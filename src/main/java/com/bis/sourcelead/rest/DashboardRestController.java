@@ -79,6 +79,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.DashboardController;
 
@@ -141,6 +142,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 CommonUtil commonUtil;
+	 
+	 @Autowired
+	 ReportsUtil reportsUtil;
 	
 	 @Autowired
 	 TaskService taskService;
@@ -1443,6 +1447,51 @@ public class DashboardRestController {
 		}
 		return requirementList;
 	}
+	
+	
+	
+	
+	@RequestMapping(value = "/getAllRequirementsForJobSharing")
+	public List<RequirementDTO> getAllRequirementsForJobSharing(@RequestParam(value="postedDateRange", required=false) String postedDateRange, @RequestParam(value="startDate", required=false) String startDate,
+			@RequestParam(value="endDate", required=false) String endDate,@RequestParam(value="managerId", required=false) Long managerId,HttpServletRequest request) throws Exception {
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		
+		Date[] searchDates = null;
+		List<RequirementDTO> requirementDTOList = null;
+		if(StringUtils.isNotBlank(postedDateRange)) {
+			if(postedDateRange.equalsIgnoreCase("custom") && StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
+				Date fromDate =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), startDate);
+	    	    Date toDate =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), endDate);
+	    	   
+	    	    Timezone timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
+	    	    DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    	    DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+	    	    DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+	    	    String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+	    	    String customEndTimeStr = TZ_DF_CED.format(toDate);
+	    	    String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+	    	    String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+	    	    fromDate = TZ_DF_TS.parse(startDateString);
+	    	    toDate = TZ_DF_TS.parse(endDateString);
+	    	    
+	    	    searchDates = new Date[2];
+	    	    searchDates[0] = fromDate;
+	    	    searchDates[1] = toDate;
+			}else if (!postedDateRange.equalsIgnoreCase("custom")){
+				searchDates = reportsUtil.getJobFilterDate(postedDateRange,loginOrgLocation);
+			}
+		}
+		
+		if(searchDates != null) {
+			requirementDTOList = requirementService.getAllManagerRequirementForJobSharing(searchDates, user.getId(), loginOrgLocation.getId());
+		}
+		
+		return requirementDTOList;
+	}
+	
+	
 	
 	@RequestMapping(value = "/applicantList")
 	public @ResponseBody ResponseList<RequirementSubmissionHistoryDTO> applicantList(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO,@RequestParam (value = "orgLocationId", required = false)Long orgLocationId, @RequestParam (value = "tab", required = false)String tab, HttpServletRequest request)throws Exception

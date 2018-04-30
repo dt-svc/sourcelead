@@ -117,6 +117,10 @@ public class UserManualServiceImpl implements UserManualService{
 					userManualLevelThree.setUpdatedBy(user);
 				}
 				userManualLevelThree.setUpdatedDate(new Date());
+				if(userManualsDTO.getSave().equalsIgnoreCase("publish")){
+					userManualLevelThree.setStatus("published");
+				}
+				
 			}else{
 				userManualLevelThree=new UserManualLevelThree();
 				if(user!=null){

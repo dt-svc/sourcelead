@@ -140,25 +140,12 @@ public class SourceleadTicketServiceImpl implements SourceleadTicketService{
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("ticketLoginUrl",loginBuilder.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
 		
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SOURCLEAD_TICKET_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
 		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,new Org(),new OrgLocations());
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		 
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.SOURCLEAD_TICKET_EMAIL,new ArrayList<EmailAttachment>());
 		 
 		 /*EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ORGREQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION); 
 		 String actionLink = "";
