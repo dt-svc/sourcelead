@@ -2162,32 +2162,15 @@ public class EMailJobScheduler {
 							commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidayEndDate));
 					globalVarsMap.put("holidayname", holidayNames);
 					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-					// getting the current EmailScenario by EmailScenario unique
-					// name and entity type
-					EmailScenario emailScenario = emailScenarioService
-							.getEmailScenarioByUniqueName(Constants.HOLIDAY_REMAINDER, Constants.ENTITY_TYPE_EMAIL);
+					commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.HOLIDAY_REMAINDER);
 					EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 							Constants.HOLIDAY_REMAINDER_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
-					// covert subject,body and signature
-					String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-					String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-					String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-					String url = sourceleadUrl;
-					// construct HTML template using required data
-					String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject,
-							body, signature, url, orgLocations.getOrg(), orgLocations);
-					emailMessage.setSubject(subject);
-					emailMessage.setMessageBody(emailTemplate);
-					// calling the sendEmail method of emailScenerioUtil
-					emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray,
-							new ArrayList<EmailAttachment>());
-					String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),
-							globalVarsMap);
+					String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 					notificationScenario.setBody(notificationBody);
 					StringBuilder actionLinkBuilder = new StringBuilder();
 					String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("leaveManagementReports").toString();
 					emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), user, orgLocations,notificationScenario,new HashMap<String,String>());
-
+				
 				}
 			}
 		}
