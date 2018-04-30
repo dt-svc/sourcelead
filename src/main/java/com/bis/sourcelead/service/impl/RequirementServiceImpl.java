@@ -3779,6 +3779,12 @@ public class RequirementServiceImpl implements RequirementService {
     public ResponseList<RequirementDTO> getRequirementList(Long id, String search, Long location, String employmentType, int pageNo, int pageSize) {
         return requirementDao.getRequirementList(id, search, location, employmentType, pageNo, pageSize);
     }
+
+	@Override
+	public List<RequirementDTO> getAllManagerRequirementForJobSharing(Date[] searchDates,
+			Long managerUserId,Long orgLocationId) throws Exception {
+		return requirementDao.getAllManagerRequirementForJobSharing(searchDates, managerUserId,orgLocationId);
+	}
         
         
 	
