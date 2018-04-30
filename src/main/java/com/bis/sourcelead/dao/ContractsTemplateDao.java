@@ -6,6 +6,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.ContractTemplateDTO;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.ContractEditHistory;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -63,4 +64,8 @@ public interface ContractsTemplateDao {
 	List<User> getSigningAuthoritiesForContract(Long orgLocationsId, Long tabId);
 
 	List<Contracts> validateAlreadyGeneratedContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation) throws Exception;
+
+	ContractEditHistory saveContractEditHistory(ContractEditHistory contractEditHistory);
+
+	Contracts getMaxNoOfContract(Long locationId);
 }

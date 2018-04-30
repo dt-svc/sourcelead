@@ -9,6 +9,7 @@ import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.ContractTemplateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ContractEditHistory;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -86,6 +87,8 @@ public interface ContractsTemplateService {
 
 	boolean reviseContract(ContractsDTO contractsDTO, OrgLocations loginOrgLocation, User loginUser) throws Exception;
 
-
+	ContractEditHistory saveContractEditHistory(ContractEditHistory contractEditHistory);
+	
+	Contracts getMaxNoOfContract(Long locationId);
 	
 }

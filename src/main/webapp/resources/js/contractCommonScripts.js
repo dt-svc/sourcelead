@@ -7,7 +7,7 @@ function validateAlreadyGeneratedContract(){
 	var contractType = $("#contractType").val();
 	var submissionOffersList = $("#submissionOffersList").val();
 	var url = "";
-	if(contractType == "Client MSA" || contractType == "Vendor MSA"  && orgRelationId != "" && orgRelationId != 'undefined'){
+	if((contractType == "Client MSA" || contractType == "Vendor MSA")  && (orgRelationId != "" && orgRelationId != 'undefined')){
 		url = sourceleadUrl+"/validateAlreadyGeneratedContract?startDate="+startDate+"&endDate="+endDate+"&orgRelationId="+orgRelationId+"&contractType="+contractType;
 		validateAlreadyGeneratedContractMainFunc(url,startDate,endDate,contractType);
 	}else if(contractType == "Client SOW" || contractType == "Vendor SOW"){

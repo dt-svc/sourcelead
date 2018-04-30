@@ -449,6 +449,8 @@ function getTemplateList(){
 		$("#status3").removeAttr("checked");
 	}else{
 		$("#filterContractTypePop-2").css("display", "none");
+		$("#waitingLiDiv").css("display", "none");
+		$("#status5").removeAttr("checked");
 	}
 	
 	
@@ -1544,12 +1546,14 @@ function preparedContractListWTS(json){
 		         }
 		         
 		         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-  	     		if(report.typeOfContract == "New"){
-  	     			result = result + '<a href="<c:url value="/app/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-  	     		}
-  	     		if(report.typeOfContract == "Custom"){
-  	     			result = result + '<a href="<c:url value="/app/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-  	     		}
+		         if(report.templateSubmissionStatus == "PENDING"){
+		        	 if(report.typeOfContract == "New"){
+		  	     			result = result + '<a href="<c:url value="/app/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		  	     		}
+		  	     		if(report.typeOfContract == "Custom"){
+		  	     			result = result + '<a href="<c:url value="/app/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		  	     		}
+		         }
     			'</sec:authorize>';
 		         
 		         if(report.revisedReason != null && report.revisedReason != '' && report.revisedReason != 'undefined'){
@@ -1656,12 +1660,14 @@ function preparedContractListWTS(json){
 	         }
 	         
 	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-	     		if(output.typeOfContract == "New"){
-	     			opt = opt + '<a href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-	     		}
-	     		if(output.typeOfContract == "Custom"){
-	     			opt = opt + '<a href="<c:url value="/app/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
-	     		}
+	         if(output.templateSubmissionStatus == "PENDING"){
+	        	 if(output.typeOfContract == "New"){
+		     			opt = opt + '<a href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+		     		if(output.typeOfContract == "Custom"){
+		     			opt = opt + '<a href="<c:url value="/app/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+	         }
  			'</sec:authorize>';
 	         
 	         if(output.revisedReason != null && output.revisedReason != '' && output.revisedReason != 'undefined'){

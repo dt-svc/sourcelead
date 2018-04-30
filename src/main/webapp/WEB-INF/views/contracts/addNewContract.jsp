@@ -97,46 +97,51 @@
             <div class="form-group">
               <label class="col-md-4">Contract Type<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
-              	<c:choose>
-				    <c:when test="${!empty contract.contractType}">
-				    <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
-		                    <option value=''>Contract Type</option>
-		                    <option ${contract.contractType == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
-		                    <option ${contract.contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
-		                    <option ${contract.contractType == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
-		                    <option ${contract.contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
-		                    <option ${contract.contractType == 'Vendor NDA' ? 'selected' : ''}>NDA</option>
-		                    <option ${contract.contractType == 'Vendor NSA' ? 'selected' : ''}>NSA</option>
-		                    <option ${contract.contractType == 'Full time offer' ? 'selected' : ''}>Full time offer</option>
-		                 </select>
-				    </c:when>
-				    <c:otherwise>
-				    <c:if test = "${!empty contractType}">
-				    	<select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
-		                    <option value=''>Contract Type</option>
-		                    <option>Client MSA</option>
-		                    <option ${contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
-		                    <option>Client SOW</option>
-		                    <option ${contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
-		                    <option>NDA</option>
-		                    <option>NSA</option>
-		                    <option>Full time offer</option>
-		                 </select>
-				    </c:if>
-				    <c:if test = "${empty contractType}">
-				    	<select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
-		                    <option value=''>Contract Type</option>
-		                    <option>Client MSA</option>
-		                    <option>Vendor MSA</option>
-		                    <option>Client SOW</option>
-		                    <option>Vendor SOW</option>
-		                    <option>NDA</option>
-		                    <option>NSA</option>
-		                    <option>Full time offer</option>
-		                 </select>
-				    </c:if>
-				    </c:otherwise>
-				 </c:choose>
+              		<c:if test="${!empty contract.templateSubmissionStatus && contract.templateSubmissionStatus == 'PENDING'}">
+              			<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
+              		</c:if>
+              		<c:if test="${empty contract.templateSubmissionStatus || contract.templateSubmissionStatus != 'PENDING'}">
+		              		<c:choose>
+						    <c:when test="${!empty contract.contractType}">
+						    <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" readonly data-validation="required" field-name="Contract Type">
+				                    <option value=''>Contract Type</option>
+				                    <option ${contract.contractType == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
+				                    <option ${contract.contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
+				                    <option ${contract.contractType == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
+				                    <option ${contract.contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
+				                    <option ${contract.contractType == 'Vendor NDA' ? 'selected' : ''}>NDA</option>
+				                    <option ${contract.contractType == 'Vendor NSA' ? 'selected' : ''}>NSA</option>
+				                    <option ${contract.contractType == 'Full time offer' ? 'selected' : ''}>Full time offer</option>
+				                 </select>
+						    </c:when>
+						    <c:otherwise>
+						    <c:if test = "${!empty contractType}">
+						    	<select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+				                    <option value=''>Contract Type</option>
+				                    <option>Client MSA</option>
+				                    <option ${contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
+				                    <option>Client SOW</option>
+				                    <option ${contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
+				                    <option>NDA</option>
+				                    <option>NSA</option>
+				                    <option>Full time offer</option>
+				                 </select>
+						    </c:if>
+						    <c:if test = "${empty contractType}">
+						    	<select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+				                    <option value=''>Contract Type</option>
+				                    <option>Client MSA</option>
+				                    <option>Vendor MSA</option>
+				                    <option>Client SOW</option>
+				                    <option>Vendor SOW</option>
+				                    <option>NDA</option>
+				                    <option>NSA</option>
+				                    <option>Full time offer</option>
+				                 </select>
+						    </c:if>
+						    </c:otherwise>
+						 </c:choose>
+              		</c:if>
             </div>
             </div>				
 			
@@ -280,24 +285,32 @@
          <div class="form-group" id="vendorDiv" style="display: ${!empty contractType || contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorVendor">
-                <div class="input-group col-md-10 pull-left errorInptgroup">
-                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts(); validateAlreadyGeneratedContract();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
-                   <option value=''>Select Vendor</option>
-	                   <c:forEach var="orgrelations" items="${orgRelationsList}">
-	                   	<c:if test = "${!empty orgRelationId}">
-	                   		<option value="${orgrelations.id}" ${orgrelations.id  == orgRelationId ? 'selected' : ''}>${orgrelations.orgName}</option>
-	                   	</c:if>
-	                   	<c:if test = "${empty orgRelationId}">
-	                   		<option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
-	                   	</c:if>
-	                   </c:forEach>
-                  </select>
-                  <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addCustomEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
-              </div>
-              <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
-                 </sec:authorize>
-          </div> 
+              
+              		<c:if test="${!empty contract.templateSubmissionStatus && contract.templateSubmissionStatus == 'PENDING'}">
+                		<input type="text" readonly class="form-control" id="venName" name="venName" value="${contract.contractOrgLocationId.orgLocationName}" data-validation="required" field-name="Contract Type">
+                		<input type="hidden" value="${orgRelationId}" id="orgRelationId" name="orgRelationId"/>
+                	</c:if>
+                	<c:if test="${empty contract.templateSubmissionStatus || contract.templateSubmissionStatus != 'PENDING'}">
+                		<div class="input-group col-md-10 pull-left errorInptgroup">
+			                  <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts(); validateAlreadyGeneratedContract();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
+			                   <option value=''>Select Vendor</option>
+				                   <c:forEach var="orgrelations" items="${orgRelationsList}">
+				                   	<c:if test = "${!empty orgRelationId}">
+				                   		<option value="${orgrelations.id}" ${orgrelations.id  == orgRelationId ? 'selected' : ''}>${orgrelations.orgName}</option>
+				                   	</c:if>
+				                   	<c:if test = "${empty orgRelationId}">
+				                   		<option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
+				                   	</c:if>
+				                   </c:forEach>
+			                  </select>
+			                  <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addCustomEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
+			              </div>
+	              		<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+	               			<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+	                 	</sec:authorize>
+                	</c:if>
+                
+          		</div> 
            </div>                     
                       
             <div class="form-group" id="vendorContactDiv"  style="display: ${!empty contractType || contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
@@ -336,19 +349,27 @@
              <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8 chooRadius" id="errorClient">
-               <div class="input-group col-md-10 pull-left errorInptgroup">
-                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts(); validateAlreadyGeneratedContract();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Name">
-                    <option value=''>Select Client</option>
-                   <c:forEach var="orgrelations" items="${clientList}">
-                         <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
-                  </c:forEach>
-                  </select>
-                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addCustomEmptyClientContact()"><i class="fa fa-refresh "></i></span>
-              </div>
-               <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
-               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
-             </sec:authorize>
-          </div>                      
+              
+              		<c:if test="${!empty contract.templateSubmissionStatus && contract.templateSubmissionStatus == 'PENDING'}">
+                		<input type="text" readonly class="form-control" id="venName" name="venName" value="${contract.contractOrgLocationId.orgLocationName}" data-validation="required" field-name="Contract Type">
+                		<input type="hidden" value="${orgRelationId}" id="clientOrgRelationId" name="clientOrgRelationId"/>
+                	</c:if>
+              		<c:if test="${empty contract.templateSubmissionStatus || contract.templateSubmissionStatus != 'PENDING'}">
+              			<div class="input-group col-md-10 pull-left errorInptgroup">
+		                  <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts(); validateAlreadyGeneratedContract();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Name">
+		                    	<option value=''>Select Client</option>
+			                   <c:forEach var="orgrelations" items="${clientList}">
+			                         <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
+			                   </c:forEach>
+		                  </select>
+		                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addCustomEmptyClientContact()"><i class="fa fa-refresh "></i></span>
+		              	</div>
+		                <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+		               		<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+	             	    </sec:authorize>
+              		</c:if>
+               
+          		</div>                      
               </div>               
             <div class="form-group" id="clientContactDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>

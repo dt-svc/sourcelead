@@ -30,6 +30,7 @@ import com.bis.sourcelead.dto.AccountDeductionsDTO;
 import com.bis.sourcelead.dto.ContractTemplateDTO;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.ContractEditHistory;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -267,8 +268,6 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	@Transactional
 	public List<Contracts> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation, String submissionType,String tabType, String contractsType,String contractStatus, User user, String userRoleName) throws Exception
 	{
-		
-		
 		String userRoleCondition = "";
 		Long userId = user.getId();
 		String userCode = user.getUserCode();
@@ -405,17 +404,27 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 				subQuery = "and (" +subQuery+ ")";
 			}
 		}
-		String subQuery1 = "";
+		/*String subQuery1 = "";
 		String[] status = null;
 		if(null != contractStatus && !"".equals(contractStatus)){	
 			status = contractStatus.split(",");
-		}
+		}*/
 		List<String> statusList = new ArrayList<>();
-		if(status != null){
+		/*if(status != null){
 			for(int i=0;i<status.length;i++){
 				statusList.add(status[i]);
 			}
+		}*/
+		
+		String subquery1 = "";
+		if("WAITING_FOR_APPROVER".equalsIgnoreCase(contractStatus)){
+			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_FOR_APPROVER' or contracts.templateSubmissionStatus = 'WAITING_TO_SEND') ";
+		}else if("WAITING_TO_BE_SIGNED".equalsIgnoreCase(contractStatus)){
+			subquery1 += " (contracts.templateSubmissionStatus = 'WAITING_TO_BE_SIGNED' or contracts.templateSubmissionStatus = 'PENDING') ";
+		}else{
+			subquery1 += " contracts.templateSubmissionStatus = '"+contractStatus+"'";
 		}
+		
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Contracts>  ContractsList = null;
 		if(null != statusList && !statusList.isEmpty()){
@@ -451,11 +460,11 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 					+ "left join fetch contracts.contactUser "
 					+ "left join fetch contracts.approverUser "
 					+ "left join fetch contracts.candidate "
-					+ "where contracts.orgLocationId.id = :orgLocationId and contracts.templateSubmissionStatus = :submissionType and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition;
+					+ "where contracts.orgLocationId.id = :orgLocationId and "+subquery1+" and contracts.contractType like '%"+tabType+"%' "+subQuery+" "+userRoleCondition;
 			if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
-				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("submissionType", submissionType).list();
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).list();
 			}else{
-				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setString("submissionType", submissionType).setLong("userId", userId).setString("userCode", userCode).list();
+				ContractsList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setLong("userId", userId).setString("userCode", userCode).list();
 			}
 		}
 		return ContractsList.size();
@@ -789,6 +798,36 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		if (contractsList != null && contractsList.size() > 0) {
 			return contractsList;
 		}
+		else
+			return null;
+	}
+
+	@Override
+	@Transactional
+	public ContractEditHistory saveContractEditHistory(ContractEditHistory contractEditHistory)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (contractEditHistory != null) {
+				session.saveOrUpdate(contractEditHistory);
+			}
+			logger.debug("contractEditHistory Added Successfully");
+		} catch (Exception exception) {
+			
+		}
+		return contractEditHistory;
+	}
+
+	@Override
+	@Transactional
+	public Contracts getMaxNoOfContract(Long locationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Contracts> contractsList = null;
+		String query = "from Contracts con where con.id = (SELECT MAX(id) FROM Contracts ch where ch.orgLocationId.id =:locationId) ";
+		contractsList = session.createQuery(query).setLong("locationId", locationId).list();
+		if (contractsList != null && contractsList.size() > 0)
+			return contractsList.get(0);
 		else
 			return null;
 	}

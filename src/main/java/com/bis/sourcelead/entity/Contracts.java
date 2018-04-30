@@ -216,6 +216,9 @@ public class Contracts {
 	@Column(name = "TEMPLATE_FILE_URL")
 	private String templateFileURL;
 	
+	@Column(name = "AUTO_GEN_ID")
+	private String autoGenId;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "contract")
@@ -1233,5 +1236,15 @@ public class Contracts {
 	public void setRevisedReason(String revisedReason)
 	{
 		this.revisedReason = revisedReason;
+	}
+
+	public String getAutoGenId()
+	{
+		return autoGenId;
+	}
+
+	public void setAutoGenId(String autoGenId)
+	{
+		this.autoGenId = autoGenId;
 	}
 }

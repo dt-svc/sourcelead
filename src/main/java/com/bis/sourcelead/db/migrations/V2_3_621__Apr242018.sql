@@ -42,5 +42,3 @@ INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES (
 
 INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`,`TAB_ID`) VALUES
 			('Revise Contract Email','Email', 'ReviseContractEmail', 'used to notify owner to Revise the Contract', 'Request for revise the contract.','org', 'Best Regards \n{{ReviseContractEmail.loginUser}}\n{{ReviseContractEmail.loginOrg}}.', 'Dear {{ReviseContractEmail.contractOwner}},\nThis is to inform that the contract signed between your company and us on {{ReviseContractEmail.contractStartDate}}.\nContract title : {{ReviseContractEmail.contractTitle}}\nDuration : {{ReviseContractEmail.contractDuration}}\nContract Type :{{ReviseContractEmail.contractType}}\nWe would like to have slight changes in the contract,for changes kindly go through the following link.\n{{ReviseContractEmail.reviseLink}}\nWe expect that changes are made ASAP.','N', 'SLADMIN', 'slead', 'sleadIN', 16);
-
-			
