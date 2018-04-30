@@ -102,5 +102,5 @@ public interface ImmigrationCommonService {
 
 	List<ImmigrationCandidateForms> getImmigrationCandidateFormsByImmigrationId(Long immigrationId);
 
-	
+	Integer getTableRecordCountByCandidateId(String entityName,Long candidateId, String condition);
 }
