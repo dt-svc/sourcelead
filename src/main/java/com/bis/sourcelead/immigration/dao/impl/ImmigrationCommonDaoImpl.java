@@ -909,7 +909,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		 query = "from ImmigrationCandidateDocumentsHistory cdh where  cdh.immigrationId.id =:immigrationId ORDER BY cdh.id DESC";
 		 immigrationCandidateDocumentHistoryList = session.createQuery(query).setLong("immigrationId", immigrationId).list();
 		}
-		else if(immigrationId == null) {
+		else if(docId!= null && immigrationId != null) {
 			 query = "from ImmigrationCandidateDocumentsHistory cdh where  cdh.immigrationCandidateDocumentId =:docId ORDER BY cdh.id DESC";
 			  immigrationCandidateDocumentHistoryList = session.createQuery(query).setLong("docId", docId).list();
 		}
