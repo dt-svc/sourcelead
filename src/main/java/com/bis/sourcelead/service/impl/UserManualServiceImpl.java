@@ -69,7 +69,7 @@ public class UserManualServiceImpl implements UserManualService{
 			if(userManualsDTO.getTitle()!=null && StringUtils.isNotBlank(userManualsDTO.getTitle())){
 				userManualLevelOne.setTitle(userManualsDTO.getTitle());
 			}
-			if(userManualsDTO.getDescription()!=null && StringUtils.isNotBlank(userManualsDTO.getDescription())){
+			if(userManualsDTO.getDescription()!=null){
 				userManualLevelOne.setDescription(userManualsDTO.getDescription());
 			}
 			
@@ -101,7 +101,7 @@ public class UserManualServiceImpl implements UserManualService{
 			if(userManualsDTO.getTitle()!=null && StringUtils.isNotBlank(userManualsDTO.getTitle())){
 				userManualLevelTwo.setTitle(userManualsDTO.getTitle());
 			}
-			if(userManualsDTO.getDescription()!=null && StringUtils.isNotBlank(userManualsDTO.getDescription())){
+			if(userManualsDTO.getDescription()!=null){
 				userManualLevelTwo.setDescription(userManualsDTO.getDescription());
 			}
 			UserManualLevelTwo levelTwo=userManualDao.storeUserManualstwo(userManualLevelTwo);
