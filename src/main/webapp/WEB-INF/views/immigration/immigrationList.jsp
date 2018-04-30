@@ -454,8 +454,8 @@
          "processing": true,
          "serverSide": true,
          "searching": false,
-         "colReorder": true,
-     	 'dom': 'Rlfrtip',
+        // "colReorder": true,
+     	// 'dom': 'Rlfrtip',
          // "stateSave": true, // used to save the page state local or server side.
          "ajax": $.fn.dataTable.pipeline({
              url: url,
