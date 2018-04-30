@@ -2229,7 +2229,7 @@ public class LeaveManagementRestController {
 		}
 		for (HolidayAndRestrictday holidayAndRestrictday : listFilter) {
 			if (holidayAndRestrictday.getHoliday() != null) {
-				if (id > 0) {
+				if (id != null || id > 0) {
 					if (holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name.trim())
 							&& holidayAndRestrictday.getHoliday().getId().longValue() == id.longValue()) {
 						flag = false;
