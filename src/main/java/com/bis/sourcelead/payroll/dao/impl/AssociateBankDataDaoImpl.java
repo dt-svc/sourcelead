@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.util.List;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.AssociateBankDataDao;
+import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.entity.AssociateBankData;
 
 @Repository
@@ -31,6 +35,23 @@ public class AssociateBankDataDaoImpl implements AssociateBankDataDao{
 			}
 		} catch (Exception exception) {
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return associateBankData;
+	}
+
+	@Override
+	@Transactional
+	public AssociateBankData findAssociateBankDataByUserId(Long userId, OrgLocations orgLocation)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		AssociateBankData associateBankData = null;
+		try {
+			List<AssociateBankData>  associateBankDataList = session.createQuery("from AssociateBankData bankData where bankData.userId.id=:userId and bankData.orgLocationId.id= :orgLocationId" ).setLong( "userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
+		    if(associateBankDataList !=null && associateBankDataList.size() >0) {
+		    	associateBankData = associateBankDataList.get(0);
+		    }
+		
+		}catch (Exception e) {
 		}
 		return associateBankData;
 	}

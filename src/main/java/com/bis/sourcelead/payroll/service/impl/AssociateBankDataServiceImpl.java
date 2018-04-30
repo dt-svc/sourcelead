@@ -71,4 +71,18 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 		}
 		return resObj;
 	}
+
+	@Override
+	public AssociateBankDataDTO findAssociateBankDataByUserId(Long userId, OrgLocations orgLocation)
+	{
+		AssociateBankData associateBankData =  associateBankDataDao.findAssociateBankDataByUserId(userId,orgLocation);
+		AssociateBankDataDTO associateBankDataDTO = new AssociateBankDataDTO();
+		associateBankDataDTO.setId(associateBankData.getId());
+		associateBankDataDTO.setAccountType(associateBankData.getAccountType());
+		associateBankDataDTO.setBankName(associateBankData.getBankName());
+		associateBankDataDTO.setRoutingNumber(associateBankData.getRoutingNumber());
+		associateBankDataDTO.setAssociateBankDataUUID(associateBankData.getAssociateBankUuid());
+		associateBankDataDTO.setAccountNumber(associateBankData.getAccountNumber());
+		return associateBankDataDTO;
+	}
 }

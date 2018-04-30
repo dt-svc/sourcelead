@@ -10,7 +10,7 @@
                   <div>
                     <select class="form-control chosen-select" id="accountType" name ="accountType" data-validation="required" field-name="Account Type">
                       <option value="">Bank Transfer</option>
-                      <option value="Direct_Deposit">Direct Deposit</option>
+                      <option value="Direct Deposit">Direct Deposit</option>
                       <option value="Cheque">Cheque</option>
                       <option value="Cash">Cash</option>
                     </select>

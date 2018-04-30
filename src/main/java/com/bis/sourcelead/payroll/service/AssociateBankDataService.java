@@ -8,4 +8,6 @@ import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 public interface AssociateBankDataService {
 
 	Response<AssociateBankDataDTO> saveAssociateBankData(AssociateBankDataDTO associateBankDataDTO, OrgLocations orgLocation, User loginUser);
+
+	AssociateBankDataDTO findAssociateBankDataByUserId(Long userId, OrgLocations orgLocation);
 }

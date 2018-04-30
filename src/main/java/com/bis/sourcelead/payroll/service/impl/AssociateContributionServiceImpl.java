@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
@@ -86,5 +88,28 @@ public class AssociateContributionServiceImpl implements AssociateContributionSe
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return resObj;
+	}
+
+	@Override
+	public ResponseList<ContributionDTO> findAllContributionSummaryByUserId(Long userId, OrgLocations orgLocation)
+	{
+		ResponseList<ContributionDTO> res = new ResponseList<>();
+		
+		List<AssociateContribution> associateContrList = associateContributionDao.findAllContributionSummaryByUserId(userId,orgLocation);
+		List<ContributionDTO> list = new ArrayList<>();
+		if(associateContrList != null) {
+			associateContrList.forEach(con->{
+				ContributionDTO contributionDTO = new ContributionDTO();
+				contributionDTO.setId(String.valueOf(con.getId()));
+				contributionDTO.setContributionType(con.getContributionTypeId().getDeductionTypeId().getPayrollDeductionType());
+				contributionDTO.setContributionAmount(con.getContributionAmount());
+				contributionDTO.setContributionMethod(con.getContributionMethod());
+				contributionDTO.setDescription(con.getContributionTypeId().getDescription());
+				contributionDTO.setAssociateContributionUUID(con.getAssociateContributionUuid());
+				list.add(contributionDTO);
+			});
+			res.setData(list);
+		}
+		return res;
 	}
 }

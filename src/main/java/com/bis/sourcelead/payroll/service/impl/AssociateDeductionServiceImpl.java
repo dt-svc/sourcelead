@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
@@ -90,5 +92,27 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 		payrollDeductionDTO.setPayrollDeductionMethod(payrollDeduction.getPayrollDeductionMethod());
 		payrollDeductionDTO.setDeductionAmount(payrollDeduction.getDeductionAmount());
 		return payrollDeductionDTO;
+	}
+
+	@Override
+	public ResponseList<DeductionDTO> findAllDeductionSummaryByUserId(Long userId, OrgLocations orgLocation)
+	{
+		ResponseList<DeductionDTO>  res = new ResponseList<>();
+		List<AssociateDeduction> associateDedList = associateDeductionDao.findAllDeductionSummaryByUserId(userId,orgLocation);
+		List<DeductionDTO> list = new ArrayList<>();
+		if(associateDedList != null) {
+			associateDedList.forEach(ad->{
+				DeductionDTO deductionDTO = new DeductionDTO();
+				deductionDTO.setId(String.valueOf(ad.getId()));
+				deductionDTO.setDeductionType(ad.getDeductionTypeId().getPayrollDeductionType());
+				deductionDTO.setMethod(ad.getDeductionMethod());
+				deductionDTO.setAmount(ad.getDeductionAmount());
+				deductionDTO.setDescription(ad.getDeductionTypeId().getDescription());
+				deductionDTO.setAssociateDeductionUUID(ad.getAssociateDeductionUuid());
+				list.add(deductionDTO);
+			});
+			res.setData(list);
+		}
+		return res;
 	}
 }

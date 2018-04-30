@@ -207,4 +207,53 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 		
 	}
 
+	@Override
+	public AssociateTaxDTO findAssociateTaxSummaryByUserId(Long userId, OrgLocations orgLocation)
+	{
+		
+		AssociateTax associateTax = associateTaxDao.findAssociateTaxSummaryByUserId(userId,orgLocation);
+		AssociateTaxDTO associateTaxDTO = new AssociateTaxDTO();
+		if(associateTax != null) {
+			associateTaxDTO.setId(associateTax.getId());
+			associateTaxDTO.setFederaltaxFillingStatus(associateTax.getResidenceTaxFilliingStatus());
+			associateTaxDTO.setFederaltaxAllowances(associateTax.getFederalTaxAllowances());
+			associateTaxDTO.setFederaltaxAdditionalWithHolding(associateTax.getFederalTaxAdditionnalWithHolding());
+			associateTaxDTO.setStateTaxFillingStatus(associateTax.getStateTaxFilliingStatus());
+			associateTaxDTO.setStateTaxAllowances(associateTax.getStateTaxAllowances());
+			associateTaxDTO.setStateTaxAdditionalWithHolding(associateTax.getStateTaxAdditionnalWithHolding());
+			associateTaxDTO.setResidenceLocationFillingStatus(associateTax.getResidenceTaxFilliingStatus());
+			associateTaxDTO.setResidenceLocationAllowances(associateTax.getResidenceTaxAllowances());
+			associateTaxDTO.setResidenceLocationAdditionalWithHolding(associateTax.getResidenceTaxAdditionnalWithHolding());
+			associateTaxDTO.setSupplementType(associateTax.getSupplementType());
+			associateTaxDTO.setLocalTax(associateTax.getLocalTax());
+			if(associateTax.getFederalExempt()) {
+				associateTaxDTO.setFederalExempt("YES");
+			}else {
+				associateTaxDTO.setFederalExempt("NO");
+			}
+			if(associateTax.getMediacareExempt()) {
+				associateTaxDTO.setMedicareExempt("YES");
+			}else {
+				associateTaxDTO.setMedicareExempt("NO");
+			}
+			if(associateTax.getFutaExempt()) {
+				associateTaxDTO.setFutaExempt("YES");
+			}else {
+				associateTaxDTO.setFutaExempt("NO");
+			}
+			if(associateTax.getSocialSecurityExempt()) {
+				associateTaxDTO.setSocailSecurityExempt("YES");
+			}else{
+				associateTaxDTO.setSocailSecurityExempt("NO");
+			}
+			if(associateTax.getSutaExempt()) {
+				associateTaxDTO.setSutaExempt("YES");
+			}else {
+				associateTaxDTO.setSutaExempt("NO");
+			}
+		}
+		
+		return associateTaxDTO;
+	}
+
 }

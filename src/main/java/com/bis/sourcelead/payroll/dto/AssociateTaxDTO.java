@@ -52,6 +52,8 @@ public class AssociateTaxDTO {
 	
 	private long userId;
 	
+	private String supplementType;
+	
 	public long getId()
 	{
 		return id;
@@ -260,6 +262,16 @@ public class AssociateTaxDTO {
 	public void setUserId(long userId)
 	{
 		this.userId = userId;
+	}
+
+	public String getSupplementType()
+	{
+		return supplementType;
+	}
+
+	public void setSupplementType(String supplementType)
+	{
+		this.supplementType = supplementType;
 	}
 	
 	

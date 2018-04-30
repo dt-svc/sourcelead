@@ -1,5 +1,7 @@
 package com.bis.sourcelead.payroll.dao.impl;
 
+import java.util.List;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.AssociateDeductionDao;
+import com.bis.sourcelead.payroll.entity.AssociateBankData;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 
 @Repository
@@ -35,5 +39,15 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
 		return associateDeduction;
+	}
+
+
+	@Override
+	@Transactional
+	public List<AssociateDeduction> findAllDeductionSummaryByUserId(Long userId, OrgLocations orgLocation)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<AssociateDeduction>  associateDeductionList = session.createQuery("from AssociateDeduction ded where ded.userId.id=:userId and ded.orgLocationId.id= :orgLocationId" ).setLong( "userId", userId).setLong("orgLocationId", orgLocation.getId()).list();
+		return associateDeductionList;
 	}
 }

@@ -25,8 +25,11 @@ import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.dto.AssociateContributionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
+import com.bis.sourcelead.payroll.dto.ContributionDTO;
+import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollContributionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.payroll.service.AssociateBankDataService;
@@ -427,4 +430,76 @@ public class USPayrollRestController {
 			return resObj;
 		}
 		
+		
+		
+		/**
+		 * find Associate bank Data By User Id
+		 * @param associateDeductionDTO
+		 * @param request
+		 * @param response
+		 * @return Response<AssociateDeductionDTO>
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/findAssociateBankDataByUserId","/rest/findAssociateBankDataByUserId" }, method = RequestMethod.GET)
+		@ResponseBody
+		public AssociateBankDataDTO findAssociateBankDataByUserId(@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			AssociateBankDataDTO  associateBankDataDTO = associateBankDataService.findAssociateBankDataByUserId(userId,orgLocation);	
+			return associateBankDataDTO;
+		}
+		
+		
+		/**
+		 * find Associate Tax Summary By User Id
+		 * @param associateDeductionDTO
+		 * @param request
+		 * @param response
+		 * @return Response<AssociateDeductionDTO>
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/findAssociateTaxSummaryByUserId","/rest/findAssociateTaxSummaryByUserId" }, method = RequestMethod.GET)
+		@ResponseBody
+		public AssociateTaxDTO findAssociateTaxSummaryByUserId(@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			AssociateTaxDTO  associateTaxDTO = associateTaxService.findAssociateTaxSummaryByUserId(userId,orgLocation);	
+			return associateTaxDTO;
+		}
+		
+		
+		/**
+		 * find Associate Deduction Summary By User Id
+		 * @param associateDeductionDTO
+		 * @param request
+		 * @param response
+		 * @return Response<AssociateDeductionDTO>
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/findAllDeductionSummaryByUserId","/rest/findAllDeductionSummaryByUserId" }, method = RequestMethod.GET)
+		@ResponseBody
+		public ResponseList<DeductionDTO> findAllDeductionSummaryByUserId(@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			ResponseList<DeductionDTO>  res = associateDeductionService.findAllDeductionSummaryByUserId(userId,orgLocation);	
+			return res;
+		}
+		
+		
+		/**
+		 * find Associate Contribution Summary By User Id
+		 * @param associateDeductionDTO
+		 * @param request
+		 * @param response
+		 * @return Response<AssociateDeductionDTO>
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/findAllContributionSummaryByUserId","/rest/findAllContributionSummaryByUserId" }, method = RequestMethod.GET)
+		@ResponseBody
+		public ResponseList<ContributionDTO> findAllContributionSummaryByUserId(@RequestParam(value = "userId", required = false) Long userId,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			ResponseList<ContributionDTO>  res = associateContributionService.findAllContributionSummaryByUserId(userId,orgLocation);	
+			return res;
+		}
 }

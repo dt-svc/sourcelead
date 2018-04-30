@@ -12,4 +12,6 @@ public interface AssociateTaxService {
 
 	Response<AssociateTaxDTO> isLocalTaxYes(AssociateTaxDTO associateTaxDTO, OrgLocations orgLocation, User loginUser);
 
+	AssociateTaxDTO findAssociateTaxSummaryByUserId(Long userId, OrgLocations orgLocation);
+
 }
