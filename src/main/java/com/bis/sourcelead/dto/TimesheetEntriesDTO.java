@@ -10,7 +10,7 @@ public class TimesheetEntriesDTO implements Serializable{
 
 	private Long id;
 	
-	@Required(desc="timesheetTaskDTO")
+	//@Required(desc="timesheetTaskDTO")
     private TimesheetTaskDTO timesheetTaskDTO;
     
     private String dayOfTheDate;

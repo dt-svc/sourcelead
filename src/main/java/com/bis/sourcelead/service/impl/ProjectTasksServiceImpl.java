@@ -391,96 +391,82 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
         return "success";
 	}
 
-	public void SendMailtoAssigntoMembersaboutAddingTask(ProjectAssignTask projectAssignTask, ProjectTasksDTO projectTasksDTO, ProjectTasks tasks, OrgLocations loginOrgLocation,User loginUser) throws Exception
+	public void SendMailtoAssigntoMembersaboutAddingTask(ProjectAssignTask projectAssignTask, ProjectTasksDTO projectTasksDTO, ProjectTasks tasks, OrgLocations loginOrgLocation, User loginUser) throws Exception
 	{
 		String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
-	    String Assignmember=projectAssignTask.getProjectMemberId().getEmpName(); 
-	 	
- 	    
-	    Employees employee=projectAssignTask.getProjectMemberId().getEmployee();
-	    User user=employee.getUser();
-		StringBuilder fromNameBuilder=new StringBuilder();
-	     EmailMessage emailMessage = new EmailMessage();
-	     emailMessage.setFirstName(loginUser.getFirstName());
-		 emailMessage.setLastName(loginUser.getLastName());
-		 emailMessage.setToEmail(projectAssignTask.getProjectMemberId().getEmpEmail());
-		 emailMessage.setFromEmail(loginUser.getEmail());
-		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		 //setting the class filed values
-		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		
-		 if(loginUser.getFirstName() != null && loginUser.getLastName()!=null && !"".equalsIgnoreCase(loginUser.getFirstName()) && !"".equalsIgnoreCase(loginUser.getLastName())){
-			 StringBuilder userBuild = new StringBuilder();
-			 globalVarsMap.put("LoginUser",userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-			 }else{
-				 globalVarsMap.put("LoginUser",loginUser.getFirstName());
+		String Assignmember = projectAssignTask.getProjectMemberId().getEmpName();
+		Employees employee = projectAssignTask.getProjectMemberId().getEmployee();
+		User user = employee.getUser();
+		StringBuilder fromNameBuilder = new StringBuilder();
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(projectAssignTask.getProjectMemberId().getEmpEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (loginUser.getFirstName() != null && loginUser.getLastName() != null
+				&& !"".equalsIgnoreCase(loginUser.getFirstName())
+				&& !"".equalsIgnoreCase(loginUser.getLastName())) {
+			StringBuilder userBuild = new StringBuilder();
+			globalVarsMap.put("LoginUser", userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		}
+		else {
+			globalVarsMap.put("LoginUser", loginUser.getFirstName());
+		}
+		if (projectAssignTask.getProjectMemberId().getEmpName() != null
+				&& !"".equalsIgnoreCase(projectAssignTask.getProjectMemberId().getEmpName())) {
+			globalVarsMap.put("Assignedmember", projectAssignTask.getProjectMemberId().getEmpName());
+		}
+		if (tasks.getPriority() != null) {
+			String priority = tasks.getPriority().getName();
+			if (priority != null && !"".equalsIgnoreCase(priority)) {
+				globalVarsMap.put("Priority", priority);
 			}
-		      
-		      if( projectAssignTask.getProjectMemberId().getEmpName()!=null && !"".equalsIgnoreCase( projectAssignTask.getProjectMemberId().getEmpName())){
-				 globalVarsMap.put("Assignedmember",projectAssignTask.getProjectMemberId().getEmpName());}
-		         if(tasks.getPriority() != null) {
-		        	 String priority=tasks.getPriority().getName();
-			         if( priority!=null && !"".equalsIgnoreCase(priority)){
-					 globalVarsMap.put("Priority",priority);
-			         } 
-		         }
-				 if(tasks.getSeverity()!=null ){
-				 globalVarsMap.put("Severity",tasks.getSeverity().getName());
-				 }				 
-				 globalVarsMap.put("TaskTitle",tasks.getTaskName());
-				 globalVarsMap.put("ProjectName",tasks.getProjectId().getProjectName());
-				 String dueDate ="";
-				 SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
-				 if(tasks.getDueDate()!=null){
-					 dueDate=dateFormat.format(tasks.getDueDate());
-				 }
-				 globalVarsMap.put("DueDate",dueDate); 		
-				 if(tasks.getOwnerUserId()!=null){
-				if(tasks.getOwnerUserId().getFirstName() != null && tasks.getOwnerUserId().getLastName()!=null && !"".equalsIgnoreCase(tasks.getOwnerUserId().getFirstName()) && !"".equalsIgnoreCase(tasks.getOwnerUserId().getLastName())){
-					 StringBuilder userBuild = new StringBuilder();
-				globalVarsMap.put("Owner",userBuild.append(tasks.getOwnerUserId().getFirstName()).append(" ").append(tasks.getOwnerUserId().getLastName()).toString());
-					 }else{
-				globalVarsMap.put("Owner",tasks.getOwnerUserId().getFirstName());
-						}
-				 }
-		 globalVarsMap.put("LoginOrgName",loginOrgLocation.getOrgLocationName());
-		 StringBuilder linkBuild = new StringBuilder();
-		 globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ASSIGNEMPLOYEE_PROJECTTASK,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		  //calling the sendEmail method of emailScenerioUtil
-		 if(null !=loginOrgLocation.getId())
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 
-		//calling the sendNotification method of emailScenerioUtil
-		EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ASSIGNEMPLOYEE_PROJECTTASK,Constants.ENTITY_TYPE_NOTIFICATION);
-		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		}
+		if (tasks.getSeverity() != null) {
+			globalVarsMap.put("Severity", tasks.getSeverity().getName());
+		}
+		globalVarsMap.put("TaskTitle", tasks.getTaskName());
+		globalVarsMap.put("ProjectName", tasks.getProjectId().getProjectName());
+		String dueDate = "";
+		SimpleDateFormat dateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+		if (tasks.getDueDate() != null) {
+			dueDate = dateFormat.format(tasks.getDueDate());
+		}
+		globalVarsMap.put("DueDate", dueDate);
+		if (tasks.getOwnerUserId() != null) {
+			if (tasks.getOwnerUserId().getFirstName() != null
+					&& tasks.getOwnerUserId().getLastName() != null
+					&& !"".equalsIgnoreCase(tasks.getOwnerUserId().getFirstName())
+					&& !"".equalsIgnoreCase(tasks.getOwnerUserId().getLastName())) {
+				StringBuilder userBuild = new StringBuilder();
+				globalVarsMap.put("Owner", userBuild.append(tasks.getOwnerUserId().getFirstName()).append(" ").append(tasks.getOwnerUserId().getLastName()).toString());
+			}
+			else {
+				globalVarsMap.put("Owner", tasks.getOwnerUserId().getFirstName());
+			}
+		}
+		globalVarsMap.put("LoginOrgName", loginOrgLocation.getOrgLocationName());
+		StringBuilder linkBuild = new StringBuilder();
+		globalVarsMap.put("link", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		// calling the sendEmail method of emailScenerioUtil
+		if (null != loginOrgLocation.getId())
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.MAIL_ASSIGNEMPLOYEE_PROJECTTASK,new ArrayList<EmailAttachment>());
+		// calling the sendNotification method of emailScenerioUtil
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ASSIGNEMPLOYEE_PROJECTTASK, Constants.ENTITY_TYPE_NOTIFICATION);
+		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
 		notificationScenario.setBody(notificationBody);
 		notificationScenario.setOrgCode(loginOrgCode);
 		StringBuilder notificationLink = new StringBuilder();
-		String actionLink="";
-		actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectTaskSummary?"+"taskUUID="+tasks.getProjectTasksUUID()+"&projectClientUUID="+projectTasksDTO.getProjectClientUUID()).toString();
-		emailScenerioUtil.sendNotification(actionLink, loginUser, user, loginOrgLocation, notificationScenario,new HashMap<String,String>()) ;
-	 		
-
-		
+		String actionLink = "";
+		actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectTaskSummary?"
+				+ "taskUUID=" + tasks.getProjectTasksUUID() + "&projectClientUUID="
+				+ projectTasksDTO.getProjectClientUUID()).toString();
+		emailScenerioUtil.sendNotification(actionLink, loginUser, user, loginOrgLocation, notificationScenario, new HashMap<String, String>());
 	}
 
 	private Set<ProjectAssignTask> getAssignProjectTasks(ProjectTasksDTO projectTasksDTO, ProjectTasks tasks) throws Exception {
