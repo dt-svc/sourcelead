@@ -134,6 +134,24 @@
 		</div>
 	</div>
 	
+	<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+	<div class="landTempCta nomr">
+	<div class="pull-left mr10">
+           <i class="fa fa-address-card-o fa-2x text-info"></i>
+        </div>
+		<div class="pull-left">
+		<h2 class="text-info">Email</h2>
+		<p>Manage Your Email Templates</p>
+		<span>
+		
+		
+        	<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/emailTemplates" />">View</a>
+        
+			
+		</span>
+		</div>
+	</div>
+	</c:if>
 	<div class="clearfix"></div>
 </section>
     
