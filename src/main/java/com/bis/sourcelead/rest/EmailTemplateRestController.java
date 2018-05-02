@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.dto.EmailConfigurationDTO;
 import com.bis.sourcelead.dto.EmailScenarioDTO;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.EmailScenarioConfiguration;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -90,7 +92,7 @@ public class EmailTemplateRestController {
 			  emailScenario=emailScenarioService.getEmailTemplateById(Long.parseLong(emailScenarioDTO.getId()));
 		 }
 		 if(user.getUserCode().equalsIgnoreCase("sladmin") && emailScenario != null&& emailScenario.getDefaultTemplate().equalsIgnoreCase("Y")){
-			 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
+			 /*String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
 			 String bodyUrl=emailScenario.getBodyUrl();
 			 String fileName=emailScenario.getUniqueScenarioName();
 			 String entityType=emailScenario.getEntityType();
@@ -114,14 +116,14 @@ public class EmailTemplateRestController {
 					bw.close();
 				}catch(Exception e){
 					e.printStackTrace();
-				}
+				}*/
 				emailScenario.setScenarioName(emailScenarioDTO.getScenarioName());
-				emailScenario.setBodyUrl(link);
+				emailScenario.setBody(emailScenarioDTO.getBody());
 				emailScenario.setSubject(emailScenarioDTO.getSubject());
 				emailScenario.setSignature(emailScenarioDTO.getSignature());
 				emailScenarioService.save(emailScenario);
 		 }else if(emailScenario != null && emailScenario.getDefaultTemplate().equalsIgnoreCase("N")){
-			 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
+			 /*String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
 			 String bodyUrl=emailScenario.getBodyUrl();
 			 try{
 					File file = new File(path+bodyUrl);
@@ -146,14 +148,14 @@ public class EmailTemplateRestController {
 					bw.close();
 				}catch(Exception e){
 					e.printStackTrace();
-				}
+				}*/
 				emailScenario.setSubject(emailScenarioDTO.getSubject());
 				emailScenario.setSignature(emailScenarioDTO.getSignature());
 				emailScenario.setScenarioName(emailScenarioDTO.getScenarioName());
-				emailScenario.setBodyUrl(link);
+				emailScenario.setBody(emailScenarioDTO.getBody());
 				emailScenarioService.save(emailScenario);
 		 }else{
-			 String link=null;
+			 /*String link=null;
 			 String title=null;
 			 	if(emailScenario != null){
 			 		 title=emailScenario.getUniqueScenarioName()+emailScenario.getEntityType()+SourceLeadRandomCodeHelper.generateRandomOrgCode();
@@ -170,9 +172,9 @@ public class EmailTemplateRestController {
 				}catch(Exception e){
 					e.printStackTrace();
 				}
-			
+			*/
 			 EmailScenario newEmailScenario=new EmailScenario();
-			 newEmailScenario.setBodyUrl(link);
+			 newEmailScenario.setBody(emailScenarioDTO.getBody());
 			 newEmailScenario.setScenarioName(emailScenarioDTO.getScenarioName());
 			 newEmailScenario.setEntityType(emailScenario.getEntityType());
 			 newEmailScenario.setUniqueScenarioName(emailScenario.getUniqueScenarioName());
@@ -180,7 +182,6 @@ public class EmailTemplateRestController {
 			 newEmailScenario.setSubject(emailScenario.getSubject());
 			 newEmailScenario.setTemplateType(emailScenario.getTemplateType());
 			 newEmailScenario.setSignature(emailScenario.getSignature());
-			 newEmailScenario.setBodyUrl(link);
 			 newEmailScenario.setDefaultTemplate("N");
 			 newEmailScenario.setOrgLocationId(orgLocation);
 			 newEmailScenario.setEmailUUID(SourceLeadRandomCodeHelper.generateRandomOrgCode());
@@ -191,111 +192,6 @@ public class EmailTemplateRestController {
 			 newEmailScenario.setParentId(emailScenario);
 			 emailScenarioService.save(newEmailScenario);
 		 }
-		 
-		 /*else if(emailScenario != null && emailScenario.getDefaultTemplate().equalsIgnoreCase("N")){
-			 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
-			 String bodyUrl=emailScenario.getBodyUrl();
-			 try{
-					File file = new File(path+bodyUrl);
-					file.delete();
-				}catch(Exception e){
-					e.printStackTrace();
-					
-				}
-			 String link=null;
-			 String title=null;
-			 	if(emailScenarioDTO.getUniqueScenarioName() != null){
-			 		 title=emailScenarioDTO.getUniqueScenarioName()+SourceLeadRandomCodeHelper.generateRandomOrgCode();
-			 	}
-				File folder = new File(staticPath+"/"+orgLocation.getId()+"/emailTemplates/");
-				if (!folder.exists())
-					folder.mkdirs();
-				File file=new File(folder,title+".txt");
-				link = "/slead-static/"+orgLocation.getId()+"/emailTemplates/"+file.getName();
-				try{
-					BufferedWriter bw=new BufferedWriter(new FileWriter(file));
-					bw.write(emailScenarioDTO.getBody());
-					bw.close();
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-				emailScenario.setBodyUrl(link);
-				emailScenarioService.save(emailScenario);
-		 }else{
-			 EmailScenario defEmailScenario=null;
-			 if(emailScenario != null ){
-				  defEmailScenario= emailScenarioService.getEmailDefTemplateNo(emailScenario.getUniqueScenarioName(), "N");
-				  if(defEmailScenario!=null){
-					  String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
-						 String bodyUrl=defEmailScenario.getBodyUrl();
-						 try{
-								File file = new File(path+bodyUrl);
-								file.delete();
-							}catch(Exception e){
-								e.printStackTrace();
-								
-							}
-						 String link=null;
-						 String title=null;
-						 	if(emailScenarioDTO.getUniqueScenarioName() != null){
-						 		 title=emailScenarioDTO.getUniqueScenarioName()+SourceLeadRandomCodeHelper.generateRandomOrgCode();
-						 	}
-							File folder = new File(staticPath+"/"+orgLocation.getId()+"/emailTemplates/");
-							if (!folder.exists())
-								folder.mkdirs();
-							File file=new File(folder,title+".txt");
-							link = "/slead-static/"+orgLocation.getId()+"/emailTemplates/"+file.getName();
-							try{
-								BufferedWriter bw=new BufferedWriter(new FileWriter(file));
-								bw.write(emailScenarioDTO.getBody());
-								bw.close();
-							}catch(Exception e){
-								e.printStackTrace();
-							}
-							defEmailScenario.setBodyUrl(link);
-							emailScenarioService.save(defEmailScenario);
-				  }else{
-						 String link=null;
-						 String title=null;
-						 	if(emailScenarioDTO.getUniqueScenarioName() != null){
-						 		 title=emailScenarioDTO.getUniqueScenarioName()+SourceLeadRandomCodeHelper.generateRandomOrgCode();
-						 	}
-							File folder = new File(staticPath+"/"+orgLocation.getId()+"/emailTemplates/");
-							if (!folder.exists())
-								folder.mkdirs();
-							File file=new File(folder,title+".txt");
-							link = "/slead-static/"+orgLocation.getId()+"/emailTemplates/"+file.getName();
-							try{
-								BufferedWriter bw=new BufferedWriter(new FileWriter(file));
-								bw.write(emailScenarioDTO.getBody());
-								bw.close();
-							}catch(Exception e){
-								e.printStackTrace();
-							}
-						
-						 EmailScenario newEmailScenario=new EmailScenario();
-						 newEmailScenario.setBodyUrl(link);
-						 newEmailScenario.setScenarioName(emailScenario.getScenarioName());
-						 newEmailScenario.setEntityType(emailScenario.getEntityType());
-						 newEmailScenario.setUniqueScenarioName(emailScenario.getUniqueScenarioName());
-						 newEmailScenario.setDescription(emailScenario.getDescription());
-						 newEmailScenario.setSubject(emailScenario.getSubject());
-						 newEmailScenario.setTemplateType(emailScenario.getTemplateType());
-						 newEmailScenario.setSignature(emailScenario.getSignature());
-						 newEmailScenario.setBodyUrl(link);
-						 newEmailScenario.setDefaultTemplate("N");
-						 newEmailScenario.setOrgLocationId(orgLocation);
-						 newEmailScenario.setEmailUUID(SourceLeadRandomCodeHelper.generateRandomOrgCode());
-						 newEmailScenario.setIsTemplateModified("Y");
-						 newEmailScenario.setOrgCode(orgLocation.getOrgCode());
-						 newEmailScenario.setLocationCode(orgLocation.getLocationCode());
-						 newEmailScenario.setTabId(emailScenario.getTabId());
-						 emailScenarioService.save(newEmailScenario);
-					 }
-			 }
-			
-		 }*/
-		 
 		  return "success";
 			
 		}
