@@ -55,7 +55,7 @@
 	<div class="popupMid clearfix">
 
           <div class="col-sm-12 noPad mt clearfix">
-				<label class="col-md-4 padding_left">Visa Type</label>
+				<label class="col-md-4 padding_left">Visa Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
 					<select class="chosen-select form-control" name = "visaType" id = "visaType" field-name = "Visa Type"  data-validation = "required" >
 					  <option value="" selected>Select Visa Type</option>

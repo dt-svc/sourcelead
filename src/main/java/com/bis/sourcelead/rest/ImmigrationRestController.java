@@ -1072,8 +1072,7 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = { "/savePassportVisaDetailsPage" }, method = RequestMethod.POST)
 	public Response<String> savePassportDetailsPage(ImmigrationPassportVisaDTO immigrationPassportVisaDTO,
-			HttpServletRequest request, @RequestParam(value = "idType", required = true) String idType,
-			@RequestParam(value = "candidateId", required = false) String candidateId,
+			HttpServletRequest request, @RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "immigrationId", required = false) String immigrationId) {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -1083,9 +1082,9 @@ public class ImmigrationRestController {
 		if (user != null) {
 			try {
 				if (Validator.validate(immigrationPassportVisaDTO)) {
-					if (idType.trim().equalsIgnoreCase(Constants.ID_TYPE_PASSPORT)) {
+					if (immigrationPassportVisaDTO.getIdType().trim().equalsIgnoreCase(Constants.ID_TYPE_PASSPORT)) {
 						immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_PASSPORT);
-					} else if (idType.trim().equalsIgnoreCase(Constants.ID_TYPE_VISA)) {
+					} else if (immigrationPassportVisaDTO.getIdType().trim().equalsIgnoreCase(Constants.ID_TYPE_VISA)) {
 						immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_VISA);
 					}
 					immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations);
