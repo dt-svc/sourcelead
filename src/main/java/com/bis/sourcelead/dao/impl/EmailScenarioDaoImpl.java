@@ -157,7 +157,7 @@ logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCo
 		if(templateType.equalsIgnoreCase("sourcelead")) {
 			 query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y' "; 
 		}else if(templateType.equalsIgnoreCase("org")){
-			 query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y' and emailScenario.templateType = 'org' "; 
+			 query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y' and emailScenario.templateType = 'org' and emailScenario.entityType = 'Email' "; 
 		}
 		List<EmailScenario> emailScenarioList =session.createQuery(query).list();
 		return emailScenarioList;
