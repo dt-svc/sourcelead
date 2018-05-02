@@ -251,15 +251,21 @@ function Immigration() {
                     url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
                     type: "POST",
                     data: formData,
-                    success: function (data) {
-                    	eval("dataObj="+data)
-                    	immigrationId = dataObj.id;
-                    	candidateId = dataObj.candidateId;
-                    	templateId= dataObj.immTemplateId;
-                    	
-                         if(status == 'saveContinue'){// redirect to petition details tab page.
-                         window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId+"&candidateId="+candidateId+"&templateId="+templateId;
-                         }
+                    success: function (result) {
+                    	if (result && result.response === "INVALID_DATA") {
+                       	 showError(result.responseMessage);
+                       }else if (result.response === "AWKWARD") {
+                           location.href = "/errorPage";
+                       }else if(result.response === 'SUCCESS') {
+                    	   immigrationId = result.data[0];
+                       	candidateId = result.data[1];
+                       	templateId= result.data[2];
+                            if(status == 'saveContinue'){// redirect to petition details tab page.
+                            window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId+"&candidateId="+candidateId+"&templateId="+templateId;
+                            }
+                       }else{
+                       	 showError("Operation failed, please try again");
+                       }
                         
                       }
                     
@@ -276,16 +282,19 @@ function Immigration() {
                     url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
                     type: "POST",
                     data: formData,
-                    success: function (data) {
-                    	eval("dataObj="+data)
-                    	immigrationId = dataObj.id;
-                    	candidateId = dataObj.candidateId;
-                    	templateId= dataObj.immTemplateId;
+                    success: function (result) {
+                    	if (result && result.response === "INVALID_DATA") {
+                          	 showError(result.responseMessage);
+                          }else if (result.response === "AWKWARD") {
+                              location.href = "/errorPage";
+                          }else if(result.response === 'SUCCESS') {
+                        	  immigrationId = result.data[0];
+                          	candidateId = result.data[1];
+                          	templateId= result.data[2];
+                          }else{
+                          	 showError("Operation failed, please try again");
+                          }
                     	
-                         /*if(status == 'saveContinue'){// redirect to petition details tab page.
-                         window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId+"&candidateId="+candidateId+"&templateId="+templateId;
-                         }*/
-                        
                       }
                     
                 });

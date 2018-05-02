@@ -2,6 +2,7 @@ package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -970,22 +971,40 @@ public class ImmigrationRestController {
 	}
 
 	@RequestMapping(value = { "/savePetitionDetailsPage" }, method = RequestMethod.POST)
-	public String savePetitionDetailsPage(ImmigrationDTO immigrationDTO,
+	public ResponseList<Long> savePetitionDetailsPage(ImmigrationDTO immigrationDTO,
 			@RequestParam(value = "removedResidenceIds", required = false) String[] ids,
 			@RequestParam(value = "status", required = false) String status, HttpServletRequest request) {
+		ResponseList<Long> response = new ResponseList<>();
+		List<Long> requiredIds = new LinkedList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		immigrationDTO.setStaticPath(staticPath);
 		Immigration immigration = null;
 		try {
+			if(user != null && Validator.validate(immigrationDTO)){
 			immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations, ids, status);
-		} catch (Exception e) {
-			logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
+			requiredIds.add(immigration.getId());
+			requiredIds.add(immigration.getCandidate().getId());
+			requiredIds.add(immigration.getImmigrationTemplateId().getId());
+			response.setData(requiredIds);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+			}else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
 			e.printStackTrace();
 		}
-		return "{result:'success',id:'" + immigration.getId() + "',candidateId:'" + immigration.getCandidate().getId()
-				+ "',immTemplateId:'" + immigration.getImmigrationTemplateId().getId() + "'}";
+		/*return "{result:'success',id:'" + immigration.getId() + "',candidateId:'" + immigration.getCandidate().getId()
+				+ "',immTemplateId:'" + immigration.getImmigrationTemplateId().getId() + "'}";*/
+		return response;
 	}
 
 	@RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
@@ -1681,6 +1700,32 @@ public class ImmigrationRestController {
 		}
 		return FileUploadUtil.getImmigrationZipFiles(staticPath, orgId, orgLocationId, immigrationId, docId,
 				immigrationCanididateDocHistoryList, fileNameParameters);
+	}
+	@RequestMapping("/downloadAllImmigrationDocsZip") // used for downloading all immigration documents.
+	@ResponseBody
+	public String exportAllImmigrationDocuments(HttpServletRequest request, Long immigrationId)
+			throws Exception {
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		long orgId = 0, orgLocationId = 0;
+		if (org != null) {
+			orgId = org.getId();
+		}
+		if (loginOrgLocation != null) {
+			orgLocationId = loginOrgLocation.getId();
+		}
+		Map<String, String> fileNameParameters = new HashMap<>();
+		Immigration immigration = immigrationCommonService.getImmigrationById(immigrationId);
+		fileNameParameters.put("immiUUID", immigration.getGeneratedId());
+		fileNameParameters.put("firstName", immigration.getCandidate().getFirstName());
+		fileNameParameters.put("lastName", immigration.getCandidate().getLastName());
+		
+		HashMap<String, Object>	docsListMap = new HashMap<String, Object>(); 	
+		List<ImmigrationCandidateForms> immigrationCandidateForms = immigrationCommonService.getImmigrationCandidateFormsByImmigrationId(immigrationId);
+		docsListMap.put("immForms",immigrationCandidateForms);
+		return FileUploadUtil.getAllImmigrationZipFiles(staticPath, orgId, orgLocationId, immigrationId, 
+				docsListMap, fileNameParameters);
 	}
 
 	@RequestMapping(value = { "/deleteImmigrationDetailsById" })

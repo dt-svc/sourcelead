@@ -15,6 +15,7 @@
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>${immigration.generatedId}</h2>
+        <span id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt paddingRight"></i>Download Package</span>
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigrations List</a> &raquo; Immigration Summery</div>
       <input type="hidden" id = "candidateID" value = "${candidateId}">
@@ -246,6 +247,20 @@ $(document).ready(function(){
 		$(".immHeadactions ul").slideToggle(0);
 	});
 });	
+</script>
+<script>
+$("#packageZipfile").click(function() {
+	if(immigrationId == 0)
+		return;
+	$.post("downloadAllImmigrationDocsZip",{immigrationId: immigrationId}, function(data) { //  used for download all immigration doc files 
+		if(data !== "" && data.indexOf("Documents Found") === -1)
+			location.href = '/app/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
+		else if(data !== "" && data.indexOf("immigrationId Found") !== -1)
+			alert(data);
+		else
+			alert("Unable to locate logs for this upload");
+	});
+});
 </script>
 <script>
 	function goToSummaryTab(tabname) {
