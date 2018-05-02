@@ -226,8 +226,6 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 				 
 				try {
 					userService.addUser(user);
-					if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
-						sendActivationEmail(user);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
