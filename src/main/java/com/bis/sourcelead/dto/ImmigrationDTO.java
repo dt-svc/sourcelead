@@ -17,7 +17,7 @@ public class ImmigrationDTO extends SearchDTO {
 
 	private String generatedId; 
 	
-	@Required(desc = "candidate id")
+	@Required(desc="candidateId")
 	private String candidateId;
 
 	private String orgloationId;
@@ -49,14 +49,13 @@ public class ImmigrationDTO extends SearchDTO {
 	@Required(desc="entry place")
 	private String entryPlace;
 
-	@Required(desc="templet id")
 	private String templateId;
 	
 	private String templateName;
 
+	@Required(desc="attorney name")
 	private String attorneyId;
 	
-	@Required(desc="attorney name")
 	private String attorneyName;
 
 	@Required(desc="attorney contact")
@@ -118,9 +117,9 @@ public class ImmigrationDTO extends SearchDTO {
 	
 	private String experience;
 
+	@Required(desc = "Job Id")
 	private String jobId;
-
-	@Required(desc = "job title")
+	
 	private String jobTitle;
 	
 	private String employmentLevel;
@@ -166,7 +165,6 @@ public class ImmigrationDTO extends SearchDTO {
 	@Required(desc = "residence start date")
 	private String residenceStartDate;
 
-	@Required(desc = "residence end date")
 	private String residenceEndDate;
 	
 	private String militaryServiceCountry;
