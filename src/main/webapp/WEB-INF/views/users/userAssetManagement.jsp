@@ -34,23 +34,23 @@ function userAssetManagement(userId){
 				    
 				    var report = json[i];
 				  
-					if (report.model != null && report.model != '' && report.model != 'undefined') {
-						model = report.model;
+					if (report.asset.model != null && report.asset.model != '' && report.asset.model != 'undefined') {
+						model = report.asset.model;
 					}
 					
-					if(report.workingStatus == 'Working'){
+					if(report.asset.workingStatus == 'Working'){
 						selected1 = 'selected';
 					} 
 				
-					if(report.workingStatus == 'Out Of Service'){
+					if(report.asset.workingStatus == 'Out Of Service'){
 						selected2 = 'selected';
 					} 
 
 					result = result+'<tr id="asset'+report.id+'">';
 		   	        result = result+'<td><a href="'+sourceleadUrl+'/assetManagementSummary?assetId='+report.id+'" target="_blank">';
-       		       	result = result +"<div class='proj_show tbldata-dotdot_140 tbldata-dotdot-sm'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div>";
+       		       	result = result +"<div class='proj_show tbldata-dotdot_140 tbldata-dotdot-sm'><span class='pull-left' title='"+report.asset.slno+"'>"+report.asset.slno+"</span><i class='fa fa-binoculars'></i></div>";
 				   	result = result+'</a></td>';
-				   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
+				   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.asset.categoryName+'">'+report.asset.categoryName+'</div></td>';
 					result = result+'<td><div class="tbldata-dotdot-vsm" title="'+model+'">'+model+'</div></td>';
 				   	
 				   	result = result + ' <td><div class="tbldata-dotdot-100">';
@@ -60,7 +60,7 @@ function userAssetManagement(userId){
 					result = result + ' </select>';
 					result = result + ' </div></td>';
 				   	
-				   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger cursorPointer" onClick="deleteAsset(\''+report.id+'\')";></i></div></td>';
+				   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger cursorPointer" onClick="deleteAsset(\''+report.asset.id+'\')";></i></div></td>';
 		   	        result = result +'</tr>';
                 }
                 

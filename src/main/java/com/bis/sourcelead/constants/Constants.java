@@ -654,7 +654,7 @@ public class Constants {
 	public static final String[] VENDOR_HEADERS = { "Vendor Name*", "Website", "Country", "State", "City",
 			"Tier", "First Name*", "Last Name", "Email*", "Phone", 
 			"Extension Number","Status", "Owner(Email)",
-			"ClientAddress", "BillingAddress", "PaymentTerms" };
+			"VenodrAddress", "BillingAddress", "PaymentTerms" };
 	public static final String[] CLIENT_HEADERS = { "Client Name*", "Website", "Country", "State", "City",
 			"Tier", "First Name*", "Last Name", "Email*", "Phone", 
 			"Extension Number","Status", "Owner(Email)",

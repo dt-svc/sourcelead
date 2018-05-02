@@ -294,7 +294,7 @@ public class AssetServiceImpl implements AssetService{
 
 
 	@Override
-	public List<Asset> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception {
+	public List<AssetAssign> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception {
 		return assetDao.getUserBasedAssetManagementListandOrgLocation(orgLocationId, UserId);
 	}
 

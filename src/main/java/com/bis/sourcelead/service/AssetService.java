@@ -51,7 +51,7 @@ public interface AssetService {
 	
 	public Asset saveAssetDetails(AssetDTO assetDTO,User user,OrgLocations orgLocations) throws Exception;
 	
-	List<Asset> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception;
+	List<AssetAssign> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception;
 	
 	List<AssetAssign> getAssignAssetListByAssetId(Long assetId);
 	

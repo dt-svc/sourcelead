@@ -308,11 +308,10 @@ public class AssetDaoImpl implements AssetDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<Asset> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long userId) throws Exception {
+	public List<AssetAssign> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long userId) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String subQuery = "select employee.id from Employees employee where employee.user.id = :userId and  employee.orgLocations.id = :orgLocationId";
-		String query = "from Asset asset where asset.orgLocations.id = :orgLocationId and ((asset.shiftAEmployee.id IN("+subQuery+")) OR (asset.shiftBEmployee.id IN("+subQuery+") )) and asset.status = '1' ";
-		List<Asset> assetList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+		String query = "from AssetAssign assetAssign left join fetch assetAssign.asset where assetAssign.asset.orgLocations.id = :orgLocationId and assetAssign.userRole.user.id =:userId ";
+		List<AssetAssign> assetList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
       return assetList;
 	}
 
