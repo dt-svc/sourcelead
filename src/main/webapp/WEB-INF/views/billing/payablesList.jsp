@@ -572,7 +572,7 @@ function saveReceivePayment(invoiceId){
 	          		} else {
 	          		    showError("Operation failed, please try again");
 	          		}
-		        	
+		     		
 		        },
 		    });  
 	         return true; 
@@ -943,136 +943,6 @@ function payablePagination(url){
 	                    	  return result;
 	                      }
                     }],
-  	              return result;
-	    	  	}
-	    	  },{
-	    	  	"targets": colIndex++,
-	    	  	"data": "inoviceDue",
-	    	  	"render": function(data, type, report, meta) {
-	    	  		var result = "";
-	    	  		result = result +'         <td> ';
-					result = result +'           <div class="tbldata-dotdot_80" title="'+report.dueAmount+'">'+report.dueAmount+'</div>';
-					result = result +'         </td>';
-	    	  		 return result;
-	    	  	}
-	    	  }, {
-                  "targets": colIndex++,
-                  "data": "dueDate",
-                  "render": function ( data, type, report, meta ) {
-                	  var result = "";
-                	  if(report.dueDateStr != null && report.dueDateStr != '' && report.dueDateStr !='undefined'){
-                		  result = result +'<div class="tblminwidth-100">'+report.dueDateStr+'</div>';
-              		}else{
-              		  result = result +'<div class="tblminwidth-100">--</div>';
-              		}
-                	  return result;
-                  }
-                },{
-                    "targets": colIndex++,
-                    "data": "inoviceStatus",
-                    "render": function ( data, type, report, meta ) {
-                    	var result = "";
-                    	var invoiceStatus = null;
-               			if(report.invoiceStatus == "SENT"){
-               				invoiceStatus = "Sent"
-               			}else if(report.invoiceStatus == "DRAFT"){
-               				invoiceStatus = "Draft"
-               			}else{
-               				invoiceStatus = report.invoiceStatus
-               			}
-                    	
-                    	result = result +'         <td> ';
-        				result = result +'           <div class="tbldata-dotdot_100">'+invoiceStatus+'</div>';
-        				if(report.invoiceStatus == "Rejected"){
-        			 		result = result + '    <i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectReason+'</p></div></i>';
-        					}
-        				result = result +'         </td>';
-                    	 return result;
-                    }
-                  },{
-                      "targets": colIndex++,
-                      "data": "paymentStatus",
-                      "render": function ( data, type, report, meta ) {
-                    	  var result = "";
-                    	  result = result +'         <td> ';
-          				result = result +'           <div class="tbldata-dotdot-100">'+report.paymentStatus+'</div> ';
-          				result = result +'         </td>';
-                    	  return result;
-                      }
-                    },{
-                        "targets": colIndex++,
-                        "data": "action",
-                        "sortable": false,
-                        "render": function ( data, type, report, meta ) {
-                        	var result = "";
-            				result = result +'         <td> ';
-            				result = result +'     <div class="tblminwidth-90">';
-            				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
-            				if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected"){
-            					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
-            						result = result +'  <div id="popupDiv'+report.invoiceUUID+'"></div>';
-            				} 
-            				result = result +'  </div> ';  
-            				if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
-            					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
-            						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class="text-primary primary pull-left" title="Paid" >Paid</span> </td>          ';
-            						}else if(report.invoiceStatus == "DRAFT"){
-            							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
-            						}else if(report.invoiceStatus == "Rejected"){
-            							result = result +'           <div class="primary pull-left bg-red">Rejected</div>   ';	
-            						}
-            							
-            					}else{
-            						if(report.invoiceStatus == "Accepted"){
-            							result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
-            						}else if(report.invoiceStatus == "Linked"){
-            								result = result +' <a class="successBtn primary pull-left cursorPointer" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
-            							}else{
-            								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
-            							}
-            							
-            					}
-            					
-            				}else{
-            					if((report.paymentStatus == "Paid" && report.invoiceStatus != "Linked") || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
-            						if(report.paymentStatus == "Paid"){
-            							result = result +'           <span class=" primary pull-left" title="Paid" >Paid</span> </td>          ';	
-            						}else if(report.invoiceStatus == "DRAFT"){
-            							result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
-            						}else if(report.invoiceStatus == "SENT"){
-            							result = result +'           <span class=" primary pull-left" title="Paid" >Sent</span> </td>          ';
-            						}else if(report.invoiceStatus == "Rejected"){
-            							result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';
-            						}
-            							
-            					}else{
-            						if(report.invoiceStatus == "Linked"){
-            							result = result +' <a class="successBtn primary pull-left" onClick="unLinkBill(\''+report.invoiceUUID+'\')">UnLink</a>  ';
-            						}else if(report.invoiceStatus == "Received"){
-            							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.invoiceUUID+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span> </td>';
-            						}else{
-            							result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';
-            						}
-            					}
-            					
-            					
-            				}
-            				
-            				/* if(report.invoiceType=="Receivable"){
-            					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
-            						result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span> </td>          ';	
-            					}else{
-            						result = result +'           <span class="text-primary receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>          ';
-            					}
-            				} */
-            				 
-            		 
-            		        result = result +'</div>';
-            		        result = result +'</td>';
-                        	 return result;
-                        }
-                } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[1,'desc']],
@@ -1156,7 +1026,6 @@ $('html').click(function(){
 	$(".menupop").hide();
 });
 </script>
-
 <script>
 function sendReminder(invoiceUUID){
 	 $.ajax({
@@ -1751,7 +1620,6 @@ function linkInvoicePayablePagination(){
         }
     </script>
 <!-- Script for Linked Invoice pop -->
-
 <script>
 function mergeInvoice(parentTotalAmount){
 	var invoiceUUID = $('#masterInvoiceId').val();
@@ -1767,7 +1635,6 @@ function mergeInvoice(parentTotalAmount){
 	} 
 }
 </script>
-
 
 <script>
 function showDiffAmountPopup(calculatedAmount,currencyCode,checkVal,invoiceUUID){
@@ -1894,6 +1761,7 @@ function saveBillRejectedReason(invoiceUUID){
 }
 
 </script>
+
 
 
 <script>
