@@ -59,7 +59,7 @@
 			<div class="row newContrWrap">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<div class="col-md-9 txtEditor_p txtEditorP">
-							<textarea name="body" field-name="Template Content" value="" class="form-control newContrtextarea teHeight" data-validation="required" >${emailBody}</textarea>
+							<textarea name="body" field-name="Template Content" value="" class="form-control newContrtextarea teHeight" data-validation="required" >${emailScenario.body}</textarea>
 						</div>
 
 
