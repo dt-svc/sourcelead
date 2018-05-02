@@ -73,13 +73,13 @@
         
     <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;" >
 		<div class="pull-left">
-		<div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
-		<input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar input-sm" type="text">
+		<div class="pull-left mr5" style="width: 140px" id="custFromDate1Div">
+		<input value="" name="Date" id="custFromDate1" placeholder="From" class="form-control calendar input-sm" type="text">
 		</div>
-		<div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
-		<input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar input-sm" type="text">
+		<div class="pull-left mr5" style="width: 140px" id="custToDate1Div">
+		<input value="" name="Date" id="custToDate1" placeholder="To" class="form-control calendar input-sm" type="text">
 		</div>
-		<button type="button" class="btn btn-primary btn-sm" onclick="validateCustDates();"><i class="fa fa-search"></i></button>
+		<button type="button" class="btn btn-primary btn-sm" onclick="validateCustDatesGraph();"><i class="fa fa-search"></i></button>
 		</div>
     </div>
 <!-- Top Leave Takers Custom Date  -->
@@ -131,7 +131,7 @@
       <div class="text-center well well-sm" id="totalLi">
         <div class="clearfix"><i class="fa fa-users fa-2x text-info"></i></div>
         <h4>Total</h4>
-        <label class="views-count rejected" id="totalUserCount"></label>
+        <label class="view-count" id="totalUserCount"></label>
       </div>
     </li>
          <li class="col-md-2">
@@ -171,7 +171,7 @@
           <option value="Custom">Custom</option>
         </select>
         <!-- Top Leave Takers Custom Date -->
-    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;" >
+    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-selects" style="display: none; width: 346px;" >
 		<div class="pull-left">
 		<div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
 		<input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar input-sm margin-top0" type="text">
@@ -179,7 +179,7 @@
 		<div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
 		<input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar input-sm margin-top0" type="text">
 		</div>
-		<button type="button" class="btn btn-primary btn-sm" onclick="validateCustDates();"><i class="fa fa-search"></i></button>
+		<button type="button" class="btn btn-primary btn-sm" onclick="validateCustDatesList();"><i class="fa fa-search"></i></button>
 		</div>
     </div>
 <!-- Top Leave Takers Custom Date --> 
@@ -237,8 +237,8 @@
 	 $('#reportCustomize').removeAttr("onclick");
 	 $('#reportCustomize').attr("onclick", "usageReportsGraph()");
 	 $("#custom-select").hide();
-     $('#custFromDate').removeAttr('data-validation');
-     $('#custToDate').attr('data-validation',"required");
+     $('#custFromDate1').removeAttr('data-validation');
+     $('#custToDate1').attr('data-validation',"required");
 	 $("#customGraphDates").show();
 	 $("#customDates").hide();
 	 $("#GView").addClass("rAct");
@@ -248,8 +248,8 @@
 	 $("#userUsageReportsListSection").hide();
 	 
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		var fromDate = $("#custFromDate").val();
-	    var toDate = $("#custToDate").val();
+		var fromDate = $("#custFromDate1").val();
+	    var toDate = $("#custToDate1").val();
 	    var sourceleadUrl ='${sourceleadUrl}';
 	    var customGraphDates = $("#customGraphDates").val();
 	    var orgId = $("#orgs").val();
@@ -265,7 +265,7 @@
  }
  
  function usageReportsShowList(){
-	 $("#custom-select").hide();
+	 $("#custom-selects").hide();
 	 $('#reportCustomize').removeAttr("onclick");
 	 $('#reportCustomize').attr("onclick", "usageReportList(\'ACTIVE\')");
      $('#custFromDate').removeAttr('data-validation');
@@ -654,6 +654,7 @@ function activePagination(url, userType){
         	    	  	"data": "ipAddress",
         	    	  	"render": function(data, type, opt, meta) {
         	    	  		  var result = "";
+        	    	  		$("#emptyUserUsageReportsId").val(1);
         	    	  		 if(opt.ipAddress !=null && opt.ipAddress !='' && opt.ipAddress !='undefined'){
         							result = result + ' <td><div><span>'+opt.ipAddress+'</span></div></td>';
         						}else{
@@ -910,11 +911,11 @@ function showCustomFields(){
     var frequency = $("#customDates").val();
     var userType = $("#userTypeId").val();
     if(frequency == "Custom"){
-        $("#custom-select").show();
+        $("#custom-selects").show();
          $('#custFromDate').attr('data-validation',"required");
          $('#custToDate').attr('data-validation',"required");
     }else{
-        $("#custom-select").hide();
+        $("#custom-selects").hide();
         $('#custFromDate').removeAttr('data-validation');
         $('#custToDate').attr('data-validation',"required");
         usageReportList(userType);
@@ -967,7 +968,7 @@ function removeEndValid(){
     $('#custToDateDiv').find('p.jquery_form_error_message').remove();
 }
 
-function validateCustDates(){
+function validateCustDatesList(){
 	var userType = $("#userTypeId").val();
     var frequency = $("#customDates").val();
     var fromDate = $("#custFromDate").val();
@@ -988,6 +989,7 @@ function validateCustDates(){
             	usagemultipleipslist();
             }else{
             	usageReportList(userType);
+            	$("#custom-selects").hide();
             }
         }
     }else{
@@ -1243,12 +1245,12 @@ function showCustomFieldsGraph(){
     var userType = $("#userTypeId").val();
     if(frequency == "Custom"){
         $("#custom-select").show();
-         $('#custFromDate').attr('data-validation',"required");
-         $('#custToDate').attr('data-validation',"required");
+         $('#custFromDate1').attr('data-validation',"required");
+         $('#custToDate1').attr('data-validation',"required");
     }else{
         $("#custom-select").hide();
-        $('#custFromDate').removeAttr('data-validation');
-        $('#custToDate').attr('data-validation',"required");
+        $('#custFromDate1').removeAttr('data-validation');
+        $('#custToDate1').attr('data-validation',"required");
         usageReportsGraph();
     }
     
@@ -1264,7 +1266,7 @@ function showCustomFieldsGraph(){
         finalDateFormatEndDate = 'yy-dd-mm'; 
     }
 
-    $( "#custFromDate" ).datepicker({
+    $( "#custFromDate1" ).datepicker({
          dateFormat : finalDateFormatEndDate,
           changeMonth: true,
           changeYear: true,
@@ -1272,13 +1274,13 @@ function showCustomFieldsGraph(){
           onSelect : function(selected) {
           var dt = $(this).datepicker('getDate', '+1d');
           dt.setDate(dt.getDate());
-          $("#custToDate").datepicker("option", "minDate", dt);
+          $("#custToDate1").datepicker("option", "minDate", dt);
            removeStartValid();
           } 
     
     });
     
-    $( "#custToDate" ).datepicker({
+    $( "#custToDate1" ).datepicker({
          dateFormat : finalDateFormatEndDate,
           changeMonth: true,
           changeYear: true,
@@ -1286,35 +1288,35 @@ function showCustomFieldsGraph(){
     onSelect : function(selected) {
           var dt = $(this).datepicker('getDate', '+1d');
           dt.setDate(dt.getDate());
-          $("#custFromDate").datepicker("option", "maxDate", dt);
+          $("#custFromDate1").datepicker("option", "maxDate", dt);
            removeEndValid();
           }});
 }
 
 function removeStartValid(){
-  $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+  $('#custFromDate1Div').find('p.jquery_form_error_message').remove();
 }
 function removeEndValid(){
-  $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+  $('#custToDate1Div').find('p.jquery_form_error_message').remove();
 }
 
-function validateCustDates(){
+function validateCustDatesGraph(){
 	var userType = $("#userTypeId").val();
   var frequency = $("#customGraphDates").val();
-  var fromDate = $("#custFromDate").val();
-  var toDate = $("#custToDate").val();
+  var fromDate = $("#custFromDate1").val();
+  var toDate = $("#custToDate1").val();
   if(frequency == "Custom"){
       if(fromDate == ''){
-          $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-          $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+          $('#custFromDate1Div').find('p.jquery_form_error_message').remove();
+          $("input#custFromDate1").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
       }
       if(toDate == ''){
-          $('#custToDateDiv').find('p.jquery_form_error_message').remove();
-          $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+          $('#custToDate1Div').find('p.jquery_form_error_message').remove();
+          $("input#custToDate1").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
       }
       if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
-          $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-          $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+          $('#custFromDate1Div').find('p.jquery_form_error_message').remove();
+          $('#custToDate1Div').find('p.jquery_form_error_message').remove();
           if(userType == "MULTIPLE_IP"){
           	usagemultipleipslist();
           }else{
@@ -1322,8 +1324,8 @@ function validateCustDates(){
           }
       }
   }else{
-      $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
-      $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+      $('#custFromDate1Div').find('p.jquery_form_error_message').remove();
+      $('#custToDate1Div').find('p.jquery_form_error_message').remove();
       usageReportsGraph();
 //       usagemultipleipslist()
   } 

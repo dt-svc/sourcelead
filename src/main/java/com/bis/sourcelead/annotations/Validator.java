@@ -23,18 +23,21 @@ public class Validator {
 		try {
 			Field[] fields = object.getClass().getDeclaredFields();
 			for (Field field : fields) {
-				if (field.isAnnotationPresent(CleanHtml.class) && (field.get(object) != null && !field.get(object).toString().isEmpty() && !"undefined".equalsIgnoreCase(field.get(object).toString()))) {
-					 if(!field.getAnnotation(CleanHtml.class).escape()) {
+				if (field.isAnnotationPresent(CleanHtml.class)){
+					field.setAccessible(true);
+					if(field.get(object) != null && !field.get(object).toString().isEmpty() && !"undefined".equalsIgnoreCase(field.get(object).toString())){
+					  if(!field.getAnnotation(CleanHtml.class).escape()) {
 						 String value = field.get(object).toString();
 						 field.set(object,CommonUtil.cleanContent(value));
-					 }
+					  }
+					}
 				}
 				if (field.isAnnotationPresent(Required.class)) {
 					try {
 						field.setAccessible(true);
 						boolean flag = verifyParentInfo(object, fields, field);
 						boolean flag1 = verifyEitherInfo(object, fields, field);
-						if (flag && !flag1 && (field.get(object) == null || field.get(object).toString().isEmpty() || "undefined".equalsIgnoreCase(field.get(object).toString()))) {
+						if (flag && !flag1 && (field.get(object) == null || field.get(object).toString().isEmpty() || "undefined".equalsIgnoreCase(field.get(object).toString())) && !field.getAnnotation(Required.class).timesheetHours()) {
 							object.getClass().getMethod("setErrorKey", String.class).invoke(object, "error.required");
 							object.getClass().getMethod("setParams", new Class[] { String[].class }).invoke(object,
 									new Object[] { new String[] { field.getAnnotation(Required.class).desc() } });

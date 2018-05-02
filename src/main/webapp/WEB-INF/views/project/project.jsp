@@ -655,7 +655,7 @@ function getStatus(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		
-		var ee = $("#txtEditor").val($('.Editor-editor').text()); 
+		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 
 		if ($('#project_form').validate(false, validationSettings)) {
 // 		   var frm = $('#project_form').serializeFormJSON();

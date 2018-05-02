@@ -389,7 +389,7 @@ $(document).ready(function () {
             </div>
             
         <div class="form-group" >
-            <label class="col-md-3">Experience Level ${requirement.experienceLevel.name}</label>
+            <label class="col-md-3">Experience Level</label>
             <div class="col-md-9 dropdown-select"> 
             <select name="experienceLevel" id="experienceLevel">
             	<option value="">--Select Level--</option>
@@ -2897,32 +2897,39 @@ function removeReqDoc(requirementId){
  <script>
 function refreshRequirementClientList(){
 		 var selectedOrgId = '${contract.orgRelations.id}';
+		 var loginOrgLocId = '${SourceLeadWeb_orgLocationId}';
 		 $.ajax({
 	      type : "POST",
 	       url: sourceleadUrl+"/refreshRequirementClientList",       
-	       success: function(json) {
-	        	var output = "";
-	        	output = output + "<option value=''>Select Client</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		if(opt.id == selectedOrgId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
-		        		}else{
-		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
-		        		}
-		        		
-				}
-	        	$("#addClientId").empty();
-	        	 $("#selectContact").empty();
-	        	 $("#selectContact").trigger("chosen:updated");
-		        $("#addClientId").append(output);
-		        $('#addClientId').trigger("chosen:updated");
-		        
+	       success: function(result) {
+	    	   if (result.response === "SESSION_TIMEDOUT") {
+	  				location.replace(sourceleadUrl);
+               } else if (result.response === "AWKWARD") {
+                   location.href = "/errorPage";
+               } else if (result.response === "SUCCESS") {
+            	    if(result.data != null && result.data != "" && result.data != 'undefined'){
+            	    	var json = result.data;
+			        	var output = "";
+			        	output = output + "<option value=''>--Select Client--</option>"; 
+			        	for (var i=0; i<json.length; i++)
+						{
+			        		var opt = json[i];
+			        		output = output + "<option value='"+opt.id+","+opt.locationID+"' >"+opt.orgName+"</option>";
+						}
+            	    }
+		        	$("#addClientId").empty();
+		        	$("#selectContact").empty();
+		        	$("#selectContact").trigger("chosen:updated");
+			        $("#addClientId").append(output);
+			        $('#addClientId').trigger("chosen:updated");
+               } else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+			   } else {
+                   showError("Operation failed, please try again");
+               }
 	        }
 		 });
-	
-}
+	}
 </script>
 
 <script>

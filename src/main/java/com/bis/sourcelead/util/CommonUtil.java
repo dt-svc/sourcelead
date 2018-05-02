@@ -3,6 +3,7 @@ package com.bis.sourcelead.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -92,8 +94,8 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
-import com.bis.sourcelead.entity.SubmissionApproverHierarchyHistory;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
+import com.bis.sourcelead.entity.TimesheetActivities;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -229,6 +231,9 @@ public class CommonUtil {
 	@Value("${paymentSuccessReturnEmail}")
 	private String paymentSuccessReturnEmail;
 	
+	@Value("${static.path}")
+    private String staticPath;
+	
 	
 	/**
 	 * This method is used to convert JSON String to HashMap<Key,Value>
@@ -263,12 +268,12 @@ public class CommonUtil {
               "colgroup", "dd", "div", "dl", "dt", "em", "h1", "h2", "h3", "h4", "h5", "h6",
               "i", "img", "li", "ol", "p", "pre", "q", "small", "strike", "strong",
               "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "u",
-              "ul");
+              "ul","xml","br","font","span");
 	        allowedTags.addAttributes("a", "href", "title");
 	        allowedTags.addAttributes("blockquote", "cite");
 	        allowedTags.addAttributes("col", "span", "width");
 	        allowedTags.addAttributes("colgroup", "span", "width");
-	        allowedTags.addAttributes("img", "align", "alt", "height", "src", "title", "width");
+	        allowedTags.addAttributes("img", "align", "alt", "height", "src", "title", "width","style","class");
 	        allowedTags.addAttributes("ol", "start", "type");
 	        allowedTags.addAttributes("q", "cite");
 	        allowedTags.addAttributes("table", "summary", "width");
@@ -276,8 +281,8 @@ public class CommonUtil {
 	        allowedTags.addAttributes("th", "abbr", "axis", "colspan", "rowspan", "scope", "width");
 	        allowedTags.addAttributes("ul", "type");
 	       /* allowedTags.addProtocols("a", "href", "//", "#","ftp", "http", "https", "mailto");*/
-	        allowedTags.removeProtocols("a", "href", "javascript");
-	        allowedTags.addProtocols("blockquote", "cite", "http", "https");
+	        
+	        allowedTags.addProtocols("blockquote", "cite", "http", "https","style");
 	        allowedTags.addProtocols("cite", "cite", "http", "https");
 	        allowedTags.addProtocols("img", "src", "http", "https");
 	        allowedTags.addProtocols("q", "cite", "http", "https");
@@ -547,19 +552,19 @@ public class CommonUtil {
 			 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
 				 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
 					 StringBuilder empName = new StringBuilder();
-					 globalVarsMap.put("Employee Name", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
+					 globalVarsMap.put("EmployeeName", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
 				 }	 
 		 else{
-			 globalVarsMap.put("Employee Name", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
+			 globalVarsMap.put("EmployeeName", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
 			}
 		 }
 		 }
 		 
 		 if(null != pmh.getProjectMemberId().getProjects()){
 			 if(null != pmh.getProjectMemberId().getProjects().getProjectName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getProjects().getProjectName())){
-				 globalVarsMap.put("Project Name", pmh.getProjectMemberId().getProjects().getProjectName());
+				 globalVarsMap.put("ProjectName", pmh.getProjectMemberId().getProjects().getProjectName());
 			}else{
-				 globalVarsMap.put("Project Name", "--");
+				 globalVarsMap.put("ProjectName", "--");
 			 }
 		 }
 		 
@@ -572,7 +577,7 @@ public class CommonUtil {
 		 if(null != pmh.getProjectTerminationDate()){
 			 globalVarsMap.put("Project EndDate",endDate);
 		 }else{
-			 globalVarsMap.put("Project EndDate", "--");
+			 globalVarsMap.put("ProjectEndDate", "--");
 		 }
 		 
 		 if (null != user.getLastName() && !"".equalsIgnoreCase(user.getLastName())) {
@@ -607,33 +612,18 @@ public class CommonUtil {
 		 StringBuilder linkBuild = new StringBuilder();
 	     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 	   
-		
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 //using same migration which has been already used in updatedRequirementMailToManager method
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION,Constants.ENTITY_TYPE_NOTIFICATION);
-
 		 
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 User toUser = pmh.getProjectMemberId().getEmployee().getUser();
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_TERMINATION,new ArrayList<EmailAttachment>());
 		 String actionLink="";
 		emailScenerioUtil.sendNotification(actionLink, loginUser,toUser, pmh.getProjectMemberId().getEmployee().getOrgLocations(), notificationScenario,new HashMap<String,String>());
 
@@ -2154,10 +2144,10 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 if(null != pmh.getProjectMemberId().getEmployee().getUser()){
 			 if(null != pmh.getProjectMemberId().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getEmployee().getUser().getLastName())){
 				 StringBuilder empName = new StringBuilder();
-				 globalVarsMap.put("Employee Name", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
+				 globalVarsMap.put("EmployeeName", empName.append(pmh.getProjectMemberId().getEmployee().getUser().getFirstName()).append(pmh.getProjectMemberId().getEmployee().getUser().getLastName()).toString());
 			 }
 		 else{
-			 globalVarsMap.put("Employee Name", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
+			 globalVarsMap.put("EmployeeName", pmh.getProjectMemberId().getEmployee().getUser().getFirstName());
 			}
 		 }
 		 
@@ -2193,38 +2183,28 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			}
 		
 		 if (null != pmh.getProjectMemberId().getTerminateReason() && !"".equalsIgnoreCase(pmh.getProjectMemberId().getTerminateReason())) {
-			 globalVarsMap.put("Reason", pmh.getProjectMemberId().getTerminateReason());
+			 globalVarsMap.put("reason", pmh.getProjectMemberId().getTerminateReason());
 			 } else {
-				 globalVarsMap.put("Reason", "--");
+				 globalVarsMap.put("reason", "--");
 			}
 		 
 		 StringBuilder linkBuild = new StringBuilder();
 	     globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 	   
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 //using same migration which has been already used in updatedRequirementMailToManager method
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
 
 		 
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
 		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
 
 		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMPLOYEE_TERMINATION_MAIL_TO_MANAGER,new ArrayList<EmailAttachment>());
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+pmh.getProjectMemberId().getProjects().getProjectUUID()+"&projectClientUUID="+pmh.getProjectMemberId().getProjectClientUUID()+"&tabType=team").toString();
@@ -2233,37 +2213,26 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		 }
 		}
 	
-	public static SubmissionApproverHierarchyHistory getSubmissionApproverHierarchyHistory(SubmissionApproverHierarchy sah) {
-		SubmissionApproverHierarchyHistory sahh = null;
+	public static TimesheetActivities getTimesheetActivity(SubmissionApproverHierarchy sah,String activityStatus) {
+		TimesheetActivities timesheetActivity = null;
 		if(sah != null) {
-			sahh = new SubmissionApproverHierarchyHistory();
-			sahh.setHierarchyId(sah.getHierarchyId());
-			sahh.setSubmissionId(sah.getSubmissionId());
-			sahh.setSubmissionApproverHierarchyId(sah);
-			sahh.setSubmissionStatus(sah.getSubmissionStatus());
-			sahh.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
-			sahh.setInvoiceStatus(sah.getInvoiceStatus());
-			sahh.setBillingStatus(sah.getBillingStatus());
-			sahh.setInvoiceDate(sah.getInvoiceDate());
-			sahh.setBillDate(sah.getBillDate());
-			sahh.setInvoiceId(sah.getInvoiceId());
-			sahh.setBillId(sah.getBillId());
-			sahh.setFrequencyStartDate(sah.getFrequencyStartDate());
-			sahh.setFrequencyEndDate(sah.getFrequencyEndDate());
-			sahh.setMechanismType(sah.getMechanismType());
-			sahh.setRejectedReason(sah.getRejectedReason());
-			sahh.setActionPerformedBy(sah.getActionPerformedBy());
-			sahh.setActionPerformedByOrgLocationId(sah.getActionPerformedByOrgLocationId());
-			sahh.setStatus(sah.getStatus());
-			sahh.setReopenedUser(sah.getReopenedUser());
-			sahh.setReopenReason(sah.getReopenReason());
-			sahh.setReopenRejectedReason(sah.getReopenRejectedReason());
-			sahh.setCreatedDate(sah.getCreatedDate());
-			sahh.setCreatedBy(sah.getCreatedBy());
-			sahh.setUpdatedDate(sah.getUpdatedDate());
-			sahh.setUpdatedBy(sah.getUpdatedBy());
+			timesheetActivity = new TimesheetActivities();
+			timesheetActivity.setProjectId(sah.getSubmissionId().getProjects());
+			timesheetActivity.setActivityStatus(activityStatus);
+			timesheetActivity.setMasterCandidate(sah.getSubmissionId().getMasterCandidateId());
+			timesheetActivity.setFrequencyStartDate(sah.getFrequencyStartDate());
+			timesheetActivity.setFrequencyEndDate(sah.getFrequencyEndDate());
+			timesheetActivity.setRejectedReason(sah.getRejectedReason());
+			timesheetActivity.setActionPerformedBy(sah.getActionPerformedBy());
+			timesheetActivity.setActionPerformedByOrgLocationId(sah.getActionPerformedByOrgLocationId());
+			timesheetActivity.setStatus(sah.getStatus());
+			timesheetActivity.setReopenedUser(sah.getReopenedUser());
+			timesheetActivity.setReopenReason(sah.getReopenReason());
+			timesheetActivity.setReopenRejectedReason(sah.getReopenRejectedReason());
+			timesheetActivity.setCreatedDate(sah.getCreatedDate());
+			timesheetActivity.setCreatedBy(sah.getCreatedBy());
 		}
-		return sahh;
+		return timesheetActivity;
 	}
 	
 	
@@ -2374,9 +2343,41 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 	  
 	     return tempHTML;
   }
+
   
   
-  
-  
+  public void sendTemplateEmail(EmailMessage emailMessage,Map<String, String> globalVarsMap,Org org,OrgLocations orgLocations,String uniqueScenerioName,List<EmailAttachment> attachmentList){
+	  
+	  try{
+		//setting the Recipient information
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 
+			//getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = null;
+			 if(orgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL);
+			   }
+			 
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+			 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
+			 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,org,orgLocations);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,attachmentList);
+	  }catch (Exception e) {
+		  e.printStackTrace();
+	}
+	  
+  }
+
 		
 }

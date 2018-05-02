@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Required;
 
@@ -20,6 +21,7 @@ public class CandidateReferencesDTO {
 
 	private String designation;
 
+	@CleanHtml(escape=false)
 	private String comment;
 
 	private long id;

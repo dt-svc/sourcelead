@@ -136,6 +136,7 @@
 	
 	<div class="landTempCta nomr">
 	<div class="pull-left mr10">
+
            <i class="fa fa-check fa-2x text-success"></i>
         </div>
 		<div class="pull-left">
@@ -148,6 +149,25 @@
 		</div>
 	</div>
 	
+	<div class="landTempCta nomr">
+	<div class="pull-left mr10">
+           <i class="fa fa-address-card-o fa-2x text-info"></i>
+    </div>
+		<div class="pull-left">
+		<h2 class="text-info">Email</h2>
+		<p>Manage Your Email Templates</p>
+		<span>
+		
+		<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+        	<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/emailTemplates" />">View</a>
+        </c:if>
+			
+
+		</span>
+		</div>
+	</div>
+	
+
 <div class="landTempCta nomr">
 	<div class="pull-left mr10">
            <i class="fa fa-file fa-2x text-success"></i>

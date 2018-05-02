@@ -191,7 +191,7 @@ public class SubmissionsRateRestController {
 
 //	}
 	
-	@RequestMapping(value = "/storeNegotiation", method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/storeNegotiation", method = RequestMethod.POST)
 	public @ResponseBody Response<String> storeNegotiation(RequirementRateSubmissionNegotiationDTO reqRateSubNegotiationDTO,@RequestParam(value = "submissionId", required = false) String submissionId,@RequestParam(value = "type", required = false) String type) throws Exception {
 	 
 		Response<String> response = new Response<>();

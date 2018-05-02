@@ -1033,6 +1033,7 @@ public class Constants {
 	public static final String LEAVE_EMAIL_ON_BEHALF_EMAIL = "OnBehafLeaveEmail";
 	public static final String LEAVE_EMAIL_ON_BEHALF_NOTIFICATION = "OnBehafLeaveNotification";
 
+	public static final String ROLE_CREATE_ASSOCIATE="ROLE_CREATE_ASSOCIATE";
 	public static final String ROLE_CREATE_USER="ROLE_CREATE_USER";
 	public static final String ROLE_CREATE_REQUIREMENT = "ROLE_CREATE_REQUIREMENT";
 	public static final String ROLE_CREATE_CLIENT = "ROLE_CREATE_CLIENT";
@@ -1086,5 +1087,14 @@ public class Constants {
 	public static final String LICENSE_PAYMENT_ACKNOWLEDGEMENT = "licensePaymentAcknowledgement";
 	
 	public static final String LICENSE_PAYMENT_ACKNOWLEDGEMENT_DETAILS = "licensePaymentAcknowledgementDetails";
+	
+	public static final String API_TRUMAIL_URL = "https://api.trumail.io/v1/json/";
+	
+	public static final String REPORT_FILTER_TODAY = "today";
+	public static final String REPORT_FILTER_YESTERDAY = "yesterday";
+	public static final String REPORT_FILTER_1_WEEK = "1_week";
+	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
+	public static final String REPORT_FILTER_2_MONTHS = "2_months";
+	
 
 }

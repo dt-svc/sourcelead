@@ -58,6 +58,8 @@
 			</div>
 		</div>
 		
+		<input type="hidden" id="href" name="href"/>
+		
 		<c:if test="${empty sourceleadBlog.fileName}">			
 	        <div class="form-group" >
 	          <label class="col-md-3">Image</label>
@@ -135,7 +137,7 @@
         <div class="pull-right">
           <input type="button" value="Publish" class="btn btn-primary" id="publish" onclick="saveBlog('published');">
            <input type="hidden" value="${sourceleadBlog.blogUUID}" id="blogUUID">
-          <input type="button" value="Save" class="btn btn-info ml mr" id="save" onclick="saveBlog('saved');">
+          <input type="button" value="Save" class="btn btn-info ml mr" id="save" onclick="saveBlog('Publish');">
           <input type="button" value="Cancel" id="cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/blogs'/>'" class="btn btn-default">
         </div>
       </div>
@@ -151,6 +153,7 @@ function saveBlog(saveType) {
 	var blogUUID = $("#blogUUID").val();
 	var ee = $("#summernote").val($('.note-editable').html()); 
 	if ($('#add_blog_form').validate(false, validationSettings)) {
+		setBlogHref();
 	  	var formData = $($('#add_blog_form')[0]).serialize();
 		$("#blogLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(sourceleadUrl+"/addBlog?"+tokenParamName+"="+tokenValue+"&blogUUID="+blogUUID+"&blogStatus="+saveType, formData, function(result) {
@@ -172,6 +175,16 @@ function saveBlog(saveType) {
 		} else {
 			return false;
 		}
+}
+
+function setBlogHref(){
+	var title = $("#blogTitle").val();
+	var name = title.replace(/[-]/gi, '_');
+	name = name.replace(/[^\w\s]/gi, '');
+	name = name.replace(/[ ]/gi, '-');
+	name = name.replace(/[_]/gi, '-');
+	name = name.lastIndexOf("-") === name.length -1 ? name.substring(0, name.length-1) : name;
+	$("#href").val(name);
 }
 
 $('body').on('blur', '#add_blog_form', function() {
@@ -214,8 +227,9 @@ function uploadFileDoc(){
    $("#blogKeywords").trigger("chosen:updated");
    // current Date And Time Script.
 	$('#publishOn').datetimepicker({
+		//useCurrent: false,
 		minDate: new Date()
-	});
+	}).val('');
 
 </script>
 	
@@ -276,7 +290,7 @@ function validateBlogTitle(blogUUID){
 			success : function(data) {
 				if(data == true){
 	        		  $('#blogTitleDiv').find('p.jquery_form_error_message').remove();
-					  $("input#blogTitle").after("<p class='jquery_form_error_message'>"+blogTitle+" is Already Existed</span>");
+					  $("input#blogTitle").after("<p class='jquery_form_error_message' style='align:right'  title="+blogTitle+"> <span> "+blogTitle+" </span> is Already Existed</p>");
 					  document.getElementById("blogTitle").setAttribute('record-exist','yes');
 					  document.getElementById("blogTitle").setAttribute('record-exist-errorMsg',blogTitle+' is Already Existed'); 
 	        	}
@@ -292,9 +306,10 @@ function validateBlogTitle(blogUUID){
 <script src="/resources/js/summernote.min.js"></script>
 <script>
 $(function() { 
+  $('#publishOn').empty().val('${publishon}');
   setTimeout(function () {
     var description = '${sourceleadBlog.description}';
-	 $("textarea[name=description]").val(description);
+	 $("textarea[name=description]").html(description);
 	 $('.note-editable').html(description);
 	
 	}, 100); 
@@ -307,7 +322,6 @@ $(function() {
     $('.note-editable').attr("data-validation","required"); 
  	$('.note-editor').css({"min-height":"200px"});
 	$('.note-editable').css({"min-height":"200px", "max-height":"200px"});
-	
 });
 </script>
 

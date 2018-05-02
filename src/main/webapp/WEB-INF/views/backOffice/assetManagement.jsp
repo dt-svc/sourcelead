@@ -124,7 +124,7 @@ $(document).ready(function(){
                 
                 <div class="clearfix mb10">
                   <div class="col-md-6">
-                    <input type="text" class="form-control input-sm" id="macAddress" name="macAddress" placeholder="MAC Address" field-name="MAC Address"  data-validation="validate_length length8-100" data-validation-optional="true">
+                    <input type="text" class="form-control input-sm" id="macAddress" name="macAddress" placeholder="MAC Address" field-name="MAC Address"  data-validation="validate_length length8-50" data-validation-optional="true">
                   </div>
                 </div>
                 
@@ -552,7 +552,7 @@ function projectAssetPaginations(url){
 			  	"render": function(data, type, report) {
 			  		var result = "";
 			  		if (report.model != null && report.model != '' && report.model != 'undefined') {
-						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+model+'">'+report.model+'</div></td>';
+						result = result+'<td><div class="tbldata-dotdot-vsm" title="'+report.model+'">'+report.model+'</div></td>';
 					}else{
 						result = result+'<td><div class="tbldata-dotdot-vsm" >--</div></td>';
 					}
