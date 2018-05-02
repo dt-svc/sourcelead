@@ -1682,6 +1682,32 @@ public class ImmigrationRestController {
 		return FileUploadUtil.getImmigrationZipFiles(staticPath, orgId, orgLocationId, immigrationId, docId,
 				immigrationCanididateDocHistoryList, fileNameParameters);
 	}
+	@RequestMapping("/downloadAllImmigrationDocsZip") // used for downloading all immigration documents.
+	@ResponseBody
+	public String exportAllImmigrationDocuments(HttpServletRequest request, Long immigrationId)
+			throws Exception {
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		long orgId = 0, orgLocationId = 0;
+		if (org != null) {
+			orgId = org.getId();
+		}
+		if (loginOrgLocation != null) {
+			orgLocationId = loginOrgLocation.getId();
+		}
+		Map<String, String> fileNameParameters = new HashMap<>();
+		Immigration immigration = immigrationCommonService.getImmigrationById(immigrationId);
+		fileNameParameters.put("immiUUID", immigration.getGeneratedId());
+		fileNameParameters.put("firstName", immigration.getCandidate().getFirstName());
+		fileNameParameters.put("lastName", immigration.getCandidate().getLastName());
+		
+		HashMap<String, Object>	docsListMap = new HashMap<String, Object>(); 	
+		List<ImmigrationCandidateForms> immigrationCandidateForms = immigrationCommonService.getImmigrationCandidateFormsByImmigrationId(immigrationId);
+		docsListMap.put("immForms",immigrationCandidateForms);
+		return FileUploadUtil.getAllImmigrationZipFiles(staticPath, orgId, orgLocationId, immigrationId, 
+				docsListMap, fileNameParameters);
+	}
 
 	@RequestMapping(value = { "/deleteImmigrationDetailsById" })
 	public String deleteImmigrationDetailsById(
