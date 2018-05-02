@@ -46,6 +46,8 @@
 
 			
 			<div class="clearfix"></div>
+			
+			<c:if test="${emailScenario.entityType != 'Notification'}">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
 			<div class="form-group row">
 			<label class="col-md-12">Subject</label>
@@ -55,29 +57,35 @@
 				</div>
 			</div>  
 			</div>
+			</c:if>
+			
 		<div class="clearfix"></div>
+		<label class="col-md-12">Body</label>
 			<div class="row newContrWrap">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<div class="col-md-9 txtEditor_p txtEditorP">
-							<textarea name="body" field-name="Template Content" value="" class="form-control newContrtextarea teHeight" data-validation="required" >${emailBody}</textarea>
+							<textarea name="body" field-name="Template Content" value="" class="form-control newContrtextarea teHeight" data-validation="required" >${emailScenario.body}</textarea>
+						    <p class="text-danger small" style="font-size: 13px;"><i class="fa fa-exclamation-triangle"></i>&nbsp;Don't change any class fields</p>
 						</div>
-
+						
 
 						<div class="col-md-3 contrCus">
 						<h3>Custom Fields</h3>
 							<ul id="clientmsa" style="display: block">
 							 <c:if test="${!empty classFieldList}">
-	            <c:forEach var="classField" items="${classFieldList}" >
-	            <li onclick="copyToClipboard('text_element${classField}')" class="copyText" id="text_element${classField}">${classField}</li>
-	           
-	            </c:forEach>
-	   		</c:if>
+					            <c:forEach var="classField" items="${classFieldList}" >
+					            <li onclick="copyToClipboard('text_element${classField}')" class="copyText" id="text_element${classField}">${classField}</li>
+					           
+					            </c:forEach>
+					   		</c:if>
 							</ul>							
 
 						</div>
 					</div>
-				</div>	
+				</div>
 				<div class="clearfix"></div>
+			
+			<c:if test="${emailScenario.entityType != 'Notification'}">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
 			<div class="form-group row">
 			<label class="col-md-12">Signature</label>
@@ -87,6 +95,7 @@
 				</div>
 			</div>  
 			</div>
+			</c:if>
 					
 			</div>
 			
