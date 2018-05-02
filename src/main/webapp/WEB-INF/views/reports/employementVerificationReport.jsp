@@ -77,20 +77,25 @@ $(document).ready(function(){
 			<div class="form-group">
 				<label>To whom it may concern</label>
 				<div class="clearfix">
-					<textarea rows="2" class="form-control"></textarea>
+					<textarea rows="2" id="toAddress" class="form-control"></textarea>
 				</div>
 			</div>
 		</div>
 		<div class="modal-footer">
 			<div class="clearfix">
-				<button type="button" class="btn btn-primary mr">Print</button>
+				<button type="button" class="btn btn-primary mr" onClick="printPage();">Print</button>
 				<button type="button" class="btn btn-default" onClick="closePOP()">Cancel</button>
 			</div>
 		</div>
 		</div>
 	</div>
 </div>
-
+<script>
+function printPage()
+  {
+  viewCompleteTemplate('print');
+  }
+</script>
 <div class="modal viewEVR" style="display: none">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -504,11 +509,13 @@ $("#employeeDataTableSearch").keydown(function(e) {
 
 
 <script>
-function viewCompleteTemplate(){
+function viewCompleteTemplate(temp){
 	var templateUUID = $("#empTemplateId").val();
 	var toAddress = $("#toAddress").val();
 	var employeeId = $("#hiddenUserId").val();
-	window.open(sourceleadUrl+'/previewCompleteTemplateByTemplateUUID?&templateUUID='+templateUUID+'&toAddress='+toAddress+'&employeeId='+employeeId,'_newtab');
+	var winPrint = window.open(sourceleadUrl+'/previewCompleteTemplateByTemplateUUID?&templateUUID='+templateUUID+'&toAddress='+toAddress+'&employeeId='+employeeId,'_newtab');
+	if(temp == 'print')
+		winPrint.print();
 }
 </script> 
 

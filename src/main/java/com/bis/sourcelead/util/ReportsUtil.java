@@ -518,47 +518,51 @@ public class ReportsUtil {
 	    
 	    
 	    PdfPTable header = new PdfPTable(1);
-       header.setWidths(new int[]{2});
-       header.setTotalWidth(527);
-       header.setLockedWidth(true);
-       header.getDefaultCell().setFixedHeight(40);
-       header.getDefaultCell().setBorder(Rectangle.BOTTOM);
-       header.getDefaultCell().setBorderColor(BaseColor.BLUE);
-       header.addCell(getCell(letterHead));
-       document.add(header);
-       
-       PdfPTable footer = new PdfPTable(1);
-       // set defaults
-		footer.setWidths(new int[]{2});
-		footer.setTotalWidth(527);
-		footer.setLockedWidth(true);
-		footer.getDefaultCell().setFixedHeight(40);
-		footer.getDefaultCell().setBorder(Rectangle.TOP);
-		footer.getDefaultCell().setBorderColor(BaseColor.LIGHT_GRAY);
-   	
-		PdfPCell footerCell = new PdfPCell();
-		Paragraph p1 = new Paragraph(letterHead.getFooterText(),new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD));
-		if("Left".equalsIgnoreCase(letterHead.getAlignFooterText())) {
-	    	//p1.setAlignment(0);
-			footerCell.setPaddingRight(476);
-			footerCell.setPaddingLeft(0);
-	    }else if("Right".equalsIgnoreCase(letterHead.getAlignFooterText())){
-	    	//p1.setAlignment(2);
-	    	footerCell.setPaddingRight(0);
-	    	footerCell.setPaddingLeft(476);
-	    }else {
-	    	//p1.setAlignment(5);
-	    	footerCell.setPaddingRight(233);
-	    	footerCell.setPaddingLeft(233);
-	    }
-				
-		if(letterHead.getFooterBgColor() != null && letterHead.getFooterBgColor() != "") {
-	    	BaseColor myColor = WebColors.getRGBColor(letterHead.getFooterBgColor());
-	    	footerCell.setBackgroundColor(myColor);
-	    }
-		footerCell.addElement(p1);
-   	footer.addCell(footerCell);
-   
+	       header.setWidths(new int[]{2});
+	       header.setTotalWidth(527);
+	       header.setLockedWidth(true);
+	       header.getDefaultCell().setFixedHeight(40);
+	       header.getDefaultCell().setBorder(Rectangle.BOTTOM);
+	       header.getDefaultCell().setBorderColor(BaseColor.BLUE);
+	       header.addCell(getCell(letterHead));
+	       document.add(header);
+	       
+	       Paragraph p = new Paragraph(letterHead.getHeaderText(),new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL));
+	       p.setAlignment(2);
+	       document.add(p);
+
+	       PdfPTable footer = new PdfPTable(1);
+	       // set defaults
+			footer.setWidths(new int[]{2});
+			footer.setTotalWidth(527);
+			footer.setLockedWidth(true);
+			footer.getDefaultCell().setFixedHeight(40);
+			footer.getDefaultCell().setBorder(Rectangle.TOP);
+			footer.getDefaultCell().setBorderColor(BaseColor.LIGHT_GRAY);
+	   	
+			PdfPCell footerCell = new PdfPCell();
+			Paragraph p1 = new Paragraph(letterHead.getFooterText(),new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD));
+			if("Left".equalsIgnoreCase(letterHead.getAlignFooterText())) {
+		    	p1.setAlignment(Element.ALIGN_LEFT);
+				/*footerCell.setPaddingRight(476);
+				footerCell.setPaddingLeft(0);*/
+		    }else if("Right".equalsIgnoreCase(letterHead.getAlignFooterText())){
+		    	p1.setAlignment(Element.ALIGN_RIGHT);
+		    	/*footerCell.setPaddingRight(0);
+		    	footerCell.setPaddingLeft(476);*/
+		    }else {
+		    	p1.setAlignment(Element.ALIGN_CENTER);
+		    	/*footerCell.setPaddingRight(233);
+		    	footerCell.setPaddingLeft(233);*/
+		    }
+					
+			if(letterHead.getFooterBgColor() != null && letterHead.getFooterBgColor() != "") {
+		    	BaseColor myColor = WebColors.getRGBColor(letterHead.getFooterBgColor());
+		    	footerCell.setBackgroundColor(myColor);
+		    }
+			footerCell.addElement(p1);
+	   	footer.addCell(footerCell).setPaddingTop(-4);
+			
    	
    	// add current page count
 //   	footer.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
