@@ -1106,6 +1106,13 @@ public class Constants {
 	public static final String LICENSE_PAYMENT_ACKNOWLEDGEMENT_DETAILS = "licensePaymentAcknowledgementDetails";
 	
 	public static final String API_TRUMAIL_URL = "https://api.trumail.io/v1/json/";
+	
+	public static final String REPORT_FILTER_TODAY = "today";
+	public static final String REPORT_FILTER_YESTERDAY = "yesterday";
+	public static final String REPORT_FILTER_1_WEEK = "1_week";
+	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
+	public static final String REPORT_FILTER_2_MONTHS = "2_months";
+	
 
 
 }

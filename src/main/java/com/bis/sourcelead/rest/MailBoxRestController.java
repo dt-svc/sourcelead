@@ -1,7 +1,10 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -41,6 +44,7 @@ import com.bis.sourcelead.dto.CampaignStatsDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientVendorDTO;
 import com.bis.sourcelead.dto.EmailAccountSettingsDTO;
+import com.bis.sourcelead.dto.EmailScenarioDTO;
 import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.dto.JobListEmailCampaignDTO;
 import com.bis.sourcelead.dto.ReadMailDTO;
@@ -52,6 +56,7 @@ import com.bis.sourcelead.entity.CampaignStats;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.EmailAccountSettings;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -66,6 +71,7 @@ import com.bis.sourcelead.entity.UserSignature;
 import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailAccountSettingsService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmailService;
 import com.bis.sourcelead.service.HotListEmailCampaignService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -80,6 +86,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.UserSignatureService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -145,6 +152,9 @@ public class MailBoxRestController {
 	
 	@Autowired
 	CampaignService campaignService;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
@@ -894,7 +904,5 @@ public class MailBoxRestController {
 		  return emailAccountSettingsDTO;
 			
 		}
-				
-	 
-	 
+	
 }

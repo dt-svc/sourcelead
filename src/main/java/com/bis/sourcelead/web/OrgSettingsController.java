@@ -181,8 +181,9 @@ public class OrgSettingsController {
 		}
 		
 		 String subscribedCountries = subscriptionCountries.toString();
+		 if(subscribedCountries.length() >0){
 		 subscribedCountries = subscribedCountries.substring(0,subscribedCountries.length()-1);
-		 
+		 }
 		model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
 		model.addObject("subscribedCountries", subscribedCountries);
 		model.addObject("timezoneList", timezoneList);
