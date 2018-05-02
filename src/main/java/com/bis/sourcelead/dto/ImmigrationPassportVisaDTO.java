@@ -22,6 +22,7 @@ public class ImmigrationPassportVisaDTO extends SearchDTO{
 	
 	private String VisaId;
 	
+	@Required(desc = "IdNumber", dependsOn = "idType", parentValue = "Visa" )
 	private String visaType;
 
 	@Required(desc = "country")
