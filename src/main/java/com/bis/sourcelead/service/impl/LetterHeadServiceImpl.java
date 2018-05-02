@@ -26,6 +26,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.html.WebColors;
@@ -115,6 +116,8 @@ public class LetterHeadServiceImpl implements LetterHeadService{
 	    Document document = new Document();// For Template Area
 	    									// here we can add page size(a4,a6,letter) and padding left,right as a parameter 
 	    									//for ex :Document document = new Document(PageSize.A4,15,15,15,15);
+//	    document.setPageSize(letterHead.getFileType());
+	    
 	    PdfWriter writer = PdfWriter.getInstance(document, byteArray); // Important to display data
 	    document.open();
 	    
@@ -127,6 +130,8 @@ public class LetterHeadServiceImpl implements LetterHeadService{
 	    header.getDefaultCell().setBorderColor(BaseColor.BLUE);
 	    header.addCell(getCell(letterHead));
 	    
+	    
+	    
 	    PdfPTable footer = new PdfPTable(1);
 	    // set defaults
 		footer.setWidths(new int[]{2});
@@ -136,12 +141,40 @@ public class LetterHeadServiceImpl implements LetterHeadService{
 		footer.getDefaultCell().setBorder(Rectangle.TOP);
 		footer.getDefaultCell().setBorderColor(BaseColor.LIGHT_GRAY);
 		
+		PdfPCell footerCell = new PdfPCell();
+		Paragraph p1 = new Paragraph(letterHead.getFooterText(),new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD));
+		if("Left".equalsIgnoreCase(letterHead.getAlignFooterText())) {
+	    	//p1.setAlignment(0);
+			footerCell.setPaddingRight(476);
+			footerCell.setPaddingLeft(0);
+	    }else if("Right".equalsIgnoreCase(letterHead.getAlignFooterText())){
+	    	//p1.setAlignment(2);
+	    	footerCell.setPaddingRight(0);
+	    	footerCell.setPaddingLeft(476);
+	    }else {
+	    	//p1.setAlignment(5);
+	    	footerCell.setPaddingRight(233);
+	    	footerCell.setPaddingLeft(233);
+	    }
+				
+		if(letterHead.getFooterBgColor() != null && letterHead.getFooterBgColor() != "") {
+	    	BaseColor myColor = WebColors.getRGBColor(letterHead.getFooterBgColor());
+	    	footerCell.setBackgroundColor(myColor);
+	    }
+		footerCell.addElement(p1);
+   	footer.addCell(footerCell);
+		
+		
+		
+		
+		
+		
 		// add copyright
-		Font ffont = new Font(Font.FontFamily.UNDEFINED, 5, Font.ITALIC);
+		/*Font ffont = new Font(Font.FontFamily.UNDEFINED, 5, Font.ITALIC);
 		 PdfContentByte cb = writer.getDirectContent();
 		 Phrase footerText = new Phrase(letterHead.getFooterText(), ffont);
 //		footer.addCell(new Phrase(letterHead.getFooterText(), new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
-	     ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,footerText,(document.right() - document.left()) / 2 + document.leftMargin(),document.bottom() - 10, 0);
+	     ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,footerText,(document.right() - document.left()) / 2 + document.leftMargin(),document.bottom() - 10, 0);*/
 		
 		// add current page count
 //		footer.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);

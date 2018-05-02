@@ -51,9 +51,12 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.html.WebColors;
@@ -89,6 +92,9 @@ public class ReportsUtil {
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	ConversionUtil conversionUtil;
 	
 	
      public List<RequirementDTO> getAllRequirementsByOrgLocationId(Long orgLocationId,User user,String userRole,HttpServletRequest request){
@@ -529,11 +535,30 @@ public class ReportsUtil {
 		footer.getDefaultCell().setFixedHeight(40);
 		footer.getDefaultCell().setBorder(Rectangle.TOP);
 		footer.getDefaultCell().setBorderColor(BaseColor.LIGHT_GRAY);
-//   	footer.addCell(getCell1(letterHead));
    	
-   	// add copyright
-   	
-   	footer.addCell(new Phrase(letterHead.getFooterText(), new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD)));
+		PdfPCell footerCell = new PdfPCell();
+		Paragraph p1 = new Paragraph(letterHead.getFooterText(),new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD));
+		if("Left".equalsIgnoreCase(letterHead.getAlignFooterText())) {
+	    	//p1.setAlignment(0);
+			footerCell.setPaddingRight(476);
+			footerCell.setPaddingLeft(0);
+	    }else if("Right".equalsIgnoreCase(letterHead.getAlignFooterText())){
+	    	//p1.setAlignment(2);
+	    	footerCell.setPaddingRight(0);
+	    	footerCell.setPaddingLeft(476);
+	    }else {
+	    	//p1.setAlignment(5);
+	    	footerCell.setPaddingRight(233);
+	    	footerCell.setPaddingLeft(233);
+	    }
+				
+		if(letterHead.getFooterBgColor() != null && letterHead.getFooterBgColor() != "") {
+	    	BaseColor myColor = WebColors.getRGBColor(letterHead.getFooterBgColor());
+	    	footerCell.setBackgroundColor(myColor);
+	    }
+		footerCell.addElement(p1);
+   	footer.addCell(footerCell);
+   
    	
    	// add current page count
 //   	footer.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -567,7 +592,7 @@ public class ReportsUtil {
 	
 	private PdfPCell getCell(LetterHead letterHead) throws Exception
 	{
-		    PdfPCell cell = new PdfPCell();
+		 PdfPCell cell = new PdfPCell();
 		    
 		    if(letterHead.getHeaderBgColor() != null && letterHead.getHeaderBgColor() != "") {
 		    	BaseColor myColor = WebColors.getRGBColor(letterHead.getHeaderBgColor());
@@ -590,9 +615,12 @@ public class ReportsUtil {
 		    }
 		    
 	    	cell.addElement(img1);
-		    return cell;
+		    return cell;  
+		
+		
 	}
 	
+	@SuppressWarnings("static-access")
 	public String replaceAllTemplatePlaceHolders(String templateContent, EmployeeVerificationTemplate empTemplate, String toAddress, User user, OrgLocations orgLocation) throws Exception {
         
 		Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(user.getId(), orgLocation.getId());
@@ -602,21 +630,32 @@ public class ReportsUtil {
 	            StringBuffer sb = new StringBuffer();
 	            while(matchPattern.find()) {
 	                if(matchPattern.group().equalsIgnoreCase("[Issued_Date]")){
-	                    matchPattern.appendReplacement(sb, new Date().toString());
+	                    matchPattern.appendReplacement(sb, conversionUtil.getDateAsddMMMYYYY(new Date()));
 	                }else if(matchPattern.group().equalsIgnoreCase("[To_Whom_It_May_Concern]")){
 	                	if(StringUtils.isNotEmpty(toAddress))
 	                    matchPattern.appendReplacement(sb, toAddress);
 	                	else
 	                	matchPattern.appendReplacement(sb, "--");
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company_Location]")){
-	                    matchPattern.appendReplacement(sb, "");    
+						if (StringUtils.isNotEmpty(orgLocation.getCountry()))
+							matchPattern.appendReplacement(sb, orgLocation.getLocation());
+						else
+							matchPattern.appendReplacement(sb, "--");   
 	                }else if(matchPattern.group().equalsIgnoreCase("[Company_Name]")){
+	                	if(StringUtils.isNotEmpty(orgLocation.getOrgLocationName()))
 	                    matchPattern.appendReplacement(sb, orgLocation.getOrgLocationName());
+	                	else
+		                	matchPattern.appendReplacement(sb, "--");
 		            }else if(matchPattern.group().equalsIgnoreCase("[Company_Email]")){
-	                	matchPattern.appendReplacement(sb,"--");	
+		            	if (StringUtils.isNotEmpty(orgLocation.getUser().getEmail()))
+							matchPattern.appendReplacement(sb, orgLocation.getUser().getEmail());
+						else
+		            	matchPattern.appendReplacement(sb,"--");	
 		            }else if(matchPattern.group().equalsIgnoreCase("[Company_Contact]")){
 		            	if(StringUtils.isNotEmpty(orgLocation.getPhone()))
 	                	matchPattern.appendReplacement(sb,orgLocation.getPhone());
+		            	else
+		                	matchPattern.appendReplacement(sb, "--");
 	                }else if(matchPattern.group().equalsIgnoreCase("[Associate_Name]")){
 	                	StringBuilder name = new StringBuilder();
 	                	if(StringUtils.isNotEmpty(user.getLastName()))
@@ -624,9 +663,15 @@ public class ReportsUtil {
 	                	else
 	                	matchPattern.appendReplacement(sb,user.getFirstName());
 		            }else if(matchPattern.group().equalsIgnoreCase("[Associate_Designation_Role]")){
+		            	if(StringUtils.isNotEmpty(userRole.getUserType()))
 	                    matchPattern.appendReplacement(sb,userRole.getUserType());
+		            	else
+		                	matchPattern.appendReplacement(sb, "--");
 	                }else if(matchPattern.group().equalsIgnoreCase("[Associate_Employment_Type]")){
-	                   matchPattern.appendReplacement(sb, "--");
+	                	if(StringUtils.isNotEmpty(employee.getUserEmploymentType()))
+		                    matchPattern.appendReplacement(sb,employee.getUserEmploymentType());
+			            	else
+	                	matchPattern.appendReplacement(sb, "--");
 	                }else if(matchPattern.group().equalsIgnoreCase("[SSN]")){
 		               matchPattern.appendReplacement(sb, "--");
 	                }else if(matchPattern.group().equalsIgnoreCase("[PAN]")){
@@ -652,7 +697,10 @@ public class ReportsUtil {
 	                	else
 	                	matchPattern.appendReplacement(sb,empTemplate.getSignatory().getFirstName());
 		            }else if(matchPattern.group().equalsIgnoreCase("[Signatory_Designation]")){
-		               matchPattern.appendReplacement(sb, "");
+						if (StringUtils.isNotEmpty(userRole.getDesignation()))
+							matchPattern.appendReplacement(sb, userRole.getDesignation());
+						else
+							matchPattern.appendReplacement(sb,"");
 		            }else if(matchPattern.group().equalsIgnoreCase("[Signatory_Email]")){
 		               matchPattern.appendReplacement(sb, empTemplate.getSignatory().getEmail());
 		            }else if(matchPattern.group().equalsIgnoreCase("[Signatory_Contact]")){
