@@ -1542,7 +1542,7 @@ public class DashboardRestController {
 			RequirementSubmissionHistoryDTO rshDTO = new RequirementSubmissionHistoryDTO();
 			StringBuilder sb = new StringBuilder();
 			if(StringUtils.isNotBlank(rsh.getSubmissionId().getCandidate().getLastName())){
-				rshDTO.setCandidateName(sb.append(rsh.getSubmissionId().getCandidate().getFirstName()).append("").append(rsh.getSubmissionId().getCandidate().getLastName()).toString());
+				rshDTO.setCandidateName(sb.append(rsh.getSubmissionId().getCandidate().getFirstName()).append(" ").append(rsh.getSubmissionId().getCandidate().getLastName()).toString());
 			}else{
 				rshDTO.setCandidateName(rsh.getSubmissionId().getCandidate().getFirstName());
 			}
