@@ -257,9 +257,9 @@ function Immigration() {
                        }else if (result.response === "AWKWARD") {
                            location.href = "/errorPage";
                        }else if(result.response === 'SUCCESS') {
-                    	   immigrationId = result.result[0];
-                       	candidateId = result.result[1];
-                       	templateId= result.result[2];
+                    	   immigrationId = result.data[0];
+                       	candidateId = result.data[1];
+                       	templateId= result.data[2];
                             if(status == 'saveContinue'){// redirect to petition details tab page.
                             window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId+"&candidateId="+candidateId+"&templateId="+templateId;
                             }
@@ -288,9 +288,9 @@ function Immigration() {
                           }else if (result.response === "AWKWARD") {
                               location.href = "/errorPage";
                           }else if(result.response === 'SUCCESS') {
-                        	  immigrationId = result.result[0];
-                          	candidateId = result.result[1];
-                          	templateId= result.result[2];
+                        	  immigrationId = result.data[0];
+                          	candidateId = result.data[1];
+                          	templateId= result.data[2];
                           }else{
                           	 showError("Operation failed, please try again");
                           }
