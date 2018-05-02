@@ -56,12 +56,12 @@
                     <label class="col-md-12">Template Type</label>
                     <div class="col-md-12">
                       <div class="clearfix">
-                        <select id="templateType" class="sel form-control" name="templateType" onChange="templateType()" value="${letterHead.templateType}">
+                        <select id="templateType" class="sel form-control" name="templateType" onChange="templateType()">
                       	<option value="">-- Select --</option>
-                      	<option value="Letter">Letter (8.5" x 11")</option>	
-                      	<option value="A4">A4 (8.268" x 11.693")</option>
-                      	 <option value="A6">A6 (4.134" x 5.827")</option>	
-                      	<option value="Legal">Legal (8.5" x 14")</option>	
+                      	<option value="Letter" ${letterHead.templateType eq 'Letter' ? 'selected' : ''}>Letter (8.5" x 11")</option>	
+                      	<option value="A4" ${letterHead.templateType eq 'A4' ? 'selected' : ''}>A4 (8.268" x 11.693")</option>
+                      	 <option value="A6" ${letterHead.templateType eq 'A6' ? 'selected' : ''}>A6 (4.134" x 5.827")</option>	
+                      	<option value="Legal" ${letterHead.templateType eq 'Legal' ? 'selected' : ''}>Legal (8.5" x 14")</option>	
                       </select>
                       </div>
                     </div>
@@ -103,11 +103,11 @@
 					<div class="row">
 					<div class="col-md-8 paddingRight">
 					<label class="clearfix">Align logo</label>
-					<select class="form-control sel" id="alignLogo" name="alignLogo" value="${letterHead.alignLogo}">
+					<select class="form-control sel" id="alignLogo" name="alignLogo">
 						<option value="">-- Select --</option>
-						<option value="Left">Left</option>
-						<option value="Middle">Middle</option>
-						<option value="Right">Right</option>
+						<option value="Left" ${letterHead.alignLogo eq 'Left' ? 'selected' : ''}>Left</option>
+						<option value="Middle" ${letterHead.alignLogo eq 'Middle' ? 'selected' : ''}>Middle</option>
+						<option value="Right" ${letterHead.alignLogo eq 'Right' ? 'selected' : ''}>Right</option>
 					</select>
 					</div>
 					<div class="col-md-4 paddingLeft">
@@ -129,11 +129,11 @@
 					<div class="row">
 					<div class="col-md-8 paddingRight">
 					<label class="clearfix">Align Text</label>
-					<select class="form-control sel" id="headerTextAlign" name="headerTextAlign" value="${letterHead.alignHeaderText}">
+					<select class="form-control sel" id="headerTextAlign" name="headerTextAlign">
 						<option value="">-- Select --</option>
-						<option value="Left">Left</option>
-						<option value="Middle">Middle</option>
-						<option value="Right">Right</option>
+						<option value="Left" ${letterHead.alignHeaderText eq 'Left' ? 'selected' : ''}>Left</option>
+						<option value="Middle"  ${letterHead.alignHeaderText eq 'Middle' ? 'selected' : ''}>Middle</option>
+						<option value="Right" ${letterHead.alignHeaderText eq 'Right' ? 'selected' : ''}>Right</option>
 					</select>
 					</div>
 					<!--  <div class="col-md-4 paddingLeft">
@@ -159,11 +159,11 @@
 						<div class="row">
 						<div class="col-md-8 paddingRight">
 						<label class="clearfix">Align footer</label>
-						<select class="form-control sel" id="alignFooter" name="alignFooter" value="${letterHead.alignFooterText}">
+						<select class="form-control sel" id="alignFooter" name="alignFooter">
 						<option value="">-- Select --</option>
-						<option value="Left">Left</option>
-						<option value="Middle">Middle</option>
-						<option value="Right">Right</option>
+						<option value="Left" ${letterHead.alignFooterText eq 'Left' ? 'selected' : ''}>Left</option>
+						<option value="Middle" ${letterHead.alignFooterText eq 'Middle' ? 'selected' : ''}>Middle</option>
+						<option value="Right" ${letterHead.alignFooterText eq 'Right' ? 'selected' : ''}>Right</option>
 						</select>
 						</div>
 						<div class="col-md-4 paddingLeft">
