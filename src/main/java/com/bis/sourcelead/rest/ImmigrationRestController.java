@@ -1724,6 +1724,13 @@ public class ImmigrationRestController {
 		HashMap<String, Object>	docsListMap = new HashMap<String, Object>(); 	
 		List<ImmigrationCandidateForms> immigrationCandidateForms = immigrationCommonService.getImmigrationCandidateFormsByImmigrationId(immigrationId);
 		docsListMap.put("immForms",immigrationCandidateForms);
+		
+		List<ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList = immigrationCommonService
+				.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId,  null);
+		
+		docsListMap.put("immDocs",immigrationCanididateDocHistoryList);
+		
+		
 		return FileUploadUtil.getAllImmigrationZipFiles(staticPath, orgId, orgLocationId, immigrationId, 
 				docsListMap, fileNameParameters);
 	}
