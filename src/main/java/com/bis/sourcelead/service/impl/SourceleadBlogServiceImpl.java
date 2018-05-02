@@ -208,8 +208,8 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 	}
 
 	@Override
-	public List<SourceleadBlogs> getRelatedSourceleadBlogs(Long categoryId) throws Exception {
-		return sourceleadBlogDao.getRelatedSourceleadBlogs(categoryId);
+	public List<SourceleadBlogs> getRelatedSourceleadBlogs(Long blogId) throws Exception {
+		return sourceleadBlogDao.getRelatedSourceleadBlogs(blogId);
 	}
 
 	@Override

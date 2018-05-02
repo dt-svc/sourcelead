@@ -15,6 +15,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.EntityType;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -50,6 +51,12 @@ public class EmailScenerioUtil {
 		return subject ;
 	}
 	
+   public String bulidTemplateSubject(String subject,Map<String, String> globalVarsMap,EmailScenario emailScenario) throws Exception{
+		
+		subject = emailMessageBodyConverter.convertBodyOfEmailScenerioTemplate(subject,globalVarsMap,emailScenario);
+		return subject ;
+	}
+	
 	public String buildBody(String body,Map<String, String> globalVarsMap) throws Exception{
 		body = body.replaceAll("\n", "<br/>");
 		body = body.replaceAll(" ", "&nbsp;");
@@ -64,10 +71,27 @@ public class EmailScenerioUtil {
 		return body ;
 	}
 	
+	public String buildTemplateBody(String body,Map<String, String> globalVarsMap,EmailScenario emailScenario) throws Exception{
+		body = body.replaceAll("\n", "<br/>");
+		body = body.replaceAll(" ", "&nbsp;");
+		//body = emailMessageBodyConverter.convertTempBodyOfEmailTemplate(body,globalVarsMap);
+		body = emailMessageBodyConverter.convertTemplateBodyOfEmailTemplate(body,globalVarsMap,emailScenario);
+		return body ;
+	}
+	
 	public String buildSignature(String signature,Map<String, String> globalVarsMap) throws Exception{
 		signature = signature.replaceAll("\n", "<br/>");
+		signature = signature.replaceAll("\r", "<br/>");
 		signature = signature.replaceAll(" ", "&nbsp;");
 		signature = emailMessageBodyConverter.convertBodyOfEmailTemplate(signature,globalVarsMap);
+		return signature ;
+	}
+	
+	public String buildTemplateSignature(String signature,Map<String, String> globalVarsMap,EmailScenario emailScenario) throws Exception{
+		signature = signature.replaceAll("\n", "<br/>");
+		signature = signature.replaceAll("\r", "<br/>");
+		signature = signature.replaceAll(" ", "&nbsp;");
+		signature = emailMessageBodyConverter.convertTemplateBodyOfEmailTemplate(signature,globalVarsMap,emailScenario);
 		return signature ;
 	}
 

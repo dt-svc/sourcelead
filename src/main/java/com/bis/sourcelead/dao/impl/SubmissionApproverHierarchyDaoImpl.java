@@ -1480,6 +1480,23 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				weekTotalHoursMap.put(actualStartDate, weekTotalHours);
 				count++;
 			}
+			if(submissionApproverHierarchy == null) {
+				submissionApproverHierarchy = new SubmissionApproverHierarchy();
+				submissionApproverHierarchy.setTotalHours(0f);
+				// DateFormat format = LoginSessionController.DATEFORMAT;
+				Map<String, String> tabFrequencyDates = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(projects.getOrgLocationsId().getDateFormat(), startDate), commonUtil.dateStrFromOrgDateFormatter(projects.getOrgLocationsId().getDateFormat(), endDate), projects.getOrgLocationsId().getDateFormat());
+				if (tabFrequencyDates != null && !tabFrequencyDates.isEmpty()) {
+					tabFrequencyDates.forEach((k, v) -> {
+						try {
+							weekApprovalStatusMap.put(commonUtil.orgLocationDateFormat(projects.getOrgLocationsId().getDateFormat(), k.replaceAll("/", "-")), Submission_ApprovalStatus.NEW);
+							weekBillableHours.put(commonUtil.orgLocationDateFormat(projects.getOrgLocationsId().getDateFormat(), k.replaceAll("/", "-")), 0f);
+							weekNonBillableHours.put(commonUtil.orgLocationDateFormat(projects.getOrgLocationsId().getDateFormat(), k.replaceAll("/", "-")), 0f);
+							weekTotalHoursMap.put(commonUtil.orgLocationDateFormat(projects.getOrgLocationsId().getDateFormat(), k.replaceAll("/", "-")), 0f);
+						} catch (Exception e) {
+						}
+					});
+				}
+			}
 			submissionApproverHierarchy.setWeekApprovalStatusMap(weekApprovalStatusMap);
 			submissionApproverHierarchy.setWeekBillableHoursMap(weekBillableHours);
 			submissionApproverHierarchy.setWeekNonBillableHoursMap(weekNonBillableHours);
