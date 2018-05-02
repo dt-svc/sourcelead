@@ -1455,6 +1455,9 @@ public class TimesheetRestController {
 			HashMap<String, String> statusMap = getTimesheetStatusByTimeSubFrequency(projectMember, timesheetFor,
 					currentTimeFrequency, orgLocations, loginUser, isModifyMyTimeSheet, isFillMyTimeSheet);
 			tsDTO.setTimeSubFrequency(currentTimeSubFrequency);
+			tsDTO.setTimeFrequency(currentTimeFrequency);
+			tsDTO.setTimesheetFor(timesheetFor);
+			tsDTO.setProjectMemberId(projectMemberId);
 			tsDTO.setTimesheetStatus(statusMap.get("STATUS"));
 			tsDTO.setReopenReason(statusMap.get("REOPEN_REASON"));
 			tsDTO.setModifyButtonVisible(new Boolean(statusMap.get("IS_MODIFY_BUTTON_VISIBLE")));
@@ -3172,12 +3175,88 @@ public class TimesheetRestController {
 
 		}
 		addTimesheetDayEntry(projectMember, actualStartDate, actualEndDate, frequencyStartDate, frequencyEndDate,
-				loginUser, timesheetDate, hours, comments, taskUUID, loginOrgLocation.getDateFormat(), leaveStatusType);
+				loginUser, timesheetDate, hours, comments, taskUUID,null, loginOrgLocation.getDateFormat(), leaveStatusType);
 	}
 
-	private void addTimesheetDayEntry(ProjectMembers projectMember, Date actualStartDate, Date actualEndDate,
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
+	@RequestMapping(value = "/rest/saveTimesheetDayEntries", method = RequestMethod.POST)
+	public @ResponseBody TimesheetEntryDetailsDTO saveTimesheetDayEntryMobile(
+			@RequestBody TimeSheetSubmissionDTO tsDTO, HttpServletRequest request) throws Exception {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (loginUser == null && tsDTO.getUserId() != null) {
+			loginUser = userService.getUserById(tsDTO.getUserId());
+		}
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		if (orgLoc == null && StringUtils.isNotEmpty(tsDTO.getLocationCode())) {
+			orgLoc = orgLocationService.getOrgLocationsByLocationCode(tsDTO.getLocationCode());
+		}
+		String currentTimeFrequency = null;	
+		String currentTimeSubFrequency = null;
+		String timesheetFor = null;
+		Long projectMemberId = null;
+		if(tsDTO != null && tsDTO.getProjectMemberId() != null && tsDTO.getTimesheetEntries() != null && !tsDTO.getTimesheetEntries().isEmpty()  && StringUtils.isNotEmpty(tsDTO.getTimeFrequency()) && StringUtils.isNotEmpty(tsDTO.getTimeSubFrequency())) {
+			projectMemberId = tsDTO.getProjectMemberId();
+			timesheetFor = tsDTO.getTimesheetFor();
+			List<Long> oldDbIdList = new ArrayList<>();
+			List<Long> freshIdList = new ArrayList<>();
+			if(tsDTO.getId() != null) {
+				oldDbIdList = timesheetDayEntriesDao.getAllTimeSheetDayEntryIdsBySubmissionId(tsDTO.getId());
+			}
+			Date frequencyStartDate = null;
+			Date frequencyEndDate   = null;
+			Date actualStartDate = null;
+			Date actualEndDate   = null;
+			if (StringUtils.isNotEmpty(tsDTO.getTimeFrequency())) {
+				currentTimeFrequency = tsDTO.getTimeFrequency();
+				String[] frequency = currentTimeFrequency.split("To");
+				String startDate = frequency[0].trim();
+				String endDate = frequency[1].trim();
+				frequencyStartDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),startDate.replaceAll("/", "-"));
+				frequencyEndDate =  commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),endDate.replaceAll("/", "-"));
+						
+			}	
+			if (StringUtils.isNotEmpty(tsDTO.getTimeSubFrequency())) {
+				currentTimeSubFrequency = tsDTO.getTimeSubFrequency();
+				String[] frequency = currentTimeSubFrequency.split("To");
+				String startDate = frequency[0].trim();
+				String endDate = frequency[1].trim();
+				actualStartDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),startDate.replaceAll("/", "-"));
+				actualEndDate =  commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),endDate.replaceAll("/", "-"));
+						
+			}	
+			ProjectMembers projectMember = projectMembersService.getProjectMemberById(tsDTO.getProjectMemberId());
+			if(projectMember != null) {
+				for(TimesheetEntriesDTO te :tsDTO.getTimesheetEntries()) {
+					if(te.getTimesheetTaskDTO() != null && te.getTimesheetTaskDTO().getId() != null) {
+						Date timesheetDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),te.getDate().replaceAll("/", "-"));
+						TimeSheetDayEntries tde = addTimesheetDayEntry(projectMember,actualStartDate,actualEndDate,frequencyStartDate,frequencyEndDate,loginUser,timesheetDate,te.getHours(),te.getComments(),null,te.getTimesheetTaskDTO().getId(),orgLoc.getDateFormat(),null);
+						freshIdList.add(tde.getId());
+					}
+				}
+				oldDbIdList.removeAll(freshIdList);
+				if (oldDbIdList != null && !oldDbIdList.isEmpty()) {
+					for (Long removedEntryId : oldDbIdList) {
+						timesheetDayEntriesDao.deleteTimeSheetDayEntries(removedEntryId);
+					}
+				}
+			}
+			
+		}
+		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
+		eedDTO.setCurrentTimeFrequency(currentTimeFrequency);
+		eedDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
+		eedDTO.setTimeSheetsFor(timesheetFor);
+		eedDTO.setProjectMembersId(projectMemberId);
+		eedDTO.setUserId(loginUser.getId());
+		eedDTO.setLocationCode(orgLoc.getLocationCode());
+		return getTimesheetEntryDetailsMobile(eedDTO, request);
+	}
+	
+	private TimeSheetDayEntries addTimesheetDayEntry(ProjectMembers projectMember, Date actualStartDate, Date actualEndDate,
 			Date frequencyStartDate, Date frequencyEndDate, User loginUser, Date timesheetDate, String hours,
-			String comments, String taskUUID, String dateformat, String leaveStatusType) throws Exception {
+			String comments, String taskUUID, Long taskId, String dateformat, String leaveStatusType) throws Exception {
+		TimeSheetDayEntries te = null;
 		if (projectMember != null && projectMember.getProjects() != null
 				&& projectMember.getMasterCandidateId() != null) {
 			TimesheetSubmissions timesheetSubmissions = timesheetSubmissionsService
@@ -3248,10 +3327,11 @@ public class TimesheetRestController {
 				timesheetSubmissionsList.add(timesheetSubmissions);
 				timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 
-				HashMap<String, Long> totalMap = addTimesheetDateDayEntries(actualStartDate, actualEndDate,
-						timesheetDate, dateformat, taskUUID, hours, comments, timesheetSubmissions, loginUser,
+				HashMap<TimeSheetDayEntries,HashMap<String, Long>> resultMap = addTimesheetDateDayEntries(actualStartDate, actualEndDate,
+						timesheetDate, dateformat, taskUUID,taskId, hours, comments, timesheetSubmissions, loginUser,
 						leaveStatusType);
-
+			    te = resultMap.keySet().iterator().next();
+				HashMap<String, Long> totalMap = resultMap.values().iterator().next();
 				Long total = totalMap.get("TOTAL");
 				Long totalNonBillableHours = totalMap.get("BILLABLE");
 				Long totalBillableHours = totalMap.get("NONBILLABLE");
@@ -3298,20 +3378,27 @@ public class TimesheetRestController {
 				}
 			}
 		}
+		return te;
 	}
 
-	private HashMap<String, Long> addTimesheetDateDayEntries(Date actualStartDate, Date actualEndDate,
-			Date timesheetDate, String dateFormat, String taskUUID, String hours, String comments,
+	private HashMap<TimeSheetDayEntries,HashMap<String, Long>> addTimesheetDateDayEntries(Date actualStartDate, Date actualEndDate,
+			Date timesheetDate, String dateFormat, String taskUUID,Long taskId, String hours, String comments,
 			TimesheetSubmissions timesheetSubmissions, User loginUser, String leaveStatusType) throws Exception {
 		Long total = 0l;
 		Long totalBillableHours = 0l;
 		Long totalNonBillableHours = 0l;
 		HashMap<String, Long> totalMap = new HashMap<>();
+		HashMap<TimeSheetDayEntries, HashMap<String, Long>> resultMap = new HashMap<>();
 		/*
 		 * while(actualStartDate.before(actualEndDate) ||
 		 * actualStartDate.equals(actualEndDate)){
 		 */
-		ProjectTasks projectTasks = projectTasksService.getProjectTasksByUUID(taskUUID);
+		ProjectTasks projectTasks =  null;
+		if(taskId != null) {
+			projectTasks = projectTasksService.getProjectTasksByUUID(taskId.toString());
+		}else {
+			projectTasks = projectTasksService.getProjectTasksByUUID(taskUUID);
+		}
 		TimeSheetDayEntries timesheetDayEntries = timesheetDayEntriesDao
 				.getTimesheetDayEntriesBySubmissionIdTaskIdAndTimesheetDate(timesheetSubmissions.getId(),
 						projectTasks.getId(), timesheetDate);
@@ -3353,7 +3440,7 @@ public class TimesheetRestController {
 		}
 		timesheetDayEntries.setUpdatedBy(loginUser.getCreatedBy());
 		timesheetDayEntries.setUpdatedDate(CommonUtil.currentDate());
-		timesheetDayEntriesDao.saveTimesheetDayEntries(timesheetDayEntries);
+		timesheetDayEntries = timesheetDayEntriesDao.saveTimesheetDayEntries(timesheetDayEntries);
 		totalMap.put(commonUtil.dateStrFromOrgDateFormatter(dateFormat, actualStartDate), timesheetDayEntries.getId());
 		/*
 		 * actualStartDate = CalendarUtil.getNextDate(actualStartDate); }
@@ -3361,7 +3448,8 @@ public class TimesheetRestController {
 		totalMap.put("TOTAL", total);
 		totalMap.put("BILLABLE", totalBillableHours);
 		totalMap.put("NONBILLABLE", totalNonBillableHours);
-		return totalMap;
+		resultMap.put(timesheetDayEntries, totalMap);
+		return resultMap;
 	}
 
 	public static boolean isNullOrEmpty(String str) {
