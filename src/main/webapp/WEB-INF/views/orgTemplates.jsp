@@ -136,6 +136,20 @@
 	
 	<div class="landTempCta nomr">
 	<div class="pull-left mr10">
+           <i class="fa fa-file fa-2x text-success"></i>
+        </div>
+		<div class="pull-left">
+		<h2 class="text-success">Letterhead</h2>
+		<p>Manage your org letterheads</p>
+		<span>
+			<a  class="btn btn-info btn-sm mr10" href="<c:url value="${appPath}/letterHead"/>">Add</a> 
+			<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/letterHeadList" />">View</a>
+		</span>
+		</div>
+	</div>
+	
+	<div class="landTempCta nomr">
+	<div class="pull-left mr10">
 
            <i class="fa fa-check fa-2x text-success"></i>
         </div>
@@ -166,21 +180,6 @@
 		</span>
 		</div>
 	</div>
-	
-
-<div class="landTempCta nomr">
-	<div class="pull-left mr10">
-           <i class="fa fa-file fa-2x text-success"></i>
-        </div>
-		<div class="pull-left">
-		<h2 class="text-success">Letterhead</h2>
-		<p>Manage your org letterheads</p>
-		<span>
-			<a  class="btn btn-info btn-sm mr10" href="<c:url value="${appPath}/letterHead"/>">Add</a> 
-			<a  class="btn btn-primary btn-sm" href="<c:url value="${appPath}/letterHeadList" />">View</a>
-		</span>
-		</div>
-</div>
 	
 	<div class="clearfix"></div>
 </section>

@@ -22,7 +22,7 @@
           <div class="letterheadTemplate clearfix">
             <div class="">
             
-            <div class="letterhead-body clearfix col-md-3">
+            <div class="letterhead-body clearfix col-md-4">
             <h5>Letterhead Details</h5>
             <div class="form-group row">
             <label class="col-md-12">Letterhead Name</label>
@@ -40,7 +40,7 @@
               </div>
             
               <!-- Letterheadeer Body Area -->
-            <div class="letterhead-body clearfix col-md-3">
+            <%-- <div class="letterhead-body clearfix col-md-3">
                  <h5>Template Area</h5>
                   <div class="row form-group">
                     
@@ -81,10 +81,10 @@
                       <input type="text" name="paddingLeft" placeholder="Left" class="form-control input-sm" value="${letterHead.paddingLeft}">
                     </div>
                 </div>
-            </div>
+            </div> --%>
               
               <!-- Letterheadeer Body Area -->
-				<div class="letterhead-Header clearfix  col-md-3">
+				<div class="letterhead-Header clearfix  col-md-4">
 				<h5>Header</h5>
 					<div class="row form-group clearfix">
 					<label class="col-md-12">Upload Logo</label>
@@ -120,14 +120,15 @@
 					</div>
 
 					<div class="row form-group clearfix">
-					<label class="col-md-12">Text</label>
-					<div class="col-md-12">
+					
+					<div class="col-md-8 paddingRight">
+					<label class="cleafix">Text</label>
 					<input type="text" class="form-control" id="headerText" name="headerText" value="${letterHead.headerText}" data-validation-optional="true"  data-validation="validate_Space validate_length length2-100">
 					</div>
 					
-					<div class="col-md-12 mt">
-					<div class="row">
-					<div class="col-md-8 paddingRight">
+					<div class="col-md-4 paddingLeft">
+					<div class="cleafix">
+					<div class="cleafix">
 					<label class="clearfix">Align Text</label>
 					<select class="form-control sel" id="headerTextAlign" name="headerTextAlign">
 						<option value="">-- Select --</option>
@@ -148,7 +149,7 @@
 				
 
               <!-- Letterhead-Footerarea -->
-              <div class="letterhead-Footer clearfix col-md-3">
+              <div class="letterhead-Footer clearfix col-md-4">
               	<h5>Footer</h5>
               	   <div class="row form-group clearfix">
                     <label class="col-md-12">Text</label>
