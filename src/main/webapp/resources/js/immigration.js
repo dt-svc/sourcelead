@@ -68,13 +68,18 @@ function Immigration() {
                 url: sourceleadUrl + immiModulePath + "/saveEducationImmigrationDedtails?" + tokenParamName + "=" + tokenValue + "&candidateId=" + candidateId+"&immigrationId="+immigrationId,
                 type: "POST",
                 data: formData,
-                success: function (data) {
-                    if (data == 'Success') {
-                    	$('#popEduView').hide();
-                    	$('.popMask').fadeOut();
-                    	getCandidateEducationList(candidateId);
-
-                    }
+                success: function (result) {
+                	if (result && result.response === "INVALID_DATA") {
+                   	 showError(result.responseMessage);
+                   }else if (result.response === "AWKWARD") {
+                       location.href = "/errorPage";
+                   }else if(result.response === 'SUCCESS') {
+	                	$('#popEduView').hide();
+	                   	$('.popMask').fadeOut();
+	                   	getCandidateEducationList(candidateId);
+                   }else{
+                   	 showError("Operation failed, please try again");
+                   }
                 }
             });
             return true;
@@ -530,15 +535,18 @@ this.deletePassportVisaDetailsById=function(id,idType){
 				url : sourceleadUrl + immiModulePath+ "/saveCandidateFamilyDetails?candidateId="+candidateId+"&relationType="+relationType+"&memberId="+familyMemberId,
 				type : "POST",
 				data : formData,
-				success : function(data) {
-					console.log(" inside success function");
-					if (data == 'success') {
-                        console.log("data successfully saved for the candidate id "+templateId);
-                        $(".popMask").fadeOut(200); // close the popup code
-        				$("#spousePopView").fadeOut(100);// close the popup code
-        				immigration.displayFamilyDetails(candidateId);
-        				
-					}
+				success : function(result) {
+					if (result && result.response === "INVALID_DATA") {
+                   	 showError(result.responseMessage);
+                   }else if (result.response === "AWKWARD") {
+                       location.href = "/errorPage";
+                   }else if(result.response === 'SUCCESS') {
+                	   $(".popMask").fadeOut(200); // close the popup code
+       				$("#spousePopView").fadeOut(100);// close the popup code
+       				immigration.displayFamilyDetails(candidateId); 
+       				}else{
+                   	 showError("Operation failed, please try again");
+                   }
 				}
 			});
 
@@ -915,11 +923,17 @@ function saveEmployerDetails(status) {
             url: sourceleadUrl + immiModulePath + "/saveImmigrationEmployerDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
             type: "POST",
             data: formData,
-            success: function (data) {
-                if (data == 'success') {
+            success: function (result) {
+				if (result && result.response === "INVALID_DATA") {
+                	 showError(result.responseMessage);
+                }else if (result.response === "AWKWARD") {
+                    location.href = "/errorPage";
+                }else if(result.response === 'SUCCESS') {
                 	$('#emploView').hide();
                 	$('.popMask').fadeOut();
                 	getCandidateEmployerList(candidateId);
+                }else{
+                	 showError("Operation failed, please try again");
                 }
             }
         });

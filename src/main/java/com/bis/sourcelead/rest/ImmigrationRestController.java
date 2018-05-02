@@ -554,21 +554,35 @@ public class ImmigrationRestController {
 	}
 
 	@RequestMapping(value = { "/saveImmigrationEmployerDetails" }, method = RequestMethod.POST)
-	public String saveImmigrationEmployerDetails(CandidateEmployerDTO candidateEmployerDTO, HttpServletRequest request,
+	public Response<String> saveImmigrationEmployerDetails(CandidateEmployerDTO candidateEmployerDTO, HttpServletRequest request,
 			@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "immigrationId", required = false) String immigrationId) throws Exception {
-
+		
+		Response<String> response = new Response<>(); 
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		// immigrationTemplateService.savePetitionTemplateTaskDetails(templateDTO,
 		// user);
+		try{
+		if (user != null && Validator.validate(candidateEmployerDTO)) {
 		candidateEmployerDTO.setStaticPath(staticPath);
-		candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO, user, loginOrglocation,
-				Long.parseLong(candidateId));
-		System.out.println("Template Task Details saved succesfully --> ");
-
-		return "success";
+		candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO, user, loginOrglocation,	Long.parseLong(candidateId));
+		response.setResponse(Result.SUCCESS.name());
+		response.setResponseMessage(Result.SUCCESS.getValue());
+		}else if (user == null) {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		} else {
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+		}
+	}catch (Exception e) {
+		e.printStackTrace();
+		response.setResponse(Result.AWKWARD.name());
+		response.setResponseMessage(Result.AWKWARD.getValue());
+	}
+		return response;
 	}
 
 	@RequestMapping(value = { "/saveCandidateImmigrationDocuments" }, method = RequestMethod.POST)
@@ -1010,15 +1024,16 @@ public class ImmigrationRestController {
 	}
 
 	@RequestMapping(value = { "/saveCandidateFamilyDetails" })
-	public String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO,
+	public Response<String> saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO,
 			HttpServletRequest request, @RequestParam(value = "candidateId", required = true) Long candidateId,
-			@RequestParam(value = "relationType", required = true) String relationType,
 			@RequestParam(value = "memberId", required = false) Long id) { // memberId used for edit process.
-		String status = "";
+		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		
 		try {
+			if(user != null && Validator.validate(familyDetailsDTO)){
 			familyDetailsDTO.setCandidateId(candidateId);
 			if (id != null) { // edit mode we will get the value.
 
@@ -1026,24 +1041,33 @@ public class ImmigrationRestController {
 				System.out.println("familyDetailsDTO.getId()--->" + familyDetailsDTO.getId());
 			}
 
-			System.out.println(" inside conroller -->relationType :: " + relationType);
-			if (relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_SPOUSE)) {
+			System.out.println(" inside conroller -->relationType :: " + familyDetailsDTO.getRelationType());
+			if (familyDetailsDTO.getRelationType().trim().equalsIgnoreCase(Constants.RELATION_TYPE_SPOUSE)) {
 				familyDetailsDTO.setRelation(Constants.RELATION_TYPE_SPOUSE);
-			} else if (relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_CHILD)) {
+			} else if (familyDetailsDTO.getRelationType().trim().equalsIgnoreCase(Constants.RELATION_TYPE_CHILD)) {
 				familyDetailsDTO.setRelation(Constants.RELATION_TYPE_CHILD);
-			} else if (relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_MOTHER)) {
+			} else if (familyDetailsDTO.getRelationType().trim().equalsIgnoreCase(Constants.RELATION_TYPE_MOTHER)) {
 				familyDetailsDTO.setRelation(Constants.RELATION_TYPE_MOTHER);
-			} else if (relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_FATHER)) {
+			} else if (familyDetailsDTO.getRelationType().trim().equalsIgnoreCase(Constants.RELATION_TYPE_FATHER)) {
 				familyDetailsDTO.setRelation(Constants.RELATION_TYPE_FATHER);
 			}
 
-			status = immigrationCommonService.saveCandidateFamilyMemberDetails(familyDetailsDTO, orgLocations, user);
-
+			immigrationCommonService.saveCandidateFamilyMemberDetails(familyDetailsDTO, orgLocations, user);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		}else if (user == null) {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		} else {
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+		}
 		} catch (Exception e) {
-			logger.error("Exception caught in controller  -->" + e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
 			e.printStackTrace();
 		}
-		return status;
+		return response;
 	}
 
 	@RequestMapping(value = { "/savePassportVisaDetailsPage" }, method = RequestMethod.POST)
@@ -1085,22 +1109,34 @@ public class ImmigrationRestController {
 	}
 
 	@RequestMapping(value = { "/saveEducationImmigrationDedtails" }, method = RequestMethod.POST)
-	public String saveEducationImmigrationDedtails(CandidateEducationDTO candidateEducationDTO,
+	public Response<String> saveEducationImmigrationDedtails(CandidateEducationDTO candidateEducationDTO,
 			HttpServletRequest request, @RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "immigrationId", required = false) String immigrationId) {
+		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		candidateEducationDTO.setStaticPath(staticPath);
 		try {
-			candidateEducationService.storeCandidateEducation(candidateEducationDTO, Long.parseLong(candidateId),
-					orgLocations.getId(), user);
+			if (user != null && Validator.validate(candidateEducationDTO)) {
+				candidateEducationDTO.setStaticPath(staticPath);
+				candidateEducationService.storeCandidateEducation(candidateEducationDTO, Long.parseLong(candidateId),
+						orgLocations.getId(), user);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
 		} catch (Exception e) {
-			logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
 			e.printStackTrace();
 		}
 
-		return "Success";
+		return response;
 	}
 
 	@RequestMapping(value = { "/saveImmigrationResidenceDetails" })
