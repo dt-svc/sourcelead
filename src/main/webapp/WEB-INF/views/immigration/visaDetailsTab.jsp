@@ -1,4 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <c:set var ="visaListCount" value ="${fn:length(PassportList)}"/>
 <div class="immigraTabsHead">			  	
 		  	<a href="javascript:void(0)" id="addVisa"><i class="glyphicon glyphicon-plus"></i> Add Visa</a> 
 		  	<span><input class="immigraTabSerach"  id = "searchValueVisa" placeholder="Visa Type/Visa Id/Country" type="text" ></span>
@@ -159,7 +161,15 @@
 			});
 		  
 		</script>
-		
+<script>
+  var visaListCount = '<c:out value ="${visaListCount}"/>';
+  if(visaListCount>0){
+        $('#visafilled').show() // show and hides circle icon.
+    }
+	else {
+        $('#visafilled').hide()
+	}
+</script>
 		
 
 		

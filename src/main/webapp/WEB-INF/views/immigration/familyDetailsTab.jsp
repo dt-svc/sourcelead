@@ -1,4 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <c:set var ="familyListCount" value ="${fn:length(familyList)}"/>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" class="immMenuClick"><i class="glyphicon glyphicon-plus"></i> Add Family 
 				<div class="immiSubMenu">
@@ -414,3 +416,12 @@
         }
     });
 	</script>
+	<script>
+  var familyListCount = '<c:out value ="${familyListCount}"/>';
+  if(familyListCount>0){
+        $('#familyfilled').show() // show and hides circle icon.
+    }
+	else {
+        $('#familyfilled').hide()
+	}
+</script>

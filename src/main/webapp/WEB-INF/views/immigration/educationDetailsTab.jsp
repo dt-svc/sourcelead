@@ -1,4 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <c:set var ="educationListCount" value ="${fn:length(candidatesEducationList)}"/>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" id="addEdu"><i class="glyphicon glyphicon-plus"></i> Add Education</a> 
 		  	<span><input class="immigraTabSerach" id="educationSearchVal" type="text"></span>
@@ -247,4 +249,13 @@ function removeImmiEduDocFile(){
         }
     });
 }
+</script>
+<script>
+  var educationListCount = '<c:out value ="${educationListCount}"/>';
+  if(educationListCount>0){
+        $('#educationfilled').show() // show and hides circle icon.
+    }
+	else {
+        $('#educationfilled').hide()
+	}
 </script>

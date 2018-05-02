@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import  org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 //import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
@@ -85,492 +85,517 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RequestMapping("/app/immigration")
 public class ImmigrationRestController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ImmigrationRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ImmigrationRestController.class);
 
-    @Value("${sourceleadUrl}")
-    private String sourceleadUrl;
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 
-    @Value("${sourceleadLoginUrl}")
-    private String sourceleadLoginUrl;
-    @Autowired
-    private UserService userService;
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	@Autowired
+	private UserService userService;
 
-    @Value("${static.path}")
-    private String staticPath;
-    
-    @Autowired
-    private CountriesService countriesService;
+	@Value("${static.path}")
+	private String staticPath;
 
-    @Autowired
-    private OrgLocationService orgLocationService;
-    
-    @Autowired
-    private CandidateEducationService candidateEducationService;
-    
-    @Autowired
-    private UserRoleService userRoleService;
-    
-    @Autowired
-    private CandidateEmployersService candidateEmployersService; 
+	@Autowired
+	private CountriesService countriesService;
 
-    @Autowired
-    private LookUpDataService lookUpDataService;
+	@Autowired
+	private OrgLocationService orgLocationService;
 
-    @Autowired
-    private ImmigrationTemplateService immigrationTemplateService;
+	@Autowired
+	private CandidateEducationService candidateEducationService;
 
-    @Autowired
-    private ImmigrationCommonService immigrationCommonService;
+	@Autowired
+	private UserRoleService userRoleService;
 
-    @Autowired
-    private CandidateService candidateService;
-    
-    @Autowired
+	@Autowired
+	private CandidateEmployersService candidateEmployersService;
+
+	@Autowired
+	private LookUpDataService lookUpDataService;
+
+	@Autowired
+	private ImmigrationTemplateService immigrationTemplateService;
+
+	@Autowired
+	private ImmigrationCommonService immigrationCommonService;
+
+	@Autowired
+	private CandidateService candidateService;
+
+	@Autowired
 	CandidateResumesService candidateResumesService;
 
 	@Autowired
 	private CommonUtil commonUtil;
 
-    @Autowired
-    private RequirementService requirementService;
-    
-    @Autowired
-    private SourceleadNotesService sourceleadNotesService;
+	@Autowired
+	private RequirementService requirementService;
 
-    // ====================immigration view startviewImmigration if you don't
-    // required comment below code start here==============================
-    @RequestMapping(value = {"/viewImmigrationList"})
-    public ModelAndView loadImmigrationList(HttpServletRequest request) {
-        ModelAndView model = new ModelAndView();
-        model.addObject("sourceleadUrl", sourceleadUrl);
-        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        model.setViewName("/immigration/immigrationList");
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                "orgLocations");
-        try {
-        	ImmigrationDashboardView immDashboardView = immigrationCommonService.getImmigrationDashBoardDetails(orgLocations);
-        	model.addObject("dashboardResult",immDashboardView);
-        } catch(Exception e) {
-        	e.printStackTrace();
-        }
-        return model;
-    }
+	@Autowired
+	private SourceleadNotesService sourceleadNotesService;
 
-    @RequestMapping(value = {"/loadNewPetition"})
-    public ModelAndView loadNewPetition(HttpServletRequest request) {
-        ModelAndView model = new ModelAndView();
-        model.addObject("sourceleadUrl", sourceleadUrl);
-        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        model.setViewName("/immigration/newPetition");
-        return model;
-    }
+	// ====================immigration view startviewImmigration if you don't
+	// required comment below code start here==============================
+	@RequestMapping(value = { "/viewImmigrationList" })
+	public ModelAndView loadImmigrationList(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		model.setViewName("/immigration/immigrationList");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		try {
+			ImmigrationDashboardView immDashboardView = immigrationCommonService
+					.getImmigrationDashBoardDetails(orgLocations);
+			model.addObject("dashboardResult", immDashboardView);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
 
-    @RequestMapping(value = {"/loadNewPetitionPage"})
-    public ModelAndView loagNewPetitionPageView(HttpServletRequest request,
-            @RequestParam(value = "forward", required = false) String forward,
-            @RequestParam(value = "immigrationId", required = false) Long immigrationId) {
-        ModelAndView model = new ModelAndView();
-        model.addObject("sourceleadUrl", sourceleadUrl);
-        if (forward.equalsIgnoreCase("petitionDetails")) {
-            model.setViewName("/immigration/petitionDetails");
-            if(immigrationId != null) {
-            	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        		ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,orgLocations);
-        		model.addObject("immigrationDTO", immigrationDTO);
-            }
-            OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                    "orgLocations");
-            List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
-            model.addObject("templateList", templateList);
-        } else if (forward.equalsIgnoreCase("two")) {
-            model.setViewName("/immigration/newPetitionPage2");
-        } else if (forward.equalsIgnoreCase("three")) {
-            model.setViewName("/immigration/newPetitionPage3");
-        } else if (forward.equalsIgnoreCase("four")) {
-            model.setViewName("/immigration/newPetitionPage4");
-        } else if (forward.equalsIgnoreCase("five")) {
-            model.setViewName("/immigration/newPetitionPage5");
-        } else if (forward.equalsIgnoreCase("six")) {
-            model.setViewName("/immigration/newPetitionPage6");
-        } else if (forward.equalsIgnoreCase("seven")) {
-            model.setViewName("/immigration/newPetitionPage7");
-        }
-        return model;
-    }
+	@RequestMapping(value = { "/loadNewPetition" })
+	public ModelAndView loadNewPetition(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		model.setViewName("/immigration/newPetition");
+		return model;
+	}
 
-    @RequestMapping(value = {"getAllActiveCandidatesByLocation"}, method = RequestMethod.GET)
-    public @ResponseBody
-    List<Candidate> getAllActiveCandidatesByLocation(HttpServletRequest request) {
-        List<Candidate> candidateList = null;
-        try {
-            OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                    "orgLocations");
-            candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        // Gson gson=new Gson();
-        // gsondata=gson.toJson(candidateList);//.replace("\\", "\\\\");
-        return candidateList;
-    }
-    @RequestMapping(value = "/getImmigrationViewList")
-    public @ResponseBody
-    ResponseList<ImmigrationListViewDTO> getAllImmigartionList(
-    		ImmigrationListViewDTO immigrationListDTO,
-            @RequestParam(value = "searchValue", required = false) String searchValue,
-            @RequestParam(value = "filterAttorneyVal", required = false)  Long[] filterAttorneyVal,
-            @RequestParam(value = "filterTypeVal", required = false)  Long[] filterTypeVal, 
-            @RequestParam(value = "filterStatusVal", required = false)  Long[] filterStatusVal,
-            @RequestParam(value = "filterDurationVal", required = false)  Long[] filterDurationVal, HttpServletRequest request) {
-        ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
-        System.out.println("inisde controller  getAllImmigartionList  --> ");
-        try {
-            String[] tableColumns = {"currUscisStatus", "generatedId", "petitionType", "country","firstName", "email", "phone", "openDate","orgName","lcaStartDate","lcaEndDate"};// should be
-            // entity names
-            int sortColumnIndex = 0; // by default sorting using updated date
-            String sortColumnOrder = "desc"; // by default ascending order
-            if (immigrationListDTO.getOrder() != null && !immigrationListDTO.getOrder().isEmpty()) {
-                sortColumnIndex = Integer.parseInt(immigrationListDTO.getOrder().get(0).get("column"));
-                sortColumnOrder = immigrationListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means direction
-                // of the sorting.
-            }
-            Map<String, Long[]> filterVal = new HashMap<String, Long[]>();
-            if(filterAttorneyVal.length != 0) {
-            	filterVal.put("attorney", filterAttorneyVal);
-            }
-            if(filterTypeVal.length != 0) {
-            	filterVal.put("type", filterTypeVal);
-            }
-            if(filterStatusVal.length != 0) {
-            	filterVal.put("status", filterStatusVal);
-            }
-            if(filterDurationVal.length != 0) {
-            	filterVal.put("duration",filterDurationVal);
-            }
-            immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
-            immigrationListDTO.setSortOrder(sortColumnOrder);
-            OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                    "orgLocations");
-            immigrationListDTOList= immigrationCommonService.getImmigrationsList(immigrationListDTO, searchValue , orgLocations, filterVal);
-            commonUtil.highLightMenu(Constants.Immigration, request);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("after controller  getAllImmigartionList  --> ");
-        return immigrationListDTOList;
-    }
-    @RequestMapping(value = {"/getPetitionTemplateEmployers"})
-    public List<CandidateEmployerDTO> getPetitionTemplateEmployers(HttpServletRequest request) {
-        Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
-        List<CandidateEmployerDTO> caEmployerDTOs = immigrationTemplateService
-                .getPetitionTemplateEmployers(candidate.getId());
-        return caEmployerDTOs;
-    }
+	@RequestMapping(value = { "/loadNewPetitionPage" })
+	public ModelAndView loagNewPetitionPageView(HttpServletRequest request,
+			@RequestParam(value = "forward", required = false) String forward,
+			@RequestParam(value = "immigrationId", required = false) Long immigrationId) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		if (forward.equalsIgnoreCase("petitionDetails")) {
+			model.setViewName("/immigration/petitionDetails");
+			if (immigrationId != null) {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+						"orgLocations");
+				ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,
+						orgLocations);
+				model.addObject("immigrationDTO", immigrationDTO);
+			}
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			List<ImmigrationTemplate> templateList = immigrationCommonService.getImmigrationTemplateList(orgLocations);
+			model.addObject("templateList", templateList);
+		} else if (forward.equalsIgnoreCase("two")) {
+			model.setViewName("/immigration/newPetitionPage2");
+		} else if (forward.equalsIgnoreCase("three")) {
+			model.setViewName("/immigration/newPetitionPage3");
+		} else if (forward.equalsIgnoreCase("four")) {
+			model.setViewName("/immigration/newPetitionPage4");
+		} else if (forward.equalsIgnoreCase("five")) {
+			model.setViewName("/immigration/newPetitionPage5");
+		} else if (forward.equalsIgnoreCase("six")) {
+			model.setViewName("/immigration/newPetitionPage6");
+		} else if (forward.equalsIgnoreCase("seven")) {
+			model.setViewName("/immigration/newPetitionPage7");
+		}
+		return model;
+	}
 
-    @RequestMapping(value = {"/getEmploymentTypeList"})
-    public List<LookUpData> getEmploymentTypeList(HttpServletRequest request) {
-        List<LookUpData> caEmployerDTOs = immigrationTemplateService
-                .getLookupDataByType(ImmigrationConstants.EMPLOYMENT_TYPE);
-        return caEmployerDTOs;
-    }
+	@RequestMapping(value = { "getAllActiveCandidatesByLocation" }, method = RequestMethod.GET)
+	public @ResponseBody List<Candidate> getAllActiveCandidatesByLocation(HttpServletRequest request) {
+		List<Candidate> candidateList = null;
+		try {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// Gson gson=new Gson();
+		// gsondata=gson.toJson(candidateList);//.replace("\\", "\\\\");
+		return candidateList;
+	}
 
-    @RequestMapping(value = {"/viewImmigration"})
-    public ModelAndView viewImmigration(HttpServletRequest request
-    		, @RequestParam(value = "templateId", required = false) String templateId
-    		, @RequestParam(value = "candidateId", required = false) String candidateId
-    		 , @RequestParam(value = "immigrationId", required = false) String immigrationId) throws Exception {
-        ModelAndView model = new ModelAndView();
-        model.addObject("immigrationId", immigrationId);
-        model.addObject("candidateId", candidateId);
-        model.addObject("templateId", templateId);
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                "orgLocations");
-        ImmigrationDTO immigrationDTO = null;
-        if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
-        	immigrationDTO= immigrationCommonService.getImmigrationDetails(immigrationId,orgLocations);
-        }
-        List<LookUpData> uscisStatusList = immigrationTemplateService.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
-        model.addObject("uscisStatusList",uscisStatusList);        
-        model.addObject("immigration", immigrationDTO);
-        model.addObject("sourceleadUrl", sourceleadUrl);
-        model.setViewName("/immigration/immigrationView");
-        return model;
-    }
-    
-    @RequestMapping(value = { "/uploadRequstedDoc" }, method = RequestMethod.POST)
-	public String uploadRequstedDoc(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,@RequestParam(value = "id", required = true) Long id, 
+	@RequestMapping(value = "/getImmigrationViewList")
+	public @ResponseBody ResponseList<ImmigrationListViewDTO> getAllImmigartionList(
+			ImmigrationListViewDTO immigrationListDTO,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
+			@RequestParam(value = "filterAttorneyVal", required = false) Long[] filterAttorneyVal,
+			@RequestParam(value = "filterTypeVal", required = false) Long[] filterTypeVal,
+			@RequestParam(value = "filterStatusVal", required = false) Long[] filterStatusVal,
+			@RequestParam(value = "filterDurationVal", required = false) Long[] filterDurationVal,
+			@RequestParam(value = "orgTypeVal", required = false) String orgTypeVal, HttpServletRequest request) {
+		ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
+		System.out.println("inisde controller  getAllImmigartionList  --> ");
+		try {
+			String[] tableColumns = { "currUscisStatus", "generatedId", "petitionType", "country", "firstName", "email",
+					"phone", "openDate", "orgName", "lcaStartDate", "lcaEndDate" };// should be
+			// entity names
+			int sortColumnIndex = 0; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (immigrationListDTO.getOrder() != null && !immigrationListDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(immigrationListDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = immigrationListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+																					// direction
+				// of the sorting.
+			}
+			Map<String, Long[]> filterVal = new HashMap<String, Long[]>();
+			if (filterAttorneyVal.length != 0) {
+				filterVal.put("attorney", filterAttorneyVal);
+			}
+			if (filterTypeVal.length != 0) {
+				filterVal.put("type", filterTypeVal);
+			}
+			if (filterStatusVal.length != 0) {
+				filterVal.put("status", filterStatusVal);
+			}
+			if (filterDurationVal.length != 0) {
+				filterVal.put("duration", filterDurationVal);
+			}
+			immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			immigrationListDTO.setSortOrder(sortColumnOrder);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			immigrationListDTO.setOrgLocationId(orgLocations.getId());
+			immigrationListDTOList = immigrationCommonService.getImmigrationsList(immigrationListDTO, searchValue,
+					orgLocations, filterVal, orgTypeVal);
+			commonUtil.highLightMenu(Constants.Immigration, request);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("after controller  getAllImmigartionList  --> ");
+		return immigrationListDTOList;
+	}
+
+	@RequestMapping(value = { "/getPetitionTemplateEmployers" })
+	public List<CandidateEmployerDTO> getPetitionTemplateEmployers(HttpServletRequest request) {
+		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		List<CandidateEmployerDTO> caEmployerDTOs = immigrationTemplateService
+				.getPetitionTemplateEmployers(candidate.getId());
+		return caEmployerDTOs;
+	}
+
+	@RequestMapping(value = { "/getEmploymentTypeList" })
+	public List<LookUpData> getEmploymentTypeList(HttpServletRequest request) {
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService
+				.getLookupDataByType(ImmigrationConstants.EMPLOYMENT_TYPE);
+		return caEmployerDTOs;
+	}
+
+	@RequestMapping(value = { "/viewImmigration" })
+	public ModelAndView viewImmigration(HttpServletRequest request,
+			@RequestParam(value = "templateId", required = false) String templateId,
+			@RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "immigrationId", required = false) String immigrationId) throws Exception {
+		ModelAndView model = new ModelAndView();
+		model.addObject("immigrationId", immigrationId);
+		model.addObject("candidateId", candidateId);
+		model.addObject("templateId", templateId);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		ImmigrationDTO immigrationDTO = null;
+		if (immigrationId != null && !StringUtils.isEmpty(immigrationId)) {
+			immigrationDTO = immigrationCommonService.getImmigrationDetails(immigrationId, orgLocations);
+		}
+		List<LookUpData> uscisStatusList = immigrationTemplateService
+				.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
+		model.addObject("uscisStatusList", uscisStatusList);
+		model.addObject("immigration", immigrationDTO);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("/immigration/immigrationView");
+		return model;
+	}
+
+	@RequestMapping(value = { "/uploadRequstedDoc" }, method = RequestMethod.POST)
+	public String uploadRequstedDoc(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,
+			@RequestParam(value = "id", required = true) Long id,
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
-			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
-			HttpServletRequest request) {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId, HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		immigrationTemplateDocDTO.setStaticPath(staticPath);
 		try {
-			immigrationCommonService.uploadRequstedDocForCandidate(immigrationTemplateDocDTO,id,candidateId,immigrationId,user,orgLocations);
-			
+			immigrationCommonService.uploadRequstedDocForCandidate(immigrationTemplateDocDTO, id, candidateId,
+					immigrationId, user, orgLocations);
+
 		} catch (Exception e) {
-			logger.error("Exception caught in controller --->"+e.getMessage());
+			logger.error("Exception caught in controller --->" + e.getMessage());
 			e.printStackTrace();
 		}
 
 		return "success";
-    }
-   
-    @RequestMapping(value = { "/uploadRequstedForm" }, method = RequestMethod.POST)
-   	public String uploadRequstedForm(ImmigrationTemplateFormDTO immigrationTemplateFormDTO,@RequestParam(value = "id", required = true) Long id, 
-   			@RequestParam(value = "candidateId", required = true) Long candidateId,
-   			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
-   			HttpServletRequest request) {
-   		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-   		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-   		immigrationTemplateFormDTO.setStaticPath(staticPath);
-   		try {
-   			immigrationCommonService.uploadRequstedFormForCandidate(immigrationTemplateFormDTO,id,candidateId,immigrationId, user, orgLocations);
-   			
-   		} catch (Exception e) {
-   			logger.error("Exception caught in controller --->"+e.getMessage());
-   			e.printStackTrace();
-   		}
+	}
 
-   		return "success";
-       }
-       
-    @RequestMapping(value = {"/viewImmigrationById"})
-    public ModelAndView getImmigrationDeatilsById(HttpServletRequest request
-    		 ,@RequestParam(value = "immigrationId", required = true) String immigrationId) throws Exception {
-        ModelAndView model = new ModelAndView();
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                "orgLocations");
-        ImmigrationDTO immigrationDTO = null;
-        if(immigrationId!=null && !StringUtils.isEmpty(immigrationId)) {
-        	immigrationDTO= immigrationCommonService.getImmigrationDetails(immigrationId,orgLocations);
-        }
-        model.addObject("immigration", immigrationDTO);
-        model.addObject("sourceleadUrl", sourceleadUrl);
-        model.setViewName("/immigration/petitionDetailsTab");
-        return model;
-    }
-    // ============= immigration view End. if you don't required comment above code
-    // end here============================
-    @RequestMapping(value = {"/gotoTemplatePreviousPage"})
-    public ModelAndView loagNewPetitionPageOne(HttpServletRequest request,
-            @RequestParam(value = "status", required = false) String status) {
-        ModelAndView model = new ModelAndView();
-        model.addObject("sourceleadUrl", sourceleadUrl);
-        try {
-            if (status.equalsIgnoreCase("templateDetails")) {
-                ImmigrationTemplateDTO dto = (ImmigrationTemplateDTO) request.getSession().getAttribute("templateDTO");
-                //List<Countries> countryList = countriesService.getAllCountries();
-                //List<LookUpData> petitionTypeList = immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
-                //model.addObject("countriesList", countryList);
-                //model.addObject("petitionTypeList", petitionTypeList);
-                model.addObject("templateDTO", dto);
-                model.setViewName("/immigration/petitionTemplateDetails");
-            }
-            if (status.equalsIgnoreCase("tempDetails")) {
-                model.setViewName("/immigration/petitionTemplateDetails");
-            } else if (status.equalsIgnoreCase("docDetails")) {
-                List<LookUpData> educationsList = null;
-                educationsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE); // for populating
-                // dropdown
-                // values in UI.
-                /*
-                 * List<ImmigrationTemplateDTO> templateDTO =
-                 * (List<ImmigrationTemplateDTO>)request.getSession().getAttribute("templateDTO"
-                 * ); model.addObject("templateDTO", );
-                 */
-                model.addObject("educationsList", educationsList);
-                model.setViewName("/immigration/petitionTemplateDocDetails");
-            } else if (status.equalsIgnoreCase("formDetails")) {
-                model.setViewName("/immigration/petitionTemplateFormDetails");
-            } else if (status.equalsIgnoreCase("taskList")) {
-                model.setViewName("/immigration/immigrationTemplateTaskList");
-            }
-        } catch (Exception e) {
-            logger.error("Exception occured in controller while navigating-->");
-            e.printStackTrace();
-        }
-        return model;
-    }
-    @PreAuthorize("hasAnyRole('ROLE_ADD_PETITION_TEMPLATE','ROLE_EDIT_VIEW_PETITION_TEMPLATE')")
-    @RequestMapping(value = {"/addNewPetitionTemplate"})
-    public ModelAndView loadAddPetitionTemplate(HttpServletRequest request) throws ServletRequestBindingException {
-        ModelAndView model = new ModelAndView();
-        model.addObject("sourceleadUrl", sourceleadUrl);
-        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        request.getSession().removeAttribute("templateDTO");
-        request.getSession().removeAttribute("templateDocList");
-        request.getSession().removeAttribute("templateFormsList");
-        model.setViewName("/immigration/addPetitionTemplate");
-        Long templateId = ServletRequestUtils.getLongParameter(request, "templateId");// sending parameter edit mode.
-        if (templateId != null) { // below code is used for edit template name, docs, forms when opened in edit
-            // mode.
-            try {
-                ImmigrationTemplateDTO templateDTO = immigrationTemplateService.getPetitionTemplateDetails(templateId);
-                List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService
-                        .getImmigrationTemplateDocsListById(templateId);
-                logger.debug(
-                        " Edit mode templateId templateId -->" + templateId + ", docsList size is " + docsList.size());
-                List<ImmigrationTemplateFormDTO> formsList = immigrationTemplateService
-                        .getImmigrationTemplateformsListById(templateId);
-                logger.debug(
-                        " Edit mode templateId templateId -->" + templateId + ", formsList size i " + formsList.size());
-                // templateDTO.setImmigrationDocList(docsList);
-                request.getSession().setAttribute("templateDTO", templateDTO);
-                request.getSession().setAttribute("templateDocList", docsList);
-                request.getSession().setAttribute("templateFormsList", formsList);
-            } catch (Exception e) {
-                logger.error(" Exception caught in edit mode in controller -->" + templateId);
-                e.printStackTrace();
-            }
-        }
-        return model;
-    }
-
-    @RequestMapping(value = {"/viewImmigrationTemplateList"})
-    public ModelAndView loadViewPetitionTemplate(HttpServletRequest request) {
-        ModelAndView model = new ModelAndView();
-        model.addObject("sourceleadUrl", sourceleadUrl);
-        User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        model.setViewName("/immigration/immigrationTemplateList");
-        /*
-         * try { // List<ImmigrationTemplateView> templateList=
-         * immigrationTemplateService.getAllTemplateDetails();
-         * model.addObject("templateList", templateList); } catch (Exception e) {
-         * logger.error("Exception occured while getting template list-->"+e.getMessage(
-         * )); e.printStackTrace(); }
-         */
-        return model;
-    }
-
-    @RequestMapping(value = "/getImmigrationTemplateList")
-    public @ResponseBody
-    ResponseList<ImmigrationTemplateListDTO> getAlltemplateList(
-            ImmigrationTemplateListDTO templateListDTO,
-            @RequestParam(value = "searchValue", required = false) String searchValue, @RequestParam(value = "countriesList", required = false)  String[] countriesList,   HttpServletRequest request) {
-        ResponseList<ImmigrationTemplateListDTO> templateListDTOList = null;
-        try {
-            String[] tableColumns = {"name", "country", "petitionType" ,"description", "docsCount", "formsCount", "tasksCount", "status", "id"};// should be
-            // entity names
-            int sortColumnIndex = 0; // by default sorting using updated date
-            String sortColumnOrder = "desc"; // by default ascending order
-            if (templateListDTO.getOrder() != null && !templateListDTO.getOrder().isEmpty()) {
-                sortColumnIndex = Integer.parseInt(templateListDTO.getOrder().get(0).get("column"));
-                sortColumnOrder = templateListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means direction
-                // of the sorting.
-            }
-            templateListDTO.setSortColumn(tableColumns[sortColumnIndex]);
-            templateListDTO.setSortOrder(sortColumnOrder);
-            OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                    "orgLocations");
-
-            templateListDTOList = immigrationTemplateService.getAllTemplateDetails(templateListDTO, searchValue,
-                    orgLocations.getId(), countriesList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return templateListDTOList;
-    }
-    @PreAuthorize("hasRole('ROLE_DELETE_PETITION_TEMPLATE')")
-    @RequestMapping(value = "/deleteImmigrationTemplateDetatils")
-    public String deleteTemplateDetailsById(@RequestParam(value = "deleteId", required = true) Long deleteId,
-    		@RequestParam(value = "reason",required = true) String reason,
-            HttpServletRequest request) {
-        try {
-            immigrationTemplateService.deleteAllPetitionTemplateDetailsById(deleteId,reason);// only soft delete operation in
-            // Database.
-            // "+deleteId);
-            logger.debug("inside delete controller method calling ----->>>>>>>: " + deleteId);
-        } catch (Exception e) {
-            logger.error(" Exception while deleting template deitails in controller -->" + deleteId);
-            e.printStackTrace();
-        }
-        return "success";
-    }
-    
-    @RequestMapping(value = "/reactiveImmigrationTemplateDetailsById")
-    public String reactiveImmigrationTemplateDetailsById(@RequestParam(value = "templateId", required = true) Long templateId,
-            HttpServletRequest request) {
-        try {
-            immigrationTemplateService.reactiveImmigrationTemplateById(templateId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "success";
-    }
-
-    @RequestMapping(value = {"/addPetitionTemplate"})
-    public ModelAndView addPetitionTemplatePage(HttpServletRequest request,
-            @RequestParam(value = "forwardTo", required = false) String forwardTo) {
-        ModelAndView model = new ModelAndView();
-        try {
-            model.addObject("sourceleadUrl", sourceleadUrl);
-            if (forwardTo.equalsIgnoreCase("tempDetails")) {
-                model.setViewName("/immigration/petitionTemplateDetails");
-                //List<Countries> countryList = countriesService.getAllCountries();
-                //List<LookUpData> petitionTypeList = immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
-                //model.addObject("countriesList", countryList);
-                //model.addObject("petitionTypeList", petitionTypeList);
-            } else if (forwardTo.equalsIgnoreCase("docDetails")) {
-                List<LookUpData> educationsList = null;
-                educationsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE); // for populating
-                // dropdown
-                // values in UI.
-                model.addObject("educationsList", educationsList);
-                model.setViewName("/immigration/petitionTemplateDocDetails");
-            } else if (forwardTo.equalsIgnoreCase("formDetails")) {
-                model.setViewName("/immigration/petitionTemplateFormDetails");
-            } else if (forwardTo.equalsIgnoreCase("taskList")) {
-                model.setViewName("/immigration/immigrationTemplateTaskList");
-            }
-
-        } catch (Exception e) {
-            logger.error("Exception occured in controller while navigating-->");
-            e.printStackTrace();
-        }
-
-        return model;
-    }
-    
-    @RequestMapping(value = {"/saveImmigrationEmployerDetails"}, method = RequestMethod.POST)
-    public String saveImmigrationEmployerDetails(CandidateEmployerDTO candidateEmployerDTO, HttpServletRequest request,
-    		@RequestParam(value = "candidateId", required = false) String candidateId,
-    		@RequestParam(value = "immigrationId", required = false) String immigrationId) throws Exception {
-       
-            User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-            OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-           // immigrationTemplateService.savePetitionTemplateTaskDetails(templateDTO, user);
-            candidateEmployerDTO.setStaticPath(staticPath);
-            candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO,user,loginOrglocation,Long.parseLong(candidateId));
-            System.out.println("Template Task Details saved succesfully --> ");
-       
-        return "success";
-    }
-    
-    @RequestMapping(value = {"/saveCandidateImmigrationDocuments"}, method = RequestMethod.POST)
-    public String saveCandidateImmigrationDocuments(ImmigrationTemplateDocDTO immigrationTemplateDocDTO, 
-    		@RequestParam(value = "candidateId", required = false) String candidateId,
-    		@RequestParam(value = "immigrationId", required = false) String immigrationId,
-    		@RequestParam(value = "templateId", required = false) String templateId,
-    		HttpServletRequest request) throws Exception {
-    		immigrationTemplateDocDTO.setImmigrationId(immigrationId);
-    		immigrationTemplateDocDTO.setImmigrationcandidateId(candidateId);
-    		immigrationTemplateDocDTO.setImmigrationTempplateId(templateId);
-            User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-            OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-            immigrationTemplateDocDTO.setStaticPath(staticPath);
-            immigrationCommonService.saveImmigrationCandidateDocs(immigrationTemplateDocDTO,user,loginOrglocation);
-            System.out.println("Template Task Details saved succesfully --> ");
-       
-        return "success";
-    }
-    
-    @RequestMapping(value = { "/deleteDocumentDetailsByRowId" })
-	public String deleteDocumentDetailsByRowId(@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
+	@RequestMapping(value = { "/uploadRequstedForm" }, method = RequestMethod.POST)
+	public String uploadRequstedForm(ImmigrationTemplateFormDTO immigrationTemplateFormDTO,
+			@RequestParam(value = "id", required = true) Long id,
+			@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId, HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		String status="";
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		immigrationTemplateFormDTO.setStaticPath(staticPath);
+		try {
+			immigrationCommonService.uploadRequstedFormForCandidate(immigrationTemplateFormDTO, id, candidateId,
+					immigrationId, user, orgLocations);
+
+		} catch (Exception e) {
+			logger.error("Exception caught in controller --->" + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return "success";
+	}
+
+	@RequestMapping(value = { "/viewImmigrationById" })
+	public ModelAndView getImmigrationDeatilsById(HttpServletRequest request,
+			@RequestParam(value = "immigrationId", required = true) String immigrationId) throws Exception {
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		ImmigrationDTO immigrationDTO = null;
+		if (immigrationId != null && !StringUtils.isEmpty(immigrationId)) {
+			immigrationDTO = immigrationCommonService.getImmigrationDetails(immigrationId, orgLocations);
+		}
+		model.addObject("immigration", immigrationDTO);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("/immigration/petitionDetailsTab");
+		return model;
+	}
+
+	// ============= immigration view End. if you don't required comment above code
+	// end here============================
+	@RequestMapping(value = { "/gotoTemplatePreviousPage" })
+	public ModelAndView loagNewPetitionPageOne(HttpServletRequest request,
+			@RequestParam(value = "status", required = false) String status) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		try {
+			if (status.equalsIgnoreCase("templateDetails")) {
+				ImmigrationTemplateDTO dto = (ImmigrationTemplateDTO) request.getSession().getAttribute("templateDTO");
+				// List<Countries> countryList = countriesService.getAllCountries();
+				// List<LookUpData> petitionTypeList =
+				// immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
+				// model.addObject("countriesList", countryList);
+				// model.addObject("petitionTypeList", petitionTypeList);
+				model.addObject("templateDTO", dto);
+				model.setViewName("/immigration/petitionTemplateDetails");
+			}
+			if (status.equalsIgnoreCase("tempDetails")) {
+				model.setViewName("/immigration/petitionTemplateDetails");
+			} else if (status.equalsIgnoreCase("docDetails")) {
+				List<LookUpData> educationsList = null;
+				educationsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE); // for populating
+				// dropdown
+				// values in UI.
+				/*
+				 * List<ImmigrationTemplateDTO> templateDTO =
+				 * (List<ImmigrationTemplateDTO>)request.getSession().getAttribute("templateDTO"
+				 * ); model.addObject("templateDTO", );
+				 */
+				model.addObject("educationsList", educationsList);
+				model.setViewName("/immigration/petitionTemplateDocDetails");
+			} else if (status.equalsIgnoreCase("formDetails")) {
+				model.setViewName("/immigration/petitionTemplateFormDetails");
+			} else if (status.equalsIgnoreCase("taskList")) {
+				model.setViewName("/immigration/immigrationTemplateTaskList");
+			}
+		} catch (Exception e) {
+			logger.error("Exception occured in controller while navigating-->");
+			e.printStackTrace();
+		}
+		return model;
+	}
+
+	@PreAuthorize("hasAnyRole('ROLE_ADD_PETITION_TEMPLATE','ROLE_EDIT_VIEW_PETITION_TEMPLATE')")
+	@RequestMapping(value = { "/addNewPetitionTemplate" })
+	public ModelAndView loadAddPetitionTemplate(HttpServletRequest request) throws ServletRequestBindingException {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		request.getSession().removeAttribute("templateDTO");
+		request.getSession().removeAttribute("templateDocList");
+		request.getSession().removeAttribute("templateFormsList");
+		model.setViewName("/immigration/addPetitionTemplate");
+		Long templateId = ServletRequestUtils.getLongParameter(request, "templateId");// sending parameter edit mode.
+		if (templateId != null) { // below code is used for edit template name, docs, forms when opened in edit
+			// mode.
+			try {
+				ImmigrationTemplateDTO templateDTO = immigrationTemplateService.getPetitionTemplateDetails(templateId);
+				List<ImmigrationTemplateDocDTO> docsList = immigrationTemplateService
+						.getImmigrationTemplateDocsListById(templateId);
+				logger.debug(
+						" Edit mode templateId templateId -->" + templateId + ", docsList size is " + docsList.size());
+				List<ImmigrationTemplateFormDTO> formsList = immigrationTemplateService
+						.getImmigrationTemplateformsListById(templateId);
+				logger.debug(
+						" Edit mode templateId templateId -->" + templateId + ", formsList size i " + formsList.size());
+				// templateDTO.setImmigrationDocList(docsList);
+				request.getSession().setAttribute("templateDTO", templateDTO);
+				request.getSession().setAttribute("templateDocList", docsList);
+				request.getSession().setAttribute("templateFormsList", formsList);
+			} catch (Exception e) {
+				logger.error(" Exception caught in edit mode in controller -->" + templateId);
+				e.printStackTrace();
+			}
+		}
+		return model;
+	}
+
+	@RequestMapping(value = { "/viewImmigrationTemplateList" })
+	public ModelAndView loadViewPetitionTemplate(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		model.setViewName("/immigration/immigrationTemplateList");
+		/*
+		 * try { // List<ImmigrationTemplateView> templateList=
+		 * immigrationTemplateService.getAllTemplateDetails();
+		 * model.addObject("templateList", templateList); } catch (Exception e) {
+		 * logger.error("Exception occured while getting template list-->"+e.getMessage(
+		 * )); e.printStackTrace(); }
+		 */
+		return model;
+	}
+
+	@RequestMapping(value = "/getImmigrationTemplateList")
+	public @ResponseBody ResponseList<ImmigrationTemplateListDTO> getAlltemplateList(
+			ImmigrationTemplateListDTO templateListDTO,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
+			@RequestParam(value = "countriesList", required = false) String[] countriesList,
+			HttpServletRequest request) {
+		ResponseList<ImmigrationTemplateListDTO> templateListDTOList = null;
+		try {
+			String[] tableColumns = { "name", "country", "petitionType", "description", "docsCount", "formsCount",
+					"tasksCount", "status", "id" };// should be
+			// entity names
+			int sortColumnIndex = 0; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (templateListDTO.getOrder() != null && !templateListDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(templateListDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = templateListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means direction
+				// of the sorting.
+			}
+			templateListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			templateListDTO.setSortOrder(sortColumnOrder);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+
+			templateListDTOList = immigrationTemplateService.getAllTemplateDetails(templateListDTO, searchValue,
+					orgLocations.getId(), countriesList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return templateListDTOList;
+	}
+
+	@PreAuthorize("hasRole('ROLE_DELETE_PETITION_TEMPLATE')")
+	@RequestMapping(value = "/deleteImmigrationTemplateDetatils")
+	public String deleteTemplateDetailsById(@RequestParam(value = "deleteId", required = true) Long deleteId,
+			@RequestParam(value = "reason", required = true) String reason, HttpServletRequest request) {
+		try {
+			immigrationTemplateService.deleteAllPetitionTemplateDetailsById(deleteId, reason);// only soft delete
+																								// operation in
+			// Database.
+			// "+deleteId);
+			logger.debug("inside delete controller method calling ----->>>>>>>: " + deleteId);
+		} catch (Exception e) {
+			logger.error(" Exception while deleting template deitails in controller -->" + deleteId);
+			e.printStackTrace();
+		}
+		return "success";
+	}
+
+	@RequestMapping(value = "/reactiveImmigrationTemplateDetailsById")
+	public String reactiveImmigrationTemplateDetailsById(
+			@RequestParam(value = "templateId", required = true) Long templateId, HttpServletRequest request) {
+		try {
+			immigrationTemplateService.reactiveImmigrationTemplateById(templateId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "success";
+	}
+
+	@RequestMapping(value = { "/addPetitionTemplate" })
+	public ModelAndView addPetitionTemplatePage(HttpServletRequest request,
+			@RequestParam(value = "forwardTo", required = false) String forwardTo) {
+		ModelAndView model = new ModelAndView();
+		try {
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			if (forwardTo.equalsIgnoreCase("tempDetails")) {
+				model.setViewName("/immigration/petitionTemplateDetails");
+				// List<Countries> countryList = countriesService.getAllCountries();
+				// List<LookUpData> petitionTypeList =
+				// immigrationTemplateService.getLookupDataByType(Constants.PETITION_TYPE);
+				// model.addObject("countriesList", countryList);
+				// model.addObject("petitionTypeList", petitionTypeList);
+			} else if (forwardTo.equalsIgnoreCase("docDetails")) {
+				List<LookUpData> educationsList = null;
+				educationsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE); // for populating
+				// dropdown
+				// values in UI.
+				model.addObject("educationsList", educationsList);
+				model.setViewName("/immigration/petitionTemplateDocDetails");
+			} else if (forwardTo.equalsIgnoreCase("formDetails")) {
+				model.setViewName("/immigration/petitionTemplateFormDetails");
+			} else if (forwardTo.equalsIgnoreCase("taskList")) {
+				model.setViewName("/immigration/immigrationTemplateTaskList");
+			}
+
+		} catch (Exception e) {
+			logger.error("Exception occured in controller while navigating-->");
+			e.printStackTrace();
+		}
+
+		return model;
+	}
+
+	@RequestMapping(value = { "/saveImmigrationEmployerDetails" }, method = RequestMethod.POST)
+	public String saveImmigrationEmployerDetails(CandidateEmployerDTO candidateEmployerDTO, HttpServletRequest request,
+			@RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "immigrationId", required = false) String immigrationId) throws Exception {
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		// immigrationTemplateService.savePetitionTemplateTaskDetails(templateDTO,
+		// user);
+		candidateEmployerDTO.setStaticPath(staticPath);
+		candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO, user, loginOrglocation,
+				Long.parseLong(candidateId));
+		System.out.println("Template Task Details saved succesfully --> ");
+
+		return "success";
+	}
+
+	@RequestMapping(value = { "/saveCandidateImmigrationDocuments" }, method = RequestMethod.POST)
+	public String saveCandidateImmigrationDocuments(ImmigrationTemplateDocDTO immigrationTemplateDocDTO,
+			@RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "immigrationId", required = false) String immigrationId,
+			@RequestParam(value = "templateId", required = false) String templateId, HttpServletRequest request)
+			throws Exception {
+		immigrationTemplateDocDTO.setImmigrationId(immigrationId);
+		immigrationTemplateDocDTO.setImmigrationcandidateId(candidateId);
+		immigrationTemplateDocDTO.setImmigrationTempplateId(templateId);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		immigrationTemplateDocDTO.setStaticPath(staticPath);
+		immigrationCommonService.saveImmigrationCandidateDocs(immigrationTemplateDocDTO, user, loginOrglocation);
+		System.out.println("Template Task Details saved succesfully --> ");
+
+		return "success";
+	}
+
+	@RequestMapping(value = { "/deleteDocumentDetailsByRowId" })
+	public String deleteDocumentDetailsByRowId(@RequestParam(value = "id", required = true) Long id,
+			HttpServletRequest request) {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String status = "";
 		try {
 			status = immigrationCommonService.deletetImmigrationCandidateDocsById(id);
 		} catch (Exception e) {
@@ -580,47 +605,48 @@ public class ImmigrationRestController {
 		return status;
 	}
 
-@RequestMapping(value = { "/editDocumentDetailsByRowId" })
-	public @ResponseBody  ImmigrationCandidateDocuments editDocumentDetailsByRowId(
+	@RequestMapping(value = { "/editDocumentDetailsByRowId" })
+	public @ResponseBody ImmigrationCandidateDocuments editDocumentDetailsByRowId(
 			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		System.out.println(" in controller method getCandidateResidenceDetailsById id ---> "+id);
-		ImmigrationCandidateDocuments immigDocObj= null;
+		System.out.println(" in controller method getCandidateResidenceDetailsById id ---> " + id);
+		ImmigrationCandidateDocuments immigDocObj = null;
 		try {
 			immigDocObj = immigrationCommonService.getImmigrationCandidateDocumentById(id);
-			} catch (Exception e) {
-			logger.error("Exception caught in controller test --->"+e.getMessage());
+		} catch (Exception e) {
+			logger.error("Exception caught in controller test --->" + e.getMessage());
 			e.printStackTrace();
 		}
 
 		return immigDocObj;
 	}
 
-    @RequestMapping(value = {"/saveCandidateImmigrationForms"}, method = RequestMethod.POST)
-    public String saveCandidateImmigrationForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, 
-    		@RequestParam(value = "candidateId", required = false) String candidateId,
-    		@RequestParam(value = "immigrationId", required = false) String immigrationId,
-    		@RequestParam(value = "templateId", required = false) String templateId,
-    		HttpServletRequest request) throws Exception {
-    		immigrationTemplateFormDTO.setImmigrationId(immigrationId);
-    		immigrationTemplateFormDTO.setImmigrationcandidateId(candidateId);
-    		immigrationTemplateFormDTO.setImmigrationTempplateId(templateId);
-            User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-            OrgLocations  loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-            immigrationTemplateFormDTO.setStaticPath(staticPath);
-            immigrationCommonService.saveImmigrationCandidateForms(immigrationTemplateFormDTO,user,loginOrglocation);
-            System.out.println("Candidate Form  saved succesfully --> ");
-       
-        return "success";
-    }
-    
-	
-    @RequestMapping(value = { "/deleteImmigrationCandidateFormDetails" })
-	public String deleteImmigrationCandidateFormDetails(@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
+	@RequestMapping(value = { "/saveCandidateImmigrationForms" }, method = RequestMethod.POST)
+	public String saveCandidateImmigrationForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO,
+			@RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "immigrationId", required = false) String immigrationId,
+			@RequestParam(value = "templateId", required = false) String templateId, HttpServletRequest request)
+			throws Exception {
+		immigrationTemplateFormDTO.setImmigrationId(immigrationId);
+		immigrationTemplateFormDTO.setImmigrationcandidateId(candidateId);
+		immigrationTemplateFormDTO.setImmigrationTempplateId(templateId);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		immigrationTemplateFormDTO.setStaticPath(staticPath);
+		immigrationCommonService.saveImmigrationCandidateForms(immigrationTemplateFormDTO, user, loginOrglocation);
+		System.out.println("Candidate Form  saved succesfully --> ");
+
+		return "success";
+	}
+
+	@RequestMapping(value = { "/deleteImmigrationCandidateFormDetails" })
+	public String deleteImmigrationCandidateFormDetails(@RequestParam(value = "id", required = true) Long id,
+			HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		String status="";
+		String status = "";
 		try {
 			status = immigrationCommonService.deletetImmigrationCandidateFormsById(id);
 		} catch (Exception e) {
@@ -630,8 +656,7 @@ public class ImmigrationRestController {
 		return status;
 	}
 
-
-    @RequestMapping(value = { "/editImmigrationCandidateFormDetailsById" })
+	@RequestMapping(value = { "/editImmigrationCandidateFormDetailsById" })
 	public @ResponseBody ImmigrationCandidateForms editImmigrationCandidateFormDetailsById(
 			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -646,315 +671,332 @@ public class ImmigrationRestController {
 		}
 
 		return immigFormObj;
-	}	
-    
-    @RequestMapping(value = { "/deleteDocumentHistoryRecordById" })
+	}
+
+	@RequestMapping(value = { "/deleteDocumentHistoryRecordById" })
 	public @ResponseBody String deleteDocumentHistoryRecordById(
 			@RequestParam(value = "recordDelete", required = true) Long recordDelete, HttpServletRequest request) {
 		String status = "";
 		try {
-			status =immigrationCommonService.deleteDocumentHistoryRecordById(recordDelete);
+			status = immigrationCommonService.deleteDocumentHistoryRecordById(recordDelete);
 		} catch (Exception e) {
 			logger.error("Exception caught in controller test --->" + e.getMessage());
 			e.printStackTrace();
 		}
 
 		return status;
-	}	
+	}
 
-    @RequestMapping(value = { "/getCandidateImmigrationCandidateDocsList" })
-	public ModelAndView getCandidateImmigrationCandidateDocsList(@RequestParam(value = "candidateId", required = true) Long candidateId,
+	@RequestMapping(value = { "/getCandidateImmigrationCandidateDocsList" })
+	public ModelAndView getCandidateImmigrationCandidateDocsList(
+			@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "templateid", required = true) Long templateid,
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
-			@RequestParam(value = "searchVal", required = false) String searchVal,
-			HttpServletRequest request) throws Exception {
+			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
+			throws Exception {
 		ModelAndView model = new ModelAndView();
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        List<ImmigrationCandidateDocuments> immigrationCanDocList = immigrationCommonService.getImmigrationCandidateDocs(immigrationId,templateid,candidateId,user,orgLocations,searchVal);
-        for(ImmigrationCandidateDocuments docs : immigrationCanDocList){
-        	LookUpData data = lookUpDataService.getTasksById(docs.getDocumentType().getId());
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		List<ImmigrationCandidateDocuments> immigrationCanDocList = immigrationCommonService
+				.getImmigrationCandidateDocs(immigrationId, templateid, candidateId, user, orgLocations, searchVal);
+		for (ImmigrationCandidateDocuments docs : immigrationCanDocList) {
+			LookUpData data = lookUpDataService.getTasksById(docs.getDocumentType().getId());
 			docs.setDocumentTypeName(data.getName());
 			HashMap<Long, String> fileIdNameMap = new HashMap<Long, String>();
-			JSONArray jsonArray= new JSONArray();
-			List<ImmigrationCandidateDocumentsHistory> docHistoryList = immigrationCommonService.getImmigrationCandidateDocumentHistoryList(immigrationId,candidateId,docs.getId());
-		    for(ImmigrationCandidateDocumentsHistory historyObj: docHistoryList){
-		    	
-			 fileIdNameMap.put(historyObj.getId(), historyObj.getUpldedFileName());
-		    }
-		    System.out.println("Doc id ==========="+docs.getId());
-		    docs.setDocsHistoryList(jsonArray.put(fileIdNameMap));
-		    System.out.println("jsonArray to String  ==========="+jsonArray.toString());
-        }
-        model.setViewName("/immigration/documentDetailsTab");
-		 List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
-	       model.addObject("documentsList", documentsList);
-	       model.addObject("immigrationCanDocList", immigrationCanDocList);
+			JSONArray jsonArray = new JSONArray();
+			List<ImmigrationCandidateDocumentsHistory> docHistoryList = immigrationCommonService
+					.getImmigrationCandidateDocumentHistoryList(immigrationId, candidateId, docs.getId());
+			for (ImmigrationCandidateDocumentsHistory historyObj : docHistoryList) {
+
+				fileIdNameMap.put(historyObj.getId(), historyObj.getUpldedFileName());
+			}
+			System.out.println("Doc id ===========" + docs.getId());
+			docs.setDocsHistoryList(jsonArray.put(fileIdNameMap));
+			System.out.println("jsonArray to String  ===========" + jsonArray.toString());
+		}
+		model.setViewName("/immigration/documentDetailsTab");
+		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		model.addObject("documentsList", documentsList);
+		model.addObject("immigrationCanDocList", immigrationCanDocList);
 		return model;
 	}
 
-    @RequestMapping(value = {"/savePetitionTemplateDetails"}, method = RequestMethod.POST, produces = "application/json")
-    public Response<String> savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,
-            @RequestParam(value = "templateId", required = false) String templateId) {
-        
-    	Response<String> response = new Response<>();
-    	ModelAndView model = new ModelAndView();
-        model.addObject("sourceleadUrl", sourceleadUrl);
-        Long immigrationId = null;
-       
-        	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-             OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                     "orgLocations");
-         if(user != null){    
-      
-        try {
-        	  if(Validator.validate(templateDTO)){
-            immigrationId = immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user, orgLocations,
-                    templateId);
-            response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
-			response.setObject(immigrationId.toString());
-			templateDTO.setId(immigrationId);
-        }else{
-        	response.setObject("DataMissing");
-			response.setResponse(Result.INVALID_DATA.name());
-			response.setResponseMessage(Result.INVALID_DATA.getValue());
-			
-        }
-        } catch (Exception e) {
-            logger.error("Exception occured while saving Petition Template Deatils" + e.getMessage());
-            e.printStackTrace();
-        }
-       /* return "{status:'success', id:" + immigrationId + "}";*/
-         }else{
-        	response.setResponse(Result.SESSION_TIMEDOUT.name());
- 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-         }
-         request.getSession().setAttribute("templateDTO", templateDTO);
-        return response;
-    }
+	@RequestMapping(value = {
+			"/savePetitionTemplateDetails" }, method = RequestMethod.POST, produces = "application/json")
+	public Response<String> savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,
+			@RequestParam(value = "templateId", required = false) String templateId) {
 
-    @RequestMapping(value = {"/savePetitionTemplateDocDetails"}, method = RequestMethod.POST)
-    public Response<String> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,
-            @RequestParam(value = "templateId", required = false) String templateId) {
-        Response<String> response = new Response<>();
-    	ModelAndView model = new ModelAndView();
-   
-    	
-        model.addObject("sourceleadUrl", sourceleadUrl);
-        List<ImmigrationTemplateDocDTO> templateDocList = null;
-        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        Boolean flag = false;
-        if (user !=null){
-        try {
-        	for(ImmigrationTemplateDocDTO doc:templateDTO.getImmigrationDocList()){
-        	
-            if(Validator.validate(doc)){
-            flag = true;
-            }else{
-            	flag = false;
-            }
-            }
-        } catch (Exception e) {
-            logger.error("Exception occured while saving Petition Template Doc Details" + e.getMessage());
-            e.printStackTrace();
-        }
-        if(flag == true){
-         	templateDocList = immigrationTemplateService.savePetitionTemplateDocDetails(templateDTO, user,orgLocations);
-            response.setResponse(Result.SUCCESS.name());
-    		response.setResponseMessage(Result.SUCCESS.getValue());
-        }else{
-        	response.setObject("DataMissing");
-			response.setResponse(Result.INVALID_DATA.name());
-			response.setResponseMessage(Result.INVALID_DATA.getValue());
-        }
-        }else{
-        	response.setResponse(Result.SESSION_TIMEDOUT.name());
- 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-        }
-        request.getSession().setAttribute("templateDocList", templateDocList);
-        return response;
-    }
+		Response<String> response = new Response<>();
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		Long immigrationId = null;
 
-    @RequestMapping(value = {"/savePetitionTemplateFormDetails"}, method = RequestMethod.POST)
-    public Response<String> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request) {
-        Response<String> response = new Response<>();
-    	ModelAndView model = new ModelAndView();
-        List<ImmigrationTemplateFormDTO> templateFormsList = null;
-        model.addObject("sourceleadUrl", sourceleadUrl);
-        templateDTO.setStaticPath(staticPath);
-        Boolean flag = false;
-        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        if(user != null){
-        	try{
-        		for(ImmigrationTemplateFormDTO form:templateDTO.getImmigrationFormList()){
-                	
-                    if(Validator.validate(form)){
-                    flag = true;
-                    }else{
-                    	flag = false;
-                    }
-                    }
-        	}catch (Exception e) {
-        		 e.printStackTrace();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		if (user != null) {
+
+			try {
+				if (Validator.validate(templateDTO)) {
+					immigrationId = immigrationTemplateService.savePetitionTemplateDetails(templateDTO, user,
+							orgLocations, templateId);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+					response.setObject(immigrationId.toString());
+					templateDTO.setId(immigrationId);
+				} else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+
+				}
+			} catch (Exception e) {
+				logger.error("Exception occured while saving Petition Template Deatils" + e.getMessage());
+				e.printStackTrace();
 			}
-        if(flag == true){
-        	templateFormsList = immigrationTemplateService.savePetitionTemplateFormDetails(templateDTO, user,orgLocations);
-    		response.setResponse(Result.SUCCESS.name());
- 			response.setResponseMessage(Result.SUCCESS.getValue());
-        }else{
-        	response.setObject("DataMissing");
-			response.setResponse(Result.INVALID_DATA.name());
-			response.setResponseMessage(Result.INVALID_DATA.getValue());
-        }
-        }else{
-        	response.setResponse(Result.SESSION_TIMEDOUT.name());
- 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-        }
-        request.getSession().setAttribute("templateFormsList", templateFormsList);
-        return response;
-    }
+			/* return "{status:'success', id:" + immigrationId + "}"; */
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		request.getSession().setAttribute("templateDTO", templateDTO);
+		return response;
+	}
 
-    @RequestMapping(value = {"/savePetitionTemplateTaskDetails"}, method = RequestMethod.POST)
-    public Response<String> savePetitionTemplateTaskDetails(ImmigrationTemplateTaskDTO taskTemplateDTO, HttpServletRequest request) {
-        Response<String> response = new Response<>();
-    	ModelAndView model = new ModelAndView();
-        model.addObject("sourceleadUrl", sourceleadUrl);
-        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        if(user != null){
-        try {
-           if(Validator.validate(taskTemplateDTO)){
-            immigrationTemplateService.savePetitionTemplateTaskDetails(taskTemplateDTO, user,orgLocations);
-        	response.setResponse(Result.SUCCESS.name());
- 			response.setResponseMessage(Result.SUCCESS.getValue());
-           }else{
-        	response.setObject("DataMissing");
-   			response.setResponse(Result.INVALID_DATA.name());
-   			response.setResponseMessage(Result.INVALID_DATA.getValue());	
-           }
-        } catch (Exception e) {
-            logger.error("Exception occured while saving Template Task Details" + e.getMessage());
-            e.printStackTrace();
-        }
-        }else{
-        	response.setResponse(Result.SESSION_TIMEDOUT.name());
- 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-        }
-        return response;
-    }
+	@RequestMapping(value = { "/savePetitionTemplateDocDetails" }, method = RequestMethod.POST)
+	public Response<String> savePetitionTemplateDocDetails(ImmigrationTemplateDTO templateDTO,
+			HttpServletRequest request, @RequestParam(value = "templateId", required = false) String templateId) {
+		Response<String> response = new Response<>();
+		ModelAndView model = new ModelAndView();
 
-    @RequestMapping(value = {"/getTemplateTaskList"}, method = RequestMethod.POST)
-    public @ResponseBody
-    ResponseList<ImmigrationTemplateTaskDTO> getTemplateTaskList(ImmigrationTemplateTaskDTO templateDTO,
-            HttpServletRequest request, @RequestParam(value = "templateId", required = false) String templateId,
-            @RequestParam(value = "searchValue", required = false) String searchValue) throws Exception {
-        ResponseList<ImmigrationTemplateTaskDTO> immiTemplateList = new ResponseList<>();
-        String[] tableColumns = {"taskName", "assignedTo", "priority", "taskRepeat"};
-        int sortColumnIndex = 3; // by default sorting using updated date
-        String sortColumnOrder = "desc"; // by default descending order
-        templateDTO.setTemplateId(Long.parseLong(templateId));
-        if (templateDTO.getOrder() != null && !templateDTO.getOrder().isEmpty()) {
-            sortColumnIndex = Integer.parseInt(templateDTO.getOrder().get(0).get("column"));
-            sortColumnOrder = templateDTO.getOrder().get(0).get("dir");
-        }
-        templateDTO.setSortColumn(tableColumns[sortColumnIndex]);
-        templateDTO.setSortOrder(sortColumnOrder);
-        immiTemplateList = immigrationTemplateService.getTemplateTaskList(templateDTO, searchValue);
-        return immiTemplateList;
-    }
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		List<ImmigrationTemplateDocDTO> templateDocList = null;
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		Boolean flag = false;
+		if (user != null) {
+			try {
+				for (ImmigrationTemplateDocDTO doc : templateDTO.getImmigrationDocList()) {
 
-    @RequestMapping(value = {"/editImmigrationTaskList"})
-    public ImmigrationTemplateTaskDTO editImmigrationTaskList(HttpServletRequest request,
-            @RequestParam(value = "id", required = false) String id) throws NumberFormatException, Exception {
-    	ImmigrationTemplateTaskDTO templateDTO = immigrationTemplateService.editImmigrationTaskList(id);
-        return templateDTO;
-    }
+					if (Validator.validate(doc)) {
+						flag = true;
+					} else {
+						flag = false;
+					}
+				}
+			} catch (Exception e) {
+				logger.error("Exception occured while saving Petition Template Doc Details" + e.getMessage());
+				e.printStackTrace();
+			}
+			if (flag == true) {
+				templateDocList = immigrationTemplateService.savePetitionTemplateDocDetails(templateDTO, user,
+						orgLocations);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setObject("DataMissing");
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		request.getSession().setAttribute("templateDocList", templateDocList);
+		return response;
+	}
 
-    @RequestMapping(value = {"/deleteImmigrationTaskList"})
-    public void deleteImmigrationTaskList(HttpServletRequest request,
-            @RequestParam(value = "id", required = false) String id) {
-        immigrationTemplateService.deleteImmigrationTaskList(id);
-    }
+	@RequestMapping(value = { "/savePetitionTemplateFormDetails" }, method = RequestMethod.POST)
+	public Response<String> savePetitionTemplateFormDetails(ImmigrationTemplateDTO templateDTO,
+			HttpServletRequest request) {
+		Response<String> response = new Response<>();
+		ModelAndView model = new ModelAndView();
+		List<ImmigrationTemplateFormDTO> templateFormsList = null;
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		templateDTO.setStaticPath(staticPath);
+		Boolean flag = false;
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		if (user != null) {
+			try {
+				for (ImmigrationTemplateFormDTO form : templateDTO.getImmigrationFormList()) {
 
-    @RequestMapping(value = {"/savePetitionTemplateDetailsValues"})
-    public String savePetitionTemplateDetailsValues(HttpServletRequest request,
-            @RequestParam(value = "templateId", required = false) String templateId) {
-        int value = immigrationTemplateService.savePetitionTemplateDetailsValues(templateId);
-        String message = "failed";
-        if (value != 0) {
-            message = "success";
-            request.getSession().setAttribute("success", message);
-        }
-        return message;
-    }
+					if (Validator.validate(form)) {
+						flag = true;
+					} else {
+						flag = false;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (flag == true) {
+				templateFormsList = immigrationTemplateService.savePetitionTemplateFormDetails(templateDTO, user,
+						orgLocations);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setObject("DataMissing");
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		request.getSession().setAttribute("templateFormsList", templateFormsList);
+		return response;
+	}
 
-    @RequestMapping(value = {"/getPetitionTypeDropDown"})
-    public List<LookUpData> getPetitionTypeDropDown(HttpServletRequest request) {
-        List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.VISA);
-        return caEmployerDTOs;
-    }
+	@RequestMapping(value = { "/savePetitionTemplateTaskDetails" }, method = RequestMethod.POST)
+	public Response<String> savePetitionTemplateTaskDetails(ImmigrationTemplateTaskDTO taskTemplateDTO,
+			HttpServletRequest request) {
+		Response<String> response = new Response<>();
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		if (user != null) {
+			try {
+				if (Validator.validate(taskTemplateDTO)) {
+					immigrationTemplateService.savePetitionTemplateTaskDetails(taskTemplateDTO, user, orgLocations);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception occured while saving Template Task Details" + e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
 
-    @RequestMapping(value = {"/getUscisTypeDropDown"})
-    public List<LookUpData> getUscisTypeDropDown(HttpServletRequest request) {
-        List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
-        return caEmployerDTOs;
-    }
+	@RequestMapping(value = { "/getTemplateTaskList" }, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<ImmigrationTemplateTaskDTO> getTemplateTaskList(
+			ImmigrationTemplateTaskDTO templateDTO, HttpServletRequest request,
+			@RequestParam(value = "templateId", required = false) String templateId,
+			@RequestParam(value = "searchValue", required = false) String searchValue) throws Exception {
+		ResponseList<ImmigrationTemplateTaskDTO> immiTemplateList = new ResponseList<>();
+		String[] tableColumns = { "taskName", "assignedTo", "priority", "taskRepeat" };
+		int sortColumnIndex = 3; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		templateDTO.setTemplateId(Long.parseLong(templateId));
+		if (templateDTO.getOrder() != null && !templateDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(templateDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = templateDTO.getOrder().get(0).get("dir");
+		}
+		templateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		templateDTO.setSortOrder(sortColumnOrder);
+		immiTemplateList = immigrationTemplateService.getTemplateTaskList(templateDTO, searchValue);
+		return immiTemplateList;
+	}
 
-    @RequestMapping(value = {"/getEmploymentLevelDropDown"})
-    public List<LookUpData> getEmploymentLevelDropDown(HttpServletRequest request) {
-        List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(ImmigrationConstants.EMPLOYMENT_LEVEL);
-        return caEmployerDTOs;
-    }
+	@RequestMapping(value = { "/editImmigrationTaskList" })
+	public ImmigrationTemplateTaskDTO editImmigrationTaskList(HttpServletRequest request,
+			@RequestParam(value = "id", required = false) String id) throws NumberFormatException, Exception {
+		ImmigrationTemplateTaskDTO templateDTO = immigrationTemplateService.editImmigrationTaskList(id);
+		return templateDTO;
+	}
 
-    @RequestMapping(value = {"/getJobTitleDropDown"})
-    public List<Requirement> getJobTitleDropDown(HttpServletRequest request) throws Exception {
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                "orgLocations");
-        List<Requirement> jobList = requirementService.getAllRequirementsByOrglocationId(orgLocations.getId());
-        return jobList;
-    }
+	@RequestMapping(value = { "/deleteImmigrationTaskList" })
+	public void deleteImmigrationTaskList(HttpServletRequest request,
+			@RequestParam(value = "id", required = false) String id) {
+		immigrationTemplateService.deleteImmigrationTaskList(id);
+	}
 
-    @RequestMapping(value = {"/savePetitionDetailsPage"}, method = RequestMethod.POST)
-    public String  savePetitionDetailsPage(ImmigrationDTO immigrationDTO,@RequestParam(value = "removedResidenceIds", required = false) String[] ids, 
-    		@RequestParam(value = "status", required = false) String status,
-    		HttpServletRequest request) {
-        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        immigrationDTO.setStaticPath(staticPath);
+	@RequestMapping(value = { "/savePetitionTemplateDetailsValues" })
+	public String savePetitionTemplateDetailsValues(HttpServletRequest request,
+			@RequestParam(value = "templateId", required = false) String templateId) {
+		int value = immigrationTemplateService.savePetitionTemplateDetailsValues(templateId);
+		String message = "failed";
+		if (value != 0) {
+			message = "success";
+			request.getSession().setAttribute("success", message);
+		}
+		return message;
+	}
+
+	@RequestMapping(value = { "/getPetitionTypeDropDown" })
+	public List<LookUpData> getPetitionTypeDropDown(HttpServletRequest request) {
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService.getLookupDataByType(Constants.VISA);
+		return caEmployerDTOs;
+	}
+
+	@RequestMapping(value = { "/getUscisTypeDropDown" })
+	public List<LookUpData> getUscisTypeDropDown(HttpServletRequest request) {
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService
+				.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
+		return caEmployerDTOs;
+	}
+
+	@RequestMapping(value = { "/getEmploymentLevelDropDown" })
+	public List<LookUpData> getEmploymentLevelDropDown(HttpServletRequest request) {
+		List<LookUpData> caEmployerDTOs = immigrationTemplateService
+				.getLookupDataByType(ImmigrationConstants.EMPLOYMENT_LEVEL);
+		return caEmployerDTOs;
+	}
+
+	@RequestMapping(value = { "/getJobTitleDropDown" })
+	public List<Requirement> getJobTitleDropDown(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		List<Requirement> jobList = requirementService.getAllRequirementsByOrglocationId(orgLocations.getId());
+		return jobList;
+	}
+
+	@RequestMapping(value = { "/savePetitionDetailsPage" }, method = RequestMethod.POST)
+	public String savePetitionDetailsPage(ImmigrationDTO immigrationDTO,
+			@RequestParam(value = "removedResidenceIds", required = false) String[] ids,
+			@RequestParam(value = "status", required = false) String status, HttpServletRequest request) {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		immigrationDTO.setStaticPath(staticPath);
 		Immigration immigration = null;
-        try {
-        	immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations,ids,status);
-        } catch (Exception e) {
-            logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
-            e.printStackTrace();
-        }
-        return "{result:'success',id:'"+immigration.getId()+"',candidateId:'"+immigration.getCandidate().getId()+"',immTemplateId:'"+immigration.getImmigrationTemplateId().getId()+"'}";
-    }
+		try {
+			immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations, ids, status);
+		} catch (Exception e) {
+			logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
+			e.printStackTrace();
+		}
+		return "{result:'success',id:'" + immigration.getId() + "',candidateId:'" + immigration.getCandidate().getId()
+				+ "',immTemplateId:'" + immigration.getImmigrationTemplateId().getId() + "'}";
+	}
 
-    @RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
-    @ResponseBody
-    public boolean validateTemplateName(HttpServletRequest request,
-            @RequestParam(value = "templateName") String templateName,
-            @RequestParam(value = "templateId", defaultValue = "0") Long templateId) {
-        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        return immigrationTemplateService.validateTemplateNameExistance(templateName, templateId);
-    }
-    
-    
-    @RequestMapping(value = {"/getCandidatesResumeDetailsById"})
-    public @ResponseBody CandidateResumeDTO getCandidatesResumeDetailsById(@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception {
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                "orgLocations");
+	@RequestMapping(value = "/validateTemplateName", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean validateTemplateName(HttpServletRequest request,
+			@RequestParam(value = "templateName") String templateName,
+			@RequestParam(value = "templateId", defaultValue = "0") Long templateId) {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return immigrationTemplateService.validateTemplateNameExistance(templateName, templateId);
+	}
+
+	@RequestMapping(value = { "/getCandidatesResumeDetailsById" })
+	public @ResponseBody CandidateResumeDTO getCandidatesResumeDetailsById(
+			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		Integer status = Constants.CANDIDATE_ACTIVE;
-		CandidateResumeDTO candidateResumeDTO  =new CandidateResumeDTO();
+		CandidateResumeDTO candidateResumeDTO = new CandidateResumeDTO();
 		if (candidateId != null) {
-			List<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
-			if(candidateResumesList != null && candidateResumesList.size()>0) {
+			List<CandidateResumes> candidateResumesList = candidateResumesService
+					.getCandidateResumesListByCandidateIdAndStatus(candidateId, status);
+			if (candidateResumesList != null && candidateResumesList.size() > 0) {
 				CandidateResumes candidateResume = candidateResumesList.get(0);
-	             candidateResumeDTO = new CandidateResumeDTO();
+				candidateResumeDTO = new CandidateResumeDTO();
 				candidateResumeDTO.setId(candidateResume.getId());
 				candidateResumeDTO.setTitle(candidateResume.getTitle());
 				candidateResumeDTO.setDescription(candidateResume.getDescription());
@@ -965,137 +1007,135 @@ public class ImmigrationRestController {
 			}
 		}
 		return candidateResumeDTO;
-    }
-    
-    @RequestMapping(value = {"/saveCandidateFamilyDetails"})
-    public String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO,  HttpServletRequest request,
-    		@RequestParam(value = "candidateId", required = true) Long candidateId
-    		,@RequestParam(value = "relationType", required = true) String relationType
-    		,@RequestParam(value = "memberId", required = false) Long id) { // memberId used for edit process.
-    	String status ="";
-    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-                "orgLocations");
-    	try {
-    		  familyDetailsDTO.setCandidateId(candidateId);
-    		  if(id!= null) { // edit mode we will get the value.
+	}
 
-    			 familyDetailsDTO.setId(id); 
-    			 System.out.println("familyDetailsDTO.getId()--->"+familyDetailsDTO.getId()); 
-    			 }
+	@RequestMapping(value = { "/saveCandidateFamilyDetails" })
+	public String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO,
+			HttpServletRequest request, @RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "relationType", required = true) String relationType,
+			@RequestParam(value = "memberId", required = false) Long id) { // memberId used for edit process.
+		String status = "";
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		try {
+			familyDetailsDTO.setCandidateId(candidateId);
+			if (id != null) { // edit mode we will get the value.
 
-    			 
-    		  System.out.println(" inside conroller -->relationType :: "+relationType);
-    		  if(relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_SPOUSE)) {
-    			  familyDetailsDTO.setRelation(Constants.RELATION_TYPE_SPOUSE);
-    		  }
-    		  else if(relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_CHILD)) {
-    			  familyDetailsDTO.setRelation(Constants.RELATION_TYPE_CHILD);
-    		  }
-    		  else if(relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_MOTHER)) {
-    			  familyDetailsDTO.setRelation(Constants.RELATION_TYPE_MOTHER);
-    		  }
-    		  else if(relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_FATHER)) {
-    			  familyDetailsDTO.setRelation(Constants.RELATION_TYPE_FATHER);
-    		  }
-    		  
-    	      status = immigrationCommonService.saveCandidateFamilyMemberDetails(familyDetailsDTO, orgLocations, user);
-    	      
-       	}catch(Exception e) {
-       		logger.error("Exception caught in controller  -->"+e.getMessage());
-       		e.printStackTrace();
-       	}
-       	return status;
-      }
-
-    
-    @RequestMapping(value = {"/savePassportVisaDetailsPage"}, method = RequestMethod.POST)
-    public Response <String>  savePassportDetailsPage(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, HttpServletRequest request,
-    		@RequestParam(value = "idType", required = true) String idType,
-    		@RequestParam(value = "candidateId", required = false) String candidateId,
-    		@RequestParam(value = "immigrationId", required = false) String immigrationId) {
-        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Response<String> response = new Response<>();
-        System.out.println("Candidate ID ----> :  "+immigrationPassportVisaDTO.getCandidateId());
-        if(user != null){
-        try {
-        	if(Validator.validate(immigrationPassportVisaDTO)){
-        	 if(idType.trim().equalsIgnoreCase(Constants.ID_TYPE_PASSPORT)) {
-        		 immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_PASSPORT);
-   		  }
-   		  else if(idType.trim().equalsIgnoreCase(Constants.ID_TYPE_VISA)) {
-   			 immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_VISA);
-   		  }
-        	  immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations);
-        	  response.setResponse(Result.SUCCESS.name());
-   			  response.setResponseMessage(Result.SUCCESS.getValue());
-        	}else{
-        		response.setObject("DataMissing");
-       			response.setResponse(Result.INVALID_DATA.name());
-       			response.setResponseMessage(Result.INVALID_DATA.getValue());
-        	}
-         } catch (Exception e) {
-            logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
-            e.printStackTrace();
-        }
-        }else{
-        	response.setResponse(Result.SESSION_TIMEDOUT.name());
- 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-        }
-        return response;
-         
-    }
-    
-    @RequestMapping(value = {"/saveEducationImmigrationDedtails"}, method = RequestMethod.POST)
-    public String  saveEducationImmigrationDedtails(CandidateEducationDTO candidateEducationDTO, HttpServletRequest request,
-    		@RequestParam(value = "candidateId", required = false) String candidateId,
-    		@RequestParam(value = "immigrationId", required = false) String immigrationId) {
-        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        candidateEducationDTO.setStaticPath(staticPath);
-        try {
-        	candidateEducationService.storeCandidateEducation(candidateEducationDTO, Long.parseLong(candidateId), orgLocations.getId(), user);
-         } catch (Exception e) {
-            logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
-            e.printStackTrace();
-        }
-       
-        return "Success";
-    }
-
-    @RequestMapping(value = {"/saveImmigrationResidenceDetails"})
-    public Response <String> saveCandidateResidence(ResidenceDTO residenceDTO, HttpServletRequest request, 
-    		@RequestParam(value = "candidateId", required = false) Long candidateId,
-    		@RequestParam(value = "immigrationId", required = false) String immigrationId ) throws Exception {
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        Response<String> response = new Response<>();
-        if(user != null){
-        	try{
-        		if(Validator.validate(residenceDTO)){
-        		immigrationCommonService.saveResidenceDetails(residenceDTO,orgLocations,user,candidateId);
-        		  response.setResponse(Result.SUCCESS.name());
-       			  response.setResponseMessage(Result.SUCCESS.getValue());
-        		}else{
-        			response.setObject("DataMissing");
-           			response.setResponse(Result.INVALID_DATA.name());
-           			response.setResponseMessage(Result.INVALID_DATA.getValue());	
-        		}
-        	}catch (Exception e) {
-        	logger.error("Exception caugth in controller" + e.getMessage());
+				familyDetailsDTO.setId(id);
+				System.out.println("familyDetailsDTO.getId()--->" + familyDetailsDTO.getId());
 			}
-        }else{
-        	response.setResponse(Result.SESSION_TIMEDOUT.name());
- 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
-        }
+
+			System.out.println(" inside conroller -->relationType :: " + relationType);
+			if (relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_SPOUSE)) {
+				familyDetailsDTO.setRelation(Constants.RELATION_TYPE_SPOUSE);
+			} else if (relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_CHILD)) {
+				familyDetailsDTO.setRelation(Constants.RELATION_TYPE_CHILD);
+			} else if (relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_MOTHER)) {
+				familyDetailsDTO.setRelation(Constants.RELATION_TYPE_MOTHER);
+			} else if (relationType.trim().equalsIgnoreCase(Constants.RELATION_TYPE_FATHER)) {
+				familyDetailsDTO.setRelation(Constants.RELATION_TYPE_FATHER);
+			}
+
+			status = immigrationCommonService.saveCandidateFamilyMemberDetails(familyDetailsDTO, orgLocations, user);
+
+		} catch (Exception e) {
+			logger.error("Exception caught in controller  -->" + e.getMessage());
+			e.printStackTrace();
+		}
+		return status;
+	}
+
+	@RequestMapping(value = { "/savePassportVisaDetailsPage" }, method = RequestMethod.POST)
+	public Response<String> savePassportDetailsPage(ImmigrationPassportVisaDTO immigrationPassportVisaDTO,
+			HttpServletRequest request, @RequestParam(value = "idType", required = true) String idType,
+			@RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "immigrationId", required = false) String immigrationId) {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		Response<String> response = new Response<>();
+		System.out.println("Candidate ID ----> :  " + immigrationPassportVisaDTO.getCandidateId());
+		if (user != null) {
+			try {
+				if (Validator.validate(immigrationPassportVisaDTO)) {
+					if (idType.trim().equalsIgnoreCase(Constants.ID_TYPE_PASSPORT)) {
+						immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_PASSPORT);
+					} else if (idType.trim().equalsIgnoreCase(Constants.ID_TYPE_VISA)) {
+						immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_VISA);
+					}
+					immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
 		return response;
-    }
-    
-	
+
+	}
+
+	@RequestMapping(value = { "/saveEducationImmigrationDedtails" }, method = RequestMethod.POST)
+	public String saveEducationImmigrationDedtails(CandidateEducationDTO candidateEducationDTO,
+			HttpServletRequest request, @RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "immigrationId", required = false) String immigrationId) {
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		candidateEducationDTO.setStaticPath(staticPath);
+		try {
+			candidateEducationService.storeCandidateEducation(candidateEducationDTO, Long.parseLong(candidateId),
+					orgLocations.getId(), user);
+		} catch (Exception e) {
+			logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return "Success";
+	}
+
+	@RequestMapping(value = { "/saveImmigrationResidenceDetails" })
+	public Response<String> saveCandidateResidence(ResidenceDTO residenceDTO, HttpServletRequest request,
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "immigrationId", required = false) String immigrationId) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<String> response = new Response<>();
+		if (user != null) {
+			try {
+				if (Validator.validate(residenceDTO)) {
+					immigrationCommonService.saveResidenceDetails(residenceDTO, orgLocations, user, candidateId);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception caugth in controller" + e.getMessage());
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+
 	@RequestMapping(value = { "/getCandidateFamilyDetails" })
 	public ModelAndView getCandidateFamilyDetails(
-			@RequestParam(value = "candidateId", required = true) Long candidateId, @RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request) {
+			@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		System.out.println(" inisde getCandidateFamilyDetails controller test -->");
 		model.setViewName("/immigration/familyDetailsTab");
@@ -1103,179 +1143,210 @@ public class ImmigrationRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		try {
-			// String searchVal = ServletRequestUtils.getStringParameter(request, "searchVal");
-			familyList = immigrationCommonService.getCandidateFamilyDetails(candidateId,searchVal);
-			for(CandidateFamilyDetails familyObj: familyList) {
-				familyObj.setMarraigeDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getMarraigeDate()));
-				familyObj.setMarriageEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getMarriageEndDate()));
-				familyObj.setDateOfBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getDateOfBirth()));
+			// String searchVal = ServletRequestUtils.getStringParameter(request,
+			// "searchVal");
+			familyList = immigrationCommonService.getCandidateFamilyDetails(candidateId, searchVal);
+			for (CandidateFamilyDetails familyObj : familyList) {
+				familyObj.setMarraigeDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+						familyObj.getMarraigeDate()));
+				familyObj.setMarriageEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+						familyObj.getMarriageEndDate()));
+				familyObj.setDateOfBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+						familyObj.getDateOfBirth()));
 			}
 			model.addObject("familyList", familyList);
-		}catch(Exception e ) {
-			logger.error("Exception caught in controller --->"+e.getMessage());
+		} catch (Exception e) {
+			logger.error("Exception caught in controller --->" + e.getMessage());
 			e.printStackTrace();
 		}
 		System.out.println(" after getCandidateFamilyDetails controller -->");
 		return model;
 	}
-	
+
 	@RequestMapping(value = { "/deleteCandidateFamilyDetails" })
-	public String deleteCandidateFamilyDetails(
-			@RequestParam(value = "id", required = true) Long deleteId, HttpServletRequest request) {
+	public String deleteCandidateFamilyDetails(@RequestParam(value = "id", required = true) Long deleteId,
+			HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		String status="";
-		System.out.println(" in controller deleteId ---> "+deleteId);
+		String status = "";
+		System.out.println(" in controller deleteId ---> " + deleteId);
 		try {
 			status = immigrationCommonService.deletetCandidateFamilyDetails(deleteId);
-			System.out.println(" in controller status "+status);
+			System.out.println(" in controller status " + status);
 		} catch (Exception e) {
-			logger.error("Exception caught in controller --->"+e.getMessage());
+			logger.error("Exception caught in controller --->" + e.getMessage());
 			e.printStackTrace();
 		}
 
 		return status;
 	}
+
 	@RequestMapping(value = { "/getCandidateFamilyDetailsById" })
-	public @ResponseBody  CandidateFamilyDetails getCandidateFamilyDetailsById(
+	public @ResponseBody CandidateFamilyDetails getCandidateFamilyDetailsById(
 			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		String status="";
-		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> "+id);
-		CandidateFamilyDetails familyObj= null;
+		String status = "";
+		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> " + id);
+		CandidateFamilyDetails familyObj = null;
 		try {
 			familyObj = immigrationCommonService.getCandidateFamilyDetailsById(id);
-			familyObj.setMarraigeDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getMarraigeDate()));
-			familyObj.setMarriageEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getMarriageEndDate()));
-			familyObj.setDateOfBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getDateOfBirth()));
-			System.out.println(" in controller status "+status);
+			familyObj.setMarraigeDateStr(
+					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getMarraigeDate()));
+			familyObj.setMarriageEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+					familyObj.getMarriageEndDate()));
+			familyObj.setDateOfBirthStr(
+					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getDateOfBirth()));
+			System.out.println(" in controller status " + status);
 		} catch (Exception e) {
-			logger.error("Exception caught in controller test --->"+e.getMessage());
+			logger.error("Exception caught in controller test --->" + e.getMessage());
 			e.printStackTrace();
 		}
 
 		return familyObj;
 	}
-	
+
 	@RequestMapping(value = { "/getCandidateEducationDetailsById" })
-	public @ResponseBody  CandidateEducation getCandidateEducationDetailsById(
+	public @ResponseBody CandidateEducation getCandidateEducationDetailsById(
 			@RequestParam(value = "id", required = true) Long id,
 			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> "+id);
-		CandidateEducation canEdu= null;
+		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> " + id);
+		CandidateEducation canEdu = null;
 		try {
 			canEdu = candidateEducationService.getCandidateEducationBycandidateIdandEducationId(candidateId, id);
-			canEdu.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canEdu.getStartDate()));
-			canEdu.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canEdu.getEndDate()));
+			canEdu.setStartDateStr(
+					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canEdu.getStartDate()));
+			canEdu.setEndDateStr(
+					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canEdu.getEndDate()));
 		} catch (Exception e) {
-			logger.error("Exception caught in controller test --->"+e.getMessage());
+			logger.error("Exception caught in controller test --->" + e.getMessage());
 			e.printStackTrace();
 		}
 
-		return canEdu;  
+		return canEdu;
 	}
-	
+
 	@RequestMapping(value = { "/getCandidateEmpDetailsById" })
-	public @ResponseBody  CandidateEmployers getCandidateEmpDetailsById(
+	public @ResponseBody CandidateEmployers getCandidateEmpDetailsById(
 			@RequestParam(value = "id", required = true) Long id,
 			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> "+id);
-		CandidateEmployers canEmp= null;
+		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> " + id);
+		CandidateEmployers canEmp = null;
 		try {
 			canEmp = candidateEmployersService.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, id);
 
 		} catch (Exception e) {
-			logger.error("Exception caught in controller test --->"+e.getMessage());
+			logger.error("Exception caught in controller test --->" + e.getMessage());
 			e.printStackTrace();
 		}
 
-		return canEmp;  
+		return canEmp;
 	}
 
 	@RequestMapping(value = { "/deleteCandidateEduDetails" })
-	public String deleteCandidateEduDetails(
-			@RequestParam(value = "id", required = true) Long id, 
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		CandidateEducation  candidateEducation = candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, id, user, orgLocations);
+	public String deleteCandidateEduDetails(@RequestParam(value = "id", required = true) Long id,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		CandidateEducation candidateEducation = candidateEducationService
+				.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, id, user, orgLocations);
 
 		return "success";
 	}
-	
+
 	@RequestMapping(value = { "/deleteCandidateEmployerDetails" })
-	public String deleteCandidateEmployerDetails(
-			@RequestParam(value = "id", required = true) Long id, 
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		CandidateEmployers  candidatesEmployer = candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, id);
+	public String deleteCandidateEmployerDetails(@RequestParam(value = "id", required = true) Long id,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		CandidateEmployers candidatesEmployer = candidateEmployersService
+				.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, id);
 
 		return "success";
 	}
-	
+
 	@RequestMapping(value = { "/getCandidateEducationList" })
 	public ModelAndView getCandidateEducationList(
-			@RequestParam(value = "candidateId", required = true) Long candidateId,@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
+			throws Exception {
 		ModelAndView model = new ModelAndView();
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		model.setViewName("/immigration/educationDetailsTab");
-		 List<CandidateEducation>   candidatesEducationList = candidateEducationService.getCandidateEducationListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId), orgLocations.getId(),searchVal);
-		 List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
-		 model.addObject("educationsDropList", educationsList);
-		 model.addObject("candidatesEducationList",candidatesEducationList);
+		List<CandidateEducation> candidatesEducationList = candidateEducationService
+				.getCandidateEducationListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId),
+						orgLocations.getId(), searchVal);
+		List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+		model.addObject("educationsDropList", educationsList);
+		model.addObject("candidatesEducationList", candidatesEducationList);
 		return model;
 	}
-	
-	
-	
-	
+
 	@RequestMapping(value = { "/getCandidateEmployerList" })
-	public ModelAndView getCandidateEmployerList(
-			@RequestParam(value = "candidateId", required = true) Long candidateId,@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request) throws Exception {
+	public ModelAndView getCandidateEmployerList(@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
+			throws Exception {
 		ModelAndView model = new ModelAndView();
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		model.setViewName("/immigration/employerDetailsTab");
-		 List<CandidateEmployers>   candidatesEmployersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId), orgLocations.getId(),searchVal);
-		model.addObject("candidatesEmployersList",candidatesEmployersList);
+		List<CandidateEmployers> candidatesEmployersList = candidateEmployersService
+				.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId),
+						orgLocations.getId(), searchVal);
+		model.addObject("candidatesEmployersList", candidatesEmployersList);
 		return model;
 	}
-	
+
 	@RequestMapping(value = { "/getCandidateResidenceList" })
 	public ModelAndView getCandidateResidenceList(
-			@RequestParam(value = "candidateId", required = true) Long candidateId,@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
+			throws Exception {
 		ModelAndView model = new ModelAndView();
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		model.setViewName("/immigration/residenceDetailsTab");
-		 List<CandidateResidence>   candidatesResidenceList = immigrationCommonService.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId,searchVal);
-		for(CandidateResidence canRes : candidatesResidenceList){
-			canRes.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canRes.getStartDate()));
-			canRes.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canRes.getEndDate()));
+		List<CandidateResidence> candidatesResidenceList = immigrationCommonService
+				.getCandidatesResidenceListByCandidateIdAndOrgLocationID(candidateId, searchVal);
+		for (CandidateResidence canRes : candidatesResidenceList) {
+			canRes.setStartDateStr(
+					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canRes.getStartDate()));
+			canRes.setEndDateStr(
+					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canRes.getEndDate()));
 
 		}
-		 model.addObject("candidatesResidenceList",candidatesResidenceList);
+		model.addObject("candidatesResidenceList", candidatesResidenceList);
 		return model;
 	}
+
 	@RequestMapping(value = { "/getCandidatePassportVisaDetails" })
-	public ModelAndView getCandidatePassportVisaDetails(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request, @RequestParam(value = "idType", required = true) String idType,@RequestParam(value = "searchValue", required = true)String searchValue) throws Exception
-	{
+	public ModelAndView getCandidatePassportVisaDetails(
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
+			@RequestParam(value = "idType", required = true) String idType,
+			@RequestParam(value = "searchValue", required = true) String searchValue) throws Exception {
 		ModelAndView model = new ModelAndView();
 		System.out.println(" inisde getCandidatePassportDetails controller test -->");
 		List<CandidatePassportVisa> PassportList = new ArrayList<CandidatePassportVisa>();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		try {
-			PassportList = immigrationCommonService.getCandidatePassportVisaDetails(candidateId, idType,searchValue);
-			for(CandidatePassportVisa canPassportVisa : PassportList){
-				canPassportVisa.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidFromDate()));
-				canPassportVisa.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),canPassportVisa.getValidToDate()));
+			PassportList = immigrationCommonService.getCandidatePassportVisaDetails(candidateId, idType, searchValue);
+			for (CandidatePassportVisa canPassportVisa : PassportList) {
+				canPassportVisa.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+						canPassportVisa.getValidFromDate()));
+				canPassportVisa.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+						canPassportVisa.getValidToDate()));
 			}
-			
-			
+
 			List<Countries> countryList = countriesService.getAllCountries();
 			model.addObject("PassportList", PassportList);
 			model.addObject("countryList", countryList);
@@ -1286,87 +1357,103 @@ public class ImmigrationRestController {
 		System.out.println(" after getCandidatePassportVisaDetails controller -->");
 		if (idType.equalsIgnoreCase("Passport")) {
 			model.setViewName("/immigration/passportDetailsTab");
-		}
-		else {
+		} else {
 			List<String> visaList = lookUpDataService.getAllVisaByCategory();
-			model.addObject("visaList", visaList);	
+			model.addObject("visaList", visaList);
 			model.setViewName("/immigration/visaDetailsTab");
 		}
 		return model;
 	}
 
 	@RequestMapping(value = { "/updateImmigrationStatus" })
-	public String checkDataAndUpdateImmigrationStatus(@RequestParam(value = "id", required = true) Long immigrationId
-			,@RequestParam(value = "candidateId", required = true) Long candidateId,
-			@RequestParam(value = "templateId", required = true) Long templateId,
-			HttpServletRequest request) throws Exception
-	{
+	public String checkDataAndUpdateImmigrationStatus(@RequestParam(value = "id", required = true) Long immigrationId,
+			@RequestParam(value = "candidateId", required = true) Long candidateId,
+			@RequestParam(value = "templateId", required = true) Long templateId, HttpServletRequest request)
+			throws Exception {
 		String result = "{status:'success'}";
 
 		System.out.println(" inisde updateImmigrationStatus controller -->");
-		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			String entityArray[] = new String[] { "CandidatePassportVisa", "CandidatePassportVisa",
 					"CandidateEmployers", "CandidateResidence", "CandidateEducation", "CandidateFamilyDetails" };
-			String tabNameArray[] = new String[] { "Passport", "Visa", "Employers", "Residence", "Education","Family" };
+			String tabNameArray[] = new String[] { "Passport", "Visa", "Employers", "Residence", "Education",
+					"Family" };
 			Integer count = 0;
-			
+
 			for (int i = 0; i < entityArray.length; i++) {
 				if (i == 0) { // CandidatePassportVisa for passport
-					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId and idType='Passport'");
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
+							"where candidate.id=:candidateId and idType='Passport'");
 				} else if (i == 1) {// CandidatePassportVisa for Visa
-					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId and idType='Visa'");
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
+							"where candidate.id=:candidateId and idType='Visa'");
 				} else if (i == 2) { // CandidateEmployers
-					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId");
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
+							"where candidateId.id=:candidateId");
 				} else if (i == 3) { // CandidateResidence
-					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId");
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
+							"where candidate.id=:candidateId");
 				} else if (i == 4) {// CandidateEducation
-					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId");
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
+							"where candidateId.id=:candidateId");
 				} else if (i == 5) {// CandidateFamilyDetails
-					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId");
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
+							"where candidate.id=:candidateId");
 				}
 				if (count == null || count == 0) {
 					result = "{errorMsg:'" + tabNameArray[i] + "'}";
 					System.out.println(" Record not found for the Tab Nme:::--> : " + tabNameArray[i]);
 					return result;
 				}
-				
-				// check  required column value in Forms tab.
-				List<ImmigrationCandidateForms> formsList=  immigrationCommonService.getCandidateImmigartionFormsDetails(candidateId , templateId, immigrationId,"");
+
+				// check required column value in Forms tab.
+				List<ImmigrationCandidateForms> formsList = immigrationCommonService
+						.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, "");
 				System.out.println(" formsList:::--> : " + formsList.size());
-				for(ImmigrationCandidateForms form: formsList) {
-					if(form.getIsRequired().equalsIgnoreCase(Constants.YES)) {
-						if(!form.getFormStatus().equalsIgnoreCase(ImmigrationConstants.FILE_UPLOADED) || StringUtils.isEmpty(form.getUploadedFileUrl())) {
-						result = "{errorMsg:'forms'}";
-						System.out.println("form.getIsRequired() : "+form.getIsRequired()+", form.getFormStatus() : "+form.getFormStatus()+", form.getUploadedFileUrl():  "+form.getUploadedFileUrl());
-						System.out.println("Required found for the form Tab for the form ID:::--> : " + form.getId());
-						return result;
+				for (ImmigrationCandidateForms form : formsList) {
+					if (form.getIsRequired().equalsIgnoreCase(Constants.YES)) {
+						if (!form.getFormStatus().equalsIgnoreCase(ImmigrationConstants.FILE_UPLOADED)
+								|| StringUtils.isEmpty(form.getUploadedFileUrl())) {
+							result = "{errorMsg:'forms'}";
+							System.out.println("form.getIsRequired() : " + form.getIsRequired()
+									+ ", form.getFormStatus() : " + form.getFormStatus()
+									+ ", form.getUploadedFileUrl():  " + form.getUploadedFileUrl());
+							System.out
+									.println("Required found for the form Tab for the form ID:::--> : " + form.getId());
+							return result;
 						}
 					}
 				}
 				// check is required in in DocumentsTab
-				 List<ImmigrationCandidateDocuments> docsList= immigrationCommonService.getImmigrationCandidateDocs(immigrationId, templateId,candidateId, user, orgLocations, "");
-				 for(ImmigrationCandidateDocuments doc: docsList) {
-						if(doc.getIsRequired().equalsIgnoreCase(Constants.YES)) {
-							if(!doc.getDocumentStatus().equalsIgnoreCase(ImmigrationConstants.FILE_UPLOADED) || StringUtils.isEmpty(doc.getUplodedFileUrl())) {
+				List<ImmigrationCandidateDocuments> docsList = immigrationCommonService
+						.getImmigrationCandidateDocs(immigrationId, templateId, candidateId, user, orgLocations, "");
+				for (ImmigrationCandidateDocuments doc : docsList) {
+					if (doc.getIsRequired().equalsIgnoreCase(Constants.YES)) {
+						if (!doc.getDocumentStatus().equalsIgnoreCase(ImmigrationConstants.FILE_UPLOADED)
+								|| StringUtils.isEmpty(doc.getUplodedFileUrl())) {
 							result = "{errorMsg:'Documents'}";
-							System.out.println("Required found for the Documents Tab for the Doc ID :::--> : " + doc.getId());
+							System.out.println(
+									"Required found for the Documents Tab for the Doc ID :::--> : " + doc.getId());
 							return result;
-							}
 						}
 					}
-				 // if no error message means all required information is filled.
-				 // then update immigration petition status to request to fill.
-				 
-				 LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(ImmigrationConstants.PETITION_STATUS,ImmigrationConstants.PETITION_STATUS_FILLED);
-				 Immigration immigration = new Immigration();	
-				 if(immigrationId!= null) {
-					 immigration = immigrationCommonService.getImmigrationById(immigrationId);
-					}
-				 immigration.setCurrUscisStauts(data); // updating with Filled status.
-				 immigrationCommonService.updateImigrationDetatils(immigration);
-				 System.out.println("Immigartion details udated successfully for the immigration id ID :::--> : " + immigration.getId());
+				}
+				// if no error message means all required information is filled.
+				// then update immigration petition status to request to fill.
+
+				LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(ImmigrationConstants.PETITION_STATUS,
+						ImmigrationConstants.PETITION_STATUS_FILLED);
+				Immigration immigration = new Immigration();
+				if (immigrationId != null) {
+					immigration = immigrationCommonService.getImmigrationById(immigrationId);
+				}
+				immigration.setCurrUscisStauts(data); // updating with Filled status.
+				immigrationCommonService.updateImigrationDetatils(immigration);
+				System.out.println("Immigartion details udated successfully for the immigration id ID :::--> : "
+						+ immigration.getId());
 			}
 		} catch (Exception e) {
 			logger.error("Exception caught in controller --->" + e.getMessage());
@@ -1374,157 +1461,168 @@ public class ImmigrationRestController {
 		}
 		return result;
 	}
-	
-	
+
 	@RequestMapping(value = { "/deleteCandidatePassportVisaDetails" })
-	public String deleteCandidatePassportVisaDetails(
-			@RequestParam(value = "id", required = true) Long id, 
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,@RequestParam(value = "idType", required = true) String idType) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		immigrationCommonService.removeCandidatePassportVisaDetails(candidateId, id, user, orgLocations,idType);
+	public String deleteCandidatePassportVisaDetails(@RequestParam(value = "id", required = true) Long id,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
+			@RequestParam(value = "idType", required = true) String idType) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		immigrationCommonService.removeCandidatePassportVisaDetails(candidateId, id, user, orgLocations, idType);
 
 		return "success";
 	}
-	
+
 	@RequestMapping(value = { "/deleteCandidateResidenceDetails" })
-	public String deleteCandidateResidenceDetails(
-			@RequestParam(value = "id", required = true) Long id, 
-			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		String  candidateResidence = immigrationCommonService.deleteCandidateResidenceDetails(id, candidateId);
+	public String deleteCandidateResidenceDetails(@RequestParam(value = "id", required = true) Long id,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String candidateResidence = immigrationCommonService.deleteCandidateResidenceDetails(id, candidateId);
 
 		return "success";
 	}
-	
+
 	@RequestMapping(value = { "/getCandidateResidenceDetailsById" })
-	public @ResponseBody  CandidateResidence getCandidateResidenceDetailsById(
+	public @ResponseBody CandidateResidence getCandidateResidenceDetailsById(
 			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		String status="";
-		System.out.println(" in controller method getCandidateResidenceDetailsById id ---> "+id);
-		CandidateResidence residenceObj= null;
+		String status = "";
+		System.out.println(" in controller method getCandidateResidenceDetailsById id ---> " + id);
+		CandidateResidence residenceObj = null;
 		try {
 			residenceObj = immigrationCommonService.getCandidateResidenceDetailsById(id);
-			residenceObj.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), residenceObj.getStartDate()));
-			residenceObj.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), residenceObj.getEndDate()));
-			System.out.println(" in controller status "+status);
+			residenceObj.setStartDateStr(
+					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), residenceObj.getStartDate()));
+			residenceObj.setEndDateStr(
+					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), residenceObj.getEndDate()));
+			System.out.println(" in controller status " + status);
 		} catch (Exception e) {
-			logger.error("Exception caught in controller test --->"+e.getMessage());
+			logger.error("Exception caught in controller test --->" + e.getMessage());
 			e.printStackTrace();
 		}
 
 		return residenceObj;
 	}
-	
+
 	@RequestMapping(value = { "/getCandidatePassportVisaDetailsById" })
-	public @ResponseBody  CandidatePassportVisa getCandidatePassportVisaDetailsById(
+	public @ResponseBody CandidatePassportVisa getCandidatePassportVisaDetailsById(
 			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		String status="";
-		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> "+id);
-		CandidatePassportVisa passportVisaObj= null;
+		String status = "";
+		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> " + id);
+		CandidatePassportVisa passportVisaObj = null;
 		try {
 			passportVisaObj = immigrationCommonService.getCandidatePassportVisaDetailsById(id);
-			
-			passportVisaObj.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),passportVisaObj.getValidFromDate()));
-			passportVisaObj.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),passportVisaObj.getValidToDate()));
-			
-			System.out.println(" in controller status "+status);
+
+			passportVisaObj.setValidFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+					passportVisaObj.getValidFromDate()));
+			passportVisaObj.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+					passportVisaObj.getValidToDate()));
+
+			System.out.println(" in controller status " + status);
 		} catch (Exception e) {
-			logger.error("Exception caught in controller test --->"+e.getMessage());
+			logger.error("Exception caught in controller test --->" + e.getMessage());
 			e.printStackTrace();
 		}
 
 		return passportVisaObj;
 	}
-	
-	@RequestMapping(value = {"/saveImmigrationNotesDetails"})
-    public String saveImmigrationNotesDetails(SourceleadNotesDTO sourceleadNotesDTO, HttpServletRequest request, 
-    		@RequestParam(value = "candidateId", required = false) Long candidateId,
-    		@RequestParam(value = "immigrationId", required = false) String immigrationId ) throws Exception {
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        sourceleadNotesService.storeComments(sourceleadNotesDTO, user,orgLocations);
-        System.out.println("Template Task Details saved succesfully --> ");
+
+	@RequestMapping(value = { "/saveImmigrationNotesDetails" })
+	public String saveImmigrationNotesDetails(SourceleadNotesDTO sourceleadNotesDTO, HttpServletRequest request,
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "immigrationId", required = false) String immigrationId) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		sourceleadNotesService.storeComments(sourceleadNotesDTO, user, orgLocations);
+		System.out.println("Template Task Details saved succesfully --> ");
 
 		return "success";
-    }
-	
-	@RequestMapping(value = "/validateImmiEduname")
-	public Boolean validateEduname(@RequestParam(value="name", required=false) String  name,@RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request) throws Exception {
-		String candidateEducationName = name;
-			Boolean immiCanEdu = candidateEducationService.validateEducationName(candidateId, candidateEducationName );
-			return immiCanEdu;
 	}
-	
 
-	
-	@RequestMapping(value = {"/getPetitionTypeOnLocation"})
-    public List<LookUpData> getPetitionTypeOnLocation(@RequestParam(value="locationVal", required=false) String  locationVal, HttpServletRequest request) {
-        List<LookUpData> petitionTypeDTOs = immigrationTemplateService.getLookupDataByTypeAndLocation(Constants.VISA,locationVal);
-        return petitionTypeDTOs;
+	@RequestMapping(value = "/validateImmiEduname")
+	public Boolean validateEduname(@RequestParam(value = "name", required = false) String name,
+			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
+			throws Exception {
+		String candidateEducationName = name;
+		Boolean immiCanEdu = candidateEducationService.validateEducationName(candidateId, candidateEducationName);
+		return immiCanEdu;
 	}
-	
+
+	@RequestMapping(value = { "/getPetitionTypeOnLocation" })
+	public List<LookUpData> getPetitionTypeOnLocation(
+			@RequestParam(value = "locationVal", required = false) String locationVal, HttpServletRequest request) {
+		List<LookUpData> petitionTypeDTOs = immigrationTemplateService.getLookupDataByTypeAndLocation(Constants.VISA,
+				locationVal);
+		return petitionTypeDTOs;
+	}
 
 	@RequestMapping(value = { "/getNotesListByImmigrationId" })
 	public ModelAndView getNotesListByImmigrationId(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
-			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
-			HttpServletRequest request) throws Exception {
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId, HttpServletRequest request)
+			throws Exception {
 		ModelAndView model = new ModelAndView();
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		model.setViewName("/immigration/noteDetailsTab");
-		 List<SourceleadNotes>   candidatesNotesList = sourceleadNotesService.getNotesListByImmigrationId(immigrationId,orgLocations.getId());
-		 model.addObject("candidatesNotesList",candidatesNotesList);
+		List<SourceleadNotes> candidatesNotesList = sourceleadNotesService.getNotesListByImmigrationId(immigrationId,
+				orgLocations.getId());
+		model.addObject("candidatesNotesList", candidatesNotesList);
 		return model;
 	}
-	@RequestMapping(value = {"/getCandidateImmigrationFormsList"})
-    public ModelAndView getCandidateImmigrationForms(HttpServletRequest request, 
-    		@RequestParam(value = "candidateId", required = false) Long candidateId
-    	    ,@RequestParam(value = "templateId", defaultValue = "0") Long templateId
-    		,@RequestParam(value = "immigrationId", required = false) Long immigrationId,
-    		@RequestParam(value = "searchVal", required = false) String searchVal) throws Exception {
-        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-        System.out.println("inside controller method getCandidateImmigrationForms--> ");
-    	
-        ModelAndView model = new ModelAndView();
-    	model.setViewName("/immigration/formDetailsTab");
-        List<ImmigrationCandidateForms> candidateFormsLst = immigrationCommonService.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId,searchVal);
-        System.out.println("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "+candidateFormsLst.size());
-        model.addObject("formsList" ,candidateFormsLst);
+
+	@RequestMapping(value = { "/getCandidateImmigrationFormsList" })
+	public ModelAndView getCandidateImmigrationForms(HttpServletRequest request,
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "templateId", defaultValue = "0") Long templateId,
+			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+			@RequestParam(value = "searchVal", required = false) String searchVal) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		System.out.println("inside controller method getCandidateImmigrationForms--> ");
+
+		ModelAndView model = new ModelAndView();
+		model.setViewName("/immigration/formDetailsTab");
+		List<ImmigrationCandidateForms> candidateFormsLst = immigrationCommonService
+				.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, searchVal);
+		System.out.println("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "
+				+ candidateFormsLst.size());
+		model.addObject("formsList", candidateFormsLst);
 		return model;
-    }
-	
-	
+	}
+
 	@RequestMapping(value = { "/updateUscisTypeDropDown" })
-	public String updateUscisTypeDropDown(
-			@RequestParam(value = "templateId", required = false) Long templateId,
-			@RequestParam(value = "uscisId", required = false) Long uscisId,
-			HttpServletRequest request) throws Exception {
-		String resultVal = immigrationCommonService.updateUscisTypeDropDown(templateId,uscisId);
+	public String updateUscisTypeDropDown(@RequestParam(value = "templateId", required = false) Long templateId,
+			@RequestParam(value = "uscisId", required = false) Long uscisId, HttpServletRequest request)
+			throws Exception {
+		String resultVal = immigrationCommonService.updateUscisTypeDropDown(templateId, uscisId);
 		return resultVal;
 	}
-	
-	
+
 	@RequestMapping(value = { "/editImmigrationDetails" })
 	public ModelAndView editImmigrationDetails(
-			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
-			HttpServletRequest request) throws Exception {
+			@RequestParam(value = "immigrationId", required = false) Long immigrationId, HttpServletRequest request)
+			throws Exception {
 		ModelAndView model = new ModelAndView();
-        model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("immigrationIdCode", immigrationId);
 		model.setViewName("/immigration/newPetition");
 		return model;
 	}
-	
-	@RequestMapping("/downloadImmigrationDocsZip")	
+
+	@RequestMapping("/downloadImmigrationDocsZip")
 	@ResponseBody
-	public String exportImmigrationDocuments(HttpServletRequest request,Long immigrationId, Long docId) throws Exception {
+	public String exportImmigrationDocuments(HttpServletRequest request, Long immigrationId, Long docId)
+			throws Exception {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
@@ -1535,39 +1633,49 @@ public class ImmigrationRestController {
 		if (loginOrgLocation != null) {
 			orgLocationId = loginOrgLocation.getId();
 		}
-		List <ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList =immigrationCommonService.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId,docId);
-		return FileUploadUtil.getImmigrationZipFiles(staticPath, orgId, orgLocationId,immigrationId, docId, immigrationCanididateDocHistoryList);
+		List<ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList = immigrationCommonService
+				.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId, docId);
+		Map<String, String> fileNameParameters = new HashMap<>();
+		Immigration immigration = immigrationCommonService.getImmigrationById(immigrationId);
+		fileNameParameters.put("immiUUID", immigration.getGeneratedId());
+		fileNameParameters.put("firstName", immigration.getCandidate().getFirstName());
+		fileNameParameters.put("lastName", immigration.getCandidate().getLastName());
+		if(docId != null) {
+			ImmigrationCandidateDocuments docObj= immigrationCommonService.getImmigrationCandidateDocumentById(docId);
+			fileNameParameters.put("docName",docObj.getDocumentType().getName());
+		}
+		return FileUploadUtil.getImmigrationZipFiles(staticPath, orgId, orgLocationId, immigrationId, docId,
+				immigrationCanididateDocHistoryList, fileNameParameters);
 	}
-	
-	
+
 	@RequestMapping(value = { "/deleteImmigrationDetailsById" })
 	public String deleteImmigrationDetailsById(
-			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
-			HttpServletRequest request) throws Exception {
+			@RequestParam(value = "immigrationId", required = false) Long immigrationId, HttpServletRequest request)
+			throws Exception {
 		String result = immigrationCommonService.deleteImmigrationDetailsById(immigrationId);
 		return result;
-		
+
 	}
-	
+
 	@RequestMapping(value = { "/deleteImmigrationEmployerDocumentById" })
 	public String deleteImmigrationEmployerDocumentById(@RequestParam(value = "id", required = false) Long id,
 			HttpServletRequest request) throws Exception {
 		String status = candidateEmployersService.removeCandidateEmployerDocById(id);
 		return status;
-		
+
 	}
-	
+
 	@RequestMapping(value = { "/deleteImmigrationEducationDocumentById" })
 	public String deleteImmigrationEducationDocumentById(@RequestParam(value = "id", required = false) Long id,
 			HttpServletRequest request) throws Exception {
 		String status = candidateEducationService.removeCandidateEucationrDocById(id);
 		return status;
-		
+
 	}
-	
-	@RequestMapping("/downloadImmigrationFormZip")	
+
+	@RequestMapping("/downloadImmigrationFormZip")
 	@ResponseBody
-	public String exportImmigrationForms(HttpServletRequest request,Long immigrationId) throws Exception {
+	public String exportImmigrationForms(HttpServletRequest request, Long immigrationId) throws Exception {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
@@ -1578,10 +1686,15 @@ public class ImmigrationRestController {
 		if (loginOrgLocation != null) {
 			orgLocationId = loginOrgLocation.getId();
 		}
-		List <ImmigrationCandidateForms> immigrationCandidateForms =immigrationCommonService.getImmigrationCandidateFormsByImmigrationId(immigrationId);
-		return FileUploadUtil.getImmigrationFormZipFiles(staticPath, orgId, orgLocationId,immigrationId, immigrationCandidateForms);
+		List<ImmigrationCandidateForms> immigrationCandidateForms = immigrationCommonService
+				.getImmigrationCandidateFormsByImmigrationId(immigrationId);
+		Map<String, String> fileNameParameters = new HashMap<>();
+		Immigration immigration = immigrationCommonService.getImmigrationById(immigrationId);
+		fileNameParameters.put("immiUUID", immigration.getGeneratedId());
+		fileNameParameters.put("firstName", immigration.getCandidate().getFirstName());
+		fileNameParameters.put("lastName", immigration.getCandidate().getLastName());
+		return FileUploadUtil.getImmigrationFormZipFiles(staticPath, orgId, orgLocationId, immigrationId,
+				immigrationCandidateForms, fileNameParameters);
 	}
 
 }
-
-

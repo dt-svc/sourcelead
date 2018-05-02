@@ -1,5 +1,6 @@
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-	<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+	<c:set var ="allDocsUploaded" value ="No"/>
 		<div class="immigraTabsHead">
 		<!-- <a href="javascript:void(0)" id="immDocu"><i class="glyphicon glyphicon-plus"></i> Request Document</a> 		 -->	  	
 		  	<a href="javascript:void(0)" id="addDocu"><i class="glyphicon glyphicon-plus"></i> Add Document</a> 
@@ -66,9 +67,14 @@
 					<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
 					<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
 					<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteDocumentDetailsByRowId(${canDocList.id});" ></i>
+				   
 				 </c:if>
+					 
 					</div>
 				</td>
+				<c:if test="${canDocList.isRequired == 'Y' and not empty canDocList.uplodedFileUrl}">
+					 <c:set var ="allDocsUploaded" value ="Yes"/>
+					 </c:if>
 			  </tr>  
 		</c:forEach>
 			  						
@@ -471,7 +477,7 @@ $("#immigraDocTabSerach").keyup(function (e) {
 function downlaodZipfileByDocId(docId){
 	if(docId == "")
 		return;
-	$.post("downloadImmigrationDocsZip",{immigrationId: '', docId: docId}, function(data) { //  passing empty value for immigrationId to do doc level zip download
+	$.post("downloadImmigrationDocsZip",{immigrationId: immigrationId, docId: docId}, function(data) { //  passing empty value for immigrationId to do doc level zip download
 		if(data !== "" && data.indexOf("Documents Found") === -1)
 			location.href = '/app/downloadFile.html?file='+encodeURI(data); // encodeURI used for encoding file path in request parameter.
 		else
@@ -507,3 +513,15 @@ function getDocumentTypeDiv(documentTypes){
 //$("#documentType").trigger("chosen:updated");
 </script>
 
+<script>
+//$(document).ready(function(){
+  var allDocsUploaded = '<c:out value ="${allDocsUploaded}"/>';
+  console.log("allDocsUploaded -->"+allDocsUploaded);
+	if(allDocsUploaded == 'Yes'){
+	        $('#allDocsfilled').show() // show and hides circle icon.
+	 }
+    else {
+	        $('#allDocsfilled').hide()
+     }
+//});	
+</script>

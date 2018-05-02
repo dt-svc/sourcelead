@@ -50,6 +50,7 @@ import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
@@ -635,7 +636,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,
-			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal) throws Exception
+			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Long> countlist = null;
@@ -671,8 +672,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				query1.append(" or (immView.org1 like '%" + searchValue + "%' )");
 			}
 			query1.append(" or (immView.phone like '%" + searchValue + "%' ))");
-			// query1.append(" or (tempView.status like '%" + searchValue + "%'
-			// )");
 		}
 		 StringBuilder query2 = new StringBuilder("");
 		if(filterVal.size() != 0) {
@@ -683,7 +682,12 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				query2.append(" and (immView.currUscisStatusId IN ( :uscisStatusList ))");
 			}
 			if(filterVal.get("attorney") != null) {
-				query2.append(" and (immView.attorneyOrgLocationId IN ( :attorneyList ))");
+				if (orgTypeVal.equalsIgnoreCase("Org2")) {
+					query1.append(" and (immView.org2 IN ( :attorneyList )) ");
+				}
+				else {
+					query1.append(" and (immView.org1 IN ( :attorneyList )) ");
+				}
 			}
 			if(filterVal.get("duration") != null) {
 				query2.append(" and (year(immView.openDate) <= :highestDuration AND year(immView.openDate) >= :lowestDuration) ");
@@ -719,8 +723,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         		hqlQuery1.setParameterList("uscisStatusList", filterVal.get("status"));
         	}
         	if(filterVal.get("attorney") != null) {
-        		hqlQuery.setParameterList("attorneyList", filterVal.get("attorney"));
-        		hqlQuery1.setParameterList("attorneyList", filterVal.get("attorney"));
+        		List<String> orgNameList = getOrgNamesById(filterVal.get("attorney"),orgLocations.getId());
+        		hqlQuery.setParameterList("attorneyList", orgNameList);
+        		hqlQuery1.setParameterList("attorneyList", orgNameList);
         	}
         	if(filterVal.get("duration") != null) {
         		List<Long> durationDates = new ArrayList<Long>();
@@ -777,9 +782,11 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	            target.setLcaEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaEndDate()));
 	            if(orgLocations.getId() == source.getOrgLocationId()) {
 	            	target.setOrgName(source.getOrg2());
+	            	target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG2);
 	            }
 	            else {
 	            	target.setOrgName(source.getOrg1());
+	            	target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG1);
 	            }
 	            ImmigarionDTOList.add(target);
 	        }
@@ -790,7 +797,18 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         return responseList;
 	}
 	
-	
+	@Transactional(rollbackFor = { Exception.class })
+	private List<String> getOrgNamesById(Long[] longs,Long orgLocationId) {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 String query = "from OrgRelations orgr  where orgr.locationId = :currOrgLocationId and orgr.id IN ( :relationIds ) ";
+		 List<OrgRelations> orgRelations = session.createQuery(query).setLong("currOrgLocationId", orgLocationId).setParameterList("relationIds", longs).list();
+		 List<String> orgNames = new ArrayList<String>();
+		 for(OrgRelations orgRelation : orgRelations) {
+			 orgNames.add(orgRelation.getResponderLocationId().getOrg().getOrgName());
+		 }
+		return orgNames;
+	}
+
 	@Override
     @Transactional(rollbackFor = { Exception.class })
 	public ImmigrationCandidateDocumentsHistory saveImmigrationCandidateDocumentHistory(ImmigrationCandidateDocumentsHistory immigrationCandidateDocumentsHistory) throws Exception
@@ -891,7 +909,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		 query = "from ImmigrationCandidateDocumentsHistory cdh where  cdh.immigrationId.id =:immigrationId ORDER BY cdh.id DESC";
 		 immigrationCandidateDocumentHistoryList = session.createQuery(query).setLong("immigrationId", immigrationId).list();
 		}
-		else if(immigrationId == null) {
+		else if(docId!= null && immigrationId != null) {
 			 query = "from ImmigrationCandidateDocumentsHistory cdh where  cdh.immigrationCandidateDocumentId =:docId ORDER BY cdh.id DESC";
 			  immigrationCandidateDocumentHistoryList = session.createQuery(query).setLong("docId", docId).list();
 		}

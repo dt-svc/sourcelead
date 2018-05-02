@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var ="allFormsUploaded" value ="No"/>
 <div class="immigraTabsHead">			  	
 		  	<a href="javascript:void(0)" id="addForm"><i class="glyphicon glyphicon-plus"></i> Add Form</a>
 		  	<span id='formZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt paddingRight"></i>Download All Documents</span> 
@@ -37,6 +38,9 @@
 				 <i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="immigration.deleteImmigrationCandidateForm(${items.id});" ></i>
 				 </c:if>
 				 </div>
+				 <c:if test="${items.isRequired == 'Y' and not empty items.uploadedFileUrl}">
+				 <c:set var ="allFormsUploaded" value ="Yes"/>
+				 </c:if>
 				 </td>
 			  </tr>  
 			 </c:forEach>			  			  
@@ -273,4 +277,16 @@ $("#formZipfile").click(function() {
 		}
 	});
 });
+</script>
+<script>
+//$(document).ready(function(){
+  var allFormsUploaded = '<c:out value ="${allFormsUploaded}"/>';
+  console.log("allFormsUploaded -->"+allFormsUploaded);
+	if(allFormsUploaded == 'Yes'){
+	        $('#allFormsfilled').show() // show and hides circle icon.
+	 }
+    else {
+	        $('#allFormsfilled').hide()
+     }
+//});	
 </script>

@@ -445,7 +445,7 @@ function Immigration() {
 		console.log("inside updateImmigrationStatus function call  -->"+immigrationId)
 
 		$.ajax({
-			url : sourceleadUrl + immiModulePath+"/updateImmigrationStatus?id=" + immigrationId+"&candidateId="+candidateId,
+			url : sourceleadUrl + immiModulePath+"/updateImmigrationStatus?id=" + immigrationId+"&candidateId="+candidateId+"&templateId="+templateId,
 			type : "GET",
 			success : function(data) {
 				console.log(" inside success" + data);
@@ -453,9 +453,11 @@ function Immigration() {
 				console.log(jsonObj);
 				if (typeof jsonObj.errorMsg != 'undefined') {
 					alert(" error Msg"+jsonObj.errorMsg);
-					console.log(" inside !jsonObj.errorMsg" + data);
-				} else {
 					console.log(" inside jsonObj.errorMsg" + data);
+				} else {
+					console.log(" inside !jsonObj.errorMsg" + data);
+					console.log(" No Errors found----->");
+					location.reload();
 				}
 			}
 		});

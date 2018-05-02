@@ -1,4 +1,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <c:set var ="residenceListCount" value ="${fn:length(candidatesResidenceList)}"/>
 <div class="immigraTabsHead">
 		  	<a href="javascript:void(0)" id="addResi"><i class="glyphicon glyphicon-plus"></i> Add Residence</a> 
 		  	<span><input class="immigraTabSerach" type="text" id="residenceSearch" placeholder="Location/Country"></span>
@@ -202,6 +204,12 @@
 			    });
 		</script>
 		
-		
-		
-		
+<script>
+  var residenceListCount = '<c:out value ="${residenceListCount}"/>';
+  if(residenceListCount>0){
+        $('#residencefilled').show() // show and hides circle icon.
+    }
+	else {
+        $('#residencefilled').hide()
+	}
+</script>

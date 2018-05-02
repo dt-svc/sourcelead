@@ -10,7 +10,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <script type="text/javascript" src="/resources/js/immigration.js"></script>
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script>
+<!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
 <title>Insert title here</title>
     <section class="content-wraper content-wraperNew">
@@ -187,7 +187,7 @@
 							 
 						</div>
 				</div>
-				
+				<input type="hidden" id="orgType" value="">
 				<div class="col-md-3">
 						<div class="row">
 							<div class="col-md-12 mb">
@@ -416,7 +416,7 @@
 		filterStatusVal = filterVal[2];
 		filterDurationVal = filterVal[3];
 	 }
-	 
+	 var orgTypeVal =  $("#orgType").val();
      var result = "";
      result = result + '<table id="dynamicImmigrationListTbl">';
      result = result + '<thead>';
@@ -444,7 +444,7 @@
 //     var statusFilter = $("#statusFilter").val();
      var searchValue = $("#immiListSerach").val();
      searchValue = searchValue ? searchValue : "";
-     var url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal;
+     var url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal+"&orgTypeVal="+orgTypeVal;
      dynamicImmigrationListPagination(url);
  }
  //var count = 0;
@@ -454,8 +454,8 @@
          "processing": true,
          "serverSide": true,
          "searching": false,
-         "colReorder": true,
-     	 'dom': 'Rlfrtip',
+        // "colReorder": true,
+     	// 'dom': 'Rlfrtip',
          // "stateSave": true, // used to save the page state local or server side.
          "ajax": $.fn.dataTable.pipeline({
              url: url,
@@ -639,6 +639,9 @@
                  "targets": colIndex++,
                  /*"data": "formsCount",*/
                  "render": function (data, type, opt, meta) {
+                	 if( $("#orgType").val() == ""){
+                	 	$("#orgType").val(opt.orgNameSel);
+                	 }
                      var result = "";
                      result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationId='+opt.id+'><i id="edit' + opt.id + '" class="glyphicon glyphicon-pencil"></i></a><i id="delete' + opt.id + '" onclick="deleteImmigrationListId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                      return result;
