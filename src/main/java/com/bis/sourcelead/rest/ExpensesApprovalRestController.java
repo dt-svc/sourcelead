@@ -292,36 +292,16 @@ public class ExpensesApprovalRestController {
 			 amountCurrencyType.append(amountCurrencyType1).append(" ").append(currencyCode);
 			 globalVarsMap.put("amount",amountCurrencyType1.toString());
 			 globalVarsMap.put("reason",rejectedReason);
-			 
-			 //setting the Recipient information
-			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-			 
-			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = null;
+	
 			 if(status.equals("REJECTED")){
-	             emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_REJECTED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_EMAIL);
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLoc.getOrg(),orgLoc,Constants.EXPENSES_REJECTED_EMAIL_TOVENDOR,new ArrayList<EmailAttachment>());
 			 }else{
-				 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_APPROVED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_EMAIL);
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLoc.getOrg(),orgLoc,Constants.EXPENSES_APPROVED_EMAIL_TOVENDOR,new ArrayList<EmailAttachment>());
 			 }
-			 
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;
-			 
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLoc.getOrg(),orgLoc);
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			 
-			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLoc.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-			 
-			 
+			
 			//calling the sendNotification method of emailScenerioUtil
 			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_APPROVED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
-			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 			notificationScenario.setBody(notificationBody);
 			notificationScenario.setOrgCode(orgLoc.getLocationCode());
 			//String url = null;
@@ -332,7 +312,8 @@ public class ExpensesApprovalRestController {
 		}
 	}
     private void sendEmailNotificationToEmployeeAndApproversOfEndClient(Expenses expenses,String currencyCode,String firstName,String lastName,String toEmail,User loginUser,OrgLocations loginOrgLocation,ProjectMembers projectMembers,String startDate, String endDate,String status,String rejectedReason) throws Exception{
-		 EmailMessage emailMessage = new EmailMessage();
+		
+    	EmailMessage emailMessage = new EmailMessage();
     	 emailMessage.setFirstName(firstName);
 	 	 emailMessage.setLastName(lastName);
 	 	 emailMessage.setToEmail(toEmail);
@@ -394,29 +375,13 @@ public class ExpensesApprovalRestController {
 		 StringBuilder loginURLSB = new StringBuilder();
 		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = null;
 		 if("REJECTED".equalsIgnoreCase(status)){
-			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_REJECTED_EXPENSE,Constants.ENTITY_TYPE_EMAIL);
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MANAGER_REJECTED_EXPENSE,new ArrayList<EmailAttachment>());
 		 }
 		 if("APPROVED".equalsIgnoreCase(status)){
-			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE,Constants.ENTITY_TYPE_EMAIL);
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE,new ArrayList<EmailAttachment>());
 		 }
-		 
 		
-		 // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once 
-		 // TODO @Shivayogi  i have checked it,its working fine . if migration is not there it will throw null pointer.
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 EmailScenario  notificationScenario = null;
 		 String actionLink="";
 		 StringBuilder notificationLink = new StringBuilder();
@@ -430,7 +395,7 @@ public class ExpensesApprovalRestController {
 			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }
 		 // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once 
-		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getSubject(),globalVarsMap);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
 		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());  
