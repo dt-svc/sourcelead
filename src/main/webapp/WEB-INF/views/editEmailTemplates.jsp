@@ -17,7 +17,7 @@
 <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
-            <h2> Edit Email Template</h2>
+            <h2> Edit ${emailScenario.entityType} Template</h2>
           </div>
          <%--  <a href="${appPath}/addUserManuals" class="pull-right btn btn-primary btn-sm mb">Add</a> --%>
           <%-- <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default " ><i class="fa fa-pie-chart"></i></a>
@@ -137,7 +137,7 @@
 
 <script>
 function editEmailTemplates() {
-	if ($('#user_manuals_form').validate(false, validationSettings)) {
+	if ($('#email_template_form').validate(false, validationSettings)) {
 		$("#save_title").attr("disabled", "disabled");
 		$("#save_title").addClass('button').val('Processing..');
 	
