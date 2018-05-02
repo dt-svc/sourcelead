@@ -26,7 +26,6 @@ public class CandidateFamilyDetailsDTO extends SearchDTO {
    
     private Long id; // added to populate the value in edit mode.
     
-	@Required(desc = "candidate id")
 	private Long candidateId;
 	
 	@Required(desc = "first name")
@@ -46,10 +45,10 @@ public class CandidateFamilyDetailsDTO extends SearchDTO {
 	
 	private String nationality;
 	
-	@Required(desc = "marriage place")
+	@Required(desc = "marriage place", dependsOn = "relationType", parentValue = "Spouse" )
 	private String marriagePlace;
 	
-	@Required(desc = "marraige date")
+	@Required(desc = "marraige date", dependsOn = "relationType", parentValue = "Spouse")
 	private String marraigeDate;
 	
 	private String marriageEndDate;
@@ -65,6 +64,8 @@ public class CandidateFamilyDetailsDTO extends SearchDTO {
 	private String updatedDate;
 
 	private String updatedBy;
+	
+	private String relationType;
 
 	
 	public Long getId() {
@@ -210,6 +211,13 @@ public class CandidateFamilyDetailsDTO extends SearchDTO {
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
+
+	public String getRelationType() {
+		return relationType;
+	}
+
+	public void setRelationType(String relationType) {
+		this.relationType = relationType;
+	}
     	
 }
