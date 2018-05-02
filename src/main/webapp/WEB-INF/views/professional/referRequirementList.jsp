@@ -353,35 +353,45 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 				<div class="referWrap referWrap_custom">
 				<div id="loading"></div> 
 				  <div class="referWrapInn">
-					<div class="form-group col-md-6" id="firstNameDiv">
-					  <label class="col-md-12">First Name *</label>
-					  
-					  <div class="col-md-12">
+					<div class="col-md-12" id="firstNameDiv">
+					  <label class="clearfix">First Name *</label>
+					  <div class="clearfix">
 						<input type="text" class="form-control margin-top0" name="firstName" id="firstName" field-name="First Name" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">
-						<span class="hidden"></span> </div>
+						<span class="hidden"></span> 
+					  </div>
 					</div> 
-					<div class="form-group col-md-6" id="lastNameDiv">
-					  <label class="col-md-12">Last Name</label>
-					  <div class="col-md-12">
+					<div class="col-md-12 mt10" id="lastNameDiv">
+					  <label class="clearfix">Last Name</label>
+					  <div class="clearfix">
 						<input type="text" class="form-control margin-top0" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">
 						<span class="hidden"></span> </div>
 					</div> 
-					<div class="form-group col-md-6" id="emailDiv">
-					  <label class="col-md-12">Email Id *</label>
-					  <div class="col-md-12">
-						<input type="text" class="form-control input-sm margin-top0" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
-						<span class="hidden"></span> </div>
+					
+					<div class="col-md-12 mt10" id="emailDiv">
+					  <label class="clearfix">Email Id *</label>
+					  <div class="row">
+					  <div class="col-md-10 paddingRight errorInptgroup">
+						<input type="text" class="form-control margin-top0" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
+						<span class="hidden"></span> 
+					 </div>
+					 <div class="col-md-2 padding_left">
+					 <div class="input-group-addon input-groupaddon-custom" id="emailStatusIconDiv" >
+	                    <i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                    </div>
+	                 </div>
+					</div>
 					</div> 
-					<div class="form-group col-md-6" id="phoneDiv">
-					  <label class="col-md-12">Phone </label>
-					  <div class="col-md-12" >
+					
+					<div class="col-md-12 mt10" id="phoneDiv">
+					  <label class="clearfix">Phone </label>
+					  <div class="clearfix" >
 						<input type="text" class="form-control margin-top0"  name="phone" id="phone" field-name="Phone" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20">
 						<span class="hidden"></span> </div>
 					</div> 
 					
-					<div class="form-group col-md-6">
-							<label class="col-md-12" >Contact Type</label>
-							<div class="col-md-12 select-field">
+					<div class="col-md-12 mt10">
+							<label class="clearfix" >Contact Type</label>
+							<div class="clearfix select-field">
 								<select class="form-control margin-top0" name="contactType" id="contactType"  field-name="contactType">
 									<option value="">Select ContactType</option>
 									<option value="Vendor">Vendor</option>
@@ -392,9 +402,9 @@ img.contact-images { width:24px; height: 24px; margin-right: 10px;
 							</div>
 						</div>
 						
-						<div class="form-group col-md-6" id="companyName">
-					  <label class="col-md-12">Company Name</label>
-					  <div class="col-md-12">
+					<div class="col-md-12 mt10" id="companyName">
+					  <label class="clearfix">Company Name</label>
+					  <div class="clearfix">
 						<input type="text" class="form-control margin-top0" name="companyName" id="companyName" field-name="companyName" >
 						<span class="hidden"></span> </div>
 					</div> 
@@ -766,23 +776,25 @@ function validateContactEmail(){
 						    	    $("input#email").after("<p class='jquery_form_error_message'>"+contactEmail+" is already added as Contact</span>");
 				    				$('input#email').attr('record-exist','yes');
 				    				$('input#email').attr('record-exist-errorMsg',contactEmail+' is already added as Contact'); 
-						     } 
-						     
-					       	else{
+						     }else{
 					       		 $("#add_contact").removeAttr("disabled");
 								 $('input#email').removeAttr( "record-exist record-exist-errormsg");
 				        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 								 $( "#add_contact" ).removeAttr("style");
+								 validateEmailForExistenceUniversally(email, "input#email");
 								 $( "#add_contact" ).click(function() {
 								 if ($(this).validate(false, validationSettings)){
 								 }
 								});
+								
 					       	}
 				       	}
-			    	   
 			      },
 			       
 			}); 
+	}else{
+		$("#emailStatusIconDiv").find("i").remove();
+  		$("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	}
 }
 </script>
@@ -1417,34 +1429,41 @@ function resetContactFilter(){
 		result = result  +'  <div class="modal-content">                                                                                                                                                                                           ';
 		result = result  +'  <div class="modal-body">                                                                                                                                                                                           ';
 		result = result  +'<a href="javascript:void(0)" class="close" onClick="closeEditContactDiv();">&times;</a>';
-		result = result  +'	<div class="form-group col-md-6" id="firstNameDiv">                                                                                                                                                                   ';
-		result = result  +'	  <label class="col-md-12">First Name *</label>                                                                                                                                                                       ';
-		result = result  +'	  <div class="col-md-12">                                                                                                                                                                                             ';
+		result = result  +'	<div class="mb10 col-md-12" id="firstNameDiv">                                                                                                                                                                   ';
+		result = result  +'	  <label class="clearfix">First Name *</label>                                                                                                                                                                       ';
+		result = result  +'	  <div class="clearfix">                                                                                                                                                                                             ';
 		result = result  +'		<input type="text" class="form-control" name="firstName" id="firstName" field-name="First Name" value="'+firstName+'" data-validation="required validate_Space validate_Alphanumeric validate_length length1-100">                      ';
 		result = result  +'		<span class="hidden"></span> </div>                                                                                                                                                                               ';
 		result = result  +'	</div>                                                                                                                                                                                                                ';
-		result = result  +'	<div class="form-group col-md-6" id="lastNameDiv">                                                                                                                                                                    ';
-		result = result  +'	  <label class="col-md-12">Last Name</label>                                                                                                                                                                          ';
-		result = result  +'	  <div class="col-md-12">                                                                                                                                                                                             ';
+		result = result  +'	<div class="mb10 col-md-12" id="lastNameDiv">                                                                                                                                                                    ';
+		result = result  +'	  <label class="clearfix">Last Name</label>                                                                                                                                                                          ';
+		result = result  +'	  <div class="clearfix">                                                                                                                                                                                             ';
 		result = result  +'		<input type="text" class="form-control" name="lastName" id="lastName" field-name="Last Name" data-validation-optional="true" value="'+lastName+'" data-validation="validate_Space validate_Alphanumeric validate_length length1-100">  ';
 		result = result  +'		<span class="hidden"></span> </div>                                                                                                                                                                               ';
 		result = result  +'	</div>                                                                                                                                                                                                                ';
-		result = result  +'	<div class="form-group col-md-6" id="emailDiv">                                                                                                                                                                       ';
-		result = result  +'	  <label class="col-md-12">Email Id *</label>                                                                                                                                                                         ';
-		result = result  +'	  <div class="col-md-12">                                                                                                                                                                                             ';
+		
+		result = result  +'	<div class="mb10 col-md-12" id="emailDiv">                                                                                                                                                                       ';
+		result = result  +'	  <label class="clearfix">Email Id *</label>';
+		result = result  +'	  <div class="input-group errorInptgroup">                                                                                                                                                                                             ';
 		result = result  +'		<input type="text" class="form-control input-sm" name="email" id="email" onblur="validateContactEmail()"  field-name="Email" value="'+email+'" data-validation="required validate_Space validate_length length2-100 validate_email">';
-		result = result  +'		<span class="hidden"></span> </div>                                                                                                                                                             ';
-		result = result  +'	</div>                                                                                                                                                                                              ';
-		result = result  +'	<div class="form-group col-md-6" id="phoneDiv">                                                                                                                                                     ';
-		result = result  +'	  <label class="col-md-12">Phone </label>                                                                                                                                                           ';
-		result = result  +'	  <div class="col-md-12" >                                                                                                                                                                          ';
+		result = result  +'		<span class="hidden"></span>';
+		
+		result = result  +'<span class="input-group-addon" id="emailStatusIconDiv">';
+		result = result  +'    <i class="fa fa-check text-muted" style="color:#f6f6f6"></i>';
+		result = result  +'</span>';
+		result = result  +'	</div> ';
+		result = result  +'	</div> ';
+		
+		result = result  +'	<div class="mb10 col-md-12" id="phoneDiv">                                                                                                                                                     ';
+		result = result  +'	  <label class="clearfix">Phone </label>                                                                                                                                                           ';
+		result = result  +'	  <div class="clearfix" >                                                                                                                                                                          ';
 		result = result  +'		<input type="text" class="form-control"  name="phone" id="phone" field-name="Phone" value="'+phone+'" data-validation-optional="true" data-validation="validate_Space validate_phone validate_length length9-20"> ';
 		result = result  +'		<span class="hidden"></span> </div>                                                                             ';
 		result = result  +'	</div>                                                                                                              ';
 		result = result  +'	                                                                                                                    ';
-		result = result  +'	<div class="form-group col-md-6">                                                                                   ';
-		result = result  +'			<label class="col-md-12" >Contact Type</label>                                                              ';
-		result = result  +'			<div class="col-md-12 select-field">                                                                        ';
+		result = result  +'	<div class="mb10 col-md-12">                                                                                   ';
+		result = result  +'			<label class="clearfix" >Contact Type</label>                                                              ';
+		result = result  +'			<div class="clearfix select-field">                                                                        ';
 		result = result  +'				<select class="form-control" name="contactType" id="contactType" value="'+contactType+'" field-name="contactType">             ';
 		
 		result = result  +'					<option value="">Select ContactType</option>                                                        ';
@@ -1473,9 +1492,9 @@ function resetContactFilter(){
 		result = result  +'			</div>                                                                                                      ';
 		result = result  +'		</div>                                                                                                          ';
 		result = result  +'		                                                                                                                ';
-		result = result  +'		<div class="form-group col-md-6" id="companyName">                                                              ';
-		result = result  +'	  <label class="col-md-12">Company Name</label>                                                                     ';
-		result = result  +'	  <div class="col-md-12">                                                                                           ';
+		result = result  +'		<div class="mb10 col-md-12" id="companyName">                                                              ';
+		result = result  +'	  <label class="clearfix">Company Name</label>                                                                     ';
+		result = result  +'	  <div class="clearfix">                                                                                           ';
 		result = result  +'		<input type="text" class="form-control" name="companyName" value="'+companyName+'" id="companyName" field-name="companyName" >          ';
 		result = result  +'		<span class="hidden"></span> </div>                                                                             ';
 		result = result  +'	</div>                                                                                                              ';

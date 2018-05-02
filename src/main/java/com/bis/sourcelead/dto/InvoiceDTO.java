@@ -3,6 +3,7 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Required;
 
 public class InvoiceDTO extends SearchDTO {
@@ -27,8 +28,12 @@ public class InvoiceDTO extends SearchDTO {
 	@Required (desc = "DueDate")
 	private String dueDate;
 	
+	@CleanHtml(escape=false)
 	private String billingAddress;
+	
+	@CleanHtml(escape=false)
 	private String accountDetails;
+	
 	private List<FileInfo> fileInfo;
 	private List<InvoiceLineItemsDTO> lineItems;
 	private List<InvoiceTaxDTO> invoiceTax;
@@ -79,7 +84,9 @@ public class InvoiceDTO extends SearchDTO {
     private String vendorName;
     private String locationdateForList;
     private String orgLocationId;
+    private String paymentAccount;
     private String invoiceUUID;
+
 	public List<InvoiceExpensesDTO> getExpenseInvoice() {
 		return expenseInvoice;
 	}
@@ -477,6 +484,14 @@ public class InvoiceDTO extends SearchDTO {
 		this.orgLocationId = orgLocationId;
 	}
 
+	public String getPaymentAccount() {
+		return paymentAccount;
+	}
+
+	public void setPaymentAccount(String paymentAccount) {
+		this.paymentAccount = paymentAccount;
+	}
+
 	public String getInvoiceUUID()
 	{
 		return invoiceUUID;
@@ -486,5 +501,4 @@ public class InvoiceDTO extends SearchDTO {
 	{
 		this.invoiceUUID = invoiceUUID;
 	}
-	
 }
