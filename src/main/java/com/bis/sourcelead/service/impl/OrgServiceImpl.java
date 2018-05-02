@@ -167,8 +167,8 @@ public class OrgServiceImpl implements OrgService {
     }
     
     @Override
-    public List<PaymentAccountDTO> getPaymentAccountList(long orgId, long orgLocactionId) {
-        return orgDao.getPaymentAccountList(orgId, orgLocactionId);
+    public List<PaymentAccountDTO> getPaymentAccountList(long orgId, long orgLocactionId,boolean onlyEnabledAccounts) {
+        return orgDao.getPaymentAccountList(orgId, orgLocactionId,onlyEnabledAccounts);
     }
 	
     @Override
@@ -185,4 +185,10 @@ public class OrgServiceImpl implements OrgService {
     public PaymentAccountDTO getPaymentAccount(long id, Long orgId) {
         return orgDao.getPaymentAccount(id, orgId);
     }
+
+	@Override
+	public int changePaymentAccountStatus(long id, long orgId) {
+		return orgDao.changePaymentAccountStatus(id, orgId);
+		
+	}
 }

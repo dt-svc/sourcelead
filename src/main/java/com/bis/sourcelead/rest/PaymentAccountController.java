@@ -98,7 +98,7 @@ public class PaymentAccountController {
         response.setResponse(Result.INVALID_DATA.name());
         response.setResponseMessage(Result.INVALID_DATA.getValue());
         if (org != null) {
-            response.setData(orgService.getPaymentAccountList(org.getId(), 0));
+            response.setData(orgService.getPaymentAccountList(org.getId(), 0,false));
             response.setResponse(Result.SUCCESS.name());
             response.setResponseMessage(Result.SUCCESS.getValue());
         } else {
@@ -311,5 +311,31 @@ public class PaymentAccountController {
             Logger.getLogger(PaymentAccountController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+    
+    @RequestMapping(value = "/app/change-active-payment-account", method = RequestMethod.POST)
+    @ResponseBody
+    public com.bis.sourcelead.dto.Response changeActiveAccount(HttpServletRequest request,  long id) {
+        com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();
+        Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+        response.setResponse(Result.INVALID_DATA.name());
+        response.setResponseMessage(Result.INVALID_DATA.getValue());
+        if (org != null) {
+            int flag = orgService.changePaymentAccountStatus(id, org.getId());
+            if (flag > 0) {
+                response.setResponse(Result.SUCCESS.name());
+                response.setResponseMessage(Result.SUCCESS.getValue());
+            } else if (flag < 0) {
+                response.setResponse(Result.DUPLICATE_EMAIL.name());
+                response.setResponseMessage(Result.DUPLICATE_EMAIL.getValue());
+            } else if (flag == 0) {
+                response.setResponse(Result.FAILED.name());
+                response.setResponseMessage(Result.FAILED.getValue());
+            }
+        } else {
+            response.setResponse(Result.SESSION_TIMEDOUT.name());
+            response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+        }
+        return response;
     }
 }
