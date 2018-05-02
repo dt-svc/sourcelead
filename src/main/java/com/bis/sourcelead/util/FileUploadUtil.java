@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -14,6 +16,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -393,6 +396,150 @@ public class FileUploadUtil {
 				}
 		}	
 		return file == null ? "" : file.getAbsolutePath();
+	}
+
+	public static String getAllImmigrationZipFiles(String staticPath, Long orgId, Long orgLocationId,Long immigrationId, HashMap<String, Object>	docsListMap, Map<String, String> fileNameParameters) {
+		File file = null;
+		FileOutputStream fos = null;
+		ZipOutputStream zos = null;
+		try {
+			List<ImmigrationCandidateForms> formsList = (List<ImmigrationCandidateForms>) docsListMap.get("immForms");
+			file = new File(com.google.common.io.Files.createTempDir(),
+					fileNameParameters.get("immiUUID") + "_" + fileNameParameters.get("firstName") + "_"
+							+ fileNameParameters.get("lastName") + "_" + "Immigration_Pacakage" + ".zip");
+			fos = new FileOutputStream(file);
+			zos = new ZipOutputStream(fos);
+			File folder = new File(staticPath, orgId + "/" + orgLocationId + "/immigrationCandidateForms");
+			if (!folder.exists() || folder.list().length == 0) {
+				return "No Documents Found";
+			}
+
+			// create a folder
+			File immFormFolder = new File(com.google.common.io.Files.createTempDir(),
+					fileNameParameters.get("immiUUID") + "_" + fileNameParameters.get("firstName") + "_"
+							+ fileNameParameters.get("lastName") + "_" + "Forms");
+			immFormFolder.mkdir(); // make a immigration directory.
+
+			File files[] = folder.listFiles();
+			InputStream inStream = null;
+			OutputStream outStream = null;
+			for (File f : files) {
+				for (ImmigrationCandidateForms docObj : formsList) { // for start
+					String fullFileName = FilenameUtils.getName(docObj.getUploadedFileUrl());
+					
+					if (f.getName().equalsIgnoreCase(fullFileName)) {
+						File afile = new File(f.getAbsolutePath());
+						File bfile = new File(immFormFolder.getAbsolutePath() + File.separator + f.getName());
+
+						try {
+							inStream = new FileInputStream(afile);
+							outStream = new FileOutputStream(bfile);
+
+							byte[] buffer = new byte[1024];
+
+							int length;
+							// copy the file content in bytes
+							while ((length = inStream.read(buffer)) > 0) {
+
+								outStream.write(buffer, 0, length);
+
+							}
+							inStream.close();
+							outStream.close();
+							// delete the original file
+							// afile.delete();
+							//System.out.println("File is copied successful!");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				} ///
+			}
+			// add the immigration folder to the zip file.
+			String source = file.getAbsolutePath(); // immigration folder.
+			try {
+				String sourceDir = immFormFolder.getParent();
+				String zipFile = source;
+				try {
+					FileOutputStream fout = new FileOutputStream(zipFile);
+					ZipOutputStream zout = new ZipOutputStream(fout);
+
+					File fileSource = new File(sourceDir);
+					addDirectory(zout, sourceDir, fileSource);
+					zout.close();
+					System.out.println("Zip file has been created!");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		} finally {
+			if(zos != null)
+				try {
+					zos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			if(fos != null)
+				try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}	
+		return file == null ? "" : file.getAbsolutePath();
+	}
+
+	public static String getRelativePath(String sourceDir, File file) {
+		// Trim off the start of source dir path...
+		String path = file.getPath().substring(sourceDir.length());
+		if (path.startsWith(File.pathSeparator)) {
+			path = path.substring(1);
+		}
+		return path;
+	}
+
+	private static void addDirectory(ZipOutputStream zout, String sourceDir, File fileSource) throws IOException {
+		if (fileSource.isDirectory()) {
+			// Add the directory to the zip entry...
+			String path = getRelativePath(sourceDir, fileSource);
+			if (path.trim().length() > 0) {
+				ZipEntry ze = new ZipEntry(getRelativePath(sourceDir, fileSource));
+				zout.putNextEntry(ze);
+				zout.closeEntry();
+			}
+
+			File[] files = fileSource.listFiles();
+			//System.out.println("Adding directory " + fileSource.getName());
+			for (int i = 0; i < files.length; i++) {
+				if (files[i].isDirectory()) {
+					addDirectory(zout, sourceDir, files[i]);
+				} else {
+
+					//System.out.println("Adding file " + files[i].getName());
+
+					// create byte buffer
+					byte[] buffer = new byte[1024];
+
+					// create object of FileInputStream
+					FileInputStream fin = new FileInputStream(files[i]);
+					zout.putNextEntry(new ZipEntry(getRelativePath(sourceDir, files[i])));
+
+					int length;
+
+					while ((length = fin.read(buffer)) > 0) {
+						zout.write(buffer, 0, length);
+					}
+					zout.closeEntry();
+					// close the InputStream
+					fin.close();
+				}
+			}
+		}
 	}
 
 	public static void processResumeFiles(Map<String, List<ResumeParserJsonUtil>> parsedList, 
