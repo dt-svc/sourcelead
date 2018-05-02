@@ -43,12 +43,7 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioServic
 		return emailScenarioDao.getEmailScenarioByUniqueName(uniqueScenarioName, entityType);
 	}
 
-	@Override
-	public List<EmailScenario> getEmailScenarioList() {
-		logger.debug("In EmailScenarioServiceImpl class getEmailScenarioList method");
-		return emailScenarioDao.getEmailScenarioList();
-	}
-
+	
 	@Override
 	public EmailScenario getEmailTemplateById(Long id) {
 		return emailScenarioDao.getEmailTemplateById(id);
@@ -60,9 +55,9 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioServic
 	}
 
 	@Override
-	public List<EmailScenario> getEmailScenarioList(String sourceLead) throws Exception {
+	public List<EmailScenario> getEmailScenarioList(String templateType) throws Exception {
 		
-		return emailScenarioDao.getEmailScenarioList(sourceLead);
+		return emailScenarioDao.getEmailScenarioList(templateType);
 	}
 
 	@Override
