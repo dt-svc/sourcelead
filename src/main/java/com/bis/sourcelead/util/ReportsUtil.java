@@ -137,6 +137,46 @@ public class ReportsUtil {
 		SourceLeadSessionManager.setSessionAttribute(request, "requirementIdsList", requirementIdsList);
 		return requirementDTOList;
 	}
+     
+     
+     
+     
+	public Date[] today(OrgLocations orgLocations) throws Exception {
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
+		
+		DateTime toDayZoned = zoned.minusDays(0);
+		String todayDate = outputFormatter.print(toDayZoned);
+		Date todayDateDateUTC = TZ_DF_TS.parse(todayDate);
+		
+		Date[] dates = new Date[2];
+		dates[0] = todayDateDateUTC;
+		dates[1] = startDateUTC;
+		return dates;
+	}
+	
+public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		
+		DateTime yesterdayDayZoned = zoned.minusDays(1);
+		String yesterdayDaysDate = outputFormatter.print(yesterdayDayZoned);
+		Date yesterdayDateUTC = TZ_DF_TS.parse(yesterdayDaysDate);
+		
+		Date[] dates = new Date[2];
+		dates[0] = yesterdayDateUTC;
+		dates[1] = yesterdayDateUTC;
+		return dates;
+	}
+	
 	
 	/**
 	 * Get from and to date of last 7 days
@@ -167,13 +207,6 @@ public class ReportsUtil {
 	 * @return Date[]  Date[0] = start date ,Date[1] = End date
 	 */
 	public Date[] last15DaysDates(OrgLocations orgLocations) throws Exception {
-		/*Date[] dates = new Date[2];
-		Calendar cal = Calendar.getInstance();
-		dates[1] = cal.getTime();
-		cal.add(Calendar.DATE, -15);
-		dates[0] = cal.getTime();
-		logger.info("From Date : " + dates[0] + " / To Date : " + dates[1]);*/
-		
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
@@ -199,12 +232,26 @@ public class ReportsUtil {
 	 * @return Date[] Date[0] = start date ,Date[1] = End date
 	 */
 	public Date[] last1MonthDates(OrgLocations orgLocations) throws Exception {
-		/*Date[] dates = new Date[2];
-		Calendar cal = Calendar.getInstance();
-		dates[1] = cal.getTime();
-		cal.add(Calendar.MONTH, -1);
-		dates[0] = cal.getTime();*/
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
 		
+		DateTime oneMonthZoned = zoned.minusDays(30);
+		String oneMonthDate = outputFormatter.print(oneMonthZoned);
+		Date oneMonthDateUTC = TZ_DF_TS.parse(oneMonthDate);
+		
+		Date[] dates = new Date[2];
+		dates[0] = oneMonthDateUTC;
+		dates[1] = startDateUTC;
+		
+		return dates;
+	}
+	
+	
+	public Date[] last2MonthDates(OrgLocations orgLocations) throws Exception {
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
@@ -230,13 +277,6 @@ public class ReportsUtil {
 	 * @throws Exception 
 	 */
 	public Date[] last3MonthDates(OrgLocations orgLocations) throws Exception {
-		/*Date[] dates = new Date[2];
-		Calendar cal = Calendar.getInstance();
-		dates[1] = cal.getTime();
-		cal.add(Calendar.MONTH, -3);
-		dates[0] = cal.getTime();
-		logger.info("From Date : " + dates[0] + " / To Date : " + dates[1]);*/
-		
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
@@ -253,6 +293,27 @@ public class ReportsUtil {
 		dates[0] = threeMonthDateUTC;
 		dates[1] = startDateUTC;
 		
+		return dates;
+	}
+	
+	
+	
+   public Date[] last2Weeks(OrgLocations orgLocations) throws Exception {
+		
+		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
+		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
+		
+		DateTime sevenDayZoned = zoned.minusDays(7);
+		String sevenDaysDate = outputFormatter.print(sevenDayZoned);
+		Date sevenDateUTC = TZ_DF_TS.parse(sevenDaysDate);
+		
+		Date[] dates = new Date[2];
+		dates[0] = sevenDateUTC;
+		dates[1] = startDateUTC;
 		return dates;
 	}
 
@@ -316,6 +377,16 @@ public class ReportsUtil {
 			searchDates = yearToDate();
 		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_LAST_YEAR)) {
 			searchDates = lastYearDates();
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_1_WEEK)) {
+			searchDates = last7Days(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_2_WEEKS)) {
+			searchDates = last2Weeks(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_2_MONTHS)) {
+			searchDates = last2MonthDates(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_TODAY)) {
+			searchDates = today(orgLocations);
+		}else if(dateSelection.equalsIgnoreCase(Constants.REPORT_FILTER_YESTERDAY)) {
+			searchDates = yesterdayDates(orgLocations);
 		}
 		
 		startDate = new java.sql.Date(searchDates[0].getTime());
