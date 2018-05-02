@@ -513,7 +513,7 @@ width: 100% !important;
 	        chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        if ((newEducation != null  && newEducation != '' && newEducation != 'undefined') && tagItBykeyForSkills(e1))
 		        {
 		        	preventTabkey(e1);
 		        	var par = this.parent;
@@ -546,7 +546,7 @@ width: 100% !important;
 			    	var newSkill = this.value.replace(","," ");
 			    	
 			    	 
-			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			        if ((newSkill != null  && newSkill != '' && newSkill != 'undefined') && tagItBykeyForSkills(e))
 			        {
 			        	preventTabkey(e); 
 			        	var par = this.parent;
