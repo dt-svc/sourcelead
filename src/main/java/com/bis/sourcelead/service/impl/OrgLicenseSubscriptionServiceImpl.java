@@ -313,6 +313,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
 			
 			userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
+			sendActivationEmail(user);
 			userService.sendEmail(user, loginUser, password,orgLocations.getId());
 			
 			
