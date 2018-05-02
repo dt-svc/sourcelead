@@ -144,17 +144,17 @@ public class LetterHeadServiceImpl implements LetterHeadService{
 		PdfPCell footerCell = new PdfPCell();
 		Paragraph p1 = new Paragraph(letterHead.getFooterText(),new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD));
 		if("Left".equalsIgnoreCase(letterHead.getAlignFooterText())) {
-	    	//p1.setAlignment(0);
-			footerCell.setPaddingRight(476);
-			footerCell.setPaddingLeft(0);
+	    	p1.setAlignment(Element.ALIGN_LEFT);
+			/*footerCell.setPaddingRight(476);
+			footerCell.setPaddingLeft(0);*/
 	    }else if("Right".equalsIgnoreCase(letterHead.getAlignFooterText())){
-	    	//p1.setAlignment(2);
-	    	footerCell.setPaddingRight(0);
-	    	footerCell.setPaddingLeft(476);
+	    	p1.setAlignment(Element.ALIGN_RIGHT);
+	    	/*footerCell.setPaddingRight(0);
+	    	footerCell.setPaddingLeft(476);*/
 	    }else {
-	    	//p1.setAlignment(5);
-	    	footerCell.setPaddingRight(233);
-	    	footerCell.setPaddingLeft(233);
+	    	p1.setAlignment(Element.ALIGN_CENTER);
+	    	/*footerCell.setPaddingRight(233);
+	    	footerCell.setPaddingLeft(233);*/
 	    }
 				
 		if(letterHead.getFooterBgColor() != null && letterHead.getFooterBgColor() != "") {
@@ -162,7 +162,7 @@ public class LetterHeadServiceImpl implements LetterHeadService{
 	    	footerCell.setBackgroundColor(myColor);
 	    }
 		footerCell.addElement(p1);
-   	footer.addCell(footerCell);
+   	footer.addCell(footerCell).setPaddingTop(-4);
 		
 		
 		
@@ -194,7 +194,12 @@ public class LetterHeadServiceImpl implements LetterHeadService{
 		canvas.endMarkedContentSequence();
 		
 		document.add(header);
-		document.close();
+		 
+		Paragraph p = new Paragraph(letterHead.getHeaderText(),new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL));
+	    p.setAlignment(2);
+	    document.add(p);
+		
+	    document.close();
 		
 		byte[] pdfBytes = byteArray.toByteArray();
 		response.setHeader("Content-disposition","inline; filename=Letterhead.pdf");
