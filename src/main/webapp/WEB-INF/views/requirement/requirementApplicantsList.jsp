@@ -106,7 +106,7 @@ function applicantpagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 	    	  		 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
-							result = result + ' <td><div><span>'+opt.candidateName+'</span></div></td>';
+							result = result + ' <td><div><span title='+opt.candidateName+'>'+opt.candidateName+'</span></div></td>';
 						}else{
 							result = result + ' <td><div>--</div></td>';
 						}
@@ -118,7 +118,7 @@ function applicantpagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.requirementUUID !=null && opt.requirementUUID !='' && opt.requirementUUID !='undefined'){
-            		  result = result + '<td><div class="proj_show"><span><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.jobTitle+'<i class="fa fa-binoculars"></i></a></span></div></td>';
+            		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.jobTitle+'<i class="fa fa-binoculars"></i></a></span></div></td>';
 					}else{
 						result = result + ' <td><div>--</div></td>';
 					}
@@ -144,7 +144,7 @@ function applicantpagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.email != null && opt.email != '' && opt.email !='undefined'){
-     					result = result + '<td><div><span>'+opt.email+'</span></div></td>';
+     					result = result + '<td><div><span title='+opt.email+'>'+opt.email+'</span></div></td>';
               	 }else{
               		 result = result + '<td><div><span>---</span></div></td>';
               	 }

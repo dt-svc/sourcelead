@@ -263,7 +263,7 @@ public class CommonUtil {
               "colgroup", "dd", "div", "dl", "dt", "em", "h1", "h2", "h3", "h4", "h5", "h6",
               "i", "img", "li", "ol", "p", "pre", "q", "small", "strike", "strong",
               "sub", "sup", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "u",
-              "ul","xml","br");
+              "ul","xml","br","font","span");
 	        allowedTags.addAttributes("a", "href", "title");
 	        allowedTags.addAttributes("blockquote", "cite");
 	        allowedTags.addAttributes("col", "span", "width");
@@ -2338,17 +2338,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL);
 			   }
 			 
-			/* String emailBody = null;
-			 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
-			 try {
-				    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
-				    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
-				   // System.out.println(emailBody);
-				   
-				} catch (IOException ex) {
-				    System.err.println(ex);
-				}*/
-			
+
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
 			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
