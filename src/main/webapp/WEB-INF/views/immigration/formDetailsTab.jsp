@@ -158,7 +158,7 @@
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#familiesTab');" class="btn btn-default btn-sm">
-             	<input type="button" value="Skip" onclick="goToSummaryTab('#docsTab');" class="btn btn-default btn-sm"> 
+             	<!-- <input type="button" value="Skip" onclick="goToSummaryTab('#docsTab');" class="btn btn-default btn-sm">  -->
               	<input type="button" value="Continue" onclick="goToSummaryTab('#docsTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
