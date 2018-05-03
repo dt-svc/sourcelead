@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceDocument;
@@ -229,7 +230,9 @@ public class InvoiceController {
 	
 	
 	@RequestMapping(value = "/getClientList", method = RequestMethod.GET)
-	public @ResponseBody String getClientList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+	public @ResponseBody ResponseList<OrgRelations> getClientList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		
+		ResponseList<OrgRelations> responseList = new ResponseList<>();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
 		if(null != clientList){
@@ -245,7 +248,9 @@ public class InvoiceController {
 				orgRelations.setOrgName(orgName);
 			}
 		}
-		return commonUtil.toJSON(clientList);
+//		return commonUtil.toJSON(clientList);
+		responseList.setData(clientList);
+		return responseList;
 	} 
 	
 	private boolean isNullOrEmpty(String msg) {
