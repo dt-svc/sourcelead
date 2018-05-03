@@ -909,7 +909,7 @@ function validateUploadFile(id)
 				    	 $("#country").val(json['country']);
 				    	 $("#state").val(json['state']);
 				    	 $("#city").val(json['city']);
-				    	 $("#zipCode").val(json['zipCode']);
+				    	 $("#zipCode").val(json['zipcode']);
 				    	 
 				    	 validateOnboardCandidate(json['email']);
 			    	} else if (response.indexOf('Sign In') !== -1) {

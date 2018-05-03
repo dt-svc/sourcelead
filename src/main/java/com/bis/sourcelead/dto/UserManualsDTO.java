@@ -20,7 +20,7 @@ public class UserManualsDTO  extends SearchDTO implements Serializable{
 	@Required(desc = "title")
 	private String title;
 	
-	@CleanHtml(escape=false)
+	@CleanHtml(escape=true)
 	private String description;
 	
 	private String level;

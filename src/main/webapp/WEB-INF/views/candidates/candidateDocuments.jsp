@@ -589,7 +589,8 @@ function storeCandidateDocument(candidateId, documentUUID) {
 		dateFormat : 'yyyy/mm/dd' 
 	}; 
 	if ($('#documentType_form').validate(false, validationSettings)) {
-		if(document.getElementById("uploadBtn") !== null && (document.getElementById("uploadBtn").files.length > 0 || $("#docsName").html()!=="")) {
+		if(document.getElementById("uploadBtn") !== null){
+// 		if(document.getElementById("uploadBtn") !== null && (document.getElementById("uploadBtn").files.length > 0 || $("#docsName").html()!=="")) {
 			var frm = $('#documentType_form')[0];
 			var formData = new FormData(frm);
 			$("#save_doc").attr("disabled", "disabled");

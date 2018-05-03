@@ -58,6 +58,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
@@ -81,6 +82,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
@@ -199,6 +201,9 @@ public class LeaveManagementRestController {
 	
 	@Autowired
 	TimeZoneService timeZoneService;
+	
+	@Autowired
+	private AssetService assetService;
 	/**
 	 * returns Pending leaves jsp
 	 * 
@@ -836,6 +841,11 @@ public class LeaveManagementRestController {
 			deleteShift.setStatus(Constants.MEMBER_IN_ACTIVE);
 			shiftDao.deleteShift(deleteShift);
 			isDeleted = true;
+			List<AssetAssign> assetAssignLis = assetService.getAssignAssetListByShiftId(deleteShift.getId());
+			for(AssetAssign aa : assetAssignLis) {
+				aa.setStatus(Constants.RECORD_INACTIVE);
+				assetService.saveAssetAssign(aa);
+			}
 		}
 		return isDeleted;
 	}
@@ -2219,7 +2229,7 @@ public class LeaveManagementRestController {
 		}
 		for (HolidayAndRestrictday holidayAndRestrictday : listFilter) {
 			if (holidayAndRestrictday.getHoliday() != null) {
-				if (id > 0) {
+				if (id != null || id > 0) {
 					if (holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name.trim())
 							&& holidayAndRestrictday.getHoliday().getId().longValue() == id.longValue()) {
 						flag = false;

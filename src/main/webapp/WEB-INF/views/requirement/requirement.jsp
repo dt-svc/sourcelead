@@ -389,7 +389,7 @@ $(document).ready(function () {
             </div>
             
         <div class="form-group" >
-            <label class="col-md-3">Experience Level ${requirement.experienceLevel.name}</label>
+            <label class="col-md-3">Experience Level</label>
             <div class="col-md-9 dropdown-select"> 
             <select name="experienceLevel" id="experienceLevel">
             	<option value="">--Select Level--</option>
@@ -1513,7 +1513,7 @@ $(document).ready(function () {
 </section>
 
 <div id="divLocTd1" style="display: none; float: left;">
-    <div class='positionRelative'>
+    <div class='positionRelative' id="locationErrMsgREPLACEROWID">
 		 <input type="text"  placeholder="Location" onclick="addLocationAuto('REPLACEROWIDaddlocation','REPLACEROWID','REPLACEROWIDlongitude','REPLACEROWIDlatitude')" class="form-control joblocinput" id="REPLACEROWIDaddlocation" name="locationInfo[REPLACEROWID].locationName"  data-validation="required" field-name="Location" > 
 	     <div class="fa fa-refresh btn btn-primary refresh-icon" title="Clear" onClick="refreshLocation('REPLACEROWID');"></div>
 	     <input type="hidden"  name="locationInfo[REPLACEROWID].country" id="REPLACEROWIDcountry">
@@ -3079,8 +3079,18 @@ function addNewLocation(){
 
 <script>
 function removeLocationRow(rowId){
+	$('#locationErrMsg'+rowId).find('p.jquery_form_error_message').remove();
 	
-	var addedDocumentsRowCount = document.getElementById("locationsRowCount").value;
+	 document.getElementById("divLocationRow"+rowId).style.display = 'none';
+	 document.getElementById("divLocationRow"+rowId).value= '';
+	 var  rId = "divLocationRow"+rowId;
+	  var r = document.getElementById("locationTable").rows[rId];
+     var count = 2*(r.cells.length);
+	    for(i=0;i<=count;i++){
+	        r.deleteCell(0);
+	    } 
+	    
+	/* var addedDocumentsRowCount = document.getElementById("locationsRowCount").value;
 	 $("input[id = 'locationsRowCount']").val(parseInt(addedDocumentsRowCount) - 1);
 	 
 	 var documentsRow = document.getElementById("locationsRowCount").value;
@@ -3089,10 +3099,11 @@ function removeLocationRow(rowId){
 	 document.getElementById("divLocationRow"+rowId).value= '';
 	 var  rId = "locationsRowCount"+rowId;
 	  var r = document.getElementById("locationsRowCount").rows[rId];
+	  
      var count = 2*(r.cells.length);
 	    for(i=0;i<=count;i++){
 	        r.deleteCell(0);
-	    } 
+	    }  */
 }
 </script>
 

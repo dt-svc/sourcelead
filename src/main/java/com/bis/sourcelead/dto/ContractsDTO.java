@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.persistence.Transient;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ContractsDTO {
@@ -26,6 +27,7 @@ public class ContractsDTO {
 	private String candiRateType;
 	private String candiFlatReward;
 	private String candiRatePer;
+	@CleanHtml(escape=false)
 	private String description;
 	private String workLocation;
 	private String joinDate;
