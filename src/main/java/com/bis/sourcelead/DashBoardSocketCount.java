@@ -1,10 +1,10 @@
 package com.bis.sourcelead;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -13,6 +13,7 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.DashBoardSocketCountDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
@@ -23,34 +24,34 @@ import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 
-@ServerEndpoint("/ratesrv")
-public class TimesheetSocketCount {
+@ServerEndpoint("/app/dashBoardDynamicCount")
+public class DashBoardSocketCount {
 	
 	private UserService userService = BeanUtil.getBean(UserService.class);
-	
 	private TimesheetSubmissionsService timesheetSubmissionsService = BeanUtil.getBean(TimesheetSubmissionsService.class);
-	
 	private OrgLocationService orglocationService = BeanUtil.getBean(OrgLocationService.class);
-	
 	private CandidateService candidateService = BeanUtil.getBean(CandidateService.class);
-	
 	private CommonUtil commonUtil = BeanUtil.getBean(CommonUtil.class);
 	
-	private Map<String, Session> sessionMap = new HashMap<>();
-	
-	private Map<String, Map<String,String>> userDetailsMap = new HashMap<>();
-	
+	private static Map<String, Session> sessionMap = new HashMap<>();
 	private Thread rateThread;
+	private volatile boolean runnable = true;
+	
+	public void initThread(final DashBoardSocketCountDTO dashBoardSocketCountDTO) 
 	 {
 		rateThread = new Thread() {
 			public void run() {
-				while (true) {
-					if (userDetailsMap != null)
-						triggerCount();
-					try {
-						sleep(2000);
-					} catch (InterruptedException e) {
+				while (runnable) { 
+					if (dashBoardSocketCountDTO.getSession().isOpen()) {
+						triggerCount(dashBoardSocketCountDTO);
+						try {
+							sleep(10000);
+						} catch (InterruptedException e) {
+						}
+					} else {
+						rateThread.interrupt();
 					}
+					
 				}
 			};
 		};
@@ -58,7 +59,7 @@ public class TimesheetSocketCount {
 	}
 
 	@OnMessage
-	public void onMessage(Session session, String msg) {
+	public void  onMessage(Session session, String msg) {
 		try {
 			System.out.println("received msg " + msg + " from " + session.getId());
 		} catch (Exception e) {
@@ -72,30 +73,38 @@ public class TimesheetSocketCount {
 		String orgLocationCode = session.getRequestParameterMap().get("orgLocationCode").get(0);
 		String timesheetType = session.getRequestParameterMap().get("timesheetType").get(0);
 		String candiadteId = session.getRequestParameterMap().get("candiadteId").get(0);
-		Map<String, String> sessionIds = getDetails(userId,orgLocationCode,candiadteId,timesheetType);
-		userDetailsMap.remove(userId);
-		sessionMap.remove(userId);
-		userDetailsMap.put(userId, sessionIds);
+		
+		Iterator<String> it = sessionMap.keySet().iterator();
+		while(it.hasNext()) {
+			if(it.next().equals(userId)) {
+				sessionMap.get(userId).close();
+				sessionMap.remove(userId);
+			}
+		}
+		DashBoardSocketCountDTO dashBoardCountDto = getDetails(userId,orgLocationCode,candiadteId,timesheetType);
+		dashBoardCountDto.setSession(session);
 		sessionMap.put(userId, session);
 		System.out.println("New session opened: " + session.getId());
+		initThread(dashBoardCountDto);
 	}
 
-	private Map<String,String> getDetails(String userId, String orgLocationCode, String candiadteId, String timesheetType) throws NumberFormatException, Exception {
-		Map<String,String> sessionIds = new HashMap<>();
+	private DashBoardSocketCountDTO getDetails(String userId, String orgLocationCode, String candiadteId, String timesheetType) throws NumberFormatException, Exception {
 		User user = userService.getUserById(Long.parseLong(userId));
 		OrgLocations loginOrgLocations = orglocationService.getOrgLocationsByLocationCode(orgLocationCode);
 		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candiadteId));
-		sessionIds.put("userId", user.getId().toString());
-		sessionIds.put("orgLocationId", loginOrgLocations.getId().toString());
-		sessionIds.put("candiadteId", candidate.getMasterCandidateId().getId().toString());
-		sessionIds.put("timesheetType", timesheetType);
-		return sessionIds;
+		DashBoardSocketCountDTO dto = new DashBoardSocketCountDTO();
+		dto.setUserId(user.getId().toString());
+		dto.setCandidateId(candidate.getMasterCandidateId().getId().toString());
+		dto.setOrgLocationId(loginOrgLocations.getId().toString());
+		dto.setTimesheetType(timesheetType);
+		return dto;
 	}
 
 	@OnError
 	public void error(Session session, Throwable t) {
 		String userId = session.getRequestParameterMap().get("userId").get(0);
 		sessionMap.remove(userId);
+		runnable = false;
 		System.err.println("Error on session " + session.getId());
 	}
 
@@ -105,37 +114,41 @@ public class TimesheetSocketCount {
 		String orgLocationCode = session.getRequestParameterMap().get("orgLocationCode").get(0);
 		String timesheetType = session.getRequestParameterMap().get("timesheetType").get(0);
 		String candiadteId = session.getRequestParameterMap().get("candiadteId").get(0);
-		sessionMap.remove(userId);
-		sessionMap.remove(orgLocationCode);
-		sessionMap.remove(timesheetType);
-		sessionMap.remove(candiadteId);
+		Iterator<String> it = sessionMap.keySet().iterator();
+		while(it.hasNext()) {
+			if(it.next().equals(userId)) {
+				try {
+					sessionMap.get(userId).close();
+				} catch (IOException e) {}
+				sessionMap.remove(userId);
+			}
+		}
+		runnable = false;
 		System.out.println("session closed: " + session.getId());
 	}
 
-	private void triggerCount() {
+	private void triggerCount(DashBoardSocketCountDTO dashBoardSocketCountDTO) {
 		try {
-			/* Send the new rate to all open WebSocket sessions*/ 
-			Iterator<String> i = userDetailsMap.keySet().iterator();
 			TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
-			while (i.hasNext()) {
-				String key = i.next();
-				Session session = sessionMap.get(key);
-				Map<String,String> umap = userDetailsMap.get(key);
-				if (!session.isOpen()) {
-					System.err.println("Closed session: " + session.getId());
-					sessionMap.remove(key);
-				} else {
-					
+			
+			if(dashBoardSocketCountDTO.getSession() != null && dashBoardSocketCountDTO.getSession().isOpen()){
 					String timesheetCountType = Constants.ALL_RECORDS;
-					if("employes".equalsIgnoreCase(umap.get("timesheetType"))){
-						timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long.parseLong(umap.get("userId")), Long.parseLong(umap.get("orgLocationId")),timesheetCountType );
-					}else if("myTimesheets".equalsIgnoreCase(umap.get("timesheetType"))){
-						timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(Long.parseLong(umap.get("candiadteId")), Long.parseLong(umap.get("orgLocationId")),timesheetCountType);
+					if("employes".equalsIgnoreCase(dashBoardSocketCountDTO.getTimesheetType())){
+						timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long.parseLong(dashBoardSocketCountDTO.getUserId()), Long.parseLong(dashBoardSocketCountDTO.getOrgLocationId()),timesheetCountType );
+					}else if("myTimesheets".equalsIgnoreCase(dashBoardSocketCountDTO.getTimesheetType())){
+						timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(Long.parseLong(dashBoardSocketCountDTO.getCandidateId()), Long.parseLong(dashBoardSocketCountDTO.getOrgLocationId()),timesheetCountType);
 					}
-					session.getBasicRemote().sendText(commonUtil.toJSON(timeSheetSubmissionCount));
+					if(timeSheetSubmissionCount != null && dashBoardSocketCountDTO.getSession().isOpen()) {
+						dashBoardSocketCountDTO.getSession().getBasicRemote().sendText(commonUtil.toJSON(timeSheetSubmissionCount));
+					}
+					
+					
+					
+				} else {
+					System.err.println("Closed session: " + dashBoardSocketCountDTO.getSession().getId());
+					sessionMap.remove(dashBoardSocketCountDTO.getUserId());
 				}
-			}
-			//System.out.println("Sending " + timeSheetSubmissionCount.getApprovedTimesheetSubmissionCount() + " to " + sessionMap.size() + " clients");
+			
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
