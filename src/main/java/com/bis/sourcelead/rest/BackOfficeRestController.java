@@ -465,16 +465,15 @@ public class BackOfficeRestController {
 	  * To remove Asset Management
 	  */
 	 @RequestMapping(value = "/removeAssetManagement", method = RequestMethod.POST)
-	 @ResponseBody  Response<String> removeAssetManagement(@RequestParam(value = "assetId", required = false) Long assetId,HttpServletRequest request) throws Exception {
+	 @ResponseBody  Response<String> removeAssetManagement(@RequestParam(value = "assignAssetId", required = false) Long assignAssetId,HttpServletRequest request) throws Exception {
 		 
 		    Response<String> response = new Response<>();
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			try {
 				if (loginUser != null) {
-					Asset asset = assetService.getAssetById(assetId);
-					if(asset != null){
-						asset.setStatus(Constants.RECORD_INACTIVE);
-						assetService.saveAsset(asset);
+					AssetAssign aa =assetService.getAssignAssetByAssetId(assignAssetId);
+					if(aa != null){
+						assetService.deleteAssignAssetByAssignId(aa);
 						response.setResponse(Result.SUCCESS.name());
 						response.setResponseMessage(Result.SUCCESS.getValue());
 					}else {

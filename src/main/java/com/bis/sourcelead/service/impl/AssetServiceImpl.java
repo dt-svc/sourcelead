@@ -321,4 +321,10 @@ public class AssetServiceImpl implements AssetService{
 	public List<AssetAssign> getAssignAssetListByShiftId(Long shiftId) throws Exception {
 		return assetDao.getAssignAssetListByShiftId(shiftId);
 	}
+
+
+	@Override
+	public void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception {
+		assetDao.deleteAssignAssetByAssignId(assetAssign);
+	}
 }

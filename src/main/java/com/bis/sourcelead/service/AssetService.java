@@ -60,4 +60,6 @@ public interface AssetService {
 	AssetAssign getAssignAssetByAssetId(Long assetId)throws Exception;
 	
 	List<AssetAssign> getAssignAssetListByShiftId(Long shiftId)throws Exception;
+	
+	void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception;
 }

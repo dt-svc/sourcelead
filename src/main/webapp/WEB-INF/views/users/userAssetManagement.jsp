@@ -60,7 +60,7 @@ function userAssetManagement(userId){
 					result = result + ' </select>';
 					result = result + ' </div></td>';
 				   	
-				   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger cursorPointer" onClick="deleteAsset(\''+report.asset.id+'\')";></i></div></td>';
+				   	result = result+'<td><div class="tblminwidth-50"> <a onClick="deleteAssignAsset(\''+report.id+'\')";>Un-Assign</a></div></td>';
 		   	        result = result +'</tr>';
                 }
                 
@@ -97,13 +97,13 @@ function assetmentPagination(){
 </script>
 
 <script type="text/javascript">
-function deleteAsset(assetId){
+function deleteAssignAsset(assignAssetId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure Un-Assign Asset ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement("+assetId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='assetCancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement("+assignAssetId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='assetCancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -142,20 +142,21 @@ function assetCancel(){
 <div id="popUp"></div>
 
 <script>
-function removeAssetManagement(assetId){
+function removeAssetManagement(assignAssetId){
+	alert("222")
 	 $("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
-	
-	 $("#asset"+assetId).empty();
-	 $("#asset"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
-	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-	
+	alert("111111111")
+	 $("#asset"+assignAssetId).empty();
+	 $("#asset"+assignAssetId).html("<td colspan='7'  id='loading"+assignAssetId+"'></td>");
+	 $("#loading"+assignAssetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	alert(sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assignAssetId="+assignAssetId)
 	 $.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetId="+assetId,	    	   
+	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assignAssetId="+assignAssetId,	    	   
 	    success: function(data) {
 	    	 var table = $('#assetManagementListPagination').DataTable();
-  		     table.row("#asset"+assetId).remove().draw( false );
+  		     table.row("#asset"+assignAssetId).remove().draw( false );
 	    }
    });
 }
