@@ -19,6 +19,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "INVOICE_LINE_ITEMS")
 public class InvoiceLineItems {
@@ -121,9 +123,11 @@ public class InvoiceLineItems {
 	private Long candidateId;
 		
 	@Transient
+	@JsonProperty
 	private String startDateStr;
 	
 	@Transient
+	@JsonProperty
 	private String endDtaeStr;
 	
 	@Transient
