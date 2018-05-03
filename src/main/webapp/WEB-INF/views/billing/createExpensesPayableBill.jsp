@@ -222,7 +222,7 @@ function checkBox(){
             <tbody>
               <tr id='divAttachmentTsRow0'>
             	<td>
-              	<label><strong>Attachments</strong></label>
+              	<label class="pull-left"><strong>Attachments</strong></label>
               	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs">
                 <span><div id="savedAttachments"></div></span></div> </div>
 	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add" >
