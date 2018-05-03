@@ -23,43 +23,12 @@ $(function(){
 </script>
 
 <style>
-.viewTemplate .sjfb-field {
-float: left; min-height: 36px; margin-bottom: 15px;
+.datatable_filter {
+position: relative !important; top:0 !important;
 }
-.viewTemplate .sjfb-field textarea {
-max-height: 65px;
-}
-.viewTemplate .sjfb-field  {
-width: 80%;
-margin: 0 0 10px 15px;
-}
-.viewTemplate .sjfb-field:nth-child(2n+2) {
-    margin-left: 15px;
-}
-.viewTemplate .sjfb-field label {
-float: left; width: 30%;
-}
-.sjfb-radio .choices-radio, .sjfb-checkbox .choices-checkbox {
-float: left; width: 70%;
-}
-.sjfb-radio .choices-radio label, .sjfb-checkbox .choices-checkbox label {
-	min-width: 20%;
-	width: 25%;
-	max-width: 50%;
-	position:relative;
-	padding-right: 10px;
-	padding-left: 30px;
-}
-.choices input[type="checkbox"], .choices input[type="radio"] {
-float: left;
-position: absolute;
-left:0;
-}
-.viewTemplate .sjfb-field select {
--webkit-appearance: none; -moz-appearance: none; -ms-appearance: none; -o-appearance: none;
-}
-.viewTemplate .sjfb-field select::-ms-expand {
-    display: none;
+
+.datatable_filter input {
+position: relative !important; top:0 !important;
 }
 </style>
 
@@ -86,7 +55,7 @@ left:0;
 				  {	 
 	        		var opt = json[i];
 	        		result = result + '<tr>';
-	                result = result + '<td><div><span class="mid-span">'+opt.scenarioName+'</span></a></div></td>';
+	                result = result + '<td><div><span class="mid-span" title="'+opt.scenarioName+'">'+opt.scenarioName+'</span></a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.entityType+'"><span class="mid-span">'+opt.entityType+'</span></div></td>';
 	                result = result + '<td><div>';
 	                    result = result + '<a class="fa fa-eye text-blue ml" title="summary" onclick="viewEmailTemplate('+opt.id+',\''+opt.uniqueScenarioName+'\')"></a>';
@@ -132,16 +101,15 @@ function templatepagination(){
     <div class="pull-left">
       <h2>Email Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Interview Templates</div>
-    
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Email Templates</div>
   </section>
-  
+  	
   <div class="timesheet_out">
-    <div class="vendor_wrap">
-	       <div class="project_tabs_inn_table vendor_wrap_inn_table">
-	          <div id="emailTemplateList" class="datatable_filter"></div>
-	          
-	       </div> 
+  <div class="clearfix"></div>
+    <div class="project_wrap">
+	       <div class="project_wrap_table datatable_filter mt">
+	    				<div id="emailTemplateList" class="datatable_filter datatable_filter-cutom"></div>
+				</div>	
 	       
        </div>
   </div>
@@ -165,6 +133,13 @@ function viewEmailTemplate(id,uniqueScenarioName){
 			var subject = "";
 			var body = "";
 			var signature="";
+			var title="";
+			
+			if (json.scenarioName != null && json.scenarioName != '' && json.scenarioName != 'undefined') {
+				title = json.scenarioName;
+				} else {
+					title = "--";
+				}
 			
 			if (json.subject != null && json.subject != '' && json.subject != 'undefined') {
 				subject = json.subject;
@@ -183,28 +158,42 @@ function viewEmailTemplate(id,uniqueScenarioName){
 				}
 			
 			var result = "";
-			result = result	+ '<div class="project_tabs_inn_table">';
-			result = result + '<div class="project_details">';
+			result = result	+ '<div class="project_tabs_inn_table clearfix">';
+			result = result + '<div class="project_details col-md-10">';
 			
-			result = result	+ '<div  id="ProjectIdDiv">';
-			result = result + '<strong>subject:</strong>';
-			result = result + '<span>'+subject+'</span>';
+			result = result	+ '<div id="ProjectIdDiv" class="row mb">';
+			result = result + '<strong class="col-md-2 text-right">Template Name:</strong>';
+			result = result + '<div class="col-md-9 paddingLeft">'+title+'</div>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
 			result = result + '<div class="clearfix"></div>';
 			
-			result = result	+ '<div  id="ProjectIdDiv">';
+			result = result	+ '<div id="ProjectIdDiv" class="row mb">';
+			result = result + '<strong class="col-md-2 text-right">Subject:</strong>';
+			result = result + '<div class="col-md-9 paddingLeft">'+subject+'</div>';
+			result = result + '<div class="clearfix"></div>';
+			result = result + '</div>';
+			
+			result = result + '<div class="clearfix"></div>';
+			
+			 result = result	+ '<div class="row mb" id="ProjectIdDiv">';
+			result = result + '<strong class="col-md-2 text-right">Email Body:</strong>';
+			result = result + '<div class="col-md-9 paddingLeft">'+body+'</div>';
+			result = result + '<div class="clearfix"></div>';
+			result = result + '</div>'; 
+			
+			/* result = result	+ '<div class="blogWrap" id="ProjectIdDiv">';
 			result = result + '<strong>Email Body:</strong>';
-			result = result + '<span>'+body+'</span>';
 			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
+			result = result + '<div class="blogpreviewContent">'+body+'</div>';
+			result = result + '</div>'; */
 			
 			result = result + '<div class="clearfix"></div>';
 			
-			result = result	+ '<div class="clearfix templateName" id="ProjectIdDiv">';
-			result = result + '<strong>Email Signature:</strong>';
-			result = result + '<span>'+signature+'</span>';
+			result = result	+ '<div class="row mb" id="ProjectIdDiv">';
+			result = result + '<strong class="col-md-2 text-right">Email Signature:</strong>';
+			result = result + '<div class="col-md-9 paddingLeft">'+signature+'</div>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			

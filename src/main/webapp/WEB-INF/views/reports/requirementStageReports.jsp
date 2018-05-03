@@ -61,24 +61,35 @@ function prepareReportDataDiv(data){
     	var report= json[i];
     	result = result + '<tr>';
         result = result + '<td>';
-        result = result + '<div><span title="'+report.jobTitle+'">'+report.jobTitle+'</span></div> ';
+        result = result + '<div class="tbldata-dotdot-sm"><span title="'+report.jobTitle+'">'+report.jobTitle+'</span></div> ';
         result = result + '</td>';
 
         result = result + '<td>';
         if(report.clientName != null && report.clientName != '' && report.clientName !='undefined'&& report.clientName != null && report.clientName != ''){
-       	result = result + '<div><span title="'+report.clientName+'">'+report.clientName+'</span></div>';
+       	result = result + '<div class="tbldata-dotdot-sm"><span title="'+report.clientName+'">'+report.clientName+'</span></div>';
  		} else{
-		result = result + '<div><span>---</span></div>';
+		result = result + '<div class="tbldata-dotdot-sm"><span>---</span></div>';
 		    }
         result = result + '</td>';
         
        	 result = result + '<td>';
-        if(report.country != null && report.country != '' && report.country !='undefined'&& report.country != null && report.country != ''){
-       	 result = result + "<div><span>"+report.country+"</span></div>";
-        }
-        else{
-		 result = result + "<div><span>---</span></div>";
-		    }
+	       	 result = result +'<div class="positionRelative">';
+		         for(var k=0; k<1; k++){
+		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+report.locationsList[k]+'</p>';
+		         }
+		        result = result +'<div class="show_Empdetails showjoblist">';
+		      	result = result +'<i class="fa fa-ellipsis-v"></i>';
+		
+		      	result = result +'<div class="emailvalues emailvaluesNew">';
+		      	
+				for(var k=0; k<report.locationsList.length; k++){
+					result = result +'<p><i class="fa fa-map-marker"></i>'+report.locationsList[k]+'</p>';
+			        	
+		  	 	}
+	      	result = result +'</div>';
+	      	result = result +'</div>';
+	  	   result = result +'</div>'; 
+  	 
          result = result + '</td>';
         
          result = result + '<td>';

@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.Employees;
 
 public class AssetDTO extends SearchDTO implements Serializable {
 
 	    @Required(desc="sno")
 		private String sno;
+	    
+	    private String assetId;
 	    
 		private String make;
 		
@@ -34,19 +37,11 @@ public class AssetDTO extends SearchDTO implements Serializable {
 		@Required(desc="working status")
 		private String workingStatus;
 		
-		private String shiftAEmp;
-		
-		private String shiftBEmp;
-		
 		private String description;
 		
 		private String staticPath;
 		
 		private List<FileInfo> attachmentUpload;
-		
-		private List<FileInfo> uploadBtndskAUpload;
-		
-		private List<FileInfo> uploadBtndskBUpload;
 		
 		private String fileName;
 		
@@ -54,31 +49,11 @@ public class AssetDTO extends SearchDTO implements Serializable {
 		
 		private String fileContentType;
 		
-		private String shiftAFileContentType;
-		
-		private String shiftAFileUrl;
-		
-		private String shiftAFileName;
-		
-		private String shiftBFileContentType;
-		
-		private String shiftBFileUrl;
-		
-		private String shiftBFileName;
-		
 		private List<Employees> employeesList;
-		
-		private String shiftAEmpName;
-		
-		private String shiftBEmpName;
 		
 		private String categoryName;
 		
 		private String categoryId;
-		
-		private String shiftAEmployee;
-		
-		private String shiftBEmployee;
 		
 		private String issueDate;
 		
@@ -90,7 +65,12 @@ public class AssetDTO extends SearchDTO implements Serializable {
 		
 		private String categoryIds;
 		
-
+		private String shiftIds;
+		
+		private List<AssetAssignDTO> assignAsset;
+		
+		private List<AssetAssign> assetAssignList;
+		
 		public List<CustomFormFieldDTO> getCustomFormData() {
 			return customFormData;
 		}
@@ -179,22 +159,6 @@ public class AssetDTO extends SearchDTO implements Serializable {
 			this.workingStatus = workingStatus;
 		}
 
-		public String getShiftAEmp() {
-			return shiftAEmp;
-		}
-
-		public void setShiftAEmp(String shiftAEmp) {
-			this.shiftAEmp = shiftAEmp;
-		}
-
-		public String getShiftBEmp() {
-			return shiftBEmp;
-		}
-
-		public void setShiftBEmp(String shiftBEmp) {
-			this.shiftBEmp = shiftBEmp;
-		}
-
 		public String getDescription() {
 			return description;
 		}
@@ -219,21 +183,6 @@ public class AssetDTO extends SearchDTO implements Serializable {
 			this.attachmentUpload = attachmentUpload;
 		}
 
-		public List<FileInfo> getUploadBtndskAUpload() {
-			return uploadBtndskAUpload;
-		}
-
-		public void setUploadBtndskAUpload(List<FileInfo> uploadBtndskAUpload) {
-			this.uploadBtndskAUpload = uploadBtndskAUpload;
-		}
-
-		public List<FileInfo> getUploadBtndskBUpload() {
-			return uploadBtndskBUpload;
-		}
-
-		public void setUploadBtndskBUpload(List<FileInfo> uploadBtndskBUpload) {
-			this.uploadBtndskBUpload = uploadBtndskBUpload;
-		}
 
 		public String getFileName() {
 			return fileName;
@@ -259,54 +208,6 @@ public class AssetDTO extends SearchDTO implements Serializable {
 			this.fileContentType = fileContentType;
 		}
 
-		public String getShiftAFileContentType() {
-			return shiftAFileContentType;
-		}
-
-		public void setShiftAFileContentType(String shiftAFileContentType) {
-			this.shiftAFileContentType = shiftAFileContentType;
-		}
-
-		public String getShiftAFileUrl() {
-			return shiftAFileUrl;
-		}
-
-		public void setShiftAFileUrl(String shiftAFileUrl) {
-			this.shiftAFileUrl = shiftAFileUrl;
-		}
-
-		public String getShiftAFileName() {
-			return shiftAFileName;
-		}
-
-		public void setShiftAFileName(String shiftAFileName) {
-			this.shiftAFileName = shiftAFileName;
-		}
-
-		public String getShiftBFileContentType() {
-			return shiftBFileContentType;
-		}
-
-		public void setShiftBFileContentType(String shiftBFileContentType) {
-			this.shiftBFileContentType = shiftBFileContentType;
-		}
-
-		public String getShiftBFileUrl() {
-			return shiftBFileUrl;
-		}
-
-		public void setShiftBFileUrl(String shiftBFileUrl) {
-			this.shiftBFileUrl = shiftBFileUrl;
-		}
-
-		public String getShiftBFileName() {
-			return shiftBFileName;
-		}
-
-		public void setShiftBFileName(String shiftBFileName) {
-			this.shiftBFileName = shiftBFileName;
-		}
-
 		public List<Employees> getEmployeesList() {
 			return employeesList;
 		}
@@ -315,21 +216,6 @@ public class AssetDTO extends SearchDTO implements Serializable {
 			this.employeesList = employeesList;
 		}
 
-		public String getShiftAEmpName() {
-			return shiftAEmpName;
-		}
-
-		public void setShiftAEmpName(String shiftAEmpName) {
-			this.shiftAEmpName = shiftAEmpName;
-		}
-
-		public String getShiftBEmpName() {
-			return shiftBEmpName;
-		}
-
-		public void setShiftBEmpName(String shiftBEmpName) {
-			this.shiftBEmpName = shiftBEmpName;
-		}
 
 		public String getCategoryName() {
 			return categoryName;
@@ -347,21 +233,6 @@ public class AssetDTO extends SearchDTO implements Serializable {
 			this.categoryId = categoryId;
 		}
 
-		public String getShiftAEmployee() {
-			return shiftAEmployee;
-		}
-
-		public void setShiftAEmployee(String shiftAEmployee) {
-			this.shiftAEmployee = shiftAEmployee;
-		}
-
-		public String getShiftBEmployee() {
-			return shiftBEmployee;
-		}
-
-		public void setShiftBEmployee(String shiftBEmployee) {
-			this.shiftBEmployee = shiftBEmployee;
-		}
 
 		public String getIssueDate() {
 			return issueDate;
@@ -402,6 +273,36 @@ public class AssetDTO extends SearchDTO implements Serializable {
 		public void setCatagoryHiddenId(Long catagoryHiddenId) {
 			this.catagoryHiddenId = catagoryHiddenId;
 		}
-		
-		
+
+		public List<AssetAssignDTO> getAssignAsset() {
+			return assignAsset;
+		}
+
+		public void setAssignAsset(List<AssetAssignDTO> assignAsset) {
+			this.assignAsset = assignAsset;
+		}
+
+		public String getAssetId() {
+			return assetId;
+		}
+
+		public void setAssetId(String assetId) {
+			this.assetId = assetId;
+		}
+
+		public List<AssetAssign> getAssetAssignList() {
+			return assetAssignList;
+		}
+
+		public void setAssetAssignList(List<AssetAssign> assetAssignList) {
+			this.assetAssignList = assetAssignList;
+		}
+
+		public String getShiftIds() {
+			return shiftIds;
+		}
+
+		public void setShiftIds(String shiftIds) {
+			this.shiftIds = shiftIds;
+		}
 }
