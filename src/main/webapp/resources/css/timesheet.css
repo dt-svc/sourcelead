@@ -8081,7 +8081,9 @@ text-decoration: underline;
 .immFoot {
 	background-color: #f8f8f8; padding: 10px 15px;
 }
-
+.teHeight {
+min-height: 300px !important;
+}
 
 
 
