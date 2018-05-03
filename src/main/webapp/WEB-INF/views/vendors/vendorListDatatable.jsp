@@ -205,6 +205,7 @@ function getVendorList(){
 	                
 	          },{
 	        	  "targets": colIndex++,
+	        	  "sortable": false,
 	                "data": "releasedJobsCount",
 	                "render": function ( data, type, report, meta ) {
 	                	  var result = "";

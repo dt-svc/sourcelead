@@ -21,8 +21,8 @@
 .project_details.project_detailsHei {
 	min-height: 675px;
 }
-.main-header {
-z-index: 999;
+.main-header{
+	z-index: 999;
 }
 </style>
 

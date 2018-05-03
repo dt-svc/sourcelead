@@ -164,6 +164,7 @@ function editCandidate(candidateId){
 								if(json.candidateType == "Candidate"){
 									result = result + '<input type="hidden" name="candidateType" id="candidateType" value="'+json.candidateType+'" />';
 									result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
+									result = result + '<input type="hidden" id="tempEmail" value="'+json.email+'" />';
 								}
 								 
 								if(json.candidateType == "Consultant"){
@@ -1450,6 +1451,9 @@ function updateDesignationType(){
 <script type="text/javascript">
  function validateCandidateEmail() {
 	 var email = $('#email').val(); 
+	 
+     var tempEmail = $('#tempEmail').val(); 
+	 if(tempEmail != email){
 	 var candidateType = $('#candidateType').val();
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 if(email != null && email != ""){
@@ -1477,6 +1481,9 @@ function updateDesignationType(){
 		        	}
 		        },
 		    });
+	 }
+	 }else{
+		 $('#update_candidate').removeAttr('disabled');
 	 }
  }
  </script>     
