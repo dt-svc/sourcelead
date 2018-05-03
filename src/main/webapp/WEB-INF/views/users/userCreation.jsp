@@ -63,7 +63,7 @@
 		          <div class="row">
 		          <div class="col-md-4 paddingRight">
 		             <select class="selectpicker pull-left form-control" id="employmentDesignationType" name="employmentDesignationType" onChange="getDesignationType();">
-		                 <option value="" selected>--Employment Type--</option>
+		                 <option value="employeementType" selected>--Employment Type--</option>
 		                 <option value="All">All</option>
 		                 <option value="C2C">C2C</option>
 		                 <option value="C2C-1099">C2C-1099</option>
