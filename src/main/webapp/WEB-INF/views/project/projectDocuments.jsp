@@ -52,7 +52,6 @@
 						result = result + '	 				<i class="fa fa-folder-o mr"></i>All Folders                                      ';
 						result = result + '	 		    </a>                                                                                  ';
 						result = result + '	 			</li>                                                                                 ';
-						 
 						for (var i=0; i<json.length; i++)
 		   				{
 							var report = json[i];
@@ -61,7 +60,6 @@
 							result = result + '	 				<i class="fa fa-folder-o mr"></i>'+report.foderName+'  (<span>'+report.count+'</span>)';
 							result = result + '	 		    </a>                                                                  ';
 							if(report.permissionAccess == 0){
-							 
 							}else{
 								result = result + '	 				<span class="fmsettings-dropdown dropdown">                       ';
 								result = result + '	 					<span class="dropdown-toggle" data-toggle="dropdown">         ';
