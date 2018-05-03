@@ -26,6 +26,7 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
@@ -113,7 +114,23 @@ public class LetterHeadServiceImpl implements LetterHeadService{
 	public void letterHeadData(LetterHead letterHead,HttpServletResponse response) throws Exception {
 
 		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-	    Document document = new Document();// For Template Area
+		
+		Document document = null;
+		if(StringUtils.isNotBlank(letterHead.getTemplateType())) {
+		if("A4".equalsIgnoreCase(letterHead.getTemplateType())) {
+			 document = new Document(PageSize.A4);
+		}else if("Letter".equalsIgnoreCase(letterHead.getTemplateType())){
+			 document = new Document(PageSize.LETTER);
+		}else if("A6".equalsIgnoreCase(letterHead.getTemplateType())){
+			 document = new Document(PageSize.A6);
+		}else if("Legal".equalsIgnoreCase(letterHead.getTemplateType())){
+			 document = new Document(PageSize.LEGAL);
+		}
+		}else {
+			document = new Document();
+		}
+		
+//	    Document document = new Document();// For Template Area
 	    									// here we can add page size(a4,a6,letter) and padding left,right as a parameter 
 	    									//for ex :Document document = new Document(PageSize.A4,15,15,15,15);
 //	    document.setPageSize(letterHead.getFileType());
