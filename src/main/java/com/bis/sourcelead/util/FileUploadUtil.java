@@ -36,6 +36,8 @@ import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OrgStorageDetailDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
@@ -401,6 +403,7 @@ public class FileUploadUtil {
 	public static String getAllImmigrationZipFiles(String staticPath, Long orgId, Long orgLocationId,
 			Long immigrationId, HashMap<String, Object> docsListMap, Map<String, String> fileNameParameters) {
 		File file = null;
+		boolean DocsFoundFlag= false;
 		System.out.println("insideget   AllImmigrationZipFiles  ------->");
 		try {
 			List<ImmigrationCandidateForms> formsList = (List<ImmigrationCandidateForms>) docsListMap.get("immForms");
@@ -417,6 +420,10 @@ public class FileUploadUtil {
 			immFormFolder.mkdir(); // make a immigration directory.
 
 			File files[] = folder.listFiles();
+			if (folder.exists() || folder.list().length >0) {
+				DocsFoundFlag =true;
+			}
+			
 			InputStream inStream = null;
 			OutputStream outStream = null;
 			for (File f : files) {
@@ -461,8 +468,8 @@ public class FileUploadUtil {
 			immDocFolder.mkdir(); // make a immigration doc folder .
 			File docfolder = new File(staticPath, orgId + "/" + orgLocationId + "/immigrationCandidateDocuments");
 			files = docfolder.listFiles();
-			if (!folder.exists() || folder.list().length == 0) {
-				return "No Documents Found";
+			if (docfolder.exists() || docfolder.list().length > 0) {
+				DocsFoundFlag =true;
 			}
 			inStream = null;
 			outStream = null;
@@ -496,12 +503,109 @@ public class FileUploadUtil {
 					}
 				} ///
 			} // adding files to immigration doc folder is completed.
+			
+			// adding files to candidate employer doc folder is starts here.
+			List<CandidateEmployers> empdocsList = (List<CandidateEmployers>) docsListMap.get("employerDocs");
+			//System.out.println("empdocsList size is "+empdocsList.size());
+			
+			
+			File empDocFolder = new File(com.google.common.io.Files.createTempDir(),
+					fileNameParameters.get("immiUUID") + "_" + fileNameParameters.get("firstName") + "_"
+							+ fileNameParameters.get("lastName") + "_" + "EmployerDocs");
+			
+			File employerAndEduDocfolder = new File(staticPath, orgId + "/" + orgLocationId + "/candidateDocuments");
+			files = employerAndEduDocfolder.listFiles();
+			if (employerAndEduDocfolder.exists() || employerAndEduDocfolder.list().length > 0) {
+				DocsFoundFlag =true;
+			}
+			empDocFolder.mkdir(); // make a Employer doc folder .
+			inStream = null;
+			outStream = null;
+			for (File f : files) {
+				for (CandidateEmployers docObj : empdocsList) { // for start
+					String fullFileName = FilenameUtils.getName(docObj.getEmployerFileUrl());
+
+					if (f.getName().equalsIgnoreCase(fullFileName)) {
+						File afile = new File(f.getAbsolutePath());
+						File bfile = new File(empDocFolder.getAbsolutePath() + File.separator + f.getName());
+
+						try {
+							inStream = new FileInputStream(afile);
+							outStream = new FileOutputStream(bfile);
+
+							byte[] buffer = new byte[1024];
+
+							int length;
+							// copy the file content in bytes
+							while ((length = inStream.read(buffer)) > 0) {
+								outStream.write(buffer, 0, length);
+							}
+							inStream.close();
+							outStream.close();
+							// delete the original file
+							// afile.delete();
+							// System.out.println("File is copied successful!");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				} ///
+			} // adding files to candidate employer doc folder is completed.
+			// adding files to candidate employer doc folder is starts here.
+						List<CandidateEducation> eduDocsList = (List<CandidateEducation>) docsListMap.get("educationDocs");
+						//System.out.println("eduDocsList size is "+eduDocsList.size());
+						
+						
+						File eduDocFolder = new File(com.google.common.io.Files.createTempDir(),
+								fileNameParameters.get("immiUUID") + "_" + fileNameParameters.get("firstName") + "_"
+										+ fileNameParameters.get("lastName") + "_" + "EducationDocs");
+						
+						eduDocFolder.mkdir(); // make a Employer doc folder .
+						inStream = null;
+						outStream = null;
+						for (File f : files) {
+							for (CandidateEducation docObj : eduDocsList) { // for start
+								String fullFileName = FilenameUtils.getName(docObj.getEducationFileUrl());
+
+								if (f.getName().equalsIgnoreCase(fullFileName)) {
+									File afile = new File(f.getAbsolutePath());
+									File bfile = new File(eduDocFolder.getAbsolutePath() + File.separator + f.getName());
+
+									try {
+										inStream = new FileInputStream(afile);
+										outStream = new FileOutputStream(bfile);
+
+										byte[] buffer = new byte[1024];
+
+										int length;
+										// copy the file content in bytes
+										while ((length = inStream.read(buffer)) > 0) {
+											outStream.write(buffer, 0, length);
+										}
+										inStream.close();
+										outStream.close();
+										// delete the original file
+										// afile.delete();
+										// System.out.println("File is copied successful!");
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+								}
+							} ///
+						} // adding files to candidate employer doc folder is completed.
+			if(!DocsFoundFlag) {
+			   return "No Documents Found";
+			}
 			String dirPath = immFormFolder.getAbsolutePath();
 			File zipFileName = new File(file.getAbsolutePath());
 			ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName));
-			zipDirectory(dirPath, out, immFormFolder.getName());
+			zipDirectory(dirPath, out, immFormFolder.getName()); // adding Immigration form folder to zip
 			dirPath = immDocFolder.getAbsolutePath();
-			zipDirectory(dirPath, out, immDocFolder.getName());
+			zipDirectory(dirPath, out, immDocFolder.getName()); // adding Immigration doc folder to zip
+			dirPath = empDocFolder.getAbsolutePath();      
+			zipDirectory(dirPath, out, empDocFolder.getName());// adding Candidate Employers folder to zip
+			dirPath = eduDocFolder.getAbsolutePath();      
+			zipDirectory(dirPath, out, eduDocFolder.getName());// adding Candidate Education folder to zip
 			out.close();
 
 		} catch (Exception e1) {

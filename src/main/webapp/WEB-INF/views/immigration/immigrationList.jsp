@@ -24,29 +24,29 @@
     <div class="immigrationWrap">
 		<div class="immigraCountHead">
 			<ul class="clearfix">
-				<li class="clearfix" title="${dashboardResult.draftsCount}" >
+				<li class="clearfix" title="${!empty dashboardResult.draftsCount ? dashboardResult.draftsCount : 0}" >
 					<span><i class="fa fa-plane"></i></span>
-					<p>Draft <b>${dashboardResult.draftsCount}</b></p>
+					<p>Draft <b>${!empty dashboardResult.draftsCount ? dashboardResult.draftsCount : 0}</b></p>
 				</li>			
-				<li class="clearfix" title="${dashboardResult.reqSentCount}">
+				<li class="clearfix" title="${!empty dashboardResult.reqSentCount ? dashboardResult.reqSentCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p> Sent Request <b>${dashboardResult.reqSentCount}</b></p>
+					<p> Sent Request <b>${!empty dashboardResult.reqSentCount ? dashboardResult.reqSentCount : 0}</b></p>
 				</li>
-				<li class="clearfix" title="${dashboardResult.inProgressCount}">
+				<li class="clearfix" title="${!empty dashboardResult.inProgressCount ? dashboardResult.inProgressCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p> Inprogress <b>${dashboardResult.inProgressCount}</b></p>
+					<p> Inprogress <b>${!empty dashboardResult.inProgressCount ? dashboardResult.inProgressCount : 0}</b></p>
 				</li>
-				<li class="clearfix" title="${dashboardResult.apporovedCount}">
+				<li class="clearfix" title="${!empty dashboardResult.apporovedCount ? dashboardResult.apporovedCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p>Approved <b>${dashboardResult.apporovedCount}</b></p>
+					<p>Approved <b>${!empty dashboardResult.apporovedCount ? dashboardResult.apporovedCount : 0}</b></p>
 				</li>
-				<li class="clearfix" title="${dashboardResult.rejectedCount}">
+				<li class="clearfix" title="${!empty dashboardResult.rejectedCount ? dashboardResult.rejectedCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p>Rejected <b>${dashboardResult.rejectedCount}</b></p>
+					<p>Rejected <b>${!empty dashboardResult.rejectedCount ? dashboardResult.rejectedCount : 0}</b></p>
 				</li>
-				<li class="clearfix"title="${dashboardResult.othersCount}">
+				<li class="clearfix"title="${!empty dashboardResult.othersCount ? dashboardResult.othersCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p>Others <b>${dashboardResult.othersCount}</b></p>
+					<p>Others <b>${!empty dashboardResult.othersCount ? dashboardResult.othersCount : 0}</b></p>
 				</li>				
 			</ul>
 		</div>

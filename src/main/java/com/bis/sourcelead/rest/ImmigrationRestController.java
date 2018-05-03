@@ -1730,9 +1730,15 @@ public class ImmigrationRestController {
 		
 		docsListMap.put("immDocs",immigrationCanididateDocHistoryList);
 		
+		Long candidateId = immigration.getCandidate().getId();
 		
-		return FileUploadUtil.getAllImmigrationZipFiles(staticPath, orgId, orgLocationId, immigrationId, 
-				docsListMap, fileNameParameters);
+		List<CandidateEmployers> employersList = candidateEmployersService.getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+		 docsListMap.put("employerDocs",employersList);
+		
+		List<CandidateEducation> educationList= candidateEducationService.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+		docsListMap.put("educationDocs",educationList);
+		 
+		return FileUploadUtil.getAllImmigrationZipFiles(staticPath, orgId, orgLocationId, immigrationId, docsListMap, fileNameParameters);
 	}
 
 	@RequestMapping(value = { "/deleteImmigrationDetailsById" })
