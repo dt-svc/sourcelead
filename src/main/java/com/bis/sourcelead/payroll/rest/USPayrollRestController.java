@@ -21,6 +21,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dao.AssociateContributionDao;
 import com.bis.sourcelead.payroll.dao.AssociateDeductionDao;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.dto.AssociateContributionDTO;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollContributionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
@@ -75,6 +77,9 @@ public class USPayrollRestController {
 	
 	@Autowired
 	AssociateDeductionDao associateDeductionDao;
+	
+	@Autowired
+	AssociateContributionDao associateContributionDao;
 	/**
 	 * find all deduction types from lookup_data table 
 	 * @param request
@@ -524,7 +529,7 @@ public class USPayrollRestController {
 		}
 		
 		/**
-		 * Delete Association Deduction Amount 
+		 * Delete Association Deduction  
 		 * @param associateDeductionDTO
 		 * @param request
 		 * @param response
@@ -537,6 +542,41 @@ public class USPayrollRestController {
 			AssociateDeduction associateDeduction = associateDeductionService.findAssociateDeductionById(assDedId);
 			associateDeduction.setStatus(0);
 			return associateDeductionDao.saveAssociateDeduction(associateDeduction);
+		}
+		
+		
+		/**
+		 * Delete Association Contribution Amount 
+		 * @param associateDeductionDTO
+		 * @param request
+		 * @param response
+		 * @return Response<AssociateDeductionDTO> 
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/updateAssociateContributionAmount","/rest/updateAssociateContributionAmount" }, method = RequestMethod.POST)
+		public AssociateContribution updateAssociateContributionAmount(@RequestParam(value = "associateContributionId", required = false) Long associateContributionId,
+				@RequestParam(value = "contriAmount", required = false) String contriAmount,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			AssociateContribution associateContribution = associateContributionService.findAssociateContributionById(associateContributionId);
+			associateContribution.setContributionAmount(new BigDecimal(contriAmount));
+			return associateContributionDao.saveAssociateContribution(associateContribution);
+		}
+		
+		
+		/**
+		 * Delete Association Contribution 
+		 * @param associateDeductionDTO
+		 * @param request
+		 * @param response
+		 * @return Response<AssociateDeductionDTO> 
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/deleteAssociateContribution","/rest/deleteAssociateContribution" }, method = RequestMethod.POST)
+		public AssociateContribution deleteAssociateContribution(@RequestParam(value = "assContriId", required = false) Long assContriId,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			AssociateContribution associateContribution = associateContributionService.findAssociateContributionById(assContriId);
+			associateContribution.setStatus(0);
+			return associateContributionDao.saveAssociateContribution(associateContribution);
 		}
 		
 }

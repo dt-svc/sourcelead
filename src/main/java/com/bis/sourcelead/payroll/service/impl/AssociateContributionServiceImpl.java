@@ -112,4 +112,10 @@ public class AssociateContributionServiceImpl implements AssociateContributionSe
 		}
 		return res;
 	}
+
+	@Override
+	public AssociateContribution findAssociateContributionById(Long assContriId)
+	{
+		return associateContributionDao.findAssociateContributionById(assContriId);
+	}
 }

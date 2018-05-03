@@ -40,7 +40,7 @@ function associateContributionSummary(userId){
             	 var opt = data[i];
             	   result = result + '<tr>';
             	  
-            	   result = result + '<td><div class="proj_show tblminwidth-75"><span>'+opt.contributionType+'</span><i class="fa fa-binoculars"></i></div></td>';
+            	   result = result + '<td><div><span>'+opt.contributionType+'</span></div></td>';
                   if(opt.description !=null && opt.description !='' && opt.description !='undefined'){
                 	  result = result + '<td><div class="tbldata-dotdot-verybig">'+opt.description+'</div></td>';
                 	
@@ -49,11 +49,23 @@ function associateContributionSummary(userId){
                   }
             	  
                    result = result + '<td><div  class="tblminwidth-100">'+opt.contributionMethod+'</div></td>';
-                   result = result + '<td><div  class="tblminwidth-100">$ '+opt.contributionAmount+'</div></td>';
+                   
+                   
+                   if(opt.contributionAmount !=null && opt.contributionAmount !='' && opt.contributionAmount !='undefined'){
+						result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><i class="fa fa-dollar"style="color:#454545;"></i> '+opt.contributionAmount.toFixed(2)+'<small class="fa fa-pencil ml10 pull-right cursorPointer" onClick="showEdit('+opt.id+','+opt.contributionAmount+')"></small></div>';
+	        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
+						result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"><small class="fa fa-floppy-o ml10 pull-right mt5 cursorPointer"  onClick="editDedAmount('+opt.id+','+userId+')"></small></div></td>';
+      		    }
+      		    else{
+      		    	    result = result + '<td><div class="deeds tblminwidth-125" id="preDedDiv'+opt.id+'"><small class="fa fa-dollar expenses_symbol text-muted"></small>0<small class="fa fa-pencil ml10 pull-right cursorPointer" onClick="showEdit('+opt.id+',0)"></small></div>';
+	        		    result = result + '<div class="tblminwidth-125"><p id="preDedError'+opt.id+'" class="re_Error"></p></div>';
+						result = result + '<div class="edit-input tblminwidth-125" id="editDedDiv'+opt.id+'" style="display:none;"><input type="text" id ="preDed'+opt.id+'" class="form-control input-sm tbldata-dotdot-100 pull-left"><small class="fa fa-floppy-o ml10 pull-right mt5 cursorPointer"  onClick="editDedAmount('+opt.id+','+userId+')"></small></div></td>';
+					}
+                   
+                 /*   result = result + '<td><div  class="tblminwidth-100">$ '+opt.contributionAmount+'</div></td>'; */
                    result = result + '<td><div  class="tblminwidth-100">--</div></td>';
                    result = result + '<td><div class="tbldata-dotdot_50">';
-                   result = result + '<a href="add-deduction.html" class="text-primary"><i class="fa fa-pencil-square-o"></i></a>';
-                   result = result + '<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i></a>';
+                   result = result + '<a onclick="deleteContribution('+opt.id+','+userId+');"><i class="glyphicon glyphicon-trash"></i></a>';
                    result = result + '</div>';
                    result = result + '</td>';
                    result = result + '</tr>';
@@ -80,9 +92,61 @@ function associateContributionSummary(userId){
        }); 
   } 
 </script>
+
+
+<script>
+ function showEdit(id,dedVal){
+	 document.getElementById("preDedDiv"+id).style.display="none";
+	 document.getElementById("editDedDiv"+id).style.display="block";
+	 document.getElementById("preDed"+id).value = dedVal;
+}
+ </script>
  
  
+  <script>
+ function editDedAmount(id,userId){
+	 $("#preDedError"+id).empty();
+		var amount = document.getElementById("preDed"+id).value;
+		var flag ="valid";
+		if(amount==""){
+			flag="empty";
+		}
+		else if(/^[a-zA-Z0-9\.\_]*$/.test(amount) == false || amount.match(/[a-z]/i)) {
+			flag = "invalid";
+		}
+		if(flag == "valid"){
+			$("#preDedError").empty();
+			 var sourceleadUrl ='${sourceleadUrl}';
+			  $.ajax({
+			    	type: "POST",
+			        url: sourceleadUrl+"/updateAssociateContributionAmount?${_csrf.parameterName}=${_csrf.token}&associateContributionId="+id+"&contriAmount="+amount,
+			        success: function(data) {
+			        	document.getElementById("preDedDiv"+id).style.display="block";
+			   		 	document.getElementById("editDedDiv"+id).style.display="none";
+			   		    associateContributionSummary(userId);
+			        },
+			    });
+		}
+		else{
+			if(flag == "empty"){
+				$("#preDedError"+id).empty().append("please Enter value") ; 
+			}
+			else{
+				$("#preDedError"+id).empty().append("Invalid Number.") ; 
+			}
+		}
+	}
+	</script>
  
-<!--  <div id="tab-2" class="tabsMenu_tabs_inn clearfix"> -->
-		
-		<!--   </div> -->
+<script>
+function deleteContribution(contrubutionId,userId){
+	$.ajax({
+		type : "POST",
+		url : sourceleadUrl+"/deleteAssociateContribution?"+tokenParamName+"="+tokenValue+"&assContriId="+contrubutionId,
+		success : function(data) {
+			if(data != null && data != null)
+				associateContributionSummary(userId);
+		},
+	}); 
+}
+</script>
