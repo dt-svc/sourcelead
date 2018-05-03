@@ -68,12 +68,17 @@
 				<h4 class="modal-title">Add Emails</h4>
 			</div>
 			<div class="modal-body">
-			<div class="form-group">
+			<div class="clearfix mb">
 					<label class="clearfix">Enter Email</label>
 					<div class="clearfix">
-						<input type="text" class="form-control" value="">
+					<div class="input-group errorInptgroup">
+						<input type="text" class="form-control" id="email" value="" onblur="verifyEmails();">
+						 <span id="emailStatusIconDiv" class="input-group-addon">
+	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                  	</span>
 					</div>
-				</div>
+					</div>
+			</div>
 			<div class="clearfix mb">
 					<label class="clearfix">Choose Actions</label>
 					<div class="clearfix">
@@ -146,4 +151,17 @@ function closeEmailNotifications(){
 	$(".comMask").fadeOut();
 	$(".emailforNotifications").fadeOut();
 }
+</script>
+
+<script type="text/javascript">
+function verifyEmails() {
+	var email = document.getElementById("email").value;
+	if(email != null && email != ''){
+	      validateEmailForExistenceUniversally(email, '#email');
+	}else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
+	}
+}
+
 </script>

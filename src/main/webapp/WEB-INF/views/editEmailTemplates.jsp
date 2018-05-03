@@ -17,7 +17,7 @@
 <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
-            <h2> Edit Email Template</h2>
+            <h2> Edit ${emailScenario.entityType} Template</h2>
           </div>
          <%--  <a href="${appPath}/addUserManuals" class="pull-right btn btn-primary btn-sm mb">Add</a> --%>
           <%-- <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default " ><i class="fa fa-pie-chart"></i></a>
@@ -104,13 +104,16 @@
 			</div>
 			
       		<div class="clearfix"></div>
-      		<div class="mt clearfix mb">
-      			<div class="pull-right">
-      			<input type="hidden" name="id" id="id" value="${emailScenario.id}" />
-      				<button type="button" name="save"  value="save" id="save_title" class="btn btn-primary btnsStyles" onClick="editEmailTemplates();">Save</button>
-      				 <button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="javascript:window.location.href = '<c:url value='emailTemplates'/>'">Cancel</button>
-      			</div>
-      		</div>
+	<div class="mt clearfix mb">
+		<div class="pull-right">
+			<input type="hidden" name="id" id="id" value="${emailScenario.id}" />
+			<button type="button" name="save" value="save" id="save_title" class="btn btn-primary btnsStyles" onClick="editEmailTemplates();">Save</button>
+			<c:if test="${!empty emailScenario.parentId.id}">
+			<button type="button" name="restore" value="save" id="save_title" class="btn btn-primary btnsStyles" onClick="javascript:window.location.href = '<c:url value='editEmailTemplate?templateUUID=${emailScenario.parentId.emailUUID}'/>'">Restore</button>
+			</c:if>
+		<button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="javascript:window.location.href = '<c:url value='emailTemplates'/>'">Cancel</button>
+		</div>
+	</div>
       			
       			
       </form:form>
@@ -137,7 +140,7 @@
 
 <script>
 function editEmailTemplates() {
-	if ($('#user_manuals_form').validate(false, validationSettings)) {
+	if ($('#email_template_form').validate(false, validationSettings)) {
 		$("#save_title").attr("disabled", "disabled");
 		$("#save_title").addClass('button').val('Processing..');
 	

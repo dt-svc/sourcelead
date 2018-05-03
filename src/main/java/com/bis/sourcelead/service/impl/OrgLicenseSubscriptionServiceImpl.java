@@ -226,8 +226,6 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 				 
 				try {
 					userService.addUser(user);
-					if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
-						sendActivationEmail(user);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -313,6 +311,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
 			
 			userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
+			sendActivationEmail(user);
 			userService.sendEmail(user, loginUser, password,orgLocations.getId());
 			
 			

@@ -23,43 +23,12 @@ $(function(){
 </script>
 
 <style>
-.viewTemplate .sjfb-field {
-float: left; min-height: 36px; margin-bottom: 15px;
+.datatable_filter {
+position: relative !important; top:0 !important;
 }
-.viewTemplate .sjfb-field textarea {
-max-height: 65px;
-}
-.viewTemplate .sjfb-field  {
-width: 80%;
-margin: 0 0 10px 15px;
-}
-.viewTemplate .sjfb-field:nth-child(2n+2) {
-    margin-left: 15px;
-}
-.viewTemplate .sjfb-field label {
-float: left; width: 30%;
-}
-.sjfb-radio .choices-radio, .sjfb-checkbox .choices-checkbox {
-float: left; width: 70%;
-}
-.sjfb-radio .choices-radio label, .sjfb-checkbox .choices-checkbox label {
-	min-width: 20%;
-	width: 25%;
-	max-width: 50%;
-	position:relative;
-	padding-right: 10px;
-	padding-left: 30px;
-}
-.choices input[type="checkbox"], .choices input[type="radio"] {
-float: left;
-position: absolute;
-left:0;
-}
-.viewTemplate .sjfb-field select {
--webkit-appearance: none; -moz-appearance: none; -ms-appearance: none; -o-appearance: none;
-}
-.viewTemplate .sjfb-field select::-ms-expand {
-    display: none;
+
+.datatable_filter input {
+position: relative !important; top:0 !important;
 }
 </style>
 
@@ -133,15 +102,14 @@ function templatepagination(){
       <h2>Email Templates</h2>
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Interview Templates</div>
-    
   </section>
-  
+  	
   <div class="timesheet_out">
-    <div class="vendor_wrap">
-	       <div class="project_tabs_inn_table vendor_wrap_inn_table">
-	          <div id="emailTemplateList" class="datatable_filter"></div>
-	          
-	       </div> 
+  <div class="clearfix"></div>
+    <div class="project_wrap">
+	       <div class="project_wrap_table datatable_filter mt">
+	    				<div id="emailTemplateList" class="datatable_filter datatable_filter-cutom"></div>
+				</div>	
 	       
        </div>
   </div>
