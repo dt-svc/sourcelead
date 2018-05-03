@@ -115,4 +115,10 @@ public class AssociateDeductionServiceImpl implements AssociateDeductionService{
 		}
 		return res;
 	}
+
+	@Override
+	public AssociateDeduction findAssociateDeductionById(Long associateDeductionId)
+	{
+		return associateDeductionDao.findAssociateDeductionById(associateDeductionId);
+	}
 }

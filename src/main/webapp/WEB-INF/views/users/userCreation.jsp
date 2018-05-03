@@ -1148,7 +1148,7 @@ function clearDate(){
 <script>
 // script for tabs
 
-			/* 	var associateBanking = document.getElementById("associateBanking");
+			var associateBanking = document.getElementById("associateBanking");
 				if(associateBanking){
 					associateBanking.href = "#";
 					associateBanking.className = "disabledLink";
@@ -1163,7 +1163,7 @@ function clearDate(){
 				if(associateDeduction){
 					associateDeduction.href = "#";
 					associateDeduction.className = "disabledLink";
-				} */
+				} 
 				
 				// associateContribution associateAdvances
 

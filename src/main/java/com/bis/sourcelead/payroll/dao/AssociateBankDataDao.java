@@ -9,4 +9,6 @@ public interface AssociateBankDataDao {
 	AssociateBankData saveAssociateBankData(AssociateBankData associateBankData);
 
 	AssociateBankData findAssociateBankDataByUserId(Long userId, OrgLocations orgLocation);
+
+	AssociateBankData findAssociateBankDataById(long id);
 }

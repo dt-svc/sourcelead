@@ -7,6 +7,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
+import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 
 public interface AssociateDeductionService {
 
@@ -15,4 +16,6 @@ public interface AssociateDeductionService {
 	PayrollDeductionDTO getDeductionAmount(long deductionTypeId);
 
 	ResponseList<DeductionDTO> findAllDeductionSummaryByUserId(Long userId, OrgLocations orgLocation);
+
+	AssociateDeduction findAssociateDeductionById(Long associateDeductionId);
 }

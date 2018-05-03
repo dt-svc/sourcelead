@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.rest;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.AssociateDeductionDao;
-import com.bis.sourcelead.payroll.dao.impl.USPayrollDaoImpl;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
 import com.bis.sourcelead.payroll.dto.AssociateContributionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
@@ -72,6 +73,8 @@ public class USPayrollRestController {
 	@Autowired
 	AssociateContributionService associateContributionService;
 	
+	@Autowired
+	AssociateDeductionDao associateDeductionDao;
 	/**
 	 * find all deduction types from lookup_data table 
 	 * @param request
@@ -502,4 +505,38 @@ public class USPayrollRestController {
 			ResponseList<ContributionDTO>  res = associateContributionService.findAllContributionSummaryByUserId(userId,orgLocation);	
 			return res;
 		}
+		
+		/**
+		 * Update Deduction Amount 
+		 * @param associateDeductionDTO
+		 * @param request
+		 * @param response
+		 * @return Response<AssociateDeductionDTO> 
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/updateAssociateDeductionAmount","/rest/updateAssociateDeductionAmount" }, method = RequestMethod.POST)
+		public AssociateDeduction updateAssociateDeductionAmount(@RequestParam(value = "associateDeductionId", required = false) Long associateDeductionId,
+				@RequestParam(value = "dedAmount", required = false) String dedAmount,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			AssociateDeduction associateDeduction = associateDeductionService.findAssociateDeductionById(associateDeductionId);
+			associateDeduction.setDeductionAmount(new BigDecimal(dedAmount));
+			return associateDeductionDao.saveAssociateDeduction(associateDeduction);
+		}
+		
+		/**
+		 * Delete Association Deduction Amount 
+		 * @param associateDeductionDTO
+		 * @param request
+		 * @param response
+		 * @return Response<AssociateDeductionDTO> 
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/deleteAssociateDeduction","/rest/deleteAssociateDeduction" }, method = RequestMethod.POST)
+		public AssociateDeduction deleteAssociateDeduction(@RequestParam(value = "assDedId", required = false) Long assDedId,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			AssociateDeduction associateDeduction = associateDeductionService.findAssociateDeductionById(assDedId);
+			associateDeduction.setStatus(0);
+			return associateDeductionDao.saveAssociateDeduction(associateDeduction);
+		}
+		
 }

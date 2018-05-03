@@ -35,17 +35,22 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	@Override
 	public Response<AssociateBankDataDTO> saveAssociateBankData(AssociateBankDataDTO associateBankDataDTO, OrgLocations orgLocation, User loginUser)
 	{
-		AssociateBankData associateBankData = new AssociateBankData();
+		AssociateBankData associateBankData = null;
 		Response<AssociateBankDataDTO> resObj = new Response<>();
 		try {
 			if (Validator.validate(associateBankDataDTO)) {
+				if(associateBankDataDTO.getId() != 0){
+					associateBankData = associateBankDataDao.findAssociateBankDataById(associateBankDataDTO.getId());
+				}else {
+					associateBankData = new AssociateBankData();
+					User user = userService.getUserById(Long.parseLong(associateBankDataDTO.getUserId()));
+					associateBankData.setUserId(user);
+				}
 				associateBankData.setAccountType(associateBankDataDTO.getAccountType());
 				associateBankData.setBankName(associateBankDataDTO.getBankName());
 				associateBankData.setAccountNumber(associateBankDataDTO.getAccountNumber());
 				associateBankData.setRoutingNumber(associateBankDataDTO.getRoutingNumber());
 				associateBankData.setOrgLocationId(orgLocation);
-				User user = userService.getUserById(Long.parseLong(associateBankDataDTO.getUserId()));
-				associateBankData.setUserId(user);
 				associateBankData.setStatus(1);
 				associateBankData.setAssociateBankUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				associateBankData.setCreatedBy(loginUser.getUserCode());

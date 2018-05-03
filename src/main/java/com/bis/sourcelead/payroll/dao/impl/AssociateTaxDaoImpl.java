@@ -56,4 +56,21 @@ public class AssociateTaxDaoImpl implements AssociateTaxDao{
 		}
 		return associateTax;
 	}
+
+	@Override
+	@Transactional
+	public AssociateTax findAssociateTaxById(long associateTaxId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		AssociateTax associateTax = null;
+		try {
+			@SuppressWarnings("unchecked")
+			List<AssociateTax> associateTaxTaxList = session.createQuery("from AssociateTax aTax where aTax.id=:associateTaxId").setLong("associateTaxId", associateTaxId).list();
+			if (associateTaxTaxList != null && associateTaxTaxList.size() > 0) {
+				associateTax = associateTaxTaxList.get(0);
+			}
+		} catch (Exception e) {
+		}
+		return associateTax;
+	}
 }

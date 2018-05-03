@@ -43,8 +43,15 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 	{
 		Response<AssociateTaxDTO> resObj = new Response<>();
 		try {
+			AssociateTax associateTax = null;
 			if (Validator.validate(associateTaxDTO)) {
-				AssociateTax associateTax = new AssociateTax();
+				if(associateTaxDTO.getId() != 0) {
+					associateTax = associateTaxDao.findAssociateTaxById(associateTaxDTO.getId());
+				}else {
+					associateTax = new AssociateTax();
+					User user = userService.getUserById(associateTaxDTO.getUserId());
+					associateTax.setUserId(user);
+				}
 				associateTax.setFederalTaxFilliingStatus(associateTaxDTO.getFederaltaxFillingStatus());
 				associateTax.setFederalTaxAllowances(associateTaxDTO.getFederaltaxAllowances());
 				associateTax.setFederalTaxAdditionnalWithHolding(associateTaxDTO.getFederaltaxAdditionalWithHolding());
@@ -94,8 +101,6 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 					associateTax.setLocalTaxState(associateTaxDTO.getLocalTax());
 				}
 				associateTax.setStatus(1);
-				User user = userService.getUserById(associateTaxDTO.getUserId());
-				associateTax.setUserId(user);
 				associateTax.setOrgLocationId(orgLocation);
 				associateTax.setCreatedBy(loginUser.getUserCode());
 				associateTax.setCreatedDate(new Date());
@@ -225,7 +230,9 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 			associateTaxDTO.setResidenceLocationAllowances(associateTax.getResidenceTaxAllowances());
 			associateTaxDTO.setResidenceLocationAdditionalWithHolding(associateTax.getResidenceTaxAdditionnalWithHolding());
 			associateTaxDTO.setSupplementType(associateTax.getSupplementType());
+			associateTaxDTO.setResidenceLocationSupplementType(associateTax.getSupplementType());
 			associateTaxDTO.setLocalTax(associateTax.getLocalTax());
+			associateTaxDTO.setLocalTaxState(associateTax.getLocalTaxState());
 			if(associateTax.getFederalExempt()) {
 				associateTaxDTO.setFederalExempt("YES");
 			}else {

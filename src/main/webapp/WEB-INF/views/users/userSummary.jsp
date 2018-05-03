@@ -118,10 +118,10 @@ $(document).ready(function(){
 		 result = result + '<div id="tab-17" class="project_tabs_inn project_tabs_inn_table">';
 		 result = result + '</div>';
 		 
-		 result = result + '<div id="tab-21" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative">';
+		 result = result + '<div id="tab-21" class="table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative clearfix">';
 		 result = result + '</div>';
 		 
-		 result = result + '<div id="tab-22" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
+		 result = result + '<div id="tab-22" class="clearfix table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
 		 result = result + '</div>';
 		 
 		 result = result + '<div id="tab-23" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';

@@ -26,6 +26,8 @@ public class AssociateTaxDTO {
 	
 	private String localTax;
 	
+	private String localTaxState;
+	
 	private String federalExempt;
 	
 	private String medicareExempt;
@@ -272,6 +274,16 @@ public class AssociateTaxDTO {
 	public void setSupplementType(String supplementType)
 	{
 		this.supplementType = supplementType;
+	}
+
+	public String getLocalTaxState()
+	{
+		return localTaxState;
+	}
+
+	public void setLocalTaxState(String localTaxState)
+	{
+		this.localTaxState = localTaxState;
 	}
 	
 	

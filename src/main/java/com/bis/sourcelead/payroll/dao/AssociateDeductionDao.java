@@ -10,4 +10,6 @@ public interface AssociateDeductionDao {
 	AssociateDeduction saveAssociateDeduction(AssociateDeduction associateDeduction);
 
 	List<AssociateDeduction> findAllDeductionSummaryByUserId(Long userId, OrgLocations orgLocation);
+
+	AssociateDeduction findAssociateDeductionById(Long associateDeductionId);
 }

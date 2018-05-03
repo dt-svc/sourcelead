@@ -8,4 +8,6 @@ public interface AssociateTaxDao {
 	AssociateTax saveAssociateTax(AssociateTax associateTax);
 
 	AssociateTax findAssociateTaxSummaryByUserId(Long userId, OrgLocations orgLocation);
+
+	AssociateTax findAssociateTaxById(long associateTaxId);
 }
