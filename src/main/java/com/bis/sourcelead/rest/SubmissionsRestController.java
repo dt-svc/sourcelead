@@ -790,7 +790,9 @@ public class SubmissionsRestController {
 	public RequirementSubmissionTemplateFields getSubmittedCandidateDetailsForRequriement(@RequestParam(value = "submissionId", required = true) Long submissionId) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
-		
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		/*requirementSubmissionTemplateFields.setSubmissionJsonString(requirementSubmission.getSubmissionTemplateJsonString());
+		requirementSubmissionTemplateFields.setSubmissionJsonStringValue(requirementSubmission.getSubmissionTemplateJsonStringValue());*/
 		return requirementSubmissionTemplateFields;
 	}
 	
