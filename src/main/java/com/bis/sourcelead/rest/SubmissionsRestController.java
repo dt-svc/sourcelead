@@ -836,7 +836,7 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 				requirementSubmission.setUpdatedDate(new Date());
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				if(orgLocations.getId() != requirementSubmission.getCandidate().getOrgLocationId().getId() && !requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
+				if(!orgLocations.getId().equals(requirementSubmission.getCandidate().getOrgLocationId().getId()) && !requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
 					requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
 				}
 				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
