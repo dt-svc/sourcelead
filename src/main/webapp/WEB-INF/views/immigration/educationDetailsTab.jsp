@@ -7,7 +7,7 @@
 		</div>
 		
 	  	<div class="immigraTable">
-		  <table>
+		  <table id ="educationTbl">
 			<tbody>
 			  <tr>
 				<th>Education</th>
@@ -252,7 +252,8 @@ function removeImmiEduDocFile(){
 </script>
 <script>
   var educationListCount = '<c:out value ="${educationListCount}"/>';
-  if(educationListCount>0){
+  var initCount  = '<c:out value ="${requestScope.eduOnLoadCount}"/>';
+  if(educationListCount>0 || initCount!= ""){
         $('#educationfilled').show() // show and hides circle icon.
     }
 	else {

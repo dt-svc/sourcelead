@@ -7,7 +7,7 @@
 		</div>
 		
 	  	<div class="immigraTable">
-		  <table>
+		  <table id="formsTbl">
 			<tbody>
 			  <tr>
 				<th>Form Name</th>

@@ -299,8 +299,15 @@ public class ImmigrationRestController {
 		if (immigrationId != null && !StringUtils.isEmpty(immigrationId)) {
 			immigrationDTO = immigrationCommonService.getImmigrationDetails(immigrationId, orgLocations);
 		}
-		List<LookUpData> uscisStatusList = immigrationTemplateService
-				.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
+		List<LookUpData> uscisStatusList = immigrationTemplateService.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
+		
+		 HashMap<String , Integer> tabRecordCountMap = null;
+		if(candidateId!= null) {
+		  tabRecordCountMap= getImmigrationViewTabStatusDetails(Long.parseLong(candidateId));
+		}
+		System.out.println("tabRecordCountMap");
+		System.out.println(tabRecordCountMap);
+		model.addObject("tabRecordCountMap", tabRecordCountMap);
 		model.addObject("uscisStatusList", uscisStatusList);
 		model.addObject("immigration", immigrationDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -1431,33 +1438,26 @@ public class ImmigrationRestController {
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
-			String entityArray[] = new String[] { "CandidatePassportVisa", "CandidatePassportVisa",
-					"CandidateEmployers", "CandidateResidence", "CandidateEducation", "CandidateFamilyDetails" };
-			String tabNameArray[] = new String[] { "Passport", "Visa", "Employers", "Residence", "Education",
-					"Family" };
+			String entityArray[] = new String[] { "CandidatePassportVisa", "CandidateEmployers", "CandidateResidence", "CandidateEducation"};
+			String tabNameArray[] = new String[] { "Passport",  "Employers", "Residence", "Education"};
 			Integer count = 0;
 
 			for (int i = 0; i < entityArray.length; i++) {
 				if (i == 0) { // CandidatePassportVisa for passport
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
 							"where candidate.id=:candidateId and idType='Passport'");
-				} else if (i == 1) {// CandidatePassportVisa for Visa
-					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
-							"where candidate.id=:candidateId and idType='Visa'");
-				} else if (i == 2) { // CandidateEmployers
+				} else if (i == 1) { // CandidateEmployers
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
 							"where candidateId.id=:candidateId");
-				} else if (i == 3) { // CandidateResidence
+				} else if (i == 2) { // CandidateResidence
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
 							"where candidate.id=:candidateId");
-				} else if (i == 4) {// CandidateEducation
+				} else if (i == 3) {// CandidateEducation
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
 							"where candidateId.id=:candidateId");
-				} else if (i == 5) {// CandidateFamilyDetails
-					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
-							"where candidate.id=:candidateId");
 				}
-				if (count == null || count == 0) {
+				System.out.println(" count value is ::--> : " + count);
+				if (count == null) {
 					result = "{errorMsg:'" + tabNameArray[i] + "'}";
 					System.out.println(" Record not found for the Tab Nme:::--> : " + tabNameArray[i]);
 					return result;
@@ -1516,6 +1516,47 @@ public class ImmigrationRestController {
 		return result;
 	}
 
+	private HashMap<String, Integer> getImmigrationViewTabStatusDetails(Long candidateId) {
+		//result = "{errorMsg:'" + tabNameArray[i] + "'}";
+		//System.out.println(" Record not found for the Tab Nme:::--> : " + tabNameArray[i]);
+		HashMap<String , Integer> tabRecordCountMap = new HashMap<String, Integer>();
+		try {
+			String entityArray[] = new String[] { "CandidatePassportVisa", "CandidatePassportVisa",
+					"CandidateEmployers", "CandidateResidence", "CandidateEducation",  "CandidateFamilyDetails"};
+			String tabNameArray[] = new String[] { "Passport", "Visa", "Employers", "Residence", "Education", "Family"};
+			Integer count=0;
+			for (int i = 0; i < entityArray.length; i++) {
+				if (i == 0) { // CandidatePassportVisa for passport
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId and idType='Passport'");
+					tabRecordCountMap.put(tabNameArray[i], count);
+					
+				} else if (i == 1) {// CandidatePassportVisa for Visa
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId and idType='Visa'");
+					tabRecordCountMap.put(tabNameArray[i], count);
+				} else if (i == 2) { // CandidateEmployers
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId");
+					tabRecordCountMap.put(tabNameArray[i], count);
+				} else if (i == 3) { // CandidateResidence
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId");
+					tabRecordCountMap.put(tabNameArray[i], count);
+				} else if (i == 4) {// CandidateEducation
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId");
+					tabRecordCountMap.put(tabNameArray[i], count);
+				}
+				else if (i == 5) {// CandidateFamilyDetails
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId, "where candidate.id=:candidateId");
+					tabRecordCountMap.put(tabNameArray[i], count);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return tabRecordCountMap;
+		
+		
+	}
 	@RequestMapping(value = { "/deleteCandidatePassportVisaDetails" })
 	public String deleteCandidatePassportVisaDetails(@RequestParam(value = "id", required = true) Long id,
 			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,

@@ -7,7 +7,7 @@
 		</div>
 		
 	  	<div class="immigraTable">
-		  <table>
+		  <table id="residenceTbl">
 			<tbody>
 			  <tr>
 				<th>Location</th>
@@ -206,7 +206,9 @@
 		
 <script>
   var residenceListCount = '<c:out value ="${residenceListCount}"/>';
-  if(residenceListCount>0){
+  var initCount  = '<c:out value ="${requestScope.resiOnLoadCount}"/>';
+ 
+  if(residenceListCount>0 || initCount!= ""){
         $('#residencefilled').show() // show and hides circle icon.
     }
 	else {

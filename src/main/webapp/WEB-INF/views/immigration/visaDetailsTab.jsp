@@ -7,7 +7,7 @@
 		</div>
 		
 	  	<div class="immigraTable">
-		  <table>
+		  <table id ="visaTbl">
 			<tbody>
 			  <tr>
 				<th>Visa Type</th>
@@ -163,10 +163,11 @@
 		</script>
 <script>
   var visaListCount = '<c:out value ="${visaListCount}"/>';
-  if(visaListCount>0){
+  var initCount  = '<c:out value ="${requestScope.visaOnLoadCount}"/>';
+  if(visaListCount>0 || initCount!= ""){
         $('#visafilled').show() // show and hides circle icon.
     }
-	else {
+	else{
         $('#visafilled').hide()
 	}
 </script>

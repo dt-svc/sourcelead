@@ -7,7 +7,7 @@
 		</div>
 		
 	  	<div class="immigraTable">
-		  <table>
+		  <table id="employerTbl">
 			<tbody>
 			  <tr>
 				<th>Employer</th>
@@ -236,7 +236,8 @@ function removeImmiEmpDocFile(){
 		
 <script>
   var employersListCount = '<c:out value ="${employersListCount}"/>';
-  if(employersListCount>0){
+  var empInitCount2  = '<c:out value="${requestScope.empOnLoadCount}"/>';
+  if(employersListCount>0 || empInitCount2!= ""){
         $('#employersfilled').show() // show and hides circle icon.
     }
 	else {

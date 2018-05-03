@@ -8,7 +8,7 @@
 		</div>
 		
 	  	<div class="immigraTable overflow_Auto">
-		  <table>
+		  <table id="passportTbl">
 			<tbody>
 			  <tr>
 				<th>Passport Id</th>
@@ -148,7 +148,8 @@
 
 <script>
   var passListCount = '<c:out value ="${passListCount}"/>';
-  if(passListCount>0){
+  var initCount  = '<c:out value ="${requestScope.passOnLoadCount}"/>';
+  if(passListCount>0 || initCount!= ""){
         $('#passportfilled').show() // show and hides circle icon.
     }
 	else {
