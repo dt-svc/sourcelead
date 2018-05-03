@@ -90,7 +90,7 @@ public class SourceleadTicketsDaoImpl implements SourceleadTicketsDao{
  	    
         StringBuilder query1 = new StringBuilder("");
 		if(sourceleadTicketDTO.getSearchValue() !=null && !"".equalsIgnoreCase(sourceleadTicketDTO.getSearchValue())) {
-			query1.append("and( (st.userId.firstName like '" + sourceleadTicketDTO.getSearchValue() + "%' OR st.userId.lastName like '%" + sourceleadTicketDTO.getSearchValue() + "' )")
+			query1.append("and ((st.userId.firstName like '" + sourceleadTicketDTO.getSearchValue() + "%' OR st.userId.lastName like '%" + sourceleadTicketDTO.getSearchValue() + "' )")
 			   .append("OR (concat(st.userId.firstName,st.userId.lastName) like '%" + sourceleadTicketDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
 		       .append("OR st.ticketTitle like '%" + sourceleadTicketDTO.getSearchValue() + "%' ")
 		       .append("OR st.ticketType like '%" + sourceleadTicketDTO.getSearchValue() + "%' ")
@@ -135,11 +135,12 @@ public class SourceleadTicketsDaoImpl implements SourceleadTicketsDao{
 			    countlist = session.createQuery(countQuery.toString()).setParameter("fromDate", searchDates[0]).setParameter("endDate", searchDates[1]).setLong("varZero", 0).setParameterList("orgLocationList", orgLocationList).list();
 			}else {
 				subQuery = " ((:varZero  IN (:orgLocationList)) OR (:varZero NOT IN (:orgLocationList) and st.orgLocationId.id IN (:orgLocationList)))";
-
-				String query = "from SourceleadTickets st  where  "+query1+" "+subQuery+" "+sortingQry+"";
+				
+				
+				String query = "from SourceleadTickets st  where   "+subQuery+" "+query1+"  "+sortingQry+"";
 			    ticketList = session.createQuery(query.toString()).setLong("varZero", 0).setParameterList("orgLocationList", orgLocationList).setFirstResult(sourceleadTicketDTO.getStart()).setMaxResults(sourceleadTicketDTO.getLength()).list();
 			    
-			    String countQuery = "select count(*) from SourceleadTickets st where  "+query1+" "+subQuery+" "+sortingQry+"";
+			    String countQuery = "select count(*) from SourceleadTickets st where  "+subQuery+" "+query1+"  "+sortingQry+"";
 			    countlist = session.createQuery(countQuery.toString()).setLong("varZero", 0).setParameterList("orgLocationList", orgLocationList).list();
 			}
 			

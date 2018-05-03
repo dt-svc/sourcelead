@@ -1237,14 +1237,14 @@ function dynamicUserListPagination(url){
 		    	  		var result = "";
 		    	  		if(userRole.userName !=null && userRole.userName !='' && userRole.userName !='undefined'){
 		        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
-		        			   result = result +"<td><div class='tbldata-dotdot-200'>"    
+		        			   result = result +"<td><div class='proj_show divmax-width dotdotwithImage'>"    
 		        			    result = result +" <a href='<c:url value='/app/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft' title = '"+userRole.userName+"'>";
 		        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
-				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.fileUrl+"' alt='image'>";
+				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src='"+userRole.fileUrl+"' alt='image'>";
 		        			    }else{
-					       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='/resources/images/userprofileImg.jpg' alt='image'>";
+					       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src='/resources/images/userprofileImg.jpg' alt='image'>";
 		        			    }
-				       	    	result = result + ''+userRole.userName+'</a></div></td>';
+				       	    	result = result + '<div class="tbldata-dotdot-vsm">'+userRole.userName+'</div><i class="fa fa-binoculars pull-right"></i></a></div></td>';
 								'</sec:authorize>';
 							}else{
 							result = result + ' <td><div>--</div></td>';

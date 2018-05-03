@@ -50,6 +50,8 @@ public interface UserRoleDao {
 	
 	public UserRole getUserRoleById(Long userRoleId) throws Exception;
 	
+	public List<UserRole> getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(Long orgLocationId) throws Exception;
+	
 	/**To get user role by userid and locationId
 	 * @author Prasad salina
 	 * @param userId
