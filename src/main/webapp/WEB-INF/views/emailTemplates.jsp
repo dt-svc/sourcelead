@@ -98,10 +98,15 @@ function templatepagination(){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
-    <div class="pull-left">
+    <div class="pull-left" id="emailtemplate" style="display:block">
       <h2>Email Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Email Templates</div>
+    <div class="pull-left" id="emailSummary" style="display:none">
+            <h2>Email Template Summary</h2>
+          </div>
+    <div class="pull-right brud-crum"  id="emailTemplates" style="display:block"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Email Templates</div>
+    <div class="pull-right brud-crum" id="emailSumm" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a>&raquo; <a href="<c:url value='${appPath}/emailTemplates'/>" class="paddingLeft">Email TemplatesList</a> &raquo; emailTemplateSummary </div>
+         
   </section>
   	
   <div class="timesheet_out">
@@ -159,27 +164,27 @@ function viewEmailTemplate(id,uniqueScenarioName){
 			
 			var result = "";
 			result = result	+ '<div class="project_tabs_inn_table clearfix">';
-			result = result + '<div class="project_details col-md-10">';
+			result = result + '<div class="mt col-md-10">';
 			
-			result = result	+ '<div id="ProjectIdDiv" class="row mb">';
-			result = result + '<strong class="col-md-2 text-right">Template Name:</strong>';
-			result = result + '<div class="col-md-9 paddingLeft">'+title+'</div>';
+			result = result	+ '<div id="ProjectIdDiv" class="mb">';
+			result = result + '<label class="clearfix">Template Name:</label>';
+			result = result + '<div class="clearfix"><input type="text" value="'+title+'" class="form-control" readonly="true"></div>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
 			result = result + '<div class="clearfix"></div>';
 			
-			result = result	+ '<div id="ProjectIdDiv" class="row mb">';
-			result = result + '<strong class="col-md-2 text-right">Subject:</strong>';
-			result = result + '<div class="col-md-9 paddingLeft">'+subject+'</div>';
+			result = result	+ '<div id="ProjectIdDiv" class="mb">';
+			result = result + '<label class="clearfix">Subject:</label>';
+			result = result + '<div class="clearfix"><textarea class="form-control" rows="2" readonly="true">'+subject+'</textarea></div>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
 			result = result + '<div class="clearfix"></div>';
 			
-			 result = result	+ '<div class="row mb" id="ProjectIdDiv">';
-			result = result + '<strong class="col-md-2 text-right">Email Body:</strong>';
-			result = result + '<div class="col-md-9 paddingLeft">'+body+'</div>';
+			 result = result	+ '<div class="mb" id="ProjectIdDiv">';
+			result = result + '<label class="clearfix">Email Body:</label>';
+			result = result + '<div class="clearfix"><textarea class="form-control" rows="10" readonly="true">'+body+'</textarea></div>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>'; 
 			
@@ -191,9 +196,9 @@ function viewEmailTemplate(id,uniqueScenarioName){
 			
 			result = result + '<div class="clearfix"></div>';
 			
-			result = result	+ '<div class="row mb" id="ProjectIdDiv">';
-			result = result + '<strong class="col-md-2 text-right">Email Signature:</strong>';
-			result = result + '<div class="col-md-9 paddingLeft">'+signature+'</div>';
+			result = result	+ '<div class="mb" id="ProjectIdDiv">';
+			result = result + '<label class="clearfix">Email Signature:</label>';
+			result = result + '<div class="clearfix"><textarea class="form-control" rows="3" readonly="true">'+signature+'</textarea></div>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
@@ -201,6 +206,10 @@ function viewEmailTemplate(id,uniqueScenarioName){
 			
 			$("#emailTemplateList").empty();  
 			$("#emailTemplateList").append(result); 
+			 document.getElementById("emailtemplate").style.display="none";
+			 document.getElementById("emailSummary").style.display="block";
+			 document.getElementById("emailTemplates").style.display="none";
+			 document.getElementById("emailSumm").style.display="block";
 			
 			}
 	});
