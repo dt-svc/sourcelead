@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
@@ -48,7 +49,17 @@ public interface AssetService {
 	
 	List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception;
 	
-	public Asset saveAssetDetails(AssetDTO assetDTO,String assetId, User user,OrgLocations orgLocations) throws Exception;
+	public Asset saveAssetDetails(AssetDTO assetDTO,User user,OrgLocations orgLocations) throws Exception;
 	
-	List<Asset> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception;
+	List<AssetAssign> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception;
+	
+	List<AssetAssign> getAssignAssetListByAssetId(Long assetId);
+	
+	AssetAssign saveAssetAssign(AssetAssign assetAssign) throws Exception;
+	
+	AssetAssign getAssignAssetByAssetId(Long assetId)throws Exception;
+	
+	List<AssetAssign> getAssignAssetListByShiftId(Long shiftId)throws Exception;
+	
+	void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception;
 }
