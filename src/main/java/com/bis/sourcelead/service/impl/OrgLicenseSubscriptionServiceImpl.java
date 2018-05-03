@@ -696,6 +696,11 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 			storageSubscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getStorageType()));
 			orgLicenseSubscription.setStorageSubscriptionType(storageSubscriptionType);
 			
+			
+			Timezone timezone = new Timezone();
+			timezone.setId(Long.parseLong(orgLicenseSubscriptionDTO.getTimezone()));
+			orgLicenseSubscription.setTimezone(timezone);
+			
 			orgLicenseSubscription.setCreatedBy(loginUser);
 			orgLicenseSubscription.setCreatedDate(new Date());
 			orgLicenseSubscription.setUpdatedBy(loginUser);
