@@ -28,10 +28,8 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.html.WebColors;
-import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfName;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -111,22 +109,41 @@ public class LetterHeadServiceImpl implements LetterHeadService{
 		return letterHeadDao.getLetterheadById(letterHeadId);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void letterHeadData(LetterHead letterHead,HttpServletResponse response) throws Exception {
 
 		ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
 		
 		Document document = null;
-		if(StringUtils.isNotBlank(letterHead.getTemplateType())) {
-		if("A4".equalsIgnoreCase(letterHead.getTemplateType())) {
-			 document = new Document(PageSize.A4);
-		}else if("Letter".equalsIgnoreCase(letterHead.getTemplateType())){
-			 document = new Document(PageSize.LETTER);
-		}else if("A6".equalsIgnoreCase(letterHead.getTemplateType())){
-			 document = new Document(PageSize.A6);
-		}else if("Legal".equalsIgnoreCase(letterHead.getTemplateType())){
-			 document = new Document(PageSize.LEGAL);
-		}
-		}else {
+		if (StringUtils.isNotBlank(letterHead.getTemplateType())) {
+			Rectangle pageSize;
+			if ("A4".equalsIgnoreCase(letterHead.getTemplateType())) {
+				 pageSize = new Rectangle(PageSize.A4);
+				 pageSize.setBackgroundColor(WebColors.getRGBColor(letterHead.getTemplateBgColor()));
+				document = new Document(pageSize, Float.parseFloat(letterHead.getPaddingLeft()),
+						Float.parseFloat(letterHead.getPaddingRight()), Float.parseFloat(letterHead.getPaddingTop()),
+						Float.parseFloat(letterHead.getPaddingBottom()));
+				
+			} else if ("Letter".equalsIgnoreCase(letterHead.getTemplateType())) {
+				pageSize = new Rectangle(PageSize.LETTER);
+				pageSize.setBackgroundColor(WebColors.getRGBColor(letterHead.getTemplateBgColor()));
+				document = new Document(pageSize, Float.parseFloat(letterHead.getPaddingLeft()),
+						Float.parseFloat(letterHead.getPaddingRight()), Float.parseFloat(letterHead.getPaddingTop()),
+						Float.parseFloat(letterHead.getPaddingBottom()));
+			} else if ("A6".equalsIgnoreCase(letterHead.getTemplateType())) {
+				pageSize = new Rectangle(PageSize.LETTER);
+				pageSize.setBackgroundColor(WebColors.getRGBColor(letterHead.getTemplateBgColor()));
+				document = new Document(pageSize, Float.parseFloat(letterHead.getPaddingLeft()),
+						Float.parseFloat(letterHead.getPaddingRight()), Float.parseFloat(letterHead.getPaddingTop()),
+						Float.parseFloat(letterHead.getPaddingBottom()));
+			} else if ("Legal".equalsIgnoreCase(letterHead.getTemplateType())) {
+				pageSize = new Rectangle(PageSize.LEGAL);
+				pageSize.setBackgroundColor(WebColors.getRGBColor(letterHead.getTemplateBgColor()));
+				document = new Document(pageSize, Float.parseFloat(letterHead.getPaddingLeft()),
+						Float.parseFloat(letterHead.getPaddingRight()), Float.parseFloat(letterHead.getPaddingTop()),
+						Float.parseFloat(letterHead.getPaddingBottom()));
+			}
+		} else {
 			document = new Document();
 		}
 		

@@ -60,7 +60,7 @@
                       	<option value="">-- Select --</option>
                       	<option value="Letter" ${letterHead.templateType eq 'Letter' ? 'selected' : ''}>Letter (8.5" x 11")</option>	
                       	<option value="A4" ${letterHead.templateType eq 'A4' ? 'selected' : ''}>A4 (8.268" x 11.693")</option>
-                      	 <option value="A6" ${letterHead.templateType eq 'A6' ? 'selected' : ''}>A6 (4.134" x 5.827")</option>	
+<%--                       	 <option value="A6" ${letterHead.templateType eq 'A6' ? 'selected' : ''}>A6 (4.134" x 5.827")</option>	 --%>
                       	<option value="Legal" ${letterHead.templateType eq 'Legal' ? 'selected' : ''}>Legal (8.5" x 14")</option>	
                       </select>
                       </div>
