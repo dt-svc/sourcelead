@@ -158,6 +158,7 @@ import com.bis.sourcelead.entity.UserRole;
 
 		private List<CustomFormFieldDTO> customFormData;
 		
+		
 		public String getFirstName() {
 			return firstName;
 		}
@@ -712,6 +713,5 @@ import com.bis.sourcelead.entity.UserRole;
 		public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
 			this.customFormData = customFormData;
 		}
-			
 		
 }

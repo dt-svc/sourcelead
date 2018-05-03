@@ -366,9 +366,9 @@ function getExpensesDetails(expId){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getExpensesEntries?"+tokenParamName+"="+tokenValue+"&expensesId="+expensesId,
-		success :function(data) {
-			if(data !=null && data !=''){
-			populateExpensesDetailsGrid(data);
+		success :function(json) {
+			if(json.data !=null && json.data !=''){
+			populateExpensesDetailsGrid(json.data);
 			}else{
                   alertMessageInExpense();
             }
@@ -613,12 +613,12 @@ function getProjectAssignMembers(pid,projectMemberName){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getProjectAssignMembers?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,
-		success :function(data) {
+		success :function(json) {
 			var output = "";
 			output = output + "<option value=''>--Select Associate--</option>";
-			for (var i=0; i<data.length; i++)
+			for (var i=0; i<json.data.length; i++)
 			{
-			var opt = data[i];
+			var opt = json.data[i];
 			var selected = "";
 			 if(projectMemberName = opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
 				 selected = 'selected';
