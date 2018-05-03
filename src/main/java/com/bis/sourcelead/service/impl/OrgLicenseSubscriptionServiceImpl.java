@@ -226,8 +226,6 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 				 
 				try {
 					userService.addUser(user);
-					if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
-						sendActivationEmail(user);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -313,6 +311,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
 			
 			userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
+			sendActivationEmail(user);
 			userService.sendEmail(user, loginUser, password,orgLocations.getId());
 			
 			
@@ -696,6 +695,11 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 			OrgLicenseSubscriptionTypes storageSubscriptionType = new OrgLicenseSubscriptionTypes();
 			storageSubscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getStorageType()));
 			orgLicenseSubscription.setStorageSubscriptionType(storageSubscriptionType);
+			
+			
+			Timezone timezone = new Timezone();
+			timezone.setId(Long.parseLong(orgLicenseSubscriptionDTO.getTimezone()));
+			orgLicenseSubscription.setTimezone(timezone);
 			
 			orgLicenseSubscription.setCreatedBy(loginUser);
 			orgLicenseSubscription.setCreatedDate(new Date());

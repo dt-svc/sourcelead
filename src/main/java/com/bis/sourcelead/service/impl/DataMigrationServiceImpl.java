@@ -372,12 +372,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				assetDTO.setMemory(assetMigDTO.getMemory());
 				assetDTO.setModel(assetMigDTO.getModel());
 				assetDTO.setMake(assetMigDTO.getMake());
-				assetDTO.setShiftAEmp(assetMigDTO.getShiftAEmp());
-				assetDTO.setShiftBEmp(assetMigDTO.getShiftBEmp());
 				assetDTO.setDescription(assetMigDTO.getDescription());
 				assetDTO.setHarddisk(assetMigDTO.getHarddisk());
 				
-				Asset asset = assetService.saveAssetDetails(assetDTO, null, user, orgLocation);
+				Asset asset = assetService.saveAssetDetails(assetDTO, user, orgLocation);
 		    	break;
 		    
 		    case "timesheetUpload": 

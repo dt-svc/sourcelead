@@ -160,7 +160,7 @@ function errRemoveClientContact(){
 			              <label class="col-md-3">Payment Account</label>
 			              <div class="col-md-9 select-field" id="projectMemberIdDiv">
 			                <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
-			                   <option>--Select Account--</option>
+			                   <option value="">--Select Account--</option>
 			                    <c:forEach items="${paymentAccountList}" var="p">
 			                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
 			                    </c:forEach>
