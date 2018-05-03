@@ -74,8 +74,8 @@ public class ProjectDocumentFolderDaoImpl implements ProjectDocumentFloderDao{
 				 query = "from ProjectDocumentFolder pdf  where  pdf.projectId.id =:projectId and pdf.status = '1' "; 
 					 projectDocumentFolderList = session.createQuery(query).setLong("projectId", projectId).list();
 			}else {
-				 query = "from ProjectDocumentFolder pdf  where  pdf.projectId.id =:projectId and pdf.status = '1' "+subQuery+""; 
-					projectDocumentFolderList = session.createQuery(query).setLong("projectId", projectId).setLong("roleId", roleId).setLong("candidateId", candidateId).list();
+				 query = "from ProjectDocumentFolder pdf  where  pdf.projectId.id =:projectId and pdf.status = '1'"; 
+					projectDocumentFolderList = session.createQuery(query).setLong("projectId", projectId).list();
 			}
 			String query1 = "select docs.projectFolderId.id, count(id) from ProjectDocuments docs where docs.status = 1 and docs.projects.id = :projectId group by docs.projectFolderId.id";
 			List<Object[]> data = session.createQuery(query1).setLong("projectId", projectId).list();
