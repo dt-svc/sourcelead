@@ -195,6 +195,10 @@ public class ImmigrationDTO extends SearchDTO {
     
     private Long currUscisStatusId;
     
+    private String orgName;
+    
+    private String attorneyContactName;
+    
 	public Long getId() {
 		return id;
 	}
@@ -869,6 +873,22 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setCurrUscisStatusId(Long currUscisStatusId) {
 		this.currUscisStatusId = currUscisStatusId;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public String getAttorneyContactName() {
+		return attorneyContactName;
+	}
+
+	public void setAttorneyContactName(String attorneyContactName) {
+		this.attorneyContactName = attorneyContactName;
 	}
 	
 }
