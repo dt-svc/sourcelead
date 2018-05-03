@@ -143,14 +143,11 @@ function assetCancel(){
 
 <script>
 function removeAssetManagement(assignAssetId){
-	alert("222")
 	 $("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
-	alert("111111111")
 	 $("#asset"+assignAssetId).empty();
 	 $("#asset"+assignAssetId).html("<td colspan='7'  id='loading"+assignAssetId+"'></td>");
 	 $("#loading"+assignAssetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-	alert(sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assignAssetId="+assignAssetId)
 	 $.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assignAssetId="+assignAssetId,	    	   
