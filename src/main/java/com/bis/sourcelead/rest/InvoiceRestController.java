@@ -944,7 +944,7 @@ public class InvoiceRestController {
 				// Candidate candidate =
 				// candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
 				Candidate candidate = projectMember.getProjectMemberCandidteId();
-				if (candidate != null && "C2C".equalsIgnoreCase(candidate.getDesignationType())) {
+				if (candidate != null && ("C2C".equalsIgnoreCase(candidate.getDesignationType()) || "C2C-1099".equalsIgnoreCase(candidate.getDesignationType()))) {
 					projectMember.setSubmissionApproverHierarchyId(sah.getId());
 					projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
 					/*

@@ -366,9 +366,9 @@ function getExpensesDetails(expId){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getExpensesEntries?"+tokenParamName+"="+tokenValue+"&expensesId="+expensesId,
-		success :function(data) {
-			if(data !=null && data !=''){
-			populateExpensesDetailsGrid(data);
+		success :function(json) {
+			if(json.data !=null && json.data !=''){
+			populateExpensesDetailsGrid(json.data);
 			}else{
                   alertMessageInExpense();
             }
@@ -582,12 +582,12 @@ function getExpenses(projectMemberId,expensesFrequency){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&invoiceType=Receivable",
-		success :function(data) {
+		success :function(json) {
 			var output = "";
 			output = output + "<option value=''>--Select Expenses--</option>";
-			for (var i=0; i<data.length; i++)
+			for (var i=0; i<json.data.length; i++)
 			{
-			var opt = data[i];
+			var opt = json.data[i];
 			var selected = "";
 			 if(expensesFrequency = opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
 				selected = 'selected';
@@ -613,12 +613,12 @@ function getProjectAssignMembers(pid,projectMemberName){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getProjectAssignMembers?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,
-		success :function(data) {
+		success :function(json) {
 			var output = "";
 			output = output + "<option value=''>--Select Associate--</option>";
-			for (var i=0; i<data.length; i++)
+			for (var i=0; i<json.data.length; i++)
 			{
-			var opt = data[i];
+			var opt = json.data[i];
 			var selected = "";
 			 if(projectMemberName = opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
 				 selected = 'selected';
@@ -1419,7 +1419,7 @@ function toDate(selector) {
 		           		getExpenses(json['memberId'],json['expensesFrequency']);
 		           		editExpensesDetailsEdit(json['invoiceLineItemsList']); 
 		           	}else{
-		           	 	editExpensesInlineItems(json['invoiceLineItemsList']);
+		           	 	editExpensesInlineItems(json.data['invoiceLineItemsList']);
 		           	}
 		           	$("#invoiceId").val(json['invoiceId']);
 		           	if(json['paymentFrequency'] != null && json['paymentFrequency'] != '' && json['paymentFrequency'] != 'undefined'){
@@ -1527,12 +1527,13 @@ function getClients(){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
-		success :function(data) {
-		var json = JSON.parse(data);
+		success :function(json) {
+// 		var json = JSON.parse(data);
 		var output = "";
 		output = output + "<option value=''>Select Client</option>";
-		for (var i=0; i<json.length; i++)
+		for (var i=0; i<json.data.length; i++)
 		{
+			var opt = json.data[i];
 		if(orgRelationId == opt.id){
 			var selected = 'selected';
 			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";
