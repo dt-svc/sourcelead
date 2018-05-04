@@ -48,9 +48,12 @@ public class LeaveTypeDTO {
 	private String overdrawLeaves;
 	private String donateLeave;
 	private String priorLeaveApplying;
+	@Required(desc = "Min Days", dependsOn="priorLeaveApplying",parentValue="Y")
 	private String priorDays;
 	private String leaveDuration;
+	@Required(desc = "Min Days", dependsOn="leaveDuration",parentValue="Y")
 	private String minDays;
+	@Required(desc = "Max Days", dependsOn="leaveDuration",parentValue="Y")
 	private String maxDays;
 	@Required(desc = "No. of Days")
 	private String noOfDays;
@@ -477,6 +480,5 @@ public class LeaveTypeDTO {
 	{
 		this.updatedUser = updatedUser;
 	}
-	
 	
 }
