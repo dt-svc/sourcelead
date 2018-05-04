@@ -385,7 +385,7 @@ function getViewInvoice(){
 					result = result +'                <label>'+dueDateStr+'</label>                                          ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
-                                        if(report.invoiceCategory != "expenses"){
+                                        if(report.invoiceCategory != "expenses" || invoiceType == "Payables"){
                                             result = result +'            <div class="col-md-6">                                                 ';
                                             result = result +'              <label class="col-md-4 control-label">Due Amount :</label>               ';
                                             result = result +'              <div class="col-md-8">';
