@@ -1521,16 +1521,18 @@ public class InvoiceRestController {
 	 */
 	@RequestMapping(value = "/generateAutomaticInvoice", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Integer> generateAutomaticInvoice(@RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request) throws Exception
+	public Response<InvoiceDTO> generateAutomaticInvoice(@RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request) throws Exception
 	{
-		Response<Integer> response = new Response<>();
+		Response<InvoiceDTO> response = new Response<>();
+		InvoiceDTO invoiceDTO = new InvoiceDTO();
 //		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Integer savedInvoiceCount = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user, contractType);
 //		resultJson = commonUtil.toJSON(savedInvoiceCount);
-		response.setObject(savedInvoiceCount);
+		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
+		response.setObject(invoiceDTO);
 		return response;
 	}
 	
