@@ -312,7 +312,7 @@ public class PaymentController {
                 }
             }
         }
-        return success ? "payment/success" : "payment/failed";
+        return success ? "payment/subscriptionPaymentSuccess" : "payment/failed";
     }
 
     private List<Transaction> getTransactions(String guid, String type, double amt) {
