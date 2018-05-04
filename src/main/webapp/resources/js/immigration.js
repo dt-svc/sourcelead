@@ -244,7 +244,7 @@ function Immigration() {
         //$("#newPetitionTemplateDiv").empty();
         if (status == 'petitionDetails') {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=petitionDetails");
-        } else if (status == 'saveContinue') {
+        } else if (status == 'saveContinue' || status == 'sendRequest') {
             if ($("#petitionDetailsForm").validate(false, validationSettings)) {
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
@@ -262,6 +262,9 @@ function Immigration() {
                        	templateId= result.data[2];
                             if(status == 'saveContinue'){// redirect to petition details tab page.
                             window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId+"&candidateId="+candidateId+"&templateId="+templateId;
+                            }
+                            if(status == 'sendRequest'){
+                            	window.location.href = sourceleadUrl + immiModulePath + "/viewImmigrationList";
                             }
                        }else{
                        	 showError("Operation failed, please try again");

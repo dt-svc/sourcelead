@@ -70,7 +70,7 @@ public class BlogSubscriptionServiceImpl implements BlogSubscriptionService{
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setToEmail(blogSubscriptionDTO.getEmail());
 		 emailMessage.setFromEmail("info@sourcelead.com");
-        
+		 emailMessage.setFirstName("Admin");
 		 globalVarsMap = getBlogSubscriptionTable(globalVarsMap); 
 		 
 		 //setting the Recipient information
@@ -92,7 +92,8 @@ public class BlogSubscriptionServiceImpl implements BlogSubscriptionService{
 		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,null,iAdressArray,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,1l,iAdressArray,new ArrayList<EmailAttachment>());
+		 
 		 
 		
 	}

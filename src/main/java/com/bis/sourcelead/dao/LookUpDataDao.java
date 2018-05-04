@@ -35,4 +35,6 @@ public interface LookUpDataDao {
 	
 	LookUpData getRequirementExperienceLevelyUniqueKey(String uniqueKey) throws Exception;
 
+	public LookUpData getLookUpDataByIdAndCategory(String visaType, long id);
+
 }

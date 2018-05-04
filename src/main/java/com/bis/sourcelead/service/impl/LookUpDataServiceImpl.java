@@ -82,5 +82,11 @@ public class LookUpDataServiceImpl implements LookUpDataService {
 	{
 		return lookUpDataDao.getRequirementExperienceLevelyUniqueKey(uniqueKey);
 	}
+
+	@Override
+	public LookUpData getLookUpDataByIdAndCategory(String visaType, long id) {
+
+		return lookUpDataDao.getLookUpDataByIdAndCategory(visaType, id);
+	}
 	
 }

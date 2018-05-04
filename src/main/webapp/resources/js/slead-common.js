@@ -24,7 +24,7 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 	             }
 	    	 }else{
 		    	var newEmail = this.value.replace(","," ");
-		        if (window[func](e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
+		        if ((newEmail != null  && newEmail != '' && newEmail != 'undefined') && window[func](e))
 		        {
 		        	preventTabkey(e); 
 		        	var par = this.parent;
@@ -62,7 +62,7 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 				    	 }else{
 				    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
 			    			var newSkill = this.value.replace(","," ");
-			    			 if (window[func](e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			    			 if ((newSkill != null  && newSkill != '' && newSkill != 'undefined') && window[func](e))
 			                 {
 			    				 preventTabkey(e);
 			                   // below code manually enter skills are taken
@@ -548,7 +548,7 @@ function validateEmail(emailId) {
     return true;
 }
 
-function validateEmailForExistenceUniversally(email, divId) {
+/*function validateEmailForExistenceUniversally(email, divId, spanId) {
 	var flag = null;
 	$.ajax({
 	    type: "GET",
@@ -569,19 +569,19 @@ function validateEmailForExistenceUniversally(email, divId) {
 	});
 
 	if(flag === true){
-		$("#emailStatusIconDiv").find("i").remove();
-		$("#emailStatusIconDiv").append('<i class="fa fa-check text-succes"></i>');
+		$(spanId).find("i").remove();
+		$(spanId).append('<i class="fa fa-check text-succes"></i>');
 	}else if(flag === false){
-		$("#emailStatusIconDiv").find("i").remove();
-		$("#emailStatusIconDiv").append('<i class="fa fa-exclamation-triangle text-warning"></i>');
+		$(spanId).find("i").remove();
+		$(spanId).append('<i class="fa fa-exclamation-triangle text-warning"></i>');
 		$(divId).after("<p class='jquery_form_error_message textWarning'><i class='fa fa-exclamation-triangle' aria-hidden='true'></i>This email universally not existed</span>");
 	}else if(flag === "invalidDomain"){
-		$("#emailStatusIconDiv").find("i").remove();
-		$("#emailStatusIconDiv").append('<i class="fa fa-ban text-danger"></i>');
+		$(spanId).find("i").remove();
+		$(spanId).append('<i class="fa fa-ban text-danger"></i>');
 		$(divId).after("<p class='jquery_form_error_message textWarning'><i class='fa fa-ban' aria-hidden='true'></i>This domain universally not existed</span>");
 	}
 return flag;
-}
+}*/
 
 
 function validate(id, label) {

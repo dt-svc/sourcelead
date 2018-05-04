@@ -8298,7 +8298,7 @@ display: block;
 	min-height: 100px;
 }
 .letterheadTemplate .letterhead-body, .letterheadTemplate .letterhead-Header, .letterheadTemplate .letterhead-contentbody {
-	border-bottom: 1px solid #ddd;
+	/*border-bottom: 1px solid #ddd;*/
 }
 .letterheadTemplate h5 {
 	font-size: 15px;
@@ -8695,6 +8695,15 @@ border-radius:4px !important; border: 1px solid #ccc !important;
 }
 .project-tabs-menu.project-tabs-menu-custom li a {
    padding: 8px 20px !important;
+}
+.chosenmbNone .chosen-container-multi .chosen-choices {
+margin-bottom: 0;
+}
+.dotdotwithImage .tbldata-dotdot-vsm {
+display: inline-block; margin-top: 5px;
+}
+.dotdotwithImage .fa-binoculars {
+position:absolute; right: 0; top:10px;
 }
 @media (max-width: 320px) {
 .uasrch-selectpicker {
