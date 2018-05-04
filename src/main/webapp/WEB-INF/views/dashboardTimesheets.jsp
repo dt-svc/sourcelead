@@ -14,16 +14,16 @@
 <script> 
 $(document).ready(function(){
 	  if('${bothTimesheets}' == 'true' || '${onlyTimesheets}' == 'true'){
-		  timeSheetSubmissionStatusCount("myTimesheets");
-		 /*  timeSheetSubmissionStatusCountApproval("myTimesheets");
+		  timeSheetSubmissionStatusCountDraft("myTimesheets");
+		  timeSheetSubmissionStatusCountApproval("myTimesheets");
 		  timeSheetSubmissionStatusCountRejected("myTimesheets");
-		  timeSheetSubmissionStatusCountWaitingForApproval("myTimesheets"); */
+		  timeSheetSubmissionStatusCountWaitingForApproval("myTimesheets");
 	  }
 	  else{
-		  timeSheetSubmissionStatusCount("employes");
-		  /* timeSheetSubmissionStatusCountApproval("employes");
+		  timeSheetSubmissionStatusCountDraft("employes");
+		  timeSheetSubmissionStatusCountApproval("employes");
 		  timeSheetSubmissionStatusCountRejected("employes");
-		  timeSheetSubmissionStatusCountWaitingForApproval("employes"); */
+		  timeSheetSubmissionStatusCountWaitingForApproval("employes");
 	  }
 });
 </script>
@@ -33,7 +33,7 @@ $(document).ready(function(){
         <div class="dashboard-widget dashboard-widget-icons">
           <h4 class="clearfix"><a id="timeSheetLink" href="<c:url value="/app/timesheet"/>"> ${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'My Timesheets' : onlyApprovalTimesheets ? 'Approval Timesheets' : ''} &nbsp;&nbsp;</a><!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
            <div class="clearfix dashboard-data mt">
-            <input type="hidden" value="" id="timesheetSocketsFor">
+            
              <c:if test="${bothTimesheets}">
 	             <ul class="nav nav-tabs">
 	               <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');" href="#today-myTimesheets">Self</a></li>
@@ -85,19 +85,18 @@ $(document).ready(function(){
       <!-- Timesheets ends --> 
       
       
-<!-- <!-- <script>
+<script>
 function timeSheetSubmissionStatusCount(employes){
-	$('#timesheetSocketsFor').val(employes);
 	timeSheetSubmissionStatusCountDraft(employes);
 	  timeSheetSubmissionStatusCountApproval(employes);
 	  timeSheetSubmissionStatusCountRejected(employes);
 	  timeSheetSubmissionStatusCountWaitingForApproval(employes);
 }
-</script> -->
+</script>
       
       
 
-<!-- <script type="text/javascript">
+<script type="text/javascript">
 function timeSheetSubmissionStatusCountDraft(timesheetType){
   var sourceleadUrl ='${sourceleadUrl}';
   $("#savedTimesheetsSubmissionsCount").empty();
@@ -106,6 +105,7 @@ function timeSheetSubmissionStatusCountDraft(timesheetType){
 		    	type: "GET",
 		        url: sourceleadUrl+"/getTimeSheetSubmissionStatus?${_csrf.parameterName}=${_csrf.token}&timesheetType="+timesheetType+"&timesheetCountType=DRAFT", 
 		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	
 		        	$("#draftLoading").removeAttr("style");
 
@@ -228,10 +228,9 @@ function timeSheetSubmissionStatusCountWaitingForApproval(timesheetType){
 		 }
 }
 </script>
-
-  -->
   
-<script>
+  
+<!-- <script>
 var wsocket;  
 var userId = '${SourceLeadWeb_user.id}';
 var orgLocationCode = '${SourceLeadWeb_locationCode}';
@@ -316,4 +315,4 @@ function onMessage(evt) {
 		 $("#timeSheetLink").attr("href", "<c:url value='/app/timesheetApproval'/>");
 	 }
 }
-</script>  
+</script>   -->

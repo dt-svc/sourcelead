@@ -104,7 +104,6 @@ public class DashBoardSocketCount {
 	public void error(Session session, Throwable t) throws IOException {
 		String userId = session.getRequestParameterMap().get("userId").get(0);
 		sessionMap.remove(userId);
-		sessionMap.get(userId).close();
 		runnable = false;
 		System.err.println("Error on session " + session.getId());
 	}
