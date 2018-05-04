@@ -2026,7 +2026,9 @@ public class RequirementListRestController {
 			            		
 			            		if(requirement.getOrgRelationId() != null && !requirement.getOrgRelationId().isEmpty()){
 			            			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(requirement.getOrgRelationId()));
-			            			requirement.setOrgRelationUUID(orgRelations.getUUID());
+			            			if(orgRelations != null) {
+			            				requirement.setOrgRelationUUID(orgRelations.getUUID());
+			            			}
 			            		}
 			            		
 			            		if(requirement.getSpocId() != null){
