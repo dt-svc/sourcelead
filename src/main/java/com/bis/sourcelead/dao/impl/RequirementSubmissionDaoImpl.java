@@ -2810,6 +2810,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				 Pattern pattern = Pattern.compile("^(([0-9]{0,4})[-{1}]([0-9]{0,4})[-{1}]([0-9]{0,4}))$");
 				 Matcher matcher = pattern.matcher(requirementSubmissionsDTO.getSearchValue());
 				 if (matcher.find()) {
+					try {
 						String searchValue = requirementSubmissionsDTO.getSearchValue();
 						DateTimeFormatter f = new DateTimeFormatterBuilder().appendPattern(orgLocations.getDateFormat()).toFormatter();
 						LocalDate parsedDate = LocalDate.parse(searchValue, f);
@@ -2818,6 +2819,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
 						sqlDate = new java.sql.Date(searchDate.getTime()); 
 						searchQuery.append("and (reqSub.createdDate like '" + sqlDate + "%' )");
+					 }catch (Exception e) {
+						 searchQuery.append("");
+					 }
 				}else {
 				searchQuery.append(" and (reqSub.candidate.firstName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
 					.append("OR reqSub.candidate.lastName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")

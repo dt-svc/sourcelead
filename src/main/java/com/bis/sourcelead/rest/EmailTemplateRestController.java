@@ -128,17 +128,15 @@ public class EmailTemplateRestController {
 		}
 	 
 	 @RequestMapping(value = "/viewEmailTemplate" , method = RequestMethod.GET)
-		public @ResponseBody EmailScenarioDTO viewEmailTemplate(EmailScenarioDTO emailScenarioDTO,HttpServletRequest request)
+		public @ResponseBody EmailScenario viewEmailTemplate(EmailScenarioDTO emailScenarioDTO,HttpServletRequest request)
 				throws Exception {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 EmailScenarioDTO emailScenarioDto=new EmailScenarioDTO();
 		  EmailScenario emailScenario= emailScenarioService.getEmailTemplateById(Long.parseLong(emailScenarioDTO.getId()));
-		  if(emailScenario != null){
-			  emailScenarioDto.setSubject(emailScenario.getSubject());
-			  emailScenarioDto.setSignature(emailScenario.getSignature());
-			  emailScenarioDto.setBody(emailScenario.getBody());
-		  }
-		  return emailScenarioDto;
+		/*String body = (emailScenario.getBody()).replaceAll("(\r\n|\n)", "<br />");
+		emailScenario.setBody(body);*/
+		  
+		  return emailScenario;
 			
 		}
 	 
