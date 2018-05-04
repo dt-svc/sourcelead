@@ -955,7 +955,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.status ='1' ORDER BY cnadidate.id DESC";  
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.status ='1' and cnadidate.consultantUser !=null ORDER BY cnadidate.id DESC";  
         return  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
 
