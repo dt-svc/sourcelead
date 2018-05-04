@@ -92,5 +92,7 @@ public interface ContractsTemplateService {
 	ContractEditHistory saveContractEditHistory(ContractEditHistory contractEditHistory);
 	
 	Contracts getMaxNoOfContract(Long locationId);
+
+	Contracts updateContractSigner(ContractsDTO contractsDTO, OrgLocations loginOrgLocation, User loginUser) throws NumberFormatException, Exception;
 	
 }

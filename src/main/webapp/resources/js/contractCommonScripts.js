@@ -35,12 +35,11 @@ function validateAlreadyGeneratedContractMainFunc(url,startDate,endDate,contract
 			      						&& opt.contractUUID != null && opt.contractUUID != '' && opt.contractUUID != 'undefined'
 			      							&& opt.contractTitle != null && opt.contractTitle != '' && opt.contractTitle != 'undefined'){
 			      				if(contractType == "Client SOW" || contractType == "Vendor SOW"){
-			      					result += '<li class="mb10">'+contractType+' Contract generated for '+opt.applicantName+' with '+opt.contractWith+' from '+opt.startDateStr+' - '+opt.endDateStr+'. <strong>'+opt.contractUUID+' - <a href="'+sourceleadUrl+'/viewContract?contractUUID='+opt.contractUUID+'" target="_blank"> '+opt.contractTitle+'</a></strong> </li>';
+			      					result += '<li class="mb10">'+contractType+' Contract generated for '+opt.applicantName+' with '+opt.contractWith+' from '+opt.startDateStr+' - '+opt.endDateStr+'. <strong>'+opt.autoGenId+' - <a href="'+sourceleadUrl+'/viewContract?contractUUID='+opt.contractUUID+'" target="_blank"> '+opt.contractTitle+'</a></strong> </li>';
 			      				}else if(contractType == "Client MSA" || contractType == "Vendor MSA"){
-			      					result += '<li class="mb10">'+contractType+' Contract generated with '+opt.contractWith+' from '+opt.startDateStr+' - '+opt.endDateStr+'. <strong>'+opt.contractUUID+' - <a href="'+sourceleadUrl+'/viewContract?contractUUID='+opt.contractUUID+'" target="_blank"> '+opt.contractTitle+'</a></strong> </li>';
+			      					result += '<li class="mb10">'+contractType+' Contract generated with '+opt.contractWith+' from '+opt.startDateStr+' - '+opt.endDateStr+'. <strong>'+opt.autoGenId+' - <a href="'+sourceleadUrl+'/viewContract?contractUUID='+opt.contractUUID+'" target="_blank"> '+opt.contractTitle+'</a></strong> </li>';
 			      				}
 			      			}
-			      			
 			      		}
 			      		result += '</ul>';
 			      		$("#preExistContractMsg").empty();

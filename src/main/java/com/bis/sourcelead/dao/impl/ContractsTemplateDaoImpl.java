@@ -769,7 +769,7 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	    	 
 	     }
 		 
-	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) and user.id IN (Select ols.userId.id from OrglocationSignatory ols where ols.authorizedType LIKE '%Contracts%')";
+	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList)) and user.id IN (Select ols.userId.id from OrglocationSignatory ols where ols.authorizedType LIKE '%Contracts%' and ols.status='1')";
 	     List<User> userRoleList = session.createQuery(query.toString()).setParameterList("ownerRolesList", ownerRolesList).list();
 	     return userRoleList;
 	}

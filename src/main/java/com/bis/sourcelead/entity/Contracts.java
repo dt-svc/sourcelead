@@ -402,19 +402,8 @@ public class Contracts {
 	
 	@Transient
 	@JsonProperty
-	private String autoGenId;
+	private String isParentContract;
 	
-	
-	public String getAutoGenId()
-	{
-		return autoGenId;
-	}
-
-	public void setAutoGenId(String autoGenId)
-	{
-		this.autoGenId = autoGenId;
-	}
-
 	public List<ContractRequestDocuments> getContractRequestDocumentsList()
 	{
 		return contractRequestDocumentsList;
@@ -1260,5 +1249,15 @@ public class Contracts {
 	public void setAutoGenId(String autoGenId)
 	{
 		this.autoGenId = autoGenId;
+	}
+
+	public String getIsParentContract()
+	{
+		return isParentContract;
+	}
+
+	public void setIsParentContract(String isParentContract)
+	{
+		this.isParentContract = isParentContract;
 	}
 }

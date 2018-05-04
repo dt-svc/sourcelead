@@ -658,8 +658,10 @@ public class ContractController {
 			sessionData = new SessionMaintainanceData();
 		}
 		sessionData.setNav(Constants.Contract);
-		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
+		List<User> userList = contractsTemplateService.getSigningAuthoritiesForContract(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
+		model.addObject("userList", userList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("contractUUID", contractUUID);
 		model.setViewName("contracts/viewContract");

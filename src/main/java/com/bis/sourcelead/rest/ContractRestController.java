@@ -49,6 +49,7 @@ import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
@@ -67,6 +68,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
@@ -731,6 +733,7 @@ public class ContractRestController {
 					contract.setOwnerName(owner.append(contract.getOwnerUserId().getFirstName()).toString());
 				}
 			}
+			contract.setIsParentContract(Constants.NO);
 		}
 		else {
 			StringBuilder owner = new StringBuilder();
@@ -741,6 +744,7 @@ public class ContractRestController {
 					owner.append(coh.getOwnerUserId().getFirstName()).append(", ");
 			}
 			contract.setOwnerName(owner.toString().replaceAll("\\s*,\\s*$", ""));
+			contract.setIsParentContract(Constants.YES);
 		}
 		 	
 		 	
@@ -1221,6 +1225,24 @@ public class ContractRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		return contractsTemplateService.reviseContract(contractsDTO,loginOrgLocation,loginUser);
+	}
+	
+	@RequestMapping(value = "/updateContractSigner")
+	public Response<Contracts> updateContractSigner(ContractsDTO contractsDTO,HttpServletRequest request) throws Exception
+	{
+		Response<Contracts> response = new Response<>();
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(loginOrgLocation != null){
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Contracts contract =  contractsTemplateService.updateContractSigner(contractsDTO,loginOrgLocation,loginUser);
+			if(contract != null){
+				response.setResponse(Result.SUCCESS.name());
+				response.setObject(contract);
+			}
+		}else{
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+		}
+		return response;
 	}
 	 
 }

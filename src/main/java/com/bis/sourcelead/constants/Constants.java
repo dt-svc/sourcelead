@@ -387,6 +387,7 @@ public class Constants {
 	public static final String SocialInviter = "SocialInviter";
 	public static final String CONTRACT_SIGNED = "ContractSigned";
 	public static final String REMINDER_CONTRACT_SIGNING_EMAIL_PENDING = "RemindercontractSigningEmailPending";
+	public static final String REMINDER_CONTRACT_SIGNING_EMAIL_WAITING_TO_BE_VERIFY = "RemindercontractSigningEmailWTV";
 	public static final String SEND_CONTRACT = "SendContract";
 	public static final String SEND_SOW_CONTRACT = "SendSowContract";
 	public static final DateFormat TMS = new SimpleDateFormat("hh:mm a");
