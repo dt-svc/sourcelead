@@ -70,6 +70,8 @@ public class ImmigrationDTO extends SearchDTO {
 	private String attorneyPhone;
 	
 	private String attorneyLawFirm;
+	
+	private String editMode;
 
 	@Required(desc = "first name")
 	private String firstName;
@@ -889,6 +891,14 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setAttorneyContactName(String attorneyContactName) {
 		this.attorneyContactName = attorneyContactName;
+	}
+
+	public String getEditMode() {
+		return editMode;
+	}
+
+	public void setEditMode(String editMode) {
+		this.editMode = editMode;
 	}
 	
 }
