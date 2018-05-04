@@ -1028,6 +1028,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigrationDTO.setImmigrationId(immigration.getId().toString());
 			immigrationDTO.setCandidateId(immigration.getCandidate().getId().toString());
 			immigrationDTO.setTemplateId(immigration.getImmigrationTemplateId().getId().toString());
+			immigrationDTO.setTemplateName(immigration.getImmigrationTemplateId().getName());
 			immigrationDTO.setPetitionType(immigration.getPetitionType().getId().toString());
 			immigrationDTO.setOpenDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), immigration.getOpenDate()));
 			if(immigration.getCurrUscisStauts()!=null) {
@@ -1075,6 +1076,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigrationDTO.setSsnNumber(candidateIdendities.getIdNumber());
 			/*===============================from Requirement Table==========================*/
 			immigrationDTO.setJobId(immigration.getJob().getId().toString());
+			immigrationDTO.setJobTitle(immigration.getJob().getJobTitle());
 			/*===============================from Lcasummary Table==========================*/
 			CandidateLcaI94Summary lcaSummaryCurr = immigrationCommonDao.getCandidateLCADetails(immigration.getCandidate().getId(), Constants.YES);
 			immigrationDTO.setLcaStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),lcaSummaryCurr.getStartDate()));
