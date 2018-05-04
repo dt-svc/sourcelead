@@ -407,7 +407,7 @@ function resendSpocInvitation(spocUserId,orgRelationID,clientLocationId,spocId){
 
    <!-- This Script is For Popup Div Starts-->  
 <script>
-function addContact(orgRelationID,clientLocationId) {	  
+function addContact(orgRelationID,clientLocationId) {	
 	var result = "";
 	result = result  +'	<form id="clinetContact_form" name="clinetContact_form" method="post">';
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopupDiv();"></i> ';

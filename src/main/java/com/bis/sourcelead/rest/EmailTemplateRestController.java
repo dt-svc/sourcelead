@@ -133,13 +133,9 @@ public class EmailTemplateRestController {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 EmailScenarioDTO emailScenarioDto=new EmailScenarioDTO();
 		  EmailScenario emailScenario= emailScenarioService.getEmailTemplateById(Long.parseLong(emailScenarioDTO.getId()));
-		String body = (emailScenario.getBody()).replaceAll("(\r\n|\n)", "<br />");
-		emailScenario.setBody(body);
-		  /*if(emailScenario != null){
-			  emailScenarioDto.setSubject(emailScenario.getSubject());
-			  emailScenarioDto.setSignature(emailScenario.getSignature());
-			  emailScenarioDto.setBody(emailScenario.getBody());
-		  }*/
+		/*String body = (emailScenario.getBody()).replaceAll("(\r\n|\n)", "<br />");
+		emailScenario.setBody(body);*/
+		  
 		  return emailScenario;
 			
 		}
