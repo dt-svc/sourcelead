@@ -281,9 +281,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			User user, Requirement requirement, OrgLocations orgLocations) {
 		List<CandidateLcaI94Summary> lcaSummaryLst  = new ArrayList<CandidateLcaI94Summary>();
 		CandidateLcaI94Summary lcaSummaryCurr  = null;
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		lcaSummaryCurr = immigrationCommonDao.getCandidateLCADetails(Long.parseLong(immigrationDTO.getCandidateId()), Constants.YES);
 		if(lcaSummaryCurr == null) {
 			lcaSummaryCurr = new CandidateLcaI94Summary();
+			lcaSummaryCurr.setCreatedDate(currentDate);
+			lcaSummaryCurr.setCreatedBy(user);
 		}
 		lcaSummaryCurr.setIdNumber(immigrationDTO.getLcaNumber());
 		if(immigrationDTO.getLcaStartDate()!=null && !StringUtils.isEmpty(immigrationDTO.getLcaStartDate())) {
@@ -295,7 +298,6 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		lcaSummaryCurr.setIsCurrent(Constants.YES);
 		lcaSummaryCurr.setRequirementId(requirement);
 		lcaSummaryCurr.setCandidateId(candidate);
-		lcaSummaryCurr.setCreatedBy(user);
 		lcaSummaryCurr.setUpdatedBy(user);
 		lcaSummaryCurr.setEmploymentLevel(immigrationDTO.getEmploymentLevel());
 		lcaSummaryCurr.setEmployerName(immigrationDTO.getEmployer());
@@ -305,8 +307,6 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		lcaSummaryCurr.setRateType(immigrationDTO.getRateType());
 		lcaSummaryCurr.setStatus(Constants.RECORD_ACTIVE);
 		lcaSummaryCurr.setIdType(Constants.ID_TYPE_LCA);
-		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-		lcaSummaryCurr.setCreatedDate(currentDate);
 		lcaSummaryCurr.setUpdatedDate(currentDate);
 		if(immigrationDTO.getJobStartDate() != null && StringUtils.isNotEmpty(immigrationDTO.getJobStartDate())) {
 			lcaSummaryCurr.setJobStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),immigrationDTO.getJobStartDate()));
@@ -379,17 +379,17 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	private CandidateIdendities savePetitionCandidateIdentities(ImmigrationDTO immigrationDTO, Candidate candidate,
 			User user,OrgLocations orgLocations) {
 		CandidateIdendities candidateIdendities = null;
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		candidateIdendities = candidateDao.getCandidateIdentitiesNumberByCandidateId(candidate.getId(), Constants.ID_TYPE_SSN);
 		if(candidateIdendities == null) {
 			candidateIdendities = new CandidateIdendities();
+			candidateIdendities.setCreatedBy(user);
+			candidateIdendities.setCreatedDate(currentDate);
 		}
 		candidateIdendities.setCandidateId(candidate);
 		candidateIdendities.setIdNumber(immigrationDTO.getSsnNumber());
 		candidateIdendities.setIdType(Constants.ID_TYPE_SSN);
 		candidateIdendities.setStatus(Constants.RECORD_ACTIVE);
-		candidateIdendities.setCreatedBy(user);
-		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-		candidateIdendities.setCreatedDate(currentDate);
 		candidateIdendities.setUpdatedBy(user);
 		candidateIdendities.setUpdatedDate(currentDate);
 		return candidateIdendities;
@@ -433,9 +433,14 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	private Immigration savePetitionImmigration(ImmigrationDTO immigrationDTO, OrgLocations orgLocations, Candidate candidate, Requirement requirement, User user,String status) throws Exception, Exception {
-		Immigration immigration = new Immigration();
+		Immigration immigration = null;
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		if(immigrationDTO.getImmigrationId() != null && StringUtils.isNotEmpty(immigrationDTO.getImmigrationId())) {
 			immigration = immigrationCommonDao.getImmigrationById(Long.parseLong(immigrationDTO.getImmigrationId()));
+		}else{
+			immigration = new Immigration();
+			immigration.setCreatedBy(user);
+			immigration.setCreatedDate(currentDate);
 		}
 		LookUpData petitionTypeId = lookUpDataService.getLookUpDataByIdAndCategory(Constants.VISA, Long.parseLong(immigrationDTO.getPetitionType()));
 		immigration.setPetitionType(petitionTypeId);
@@ -475,9 +480,6 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}
 		immigration.setJob(requirement);
 		immigration.setStatus(Constants.RECORD_ACTIVE);
-		immigration.setCreatedBy(user);
-		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
-		immigration.setCreatedDate(currentDate);
 		immigration.setUpdatedBy(user);
 		immigration.setUpdatedDate(currentDate);
 		return immigration;
