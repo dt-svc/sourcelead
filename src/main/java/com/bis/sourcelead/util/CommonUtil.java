@@ -72,6 +72,7 @@ import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -104,6 +105,7 @@ import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -222,6 +224,9 @@ public class CommonUtil {
 	
 	@Autowired
 	private ProjectTasksDao tasksDao;
+	
+	@Autowired
+	private EmployeeVerificationTemplateService employeeVerificationTemplateService;
 	
 	@Value("${paymentSuccessReturnEmail}")
 	private String paymentSuccessReturnEmail;
@@ -2095,6 +2100,23 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
 		
 		return sbuilder.append(convetredRequirementsId).toString();
+	}
+
+	public void saveDefaultEmployeeVerificationTemplate(Org org, OrgLocations orgLocations, User user, String template) {
+		 EmployeeVerificationTemplate employeeVerificationTemplate = new EmployeeVerificationTemplate();
+		 StringBuilder sb = new StringBuilder();
+		 employeeVerificationTemplate.setTemplateName(sb.append(orgLocations.getOrgLocationName()).append(" ").append(template).toString());
+		 employeeVerificationTemplate.setSignatory(org.getUser());
+		 employeeVerificationTemplate.setDescription(template);
+		 employeeVerificationTemplate.setTemplateContent(DefaultEmployeeVerificationTemplateUtil.getDefaultTemplates(template));
+		 employeeVerificationTemplate.setOrgLocationId(orgLocations);
+		 employeeVerificationTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		 employeeVerificationTemplate.setTemplateStatus(Constants.MEMBER_ACTIVE);
+		 employeeVerificationTemplate.setUpdatedBy(user.getUserCode());
+		 employeeVerificationTemplate.setUpdatedDate(new Date());
+		 employeeVerificationTemplate.setCreatedBy(user.getUserCode());
+		 employeeVerificationTemplate.setCreatedDate(new Date());
+		 employeeVerificationTemplateService.saveDefaultEmployeeVerificationTemplate(employeeVerificationTemplate);
 	}
 	
 	public void employeeTerminationMailToProjectManager(User loginUser, ProjectMembersHistory pmh,OrgLocations orgLocations) throws Exception {

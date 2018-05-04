@@ -240,7 +240,7 @@ public class CustomFormRestController {
 		 		 		break;
 		 		 	case "asset" :
 		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getAssetId() != null){
-		 		 			jobData =  assetCustomFieldService.getAssetCustomFieldDataByAssetId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getProjectTask());
+		 		 			jobData =  assetCustomFieldService.getAssetCustomFieldDataByAssetId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getAssetId());
 		 		 	}
 		 		 		
 		 		 		break;

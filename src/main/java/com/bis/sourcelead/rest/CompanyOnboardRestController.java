@@ -293,6 +293,38 @@ public class CompanyOnboardRestController {
 		}
 		return response;
 	}
+	
+	
+	
+	
+	@RequestMapping(value = "/saveLoginUserAsOrgLocationSignatory", method = RequestMethod.POST)
+	@ResponseBody
+	public Response<String> saveLoginUserAsOrgLocationSignatory(HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<String> response = new Response<>();
+		try {
+			if (user != null) {
+				orglocationSignatoryService.addLoginUserAsCompanyOrglocationSignatory(user, loginOrgLocation);
+				commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate, loginOrgLocation);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+	
+	
 	@RequestMapping(value = "/saveCompanyOnBoardSignatory", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<String> saveCompanyOnBoardSignatory(SingnatoryDTO singnatoryDTO,HttpServletRequest request) throws Exception
