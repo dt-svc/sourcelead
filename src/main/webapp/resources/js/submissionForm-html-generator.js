@@ -525,8 +525,8 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
              d.setFullYear(year);
              $(".DatePicker").datepicker({
             	 dateFormat: finalDateFormatScript,
-            	 yearRange: "-70Y:-18Y" ,
-            	 defaultDate: d,
+            	 //yearRange: "-70Y:-18Y" ,
+            	// defaultDate: d,
             	 changeMonth: true,
                  changeYear: true,
                  showOn: 'focus',
