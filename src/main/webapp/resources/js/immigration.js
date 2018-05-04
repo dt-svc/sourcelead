@@ -469,10 +469,10 @@ function Immigration() {
 				eval("jsonObj=" + data);
 				console.log(jsonObj);
 				if (typeof jsonObj.errorMsg != 'undefined') {
-					alert(" error Msg"+jsonObj.errorMsg);
-					console.log(" inside jsonObj.errorMsg" + data);
+					//alert(" error Msg"+jsonObj.errorMsg);
+					var warningMsg="Below Required Tab(s) Data is Missing!...\n"+jsonObj.errorMsg;
+					showWarningPopup("", warningMsg);
 				} else {
-					console.log(" inside !jsonObj.errorMsg" + data);
 					console.log(" No Errors found----->");
 					location.reload();
 				}
