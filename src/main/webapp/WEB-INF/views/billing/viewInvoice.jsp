@@ -180,12 +180,14 @@ function continuePaymentOnline() {
         showError("Enter payment amount");
         return;
     }
+    $("#save_paymentOnline").attr("disabled", "disabled");
     $.post(sourceleadUrl+"/wepay-iframe-payment", {notes: $("#paymentMemoOnline").val(), paymentType: $("[name=paymentAmountOnline][value=custom]").is(":checked") ? 0 : 1, invoiceUUID: $("#paymentInfoOnline").data('invoiceid'), amount: amount}, function(data) {
         if(data && data === "FAILED") {
             
         } else if(data) {
             $("#paymentInfoOnline").hide();
             WePay.iframe_checkout("wepay_checkout", data);
+            $("#save_paymentOnline").removeAttr("disabled", "disabled");
         }
     });
 }

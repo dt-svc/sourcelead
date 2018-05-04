@@ -502,6 +502,11 @@ public class InvoiceRestController {
 			if (null != invoice.getRejectReason()) {
 				billingDto.setRejectReason(invoice.getRejectReason());
 			}
+			if(invoice.getParentInvoiceId() != null) {
+				if(invoice.getParentInvoiceId().getPaymentAccount() != null) {
+					billingDto.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getParentInvoiceId().getPaymentAccount().getId(), null));
+				}
+			}
 			billingDto.setInvoiceUUID(invoice.getInvoiceUUID());
 			billingDto.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
 			billingDto.setDueAmount(String.format("%.2f", Float.valueOf(invoice.getDueAmount())));

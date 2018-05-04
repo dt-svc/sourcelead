@@ -94,7 +94,7 @@ public class PaymentController {
     @Autowired
     private CommonUtil commonUtil;
 
-    @Value("${clientId}")
+    @Value("${paypal.clientId}")
     private String clientId;
 
     @Value("${wepay.accountid}")
@@ -106,10 +106,10 @@ public class PaymentController {
     @Value("${wepay.url}")
     private String wepayURL;
 
-    @Value("${clientSecret}")
+    @Value("${paypal.clientSecret}")
     private String clientSecret;
 
-    @Value("${paymentMode}")
+    @Value("${paypal.paymentMode}")
     private String paymentMode;
 
     @Value("${env}")
@@ -424,7 +424,7 @@ public class PaymentController {
                 InvoicePaymentDTO payment = new InvoicePaymentDTO();
                 payment.setInvoiceId(invoice.getInvoiceId());
                 payment.setPaymentAmount(paymentType == 1 ? "total" : "custom");
-                payment.setTotalAmount("" + (paymentType == 1 ? amount : 0));
+                payment.setTotalAmount(invoice.getDueAmount());
                 payment.setCustomeAmount("" + (paymentType == 1 ? 0 : amount));
                 payment.setPaymentMemo(notes);
                 payment.setPaymentMethod("Online (WePay)");

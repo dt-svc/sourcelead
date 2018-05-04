@@ -775,9 +775,9 @@ function payablePagination(url){
 										
 								}else{
 									if(report.invoiceStatus == "Accepted"){
-                                                                            if(report.paymentAccountDTO != null && report.paymentAccountDTO.accountType == "WEPAY")
-                                                                                result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="initPaymentOnline('+report.invoiceUUID+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
-                                                                            else
+                                      if(report.paymentAccountDTO != null && report.paymentAccountDTO.accountType == "WEPAY")
+                                          result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="initPaymentOnline(\''+report.invoiceUUID+'\','+report.dueAmount+');" title="Pay">Pay</span> </td>';
+                                      else
 										result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
 									}else if(report.invoiceStatus == "Linked"){
 											result = result +' <a class="successBtn primary pull-left cursorPointer" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
@@ -1826,12 +1826,14 @@ function continuePaymentOnline() {
         showError("Enter payment amount");
         return;
     }
+    $("#save_paymentOnline").attr("disabled", "disabled");
     $.post(sourceleadUrl+"/wepay-iframe-payment", {notes: $("#paymentMemoOnline").val(), paymentType: $("[name=paymentAmountOnline][value=custom]").is(":checked") ? 0 : 1, invoiceUUID: $("#paymentInfoOnline").data('invoiceid'), amount: amount}, function(data) {
         if(data && data === "FAILED") {
             
         } else if(data) {
             $("#paymentInfoOnline").hide();
             WePay.iframe_checkout("wepay_checkout", data);
+            $("#save_paymentOnline").removeAttr("disabled", "disabled");
         }
     });
 }
