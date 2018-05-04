@@ -29,7 +29,7 @@
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>${immigration.generatedId}</h2>
-        <span id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt paddingRight"></i>Download Package</span>
+        <!-- <span id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt paddingRight"></i>Download Package</span> -->
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigrations List</a> &raquo; Immigration Summery</div>
       <input type="hidden" id = "candidateID" value = "${candidateId}">
@@ -50,7 +50,12 @@
 				<p><strong>Visa Type</strong>: ${immigration.petitionType}</p>
 				<p><strong>Attorney</strong>: ${immigration.attorneyName}</p>
   			</div>
-  			<div class="col-md-2 immHeadactions clearfix col-md-offset-2">
+  			
+  			<div class="col-md-2 clearfix mt10">
+  				<p id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt mr10"></i>Download Package</p>
+  			</div>
+  			
+  			<div class="col-md-2 immHeadactions clearfix">
   			
   			
   			<select id="uscisStatusId" onchange="changeUscisStatusForImmigration($(this).val());" class="form-control selstyles-new">
