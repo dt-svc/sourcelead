@@ -183,8 +183,8 @@ function requirementProfile(requirementUUID){
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +'                <div class="company-logo">';
-				 if(json.fileUrl != null && json.fileUrl != '' && json.fileUrl != 'undefined'){
-				 result = result +'                  <div class="orgImage"> <img onerror="predefineOrgProfileImage(this);" data-id="orgLogoImage" src="'+json.fileUrl+'" alt="Company" title="Company Logo" class="img-responsive"> </div>';
+				 if(json.orgImageUrl != null && json.orgImageUrl != '' && json.orgImageUrl != 'undefined'){
+				 result = result +'                  <div class="orgImage"> <img onerror="predefineOrgProfileImage(this);" data-id="orgLogoImage" src="'+json.orgImageUrl+'" alt="Company" title="Company Logo" class="img-responsive"> </div>';
 				 }
 				 result = result +'                 </div>';
 				 
