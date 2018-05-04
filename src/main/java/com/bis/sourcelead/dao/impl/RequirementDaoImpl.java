@@ -2162,4 +2162,32 @@ Session session = this.sessionFactory.getCurrentSession();
 
 	}
 
+	@Override
+	@Transactional
+	public List<RequirementDTO> getAllManagerRequirementForJobSharing(Date[] searchDates, Long managerUserId,Long orgLocationId)
+			throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<Requirement> requirementList = null;
+		List<RequirementDTO> requirementDTOList = new ArrayList<>();
+		
+		query ="from Requirement requirement where  (requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'NEW' or requirement.requirementSubmissionStatus = 'OPEN' ) "
+				+ " and requirement.managerUserId.id = :managerId and requirement.orgLocationId.id = :orgLocationId and date(requirement.createdDate) BETWEEN :startDate and :endDate";
+		
+		requirementList =  session.createQuery(query.toString()).setLong("managerId", managerUserId).setLong("orgLocationId", orgLocationId).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).list();
+		
+			if(requirementList != null && !requirementList.isEmpty()){
+					for(Requirement requirement : requirementList) {
+						RequirementDTO requirementDTO = new RequirementDTO();
+						requirementDTO.setId(requirement.getId());
+						requirementDTO.setGeneratedId(requirement.getGeneratedId());
+						requirementDTO.setJobTitle(requirement.getJobTitle());
+						requirementDTO.setPostedDateStr(requirement.getPostedOnStr());
+						requirementDTOList.add(requirementDTO);
+					}
+			}
+			return requirementDTOList;
+	}
+
 }

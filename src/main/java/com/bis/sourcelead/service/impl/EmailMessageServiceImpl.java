@@ -1,10 +1,12 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -123,6 +125,9 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 
 	@Value("${env}")
 	private String environment;
+	
+	@Value("${static.path}")
+	private String staticPath;
 
 	@Value("${defaultFromEmailAddress}")
 	private String defaultFromEmailAddress;
@@ -188,14 +193,15 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				emailMessage.setPassword(defaultFromEmailAddressPwd);
 				logger.info("######## if production email/password not correct then email sent from default email address ###########");
 			}
-			emailNotificationId = storeEmailInfoInDB(emailMessage, iAdressArray);
+			emailNotificationId = storeEmailInfoInDBTwo(emailMessage, iAdressArray,orgLocations);
 			sendMessage(emailMessage, iAdressArray, attachmentList);
 		}
 		else {
 			if (sendMailForNonProd.equalsIgnoreCase("true")) {
+				OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
 				emailMessage.setUserName(defaultFromEmailAddress);
 				emailMessage.setPassword(defaultFromEmailAddressPwd);
-				emailNotificationId = storeEmailInfoInDB(emailMessage, iAdressArray);
+				emailNotificationId = storeEmailInfoInDBTwo(emailMessage, iAdressArray,orgLocations);
 				sendMessage(emailMessage, iAdressArray, attachmentList);
 			}
 		}
@@ -329,10 +335,71 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			recipients.append("]");
 			emailNotification.setEmailTo(recipients.toString());
 		}
+		String url=null;
+		if(emailMessage != null && emailMessage.getMessageBody() != null ){
+			String title="email"+SourceLeadRandomCodeHelper.generateRandomOrgCode();
+			File f=new File(staticPath,"/"+"/"+"profile"+"/"+"test.html");
+			url=staticPath+"test.html";
+			try{
+				BufferedWriter bw=new BufferedWriter(new FileWriter(f));
+				bw.write(emailMessage.getMessageBody());
+				bw.close();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
 
 		emailNotification.setEmailFrom(emailMessage.getFromEmail());
 		emailNotification.setSubject(emailMessage.getSubject());
-		emailNotification.setBody(emailMessage.getMessageBody());
+		emailNotification.setBody(url);
+		emailNotification.setDeliveryStatus("N");
+		Date date = new Date();
+		emailNotification.setCreatedDate(new Timestamp(date.getTime()));
+		emailNotification.setCreatedBy(emailMessage.getCreatedBy());
+		emailNotificationService.save(emailNotification);
+
+		return emailNotification.getId();
+	}
+	
+	private Long storeEmailInfoInDBTwo(EmailMessage emailMessage, InternetAddress[] iAdressArray,OrgLocations locaId) throws Exception {
+
+		EmailNotification emailNotification = new EmailNotification();
+		if (iAdressArray != null && iAdressArray.length > 0) {
+			StringBuilder recipients = new StringBuilder("");
+			recipients.append("[");
+			int count = 1;
+			for (InternetAddress address : iAdressArray) {
+				if (count > 1) {
+					recipients.append(",");
+				}
+				count++;
+				recipients.append(address.getAddress());
+			}
+			recipients.append("]");
+			emailNotification.setEmailTo(recipients.toString());
+		}
+		String link=null;
+		if(emailMessage != null && emailMessage.getMessageBody() != null ){
+			String title=emailMessage.getFirstName()+SourceLeadRandomCodeHelper.generateRandomOrgCode();
+			File folder = new File(staticPath+"/"+locaId.getOrg().getId()+"/"+locaId.getId()+"/emailBody/");
+			if (!folder.exists())
+				folder.mkdirs();
+			File file=new File(folder,title+".html");
+			link = "/slead-static/"+locaId.getOrg().getId()+"/"+locaId.getId()+"/emailBody/"+file.getName();
+			try{
+				BufferedWriter bw=new BufferedWriter(new FileWriter(file));
+				bw.write(emailMessage.getMessageBody());
+				bw.close();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		
+
+		emailNotification.setEmailFrom(emailMessage.getFromEmail());
+		emailNotification.setSubject(emailMessage.getSubject());
+		emailNotification.setBody(link);
 		emailNotification.setDeliveryStatus("N");
 		Date date = new Date();
 		emailNotification.setCreatedDate(new Timestamp(date.getTime()));
@@ -374,13 +441,14 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 					logger.info(
 							"######## if production email/password not correct then email sent from default email address ###########");
 				}
-				emailNotificationId = storeEmailInfoInDB(emailMessage, iAdressArray);
+				emailNotificationId = storeEmailInfoInDBTwo(emailMessage, iAdressArray,orgLocations);
 				sendMessageAttachment(emailMessage, iAdressArray, attachmentList, submissionIds);
 			} else {
 				if (sendMailForNonProd.equalsIgnoreCase("true")) {
+					OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
 					emailMessage.setUserName(defaultFromEmailAddress);
 					emailMessage.setPassword(defaultFromEmailAddressPwd);
-					emailNotificationId = storeEmailInfoInDB(emailMessage, iAdressArray);
+					emailNotificationId = storeEmailInfoInDBTwo(emailMessage, iAdressArray,orgLocations);
 					sendMessageAttachment(emailMessage, iAdressArray, attachmentList, submissionIds);
 				}
 			}

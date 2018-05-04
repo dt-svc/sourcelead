@@ -52,7 +52,6 @@
 						result = result + '	 				<i class="fa fa-folder-o mr"></i>All Folders                                      ';
 						result = result + '	 		    </a>                                                                                  ';
 						result = result + '	 			</li>                                                                                 ';
-						 
 						for (var i=0; i<json.length; i++)
 		   				{
 							var report = json[i];
@@ -61,7 +60,6 @@
 							result = result + '	 				<i class="fa fa-folder-o mr"></i>'+report.foderName+'  (<span>'+report.count+'</span>)';
 							result = result + '	 		    </a>                                                                  ';
 							if(report.permissionAccess == 0){
-							 
 							}else{
 								result = result + '	 				<span class="fmsettings-dropdown dropdown">                       ';
 								result = result + '	 					<span class="dropdown-toggle" data-toggle="dropdown">         ';
@@ -958,7 +956,7 @@ document.getElementById("uploadBtn").onchange = function () {
 	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 };
 /* upload file script for size validation 2MB*/
-   var selectedFile = document.getElementById("uploadBtn");
+   /* var selectedFile = document.getElementById("uploadBtn");
     selectedFile.addEventListener("change", function() {
   var docSize = this.files[0].size;
   $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
@@ -966,7 +964,7 @@ document.getElementById("uploadBtn").onchange = function () {
 	  document.getElementById("uploadFile").value = '';
 	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
   }
-});
+}); */
 function uploadProjectDocument(){
 	fileUpload("uploadBtn", "ProjectDoument", "projectDocumentType_form");
 }

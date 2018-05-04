@@ -24,13 +24,13 @@
 			}
  </script>
  
- <script>
+<!--  <script>
 $(document).ready(function(){
 	if('${AWKWARD}' == "true"){
 		   window.location.href =  "/errorPage";
 	 }
 });
-</script>
+</script> -->
  
 <meta charset="utf-8">
 <meta http-equiv="Pragma" content="private">
@@ -773,8 +773,12 @@ function preventTabkey(e){
 					
 					  	<li><a href="<c:url value="/app/payrollConfigure" />"><i class="fa fa-dollar-sign" aria-hidden="true"></i>Payroll Configuration</a></li>
 
+
 					   <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value='${sourceleadUrl}/guestOrgActionRoles'/>" ><i class="fa fa-key" aria-hidden="true"></i>Guest Action Roles</a></li>
+                       </sec:authorize>
+                       <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
+	                     <li><a href="<c:url value='${sourceleadUrl}/emailTemplates'/>" ><i class="fa fa-key" aria-hidden="true"></i>Email Templates</a></li>
                        </sec:authorize>
 	              </ul>
 	            </div>
