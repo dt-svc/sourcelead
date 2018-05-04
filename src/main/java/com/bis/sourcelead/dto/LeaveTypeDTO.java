@@ -19,8 +19,10 @@ public class LeaveTypeDTO {
 	private String noOfLeavesPerYear;
 	private String description;
 	private String leavePolicy;
+	@Required(desc = "Policy Name", dependsOn="leavePolicy",parentValue="Y")
 	private String policyName;
 	private String visibilityToAllUsers;
+	@Required(desc = "Policy Description", dependsOn="leavePolicy",parentValue="Y")
 	private String leavePolicyDescription;
 	private String orgLocationId;
 	private String noOfLeavesPerMonth;
