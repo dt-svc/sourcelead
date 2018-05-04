@@ -36,6 +36,7 @@ import com.bis.sourcelead.service.OrgLicensePaymentTransactionHistoryService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionHistoryService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -87,6 +88,9 @@ public class PaymentController {
 
     @Autowired
     private InvoicePaymentService invoicePaymentService;
+    
+    @Autowired
+    private UserService userService;
 
     @Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -224,6 +228,19 @@ public class PaymentController {
 
                     try {
                         commonUtil.paymentAcknowledgementMail(paymentHistory, loginUser, org, orgLocations);
+                        if(orgLocations.getUser() != null) {
+                      		  User locationPrimaryUser = userService.getUserById(orgLocations.getUser().getId());
+                      		  paymentHistory.setTransactionUser(locationPrimaryUser.getFullName());
+                      		  paymentHistory.setTransactionUserEmail(locationPrimaryUser.getEmail());
+                        	  commonUtil.paymentAcknowledgementMail(paymentHistory, loginUser, org, orgLocations);
+                        }
+                        
+                        if(org.getUser() != null) {
+                        	  User orgPrimaryUser = userService.getUserById(org.getUser().getId());
+                     		  paymentHistory.setTransactionUser(orgPrimaryUser.getFullName());
+                     		  paymentHistory.setTransactionUserEmail(orgPrimaryUser.getEmail());
+                       	      commonUtil.paymentAcknowledgementMail(paymentHistory, loginUser, org, orgLocations);
+                        }
 
                         if (environment.equalsIgnoreCase("prod")) {
                             commonUtil.paymentAcknowledgementDetailsMail(paymentHistory, loginUser, org, orgLocations);
