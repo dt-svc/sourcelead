@@ -611,6 +611,8 @@ public class ClientServiceImpl implements ClientService {
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Client SOW Template",Constants.Client_SOW);
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Vendor SOW Template",Constants.Vendor_SOW);
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default NDA Template",Constants.NDA);
+			
+			commonUtil.saveDefaultEmployeeVerificationTemplate(org, clientOrgLocations, spocUser, "Default Employee Verification Template");
 		}
 		
 		if(Constants.GUEST.equalsIgnoreCase(org.getOrgType())) {
@@ -1766,11 +1768,18 @@ public class ClientServiceImpl implements ClientService {
 		EmailScenario emailScenario = null;
 
 		if (Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT,
-					Constants.ENTITY_TYPE_EMAIL);
+			 if(orgLocations != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ACCEPT_CLIENT,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+				   }
 		} else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR,
-					Constants.ENTITY_TYPE_EMAIL);
+			 if(orgLocations != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ACCEPT_VENDOR,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+				   }
+			
 		}
 		// covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);

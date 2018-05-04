@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1083,10 +1084,18 @@ public class UserServiceImpl implements UserService {
 		 EmailScenario  emailScenario = null;
 		 EmailScenario noificationEmailScenario = null;
 		 if("Client".equals(responderType)){
-			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT_INVITATION,Constants.ENTITY_TYPE_EMAIL);
+			 if(orgLocation != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ACCEPT_CLIENT_INVITATION,Constants.ENTITY_TYPE_EMAIL, orgLocation.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT_INVITATION,Constants.ENTITY_TYPE_EMAIL);
+				   }
 			 noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT_INVITATION,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }else if("Vendor".equals(responderType)){
 			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR_INVITATION,Constants.ENTITY_TYPE_EMAIL);
+			 if(orgLocation != null)
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR_INVITATION,Constants.ENTITY_TYPE_EMAIL);
+				   }
 			 noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR_INVITATION,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }
 		
@@ -1348,8 +1357,12 @@ public class UserServiceImpl implements UserService {
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
-		
+		 EmailScenario  emailScenario = null;
+		 if(locations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL, locations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
@@ -1451,6 +1464,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception {
 		return userDao.getUsersDTOListByOrglocationId(orgLocationId,userDTO);
+	}
+
+	@Override
+	public ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation) throws Exception {
+		return userDao.getUsersResponseListByOrglocationId(userDTO,orgLocation);
 	}
 	
 }
