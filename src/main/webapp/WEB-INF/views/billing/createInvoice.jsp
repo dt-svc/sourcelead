@@ -160,7 +160,7 @@ function errRemoveClientContact(){
 			              <label class="col-md-3">Payment Account</label>
 			              <div class="col-md-9 select-field" id="projectMemberIdDiv">
 			                <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
-			                   <option>--Select Account--</option>
+			                   <option value="">--Select Account--</option>
 			                    <c:forEach items="${paymentAccountList}" var="p">
 			                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
 			                    </c:forEach>
@@ -1922,13 +1922,13 @@ function getClients(){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
-		success :function(data) {
-		var json = JSON.parse(data);
+		success :function(json) {
+// 		var json = JSON.parse(data);
 		var output = "";
 			output = output + "<option value=''>Select Client</option>";
-		for (var i=0; i<json.length; i++)
+		for (var i=0; i<json.data.length; i++)
 		{
-		var opt = json[i];
+		var opt = json.data[i];
 		if(orgRelationId == opt.id){
 			var selected = 'selected';
 			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";

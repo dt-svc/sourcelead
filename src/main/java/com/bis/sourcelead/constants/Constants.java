@@ -542,7 +542,7 @@ public class Constants {
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category", "Work Status",
-			"Serial Number/Port Number", "Make", "Model", "Memory", "CPU", "Monitor", "Hard Disk", "Description", "ShiftA Employee","ShiftB Employee"};
+			"Serial Number/Port Number", "Make", "Model", "Memory", "CPU", "Monitor", "Hard Disk", "Description"};
 	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
 			"Recruiter" };
@@ -591,7 +591,7 @@ public class Constants {
 	public static final String[] CLIENT_EXCEL_HEADERS = { "Client Name", "Website", "Location", "Tiers",
 			"Number of Contacts" };
 	public static final String[] CLIENT_CONTACTS_EXCEL_HEADERS = { "Client Name", "Name", "Emailid",
-			"Phone Number", "Owner", "Role", "Status" };
+			"Phone Number", "Owner", "Status" };
 	public static final String[] VENDOR_EXCEL_HEADERS = { "VendorName", "Website", "Location", "Level",
 			"Number of Contacts" };
 	public static final String[] VENDOR_CONTACTS_EXCEL_HEADERS = { "Vendor Name", "Name", "Emailid",
@@ -656,7 +656,7 @@ public class Constants {
 	public static final String[] VENDOR_HEADERS = { "Vendor Name*", "Website", "Country", "State", "City",
 			"Tier", "First Name*", "Last Name", "Email*", "Phone", 
 			"Extension Number","Status", "Owner(Email)",
-			"ClientAddress", "BillingAddress", "PaymentTerms" };
+			"VenodrAddress", "BillingAddress", "PaymentTerms" };
 	public static final String[] CLIENT_HEADERS = { "Client Name*", "Website", "Country", "State", "City",
 			"Tier", "First Name*", "Last Name", "Email*", "Phone", 
 			"Extension Number","Status", "Owner(Email)",

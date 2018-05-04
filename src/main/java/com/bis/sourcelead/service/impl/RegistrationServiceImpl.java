@@ -410,6 +410,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template",Constants.NDA);
+
+		commonUtil.saveDefaultEmployeeVerificationTemplate(org,orgLocations,user,"Default Employee Verification Template");
+//		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
 		
 		saveOrgLocationDefaultProject(registration, orgLocations, user);
 		commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);

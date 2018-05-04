@@ -843,7 +843,7 @@ public class PdfUtil {
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header 
-            int[] columnWidths = new int[]{3, 5, 5,3, 2,3,3};
+            int[] columnWidths = new int[]{3, 5, 5,3, 2,3};
             PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
 	        table.completeRow();
 	        java.util.List<String[]> cantactsList = new ArrayList<>();
@@ -900,7 +900,7 @@ public class PdfUtil {
 			contactsArray[4] = "--";
 		}
 		
-		UserRole userRole = userRoleService.getUserRoleByUserId(orgSpoc.getVendorUser().getId());
+		/*UserRole userRole = userRoleService.getUserRoleByUserId(orgSpoc.getVendorUser().getId());
 		
 		if(null != userRole){
 		if (userRole.getRoles().getDisplayName() != null && !"".equalsIgnoreCase(userRole.getRoles().getDisplayName())) {
@@ -908,11 +908,11 @@ public class PdfUtil {
 		}
 		}else{
 			contactsArray[5] = "--";
-		}
+		}*/
 		if (orgSpoc.getSpocStatus() != null && !"".equalsIgnoreCase(orgSpoc.getSpocStatus())) {
-			contactsArray[6] = orgSpoc.getSpocStatus();
+			contactsArray[5] = orgSpoc.getSpocStatus();
 		}else{
-			contactsArray[6] = "--";
+			contactsArray[5] = "--";
 		}
 		return contactsArray;
 	}
