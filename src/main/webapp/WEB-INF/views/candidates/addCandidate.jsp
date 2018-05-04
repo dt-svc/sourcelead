@@ -443,9 +443,8 @@
 							<select class="form-control valid selectpicker" id="noticePeriod"
 								name="noticePeriod">
 								<option value="">---Select Notice Period---</option>
-								<option
-									${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately
-                                    available</option>
+								<option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately 
+                            available</option>
 								<option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15
                                     Days</option>
 								<option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1
