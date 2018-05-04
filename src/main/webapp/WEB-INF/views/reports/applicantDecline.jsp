@@ -253,7 +253,7 @@ function getDeclineApplicantList(){
 						 result  = result + '       <tr>                                  ';
 						 result  = result + '         <th>Jobs</th>                       ';
 						 result  = result + '         <th>Skills</th>                     ';
-						 result  = result + '         <th>Over Qualified</th>             ';
+						 result  = result + '         <th>Unsuitable Personality</th>     ';
 						 result  = result + '         <th>Bad Fit</th>                    ';
 						 result  = result + '         <th>Interview</th>                  ';
 						 result  = result + '         <th>Salary</th>                     ';
@@ -389,7 +389,7 @@ function getCustomDates(){
 			 }
 		 if(response.object.unsuitableCount>0){
 			 mainChar.push( {
-				    "category": "Over Qualified",
+				    "category": "Unsuitable Personality",
 					"color": "#90CAF9",
 					"column-1": response.object.unsuitableCount,
 					"count": response.object.unsuitableCount,

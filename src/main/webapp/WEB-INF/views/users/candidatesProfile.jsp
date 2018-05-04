@@ -207,9 +207,16 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6" id="emailDiv">';
 							if(json.candidateType == "Candidate"){
+								result = result + '<div class="input-group errorInptgroup">';
 								result = result + '<input type="hidden" name="candidateType" id="candidateType" value="'+json.candidateType+'" />';
 								result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
 								result = result + '<input type="hidden" id="tempEmail" value="'+json.email+'" />';
+								result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
+								result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
+								result = result + '</i>';
+								result = result + '</span>';
+								
+								result = result + '</div>';
 							}
 							if(json.candidateType == "Consultant"){
 							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
@@ -1598,6 +1605,7 @@ function updateDesignationOtherType(){
 			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 			        		 $("#update_candidate" ).addClass('button').val('Save');
 	                         $("#update_candidate").removeAttr("disabled");
+	                         validateEmailForExistenceUniversally(email, "input#email");
 			        	}
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
@@ -1606,6 +1614,9 @@ function updateDesignationOtherType(){
 		        	}
 		        },
 		    });
+	 }else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	 }
 	 }else{
 		 $('#update_candidate').removeAttr('disabled');

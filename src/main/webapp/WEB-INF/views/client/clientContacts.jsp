@@ -407,7 +407,7 @@ function resendSpocInvitation(spocUserId,orgRelationID,clientLocationId,spocId){
 
    <!-- This Script is For Popup Div Starts-->  
 <script>
-function addContact(orgRelationID,clientLocationId) {	  
+function addContact(orgRelationID,clientLocationId) {	
 	var result = "";
 	result = result  +'	<form id="clinetContact_form" name="clinetContact_form" method="post">';
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopupDiv();"></i> ';
@@ -416,7 +416,14 @@ function addContact(orgRelationID,clientLocationId) {
 	
 	result = result  +'	 <div class="clearfix mb10" id="EmailIdDiv">';
 	result = result  +'	  <div class="col-md-12">';
-	result = result  +'	    <input type="text" class="form-control input-sm" id="EmailId" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="validateEmail('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	result = result + '<div class="input-group errorInptgroup">';
+	result = result  +'<input type="text" class="form-control input-sm" id="EmailId" name="email"  value="" field-name="Email" placeholder="Email Id *" onblur="validateEmail1('+orgRelationID+'); getSpocUserDetails('+clientLocationId+','+orgRelationID+');" data-validation="required validate_Space validate_length length2-100 validate_email">';
+	
+	result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
+	result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
+	result = result + '</i>';
+	result = result + '</span>';
+	result = result  +'	   </div>';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	
@@ -569,6 +576,7 @@ function closePopupDiv(){
 
 <script type="text/javascript">
  function validateSpocEmail(orgRelationId) {
+	 
 	 var EmailId = document.getElementById("EmailId").value; 
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -645,26 +653,26 @@ function getSpocUserDetails(orgLocationId,orgRelationID){
 	        		var json = JSON.parse(data);
 	        		
 	        		 if(json[0] != null && json[0] != ''){
-	        			$("#firstName").attr("disabled", true);
+	        			$("#firstName").attr("readOnly", true);
 	        		    $("#firstName").val(json[0]);
 	        		 }else{
-	        			 $("#firstName").attr("disabled", false);
+	        			 $("#firstName").attr("readOnly", false);
 	        			 $("#firstName").val('');
 	        		 }
 	        		 
 	        		 if(json[1] != null && json[1] != ''){
-		        			$("#lastName").attr("disabled", true);
+		        			$("#lastName").attr("readOnly", true);
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
-	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").attr("readOnly", false);
 	        			    $("#lastName").val('');
 	        		 }
 		        		
 	        		 if(json[2] != null && json[2] != ''){
-		        			$("#phoneNumber").attr("disabled", true);
+		        			$("#phoneNumber").attr("readOnly", true);
 		        		    $("#phoneNumber").val(json[2]);
 	        		 }else{
-	        			    $("#phoneNumber").attr("disabled", false);
+	        			    $("#phoneNumber").attr("readOnly", false);
 	        			    $("#phoneNumber").val('');
 	        		 }
 	        		 
@@ -794,7 +802,7 @@ function rejectSpocInvitation(spocId,orgRelationId,clientLocationId){
 </script>
 
 <script type="text/javascript">
-function validateEmail(orgRelationID){
+function validateEmail1(orgRelationID){
 	 getOwners(orgRelationID);
 	var email = document.getElementById("EmailId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -814,11 +822,15 @@ function validateEmail(orgRelationID){
 					$('input#EmailId').removeAttr("class record-exist record-exist-errormsg");
 					$('input#EmailId').attr('class','valid form-control');
 					$('#EmailIdDiv').find('p.jquery_form_error_message').remove();
+					validateEmailForExistenceUniversally(EmailId, "input#EmailId");
 					
 				}
 			},
 
 		});
+	}else{
+		$("#emailStatusIconDiv").find("i").remove();
+  		$("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	}
 }
 </script>
