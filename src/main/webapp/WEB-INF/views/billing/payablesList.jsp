@@ -1751,10 +1751,11 @@ function generateAutomaticInvoice(){
 	     dataType : 'json',
 	    	 url: sourceleadUrl+"/generateAutomaticInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&contractType=vendorSow", 
              success: function(json) {
+            	 
             	 $("#invoiceLoading").removeAttr("style");
             	    $("#selector1").removeAttr("style");
 	    			$("#selector1").css("display", "block");
-	    			$("#msgDiv").html(json.data+" Bill(s) Generated Successfully.");
+	    			$("#msgDiv").html(json.data.count+" Bill(s) Generated Successfully.");
 					msgFadein();
             	 location.replace(sourceleadUrl+"/payablesList");	
         },
