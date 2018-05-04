@@ -103,21 +103,66 @@
 								<label class="col-md-4"><span class="pull-left">Attorney Name</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
 								<div class="col-md-8 chooRadius" id="errorAttorney">
+								
+								
+								<c:if test="${!empty immigrationDTO}">
+								<c:if test="${immigrationDTO.orgloationId != SourceLeadWeb_orgLocations.id}">
+									<input class="form-control" type="text" readonly name="attorneyId" id="attorneyId" value="${immigrationDTO.orgName}"/>
+									<input type="hidden" id="attorneyId" name="attorneyId" value="${immigrationDTO.attorneyId}"/>
+								</c:if>
+								<c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
 								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
 									<select class="chosen-select form-control" name="attorneyId"
 										id="attorneyId" placeholder="Select Attorney" field-name="Attorney Name" data-validation="required"
 										onchange="getAttorneyContactList();removeValidationAttorney();">
 									</select>
-								 <span class="input-group-addon cursorPointer bg-blue" onclick="getAttorneysByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
-									
-								</div>
-								<span class="col-md-2 noPad clearfix">
+								 	<span class="input-group-addon cursorPointer bg-blue" onclick="getAttorneysByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
+							 	</div>
+							 	<span class="col-md-2 noPad clearfix">
+							<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+							</span> 
+								</c:if>
+								</c:if>
+								<c:if test="${empty immigrationDTO}">
+								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
+								<select class="chosen-select form-control" name="attorneyId"
+										id="attorneyId" placeholder="Select Attorney" field-name="Attorney Name" data-validation="required"
+										onchange="getAttorneyContactList();removeValidationAttorney();">
+									</select>
+								<span class="input-group-addon cursorPointer bg-blue" onclick="getAttorneysByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
+							</div>
+							<span class="col-md-2 noPad clearfix">
 							<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 							</span>
+								</c:if>
+								
+							
 							</div>
 							</div>
 
 							<div class="form-group">
+							<c:if test="${!empty immigrationDTO}">
+							<c:if test="${immigrationDTO.orgloationId != SourceLeadWeb_orgLocations.id}">
+							<input class="form-control" type="text" readonly name="attorneyContact" id="attorneyContact" value="${immigrationDTO.attorneyContactName}"/>
+									<input type="hidden" id="attorneyContact" name="attorneyContact" value="${immigrationDTO.attorneyName}"/>
+							</c:if>
+							<c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
+							<label class="col-md-4"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+								<div class="col-md-8 chooRadius" id="errorAttorneyContact">
+								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
+									<select class="chosen-select form-control" name="attorneyContact" id="attorneyContact" placeholder="Select Attorney Contact" field-name="Attorney Contact"
+										 data-validation="required" onchange="removeValidationAttorneyContact();">
+									</select>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getAttorneysByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
+			</div>		
+								<span class="col-md-2 noPad clearfix" onclick="selectedAttorney();">
+								<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+							 </span>			
+										
+								</div>
+							</c:if>
+							</c:if>
+							<c:if test="${empty immigrationDTO}">
 								<label class="col-md-4"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
 								<div class="col-md-8 chooRadius" id="errorAttorneyContact">
 								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
@@ -131,7 +176,7 @@
 							 </span>			
 										
 								</div>
-								
+								</c:if>
 							</div>
               
            <div class="clearfix"></div>

@@ -7,7 +7,7 @@
 		</div>
 		
 	  	<div class="immigraTable">
-		  <table>
+		  <table id ="educationTbl">
 			<tbody>
 			  <tr>
 				<th>Education</th>
@@ -160,7 +160,7 @@
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#residencesTab');" class="btn btn-default btn-sm">
-             	<input type="button" value="Skip" onclick="goToSummaryTab('#familiesTab');" class="btn btn-default btn-sm"> 
+             	<!-- <input type="button" value="Skip" onclick="goToSummaryTab('#familiesTab');" class="btn btn-default btn-sm">  -->
               	<input type="button" value="Continue" onclick="goToSummaryTab('#familiesTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
@@ -252,7 +252,8 @@ function removeImmiEduDocFile(){
 </script>
 <script>
   var educationListCount = '<c:out value ="${educationListCount}"/>';
-  if(educationListCount>0){
+  var initCount  = '<c:out value ="${requestScope.eduOnLoadCount}"/>';
+  if(educationListCount>0 || initCount!= ""){
         $('#educationfilled').show() // show and hides circle icon.
     }
 	else {

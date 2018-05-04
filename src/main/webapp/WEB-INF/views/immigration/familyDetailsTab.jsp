@@ -418,7 +418,8 @@
 	</script>
 	<script>
   var familyListCount = '<c:out value ="${familyListCount}"/>';
-  if(familyListCount>0){
+  var initCount  = '<c:out value ="${requestScope.familyOnLoadCount}"/>';
+  if(familyListCount>0 || initCount!= ""){
         $('#familyfilled').show() // show and hides circle icon.
     }
 	else {
