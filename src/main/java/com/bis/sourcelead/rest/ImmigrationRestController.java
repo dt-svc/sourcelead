@@ -202,7 +202,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 
-	@RequestMapping(value = { "getAllActiveCandidatesByLocation" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getAllActiveCandidatesByLocation" }, method = RequestMethod.GET)
 	public @ResponseBody List<Candidate> getAllActiveCandidatesByLocation(HttpServletRequest request) {
 		List<Candidate> candidateList = null;
 		try {
