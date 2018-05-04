@@ -632,7 +632,11 @@ function totalLeaveByEmployeeBarChart(data){
 					}
 				],
 				"guides": [],
-				"valueAxes": [],
+				"valueAxes": [
+					{
+						"stackType": "regular"
+					}
+				],
 				"allLabels": [],
 				"balloon": {
 					"offsetY": 4,
