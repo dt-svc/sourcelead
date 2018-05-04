@@ -1440,8 +1440,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	        	 
                if(StringUtils.isNotBlank(projectDTO.getProjectSequeneNumber())){
 			    	 projects.setProjectSequeneNumber(projectDTO.getProjectSequeneNumber());
+			     }else {
+			    	 projects.setProjectSequeneNumber(null); 
 			     }
-		        
 		        
 		    	projects.setProjectName(projectDTO.getProjectName());
 		    	

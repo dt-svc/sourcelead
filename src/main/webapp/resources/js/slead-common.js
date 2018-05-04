@@ -24,7 +24,7 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 	             }
 	    	 }else{
 		    	var newEmail = this.value.replace(","," ");
-		        if (window[func](e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
+		        if ((newEmail != null  && newEmail != '' && newEmail != 'undefined') && window[func](e))
 		        {
 		        	preventTabkey(e); 
 		        	var par = this.parent;
@@ -62,7 +62,7 @@ function tagIt(id, noResultText, func,type,placeholderName) {
 				    	 }else{
 				    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
 			    			var newSkill = this.value.replace(","," ");
-			    			 if (window[func](e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			    			 if ((newSkill != null  && newSkill != '' && newSkill != 'undefined') && window[func](e))
 			                 {
 			    				 preventTabkey(e);
 			                   // below code manually enter skills are taken
