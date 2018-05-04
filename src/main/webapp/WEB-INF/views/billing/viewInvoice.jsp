@@ -110,7 +110,7 @@ $(document).ready(function(){
                 <h4 class="modal-title">Payment</h4>                                
             </div>                                                                        
             <div class="modal-body clearfix">                                             
-                <div id="wepay_checkout"></div>
+                <div id="wepay_checkout" class="col-md-12 clearfix" ></div>
                 <!-- Add New Task Widget -->                                                
                 <div class="col-md-12 clearfix" id="paymentInfoOnline">                                            
                     <form class="form-horizontal clearfix" id="receivePaymentOnline-form" name="receivePaymentOnline-form">                                     

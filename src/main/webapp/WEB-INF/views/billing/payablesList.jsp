@@ -333,6 +333,63 @@ $(document).ready(function(){
 	</div>
 </div>
 <div class="pop_mask"></div>
+<div id="recvPymntpopOnline" class="modal" style="display: none;">
+    
+    <div class="modal-dialog modal-lg ">
+        <div class="modal-content">                                                     
+            <div class="modal-header">                                                    
+                <button type="button" class="close" data-dismiss="modal" onclick="cancelbtn();">×</button>         
+                <h4 class="modal-title">Payment</h4>                                
+            </div>                                                                        
+            <div class="modal-body clearfix">                                             
+                <div id="wepay_checkout" class="col-md-12 clearfix" ></div>
+                <!-- Add New Task Widget -->                                                
+                <div class="col-md-12 clearfix" id="paymentInfoOnline">                                            
+                    <form class="form-horizontal clearfix" id="receivePaymentOnline-form" name="receivePaymentOnline-form">                                     
+                                
+                        <div class="row mt">                                 
+                            <div class="col-md-12">                             
+                                <div class="row">                                
+                                    <div class="col-md-6">                        
+                                        <label>Amount</label>               
+                                        <div class="row">                            
+                                            <div class="col-md-6">                     
+                                                <input   type="radio" name="paymentAmountOnline" value="total" checked onclick="validMask();"> 
+                                                Total Due:          
+                                                <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10" id="totalAmountOnline" name="totalAmountOnline" readonly> 
+                                                <span class="addon-currency">$</span>
+                                            </div>              
+                                            <div class="col-md-6">      
+                                                <input  type="radio" name="paymentAmountOnline" value="custom" onclick="removeMask();" >     
+                                                Custom:
+                                                <input type="text" value="" placeholder="Custom Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmountOnline" name="customeAmountOnline" readonly>       
+                                                <span class="addon-currency">$</span>
+                                            </div>                      
+                                        </div>                        
+                                    </div>                          
+                                    <div class="col-md-6 mt">      
+                                        <label>Memo</label>           
+                                        <textarea rows="2" class="form-control" placeholder="Memo" id="paymentMemoOnline" name="paymentMemoOnline" data-validation="validate_length length2-500" data-validation-optional="true"></textarea>
+                                    </div>                                                            
+                                </div>                                                              
+                            </div>                                                     
+                        </div>  
+                        
+                        <div class="clearfix"></div>                                            
+                        <div class="clearfix mt col-md-12 mb">                                  
+                            <div class="pull-right">                                              
+                                <sec:authorize access="hasAnyRole(\'ROLE_RECEIVE_PAYMENT\')">
+                                    <input class="btn btn-primary btn-sm" value="Continue to Payment" type="button" id="save_paymentOnline" onclick="continuePaymentOnline();">   
+                                </sec:authorize>
+                                <input class="btn btn-default btn-sm ml10" value="Cancel" type="button" onclick="cancelbtn();">   
+                            </div>                                                                                              
+                        </div>                                                                                                
+                    </form>                                                                                                 
+                </div>                                                                                                    
+            </div>                                                                                                      
+        </div>                                                                                                        
+    </div>
+</div>
 <script>
 		    //addcandidate-popup script
 		    function createBill(){
@@ -1800,4 +1857,5 @@ function initPaymentOnline(invoiceId, dueAmount) {
 	
 	 
 </script>
+<script type="text/javascript" src="https://www.wepay.com/min/js/iframe.wepay.js">
 <jsp:include page="../masterFooter.jsp" />
