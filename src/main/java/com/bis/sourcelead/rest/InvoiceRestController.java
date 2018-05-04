@@ -1932,7 +1932,7 @@ public class InvoiceRestController {
 	@RequestMapping(value = "/getAllPaymentAccountList", method = RequestMethod.GET)
 	public List<PaymentAccountDTO> getAllPaymentAccountList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
 		OrgRelations orgRealation =  orgRelationsService.getOrgRelationById(orgRelationId); 
-		List<PaymentAccountDTO> paymentAccountList = orgService.getPaymentAccountList(orgRealation.getResponderLocationId().getOrg().getId(), orgRealation.getResponderLocationId().getId());
+		List<PaymentAccountDTO> paymentAccountList = orgService.getPaymentAccountList(orgRealation.getResponderLocationId().getOrg().getId(), orgRealation.getResponderLocationId().getId(),true);
 		return paymentAccountList;
 	}
 }

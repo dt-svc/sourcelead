@@ -49,6 +49,9 @@ public class PaymentAccount extends Record implements Serializable {
     @Column(name = "BANK_NAME")
     private String bankName;
 
+    @Column(name="DISABLED")
+    private boolean disabled;
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
     private OrgLocations orgLocation;
@@ -267,4 +270,13 @@ public class PaymentAccount extends Record implements Serializable {
         this.bankName = bankName;
     }
 
+	public boolean isDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
+
+	
 }

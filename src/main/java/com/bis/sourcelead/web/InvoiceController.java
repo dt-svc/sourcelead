@@ -106,7 +106,7 @@ public class InvoiceController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		Date currentDate = new Date();
 		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
-        model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId()));
+        model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		model.addObject("currentDate", convertedDate);
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
@@ -127,7 +127,7 @@ public class InvoiceController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ModelAndView model = new ModelAndView();
-		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId()));
+		model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(null != countries){
         model.addObject("loginCountryName", countries.getName());
@@ -281,7 +281,7 @@ public class InvoiceController {
 		
 		Date currentDate = new Date();
 		String convertedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),currentDate);
-        model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId()));
+        model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		model.addObject("currentDate", convertedDate);
 		model.setViewName("billing/createProjectReceivableInvoice");
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -341,7 +341,7 @@ public class InvoiceController {
 		model.setViewName("billing/createExpensesReceivableInvoice");
 		model.addObject("currentDate", commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 		model.addObject("sourceleadUrl", sourceleadUrl);
-                model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId()));
+                model.addObject("paymentAccountList", orgService.getPaymentAccountList(orgLocations.getOrg().getId(), orgLocations.getId(),true));
 		sessionData.setNav(Constants.Receivable);
 		request.getSession().setAttribute("sessionData",sessionData);
 	return model;
