@@ -119,11 +119,33 @@
             </div>
           
             <div class="clearfix"></div>
+            <c:if test="${!empty immigrationDTO}">
+            <c:if test="${immigrationDTO.orgloationId != SourceLeadWeb_orgLocations.id}">
+             <h4 class="col-md-12 mb">2. Company Details</h4>
+            </c:if>
+            <c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
+             <h4 class="col-md-12 mb">2. Attorney Details</h4>
+            </c:if>
+            </c:if>
+            <c:if test="${empty immigrationDTO}">
             <h4 class="col-md-12 mb">2. Attorney Details</h4>
+            </c:if>
             <div class="clearfix"></div>
 							<div class="form-group">
+							 <c:if test="${!empty immigrationDTO}">
+								<c:if test="${immigrationDTO.orgloationId != SourceLeadWeb_orgLocations.id}">
+								<label class="col-md-4"><span class="pull-left">Company Name</span><span
+									class="text-danger pull-left" id="man1">*</span></label>
+								</c:if>
+								<c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
 								<label class="col-md-4"><span class="pull-left">Attorney Name</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
+								</c:if>
+									</c:if>
+									 <c:if test="${empty immigrationDTO}">
+									 <label class="col-md-4"><span class="pull-left">Attorney Name</span><span
+									class="text-danger pull-left" id="man1">*</span></label>
+									 </c:if>
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								
 								
@@ -163,7 +185,19 @@
 							</div>
 
 							<div class="form-group">
+							<c:if test="${!empty immigrationDTO}">
+							<c:if test="${immigrationDTO.orgloationId != SourceLeadWeb_orgLocations.id}">
+							<label class="col-md-4"><span class="pull-left">Company Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+							
+							</c:if>
+							<c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
 							<label class="col-md-4"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+							
+							</c:if>
+							</c:if>
+							<c:if test="${empty immigrationDTO}">
+							<label class="col-md-4"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+							</c:if>
 							
 							<c:if test="${!empty immigrationDTO}">
 							<c:if test="${immigrationDTO.orgloationId != SourceLeadWeb_orgLocations.id}">
