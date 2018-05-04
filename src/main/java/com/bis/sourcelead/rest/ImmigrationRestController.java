@@ -991,6 +991,9 @@ public class ImmigrationRestController {
 		try {
 			if(user != null && Validator.validate(immigrationDTO)){
 			immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations, ids, status);
+			if(status.equalsIgnoreCase("sendRequest")) {
+				immigrationCommonService.sendEmailToImmigrationBeneficiary(immigration,user, orgLocations);
+			}
 			requiredIds.add(immigration.getId());
 			requiredIds.add(immigration.getCandidate().getId());
 			requiredIds.add(immigration.getImmigrationTemplateId().getId());

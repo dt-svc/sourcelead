@@ -581,7 +581,7 @@
 			<!--<a href="javascript:void(0)" class="pull-left">Prev</a>-->
 			
 			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('save')" class="nextBtn">Save As Draft</a>
-			<a href="javascript:void(0)"  class="nextBtn">Send Request</a><!--  should be Send Request -->.
+			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('sendRequest')" class="nextBtn">Send Request</a><!--  should be Send Request -->.
 			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('saveContinue')" id="savePageOneContinue" class="nextBtn">Save &amp; Continue</a>
 			<div class="clearfix"></div>
 		</div>

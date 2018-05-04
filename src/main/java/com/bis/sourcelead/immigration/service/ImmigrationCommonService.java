@@ -107,4 +107,6 @@ public interface ImmigrationCommonService {
 	Immigration getImmigrationById(Long immigrationId);
 
 	Immigration updateImigrationDetatils(Immigration immigration);
+
+	void sendEmailToImmigrationBeneficiary(Immigration immigration, User user, OrgLocations orgLocations) throws Exception;
 }
