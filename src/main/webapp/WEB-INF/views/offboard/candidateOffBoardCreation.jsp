@@ -1070,9 +1070,10 @@ function loadOffBoardingTemplates(offboardTemplateId){
 			    	if(json['effectiveDate'] != null && json['effectiveDate'] != "" && json['effectiveDate'] !="undefined"){
 			    		$("#effectiveDate").val(json['effectiveDateStr']);
 			    	}
-			    	if(json['offboardTemplateId'] != null && json['offboardTemplateId'] != "" && json['offboardTemplateId'] !="undefined"){
+			    	/* if(json['offboardTemplateId'] != null && json['offboardTemplateId'] != "" && json['offboardTemplateId'] !="undefined"){
 			    		loadOffBoardingTemplates(json['offboardTemplateId']);
-			    	}
+			    	} */
+			    	loadOffBoardingTemplates(json['offboardTemplateId']);
 			    	$("#savedoffboardId").val(json['savedoffboardId']);
 			    	$("#loading").removeAttr("style");
 	        	} else if (response.indexOf('Sign In') !== -1) {
