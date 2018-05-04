@@ -344,7 +344,12 @@ public class TaskServiceImpl implements TaskService{
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+			 EmailScenario  emailScenario = null;
+			 if(orglo != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.TASK_MECHANISM_EMAIL,Constants.ENTITY_TYPE_EMAIL, orglo.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+				   }
 			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
 			 //covert subject,body and signature

@@ -1768,11 +1768,18 @@ public class ClientServiceImpl implements ClientService {
 		EmailScenario emailScenario = null;
 
 		if (Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT,
-					Constants.ENTITY_TYPE_EMAIL);
+			 if(orgLocations != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ACCEPT_CLIENT,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+				   }
 		} else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR,
-					Constants.ENTITY_TYPE_EMAIL);
+			 if(orgLocations != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ACCEPT_VENDOR,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+				   }
+			
 		}
 		// covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
