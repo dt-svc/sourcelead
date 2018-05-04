@@ -279,7 +279,13 @@
 														         <option value='${pt.id}' selected>${pt.taskName}</option>
 														       </c:if>
 														       <c:if test="${pt.id != entry.key}">
-														          <option value='${pt.id},${pt.taskType},${pt.taskName}'>${pt.taskName}</option>
+														       <c:if test="${not empty pt.generatedId}" >
+														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
+														       </c:if>
+														        <c:if test="${empty pt.generatedId}" >
+														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'>${pt.taskName} </option>
+														       </c:if>
+														          
 														       </c:if>
 														   </c:forEach>
 														</c:if>
@@ -1286,6 +1292,10 @@ function addTimeSheetRow(projectId) {
         }
 	   //get project tasks 
 	   function getProjectTasks(projectTaskId,projectId){
+		 /*   alert($("#"+projectTaskId).val($("#"+projectTaskId+" option:first").val())); 
+		 <i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
+*/         $("#"+projectTaskId).next('i').remove();
+		   $("#"+projectTaskId).after('<i class="fa fa-spinner fa-pulse"></i>');
 		   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		   if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
 			   var taskId = $("#" + projectTaskId).val().split(",");
@@ -1325,12 +1335,14 @@ function addTimeSheetRow(projectId) {
 	  			        		var opt = json[i];
 	  			        		result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.taskName+"</option>";
 	  						}
+	  		    	    	
  				    	 	$("#"+localId).append(result);
+ 				    	 	$("#"+localId).next('i').remove();
  			   	   }); 
  		    	   
  		      }
  	      	  
- 	       }); 
+ 	       });  
 		   
 	   }
 </script>
