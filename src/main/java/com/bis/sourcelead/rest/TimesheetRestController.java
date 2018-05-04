@@ -1477,6 +1477,9 @@ public class TimesheetRestController {
 					taskDTO.setId(pt.getId());
 					taskDTO.setTaskName(pt.getTaskName());
 					taskDTO.setTaskType(pt.getBillableType());
+					if(pt.getGeneratedId() != null && StringUtils.isNotEmpty(pt.getGeneratedId())) {
+						taskDTO.setGeneratedId(pt.getGeneratedId());
+					}
 					taskDTOList.add(taskDTO);
 				}
 
