@@ -450,6 +450,9 @@ public class InvoiceRestController {
 		for (Invoice invoice : invoiceFilterList) {
 			BillingDTO billingDto = new BillingDTO();
 			boolean isInvoiceDueDate = false;
+                        if(invoice.getPaymentAccount() != null) {
+				invoice.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null));
+			}
 			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(invoice.getOrgRelationID().getId());
 			if (orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
 				billingDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());

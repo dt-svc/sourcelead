@@ -472,7 +472,7 @@ function removeErr(){
 	$('#errPaymethod').find('p.jquery_form_error_message').remove(); 
 }
 function removeMask(){
-	 $("#customeAmount").removeAttr("readonly");
+	 $("#customeAmount, #customeAmountOnline").removeAttr("readonly");
 	 /* $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
 	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
 	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && ((event.which) < 48 || (event.which) > 57)) {
@@ -480,7 +480,7 @@ function removeMask(){
 	            }
 	        }); */
 	        
-	 $("#customeAmount").keydown(function (e) {
+	 $("#customeAmount, #customeAmountOnline").keydown(function (e) {
 	        // Allow: backspace, delete, tab, escape, enter and .
 	        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
 	             // Allow: Ctrl+A, Command+A
@@ -497,7 +497,7 @@ function removeMask(){
 	    });
 }
 function validMask(){
-	  $('#customeAmount').attr("readonly","readonly");  
+	  $('#customeAmount, #customeAmountOnline').attr("readonly","readonly");  
 }
 /* function amountCal(){
 	var totalAmount =  $("#totalAmount").val();
@@ -718,6 +718,9 @@ function payablePagination(url){
 										
 								}else{
 									if(report.invoiceStatus == "Accepted"){
+                                                                            if(report.paymentAccountDTO != null && report.paymentAccountDTO.accountType == "WEPAY")
+                                                                                result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="initPaymentOnline('+report.invoiceUUID+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
+                                                                            else
 										result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
 									}else if(report.invoiceStatus == "Linked"){
 											result = result +' <a class="successBtn primary pull-left cursorPointer" onClick="unLinkBill('+report.id+')">UnLink</a>  ';
@@ -1158,7 +1161,7 @@ function rejectInvoice(id){
 </script> -->
 <script>
 function cancelbtn(){
-	  $("#recvPymntpop").fadeOut(200);
+	  $("#recvPymntpop, #recvPymntpopOnline").fadeOut(200);
       $('.modal-backdrop').fadeOut(200).removeClass('in');
 }
 </script>
@@ -1760,6 +1763,27 @@ function saveBillRejectedReason(invoiceUUID){
 	
 }
 
+function continuePaymentOnline() {
+        var amount = $("[name=paymentAmountOnline][value=custom]").is(":checked") ? $("#customeAmountOnline").val() : $("#totalAmountOnline").val();
+    if(amount === "") {
+        showError("Enter payment amount");
+        return;
+    }
+    $.post(sourceleadUrl+"/wepay-iframe-payment", {notes: $("#paymentMemoOnline").val(), paymentType: $("[name=paymentAmountOnline][value=custom]").is(":checked") ? 0 : 1, invoiceUUID: $("#paymentInfoOnline").data('invoiceid'), amount: amount}, function(data) {
+        if(data && data === "FAILED") {
+            
+        } else if(data) {
+            $("#paymentInfoOnline").hide();
+            WePay.iframe_checkout("wepay_checkout", data);
+        }
+    });
+}
+function initPaymentOnline(invoiceId, dueAmount) {
+    $("#totalAmountOnline").val(dueAmount);
+    $("#paymentInfoOnline").data('invoiceid', invoiceId);
+    $("#recvPymntpopOnline").fadeIn(200);
+    $('.modal-backdrop').fadeIn(200).addClass('in');
+}
 </script>
 
 
