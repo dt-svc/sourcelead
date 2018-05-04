@@ -59,6 +59,7 @@ public class Constants {
 	public static final String VENDOR_NAME = "Vendor Name*";
 	public static final String JOB_OTHER = "Other";
 	public static final String CLIENT_ADDRESS = "ClientAddress";
+	public static final String VENDOR_ADDRESS = "VenodrAddress";
 	public static final String BILLING_ADDRESS = "BillingAddress";
 	public static final String PAYMENT_TERMS = "PaymentTerms";
 	public static final String INVOICE_RECEIVABLE = "Receivable";
