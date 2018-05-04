@@ -387,34 +387,44 @@ function removeEndValid(){
         	  }
         	  output = output +'</select>';
         	  $("#leaveTypeIdDiv").empty();
+        	  
         	  $("#leaveTypeIdDiv").append(output);
         	  $('#leaveType').chosen();
         	  $("#leaveType").trigger("chosen:updated");
 //         	  $('#leaveType').prop('disabled', true).trigger("chosen:updated");
         	  
-        	  var counts = json[json.length-1];
-        	  var totalBalanceCounts = counts.totalBalanceLeaveCounts;
-        	  var totalPendingCounts = counts.pendingLeaveCounts;
-        	  var totalTakenCounts = counts.takenLeaves;
-        	  getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts);
+        	  if(json.length > 0){
+        		  var counts = json[json.length-1];
+            	  var totalBalanceCounts = counts.totalBalanceLeaveCounts;
+            	  var totalPendingCounts = counts.pendingLeaveCounts;
+            	  var totalTakenCounts = counts.takenLeaves;
+        		  getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts);
+        		  
+        		  
+        		  var result = "";
+    	    	  result = result +' <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">';
+    	    	  result = result +'			<label>Balance Leaves :</label>';
+    	          for (var i = 0; i < json.length; i++) { 
+    	        		  var leaveType = json[i];
+    				        result = result +'	<li>';
+    				  		result = result +'			<label>'+leaveType.name+'</label>';
+    				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
+    				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount+'</span>';
+    				  		result = result +'	</li>'; 
+    	        	  }
+   	        	  result = result +'	</ul>'; 
+   	        	  $("#leaveStatusIdDiv").empty();
+   	        	  $("#leaveStatusIdDiv").append(result);
+        		  
+        	  }else{
+        		  var res = ""
+	        		  res = res +'<div class="text-center mt25 well"><i class="fa fa-calendar-minus-o fa-5x text-muted"></i>';
+	        		  res = res +'<p class="clearfix mt text-muted small">No Active Leave Types Found !</p>';
+	        		  res = res +'</div>';
+        		  $("#leavestatsu").empty();
+        		  $("#leavestatsu").append(res);
+        	  }
         	  
-        	  var result = "";
-	    	  result = result +' <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">';
-	    	  result = result +'			<label>Balance Leaves :</label>';
-	          for (var i = 0; i < json.length; i++) { 
-	        		  var leaveType = json[i];
-				        result = result +'	<li>';
-				  		result = result +'			<label>'+leaveType.name+'</label>';
-				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
-				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount+'</span>';
-				  		result = result +'	</li>'; 
-	        	  }
-	        	  result = result +'	</ul>'; 
-	        	  $("#leaveStatusIdDiv").empty();
-	        	  $("#leaveStatusIdDiv").append(result);
-
-	        	  
-	        	 
          },
           
      });
@@ -422,6 +432,7 @@ function removeEndValid(){
 	 
 function getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts){
 	//ApplyLeves piechart
+	//
 	AmCharts.makeChart("leavestatsu",
 		{
 			"type": "pie",
@@ -620,7 +631,6 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	}else{
     		    		$("#applyId").prop("disabled", false);
     		    	}
-    		    	alert(report.priorLeaveApplying)
     		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
     		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
     		    		
@@ -679,14 +689,11 @@ function validateOverDrawLeaves(leaveTypeName){
 <script>
 var errorMessage = "";
 function validatePriorDays(priorDays,finalDateFormatEndDate){
-	alert("hai");
 	var currentDate = new Date();
 	
 	$( "#fromDate" ).datepicker({ dateFormat: finalDateFormatEndDate });
 	var start = $('#fromDate').datepicker('getDate');
     var diffDays = parseInt((start - currentDate) / (1000 * 60 * 60 * 24)); 
-    alert(diffDays)
-    alert(diffDays)
     if(priorDays > diffDays){
     	errorMessage += "You need to apply this Leave Type "+priorDays+" earlier.";
     }
