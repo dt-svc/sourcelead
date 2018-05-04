@@ -587,64 +587,76 @@ function getLeaveDetails(finalDateFormatEndDate){
 		$.ajax({
 		   	type: "POST",
 		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	 
-		    success: function(report) {
-		    	if(report.duration == "Half Day"){
-		    		$("#fromHalfDayDiv").hide();
-		    		$("#toHalfDayDiv").hide();
-		    	}else{
-		    		$("#fromHalfDayDiv").show();
-		    		$("#toHalfDayDiv").show();
-		    	} 
+		    success: function(result) {
+		    	if (result && result.response === "INVALID_DATA") {
+          		    showError(result.responseMessage);
+          		} else if (result.response === "AWKWARD") {
+          		    location.href = "/errorPage";
+          		} else if (result.response === "SUCCESS") {
+          			var report = result.object;
+          			if(report.duration == "Half Day"){
+    		    		$("#fromHalfDayDiv").hide();
+    		    		$("#toHalfDayDiv").hide();
+    		    	}else{
+    		    		$("#fromHalfDayDiv").show();
+    		    		$("#toHalfDayDiv").show();
+    		    	} 
+    		    	
+    		    	if(report.reasonRequired == "Y"){
+    			 		$("#reason").attr('data-validation',"required");
+    			 		document.getElementById("reasonIdY").style.display = 'block';
+    			 		document.getElementById("reasonIdN").style.display = 'none';
+    		    	}else{
+    		    		document.getElementById("reasonIdY").style.display = 'none';
+    			 		document.getElementById("reasonIdN").style.display = 'block';
+    		    		$("#reason").removeAttr('data-validation');
+    		    	}
+    		    	
+    		    	if(report.attachmentRequired == "Y"){
+    			 		$("#uploadBtn").attr('data-validation',"required");
+    			 		document.getElementById("attachmentY").style.display = 'block';
+    			 		document.getElementById("attachmentN").style.display = 'none';
+    		    	}else{
+    		    		document.getElementById("attachmentY").style.display = 'none';
+    		    		document.getElementById("attachmentN").style.display = 'block';
+    		    		$("#uploadBtn").removeAttr('data-validation');
+    		    	}
+    		    	
+    		    	
+    		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
+    		    		validateOverDrawLeaves(report.name);
+    		    	}else{
+    		    		$("#applyId").prop("disabled", false);
+    		    	}
+    		    	alert(report.priorLeaveApplying)
+    		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
+    		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
+    		    		
+    		    	}
+    		    	if(report.leaveDuration == "Y" && fromDate != "" && toDate != ""){
+    		    		validateMinMaxDays(report.minDays, report.maxDays);
+    		    	}
+    		    	
+    		    	if(errorMessage != ""){
+    		        	$("#applyId").prop("disabled", true);
+    		        	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</span> ");
+    		        	$(".comMask").fadeIn();
+    		        	errorMessage = "";
+    		        }else{
+    		    		$("#applyId").prop("disabled", false);
+    		        }
+    		    	if(skipPolicy != true){
+    		    		if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
+    		 				$("#termsAndConditions").html(report.policyDescription);
+    		 				document.getElementById("termsModel").style.display="block";
+    		 			}
+    		    	}
+          		} else if (result.indexOf('Sign In') !== -1) {
+          			location.replace(sourceleadUrl);
+          		} else {
+          		    showError("Operation failed, please try again");
+          		}
 		    	
-		    	if(report.reasonRequired == "Y"){
-			 		$("#reason").attr('data-validation',"required");
-			 		document.getElementById("reasonIdY").style.display = 'block';
-			 		document.getElementById("reasonIdN").style.display = 'none';
-		    	}else{
-		    		document.getElementById("reasonIdY").style.display = 'none';
-			 		document.getElementById("reasonIdN").style.display = 'block';
-		    		$("#reason").removeAttr('data-validation');
-		    	}
-		    	
-		    	if(report.attachmentRequired == "Y"){
-			 		$("#uploadBtn").attr('data-validation',"required");
-			 		document.getElementById("attachmentY").style.display = 'block';
-			 		document.getElementById("attachmentN").style.display = 'none';
-		    	}else{
-		    		document.getElementById("attachmentY").style.display = 'none';
-		    		document.getElementById("attachmentN").style.display = 'block';
-		    		$("#uploadBtn").removeAttr('data-validation');
-		    	}
-		    	
-		    	
-		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
-		    		validateOverDrawLeaves(report.name);
-		    	}else{
-		    		$("#applyId").prop("disabled", false);
-		    	}
-		    	
-		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
-		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
-		    		
-		    	}
-		    	if(report.leaveDuration == "Y" && fromDate != "" && toDate != ""){
-		    		validateMinMaxDays(report.minDays, report.maxDays);
-		    	}
-		    	
-		    	if(errorMessage != ""){
-		        	$("#applyId").prop("disabled", true);
-		        	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</span> ");
-		        	$(".comMask").fadeIn();
-		        	errorMessage = "";
-		        }else{
-		    		$("#applyId").prop("disabled", false);
-		        }
-		    	if(skipPolicy != true){
-		    		if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
-		 				$("#termsAndConditions").html(report.policyDescription);
-		 				document.getElementById("termsModel").style.display="block";
-		 			}
-		    	}
 		    	
 		    }
 		});
@@ -675,12 +687,14 @@ function validateOverDrawLeaves(leaveTypeName){
 <script>
 var errorMessage = "";
 function validatePriorDays(priorDays,finalDateFormatEndDate){
+	alert("hai");
 	var currentDate = new Date();
 	
 	$( "#fromDate" ).datepicker({ dateFormat: finalDateFormatEndDate });
 	var start = $('#fromDate').datepicker('getDate');
     var diffDays = parseInt((start - currentDate) / (1000 * 60 * 60 * 24)); 
-    
+    alert(diffDays)
+    alert(diffDays)
     if(priorDays > diffDays){
     	errorMessage += "You need to apply this Leave Type "+priorDays+" earlier.";
     }
