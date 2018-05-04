@@ -28,4 +28,7 @@ public interface LookUpDataService {
 	LookUpData getTasksTypeByUniqueKey(String uniqueKey) throws Exception;
 	
 	LookUpData getRequirementExperienceLevelyUniqueKey(String uniqueKey) throws Exception;
+
+	public LookUpData getLookUpDataByIdAndCategory(String visaType, long id);
+	
 }

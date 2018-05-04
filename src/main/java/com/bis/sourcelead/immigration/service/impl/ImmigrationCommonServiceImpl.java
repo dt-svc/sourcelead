@@ -7,6 +7,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,9 @@ import com.bis.sourcelead.entity.CandidateLcaI94Summary;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
@@ -57,8 +61,10 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
+import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -98,6 +104,15 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
+	@Autowired
+	EmailScenerioUtil emailScenerioUtil;
+	
+	@Autowired
+	EmailScenarioService emailScenarioService;
 
 	@Override
 	public List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations) {
@@ -422,8 +437,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		if(immigrationDTO.getImmigrationId() != null && StringUtils.isNotEmpty(immigrationDTO.getImmigrationId())) {
 			immigration = immigrationCommonDao.getImmigrationById(Long.parseLong(immigrationDTO.getImmigrationId()));
 		}
-		LookUpData petitionTypeId = new LookUpData();
-		petitionTypeId.setId(Long.parseLong(immigrationDTO.getPetitionType()));
+		LookUpData petitionTypeId = lookUpDataService.getLookUpDataByIdAndCategory(Constants.VISA, Long.parseLong(immigrationDTO.getPetitionType()));
 		immigration.setPetitionType(petitionTypeId);
 		//DateFormat dateFormat = new SimpleDateFormat ("dd-MM-yyyy");
 		immigration.setOpenDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), immigrationDTO.getOpenDate()));
@@ -1177,5 +1191,54 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	public Immigration updateImigrationDetatils(Immigration immigration) {
 		return immigrationCommonDao.updateImigrationDetatils(immigration);
 	}
+
+	@Override
+	public void sendEmailToImmigrationBeneficiary(Immigration immigration, User user, OrgLocations orgLocations) throws Exception{
+		
+		 EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(immigration.getCandidate().getFirstName());
+		 emailMessage.setLastName(immigration.getCandidate().getLastName());
+		 emailMessage.setToEmail(immigration.getCandidate().getEmail());
+		 emailMessage.setFromEmail(user.getEmail());
+		 emailMessage.setCreatedBy(user.getUserCode());
+		// StringBuilder msgBuild = new StringBuilder();
+		// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 if (immigration.getGeneratedId() != null && !"".equalsIgnoreCase(immigration.getGeneratedId()) ) {
+			 globalVarsMap.put("immigrationId", immigration.getGeneratedId());
+		 }
+		 if(immigration.getPetitionType().getName() != null && !"".equalsIgnoreCase(immigration.getPetitionType().getName())) {
+			 globalVarsMap.put("petitionType", immigration.getPetitionType().getName());
+		 }
+		 if(user.getFullName() != null && !"".equalsIgnoreCase(user.getFullName())) {
+			 globalVarsMap.put("immigrationManagerName", user.getFullName());
+		 }
+		 if(user.getEmail() != null && !"".equalsIgnoreCase(user.getEmail())) {
+			 globalVarsMap.put("immigrationManagerEmail", user.getEmail());
+		 }
+		 if(immigration.getCandidate().getFullName() != null && !"".equalsIgnoreCase(immigration.getCandidate().getFullName())) {
+			 globalVarsMap.put("beneficiaryName", immigration.getCandidate().getFullName());
+		 }
+		 StringBuilder loginBuilder = new StringBuilder();
+		 globalVarsMap.put("immigrationLoginUrl", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 //using same migration which has been already used in updatedRequirementMailToManager method
+		 //EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.PASSWORD_RESET_MAIL_TO_USER,Constants.ENTITY_TYPE_NOTIFICATION);
+
+		 
+		 
+		// String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
+		 //notificationScenario.setBody(notificationbody);
+
+		 //calling the sendEmail method of emailScenerioUtil
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.EMAIL_TO_IMMIGRATION_BENEFICIARY,new ArrayList<EmailAttachment>());
+
+		 //String actionLink="";
+		// emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations, notificationScenario,new HashMap<String,String>());
+		}
 
 }
