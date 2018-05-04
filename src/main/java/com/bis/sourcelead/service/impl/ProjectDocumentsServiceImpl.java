@@ -235,16 +235,24 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 		if (null != emails) {
 			iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).toString());
 		}
+		emailMessage.setFirstName(user.getFirstName());
 		emailMessage.setCreatedBy(user.getUserCode());
 		emailMessage.setFromEmail(user.getEmail());
 		emailMessage.setFromName(fullName);
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		globalVarsMap.put("body", projectsDocumentsDTO.getMessage());
 		globalVarsMap.put("subject", projectsDocumentsDTO.getSubject());
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_SEND_PROJECT_DOCUMENTS, Constants.ENTITY_TYPE_EMAIL);
+		//EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_SEND_PROJECT_DOCUMENTS, Constants.ENTITY_TYPE_EMAIL);
+		
+		 EmailScenario  emailScenario = null;
+		 if(loginOrgLocation != null)
+		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.MAIL_SEND_PROJECT_DOCUMENTS,Constants.ENTITY_TYPE_EMAIL, loginOrgLocation.getId());
+		  if(emailScenario == null){
+				emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_SEND_PROJECT_DOCUMENTS,Constants.ENTITY_TYPE_EMAIL);
+		   }
 		// covert subject,body and signatur
-		String subject = emailScenerioUtil.bulidSubject(projectsDocumentsDTO.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+		String subject = emailScenerioUtil.bulidTemplateSubject(projectsDocumentsDTO.getSubject(), globalVarsMap,emailScenario);
+		String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(), globalVarsMap,emailScenario);
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, sourceleadUrl, loginOrgLocation.getOrg(), loginOrgLocation);
 		emailMessage.setSubject(subject);
