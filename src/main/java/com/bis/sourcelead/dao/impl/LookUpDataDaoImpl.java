@@ -187,5 +187,13 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 			return null;
 		}		
 	}
+
+	@Override
+	public LookUpData getLookUpDataByIdAndCategory(String visaType, long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LookUpData lookupdata where lookupdata.category = :category and lookupdata.id = :id";
+		LookUpData lookupData = (LookUpData) session.createQuery(query.toString()).setString("category", visaType).setLong("id", id).uniqueResult();
+		return lookupData;
+	}
  
 }

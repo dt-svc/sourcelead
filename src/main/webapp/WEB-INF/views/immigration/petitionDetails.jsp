@@ -54,9 +54,9 @@
             
             
             <div class="form-group">
-              <label class="col-md-4">Status</label> <!-- renamed form Current USCIS as Status as per request change -->
+              <label class="col-md-4">Status<span class="text-danger paddingLeft">*</span></label> <!-- renamed form Current USCIS as Status as per request change -->
               <div class="col-md-8 dropdown-select">
-                <select id="currUscisStatus" name="currUscisStatus" class="chosen-select form-control">
+                <select id="currUscisStatus" name="currUscisStatus" field-name="Status" data-validation="required" class="chosen-select form-control">
                     
                   </select>
               </div>
@@ -581,7 +581,7 @@
 			<!--<a href="javascript:void(0)" class="pull-left">Prev</a>-->
 			
 			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('save')" class="nextBtn">Save As Draft</a>
-			<a href="javascript:void(0)"  class="nextBtn">Send Request</a><!--  should be Send Request -->.
+			<a href="javascript:void(0)" id="sendRequestButton" onclick="immigration.savePageAndContinue('sendRequest')" class="nextBtn">Send Request</a><!--  should be Send Request -->.
 			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('saveContinue')" id="savePageOneContinue" class="nextBtn">Save &amp; Continue</a>
 			<div class="clearfix"></div>
 		</div>
@@ -809,8 +809,9 @@ $("#experienceValue").change(function () {
 		            	  var opt = data[i];
 		            	  if(opt.id == status){
 		            		$('#currUscisStatus').append('<option selected value='+opt.id+' >'+opt.name+'</option>');
-		            	  }else if(opt.name == "Request to fill"){
-		            	  	$('#currUscisStatus').append('<option selected value='+opt.id+' >'+opt.name+'</option>');
+		            		if(opt.name != 'Draft'){
+		            			$("#sendRequestButton").hide();
+		            		}
 		            	  }else{
 		            		$('#currUscisStatus').append('<option value='+opt.id+' >'+opt.name+'</option>');
 		            	  }
