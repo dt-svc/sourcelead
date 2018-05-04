@@ -101,9 +101,10 @@ public class DashBoardSocketCount {
 	}
 
 	@OnError
-	public void error(Session session, Throwable t) {
+	public void error(Session session, Throwable t) throws IOException {
 		String userId = session.getRequestParameterMap().get("userId").get(0);
 		sessionMap.remove(userId);
+		sessionMap.get(userId).close();
 		runnable = false;
 		System.err.println("Error on session " + session.getId());
 	}
@@ -111,9 +112,6 @@ public class DashBoardSocketCount {
 	@OnClose
 	public void closedConnection(Session session) {
 		String userId = session.getRequestParameterMap().get("userId").get(0);
-		String orgLocationCode = session.getRequestParameterMap().get("orgLocationCode").get(0);
-		String timesheetType = session.getRequestParameterMap().get("timesheetType").get(0);
-		String candiadteId = session.getRequestParameterMap().get("candiadteId").get(0);
 		Iterator<String> it = sessionMap.keySet().iterator();
 		while(it.hasNext()) {
 			if(it.next().equals(userId)) {
