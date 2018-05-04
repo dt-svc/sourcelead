@@ -87,6 +87,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -180,6 +181,8 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private RequirementLocationsService requirementLocationsService;
+	@Autowired
+	private OrgSpocService orgSpocService;
 	
 	
 	@Override
@@ -494,8 +497,7 @@ public class RequirementServiceImpl implements RequirementService {
 			client = requirementDTO.getSelectClient().split(",")[0];
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getSelectContact())) {
-			OrgSpoc orgSpoc = new OrgSpoc();
-			orgSpoc.setId(Long.parseLong(requirementDTO.getSelectContact()));
+			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(requirementDTO.getSelectContact()));
 			requirement.setSpocId(orgSpoc);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getClientCurrencyCode())) {

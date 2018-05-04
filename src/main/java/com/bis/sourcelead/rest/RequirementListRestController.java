@@ -890,6 +890,7 @@ public class RequirementListRestController {
 				list.setResponse(Result.SUCCESS.name());
 				list.setResponseMessage(Result.SUCCESS.getValue());
 			}catch(Exception e) {
+				e.printStackTrace();
 			list.setResponse(Result.AWKWARD.name());
 			list.setResponseMessage(Result.AWKWARD.getValue());
 		}
@@ -2053,6 +2054,7 @@ public class RequirementListRestController {
 			     resp.setResponse(Result.SUCCESS.name());
 				 resp.setResponseMessage(Result.SUCCESS.getValue());
 			}catch(Exception e) {
+				e.printStackTrace();
 				resp.setResponse(Result.AWKWARD.name());
 				resp.setResponseMessage(Result.AWKWARD.getValue());
 			}

@@ -407,7 +407,7 @@ function resendSpocInvitation(spocUserId,orgRelationID,clientLocationId,spocId){
 
    <!-- This Script is For Popup Div Starts-->  
 <script>
-function addContact(orgRelationID,clientLocationId) {	  
+function addContact(orgRelationID,clientLocationId) {	
 	var result = "";
 	result = result  +'	<form id="clinetContact_form" name="clinetContact_form" method="post">';
 	result = result  +'          <i class="fa fa-close close-div"  onClick="closePopupDiv();"></i> ';
@@ -653,26 +653,26 @@ function getSpocUserDetails(orgLocationId,orgRelationID){
 	        		var json = JSON.parse(data);
 	        		
 	        		 if(json[0] != null && json[0] != ''){
-	        			$("#firstName").attr("disabled", true);
+	        			$("#firstName").attr("readOnly", true);
 	        		    $("#firstName").val(json[0]);
 	        		 }else{
-	        			 $("#firstName").attr("disabled", false);
+	        			 $("#firstName").attr("readOnly", false);
 	        			 $("#firstName").val('');
 	        		 }
 	        		 
 	        		 if(json[1] != null && json[1] != ''){
-		        			$("#lastName").attr("disabled", true);
+		        			$("#lastName").attr("readOnly", true);
 		        		    $("#lastName").val(json[1]);
 	        		 }else{
-	        			    $("#lastName").attr("disabled", false);
+	        			    $("#lastName").attr("readOnly", false);
 	        			    $("#lastName").val('');
 	        		 }
 		        		
 	        		 if(json[2] != null && json[2] != ''){
-		        			$("#phoneNumber").attr("disabled", true);
+		        			$("#phoneNumber").attr("readOnly", true);
 		        		    $("#phoneNumber").val(json[2]);
 	        		 }else{
-	        			    $("#phoneNumber").attr("disabled", false);
+	        			    $("#phoneNumber").attr("readOnly", false);
 	        			    $("#phoneNumber").val('');
 	        		 }
 	        		 

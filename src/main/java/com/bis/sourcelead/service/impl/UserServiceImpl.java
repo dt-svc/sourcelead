@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1477,6 +1478,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception {
 		return userDao.getUsersDTOListByOrglocationId(orgLocationId,userDTO);
+	}
+
+	@Override
+	public ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation) throws Exception {
+		return userDao.getUsersResponseListByOrglocationId(userDTO,orgLocation);
 	}
 	
 }
