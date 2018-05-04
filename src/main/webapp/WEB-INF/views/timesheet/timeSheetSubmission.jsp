@@ -279,7 +279,13 @@
 														         <option value='${pt.id}' selected>${pt.taskName}</option>
 														       </c:if>
 														       <c:if test="${pt.id != entry.key}">
-														          <option value='${pt.id},${pt.taskType},${pt.taskName}'>${pt.taskName}</option>
+														       <c:if test="${not empty pt.generatedId}" >
+														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
+														       </c:if>
+														        <c:if test="${empty pt.generatedId}" >
+														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'>${pt.taskName} </option>
+														       </c:if>
+														          
 														       </c:if>
 														   </c:forEach>
 														</c:if>
