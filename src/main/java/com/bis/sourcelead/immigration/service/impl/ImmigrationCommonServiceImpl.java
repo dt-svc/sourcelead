@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.Consts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -473,7 +474,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setOrgSpoc(orgSpoc);
 		immigration.setSpocUserId(orgSpoc.getVendorUser());
 		immigration.setCandidate(candidate);
+		if(immigrationDTO.getEditMode().equalsIgnoreCase("false")){
 		immigration.setOrgLocationId(orgLocations);
+		}
 		immigration.setReceiptNo(immigrationDTO.getReceiptNo());
 		if(StringUtils.isEmpty(immigrationDTO.getImmigrationId())) {
 			immigration.setGeneratedId(getImmigrationIdForGeneratedId(orgLocations));

@@ -20,6 +20,12 @@
 		
 		<div class="addImmiContent clearfix">
 			<form id="petitionDetailsForm" name="petitionDetailsForm">
+			<c:if test="${empty immigrationDTO}">
+			<input type = "hidden" id="editMode" name = "editMode" value = "false">
+			</c:if>
+			<c:if test="${!empty immigrationDTO}">
+			<input type = "hidden" id="editMode" name = "editMode" value = "true">
+			</c:if>
           <div class="col-md-12 col-lg-12 myForm margin-top0">
           	<input type="hidden" name="immigrationId" value="${immigrationDTO.immigrationId}">
           	<input type="hidden" name="candidateId" value="${immigrationDTO.candidateId}">
