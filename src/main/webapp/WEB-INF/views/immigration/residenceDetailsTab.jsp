@@ -7,7 +7,7 @@
 		</div>
 		
 	  	<div class="immigraTable">
-		  <table>
+		  <table id="residenceTbl">
 			<tbody>
 			  <tr>
 				<th>Location</th>
@@ -147,7 +147,7 @@
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#employersTab');" class="btn btn-default btn-sm">
-             	<input type="button" value="Skip" onclick="goToSummaryTab('#educationsTab');" class="btn btn-default btn-sm"> 
+             	<!-- <input type="button" value="Skip" onclick="goToSummaryTab('#educationsTab');" class="btn btn-default btn-sm">  -->
               	<input type="button" value="Continue" onclick="goToSummaryTab('#educationsTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
@@ -206,7 +206,9 @@
 		
 <script>
   var residenceListCount = '<c:out value ="${residenceListCount}"/>';
-  if(residenceListCount>0){
+  var initCount  = '<c:out value ="${requestScope.resiOnLoadCount}"/>';
+ 
+  if(residenceListCount>0 || initCount!= ""){
         $('#residencefilled').show() // show and hides circle icon.
     }
 	else {

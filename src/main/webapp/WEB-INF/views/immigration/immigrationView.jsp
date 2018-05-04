@@ -10,6 +10,20 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 <script src="/resources/js/immigration.js"></script>
+<style>
+.disabledLink
+{
+	color: #333;
+	text-decoration : none;
+	pointer-events: none;
+}
+</style>
+<c:set var ="passOnLoadCount" value = "${tabRecordCountMap['Passport']}" scope="request"/>
+<c:set var ="visaOnLoadCount" value = "${tabRecordCountMap['Visa']}" scope="request"/>
+<c:set var ="empOnLoadCount" value  =  "${tabRecordCountMap['Employers']}" scope="request"/>
+<c:set var ="resiOnLoadCount" value = "${tabRecordCountMap['Residence']}" scope="request"/>
+<c:set var ="eduOnLoadCount" value  = "${tabRecordCountMap['Education']}" scope="request"/>
+<c:set var ="familyOnLoadCount" value  = "${tabRecordCountMap['Family']}" scope="request"/>
  <section class="content-wraper content-wraperNew">
    
     <section class="content-header clearfix">
@@ -46,16 +60,15 @@
   			</select>
   			</div>
   		</div>
-	
 		<div class="immigraHead">
 			<ul class="immigraTabs">
               <li class="current"><a href="#detailsTab"><i class="fa fa-check-circle-o"></i>Details</a></li>
               <li><a href="#passportsTab"><i id ="passportfilled" class="fa fa-check-circle-o"></i>Passport</a></li>
-              <li><a href="#visasTab"><i id ="visafilled" class="fa fa-check-circle-o"></i>Visa</a></li>
-              <li><a href="#employersTab"><i id ="employersfilled" class="fa fa-check-circle-o"></i>Employers</a></li>
-              <li><a href="#residencesTab"><i id ="residencefilled" class="fa fa-check-circle-o"></i>Residence</a></li>
-              <li><a href="#educationsTab"><i id ="educationfilled" class="fa fa-check-circle-o"></i>Educations</a></li>
-              <li><a href="#familiesTab"><i id ="familyfilled" class="fa fa-check-circle-o"></i>Family</a></li>
+              <li><a href="#visasTab"  id="visaInfoTab" class="${visaOnLoadCount==null?'disabledLink':''}"><i id ="visafilled" class="fa fa-check-circle-o"></i>Visa</a></li>
+              <li><a href="#employersTab" id="employersInfoTab" class="${empOnLoadCount==null?'disabledLink':''}"><i id ="employersfilled" class="fa fa-check-circle-o"></i>Employers</a></li>
+              <li><a href="#residencesTab" id="residenceInfoTab" class="${resiOnLoadCount==null?'disabledLink':''}"><i id ="residencefilled" class="fa fa-check-circle-o"></i>Residence</a></li>
+              <li><a href="#educationsTab" id="educationInfoTab" class="${eduOnLoadCount==null?'disabledLink':''}"><i id ="educationfilled" class="fa fa-check-circle-o"></i>Educations</a></li>
+              <li><a href="#familiesTab" class="${familyOnLoadCount==null?'disabledLink':''}"><i id ="familyfilled" class="fa fa-check-circle-o"></i>Family</a></li>
               <li><a href="#formsTab"><i id="allFormsfilled" class="fa fa-check-circle-o"></i>Forms</a></li>
               <li><a href="#docsTab"><i id="allDocsfilled" class="fa fa-check-circle-o"></i>Documents</a></li>
               <li><a href="#notesTab">Notes</a></li>
@@ -116,7 +129,7 @@
 	  </div>
 
 	</section>
-    
+    <div id="popUp"></div>
     
   </section>
   <!-- Content Area -->
@@ -263,8 +276,42 @@ $("#packageZipfile").click(function() {
 });
 </script>
 <script>
-	function goToSummaryTab(tabname) {
-		$("a[href='"+tabname+"']").click();
+	function goToSummaryTab(tabName) {
+		if(tabName=="#visasTab"){
+			if($('#passportTbl tr').length<=1){
+				showWarningPopup("Passport");
+			return;
+			}
+		}else if(tabName=="#employersTab"){
+			if($('#passportTbl tr').length<=1){
+				showWarningPopup("Passport");
+			return;
+			}
+		}else if(tabName=="#residencesTab"){
+			if($('#employerTbl tr').length<=1){
+				showWarningPopup("Employer");
+			return;
+			}
+		}else if(tabName=="#educationsTab"){
+			if($('#residenceTbl tr').length<=1){
+				showWarningPopup("Residence");
+			return;
+			}
+		}
+		else if(tabName=="#familiesTab"){
+			if($('#educationTbl tr').length<=1){
+				showWarningPopup("Education");
+			return;
+			}
+		}	
+		else if(tabName=="#docsTab"){
+			if($('#formsTbl tr').length<=1){
+				showWarningPopup("Form");
+			return;
+			}
+		}	
+		$("a[href='"+tabName+"']").removeClass("disabledLink");
+		$("a[href='"+tabName+"']").click();
 	}
 	
 	function changeUscisStatusForImmigration(uscisStatusId){
@@ -279,6 +326,26 @@ $("#packageZipfile").click(function() {
 		 });
 	}
 </script>
+<script>
 
+function showWarningPopup(tabName){ // tabName is replaced with content
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a modal-body'>";
+	result = result +" <b class='mt mb'>Please Add "+tabName+" Details!...</b>";
+	result = result + ' <div id="reasonForTemplateDiv"/>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='closePop()'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_immigration_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function closePop(){
+	$("#remove_immigration_pop").fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
 <jsp:include page="../masterFooter.jsp" />
  
