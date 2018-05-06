@@ -1090,8 +1090,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NOTIFY_APPLICANT_MAILABOUT_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
-
+		 EmailScenario  emailScenario = null;
+		 if(orgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.NOTIFY_APPLICANT_MAILABOUT_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NOTIFY_APPLICANT_MAILABOUT_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		 //covert subject,body and signature
 		 String subject = "";
 		 if(submissionType.equalsIgnoreCase("EditSubmission")) {
@@ -2441,8 +2445,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			// getting the current EmailScenario by EmailScenario unique name
 			// and entity type
 			EmailScenario emailScenario = null;
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SUBMIT_TO_CLIENT,
-					Constants.ENTITY_TYPE_EMAIL);
+			if(loginOrgLocation != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.SUBMIT_TO_CLIENT,Constants.ENTITY_TYPE_EMAIL, loginOrgLocation.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SUBMIT_TO_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+				   }
 			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NOTIFICATION_TO_CLIENT,Constants.ENTITY_TYPE_NOTIFICATION);
 
 			// covert subject,body and signature
@@ -2785,7 +2792,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  emailScenario = null;
+		 if(orgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.VENDOR_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CLIENT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
 		
@@ -3020,8 +3032,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL);
-	//	 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_NOTIFICATION);
+		 EmailScenario  emailScenario = null;
+		 if(loginOrgLocation != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL, loginOrgLocation.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL);
+			   }
+		 //	 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_NOTIFICATION);
 		 
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
@@ -3200,7 +3217,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  emailScenario = null;
+		 if(loginOrgLocation != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL, loginOrgLocation.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_NOTIFICATION);
 		 
 		 //covert subject,body and signature
