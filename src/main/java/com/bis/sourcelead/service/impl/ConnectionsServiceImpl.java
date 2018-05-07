@@ -189,8 +189,12 @@ public class ConnectionsServiceImpl implements ConnectionsService {
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService
-				.getEmailScenarioByUniqueName(Constants.INVITE_CONNECTION_USER, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario emailScenario = null;
+		 if(locations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.INVITE_CONNECTION_USER,Constants.ENTITY_TYPE_EMAIL, locations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_CONNECTION_USER,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		EmailScenario noificationEmailScenario = emailScenarioService
 				.getEmailScenarioByUniqueName(Constants.INVITE_CONNECTION_USER, Constants.ENTITY_TYPE_NOTIFICATION);
 		

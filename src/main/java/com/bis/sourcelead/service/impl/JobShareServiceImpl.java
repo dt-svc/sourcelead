@@ -127,8 +127,12 @@ public class JobShareServiceImpl implements JobShareService{
 		StringBuilder linkBuild = new StringBuilder();
 		globalVarsMap.put("viewJobLink", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("jobCampaignSummary?requirementUUID=").append("").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Job</div></a>").toString());
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_BULK_NEW_RESOURCE_REQUEST, Constants.ENTITY_TYPE_EMAIL);
-		 
+		EmailScenario emailScenario =null;
+		 if(orgLocation != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ACCEPT_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL, orgLocation.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
 		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);

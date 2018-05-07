@@ -166,10 +166,10 @@
 			   			</c:if>
 		                </div>
 		                
+		                <c:if test="${!empty siftList}">
 		                <div class="clearfix">
-		                  <h4 class="col-md-12">Assing Asset</h4>
+		                  <h4 class="col-md-12">Assign Asset</h4>
 		                </div>
-		                
 		                 <c:forEach var="shift" items="${siftList}" varStatus="shiftOrder">
 			                <div class="clearfix mb10">
 			                  <div class="col-md-5" id="uploadFile-dskADiv">
@@ -227,7 +227,7 @@
 			                </div>
 			              </div>
 		                </c:forEach>
-		                 
+		              </c:if>
 		                </div>
 		                </div>
 		            </div>

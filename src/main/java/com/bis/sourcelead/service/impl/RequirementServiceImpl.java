@@ -1298,6 +1298,7 @@ public class RequirementServiceImpl implements RequirementService {
 		if(requirement.getSpocId() != null){
 			globalVarsMap.put("clientContactname", requirement.getSpocId().getClientLocationId().getOrgLocationName());
 		}
+			globalVarsMap.put("managerName", managerUser.getFullName());
 		/*if (managerUser.getFirstName() != null && managerUser.getLastName() != null
 				&& !"".equalsIgnoreCase(managerUser.getFirstName())
 				&& !"".equalsIgnoreCase(managerUser.getLastName())) {
@@ -1616,8 +1617,28 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("requirementName", "--");
 		}
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String Reqlocation = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							Reqlocation = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							Reqlocation = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		if (location != null) {
-			globalVarsMap.put("requirementLocation", location.toString());
+			globalVarsMap.put("requirementLocation", Reqlocation);
 		}
 		else {
 			globalVarsMap.put("requirementLocation", "--");
