@@ -156,11 +156,11 @@
 		                    <textarea class="form-control" rows="2" name="description" id="description" value="${assetAssignData.description}" placeholder="Description" data-validation-optional="true" data-validation="validate_length length2-250">${assetAssignData.description}</textarea>
 		                  </div>
 		                   </div>
-		                  
+		                  <div class="clearfix"></div>
 		                   <c:if test="${!empty sourceleadSectionList}">
 			            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 			               		<c:if test="${sectionOrder.index == 0}">
-			                		  <div id="customDiv${section.id}" class="col-md-5 columnfields-custom"></div>
+			                		  <div id="customDiv${section.id}" class="columnfields-custom clearfix customfieldfor-colmn5 mt"></div>
 			              		 </c:if>
 			            	</c:forEach>
 			   			</c:if>
