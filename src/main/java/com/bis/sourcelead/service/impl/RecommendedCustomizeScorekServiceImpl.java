@@ -88,7 +88,7 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 	
 	@Override
 	public RecommendedCustomizeScore saveCustomizeScore(Requirement requirement) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(requirement.getOrgLocationId().getId());
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		
 		RecommendedCustomizeScore res;
