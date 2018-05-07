@@ -526,15 +526,17 @@ $('.chosen-select').chosen().on('change', function() {
 <script>
 function tasksAssignList(projectId){
     $("#assignedUsers").trigger("chosen:updated");
-	    
 	var values = "Active";
 // 	  var map = new Object(); 
 	  var assignedUsers = [];
       <c:forEach var="assign" items="${assignedUsers}">
       	assignedUsers.push('${assign.projectMemberId.id}');
       </c:forEach>
+     /*  $.post(sourceleadUrl + "/getProjectEmployeeListById?" + tokenParamName + "=" + tokenValue + "&projectId="+projectId+"&status="+values, formData, function(json) {
+    	  
+      } */
 	$.ajax({
-    	type: "POST",
+    	type: "GET",
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";
