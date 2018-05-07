@@ -224,7 +224,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		// globalVarsMap.put("requirementTitle", requirement.getJobTitle());
 		 globalVarsMap.put("professinalName", professionalName);
-		 globalVarsMap.put("professinalName", user.getUserName());
+//		 globalVarsMap.put("professinalName", user.getUserName());
  if(user.getLastName() != null && !"".equalsIgnoreCase(user.getLastName())){
 			 
 			 StringBuilder lname=new StringBuilder();
@@ -283,7 +283,7 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 			
 		 
 		 globalVarsMap.put("professinalName", professionalName);
-		 globalVarsMap.put("professinalName", user.getUserName());
+//		 globalVarsMap.put("professinalName", user.getUserName());
 		 StringBuilder loginBuilder = new StringBuilder();
 		 globalVarsMap.put("registerLink",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("referRequirementToProfessional?requirementUUID=").append(requirement.getRequirementUUID()).append("&contactUUID=").append(contactUUID).append("&referUUID=").append(referUUID).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View</div></a>").toString());
 		
