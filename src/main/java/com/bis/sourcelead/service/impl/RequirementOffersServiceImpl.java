@@ -782,8 +782,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService .getEmailScenarioByUniqueName(Constants.OFFERREJECT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
-
+		EmailScenario emailScenario = null;
+		 if(loginOrgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.OFFERREJECT_EMAIL,Constants.ENTITY_TYPE_EMAIL, loginOrgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFERREJECT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		// covert subject,body and signature
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);

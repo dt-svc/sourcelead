@@ -5,6 +5,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 
 public interface AssetDao {
 	
@@ -20,28 +21,29 @@ public interface AssetDao {
 	 */
 	Asset getAssetById(Long Id) throws Exception;
 	
-	/**
-	 * 
-	 * @param orgLocationId
-	 * @param categoryIds
-	 * @param workingStatus 
-	 * @return
-	 * @throws Exception
-	 * To get the asset list with filters.
-	 * This method used in BackOfficeRestController
-	 */
 	List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds, String workingStatus) throws Exception;
 	
 	List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception;
 	
 	ResponseList<Asset> getDynamicAssetFilterListByLocationId(Long orgLocationId,AssetDTO assetDTO) throws Exception;
 	
-	List<Asset> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception;
+	List<AssetAssign> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception;
 	
 	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception;
 	
 	public Asset validateAssetSno(String assetSno, Long orgLocationsId) throws Exception;
 	
 	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception;
+	
+	List<AssetAssign> getAssignAssetListByAssetId(Long assetId);
+	
+	AssetAssign saveAssetAssign(AssetAssign assetAssign) throws Exception;
 
+	AssetAssign getAssignAssetByAssetId(Long assetId)throws Exception;
+	
+	AssetAssign getAssignAssetById(Long id)throws Exception;
+	
+	List<AssetAssign> getAssignAssetListByShiftId(Long shiftId)throws Exception;
+
+	void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception;
 }
