@@ -157,7 +157,23 @@ public class ImmigrationRestController {
 		}
 		return model;
 	}
-
+	@RequestMapping(value = { "/myImmigration" })
+	public ModelAndView loadMyImmigration(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		model.setViewName("/immigration/myImmigration");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		try {
+			ImmigrationDashboardView immDashboardView = immigrationCommonService
+					.getImmigrationDashBoardDetails(orgLocations);
+			model.addObject("dashboardResult", immDashboardView);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
 	@RequestMapping(value = { "/loadNewPetition" })
 	public ModelAndView loadNewPetition(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
