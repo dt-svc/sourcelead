@@ -87,6 +87,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -180,6 +181,8 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private RequirementLocationsService requirementLocationsService;
+	@Autowired
+	private OrgSpocService orgSpocService;
 	
 	
 	@Override
@@ -494,8 +497,7 @@ public class RequirementServiceImpl implements RequirementService {
 			client = requirementDTO.getSelectClient().split(",")[0];
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getSelectContact())) {
-			OrgSpoc orgSpoc = new OrgSpoc();
-			orgSpoc.setId(Long.parseLong(requirementDTO.getSelectContact()));
+			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(requirementDTO.getSelectContact()));
 			requirement.setSpocId(orgSpoc);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getClientCurrencyCode())) {
@@ -832,6 +834,7 @@ public class RequirementServiceImpl implements RequirementService {
 						}
 						requirementLocationsService.saveRequirementLocations(reqLocation);
 					}
+					location.append(reqLocation.getLocation()).append("<br>");
 					UUIDList.add(savedLocationDTO.getLocationUUID());
 					}
 				}
@@ -1148,16 +1151,8 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
 		}
-		StringBuilder stringBuild = new StringBuilder();
-		if (requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
-		}
-		else if (requirement.getState() != null && !"".equalsIgnoreCase(requirement.getState())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
-		}
-		else if (requirement.getCountry() != null
-				&& !"".equalsIgnoreCase(requirement.getCountry())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).toString());
+		if (location != null) {
+			globalVarsMap.put("RequirementLocation",location.toString() );
 		}
 		else {
 			globalVarsMap.put("RequirementLocation", "--");
@@ -1296,6 +1291,7 @@ public class RequirementServiceImpl implements RequirementService {
 		if(requirement.getSpocId() != null){
 			globalVarsMap.put("clientContactname", requirement.getSpocId().getClientLocationId().getOrgLocationName());
 		}
+			globalVarsMap.put("managerName", managerUser.getFullName());
 		/*if (managerUser.getFirstName() != null && managerUser.getLastName() != null
 				&& !"".equalsIgnoreCase(managerUser.getFirstName())
 				&& !"".equalsIgnoreCase(managerUser.getLastName())) {
@@ -1378,20 +1374,29 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("RequirementTitle", "--");
 		}
-		StringBuilder stringBuild = new StringBuilder();
-		if (requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
-		}
-		else if (requirement.getState() != null && !"".equalsIgnoreCase(requirement.getState())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
-		}
-		else if (requirement.getCountry() != null
-				&& !"".equalsIgnoreCase(requirement.getCountry())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).toString());
-		}
-		else {
-			globalVarsMap.put("RequirementLocation", "--");
-		}
+		
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String location = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							location = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							location = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+			globalVarsMap.put("RequirementLocation", location);
 		StringBuilder sb = new StringBuilder();
 		if ((requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()))
 				&& (requirement.getMaxRate() != null
@@ -1614,6 +1619,26 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("requirementName", "--");
 		}
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String Reqlocation = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							Reqlocation = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							Reqlocation = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		if (location != null) {
 			globalVarsMap.put("requirementLocation", location.toString());
 		}
@@ -2719,7 +2744,6 @@ public class RequirementServiceImpl implements RequirementService {
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RELEASEMECHANISM_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RELEASEMECHANISM_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 		// covert subject,body and signature
 		
@@ -2733,7 +2757,7 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		
 		
-		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,emailScenario);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
 		// construct HTML template using required data

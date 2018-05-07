@@ -72,6 +72,7 @@ import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractsTemplate;
+import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -104,6 +105,7 @@ import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -222,6 +224,9 @@ public class CommonUtil {
 	
 	@Autowired
 	private ProjectTasksDao tasksDao;
+	
+	@Autowired
+	private EmployeeVerificationTemplateService employeeVerificationTemplateService;
 	
 	@Value("${paymentSuccessReturnEmail}")
 	private String paymentSuccessReturnEmail;
@@ -2096,6 +2101,23 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		
 		return sbuilder.append(convetredRequirementsId).toString();
 	}
+
+	public void saveDefaultEmployeeVerificationTemplate(Org org, OrgLocations orgLocations, User user, String template) {
+		 EmployeeVerificationTemplate employeeVerificationTemplate = new EmployeeVerificationTemplate();
+		 StringBuilder sb = new StringBuilder();
+		 employeeVerificationTemplate.setTemplateName(sb.append(orgLocations.getOrgLocationName()).append(" ").append(template).toString());
+		 employeeVerificationTemplate.setSignatory(org.getUser());
+		 employeeVerificationTemplate.setDescription(template);
+		 employeeVerificationTemplate.setTemplateContent(DefaultEmployeeVerificationTemplateUtil.getDefaultTemplates(template));
+		 employeeVerificationTemplate.setOrgLocationId(orgLocations);
+		 employeeVerificationTemplate.setTemplateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		 employeeVerificationTemplate.setTemplateStatus(Constants.MEMBER_ACTIVE);
+		 employeeVerificationTemplate.setUpdatedBy(user.getUserCode());
+		 employeeVerificationTemplate.setUpdatedDate(new Date());
+		 employeeVerificationTemplate.setCreatedBy(user.getUserCode());
+		 employeeVerificationTemplate.setCreatedDate(new Date());
+		 employeeVerificationTemplateService.saveDefaultEmployeeVerificationTemplate(employeeVerificationTemplate);
+	}
 	
 	public void employeeTerminationMailToProjectManager(User loginUser, ProjectMembersHistory pmh,OrgLocations orgLocations) throws Exception {
 		 
@@ -2251,17 +2273,9 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		
 		StringBuilder paymentDetailsBuilder = paymentDetailsTable(paymentHistory);
 		globalVarsMap.put("paymentDetails", paymentDetailsBuilder.toString());
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT, Constants.ENTITY_TYPE_EMAIL);
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String url = sourceleadUrl;
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				null, url, null, null);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT,new ArrayList<EmailAttachment>());
+
   }
   
   
@@ -2280,17 +2294,9 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		
 		StringBuilder paymentDetailsBuilder = paymentDetailsTable(paymentHistory);
 		globalVarsMap.put("paymentDetails", paymentDetailsBuilder.toString());
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT_DETAILS, Constants.ENTITY_TYPE_EMAIL);
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String url = sourceleadUrl;
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				null, url, org, orgLocations);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT_DETAILS,new ArrayList<EmailAttachment>());
+
 }
   
   
@@ -2338,21 +2344,14 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL);
 			   }
 			 
-			/* String emailBody = null;
-			 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
-			 try {
-				    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
-				    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
-				   // System.out.println(emailBody);
-				   
-				} catch (IOException ex) {
-				    System.err.println(ex);
-				}*/
-			
+
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
 			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
-			 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
+			 String signature = null;
+			 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+				 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+			 }
 			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data

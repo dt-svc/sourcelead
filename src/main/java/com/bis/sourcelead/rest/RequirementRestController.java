@@ -360,6 +360,7 @@ public class RequirementRestController {
 						if(isLoginUserAsAdmin.equalsIgnoreCase("true")){
 							if (status.equalsIgnoreCase("APPROVED")) {
 								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+								requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
 							} else if (status.equalsIgnoreCase("REJECTED")) {
 								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
 							}
@@ -993,10 +994,10 @@ public class RequirementRestController {
 					for(OrgRelations ocl :orgClientList){
 						/*ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
 						ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());*/
-						if(orgLocations.getId() == ocl.getLocationId().getId()){
+						if(orgLocations.getId().equals(ocl.getLocationId().getId())){
 							ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
 							ocl.setLocationID(ocl.getResponderLocationId().getId().toString());
-		        		}if(orgLocations.getId() == ocl.getResponderLocationId().getId()){
+		        		}if(orgLocations.getId().equals(ocl.getResponderLocationId().getId())){
 		        			ocl.setOrgName(ocl.getLocationId().getOrgLocationName());
 		        			ocl.setLocationID(ocl.getLocationId().getId().toString());
 		        		}

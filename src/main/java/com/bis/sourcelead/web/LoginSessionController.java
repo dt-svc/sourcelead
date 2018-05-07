@@ -196,7 +196,7 @@ public class LoginSessionController {
 			model.setViewName("login");
 			return model;
 		}
-		
+		SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
 		User user = userService.findByUserName(authentication.getName());
 		UserRole userRole = null;
 		OrgLocations orgLocations = null;
@@ -278,7 +278,7 @@ public class LoginSessionController {
 			}
 
 			SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
-			SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
+			
 			
 			if(isNullOrEmpty(orgLocations.getDateFormat()) || isNullOrEmpty(orgLocations.getGeneratedUserId())){
 				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "N");
@@ -548,7 +548,6 @@ public class LoginSessionController {
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
-			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
 			setTimeZone(request,orgLocations, model);
