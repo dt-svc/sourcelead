@@ -366,6 +366,7 @@ public class ProfessionalRequirementsController {
 		        Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		        if(null != requirement.getOrgLocationId()){
 		        	if(null != requirement.getOrgLocationId().getOrg()){
+		        		requirement.setOrgImageUrl(requirement.getOrgLocationId().getOrg().getFileUrl());
 		        		if(null != requirement.getOrgLocationId().getOrg().getOrgCode()){
 		        			requirement.setOrgcode(requirement.getOrgLocationId().getOrg().getOrgCode());	
 		        		}

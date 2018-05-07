@@ -241,7 +241,7 @@
 			<div id="timesheetDivByTab">
 				<div class="project_tabs">
 					<div id="tab-1" class="project_tabs_inn" style="display: block;">
-						<div class="timesheet_tableNew overflow_inherint">
+						<div class="timesheet_tableNew">
 						   <input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='${timesheetSubmissionDTO.maxRowCount > 0 ? timesheetSubmissionDTO.maxRowCount : 1}' />
 							<table id="timesheet" cellspacing="0" cellpadding="0">
 								<tbody>
@@ -279,7 +279,13 @@
 														         <option value='${pt.id}' selected>${pt.taskName}</option>
 														       </c:if>
 														       <c:if test="${pt.id != entry.key}">
-														          <option value='${pt.id},${pt.taskType},${pt.taskName}'>${pt.taskName}</option>
+														       <c:if test="${not empty pt.generatedId}" >
+														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
+														       </c:if>
+														        <c:if test="${empty pt.generatedId}" >
+														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'>${pt.taskName} </option>
+														       </c:if>
+														          
 														       </c:if>
 														   </c:forEach>
 														</c:if>
