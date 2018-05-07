@@ -712,7 +712,7 @@ public class InvoiceRestController {
 					inviceLine.setStartDateStr(formatter.format(inviceLine.getStartDate()));
 				}
 				if (null != inviceLine.getEndDate()) {
-					inviceLine.setEndDtaeStr(formatter.format(inviceLine.getEndDate()));
+					inviceLine.setEndDateStr(formatter.format(inviceLine.getEndDate()));
 				}
 				if (null != inviceLine.getCandidate()) {
 					if (null != inviceLine.getCandidate().getConsultantUser()) {
