@@ -25,6 +25,7 @@ import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
@@ -102,6 +103,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Autowired
 	private CandidateResumesDao candidateResumesDao;
+	
+	@Autowired
+	private UserDao userDao;
 	
 	@Value("${static.path}")
 	private String staticPath;
@@ -474,6 +478,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setOrgSpoc(orgSpoc);
 		immigration.setSpocUserId(orgSpoc.getVendorUser());
 		immigration.setCandidate(candidate);
+		if(candidate.getConsultantUser().getId() != null){
+			User candidateUser = userDao.getUserById(candidate.getConsultantUser().getId());
+			immigration.setCandidateUserId(candidateUser);
+			}
 		if(immigrationDTO.getEditMode().equalsIgnoreCase("false")){
 		immigration.setOrgLocationId(orgLocations);
 		}
