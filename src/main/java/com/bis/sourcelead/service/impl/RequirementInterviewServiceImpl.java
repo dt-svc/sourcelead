@@ -1379,32 +1379,32 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		}
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
-		globalVarsMap.put("vendorFirstName", emailMessage.getFirstName());
-		globalVarsMap.put("vendorLastName", emailMessage.getLastName());
-		globalVarsMap.put("loginUser", emailMessage.getFromName());
+		globalVarsMap.put("VendorFirstName", emailMessage.getFirstName());
+		globalVarsMap.put("VendorLastName", emailMessage.getLastName());
+		globalVarsMap.put("LoginUser", emailMessage.getFromName());
 		// globalVarsMap.put("requirementName",
 		// requirementSubmission.getRequirement().getJobTitle());
 		globalVarsMap.put("loginOrgName", loginOrgLocations.getOrgLocationName());
-		globalVarsMap.put("interviewDate", dateOfInterviewStr);
+		globalVarsMap.put("InterviewDate", dateOfInterviewStr);
 		globalVarsMap.put("interviewTime", time);
-		globalVarsMap.put("interviewType", interviewTypeValue);
+		globalVarsMap.put("InterviewType", interviewTypeValue);
 		globalVarsMap.put("Details", requirementInterview.getLocation());
 		if (requirementSubmission.getRequirement().getJobId() != null
 				&& !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobId())) {
 			StringBuilder reqsb = new StringBuilder();
-			globalVarsMap.put("requirementName", reqsb.append(requirementSubmission.getRequirement().getJobId()).append("-").append(requirementSubmission.getRequirement().getJobTitle()).toString());
+			globalVarsMap.put("RequirementName", reqsb.append(requirementSubmission.getRequirement().getJobId()).append("-").append(requirementSubmission.getRequirement().getJobTitle()).toString());
 		}
 		else {
-			globalVarsMap.put("requirementName", requirementSubmission.getRequirement().getJobTitle());
+			globalVarsMap.put("RequirementName", requirementSubmission.getRequirement().getJobTitle());
 		}
 		StringBuilder applicantNameBuilder = new StringBuilder();
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 		if (requirementSubmissionTemplateFields != null) {
 			if (requirementSubmissionTemplateFields.getLastName() != null) {
-				globalVarsMap.put("applicantName", applicantNameBuilder.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+				globalVarsMap.put("ApplicantName", applicantNameBuilder.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
 			}
 			else {
-				globalVarsMap.put("applicantName", applicantNameBuilder.append(requirementSubmissionTemplateFields.getFirstName()).toString());
+				globalVarsMap.put("ApplicantName", applicantNameBuilder.append(requirementSubmissionTemplateFields.getFirstName()).toString());
 			}
 		}
 		// setting the Recipient information
