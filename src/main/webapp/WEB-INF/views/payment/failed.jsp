@@ -8,7 +8,12 @@
         <div class="pull-left">
             <h2>Payment Failed</h2>
         </div>
-        <div class="pull-right brud-crum">Home &raquo; Payment Failed</div>
+        <div class="pull-right brud-crum">
+				<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
+					href="<c:url value='/app/payablesList'/>"> Bills List</a>
+				&raquo; Payment Failed
+			</div>
+			
     </section>
     <div class="scontent-new clearfix">
         <div class="clearfix">
