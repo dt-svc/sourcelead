@@ -13,7 +13,9 @@ public class LeaveTypeDTO {
 	private String hoursType;
 	private String billingType;
 	private String applicableToUsers;
+	@Required(desc = "Department", dependsOn="applicableToUsers",parentValue="N")
 	private String department;
+	@Required(desc = "Roles", dependsOn="applicableToUsers",parentValue="N")
 	private List<String> roles;
 	private String carryforward;
 	private String noOfLeavesPerYear;
@@ -29,7 +31,7 @@ public class LeaveTypeDTO {
 	private String loginUserId;
 	private long leaveTypeId;
 	private String deleteReason;
-	@Required(desc = "Color Code")
+	@Required(desc = "Color Code",dependsOn="leaveEffective",parentValue={"All Employees","Experienced"})
 	private String colorCode;
 	private int approvedCount;
 	private int pendingCount;
@@ -41,9 +43,13 @@ public class LeaveTypeDTO {
 	private String period;
 	@Required(desc = "Leave Effective")
 	private String leaveEffective;
+	@Required(desc = "New Joinee",dependsOn="leaveEffective",parentValue="Experienced")
 	private String newJoinee;
+	@Required(desc = "Min Days",dependsOn="leaveEffective",parentValue="Experienced")
 	private String experiencedType;
+	@Required(desc = "Min Days",dependsOn="leaveEffective",parentValue="Experienced")
 	private String experiencedDuration;
+	@Required(desc = "Min Days",dependsOn="leaveEffective",parentValue="Experienced")
 	private String experiencedApplicableDays;
 	private String reasonRequired;
 	private String attachmentRequired;
@@ -57,7 +63,7 @@ public class LeaveTypeDTO {
 	private String minDays;
 	@Required(desc = "Max Days", dependsOn="leaveDuration",parentValue="Y")
 	private String maxDays;
-	@Required(desc = "No. of Days")
+	@Required(desc = "No. of Days",dependsOn="leaveEffective",parentValue="All Employees")
 	private String noOfDays;
 	private String leaveTypeUUID;
 	
