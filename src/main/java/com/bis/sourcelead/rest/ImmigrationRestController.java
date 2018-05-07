@@ -40,6 +40,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateTaskDTO;
+import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -161,17 +162,7 @@ public class ImmigrationRestController {
 	public ModelAndView loadMyImmigration(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/myImmigration");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		try {
-			ImmigrationDashboardView immDashboardView = immigrationCommonService
-					.getImmigrationDashBoardDetails(orgLocations);
-			model.addObject("dashboardResult", immDashboardView);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		return model;
 	}
 	@RequestMapping(value = { "/loadNewPetition" })
@@ -284,7 +275,37 @@ public class ImmigrationRestController {
 		System.out.println("after controller  getAllImmigartionList  --> ");
 		return immigrationListDTOList;
 	}
-
+	@RequestMapping(value = "/getMyImmigrationList")
+	public @ResponseBody ResponseList<MyImmigrationViewDTO> getMyImmigrationList(
+			MyImmigrationViewDTO immigrationListDTO,
+			 HttpServletRequest request) {
+		ResponseList<MyImmigrationViewDTO> immigrationListDTOList = null;
+		System.out.println("inisde controller  getMyImmigrationList  --> ");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			String[] tableColumns = { "currUscisStatus", "generatedId", "petitionType", "country", "firstName", "email",
+					"phone", "openDate",  "lcaStartDate", "lcaEndDate" };// should be
+			// entity names
+			int sortColumnIndex = 0; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (immigrationListDTO.getOrder() != null && !immigrationListDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(immigrationListDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = immigrationListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+																					// direction
+				// of the sorting.
+			}
+			immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			immigrationListDTO.setSortOrder(sortColumnOrder);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			immigrationListDTO.setOrgLocationId(orgLocations.getId());
+			immigrationListDTOList = immigrationCommonService.getMyImmigrationsList(immigrationListDTO , orgLocations, loginUser.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("after controller  getAllImmigartionList  --> ");
+		return immigrationListDTOList;
+	}
 	@RequestMapping(value = { "/getPetitionTemplateEmployers" })
 	public List<CandidateEmployerDTO> getPetitionTemplateEmployers(HttpServletRequest request) {
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");

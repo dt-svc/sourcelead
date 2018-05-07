@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
@@ -109,5 +110,7 @@ public interface ImmigrationCommonDao {
 	Integer getTableRecordCountByCandidateId(String entityName, Long candidateId, String condition);
 
 	Immigration updateImigrationDetatils(Immigration immigration);
+
+	ResponseList<MyImmigrationViewDTO> getMyImmigrationsList(MyImmigrationViewDTO immigrationListDTO,	OrgLocations orgLocations, Long userId);
 
 }
