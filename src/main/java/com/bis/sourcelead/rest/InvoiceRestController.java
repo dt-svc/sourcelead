@@ -450,6 +450,9 @@ public class InvoiceRestController {
 		for (Invoice invoice : invoiceFilterList) {
 			BillingDTO billingDto = new BillingDTO();
 			boolean isInvoiceDueDate = false;
+                        if(invoice.getPaymentAccount() != null) {
+				invoice.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null));
+			}
 			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(invoice.getOrgRelationID().getId());
 			if (orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
 				billingDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
@@ -498,6 +501,11 @@ public class InvoiceRestController {
 			}
 			if (null != invoice.getRejectReason()) {
 				billingDto.setRejectReason(invoice.getRejectReason());
+			}
+			if(invoice.getParentInvoiceId() != null) {
+				if(invoice.getParentInvoiceId().getPaymentAccount() != null) {
+					billingDto.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getParentInvoiceId().getPaymentAccount().getId(), null));
+				}
 			}
 			billingDto.setInvoiceUUID(invoice.getInvoiceUUID());
 			billingDto.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
@@ -704,7 +712,7 @@ public class InvoiceRestController {
 					inviceLine.setStartDateStr(formatter.format(inviceLine.getStartDate()));
 				}
 				if (null != inviceLine.getEndDate()) {
-					inviceLine.setEndDtaeStr(formatter.format(inviceLine.getEndDate()));
+					inviceLine.setEndDateStr(formatter.format(inviceLine.getEndDate()));
 				}
 				if (null != inviceLine.getCandidate()) {
 					if (null != inviceLine.getCandidate().getConsultantUser()) {
@@ -1521,16 +1529,18 @@ public class InvoiceRestController {
 	 */
 	@RequestMapping(value = "/generateAutomaticInvoice", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Integer> generateAutomaticInvoice(@RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request) throws Exception
+	public Response<InvoiceDTO> generateAutomaticInvoice(@RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request) throws Exception
 	{
-		Response<Integer> response = new Response<>();
+		Response<InvoiceDTO> response = new Response<>();
+		InvoiceDTO invoiceDTO = new InvoiceDTO();
 //		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Integer savedInvoiceCount = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user, contractType);
 //		resultJson = commonUtil.toJSON(savedInvoiceCount);
-		response.setObject(savedInvoiceCount);
+		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
+		response.setObject(invoiceDTO);
 		return response;
 	}
 	

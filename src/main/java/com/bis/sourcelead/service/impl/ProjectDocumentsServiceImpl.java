@@ -241,7 +241,12 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		globalVarsMap.put("body", projectsDocumentsDTO.getMessage());
 		globalVarsMap.put("subject", projectsDocumentsDTO.getSubject());
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_SEND_PROJECT_DOCUMENTS, Constants.ENTITY_TYPE_EMAIL);
+		EmailScenario emailScenario = null;
+		 if(loginOrgLocation != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.MAIL_SEND_PROJECT_DOCUMENTS,Constants.ENTITY_TYPE_EMAIL, loginOrgLocation.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_SEND_PROJECT_DOCUMENTS,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		// covert subject,body and signatur
 		String subject = emailScenerioUtil.bulidSubject(projectsDocumentsDTO.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
