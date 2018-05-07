@@ -834,6 +834,7 @@ public class RequirementServiceImpl implements RequirementService {
 						}
 						requirementLocationsService.saveRequirementLocations(reqLocation);
 					}
+					location.append(reqLocation.getLocation()).append("<br>");
 					UUIDList.add(savedLocationDTO.getLocationUUID());
 					}
 				}
@@ -1150,16 +1151,8 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
 		}
-		StringBuilder stringBuild = new StringBuilder();
-		if (requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
-		}
-		else if (requirement.getState() != null && !"".equalsIgnoreCase(requirement.getState())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
-		}
-		else if (requirement.getCountry() != null
-				&& !"".equalsIgnoreCase(requirement.getCountry())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).toString());
+		if (location != null) {
+			globalVarsMap.put("RequirementLocation",location.toString() );
 		}
 		else {
 			globalVarsMap.put("RequirementLocation", "--");
@@ -1647,7 +1640,7 @@ public class RequirementServiceImpl implements RequirementService {
 				e.printStackTrace();
 			}
 		if (location != null) {
-			globalVarsMap.put("requirementLocation", Reqlocation);
+			globalVarsMap.put("requirementLocation", location.toString());
 		}
 		else {
 			globalVarsMap.put("requirementLocation", "--");
