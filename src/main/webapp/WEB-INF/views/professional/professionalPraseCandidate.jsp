@@ -451,9 +451,8 @@
     --%>
 <script type="text/javascript">
 	function storeCandidate() {
-		var candidateId = '${candidateId}'
+		var candidateId = '${candidateId}';
 		rateValidations();
-		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',

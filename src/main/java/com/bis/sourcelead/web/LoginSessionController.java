@@ -548,7 +548,7 @@ public class LoginSessionController {
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
-			
+			model.addObject("candidateId", candidate.getId());
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
 			setTimeZone(request,orgLocations, model);
