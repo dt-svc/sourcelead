@@ -353,9 +353,23 @@
 		              <li class="${sessionData.nav == 'Pay' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="Pay"><span><i class="fa fa-usd"></i></span><i class="subMenu">Pay</i></a></li>
 		          	</c:if>	
 					<c:if test="${userTabs.tabName == 'Immigration'}">
-			
-          				 <li class="${sessionData.nav == 'Immigration' || sessionData.nav == 'ImmigrationSender' || sessionData.nav == 'ImmigrationRecipient' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/immigration/viewImmigrationList'/>" title="Immigration"><span><i class="fa fa-plane"></i></span><i class="subMenu">Immigration</i></a></li>			
-	       			</c:if>
+
+							<li><a href="#" class="expencesLi" title="Immigration">
+									<span><i class="fa fa-plane"></i></span> <i class="subMenu">Immigration</i>
+									<i class="fa fa-fw fa-caret-down"></i>
+							</a>
+
+								<ul class="collapses" style="display: none">
+									<li><a
+										href="<c:url value='${appPath}/immigration/myImmigration'/>"
+										title="My Immigration">My Immigration</a></li>
+									<li><a
+										href="<c:url value='${appPath}/immigration/viewImmigrationList'/>"
+										title="Immigrations">Immigrations</a></li>
+								</ul>
+								
+								</li>
+						</c:if>
           </c:forEach>
             
           	
