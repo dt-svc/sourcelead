@@ -450,6 +450,9 @@ public class InvoiceRestController {
 		for (Invoice invoice : invoiceFilterList) {
 			BillingDTO billingDto = new BillingDTO();
 			boolean isInvoiceDueDate = false;
+                        if(invoice.getPaymentAccount() != null) {
+				invoice.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null));
+			}
 			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(invoice.getOrgRelationID().getId());
 			if (orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
 				billingDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
@@ -498,6 +501,11 @@ public class InvoiceRestController {
 			}
 			if (null != invoice.getRejectReason()) {
 				billingDto.setRejectReason(invoice.getRejectReason());
+			}
+			if(invoice.getParentInvoiceId() != null) {
+				if(invoice.getParentInvoiceId().getPaymentAccount() != null) {
+					billingDto.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getParentInvoiceId().getPaymentAccount().getId(), null));
+				}
 			}
 			billingDto.setInvoiceUUID(invoice.getInvoiceUUID());
 			billingDto.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
