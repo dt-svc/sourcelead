@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLocationInformationDetails;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.RolesService;
@@ -76,6 +78,9 @@ public class CompanyOnboardController {
 	
 	@Autowired
 	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	
+	@Autowired
+	OrgLocationInformationDetailsService orgLocationInformationDetailsService;
 	
 	
 	
@@ -149,6 +154,44 @@ public class CompanyOnboardController {
 				model.addObject("statesList", states);
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				model.setViewName("onboard/companyOnboardFederalAndStateTaxes");
+			}else {
+				model.setViewName("registration/persmissionDenied");
+			}
+			
+			return model;
+		}
+		
+		
+		@RequestMapping(value = "/companyOnboardInformationDetails")
+		public ModelAndView companyOnboardInformationDetails(HttpServletRequest request) throws Exception  {
+			
+			ModelAndView model = new ModelAndView();  
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded()) && orgLocations.getIsCompanyOnboarded().equalsIgnoreCase("N")) {
+				OrgLocationInformationDetails informationDetails = orgLocationInformationDetailsService.getOrgLocationInformationDetailsByOrgLocationId(orgLocations.getId());
+				if(informationDetails != null) {
+					
+					if(informationDetails.getIncorporationDate() != null) {
+						informationDetails.setIncorporationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),informationDetails.getIncorporationDate()));
+					}
+					
+					if(informationDetails.getPfRegistrationDate() != null) {
+						informationDetails.setPfRegistrationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),informationDetails.getPfRegistrationDate()));
+					}
+					
+					if(informationDetails.getEsiRegistrationDate() != null) {
+						informationDetails.setEsiRegistrationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),informationDetails.getEsiRegistrationDate()));
+					}
+					
+					if(informationDetails.getPtRegistrationDate() != null) {
+						informationDetails.setPtRegistrationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),informationDetails.getPtRegistrationDate()));
+					}
+					
+					model.addObject("informationDetails", informationDetails);
+				}
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				model.setViewName("onboard/companyOnboardInformationDetails");
 			}else {
 				model.setViewName("registration/persmissionDenied");
 			}
