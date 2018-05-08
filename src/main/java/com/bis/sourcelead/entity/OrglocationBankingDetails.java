@@ -53,7 +53,7 @@ public class OrglocationBankingDetails implements Serializable{
 	@Column(name = "BANK_NAME")
 	private String bankName;
 	
-	@Column(name = "BANK_ADDRESS")
+	@Column(name = "BANK_ADDRESS", columnDefinition = "TEXT default NULL")
 	private String bankAddress;
 	
 	@Column(name = "UUID")
