@@ -92,7 +92,9 @@
 		                  <input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
 		                  <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		                    <c:forEach var="optionValue" items="${customForm.optionData}">
+		     	 				<span class="mr">
 		     	 				<input type="checkbox" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" value="${optionValue.option}" ${fn:contains(dataMap.value[1],optionValue.option) ? 'checked="checked"':''} ${customForm.isRequired == 1 ? 'data-validation="required"':''} placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}">${optionValue.option}
+		     	 			</span>
 		     	 			</c:forEach>
 		                    </div>
 		                </div>
@@ -106,9 +108,9 @@
 		                <div class="checkBox">
 		                  <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		                    <c:forEach var="optionValue" items="${customForm.optionData}">
-			     	 			<span class="mr">
+			     	 		<div class="clearfix">
 			     	 			<input type="checkbox" value="${optionValue.option}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" ${customForm.isRequired == 1 ? 'data-validation="required"':''} field-name="${customForm.labelName}">${optionValue.option}<br>
-			     	 		</span>
+			     	 		</div>
 			     	 		</c:forEach>
 		                </div>
 		             </div>
@@ -199,7 +201,7 @@
 							 </c:otherwise>
 							</c:choose>
 				     	 	
-				     	 	<textarea rows="4" cols="50" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" ${dataValidationConditiontextArea}  ${customForm.isRequired == 1 ? 'data-check=true':'false'}>${dataMap.value[1]}</textarea>
+				     	 	<textarea rows="2" cols="50" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" ${dataValidationConditiontextArea}  ${customForm.isRequired == 1 ? 'data-check=true':'false'}>${dataMap.value[1]}</textarea>
 				    	</div>
 			        </c:if>
 		        </c:forEach>

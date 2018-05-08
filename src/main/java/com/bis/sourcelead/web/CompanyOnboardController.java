@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
@@ -208,14 +209,11 @@ public class CompanyOnboardController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
 			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded()) && orgLocations.getIsCompanyOnboarded().equalsIgnoreCase("N")) {
-				OrglocationBankingDetails bankingDetails = orglocationBankingDetailsService.getOrglocationBankingDetailsByOrgLocationId(orgLocations.getId());
-				if(bankingDetails != null) {
-					model.addObject("uuid", bankingDetails.getUuid());
-					SourceLeadSessionManager.setSessionAttribute(request, "bankingDetails", bankingDetails);
-				}else {
-					SourceLeadSessionManager.setSessionAttribute(request, "bankingDetails", bankingDetails);
-				}
+				List<OrgLocationBankingDetailsDTO> bankingDetailsDTOList =  orglocationBankingDetailsService.getOrglocationBankingDetailsListByOrgLocationId(orgLocations.getId());
+				model.addObject("bankingDetailsDTOList", bankingDetailsDTOList);
+				model.addObject("bankingDetailsDTOListSize", bankingDetailsDTOList.size());
 				model.addObject("sourceleadUrl", sourceleadUrl);
+				
 				model.setViewName("onboard/companyOnboardBankingDetails");
 			}else {
 				model.setViewName("registration/persmissionDenied");

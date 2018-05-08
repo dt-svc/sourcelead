@@ -85,7 +85,7 @@ function closeCertificatePopup(){
      2.parameter : candidateId,csrf.token
      3.ajax url implementation in CandidateEmployersRestController.
 --%>
-<script type="text/javascript">
+<script type="text/javascript">	
 	function candidateEmployersStore(candidateId) {
 		var validationSettings = {
 			errorMessagePosition : 'element',
@@ -108,21 +108,17 @@ function closeCertificatePopup(){
 			var EMdata = endMonth.split('&');
 			var eMonthNumber = EMdata[0];
 			
-			 if( (startMonth > endMonth) && (startYear == endYear) ){
+			var currentYear = new Date().getFullYear();
+			if((startMonth > endMonth) && (startYear == endYear)) {
 				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
-		
-			}
-			
-		     else if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')){
+			} else if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')) {
 				document.getElementById("endYearValidation").style.display="block";
 				$("#endYearValidation").empty().append("End year should be greater than Start year") ; 
-				
-			}
-			
-			else{
-			$("#candidateEmployersAdd").attr("disabled", "disabled");
-			$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
-	        $.post(sourceleadUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
+			} else if(startYearFlag && endYearFlag) {
+				document.getElementById("endYearValidation").style.display="none";
+				$("#candidateEmployersAdd").attr("disabled", "disabled");
+				$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
+	        	$.post(sourceleadUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
 		        	if (result && result.response === "INVALID_DATA") {
 					    $("#update_candidate").removeAttr("disabled");
 					    $("#update_candidate").removeAttr('button').val('Save');
@@ -194,6 +190,7 @@ function closeCertificatePopup(){
 --%>
 
 <script>
+	var startYearFlag = true ,endYearFlag = true;
 	function addExperience(candidateId) {
 
 		var result = "";
@@ -243,6 +240,7 @@ function closeCertificatePopup(){
 		result = result + '	                   </div>';
 		result = result + '	                   <div class="col-md-6 padding_left" id="startYearDiv">';
 		result = result	+ '	                   <input type="text" max class="form-control input-sm" value="" id="startYear" name="startYear"  placeholder="Enter Year"  field-name="Start Year" data-validation="validate_Space validate_extno validate_length length4-4" data-validation-optional="true"  >';
+		result = result + '	                <div><p id="startYearValidation" class="text-danger small" style="display: none"></p>';
 		result = result + '	                 </div>';
 		result = result + '	                 </div>';
 		
@@ -300,7 +298,7 @@ function closeCertificatePopup(){
 		/* $('html').click(function() {
 			$(".edit-details").removeClass("edit-details-active");
 		}); */
-
+		applyKeyEventsToYears();	
 	}
 </script>
 
@@ -437,6 +435,7 @@ function closeCertificatePopup(){
 					}else{
 						result = result	+ '<input type="text" max class="form-control input-sm" value="" id="startYear" name="startYear"   placeholder="Enter Year"  field-name="Start Date" data-validation="required" data-validation-optional="true" >';
 					}
+					result = result + '	                <div><p id="startYearValidation" class="text-danger small" style="display: none"></p>';
 					result = result + '</div>';
 					result = result + '</div>';
 
@@ -541,14 +540,13 @@ function closeCertificatePopup(){
 					iscurrentPositionEdit();
 
 					$(".edit-details").toggleClass("edit-details-active");
-					$(".close-div")	.click(function() {
-										$(this).parent("div.edit-details")
-												.removeClass("edit-details-active");
-									});
-					$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details")
-							.click(function(e) {
-								e.stopPropagation();
-							});
+					$(".close-div").click(function() {
+						$(this).parent("div.edit-details").removeClass("edit-details-active");
+					});
+					$(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e) {
+						e.stopPropagation();
+					});
+					applyKeyEventsToYears();
 					/* $('html').click(function() {
 								$(".edit-details").removeClass(
 										"edit-details-active");
@@ -569,6 +567,28 @@ function closeCertificatePopup(){
      1.usage     :  used in candidateEmployersStore function  line 57
 --%>
 <script type="text/javascript">
+function applyKeyEventsToYears() {
+	$("#startYear").keyup(function() {
+		if($(this).val() > new Date().getFullYear()) {
+			$("#startYearValidation").html("Start year shouldn't be greater than Current year");
+			$("#startYearValidation").show();
+			startYearFlag = false;
+		} else {
+			$("#startYearValidation").hide();
+			startYearFlag = true;
+		}
+	});
+	$("#endYear").keyup(function() {
+		if($(this).val() > new Date().getFullYear()) {
+			$("#endYearValidation").html("End year shouldn't be greater than Current year");
+			$("#endYearValidation").show();
+			endYearFlag = false;
+		} else {
+			$("#endYearValidation").hide();
+			endYearFlag = true;
+		} 
+	});
+}
 	(function($) {
 		$.fn.serializeFormJSON = function() {
 
@@ -841,18 +861,13 @@ function removeEmployer(candidateemployerId, candidateId){
 			var EMdata = endMonth.split('&');
 			var eMonthNumber = EMdata[0];
 			
-			 if( (startMonth > endMonth) && (startYear == endYear) ){
-				
+			if((startMonth > endMonth) && (startYear == endYear)) {
 				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
-		
-			}
-			
-			 else if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')){
+			} else if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')) {
 				document.getElementById("endYearValidation").style.display="block";
 				$("#endYearValidation").empty().append("End year should be greater than Start year") ; 
-				
-			}
-			else{
+			} else if(startYearFlag && endYearFlag) {
+				document.getElementById("endYearValidation").style.display="none";
 				$.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(result) {
 					if (result && result.response === "INVALID_DATA") {
 					    $("#update_candidate").removeAttr("disabled");
@@ -882,18 +897,16 @@ function removeEmployer(candidateemployerId, candidateId){
 					} else {
 					    showError("Operation failed, please try again");
 					}
-	        });
+	        	});
 			}
 			return true;
 		} else {
 			return false;
 		}
-		$('body').on('blur','#candidateExperianceEdit_form',
-				function() {
-					$("#candidateExperianceEdit_form").showHelpOnFocus();
-					$("#candidateExperianceEdit_form").validateOnBlur(false,
-							validationSettings);
-				});
+		$('body').on('blur','#candidateExperianceEdit_form', function() {
+			$("#candidateExperianceEdit_form").showHelpOnFocus();
+			$("#candidateExperianceEdit_form").validateOnBlur(false, validationSettings);
+		});
 	}
 </script>
 
@@ -905,20 +918,20 @@ function removeEmployer(candidateemployerId, candidateId){
 --%>
 <script>
 	function iscurrentPosition() {
-
 		var currentposition = document.getElementById("isCurrentPosition").checked;
-			 
 		if (currentposition) {
 			document.getElementById("endDateDiv").style.display = 'none';
 			$('#endYear').removeAttr('data-validation');
 			$('#endMonth').removeAttr('data-validation');
+			$("#endMonth").val("");
+			$('#endYear').val("");
+			document.getElementById("endYearValidation").style.display="none";
+			endYearFlag = true;
 		} else if (document.getElementById("endDateDiv").style.display == 'none') {
-			
 			document.getElementById("endDateDiv").style.display = 'block';
 			/* $("#endYear").attr("data-validation", "required");
 			$("#endMonth").attr("data-validation", "required"); */
 		}
-
 	}
 </script>
 
@@ -929,32 +942,29 @@ function removeEmployer(candidateemployerId, candidateId){
 --%>
 <script>
 	function iscurrentPositionEdit() {
-		
 		var currentposition = document.getElementById("isCurrentPositionEdit").checked;
 		if (currentposition) {
-			$("#urrentPositionEdit" ).val( 'Y' );
+			$("#isCurrentPositionEdit").val( 'Y' );
 			document.getElementById("endDateEditDiv").style.display = 'none';
-			$('#endYearEdit').removeAttr('data-validation');
+			$('#endYear').removeAttr('data-validation');
 			$('#endMonth').removeAttr('data-validation');
+			$("#endMonth").val("");
+			$('#endYear').val("");
+			document.getElementById("endYearValidation").style.display="none";
+			endYearFlag = true;
 		}else {
-			
 			document.getElementById("endDateEditDiv").style.display = '';
 		/* 	$("#endYearEdit").attr("data-validation", "required");
 			$("#endMonthEdit").attr("data-validation", "required"); */
 			
 			 var exisitngEndYear;
-			 if ($('#exisitngEndYear').length)
-			 {
+			 if ($('#exisitngEndYear').length) {
 				 exisitngEndYear = document.getElementById("exisitngEndYear").value; 
-			 }
-			 else
-			 {
+			 } else {
 				 exisitngEndYear = '';
 				 $("#endYearEdit" ).val( '' );
 			 }
-			 
 		}
-
 	}
 </script>
 <%-- 
