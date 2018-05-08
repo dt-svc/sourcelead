@@ -201,7 +201,7 @@
 							 </c:otherwise>
 							</c:choose>
 				     	 	
-				     	 	<textarea rows="4" cols="50" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" ${dataValidationConditiontextArea}  ${customForm.isRequired == 1 ? 'data-check=true':'false'}>${dataMap.value[1]}</textarea>
+				     	 	<textarea rows="2" cols="50" class="form-control" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" ${dataValidationConditiontextArea}  ${customForm.isRequired == 1 ? 'data-check=true':'false'}>${dataMap.value[1]}</textarea>
 				    	</div>
 			        </c:if>
 		        </c:forEach>
