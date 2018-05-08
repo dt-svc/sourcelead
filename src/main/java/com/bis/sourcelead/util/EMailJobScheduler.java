@@ -1923,13 +1923,13 @@ public class EMailJobScheduler {
 						 
 						 StringBuilder experience = new StringBuilder();
 						 
-						 if(!isNullOrEmpty(requirementIndex.getMinExperience()) && !isNullOrEmpty(requirementIndex.getMaxExperience())){
+						 if(requirementIndex.getMinExperience() !=  null && requirementIndex.getMaxExperience() != null){
 							 experience = experience.append("(").append(requirementIndex.getMinExperience()).append("-").append(requirementIndex.getMaxExperience()).append(" Years").append(")");
 						 }
-						 else if(!isNullOrEmpty(requirementIndex.getMinExperience()) && isNullOrEmpty(requirementIndex.getMaxExperience())){
+						 else if(requirementIndex.getMinExperience() !=  null && requirementIndex.getMaxExperience() == null){
 							 experience = experience.append("(").append(requirementIndex.getMinExperience()).append(" Years").append(")");
 						 }
-						 else if(isNullOrEmpty(requirementIndex.getMinExperience()) && !isNullOrEmpty(requirementIndex.getMaxExperience())){
+						 else if(requirementIndex.getMinExperience() ==  null && requirementIndex.getMaxExperience() != null){
 							 experience = experience.append("(").append(requirementIndex.getMaxExperience()).append(" Years").append(")");
 						 }
 						 
