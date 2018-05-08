@@ -16,6 +16,9 @@ public class OrgLocationBankingDetailsDTO {
 	@Required(desc="accountNumber")
 	private String accountNumber;
 	
+	@Required(desc="bankName")
+	private String bankName;
+	
 	private String uuid;
 	
 	
@@ -58,5 +61,13 @@ public class OrgLocationBankingDetailsDTO {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
 	}
 }
