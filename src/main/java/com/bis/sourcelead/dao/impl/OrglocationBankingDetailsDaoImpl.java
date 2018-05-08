@@ -110,6 +110,7 @@ public class OrglocationBankingDetailsDaoImpl implements OrglocationBankingDetai
 				bankingDetailsDTO.setBankName(bankingDetails.getBankName());
 				bankingDetailsDTO.setRoutingNumber(bankingDetails.getRoutingNumber());
 				bankingDetailsDTO.setUuid(bankingDetails.getUuid());
+				bankingDetailsDTO.setBankAddress(bankingDetails.getBankAddress());
 				bankingDetailsDTOList.add(bankingDetailsDTO);
 			}
 		}
