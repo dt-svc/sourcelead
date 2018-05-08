@@ -25,6 +25,7 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.FederalAndStateTaxDTO;
 import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
+import com.bis.sourcelead.dto.OrgLocationIndiaBankingDetailsDTO;
 import com.bis.sourcelead.dto.OrgLocationInformationDetailsDTO;
 import com.bis.sourcelead.dto.OrglocationOnboardDocumentsDTO;
 import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
@@ -35,12 +36,14 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocationInformationDetails;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
+import com.bis.sourcelead.entity.OrglocationIndiaBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
 import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.entity.OrglocationStateTax;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgLocationIndiaBankingDetailsService;
 import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
@@ -83,6 +86,9 @@ public class CompanyOnboardRestController {
 	
 	@Autowired
 	OrgLocationInformationDetailsService orgLocationInformationDetailsService;
+	
+	@Autowired
+	OrgLocationIndiaBankingDetailsService orglocationIndiaBankingDetailsService;
 	
 	@RequestMapping(value = "/saveOrgLocationsFederalAndStatesTax", method = RequestMethod.POST)
 	@ResponseBody
@@ -231,7 +237,6 @@ public class CompanyOnboardRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		OrglocationBankingDetails bankingDetails = null;
-		String result = "invalid";
 		
 		try {
 			if(user !=null){
@@ -281,6 +286,68 @@ public class CompanyOnboardRestController {
 	
 	
 	
+	@RequestMapping(value = "/saveOrgLocationsIndiaBankingDetails", method = RequestMethod.POST)
+	@ResponseBody
+	public  Response<String> saveOrgLocationsIndiaBankingDetails(OrgLocationIndiaBankingDetailsDTO bankingDetailsDTO, HttpServletRequest request) throws Exception
+	{
+		Response<String> response=new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrglocationIndiaBankingDetails bankingDetails = null;
+		
+		try {
+			if(user !=null){
+			if(Validator.validate(bankingDetailsDTO)){
+				if(bankingDetailsDTO.getUuid() != null && !bankingDetailsDTO.getUuid().isEmpty()) {
+				bankingDetails = orglocationIndiaBankingDetailsService.getOrglocationIndiaBankingDetailsByUUID(bankingDetailsDTO.getUuid());
+			}else {
+				bankingDetails = new OrglocationIndiaBankingDetails();
+				bankingDetails.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			}
+			bankingDetails.setOrgLocationId(loginOrgLocation);
+			bankingDetails.setAccountName(bankingDetailsDTO.getAccountName());
+			bankingDetails.setBankAddress(bankingDetailsDTO.getBankAddress());
+			bankingDetails.setAccountNumber(bankingDetailsDTO.getAccountNumber());
+			bankingDetails.setBankName(bankingDetailsDTO.getBankName());
+			bankingDetails.setIfscCode(bankingDetailsDTO.getIfscCode());
+			
+			if(StringUtils.isNotBlank(bankingDetailsDTO.getBsrNumber())) {
+				bankingDetails.setBsrNumber(bankingDetailsDTO.getBsrNumber());
+			}
+			if(StringUtils.isNotBlank(bankingDetailsDTO.getMicrCode())) {
+				bankingDetails.setMicrCode(bankingDetailsDTO.getMicrCode());
+			}
+			
+			bankingDetails.setStatus(Constants.RECORD_ACTIVE);
+			bankingDetails.setCreatedBy(user);
+			bankingDetails.setUpdatedBy(user);
+			bankingDetails.setCreatedDate(commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), new Date()));
+			bankingDetails.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), new Date()));
+			orglocationIndiaBankingDetailsService.saveOrgLocationIndiaBankingDetails(bankingDetails);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+			}
+			else{
+				response.setObject("DataMissing");
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+			}
+			else{
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+    			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+	
+		return response;
+	}
+	
+	
+	
 	
 	@RequestMapping(value = "/getOrgLocationsBankingDetailsByUUId", method = RequestMethod.GET)
 	@ResponseBody
@@ -306,6 +373,32 @@ public class CompanyOnboardRestController {
 	}
 	
 	
+	
+	@RequestMapping(value = "/getOrgLocationsIndiaBankingDetailsByUUId", method = RequestMethod.GET)
+	@ResponseBody
+	public  OrgLocationIndiaBankingDetailsDTO getOrgLocationsIndiaBankingDetailsByUUId(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) throws Exception
+	{
+		OrglocationIndiaBankingDetails bankingDetails = null;
+		OrgLocationIndiaBankingDetailsDTO bankingDetailsDTO = new OrgLocationIndiaBankingDetailsDTO();
+		if(StringUtils.isNotBlank(uuid)) {
+			bankingDetails = orglocationIndiaBankingDetailsService.getOrglocationIndiaBankingDetailsByUUID(uuid);
+			if(bankingDetails != null) {
+				bankingDetailsDTO.setBankName(bankingDetails.getBankName());
+				bankingDetailsDTO.setAccountName(bankingDetails.getAccountName());
+				bankingDetailsDTO.setAccountNumber(bankingDetails.getAccountNumber());
+				bankingDetailsDTO.setBankAddress(bankingDetails.getBankAddress());
+				bankingDetailsDTO.setIfscCode(bankingDetails.getIfscCode());
+				bankingDetailsDTO.setBsrNumber(bankingDetails.getBsrNumber());
+				bankingDetailsDTO.setMicrCode(bankingDetails.getMicrCode());
+				bankingDetailsDTO.setUuid(bankingDetails.getUuid());
+			}
+		}
+		
+	
+		return bankingDetailsDTO;
+	}
+	
+	
 	@RequestMapping(value = "/deleteOnboardBankingDetails", method = RequestMethod.POST)
 	public @ResponseBody Response<String> deleteOnboardBankingDetails(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) throws Exception
 	{
@@ -318,6 +411,36 @@ public class CompanyOnboardRestController {
 					OrglocationBankingDetails bankingDetails = orglocationBankingDetailsService.getOrglocationBankingDetailsByUUID(uuid);
 					if(bankingDetails != null) {
 						orglocationBankingDetailsService.deleteOrglocationBankingDetails(bankingDetails);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+		
+	}
+	
+	@RequestMapping(value = "/deleteIndiaOnboardBankingDetails", method = RequestMethod.POST)
+	public @ResponseBody Response<String> deleteIndiaOnboardBankingDetails(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) throws Exception
+	{
+		
+		Response<String> response=new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			if (user != null) {
+				if(uuid != null && !uuid.isEmpty()) {
+					OrglocationIndiaBankingDetails bankingDetails = orglocationIndiaBankingDetailsService.getOrglocationIndiaBankingDetailsByUUID(uuid);
+					if(bankingDetails != null) {
+						orglocationIndiaBankingDetailsService.deleteOrglocationIndiaBankingDetails(bankingDetails);
 						response.setResponse(Result.SUCCESS.name());
 						response.setResponseMessage(Result.SUCCESS.getValue());
 					}

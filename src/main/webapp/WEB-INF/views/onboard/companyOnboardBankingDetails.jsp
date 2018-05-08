@@ -291,14 +291,14 @@ right: 15px;
 		result = result + '	    <div class="row">';
 		
 		result = result + '	    <div class="clearfix mb10 col-md-6">';
-		result = result + '	      <label class="clearfix">Bank Name</label>';
+		result = result + '	      <label class="clearfix">Bank Name<span class="text-danger">&nbsp;*</span></label>';
 		result = result + '	      <div class="">';
 		result = result + '	        <input type="text" class="form-control inlineField"  id="bankName" name="bankName" field-name="Bank Name"  data-validation="required validate_Space validate_length length2-250">';
 		result = result + '	      </div>';
 		result = result + '	    </div>';
 		
 		result = result + '	    <div class="clearfix mb10 col-md-6 ">';
-		result = result + '	    <label class="clearfix">Account Type</label>';
+		result = result + '	    <label class="clearfix">Account Type<span class="text-danger">&nbsp;*</span></label>';
 		result = result + '	      <div class="dropdown-select">';
 		result = result + '		<select id="accountType" name="accountType" field-name="Account Type" data-validation="required">';
 		result = result + '		<option value="">--Select--</option>';
@@ -314,14 +314,14 @@ right: 15px;
 		result = result + '	    <div class="row">';
 		
 		result = result + '	    <div class="clearfix mb10 col-md-6">';
-		result = result + '	      <label class="clearfix">Account Name</label>';
+		result = result + '	      <label class="clearfix">Account Name<span class="text-danger">&nbsp;*</span></label>';
 		result = result + '	      <div class="">';
 		result = result + '	        <input type="text" class="form-control inlineField"  id="accountName" name="accountName" field-name="Account Name"  data-validation="required validate_Space validate_length length2-250">';
 		result = result + '	      </div>';
 		result = result + '	    </div>';
 		
 		result = result + '	    <div class="clearfix mb10 col-md-6">';
-		result = result + '	      <label class="clearfix">Account Number</label>';
+		result = result + '	      <label class="clearfix">Account Number<span class="text-danger">&nbsp;*</span></label>';
 		result = result + '	      <div class="">';
 		result = result + '	        <input type="text" class="form-control inlineField"  id="accountNumber" name="accountNumber" field-name="Account Number"  data-validation="required validate_Space validate_int validate_length length9-18">';
 		result = result + '	      </div>';
@@ -333,14 +333,14 @@ right: 15px;
 		result = result + '	    <div class="row">';
 		
 		result = result + '	    <div class="clearfix mb10 col-md-6">';
-		result = result + '	      <label class="clearfix">Address</label>';
+		result = result + '	      <label class="clearfix">Address<span class="text-danger">&nbsp;*</span></label>';
 		result = result + '	      <div class="">';
 		result = result + '	        <input type="text" class="form-control inlineField"  id="bankAddress" name="bankAddress" field-name="Address"  data-validation="required validate_space">';
 		result = result + '	      </div>';
 		result = result + '	    </div>';
 		
 		result = result + '	    <div class="clearfix mb10 col-md-6">';
-		result = result + '	      <label class="clearfix">Routing Number</label>';
+		result = result + '	      <label class="clearfix">Routing Number<span class="text-danger">&nbsp;*</span></label>';
 		result = result + '	      <div class="">';
 		result = result + '	        <input type="text" class="form-control inlineField"  id="routingNumber" name="routingNumber" field-name="Routing Number"  data-validation="required validate_space validate_length length9-9" maxlength="9">';
 		result = result + '	      </div>';
