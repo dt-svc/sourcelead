@@ -270,9 +270,6 @@
  var table = "";
  $(document).ready(function () {
      getDynamicImmigrationList(null);
-     getPetitionTypeDropDown();
-     getAttorneysByOrgLocation();
-     getUscisTypeDropDown();
      /* getUscisStatusList(); */
      $('label.toggle-vis').on('click', function (e) {
          e.preventDefault();
