@@ -55,6 +55,7 @@ import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.Department;
@@ -1359,9 +1360,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	}
 	
 	@RequestMapping(value =  "/getUserBasedAssetManagementList", method = RequestMethod.GET)
-	public @ResponseBody List<Asset> getUserBasedAssetManagementList(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	public @ResponseBody List<AssetAssign> getUserBasedAssetManagementList(@RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
 	{
-	List<Asset> assementList = assetService.getUserBasedAssetManagementListandOrgLocation(orgLocationId, userId);
+	List<AssetAssign> assementList = assetService.getUserBasedAssetManagementListandOrgLocation(orgLocationId, userId);
 	return assementList;
 	}
 	

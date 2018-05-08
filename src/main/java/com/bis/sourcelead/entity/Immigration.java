@@ -73,6 +73,10 @@ public class Immigration implements Serializable {
 	private Candidate candidate;
 	
 	@ManyToOne
+	@JoinColumn(name = "CANDIDATE_USER_ID")
+	private User candidateUserId;
+	
+	@ManyToOne
 	@JoinColumn(name = "JOB_ID")
 	private Requirement job;
 
@@ -348,6 +352,14 @@ public class Immigration implements Serializable {
 
 	public void setSpocUserId(User spocUserId) {
 		this.spocUserId = spocUserId;
+	}
+
+	public User getCandidateUserId() {
+		return candidateUserId;
+	}
+
+	public void setCandidateUserId(User candidateUserId) {
+		this.candidateUserId = candidateUserId;
 	}
 
 	

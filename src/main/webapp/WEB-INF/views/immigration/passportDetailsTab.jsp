@@ -47,7 +47,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Passport Id<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Passport Id" field-name = "Passport Id" class="form-control" data-validation = "required"/>
+              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Passport Id" field-name = "Passport Id" class="form-control" data-validation = "required validate_length length8-12 validate_AlphaNumber"/>
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">

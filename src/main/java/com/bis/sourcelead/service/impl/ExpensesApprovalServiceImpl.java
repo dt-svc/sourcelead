@@ -296,7 +296,12 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 					}
 				}
 	    }
-		expensesApproverHierarchyDto.setTotalAmount(expensesApproverHierarchy.getExpenseId().getTotalAmount());
+		 
+
+		BigDecimal totalAmo = new BigDecimal(expensesApproverHierarchy.getExpenseId().getTotalAmount());
+		BigDecimal totalAmountRoundOff = totalAmo.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		 
+		expensesApproverHierarchyDto.setTotalAmount(totalAmountRoundOff);
 		expensesApproverHierarchyDto.setTdSpanLength("9");
 		if(expensesApproverHierarchy.getActionbyorglocid()!= null) {
 		 OrgLocations actionPerformedBy = orgLocationService.getOrgLocations(expensesApproverHierarchy.getActionbyorglocid());

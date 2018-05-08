@@ -245,7 +245,7 @@
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#formsTab');" class="btn btn-default btn-sm">
              	<!-- <input type="button" value="Skip" onclick="goToSummaryTab('#notesTab');" class="btn btn-default btn-sm">  -->
-              	<input type="button" value="Submit" onclick="immigration.updateImmigrationStatus(immigrationId);" class="btn btn-primary btn-sm ml10">
+              	<input type="button" value="Submit" onclick=" checkRequiredDocAndContinue();" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
 	</form>	
@@ -507,7 +507,34 @@ function getDocumentTypeDiv(documentTypes){
 		  }
 	}
 }
+function checkRequiredDocAndContinue(){
+	 var multiWarnMsg="Please Upload Below Required Docs!..." 
+		    var missedDocs="";
+			$("table#documentsTbl > tbody > tr").each(function(row, tr) {
+				var docName = ($('td:eq(0)', this).text()); // first column form name text
+				var required = ($('td:eq(2)', this).text());// third  column required column text
+				var status = ($('td:eq(4)', this).text()); // fifth  column status column text
 
+				if (required.toUpperCase() == 'YES'	&& status.toUpperCase() == 'REQUESTED') {
+					if (missedDocs == '') {
+						missedDocs = missedDocs + docName;
+					} else {
+						missedDocs = missedDocs + ", " + docName;
+					}
+				}
+						
+			});
+			
+			if(missedDocs!=''){  // if missed required docs upload
+				multiWarnMsg = multiWarnMsg + '\n' + missedDocs;
+			   showWarningPopup("", multiWarnMsg);
+			return;
+			}
+		// calling submit server action if no errors found.
+	immigration.updateImmigrationStatus(immigrationId);
+			
+	
+}
 //chosen script
 //$("#documentType").chosen();
 //$("#documentType").trigger("chosen:updated");

@@ -1090,8 +1090,12 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NOTIFY_APPLICANT_MAILABOUT_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
-
+		 EmailScenario  emailScenario = null;
+		 if(orgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.NOTIFY_APPLICANT_MAILABOUT_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NOTIFY_APPLICANT_MAILABOUT_REQUIREMENT,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		 //covert subject,body and signature
 		 String subject = "";
 		 if(submissionType.equalsIgnoreCase("EditSubmission")) {
@@ -1596,15 +1600,19 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 	 }else{
 			 globalVarsMap.put("experience","--");
 			 }
-		 if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState()) && requirement.getCity()!= null && !"".equalsIgnoreCase(requirement.getCity())){
-			 StringBuilder locBuildeer = new StringBuilder();
-			 globalVarsMap.put("location", locBuildeer.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
-		 	}else if(requirement.getState()!= null && !"".equalsIgnoreCase(requirement.getState())){
-		 		StringBuilder locBuildeer = new StringBuilder();
-			 	globalVarsMap.put("location", locBuildeer.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
-		 	}else{
-			globalVarsMap.put("location",requirement.getCountry());
-			}
+		 
+		 List<RequirementLocations> reqLocationList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+		 if(reqLocationList != null) {
+			 StringBuilder locBuilder = new StringBuilder();
+			 for(RequirementLocations reqLocations : reqLocationList) {
+				 locBuilder.append(reqLocations.getLocation()).append("<br>");
+			 }
+			 globalVarsMap.put("location",locBuilder.toString());
+		 }else {
+			 globalVarsMap.put("location","--");
+		 }
+		 
+		 
 		 if(null != requirementSubmissionTemplateFields.getExpectedCTC() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedCTC()) && null != requirementSubmissionTemplateFields.getExpectedRatePer() && !"".equalsIgnoreCase(requirementSubmissionTemplateFields.getExpectedRatePer())){
 			 StringBuilder ratebuild = new StringBuilder();
 			 globalVarsMap.put("requirementRate", ratebuild.append(requirementSubmissionTemplateFields.getExpectedRateType()).append(" ").append(requirementSubmissionTemplateFields.getExpectedCTC()).append(" / ").append(requirementSubmissionTemplateFields.getExpectedRatePer()).toString());
@@ -1656,31 +1664,20 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 //	        }
 		 
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
 		 //EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
 		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
 		 
 		// String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 		// notificationScenario.setBody(notificationbody);
 		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		 
 		//calling the sendEmail method of emailScenerioUtil
 		 //emailScenerioUtil.sendNotification(actionLink, loginUser,approverUser, loginOrgLocation, notificationScenario);
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_RECEIVE_MAILABOUT_REQUIREMENT_EMAIL,new ArrayList<EmailAttachment>());
+
 
 	}
 
@@ -1760,34 +1757,23 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 globalVarsMap.put("jobDescription","--");
 			 }
 		
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
 		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
 		 
-		String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		  
 		 User fromUser = userService.getUserById(Constants.USERID);
 		 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
 	      // String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=APPLICANTRATE&requirementUUID="+requirement.getRequirementUUID()+"&candidateUUID="+requirement.getcgetCandidate().getCandidateUUID()+"&submissionId="+requirement.getSubmissionId()).toString();//calling the sendEmail method of emailScenerioUtil
 		// emailScenerioUtil.sendNotification(actionLink, fromUser,initiatorUser, orgLocations, notificationScenario);
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPLICANT_ACCEPT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,new ArrayList<EmailAttachment>());
+
 
 	}
 
@@ -2463,8 +2449,11 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			// getting the current EmailScenario by EmailScenario unique name
 			// and entity type
 			EmailScenario emailScenario = null;
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SUBMIT_TO_CLIENT,
-					Constants.ENTITY_TYPE_EMAIL);
+			if(loginOrgLocation != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.SUBMIT_TO_CLIENT,Constants.ENTITY_TYPE_EMAIL, loginOrgLocation.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SUBMIT_TO_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+				   }
 			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NOTIFICATION_TO_CLIENT,Constants.ENTITY_TYPE_NOTIFICATION);
 
 			// covert subject,body and signature
@@ -2807,7 +2796,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  emailScenario = null;
+		 if(orgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.VENDOR_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.VENDOR_RATE_NEGOTIATION,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CLIENT_RATE_NEGOTIATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
 		
@@ -3042,8 +3036,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL);
-	//	 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_NOTIFICATION);
+		 EmailScenario  emailScenario = null;
+		 if(loginOrgLocation != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL, loginOrgLocation.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Applicant_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL);
+			   }
+		 //	 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_NOTIFICATION);
 		 
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
@@ -3222,12 +3221,18 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL);
+		 EmailScenario  emailScenario = null;
+		 if(loginOrgLocation != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL, loginOrgLocation.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_NOTIFICATION);
 		 
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
 		 
 		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);

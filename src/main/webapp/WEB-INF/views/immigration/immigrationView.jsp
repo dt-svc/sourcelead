@@ -29,7 +29,7 @@
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>${immigration.generatedId}</h2>
-        <span id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt paddingRight"></i>Download Package</span>
+        <!-- <span id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt paddingRight"></i>Download Package</span> -->
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigrations List</a> &raquo; Immigration Summery</div>
       <input type="hidden" id = "candidateID" value = "${candidateId}">
@@ -50,7 +50,12 @@
 				<p><strong>Visa Type</strong>: ${immigration.petitionType}</p>
 				<p><strong>Attorney</strong>: ${immigration.attorneyName}</p>
   			</div>
-  			<div class="col-md-2 immHeadactions clearfix col-md-offset-2">
+  			
+  			<div class="col-md-2 clearfix mt10">
+  				<p id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt mr10"></i>Download Package</p>
+  			</div>
+  			
+  			<div class="col-md-2 immHeadactions clearfix">
   			
   			
   			<select id="uscisStatusId" onchange="changeUscisStatusForImmigration($(this).val());" class="form-control selstyles-new">
@@ -282,11 +287,6 @@ $("#packageZipfile").click(function() {
 				showWarningPopup("Passport");
 			return;
 			}
-		}else if(tabName=="#employersTab"){
-			if($('#passportTbl tr').length<=1){
-				showWarningPopup("Passport");
-			return;
-			}
 		}else if(tabName=="#residencesTab"){
 			if($('#employerTbl tr').length<=1){
 				showWarningPopup("Employer");
@@ -305,14 +305,35 @@ $("#packageZipfile").click(function() {
 			}
 		}	
 		else if(tabName=="#docsTab"){
-			if($('#formsTbl tr').length<=1){
-				showWarningPopup("Form");
+			 var multiWarnMsg="Please Upload Below Required Forms!..." 
+		    var missedForms="";
+			$("table#formsTbl > tbody > tr").each(
+					function(row, tr) {
+						var formName = ($('td:eq(0)', this).text()); // first column form name text
+						var required = ($('td:eq(1)', this).text());// second  column required column text
+						var status = ($('td:eq(4)', this).text()); // fifth  column status column text
+
+						if (required.toUpperCase() == 'YES'	&& status.toUpperCase() == 'REQUESTED') {
+							if (missedForms == '') {
+								missedForms = missedForms + formName;
+							} else {
+								missedForms = missedForms + ", " + formName;
+							}
+
+						}
+						
+			});
+			
+			if(missedForms!=''){  // if missed required forms upload
+				multiWarnMsg = multiWarnMsg + '\n' + missedForms;
+			    showWarningPopup("Form", multiWarnMsg);
 			return;
 			}
-		}	
-		$("a[href='"+tabName+"']").removeClass("disabledLink");
-		$("a[href='"+tabName+"']").click();
+		}
+		$("a[href='" + tabName + "']").removeClass("disabledLink");
+		$("a[href='" + tabName + "']").click();
 	}
+
 	
 	function changeUscisStatusForImmigration(uscisStatusId){
 		 $.ajax({
@@ -328,24 +349,33 @@ $("#packageZipfile").click(function() {
 </script>
 <script>
 
-function showWarningPopup(tabName){ // tabName is replaced with content
+function showWarningPopup(tabName, multiWarnMsg){ // multiWarnMsg populated when validated form and docs required upload docs info.
 	$(".project_inn_mask").remove();
+	
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a modal-body'>";
-	result = result +" <b class='mt mb'>Please Add "+tabName+" Details!...</b>";
-	result = result + ' <div id="reasonForTemplateDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='closePop()'></b>";
-	result = result +"	</div>";
-	$("#popUp").append(result);
-	$("#remove_immigration_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
-}
+	 
+	if (typeof multiWarnMsg != 'undefined' && multiWarnMsg != '') {
+			result = result + " <b class='mt mb'>" + multiWarnMsg + "</b>";
+	} 
+	else {
+		result = result + " <b class='mt mb'>Please Add " + tabName	+ " Details!...</b>";
+	}
+	   result = result + ' <div id="reasonForTemplateDiv"/>';
+		result = result	+ "		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick='closePop()'></b>";
+		result = result + "	</div>";
+		$("#popUp").append(result);
+		$("#remove_immigration_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
 
-function closePop(){
-	$("#remove_immigration_pop").fadeOut(200);
-	$(".project_inn_mask").fadeOut(200);
-}
+	function closePop() {
+		$("#remove_immigration_pop").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+		$(".project_inn_mask").remove();
+		$("#remove_immigration_pop").remove();
+	}
 </script>
 <jsp:include page="../masterFooter.jsp" />
  

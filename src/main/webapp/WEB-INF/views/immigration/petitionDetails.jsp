@@ -20,6 +20,12 @@
 		
 		<div class="addImmiContent clearfix">
 			<form id="petitionDetailsForm" name="petitionDetailsForm">
+			<c:if test="${empty immigrationDTO}">
+			<input type = "hidden" id="editMode" name = "editMode" value = "false">
+			</c:if>
+			<c:if test="${!empty immigrationDTO}">
+			<input type = "hidden" id="editMode" name = "editMode" value = "true">
+			</c:if>
           <div class="col-md-12 col-lg-12 myForm margin-top0">
           	<input type="hidden" name="immigrationId" value="${immigrationDTO.immigrationId}">
           	<input type="hidden" name="candidateId" value="${immigrationDTO.candidateId}">
@@ -85,6 +91,26 @@
             
             <div class="form-group">
               <label class="col-md-4">Choose Template<span class="text-danger paddingLeft">*</span></label>
+              <c:if test="${empty immigrationDTO}">
+              <div class="col-md-8">
+               <select class="chosen-select form-control" id="templateId" name="templateId" data-placeholder="Choose Template" field-name="Template"  data-validation="required">
+               	
+               	<option value="" selected>--Choose Template--</option>
+							<c:forEach var="item" items="${templateList}">
+											<option ${immigrationDTO.templateId == item.id ? 'selected': ''} value="${item.id}">${item.name}(${item.country})</option>
+							</c:forEach>
+               </select>
+              </div>
+              </c:if>
+              <c:if test="${!empty immigrationDTO}">
+              <c:if test="${immigrationDTO.orgloationId != SourceLeadWeb_orgLocations.id}">
+               <div class="col-md-8">
+              <input class="form-control" type="text" readonly name="templateId" id="templateId" value="${immigrationDTO.templateName}"/>
+				<input type="hidden" id="templateId" name="templateId" value="${immigrationDTO.templateId}"/>
+				</div>			
+              </c:if>
+              
+               <c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
               <div class="col-md-8">
                <select class="chosen-select form-control" id="templateId" name="templateId" data-placeholder="Choose Template" field-name="Template"  data-validation="required">
                	
@@ -94,14 +120,38 @@
 							</c:forEach>
                </select>
               </div>
+              </c:if>
+              </c:if>
             </div>
           
             <div class="clearfix"></div>
+            <c:if test="${!empty immigrationDTO}">
+            <c:if test="${immigrationDTO.orgloationId != SourceLeadWeb_orgLocations.id}">
+             <h4 class="col-md-12 mb">2. Company Details</h4>
+            </c:if>
+            <c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
+             <h4 class="col-md-12 mb">2. Attorney Details</h4>
+            </c:if>
+            </c:if>
+            <c:if test="${empty immigrationDTO}">
             <h4 class="col-md-12 mb">2. Attorney Details</h4>
+            </c:if>
             <div class="clearfix"></div>
 							<div class="form-group">
+							 <c:if test="${!empty immigrationDTO}">
+								<c:if test="${immigrationDTO.orgloationId != SourceLeadWeb_orgLocations.id}">
+								<label class="col-md-4"><span class="pull-left">Company Name</span><span
+									class="text-danger pull-left" id="man1">*</span></label>
+								</c:if>
+								<c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
 								<label class="col-md-4"><span class="pull-left">Attorney Name</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
+								</c:if>
+									</c:if>
+									 <c:if test="${empty immigrationDTO}">
+									 <label class="col-md-4"><span class="pull-left">Attorney Name</span><span
+									class="text-danger pull-left" id="man1">*</span></label>
+									 </c:if>
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								
 								
@@ -143,11 +193,26 @@
 							<div class="form-group">
 							<c:if test="${!empty immigrationDTO}">
 							<c:if test="${immigrationDTO.orgloationId != SourceLeadWeb_orgLocations.id}">
-							<input class="form-control" type="text" readonly name="attorneyContact" id="attorneyContact" value="${immigrationDTO.attorneyContactName}"/>
-									<input type="hidden" id="attorneyContact" name="attorneyContact" value="${immigrationDTO.attorneyName}"/>
+							<label class="col-md-4"><span class="pull-left">Company Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+							
 							</c:if>
 							<c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
 							<label class="col-md-4"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+							
+							</c:if>
+							</c:if>
+							<c:if test="${empty immigrationDTO}">
+							<label class="col-md-4"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+							</c:if>
+							
+							<c:if test="${!empty immigrationDTO}">
+							<c:if test="${immigrationDTO.orgloationId != SourceLeadWeb_orgLocations.id}">
+							<div class="col-md-8">
+							<input class="form-control" type="text" readonly name="attorneyContact" id="attorneyContact" value="${immigrationDTO.attorneyContactName}"/>
+									<input type="hidden" id="attorneyContact" name="attorneyContact" value="${immigrationDTO.attorneyContact}"/>
+							</div>
+							</c:if>
+							<c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
 								<div class="col-md-8 chooRadius" id="errorAttorneyContact">
 								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
 									<select class="chosen-select form-control" name="attorneyContact" id="attorneyContact" placeholder="Select Attorney Contact" field-name="Attorney Contact"
@@ -163,7 +228,6 @@
 							</c:if>
 							</c:if>
 							<c:if test="${empty immigrationDTO}">
-								<label class="col-md-4"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
 								<div class="col-md-8 chooRadius" id="errorAttorneyContact">
 								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
 									<select class="chosen-select form-control" name="attorneyContact" id="attorneyContact" placeholder="Select Attorney Contact" field-name="Attorney Contact"
@@ -182,7 +246,7 @@
            <div class="clearfix"></div>
             	<h4 class="col-md-12 mb margin-top0">3. Beneficiary  details</h4>
            <div class="clearfix"></div>
-
+			<c:if test="${empty immigrationDTO}">
              <div class="form-group">
 								<label class="col-md-4"><span class="pull-left">Associate (Beneficiary)</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
@@ -196,6 +260,36 @@
 								</div>
 							</div>
 							</div>
+					</c:if>	
+					
+					<c:if test="${!empty immigrationDTO}">
+					<c:if test="${immigrationDTO.orgloationId != SourceLeadWeb_orgLocations.id}">
+					  <div class="form-group">
+					  <label class="col-md-4"><span class="pull-left">Associate (Beneficiary)</span><span
+									class="text-danger pull-left" id="man1">*</span></label>
+									<div class="col-md-8">
+									<input class="form-control" type="text" readonly name="candidateId" id="candidateId" value="${immigrationDTO.firstName}"/>
+									<input type="hidden" id="candidateId" name="candidateId" value="${immigrationDTO.candidateId}"/>
+						
+						</div>			
+					  </div>
+					</c:if>
+					<c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
+					<div class="form-group">
+								<label class="col-md-4"><span class="pull-left">Associate (Beneficiary)</span><span
+									class="text-danger pull-left" id="man1">*</span></label>
+								<div class="col-md-8 chooRadius" id="errorAttorney">
+								<div class="input-group col-md-10 pull-left chooRadius errorInptgroup">
+									<select class="chosen-select form-control" name="candidateId" field-name="Associate" data-validation="required"
+										id="candidateId" placeholder="Select Beneficiary" onchange="getCandidatesResumeDetailsById($(this).val());updateCandiateInfo($(this));">
+									</select>
+								 <span class="input-group-addon cursorPointer bg-blue" onclick="getCandidatesByOrgLocation(${immigrationDTO.candidateId});"><i class="fa fa-refresh "></i></span>
+									
+								</div>
+							</div>
+							</div>
+					</c:if>
+					</c:if>	
                                                                                                                                              
          <div class="form-group">
               <label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
@@ -380,10 +474,26 @@
           
              <div class="form-group">
               <label class="col-md-4">Job Title<span class="text-danger paddingLeft">*</span></label>
+              <c:if test="${empty immigrationDTO}">
               <div class="col-md-8">
                <select id="jobId" name="jobId" class="chosen-select form-control" field-name="Job Title" data-validation="required">
                   </select>
               </div>
+              </c:if>
+               <c:if test="${!empty immigrationDTO}">
+               <c:if test="${immigrationDTO.orgloationId != SourceLeadWeb_orgLocations.id}">
+                <div class="col-md-8">
+               <input class="form-control" type="text" readonly name="jobId" id="jobId" value="${immigrationDTO.jobTitle}"/>
+				<input type="hidden" id="jobId" name="jobId" value="${immigrationDTO.jobId}"/>
+				</div>		
+               </c:if>
+                <c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
+               <div class="col-md-8">
+               <select id="jobId" name="jobId" class="chosen-select form-control" field-name="Job Title" data-validation="required">
+                  </select>
+              </div>
+               </c:if>
+               </c:if>
           </div>  
             
             
@@ -1151,7 +1261,7 @@ function  removeValidationAttorneyContact() {
 	 //$( "#myselect option:selected" ).val()
 	 function updateCandiateInfo(obj){
 		var candidateObj=candidateByOrgObject[obj.val()];
-		
+		alert("allll"+candidateByOrgObject[obj.val()]);
 		$("#firstName").val(candidateObj.firstName);
 		$("#lastName").val(candidateObj.lastName);
 		$("#middleName").val(candidateObj.middelName);

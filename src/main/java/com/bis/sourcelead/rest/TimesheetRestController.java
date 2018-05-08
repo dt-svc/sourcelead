@@ -1480,6 +1480,9 @@ public class TimesheetRestController {
 					taskDTO.setId(pt.getId());
 					taskDTO.setTaskName(pt.getTaskName());
 					taskDTO.setTaskType(pt.getBillableType());
+					if(pt.getGeneratedId() != null && StringUtils.isNotEmpty(pt.getGeneratedId())) {
+						taskDTO.setGeneratedId(pt.getGeneratedId());
+					}
 					taskDTOList.add(taskDTO);
 				}
 
@@ -3661,20 +3664,31 @@ public class TimesheetRestController {
 			for (ProjectTasks projectTask : projectTaskList) {
 				ProjectMembers projectMember = projectMembersService.getProjectMemberByUserIdAndProjectId(leave.getUser().getId(), projectTask.getProjectId().getId());
 				if (projectMember != null) {
-					String dateList = commonUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(),orgLocations.getDateFormat());
+					HashSet<Date> pmhDateList = projectMembersHistoryService
+							.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(
+									projectMember.getId(), leave.getFromDate(), leave.getToDate());
+					if (pmhDateList.isEmpty() || pmhDateList == null)
+						continue;
+					
+					/*String dateList = commonUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(),orgLocations.getDateFormat());
 					String leaveDate[] = dateList.split(",");
-					for (int i = 0; i < leaveDate.length; i++) {
+					for (int i = 0; i < leaveDate.length; i++) {*/
 					if (projectTask != null && projectMember != null && leave != null) {
-						if(leave.getFromHalfDay() !=null && leave.getFromHalfDay().equalsIgnoreCase("YES") && i == 0) {
-							addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(),	projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[0],CalendarUtil.getHalfTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"),
+					    for (Date pmhDate :pmhDateList) {
+					    	String leaveDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), pmhDate);
+						/*if(!pmhDateList.contains(leaveDate[i]))
+							continue;*/
+						
+						if(leave.getFromHalfDay() !=null && leave.getFromHalfDay().equalsIgnoreCase("YES") && pmhDate.equals(leave.getFromDate())) {
+							addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(),	projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate,CalendarUtil.getHalfTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"),
 									leave.getReason(), leaveApproverUserId, orgLocations, leaveStatusType);
 						}
-						else if(leave.getToHalfDay() !=null && leave.getToHalfDay().equalsIgnoreCase("YES") && i == leaveDate.length-1) {
-							addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(),	projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[leaveDate.length-1],CalendarUtil.getHalfTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"),
+						else if(leave.getToHalfDay() !=null && leave.getToHalfDay().equalsIgnoreCase("YES") && pmhDate.equals(leave.getToDate())) {
+							addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(),	projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate,CalendarUtil.getHalfTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"),
 									leave.getReason(), leaveApproverUserId, orgLocations, leaveStatusType);
 						}
 						else {
-								addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(),projectMember.getId(), projectTask.getProjectTasksUUID(), leaveDate[i],
+								addTimesheetDayEntriesByProjectIdAndProjectMemberId(projectTask.getProjectId().getId(),projectMember.getId(), projectTask.getProjectTasksUUID(),leaveDate,
 										CalendarUtil.getTimesheetHoursDisplayFormat(orgLocations.getAverageWorkingHours().floatValue()).replace(".", ":"),
 										leave.getReason(), leaveApproverUserId, orgLocations, leaveStatusType);
 							}
