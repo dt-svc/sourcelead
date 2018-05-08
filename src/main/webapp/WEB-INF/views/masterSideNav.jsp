@@ -360,12 +360,11 @@
 							</a>
 
 								<ul class="collapses" style="display: none">
-									<li><a
-										href="<c:url value='${appPath}/immigration/myImmigration'/>"
-										title="My Immigration">My Immigration</a></li>
-									<li><a
-										href="<c:url value='${appPath}/immigration/viewImmigrationList'/>"
-										title="Immigrations">Immigrations</a></li>
+								
+								<li><a	href="<c:url value='${appPath}/immigration/viewImmigrationList'/>" title="Immigrations">Immigrations</a></li>
+								
+								<li><a	href="<c:url value='${appPath}/immigration/myImmigration'/>" title="My Immigration">My Immigration</a></li>
+									
 								</ul>
 								
 								</li>
