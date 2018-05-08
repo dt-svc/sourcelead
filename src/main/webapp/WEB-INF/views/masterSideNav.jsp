@@ -352,7 +352,9 @@
 		          	<c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_ADMIN'}">
 		              <li class="${sessionData.nav == 'Pay' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="Pay"><span><i class="fa fa-usd"></i></span><i class="subMenu">Pay</i></a></li>
 		          	</c:if>	
-					<c:if test="${userTabs.tabName == 'Immigration'}">
+					<c:if test="${userTabs.tabName == 'Immigrations'}">
+					 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')"> 
+					
 
 							<li><a href="#" class="expencesLi" title="Immigration">
 									<span><i class="fa fa-plane"></i></span> <i class="subMenu">Immigration</i>
@@ -368,6 +370,7 @@
 								</ul>
 								
 								</li>
+								</sec:authorize>
 						</c:if>
           </c:forEach>
             

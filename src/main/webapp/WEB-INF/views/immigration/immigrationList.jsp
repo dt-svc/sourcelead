@@ -602,7 +602,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.orgName !== null && opt.orgName !== '' && opt.orgName !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.orgName+"'>" + opt.orgName + "</div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.orgName+"'>" + opt.orgName +"("+opt.spocName+")</div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                      }
@@ -724,6 +724,7 @@
 	function columHide(){
 		hideColumns=[]; // reset the array object.
 		$(".toggle-vis").each(function() {
+			columClose();// 
 		   var chkdVal= $(this).prop('checked');
 		   var column = table.column($(this).attr('data-column'));
 			  if(chkdVal == true){
