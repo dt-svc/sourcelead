@@ -23,5 +23,7 @@ public class ImmigrationConstants {
 	public static final String ORG_NAME_SELECTED_ORG1 = "Org1";
 	public static final String ORG_NAME_SELECTED_ORG2 = "Org2";
 	public static final String FILE_UPLOADED = "Uploaded";
+	public static final String PETITION_STATUS_REQUEST_TO_FILL = "Request to fill";
+	public static final String SEND_REQUEST = "sendRequest";
 
 }

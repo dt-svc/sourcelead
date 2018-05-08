@@ -62,7 +62,7 @@
             <div class="form-group">
               <label class="col-md-4">Status<span class="text-danger paddingLeft">*</span></label> <!-- renamed form Current USCIS as Status as per request change -->
               <div class="col-md-8 dropdown-select">
-                <select id="currUscisStatus" name="currUscisStatus" field-name="Status" data-validation="required" class="chosen-select form-control">
+                <select id="currUscisStatus" name="currUscisStatus" onchange="onLoadStatusChange();" field-name="Status" data-validation="required" class="chosen-select form-control">
                     
                   </select>
               </div>
@@ -1024,6 +1024,15 @@ $("#experienceValue").change(function () {
 	 }
  </script>
    <script type="text/javascript">
+   
+   function onLoadStatusChange(){
+	   if($( "#currUscisStatus option:selected" ).text() != "Draft"){
+		   $("#sendRequestButton").hide();
+	   }else{
+		   $("#sendRequestButton").show();
+	   }
+   }
+   
 	  $( document ).ready(function() {
 		  $('#rateCurrency').selectpicker('refresh');  // manually refreshing select picker due to bootstrap css loading issue.
 		  $('#rateType').selectpicker('refresh');
@@ -1031,9 +1040,13 @@ $("#experienceValue").change(function () {
 		  getAttorneyContactList("${immigrationDTO.attorneyId}","${immigrationDTO.attorneyContact}");
 		 getCandidatesByOrgLocation("${immigrationDTO.candidateId}");
 		  getPetitionTypeDropDown("${immigrationDTO.petitionType}");
+		  if("${immigrationDTO.currUscisStatus}" == null){
+		  	onLoadStatusChange();
+		  }
 		  getUscisTypeDropDown("${immigrationDTO.currUscisStatus}");
 		  employmentLevelDropDown("${immigrationDTO.employmentLevel}");
 		  jobTitleDropDown("${immigrationDTO.jobId}");
+		  
 		  var sizeOfResidence = "${fn:length(immigrationDTO.residenceList)}";
 		  if(sizeOfResidence > 0){
 		  	var count = 1;

@@ -33,7 +33,7 @@ public interface ImmigrationCommonService {
 	
 	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations);
 
-	Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations, String[] ids, String status) throws Exception;
+	Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations, String[] ids, String status, String sendRequest) throws Exception;
 
 	ImmigrationDTO getImmigrationDetails(String immigrationId, OrgLocations orgLocations);
 	

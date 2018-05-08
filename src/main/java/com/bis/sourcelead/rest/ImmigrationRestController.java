@@ -1027,10 +1027,12 @@ public class ImmigrationRestController {
 		Immigration immigration = null;
 		try {
 			if(user != null && Validator.validate(immigrationDTO)){
-			immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations, ids, status);
-			if(status.equalsIgnoreCase("sendRequest")) {
+			String sendRequestStatusValue = null;
+			if(status.equalsIgnoreCase(ImmigrationConstants.SEND_REQUEST)) {
 				immigrationCommonService.sendEmailToImmigrationBeneficiary(immigration,user, orgLocations);
+				sendRequestStatusValue = ImmigrationConstants.SEND_REQUEST;
 			}
+			immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations, ids, status, sendRequestStatusValue);
 			requiredIds.add(immigration.getId());
 			requiredIds.add(immigration.getCandidate().getId());
 			requiredIds.add(immigration.getImmigrationTemplateId().getId());

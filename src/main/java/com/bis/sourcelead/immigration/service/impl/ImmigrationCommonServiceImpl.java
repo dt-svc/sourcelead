@@ -127,7 +127,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 	
 	@Override
-	public Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user,OrgLocations orgLocations, String[] ids,String status){
+	public Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user,OrgLocations orgLocations, String[] ids,String status, String sendRequestStatusValue){
 		Immigration immigrationObj = null;
 		try {
 			
@@ -143,7 +143,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}
 		
 		Immigration immigration = new Immigration();
-		immigration = savePetitionImmigration(immigrationDTO,orgLocations,candidate,requirement,user,status);
+		immigration = savePetitionImmigration(immigrationDTO,orgLocations,candidate,requirement,user,status,sendRequestStatusValue);
 		
 		CandidateResumes candidateResume = new CandidateResumes();
 		candidateResume = savePetitionCandidateResume(immigrationDTO,candidate, user, orgLocations);
@@ -438,7 +438,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return null;
 	}
 
-	private Immigration savePetitionImmigration(ImmigrationDTO immigrationDTO, OrgLocations orgLocations, Candidate candidate, Requirement requirement, User user,String status) throws Exception, Exception {
+	private Immigration savePetitionImmigration(ImmigrationDTO immigrationDTO, OrgLocations orgLocations, Candidate candidate, Requirement requirement, User user,String status, String sendRequestStatusValue) throws Exception, Exception {
 		Immigration immigration = null;
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		if(immigrationDTO.getImmigrationId() != null && StringUtils.isNotEmpty(immigrationDTO.getImmigrationId())) {
@@ -456,6 +456,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		if(immigrationDTO.getCurrUscisStatus()!=null && !StringUtils.isEmpty(immigrationDTO.getCurrUscisStatus())) {
 			LookUpData uscisStatus = new LookUpData();
 			uscisStatus.setId(Long.parseLong(immigrationDTO.getCurrUscisStatus()));
+			uscisStatus = lookUpDataService.getLookUpDataByIdAndCategory(ImmigrationConstants.PETITION_STATUS,Long.parseLong(immigrationDTO.getCurrUscisStatus()));
+			if(sendRequestStatusValue != null) {
+				if(uscisStatus.getName().equalsIgnoreCase(ImmigrationConstants.PETITION_STATUS_DRAFT)) {
+					uscisStatus = lookUpDataService.getLookUpdataByCategoryAndName(ImmigrationConstants.PETITION_STATUS, ImmigrationConstants.PETITION_STATUS_REQUEST_TO_FILL);
+				}
+			}
 			immigration.setCurrUscisStauts(uscisStatus);
 		}
 		}else {
