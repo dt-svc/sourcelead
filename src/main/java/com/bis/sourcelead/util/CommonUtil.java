@@ -2273,17 +2273,9 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		
 		StringBuilder paymentDetailsBuilder = paymentDetailsTable(paymentHistory);
 		globalVarsMap.put("paymentDetails", paymentDetailsBuilder.toString());
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT, Constants.ENTITY_TYPE_EMAIL);
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String url = sourceleadUrl;
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				null, url, null, null);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT,new ArrayList<EmailAttachment>());
+
   }
   
   
@@ -2302,17 +2294,9 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		
 		StringBuilder paymentDetailsBuilder = paymentDetailsTable(paymentHistory);
 		globalVarsMap.put("paymentDetails", paymentDetailsBuilder.toString());
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT_DETAILS, Constants.ENTITY_TYPE_EMAIL);
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String url = sourceleadUrl;
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				null, url, org, orgLocations);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.LICENSE_PAYMENT_ACKNOWLEDGEMENT_DETAILS,new ArrayList<EmailAttachment>());
+
 }
   
   
@@ -2364,7 +2348,10 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
 			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
-			 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
+			 String signature = null;
+			 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+				 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+			 }
 			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
