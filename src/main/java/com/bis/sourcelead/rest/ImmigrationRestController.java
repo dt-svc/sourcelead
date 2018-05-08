@@ -40,6 +40,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateTaskDTO;
+import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -157,7 +158,13 @@ public class ImmigrationRestController {
 		}
 		return model;
 	}
-
+	@RequestMapping(value = { "/myImmigration" })
+	public ModelAndView loadMyImmigration(HttpServletRequest request) {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("/immigration/myImmigration");
+		return model;
+	}
 	@RequestMapping(value = { "/loadNewPetition" })
 	public ModelAndView loadNewPetition(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
@@ -268,7 +275,37 @@ public class ImmigrationRestController {
 		System.out.println("after controller  getAllImmigartionList  --> ");
 		return immigrationListDTOList;
 	}
-
+	@RequestMapping(value = "/getMyImmigrationList")
+	public @ResponseBody ResponseList<MyImmigrationViewDTO> getMyImmigrationList(
+			MyImmigrationViewDTO immigrationListDTO,
+			 HttpServletRequest request) {
+		ResponseList<MyImmigrationViewDTO> immigrationListDTOList = null;
+		System.out.println("inisde controller  getMyImmigrationList  --> ");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			String[] tableColumns = { "currUscisStatus", "generatedId", "petitionType", "country", "firstName", "email",
+					"phone", "openDate",  "lcaStartDate", "lcaEndDate" };// should be
+			// entity names
+			int sortColumnIndex = 0; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (immigrationListDTO.getOrder() != null && !immigrationListDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(immigrationListDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = immigrationListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+																					// direction
+				// of the sorting.
+			}
+			immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			immigrationListDTO.setSortOrder(sortColumnOrder);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			immigrationListDTO.setOrgLocationId(orgLocations.getId());
+			immigrationListDTOList = immigrationCommonService.getMyImmigrationsList(immigrationListDTO , orgLocations, loginUser.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("after controller  getAllImmigartionList  --> ");
+		return immigrationListDTOList;
+	}
 	@RequestMapping(value = { "/getPetitionTemplateEmployers" })
 	public List<CandidateEmployerDTO> getPetitionTemplateEmployers(HttpServletRequest request) {
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
@@ -1444,60 +1481,73 @@ public class ImmigrationRestController {
 			String entityArray[] = new String[] { "CandidatePassportVisa", "CandidateEmployers", "CandidateResidence", "CandidateEducation"};
 			String tabNameArray[] = new String[] { "Passport",  "Employers", "Residence", "Education"};
 			Integer count = 0;
-
+           List<String> missedTabList= new ArrayList<String>();
 			for (int i = 0; i < entityArray.length; i++) {
 				if (i == 0) { // CandidatePassportVisa for passport
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
 							"where candidate.id=:candidateId and idType='Passport'");
+					if (count == null) {
+						missedTabList.add(tabNameArray[i]);
+					}
 				} else if (i == 1) { // CandidateEmployers
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
 							"where candidateId.id=:candidateId");
+					if (count == null) {
+						missedTabList.add(tabNameArray[i]);
+					}
 				} else if (i == 2) { // CandidateResidence
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
 							"where candidate.id=:candidateId");
+					if (count == null) {
+						missedTabList.add(tabNameArray[i]);
+					}
 				} else if (i == 3) {// CandidateEducation
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
 							"where candidateId.id=:candidateId");
+					if (count == null) {
+						missedTabList.add(tabNameArray[i]);
+					}
 				}
-				System.out.println(" count value is ::--> : " + count);
-				if (count == null) {
-					result = "{errorMsg:'" + tabNameArray[i] + "'}";
-					System.out.println(" Record not found for the Tab Nme:::--> : " + tabNameArray[i]);
-					return result;
-				}
+			}
 
 				// check required column value in Forms tab.
 				List<ImmigrationCandidateForms> formsList = immigrationCommonService
 						.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, "");
-				System.out.println(" formsList:::--> : " + formsList.size());
+				System.out.println(" formsList:::size --> : " + formsList.size());
 				for (ImmigrationCandidateForms form : formsList) {
 					if (form.getIsRequired().equalsIgnoreCase(Constants.YES)) {
 						if (!form.getFormStatus().equalsIgnoreCase(ImmigrationConstants.FILE_UPLOADED)
 								|| StringUtils.isEmpty(form.getUploadedFileUrl())) {
-							result = "{errorMsg:'forms'}";
-							System.out.println("form.getIsRequired() : " + form.getIsRequired()
-									+ ", form.getFormStatus() : " + form.getFormStatus()
-									+ ", form.getUploadedFileUrl():  " + form.getUploadedFileUrl());
-							System.out
-									.println("Required found for the form Tab for the form ID:::--> : " + form.getId());
-							return result;
+							//System.out.println("Required found for the Form Tab for the Form ID :::--> : " + form.getId());
+							missedTabList.add("Forms");
+							break;
 						}
 					}
 				}
 				// check is required in in DocumentsTab
 				List<ImmigrationCandidateDocuments> docsList = immigrationCommonService
 						.getImmigrationCandidateDocs(immigrationId, templateId, candidateId, user, orgLocations, "");
+				System.out.println(" docsList:::size --> : " + formsList.size());
 				for (ImmigrationCandidateDocuments doc : docsList) {
 					if (doc.getIsRequired().equalsIgnoreCase(Constants.YES)) {
 						if (!doc.getDocumentStatus().equalsIgnoreCase(ImmigrationConstants.FILE_UPLOADED)
 								|| StringUtils.isEmpty(doc.getUplodedFileUrl())) {
-							result = "{errorMsg:'Documents'}";
-							System.out.println(
-									"Required found for the Documents Tab for the Doc ID :::--> : " + doc.getId());
-							return result;
+							//result = "{errorMsg:'Documents'}";
+							//System.out.println("Required found for the Documents Tab for the Doc ID :::--> : " + doc.getId());
+							missedTabList.add("Documents");
+							break;
 						}
 					}
 				}
+				
+				if(missedTabList.size()>0) {
+					String commaSeparatedString = String.join(",", missedTabList);
+					//System.out.println(" comma separated String is "+commaSeparatedString);
+					result = "{errorMsg:'" + commaSeparatedString+ "'}";
+					
+					return result;
+				}
+				
 				// if no error message means all required information is filled.
 				// then update immigration petition status to request to fill.
 
@@ -1511,7 +1561,6 @@ public class ImmigrationRestController {
 				immigrationCommonService.updateImigrationDetatils(immigration);
 				System.out.println("Immigartion details udated successfully for the immigration id ID :::--> : "
 						+ immigration.getId());
-			}
 		} catch (Exception e) {
 			logger.error("Exception caught in controller --->" + e.getMessage());
 			e.printStackTrace();

@@ -245,7 +245,7 @@
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#formsTab');" class="btn btn-default btn-sm">
              	<!-- <input type="button" value="Skip" onclick="goToSummaryTab('#notesTab');" class="btn btn-default btn-sm">  -->
-              	<input type="button" value="Submit" onclick=" checkRequiredDoc();" class="btn btn-primary btn-sm ml10">
+              	<input type="button" value="Submit" onclick=" checkRequiredDocAndContinue();" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
 	</form>	
@@ -507,7 +507,7 @@ function getDocumentTypeDiv(documentTypes){
 		  }
 	}
 }
-function checkRequiredDoc(){
+function checkRequiredDocAndContinue(){
 	 var multiWarnMsg="Please Upload Below Required Docs!..." 
 		    var missedDocs="";
 			$("table#documentsTbl > tbody > tr").each(function(row, tr) {

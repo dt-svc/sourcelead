@@ -1250,10 +1250,12 @@ function saveWhiteListIps(){
             data["id"] = $("#paymentAccountId").val();
         }
         if(flag) {
+        	$("#savePaymentButton").attr("disabled", "disabled");
             $.post(sourceleadUrl+"/save-payment-account", data, function(data) {
                 showError(data.responseMessage);
                 if(data.response === "SUCCESS" || data.response === "UNABLE_SET_PAYMENT_ACCOUNT") {
                     closePaymentAccountPopup(val);
+                    $("#savePaymentButton").removeAttr("disabled", "disabled");
                 }
                 getPaymentAccounts(true);
             });

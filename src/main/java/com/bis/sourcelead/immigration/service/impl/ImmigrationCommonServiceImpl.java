@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.Consts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
@@ -32,6 +34,7 @@ import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
+import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -101,6 +104,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Autowired
 	private CandidateResumesDao candidateResumesDao;
+	
+	@Autowired
+	private UserDao userDao;
 	
 	@Value("${static.path}")
 	private String staticPath;
@@ -473,7 +479,13 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setOrgSpoc(orgSpoc);
 		immigration.setSpocUserId(orgSpoc.getVendorUser());
 		immigration.setCandidate(candidate);
+		if(candidate.getConsultantUser().getId() != null){
+			User candidateUser = userDao.getUserById(candidate.getConsultantUser().getId());
+			immigration.setCandidateUserId(candidateUser);
+			}
+		if(immigrationDTO.getEditMode().equalsIgnoreCase("false")){
 		immigration.setOrgLocationId(orgLocations);
+		}
 		immigration.setReceiptNo(immigrationDTO.getReceiptNo());
 		if(StringUtils.isEmpty(immigrationDTO.getImmigrationId())) {
 			immigration.setGeneratedId(getImmigrationIdForGeneratedId(orgLocations));
@@ -1247,5 +1259,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		 //String actionLink="";
 		// emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations, notificationScenario,new HashMap<String,String>());
 		}
+
+	@Override
+	public ResponseList<MyImmigrationViewDTO> getMyImmigrationsList(MyImmigrationViewDTO immigrationListDTO,
+			OrgLocations orgLocations, Long userId) throws Exception {
+		  ResponseList<MyImmigrationViewDTO> immigartionList = immigrationCommonDao.getMyImmigrationsList(immigrationListDTO,  orgLocations, userId);
+		return immigartionList;
+	}
 
 }
