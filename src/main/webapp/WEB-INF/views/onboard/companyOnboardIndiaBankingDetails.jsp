@@ -212,7 +212,7 @@ right: 15px;
 												<td>${bankDetails.accountNumber}</td>
 												<td>${!empty bankDetails.bsrNumber ? bankDetails.bsrNumber : '---'}</td>
 												<td>${!empty bankDetails.micrCode ? bankDetails.micrCode : '---'}</td>
-												<td class="tbldata-dotdot" title="${!empty bankDetails.bankAddress ? bankDetails.bankAddress : ''}">${!empty bankDetails.bankAddress ? bankDetails.bankAddress : '---'}</td>
+												<td class="tbldata-dotdot mt" title="${!empty bankDetails.bankAddress ? bankDetails.bankAddress : ''}">${!empty bankDetails.bankAddress ? bankDetails.bankAddress : '---'}</td>
 												<td>
 													<ul class="list-inline list-unstyled">
 														<li><a href="javascript:void(0)" onclick="addNewBankingDetails('${bankDetails.uuid}');"><i class="fa fa-pencil"></i></a></li>
