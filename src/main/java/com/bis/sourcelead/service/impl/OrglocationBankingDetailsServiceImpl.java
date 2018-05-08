@@ -38,4 +38,9 @@ public class OrglocationBankingDetailsServiceImpl implements OrglocationBankingD
 		return orglocationBankingDetailsDao.getOrglocationBankingDetailsListByOrgLocationId(orgLocationId);
 	}
 
+	@Override
+	public OrglocationBankingDetails deleteOrglocationBankingDetails(OrglocationBankingDetails orglocationBankingDetails) throws Exception {
+		return orglocationBankingDetailsDao.deleteOrglocationBankingDetails(orglocationBankingDetails);
+	}
+
 }

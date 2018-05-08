@@ -277,6 +277,64 @@ public class CompanyOnboardRestController {
 	}
 	
 	
+	
+	
+	
+	
+	@RequestMapping(value = "/getOrgLocationsBankingDetailsByUUId", method = RequestMethod.GET)
+	@ResponseBody
+	public  OrgLocationBankingDetailsDTO getOrgLocationsBankingDetailsByUUId(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) throws Exception
+	{
+		OrglocationBankingDetails bankingDetails = null;
+		OrgLocationBankingDetailsDTO bankingDetailsDTO = new OrgLocationBankingDetailsDTO();
+		if(StringUtils.isNotBlank(uuid)) {
+			bankingDetails = orglocationBankingDetailsService.getOrglocationBankingDetailsByUUID(uuid);
+			if(bankingDetails != null) {
+				bankingDetailsDTO.setBankName(bankingDetails.getBankName());
+				bankingDetailsDTO.setAccountName(bankingDetails.getAccountName());
+				bankingDetailsDTO.setAccountNumber(bankingDetails.getAccountNumber());
+				bankingDetailsDTO.setAccountType(bankingDetails.getAccountType());
+				bankingDetailsDTO.setRoutingNumber(bankingDetails.getRoutingNumber());
+				bankingDetailsDTO.setUuid(bankingDetails.getUuid());
+			}
+		}
+		
+	
+		return bankingDetailsDTO;
+	}
+	
+	
+	@RequestMapping(value = "/deleteOnboardBankingDetails", method = RequestMethod.POST)
+	public @ResponseBody Response<String> deleteOnboardBankingDetails(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) throws Exception
+	{
+		
+		Response<String> response=new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			if (user != null) {
+				if(uuid != null && !uuid.isEmpty()) {
+					OrglocationBankingDetails bankingDetails = orglocationBankingDetailsService.getOrglocationBankingDetailsByUUID(uuid);
+					if(bankingDetails != null) {
+						orglocationBankingDetailsService.deleteOrglocationBankingDetails(bankingDetails);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+		
+	}
+	
+	
 	@RequestMapping(value = "/saveOrgLocationDocuments", method = RequestMethod.POST)
 	@ResponseBody
 	public  Response<String> saveOrgLocationDocuments(OrglocationOnboardDocumentsDTO documentsDTO, HttpServletRequest request) throws Exception
@@ -309,6 +367,7 @@ public class CompanyOnboardRestController {
 		}
 		return response;
 	}
+	
 	
 	@RequestMapping(value = "/deleteOnboardDocument", method = RequestMethod.POST)
 	public @ResponseBody String deleteOnboardDocument(@RequestParam(value = "uuid", required = true) String uuid) throws Exception

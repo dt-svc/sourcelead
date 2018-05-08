@@ -118,4 +118,23 @@ public class OrglocationBankingDetailsDaoImpl implements OrglocationBankingDetai
 	
 	}
 
+
+	@Override
+	@Transactional
+	public OrglocationBankingDetails deleteOrglocationBankingDetails(OrglocationBankingDetails orglocationBankingDetails) throws Exception {
+		
+		logger.debug("Deleting orglocationBankingDetails");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (orglocationBankingDetails != null) {
+				session.delete(orglocationBankingDetails);
+			}
+			logger.debug("orglocationStateTax Deleted Successfully");
+		} catch (ConstraintViolationException exception) {
+			StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"ORGLOCATION_BANKING_DETAILS"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return orglocationBankingDetails;
+	}
+
 }

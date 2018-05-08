@@ -179,6 +179,7 @@ right: 15px;
 			  </div>
 			  
 			  <div class="comLogContent">
+			  <div id='bankdetailsListLoading'></div>
 			       <div class="row clearfix"> 
 			       <div class="col-md-5">
 			        <h2 class="pull-left">Organization Banking Details</h2>
@@ -200,22 +201,24 @@ right: 15px;
 							</thead>
 							<tbody>
 								<c:if test="${bankingDetailsDTOListSize > 0}">
-									<tr>
+									
 										<c:forEach var="bankDetails" items="${bankingDetailsDTOList}">
-												<td>${bankDetails.bankName}</td>
+										<tr>
+												<td>${!empty bankDetails.bankName ? bankDetails.bankName : '---'}</td>
 											    <td>${bankDetails.accountType}</td>
 												<td>${bankDetails.accountName}</td>
 												<td>${bankDetails.accountNumber}</td>
 												<td>${bankDetails.routingNumber}</td>
 												<td>
 													<ul class="list-inline list-unstyled">
-														<li><a href="javascript:void(0)"><i class="fa fa-pencil"></i></a></li>
-														<li><a href="javascript:void(0)"><i class="fa fa-trash text-danger"></i></a></li>
+														<li><a href="javascript:void(0)" onclick="addNewBankingDetails('${bankDetails.uuid}');"><i class="fa fa-pencil"></i></a></li>
+														<li><a href="javascript:void(0)" onclick="deleteBankingDetails('${bankDetails.uuid}');"><i class="fa fa-trash text-danger"></i></a></li>
 													</ul>
 													
 												</td>
-										</c:forEach>
 										</tr>
+										</c:forEach>
+										
 									
 									
 								</c:if>
@@ -272,17 +275,15 @@ right: 15px;
  
  
  <script>
- function addNewBankingDetails(){
-	 
+ function addNewBankingDetails(uuid){
 	 var result = "";
 		result = result +"	<div class='project_inn_mask'></div>"; 
-		
 		result = result +" <div id='edit_member_pop' class='edit_member_pop'>";
+		result = result +"	<div id='detailsLoading'></div>"; 
 		result = result +"	<h4>Add Banking Details</h4>";
 		result = result + '<div class="form-horizontal clearfix">';
 		result = result + '<form id="bankingDetails_form" name="bankingDetails_form">';
-		result = result +" <div id='editMemberLoading'></div>"; 
-		//result = result + '<input type="hidden" id="projectMemberId" name="projectMemberId" value="'+data.projectMemberId+'">';
+		result = result + '<input type="hidden" id="uuid" name="uuid" value="">';
 		
 		
 		result = result + '	    <div class="row">';
@@ -350,6 +351,62 @@ right: 15px;
 		 $("#bankingDetailsPopUp").append(result);
          $("#edit_member_pop").slideDown(200);
          $(".project_inn_mask").fadeIn(200); 
+         
+         
+		if(uuid != null && uuid != 'undefined' && uuid != ''){
+			 $("#detailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			  setTimeout(function () {
+				  var sourceleadUrl ='${sourceleadUrl}';
+				  $.ajax({
+				    	type: "GET",
+				    	  url: sourceleadUrl+"/getOrgLocationsBankingDetailsByUUId?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,		
+				        success: function(result) {
+				        	if(result.bankName != null && result.bankName != '' && result.bankName != 'undefined'){
+				        		$("#bankName").val(result.bankName);
+				        	}
+				        	
+				        	$("#bankName").val(result.bankName);
+				        	$("#accountType").val(result.accountType);
+				        	$("#accountName").val(result.accountName);
+				        	$("#routingNumber").val(result.routingNumber);
+				        	$("#accountNumber").val(result.accountNumber);
+				        	$("#uuid").val(result.uuid);
+				        	
+				        },
+				    });  
+				  
+				  $("#detailsLoading").removeAttr('style');
+		 			}, 1000);
+		}
+ }
+ 
+ 
+ 
+ 
+ function deleteBankingDetails(uuid){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $("#bankdetailsListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $.ajax({
+	    	type: "POST",
+	    	  url: sourceleadUrl+"/deleteOnboardBankingDetails?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,		
+	        success: function(result) {
+	        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+  	    		    showError(result.responseMessage);
+  	    		    $("#bankdetailsListLoading").removeAttr('style');
+  	    		}
+	        	else if (result.response === "AWKWARD") {
+  	    		    location.href = "/errorPage";
+  	    		}
+            	else if(result.response === "SUCCESS"){
+            		location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
+	        	}else if (result.indexOf('Sign In') !== -1) {
+  					location.replace(sourceleadUrl);
+  				}else {
+  				    showError("Operation failed, please try again");
+  				    $("#bankdetailsListLoading").removeAttr('style');
+  				}
+	        },
+	    });  
  }
  
  
@@ -376,34 +433,30 @@ $('body').on('submit', '#bankingDetails_form', function(e){
       e.preventDefault();
       var sourceleadUrl ='${sourceleadUrl}';
       var formData = getFormData("bankingDetails_form");
-      var uuid = '';
-      if('${uuid}' != null && '${uuid}' != '' && '${uuid}' != 'undefined'){
-    	   uuid = '${uuid}';
-      }
-	 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	       $.ajax({
+     
+	 	$("#detailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $.ajax({
 		    	type: "POST",
 		    	data : formData,
-		    	  url: sourceleadUrl+"/saveOrgLocationsBankingDetails?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,		
+		    	  url: sourceleadUrl+"/saveOrgLocationsBankingDetails?${_csrf.parameterName}=${_csrf.token}",		
 		        success: function(result) {
 		        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
       	    		    showError(result.responseMessage);
-      	    		    $("#loading").removeAttr('style');
+      	    		    $("#detailsLoading").removeAttr('style');
       	    		}
 		        	else if (result.response === "AWKWARD") {
       	    		    location.href = "/errorPage";
       	    		}
                 	else if(result.response === "SUCCESS"){
-                		 $("#loading").removeAttr('style');
                 		location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
 		        	}else if (result.indexOf('Sign In') !== -1) {
       					location.replace(sourceleadUrl);
       				}else {
       				    showError("Operation failed, please try again");
-      				    $("#loading").removeAttr('style');
+      				    $("#detailsLoading").removeAttr('style');
       				}
 		        },
-		    });    
+		    });     
       return true; 
     }
     else{
