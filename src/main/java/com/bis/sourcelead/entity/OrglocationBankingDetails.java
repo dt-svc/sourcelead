@@ -53,6 +53,9 @@ public class OrglocationBankingDetails implements Serializable{
 	@Column(name = "BANK_NAME")
 	private String bankName;
 	
+	@Column(name = "BANK_ADDRESS", columnDefinition = "TEXT default NULL")
+	private String bankAddress;
+	
 	@Column(name = "UUID")
 	private String uuid;
 	
@@ -177,6 +180,14 @@ public class OrglocationBankingDetails implements Serializable{
 
 	public void setBankName(String bankName) {
 		this.bankName = bankName;
+	}
+
+	public String getBankAddress() {
+		return bankAddress;
+	}
+
+	public void setBankAddress(String bankAddress) {
+		this.bankAddress = bankAddress;
 	}
     
 }

@@ -723,15 +723,16 @@ function addFavourite(candidateId){
 			type : "POST",
 			url : sourceleadUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(response) {
-				
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class");
-					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
+					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating';
+					 document.getElementById("fav"+candidateId).setAttribute("title","Change to un Favourite");
 				} else {
 					 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
-					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
+// 					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
+					 $("#fav"+candidateId).removeAttr("title");
+					 document.getElementById("fav"+candidateId).setAttribute("title","Add as Favourite");
 				}
-				
 				if (response && response.response === "INVALID_DATA") {
 				    showError(response.responseMessage);
 				} else if (response.response === "AWKWARD") {
