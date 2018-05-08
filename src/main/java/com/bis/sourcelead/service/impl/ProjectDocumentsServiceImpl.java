@@ -203,17 +203,11 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 	public ProjectDocuments sendProjectDocumentEmail(ProjectsDocumentsDTO projectsDocumentsDTO, User user, OrgLocations loginOrgLocation) throws Exception
 	{
 		EmailMessage emailMessage = new EmailMessage();
-		String fullName = null;
 		String emails = null;
 		StringBuilder toRecipantsEmailsList = new StringBuilder();
 		String signature = "";
 		InternetAddress[] iAdressArray = null;
-		if (!isNullOrEmpty(user.getLastName())) {
-			fullName = user.getFirstName() + " " + user.getLastName();
-		}
-		else {
-			fullName = user.getFirstName();
-		}
+		 
 		if (StringUtils.isNotBlank(projectsDocumentsDTO.getSendTo())) {
 			String jsonArray = projectsDocumentsDTO.getSendTo();
 			emails = jsonArray.toString();
@@ -236,8 +230,10 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 			iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).toString());
 		}
 		emailMessage.setCreatedBy(user.getUserCode());
+		emailMessage.setToEmail(projectsDocumentsDTO.getSendTo());
 		emailMessage.setFromEmail(user.getEmail());
-		emailMessage.setFromName(fullName);
+		emailMessage.setFromName(user.getFullName());
+		emailMessage.setFirstName(user.getFullName());
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		globalVarsMap.put("body", projectsDocumentsDTO.getMessage());
 		globalVarsMap.put("subject", projectsDocumentsDTO.getSubject());
@@ -247,9 +243,12 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 			  if(emailScenario == null){
 					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_SEND_PROJECT_DOCUMENTS,Constants.ENTITY_TYPE_EMAIL);
 			   }
-		// covert subject,body and signatur
-		String subject = emailScenerioUtil.bulidSubject(projectsDocumentsDTO.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
+			  
+			  
+			//covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+				 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+				  
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, sourceleadUrl, loginOrgLocation.getOrg(), loginOrgLocation);
 		emailMessage.setSubject(subject);
