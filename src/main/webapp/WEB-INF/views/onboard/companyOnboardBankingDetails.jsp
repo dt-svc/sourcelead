@@ -210,7 +210,7 @@ right: 15px;
 												<td>${bankDetails.accountName}</td>
 												<td>${bankDetails.accountNumber}</td>
 												<td>${bankDetails.routingNumber}</td>
-												<td class="tbldata-dotdot" title="${!empty bankDetails.bankAddress ? bankDetails.bankAddress : ''}">${!empty bankDetails.bankAddress ? bankDetails.bankAddress : '---'}</td>
+												<td class="tbldata-dotdot mt" title="${!empty bankDetails.bankAddress ? bankDetails.bankAddress : ''}">${!empty bankDetails.bankAddress ? bankDetails.bankAddress : '---'}</td>
 												<td>
 													<ul class="list-inline list-unstyled">
 														<li><a href="javascript:void(0)" onclick="addNewBankingDetails('${bankDetails.uuid}');"><i class="fa fa-pencil"></i></a></li>
