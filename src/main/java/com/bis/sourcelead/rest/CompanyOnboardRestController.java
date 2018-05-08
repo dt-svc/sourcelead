@@ -247,6 +247,7 @@ public class CompanyOnboardRestController {
 			bankingDetails.setAccountName(bankingDetailsDTO.getAccountName());
 			bankingDetails.setRoutingNumber(bankingDetailsDTO.getRoutingNumber());
 			bankingDetails.setAccountNumber(bankingDetailsDTO.getAccountNumber());
+			bankingDetails.setBankName(bankingDetailsDTO.getBankName());
 			bankingDetails.setStatus(Constants.RECORD_ACTIVE);
 			bankingDetails.setCreatedBy(user);
 			bankingDetails.setUpdatedBy(user);

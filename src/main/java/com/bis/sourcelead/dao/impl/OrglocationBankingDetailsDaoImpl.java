@@ -1,8 +1,10 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.OrglocationBankingDetailsDao;
+import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -85,6 +88,34 @@ public class OrglocationBankingDetailsDaoImpl implements OrglocationBankingDetai
 			orglocationBankingDetails = (OrglocationBankingDetails) orglocationBankingDetailsList.iterator().next();
 		}
 		return orglocationBankingDetails;
+	}
+
+
+	@Override
+	@Transactional
+	public List<OrgLocationBankingDetailsDTO> getOrglocationBankingDetailsListByOrgLocationId(Long orgLocationId)
+			throws Exception {
+		List<OrgLocationBankingDetailsDTO> bankingDetailsDTOList = new ArrayList<>();
+		Session session = this.sessionFactory.getCurrentSession();
+		List<OrglocationBankingDetails> orgLocationBankingDetailsList = null;
+		Query bankingDetailsList= session.createQuery("from OrglocationBankingDetails bankingDetails left join fetch bankingDetails.orgLocationId  where bankingDetails.orgLocationId = :orgLocationId ");
+		orgLocationBankingDetailsList = bankingDetailsList.setLong("orgLocationId", orgLocationId).list();
+		
+		if(orgLocationBankingDetailsList != null) {
+			for(OrglocationBankingDetails bankingDetails : orgLocationBankingDetailsList) {
+				OrgLocationBankingDetailsDTO bankingDetailsDTO = new OrgLocationBankingDetailsDTO();
+				bankingDetailsDTO.setAccountType(bankingDetails.getAccountType());
+				bankingDetailsDTO.setAccountName(bankingDetails.getAccountName());
+				bankingDetailsDTO.setAccountNumber(bankingDetails.getAccountNumber());
+				bankingDetailsDTO.setBankName(bankingDetails.getBankName());
+				bankingDetailsDTO.setRoutingNumber(bankingDetails.getRoutingNumber());
+				bankingDetailsDTO.setUuid(bankingDetails.getUuid());
+				bankingDetailsDTOList.add(bankingDetailsDTO);
+			}
+		}
+		
+		return bankingDetailsDTOList;
+	
 	}
 
 }
