@@ -579,4 +579,19 @@ public class USPayrollRestController {
 			return associateContributionDao.saveAssociateContribution(associateContribution);
 		}
 		
+		/**
+		 * Returning US Payroll Generate JSP
+		 * @param request
+		 * @param response
+		 * @return ModelAndView
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/usPayroll","/rest/usPayroll" })
+		public ModelAndView usPayroll(HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			ModelAndView model = new ModelAndView();
+			model.setViewName("payroll/usPayroll");
+			return model;
+		}
+		
 }

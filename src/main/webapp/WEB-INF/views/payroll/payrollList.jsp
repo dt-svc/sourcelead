@@ -26,8 +26,8 @@
 		<div class="pull-left ml generateButtons">
 			<a href="<c:url value='${appPath}/uploadDocuments'/>" class="ml10 mt5"
 				id="uloadDocs" title="Upload Files">Upload Files</a> 
-				<%-- <a href="<c:url value='/payrollReport'/>" class="ml10 mt5"
-				id=generateReportId title="Generate Report">Generate Report</a> --%>
+			 <a href="<c:url value='${appPath}/usPayroll'/>" class="ml10 mt5"
+				id=generateReportId title="Generate Report">US Payroll</a> 
 		</div>
 	</section>
 	<%-- <a href="<c:url value='/addChecks'/>" class="ml10 mt5"
