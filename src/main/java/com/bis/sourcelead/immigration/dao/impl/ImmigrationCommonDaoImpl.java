@@ -33,6 +33,7 @@ import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
@@ -49,6 +50,7 @@ import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.MyImmigrationView;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.User;
@@ -972,6 +974,72 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<MyImmigrationViewDTO> getMyImmigrationsList(MyImmigrationViewDTO immigrationListDTO,
+			OrgLocations orgLocations, Long userId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		List<MyImmigrationView> ImmigrationViewLst = null;
+		ResponseList<MyImmigrationViewDTO> responseList = new ResponseList<>();
+		
+        // usertList sorting order
+        String sortingQry = "";
+        if (StringUtils.isNotBlank(immigrationListDTO.getSortColumn())) {
+            sortingQry = " order by immView." + immigrationListDTO.getSortColumn() + " " + immigrationListDTO.getSortOrder();
+        } else {
+            sortingQry = " order by immView.updatedDate desc ";
+        }
+		String listQuery = "";
+		
+        listQuery = "from MyImmigrationView immView  where immView.status = 1  and immView.candidateUserId =:candidateUserId and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
+        String listQueryCount = "select count(*) from MyImmigrationView immView where  immView.status = 1  and immView.candidateUserId =:candidateUserId and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId)  ";
+        String resultQuery = null;
+        String resultCountQuery = null;
+        Query hqlQuery = null;
+        Query hqlQuery1 = null;
+        
+        resultCountQuery = listQueryCount + sortingQry;
+    	resultQuery = listQuery + sortingQry;
+    	hqlQuery = session.createQuery(resultQuery);
+    	hqlQuery1 = session.createQuery(resultCountQuery);
+    	
+    	hqlQuery = session.createQuery(resultQuery).setLong("orgLocationId", orgLocations.getId()).setLong("candidateUserId", userId);
+    	hqlQuery1 = session.createQuery(resultCountQuery).setLong("orgLocationId", orgLocations.getId()).setLong("candidateUserId", userId);
+    	ImmigrationViewLst = hqlQuery.list();
+        
+        countlist = hqlQuery1.setFirstResult(immigrationListDTO.getStart())
+                .setMaxResults(immigrationListDTO.getLength()).list();
+        int totalCount = 0;
+        if (immigrationListDTO != null) {
+            if (countlist != null && !countlist.isEmpty()) {
+                totalCount = countlist.iterator().next().intValue();
+                filterCount = totalCount;
+            }
+        }
+        responseList.setRecordsTotal(totalCount);
+        //opendate
+        
+        List<MyImmigrationViewDTO> ImmigarionDTOList = new ArrayList<MyImmigrationViewDTO>();
+        if(!ImmigrationViewLst.isEmpty()) {
+	        for (MyImmigrationView source : ImmigrationViewLst) {
+	            //System.out.println(" DocsCount"+source.getDocsCount());
+	        	MyImmigrationViewDTO target = new MyImmigrationViewDTO();
+	            BeanUtils.copyProperties(source, target);
+	            //System.out.println(" DocsCount target"+target.getDocsCount());
+	            target.setOpenDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getOpenDate()));
+	            target.setLcaStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaStartDate()));
+	            target.setLcaEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaEndDate()));
+	            ImmigarionDTOList.add(target);
+	        }
+        }
+        responseList.setData(ImmigarionDTOList);
+        
+        System.out.println(" after dao impl  ---getMyImmigrationsList getRecordsTotal is -->" +responseList.getRecordsTotal());
+        return responseList;
 	}
 }
 	

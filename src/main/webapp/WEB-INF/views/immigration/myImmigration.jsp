@@ -308,7 +308,6 @@
      result = result + '<th>Email</th>';
      result = result + '<th>Phone</th>';
      result = result + '<th>On Date</th>';
-     result = result + '<th>Attorney</th>';
      result = result + '<th>LCA Start Date</th>';
      result = result + '<th>LCA End Date</th>';
      result = result + '</tr>';
@@ -320,9 +319,7 @@
 
      var sourceleadUrl = '${sourceleadUrl}';
 //     var statusFilter = $("#statusFilter").val();
-     var searchValue = $("#immiListSerach").val();
-     searchValue = searchValue ? searchValue : "";
-     var url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal+"&orgTypeVal="+orgTypeVal;
+     var url = sourceleadUrl + "/immigration/getMyImmigrationList";
      dynamicImmigrationListPagination(url);
  }
  //var count = 0;
@@ -349,7 +346,6 @@
              {"data": "Email"},
              {"data": "Phone"},
              {"data": "On date"},
-             {"data": "Attorney"},
              {"data": "LCA Start Date"},
              {"data": "LCA End Date"}
          ],
@@ -462,19 +458,6 @@
              },
              {
                  "targets": colIndex++,
-                 "data": "orgName",
-                 "render": function (data, type, opt, meta) {
-                     var result = "";
-                     if (opt.orgName !== null && opt.orgName !== '' && opt.orgName !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.orgName+"'>" + opt.orgName + "</div></td>";
-                     } else {
-                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
-                     }
-                     return result;
-                 }
-             },
-             {
-                 "targets": colIndex++,
                  "data": "lcaStartDateStr",
                  "render": function (data, type, opt, meta) {
                      var result = "";
@@ -517,14 +500,6 @@
     
      $("#dynamicImmigrationListTbl").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 
-     $("#immiListSerach").keyup(function (e) {
-         if (e.which === 13) {
-        	 getDynamicImmigrationList(null);
-        	 for (var i=0; i<hideColumns.length; i++) {
-        		 table.column(hideColumns[i]).visible(false); // hide the columns after filters also.
-        		}
-         }
-     });
 
     // $("table").colResizable(); // for resizing columns in tables.
  }

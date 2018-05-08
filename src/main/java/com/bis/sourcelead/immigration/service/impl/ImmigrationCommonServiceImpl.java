@@ -34,6 +34,7 @@ import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ImmigrationResidenceDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
+import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -1258,5 +1259,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		 //String actionLink="";
 		// emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations, notificationScenario,new HashMap<String,String>());
 		}
+
+	@Override
+	public ResponseList<MyImmigrationViewDTO> getMyImmigrationsList(MyImmigrationViewDTO immigrationListDTO,
+			OrgLocations orgLocations, Long userId) throws Exception {
+		  ResponseList<MyImmigrationViewDTO> immigartionList = immigrationCommonDao.getMyImmigrationsList(immigrationListDTO,  orgLocations, userId);
+		return immigartionList;
+	}
 
 }
