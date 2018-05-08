@@ -86,13 +86,13 @@
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="9"  type="checkbox" checked="">
+					<input id="j" class="checkbox-custom toggle-vis" name="paidComponent" data-column="8"  type="checkbox" checked="">
 					<label for="j" class="checkbox-custom-label" >LCA Start Date</label>
 				</span>
 			</li>
 			<li>
 				<span class="checkbox-new clearfix">
-					<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="10" checked="">
+					<input id="k" class="checkbox-custom toggle-vis" name="paidComponent" type="checkbox"  data-column="9" checked="">
 					<label for="k" class="checkbox-custom-label" >LCA End Date</label>
 				</span>
 			</li>
@@ -270,18 +270,7 @@
  var table = "";
  $(document).ready(function () {
      getDynamicImmigrationList(null);
-     getPetitionTypeDropDown();
-     getAttorneysByOrgLocation();
-     getUscisTypeDropDown();
-     /* getUscisStatusList(); */
-     $('label.toggle-vis').on('click', function (e) {
-         e.preventDefault();
-         // Get the column API object
-         var column = table.column($(this).attr('data-column'));
-         $(this).toggleClass("active");
-         // Toggle the visibility
-         column.visible(!column.visible());
-     });
+  
 });
 
  function getDynamicImmigrationList(filterVal) {
@@ -520,6 +509,7 @@
 	
 		
 	function columHide(){
+		columClose();
 		hideColumns=[]; // reset the array object.
 		$(".toggle-vis").each(function() {
 		   var chkdVal= $(this).prop('checked');
@@ -529,10 +519,9 @@
 			    }
 			    else{
 			      column.visible(false);
-			      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
 			  }
 	    });
-		columClose();
+		
 	}
 	function checkAllColumns(obj){
 		var id = obj.id;
