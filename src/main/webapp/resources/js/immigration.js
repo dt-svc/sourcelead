@@ -1098,12 +1098,12 @@ function deleteResidenceDetailsById(id){
     });
 }
 
-function editResidenceDEtailsByRowId(id){
+function editResidenceDEtailsByRowId(id, isCurr){
 	console.log(" inside edit record  "+id);
 	 // update the variable with residence member id in edit mode.
 	var candidateId = $("#candidateID").val();
 	$.ajax({
-     url: sourceleadUrl + immiModulePath + "/getCandidateResidenceDetailsById?id="+id+"&candidateId="+candidateId,
+     url: sourceleadUrl + immiModulePath + "/getCandidateResidenceDetailsById?id="+id+"&isCurr="+isCurr,
      type: "GET",
      success: function (data) {
      	console.log(" inside success test --->" );
@@ -1120,7 +1120,15 @@ function editResidenceDEtailsByRowId(id){
      			$('#residenceStartDate').val(data.startDateStr);
      			$('#residenceEndDate').val(data.endDateStr);
      			$('#residenceId').val(data.id);
-     	
+     	        if(isCurr =='Y'){
+     	        	$('#resiEnddatediv').hide(); // remove end date 
+     	        	$('#isCurrResi').val('Y');
+     	        	 $("#residenceEndDate").removeAttr("data-validation");
+     	        }else{
+     	        	$('#isCurrResi').val('N');
+     	        	$('#resiEnddatediv').show();
+     	        	 $("#residenceEndDate").attr("data-validation","required");
+     	        }
      	   
      	}
      }

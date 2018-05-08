@@ -1214,10 +1214,26 @@ public class ImmigrationRestController {
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<String> response = new Response<>();
+	//	System.out.println("isCurrResi value is ---> "+residenceDTO.getIsCurrResi());
 		if (user != null) {
 			try {
 				if (Validator.validate(residenceDTO)) {
+					if(residenceDTO.getIsCurrResi().equalsIgnoreCase(Constants.YES)) {
+						Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+						candidate.setLocation(residenceDTO.getLocation());
+						candidate.setCountry(residenceDTO.getCountry());
+						candidate.setState(residenceDTO.getState());
+						candidate.setCity(residenceDTO.getCity());
+						candidate.setZipCode(residenceDTO.getZipcode());
+						candidate.setAddress(residenceDTO.getStreetAddress());
+						candidate.setResidenceStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+								residenceDTO.getResidenceStartDate()));
+						
+						candidateService.saveOrUpdateCandidate(candidate); // update the master candidate table.
+						
+					}else {
 					immigrationCommonService.saveResidenceDetails(residenceDTO, orgLocations, user, candidateId);
+					}
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
@@ -1637,14 +1653,34 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = { "/getCandidateResidenceDetailsById" })
 	public @ResponseBody CandidateResidence getCandidateResidenceDetailsById(
-			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
+			@RequestParam(value = "id", required = true) Long id, 
+			@RequestParam(value = "isCurr", required = false) String isCurr, 
+			HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		String status = "";
 		System.out.println(" in controller method getCandidateResidenceDetailsById id ---> " + id);
 		CandidateResidence residenceObj = null;
 		try {
-			residenceObj = immigrationCommonService.getCandidateResidenceDetailsById(id);
+			
+			if(isCurr.equalsIgnoreCase("Y")) {
+				CandidateResidence currResidence = new CandidateResidence();
+				Candidate canCurrResiCand= candidateService.getCandidateById(id);
+				if(canCurrResiCand!= null) {
+					currResidence.setLocation(canCurrResiCand.getLocation());
+					currResidence.setCountry(canCurrResiCand.getCountry());
+					currResidence.setState(canCurrResiCand.getState());
+					currResidence.setCity(canCurrResiCand.getCity());
+					currResidence.setStreetAddress(canCurrResiCand.getAddress());
+					currResidence.setZipcode(canCurrResiCand.getZipCode());
+					currResidence.setStartDate(canCurrResiCand.getResidenceStartDate());
+					currResidence.setIsCurrAddress("Y");// used for edit functionality.
+					currResidence.setId(canCurrResiCand.getId());
+				}
+				residenceObj= currResidence;
+			}else {
+				residenceObj = immigrationCommonService.getCandidateResidenceDetailsById(id);
+			}
 			residenceObj.setStartDateStr(
 					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), residenceObj.getStartDate()));
 			residenceObj.setEndDateStr(

@@ -266,7 +266,6 @@
  
  
  
- var hideColumns = [];
  var table = "";
  $(document).ready(function () {
      getDynamicImmigrationList(null);
@@ -510,7 +509,6 @@
 		
 	function columHide(){
 		columClose();
-		hideColumns=[]; // reset the array object.
 		$(".toggle-vis").each(function() {
 		   var chkdVal= $(this).prop('checked');
 		   var column = table.column($(this).attr('data-column'));

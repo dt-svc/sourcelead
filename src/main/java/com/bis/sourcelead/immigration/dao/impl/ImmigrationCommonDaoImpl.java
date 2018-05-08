@@ -326,16 +326,44 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
    		logger.debug("Getting  CandidateResidenceDetails --->  ");
    		Session session = this.sessionFactory.getCurrentSession();
    		List<CandidateResidence> candidatesResidenceList = new ArrayList<CandidateResidence>();
+   		List<CandidateResidence> candidatesMasterResidenceList = new ArrayList<CandidateResidence>();
+   		
+   	     Candidate canCurrResiCand = null;
+   	     
+   	    String queryStringCand  = null;
+   	    if(!"undefiend".equalsIgnoreCase(searchValue) && StringUtils.isNotBlank(searchValue)){
+   	    	queryStringCand = "from Candidate cr where cr.id=:candidateId and (cr.location like :searchValue or cr.country like :searchValue)";
+   	    	canCurrResiCand = (Candidate)session.createQuery(queryStringCand).setLong("candidateId", candidateId).setString("searchValue", "%"+searchValue+"%").uniqueResult();
+   	    }else {
+   	    	queryStringCand  ="from Candidate cr where cr.id=:candidateId";
+   	    	canCurrResiCand = (Candidate)session.createQuery(queryStringCand).setLong("candidateId", candidateId).uniqueResult();
+   	    }
+   	 //System.out.println(" inside  canCurrResiCand -->"+canCurrResiCand);	
+   	   	CandidateResidence currResidence = new CandidateResidence();
+		if (canCurrResiCand != null) {
+			currResidence.setLocation(canCurrResiCand.getLocation());
+			currResidence.setCountry(canCurrResiCand.getCountry());
+			currResidence.setState(canCurrResiCand.getState());
+			currResidence.setCity(canCurrResiCand.getCity());
+			currResidence.setStreetAddress(canCurrResiCand.getAddress());
+			currResidence.setZipcode(canCurrResiCand.getZipCode());
+			currResidence.setStartDate(canCurrResiCand.getResidenceStartDate());
+			currResidence.setIsCurrAddress("Y");// used for edit functionality.
+			currResidence.setId(canCurrResiCand.getId());
+		}
+		candidatesMasterResidenceList.add(currResidence);
    		if(!"undefiend".equalsIgnoreCase(searchValue) && StringUtils.isNotBlank(searchValue)){
-   			String queryString  ="from CandidateResidence cr where cr.candidate.id=:candidateId and (cr.location =:searchValue or cr.country =:searchValue) order by cr.updatedDate desc";
-   			candidatesResidenceList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("searchValue", searchValue).list();
+   			String queryString  ="from CandidateResidence cr where cr.candidate.id=:candidateId and (cr.location like :searchValue or cr.country like :searchValue) order by cr.updatedDate desc";
+   			candidatesResidenceList = session.createQuery(queryString).setLong("candidateId", candidateId).setString("searchValue", "%"+searchValue+"%").list();
    		}
    		else{
    			String queryString  ="from CandidateResidence cr where cr.candidate.id=:candidateId order by cr.updatedDate desc";
    			candidatesResidenceList = session.createQuery(queryString).setLong("candidateId", candidateId).list();
    		}
-   		
-   		return candidatesResidenceList;
+   		//System.out.println(" inside  candidatesResidenceList size -->"+candidatesResidenceList.size());
+		candidatesMasterResidenceList.addAll(candidatesResidenceList);
+   		//System.out.println(" inside  candidatesMasterResidenceList size -->"+candidatesMasterResidenceList.size());
+   		return candidatesMasterResidenceList;
    	}
     
     @SuppressWarnings("unchecked")
