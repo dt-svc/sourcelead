@@ -92,6 +92,9 @@ public class ImmigrationListView implements Serializable {
 	@Column(name = "PETITION_TYPE")
 	private Long petitionTypeId;
 	
+	@Column(name = "SPOC_NAME")
+	private String spocName;
+	
 	public Long getId() {
 		return id;
 	}
@@ -275,6 +278,14 @@ public class ImmigrationListView implements Serializable {
 
 	public void setPetitionTypeId(Long petitionTypeId) {
 		this.petitionTypeId = petitionTypeId;
+	}
+
+	public String getSpocName() {
+		return spocName;
+	}
+
+	public void setSpocName(String spocName) {
+		this.spocName = spocName;
 	}
 
 }
