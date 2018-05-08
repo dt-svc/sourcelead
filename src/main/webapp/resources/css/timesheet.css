@@ -4643,7 +4643,15 @@ display:none;
 .editNewDat .fa-floppy-o {
     float: right; color: #368ee0; cursor: pointer; padding: 4px 5px 0px 0px; font-size: 18px;
 }
- 
+.editSignature {
+    position: absolute; top: -5px; left: 22px; width: 80%; display: none;
+}
+.editSignature .fa-floppy-o {
+    color: #368ee0; cursor: pointer; padding: 4px 5px 0px 0px; font-size: 18px;
+}
+.editSignature .chosen-container-single .chosen-single {
+    height: 30px !important; line-height: 30px !important;
+} 
  
 .ExpBudget {
     padding-top:15px;

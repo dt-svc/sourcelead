@@ -520,15 +520,14 @@ function getViewInvoice(){
 							sowName = "--";
 						}
 						if(items.startDateStr != null && items.startDateStr != '' && items.startDateStr != 'undefined'){
-							startDateStr = items.startDateStr +' To';
+							startDateStr = items.startDateStr;
 						}else{
 							startDateStr = "-";
 						}
-						
-						if(items.endDtaeStr != null && items.endDtaeStr != '' && items.endDtaeStr != 'undefined'){
-							endDtaeStr = items.endDtaeStr;
+						if(items.endDateStr != null && items.endDateStr != '' && items.endDateStr != 'undefined'){
+							endDateStr = items.endDateStr;
 						}else{
-							endDtaeStr = "-";
+							endDateStr = "-";
 						}
 						if(items.rate != null && items.rate != '' && items.rate != 'undefined'){
 							rate = items.rate;
@@ -576,7 +575,7 @@ function getViewInvoice(){
                             result = result +'</td>';
                             
                             result = result +'<td>';
-                            result = result +'<div class="tbldata-dotdot_50" title="'+quantity+'">'+quantity+'</div>';
+                            result = result +'<div class="tbldata-dotdot_50" title="'+items.inlineDescription+'">'+items.inlineDescription+'</div>';
                             result = result +'</td>';
                         }else{
                             result = result +'                     <td>                                                      ';
@@ -586,9 +585,8 @@ function getViewInvoice(){
                             result = result +'                         <div class="tbldata-dotdot-sm" title="'+candidateName+'">'+candidateName+'</div>       ';
                             result = result +'                     </td>                                                     ';
                         }
-                        
                         result = result +'                     <td>                                                     ';
-                        result = result +'                         <div class="tbldata-dotdot_80" title="'+items.inlineDescription+'">'+items.inlineDescription+'</div>       ';
+                        result = result +'                         <div class="tbldata-dotdot_80" title="'+quantity+'">'+quantity+'</div>       ';
                         result = result +'                     </td>                                                     ';
                         
                         if(report.invoiceCategory != null && report.invoiceCategory != '' && report.invoiceCategory != 'undefined' && report.invoiceCategory == "expenses"){
@@ -604,7 +602,7 @@ function getViewInvoice(){
                             result = result +'                         <div class="tbldata-dotdot_80" title="'+sowName+'">'+sowName+'</div>       ';
                             result = result +'                     </td>                                                     ';
                             result = result +'                     <td>                                                      ';
-                            result = result +'                         <div class="tbldata-dotdot_80" title="'+startDateStr+'  '+endDtaeStr+'" >'+startDateStr+' &nbsp; '+endDtaeStr+'</div>       ';
+                            result = result +'                         <div class="tbldata-dotdot_80" title="'+startDateStr+'  '+endDateStr+'" >'+startDateStr+' &nbsp; '+endDateStr+'</div>       ';
                             result = result +'                     </td>                                                     ';
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';
@@ -1082,7 +1080,7 @@ function paymentHistroy(){
 				result = result +'           </tbody>        ';
 				result = result +'       </table>  ';     
 				$("#paymentHistorytId").empty();  
-			    $("#paymentHistorytId").append(result)
+			    $("#paymentHistorytId").append(result);
 			    paymentHistoryPagination()
 	        }
 	  });
