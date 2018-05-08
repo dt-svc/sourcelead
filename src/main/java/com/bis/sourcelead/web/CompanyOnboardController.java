@@ -213,6 +213,7 @@ public class CompanyOnboardController {
 				model.addObject("bankingDetailsDTOList", bankingDetailsDTOList);
 				model.addObject("bankingDetailsDTOListSize", bankingDetailsDTOList.size());
 				model.addObject("sourceleadUrl", sourceleadUrl);
+				
 				model.setViewName("onboard/companyOnboardBankingDetails");
 			}else {
 				model.setViewName("registration/persmissionDenied");
