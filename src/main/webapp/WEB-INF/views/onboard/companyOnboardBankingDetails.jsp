@@ -147,7 +147,10 @@ right: 15px;
 				       <ul>
 						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
 						  <li class="actLi">Locations<i class="fa fa-check-circle"></i></li>
-						  <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
+						   <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+						  <li class="actLi">Information<i class="fa fa-check-circle"></i></li>
+						  </c:if>
+						  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 						  <li class="actLi">Federal & state taxes<i class="fa fa-check-circle"></i></li>
 						  </c:if>
 						  <li class="hoverLi">Banking details</li>
@@ -199,11 +202,15 @@ right: 15px;
 				  	</div>
 				  </div>
 					<div class="welBtns welBtnsA">
-						<c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
+						<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardFederalAndStateTaxes'/>'"><input type="submit" value="Save & Continue" class="Brig" id="save_button">
 						</c:if>
 						
 						<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardInformationDetails'/>'"><input type="submit" value="Save & Continue" class="Brig" id="save_button">
+						</c:if>
+						
+						<c:if test="${SourceLeadWeb_orgLocations.country != 'India' && SourceLeadWeb_orgLocations.country != 'United States'}">
 						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardLocations'/>'"><input type="submit" value="Save & Continue" class="Brig" id="save_button">
 						</c:if>
 						

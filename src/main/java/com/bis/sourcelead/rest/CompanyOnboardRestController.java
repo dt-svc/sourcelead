@@ -25,12 +25,14 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.FederalAndStateTaxDTO;
 import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
+import com.bis.sourcelead.dto.OrgLocationInformationDetailsDTO;
 import com.bis.sourcelead.dto.OrglocationOnboardDocumentsDTO;
 import com.bis.sourcelead.dto.OrglocationSignatoryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.SingnatoryDTO;
 import com.bis.sourcelead.dto.StateTaxesList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.OrgLocationInformationDetails;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
@@ -39,6 +41,7 @@ import com.bis.sourcelead.entity.OrglocationStateTax;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
@@ -77,6 +80,9 @@ public class CompanyOnboardRestController {
 	
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Autowired
+	OrgLocationInformationDetailsService orgLocationInformationDetailsService;
 	
 	@RequestMapping(value = "/saveOrgLocationsFederalAndStatesTax", method = RequestMethod.POST)
 	@ResponseBody
@@ -154,6 +160,66 @@ public class CompanyOnboardRestController {
 			}
 		}
 		return result;
+	}
+	
+	
+	
+	
+	@RequestMapping(value = "/saveCompanyOnboardInformationDetails", method = RequestMethod.POST)
+	@ResponseBody
+	public  Response<String> saveCompanyOnboardInformationDetails(OrgLocationInformationDetailsDTO informationDetailsDTO, HttpServletRequest request) throws Exception
+	{
+		Response<String> response=new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocationInformationDetails informationDetails = null;
+		
+		try {
+			if(user !=null){
+			if(Validator.validate(informationDetailsDTO)){
+				informationDetails = orgLocationInformationDetailsService.getOrgLocationInformationDetailsByOrgLocationId(loginOrgLocation.getId());
+			 if(informationDetails == null) {
+				 informationDetails = new OrgLocationInformationDetails();
+				 informationDetails.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		       }
+			 informationDetails.setOrgLocationId(loginOrgLocation);
+			 informationDetails.setCin(informationDetailsDTO.getCin());
+			 informationDetails.setGstin(informationDetailsDTO.getGstin());
+			 informationDetails.setIncorporationDate(commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),informationDetailsDTO.getIncorporationDate()));
+			 informationDetails.setPan(informationDetailsDTO.getPan());
+			 informationDetails.setTan(informationDetailsDTO.getTan());
+			 informationDetails.setTds(informationDetailsDTO.getTds());
+			 informationDetails.setPfNumber(informationDetailsDTO.getPfNumber());
+			 informationDetails.setPfRegistrationDate(commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),informationDetailsDTO.getPfregistrationDate()));
+			 informationDetails.setEsiNumber(informationDetailsDTO.getEsiNumber());
+			 informationDetails.setEsiRegistrationDate(commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),informationDetailsDTO.getEsiregistrationDate()));
+			 informationDetails.setPtNumber(informationDetailsDTO.getPtNumber());
+			 informationDetails.setPtRegistrationDate(commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),informationDetailsDTO.getPtregistrationDate()));
+			 informationDetails.setCreatedBy(user);
+			 informationDetails.setUpdatedBy(user);
+			 informationDetails.setCreatedDate(commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), new Date()));
+			 informationDetails.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), new Date()));
+			 orgLocationInformationDetailsService.saveOrgLocationInformationDetails(informationDetails);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+			}
+			else{
+				response.setObject("DataMissing");
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+			}
+			else{
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+    			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+	
+		return response;
 	}
 	
 	
