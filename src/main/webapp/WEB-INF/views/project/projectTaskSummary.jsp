@@ -406,7 +406,7 @@ var sourceleadUrl = '${sourceleadUrl}';
 		              </div>
 		              </div>
 			              <form name="projectTaskCustomForm" id="projectTaskCustomForm">
-			             	<div id="projectTaskCustomId" onClick="inlinesaveProjectTaskCustomFieldDetails();"></div>
+			             	<div id="projectTaskCustomId" onClick="inlinesaveProjectTaskCustomFieldDetails();" class="formGroup100"></div>
 			             </form>
 		          </div>
 		      </div>
