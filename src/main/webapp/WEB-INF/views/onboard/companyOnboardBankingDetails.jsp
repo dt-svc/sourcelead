@@ -196,6 +196,7 @@ right: 15px;
 									<th>Account Name</th>
 									<th>Account Number</th>
 									<th>Routing Number</th>
+									<th>Address</th>
 									<th>Actions</th>
 								</tr>
 							</thead>
@@ -209,6 +210,7 @@ right: 15px;
 												<td>${bankDetails.accountName}</td>
 												<td>${bankDetails.accountNumber}</td>
 												<td>${bankDetails.routingNumber}</td>
+												<td class="tbldata-dotdot" title="${!empty bankDetails.bankAddress ? bankDetails.bankAddress : ''}">${!empty bankDetails.bankAddress ? bankDetails.bankAddress : '---'}</td>
 												<td>
 													<ul class="list-inline list-unstyled">
 														<li><a href="javascript:void(0)" onclick="addNewBankingDetails('${bankDetails.uuid}');"><i class="fa fa-pencil"></i></a></li>
@@ -331,6 +333,13 @@ right: 15px;
 		result = result + '	    <div class="row">';
 		
 		result = result + '	    <div class="clearfix mb10 col-md-6">';
+		result = result + '	      <label class="clearfix">Address</label>';
+		result = result + '	      <div class="">';
+		result = result + '	        <input type="text" class="form-control inlineField"  id="bankAddress" name="bankAddress" field-name="Address"  data-validation="required validate_space">';
+		result = result + '	      </div>';
+		result = result + '	    </div>';
+		
+		result = result + '	    <div class="clearfix mb10 col-md-6">';
 		result = result + '	      <label class="clearfix">Routing Number</label>';
 		result = result + '	      <div class="">';
 		result = result + '	        <input type="text" class="form-control inlineField"  id="routingNumber" name="routingNumber" field-name="Routing Number"  data-validation="required validate_space validate_length length9-9" maxlength="9">';
@@ -369,6 +378,7 @@ right: 15px;
 				        	$("#accountType").val(result.accountType);
 				        	$("#accountName").val(result.accountName);
 				        	$("#routingNumber").val(result.routingNumber);
+				        	$("#bankAddress").val(result.bankAddress);
 				        	$("#accountNumber").val(result.accountNumber);
 				        	$("#uuid").val(result.uuid);
 				        	

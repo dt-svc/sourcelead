@@ -245,6 +245,7 @@ public class CompanyOnboardRestController {
 			bankingDetails.setOrgLocationId(loginOrgLocation);
 			bankingDetails.setAccountType(bankingDetailsDTO.getAccountType());
 			bankingDetails.setAccountName(bankingDetailsDTO.getAccountName());
+			bankingDetails.setBankAddress(bankingDetailsDTO.getBankAddress());
 			bankingDetails.setRoutingNumber(bankingDetailsDTO.getRoutingNumber());
 			bankingDetails.setAccountNumber(bankingDetailsDTO.getAccountNumber());
 			bankingDetails.setBankName(bankingDetailsDTO.getBankName());
@@ -294,6 +295,7 @@ public class CompanyOnboardRestController {
 				bankingDetailsDTO.setAccountName(bankingDetails.getAccountName());
 				bankingDetailsDTO.setAccountNumber(bankingDetails.getAccountNumber());
 				bankingDetailsDTO.setAccountType(bankingDetails.getAccountType());
+				bankingDetailsDTO.setBankAddress(bankingDetails.getBankAddress());
 				bankingDetailsDTO.setRoutingNumber(bankingDetails.getRoutingNumber());
 				bankingDetailsDTO.setUuid(bankingDetails.getUuid());
 			}
