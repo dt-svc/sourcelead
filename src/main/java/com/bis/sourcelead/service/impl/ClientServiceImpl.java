@@ -358,9 +358,11 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
 				org.setWebSite(convertWebsite(clientDTO.getWebSite()));
 			}
+			if((StringUtils.isNotBlank(clientDTO.getIsLawFirm())) && (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()))){
 			if(clientDTO.getIsLawFirm().equalsIgnoreCase("Y") && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")){
 			clientOrgLocations.setIsLawFirm(Constants.YES);
 			clientOrgLocations.setIsAccountingFirm(Constants.YES);
+			}
 			}else{
 			clientOrgLocations.setIsLawFirm(Constants.NO);
 			clientOrgLocations.setIsAccountingFirm(Constants.NO);	
