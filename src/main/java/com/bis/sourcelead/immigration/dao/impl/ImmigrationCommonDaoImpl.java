@@ -1051,6 +1051,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
             }
         }
         responseList.setRecordsTotal(totalCount);
+        responseList.setRecordsFiltered(filterCount);
         //opendate
         
         List<MyImmigrationViewDTO> ImmigarionDTOList = new ArrayList<MyImmigrationViewDTO>();

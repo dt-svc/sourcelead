@@ -245,7 +245,9 @@
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#formsTab');" class="btn btn-default btn-sm">
              	<!-- <input type="button" value="Skip" onclick="goToSummaryTab('#notesTab');" class="btn btn-default btn-sm">  -->
+             	<c:if test ="${myImmigrationPage =='Y'}">
               	<input type="button" value="Submit" onclick=" checkRequiredDocAndContinue();" class="btn btn-primary btn-sm ml10">
+              	</c:if> 
             </div>
 		</div>
 	</form>	
