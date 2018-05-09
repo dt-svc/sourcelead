@@ -3168,4 +3168,5 @@ return result;
 <jsp:include page="applicantQuickView.jsp"></jsp:include>
 <jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
 <jsp:include page="requirementAssignedToList.jsp"></jsp:include>
+ <jsp:include page="recommendationListTable.jsp"></jsp:include>
 
