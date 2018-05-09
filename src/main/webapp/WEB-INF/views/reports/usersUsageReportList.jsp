@@ -918,6 +918,8 @@ function showCustomFields(){
         $("#custom-selects").hide();
         $('#custFromDate').removeAttr('data-validation');
         $('#custToDate').attr('data-validation',"required");
+        $('#custFromDate').val("");
+        $('#custToDate').val("");
         usageReportList(userType);
 //         usagemultipleipslist();
     }
