@@ -1086,7 +1086,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					+ searchValue
 					+ "%' ").append("OR sah.submissionId.projectMembers.projectMemberCandidteId.lastName like '%"
 							+ searchValue
-							+ "%' ").append("OR sah.submissionId.projectMembers.projectMemberCandidteId.email like '%"
+		        	+ "%' ").append("OR concat(sah.submissionId.projectMembers.projectMemberCandidteId.firstName,' ',sah.submissionId.projectMembers.projectMemberCandidteId.lastName) like '%"
+					+ searchValue.trim().replaceAll(" +", " ")
+					+ "%' ")
+			       .append("OR sah.submissionId.projectMembers.projectMemberCandidteId.email like '%"
 									+ searchValue
 									+ "%' ").append("OR sah.submissionId.projectMembers.projects.projectName like '%"
 											+ searchValue
@@ -1098,8 +1101,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			searchQuery.append(" and( sah.submissionId.projectMembers.projectMemberCandidteId.firstName like '%"
 					+ searchValue
 					+ "%' ").append("OR sah.submissionId.projectMembers.projectMemberCandidteId.lastName like '%"
-							+ searchValue
-							+ "%' ").append("OR sah.submissionId.projectMembers.projectMemberCandidteId.email like '%"
+					+ searchValue
+					+ "%' ").append("OR concat(sah.submissionId.projectMembers.projectMemberCandidteId.firstName,' ',sah.submissionId.projectMembers.projectMemberCandidteId.lastName) like '%"
+					+ searchValue.trim().replaceAll(" +", " ")		
+					+ "%' ").append("OR sah.submissionId.projectMembers.projectMemberCandidteId.email like '%"
 									+ searchValue
 									+ "%' ").append("OR  sah.submissionId.projectMembers.projects.projectName like '%"
 											+ searchValue
