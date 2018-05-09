@@ -108,7 +108,7 @@ var sourceleadUrl ='${sourceleadUrl}';
 								        </c:if>
 								        
 								        <c:if test="${docs.isRequestedDocRequired == 'N'}">
-								        	<input type="file"  class="form-control welFile"  id="uploadDocFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validatedoc" data-validation-optional="true" onchange="uploadFileReqDoc(${docs.id});">
+								        	<input type="file"  class="form-control welFile"  id="uploadDocFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validate_docimgpdf" data-validation-optional="true" onchange="uploadFileReqDoc(${docs.id});">
 								        </c:if>
 								     </div>
 								    </td>
