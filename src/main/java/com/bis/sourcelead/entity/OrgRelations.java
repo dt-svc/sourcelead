@@ -145,6 +145,10 @@ public class OrgRelations implements Serializable{
 	
 	@Transient
 	@JsonProperty
+    private Long immigrationRelatedId;
+	
+	@Transient
+	@JsonProperty
     private String vendorOrgLocation;
 	
 	@Transient
@@ -1140,6 +1144,14 @@ public class OrgRelations implements Serializable{
 
 	public void setIsAccountingFirm(String isAccountingFirm) {
 		this.isAccountingFirm = isAccountingFirm;
+	}
+
+	public Long getImmigrationRelatedId() {
+		return immigrationRelatedId;
+	}
+
+	public void setImmigrationRelatedId(Long immigrationRelatedId) {
+		this.immigrationRelatedId = immigrationRelatedId;
 	}
 
 	
