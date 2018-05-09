@@ -87,8 +87,15 @@ public class CandidateOnBoardController {
  	}
 	
 	@RequestMapping(value = "/onboardingCandidateStep2")
-	public ModelAndView onboardingCandidateStep2(HttpServletRequest request) {
+	public ModelAndView onboardingCandidateStep2(HttpServletRequest request) throws Exception{
 		ModelAndView model = new ModelAndView();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
+		model.addObject("address1",candidateOnBoarding.getAddress1());
+		model.addObject("address2",candidateOnBoarding.getAddress2());
+		model.addObject("mobileNumber",candidateOnBoarding.getMobileNumber());
+		model.addObject("zipCode",candidateOnBoarding.getZipCode());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("onboard/welcomeStep2");
 		return model;
