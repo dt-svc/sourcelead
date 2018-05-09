@@ -2263,6 +2263,24 @@ public class ClientRestController {
 							}
 							boolQueryBuilder.must(invitationAdvancedBoolQueryBuilder);
 						}
+						
+						
+						String spocStatus = null;
+						//Spoc Status
+						List<String> statusAdvancedArray = null;//getSearchKeywordsFromChosenSelectField(jsonObj, "statusAdvanced");
+						if(clientVendorDTO.getStatus() !=null && clientVendorDTO.getStatus().size() >0) {
+							statusAdvancedArray = clientVendorDTO.getStatus();
+						}else if(clientVendorDTO.getStatusAdvanced() !=null && clientVendorDTO.getStatusAdvanced().size() >0) {
+							statusAdvancedArray = clientVendorDTO.getStatusAdvanced();
+						}
+						if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty() && statusAdvancedArray.size() < 2){
+							BoolQueryBuilder statusBoolQueryBuilder = QueryBuilders.boolQuery();
+							for(String keywd : statusAdvancedArray){
+								statusBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("spocStatus", keywd));
+								spocStatus = keywd;
+							}
+							boolQueryBuilder.must(statusBoolQueryBuilder);
+						}
 			  // --end
 				
 				SearchResponse searchResponse = sourceleadELKBaseIndexer
@@ -2276,22 +2294,6 @@ public class ClientRestController {
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				ResponseList<ClientVendorContactsIndex> response = new ResponseList<>();
-				
-				String spocStatus = null;
-				//Spoc Status
-				List<String> statusAdvancedArray = null;//getSearchKeywordsFromChosenSelectField(jsonObj, "statusAdvanced");
-				if(clientVendorDTO.getStatus() !=null && clientVendorDTO.getStatus().size() >0) {
-					statusAdvancedArray = clientVendorDTO.getStatus();
-				}else if(clientVendorDTO.getStatusAdvanced() !=null && clientVendorDTO.getStatusAdvanced().size() >0) {
-					statusAdvancedArray = clientVendorDTO.getStatusAdvanced();
-				}
-				if(statusAdvancedArray != null && !statusAdvancedArray.isEmpty() && statusAdvancedArray.size() < 2){
-					for(String keywd : statusAdvancedArray){
-						spocStatus = keywd;
-					}
-				}
-				
-				
 				
 				if(searchHits != null && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
@@ -2392,12 +2394,29 @@ public class ClientRestController {
 					}	
 					
 				}
-				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
-				SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
-						.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
-								0, 10, "invitationStatus.keyword", SortOrder.DESC, boolQueryBuilderForCount);
+				if(spocStatus != null){
+					response.setRecordsFiltered(clientVendorContactsList.size());
+				}else{
+					response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
+				}
+			
+				Long totalRecorCount = 0l;
+				if(spocStatus != null){
+					totalRecorCount = Long.valueOf(clientVendorContactsList.size());
+				}else{
+					SearchResponse searchResponseForCount = sourceleadELKBaseIndexer
+							.searchDocumentWithMaxResults(Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,
+									0, 10, "invitationStatus.keyword", SortOrder.DESC, boolQueryBuilderForCount);
+					if(searchResponseForCount !=null){
+						totalRecorCount = searchResponseForCount.getHits().getTotalHits();
+					}else{
+						totalRecorCount = 0l;
+					}
+					
+				}
 				
-			response.setRecordsTotal(searchResponseForCount == null ? response.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
+				
+			response.setRecordsTotal(totalRecorCount == 0 ? response.getRecordsFiltered() : totalRecorCount.intValue());
 			response.setData(clientVendorContactsList);
 			 return response;
 		}
