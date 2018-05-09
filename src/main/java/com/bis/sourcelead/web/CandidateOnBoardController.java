@@ -92,10 +92,10 @@ public class CandidateOnBoardController {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
-		model.addObject("address1",candidateOnBoarding.getAddress1());
-		model.addObject("address2",candidateOnBoarding.getAddress2());
-		model.addObject("mobileNumber",candidateOnBoarding.getMobileNumber());
-		model.addObject("zipCode",candidateOnBoarding.getZipCode());
+		if(candidateOnBoarding != null){
+			model.addObject("candidateOnBoarding",candidateOnBoarding);
+		}
+		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("onboard/welcomeStep2");
 		return model;
