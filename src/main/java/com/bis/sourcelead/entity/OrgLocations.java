@@ -228,6 +228,12 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name = "REGISTRATION_STATUS")
 	private String registrationStatus;
+	
+	@Column(name = "IS_LAW_FIRM")
+	private String isLawFirm;
+	
+	@Column(name = "IS_ACCOUNTING_FIRM")
+	private String isAccountingFirm;
     
     @Transient
     private String orgName;
@@ -963,4 +969,22 @@ public class OrgLocations implements Serializable{
 	public void setRegistrationStatus(String registrationStatus) {
 		this.registrationStatus = registrationStatus;
 	}
+
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
+	}
+	
+	
 }

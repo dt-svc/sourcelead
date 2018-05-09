@@ -133,6 +133,12 @@ public class OrgRelations implements Serializable{
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "IS_LAW_FIRM")
+	private String isLawFirm;
+	
+	@Column(name = "IS_ACCOUNTING_FIRM")
+	private String isAccountingFirm;
+	
 	@Transient
 	@JsonProperty
     private String orgName;
@@ -1118,6 +1124,22 @@ public class OrgRelations implements Serializable{
 	public void setLocationJsonId(Long locationJsonId)
 	{
 		this.locationJsonId = locationJsonId;
+	}
+
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
 	}
 
 	

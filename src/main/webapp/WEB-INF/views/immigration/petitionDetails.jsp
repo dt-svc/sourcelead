@@ -166,7 +166,7 @@
 										id="attorneyId" placeholder="Select Attorney" field-name="Attorney Name" data-validation="required"
 										onchange="getAttorneyContactList();removeValidationAttorney();">
 									</select>
-								 	<span class="input-group-addon cursorPointer bg-blue" onclick="getAttorneysByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
+								 	<span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 							 	</div>
 							 	<span class="col-md-2 noPad clearfix">
 							<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
@@ -179,7 +179,7 @@
 										id="attorneyId" placeholder="Select Attorney" field-name="Attorney Name" data-validation="required"
 										onchange="getAttorneyContactList();removeValidationAttorney();">
 									</select>
-								<span class="input-group-addon cursorPointer bg-blue" onclick="getAttorneysByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
+								<span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 							</div>
 							<span class="col-md-2 noPad clearfix">
 							<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
@@ -218,7 +218,7 @@
 									<select class="chosen-select form-control" name="attorneyContact" id="attorneyContact" placeholder="Select Attorney Contact" field-name="Attorney Contact"
 										 data-validation="required" onchange="removeValidationAttorneyContact();">
 									</select>
-                  <span class="input-group-addon cursorPointer bg-blue" onclick="getAttorneysByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 			</div>		
 								<span class="col-md-2 noPad clearfix" onclick="selectedAttorney();">
 								<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
@@ -233,7 +233,7 @@
 									<select class="chosen-select form-control" name="attorneyContact" id="attorneyContact" placeholder="Select Attorney Contact" field-name="Attorney Contact"
 										 data-validation="required" onchange="removeValidationAttorneyContact();">
 									</select>
-                  <span class="input-group-addon cursorPointer bg-blue" onclick="getAttorneysByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 			</div>		
 								<span class="col-md-2 noPad clearfix" onclick="selectedAttorney();">
 								<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
@@ -996,6 +996,30 @@ $("#experienceValue").change(function () {
 		 });
  }
  
+ function getAllRelationssByOrgLocation(attorneyId){
+	 console.log(" before function calling ---->");
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/getAllRelationsByOrgLocationAndType?"+tokenParamName+"="+tokenValue+"&type=Client", 
+		        success: function(data) {
+		        	var json = JSON.parse(data);
+		        	$('#attorneyId').empty();
+		        	$('#attorneyId').append('<option value="">--Select Attorney --</option>');
+		            for(var i=0;i<json.length;i++){
+		            	  var opt = json[i];
+		            	  if(opt.id == attorneyId){
+		            		  $('#attorneyId').append('<option selected value='+opt.id+' >'+opt.orgName+'</option>');
+		            	  }else{
+		            		$('#attorneyId').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
+		            	  }
+		            }
+		            $('#attorneyId').trigger("chosen:updated");
+		            //getVendorContactList();
+		            
+		        }
+		 });
+ }
+ 
  function getAttorneyContactList(attorneyId,attorneyContactId){
 	 var orgRelationID = null;
 	 	if(attorneyId != null){
@@ -1036,7 +1060,8 @@ $("#experienceValue").change(function () {
 	  $( document ).ready(function() {
 		  $('#rateCurrency').selectpicker('refresh');  // manually refreshing select picker due to bootstrap css loading issue.
 		  $('#rateType').selectpicker('refresh');
-		  getAttorneysByOrgLocation("${immigrationDTO.attorneyId}");
+		 // getAttorneysByOrgLocation("${immigrationDTO.attorneyId}");
+		  getAllRelationssByOrgLocation("${immigrationDTO.attorneyId}")
 		  getAttorneyContactList("${immigrationDTO.attorneyId}","${immigrationDTO.attorneyContact}");
 		 getCandidatesByOrgLocation("${immigrationDTO.candidateId}");
 		  getPetitionTypeDropDown("${immigrationDTO.petitionType}");
