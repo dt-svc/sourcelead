@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
+import com.bis.sourcelead.dto.OrgLocationIndiaBankingDetailsDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
@@ -38,6 +40,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLocationIndiaBankingDetailsService;
 import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
@@ -103,6 +106,9 @@ public class OrgSettingsController {
 	
 	@Autowired
 	OrgLocationInformationDetailsService orgLocationInformationDetailsService;
+	
+	@Autowired
+	OrgLocationIndiaBankingDetailsService orglocationIndiaBankingDetailsService;
 
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
@@ -125,10 +131,14 @@ public class OrgSettingsController {
 		model.addObject("bussinessTypesList", bussinessTypesList);
 		
 		
-		OrglocationBankingDetails bankingDetails = orglocationBankingDetailsService.getOrglocationBankingDetailsByOrgLocationId(orgLocations.getId());
-		if(bankingDetails != null) {
-			model.addObject("uuid", bankingDetails.getUuid());
-			SourceLeadSessionManager.setSessionAttribute(request, "bankingDetails", bankingDetails);
+		if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
+			List<OrgLocationIndiaBankingDetailsDTO> bankingDetailsDTOList =  orglocationIndiaBankingDetailsService.getOrglocationIndiaBankingDetailsList(orgLocations.getId());
+			model.addObject("bankingDetailsDTOList", bankingDetailsDTOList);
+			model.addObject("bankingDetailsDTOListSize", bankingDetailsDTOList.size());
+		}else {
+			List<OrgLocationBankingDetailsDTO> bankingDetailsDTOList =  orglocationBankingDetailsService.getOrglocationBankingDetailsListByOrgLocationId(orgLocations.getId());
+			model.addObject("bankingDetailsDTOList", bankingDetailsDTOList);
+			model.addObject("bankingDetailsDTOListSize", bankingDetailsDTOList.size());
 		}
 		
 		
