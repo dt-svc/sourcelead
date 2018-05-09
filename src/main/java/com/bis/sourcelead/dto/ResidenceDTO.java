@@ -24,10 +24,12 @@ public class ResidenceDTO extends CommonDTO {
 		
 		private String zipcode;
 		
+		private String isCurrResi;
+		
 		@Required(desc="residence start date")
 		private String residenceStartDate;
 		
-		@Required(desc="residence end date")
+		@Required(desc="residence end date",dependsOn = "isCurrResi", parentValue = "N")
 		private String residenceEndDate;
 
 		public String getLocation() {
@@ -100,6 +102,14 @@ public class ResidenceDTO extends CommonDTO {
 
 		public void setResidenceId(Long residenceId) {
 			this.residenceId = residenceId;
+		}
+
+		public String getIsCurrResi() {
+			return isCurrResi;
+		}
+
+		public void setIsCurrResi(String isCurrResi) {
+			this.isCurrResi = isCurrResi;
 		}
 
 		

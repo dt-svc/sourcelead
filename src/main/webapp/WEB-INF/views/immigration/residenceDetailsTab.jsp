@@ -24,12 +24,18 @@
 				<td><div class="tbldata-dotdot-vsm">${!empty residitems.country ? residitems.country : '---'}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${!empty residitems.startDateStr ? residitems.startDateStr : '---'}</div></td>				
 				<td><div class="tbldata-dotdot-vsm">${!empty residitems.endDateStr ? residitems.endDateStr : '---'}</div></td>
-				
+				<c:choose>
+				<c:when test = "${residitems.isCurrAddress =='Y'}">
+				<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id},'${residitems.isCurrAddress}');"
+				class="glyphicon glyphicon-pencil cursorPointer"></i></div></td>
+				</c:when>
+				<c:otherwise>
 				<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id});"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
 				 onclick="deleteResidenceDetailsById(${residitems.id});" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
-				
+				</c:otherwise>
+				</c:choose>
 				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
@@ -62,6 +68,7 @@
 		<form id ="residenceDetails_form" name = "residenceDetails_form" method = "Post">
 		<div class="popUpOut" id="popResiView">
 		<input type="hidden" id= "residenceId" name = "residenceId">
+		<input type="hidden" id= "isCurrResi" value="Y" name = "isCurrResi">
 		<div class="popupHead">
 			<h2>Add Residence</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="refreshResidency();"></a>
 		</div>
@@ -125,7 +132,7 @@
 				</div>
 				</div>
 			</div>
-          <div class="col-sm-12 noPad mt clearfix">
+          <div class="col-sm-12 noPad mt clearfix" id="resiEnddatediv">
 				<label class="col-md-4 padding_left">End Date<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
               	 <div class="input-group errorInptgroup">
