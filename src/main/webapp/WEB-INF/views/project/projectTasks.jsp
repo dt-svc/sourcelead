@@ -609,8 +609,8 @@ function editCancel(){
 			result = result	+ '     <form name="projectTask_form" id="projectTask_form" method="post">';
 			result = result	+ '       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Task Type<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Task Type<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 		    result = result	+ '             <select class="form-control" onchange="showtasktype()" id="taskstype" name="taskstype" field-name="Task Type"  data-validation="required">'; 
 		    result = result	+ '     <c:forEach var="type" items="${taskTypeList}">  ';        
 		    result = result	+ '  	 	  <option value="${type.uniqueKey}">${type.name}</option>';   
@@ -619,23 +619,23 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '           <div class="form-group" style="display: none" id="epic">';
-			result = result	+ '           <label class="col-md-4">Epic</label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Epic</label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="chosen-select form-control" id="epicId" name="epic">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '           <div class="form-group" style="display: none" id="userStory">';
-			result = result	+ '           <label class="col-md-4">User Story</label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">User Story</label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="chosen-select form-control" id="userStroyId" name="userStory">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			
 			result = result	+ '           <div class="form-group" style="display: none" id="task">';
-			result = result	+ '           <label class="col-md-4">Task<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Task<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="chosen-select form-control" id="subTasksId" name="subTask" field-name="Task">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
@@ -643,21 +643,21 @@ function editCancel(){
 			
 			
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Task Title<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Task Title<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result	+ '             <input class="form-control"  placeholder="Task Title" type="text" id="taskName" name="taskName" field-name="Task Title"  data-validation="required validate_length length2-250" >';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Assign To <i class="fa fa-info-circle" title="Select the project team members who will handle this task (can be assigned to multiple members)"></i></label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Assign To <i class="fa fa-info-circle" title="Select the project team members who will handle this task (can be assigned to multiple members)"></i></label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result	+ '             <select class="form-control chosen-select choose" multiple  id="assignTaskId" name="assignTaskId" data-placeholder="Select Assign To">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Due Date <i class="fa fa-info-circle" title="The deadline for the assigned project task"></i></label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Due Date <i class="fa fa-info-circle" title="The deadline for the assigned project task"></i></label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result +'<div class="input-group">';
 			result = result	+ '             <input class="form-control calendar" value="" name="duDate" id="dueDate" placeholder="Due Date" type="text" readonly>';
 			 result = result +'<span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
@@ -666,8 +666,8 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Priority</label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Priority</label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="form-control" id="priority" name="priority">';
 			result = result	+ '           <c:forEach var="priority" items="${taskPriorityList}"> ';        
 			result = result	+ '		             <option value="${priority.id}" ${priority.name  == "P2" ? "selected" : ''} >${priority.name}</option>';   
@@ -676,14 +676,14 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Estimated Time <i class="fa fa-info-circle" title="The estimated of time taken for the project task"></i></label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Estimated Time <i class="fa fa-info-circle" title="The estimated of time taken for the project task"></i></label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result	+ '             <input class="form-control"  placeholder="Estimated Time" type="text" id="estimatedTime" name="estimatedTime" field-name="Estimated Time"  data-validation="validate_Space validate_float validate_length length1-10" data-validation-optional="true" >';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Severity</label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Severity</label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="form-control" id="severity" name="severity">';
 			result = result	+ '               <option value="">-- Select Severity --</option>';
 			result = result	+ '                 <c:forEach var="severity" items="${taskSeverityList}">  ';       
@@ -693,8 +693,8 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Status<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Status<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="form-control" field-name="Status"  id="taskStatus" name="taskStatus" data-validation="required">';
 			result = result	+ '              <c:forEach var="Status" items="${taskStatusList}">    ';   
 			result = result	+ ' 			  <option value="${Status.id}">${Status.name}</option> ';
@@ -703,15 +703,15 @@ function editCancel(){
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Owner</label>';
-			result = result	+ '           <div class="col-md-8">';
+			result = result	+ '           <label class="col-md-3">Owner</label>';
+			result = result	+ '           <div class="col-md-9">';
 			result = result	+ '             <select class="form-control" data-placeholder="Select Owner" id="ownerId" name="taskOwner">';
 			result = result	+ '             </select>';
 			result = result	+ '           </div>';
 			result = result	+ '         </div>';
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Billing Type<span class="text-danger paddingLeft">*</span></label>';
-			result = result	+ '           <div class="col-md-8 dropdown-select">';
+			result = result	+ '           <label class="col-md-3">Billing Type<span class="text-danger paddingLeft">*</span></label>';
+			result = result	+ '           <div class="col-md-9 dropdown-select">';
 			result = result	+ '             <select class="form-control" field-name="Billing Type" id="taskBillableType" name="taskBillableType" data-validation="required">';
 			result = result	+ '               <option value="Billable">Billable</option>';
 			result = result	+ '               <option value="Non-Billable">Non-Billable</option>';
@@ -720,8 +720,8 @@ function editCancel(){
 			result = result	+ '         </div>';
 			
 			result = result	+ '         <div class="form-group">';
-			result = result	+ '           <label class="col-md-4">Business Value</label>';
-			result = result	+ '             <div  class="col-md-8 positionRelative">';
+			result = result	+ '           <label class="col-md-3">Business Value</label>';
+			result = result	+ '             <div  class="col-md-9 positionRelative">';
 			result = result	+ '             <div class="input-group er ratetype">';
 			result = result	+ '					<div class="input-group-btn">';
 			result = result	+ '					<select class="selectpicker" id="currencyType" name="currencyType">';
@@ -743,7 +743,7 @@ function editCancel(){
 			result = result	+ '           <c:if test= "${!empty sourceleadSectionListForProjectTask}">  ';
 			result = result	+ '           <c:forEach var="section" items="${sourceleadSectionListForProjectTask}" varStatus="sectionOrder"> ';
 			result = result	+ '	          <c:if test="${sectionOrder.index == 0}">';
-			result = result	+ '           <div class="form-group" id="customDiv${section.id}"></div>';
+			result = result	+ '           <div class="clearfix" id="customDiv${section.id}"></div>';
 			result = result	+ '           </c:if>';
 			result = result	+ '           </c:forEach>';
 			result = result	+ '           </c:if>';
@@ -901,7 +901,7 @@ function tasksAssignList(projectId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var values = "Active";
 	$.ajax({
-    	type: "POST",
+    	type: "GET",
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";
