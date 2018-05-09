@@ -1044,9 +1044,9 @@ $("#experienceValue").change(function () {
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            	  if(opt.id == attorneyId){
-		            		  $('#attorneyId').append('<option attrval='+opt.responderLocationId.id+' selected value='+opt.id+' >'+opt.orgName+'</option>');
+		            		  $('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' selected value='+opt.id+' >'+opt.orgName+'</option>');
 		            	  }else{
-		            		$('#attorneyId').append('<option attrval='+opt.responderLocationId.id+' value='+opt.id+' >'+opt.orgName+'</option>');
+		            		$('#attorneyId').append('<option attrval='+opt.immigrationRelatedId+' value='+opt.id+' >'+opt.orgName+'</option>');
 		            		//$('#abbb').val(opt.responderLocationId.id);
 		            	  }
 		            }

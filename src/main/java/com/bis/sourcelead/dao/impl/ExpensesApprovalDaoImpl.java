@@ -82,6 +82,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		return tslist;
 	}
 	
+
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<ExpensesApproverHierarchy> getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(Long userId,Long orgLocationId, String expenseStatus, Date startDateUTC, Date endDateUTC,String searchValue,int start,int length) throws Exception {
@@ -136,13 +137,13 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		   query1.append(" and (sah.expenseId.purpose like '%" + searchValue + "%' ")
 				.append("OR sah.expenseId.projectMembers.projects.projectName like '%" + searchValue + "%' ")
 				.append("OR (sah.expenseId.projectMembers.projectMemberCandidteId.firstName like '" + searchValue + "%' OR sah.expenseId.projectMembers.projectMemberCandidteId.lastName like '%" + searchValue + "' )")
-				.append("OR (concat(sah.expenseId.projectMembers.projectMemberCandidteId.firstName,sah.expenseId.projectMembers.projectMemberCandidteId.lastName) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
+				.append("OR (concat(sah.expenseId.projectMembers.projectMemberCandidteId.firstName,' ',sah.expenseId.projectMembers.projectMemberCandidteId.lastName) like '%" + searchValue.trim().replaceAll(" +", " ")+ "%')" )
 				.append("OR sah.expenseId.projectMembers.projectMemberCandidteId.email like '" + searchValue + "%'")
 				.append("OR sah.expenseId.startDate like '%" + searchValue + "%' ")
 				.append("OR sah.expenseId.projectMembers.projectMemberCandidteId.designationType like '%" + searchValue + "%' ")
 				.append("OR sah.expenseApprovalStatus like '" + searchValue + "%' ");
 		   
-		   
+
 		   
 				if(matcher.matches() == false) {
 					query1.append("OR sah.expenseId.endDate like '%" + searchValue + "%' )");

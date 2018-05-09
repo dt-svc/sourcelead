@@ -526,10 +526,10 @@ function editCandidate(candidateId){
 							
 							result = result + '</span>';
 							
-							result = result + '<div id="customFieldDataId" class="col-md-6 columnfields-custom"></div>';
-							
+							result = result + '<div id="customFieldDataId" class="myForm columnfields-custom"></div>';
+							result = result + '<div class="clearfix"></div>';
 							result = result + '<div class="clearfix mb10 mt">';
-							result = result + '<div class="col-md-12">';
+							result = result + '<div class="col-md-6">';
 							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true">'+summary+'</textarea>';
 							result = result + ' </div>'; 
 							result = result + ' </div>'; 
@@ -680,20 +680,7 @@ function deleteCandidate(candidateId,candidateType) {
 				    showError("Operation failed, please try again");
 				}	
 			});
-			/* $.ajax({
-	        type : "POST",
-	         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
-	         success :function(data) {
-	              if(data != null && data != 'undefined' && data != ""){
-	            	  var json = JSON.parse(data);
-	            	  if(candidateType == 'Associates'){
-	            		  location.replace(sourceleadUrl+"/associatesList");
-	            	  }else{
-	            		  location.replace(sourceleadUrl+"/candidatesList");
-	            	  }
-	                }
-	                 },
-	              }); */ 
+			
 		}
 	} else {
 		showError("Reason is required");
