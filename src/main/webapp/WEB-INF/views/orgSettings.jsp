@@ -179,6 +179,9 @@ function cancelOrgImg(){
         <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
         <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Federal And State Taxes</a></li>
         </c:if>
+        <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+        <li><a data-toggle="tab" href="#informationDetails">Information</a></li>
+        </c:if>
         <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
         <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments">Documents</a></li>
         <li><a data-toggle="tab" href="#orglocationSignatory" onclick="getAllSignatory();">Signatory</a></li>
@@ -881,6 +884,7 @@ function cancelOrgImg(){
             			
         			</div>
    			 <jsp:include page="federalAndStateTaxes.jsp" />
+   			 <jsp:include page="locationInformationDetails.jsp" />
      		 <jsp:include page="orglocationBankingDetails.jsp" />
      		 <jsp:include page="orglocationDocuments.jsp" />
      		 <jsp:include page="orglocationSignatory.jsp" />

@@ -206,6 +206,7 @@ public class CompanyOnboardRestController {
 			 informationDetails.setCreatedDate(commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), new Date()));
 			 informationDetails.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), new Date()));
 			 orgLocationInformationDetailsService.saveOrgLocationInformationDetails(informationDetails);
+			 SourceLeadSessionManager.setSessionAttribute(request, "informationDetails", informationDetails);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
 			}
