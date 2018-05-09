@@ -134,7 +134,15 @@
             </c:if>
             </c:if>
             <c:if test="${empty immigrationDTO}">
-            <h4 class="col-md-12 mb">2. Attorney Details</h4>
+            <c:choose>
+				<c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y' && SourceLeadWeb_orgLocations.isAccountingFirm == 'Y'}">
+					 <h4 class="col-md-12 mb">2. Company Details</h4>
+				</c:when>
+				<c:otherwise>
+					  <h4 class="col-md-12 mb">2. Attorney Details</h4>
+				</c:otherwise>
+			</c:choose>
+           
             </c:if>
             <div class="clearfix"></div>
 							<div class="form-group">
@@ -149,9 +157,19 @@
 								</c:if>
 									</c:if>
 									 <c:if test="${empty immigrationDTO}">
+									 <c:choose>
+									 <c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y' && SourceLeadWeb_orgLocations.isAccountingFirm == 'Y'}">
+									 <label class="col-md-4"><span class="pull-left">Company Name</span><span
+									class="text-danger pull-left" id="man1">*</span></label>
+									</c:when>
+									<c:otherwise>
 									 <label class="col-md-4"><span class="pull-left">Attorney Name</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
+									</c:otherwise>
+									</c:choose>
+									
 									 </c:if>
+									 
 								<div class="col-md-8 chooRadius" id="errorAttorney">
 								
 								
@@ -202,7 +220,15 @@
 							</c:if>
 							</c:if>
 							<c:if test="${empty immigrationDTO}">
-							<label class="col-md-4"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+							<c:choose>
+								<c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y' && SourceLeadWeb_orgLocations.isAccountingFirm == 'Y'}">
+									 <label class="col-md-4"><span class="pull-left">Company Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+								</c:when>
+								<c:otherwise>
+									  <label class="col-md-4"><span class="pull-left">Attorney Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+								</c:otherwise>
+							</c:choose>
+							
 							</c:if>
 							
 							<c:if test="${!empty immigrationDTO}">
@@ -1018,9 +1044,9 @@ $("#experienceValue").change(function () {
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            	  if(opt.id == attorneyId){
-		            		  $('#attorneyId').append('<option attrval='+opt.locationId.id+' selected value='+opt.id+' >'+opt.orgName+'</option>');
+		            		  $('#attorneyId').append('<option attrval='+opt.responderLocationId.id+' selected value='+opt.id+' >'+opt.orgName+'</option>');
 		            	  }else{
-		            		$('#attorneyId').append('<option attrval='+opt.locationId.id+' value='+opt.id+' >'+opt.orgName+'</option>');
+		            		$('#attorneyId').append('<option attrval='+opt.responderLocationId.id+' value='+opt.id+' >'+opt.orgName+'</option>');
 		            		//$('#abbb').val(opt.responderLocationId.id);
 		            	  }
 		            }
