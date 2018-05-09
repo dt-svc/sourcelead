@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
+import com.bis.sourcelead.dto.OrgLocationIndiaBankingDetailsDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLocationIndiaBankingDetailsService;
 import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
@@ -82,6 +84,9 @@ public class CompanyOnboardController {
 	
 	@Autowired
 	OrgLocationInformationDetailsService orgLocationInformationDetailsService;
+	
+	@Autowired
+	OrgLocationIndiaBankingDetailsService orglocationIndiaBankingDetailsService;
 	
 	
 	
@@ -209,12 +214,19 @@ public class CompanyOnboardController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			
 			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded()) && orgLocations.getIsCompanyOnboarded().equalsIgnoreCase("N")) {
-				List<OrgLocationBankingDetailsDTO> bankingDetailsDTOList =  orglocationBankingDetailsService.getOrglocationBankingDetailsListByOrgLocationId(orgLocations.getId());
-				model.addObject("bankingDetailsDTOList", bankingDetailsDTOList);
-				model.addObject("bankingDetailsDTOListSize", bankingDetailsDTOList.size());
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				
-				model.setViewName("onboard/companyOnboardBankingDetails");
+				if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
+					List<OrgLocationIndiaBankingDetailsDTO> bankingDetailsDTOList =  orglocationIndiaBankingDetailsService.getOrglocationIndiaBankingDetailsList(orgLocations.getId());
+					model.addObject("bankingDetailsDTOList", bankingDetailsDTOList);
+					model.addObject("bankingDetailsDTOListSize", bankingDetailsDTOList.size());
+					model.setViewName("onboard/companyOnboardIndiaBankingDetails");
+				}else {
+					List<OrgLocationBankingDetailsDTO> bankingDetailsDTOList =  orglocationBankingDetailsService.getOrglocationBankingDetailsListByOrgLocationId(orgLocations.getId());
+					model.addObject("bankingDetailsDTOList", bankingDetailsDTOList);
+					model.addObject("bankingDetailsDTOListSize", bankingDetailsDTOList.size());
+					model.setViewName("onboard/companyOnboardBankingDetails");
+				}
 			}else {
 				model.setViewName("registration/persmissionDenied");
 			}
