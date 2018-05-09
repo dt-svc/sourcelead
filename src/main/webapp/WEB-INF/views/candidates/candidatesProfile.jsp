@@ -577,20 +577,7 @@ function deleteCandidate(candidateId,candidateType) {
 				    showError("Operation failed, please try again");
 				}	
 			});
-			/* $.ajax({
-	        type : "POST",
-	         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
-	         success :function(data) {
-	              if(data != null && data != 'undefined' && data != ""){
-	            	  var json = JSON.parse(data);
-	            	  if(candidateType == 'Associates'){
-	            		  location.replace(sourceleadUrl+"/associatesList");
-	            	  }else{
-	            		  location.replace(sourceleadUrl+"/candidatesList");
-	            	  }
-	                }
-	                 },
-	              }); */ 
+			
 		}
 	} else {
 		showError("Reason is required");
