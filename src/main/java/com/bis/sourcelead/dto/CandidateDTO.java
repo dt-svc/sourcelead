@@ -8,7 +8,6 @@ import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Phone;
 import com.bis.sourcelead.annotations.Required;
-
 public class CandidateDTO extends SearchDTO{
 
 	private Long id;
@@ -84,7 +83,7 @@ public class CandidateDTO extends SearchDTO{
 
 	private String designation;
 
-        @Required(desc = "designation type")
+    @Required(desc = "designation type")
 	private String designationType;
 
 	private String designationOtherType;

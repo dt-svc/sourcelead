@@ -166,7 +166,10 @@ right: 15px;
 			  <ul>
 				  <li class="hoverLi">Organization details</li>
 				  <li>Locations</li>
-				  <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
+				  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+				  <li>Information</li>
+				  </c:if>
+				  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 				  <li>Federal & state taxes</li>
 				  </c:if>
 				  <li>Banking details</li>

@@ -2823,8 +2823,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						 searchQuery.append("");
 					 }
 				}else {
-				searchQuery.append(" and (reqSub.candidate.firstName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+		 searchQuery.append(" and (reqSub.candidate.firstName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
 					.append("OR reqSub.candidate.lastName like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
+					.append("OR (concat(reqSub.candidate.firstName,' ',reqSub.candidate.lastName) like '%" + requirementSubmissionsDTO.getSearchValue().trim().replaceAll(" +", " ")+ "%')" )
 					.append("OR reqSub.candidate.email like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
 					.append("OR reqSub.candidate.mobilePhone like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
 					.append("OR reqSub.candidate.expectedRate like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
@@ -2832,12 +2833,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					.append("OR reqSub.candidateScore like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
 					.append("OR reqSub.candidate.experienceYears like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ")
 					.append("OR reqSub.submissionStatus like '%" + requirementSubmissionsDTO.getSearchValue() + "%' ");
-					String[] nameBytes = requirementSubmissionsDTO.getSearchValue().split(" ");
+				   
+					/*String[] nameBytes = requirementSubmissionsDTO.getSearchValue().split(" ");
 					for(String nameByte : nameBytes) {
 						searchQuery.append("OR reqSub.candidate.firstName like '%" + nameByte + "%' ")
 						.append("OR reqSub.candidate.lastName like '%" + nameByte + "%' ");
 						
-					}
+					}*/
 					searchQuery.append(" )");
 					}
 				}

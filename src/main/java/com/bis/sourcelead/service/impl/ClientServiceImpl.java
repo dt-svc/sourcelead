@@ -1866,14 +1866,22 @@ public class ClientServiceImpl implements ClientService {
 
 		// getting the current EmailScenario by EmailScenario unique name and entity
 		// type
-		EmailScenario emailScenario = null;
-
+		
+		//getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = null;
 		if (Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_CLIENT,
-					Constants.ENTITY_TYPE_EMAIL);
+			//getting the current EmailScenario by EmailScenario unique name and entity type
+			 if(orgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.REJECT_CLIENT,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		} else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_VENDOR,
-					Constants.ENTITY_TYPE_EMAIL);
+			 if(orgLocations != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.REJECT_VENDOR,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+				   }
 		}
 		
 

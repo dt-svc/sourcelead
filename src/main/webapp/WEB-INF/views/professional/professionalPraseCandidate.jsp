@@ -492,9 +492,8 @@
     --%>
 <script type="text/javascript">
 	function storeCandidate() {
-		var candidateId = '${candidateId}'
+		var candidateId = '${SourceLeadWeb_candidateId}';
 		rateValidations();
-		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
