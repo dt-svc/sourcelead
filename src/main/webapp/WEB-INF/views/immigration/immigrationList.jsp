@@ -429,7 +429,11 @@
      result = result + '<th>Email</th>';
      result = result + '<th>Phone</th>';
      result = result + '<th>On Date</th>';
-     result = result + '<th>Attorney</th>';
+     if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y' && '${SourceLeadWeb_orgLocations.isAccountingFirm}' == 'Y'){
+     result = result + '<th>Company</th>';
+     }else{
+     result = result + '<th>Attorney</th>'; 
+     }
      result = result + '<th>LCA Start Date</th>';
      result = result + '<th>LCA End Date</th>';
      result = result + '<th>Action</th>';

@@ -811,12 +811,14 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	            target.setLcaStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaStartDate()));
 	            target.setLcaEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaEndDate()));
 	            if(orgLocations.getId() == source.getOrgLocationId()) {
-	            	target.setOrgName(source.getOrg2());
+	            	target.setOrgName(source.getVendor());
 	            	target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG2);
+	            	target.setSpocName(source.getSpocNameVendor());
 	            }
 	            else {
-	            	target.setOrgName(source.getOrg1());
+	            	target.setOrgName(source.getClient());
 	            	target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG1);
+	            	target.setSpocName(source.getSpocNameClient());
 	            }
 	            ImmigarionDTOList.add(target);
 	        }

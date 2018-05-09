@@ -77,11 +77,11 @@ public class ImmigrationListView implements Serializable {
 	@Column(name = "PHONE ")
 	private String phone;
 
-	@Column(name = "ORG1 ")
-	private String org1;
+	@Column(name = "CLIENT ")
+	private String client;
 	
-	@Column(name = "ORG2 ")
-	private String org2;
+	@Column(name = "VENDOR ")
+	private String vendor;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -92,8 +92,11 @@ public class ImmigrationListView implements Serializable {
 	@Column(name = "PETITION_TYPE")
 	private Long petitionTypeId;
 	
-	@Column(name = "SPOC_NAME")
-	private String spocName;
+	@Column(name = "SPOC_NAME_CLIENT")
+	private String spocNameClient;
+	
+	@Column(name = "SPOC_NAME_VENDOR")
+	private String spocNameVendor;
 	
 	public Long getId() {
 		return id;
@@ -165,23 +168,6 @@ public class ImmigrationListView implements Serializable {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
-	}
-
-
-	public String getOrg1() {
-		return org1;
-	}
-
-	public void setOrg1(String org1) {
-		this.org1 = org1;
-	}
-
-	public String getOrg2() {
-		return org2;
-	}
-
-	public void setOrg2(String org2) {
-		this.org2 = org2;
 	}
 
 	public Long getImmTemplateId() {
@@ -280,12 +266,38 @@ public class ImmigrationListView implements Serializable {
 		this.petitionTypeId = petitionTypeId;
 	}
 
-	public String getSpocName() {
-		return spocName;
+	public String getClient() {
+		return client;
 	}
 
-	public void setSpocName(String spocName) {
-		this.spocName = spocName;
+	public void setClient(String client) {
+		this.client = client;
 	}
+
+	public String getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
+	}
+
+	public String getSpocNameClient() {
+		return spocNameClient;
+	}
+
+	public void setSpocNameClient(String spocNameClient) {
+		this.spocNameClient = spocNameClient;
+	}
+
+	public String getSpocNameVendor() {
+		return spocNameVendor;
+	}
+
+	public void setSpocNameVendor(String spocNameVendor) {
+		this.spocNameVendor = spocNameVendor;
+	}
+
+	
 
 }

@@ -100,6 +100,14 @@ CREATE OR REPLACE VIEW IMMIGRATION_LIST_VIEW AS
         WHERE
             LCA.CANDIDATE_ID = IMM.CANDIDATE_ID
                 AND LCA.IS_CURR = 'Y') AS LCA_END_DATE,
+      (SELECT 
+            O.ORG_NAME
+        FROM
+            SOURCELEAD.ORG_LOCATIONS OL,
+            SOURCELEAD.ORG O
+        WHERE
+            OL.ORG_ID = O.ID
+                AND OL.ID = IMM.ORG_LOCATION_ID) AS CLIENT,
     (SELECT 
             O.ORG_NAME
         FROM
@@ -107,19 +115,17 @@ CREATE OR REPLACE VIEW IMMIGRATION_LIST_VIEW AS
             SOURCELEAD.ORG O
         WHERE
             OL.ORG_ID = O.ID
-                AND OL.ID = IMM.ORG_LOCATION_ID) AS ORG1,
-    (SELECT 
-            O.ORG_NAME
-        FROM
-            SOURCELEAD.ORG_LOCATIONS OL,
-            SOURCELEAD.ORG O
-        WHERE
-            OL.ORG_ID = O.ID
-                AND OL.ID = IMM.ATTORNEY_LOCATION_ID) AS ORG2,
+                AND OL.ID = IMM.ATTORNEY_LOCATION_ID) AS VENDOR,
    
     (SELECT U.FIRST_NAME
-          FROM USER U
-           WHERE U.ID= IMM.SPOC_USER_ID) AS SPOC_NAME
+          FROM USER U, ORG_SPOC OS
+           WHERE  OS.CLIENT_USER_ID= U.ID
+             AND OS.ID=IMM.ORG_SPOC_ID ) AS SPOC_NAME_CLIENT,
+   
+   (SELECT U.FIRST_NAME
+          FROM USER U, ORG_SPOC OS
+           WHERE  OS.VENDOR_USER_ID= U.ID
+             AND OS.ID=IMM.ORG_SPOC_ID ) AS SPOC_NAME_VENDOR
                     
     FROM
         SOURCELEAD.IMMIGRATION IMM
