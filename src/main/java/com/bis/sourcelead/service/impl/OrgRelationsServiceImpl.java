@@ -139,6 +139,8 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			}else{
 				orgRelations.setInitiatorType("Client"); 
 				orgRelations.setResponderType("Vendor");
+				orgRelations.setIsAccountingFirm(clientDTO.getIsAccountingFirm());
+				orgRelations.setIsLawFirm(clientDTO.getIsLawFirm());
 				if(StringUtils.isNotBlank(clientDTO.getClientSaveFromType()) && "BulkVendorSaving".equalsIgnoreCase(clientDTO.getClientSaveFromType())){
 					orgRelations.setVendorRelationStatus("Sent");
 					orgRelations.setIsVendorDetailsFilled(Constants.YES);
@@ -544,6 +546,11 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	@Override
 	public List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId, String type) {
 		return orgRelationsDao.getClientOrVendorListByOrgLocationId(orgLocationId, type);
+	}
+	
+	@Override
+	public List<OrgRelations> getClientOrVendorListByOrgLocationIdForImmigration(Long orgLocationId, String type) {
+		return orgRelationsDao.getClientOrVendorListByOrgLocationIdForImmigration(orgLocationId, type);
 	}
 
 	@Override
