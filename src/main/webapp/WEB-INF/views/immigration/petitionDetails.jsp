@@ -998,9 +998,15 @@ $("#experienceValue").change(function () {
  
  function getAllRelationssByOrgLocation(attorneyId){
 	 console.log(" before function calling ---->");
+	var type = null ;
+	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y' && '${SourceLeadWeb_orgLocations.isAccountingFirm}' == 'Y'){
+		type = "Client";
+	}else{
+		type = "Vendor";
+	}
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getAllRelationsByOrgLocationAndType?"+tokenParamName+"="+tokenValue+"&type=Client", 
+		        url: sourceleadUrl+"/getAllRelationsByOrgLocationAndType?"+tokenParamName+"="+tokenValue+"&type="+type, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#attorneyId').empty();
