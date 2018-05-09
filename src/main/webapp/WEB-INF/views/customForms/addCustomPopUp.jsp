@@ -305,7 +305,7 @@
 			  <div class="col-md-8">${customFormPopDetails.labelinfo}</div>
 			</div>
 			
-			<div class="col-sm-12 noPad mt clearfix" id="labelInfoDiv">
+		<%-- 	<div class="col-sm-12 noPad mt clearfix" id="labelInfoDiv">
 			  <div class="col-md-4 noPad clearfix">Preview <span class="pull-right">:</span></div>
 			  <div class="col-md-8">
 			  	<div class="preImg">
@@ -313,7 +313,7 @@
 				  <input type="hidden" name="fieldType" value="${customFormPopDetails.fieldType}">
 				  </div>
 			  </div>
-			</div>			
+			</div> --%>			
 			
 			<!-- <div class="col-sm-12 noPad mt clearfix">
 			  <div class="col-md-4 noPad">Dependent Fields</div>
