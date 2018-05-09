@@ -1829,7 +1829,7 @@ public class RequirementListRestController {
 				}
 
 				
-				 /* //requirementPriority
+				  //requirementPriority
 		
 						if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
 							String priority = "";
@@ -1875,7 +1875,7 @@ public class RequirementListRestController {
 								}
 							} 
 						}
-						*/
+						
 						
 						//filter for is Client job
 						if(StringUtils.isNotEmpty(search.getFilterSpecJobs()) && "ClientJobs".equalsIgnoreCase(search.getFilterSpecJobs())){
