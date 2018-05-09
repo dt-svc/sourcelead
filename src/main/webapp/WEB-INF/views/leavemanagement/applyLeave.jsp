@@ -114,7 +114,7 @@ window.onload = function() {
               <label class="col-md-3" id="attachmentN" style="display:none">Attachment</label>
               <div class="col-md-9 errorInptgroup errorInptgroup-bottom" id="attachmentId">
                   <div style="float:left; width:100%; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#fff; color:#333; ">
-                      <input  type="file" class="pull-left valid" id="uploadBtn" field-name="Attachment"  onchange="uploadButton(0);">
+                      <input  type="file" class="pull-left valid" id="uploadBtn" field-name="Attachment"  onchange="uploadButton(0);" data-validation="required" >
                       <a id="Button0value">
                       <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" title="clear" onClick="removedocfile();"></i>
                       </a>
@@ -520,10 +520,18 @@ function applyLeave(){
 		if ($('#apply_leave_form').validate(false, validationSettings)) {
 	  	var formData = $($('#apply_leave_form')[0]).serialize();
 		$("#leaveLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
-			if(data == true){
-				location.replace(sourceleadUrl+ "/leaveManagementReports");
-			}
+		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(result) {
+			if (result && result.response === "INVALID_DATA") {
+    		    showError(result.responseMessage);
+    		} else if (result.response === "AWKWARD") {
+    		    location.href = "/errorPage";
+    		} else if (result.response === "SUCCESS") {
+    			location.replace(sourceleadUrl+ "/leaveManagementReports");
+    		} else if (result.indexOf('Sign In') !== -1) {
+    			location.replace(sourceleadUrl);
+    		} else {
+    		    showError("Operation failed, please try again");
+    		}
 		}); 
 		return true;
 		} else {

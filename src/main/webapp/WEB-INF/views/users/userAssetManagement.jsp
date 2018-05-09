@@ -47,7 +47,7 @@ function userAssetManagement(userId){
 					} 
 
 					result = result+'<tr id="asset'+report.id+'">';
-		   	        result = result+'<td><a href="'+sourceleadUrl+'/assetManagementSummary?assetId='+report.id+'" target="_blank">';
+		   	        result = result+'<td><a href="'+sourceleadUrl+'/assetManagementSummary?assetId='+report.asset.id+'" target="_blank">';
        		       	result = result +"<div class='proj_show tbldata-dotdot_140 tbldata-dotdot-sm'><span class='pull-left' title='"+report.asset.slno+"'>"+report.asset.slno+"</span><i class='fa fa-binoculars'></i></div>";
 				   	result = result+'</a></td>';
 				   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.asset.categoryName+'">'+report.asset.categoryName+'</div></td>';
@@ -150,7 +150,7 @@ function removeAssetManagement(assignAssetId){
 	 $("#loading"+assignAssetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assignAssetId="+assignAssetId,	    	   
+	    url: sourceleadUrl+"/removeAssocateAssingAssetManagement?"+tokenParamName+"="+tokenValue+"&assignAssetId="+assignAssetId,	    	   
 	    success: function(data) {
 	    	 var table = $('#assetManagementListPagination').DataTable();
   		     table.row("#asset"+assignAssetId).remove().draw( false );
