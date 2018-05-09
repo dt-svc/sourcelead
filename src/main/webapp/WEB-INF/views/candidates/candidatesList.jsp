@@ -1612,7 +1612,7 @@ function savedCommentAndCount(candidateId){
         		    location.href = "/errorPage";
         		} else if (data.response === "SUCCESS") {
         			var result = "";
-                    if(data.object.length > 0) {
+                    if(data.data.length > 0) {
                     	var json = data.data;
                   		var totalComments = 0;
                   		if(json.length>0) {
