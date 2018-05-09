@@ -519,7 +519,7 @@ $(document).ready(function () {
                          <div class="col-md-9">
                            <div class="input-group">
                               <input type="text"  name="closedDate" class="form-control calendar" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
-                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                              <span class="input-group-addon" onClick="closedDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
                   </div>
@@ -2845,7 +2845,8 @@ $(document).ready(function(){
 
 
 <script>
-function clearDate(){
+function closedDate(){
+	
 	$("#closedDate").val("");
 	document.getElementById("receivingApplicantsDiv").style.display="none";
 	if (document.getElementById('receivingApplicantsId').checked){
