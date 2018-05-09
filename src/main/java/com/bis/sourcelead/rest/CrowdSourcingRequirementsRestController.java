@@ -1661,7 +1661,7 @@ public class CrowdSourcingRequirementsRestController {
 		public String getRecruiterJobSummaryDoNutChart(@RequestParam(value = "startDate", required = false) String startDate,
 				@RequestParam(value = "endDate", required = false) String endDate,HttpServletRequest request) throws Exception {
 			String resultJson = null;
-			
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 			
@@ -1673,8 +1673,9 @@ public class CrowdSourcingRequirementsRestController {
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
 				
-				jobSummaryStartDate =  sdf.parse(startDate);
-				jobSummaryEndDate =  sdf.parse(endDate);
+				jobSummaryStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), startDate);
+				jobSummaryEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), endDate);
+				
 			
 			}else{
 				
@@ -1702,7 +1703,7 @@ public class CrowdSourcingRequirementsRestController {
 				Integer referByMe = requirementReferService.getReferJobsByReferType(user.getId(), "referByMe", jobSummaryStartDate, jobSummaryEndDate);
 				refer.setReferByMeJobs(referByMe);
 				
-				Integer submittedByMe = requirementSubmissionService.getRecruiterSubmittedJobCountByStartDateAndEndDate(user.getId(), jobSummaryStartDate, jobSummaryEndDate);
+				Integer submittedByMe = requirementSubmissionService.getRecruiterSubmittedCandidateCountByStartDateAndEndDate(user.getId(), jobSummaryStartDate, jobSummaryEndDate);
 				refer.setSubmittedByMeJobs(submittedByMe);
 				
 				
