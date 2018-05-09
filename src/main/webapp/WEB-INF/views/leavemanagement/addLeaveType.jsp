@@ -354,7 +354,7 @@
 						<div class="form-group" id="newJoineeDiv">
 							<label class="col-md-4">New Joinee<span class="text-danger paddingLeft" >*</span></label>
 							<div class="col-md-3">
-								<input type="text" id="newJoinee" name="newJoinee" placeholder="Enter no.of Days" field-name="New Joinee" class="form-control" value="${leaveType.newJoinee}">
+								<input type="text" id="newJoinee" name="newJoinee" placeholder="Enter no.of Days" field-name="ApplicableDays" class="form-control" value="${leaveType.newJoinee}">
 							</div>
 						</div>
 						
@@ -535,7 +535,7 @@
 								<label class="col-md-6  paddingRight text-right mt5">Min.Days<span
 									class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-6" id=minimumDaysDiv>
-									<input type="text" class="form-control" name="minDays"
+									<input type="text" class="form-control" name="minDays" onblur="validateDuration();"
 										id="minDays" value="${leaveType.minDays}"
 										field-name="Min Days" data-validation-optional="true">
 								</div>
@@ -546,15 +546,18 @@
 								<label class="col-md-6  paddingRight text-right mt5">Max. Days<span
 									class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-6" id=maximumDaysDiv>
-									<input type="text" class="form-control" name="maxDays"
+									<input type="text" class="form-control" name="maxDays" onblur="validateDuration();"
 										id="maxDays" value="${leaveType.maxDays}"
 										field-name="Max Days" data-validation-optional="true">
 								</div>
 						 </div>
 					 </div>
+					   <div class="row pull-right" id="expId">
+                  <input type="hidden" name="expValidation" id="expValidation">
+              </div> 
 				 </div>
 			 </div>
-						</div>
+		</div>
 										
 										
 						<div class="clearfix"></div>
@@ -630,6 +633,41 @@
 </section>
 
 <script>
+
+function validateDuration(){
+	 var maxDays = ($('#maxDays').val());
+	    var minDays = ($('#minDays').val());
+	    
+	    if (parseFloat(maxDays) <= parseFloat(minDays)){
+	        $('#expId').find('p.jquery_form_error_message').remove(); 
+			$('input#expValidation').attr('class','error signin_fild');
+			$("input#expValidation").after("<p class='jquery_form_error_message'>Max Days should be greater than Min Days</p>");
+			$('input#expValidation').attr('record-exist','yes');
+			$('input#expValidation').attr('record-exist-errorMsg','Max Days should be greater than Min Days'); 
+	    }  else{
+	    	$('#expId').find('p.jquery_form_error_message').remove(); 
+	    	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
+			$('#expId').find('p.jquery_form_error_message').remove();
+	    }
+}
+
+/*function setTemplateValues(){
+	var requirementId = document.getElementById('template').value;
+	getEditRequirementDetails(requirementId);
+	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
+		
+// 		getRequirementAndLookUpSkills(requirementId);
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getRequirementById?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
+		    success: function(json) {
+		    	if(json != null && json != 'undefined' && json !='' ){ 
+		    		if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
+		    			$("#templateId").val(json.id);
+		    		}
+		    		$("#minDays").val(json.minDays);
+			    	$("#maxDays").val(json.maxDays);
+			    	*/
 	function validateName() {
 	
 		var locationId = '${SourceLeadWeb_orgLocationId}';

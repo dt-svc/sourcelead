@@ -42,9 +42,9 @@ public class RequirementIndex implements Serializable {
 	
 	private String clientRateType;
 	
-	private Integer minExperience;
+	private Float minExperience;
 	
-	private Integer maxExperience;
+	private Float maxExperience;
 	
 	private String requirementStatus;
 	
@@ -368,19 +368,19 @@ public class RequirementIndex implements Serializable {
 		this.clientRateType = clientRateType;
 	}
 
-	public Integer getMinExperience() {
+	public Float getMinExperience() {
 		return minExperience;
 	}
 
-	public void setMinExperience(Integer minExperience) {
+	public void setMinExperience(Float minExperience) {
 		this.minExperience = minExperience;
 	}
 
-	public Integer getMaxExperience() {
+	public Float getMaxExperience() {
 		return maxExperience;
 	}
 
-	public void setMaxExperience(Integer maxExperience) {
+	public void setMaxExperience(Float maxExperience) {
 		this.maxExperience = maxExperience;
 	}
 

@@ -410,7 +410,7 @@ $(document).ready(function(){
 				result = result + '	   </div>';				
 				result = result + '	  <div class="clearfix"></div>';
 				result = result + '	   </div>';
-				result = result + ' <div class="user_summary_edit user_summaryEdit" id="editUserDiv"></div>';
+				result = result + ' <div class="user_summary_edit user_summaryEdit user_summaryEdit-custom" id="editUserDiv"></div>';
 				result = result + '	  <div class="clearfix"></div>';
 				result = result + '	</div>';
 				result = result + '</div>';
@@ -1390,11 +1390,14 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
-					result = result + ' <label><strong>Role:</strong></label>';
-					result = result + '<div class="clearfix mt10"><span>'+json.roles.displayName+'</span></div>';
+					result = result + ' <label>Role:</label>';
+					//result = result + '<div class="clearfix mt10"><span>'+json.roles.displayName+'</span></div>';
+					result = result + '<div class="clearfix"><span></span>';
+					result = result + '<input type="text" value="'+json.roles.displayName+'" name="roleType" id="role" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" >';
 					result = result + '<input type = "hidden" id = "role" name = "roleType" value = "'+json.roles.id+'">';
 					/* result = result + '<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span></div>'; */
 					result = result + ' </div>'; 
+					result = result + ' </div>';
 					result = result + ' <div class="clearfix"></div>';
 					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
 					result = result + ' <label>Employee Id</label>';
@@ -1480,6 +1483,8 @@ $("#editRoleDetailsList").empty();
 						result = result + '<option  '+(json.userEmploymentType == "Full Time" ? "selected" : '') +'>Full Time</option>';
 						result = result + '<option  '+(json.userEmploymentType == "Offshore C2C" ? "selected" : '') +'>Offshore C2C</option>';
 						result = result + '<option  '+(json.userEmploymentType == "Other" ? "selected" : '') +'>Other</option>';
+						result = result + '<option  '+(json.userEmploymentType == "Contract" ? "selected" : '') +'>Contract</option>';
+						
 						result = result + ' </select>';
 						result = result + '</div>';
 						result = result + '<div class="clearfix"></div>';
@@ -1507,9 +1512,9 @@ $("#editRoleDetailsList").empty();
 						result = result + '</span>';
 					
 					// moving date bottom to top
-					result = result + ' <div class="user_summary_edit_cta select-field">';
+					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Rate</label>';
-		            result = result+'  <select class="rate_sele" id="currentCurrency" name="currentCurrency"> ';
+		            result = result+'  <select class="rate_sele selectpicker" id="currentCurrency" name="currentCurrency" data-style="btn-primary" data-width="70px"> ';
 					if(json.currentCurrency != "undefined" && json.currentCurrency != null && json.currentCurrency != ''){
 						result = result + ' <option '+(json.currentCurrency == "INR" ? "selected" : '') +'>INR</option>';
 						result = result + ' <option '+(json.currentCurrency == "AUD" ? "selected" : '') +'>AUD</option>';
@@ -1527,9 +1532,9 @@ $("#editRoleDetailsList").empty();
 					
 					}
 					result = result+'</select>';
-					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate" field-name="Rate" name="Rate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">';
-					result = result + ' <select class="rate_sele" id="RatePer" name="RatePer" field-name="Rate Per">';
-					result = result + ' <option value="">-Rate Per-</option>';
+					result = result + ' <input type="text" class="rate_filed" value="'+rate+'" id="Rate" field-name="Rate" name="Rate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true" style="width:120px !important;">';
+					result = result + ' <select class="rate_sele selectpicker" id="RatePer" name="RatePer" field-name="Rate Per" data-style="btn-primary" data-width="105px">';
+					result = result + ' <option value="">Rate per</option>';
 					result = result + ' <option '+selected1+'>Hourly</option>';
 					result = result + ' <option '+selected2+'>Daily</option>';
 					result = result + ' <option '+selected3+'>Weekly</option>';
@@ -1596,7 +1601,8 @@ $("#editRoleDetailsList").empty();
 			    
 			    $("#vendorcontact").chosen();
 			    $("#vendorcontact, #user_department").trigger("chosen:updated");
-			    
+			    $("#currentCurrency").selectpicker('refresh');
+			    $("#RatePer").selectpicker('refresh');
 			    var config = {
 				  		  '.chosen-select'           : {},
 				  		  '.chosen-select-deselect'  : {allow_single_deselect:true},
