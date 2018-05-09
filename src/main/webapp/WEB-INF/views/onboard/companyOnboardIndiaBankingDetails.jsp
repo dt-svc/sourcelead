@@ -23,22 +23,6 @@
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 
 
-<style>
-.edit_member_pop {
-	top:12% !important; left: 35%; margin: 0px auto; z-index: 15500; width: 520px;
-	position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px;
-}
-.edit_member_pop .footerBtns input {
-    width: 50%; border: none; height: 30px; font-size: 14px; font-weight: 500; color: #FFF; background-color: #ff4b4b;
-}
-.edit_member_pop .footerBtns input.u_can_color {
-    background-color: #375d81;
-}
-.edit_member_pop h4 {
-background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-size: 15px;
-}
-</style>
-
 
 <script>
   function navtoggle(elementRef){
@@ -186,57 +170,8 @@ right: 15px;
 			        	<a href="javascripit:void(0)" onclick="addNewBankingDetails();"  class="pull-left ml mt2"><i class="fa fa-plus paddingRight"></i>Add</a>
 			        </div>
 					</div>
+					<jsp:include page="locationIndiaBankingDetails.jsp" />
 					
-					<div class="clearfix styleTables mt">
-						<table width="100%">
-							<thead>
-								<tr>
-								    <th>Bank Name</th>
-								    <th>IFSC Code</th>
-									<th>Account Name</th>
-									<th>Account Number</th>
-									<th>BSR Number</th>
-									<th>MICR Code</th>
-									<th>Address</th>
-									<th>Actions</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:if test="${bankingDetailsDTOListSize > 0}">
-									
-										<c:forEach var="bankDetails" items="${bankingDetailsDTOList}">
-										<tr>
-												<td>${!empty bankDetails.bankName ? bankDetails.bankName : '---'}</td>
-											    <td>${bankDetails.ifscCode}</td>
-												<td>${bankDetails.accountName}</td>
-												<td>${bankDetails.accountNumber}</td>
-												<td>${!empty bankDetails.bsrNumber ? bankDetails.bsrNumber : '---'}</td>
-												<td>${!empty bankDetails.micrCode ? bankDetails.micrCode : '---'}</td>
-												<td class="tbldata-dotdot mt" title="${!empty bankDetails.bankAddress ? bankDetails.bankAddress : ''}">${!empty bankDetails.bankAddress ? bankDetails.bankAddress : '---'}</td>
-												<td>
-													<ul class="list-inline list-unstyled">
-														<li><a href="javascript:void(0)" onclick="addNewBankingDetails('${bankDetails.uuid}');"><i class="fa fa-pencil"></i></a></li>
-														<li><a href="javascript:void(0)" onclick="deleteBankingDetails('${bankDetails.uuid}');"><i class="fa fa-trash text-danger"></i></a></li>
-													</ul>
-													
-												</td>
-										</tr>
-										</c:forEach>
-										
-									
-									
-								</c:if>
-							</tbody>
-						</table>
-						<c:if test="${bankingDetailsDTOListSize == 0}">
-						 <div class='row'> 
-							 <div class='col-lg-12'> 
-								 <div class='dataTables_empty'>
-								 </div>
-							 </div>
-						 </div>
-						</c:if>
-					</div>
 					<div class="welBtns welBtnsA">
 									<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 									<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardFederalAndStateTaxes'/>'">
@@ -279,137 +214,6 @@ right: 15px;
  
  
  <script>
- function addNewBankingDetails(uuid){
-	 var result = "";
-		result = result +"	<div class='project_inn_mask'></div>"; 
-		result = result +" <div id='edit_member_pop' class='edit_member_pop'>";
-		result = result +"	<div id='detailsLoading'></div>"; 
-		result = result +"	<h4>Add Banking Details</h4>";
-		result = result + '<div class="form-horizontal clearfix">';
-		result = result + '<form id="bankingDetails_form" name="bankingDetails_form">';
-		result = result + '<input type="hidden" id="uuid" name="uuid" value="">';
-		
-		
-		result = result + '	    <div class="row">';
-		
-		result = result + '	    <div class="clearfix mb10 col-md-6">';
-		result = result + '	      <label class="clearfix">Bank Name<span class="text-danger">&nbsp;*</span></label>';
-		result = result + '	      <div class="">';
-		result = result + '	        <input type="text" class="form-control inlineField"  id="bankName" name="bankName" field-name="Bank Name"  data-validation="required validate_Space validate_length length2-250">';
-		result = result + '	      </div>';
-		result = result + '	    </div>';
-		
-		result = result + '	    <div class="clearfix mb10 col-md-6">';
-		result = result + '	      <label class="clearfix">IFSC Code<span class="text-danger">&nbsp;*</span></label>';
-		result = result + '	      <div class="">';
-		result = result + '	        <input type="text" class="form-control inlineField"  id="ifscCode" name="ifscCode" field-name="IFSC Code"  data-validation="required validate_Space validate_length length2-11" maxlength="11">';
-		result = result + '	      </div>';
-		result = result + '	    </div>';
-		
-		result = result + '	    </div>';
-		
-		
-		result = result + '	    <div class="row">';
-		
-		result = result + '	    <div class="clearfix mb10 col-md-6">';
-		result = result + '	      <label class="clearfix">Account Name<span class="text-danger">&nbsp;*</span></label>';
-		result = result + '	      <div class="">';
-		result = result + '	        <input type="text" class="form-control inlineField"  id="accountName" name="accountName" field-name="Account Name"  data-validation="required validate_Space validate_length length2-250">';
-		result = result + '	      </div>';
-		result = result + '	    </div>';
-		
-		result = result + '	    <div class="clearfix mb10 col-md-6">';
-		result = result + '	      <label class="clearfix">Account Number<span class="text-danger">&nbsp;*</span></label>';
-		result = result + '	      <div class="">';
-		result = result + '	        <input type="text" class="form-control inlineField"  id="accountNumber" name="accountNumber" field-name="Account Number"  data-validation="required validate_Space validate_int validate_length length9-18">';
-		result = result + '	      </div>';
-		result = result + '	    </div>';
-		
-		result = result + '	    </div>';
-		
-		
-		result = result + '	    <div class="row">';
-		
-		result = result + '	    <div class="clearfix mb10 col-md-6">';
-		result = result + '	      <label class="clearfix">MICR Code</label>';
-		result = result + '	      <div class="">';
-		result = result + '	        <input type="text" class="form-control inlineField"  id="micrCode" name="micrCode" field-name="MICR Code" data-validation-optional="true"  data-validation="validate_space validate_length length2-9" maxlength="9">';
-		result = result + '	      </div>';
-		result = result + '	    </div>';
-		
-		result = result + '	    <div class="clearfix mb10 col-md-6">';
-		result = result + '	      <label class="clearfix">BSR Number</label>';
-		result = result + '	      <div class="">';
-		result = result + '	        <input type="text" class="form-control inlineField"  id="bsrNumber" name="bsrNumber" field-name="BSR Number"  data-validation-optional="true" data-validation="validate_space validate_length length2-7" maxlength="7">';
-		result = result + '	      </div>';
-		result = result + '	    </div>';
-		
-		result = result + '	    </div>';
-		
-		
-		
-		result = result + '	    <div class="row">';
-		
-		result = result + '	    <div class="clearfix mb10 col-md-6">';
-		result = result + '	      <label class="clearfix">Address<span class="text-danger">&nbsp;*</span></label>';
-		result = result + '	      <div class="">';
-		result = result + '	        <input type="text" class="form-control inlineField"  id="bankAddress" name="bankAddress" field-name="Address"  data-validation="required validate_space">';
-		result = result + '	      </div>';
-		result = result + '	    </div>';
-		
-		result = result + '	    </div>';
-		
-		
-		result = result + ' <div id="reasonForProjectDiv" class="footerBtns">';
-		result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="u_can_color" type="submit" value="Save"><input  type="button"  value="Cancel" onClick="cancelAddDetails();"></b>';
-		result = result +"	</div>";
-		result = result +"	</div>";
-		
-		result = result + '</form>';
-		
-		
-		 $("#bankingDetailsPopUp").append(result);
-         $("#edit_member_pop").slideDown(200);
-         $(".project_inn_mask").fadeIn(200); 
-         
-         
-		if(uuid != null && uuid != 'undefined' && uuid != ''){
-			 $("#detailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			  setTimeout(function () {
-				  var sourceleadUrl ='${sourceleadUrl}';
-				  $.ajax({
-				    	type: "GET",
-				    	  url: sourceleadUrl+"/getOrgLocationsIndiaBankingDetailsByUUId?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,		
-				        success: function(result) {
-				        	
-				        	$("#bankName").val(result.bankName);
-				        	$("#bankName").val(result.bankName);
-				        	$("#accountName").val(result.accountName);
-				        	$("#bankAddress").val(result.bankAddress);
-				        	$("#accountNumber").val(result.accountNumber);
-				        	$("#ifscCode").val(result.ifscCode);
-				        	
-							if(result.bsrNumber != null && result.bsrNumber != '' && result.bsrNumber != 'undefined'){
-								$("#bsrNumber").val(result.bsrNumber);
-				        	}
-							
-							if(result.micrCode != null && result.micrCode != '' && result.micrCode != 'undefined'){
-								$("#micrCode").val(result.micrCode);
-				        	}
-				        	
-				        	$("#uuid").val(result.uuid);
-				        	
-				        },
-				    });  
-				  
-				  $("#detailsLoading").removeAttr('style');
-		 			}, 1000);
-		}
- }
- 
- 
- 
- 
  function deleteBankingDetails(uuid){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $("#bankdetailsListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -435,19 +239,11 @@ right: 15px;
 	        },
 	    });  
  }
- 
- 
- function cancelAddDetails(){
-		$("#bankingDetailsPopUp").empty();
-		 $(".project_inn_mask").fadeOut(200);
-		 $(".vendor_wrap_mask").fadeOut(200);
-	}
- 
  </script>
  
  
  <script type="text/javascript">
-$('body').on('submit', '#bankingDetails_form', function(e){
+$('body').on('submit', '#indiabankingDetails_form', function(e){
 	
 	var validationSettings = {
 	        errorMessagePosition : 'element',
@@ -456,10 +252,10 @@ $('body').on('submit', '#bankingDetails_form', function(e){
 			dateFormat : 'yyyy/mm/dd' 
          }; 
 	
-	if ($('#bankingDetails_form').validate(false, validationSettings)){
+	if ($('#indiabankingDetails_form').validate(false, validationSettings)){
       e.preventDefault();
       var sourceleadUrl ='${sourceleadUrl}';
-      var formData = getFormData("bankingDetails_form");
+      var formData = getFormData("indiabankingDetails_form");
      
 	 	$("#detailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
@@ -491,9 +287,9 @@ $('body').on('submit', '#bankingDetails_form', function(e){
        }
   });
 
-	$('body').on('blur', '#bankingDetails_form', function() {
-		$("#bankingDetails_form").showHelpOnFocus();
-		$("#bankingDetails_form").validateOnBlur(false, validationSettings);
+	$('body').on('blur', '#indiabankingDetails_form', function() {
+		$("#indiabankingDetails_form").showHelpOnFocus();
+		$("#indiabankingDetails_form").validateOnBlur(false, validationSettings);
 	});
 	
 	$(".loc-alertclose").click(function(){
