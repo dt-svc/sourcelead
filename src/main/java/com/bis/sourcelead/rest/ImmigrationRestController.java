@@ -210,12 +210,13 @@ public class ImmigrationRestController {
 	}
 
 	@RequestMapping(value = { "/getAllActiveCandidatesByLocation" }, method = RequestMethod.GET)
-	public @ResponseBody List<Candidate> getAllActiveCandidatesByLocation(HttpServletRequest request) {
+	public @ResponseBody List<Candidate> getAllActiveCandidatesByLocation(@RequestParam(value = "locationId", required = false) Long locationId,
+			HttpServletRequest request) {
 		List<Candidate> candidateList = null;
 		try {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
-			candidateList = candidateService.getAllActiveCandidatesByLocation(orgLocations.getId());
+			candidateList = candidateService.getAllActiveCandidatesByLocation(locationId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

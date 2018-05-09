@@ -821,12 +821,16 @@
 
 var candidateByOrgObject = {};
 function getCandidatesByOrgLocation(candidateId){
-	 console.log(" before getCandidatesByOrgLocation function calling ---->");
-	 $("#loadingPetitionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y' && '${SourceLeadWeb_orgLocations.isAccountingFirm}' == 'Y'){
+	var locationId = responderLocationId;
+	}else{
+	var locationId ='${SourceLeadWeb_orgLocations.id}';
+	}
+	// $("#loadingPetitionDiv").attr('style','position:fixed; width:auto; height:100%; background-color:rgba(255,255,255,0.8); top:52px; left:220px; right:30px; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 urltest = sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation";
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation", 
+		        url: sourceleadUrl+immiModulePath+"/getAllActiveCandidatesByLocation?locationId="+locationId, 
 		        success: function(data) {
 		        	 $('#candidateId').empty();
 		        	$('#candidateId').append('<option value="">--Select Beneficiary --</option>');
@@ -995,7 +999,7 @@ $("#experienceValue").change(function () {
 		        }
 		 });
  }
- 
+
  function getAllRelationssByOrgLocation(attorneyId){
 	 console.log(" before function calling ---->");
 	var type = null ;
@@ -1014,28 +1018,38 @@ $("#experienceValue").change(function () {
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            	  if(opt.id == attorneyId){
-		            		  $('#attorneyId').append('<option selected value='+opt.id+' >'+opt.orgName+'</option>');
+		            		  $('#attorneyId').append('<option attrval='+opt.locationId.id+' selected value='+opt.id+' >'+opt.orgName+'</option>');
 		            	  }else{
-		            		$('#attorneyId').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
+		            		$('#attorneyId').append('<option attrval='+opt.locationId.id+' value='+opt.id+' >'+opt.orgName+'</option>');
+		            		//$('#abbb').val(opt.responderLocationId.id);
 		            	  }
 		            }
 		            $('#attorneyId').trigger("chosen:updated");
+		           
 		            //getVendorContactList();
 		            
 		        }
 		 });
  }
- 
+ var responderLocationId = null;
  function getAttorneyContactList(attorneyId,attorneyContactId){
 	 var orgRelationID = null;
+	 var reponsderLocId = $('option:selected', '#attorneyId').attr('attrval');
+	 responderLocationId = reponsderLocId;
 	 	if(attorneyId != null){
 	 		orgRelationID = attorneyId;
 	 	}else{
 			var orgRelationID = $('#attorneyId').val();
 	 	}
+	 	
+	 	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y' && '${SourceLeadWeb_orgLocations.isAccountingFirm}' == 'Y'){
+			type = "Client";
+		}else{
+			type = "Vendor";
+		}
 			 $.ajax({
 				    type: "POST",
-			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+			        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type="+type,  
 			        success: function(json) {
 			        	//var json = JSON.parse(data);
 			        	$('#attorneyContact').empty();
@@ -1049,6 +1063,7 @@ $("#experienceValue").change(function () {
 			            	 }
 			            } 
 			            $('#attorneyContact').trigger("chosen:updated");
+			            getCandidatesByOrgLocation("${immigrationDTO.candidateId}");
 			        }
 			 }); 
 	 }
@@ -1305,7 +1320,6 @@ function  removeValidationAttorneyContact() {
 	 //$( "#myselect option:selected" ).val()
 	 function updateCandiateInfo(obj){
 		var candidateObj=candidateByOrgObject[obj.val()];
-		alert("allll"+candidateByOrgObject[obj.val()]);
 		$("#firstName").val(candidateObj.firstName);
 		$("#lastName").val(candidateObj.lastName);
 		$("#middleName").val(candidateObj.middelName);
