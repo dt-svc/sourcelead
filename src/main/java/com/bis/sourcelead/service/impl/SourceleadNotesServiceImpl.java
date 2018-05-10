@@ -35,7 +35,8 @@ import com.ibm.icu.text.SimpleDateFormat;
 /**
  * @author Ajith Matta
  *
- */
+ */  
+
 @Service
 public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 	@Autowired
@@ -169,7 +170,7 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 			User user = userService.getUserByUserCode(notes.getCreatedBy());
 			if(null != user){
 				String authorLastName = "";
-				if(StringUtils.isNotEmpty(user.getFirstName())){
+				if(StringUtils.isNotBlank(user.getFirstName())){
 					authorLastName = user.getLastName();
 				}
 				StringBuilder nameBuilder = new StringBuilder();
@@ -189,7 +190,12 @@ public class SourceleadNotesServiceImpl implements SourceleadNotesService {
 			}
 			
 			if (notes.getSpocId() != null) {
-				notes.setContactName(notes.getSpocId().getClientUser().getFirstName());
+				StringBuilder nameBuilder1 = new StringBuilder();
+				if(StringUtils.isNotBlank(notes.getSpocId().getClientUser().getLastName())){
+					notes.setContactName(nameBuilder1.append(notes.getSpocId().getClientUser().getFirstName()).append(" ").append(notes.getSpocId().getClientUser().getLastName()).toString());
+				}else{
+					notes.setContactName(notes.getSpocId().getClientUser().getFirstName());
+				}
 			}
 			notes.setCheckBox(notes.getCheckBox());
 			notes.setUserIdStr(notes.getUserId().getId());

@@ -48,7 +48,7 @@
            </label>
             
              <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc " >
-             
+             <div class="clearUpload"></div>
          </div>
           </div>
         </div>
@@ -846,6 +846,30 @@ function candidateEmptyVendorContact(){
 		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
+	 
+<script>
+    $(function () {
+        $("#uploadBtn").change(function () {
+            fileUpload("uploadBtn", "resumes", "candidate_form");
+            $(".clearUpload").show();
+        });
+    });
+</script>
+<script>
+    $(".clearUpload").click(function () {
+        $("#uploadFile").val('');
+        $(".clearUpload").hide();
+        $("#candidate_form input[data-id*=uploadBtn]").remove();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".clearUpload").hide();
+        document.getElementById("candidate_form").reset();
+   
+    });
+</script>
 <!-- <script>
 	$(".clearUpload").click(function(){
 		$("#uploadFile").val("");
