@@ -26,14 +26,14 @@
 		<div class="immigraInnWrap">
 			<div class="timesheet_head clearfix">
 			
-			<div class="pull-left colCho">
+			<div class="pull-left colCho mb5">
 				<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="btn btn-sm btn-default"><i class="fa fa-table"></i></a>
 			</div>
 			
 			<div class="filterSearchDiv pull-left colCho">
 				
 <div class="colPop">
-	<div class="colPopMid">
+	<div class="colPopMid coldropdown-parent">
 	<div class="clearfix">
 		<div class="row">
 				<div class="col-md-10 mb10 mt5 col-md-offset-2">
@@ -48,6 +48,8 @@
 			</div>
 		</div>
 	<div class="clearfix"></div>
+	
+	<div class="coldropdown-inner">
 		<ul>
 			<li>
 				<span class="checkbox-new clearfix">
@@ -98,6 +100,7 @@
 				</span>
 			</li>
 		</ul>
+		</div>
 	</div>
 	<div class="colPopFot">
 		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
