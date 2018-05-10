@@ -792,7 +792,6 @@ function getTimeToFillReports(){
 <script>
 function getTimeToFillAmchartData(data){
     
-    
     AmCharts.makeChart("timeToFill",
         {
 "type": "pie",
@@ -830,32 +829,32 @@ function getTimeToFillAmchartData(data){
 "dataProvider": [
 {
     "category": "Applicants",
-    "column-1": data.applicantsDays,
+    "column-1": data.object.applicantsDays,
     "color": "#80CBC4"
 },
 {
     "category": "Shortlisted",
-    "column-1": data.shortlistedDays,
+    "column-1": data.object.shortlistedDays,
     "color": "#FFB74D"
 },
 {
     "category": "Submit to Client",
-    "column-1": data.submitToClientDays,
+    "column-1": data.object.submitToClientDays,
     "color": "#9575CD"
 },
 {
     "category": "Interviewed",
-    "column-1": data.interviewsDays,
+    "column-1": data.object.interviewsDays,
     "color": "#4DD0E1"
 },
 {
     "category": "Offered",
-    "column-1": data.offeredDays,
+    "column-1": data.object.offeredDays,
     "color": "#AED581"
 },
 {
     "category": "Joined",
-    "column-1": data.offeredAcceptedDays,
+    "column-1": data.object.offeredAcceptedDays,
     "color": "#81D4FA"
 }
 ]
@@ -921,32 +920,32 @@ function getSuccessPercentageAmchartData(data){
             "dataProvider": [
                 {
                     "category": "Applicants",
-                    "column-1": data.applicantsMove,
+                    "column-1": data.object.applicantsMove,
                     "color": "#9575CD"
                 },
                 {
                     "category": "Shortlisted",
                     "color": "#9575CD",
-                    "column-1": data.shortlistedMove,
+                    "column-1": data.object.shortlistedMove,
                 },
                 {
                     "category": "Submit to Client",
-                    "column-1": data.submitToClientMove,
+                    "column-1": data.object.submitToClientMove,
                     "color": "#FFB74D"
                 },
                 {
                     "category": "Interviewed",
-                    "column-1": data.interviewsMove,
+                    "column-1": data.object.interviewsMove,
                     "color": "#5C6BC0"
                 },
                 {
                     "category": "Offered",
-                    "column-1": data.offeredMove,
+                    "column-1": data.object.offeredMove,
                     "color": "#9CCC65"
                 },
                 {
                     "category": "Joined",
-                    "column-1": data.offeredAcceptedMove,
+                    "column-1": data.object.offeredAcceptedMove,
                     "color": "#1E88E5"
                 }
             ]
