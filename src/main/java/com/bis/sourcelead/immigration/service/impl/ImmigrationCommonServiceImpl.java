@@ -1067,8 +1067,13 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigrationDTO.setAttorneyContact(immigration.getOrgSpoc().getId().toString());
 			immigrationDTO.setReceiptNo(immigration.getReceiptNo());
 			immigrationDTO.setOrgloationId(immigration.getOrgLocationId().getId().toString());
+			
 			immigrationDTO.setOrgName(immigration.getOrgLocationId().getOrgLocationName());
+			if(orgLocations.getId().equals(immigration.getOrgLocationId().getId())){
 			immigrationDTO.setAttorneyContactName(immigration.getOrgSpoc().getVendorUser().getFirstName());
+			}else{
+			immigrationDTO.setAttorneyContactName(immigration.getOrgSpoc().getClientUser().getFirstName());	
+			}
 			/*===============from Candidate Table=============================*/
 			immigrationDTO.setCandidateId(immigration.getCandidate().getId().toString());
 			immigrationDTO.setFirstName(immigration.getCandidate().getFirstName());
