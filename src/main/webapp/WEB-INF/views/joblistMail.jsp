@@ -592,7 +592,7 @@ function getCheckedJobs(){
 	  }
 	 
 	 if($("input[name='jobTitle[]']:checked").length == 0){
-	    	$("#popupId").after("<p class='jquery_form_error_message'><span>Select Atleast One Candidate/Associates</span>");
+	    	$("#popupId").after("<p class='jquery_form_error_message'><span>Select Atleast One Jobs</span>");
 	    }else{
 	    	$("#requirement").modal('hide');
 	    	$('#popupId').parent().find('p.jquery_form_error_message').remove();
