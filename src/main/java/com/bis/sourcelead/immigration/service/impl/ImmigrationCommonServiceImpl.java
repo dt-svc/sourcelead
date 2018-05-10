@@ -490,7 +490,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigration.setCandidateUserId(candidateUser);
 			}
 		if(immigrationDTO.getEditMode().equalsIgnoreCase("false")){
-			if(orgLocations.getIsLawFirm().equalsIgnoreCase("Y") && orgLocations.getIsAccountingFirm().equalsIgnoreCase("Y")){
+			if((orgLocations.getIsLawFirm() != null && orgLocations.getIsLawFirm().equalsIgnoreCase("Y")) && (orgLocations.getIsAccountingFirm() !=null &&  orgLocations.getIsAccountingFirm().equalsIgnoreCase("Y"))){
 				immigration.setOrgLocationId(orgRelations.getLocationId());
 			}else{
 				immigration.setOrgLocationId(orgLocations);
@@ -1138,6 +1138,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					residenceDTO.setLocation(residence.getLocation());
 					residenceDTO.setState(residence.getState());
 					residenceDTO.setZipcode(residence.getZipcode());
+					residenceDTO.setIsCurrResidence(residence.getIsCurrAddress());
 					residenceDTO.setResidenceStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),residence.getStartDate()));
 					residenceDTO.setResidenceEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),residence.getEndDate()));
 					residenceDTO.setIsCurrResidence(residence.getIsCurrAddress());
