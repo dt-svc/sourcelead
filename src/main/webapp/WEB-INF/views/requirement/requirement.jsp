@@ -33,8 +33,13 @@ $(document).ready(function() {
 	zipcodeMask('${requirement.country}','ReqZipCode');
 });
 </script>
+<script>
+  $(function() { 
+		tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+		tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education Options');
 
-
+	});
+ </script>
 <script type="text/javascript">
 		window.onload = function () {
 			getNoticePeriodList();
@@ -1861,14 +1866,6 @@ function storeTeam(){
 		};
 	})(jQuery);
 </script>
-
-<script>
-  $(function() { 
-		tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
-		tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education Options');
-
-	});
- </script>
 
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->

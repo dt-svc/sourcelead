@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ClientVendorExport;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
@@ -58,6 +59,10 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 	
 	@Autowired
 	private PdfUtil pdfUtil;
+	
+	@Autowired
+	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	
 	/**
 	 * @author Rajashekar 
 	 * write clients date to excel and pdf based exportType
@@ -484,11 +489,14 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		}else {
 			writeRow.createCell(6).setCellValue("--");
 		}
-		if (projectMember.getDraftHrs() != null && !"".equalsIgnoreCase(projectMember.getDraftHrs())) {
-			writeRow.createCell(7).setCellValue(projectMember.getDraftHrs());
+		if(projectMember.getMasterCandidateId() != null){
+			 Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId(), "APPROVED");
+			writeRow.createCell(7).setCellValue(approvalTimesheetsSubmissionsCountAsEmployee);
 		}else {
 			writeRow.createCell(7).setCellValue("--");
 		}
+		
+	 
 		return sheet;
 	}
 
