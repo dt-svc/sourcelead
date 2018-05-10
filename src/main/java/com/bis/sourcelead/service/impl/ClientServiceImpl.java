@@ -1262,6 +1262,14 @@ public class ClientServiceImpl implements ClientService {
 				}
 			}
 			
+			if((clientDTO.getIsAccountingFirm() != null && clientDTO.getIsLawFirm() != null) &&(clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y") &&  clientDTO.getIsLawFirm().equalsIgnoreCase("Y"))){
+				orgRelation.setIsLawFirm(Constants.YES);
+				orgRelation.setIsAccountingFirm(Constants.YES);
+			}else{
+				orgRelation.setIsAccountingFirm(Constants.NO);
+				orgRelation.setIsLawFirm(Constants.NO);
+			}
+			
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
 				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
 			}
@@ -1332,7 +1340,13 @@ public class ClientServiceImpl implements ClientService {
 				 orgLocations.setBillingAddress("");
 			 }
 			
-
+			 if((clientDTO.getIsAccountingFirm() != null && clientDTO.getIsLawFirm() != null) &&(clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y") &&  clientDTO.getIsLawFirm().equalsIgnoreCase("Y"))){
+				 orgLocations.setIsLawFirm(Constants.YES);
+				 orgLocations.setIsAccountingFirm(Constants.YES);
+				}else{
+					orgLocations.setIsAccountingFirm(Constants.NO);
+					orgLocations.setIsLawFirm(Constants.NO);
+				}
 			/*
 			 * if(jsonObj.getString(emailId) !=null &&
 			 * !jsonObj.getString(emailId).isEmpty()){

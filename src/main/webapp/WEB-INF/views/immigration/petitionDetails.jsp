@@ -1124,18 +1124,20 @@ $("#experienceValue").change(function () {
 		  	var count = 1;
 		  	var residenceArr = [];
 		  	<c:forEach var='edu' items="${immigrationDTO.residenceList}">
-		  		residenceArr.push("${edu.id == 'undefined' ? '':edu.id}");
-			  	residenceArr.push("${edu.location}");
-			  	residenceArr.push("${edu.address}");
-			  	residenceArr.push("${edu.city}");
-			  	residenceArr.push("${edu.state}");
-			  	residenceArr.push("${edu.country}");
-			  	residenceArr.push("${edu.zipcode}");
-			  	residenceArr.push("${edu.residenceStartDate}");
-			  	residenceArr.push("${edu.residenceEndDate}");
-			  	$("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(count,residenceArr));
-			  	residenceArr = [];
-		  		count++;
+		  		if("${edu.isCurrResidence}" != 'Y'){
+			  		residenceArr.push("${edu.id == 'undefined' ? '':edu.id}");
+				  	residenceArr.push("${edu.location}");
+				  	residenceArr.push("${edu.address}");
+				  	residenceArr.push("${edu.city}");
+				  	residenceArr.push("${edu.state}");
+				  	residenceArr.push("${edu.country}");
+				  	residenceArr.push("${edu.zipcode}");
+				  	residenceArr.push("${edu.residenceStartDate}");
+				  	residenceArr.push("${edu.residenceEndDate}");
+				  	$("#dynamicResidenceGroupDiv").append(prepareDynamicResidenceDiv(count,residenceArr));
+				  	residenceArr = [];
+			  		count++;
+		  		}
 		  	</c:forEach>
 		  	var fileNameVal = "${immigrationDTO.fileName}";
 		  	if(fileNameVal != ""){
