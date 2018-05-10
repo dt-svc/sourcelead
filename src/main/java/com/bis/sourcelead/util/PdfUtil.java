@@ -795,7 +795,7 @@ public class PdfUtil {
         try {
         	    Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 		        PdfPCell cell1 = new PdfPCell(new Phrase(title,font));
-		        cell1.setColspan(8);
+		        cell1.setColspan(6);
 		        headerCellStyle(cell1);
 	            table.addCell(cell1);
 			table.setWidths(columnWidths);
@@ -969,7 +969,6 @@ public class PdfUtil {
 	        // Create an instance of PdfPTable. After that we transform the header and
 	        int[] columnWidths = new int[]{5, 5, 3,3, 3,3,3,3};
             PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
-            table.completeRow();
             java.util.List<String[]> assignedEmpList = new ArrayList<>();
             for(ProjectMembers projectMembers : employeeList){
             	assignedEmpList.add(prepareEmployeeArray(projectMembers,headers));
