@@ -436,10 +436,10 @@ public class CrowdSourcingRequirementsRestController {
     					 requirementIndex.setJobType(refer.getRequirementId().getJobType());
     					 requirementIndex.setJobId(refer.getRequirementId().getJobId());
     					 if(StringUtils.isNotEmpty(refer.getRequirementId().getMinExp())) {
-    						 requirementIndex.setMinExperience(Integer.parseInt(refer.getRequirementId().getMinExp()));
+    						 requirementIndex.setMinExperience(Float.parseFloat(refer.getRequirementId().getMinExp()));
     					 }
     					 if(StringUtils.isNotEmpty(refer.getRequirementId().getMaxExp())) {
-    						 requirementIndex.setMaxExperience(Integer.parseInt(refer.getRequirementId().getMaxExp())); 
+    						 requirementIndex.setMaxExperience(Float.parseFloat(refer.getRequirementId().getMaxExp())); 
     					 }
     					 requirementIndex.setCountry(refer.getRequirementId().getCountry());
     					 requirementIndex.setState(refer.getRequirementId().getState());
@@ -554,10 +554,10 @@ public class CrowdSourcingRequirementsRestController {
     					 requirementIndex.setJobType(savedJobs.getRequirementId().getJobType());
     					 requirementIndex.setJobId(savedJobs.getRequirementId().getJobId());
     					 if(StringUtils.isNotEmpty(savedJobs.getRequirementId().getMinExp())) {
-    						 requirementIndex.setMinExperience(Integer.parseInt(savedJobs.getRequirementId().getMinExp()));
+    						 requirementIndex.setMinExperience(Float.parseFloat(savedJobs.getRequirementId().getMinExp()));
     					 }
     					 if(StringUtils.isNotEmpty(savedJobs.getRequirementId().getMaxExp())) {
-    						 requirementIndex.setMaxExperience(Integer.parseInt(savedJobs.getRequirementId().getMaxExp()));
+    						 requirementIndex.setMaxExperience(Float.parseFloat(savedJobs.getRequirementId().getMaxExp()));
     					 }
     					 requirementIndex.setCountry(savedJobs.getRequirementId().getCountry());
     					 requirementIndex.setState(savedJobs.getRequirementId().getState());
@@ -1661,7 +1661,7 @@ public class CrowdSourcingRequirementsRestController {
 		public String getRecruiterJobSummaryDoNutChart(@RequestParam(value = "startDate", required = false) String startDate,
 				@RequestParam(value = "endDate", required = false) String endDate,HttpServletRequest request) throws Exception {
 			String resultJson = null;
-			
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 			
@@ -1673,8 +1673,9 @@ public class CrowdSourcingRequirementsRestController {
 			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
 				//Custom StartDate and EndDate
 				
-				jobSummaryStartDate =  sdf.parse(startDate);
-				jobSummaryEndDate =  sdf.parse(endDate);
+				jobSummaryStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), startDate);
+				jobSummaryEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), endDate);
+				
 			
 			}else{
 				
@@ -1702,7 +1703,7 @@ public class CrowdSourcingRequirementsRestController {
 				Integer referByMe = requirementReferService.getReferJobsByReferType(user.getId(), "referByMe", jobSummaryStartDate, jobSummaryEndDate);
 				refer.setReferByMeJobs(referByMe);
 				
-				Integer submittedByMe = requirementSubmissionService.getRecruiterSubmittedJobCountByStartDateAndEndDate(user.getId(), jobSummaryStartDate, jobSummaryEndDate);
+				Integer submittedByMe = requirementSubmissionService.getRecruiterSubmittedCandidateCountByStartDateAndEndDate(user.getId(), jobSummaryStartDate, jobSummaryEndDate);
 				refer.setSubmittedByMeJobs(submittedByMe);
 				
 				
