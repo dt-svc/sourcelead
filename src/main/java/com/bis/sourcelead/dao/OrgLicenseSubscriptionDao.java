@@ -17,4 +17,6 @@ public interface OrgLicenseSubscriptionDao {
 	OrgLicenseSubscription getOrgLicenseSubscriptionByUUID(String uuid) throws Exception;
 	
 	List<String> getOrgLicenseSubscribedCountriesByOrgId(Long orgId) throws Exception;
+	
+	List<String> getOrgLicenseSubscribedAndRegisteredCountriesByOrgId(Long orgId) throws Exception;
 }

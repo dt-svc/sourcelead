@@ -2148,13 +2148,16 @@ $(document).ready(function() {
 		if(vendorCont == "listbyContact"){
 			getVendorContactListsELK();
 		}if(vendorCont == "listbyVendor" ){
-			getVendorListsElk();
+			
    		}
 	});	
 });
 
 function refresh(){
-	getVendorList();
+	if($("#listOfVendors").val() == 'listbyContact')
+		getVendorContactListsELK();
+	else
+		getVendorListsElk();
 }
 
 // project side bar tabs
