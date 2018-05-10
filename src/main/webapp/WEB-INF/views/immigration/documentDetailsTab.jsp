@@ -206,7 +206,7 @@
  
           <div class="row mt clearfix" id ="dynamicUplodDiv">
 				
-              	<div class="col-md-10" id= "uploadDocSaveDiv">
+              	<div class="col-md-10" id= "uploadDocSaveDiv0">
               	<div class="row">
               	<label class="col-md-2">File<span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-10 paddingRight">
@@ -220,7 +220,7 @@
 					 </div>
 				</div>
 				
-				<div class="col-md-10" id="uploadDocEditDiv" style="display: none">
+				<div class="col-md-10" id="uploadDocEditDiv0" style="display: none">
 				<div class="row">
 			<label class="col-md-2">File<span class="text-danger">&nbsp;*</span></label>
 			 <div class="col-md-10 paddingRight">
@@ -282,8 +282,8 @@ function removeImmigDocumrntDynamic(id){
 			     $.each( dataMap[0], function( key, value ) {
 			    		  if(fileUploadRow == 0){
 			    			  console.log("row id  if BLOCK value is >>>  "+rowId);
-			    			  $("#uploadDocSaveDiv").hide();
-								$("#uploadDocEditDiv").show();
+			    			  $("#uploadDocSaveDiv0").hide();
+								$("#uploadDocEditDiv0").show();
 								 $('#uploadDocumentName0').text(value);  
 								 $("#uploadFile0").attr("data-validation-optional","true");
 			    			  
@@ -307,12 +307,12 @@ function removeImmigDocumrntDynamic(id){
 			    	
 			    	var fileName = Object.values(dataMap[0]);
 			    	$('#uploadDocumentName0').text(fileName);
-			    	$("#uploadDocSaveDiv").hide();// uploadDocSaveDiv used for browse file div id 
-					$("#uploadDocEditDiv").show(); // uploadDocEditDiv used for show file name div id
+			    	$("#uploadDocSaveDiv0").hide();// uploadDocSaveDiv used for browse file div id 
+					$("#uploadDocEditDiv0").show(); // uploadDocEditDiv used for show file name div id
 			     }
 			    }else{
-			    	$("#uploadDocSaveDiv").show();
-					$("#uploadDocEditDiv").hide();
+			    	$("#uploadDocSaveDiv0").show();
+					$("#uploadDocEditDiv0").hide();
 			    }
 				if(allowMultiple=="Y"){
 					$('#divAddButton').show();
