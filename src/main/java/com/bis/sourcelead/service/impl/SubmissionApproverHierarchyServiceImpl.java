@@ -331,6 +331,7 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 			Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId,Long locationId) throws Exception {
 		return submissionApproverHierarchyDao.getAllSubmissionApproverHierarchiesByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId,locationId);
 	}
+
 	
 	
 

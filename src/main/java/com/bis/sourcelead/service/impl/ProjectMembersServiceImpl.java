@@ -1689,4 +1689,10 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return flag;
 	}
 
+	@Override
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(Long locationsId, Date startDate, Date endDate, int start, int length)
+	{
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(locationsId, startDate, endDate, start, length);
+	}
+
 }

@@ -342,6 +342,91 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(Long locationsId,Date startDate,Date endDate,int start,int length){
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		
+		ResponseList<ProjectMembers> response = new ResponseList<>();
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		
+		java.sql.Date sqlStartDate = null;
+		if(startDate != null){
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		
+		java.sql.Date sqlEndDate = null;
+		if(endDate != null){
+			sqlEndDate = new java.sql.Date(endDate.getTime());
+		}
+		
+		String dateQuery = "";
+		String statusQuery = "";
+		
+		String dateCountQuery = "";
+		
+		if(startDate != null && endDate != null){
+			   dateQuery =  " and pm.id IN ( "
+                + "    select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  pmh.projectTerminationDate between :startDate and :endDate) OR "
+                + "    ( pmh.projectTerminationDate IS NULL and :endDate >= pmh.projectAssignedDate) "
+                + "  )  ";
+			   dateCountQuery = dateQuery;
+	     }
+		
+		
+		//(sah.submissionId.startDate = :startDate OR sah.submissionId.endDate = :endDate OR sah.submissionId.startDate BETWEEN :startDate and :endDate OR sah.submissionId.endDate BETWEEN :startDate and :endDate)
+	    statusQuery = " and pm.id IN(select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where (sah.submissionId.startDate = :startDate OR sah.submissionId.endDate = :endDate OR sah.submissionId.startDate BETWEEN :startDate and :endDate OR sah.submissionId.endDate BETWEEN :startDate and :endDate) and sah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' )";
+	     
+		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient left join fetch pclient.orgRelationId pcOrgRelation"
+				+ " where  candidate.orgLocationId.id = :locationsId"
+				    + statusQuery
+				    + dateQuery;
+		Query query = session.createQuery(queryStr.toString());
+		
+		
+		String countQuery = " Select count(*) from ProjectMembers pm where pm.projectMemberCandidteId.orgLocationId.id = :locationsId "
+				+ statusQuery
+				+ dateCountQuery;
+		
+		
+		if(startDate != null && endDate != null){
+			query.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+		}
+		
+		@SuppressWarnings("unchecked")
+		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setFirstResult(start).setMaxResults(length).list();;
+		response.setData(projectMemberList);
+		
+		Query countQ = session.createQuery(countQuery);
+		if(startDate != null && endDate != null){
+			countQ.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+		}
+		countQ.setLong("locationsId", locationsId);
+		
+		List<Long> countList  = null;
+		if(countQ != null) {
+			countList  = countQ.list();
+		}
+		int recordsTotal=0;
+		if(countList != null && !countList.isEmpty()) {
+			recordsTotal  =  countList.iterator().next().intValue();
+		}
+		response.setRecordsTotal(recordsTotal);
+		
+		/*if(searchQuery.toString() != null && !searchQuery.toString().isEmpty()){
+			response.setRecordsFiltered(recordsFiltered);
+		}
+		else {
+			response.setRecordsFiltered(recordsTotal);
+		}*/
+		
+		return response;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor){
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		

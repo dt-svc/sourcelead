@@ -1814,6 +1814,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		return monthTotals;
 	}
 	
+	
+	
 	@SuppressWarnings("unchecked")   
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
