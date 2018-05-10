@@ -206,8 +206,8 @@ public class CompanyOnboardRestController {
 			 informationDetails.setCreatedDate(commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), new Date()));
 			 informationDetails.setUpdatedDate(commonUtil.getOrgLocationCurrentDate(loginOrgLocation.getDateFormat(), new Date()));
 			 orgLocationInformationDetailsService.saveOrgLocationInformationDetails(informationDetails);
-			response.setResponse(Result.SUCCESS.name());
-			response.setResponseMessage(Result.SUCCESS.getValue());
+			 response.setResponse(Result.SUCCESS.name());
+			 response.setResponseMessage(Result.SUCCESS.getValue());
 			}
 			else{
 				response.setObject("DataMissing");
