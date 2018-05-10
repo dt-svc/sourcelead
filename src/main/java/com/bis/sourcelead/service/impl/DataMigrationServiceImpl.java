@@ -169,6 +169,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		Sheet firstSheet = workbook.getSheetAt(0);
 		Iterator<Row> rowIterator = firstSheet.iterator();
 		int colCount = 0;
+		Boolean isEmptyExcel = true;
 		while (rowIterator.hasNext()) {
 			Row nextRow = rowIterator.next();
 			if(nextRow.getRowNum()+1 == Integer.parseInt(dataMigrationDTO.getHeaderPosition()) ) {
@@ -180,6 +181,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 			}
 			if(nextRow.getRowNum()+1 > Integer.parseInt(dataMigrationDTO.getHeaderPosition()) ) {
+				isEmptyExcel = false;
 				HashMap< String, String> errorSet = new HashMap< String, String>();
 				Gson gson = new Gson();
 				String gsonOutput = gson.toJson(dataMigrationDTO);
@@ -282,7 +284,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		}
 		workbook.close();
 		inputStream.close();
-		if(finalImportStatus != null) {
+		if(isEmptyExcel) {
+			return "fail";
+		}else if(finalImportStatus != null) {
 			return finalImportStatus;
 		}else {
 			return importStatus;
