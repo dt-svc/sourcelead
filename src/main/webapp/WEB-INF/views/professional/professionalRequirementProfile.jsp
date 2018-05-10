@@ -838,16 +838,17 @@ function proposeNewRate(submissionId, candidateId) {
 			processData: false,
 		    contentType:false, 
 			data: formData,
-			url: sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,
-				success: function(data) {
-					if (data.response === "FAILED") {
-			    		showError(data.responseMessage);
-			    	} else if (data.response === "AWKWARD") {
+			url : sourceleadUrl+'/ws/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
+				success: function(output) {
+					if (output.response === "FAILED") {
+			    		showError(output.responseMessage);
+			    	} else if (output.response === "AWKWARD") {
 			    		location.href = "/errorPage";
-			    	} else if (data.response === "SUCCESS") {
+			    	} else if (output.response === "SUCCESS") {
 			    		getRateNegotiationDetails(submissionId, candidateId);
 			    	}else {
 			    		showError("Operation failed, please try again");
+			    		$("#add_rate").removeAttr("disabled");
 			    	}
 				},
 			});
