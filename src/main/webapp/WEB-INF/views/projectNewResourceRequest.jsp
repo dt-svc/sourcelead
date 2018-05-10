@@ -232,6 +232,7 @@ function newResourceRequestPagination(url,requestType,sourceleadUrl){
 			    			
 			    			if(opt.resourceStatus == 'On hold'){
 			    			  result = result +"<i class='glyphicon glyphicon-comment edit-reason colB'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>&nbsp;|&nbsp;";
+			    			  result = result+" <br><span class='rejNam' title='"+opt.approvedUser+"'>By : "+opt.approvedUser+"</span>";
 			    			}
 			    			result = result + '<a href="javascript:void(0)" onclick="acceptNewAssociate(\''+opt.requestUUID+'\',\''+requestType+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approve"></i></a>&nbsp;|&nbsp;';
 				    		result = result + '<a href="javascript:void(0)" onclick="rejectNewAssociate(\''+opt.requestUUID+'\',\''+opt.roleName+'\');"><i class="fa fa-times text-danger" alt="Reject" title="Reject"></i></a>';
@@ -244,8 +245,10 @@ function newResourceRequestPagination(url,requestType,sourceleadUrl){
 			    			if(opt.resourceStatus == 'Rejected'){
 			    				result = result +"<i class='glyphicon glyphicon-comment colB edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
 			    				result = result + '<b class="bg-red">'+opt.resourceStatus+'</b>';
+			    				result = result+" <br><span class='rejNam' title='"+opt.approvedUser+"'>By : "+opt.approvedUser+"</span>";
 			    			}else{
 			    				result = result + '<b class="bg-green">'+opt.resourceStatus+'</b>';
+			    				result = result+" <br><span class='rejNam' title='"+opt.approvedUser+"'>By : "+opt.approvedUser+"</span>";
 			    			}
 			    			
 			    		}

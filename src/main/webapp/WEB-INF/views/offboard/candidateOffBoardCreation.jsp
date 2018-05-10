@@ -13,9 +13,10 @@
 
 <script> 
 	$(document).ready(function(){
-		document.getElementById("templateDocs").disabled = true;
-		document.getElementById("templateTasks").disabled = true;
-		document.getElementById("checkList").disabled = true;
+		 
+		 document.getElementById("templateDocs").disabled = true;
+		 document.getElementById("checkList").disabled = true;
+		 document.getElementById("templateTasks").disabled = true; 
 		
 		
 		var offBoardingId = '${offBoardingId}';
@@ -1189,12 +1190,12 @@ function createTemplateDocs(saveType){
 <script>
 function getOffboardingCheckList(){
 	
-	
 	var result = "";
 	var candidateOffBoardId = document.getElementById("candidateOffBoardId").value;
 	var sourceleadUrl ='${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
+	if(candidateOffBoardId){
 	result = result + '<div class="clearfix">';
 	        result = result + '</div>';
 	        result = result + '<div id="sjfb-wrap">';
@@ -1247,6 +1248,7 @@ function getOffboardingCheckList(){
 	           $("#offboardingCheckList").append(result); 
 	           $("#offboardTasksList").empty();
 	           customizeFields(candidateOffBoardId,sourceleadUrl,"offboarding");
+	}
 	           
 	
 }
