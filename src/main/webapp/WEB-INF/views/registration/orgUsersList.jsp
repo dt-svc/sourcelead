@@ -696,6 +696,9 @@ function makeAsPrimaryAdmin(userId){
 	$(".project_inn_mask").fadeOut(200);
 	
 	var orgLocationId =   $('input[name=subscribedOrgLocation]:checked').val();
+	 if(orgLocationId == null || orgLocationId == '' || orgLocationId == 'undefined'){
+		 orgLocationId = '${registeredOrgLocationId}'
+	 }
 	var orgCode = '${orgCode}';
 	
  	$("#loading").attr('style','position:absolute; width:100%; height:450px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -720,6 +723,9 @@ function resendInvitation(userId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var orgId = '${orgId}';
 	var orgLocationId =   $('input[name=subscribedOrgLocation]:checked').val();
+	 if(orgLocationId == null || orgLocationId == '' || orgLocationId == 'undefined'){
+		 orgLocationId = '${registeredOrgLocationId}'
+	 }
 	if(userId != null && userId != ""){
 			 $.ajax({
 			    	type: "POST",
