@@ -696,10 +696,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			query1.append(" or (immView.country like '%" + searchValue + "%' )");
 			query1.append(" or (immView.petitionType like '%" + searchValue + "%' )");
 			if (orgLocations.getId() == immigrationListDTO.getOrgLocationId()) {
-				query1.append(" or (immView.org2 like '%" + searchValue + "%' )");
+				query1.append(" or (immView.vendor like '%" + searchValue + "%' )");
 			}
 			else {
-				query1.append(" or (immView.org1 like '%" + searchValue + "%' )");
+				query1.append(" or (immView.client like '%" + searchValue + "%' )");
 			}
 			query1.append(" or (immView.phone like '%" + searchValue + "%' ))");
 		}
@@ -713,10 +713,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			}
 			if(filterVal.get("attorney") != null) {
 				if (orgTypeVal.equalsIgnoreCase("Org2")) {
-					query1.append(" and (immView.org2 IN ( :attorneyList )) ");
+					query1.append(" and (immView.vendor IN ( :attorneyList )) ");
 				}
 				else {
-					query1.append(" and (immView.org1 IN ( :attorneyList )) ");
+					query1.append(" and (immView.client IN ( :attorneyList )) ");
 				}
 			}
 			if(filterVal.get("duration") != null) {
@@ -1051,6 +1051,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
             }
         }
         responseList.setRecordsTotal(totalCount);
+        responseList.setRecordsFiltered(filterCount);
         //opendate
         
         List<MyImmigrationViewDTO> ImmigarionDTOList = new ArrayList<MyImmigrationViewDTO>();
