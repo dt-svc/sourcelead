@@ -160,4 +160,34 @@ public class ProjectDocumentPermissionDaoImpl implements ProjectDocumentPermissi
 		}
 		return projectDocumentPermission;
 	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteAllProjectDocumentByFoderId(Long foderId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectDocumentPermission pdp where pdp.projectDocumentFolderId.id =:foderId";
+		List<ProjectDocumentPermission> projectDocumentPermissionList = session.createQuery(query).setLong("foderId", foderId).list();
+       if(projectDocumentPermissionList != null && !projectDocumentPermissionList.isEmpty()) {
+    	   for(ProjectDocumentPermission pdp :projectDocumentPermissionList) {
+    		   session.delete(pdp);
+    	   }
+       }
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional(rollbackFor = { Exception.class })
+	public void deleteAllProjectDocumentByDocumentId(Long documentId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectDocumentPermission pdp where pdp.projectDocumentId.id =:documentId";
+		List<ProjectDocumentPermission> projectDocumentPermissionList = session.createQuery(query).setLong("documentId", documentId).list();
+       if(projectDocumentPermissionList != null && !projectDocumentPermissionList.isEmpty()) {
+    	   for(ProjectDocumentPermission pdp :projectDocumentPermissionList) {
+    		   session.delete(pdp);
+    	   }
+       }
+	}
+	 
+	
 }
