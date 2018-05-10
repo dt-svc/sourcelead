@@ -13,7 +13,37 @@
     <!-- Project -->
     <div class="timesheet_out">
       <div class="clients_wrap">
-        <jsp:include page="JobCountFilter.jsp"></jsp:include>
+        <div class="timesheet_head">
+      
+      <jsp:include page="JobCountFilter.jsp"></jsp:include>
+      
+      <div class="pull-left ml mt10 dropdown-select">
+	        <div class="dropdown-select positionRelative">
+	        <select class="form-control" id="customDates" onchange="showCustomFields();">
+	          <option value="Last_7_days" selected>Last 7 days</option>
+	          <option value="Last_15_days">Last 15 days</option>
+	          <option value="1_month">1 month</option>
+	          <option value="3_months">3 months</option>
+	          <option value="Last_Year">Last year</option>
+	          <option value="Custom">Custom</option>
+	        </select>
+	        <!-- Top Leave Takers Custom Date -->
+		    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-selects" style="display: none; width: 346px;" >
+				<div class="pull-left">
+				<div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
+				<input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar input-sm margin-top0" type="text">
+				</div>
+				<div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
+				<input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar input-sm margin-top0" type="text">
+				</div>
+				<button type="button" class="btn btn-primary btn-sm" onclick="validateCustDatesList();"><i class="fa fa-search"></i></button>
+				</div>
+		    </div>
+	      	</div>
+      	</div>
+      
+       
+       </div>
         <div class="clients_wrap_table datatable_filter">
         
         <div id="previousOfferDiv"></div>
@@ -39,11 +69,14 @@
        function requirementOfferist(){
 		var sourceleadUrl ='${sourceleadUrl}';
 	   // var tab = "previous";
-	   var tab = '${tab}';
+	    var tab = '${tab}';
+	    var fromDate = $("#custFromDate").val();
+	    var toDate = $("#custToDate").val();
+	   	var customDates = $("#customDates").val();
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tab="+tab+"&submissionStatus=OFFERMADE";
+		var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tab="+tab+"&submissionStatus=OFFERMADE&frequency="+customDates+"&fromDate="+fromDate+"&toDate="+toDate;
 	    prepareOfferList(url);
 }
 </script> 
@@ -53,7 +86,7 @@
 function prepareOfferList(url){
         var result = "";
  	    result = result +' <div class="modal-header">';
- 	    result = result +' <div class="remove_search">';
+ 	    result = result +' <div class="remove_search mt10">';
  	    result = result +' <input type="text" placeholder="Search" id="dataTableSearch"/>';
  	    result = result +'</div>';
  	    result = result +'</div>';
@@ -259,114 +292,6 @@ function offerpagination(url){
 }
 
 </script>
-
-        
-           <%-- <table id="appTable">
-            <thead>
-              <tr>
-                <th>Applicant name</th>
-                <th>Job</th>
-                <th>Client</th>
-                <th>Resume</th>
-                <th>Join Date</th>
-                <th>Rate</th>
-                <th>Position Type</th>
-                <th>Attachment</th>
-                <th>Offered On</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-            <c:forEach var="reqSub" items="${toDayReqOfferscount}">
-              <tr>
-			 <td><div><span>${reqSub.submissionId.candidate.firstName}</span></div></td>
-              <sec:authorize access="hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')"> 
-			 	<td><div class="proj_show"><span><a href='<c:url value='${appPath}/requirementSummary?requirementUUID=${reqSub.submissionId.requirement.requirementUUID}'/>'>${reqSub.submissionId.requirement.jobTitle}<i class='fa fa-binoculars'></i></a></span></div></td>
-            </sec:authorize>
-            <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">
-            	<td><div><span>${reqSub.submissionId.requirement.jobTitle}</span></div></td>
-            </sec:authorize>
-              <td><div><span>
-              <c:if test="${not empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
-              	${reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}
-              </c:if>
-              <c:if test="${empty reqSub.submissionId.requirement.parentRequirement.orgLocationId.org.orgName}">
-              	--
-              </c:if>
-              </span></div></td>
-               <td><div><span>
-	              <c:if test="${not empty reqSub.submissionId.candidateResumes.resumeUUID}">
-	                <a target="_blank" href="${reqSub.submissionId.candidateResumes.fileURL}"/><i class='fa fa-download'></i></a>
-	               <a href="javascript:void(0)" onclick="viewFile('${reqSub.submissionId.candidateResumes.fileURL}','${reqSub.submissionId.candidateResumes.fileName}','${reqSub.submissionId.candidateResumes.fileContentType}');" class="fa fa-eye ml10 paddingRight"></a>
-	              </c:if>
-	              <c:if test="${empty reqSub.submissionId.candidateResumes.resumeUUID}">
-	             	 --
-	              </c:if>
-              </span></div>
-              </td>
-               <td><div><span>
-	              <c:if test="${not empty reqSub.submissionId.offerJoinDate}">
-	               ${reqSub.submissionId.offerJoinDate}
-	              </c:if>
-	                <c:if test="${empty reqSub.submissionId.offerJoinDate}">
-	              	 --
-	              </c:if>
-              </span></div>
-              </td>
-              <td><div><span>
-	               <c:if test="${not empty reqSub.submissionId.offerRate}">
-	            	  ${reqSub.submissionId.offerRate} ${reqSub.submissionId.ratePer}  ${reqSub.submissionId.rateType} 
-	              </c:if>
-	              <c:if test="${empty reqSub.submissionId.offerRate}">
-	             	 --
-	              </c:if>
-              </span></div></td>
-         
-              
-               <td><div><span>
-	               <c:if test="${not empty reqSub.submissionId.positionType}">
-	            	  ${reqSub.submissionId.positionType}
-	              </c:if>
-	              <c:if test="${empty reqSub.submissionId.positionType}">
-	             	 --
-	              </c:if>
-              </span></div></td>
-              
-               <td><div><span>
-	               <c:if test="${not empty reqSub.submissionId.attachment}">
-	            	 <a href="<c:url value='${appPath}/ws/downloadOfferAttachment?offerId=${reqSub.submissionId.offerId}'/>"><i class="fa fa-paperclip"></i> </a>
-	            	 <a class="fa fa-eye ml10" onclick="viewOffersListAttachment('${reqSub.submissionId.offerId}','shiva')"></a>
-	              </c:if>
-	              <c:if test="${empty reqSub.submissionId.attachment}">
-	             	 --
-	              </c:if>
-              </span></div></td> 
-            
-             <td><div><span>
-	               <c:if test="${not empty reqSub.submissionId.createdDateStr}">
-	            	  ${reqSub.submissionId.createdDateStr}
-	              </c:if>
-	              <c:if test="${empty reqSub.submissionId.createdDateStr}">
-	             	 --
-	              </c:if>
-              </span></div></td> 
-              
-               <td><div><span>
-	               <c:if test="${not empty reqSub.toStage}">
-	            	 ${reqSub.toStage}
-	              </c:if>
-	              <c:if test="${empty reqSub.toStage}">
-	             	 --
-	              </c:if>
-              </span></div></td>
-            
-               </tr>
-			  </c:forEach>
-            </tbody>
-            
-          </table> --%>
-        
-  
   
 <script>
 function viewInterviewListResumes(resumeUUID,title){
@@ -384,28 +309,94 @@ function viewOffersListAttachment(offerId,title){
 }
 </script>
 
+<script>
+function showCustomFields(){
+    var frequency = $("#customDates").val();
+    if(frequency == "Custom"){
+        $("#custom-selects").show();
+         $('#custFromDate').attr('data-validation',"required");
+         $('#custToDate').attr('data-validation',"required");
+    }else{
+        $("#custom-selects").hide();
+        $('#custFromDate').removeAttr('data-validation');
+        $('#custToDate').attr('data-validation',"required");
+        $('#custFromDate').val("");
+        $('#custToDate').val("");
+        requirementOfferist();
+    }
+    
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+      var finalDateFormatEndDate = '';
+      if(locationDate.match("yyyy-MM-dd")){
+          finalDateFormatEndDate = 'yy-mm-dd';
+      }if(locationDate.match("dd-MM-yyyy")){
+          finalDateFormatEndDate = 'dd-mm-yy'; 
+      }if(locationDate.match("MM-dd-yyyy")){
+          finalDateFormatEndDate = 'mm-dd-yy'; 
+      }if(locationDate.match("yyyy-dd-MM")){
+          finalDateFormatEndDate = 'yy-dd-mm'; 
+      }
 
-  
-  <!-- <script>
-function pagination1(){ 
-    $('#appTable').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    });
-    $("#appTable").wrap("<div class='overflow_Auto'></div>");
+      $( "#custFromDate" ).datepicker({
+           dateFormat : finalDateFormatEndDate,
+            changeMonth: true,
+            changeYear: true,
+            maxDate: new Date() ,
+            onSelect : function(selected) {
+            var dt = $(this).datepicker('getDate', '+1d');
+            dt.setDate(dt.getDate());
+            $("#custToDate").datepicker("option", "minDate", dt);
+             removeStartValid();
+            } 
+      
+      });
+      
+      $( "#custToDate" ).datepicker({
+           dateFormat : finalDateFormatEndDate,
+            changeMonth: true,
+            changeYear: true,
+          	maxDate: new Date() ,
+      		onSelect : function(selected) {
+            var dt = $(this).datepicker('getDate', '+1d');
+            dt.setDate(dt.getDate());
+            $("#custFromDate").datepicker("option", "maxDate", dt);
+             removeEndValid();
+            }});
+}
+function removeStartValid(){
+    $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+}
+function removeEndValid(){
+    $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+
+function validateCustDatesList(){
+// 	var userType = $("#userTypeId").val();
+    var frequency = $("#customDates").val();
+    var fromDate = $("#custFromDate").val();
+    var toDate = $("#custToDate").val();
+    if(frequency == "Custom"){
+        if(fromDate == ''){
+            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+            $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+        }
+        if(toDate == ''){
+            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+            $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+        }
+        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+            requirementOfferist();
+            $("#custom-selects").hide();
+        }
+    }else{
+        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+        requirementOfferist();
+    } 
 }
 </script>
-<script type="text/javascript">
-window.onload = function () {
-	pagination1();
- };
- 
-</script> -->
+
 <jsp:include page="../masterFooter.jsp" />
