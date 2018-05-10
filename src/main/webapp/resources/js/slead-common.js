@@ -548,9 +548,9 @@ function validateEmail(emailId) {
     return true;
 }
 
-/*function validateEmailForExistenceUniversally(email, divId, spanId) {
+function validateEmailForExistenceUniversally(email, divId, spanId) {
 	var flag = null;
-	$.ajax({
+	/*$.ajax({
 	    type: "GET",
 	    url: sourceleadUrl + "/validateEmailForExistenceUniversally?email="+email,
 	    async: false,
@@ -579,9 +579,9 @@ function validateEmail(emailId) {
 		$(spanId).find("i").remove();
 		$(spanId).append('<i class="fa fa-ban text-danger"></i>');
 		$(divId).after("<p class='jquery_form_error_message textWarning'><i class='fa fa-ban' aria-hidden='true'></i>This domain universally not existed</span>");
-	}
-return flag;
-}*/
+	}*/
+return true;
+}
 
 
 function validate(id, label) {
