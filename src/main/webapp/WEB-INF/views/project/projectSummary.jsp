@@ -45,7 +45,7 @@ margin: 0.1% 2%;
 	   </section>
  	   <div id="popUp"></div>
  	   <div id="teampopUp"></div>
- 	   
+ 	   <div id="projectMemberDetailsPopUp"></div>
  	   <div id="projectMemberRateHistoryPopUp"></div>
             <!--   Popup's   -->	
             <jsp:include page="employee.jsp" />
