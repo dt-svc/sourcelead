@@ -623,8 +623,8 @@ function invoicePagination(url){
 				result = result +'     <div class="tblminwidth-90">';
 				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
 				 if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected" ){
-					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
-						result = result +'  <div id="popupDiv'+report.id+'" class="invoicePopRg"></div>';
+					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
+						result = result +'  <div id="popupDiv'+report.invoiceUUID+'" class="invoicePopRg"></div>';
 				} 
 				result = result +'  </div> ';
 				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
@@ -641,7 +641,7 @@ function invoicePagination(url){
 							
 					}else{
 						if(report.invoiceStatus == "Linked"){
-							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
+							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 						}else{
 							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
 						}
@@ -658,7 +658,7 @@ function invoicePagination(url){
 						if(report.invoiceStatus == "Rejected"){
 							result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';	
 						}else if(report.invoiceStatus == "Linked"){
-							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
+							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 						}else{
 							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 

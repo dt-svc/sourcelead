@@ -1,17 +1,18 @@
 package com.bis.sourcelead.dto;
 
 public class CustomFieldsRequestTypeDTO {
-	Long sectionId;
-	Long requirementId;
-	String requestFrom;
-	Long candidateId;
-	Long userId;
-	Long orgRelationID;
-	Long clientLocationId;
-	Long projectId;
-	Long contractId;
-	Long assetId;
-	Long projectTask;
+	private Long sectionId;
+	private Long requirementId;
+	private String requestFrom;
+	private Long candidateId;
+	private Long userId;
+	private Long orgRelationID;
+	private Long clientLocationId;
+	private Long projectId;
+	private Long contractId;
+	private Long assetId;
+	private Long projectTask;
+	private String requestType;
 	public Long getSectionId() {
 		return sectionId;
 	}
@@ -77,6 +78,12 @@ public class CustomFieldsRequestTypeDTO {
 	}
 	public void setProjectTask(Long projectTask) {
 		this.projectTask = projectTask;
+	}
+	public String getRequestType() {
+		return requestType;
+	}
+	public void setRequestType(String requestType) {
+		this.requestType = requestType;
 	}
 	
 }

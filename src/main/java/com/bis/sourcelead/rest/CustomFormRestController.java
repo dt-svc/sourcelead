@@ -171,8 +171,11 @@ public class CustomFormRestController {
 	    	model.addObject("dataMapList", jobData);
 	    	model.addObject("customFieldsList",OrglocationFormFieldsDTOList);
 			model.addObject("currentIndex",currentIndex);
-		
-    	model.setViewName("genericCustomFormFields");
+		if(CustomFieldsRequestTypeDTO.getRequestType()!= null && StringUtils.isNotBlank(CustomFieldsRequestTypeDTO.getRequestType()) && CustomFieldsRequestTypeDTO.getRequestType().equalsIgnoreCase("view")) {
+			model.setViewName("genericCustomViewFields");
+		}else {
+			model.setViewName("genericCustomFormFields");
+		}
     	return model;
     }
     

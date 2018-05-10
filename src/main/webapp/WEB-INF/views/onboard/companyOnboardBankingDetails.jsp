@@ -23,6 +23,23 @@
 <script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 
 
+<style>
+.edit_member_pop {
+	top:12% !important; left: 35%; margin: 0px auto; z-index: 15500; width: 520px;
+	position: fixed !important; background-color: #f9f9f9; box-shadow: 0px 0px 5px rgba(0,0,0,0.3); padding: 15px;
+}
+.edit_member_pop .footerBtns input {
+    width: 50%; border: none; height: 30px; font-size: 14px; font-weight: 500; color: #FFF; background-color: #ff4b4b;
+}
+.edit_member_pop .footerBtns input.u_can_color {
+    background-color: #375d81;
+}
+.edit_member_pop h4 {
+background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-size: 15px;
+}
+</style>
+
+
 <script>
   function navtoggle(elementRef){
 	  
@@ -161,68 +178,38 @@ right: 15px;
 				  <div class="clearfix"></div>
 			  </div>
 			  
-			<form:form class="login-form clearfix"  id="bankingDetails_form"  name="bankingDetails_form" method="post" > 	  
 			  <div class="comLogContent">
-			  <div id="loading"></div> 
-			  <h2>Organization Banking Details</h2>
-				  <div class="row clearfix"> 
-				  	<div class="col-md-6">
-					  	<div class="form-group clearfix">
-						<label class="col-md-4 noPad">Account type<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-8 padding_right">
-							<select class="chosen-select form-control" name="accountType" id="accountType" data-validation="required" field-name="Account Type">
-								<option value="">--Select Account type--</option>
-								<option ${SourceLeadWeb_bankingDetails.accountType  == 'Savings' ? 'selected' : ''} value="Savings">Savings</option>
-								<option ${SourceLeadWeb_bankingDetails.accountType  == 'Checking' ? 'selected' : ''} value="Checking">Checking</option>
-							  </select>
-							</div>
-						</div>
-						
-						<div class="form-group clearfix">
-								<label class="col-md-4 noPad">Account Name<span class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-8 padding_right">
-								 <input class=" form-control" type="text" name="accountName" id="accountName" value='${SourceLeadWeb_bankingDetails.accountName}' field-name="Account Name"  data-validation="required validate_space validate_length length1-250" >
-								</div>
-						</div>
-						
-						<div class="form-group clearfix">
-								<label class="col-md-4 noPad">Routing Number<span class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-8 padding_right">
-								 <input class=" form-control" type="text" name="routingNumber" id="routingNumber" placeholder="Routing Number" field-name="Routing Number" value='${SourceLeadWeb_bankingDetails.routingNumber}' data-validation="required validate_space validate_length length9-9" maxlength="9" >
-								</div>
-						</div>
-						
-						<div class="form-group clearfix">
-								<label class="col-md-4 noPad">Account Number<span class="text-danger">&nbsp;*</span></label>
-								<div class="col-md-8 padding_right">
-								 <input class=" form-control" type="text" name="accountNumber" id="accountNumber" placeholder="Account Number" field-name="Account Number" value='${SourceLeadWeb_bankingDetails.accountNumber}' data-validation="required validate_space validate_length length9-15"  >
-								</div>
-						</div>
-						
-				  	</div>
-				  </div>
-					<div class="welBtns welBtnsA">
-						<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
-						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardFederalAndStateTaxes'/>'"><input type="submit" value="Save & Continue" class="Brig" id="save_button">
-						</c:if>
-						
-						<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardInformationDetails'/>'"><input type="submit" value="Save & Continue" class="Brig" id="save_button">
-						</c:if>
-						
-						<c:if test="${SourceLeadWeb_orgLocations.country != 'India' && SourceLeadWeb_orgLocations.country != 'United States'}">
-						<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardLocations'/>'"><input type="submit" value="Save & Continue" class="Brig" id="save_button">
-						</c:if>
-						
-						<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardDocuments'/>'"></a>
-						<div class="clearfix"></div>
+			  <div id='bankdetailsListLoading'></div>
+			       <div class="row clearfix"> 
+			       <div class="col-md-5">
+			        <h2 class="pull-left">Organization Banking Details</h2>
+			        	<a href="javascripit:void(0)" onclick="addNewBankingDetails();"  class="pull-left ml mt2"><i class="fa fa-plus paddingRight"></i>Add</a>
+			        </div>
 					</div>
-			  </div>
-			  </form:form>
+					<jsp:include page="locationBankingDetails.jsp" />
+					
+					<div class="welBtns welBtnsA">
+									<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+									<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardFederalAndStateTaxes'/>'">
+									</c:if>
+									
+									<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+									<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardInformationDetails'/>'">
+									</c:if>
+									
+									<c:if test="${SourceLeadWeb_orgLocations.country != 'India' && SourceLeadWeb_orgLocations.country != 'United States'}">
+									<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardLocations'/>'">
+									</c:if>
+									
+									<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardDocuments'/>'"></a>
+									<div class="clearfix"></div>
+								</div>	
+				</div>	
 			</section>
 	</section>
 </div>
 
+<div id="bankingDetailsPopUp"></div>
 
 <div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
     <a href="#" class="loc-alertclose close">&times;</a>
@@ -241,7 +228,33 @@ right: 15px;
  <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
  <script src="/resources/js/formvalidator.js"></script>
  
- 
+ <script>
+ function deleteBankingDetails(uuid){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $("#bankdetailsListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $.ajax({
+	    	type: "POST",
+	    	  url: sourceleadUrl+"/deleteOnboardBankingDetails?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,		
+	        success: function(result) {
+	        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+  	    		    showError(result.responseMessage);
+  	    		    $("#bankdetailsListLoading").removeAttr('style');
+  	    		}
+	        	else if (result.response === "AWKWARD") {
+  	    		    location.href = "/errorPage";
+  	    		}
+            	else if(result.response === "SUCCESS"){
+            		location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
+	        	}else if (result.indexOf('Sign In') !== -1) {
+  					location.replace(sourceleadUrl);
+  				}else {
+  				    showError("Operation failed, please try again");
+  				    $("#bankdetailsListLoading").removeAttr('style');
+  				}
+	        },
+	    });  
+ }
+ </script>
  
  
  <script type="text/javascript">
@@ -258,34 +271,30 @@ $('body').on('submit', '#bankingDetails_form', function(e){
       e.preventDefault();
       var sourceleadUrl ='${sourceleadUrl}';
       var formData = getFormData("bankingDetails_form");
-      var uuid = '';
-      if('${uuid}' != null && '${uuid}' != '' && '${uuid}' != 'undefined'){
-    	   uuid = '${uuid}';
-      }
-	 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	       $.ajax({
+     
+	 	$("#detailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $.ajax({
 		    	type: "POST",
 		    	data : formData,
-		    	  url: sourceleadUrl+"/saveOrgLocationsBankingDetails?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,		
+		    	  url: sourceleadUrl+"/saveOrgLocationsBankingDetails?${_csrf.parameterName}=${_csrf.token}",		
 		        success: function(result) {
 		        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
       	    		    showError(result.responseMessage);
-      	    		    $("#loading").removeAttr('style');
+      	    		    $("#detailsLoading").removeAttr('style');
       	    		}
 		        	else if (result.response === "AWKWARD") {
       	    		    location.href = "/errorPage";
       	    		}
                 	else if(result.response === "SUCCESS"){
-                		 $("#loading").removeAttr('style');
-                		location.replace(sourceleadUrl+"/companyOnboardDocuments"); 
+                		location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
 		        	}else if (result.indexOf('Sign In') !== -1) {
       					location.replace(sourceleadUrl);
       				}else {
       				    showError("Operation failed, please try again");
-      				    $("#loading").removeAttr('style');
+      				    $("#detailsLoading").removeAttr('style');
       				}
 		        },
-		    });    
+		    });     
       return true; 
     }
     else{
