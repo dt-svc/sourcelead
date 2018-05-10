@@ -123,11 +123,11 @@ public class RequirementHelper {
 			if (null != requirement.getRateType() && !"".equals(requirement.getRateType())) {
 				requirementIndex.setRateType(requirement.getRateType());
 			}
-			if (null != requirement.getMinExp()) {
-				requirementIndex.setMinExperience(requirement.getMinExp());
+			if (StringUtils.isNotEmpty(requirement.getMinExp())) {
+				requirementIndex.setMinExperience(Float.parseFloat(requirement.getMinExp()));
 			}
-			if (null != requirement.getMaxExp()) {
-				requirementIndex.setMaxExperience(requirement.getMaxExp());
+			if (StringUtils.isNotEmpty(requirement.getMaxExp())) {
+				requirementIndex.setMaxExperience(Float.parseFloat(requirement.getMaxExp()));
 			}
 			if(null != requirement.getCurrencyCode() && !"".equalsIgnoreCase(requirement.getCurrencyCode())){
 				requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());

@@ -12,6 +12,7 @@
 <script type="text/javascript" src="/resources/js/jquery.dataTables.min.js"></script>
 <!-- <script type="text/javascript" src="/resources/js/ColReorderWithResize.js"></script> -->
 <!-- <script type="text/javascript" src="/resources/js/colResizable-1.6.min.js"></script> -->
+<c:set var ="myImmigrationPage" value = "N" scope="session"/>
 <title>Insert title here</title>
     <section class="content-wraper content-wraperNew">
    
@@ -429,7 +430,11 @@
      result = result + '<th>Email</th>';
      result = result + '<th>Phone</th>';
      result = result + '<th>On Date</th>';
-     result = result + '<th>Attorney</th>';
+     if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y' && '${SourceLeadWeb_orgLocations.isAccountingFirm}' == 'Y'){
+     result = result + '<th>Company</th>';
+     }else{
+     result = result + '<th>Attorney</th>'; 
+     }
      result = result + '<th>LCA Start Date</th>';
      result = result + '<th>LCA End Date</th>';
      result = result + '<th>Action</th>';

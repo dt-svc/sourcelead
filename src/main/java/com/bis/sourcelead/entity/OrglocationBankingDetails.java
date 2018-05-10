@@ -50,6 +50,12 @@ public class OrglocationBankingDetails implements Serializable{
 	@Column(name = "ACCOUNT_NUMBER")
 	private String accountNumber;
 	
+	@Column(name = "BANK_NAME")
+	private String bankName;
+	
+	@Column(name = "BANK_ADDRESS", columnDefinition = "TEXT default NULL")
+	private String bankAddress;
+	
 	@Column(name = "UUID")
 	private String uuid;
 	
@@ -166,6 +172,22 @@ public class OrglocationBankingDetails implements Serializable{
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public String getBankAddress() {
+		return bankAddress;
+	}
+
+	public void setBankAddress(String bankAddress) {
+		this.bankAddress = bankAddress;
 	}
     
 }

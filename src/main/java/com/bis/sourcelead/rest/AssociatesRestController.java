@@ -221,9 +221,11 @@ public class AssociatesRestController {
 			for(OrgRelations orgRelation:orgRelationsList){
 				if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
 					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
+					orgRelation.setImmigrationRelatedId(orgRelation.getResponderLocationId().getId());
 				}
 				if(orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
 					orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
+					orgRelation.setImmigrationRelatedId(orgRelation.getLocationId().getId());
 				}
 				
 			}

@@ -480,7 +480,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setImmigrationUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		OrgRelations orgRelations =orgRelationsDao.getOrgRelationById(Long.parseLong(immigrationDTO.getAttorneyId()));
 		immigration.setOrgRelations(orgRelations);
-		immigration.setAttorneyOrgLocationId(orgRelations.getResponderLocationId());
+		immigration.setAttorneyOrgLocationId(orgRelations.getResponderLocationId());	
 		OrgSpoc orgSpoc = orgSpocDao.getOrgSpocById(Long.parseLong(immigrationDTO.getAttorneyContact()));
 		immigration.setOrgSpoc(orgSpoc);
 		immigration.setSpocUserId(orgSpoc.getVendorUser());
@@ -490,7 +490,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigration.setCandidateUserId(candidateUser);
 			}
 		if(immigrationDTO.getEditMode().equalsIgnoreCase("false")){
-		immigration.setOrgLocationId(orgLocations);
+			if(orgLocations.getIsLawFirm().equalsIgnoreCase("Y") && orgLocations.getIsAccountingFirm().equalsIgnoreCase("Y")){
+				immigration.setOrgLocationId(orgRelations.getLocationId());
+			}else{
+				immigration.setOrgLocationId(orgLocations);
+			}
 		}
 		immigration.setReceiptNo(immigrationDTO.getReceiptNo());
 		if(StringUtils.isEmpty(immigrationDTO.getImmigrationId())) {
