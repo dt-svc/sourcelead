@@ -58,7 +58,7 @@
   			<div class="col-md-2 immHeadactions clearfix">
   			
   			
-  			<select id="uscisStatusId" onchange="changeUscisStatusForImmigration($(this).val());" class="form-control selstyles-new">
+  			<select id="uscisStatusId" onchange="changeUscisStatusForImmigration($(this).val());" <c:if test = "${myImmigrationPage =='Y'}">disabled</c:if> class="form-control selstyles-new">
   				<c:forEach var="item" items="${uscisStatusList}">
   					<option ${immigration.currUscisStatusId == item.id ? 'selected' : '' } value="${item.id}">${item.name}</option>
   				</c:forEach>
