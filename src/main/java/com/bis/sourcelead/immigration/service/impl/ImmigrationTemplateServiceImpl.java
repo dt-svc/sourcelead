@@ -65,6 +65,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         if (!templateId.equalsIgnoreCase("null") && !templateId.isEmpty()) {
         	immigrationTemplate =  new ImmigrationTemplate();
         	immigrationTemplate.setId(Long.parseLong(templateId));
+        	immigrationTemplate = immigrationTemplateDao.getImmigrationTemplateById(Long.parseLong(templateId));
             //immigrationTemplate.setStatus(1);
         }else {
         	immigrationTemplate = new ImmigrationTemplate();
