@@ -834,12 +834,11 @@ public class RequirementServiceImpl implements RequirementService {
 						}
 						requirementLocationsService.saveRequirementLocations(reqLocation);
 					}
-					location.append(reqLocation.getLocation()).append("<br>");
 					UUIDList.add(savedLocationDTO.getLocationUUID());
 					}
 				}
 			}
-				
+			
 			if(UUIDList != null && !UUIDList.isEmpty()) {
 				UUIDList.retainAll(savedUUIDList);
 				savedUUIDList.removeAll(UUIDList);
@@ -984,6 +983,13 @@ public class RequirementServiceImpl implements RequirementService {
 		 */
 		
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
+		
+		List<RequirementLocations> requirementLocationList = requirementLocationsService.getRequirementLocationsListByRequirementId(savedRequirement.getId());
+		if(requirementLocationList != null && !requirementLocationList.isEmpty()) {
+			for(RequirementLocations requirementLocation : requirementLocationList) {
+				location.append(requirementLocation.getLocation()).append("<br>");
+			}
+		}
 		
 		if(requirementDTO.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:requirementDTO.getCustomFormData()) {
