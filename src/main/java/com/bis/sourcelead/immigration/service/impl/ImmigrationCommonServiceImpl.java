@@ -755,7 +755,13 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigrationCommonDao.saveImmigrationCandidateDocs(docs);
 			List<FileInfo> fileInfo1 = immigrationTemplateDocDTO.getFileInfo();
 			for(FileInfo info: fileInfo1){
-			ImmigrationCandidateDocumentsHistory docsHistory = new ImmigrationCandidateDocumentsHistory();
+			ImmigrationCandidateDocumentsHistory docsHistory = null; 
+			if(immigrationTemplateDocDTO.getImmigrationCandidateDocHistoryId() != null){
+				docsHistory = immigrationCommonDao.getImmigrationCandidateDocumentsHistoryById(immigrationTemplateDocDTO.getImmigrationCandidateDocHistoryId());
+			}
+			else{
+				docsHistory = new ImmigrationCandidateDocumentsHistory();
+			}
 			docsHistory.setCandidateId(docs.getCandidateId());
 			docsHistory.setImmigrationCandidateDocumentId(docs);
 			docsHistory.setImmigrationId(docs.getImmigrationId());

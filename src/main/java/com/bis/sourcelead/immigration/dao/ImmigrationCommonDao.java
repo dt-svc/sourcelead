@@ -103,6 +103,8 @@ public interface ImmigrationCommonDao {
 
 	List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId, Long docId) throws Exception;
 
+	ImmigrationCandidateDocumentsHistory getImmigrationCandidateDocumentsHistoryById(Long docHistoryId)throws Exception;
+	
 	String deleteImmigrationDetailsById(Long immigrationId);
 
 	List<ImmigrationCandidateForms> getImmigrationCandidateFormsByImmigrationId(Long immigrationId);

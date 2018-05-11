@@ -1077,5 +1077,19 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         System.out.println(" after dao impl  ---getMyImmigrationsList getRecordsTotal is -->" +responseList.getRecordsTotal());
         return responseList;
 	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationCandidateDocumentsHistory getImmigrationCandidateDocumentsHistoryById(Long docHistoryId) throws Exception {
+		ImmigrationCandidateDocumentsHistory immigrationCandidateDocumentsHistory= null;
+        try {
+			Session session = this.sessionFactory.getCurrentSession();
+			immigrationCandidateDocumentsHistory = (ImmigrationCandidateDocumentsHistory)session.get(ImmigrationCandidateDocumentsHistory.class,docHistoryId);
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
+			e.printStackTrace();
+		}
+		return immigrationCandidateDocumentsHistory;
+	}
 }
 	
