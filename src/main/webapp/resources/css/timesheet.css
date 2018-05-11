@@ -7976,11 +7976,18 @@ padding: 8px 15px; border-top: 1px solid #c7c7c7; text-align: right;
 display: inline-block; width: 100px; padding: 0px 0px; border: 1px solid #ccc; border-radius: 4px; text-align: center;
 font-size: 12px; color: #6C7686; margin: 0px 0px 0px 10px; height: 30px; line-height: 28px;
 }
-
+.colPopMid.coldropdown-parent {
+padding: 15px; overflow: inherit; max-height:350px; border: 1px solid #ddd;
+}
+.colPopMid.coldropdown-parent .coldropdown-inner {
+height: 250px; overflow: auto; border-top: 1px solid #c7c7c7;
+}
+.colPopMid.coldropdown-parent ul li{
+padding-bottom: 0;
+}
 .accDetHead {
 	margin: 0px 30px; padding: 0px 0px 5px 30px; font-size: 15px; font-weight: 500; color: #454545;
 }
-
 .invoicePopRg ul {
 	top: -24px !important; left: 15px !important;
 }
