@@ -1030,13 +1030,13 @@ function closeFilterTaskPop(){
 	$(".advancedsearch-mask").fadeOut();
 }
 function openFilterTaskPop(){
-	$("div.cand-advsrch-popup").toggle();
+	$("#projTaskPop").toggle();
 	 $(".advancedsearch-mask").fadeIn();
 }
 
 </script>
 
-  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="projTaskPop">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeFilterTaskPop()"><i
 						class="fa fa-close"></i></a>

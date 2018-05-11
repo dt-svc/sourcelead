@@ -206,7 +206,6 @@ function prepareapMissingBillGraph(data){
 				$("#last_years").show();
 				lastYearGraph(data);
 			}else{
-				alert("Hai");
 				$("#custom-select").hide();
 				$("#last_7days").hide();
 				$("#last_15days").hide();
