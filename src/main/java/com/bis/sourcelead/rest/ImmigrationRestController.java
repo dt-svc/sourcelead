@@ -241,12 +241,12 @@ public class ImmigrationRestController {
 			String[] tableColumns = { "currUscisStatus", "generatedId", "petitionType", "country", "firstName", "email",
 					"phone", "openDate", "orgName", "lcaStartDate", "lcaEndDate" };// should be
 			// entity names
-			int sortColumnIndex = 0; // by default sorting using updated date
+			int sortColumnIndex = -1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default ascending order
 			if (immigrationListDTO.getOrder() != null && !immigrationListDTO.getOrder().isEmpty()) {
 				sortColumnIndex = Integer.parseInt(immigrationListDTO.getOrder().get(0).get("column"));
 				sortColumnOrder = immigrationListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
-																					// direction
+				immigrationListDTO.setSortOrder(sortColumnOrder);																	// direction
 				// of the sorting.
 			}
 			Map<String, Long[]> filterVal = new HashMap<String, Long[]>();
@@ -262,8 +262,9 @@ public class ImmigrationRestController {
 			if (filterDurationVal.length != 0) {
 				filterVal.put("duration", filterDurationVal);
 			}
-			immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
-			immigrationListDTO.setSortOrder(sortColumnOrder);
+			if(sortColumnIndex != -1)
+		   immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			immigrationListDTO.setOrgLocationId(orgLocations.getId());
@@ -517,15 +518,17 @@ public class ImmigrationRestController {
 			String[] tableColumns = { "name", "country", "petitionType", "description", "docsCount", "formsCount",
 					"tasksCount", "status", "id" };// should be
 			// entity names
-			int sortColumnIndex = 0; // by default sorting using updated date
+			int sortColumnIndex = -1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default ascending order
 			if (templateListDTO.getOrder() != null && !templateListDTO.getOrder().isEmpty()) {
 				sortColumnIndex = Integer.parseInt(templateListDTO.getOrder().get(0).get("column"));
 				sortColumnOrder = templateListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means direction
+				templateListDTO.setSortOrder(sortColumnOrder);
 				// of the sorting.
 			}
+			if(sortColumnIndex != -1) {
 			templateListDTO.setSortColumn(tableColumns[sortColumnIndex]);
-			templateListDTO.setSortOrder(sortColumnOrder);
+			}
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 
@@ -1008,10 +1011,11 @@ public class ImmigrationRestController {
 	}
 
 	@RequestMapping(value = { "/getJobTitleDropDown" })
-	public List<Requirement> getJobTitleDropDown(HttpServletRequest request) throws Exception {
+	public List<Requirement> getJobTitleDropDown(@RequestParam(value = "locationId",required = false) Long locationId,
+			HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		List<Requirement> jobList = requirementService.getAllRequirementsByOrglocationId(orgLocations.getId());
+		List<Requirement> jobList = requirementService.getAllRequirementsByOrglocationId(locationId);
 		return jobList;
 	}
 

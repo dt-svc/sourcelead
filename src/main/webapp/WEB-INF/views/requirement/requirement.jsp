@@ -33,8 +33,13 @@ $(document).ready(function() {
 	zipcodeMask('${requirement.country}','ReqZipCode');
 });
 </script>
+<script>
+  $(function() { 
+		tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+		tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education Options');
 
-
+	});
+ </script>
 <script type="text/javascript">
 		window.onload = function () {
 			getNoticePeriodList();
@@ -519,7 +524,9 @@ $(document).ready(function () {
                          <div class="col-md-9">
                            <div class="input-group">
                               <input type="text"  name="closedDate" class="form-control calendar" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
+
                               <span class="input-group-addon" onClick="clearCloseDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+
                            </div>
                         </div>
                   </div>
@@ -1860,14 +1867,6 @@ function storeTeam(){
 	})(jQuery);
 </script>
 
-<script>
-  $(function() { 
-		tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
-		tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education Options');
-
-	});
- </script>
-
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
@@ -2845,7 +2844,11 @@ $(document).ready(function(){
 
 
 <script>
+
+	
+
 function clearCloseDate(){
+
 	$("#closedDate").val("");
 	document.getElementById("receivingApplicantsDiv").style.display="none";
 	if (document.getElementById('receivingApplicantsId').checked){

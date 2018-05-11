@@ -6,10 +6,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="/resources/css/style.css" />
-<style type="text/css">
+<link rel="stylesheet" href="/resources/css/style.css" />    
+<style type="text/css"> 
 
-.timesheet_head ul.nav-tabs, .timesheet_head ul.invoiceHdr  {
+.timesheet_head ul.nav-tabs, .timesheet_head ul.invoiceHdr  { 
 padding: 5px; float: none; clear: both;
 }
 .billing_dashboard {
@@ -41,6 +41,9 @@ z-index: 9999999;
 
 
 <input type="hidden" id="emptyPayableInvoiceId" name="emptyPayableInvoiceId"/>
+<div class="success_pop" id="selector13" style="display: none;">
+		<i class="fa fa-check-circle"></i><span id="msgdiv1"></span>
+  </div>
 <script>
 function getVendorInvoiceList(orgRelationId,vendorLocationId){
 var result = "";
@@ -133,7 +136,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			            </div>                                                                                                                                                                                                 ';
  result = result + '			          </ul>                                                                                                                                                                                                    ';
  result = result + '			          <div class="tab-content">                                                                                                                                                                                ';
- result = result + '			                                                                                                                                                                                                                   ';
+ result = result + '			           <div id="invoiceLoading"></div>                                                                                                                                                                                                        ';
  result = result + '			            <!-- Employee Details -->                                                                                                                                                                              ';
  result = result + '			            <div class="tab-pane active" id="unbilled">                                                                                                                                                            ';
  result = result + '			              <div class="timesheet_out">                                                                                                                                                                       ';
@@ -948,6 +951,30 @@ function rejectInvoice(invoiceUUID){
 }
 </script>
 
+<script type="text/javascript">
+function generateAutomaticInvoice(){
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/generateAutomaticInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable&contractType=clientSow", 
+             success: function(json) {
+            	  $("#invoiceLoading").removeAttr("style");
+					$("#selector13").removeAttr("style");
+	    			$("#selector13").css("display", "block");
+	    			$("#msgdiv1").html(json.object.count+" Invoice(s) Generated Successfully.");
+					msgFadein();
+            	 location.replace(sourceleadUrl+"/invoiceList");	            	 
+        },
+    });  
+}
+</script>
+<script>
+	function msgFadein() {
+		$("#selector13").fadeIn(200);
+        $('#selector13').delay(2000).fadeOut('slow');
+	}
+</script>
 <script>
 function saveReasonforReceivable(invoiceUUID){
 	var sourceleadUrl = '${sourceleadUrl}';

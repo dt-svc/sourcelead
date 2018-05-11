@@ -221,7 +221,6 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
         result = result + '<th>No. of Forms</th>';
         result = result + '<th>No. of Tasks</th>';
         result = result + '<th>Status</th>';
-        result = result + '<th>id</th>';
         result = result + '<th>Action</th>';
         result = result + '</tr>';
         result = result + '</thead>';
@@ -373,19 +372,6 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                 },
                 {
                     "targets": colIndex++,
-                    "data": "id",
-                    "render": function (data, type, opt, meta) {
-                        var result = "";
-                        if (opt.id !== null && opt.id !== '' && opt.id !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot_80'>" + opt.id + "</div></td>";
-                        } else {
-                            result = result + "<td><div class='tbldata-dotdot_80'>---</div></td>";
-                        }
-                        return result;
-                    }
-                },
-                {
-                    "targets": colIndex++,
                     /*"data": "formsCount",*/
                     "render": function (data, type, opt, meta) {
                     	  var result = "";
@@ -412,7 +398,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
             ],
             "scrollCollapse": false,
             "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-            "aaSorting": [[8, 'desc']],
+            "aaSorting": [],
             "bLengthChange": true,
             "bDestroy": true,
             "ordering": true,
@@ -424,7 +410,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
             }
         });
-        table.column(8).visible(false);
+      //  table.column(8).visible(false);
         $("#dynamicTemplateListTbl").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
 
         $("#immiTemplateSerach").keyup(function (e) {
