@@ -6,10 +6,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="/resources/css/style.css" />
-<style type="text/css">
+<link rel="stylesheet" href="/resources/css/style.css" />    
+<style type="text/css"> 
 
-.timesheet_head ul.nav-tabs, .timesheet_head ul.invoiceHdr  {
+.timesheet_head ul.nav-tabs, .timesheet_head ul.invoiceHdr  { 
 padding: 5px; float: none; clear: both;
 }
 .billing_dashboard {
