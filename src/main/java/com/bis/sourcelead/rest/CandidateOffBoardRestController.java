@@ -993,7 +993,7 @@ public class CandidateOffBoardRestController {
 						documents.setCreatedBy(loginUser.getUserCode());
 						documents.setUpdatedDate(CommonUtil.currentDate());
 						documents.setUpdatedBy(loginUser.getUserCode());
-						offBoardingDocumentsService.saveOffBoardingDocuments(templateDocument);
+						offBoardingDocumentsService.saveOffBoardingDocuments(documents);
 					}
 				}
 				// Offboard Package documetns saving....
@@ -1038,7 +1038,7 @@ public class CandidateOffBoardRestController {
 						documents.setCreatedBy(loginUser.getUserCode());
 						documents.setUpdatedDate(CommonUtil.currentDate());
 						documents.setUpdatedBy(loginUser.getUserCode());
-						offBoardingDocumentsService.saveOffBoardingDocuments(templateDocument);
+						offBoardingDocumentsService.saveOffBoardingDocuments(documents);
 					}
 				}
 				response.setObject("success");

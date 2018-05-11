@@ -52,7 +52,7 @@
 				<select class="chosen-select form-control" id="fieldsDropDown" name="fieldType"  onchange="getSelectedFieldDetails();" ${disableFields}>
 				  <option value="">--Select Field Type--</option>
 				  <option value ="TextBox" ${customFormPopDetails.fieldType =='textBox' ? 'selected':''} selected>Text field</option>
-				  <option value ="Date" ${customFormPopDetails.fieldType =='datefield' ? 'selected':''} >Date field</option>
+				  <option value ="Date" ${customFormPopDetails.fieldType =='Date' ? 'selected':''} >Date field</option>
 				  <option value ="selectBox" ${customFormPopDetails.fieldType =='selectBox' ? 'selected':''} >Select field</option>
 				  <option value ="CheckBox" ${customFormPopDetails.fieldType =='CheckBox' ? 'selected':''} >Check box</option>
 				  <option value ="radioButton" ${customFormPopDetails.fieldType =='radioButton' ? 'selected':''} >Radio button</option>
@@ -163,7 +163,7 @@
 			</div>
 			
 			<div class="col-sm-12 noPad mt clearfix" id="labelInfoDiv">
-			  <div class="col-md-3 noPad labHeight">Tool Tip</div>
+			  <div class="col-md-3 noPad labHeight">Help Text</div>
 			  <div class="col-md-6"><input type="text" name="labelinfo" id="labelinfo" value="${customFormPopDetails.labelinfo}" class="field-label form-control input-sm" > </div>
 			</div>
 			
@@ -301,7 +301,7 @@
 			</div>
 			
 			<div class="col-sm-12 noPad mt clearfix" id="labelInfoDiv">
-			  <div class="col-md-4 noPad clearfix">Tool Tip <span class="pull-right">:</span></div>
+			  <div class="col-md-4 noPad clearfix">Help Text <span class="pull-right">:</span></div>
 			  <div class="col-md-8">${customFormPopDetails.labelinfo}</div>
 			</div>
 			
@@ -376,7 +376,7 @@
 			</div>
 			
 			<div class="col-sm-12 noPad mt clearfix" id="labelInfoDiv">
-			  <div class="col-md-4 noPad clearfix">Tool Tip <span class="pull-right">:</span></div>
+			  <div class="col-md-4 noPad clearfix">Help Text <span class="pull-right">:</span></div>
 			  <div class="col-md-8">${data.labelInfo}</div>
 			</div>
 			

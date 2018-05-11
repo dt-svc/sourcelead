@@ -7,6 +7,9 @@
 .zindex{
 z-index: 1000 !important;
 }
+.collapse-div-adduser.orgsummary-adduser {
+	left: 165px; top: 97px;
+}
 </style>
 
 <div id="users" class="tab-pane fade">
@@ -16,7 +19,6 @@ z-index: 1000 !important;
 		      </div>
 			 
 			 <div class="clearfix">
-			 <a href="javascript:void(0)" class="addcon-pop btn btn-sm btn-primary mb10" onclick="getOrgSubscribedCountries();"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add User</a>
 			 <!-- Popup Div -->
                     <div class="collapse-div-adduser orgsummaryuser-pop orgsummary-adduser col-md-4 zindex" id="addNewUserPopup"> <i class="fa fa-close close-div closediv-pop" onclick="flushUser();"></i>
                           <div class="form-horizontal clearfix">
@@ -69,6 +71,7 @@ z-index: 1000 !important;
                             </div>
                             <div class="clearfix mr">
                               <button type="submit" id="add_user"  class="btn btn-sm btn-primary pull-right">Add</button>
+                              <button type="button" onclick="removeAddUserPopUp();flushUser();" class="btn btn-sm btn-primary pull-right mr">Cancel</button>
                             </div>
                           </form:form>  
                             
@@ -86,8 +89,10 @@ z-index: 1000 !important;
 				    <span class="fa fa-refresh"></span>
 				</button>
 				
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center mr" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
 				</a>
+				
+				<a href="javascript:void(0)" class="addcon-pop btn btn-sm btn-primary anchorWhite" onclick="getOrgSubscribedCountries();"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add User</a>
 				
 	       </div> 
         	
@@ -696,6 +701,9 @@ function makeAsPrimaryAdmin(userId){
 	$(".project_inn_mask").fadeOut(200);
 	
 	var orgLocationId =   $('input[name=subscribedOrgLocation]:checked').val();
+	 if(orgLocationId == null || orgLocationId == '' || orgLocationId == 'undefined'){
+		 orgLocationId = '${registeredOrgLocationId}'
+	 }
 	var orgCode = '${orgCode}';
 	
  	$("#loading").attr('style','position:absolute; width:100%; height:450px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -720,6 +728,9 @@ function resendInvitation(userId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var orgId = '${orgId}';
 	var orgLocationId =   $('input[name=subscribedOrgLocation]:checked').val();
+	 if(orgLocationId == null || orgLocationId == '' || orgLocationId == 'undefined'){
+		 orgLocationId = '${registeredOrgLocationId}'
+	 }
 	if(userId != null && userId != ""){
 			 $.ajax({
 			    	type: "POST",

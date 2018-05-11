@@ -51,7 +51,7 @@ public interface ImmigrationCommonDao {
 
 	String deletetCandidateFamilyDetails(Long id);
 	
-	Long getImmigrationGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdCount);
+	Long getImmigrationGeneratedIdByOrgLocationId(OrgLocations orgLocations, Integer generatedIdCount);
 	
  	List<CandidateResidence> getCandidatesResidenceListByCandidateIdAndOrgLocationID(Long candidateId,String searchValue);
 
@@ -103,6 +103,8 @@ public interface ImmigrationCommonDao {
 
 	List<ImmigrationCandidateDocumentsHistory> getImmigrationCandidateDocumentHistoryListByImmigrationId(Long immigrationId, Long docId) throws Exception;
 
+	ImmigrationCandidateDocumentsHistory getImmigrationCandidateDocumentsHistoryById(Long docHistoryId)throws Exception;
+	
 	String deleteImmigrationDetailsById(Long immigrationId);
 
 	List<ImmigrationCandidateForms> getImmigrationCandidateFormsByImmigrationId(Long immigrationId);
@@ -112,5 +114,7 @@ public interface ImmigrationCommonDao {
 	Immigration updateImigrationDetatils(Immigration immigration);
 
 	ResponseList<MyImmigrationViewDTO> getMyImmigrationsList(MyImmigrationViewDTO immigrationListDTO,	OrgLocations orgLocations, Long userId);
+
+	Integer getTableRecordCountByTemplateId(String entityName, Long templateId, String condition);
 
 }

@@ -62,7 +62,7 @@
 			<div class="filterSearchDiv pull-left colCho">
 				<a href="javascript:void(0)" onclick="filterPop();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
 <div class="colPop">
-	<div class="colPopMid">
+	<div class="colPopMid coldropdown-parent">
 	<div class="clearfix">
 		<div class="row">
 				<div class="col-md-10 mb10 mt5 col-md-offset-2">
@@ -77,6 +77,7 @@
 			</div>
 		</div>
 	<div class="clearfix"></div>
+		<div class="coldropdown-inner">
 		<ul>
 			<li>
 				<span class="checkbox-new clearfix">
@@ -127,6 +128,7 @@
 				</span>
 			</li>
 		</ul>
+		</div>
 	</div>
 	<div class="colPopFot">
 		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
@@ -655,7 +657,7 @@
          ],
          "scrollCollapse": false,
          "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-         "aaSorting": [[6, 'desc']],
+         "aaSorting": [],
          "bLengthChange": true,
          "bDestroy": true,
          "ordering": true,

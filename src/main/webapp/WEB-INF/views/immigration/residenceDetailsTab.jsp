@@ -68,7 +68,7 @@
 		<form id ="residenceDetails_form" name = "residenceDetails_form" method = "Post">
 		<div class="popUpOut" id="popResiView">
 		<input type="hidden" id= "residenceId" name = "residenceId">
-		<input type="hidden" id= "isCurrResi" value="Y" name = "isCurrResi">
+		<input type="hidden" id= "isCurrResi" value="N" name = "isCurrResi">
 		<div class="popupHead">
 			<h2>Add Residence</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="refreshResidency();"></a>
 		</div>

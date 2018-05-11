@@ -42,6 +42,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.DataMigrationDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dto.AssetAssignDTO;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.AssetsDataImportDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
@@ -69,7 +71,9 @@ import com.bis.sourcelead.util.DataMigrationCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 @Service
 public class DataMigrationServiceImpl implements DataMigrationService {
@@ -201,6 +205,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				    	  while (cellIterator.hasNext()) {
 								Cell cell = cellIterator.next();
 								if (dataMigrationDTOJson.get((String) k) != null) {
+									
+									/*if(k.equalsIgnoreCase("assignAsset")) {
+					               //gson.fromJson(dataMigrationDTOJson.get((String) k), AssetAssign.class);
+										System.out.println(dataMigrationDTOJson.get((String) k).toString());
+										System.out.println(dataMigrationDTOJson.get((String) k).toString().getClass());
+										ArrayList<AssetAssign> assignList =  gson.fromJson(dataMigrationDTOJson.get((String) k).toString(), new TypeToken<List<AssetAssign>>(){}.getType());
+										//System.out.println(dataMigrationDTOJson.getJSONArray("assignAsset"));
+										 dataMigrationDTOJson.get((String) k);
+										 
+									}*/
 									if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", "")).equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
 										try {
 											if (DateUtil.isCellDateFormatted(cell)) {

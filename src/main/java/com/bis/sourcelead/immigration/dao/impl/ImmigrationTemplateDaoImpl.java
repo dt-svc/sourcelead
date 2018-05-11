@@ -216,10 +216,10 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         String sortingQry = "";
         if (StringUtils.isNotBlank(templateListDTO.getSortColumn())) {
             sortingQry = " order by tempView." + templateListDTO.getSortColumn() + " " + templateListDTO.getSortOrder();
-        } else {
+        } /*else {
             sortingQry = " order by tempView.name ";
         }
-
+*/
         String listQuery = "from ImmigrationTemplateView tempView  where tempView.orgLocationId=:orgLocationId " + (templateListDTO.getStatus() >= 0 ? "and tempView.status =" + templateListDTO.getStatus() + " " : " ");
         Query hqlQuery = session.createQuery(listQuery + query1 + query2 + sortingQry);
         if (countriesList != null && countriesList.length !=0) {
@@ -247,7 +247,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             //System.out.println(" DocsCount"+source.getDocsCount());
             ImmigrationTemplateListDTO target = new ImmigrationTemplateListDTO();
             BeanUtils.copyProperties(source, target);
-            //System.out.println(" DocsCount target"+target.getDocsCount());
+         //    System.out.println(" Tempale name is  target"+source.getName());
             tempalteDTOList.add(target);
         }
         responseList.setData(tempalteDTOList);
