@@ -201,6 +201,8 @@ public class ImmigrationDTO extends SearchDTO {
     
     private String attorneyContactName;
     
+    private String isOwnTemplateId;
+    
 	public Long getId() {
 		return id;
 	}
@@ -899,6 +901,14 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setEditMode(String editMode) {
 		this.editMode = editMode;
+	}
+
+	public String getIsOwnTemplateId() {
+		return isOwnTemplateId;
+	}
+
+	public void setIsOwnTemplateId(String isOwnTemplateId) {
+		this.isOwnTemplateId = isOwnTemplateId;
 	}
 	
 }

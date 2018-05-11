@@ -241,12 +241,12 @@ public class ImmigrationRestController {
 			String[] tableColumns = { "currUscisStatus", "generatedId", "petitionType", "country", "firstName", "email",
 					"phone", "openDate", "orgName", "lcaStartDate", "lcaEndDate" };// should be
 			// entity names
-			int sortColumnIndex = 0; // by default sorting using updated date
+			int sortColumnIndex = -1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default ascending order
 			if (immigrationListDTO.getOrder() != null && !immigrationListDTO.getOrder().isEmpty()) {
 				sortColumnIndex = Integer.parseInt(immigrationListDTO.getOrder().get(0).get("column"));
 				sortColumnOrder = immigrationListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
-																					// direction
+				immigrationListDTO.setSortOrder(sortColumnOrder);																	// direction
 				// of the sorting.
 			}
 			Map<String, Long[]> filterVal = new HashMap<String, Long[]>();
@@ -262,8 +262,9 @@ public class ImmigrationRestController {
 			if (filterDurationVal.length != 0) {
 				filterVal.put("duration", filterDurationVal);
 			}
-			immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
-			immigrationListDTO.setSortOrder(sortColumnOrder);
+			if(sortColumnIndex != -1)
+		   immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			immigrationListDTO.setOrgLocationId(orgLocations.getId());
