@@ -270,7 +270,7 @@ public class FinanceServiceImpl implements FinanceService{
 							MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
 							if(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId() != null) {
 								Candidate candidate  = candidateService.getCandidateByParentCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
-								if(candidate.getOrgRelationId() != null) {
+								if(candidate != null && candidate.getOrgRelationId() != null) {
 									OrgRelations orgRelations = orgRelationsService.getOrgRelationById(candidate.getOrgRelationId().getId());
 									String date = "";
 									if(!"last_years".equalsIgnoreCase(missingInvoiceDto.getFilterType()) && !"3months".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
@@ -289,7 +289,7 @@ public class FinanceServiceImpl implements FinanceService{
 									}
 									double amount = 0;
 									if (sah.getBillId() != null) {
-										amount = Double.parseDouble(sah.getInvoiceId().getTotal());
+										amount = Double.parseDouble(sah.getBillId().getTotal());
 									}else {
 										List<Contracts> contractList = financeDao.getRecentSowcontractListByAssociateId(candidate.getId(), orgLocation, orgRelations, contractType);
 										
