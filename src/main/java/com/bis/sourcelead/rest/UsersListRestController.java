@@ -1128,7 +1128,7 @@ public class UsersListRestController {
 						boolean flag = orgSpocService.getOwnerUserExistedByOrgRelationIdAndOwnerUserId(orgSpoc.getOrgRelations().getId(), vendorOwnerOrUser.getId());
 						
 						if(flag == false){
-							if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue())&&(orgSpoc.getVendorUser().getId()==orgSpoc.getOwnerUser().getId())){
+							if((orgSpoc.getOrgRelations().getLocationId().getId().longValue() == orgLocations.getId().longValue()) && (orgSpoc.getOwnerUser() != null && (orgSpoc.getVendorUser().getId() == orgSpoc.getOwnerUser().getId()))){
 								orgSpoc.setOwnerUser(vendorOwnerOrUser);
 								orgSpoc.setVendorUser(vendorOwnerOrUser);
 							}else{

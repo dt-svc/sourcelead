@@ -982,9 +982,14 @@ $("#experienceValue").change(function () {
 	}
 	
 	function jobTitleDropDown(jobId){
+		if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y' && '${SourceLeadWeb_orgLocations.isAccountingFirm}' == 'Y'){
+			var locationId = responderLocationId;
+			}else{
+			var locationId ='${SourceLeadWeb_orgLocations.id}';
+			}
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+immiModulePath+"/getJobTitleDropDown", 
+		        url: sourceleadUrl+immiModulePath+"/getJobTitleDropDown?locationId="+locationId, 
 		        success: function(data) {
 		        	$('#jobId').empty();
 		        	$('#jobId').append('<option value="">--Select Type --</option>');
@@ -1090,6 +1095,7 @@ $("#experienceValue").change(function () {
 			            } 
 			            $('#attorneyContact').trigger("chosen:updated");
 			            getCandidatesByOrgLocation("${immigrationDTO.candidateId}");
+			            jobTitleDropDown("${immigrationDTO.jobId}");
 			        }
 			 }); 
 	 }

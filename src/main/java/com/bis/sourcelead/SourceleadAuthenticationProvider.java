@@ -6,30 +6,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginAttempts;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -78,6 +71,9 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
 	
 	@Autowired
 	WhiteListIpAddressService whiteListIpAddressService;
+	
+	@Autowired
+	CandidateOffBoardingService candidateOffBoardingService;
   
     /*@param
      * 
@@ -92,10 +88,12 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           UserRole userRole = null;
           List<Long> modulesId = null;
           List<UserRole> userRolesList = null;
+          CandidateOffBoarding candidateOffBoarding = null;
 			
           try {
         	    if(user != null){
         		     userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+        		     candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(userRole.getUser().getId(), userRole.getOrgLocations().getId());
         	     }
 				
 			  } catch (Exception e1) {
@@ -113,7 +111,6 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
           else{
         	  if(sourceleadPasswordEncoder.matches(password, user.getPassword())){
         		  
-//        		  Boolean flag = orgLocationService.isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(user.getId());
         		  try {
 					 userRolesList = userRoleService.getUserSpocsListByUserId(userRole.getUser().getId());
 					} catch (Exception e) {
@@ -125,6 +122,8 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
             			  throw new BadCredentialsException("login_2_Step_Process_Enabled");
             		  else if ((userRolesList.size() == 1 && (Constants.YES.equalsIgnoreCase(userRolesList.get(0).getOrgLocations().getLoginSecurity())) || Constants.YES.equalsIgnoreCase(userRolesList.get(0).getUser().getLoginSecurity())))
             			  throw new BadCredentialsException("redirect_to_login_2_Step_Process");
+            		  else if ((userRolesList.size() == 1 && candidateOffBoarding != null && candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("Y")))
+            			  throw new BadCredentialsException("login_offboardUser_error");
             		  else{
             			  return userLoginHelper.redirectToDashboard(userRole,username,password,null);
             		  }
@@ -132,54 +131,6 @@ public class SourceleadAuthenticationProvider  implements AuthenticationProvider
         			   return userLoginHelper.redirectToDashboard(userRole,username,password,null);
         		   }
         		    
-        			  /*OrgLocations orgLocations = null;
-        			  Org org = null;
-        			  List<SourceleadActions> actionsList = null;
-        			
-        			  if(null == user.getUserType() || (!user.getUserType().equalsIgnoreCase(Constants.PROFESSIONAL) && !user.getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER))){
-        				  orgLocations = userRole.getOrgLocations();
-        				  org = orgLocations.getOrg();
-        				try {
-        					modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
-        				} catch (Exception e1) {
-        					e1.printStackTrace();
-        				} 
-        				try {
-        					actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
-        				} catch (Exception e) {
-        					e.printStackTrace();
-        				}
-        			  }else{
-        				  try {
-        					actionsList = sourceleadActionsService.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(userRole.getRoles().getId());
-        				} catch (Exception e) {
-        					e.printStackTrace();
-        				} 
-        			  }
-        			
-        			  List<GrantedAuthority> authorities = buildUserAuthority(actionsList); 
-        			  try {
-        				  if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
-        	  			  userRole.setUserState(Status.ACTIVE);
-        	  			  userRole.setNewlyLoginUser(Constants.YES);
-        	  			  userRoleService.addUserRole(userRole);
-
-        	  			  
-        	               Update USER DB data as ElasticSearch Documents
-        	                 
-        	                Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocations.getId());
-        	                if(null != employee){
-        	                    userService.saveOrUpdateUserElkDocument(userRole,employee,userRole.getCreatedBy());
-        	                }
-        	  		  }
-        			   } catch (Exception e) {
-        				  e.printStackTrace();
-        			   }
-        			  
-        			  return new UsernamePasswordAuthenticationToken(username, password, authorities);*/
-        			  
-        			  
-        		
         	  }
         	  else{
         		  throw new BadCredentialsException("login_password_error");
