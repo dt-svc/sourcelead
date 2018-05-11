@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -102,14 +103,19 @@ public class SourceleadBlogDaoImpl implements SourceleadBlogDao {
 					.append("OR sb.blogStatus like '%" + sourceleadBlogDTO.getSearchValue() + "%') ) ");
 
 		}
+		
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(sourceleadBlogDTO.getSortColumn())) {
+				sortingQry = " order by sb."+ sourceleadBlogDTO.getSortColumn() +" "+sourceleadBlogDTO.getSortOrder();
+		}
+		
 
-		String query = "from SourceleadBlogs sb left join fetch sb.createdBy user where sb.status = 1 " + query1
-				+ " ORDER BY sb.id DESC";
-		List<SourceleadBlogs> sourceleadBlogsList = session.createQuery(query.toString())
+		String query = "from SourceleadBlogs sb left join fetch sb.createdBy user where sb.status = 1 " ;
+		List<SourceleadBlogs> sourceleadBlogsList = session.createQuery(query.toString()+" "+ query1+sortingQry)
 				.setFirstResult(sourceleadBlogDTO.getStart()).setMaxResults(sourceleadBlogDTO.getLength()).list();
 
 		String countQuery = "select count (*) from SourceleadBlogs sb where sb.status = 1 " + query1 + "";
-		Query listCountQuery = session.createQuery(countQuery);
+		Query listCountQuery = session.createQuery(countQuery+sortingQry);
 		countlist = listCountQuery.list();
 
 		int totalCount = 0;

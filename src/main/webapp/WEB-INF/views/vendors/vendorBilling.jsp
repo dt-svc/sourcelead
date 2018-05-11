@@ -1015,9 +1015,9 @@ function generateAutomaticInvoice(){
             	  $("#invoiceLoading").removeAttr("style");
 					$("#selector13").removeAttr("style");
 	    			$("#selector13").css("display", "block");
-	    			$("#msgdiv1").html(json.object.count+" Invoice(s) Generated Successfully.");
+	    			$("#msgdiv1").html(json.object.count+" Bill(s) Generated Successfully.");
 					msgFadein();
-            	 location.replace(sourceleadUrl+"/invoiceList");	            	 
+            	 location.replace(sourceleadUrl+"/payablesList");	            	 
         },
     });  
 }
