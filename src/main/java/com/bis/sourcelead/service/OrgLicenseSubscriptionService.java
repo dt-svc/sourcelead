@@ -24,6 +24,8 @@ public interface OrgLicenseSubscriptionService {
 	
 	List<String> getOrgLicenseSubscribedCountriesByOrgId(Long orgId) throws Exception;
 	
+	List<String> getOrgLicenseSubscribedAndRegisteredCountriesByOrgId(Long orgId) throws Exception;
+	
 	void upgradeLicenseSubscription(OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO,User loginUser,Long orgId,String subscriptionUUID) throws Exception;
 	
 	
