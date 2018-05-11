@@ -163,7 +163,7 @@
 			</div>
 			
 			<div class="col-sm-12 noPad mt clearfix" id="labelInfoDiv">
-			  <div class="col-md-3 noPad labHeight">Tool Tip</div>
+			  <div class="col-md-3 noPad labHeight">Help Text</div>
 			  <div class="col-md-6"><input type="text" name="labelinfo" id="labelinfo" value="${customFormPopDetails.labelinfo}" class="field-label form-control input-sm" > </div>
 			</div>
 			
@@ -301,7 +301,7 @@
 			</div>
 			
 			<div class="col-sm-12 noPad mt clearfix" id="labelInfoDiv">
-			  <div class="col-md-4 noPad clearfix">Tool Tip <span class="pull-right">:</span></div>
+			  <div class="col-md-4 noPad clearfix">Help Text <span class="pull-right">:</span></div>
 			  <div class="col-md-8">${customFormPopDetails.labelinfo}</div>
 			</div>
 			
@@ -376,7 +376,7 @@
 			</div>
 			
 			<div class="col-sm-12 noPad mt clearfix" id="labelInfoDiv">
-			  <div class="col-md-4 noPad clearfix">Tool Tip <span class="pull-right">:</span></div>
+			  <div class="col-md-4 noPad clearfix">Help Text <span class="pull-right">:</span></div>
 			  <div class="col-md-8">${data.labelInfo}</div>
 			</div>
 			
