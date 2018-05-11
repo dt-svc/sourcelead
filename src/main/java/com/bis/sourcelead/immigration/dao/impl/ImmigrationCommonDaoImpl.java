@@ -290,9 +290,14 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
     @Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Long getImmigrationGeneratedIdByOrgLocationId(Long orgLocationId,Integer generatedIdCount) {
+	public Long getImmigrationGeneratedIdByOrgLocationId(OrgLocations orgLocations,Integer generatedIdCount) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdCount+"') AS UNSIGNED)) FROM sourcelead.IMMIGRATION WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
+		String query = null;
+		if((orgLocations.getIsAccountingFirm() != null && orgLocations.getIsAccountingFirm().equalsIgnoreCase("Y")) && (orgLocations.getIsLawFirm() != null && orgLocations.getIsLawFirm().equalsIgnoreCase("Y"))){
+		 query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdCount+"') AS UNSIGNED)) FROM sourcelead.IMMIGRATION WHERE ATTORNEY_LOCATION_ID = '"+ orgLocations.getId() + "'";
+		}else{
+		 query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdCount+"') AS UNSIGNED)) FROM sourcelead.IMMIGRATION WHERE ORG_LOCATION_ID = '"+ orgLocations.getId() + "'";
+		}
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {

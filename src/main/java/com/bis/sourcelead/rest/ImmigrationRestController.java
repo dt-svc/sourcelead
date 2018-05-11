@@ -1008,10 +1008,11 @@ public class ImmigrationRestController {
 	}
 
 	@RequestMapping(value = { "/getJobTitleDropDown" })
-	public List<Requirement> getJobTitleDropDown(HttpServletRequest request) throws Exception {
+	public List<Requirement> getJobTitleDropDown(@RequestParam(value = "locationId",required = false) Long locationId,
+			HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		List<Requirement> jobList = requirementService.getAllRequirementsByOrglocationId(orgLocations.getId());
+		List<Requirement> jobList = requirementService.getAllRequirementsByOrglocationId(locationId);
 		return jobList;
 	}
 
