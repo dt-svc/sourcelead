@@ -2094,8 +2094,8 @@ public class RequirementListRestController {
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("manager", keywd));
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
-			if(matcher.find()){
+			//Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			if(StringUtils.isNumeric(keywd)){
 //				Float expYears = Float.valueOf(matcher.group());
 				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
 				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
