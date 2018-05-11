@@ -151,6 +151,8 @@ function displayAcceptRejectButtonOnHedder() {
           var frequencyMonth = $("#frequencyMonth").val();
 	      var timesheetFrequency = $('#timesheetFrequency').val();
 	      var weekFrequency = $('#weekFrequency').val();
+	      if(weekFrequency == null || weekFrequency == '' || weekFrequency == 'undefined')
+	    	  weekFrequency = '';
           var stage = $('#stage').val();
           var client = $('#client').val();
           var pageSize = $("#pageSize").val();
