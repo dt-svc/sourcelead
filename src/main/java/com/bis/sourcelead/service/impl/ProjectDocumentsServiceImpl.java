@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.GenericDao;
+import com.bis.sourcelead.dao.ProjectDocumentPermissionDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectsDocumentsDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -68,6 +69,9 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
+	
+	@Autowired
+	private ProjectDocumentPermissionDao projectDocumentPermissionDao;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -191,6 +195,7 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 		if(!isNullOrEmpty(documentid)){
 			String[] documentIds = documentid.split(",");
 			for(int i=0; i< documentIds.length; i++) {
+				projectDocumentPermissionDao.deleteAllProjectDocumentByDocumentId(Long.valueOf(documentIds[i]));
 				genericDao.delteEachDocumentById(Long.valueOf(documentIds[i]));
 			}
 		}

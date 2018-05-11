@@ -5,7 +5,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
-.edit-details {
+.edit-details {                 
 text-align:left;
 }
 .edit-details ul {
@@ -187,7 +187,7 @@ function addClientNotes(orgRelationId,clientLocationId) {
      result = result +"<option value='Jobs'>Jobs</option>";
      result = result +"<option value='Contacts'>Contacts</option>";
      result = result +"<option value='Contracts'>Contracts</option>";
-     result = result +"<option value='Billing'>Billing</option>";
+     result = result +"<option value='Billing'>Invoice</option>";
      result = result +"<option value='Other'>Other</option>";
      result = result +"</select>";
      result = result +"    </div>";
@@ -198,7 +198,7 @@ function addClientNotes(orgRelationId,clientLocationId) {
      
 	result = result  +'                <div class="row clearfix"> ';
 	result = result+'	                  <div class="col-md-12">';
-	result = result+'	                      <textarea rows="2" placeholder="Note" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length1-5000"  field-name="Note" class="form-control" ></textarea>';
+	result = result+'	                      <textarea rows="2" placeholder="Note*" value="" id="noteDescription" name="noteDescription" data-validation="required validate_length length1-5000"  field-name="Note" class="form-control" ></textarea>';
 	result = result+'	                  </div>';
 	result = result+' <div class="col-md-9 checkBox"> ';
 	result = result+'   <input type="checkbox" class="pull-left" value= "Y" id="allowAll" name = "allowAll" checked="checked">';
