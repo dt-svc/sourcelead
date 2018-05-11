@@ -1249,10 +1249,8 @@ function leavePdfExport(){
 	}
 
 	if(emptyExport > 0){
-		alert("1");
 	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=PDF";
 	}else{
-		alert("2");
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='empty_leave_pop' class='remove_user_pop remove_user_pop_a'>";
