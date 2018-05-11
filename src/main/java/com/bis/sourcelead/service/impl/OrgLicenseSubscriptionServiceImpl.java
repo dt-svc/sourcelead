@@ -898,4 +898,9 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 		
 	}
 
+	@Override
+	public List<String> getOrgLicenseSubscribedAndRegisteredCountriesByOrgId(Long orgId) throws Exception {
+		return orgLicenseSubscriptionDao.getOrgLicenseSubscribedAndRegisteredCountriesByOrgId(orgId);
+	}
+
 }

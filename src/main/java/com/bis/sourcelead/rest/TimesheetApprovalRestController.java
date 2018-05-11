@@ -544,7 +544,7 @@ public class TimesheetApprovalRestController {
 			 ts.setEmployeeName(projectMember.getProjectMemberCandidteId().getFullName());
 			 ts.setEmployeeEmail(projectMember.getProjectMemberCandidteId().getEmail());
 			 ts.setEmployeePhoneNo(projectMember.getProjectMemberCandidteId().getMobilePhone());
-			 
+			 timesheetApprovalDTO.setWeekFrequency(timesheetApprovalDTO.getFrequencyStartDate().trim()+"To"+timesheetApprovalDTO.getFrequencyEndDate().trim());
 			 if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
 		   	 OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 		   	 if(orgRelation != null){
