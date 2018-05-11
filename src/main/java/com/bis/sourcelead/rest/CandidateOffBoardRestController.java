@@ -679,20 +679,19 @@ public class CandidateOffBoardRestController {
 	public Response<String> loadOffboardCheckListByTemplateId(@RequestParam(value = "templateId", required = false) Long templateId)
 			throws Exception {
 		Response<String> response = new Response<>();
+		if(templateId != null) {
 		try {
-			OffboardCheckList checkList = offboardCheckListService.getOffboardCheckListByTemplateId(templateId);
-			if (null != checkList) {
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
-				response.setObject(checkList.getCheckListJsonString());
-			}
-			/*
-			 * else { return null; }
-			 */
-		} catch (Exception e) {
-			response.setResponse(Result.AWKWARD.name());
-			response.setResponseMessage(Result.AWKWARD.getValue());
-			logger.error(ExceptionUtils.getFullStackTrace(e));
+				OffboardCheckList checkList = offboardCheckListService.getOffboardCheckListByTemplateId(templateId);
+				if (null != checkList) {
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+					response.setObject(checkList.getCheckListJsonString());
+				}
+		 }catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
 		}
 		return response;
 	}
