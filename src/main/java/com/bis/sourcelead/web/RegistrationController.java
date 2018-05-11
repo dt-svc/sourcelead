@@ -420,7 +420,7 @@ public class RegistrationController {
 				List<OrgLicenseSubscriptionTypes> dataStorageTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.DATA_STORAGE);
 				model.addObject("dataStorageTypeList", dataStorageTypeList);
 				
-				List<String> orgSubscribedCountriesList = orgLicenseSubscriptionService.getOrgLicenseSubscribedCountriesByOrgId(org.getId());
+				List<String> orgSubscribedCountriesList = orgLicenseSubscriptionService.getOrgLicenseSubscribedAndRegisteredCountriesByOrgId(org.getId());
 				model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
 				
 				model.addObject("sourceleadUrl", sourceleadUrl);
