@@ -1581,7 +1581,7 @@ function generateAutomaticInvoice(){
             	  $("#invoiceLoading").removeAttr("style");
 					$("#selector1").removeAttr("style");
 	    			$("#selector1").css("display", "block");
-	    			$("#msgDiv").html(json.data.count+" Invoice(s) Generated Successfully.");
+	    			$("#msgDiv").html(json.object.count+" Invoice(s) Generated Successfully.");
 					msgFadein();
             	 location.replace(sourceleadUrl+"/invoiceList");	            	 
         },

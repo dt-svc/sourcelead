@@ -954,7 +954,6 @@
         }
 
         if (designationType.value == 'C2C') {
-        	alert("1")
             document.getElementById("hideVendor").style.display = "block";
             getVendorsByOrgLocation();
         } else {
@@ -1001,8 +1000,6 @@
             $('#rateType').attr("data-validation-optional", "true");
         }
 
-
-
         var currentRateType = document.getElementById("currentRateType").value;
         if (currentRateType != null && currentRateType != "") {
             $('#currentRate').removeAttr('data-validation-optional');
@@ -1016,17 +1013,13 @@
 
         var currentRate = document.getElementById("currentRate").value;
         if (currentRate != null && currentRate != "") {
-
             $('#currentRateType').removeAttr('data-validation-optional');
             $('#currentRateType').attr("data-validation", "required");
             $('#currentRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
 
-
         } else {
-
             $('#currentRateType').removeAttr('data-validation');
             $('#currentRateType').attr("data-validation-optional", "true");
-
         }
 
     }
