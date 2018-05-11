@@ -115,4 +115,6 @@ public interface ImmigrationCommonDao {
 
 	ResponseList<MyImmigrationViewDTO> getMyImmigrationsList(MyImmigrationViewDTO immigrationListDTO,	OrgLocations orgLocations, Long userId);
 
+	Integer getTableRecordCountByTemplateId(String entityName, Long templateId, String condition);
+
 }

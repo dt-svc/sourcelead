@@ -111,6 +111,7 @@
               </c:if>
               
                <c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
+              <c:if test="${immigrationDTO.isOwnTemplateId == 'Y'}">
               <div class="col-md-8">
                <select class="chosen-select form-control" id="templateId" name="templateId" data-placeholder="Choose Template" field-name="Template"  data-validation="required">
                	
@@ -120,6 +121,13 @@
 							</c:forEach>
                </select>
               </div>
+              </c:if>
+               <c:if test="${immigrationDTO.isOwnTemplateId == 'N'}">
+               <div class="col-md-8">
+               <input class="form-control" type="text" readonly name="templateId" id="templateId" value="${immigrationDTO.templateName}"/>
+				<input type="hidden" id="templateId" name="templateId" value="${immigrationDTO.templateId}"/>
+			</div>
+               </c:if>
               </c:if>
               </c:if>
             </div>
