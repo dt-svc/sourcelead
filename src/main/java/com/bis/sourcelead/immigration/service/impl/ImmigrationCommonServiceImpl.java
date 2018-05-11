@@ -792,7 +792,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				}
 			}
 			generatedIdcount = generatedIdcount+1;
-			Long checkNumber = immigrationCommonDao.getImmigrationGeneratedIdByOrgLocationId(orgLocations.getId(),generatedIdcount);
+			Long checkNumber = immigrationCommonDao.getImmigrationGeneratedIdByOrgLocationId(orgLocations,generatedIdcount);
 			if(checkNumber == null){
 				immigrationId = number.toString();
 			}else{
