@@ -853,6 +853,12 @@ function candidateEmptyVendorContact(){
         $("#uploadFile").val('');
         $(".clearUpload").hide();
         $("#candidate_form input[data-id*=uploadBtn]").remove();
+        $("#firstName").val('');
+        $("#lastName").val('');
+        $("#email").val('');
+        $("#mobilePhone").val('');
+        $('#candidateSkills').val('').trigger('chosen:updated');
+        $('#emailDiv').find('p.jquery_form_error_message').remove();
     });
 </script>
 

@@ -57,6 +57,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.GenericDao;
+import com.bis.sourcelead.dao.ProjectDocumentPermissionDao;
 import com.bis.sourcelead.dto.ClientOrgRelationsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
@@ -236,6 +237,9 @@ public class ProjectsDashboardRestController {
 	
 	@Autowired
 	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private ProjectDocumentPermissionDao projectDocumentPermissionDao;
 	
 	@Autowired
 	private ProjectCustomFieldDataService projectCustomFieldDataService;
@@ -1218,6 +1222,7 @@ public void downloadProjectDoc(@RequestParam(value = "porjectDocumentId", requir
    @RequestMapping(value = "/eachDeleteDocuments",method = RequestMethod.POST)
 	public void eachDeleteDocuments(@RequestParam(value = "documentId", required = false) Long documentId) throws Exception
 	{
+	   projectDocumentPermissionDao.deleteAllProjectDocumentByDocumentId(documentId);
 	   genericDao.delteEachDocumentById(documentId);
 	 
 	}
@@ -1270,11 +1275,14 @@ public void downloadProjectDoc(@RequestParam(value = "porjectDocumentId", requir
 	   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	   UserRole userRoel = userRoleService.getUserRoleByUserIdAndLocationId(userId,loginOrgLocation.getId());
 	   Long candidateId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+	   projectDocumentPermissionDao.deleteAllProjectDocumentByFoderId(folderId);
 	   List<ProjectDocuments> projectDocumentsList = projectDocumentsService.getEachProjectDocumentsListByProjectIdIdAndFolderId(projectId,userRoel.getId(),userRoel.getRoles().getRoleName(), folderId,candidateId);
 	   for(ProjectDocuments pd:projectDocumentsList) {
 		     genericDao.delteEachDocumentById(pd.getId());
 	   }
 		projectDocumentsFolderService.deleteProjectFolderByFolderId(folderId);
+		
+		
 		   
 		return "success";
 	}
