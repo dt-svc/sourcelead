@@ -2105,12 +2105,14 @@ function validateContractTitle(){
 		        	if(data == 'true'){
 						  $("input#contractTitle").after("<p class='jquery_form_error_message'>"+contractTitle+" is Already Existed</span>");
 						  $("#save_template").attr("disabled", "disabled");
+						  $("#draft_template").attr("disabled", "disabled");
 		        	}
 		        	else{
 		        		 $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#save_template" ).addClass('button').val('Send');
                         $("#save_template").removeAttr("disabled");
+                        $("#draft_template").removeAttr("disabled");
 		        	}
 		        	}
 		        });

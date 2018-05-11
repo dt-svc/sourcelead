@@ -31,6 +31,9 @@ public class BlogController {
 
 	@Autowired
 	private UserRoleService userRoleService;
+	
+	@Autowired
+	private StaticWebController staticWebController;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -42,23 +45,28 @@ public class BlogController {
 
 	@RequestMapping("/all")
 	public ModelAndView allBlogs(HttpServletRequest request) throws Exception {
-		ModelAndView modelAndView = new ModelAndView();
+
+		ModelAndView modal = new ModelAndView();
+
+		modal = staticWebController.setMetaProperties("all-blogs");
 
 		List<SourceleadBlogs> allBlogs = sourceleadBlogService.getAllSourceleadBlogs();
-		modelAndView.addObject("allBlogs", allBlogs);
-		modelAndView.setViewName("/resources/all-blogs");
-		return modelAndView;
+		modal.addObject("allBlogs", allBlogs);
+		modal.addObject("sourceleadUrl",sourceleadUrl);
+		modal.setViewName("/resources/all-blogs");
+		return modal;
 	}
 
 	@RequestMapping(value = "/{blogTitle}.html")
 	public ModelAndView blogRedirect(@PathVariable String blogTitle, HttpServletRequest request) throws Exception {
 
 		ModelAndView modelAndView = new ModelAndView();
+		modelAndView = staticWebController.setMetaProperties("all-blogs");
 		SourceleadBlogs blogDetails = sourceleadBlogService.getSourceleadBlogsByBlogTitle(blogTitle);
 
 		if (blogDetails.getCategoryId() != null) {
 			List<SourceleadBlogs> relatedBlogs = sourceleadBlogService
-					.getRelatedSourceleadBlogs(blogDetails.getCategoryId().getId());
+					.getRelatedSourceleadBlogs(blogDetails.getId());
 			modelAndView.addObject("relatedBlogs", relatedBlogs);
 		}
 
@@ -90,6 +98,7 @@ public class BlogController {
 	public ModelAndView blogCategoryRedirect(@PathVariable String category, HttpServletRequest request)
 			throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
+		modelAndView = staticWebController.setMetaProperties("all-blogs");
 		List<SourceleadBlogs> blogsByCategory = sourceleadBlogService.getAllSourceleadBlogsByCategoryName(category);
 		modelAndView.addObject("allBlogs", blogsByCategory);
 		String sleadUrl = sourceleadUrl.replace("/app", "");

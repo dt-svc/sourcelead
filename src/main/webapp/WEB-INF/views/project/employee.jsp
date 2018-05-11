@@ -731,8 +731,8 @@ function budgetRequests(){
 			    		result = result + '	    <thead>';
 			    		result = result + '	     	<tr>';
 			            result = result + '	 	<th>Request Id</th>';
-			            result = result + '	   <th>Base Line</th>';
-			            result = result + '	   <th>Budget Total</th>';
+			            result = result + '	   <th>Description</th>';
+			            result = result + '	   <th>Estimated Budget</th>';
 			            result = result + '	   <th>Estimated Hours</th>';
 			            result = result + '	   <th>Date</th>';
 			            result = result + '	   <th>Initiator</th>';

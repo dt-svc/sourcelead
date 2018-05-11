@@ -5,11 +5,11 @@
   	<h4>Site Map</h4>
 	 <ul class="list-unstyled">
 		  <li><a href="/">Home</a></li>
-		  <li><a href="/sourceleadJobPage.html">Search Job</a></li>
-		  <li><a href="/marketplace.html">Marketplace</a></li>
+		  <li><a href="/search-jobs.html">Search Job</a></li>
+		  <li><a href="/market-place.html">Marketplace</a></li>
 		  <li><a href="/about-us.html">About Us</a></li>
-		  <li><a href="/helpManuals.html">Help</a></li>
-		  <li><a href="/blog.html">Blog</a></li>
+		  <li><a href="/help.html">Help</a></li>
+		  <li><a href="/all.html">Blog</a></li>
 		  <li><a href="/contact.html">Contact</a></li>
 	</ul>
   	</div>
@@ -23,7 +23,7 @@
 			<li><a href="/hrms.html">HRMS/Contracts</a></li>
 			<li><a href="/ims.html">IMS</a></li>
 			<li><a href="/immigration.html">Immigration</a></li>
-			<li><a href="/mergers_acquisition.html">Mergers &amp; Acquisition</a></li>
+			<li><a href="/mergers-acquisition.html">Mergers &amp; Acquisition</a></li>
 		</ul>
   	</div>
   	<div class="col-md-3 col-sm-6">
@@ -64,8 +64,8 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
     </div>
     <div class="col-xs-12 col-sm-6 text-center footer-Qlinks">
       <ul class="list-unstyled list-inline">
-        <li><a href="/termsofuse.html">Terms of Use</a></li>
-        <li><a href="/privacypolicy.html">Privacy Policy</a></li>
+        <li><a href="/terms-of-use.html">Terms of Use</a></li>
+        <li><a href="/privacy-policy.html">Privacy Policy</a></li>
         <li><a href="/contact.html">Contact Us</a></li>
       </ul>
     </div>
@@ -91,19 +91,19 @@ mail us to <a href="mailto:info@sourcelead.com"><strong>info@sourcelead.com</str
 				<li><a href="/hrms.html">HRMS/Contracts</a></li>
 				<li><a href="/ims.html">IMS</a></li>
 				 <li><a href="/immigration.html">Immigration</a></li>
-				<li><a href="/mergers_acquisition.html">Mergers &amp; Acquisition</a></li>
+				<li><a href="/mergers-acquisition.html">Mergers &amp; Acquisition</a></li>
 				
 			</ul>
 	</li>
-	<li><a href="/sourceleadJobPage.html">Search Job</a></li>
-	<li><a href="/marketplace.html">Marketplace</a></li>
+	<li><a href="/search-jobs.html">Search Job</a></li>
+	<li><a href="/market-place.html">Marketplace</a></li>
 	<li><a href="/about-us.html">About Us</a></li>
 	<li class="dropdown dropdown-featureshome">
 	 <a data-target="#featureshome" href="javascript:void(0)" id="resourcesID">Resources
 			  <span class="fa fa-angle-down"></span></a>
 			<ul id="featureshome" class="collapse list-unstyled dropdownmenu-custom">
-				<li><a class="helpbtn" href="/sourcelead_help.html">Help</a></li>
-				<li><a href="/blog.html" id="blogID">Blog</a></li>
+				<li><a class="helpbtn" href="/help.html">Help</a></li>
+				<li><a href="/all.html" id="blogID">Blog</a></li>
 			</ul>
 	</li>
 

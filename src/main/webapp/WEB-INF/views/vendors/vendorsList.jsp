@@ -389,7 +389,7 @@ position: absolute !important;
    
 </div>
 
-<div class="side_mask"><div class="proj_close" onclick="refresh();"></div></div>
+<div class="side_mask" style="z-index:10000;"><div class="proj_close" onclick="refresh();"></div></div>
 
 <!-- Client Side Nav Div -->
 <div class="clients_side_wrap clientspagedrop">
@@ -2148,13 +2148,16 @@ $(document).ready(function() {
 		if(vendorCont == "listbyContact"){
 			getVendorContactListsELK();
 		}if(vendorCont == "listbyVendor" ){
-			getVendorListsElk();
+			
    		}
 	});	
 });
 
 function refresh(){
-	getVendorList();
+	if($("#listOfVendors").val() == 'listbyContact')
+		getVendorContactListsELK();
+	else
+		getVendorListsElk();
 }
 
 // project side bar tabs

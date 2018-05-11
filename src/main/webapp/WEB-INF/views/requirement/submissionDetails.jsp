@@ -335,7 +335,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 				result = result + '</div>';
 				result = result + '<div class="clearfix"></div>';
 				/* New comments div creation Nov 8th, 2016 */ 
-	            result = result+'<div class="comments-div clearfix mr" id="latestMessage">';
+	            /* result = result+'<div class="comments-div clearfix mr" id="latestMessage">';
 	            result = result+'    <div class="commentsimg">';
 	            result = result+'    <i class="fa fa-comments"></i>';
 	            result = result+'        <div class="commentsimg-inner">';
@@ -360,7 +360,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+','+submissionId+');">View more <span class="label label-warning">'+json.candidateCommentsCount+'</span></a>';
 	 			result = result+'		</div>';
 	            result = result+'     </div>';
-	            result = result+'</div>';
+	            result = result+'</div>'; */
 	 		    /* New comments div creation Nov 8th, 2016 */
 			
 		       result = result + '</div>';
@@ -1747,7 +1747,7 @@ function getApplicantOtherizationRejectedCategory(){
 </script>
 
 <script>
-function showComment(candidateId,submissionId){
+/* function showComment(candidateId,submissionId){
 	var result = "";
 		result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
 	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_length length2-500" field-name="Comment"></textarea>';
@@ -1759,7 +1759,7 @@ function showComment(candidateId,submissionId){
 	$('.add-comment').empty();
 	$('.add-comment').append(result);
 	$('.add-comment').toggle(200);
-}
+} */
 function closeComment(){
 	$('.add-comment').toggle(200);
 }
@@ -2417,13 +2417,14 @@ $("#notMail").click(function(){
 <!-- this script using for interview feedback Ends -->
 <script type="text/javascript">
 function reActivateApplicant(submissionId,candidateId,requirementId,type){
-	$("#reactiveApplicantBtnDiv").remove();
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#reactiveApplicantBtnDiv").hide();
 	var result = "";
 	var sourceleadUrl ='${sourceleadUrl}';
 	//$("#reactiveApplicant").attr("disabled","disabled");
 // 	var message = confirm("You are choosing to ReActivate the Applicant");
 // 	if (message == true) {
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		
 		$.ajax({
 	        type : "POST",
 	         url: sourceleadUrl+"/reActivateRejectedApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&type="+type,        

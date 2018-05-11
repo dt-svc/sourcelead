@@ -4,17 +4,16 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.dao.OrgDao;
 import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OrgDTO;
+import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.form.OrgSettings;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.util.FileUploadUtil;
 
@@ -161,6 +160,35 @@ public class OrgServiceImpl implements OrgService {
     public int changeCareerPageKeyStatus(Long id) throws Exception {
         return orgDao.changeCareerPageKeyStatus(id);
     }
-	
 
+    @Override
+    public long savePaymentAccount(PaymentAccountDTO account) {
+        return orgDao.savePaymentAccount(account);
+    }
+    
+    @Override
+    public List<PaymentAccountDTO> getPaymentAccountList(long orgId, long orgLocactionId,boolean onlyEnabledAccounts) {
+        return orgDao.getPaymentAccountList(orgId, orgLocactionId,onlyEnabledAccounts);
+    }
+	
+    @Override
+    public long changePaymentAccountToAccess(long id, long orgLocactionId) {
+        return orgDao.changePaymentAccountToAccess(id, orgLocactionId);
+    }
+    
+    @Override
+    public int changeDefaultPaymentAccount(long id, long orgId, boolean defaultAccount) {
+        return orgDao.changeDefaultPaymentAccount(id, orgId, defaultAccount);
+    }
+
+    @Override
+    public PaymentAccountDTO getPaymentAccount(long id, Long orgId) {
+        return orgDao.getPaymentAccount(id, orgId);
+    }
+
+	@Override
+	public int changePaymentAccountStatus(long id, long orgId) {
+		return orgDao.changePaymentAccountStatus(id, orgId);
+		
+	}
 }

@@ -171,9 +171,17 @@ function editCandidate(candidateId){
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6" id="emailDiv">';
 							if(json.candidateType == "Candidate"){
+								result = result + '<div class="input-group errorInptgroup">';
 								result = result + '<input type="hidden" name="candidateType" id="candidateType" value="'+json.candidateType+'" />';
+								
 								result = result + '<input type="text" class="form-control input-sm" id="email" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" onblur="validateCandidateEmail();">';
+								
 								result = result + '<input type="hidden" id="tempEmail" value="'+json.email+'" />';
+								result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
+								result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
+								result = result + '</i>';
+								result = result + '</span>';
+								result = result + '		        </div>';
 							}
 							if(json.candidateType == "Consultant"){
 							     result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email" data-validation="validate_Space required validate_email validate_length length2-100" readonly="true">';
@@ -430,10 +438,10 @@ function editCandidate(candidateId){
 							
 							result = result + '</span>';
 							
-							result = result + '<div id="customFieldDataId" class="col-md-6 columnfields-custom"></div>';
-							
+							result = result + '<div id="customFieldDataId" class="myForm columnfields-custom"></div>';
+							result = result + '<div class="clearfix"></div>';
 							result = result + '<div class="clearfix mb10 mt">';
-							result = result + '<div class="col-md-12">';
+							result = result + '<div class="col-md-6">';
 							result = result + '<textarea placeholder="Summary" class="form-control input-sm"  name="summary" rows="2" cols="5" field-name="Summary" data-validation=" validate_length length2-5000" data-validation-optional="true">'+summary+'</textarea>';
 							result = result + ' </div>'; 
 							result = result + ' </div>'; 
@@ -569,20 +577,7 @@ function deleteCandidate(candidateId,candidateType) {
 				    showError("Operation failed, please try again");
 				}	
 			});
-			/* $.ajax({
-	        type : "POST",
-	         url: sourceleadUrl+"/deleteCandidateByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&reason="+reason+"&candidateType="+candidateType,        
-	         success :function(data) {
-	              if(data != null && data != 'undefined' && data != ""){
-	            	  var json = JSON.parse(data);
-	            	  if(candidateType == 'Associates'){
-	            		  location.replace(sourceleadUrl+"/associatesList");
-	            	  }else{
-	            		  location.replace(sourceleadUrl+"/candidatesList");
-	            	  }
-	                }
-	                 },
-	              }); */ 
+			
 		}
 	} else {
 		showError("Reason is required");
@@ -875,7 +870,7 @@ function candidateProfile(candidateId,candidateType){
 							$("#tab-1").append(result);  
 							employeeSubmissionProfile(candidateId);
 							educationSubmissionProfile(candidateId);
-							/* certificationSubmissionProfile(candidateId); */
+							 certificationSubmissionProfile(candidateId); 
 							$("#tab-1").show();
 							$(".project-tabs-menu a").click(function(event) {
 							     event.preventDefault();
@@ -1383,8 +1378,8 @@ function educationSubmissionProfile(candidateId){
 						result = result +'          <div class="row">';
 						result = result +'            <div class="col-md-12">';
 						result = result +'              <ul class="list-unstyled personal-info">';
-	                     for (var i = 0; i < json.data.length; i++) { 
-	                    	 var opt = json.data[i];  
+	                     for (var i = 0; i < response.data.length; i++) { 
+	                    	 var opt = response.data[i];  
 	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
                    		        EducationName = opt.name;
 	                    	    }else{
@@ -1457,20 +1452,20 @@ function educationSubmissionProfile(candidateId){
 
 <script>
 function certificationSubmissionProfile(candidateId) {
+	
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
-        	  if (data && (data.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
-				    $("#update_candidate").removeAttr("disabled");
-				    $("#update_candidate").removeAttr('button').val('Save');
-				    showError(data.responseMessage);
-				} else if (data.response === "AWKWARD") {
-				    location.href = "/errorPage";
+        	  if (data && data.response === "INVALID_DATA") {
+      		    showError(data.responseMessage);
+      		} else if (data && data.response === "INVALID_USER") {
+      		    showError(data.responseMessage);
+      		} else if (data.response === "AWKWARD") {
+      		    location.href = "/errorPage";
 				} else if (data.response === "SUCCESS") {
 					$("#certificationSubmissionProfile").empty();
                	 	var result = "";
-               	 
                	 	result = result +'<div class="clearfix design-view">';
 					result = result +'<h2 class="education"><i class="fa fa-certificate"></i>&nbsp;&nbsp;Certification</h2>';
 					result = result +'<div class="row">';
@@ -1597,6 +1592,7 @@ function updateDesignationOtherType(){
 			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
 			        		 $("#update_candidate" ).addClass('button').val('Save');
 	                         $("#update_candidate").removeAttr("disabled");
+	                         validateEmailForExistenceUniversally(email, "input#email");
 			        	}
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
@@ -1605,6 +1601,9 @@ function updateDesignationOtherType(){
 		        	}
 		        },
 		    });
+	 }else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>'); 
 	 }
 	 }else{
 		 $('#update_candidate').removeAttr('disabled');
@@ -1622,29 +1621,30 @@ function updateDesignationOtherType(){
 function rateValidations(){
 	
 var rateType = document.getElementById("expectedRateType").value; 
-if(rateType != null && rateType != ""){
-	 $('#expectedRate').removeAttr('data-validation-optional');
-	 $('#expectedRate').attr("data-validation","required"); 
-}else{
-	 $('#expectedRate').removeAttr('data-validation');
-	 $('#expectedRate').attr("data-validation-optional","true");
-	 $('#expectedRateType').removeAttr('data-validation');
-	 $('#expectedRateType').attr("data-validation-optional","true"); 
-}
+	if(rateType != null && rateType != ""){
+		 $('#expectedRate').removeAttr('data-validation-optional');
+		 $('#expectedRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
+	}else{
+		 $('#expectedRate').removeAttr('data-validation');
+		 $('#expectedRate').attr("data-validation-optional","true");
+		 $('#expectedRateType').removeAttr('data-validation');
+		 $('#expectedRateType').attr("data-validation-optional","true"); 
+	}
 
 var expectedRate = document.getElementById("expectedRate").value; 
-if(expectedRate != null && expectedRate != ""){
-	 $('#expectedRateType').removeAttr('data-validation-optional');
-	 $('#expectedRateType').attr("data-validation","required"); 
-}else{
-$('#expectedRateType').removeAttr('data-validation');
-$('#expectedRateType').attr("data-validation-optional","true"); 
-}
+	if(expectedRate != null && expectedRate != ""){
+		 $('#expectedRateType').removeAttr('data-validation-optional');
+		 $('#expectedRateType').attr("data-validation","required"); 
+		 $('#expectedRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
+	}else{
+		$('#expectedRateType').removeAttr('data-validation');
+		$('#expectedRateType').attr("data-validation-optional","true"); 
+	}
 
 var currentRateType = document.getElementById("currentRateType").value; 
 	if(currentRateType != null && currentRateType != ""){
 		$('#currentRate').removeAttr('data-validation-optional');
-		$('#currentRate').attr("data-validation","required"); 
+		$('#currentRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
 	}else{
 		$('#currentRate').removeAttr('data-validation');
 	 	$('#currentRate').attr("data-validation-optional","true"); 
@@ -1654,12 +1654,12 @@ var currentRateType = document.getElementById("currentRateType").value;
 	
 var currentRate = document.getElementById("currentRate").value; 
 	 if(currentRate != null && currentRate != ""){
-		
 		 $('#currentRateType').removeAttr('data-validation-optional');
 		 $('#currentRateType').attr("data-validation","required"); 
+		 $('#currentRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
 	 }else{
-	 $('#currentRateType').removeAttr('data-validation');
-	 $('#currentRateType').attr("data-validation-optional","true"); 
+		 $('#currentRateType').removeAttr('data-validation');
+		 $('#currentRateType').attr("data-validation-optional","true"); 
 	 }
 }
 </script>

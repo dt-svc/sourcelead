@@ -567,13 +567,19 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setExperienceMonths(null);	
 		}
 		
-			if(candidate.getNoticePeriod() != null  && candidate.getNoticePeriod() != "" && !candidateDto.getNoticePeriod().equalsIgnoreCase(candidate.getNoticePeriod())){
-				activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getNoticePeriod()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}else if((candidate.getNoticePeriod() != null || candidate.getNoticePeriod() != "" ||  candidateDto.getNoticePeriod().equalsIgnoreCase(candidate.getNoticePeriod())) && candidateDto.getNoticePeriod() !="" ){
-				activitySummary.append("Notice Period").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getNoticePeriod()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}else
-				activitySummary.append("Notice Period").append(" : ").append("---").append(" ");
-			candidate.setNoticePeriod(candidateDto.getNoticePeriod());	
+		 String noticePeriod = null;
+		if(candidateDto.getNoticePeriod() != null)
+			noticePeriod = candidateDto.getNoticePeriod().replaceAll("\\s+", " ");
+		
+	    if(noticePeriod != null) {
+		if(candidate.getNoticePeriod() != null  && candidate.getNoticePeriod() != "" && !noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())){
+			 activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(noticePeriod).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		}else if((candidate.getNoticePeriod() != null || candidate.getNoticePeriod() != "" ||  noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())) && noticePeriod !="" ){
+			  activitySummary.append("Notice Period").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(noticePeriod).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		}else 
+			activitySummary.append("Notice Period").append(" : ").append("---").append(" ");
+			candidate.setNoticePeriod(noticePeriod);	
+	     }
 		
 		if(candidateDto.getAddress() !=null){
 			if(candidate.getAddress() != null   && candidate.getAddress() != "" && !candidateDto.getAddress().equalsIgnoreCase(candidate.getAddress())){
@@ -581,9 +587,9 @@ public class CandidateServiceImpl implements CandidateService {
 			}else if((candidate.getAddress() != null || candidate.getAddress() != "" ||  candidateDto.getAddress().equalsIgnoreCase(candidate.getAddress())) && candidateDto.getAddress() !="" ){
 				activitySummary.append("Address").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}else
-				activitySummary.append("Address").append(" : ").append("---").append(" ");
+			activitySummary.append("Address").append(" : ").append("---").append(" ");
 			candidate.setAddress(candidateDto.getAddress());
-		}
+		  }
 		
 		UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(),orgLocations.getId(),"Recruiter");
 		if(null != userRole && userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
@@ -809,27 +815,8 @@ public class CandidateServiceImpl implements CandidateService {
  		 String sourceleadRegisterUrl =StringUtils.removeEnd(sourceleadUrl, sourceleadUrl.substring(sourceleadUrl.lastIndexOf("/")));
          globalVarsMap.put("registerURL",loginBuilder.append("<a href='").append(sourceleadRegisterUrl).append("/register").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Register</div></a>").toString());
         
-         //setting the Recipient information
-         //setting the Recipient information
-         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-        
-         //getting the current EmailScenario by EmailScenario unique name and entity type
-         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CANDIDATE_INVITATION,Constants.ENTITY_TYPE_EMAIL);
-
-        
-         //covert subject,body and signature
-         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-         String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-         String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-         String url = sourceleadUrl;
-        
-         //construct HTML template using required data
-         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-         emailMessage.setSubject(subject);
-         emailMessage.setMessageBody(emailTemplate);
-        
         //calling the sendEmail method of emailScenerioUtil
-         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.CANDIDATE_INVITATION,new ArrayList<EmailAttachment>());
         
     }
 

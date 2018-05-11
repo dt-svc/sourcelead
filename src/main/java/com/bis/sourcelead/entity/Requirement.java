@@ -422,6 +422,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Transient
 	@JsonProperty
+	private String orgImageUrl;
+	
+	@Transient
+	@JsonProperty
 	private String orgRelationId;
 	
 	@Transient
@@ -1969,6 +1973,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setExperienceLevelStr(String experienceLevelStr)
 	{
 		this.experienceLevelStr = experienceLevelStr;
+	}
+
+	public String getOrgImageUrl()
+	{
+		return orgImageUrl;
+	}
+
+	public void setOrgImageUrl(String orgImageUrl)
+	{
+		this.orgImageUrl = orgImageUrl;
 	}
 
 	

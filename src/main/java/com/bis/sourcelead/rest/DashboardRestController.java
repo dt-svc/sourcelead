@@ -79,6 +79,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.DashboardController;
 
@@ -141,6 +142,9 @@ public class DashboardRestController {
 	 
 	 @Autowired
 	 CommonUtil commonUtil;
+	 
+	 @Autowired
+	 ReportsUtil reportsUtil;
 	
 	 @Autowired
 	 TaskService taskService;
@@ -1444,8 +1448,53 @@ public class DashboardRestController {
 		return requirementList;
 	}
 	
+	
+	
+	
+	@RequestMapping(value = "/getAllRequirementsForJobSharing")
+	public List<RequirementDTO> getAllRequirementsForJobSharing(@RequestParam(value="postedDateRange", required=false) String postedDateRange, @RequestParam(value="startDate", required=false) String startDate,
+			@RequestParam(value="endDate", required=false) String endDate,@RequestParam(value="managerId", required=false) Long managerId,HttpServletRequest request) throws Exception {
+		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		
+		
+		Date[] searchDates = null;
+		List<RequirementDTO> requirementDTOList = null;
+		if(StringUtils.isNotBlank(postedDateRange)) {
+			if(postedDateRange.equalsIgnoreCase("custom") && StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
+				Date fromDate =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), startDate);
+	    	    Date toDate =  commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), endDate);
+	    	   
+	    	    Timezone timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
+	    	    DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    	    DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+	    	    DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+	    	    String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+	    	    String customEndTimeStr = TZ_DF_CED.format(toDate);
+	    	    String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+	    	    String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+	    	    fromDate = TZ_DF_TS.parse(startDateString);
+	    	    toDate = TZ_DF_TS.parse(endDateString);
+	    	    
+	    	    searchDates = new Date[2];
+	    	    searchDates[0] = fromDate;
+	    	    searchDates[1] = toDate;
+			}else if (!postedDateRange.equalsIgnoreCase("custom")){
+				searchDates = reportsUtil.getJobFilterDate(postedDateRange,loginOrgLocation);
+			}
+		}
+		
+		if(searchDates != null) {
+			requirementDTOList = requirementService.getAllManagerRequirementForJobSharing(searchDates, user.getId(), loginOrgLocation.getId());
+		}
+		
+		return requirementDTOList;
+	}
+	
+	
+	
 	@RequestMapping(value = "/applicantList")
-	public @ResponseBody ResponseList<RequirementSubmissionHistoryDTO> applicantList(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO,@RequestParam (value = "orgLocationId", required = false)Long orgLocationId, @RequestParam (value = "tab", required = false)String tab, HttpServletRequest request)throws Exception
+	public @ResponseBody ResponseList<RequirementSubmissionHistoryDTO> applicantList(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, HttpServletRequest request)throws Exception
    {
 //		String stage ="SUBMISSION" ;
 		ResponseList<RequirementSubmissionHistoryDTO> responseList = new ResponseList<>();
@@ -1457,11 +1506,14 @@ public class DashboardRestController {
 		if(loginOrgLocations.getTimezone() != null){
 			timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 		}
+		
+		
+		Date[] freqDates = new Date[2];
 		String userType = null;
 		Date startUTCDate = null;
 		Date endUTCDate = null;
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		if("today".equals(tab)){
+		if("today".equals(requirementSubmissionHistoryDTO.getTabType())){
 			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 			 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
 			 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
@@ -1472,11 +1524,23 @@ public class DashboardRestController {
 			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
 			 endUTCDate = TZ_DF_TS.parse(endDateString);
 		}else{
-			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-			 String startDate = outputFormatter.print(zoned);
-			 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-			 startUTCDate = TZ_DF_TS.parse(startDateString);
+			 DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+			 DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+			 
+			if("Custom".equalsIgnoreCase(requirementSubmissionHistoryDTO.getFrequency())){
+				Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getFromDate());
+				Date endTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),requirementSubmissionHistoryDTO.getToDate());
+				String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+				String customEndTimeStr = TZ_DF_CED.format(endTime);  
+				startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+				endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+			}else{
+				freqDates = reportsUtil.getJobFilterDate(requirementSubmissionHistoryDTO.getFrequency(),loginOrgLocations);
+				String customStartTimeStr = TZ_DF_CSD.format(freqDates[0]);  
+				String customEndTimeStr = TZ_DF_CED.format(freqDates[1]);  
+				startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+				endUTCDate = TZ_DF_TS.parse(customEndTimeStr);
+			}
 		}
 		
 		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
@@ -1484,16 +1548,17 @@ public class DashboardRestController {
 		} 
 		
 		
-	   ResponseList<RequirementSubmissionHistory> toDayReqApplicantscount =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),tab,userType,user,startUTCDate,endUTCDate);
+	   ResponseList<RequirementSubmissionHistory> toDayReqApplicantscount =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),requirementSubmissionHistoryDTO.getTabType(),userType,user,startUTCDate,endUTCDate);
 
 //		List<RequirementSubmissionHistory> toDayReqApplicantscount = dashboardController.getReqSubmissionListByStage(request,stage,tab);
 		
 	   List<RequirementSubmissionHistoryDTO> rshDTOList = new ArrayList<>();
+	   if(toDayReqApplicantscount.getData() != null)
 		for(RequirementSubmissionHistory rsh: toDayReqApplicantscount.getData()){
 			RequirementSubmissionHistoryDTO rshDTO = new RequirementSubmissionHistoryDTO();
 			StringBuilder sb = new StringBuilder();
 			if(StringUtils.isNotBlank(rsh.getSubmissionId().getCandidate().getLastName())){
-				rshDTO.setCandidateName(sb.append(rsh.getSubmissionId().getCandidate().getFirstName()).append("").append(rsh.getSubmissionId().getCandidate().getLastName()).toString());
+				rshDTO.setCandidateName(sb.append(rsh.getSubmissionId().getCandidate().getFirstName()).append(" ").append(rsh.getSubmissionId().getCandidate().getLastName()).toString());
 			}else{
 				rshDTO.setCandidateName(rsh.getSubmissionId().getCandidate().getFirstName());
 			}

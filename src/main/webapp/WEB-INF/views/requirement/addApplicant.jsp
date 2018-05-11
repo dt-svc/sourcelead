@@ -818,7 +818,11 @@ function discordApplicant(){
 			 document.getElementById("primarySkillDiv").style.display="none";
 			 $("#primarySkill").val('');
 		 }
-		 
+		 var newresumeDiv = document.getElementById('newResumeDiv');
+		 if(newresumeDiv != null)
+		 {
+			 document.getElementById("newResumeDiv").style.display="block";
+		 }
 		 var employmentTypeDiv = document.getElementById('employmentTypeDiv');
 		 if(employmentTypeDiv != null){
 			 document.getElementById("employmentTypeDiv").style.display="none";

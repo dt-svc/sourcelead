@@ -279,6 +279,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		
 		
 		if(StringUtils.isNotBlank(onboardTasksDTO.getIsMailSent())){
+			sendActivationEmail(onboardingSpocUser);
 			setEmialAndNotificationToVendor(onboardingSpocUser, user, orgLocations, vendorOnboarding, vendorOrgLocations,"Vendor Invitation");
 			Set<OrgSpoc> orgSpocList = vendorOnboarding.getOrgRelationId().getOrgSpocList();
 			if(orgSpocList != null){
@@ -303,6 +304,55 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 				submissionTemplate, user, orgLocations);
 		
 	}
+	
+	
+	
+	
+	public void sendActivationEmail(User user) throws Exception
+	{
+		StringBuilder sb = new StringBuilder();
+		 EmailMessage emailMessage = new EmailMessage();
+		 String professionalName = null;
+		 
+		 if(StringUtils.isNotBlank(user.getLastName())){
+			 professionalName = sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString();
+		 }else{
+			 professionalName = sb.append(user.getFirstName()).toString();
+		 }
+		 emailMessage.setFirstName(user.getFirstName());
+		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFromName("Sourcelead Admin");
+		 emailMessage.setFromEmail("Info@sourcelead.com");
+		 emailMessage.setCreatedBy("sladmin");
+		 
+		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("registerName", professionalName);
+		 StringBuilder verifylink = new StringBuilder();
+		 
+		 globalVarsMap.put("verifyLink",verifylink.append("<a href='").append(sourceleadUrl).append("/ws/activateEmail?&token=").append(user.getVerificationUUID()).append("'>").append(sourceleadUrl).append("/activateEmail?&token=").append(user.getVerificationUUID()).append("</a>").toString()); 
+
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACTIVATE_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
+		 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+	}
+	
 	
 
 	public Tasks getTaskDetails(VendorOnboardTasks onboardTasks,User user,User loginUser,OrgLocations orgLocations){
@@ -420,10 +470,10 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 					  userDao.addUser(spocUser);
 					  
 					  globalVarsMap.put("userName",spocUser.getUserName());
-				      globalVarsMap.put("password",password);
+				      globalVarsMap.put("Password",password);
 				  }else{
 					  globalVarsMap.put("userName",spocUser.getEmail());
-					  globalVarsMap.put("password","Login with your existing sourcelead credentials");
+					  globalVarsMap.put("Password","Login with your existing sourcelead credentials");
 					}
 			   
 		 }
@@ -432,27 +482,22 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = null;
+		 if(orgLocations != null)
+		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ACCEPT_VENDOR_INVITATION,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+		  if(emailScenario == null){
+				emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR_INVITATION,Constants.ENTITY_TYPE_EMAIL);
+		   }
 		 EmailScenario noificationEmailScenario = null;
 		 
-		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR_INVITATION,Constants.ENTITY_TYPE_EMAIL);
+//		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR_INVITATION,Constants.ENTITY_TYPE_EMAIL);
 		 noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR_INVITATION,Constants.ENTITY_TYPE_NOTIFICATION);
-		 String emailBody = null;
-		 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
-		 try {
-			    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
-			    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
-			    System.out.println(emailBody);
-			   
-			} catch (IOException ex) {
-			    System.err.println(ex);
-			}
 		 
 		 EntityType entityType=classFieldService.getEntityTypeById(Constants.ACCEPT_VENDOR_INVITATION, Constants.ENTITY_TYPE_EMAIL);
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
 		 //String body = emailScenerioUtil.buildTempBody(emailBody,globalVarsMap);
-		 String body = emailScenerioUtil.buildTemplateBody(emailBody,globalVarsMap,emailScenario);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
@@ -464,7 +509,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailScenerioUtil.sendEmail(emailMessage,vendorOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(),globalVarsMap,noificationEmailScenario);
 		 
 		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(onboarding.getSpocUserId().getId(), onboarding.getVendorLocationId().getId());
 		 if(userRole != null) {
@@ -963,7 +1008,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 				
 				clientService.saveOrUpdateClientVendorElkDocument(orgLocations.getOrg(), vendorOrgLocations, "Vendor", null, orgRelations,
 						submissionTemplate, user, orgLocations);
-				
+				sendActivationEmail(spocUser);
 				setEmialAndNotificationToVendor(spocUser, user, orgLocations, vendorOnboarding, vendorOrgLocations,"Vendor Contact Invitation");
 	    	
 		}

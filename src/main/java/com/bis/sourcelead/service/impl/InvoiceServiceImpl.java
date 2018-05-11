@@ -83,6 +83,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -297,8 +298,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(StringUtils.isNotBlank(invoiceDTO.getBillingAddress())){
 			invoice.setBillingAddress(invoiceDTO.getBillingAddress());
 		}
-		if(StringUtils.isNotBlank(invoiceDTO.getAccountDetails())){
+		/*if(StringUtils.isNotBlank(invoiceDTO.getAccountDetails())){
 			invoice.setAccountDetails(invoiceDTO.getAccountDetails());
+		}*/
+		
+		if(StringUtils.isNotBlank(invoiceDTO.getPaymentAccount())){
+			PaymentAccount paymentaccount = new PaymentAccount();
+			paymentaccount.setId(Long.valueOf(invoiceDTO.getPaymentAccount()));
+			invoice.setPaymentAccount(paymentaccount);
 		}
 		
 		if(StringUtils.isNotBlank(invoiceDTO.getInvoiceDate())){
@@ -1461,9 +1468,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				vendorOrgLocation = orgRelation.getLocationId();
 				if(orgSpocList !=null && !orgSpocList.isEmpty()) {
 					if(Constants.VENDOR.equalsIgnoreCase(orgRelation.getResponderType())) {
-						contactUser = orgSpocList.get(0).getVendorUser();
-					}else{
 						contactUser = orgSpocList.get(0).getClientUser();
+					}else{
+						contactUser = orgSpocList.get(0).getVendorUser();
 					}
 					
 				}
@@ -1834,9 +1841,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					projectMember.setUserId(projectMember.getProjectMemberCandidteId().toString());
 					projectMember.setStartDate(startDateStr);
 					projectMember.setEndDate(endDateStr);
-					String billableHours = String.valueOf(sah.getBillableHours());;
-					String arr[] = billableHours.split("\\.");
+					String billableHours = String.valueOf(sah.getBillableHours());
 					StringBuilder sb = new StringBuilder();
+					if(!"null".equalsIgnoreCase(billableHours))
+					{
+					String arr[] = billableHours.split("\\.");
 					if (arr[0].length() == 2) {
 						sb.append("0").append(arr[0]);
 					}
@@ -1851,6 +1860,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					}
 					else {
 						sb.append(":").append(arr[1]);
+					}
+					} else{
+						sb.append("0");
 					}
 					projectMember.setTotalHours(sb.toString());
 					Candidate candidate = projectMember.getProjectMemberCandidteId();
@@ -2549,6 +2561,12 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			invoice.setPaymentFrequency(null);
 		}
 
+		if(StringUtils.isNotBlank(invoiceDTO.getPaymentAccount())){
+			PaymentAccount paymentaccount = new PaymentAccount();
+			paymentaccount.setId(Long.valueOf(invoiceDTO.getPaymentAccount()));
+			invoice.setPaymentAccount(paymentaccount);
+		}
+		
 		if (StringUtils.isNotBlank(invoiceDTO.getDisCount())) {
 			invoice.setDiscountType(invoiceDTO.getDisCount());
 

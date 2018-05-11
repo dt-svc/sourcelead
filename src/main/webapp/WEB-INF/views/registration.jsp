@@ -428,7 +428,7 @@ window.onload = function () {
             <div class='col-md-12 privacy_checkbox text-center'>
                     <!-- <input type="checkbox" name="privacy" onClick="termsConditon();" id="terms"> -->
                     <input type="checkbox" name="privacy" id="professionalRegistrationCheckTermsId">
-                    I agree <a href="/termsofuse.html" target="blank" class="text-succcess">terms of service</a> and <a href="/privacypolicy.html" target="blank" class="text-succcess">privacy policy</a>
+                    I agree <a href="/terms-of-use.html" target="blank" class="text-succcess">terms of service</a> and <a href="/privacy-policy.html" target="blank" class="text-succcess">privacy policy</a>
                     <input type="hidden" id="professionalRegistrationErrorMsg" field-name="Terms And Conditions" data-validation='required'/>
             </div>
             <div class="col-md-12 mt10">
@@ -540,7 +540,7 @@ window.onload = function () {
             <div class='col-md-12 privacy_checkbox text-center'>
                     <!-- <input type="checkbox" name="privacy" onClick="termsConditon();" id="terms"> -->
                     <input type="checkbox" name="privacy" id="termsCheckoxId">
-                    I agree <a href="/termsofuse.html" target="blank" class="text-succcess">terms of service</a> and <a href="/privacypolicy.html" target="blank" class="text-succcess">privacy policy</a>
+                    I agree <a href="/terms-of-use.html" target="blank" class="text-succcess">terms of service</a> and <a href="/privacy-policy.html" target="blank" class="text-succcess">privacy policy</a>
                     <input type="hidden" id="recruiterRegistrationErrorMsg" field-name="Terms And Conditions" data-validation='required'/>
             </div>
             <div class="col-md-12 mt10">
@@ -697,7 +697,7 @@ window.onload = function () {
 	            <div class="clearfix row">
 	            <div class='col-md-12 privacy_checkbox text-center'>
 	                 <input type="checkbox" name="agreeTerms" id="employerRegistrationCheckTermsId" value="Y">
-	                  I agree <a href="/termsofuse.html" target="blank" class="text-succcess">terms of service</a> and <a href="/privacypolicy.html" target="blank" class="text-succcess">privacy policy</a>
+	                  I agree <a href="/terms-of-use.html" target="blank" class="text-succcess">terms of service</a> and <a href="/privacy-policy.html" target="blank" class="text-succcess">privacy policy</a>
 	                 <input type="hidden" id="employerRegistrationErrorMsg" field-name="Terms And Conditions" data-validation='required'/>
 	            </div>
 	            <div class="col-md-12 mt10">

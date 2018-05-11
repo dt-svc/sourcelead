@@ -291,7 +291,7 @@ width: auto;
 						data: formData,
 						processData: false,
 					    contentType:false, 
-						url : sourceleadUrl+'/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
+						url : sourceleadUrl+'/ws/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
 						success : function(data) {
 							if (data.response === "FAILED") {
 					    		showError(data.responseMessage);

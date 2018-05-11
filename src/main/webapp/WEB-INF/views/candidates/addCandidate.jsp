@@ -99,14 +99,22 @@
 					</div>
 					<div class="form-group" id="emailDiv">
 						<label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
-						<div class="col-md-9">
-							<input type="text" class="form-control" id="email" name="email"
+						<div class="col-md-9 ">
+							<div class="input-group errorInptgroup">
+	                    <input type="text" class="form-control" id="email" name="email"
 								value="${email}" field-name="Email"
 								data-validation="required validate_length length2-100 validate_email"
 								onblur="validateCandidateEmail();"
-								onmouseout="validateCandidateEmail();" value=""> <span
+								 value=""> <span
 								class="hidden">Valid Email</span>
+	                    <span id="emailStatusIconDiv" class="input-group-addon">
+	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                  	</span>
+	                  </div>
 						</div>
+						
+						 
+	                  
 					</div>
 
 					<div class="form-group">
@@ -435,9 +443,8 @@
 							<select class="form-control valid selectpicker" id="noticePeriod"
 								name="noticePeriod">
 								<option value="">---Select Notice Period---</option>
-								<option
-									${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately
-                                    available</option>
+								<option ${noticePeriod  == 'Immediately available' ? 'selected' : ''}>Immediately 
+                            available</option>
 								<option ${noticePeriod  == '15 Days' ? 'selected' : ''}>15
                                     Days</option>
 								<option ${noticePeriod  == '1 Month' ? 'selected' : ''}>1
@@ -808,6 +815,7 @@
                             $('#emailDiv').find('p.jquery_form_error_message').remove();
                             $("#store_candidate").addClass('button').val('Save');
                             $("#store_candidate").removeAttr("disabled");
+                            validateEmailForExistenceUniversally(email, "input#email");
                         }
                 	} else if (response.indexOf('Sign In') !== -1) {
                 		location.replace(sourceleadUrl);
@@ -816,6 +824,9 @@
                 	}
                 },
             });
+         }else{
+         $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
         }
     }
 </script>
@@ -886,7 +897,6 @@
             }
         }
 
-
         if (designationType.value == 'C2C') {
             document.getElementById("hideVendor").style.display = "block";
             getVendorsByOrgLocation();
@@ -934,8 +944,6 @@
             $('#rateType').attr("data-validation-optional", "true");
         }
 
-
-
         var currentRateType = document.getElementById("currentRateType").value;
         if (currentRateType != null && currentRateType != "") {
             $('#currentRate').removeAttr('data-validation-optional');
@@ -949,17 +957,13 @@
 
         var currentRate = document.getElementById("currentRate").value;
         if (currentRate != null && currentRate != "") {
-
             $('#currentRateType').removeAttr('data-validation-optional');
             $('#currentRateType').attr("data-validation", "required");
             $('#currentRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
 
-
         } else {
-
             $('#currentRateType').removeAttr('data-validation');
             $('#currentRateType').attr("data-validation-optional", "true");
-
         }
 
     }

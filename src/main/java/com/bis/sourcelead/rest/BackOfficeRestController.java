@@ -41,6 +41,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.BoAmexTrans;
 import com.bis.sourcelead.entity.BoComericaTrans;
@@ -260,30 +261,6 @@ public class BackOfficeRestController {
 		return resultJson;
 	}
 	
-	@RequestMapping(value = "/deleteDoc", method = RequestMethod.POST)
-	public String deleteDoc(@RequestParam(value="assetId", required=false) String assetId,@RequestParam(value="url", required=false) String url,HttpServletRequest request) throws Exception {
-
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	       Asset asset = assetService.getAssetById(Long.parseLong(assetId));
-	       if(url.equals(asset.getFileUrl())){
-	       asset.setFileUrl(null);
-	       asset.setFileContentType(null);
-	       asset.setFileName(null);
-	       }if(url .equals(asset.getShiftAFileUrl())){
-	    	  asset.setShiftAFileUrl(null);
-			  asset.setShiftAFileName(null);
-			  asset.setShiftAFileContentType(null); 
-	       }
-	       if(url.equals(asset.getShiftBFileUrl())){
-	    	   asset.setShiftBFileUrl(null);
-			   asset.setShiftBFileName(null);
-			   asset.setShiftBFileContentType(null);   
-	       }
-	       assetDao.saveAsset(asset);	
-
-		return "success";
-
-	}
 	
 	@RequestMapping(value = "/getComericaTransactions")
 	@ResponseBody
@@ -387,50 +364,6 @@ public class BackOfficeRestController {
 		return status;
 	}
 	
-	/**
-	 * @author Prasad Salina
-	 * @param fileType
-	 * @param assetId
-	 * @param response
-	 * @throws Exception
-	 * To download attached files
-	 */
-	@RequestMapping(value = "/downloadAssetFile", method = RequestMethod.GET)
-    public void downloadAssetFile(@RequestParam(value="fileType", required=false) String fileType ,@RequestParam(value="assetId", required=false) Long assetId ,HttpServletResponse response) throws Exception {
-		
-		     Asset asset = assetService.getAssetById(assetId);
-		     StringBuilder fileName = new StringBuilder();
-		    
-		     InputStream inputStream;
-		     if(null != fileType && "shiftAfile".equals(fileType)){
-		    	 response.setHeader("content-disposition", fileName.append("attachment; filename=\"").append(asset.getShiftAFileName()).append("\"").toString());
-				 inputStream = new ByteArrayInputStream(asset.getShiftADocFile()); 
-		     }else if(null != fileType && "shiftBfile".equals(fileType)){
-		    	 response.setHeader("content-disposition", fileName.append("attachment; filename=\"").append(asset.getShiftBFileName()).append("\"").toString());
-				 inputStream = new ByteArrayInputStream(asset.getShiftBDocFile()); 
-		     }else{
-		    	 response.setHeader("content-disposition", fileName.append("attachment; filename=\"").append(asset.getFileName()).append("\"").toString());
-				 inputStream = new ByteArrayInputStream(asset.getDocFile()); 
-		     }
-		     
-	        
-			try {
-				OutputStream outStream = response.getOutputStream();
-
-				byte[] buffer = new byte[4096];
-				int bytesRead = -1;
-
-				while ((bytesRead = inputStream.read(buffer)) != -1) {
-					outStream.write(buffer, 0, bytesRead);
-				}
-
-				inputStream.close();
-				outStream.close();
-
-			} catch (FileNotFoundException e) {
-				logger.error(ExceptionUtils.getFullStackTrace(e));
-			} 
-		}
 	
 	
 	
@@ -473,20 +406,6 @@ public class BackOfficeRestController {
 	@RequestMapping(value = "/getAssetDynamicList")
 	@ResponseBody
 	public ResponseList<Asset> getAssetDynamicList(AssetDTO assetDTO,HttpServletRequest request) throws Exception {
-		/*OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String[] tableColumns = {"slno", "assetCategory", "model", "shiftAEmployee","shiftBEmployee","workingStatus"};
-	    int sortColumnIndex = 1; //by default sorting using updated date
-		String sortColumnOrder = "asc"; //by default descending order
-		if(assetDTO.getOrder() != null && !assetDTO.getOrder().isEmpty()) {
-			sortColumnIndex = Integer.parseInt(assetDTO.getOrder().get(0).get("column"));
-			sortColumnOrder = assetDTO.getOrder().get(0).get("dir");
-		}
-		assetDTO.setSortColumn(tableColumns[sortColumnIndex]);
-		assetDTO.setSortOrder(sortColumnOrder);
-		ResponseList<Asset> assetList = assetService.getDynamicAssetFilterListByLocationId(orgLocations.getId(), assetDTO);
-		return assetList;*/
-		
-		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
   		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ResponseList<Asset> responseList = new ResponseList<>();
@@ -494,7 +413,7 @@ public class BackOfficeRestController {
 			
 			if (user != null && orgLocations != null) {
 				
-				String[] tableColumns = {"slno", "assetCategory", "model", "shiftAEmployee","shiftBEmployee","workingStatus"};
+				String[] tableColumns = {"slno", "assetCategory", "model", "issueDate","macAddress","workingStatus"};
 		    int sortColumnIndex = 1; //by default sorting using updated date
 			String sortColumnOrder = "asc"; //by default referContactsDTO order
 			if(assetDTO.getOrder() != null && !assetDTO.getOrder().isEmpty()) {
@@ -545,17 +464,16 @@ public class BackOfficeRestController {
 	  * @throws Exception
 	  * To remove Asset Management
 	  */
-	 @RequestMapping(value = "/removeAssetManagement", method = RequestMethod.POST)
-	 @ResponseBody  Response<String> removeAssetManagement(@RequestParam(value = "assetId", required = false) Long assetId,HttpServletRequest request) throws Exception {
+	 @RequestMapping(value = "/removeAssocateAssingAssetManagement", method = RequestMethod.POST)
+	 @ResponseBody  Response<String> removeAssocateAssingAssetManagement(@RequestParam(value = "assignAssetId", required = false) Long assignAssetId,HttpServletRequest request) throws Exception {
 		 
 		    Response<String> response = new Response<>();
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			try {
 				if (loginUser != null) {
-					Asset asset = assetService.getAssetById(assetId);
-					if(asset != null){
-						asset.setStatus(Constants.RECORD_INACTIVE);
-						assetService.saveAsset(asset);
+					AssetAssign aa =assetService.getAssignAssetByAssetId(assignAssetId);
+					if(aa != null){
+						assetService.deleteAssignAssetByAssignId(aa);
 						response.setResponse(Result.SUCCESS.name());
 						response.setResponseMessage(Result.SUCCESS.getValue());
 					}else {
@@ -574,6 +492,42 @@ public class BackOfficeRestController {
 			return response;
 	 }
 	
+	 
+	 @RequestMapping(value = "/removeAssetManagement", method = RequestMethod.POST)
+	 @ResponseBody  Response<String> removeAssetManagement(@RequestParam(value = "assetId", required = false) Long assetId,HttpServletRequest request) throws Exception {
+		 
+		 Response<String> response = new Response<>();
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			try {
+				if (loginUser != null) {
+					Asset asset = assetService.getAssetById(assetId);
+					
+					if(asset != null){
+						asset.setStatus(Constants.RECORD_INACTIVE);
+						assetService.saveAsset(asset);
+						
+						List<AssetAssign> assetList =  assetService.getAssignAssetListByAssetId(asset.getId());
+						for(AssetAssign aa :assetList) {
+						  assetService.deleteAssignAssetByAssignId(aa);
+						}
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());	
+				}
+				}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
+				}
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			return response;
+	 }
+	 
 	/**
 	 * @author Prasad Salina
 	 * @param request
@@ -597,21 +551,12 @@ public class BackOfficeRestController {
 			assetDTO.setCategoryName(asset.getAssetCategory().getCategoryName());	
 			assetDTO.setCategoryId(asset.getAssetCategory().getId().toString());
 			assetDTO.setCatagoryHiddenId(asset.getAssetCategory().getId());
-			
-			if(asset.getShiftAEmployee() != null){
-			assetDTO.setShiftAEmployee(asset.getShiftAEmployee().getId().toString());
-			}
-			if(asset.getShiftBEmployee() != null){
-			assetDTO.setShiftBEmployee(asset.getShiftBEmployee().getId().toString());
-			}
 		}
 		assetDTO.setMacAddress(asset.getMacAddress());
 		assetDTO.setSno(asset.getSlno());
 		assetDTO.setMake(asset.getMake());
 		assetDTO.setMonitor(asset.getMonitor());
 		assetDTO.setCpu(asset.getCpu());
-	/*	assetDTO.setShiftAEmp(asset.getShiftAEmployee().toString());
-		assetDTO.setShiftBEmp(asset.getShiftBEmployee().toString());*/
 		assetDTO.setWorkingStatus(asset.getWorkingStatus());
 		assetDTO.setModel(asset.getModel());
 		assetDTO.setMemory(asset.getMemory());
@@ -619,15 +564,10 @@ public class BackOfficeRestController {
 		assetDTO.setFileName(asset.getFileName());
 		assetDTO.setFileUrl(asset.getFileUrl());
 		assetDTO.setFileContentType(asset.getFileContentType());
-		assetDTO.setShiftAFileContentType(asset.getShiftAFileContentType());
-		assetDTO.setShiftAFileName(asset.getShiftAFileName());
-		assetDTO.setShiftAFileUrl(asset.getShiftAFileUrl());
-		assetDTO.setShiftBFileContentType(asset.getShiftBFileContentType());
-		assetDTO.setShiftBFileName(asset.getShiftBFileName());
-		assetDTO.setShiftBFileUrl(asset.getShiftBFileUrl());
-		assetDTO.setEmployeesList(employeesList);
-		assetDTO.setShiftAEmpName(asset.getShiftAEmpName());
-		assetDTO.setShiftBEmpName(asset.getShiftBEmpName());
+		
+		List<AssetAssign> assetAssignList = assetService.getAssignAssetListByAssetId(assetId);
+		assetDTO.setAssetAssignList(assetAssignList);
+		
 		assetDTO.setName(asset.getName());
 		assetDTO.setDescription(asset.getDescription());
 		if(asset.getIssueDate() != null){
@@ -635,35 +575,6 @@ public class BackOfficeRestController {
 		}else{
 			assetDTO.setIssueDate("");
 		}
-		
-		
-		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_ASSET);
-		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
-		 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
-		 if(sections != null && !sections.isEmpty()) {
-			 for(SourceleadSectionDTO sec:sections) {
-				 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
-					 CustomFormFieldDTO custom = new CustomFormFieldDTO();
-					 custom.setCustomFormFieldId(customFields.getId());
-					 formFieldId.add(custom);
-				 }
-			 }
-			 if(formFieldId != null && !formFieldId.isEmpty() && assetId != null) {
-			 Map<Long, String[]> assetData = assetCustomFieldService.getAssetCustomFieldDataByAssetId(orgLocations.getOrg().getId(),formFieldId,assetId);
-			 Map<Long,String> dataMap = new HashMap<>();
-			 if(assetData!= null && !assetData.isEmpty()) {
-				 for(Entry<Long, String[]> assetCustomData:assetData.entrySet()) {
-					String labelName = assetCustomData.getValue()[0];
-					 String labelData = assetCustomData.getValue()[1];
-					 Long id = assetCustomData.getKey();
-					 StringBuilder keyValue =  new StringBuilder();
-					 keyValue.append(labelName).append("$").append(labelData);
-					 dataMap.put(id, keyValue.toString());
-					 assetDTO.setAssetCustomFieldlabelNameAndValue(dataMap);
-				 	}
-			 	}
-			 }
-		 }
 		 return assetDTO;
 	}
 	
@@ -737,7 +648,7 @@ public class BackOfficeRestController {
 		}
 
 	@RequestMapping(value = "/addCategoryAssets" , method = RequestMethod.POST)
-	   public Response<String> addCategoryAssets(AssetDTO assetDTO,@RequestParam(value="assetId", required=false) String assetId,HttpServletRequest request) throws Exception {
+	   public Response<String> addCategoryAssets(AssetDTO assetDTO,HttpServletRequest request) throws Exception {
 			
 		Response<String> response = new Response<>();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -748,7 +659,7 @@ public class BackOfficeRestController {
 				if (Validator.validate(assetDTO)) {
 					assetDTO.setStaticPath(staticPath);
 					assetDTO.setDateFormat(orgLocations.getDateFormat());
-					assetService.saveAssetDetails(assetDTO, assetId, user, orgLocations);
+					assetService.saveAssetDetails(assetDTO, user, orgLocations);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
@@ -837,6 +748,21 @@ public class BackOfficeRestController {
 		
 		return response;
 	} 
+	
+	
+	@RequestMapping(value = "/deleteAssignAssetDoc", method = RequestMethod.POST)
+	public String deleteAssignAssetDoc(@RequestParam(value="assetAssignId", required=false) Long assetAssignId,HttpServletRequest request) throws Exception {
+		AssetAssign assetAssign = assetService.getAssignAssetByAssetId(assetAssignId);
+		if(assetAssign != null) {
+			assetAssign.setFileName(null);
+			assetAssign.setFileType(null);
+			assetAssign.setFileURL(null);
+			assetService.saveAssetAssign(assetAssign);
+		} 
+		return "success";
+
+	}
+	
 	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

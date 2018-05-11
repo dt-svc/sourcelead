@@ -1,11 +1,15 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
@@ -163,6 +167,8 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 	
 	@Autowired
 	OrgLicenseSubscriptionHistoryDao orgLicenseSubscriptionHistoryDao;
+	@Value("${static.path}")
+    private String staticPath;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -220,8 +226,6 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 				 
 				try {
 					userService.addUser(user);
-					if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
-						sendActivationEmail(user);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -307,6 +311,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
 			
 			userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
+			sendActivationEmail(user);
 			userService.sendEmail(user, loginUser, password,orgLocations.getId());
 			
 			
@@ -637,15 +642,14 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACTIVATE_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		//covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
+		 
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
@@ -691,6 +695,11 @@ private UserRole getUserRoleDetails(User user,OrgLocations orgLocations ){
 			OrgLicenseSubscriptionTypes storageSubscriptionType = new OrgLicenseSubscriptionTypes();
 			storageSubscriptionType.setId(Long.parseLong(orgLicenseSubscriptionDTO.getStorageType()));
 			orgLicenseSubscription.setStorageSubscriptionType(storageSubscriptionType);
+			
+			
+			Timezone timezone = new Timezone();
+			timezone.setId(Long.parseLong(orgLicenseSubscriptionDTO.getTimezone()));
+			orgLicenseSubscription.setTimezone(timezone);
 			
 			orgLicenseSubscription.setCreatedBy(loginUser);
 			orgLicenseSubscription.setCreatedDate(new Date());
@@ -887,6 +896,11 @@ public void updateOrgBasedRoles(OrgLicenseSubscriptionDTO orgLicenseSubscription
 		}
 	
 		
+	}
+
+	@Override
+	public List<String> getOrgLicenseSubscribedAndRegisteredCountriesByOrgId(Long orgId) throws Exception {
+		return orgLicenseSubscriptionDao.getOrgLicenseSubscribedAndRegisteredCountriesByOrgId(orgId);
 	}
 
 }

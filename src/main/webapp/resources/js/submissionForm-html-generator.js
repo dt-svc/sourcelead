@@ -183,7 +183,6 @@ function generateForm(sourceleadUrl,templateId) {
 function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript) {
     //empty out the preview area
     $("#sjfb-fields").empty();
-    
     $.ajax({
     	type: "GET",
         url: sourceleadUrl+"/getRequirmentOrgSubmissionTemplate?requirementId="+requirementId, 
@@ -525,8 +524,8 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
              d.setFullYear(year);
              $(".DatePicker").datepicker({
             	 dateFormat: finalDateFormatScript,
-            	 yearRange: "-70Y:-18Y" ,
-            	 defaultDate: d,
+            	 //yearRange: "-70Y:-18Y" ,
+            	// defaultDate: d,
             	 changeMonth: true,
                  changeYear: true,
                  showOn: 'focus',

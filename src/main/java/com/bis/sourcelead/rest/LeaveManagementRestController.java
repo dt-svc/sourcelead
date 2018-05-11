@@ -58,6 +58,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
@@ -81,6 +82,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.HolidayService;
@@ -199,6 +201,9 @@ public class LeaveManagementRestController {
 	
 	@Autowired
 	TimeZoneService timeZoneService;
+	
+	@Autowired
+	private AssetService assetService;
 	/**
 	 * returns Pending leaves jsp
 	 * 
@@ -836,6 +841,11 @@ public class LeaveManagementRestController {
 			deleteShift.setStatus(Constants.MEMBER_IN_ACTIVE);
 			shiftDao.deleteShift(deleteShift);
 			isDeleted = true;
+			List<AssetAssign> assetAssignLis = assetService.getAssignAssetListByShiftId(deleteShift.getId());
+			for(AssetAssign aa : assetAssignLis) {
+				aa.setStatus(Constants.RECORD_INACTIVE);
+				assetService.saveAssetAssign(aa);
+			}
 		}
 		return isDeleted;
 	}
@@ -1191,18 +1201,34 @@ public class LeaveManagementRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
 	@RequestMapping(value = { "/saveApplyLeave", "/rest/saveApplyLeave" }, method = RequestMethod.POST)
-	@ResponseBody
-	public boolean applyLeave(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
-
-		boolean isInserted = false;
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
-		User user = userService.getUserById(Long.parseLong(leaveDTO.getUserId()));
-		leaveDTO.setStaticPath(staticPath);
-		Leave leave = leaveService.saveLeave(leaveDTO, orgLocations, user);
-		if (leave != null) {
-			isInserted = true;
+	public @ResponseBody Response<String> applyLeave(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+			User user = userService.getUserById(Long.parseLong(leaveDTO.getUserId()));
+			if (user != null && Validator.validate(leaveDTO)) {
+				leaveDTO.setStaticPath(staticPath);
+				Leave leave = leaveService.saveLeave(leaveDTO, orgLocations, user);
+				if (leave != null) {
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
+			} else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		return isInserted;
+		return response;
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
@@ -1435,35 +1461,33 @@ public class LeaveManagementRestController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = { "/leaveTypeSummary", "/rest/leaveTypeSummary" }, method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<LeaveType> leaveTypeSummary(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request)
+	public Response<LeaveType> leaveTypeSummary(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request)
 			throws Exception {
 
-		ResponseList<LeaveType> responseList = new ResponseList<>();
+		Response<LeaveType> response = new Response<>();
 		try {
 
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			if (loginOrgLocation != null) {
 				LeaveType leaveType = new LeaveType();
-				List<LeaveType> list = new ArrayList<>();
 				leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
-				list.add(leaveType);
-				if (list != null) {
-					responseList.setData(list);
-					responseList.setResponse(Result.SUCCESS.name());
-					responseList.setResponseMessage(Result.SUCCESS.getValue());
+				if (leaveType != null) {
+					response.setObject(leaveType);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
 				}
 			} else {
-				responseList.setResponse(Result.SESSION_TIMEDOUT.name());
-				responseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
 		} catch (Exception e) {
-			responseList.setResponse(Result.AWKWARD.name());
-			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 
-		return responseList;
+		return response;
 					
 		/*LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
 		return leaveType;*/
@@ -2219,7 +2243,7 @@ public class LeaveManagementRestController {
 		}
 		for (HolidayAndRestrictday holidayAndRestrictday : listFilter) {
 			if (holidayAndRestrictday.getHoliday() != null) {
-				if (id > 0) {
+				if (id != null || id > 0) {
 					if (holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name.trim())
 							&& holidayAndRestrictday.getHoliday().getId().longValue() == id.longValue()) {
 						flag = false;

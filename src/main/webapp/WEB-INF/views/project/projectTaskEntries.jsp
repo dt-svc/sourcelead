@@ -53,6 +53,8 @@
 					      <div class="clearfix">
 					      <input type="hidden" name="taskUUID" value="${taskUUID}">
 					      <input type="hidden" name="projectId" value="${projectId}">
+					      <input type="hidden" id="editTask" name="editTask" value="">
+					      
 					          <button type="button" class="close" onclick="closeTimeEntryTasks()">&times;</button> 
 					          <p><strong>Time Entry</strong></p>
 					      </div>
@@ -169,12 +171,13 @@ function saveTaskDetails(){
 		var timesheetHour =  $('#timesheetHours').val();
 		var timeDate =  $('#timesheetDate').val();
 		var taskUUID = '${taskUUID}';
+		var editTaskTime = $('#editTask').val();
 		$("#projectTaskErrorMsgDiv").find('p.jquery_form_error_message').remove();
 		if(timesheetHour != null && timesheetHour != 'undefined' && timesheetHour != '' && timeDate != null && timeDate != 'undefined' && timeDate != ''){
 			$("#projectTaskErrorMsgDiv").find('p.jquery_form_error_message').remove();
 			$.ajax({
 				 type : "POST",
-				 	 url : sourceleadUrl+"/ProjectTasks/calculateTotalTaskHoursForADay?&timeDate="+timeDate+"&projectMember="+projectMember+"&timesheetHour="+timesheetHour,
+				 	 url : sourceleadUrl+"/ProjectTasks/calculateTotalTaskHoursForADay?&timeDate="+timeDate+"&projectMember="+projectMember+"&timesheetHour="+timesheetHour+"&editTaskTime="+editTaskTime,
 				  		success : function(data) {
 				  			if(data == "false"){   
 				  				$("#projectTaskErrorMsgDiv").append("<p class='jquery_form_error_message'>Day hours should not be more than 24</p>");
@@ -202,8 +205,9 @@ function saveTaskDetails(){
 
 
 <script>
-function editProjectTaskTimesheetDayEntry(timesheetDate){
+function editProjectTaskTimesheetDayEntry(timesheetDate,type){
 	var projectMember = '${projectmember.id}';
+	$('#editTask').val(type);
 	if(projectMember!= null && projectMember !='' && projectMember!='undefined'){
 	var timeDate = '';
 	if(timesheetDate != null && timesheetDate !='' && timesheetDate !='undefined'){

@@ -1,5 +1,8 @@
 package com.bis.sourcelead.util;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -270,6 +274,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	LeaveDao leaveDao;
+	
+	@Value("${static.path}")
+    private String staticPath;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1081,32 +1088,15 @@ public class EMailJobScheduler {
 		 globalVarsMap.put("consultantsCount", Integer.toString(candidatesListToBeAddedInHotList.size()));
 		 globalVarsMap.put("tableOfContent", sb.toString());
 			 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = null;
-			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.HOTLIST_ALERT_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = "";
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, org,orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.HOTLIST_ALERT_EMAIL,new ArrayList<EmailAttachment>());
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.HOTLIST_ALERT_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION); 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
 		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("/candidatesList").toString();		 
 		 if(user.getFirstName()!=null){
-		 String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(),globalVarsMap,noificationEmailScenario);
 		 noificationEmailScenario.setBody(notificationbody);
 		 
 		 User sourceLeadAdmin = userService.getUserById(Constants.SOURCELEAD_ADMIN_USERID);
@@ -1890,10 +1880,11 @@ public class EMailJobScheduler {
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.JOB_ALERTS,Constants.ENTITY_TYPE_EMAIL);
 		
+		
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
@@ -1934,13 +1925,13 @@ public class EMailJobScheduler {
 						 
 						 StringBuilder experience = new StringBuilder();
 						 
-						 if(!isNullOrEmpty(requirementIndex.getMinExperience()) && !isNullOrEmpty(requirementIndex.getMaxExperience())){
+						 if(requirementIndex.getMinExperience() !=  null && requirementIndex.getMaxExperience() != null){
 							 experience = experience.append("(").append(requirementIndex.getMinExperience()).append("-").append(requirementIndex.getMaxExperience()).append(" Years").append(")");
 						 }
-						 else if(!isNullOrEmpty(requirementIndex.getMinExperience()) && isNullOrEmpty(requirementIndex.getMaxExperience())){
+						 else if(requirementIndex.getMinExperience() !=  null && requirementIndex.getMaxExperience() == null){
 							 experience = experience.append("(").append(requirementIndex.getMinExperience()).append(" Years").append(")");
 						 }
-						 else if(isNullOrEmpty(requirementIndex.getMinExperience()) && !isNullOrEmpty(requirementIndex.getMaxExperience())){
+						 else if(requirementIndex.getMinExperience() ==  null && requirementIndex.getMaxExperience() != null){
 							 experience = experience.append("(").append(requirementIndex.getMaxExperience()).append(" Years").append(")");
 						 }
 						 
@@ -2073,18 +2064,12 @@ public class EMailJobScheduler {
 	        
 	                
 	        
-	         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 	        
 	         //getting the current EmailScenario by EmailScenario unique name and entity type
-	         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGAPPLICANTDELAYPROCESS,Constants.ENTITY_TYPE_EMAIL);
 	         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGAPPLICANTDELAYPROCESS,Constants.ENTITY_TYPE_NOTIFICATION);
 
 	        
 	         //covert subject,body and signature
-	         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-	         String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-	         String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-	         String url = sourceleadUrl;
 	        
 	        /* String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 	         notificationScenario.setBody(notificationbody);
@@ -2093,13 +2078,9 @@ public class EMailJobScheduler {
 	        // OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
 
 	        
-	         //construct HTML template using required data
-	         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-	         emailMessage.setSubject(subject);
-	         emailMessage.setMessageBody(emailTemplate);
 	        
 	         //calling the sendEmail method of emailScenerioUtil
-	         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+	         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.OFFBOARDINGAPPLICANTDELAYPROCESS,new ArrayList<EmailAttachment>());
 	         String actionLink="";
 	     // emailScenerioUtil.sendNotification(actionLink, loginUser, candidateOffBoarding.getUserId(), orgLocations, notificationScenario);
 			}
@@ -2173,32 +2154,15 @@ public class EMailJobScheduler {
 							commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidayEndDate));
 					globalVarsMap.put("holidayname", holidayNames);
 					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-					// getting the current EmailScenario by EmailScenario unique
-					// name and entity type
-					EmailScenario emailScenario = emailScenarioService
-							.getEmailScenarioByUniqueName(Constants.HOLIDAY_REMAINDER, Constants.ENTITY_TYPE_EMAIL);
+					commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.HOLIDAY_REMAINDER,new ArrayList<EmailAttachment>());
 					EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 							Constants.HOLIDAY_REMAINDER_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
-					// covert subject,body and signature
-					String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-					String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-					String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-					String url = sourceleadUrl;
-					// construct HTML template using required data
-					String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject,
-							body, signature, url, orgLocations.getOrg(), orgLocations);
-					emailMessage.setSubject(subject);
-					emailMessage.setMessageBody(emailTemplate);
-					// calling the sendEmail method of emailScenerioUtil
-					emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray,
-							new ArrayList<EmailAttachment>());
-					String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),
-							globalVarsMap);
+					String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 					notificationScenario.setBody(notificationBody);
 					StringBuilder actionLinkBuilder = new StringBuilder();
 					String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("leaveManagementReports").toString();
 					emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), user, orgLocations,notificationScenario,new HashMap<String,String>());
-
+				
 				}
 			}
 		}

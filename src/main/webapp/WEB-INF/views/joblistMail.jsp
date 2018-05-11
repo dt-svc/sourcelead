@@ -175,7 +175,7 @@ display: none;
 					    <li class="checkBox"><input name="jobStatus" type="checkbox"><label>By Client</label></li>
 					  </ul>
 					</span> -->
-                    
+                    <div id="popupId"></div>
                     </div>
                   <!-- <div id="mailBoxJobsList" class="mailFil datatable_filter"></div> -->
                     <div class="clearfix">
@@ -360,8 +360,8 @@ function jobListChange(type){
     	result = result +'</div>'; 
     	result = result +'</div>';
     	result = result +'<div class="clearfix pull-right mr mb">';
-     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onclick="getCheckedJobs();">Add</button>';
-     	result = result +' <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
+     	result = result +'<button class="btn btn-primary"  type="button" id="assignbtnId" onclick="getCheckedJobs();">Add</button>';
+     	result = result +' <button class="btn btn-default" type="button">Close</button>';
      	result = result +' </div>'; 
 	    $("#mailBoxJobsList").empty();
 	    $("#mailBoxJobsList").append(result);
@@ -584,11 +584,19 @@ $('input[class="myJobsCheckbox"]').each(function(i) {
 <script>
 function getCheckedJobs(){
 	
+	$('#popupId').parent().find('p.jquery_form_error_message').remove();
 	var internalOutput = "";
 	 for(var e in allJobs) {
 		 var checkbox_value = allJobs[e].split(",");
 		 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
 	  }
+	 
+	 if($("input[name='jobTitle[]']:checked").length == 0){
+	    	$("#popupId").after("<p class='jquery_form_error_message'><span>Select Atleast One Jobs</span>");
+	    }else{
+	    	$("#requirement").modal('hide');
+	    	$('#popupId').parent().find('p.jquery_form_error_message').remove();
+	    }
 	
 	    $("#selectedJobs").append(internalOutput);
 		$("#selectedJobs").trigger("chosen:updated");
@@ -1543,6 +1551,13 @@ function checkUniqueSubject(){
 	            });
 		}
 }
+</script>
+
+<script>
+	function removeMessage() {
+		$('#popupId').parent().find('p.jquery_form_error_message').remove();
+		$("#requirement").modal('hide');
+	}
 </script>
 
 

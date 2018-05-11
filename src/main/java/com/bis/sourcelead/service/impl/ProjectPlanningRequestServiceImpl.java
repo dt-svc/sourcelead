@@ -216,25 +216,13 @@ public class ProjectPlanningRequestServiceImpl implements ProjectPlanningRequest
         String resourceTable = getRequestedResourcesTable(projectPlanningResourceRequestList);
         globalVarsMap.put("resourceTable", resourceTable);
         
-        EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
         
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
         
-        //covert subject,body and signature
-        String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-        String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-        String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-        String url = sourceleadUrl;
-       
-        InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-       
-        String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-        emailMessage.setSubject(subject);
-        emailMessage.setMessageBody(emailTemplate);
-       
-        emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.RESOURCE_REQUEST,new ArrayList<EmailAttachment>());
+
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
@@ -408,25 +396,11 @@ public void sendMailToNewResourceRequestApprover(ProjectPlanningRequest projectP
         String resourceTable = getNewRequestedResourcesTable(projectPlanningNewResourceRequestList);
         globalVarsMap.put("resourceTable", resourceTable);
         
-        EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
         
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
-        
-        //covert subject,body and signature
-        String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-        String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-        String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-        String url = sourceleadUrl;
-       
-        InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-       
-        String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-        emailMessage.setSubject(subject);
-        emailMessage.setMessageBody(emailTemplate);
-       
-        emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+        commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.NEW_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewNewResourceRequestDashborad?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          

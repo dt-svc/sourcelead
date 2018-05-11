@@ -1,6 +1,6 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
-<meta http-equiv="Expires" content="0">
+<meta http-equiv="Expires" content="0">                            
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -49,6 +49,9 @@ z-index: 9999999;
 
 
 <input type="hidden" id="emptyInvoiceId" name="emptyInvoiceId"/>
+<div class="success_pop" id="selector12" style="display: none;">
+		<i class="fa fa-check-circle"></i><span id="msgdiv"></span>
+  </div>
 <script>
 function getClientInvoiceList(orgRelationId,clientLocationId){
 var result = "";
@@ -141,7 +144,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			            </div>                                                                                                                                                                                                 ';
  result = result + '			          </ul>                                                                                                                                                                                                    ';
  result = result + '			          <div class="tab-content">                                                                                                                                                                                ';
- result = result + '			                                                                                                                                                                                                                   ';
+ result = result + '			          <div id="invoiceLoading"></div>                                                                                                                                                                                                         ';
  result = result + '			            <!-- Employee Details -->                                                                                                                                                                              ';
  result = result + '			            <div class="tab-pane active" id="unbilled">                                                                                                                                                            ';
  result = result + '			              <div class="timesheet_out">                                                                                                                                                                       ';
@@ -606,8 +609,29 @@ function searchResults(orgRelationId,clientLocationId){
 
 </script>
 
-
-
+<script type="text/javascript">
+function generateAutomaticInvoice(){
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/generateAutomaticInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable&contractType=clientSow", 
+             success: function(json) {
+            	  $("#invoiceLoading").removeAttr("style");
+					$("#selector12").removeAttr("style");
+					$("#msgdiv").html(json.object.count+" Invoice(s) Generated Successfully.");
+					msgFadein();
+            	 location.replace(sourceleadUrl+"/invoiceList");	            	 
+        },
+    });  
+}
+</script>
+<script>
+	function msgFadein() {
+		$("#selector12").fadeIn(200);
+        $('#selector12').delay(2000).fadeOut('slow');
+	}
+</script>
 
 <script>
 function clientInvoicePagination(){  
@@ -792,7 +816,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              <label><strong>Attachments</strong></label>                         ';
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
-	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment"> ';
+	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment" onchange="getfileUrl()"> ';
 	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
@@ -820,12 +844,12 @@ function receivePaymentPop1(invoiceId,total){
     $('.modal-backdrop').fadeIn(200).addClass('in');
     
     $('#paymentDate').datepicker({
-	/* 	dateFormat : recievePaymentPopUpDate,
+ 	dateFormat : recievePaymentPopUpDate,
 		changeMonth: true,
 		changeYear: true, 
 		onSelect : function(selected) {
 			removeValidate();
-		} */
+		} 
 	});
     
     
@@ -968,6 +992,9 @@ function cancelTermination(){
 </script>
 
 <script>
+function getfileUrl(){
+	fileUpload("paymentAttachment", "incoiceDocuments", "receivePayment-form");
+}
 function removeValidate(){
 	$('#errPaymentDate').find('p.jquery_form_error_message').remove(); 
 }

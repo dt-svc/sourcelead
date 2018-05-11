@@ -890,6 +890,7 @@ public class RequirementListRestController {
 				list.setResponse(Result.SUCCESS.name());
 				list.setResponseMessage(Result.SUCCESS.getValue());
 			}catch(Exception e) {
+				e.printStackTrace();
 			list.setResponse(Result.AWKWARD.name());
 			list.setResponseMessage(Result.AWKWARD.getValue());
 		}
@@ -1828,7 +1829,7 @@ public class RequirementListRestController {
 				}
 
 				
-				 /* //requirementPriority
+				  //requirementPriority
 		
 						if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
 							String priority = "";
@@ -1874,7 +1875,7 @@ public class RequirementListRestController {
 								}
 							} 
 						}
-						*/
+						
 						
 						//filter for is Client job
 						if(StringUtils.isNotEmpty(search.getFilterSpecJobs()) && "ClientJobs".equalsIgnoreCase(search.getFilterSpecJobs())){
@@ -2025,7 +2026,9 @@ public class RequirementListRestController {
 			            		
 			            		if(requirement.getOrgRelationId() != null && !requirement.getOrgRelationId().isEmpty()){
 			            			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(requirement.getOrgRelationId()));
-			            			requirement.setOrgRelationUUID(orgRelations.getUUID());
+			            			if(orgRelations != null) {
+			            				requirement.setOrgRelationUUID(orgRelations.getUUID());
+			            			}
 			            		}
 			            		
 			            		if(requirement.getSpocId() != null){
@@ -2053,6 +2056,7 @@ public class RequirementListRestController {
 			     resp.setResponse(Result.SUCCESS.name());
 				 resp.setResponseMessage(Result.SUCCESS.getValue());
 			}catch(Exception e) {
+				e.printStackTrace();
 				resp.setResponse(Result.AWKWARD.name());
 				resp.setResponseMessage(Result.AWKWARD.getValue());
 			}
@@ -2090,8 +2094,8 @@ public class RequirementListRestController {
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("manager", keywd));
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
-			if(matcher.find()){
+			//Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			if(StringUtils.isNumeric(keywd)){
 //				Float expYears = Float.valueOf(matcher.group());
 				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
 				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
@@ -2386,25 +2390,15 @@ public class RequirementListRestController {
 				}
 				globalVarsMap.put("reqExp", reqExp);
 				StringBuilder linkBuild = new StringBuilder();
-				globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-				InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+				globalVarsMap.put("LoginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 				// getting the current EmailScenario by EmailScenario unique
 				// name and entity type
-				EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MODIFIED_REQUIREMENT_STATUS_EMAIL, Constants.ENTITY_TYPE_EMAIL);
 				EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MODIFIED_REQUIREMENT_STATUS_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 				// covert subject,body and signature
-				String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-				String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-				String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-				String url = "";
-				String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+				String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 				notificationScenario.setBody(notificationbody);
-				// construct HTML template using required data
-				String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, new Org(), loginOrgLocation);
-				emailMessage.setSubject(subject);
-				emailMessage.setMessageBody(emailTemplate);
 				// calling the sendEmail method of emailScenerioUtil
-				emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+				commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MODIFIED_REQUIREMENT_STATUS_EMAIL,new ArrayList<EmailAttachment>());
 				String actionLink = "";
 				emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContact, releasedRequirement.getSpocId().getVendorLocationId(), notificationScenario,new HashMap<String,String>());
 			}

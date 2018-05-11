@@ -11,12 +11,12 @@
 <script src="/resources/js/offboardCheckListBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="/resources/js/offboardCheckList-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
-
 <script> 
 	$(document).ready(function(){
-		document.getElementById("templateDocs").disabled = true;
-		document.getElementById("templateTasks").disabled = true;
-		document.getElementById("checkList").disabled = true;
+		 
+		 document.getElementById("templateDocs").disabled = true;
+		 document.getElementById("checkList").disabled = true;
+		 document.getElementById("templateTasks").disabled = true; 
 		
 		
 		var offBoardingId = '${offBoardingId}';
@@ -196,10 +196,13 @@
                 
                  <div class="form-group">
                        <label class="col-md-3 control-label">Offboard Template</label>
-                  <div class="col-md-6 chooRadius">
-<div class="input-group col-md-10 pull-left">                      <select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="offboardingTemplate" name="offboardingTemplate" >
+                  <div class="col-md-6 chooRadius chosenmbNone">
+                  
+				<div class="input-group col-md-10 pull-left">
+						<select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="offboardingTemplate" name="offboardingTemplate" >
                        </select>
-                        <span class="input-group-addon cursorPointer bg-blue" onclick="loadOffBoardingTemplates();"><i class="fa fa-refresh "></i></span>                  </div>
+                        <span class="input-group-addon cursorPointer bg-blue" onclick="loadOffBoardingTemplates();"><i class="fa fa-refresh "></i></span>
+                        </div>
  <sec:authorize access="hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE')">
                   <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addNewOffboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>	
                </sec:authorize></div>                </div>
@@ -1068,9 +1071,10 @@ function loadOffBoardingTemplates(offboardTemplateId){
 			    	if(json['effectiveDate'] != null && json['effectiveDate'] != "" && json['effectiveDate'] !="undefined"){
 			    		$("#effectiveDate").val(json['effectiveDateStr']);
 			    	}
-			    	if(json['offboardTemplateId'] != null && json['offboardTemplateId'] != "" && json['offboardTemplateId'] !="undefined"){
+			    	/* if(json['offboardTemplateId'] != null && json['offboardTemplateId'] != "" && json['offboardTemplateId'] !="undefined"){
 			    		loadOffBoardingTemplates(json['offboardTemplateId']);
-			    	}
+			    	} */
+			    	loadOffBoardingTemplates(json['offboardTemplateId']);
 			    	$("#savedoffboardId").val(json['savedoffboardId']);
 			    	$("#loading").removeAttr("style");
 	        	} else if (response.indexOf('Sign In') !== -1) {
@@ -1186,12 +1190,12 @@ function createTemplateDocs(saveType){
 <script>
 function getOffboardingCheckList(){
 	
-	
 	var result = "";
 	var candidateOffBoardId = document.getElementById("candidateOffBoardId").value;
 	var sourceleadUrl ='${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
+	if(candidateOffBoardId){
 	result = result + '<div class="clearfix">';
 	        result = result + '</div>';
 	        result = result + '<div id="sjfb-wrap">';
@@ -1244,6 +1248,7 @@ function getOffboardingCheckList(){
 	           $("#offboardingCheckList").append(result); 
 	           $("#offboardTasksList").empty();
 	           customizeFields(candidateOffBoardId,sourceleadUrl,"offboarding");
+	}
 	           
 	
 }

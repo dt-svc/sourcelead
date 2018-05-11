@@ -185,9 +185,9 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 		    	  document = new Document(PageSize.LETTER.rotate()); 
 		     }DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
  		     StringBuilder exprortReports =  new StringBuilder();
- 		     exprortReports.append("EXPRORT_REPORTS_").append(dateFormat.format(new Date()));
+ 		     exprortReports.append("EXPORT_REPORTS_").append(dateFormat.format(new Date()));
 			 StringBuilder fileSB = new StringBuilder();
-			 File file = File.createTempFile(fileSB.append("EXPRORT_REPORTS_").append(dateFormat.format(new Date())).toString(),".pdf");
+			 File file = File.createTempFile(fileSB.append("EXPORT_REPORTS_").append(dateFormat.format(new Date())).toString(),".pdf");
 			 file.setReadable(true);
 			 
 			 try {
@@ -200,11 +200,11 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					BaseColor myColor = WebColors.getRGBColor("#000000");
 			        boldFont.setColor(myColor);
 			        StringBuilder userStyle = new StringBuilder();
-			        userStyle.append(orgLoc.getOrg().getOrgName()).append(" ").append("_EXPRORT_REPORTS");
+			        userStyle.append(orgLoc.getOrg().getOrgName()).append(" ").append("_EXPORT_REPORTS");
 		          
 
 			        StringBuilder orgNameSB = new StringBuilder();
-		            Paragraph para = new Paragraph(orgNameSB.append("EXPRORT_REPORTS : ").append(orgLoc.getOrg().getOrgName()).toString());
+		            Paragraph para = new Paragraph(orgNameSB.append("EXPORT_REPORTS : ").append(orgLoc.getOrg().getOrgName()).toString());
 		            para.setAlignment(Element.ALIGN_CENTER);
 		            document.add(para);
 			        

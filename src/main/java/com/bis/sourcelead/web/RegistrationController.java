@@ -29,6 +29,8 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.EmailDomains;
+import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
+import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
@@ -46,6 +48,7 @@ import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ActionRolesService;
 import com.bis.sourcelead.service.ClientService;
 import com.bis.sourcelead.service.EmailDomainsService;
+import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.NotificationsService;
@@ -122,9 +125,12 @@ public class RegistrationController {
 	 EmailDomainsService emailDomainsService;
 	 
 	 @Autowired
+	 private EmployeeVerificationTemplateService employeeVerificationTemplateService;
+	 
+	 @Autowired
 	 ReferContactsDao referContactsDao;
 	 
-	@Autowired
+	 @Autowired
 	 LookUpDataService lookUpDataService;
 	 
 	 @Autowired
@@ -138,7 +144,7 @@ public class RegistrationController {
 	 
 	 @Autowired
 	 OrgLicenseSubscriptionTypesService orgLicenseSubscriptionTypesService;
-	 
+
 	 
 	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
 	 @RequestMapping(value = "/app/enrolledOrgsList")
@@ -303,6 +309,13 @@ public class RegistrationController {
 					orgLocations.setStatus(Status.ACTIVE);
 					orgLocationService.updateOrgLocations(orgLocations);
 					
+					if(orgLocations != null) {
+						EmployeeVerificationTemplate empTemp = employeeVerificationTemplateService.getEmploymentVerificationtemplateByLocationId(orgLocations.getId());
+						if(empTemp != null) {
+							empTemp.setSignatory(orgLocations.getUser());
+							employeeVerificationTemplateService.updateEmployMentTemplate(empTemp);
+						}
+					}
 		    	}
 				 
 				
@@ -410,7 +423,7 @@ public class RegistrationController {
 				List<OrgLicenseSubscriptionTypes> dataStorageTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.DATA_STORAGE);
 				model.addObject("dataStorageTypeList", dataStorageTypeList);
 				
-				List<String> orgSubscribedCountriesList = orgLicenseSubscriptionService.getOrgLicenseSubscribedCountriesByOrgId(org.getId());
+				List<String> orgSubscribedCountriesList = orgLicenseSubscriptionService.getOrgLicenseSubscribedAndRegisteredCountriesByOrgId(org.getId());
 				model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
 				
 				model.addObject("sourceleadUrl", sourceleadUrl);

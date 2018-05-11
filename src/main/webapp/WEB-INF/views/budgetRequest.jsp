@@ -96,7 +96,7 @@ function getBudgetRequestList(requestType){
 	    		result = result + '	    <thead>';
 	    		result = result + '	     	<tr>';
 	    		result = result + '	         	<th>Request Id</th>';
-	    		result = result + '	             <th>Base Line</th>';
+	    		result = result + '	             <th>Description</th>';
 	    		result = result + '	             <th>Project</th>';
 	    		result = result + '	             <th>Est Hours</th>';
 	    		result = result + '	             <th>Est Budget</th>';
@@ -134,8 +134,8 @@ function getBudgetRequestList(requestType){
 	    			
 	    			result = result + '     <td><div class="tbldata-dotdot-sm" title="'+budgetDescription+'">'+budgetDescription+'</div></td>';
 	    			result = result + '     <td><div class="tbldata-dotdot-sm" title="'+report.projectName+'">'+report.projectName+'</div></td>';
+	    			result = result + '     <td><div  class="tbldata-dotdot_80">'+estimatedHours+'</div></td>';
 	    			result = result + '     <td><div class="tbldata-dotdot_80" title="'+estimatedBudgetValue+'">'+estimatedBudgetValue+'</div></td>';
-					result = result + '     <td><div  class="tbldata-dotdot_80">'+estimatedHours+'</div></td>';
 					result = result + '     <td><div  class="tbldata-dotdot-vsm" title="'+report.createdUserName+'">'+report.createdUserName+'</div></td>';
 					result = result + '     <td><div  class="tblminwidth-100">'+report.createdStr+'</div></td>';
 					

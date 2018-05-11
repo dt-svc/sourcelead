@@ -6,8 +6,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script type="text/javascript">
-$(document).ready(function(){
-	
+$(document).ready(function(){           
+	                   
 	var status='${status}'
 	var contractType='${contractType}'
 	if(status == "waiting"){
@@ -533,9 +533,9 @@ function preparedContractListDraft(json){
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+		        	result = result + '<div class="tblminwidth-175 proj_show" onclick="PopUp(\''+report.contractUUID+'\',\'DRAFT\');"><div class="tbldata-dotdot-sm pull-left" title="'+report.contractTitle+'">'+report.contractTitle+'</div><i class="fa fa-binoculars"></i></div>';
 		        }else{
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
+		        	result = result + '<div class="tblminwidth-175 proj_show" ><div class="tbldata-dotdot-sm pull-left" title="'+report.contractTitle+'">'+report.contractTitle+'</div></div>';
 		        }
 		         result = result + '</td>';
 		         result = result + '<td>';
@@ -1098,9 +1098,9 @@ function preparedContractListWFA(json){
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\',\'APPROVE\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
+	        	opt = opt + '<div class="proj_show tblminwidth-175" onclick="PopUp(\''+output.contractUUID+'\',\'APPROVE\');"><div class="tbldata-dotdot-sm pull-left" title="'+output.contractTitle+'">'+output.contractTitle+'</div><i class="fa fa-binoculars"></i></div>';
 	        }else{
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
+	        	opt = opt + '<div class="proj_show tblminwidth-175" ><div class="tbldata-dotdot-sm pull-left" title="'+output.contractTitle+'">'+output.contractTitle+'</div></div>';
 	        }
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';

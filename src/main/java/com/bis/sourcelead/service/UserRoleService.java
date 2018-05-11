@@ -54,6 +54,7 @@ public interface UserRoleService {
 	
 	public List<UserRole> getAllUsersBasedOrgLocationId(Long orgLocationId) throws Exception;
 
+	public List<UserRole> getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(Long orgLocationId) throws Exception;
 	
 	/**To get user role by userid and locationId
 	 * @author Prasad salina

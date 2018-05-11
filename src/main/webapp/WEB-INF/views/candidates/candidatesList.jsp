@@ -723,15 +723,16 @@ function addFavourite(candidateId){
 			type : "POST",
 			url : sourceleadUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
 			success : function(response) {
-				
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class");
-					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating' 
+					 document.getElementById("favourite"+candidateId).className = 'iconClass pull-left star-rating activestar-rating';
+					 document.getElementById("fav"+candidateId).setAttribute("title","Change to un Favourite");
 				} else {
 					 document.getElementById("favourite"+candidateId).classList.remove("activestar-rating");
-					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
+// 					 document.getEmentById("favourite"+candidateId).className = 'iconClass pull-left star-rating';
+					 $("#fav"+candidateId).removeAttr("title");
+					 document.getElementById("fav"+candidateId).setAttribute("title","Add as Favourite");
 				}
-				
 				if (response && response.response === "INVALID_DATA") {
 				    showError(response.responseMessage);
 				} else if (response.response === "AWKWARD") {
@@ -1611,7 +1612,7 @@ function savedCommentAndCount(candidateId){
         		    location.href = "/errorPage";
         		} else if (data.response === "SUCCESS") {
         			var result = "";
-                    if(data.object.length > 0) {
+                    if(data.data.length > 0) {
                     	var json = data.data;
                   		var totalComments = 0;
                   		if(json.length>0) {
@@ -2414,11 +2415,11 @@ function sharejobpopup(candidateCount) {
 	 result = result+ '    <select class="form-control" id="requirementsTimeRange" onchange="getRequirements();rolecustomedates();">';
 	 result = result+ '    <option value="today">Today</option>';
 	 result = result+ '    <option value="yesterday">Yesterday</option>';
-	 result = result+ '    <option value="week" selected="">1 week</option>';
-	 result = result+ '    <option value="twoweeks">2 weeks</option>';
-	 result = result+ '    <option value="month">1 month</option>';
-	 result = result+ '    <option value="twomonths">2 months</option>';
-	 result = result+ '    <option value="custome">Custom</option>';
+	 result = result+ '    <option value="1_week" selected="">1 week</option>';
+	 result = result+ '    <option value="2_weeks">2 weeks</option>';
+	 result = result+ '    <option value="1_month">1 month</option>';
+	 result = result+ '    <option value="2_months">2 months</option>';
+	 result = result+ '    <option value="custom">Custom</option>';
 	 result = result+ '    </select>';
 	 result = result+ '    </div>';
 	 result = result+ '  </div>';
@@ -2557,7 +2558,7 @@ $('body').on('blur', '#shareJob-form', function() {
 //Role custome Dates
 function rolecustomedates(){
 	var roleval = $("#requirementsTimeRange").val();
-	if(roleval == "custome"){
+	if(roleval == "custom"){
 		document.getElementById("customedatesDiv").style.display ="block";
 		 $('#shareStartDate').attr("data-validation","required"); 
 		 $('#shareEndDate').attr("data-validation","required"); 
@@ -2586,14 +2587,14 @@ function getRequirements(){
 	var managerId = $("#requirementManagerlist").val();
 	$.ajax({
         type : "GET",
-        url: sourceleadUrl+"/getAllRequirementByOrgLocationIdAndUserIdAndPostedDateWithCustomDates?postedDateRange="+postedDateRange+"&startDate="+startDate+"&endDate="+endDate+"&managerId="+managerId,    
+        url: sourceleadUrl+"/getAllRequirementsForJobSharing?postedDateRange="+postedDateRange+"&startDate="+startDate+"&endDate="+endDate+"&managerId="+managerId,    
          success :function(json) {
               if(json != null && json != 'undefined' && json != "" && json != '[]'){
             	  var result = "";
             	  result = result + '<option value="">--- Select Job ---</option>';
                   for (var i = 0; i < json.length; i++) {
                  	 var opt = json[i]; 
-                 	 result = result +  '<option value="'+opt.id+'"> '+opt.generatedId+' - '+opt.jobTitle+' ('+opt.postedOnStr+')</option>';
+                 	 result = result +  '<option value="'+opt.id+'"> '+opt.generatedId+' - '+opt.jobTitle+' ('+opt.postedDateStr+')</option>';
                   }
                   $("#shareRequirementsList").empty();
                   $("#shareRequirementsList").append(result);

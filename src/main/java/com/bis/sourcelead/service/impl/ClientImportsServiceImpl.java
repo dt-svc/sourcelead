@@ -1359,11 +1359,14 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		boolean isValid = false;
 		Row row = (Row) rows.next();
 		String name = "";
+		String address = "";
 		if (responderType.equalsIgnoreCase(Constants.CLIENT)) {
 			name = Constants.CLIENT_NAME;
+			address = Constants.CLIENT_ADDRESS;
 		}
 		else {
 			name = Constants.VENDOR_NAME;
+			address = Constants.VENDOR_ADDRESS;
 		}
 		if (row.getRowNum() == 0) {
 			if (name.equalsIgnoreCase(row.getCell(0).getStringCellValue())) {
@@ -1379,7 +1382,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 												if(Constants.EXTENSION_NUMBER.equalsIgnoreCase(row.getCell(10).getStringCellValue())){	
 													if (Constants.STATUS.equalsIgnoreCase(row.getCell(11).getStringCellValue())) {
 														if (Constants.OWNER.equalsIgnoreCase(row.getCell(12).getStringCellValue())) {
-															if (Constants.CLIENT_ADDRESS.equalsIgnoreCase(row.getCell(13).getStringCellValue())) {
+															if (address.equalsIgnoreCase(row.getCell(13).getStringCellValue())) {
 																if (Constants.BILLING_ADDRESS.equalsIgnoreCase(row.getCell(14).getStringCellValue())) {
 																	if (Constants.PAYMENT_TERMS.equalsIgnoreCase(row.getCell(15).getStringCellValue())) {
 																		isValid = true;

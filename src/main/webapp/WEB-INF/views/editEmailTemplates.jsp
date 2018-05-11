@@ -17,12 +17,12 @@
 <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
-            <h2> Edit Email Template</h2>
+            <h2> Edit ${emailScenario.entityType} Template</h2>
           </div>
          <%--  <a href="${appPath}/addUserManuals" class="pull-right btn btn-primary btn-sm mb">Add</a> --%>
           <%-- <a href="${appPath}/applicantDeclineReports" title="Grid View" id="GView" class="btn btn-default " ><i class="fa fa-pie-chart"></i></a>
           --%> 
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Email Templates </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates</a>&raquo; <a href="<c:url value='${appPath}/emailTemplates'/>">EmailTemplatesList</a>&raquo; Email Templates </div>
         </section>
         
         <div class="content-area clearfix">
@@ -46,6 +46,8 @@
 
 			
 			<div class="clearfix"></div>
+			
+			<c:if test="${emailScenario.entityType != 'Notification'}">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
 			<div class="form-group row">
 			<label class="col-md-12">Subject</label>
@@ -55,29 +57,35 @@
 				</div>
 			</div>  
 			</div>
+			</c:if>
+			
 		<div class="clearfix"></div>
+		<label class="col-md-12">Body</label>
 			<div class="row newContrWrap">
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
 						<div class="col-md-9 txtEditor_p txtEditorP">
-							<textarea name="body" field-name="Template Content" value="" class="form-control newContrtextarea teHeight" data-validation="required" >${emailBody}</textarea>
+							<textarea name="body" field-name="Template Content" value="" class="form-control newContrtextarea teHeight" data-validation="required" >${emailScenario.body}</textarea>
+						    <p class="text-danger small" style="font-size: 13px;"><i class="fa fa-exclamation-triangle"></i>&nbsp;Don't change any class fields</p>
 						</div>
-
+						
 
 						<div class="col-md-3 contrCus">
 						<h3>Custom Fields</h3>
 							<ul id="clientmsa" style="display: block">
 							 <c:if test="${!empty classFieldList}">
-	            <c:forEach var="classField" items="${classFieldList}" >
-	            <li onclick="copyToClipboard('text_element${classField}')" class="copyText" id="text_element${classField}">${classField}</li>
-	           
-	            </c:forEach>
-	   		</c:if>
+					            <c:forEach var="classField" items="${classFieldList}" >
+					            <li onclick="copyToClipboard('text_element${classField}')" class="copyText" id="text_element${classField}">${classField}</li>
+					           
+					            </c:forEach>
+					   		</c:if>
 							</ul>							
 
 						</div>
 					</div>
-				</div>	
+				</div>
 				<div class="clearfix"></div>
+			
+			<c:if test="${emailScenario.entityType != 'Notification'}">
 			<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 mt">
 			<div class="form-group row">
 			<label class="col-md-12">Signature</label>
@@ -87,6 +95,7 @@
 				</div>
 			</div>  
 			</div>
+			</c:if>
 					
 			</div>
 			
@@ -95,13 +104,16 @@
 			</div>
 			
       		<div class="clearfix"></div>
-      		<div class="mt clearfix mb">
-      			<div class="pull-right">
-      			<input type="hidden" name="id" id="id" value="${emailScenario.id}" />
-      				<button type="button" name="save"  value="save" id="save_title" class="btn btn-primary btnsStyles" onClick="editEmailTemplates();">Save</button>
-      				 <button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="javascript:window.location.href = '<c:url value='emailTemplates'/>'">Cancel</button>
-      			</div>
-      		</div>
+	<div class="mt clearfix mb">
+		<div class="pull-right">
+			<input type="hidden" name="id" id="id" value="${emailScenario.id}" />
+			<button type="button" name="save" value="save" id="save_title" class="btn btn-primary btnsStyles" onClick="editEmailTemplates();">Save</button>
+			<c:if test="${!empty emailScenario.parentId.id}">
+			<button type="button" name="restore" value="save" id="save_title" class="btn btn-primary btnsStyles" onClick="javascript:window.location.href = '<c:url value='editEmailTemplate?templateUUID=${emailScenario.parentId.emailUUID}'/>'">Restore</button>
+			</c:if>
+		<button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="javascript:window.location.href = '<c:url value='emailTemplates'/>'">Cancel</button>
+		</div>
+	</div>
       			
       			
       </form:form>
@@ -128,7 +140,7 @@
 
 <script>
 function editEmailTemplates() {
-	if ($('#user_manuals_form').validate(false, validationSettings)) {
+	if ($('#email_template_form').validate(false, validationSettings)) {
 		$("#save_title").attr("disabled", "disabled");
 		$("#save_title").addClass('button').val('Processing..');
 	

@@ -25,4 +25,6 @@ public interface OrglocationSignatoryService {
 	public boolean getUserByUserId(Long userId, Long orgLocationsId) throws Exception;
 	
 	public OrglocationSignatory getUserBySignatoryUuId(Long userId, String uuid, Long orgLocationsId) throws Exception;
+	
+	public String addLoginUserAsCompanyOrglocationSignatory(User loginUser,OrgLocations orgLocations) throws Exception;
 }

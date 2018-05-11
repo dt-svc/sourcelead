@@ -147,14 +147,10 @@ window.onload = function () {
 				 if(tabType == "tasks"){
 					 if('${isClientOrgActive}' == "N" || '${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){   
 				  		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
-						  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
- 									document.getElementById('projectTaskTab').className = 'current'
+				  		 			if(document.getElementById('projectTaskTab') != null){
+	 									document.getElementById('projectTaskTab').className = 'current'
+				  		 			}
 									projectTask(projectId, status);
-						  	'</sec:authorize>';
-						  	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">' 
-									document.getElementById('projectTaskTab').className = 'current'
-									projectTask(projectId, status);
-						  	'</sec:authorize>';
 					  	'</sec:authorize>';
 				  	 }
 				 }else  if(tabType == "projectMembers"){
@@ -170,6 +166,7 @@ window.onload = function () {
 					 document.getElementById('projectTeam').className = 'current'
 						 projectTeam(projectId,startDateStr,endDateStr,status,projectName);
 				 }
+				 if(document.getElementById("details") != null)
 			     document.getElementById("details").removeAttribute("class")
 			}else{
 				  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
@@ -195,8 +192,6 @@ window.onload = function () {
 			}
  }
  </script> 
- 
-
 <script>
 function removeErroeMsg(){
 	$(".dataTables_empty").html("");

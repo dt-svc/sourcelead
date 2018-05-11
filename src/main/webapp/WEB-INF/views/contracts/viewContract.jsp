@@ -8,8 +8,9 @@
 
 <style type="text/css">
 .chosen-container {
-    width: 100% !important;
+    width: 100% !important;        
 }
+
 .fullWid {width: 100% !important;}
 .viewontracts .tab-content {
 background-color: #fff;
@@ -278,12 +279,12 @@ function displyContract(stage){
 			result = result +	'<div class="col-xs-12 col-md-12 col-lg-12 noPad clearfix mt10">';
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 			result = result +	'		<div class="col-md-4 col-sm-4">Contract Title</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractTitle+'</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8" title="'+json.contractTitle+'">: '+json.contractTitle+'</div>';
 			result = result +	'	</div>';
 			
 			result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 			result = result +	'		<div class="col-md-4 col-sm-4">Contract Type</div>';
-			result = result +	'		<div class="col-md-8 col-sm-8">: '+json.contractType+'</div>';
+			result = result +	'		<div class="col-md-8 col-sm-8" title="'+json.contractType+'">: '+json.contractType+'</div>';
 			result = result +	'	</div>';
 			
 			if(json.templateName != null && 'Custom' != json.typeOfContract && 'Existing' != json.typeOfContract){
@@ -295,7 +296,7 @@ function displyContract(stage){
 			if(null != json.startDateStr && "" != json.startDateStr && 'undefined' != json.startDateStr){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Start Date</div>';
-				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.startDateStr+'</div>';
+				result = result +	'		<div class="col-md-8 col-sm-8" title="'+json.startDateStr+'">: '+json.startDateStr+'</div>';
 				result = result +	'	</div>';
 			}
 			

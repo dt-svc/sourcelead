@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
@@ -233,6 +236,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Autowired
 	OrgLicenseSubscriptionTypesService orgLicenseSubscriptionTypesService;
 	
+	@Value("${static.path}")
+    private String staticPath;
+	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 	}
@@ -404,6 +410,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
 		commonUtil.saveDefaultContractTemplate(org,orgLocations,user," Default NDA Template",Constants.NDA);
+
+		commonUtil.saveDefaultEmployeeVerificationTemplate(org,orgLocations,user,"Default Employee Verification Template");
+//		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
 		
 		saveOrgLocationDefaultProject(registration, orgLocations, user);
 		commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
@@ -889,6 +898,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 	@Override
 	public void sendEmail(Registration registration,Long locationsId) throws Exception {
+		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(registration.getFirstName());
 		 emailMessage.setLastName(registration.getLastName());
@@ -927,6 +937,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 	
 	@Override
 	public void sendResetPasswordEmail(User user,Long locationsId, String verificationCode) throws Exception {
+		
+		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationsId);
+		 if(userRole == null){
+		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		 }
+		OrgLocations locations= orgLocationService.getOrgLocations(locationsId);
+		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
@@ -937,38 +954,27 @@ public class RegistrationServiceImpl implements RegistrationService{
 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("firstName", emailMessage.getFirstName());
-		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 globalVarsMap.put("FirstName", emailMessage.getFirstName());
+		 globalVarsMap.put("LastName",emailMessage.getLastName());
 		 globalVarsMap.put("verificationCode",verificationCode);
 		 StringBuilder resetPasswordURLStringBuilder=new StringBuilder();
 		 String mailUrl = sourceleadUrl.replace("/app", "");
-		 globalVarsMap.put("resetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(mailUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
-			
-		//setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
-		//getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.FORGOT_PASSWORD,Constants.ENTITY_TYPE_EMAIL);
-		
-		//covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
-		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,locationsId,iAdressArray,new ArrayList<EmailAttachment>());
+		 globalVarsMap.put("ResetPasswordURL",resetPasswordURLStringBuilder.append("<a href=").append(mailUrl).append("/resetPassword").append(" style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reset Password</div></a>").toString());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.FORGOT_PASSWORD,new ArrayList<EmailAttachment>());
+
 		
 	}
 	
 	
 	@Override
 	public void sendUpdatePasswordEmail(User user,Long locationsId) throws Exception {
+		
+		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), locationsId);
+		 if(userRole == null){
+		    userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		 }
+		OrgLocations locations= orgLocationService.getOrgLocations(locationsId);
+		
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
@@ -978,8 +984,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("firstName", emailMessage.getFirstName());
-		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 globalVarsMap.put("FirstName", emailMessage.getFirstName());
+		 globalVarsMap.put("LastName",emailMessage.getLastName());
 		 globalVarsMap.put("userName",user.getEmail());
 		 globalVarsMap.put("updatedDate",user.getUpdatedDate().toString());
 		 StringBuilder sbLink = new StringBuilder();
@@ -988,27 +994,8 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 globalVarsMap.put("supportLink",linkBuilder.append("<a href='support@sourcelead.com' target='_blank' style='outline:none; border:none;'>support@sourcelead.com</a>").toString());
 		 StringBuilder sourceLink = new StringBuilder();
 		 globalVarsMap.put("sourceleadLink",sourceLink.append("<a href='http://www.sourcelead.com/' target='_blank' style='outline:none; border:none;'>http://www.sourcelead.com/</a>").toString());
-		 
-		//setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
-		//getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATE_PASSWORD,Constants.ENTITY_TYPE_EMAIL);
-	
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		//construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
-		//calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,locationsId,iAdressArray,new ArrayList<EmailAttachment>());
-		
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.UPDATE_PASSWORD,new ArrayList<EmailAttachment>());
+
 		
 	}
 
@@ -1078,9 +1065,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 			orgUser.setUpdatedDate(new Date());
 			orgUser.setVerificationUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			orgUser.setIsVerified(Constants.NO);
-			user.setUrlSentTime(new Date());
-			user.setLoginSecurity(Constants.NO);
-			user.setRegistrationType("Newly Registered");
+			orgUser.setUrlSentTime(new Date());
+			orgUser.setLoginSecurity(Constants.NO);
+			orgUser.setRegistrationType("Newly Registered");
 			userService.addUser(orgUser);
 			userRole.setIsPrimary(1);
 			
@@ -1163,10 +1150,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 * Saving USER DB data as ElasticSearch Documents
 		 */
 		userService.saveOrUpdateUserElkDocument(userRole,employees,orgUser.getUserCode());
+		
+		if("Newly Registered".equalsIgnoreCase(orgUser.getRegistrationType()))
+	    	sendActivationEmail(orgUser);
 		sendEmail(orgUser,user,password,orgLocations.getId(),addUserDTO.getRegistredOrgId());
-		
-		
-		
 	}
 	
 	
@@ -1197,7 +1184,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("firstName", emailMessage.getFirstName());
+		 globalVarsMap.put("FirstName", emailMessage.getFirstName());
 		// globalVarsMap.put("lastName",emailMessage.getLastName());
 		/* globalVarsMap.put("administratorFirstName", loginUser.getFirstName());
 		 globalVarsMap.put("administratorLastName",loginUser.getLastName());*/
@@ -1207,43 +1194,22 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 }else{
 			 globalVarsMap.put("loginUser", user.getFirstName());	 
 		 }
-		 globalVarsMap.put("role",userRole.getUserType());
+		 globalVarsMap.put("Role",userRole.getUserType());
 		 globalVarsMap.put("orgName", locations.getOrgLocationName());
 		 StringBuilder loginBuilder = new StringBuilder();
-		 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-		 globalVarsMap.put("userEmailId",user.getEmail());
+		 globalVarsMap.put("LoginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("UserEmailId",user.getEmail());
 		 if(isUserActive == false){
 			 password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			 user.setPassword(sourceleadPasswordEncoder.encode(password));
 			 userService.addUser(user);
-			 globalVarsMap.put("password",password);
+			 globalVarsMap.put("Password",password);
 		 }else{
-			 globalVarsMap.put("password","<font color='green'><b>Login with your existing Sourcelead password.</b></font>");
+			 globalVarsMap.put("Password","<font color='green'><b>Login with your existing Sourcelead password.</b></font>");
 		 }
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.INVITE_USER,new ArrayList<EmailAttachment>());
+
 		 
-		
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_USER,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 Org registredOrg = orgDao.findOrgByID(Long.parseLong(orgId));
-		 OrgLocations regLocation = orgLocationService.getOrgLocations(locationId);
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, registredOrg,regLocation);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
-		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,locationId,iAdressArray,new ArrayList<EmailAttachment>());
 		
 	}
 
@@ -1419,7 +1385,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 }else{
 			 professionalName = sb.append(user.getFirstName()).toString();
 		 }
-		 
+		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
 		 emailMessage.setFromEmail("Info@sourcelead.com");
@@ -1438,11 +1404,10 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACTIVATE_EMAIL,Constants.ENTITY_TYPE_EMAIL);
-		
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
@@ -1471,7 +1436,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setFromName("Sourcelead Admin");
 		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("sladmin");
-		 
+		 emailMessage.setFirstName(professionalName);
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1508,11 +1473,13 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_PROFESSIONAL,Constants.ENTITY_TYPE_EMAIL);
 		
+		
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
+		 
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
@@ -1698,6 +1665,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 emailMessage.setFromName("Sourcelead Admin");
 		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("sladmin");
+		 emailMessage.setFirstName(professionalName);
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1735,10 +1703,11 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_INDIVIDUAL_RECRUITER,Constants.ENTITY_TYPE_EMAIL);
 		
+		
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
@@ -2180,7 +2149,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 OrgLocations orgloc = orgLocationService.getOrgLocations(1l);
-		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, new Org(), orgloc, Constants.LOGIN_OTP_EMAIL,null);
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, new Org(), orgloc, Constants.LOGIN_OTP_EMAIL,new ArrayList<EmailAttachment>());
 		 
 		 return token;
 				

@@ -1,10 +1,14 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.mail.internet.InternetAddress;
 
@@ -49,6 +53,9 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	@Value("${static.path}")
+    private String staticPath;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -105,6 +112,10 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 						referContacts.setOtherType(1);
 					}
 					
+				}
+				
+				if(StringUtils.isNotBlank(referContactsDTO.getEmail())) {
+					referContacts.setContactUserEmail(referContactsDTO.getEmail());
 				}
 				if(StringUtils.isNoneBlank(referContactsDTO.getCompanyName())){
 					referContacts.setCompanyName(referContactsDTO.getCompanyName());
@@ -206,10 +217,11 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_NEW_USER_CONTACT,Constants.ENTITY_TYPE_EMAIL);
 		
+		
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
@@ -219,6 +231,8 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,1L,iAdressArray,new ArrayList<EmailAttachment>());
+		 
+		 
 		
 	}
 

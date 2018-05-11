@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto;
 
+import com.ibm.icu.math.BigDecimal;
+
 public class ExpensesApproverHierarchyDTO {
 	
 
@@ -9,7 +11,7 @@ private String locationsCode,expenseStartDateString,expenseEndDateString,expense
 private String userFileUrl,userTypeVendorName,expenseEmpUserType,expenseEmpUserFirstNameLastName,expenseEmpUserEmail;
 private String reopenRejectedReason,rejectedReason,expensesStatus,expenseApprovalStatus;
 private Long expensesUserid;
-private float totalAmount;
+private BigDecimal totalAmount;
 private String tdSpanLength;
 private String actionPerformedBy;
 private String noOfExpenses;
@@ -113,11 +115,11 @@ public String getClientName() {
 public void setClientName(String clientName) {
 	this.clientName = clientName;
 }
-public float getTotalAmount() {
+public BigDecimal getTotalAmount() {
 	return totalAmount;
 }
-public void setTotalAmount(float totalAmount) {
-	this.totalAmount = totalAmount;
+public void setTotalAmount(BigDecimal totalAmountRoundOff) {
+	this.totalAmount = totalAmountRoundOff;
 }
 public String getTdSpanLength() {
 	return tdSpanLength;

@@ -193,7 +193,11 @@ function redirectlocation(location){
 		    	  	"data": "approvedBy",
 		    	  	"render": function(data, type, opt, meta) {
 		    	  		var result = "";
+		    	  		if(opt.approvedBy != null && opt.approvedBy !='' && opt.approvedBy !='undefined'){
 		    	  		 result = result + '     <div title="'+opt.approvedBy+'" class="tblminwidth-75">'+opt.approvedBy+'</div>';
+		    	  		}else{
+		    	  			 result = result + '     <div class="tblminwidth-75">--</div>';
+		    	  		}
 	  	                return result; 
 		    	  	}
 		    	  },{

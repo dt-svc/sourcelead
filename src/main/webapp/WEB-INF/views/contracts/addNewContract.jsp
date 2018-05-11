@@ -2400,6 +2400,7 @@ function validateContractTitle(){
 		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 						  $("input#contractTitle").after("<p class='jquery_form_error_message'>"+contractTitle+" is Already Existed</span>");
 						 $("#save_template").attr("disabled", "disabled");
+						 $("#draft_template").attr("disabled", "disabled");
 						 // $("#draft_template").attr("disabled", "disabled");
 		
 				}
@@ -2408,6 +2409,7 @@ function validateContractTitle(){
 		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#save_template" ).addClass('button').val('Send');
                          $("#save_template").removeAttr("disabled");
+                         $("#draft_template").removeAttr("disabled");
                         //$("#draft_template").removeAttr("disabled");
 		        	}
 		        	}

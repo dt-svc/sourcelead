@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -8,6 +9,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
 public interface UserDao {
@@ -153,5 +155,7 @@ public interface UserDao {
 	User getUserByUserCodeAndOrgLocationsId(String userCode, Long orgLocationsId) throws Exception;
 	
 	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception;
+
+	ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO, OrgLocations orgLocation) throws Exception;
 
 }

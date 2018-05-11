@@ -13,13 +13,11 @@ public interface EmailScenarioDao {
 
 	EmailScenario getEmailScenarioByUniqueName(String uniqueScenarioName, String entityType) throws Exception;
 	
-	List<EmailScenario> getEmailScenarioList();
-	
 	EmailScenario getEmailTemplateById(Long id);
 	
 	EmailScenario getEmailDefTemplateNo(String uniqueScenarioName, String defaultTemp) throws Exception ;
 	
-	List<EmailScenario> getEmailScenarioList(String sourceLead) throws Exception;
+	List<EmailScenario> getEmailScenarioList(String templateType) throws Exception;
 	
 	EmailScenario getEmailScenarioByUniqueNameAndOrgLocationId(String uniqueScenarioName, String entityType,Long orgLocationId) throws Exception;
 	

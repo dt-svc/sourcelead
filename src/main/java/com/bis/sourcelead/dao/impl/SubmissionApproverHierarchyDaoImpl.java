@@ -1086,7 +1086,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 					+ searchValue
 					+ "%' ").append("OR sah.submissionId.projectMembers.projectMemberCandidteId.lastName like '%"
 							+ searchValue
-							+ "%' ").append("OR sah.submissionId.projectMembers.projectMemberCandidteId.email like '%"
+		        	+ "%' ").append("OR concat(sah.submissionId.projectMembers.projectMemberCandidteId.firstName,' ',sah.submissionId.projectMembers.projectMemberCandidteId.lastName) like '%"
+					+ searchValue.trim().replaceAll(" +", " ")
+					+ "%' ")
+			       .append("OR sah.submissionId.projectMembers.projectMemberCandidteId.email like '%"
 									+ searchValue
 									+ "%' ").append("OR sah.submissionId.projectMembers.projects.projectName like '%"
 											+ searchValue
@@ -1098,8 +1101,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			searchQuery.append(" and( sah.submissionId.projectMembers.projectMemberCandidteId.firstName like '%"
 					+ searchValue
 					+ "%' ").append("OR sah.submissionId.projectMembers.projectMemberCandidteId.lastName like '%"
-							+ searchValue
-							+ "%' ").append("OR sah.submissionId.projectMembers.projectMemberCandidteId.email like '%"
+					+ searchValue
+					+ "%' ").append("OR concat(sah.submissionId.projectMembers.projectMemberCandidteId.firstName,' ',sah.submissionId.projectMembers.projectMemberCandidteId.lastName) like '%"
+					+ searchValue.trim().replaceAll(" +", " ")		
+					+ "%' ").append("OR sah.submissionId.projectMembers.projectMemberCandidteId.email like '%"
 									+ searchValue
 									+ "%' ").append("OR  sah.submissionId.projectMembers.projects.projectName like '%"
 											+ searchValue
@@ -1479,6 +1484,23 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				weekNonBillableHours.put(actualStartDate, weekNonBillableTotalHours);
 				weekTotalHoursMap.put(actualStartDate, weekTotalHours);
 				count++;
+			}
+			if(submissionApproverHierarchy == null) {
+				submissionApproverHierarchy = new SubmissionApproverHierarchy();
+				submissionApproverHierarchy.setTotalHours(0f);
+				// DateFormat format = LoginSessionController.DATEFORMAT;
+				Map<String, String> tabFrequencyDates = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(projects.getOrgLocationsId().getDateFormat(), startDate), commonUtil.dateStrFromOrgDateFormatter(projects.getOrgLocationsId().getDateFormat(), endDate), projects.getOrgLocationsId().getDateFormat());
+				if (tabFrequencyDates != null && !tabFrequencyDates.isEmpty()) {
+					tabFrequencyDates.forEach((k, v) -> {
+						try {
+							weekApprovalStatusMap.put(commonUtil.orgLocationDateFormat(projects.getOrgLocationsId().getDateFormat(), k.replaceAll("/", "-")), Submission_ApprovalStatus.NEW);
+							weekBillableHours.put(commonUtil.orgLocationDateFormat(projects.getOrgLocationsId().getDateFormat(), k.replaceAll("/", "-")), 0f);
+							weekNonBillableHours.put(commonUtil.orgLocationDateFormat(projects.getOrgLocationsId().getDateFormat(), k.replaceAll("/", "-")), 0f);
+							weekTotalHoursMap.put(commonUtil.orgLocationDateFormat(projects.getOrgLocationsId().getDateFormat(), k.replaceAll("/", "-")), 0f);
+						} catch (Exception e) {
+						}
+					});
+				}
 			}
 			submissionApproverHierarchy.setWeekApprovalStatusMap(weekApprovalStatusMap);
 			submissionApproverHierarchy.setWeekBillableHoursMap(weekBillableHours);

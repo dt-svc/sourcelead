@@ -189,9 +189,7 @@ public class DataMigrationDTO extends CommonDTO {
 	
 	private String categoryId;
 	
-	private String shiftAEmployee;
-	
-	private String shiftBEmployee;
+	private List<AssetAssignDTO> assignAsset;
 	
 	/*Asset Uploads End*/
 	
@@ -1085,20 +1083,13 @@ public class DataMigrationDTO extends CommonDTO {
 		this.categoryId = categoryId;
 	}
 
-	public String getShiftAEmployee() {
-		return shiftAEmployee;
+	
+	public List<AssetAssignDTO> getAssignAsset() {
+		return assignAsset;
 	}
 
-	public void setShiftAEmployee(String shiftAEmployee) {
-		this.shiftAEmployee = shiftAEmployee;
-	}
-
-	public String getShiftBEmployee() {
-		return shiftBEmployee;
-	}
-
-	public void setShiftBEmployee(String shiftBEmployee) {
-		this.shiftBEmployee = shiftBEmployee;
+	public void setAssignAsset(List<AssetAssignDTO> assignAsset) {
+		this.assignAsset = assignAsset;
 	}
 
 	public String getTaskName() {

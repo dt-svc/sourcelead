@@ -38,7 +38,7 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 chooRadius">
                <div class="input-group col-md-10 pull-left">
-			<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
+			<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();getPaymentAccountList();"
 				data-validation="required" field-name="Vendor">
 			</select>
 			 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();creatProPayInvoiceEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
@@ -134,13 +134,23 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                      name="billingAddress"></textarea>
               </div>
             </div>
+            
             <div class="form-group">
+              <label class="col-md-3">Payment Account</label>
+              <div class="col-md-9 select-field">
+                <select class="form-control" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
+                   <option value="">--Select Account--</option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- <div class="form-group">
 							<label class="col-md-3">Account Details</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
 									name="accountDetails" placeholder="Account Details"></textarea>
 							</div>
-			</div>
+			</div> -->
             
           </div>
         </div>
@@ -1354,6 +1364,9 @@ function toDate(selector) {
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	 var result = '';
+		        	 if(json.paymentAccountId > 0) {
+		        		 getPaymentAccountList(json.vendorOrgRelationId,json.paymentAccountId)
+		        	 }
 		        	 var selected = 'selected';
 		        	 result = result +'<option value='+json.vendorOrgRelationId+' '+selected+' >'+json.orgName+'</option>';
 		        	 $("#vendorOrgRelationId").empty();
@@ -1845,6 +1858,39 @@ if(selectedTextInvoice =='percentage'){
 	  }		
 	  
  
+}
+</script>
+
+<script>
+function getPaymentAccountList(dbOrgRelationId,paymentAccoutId){
+	var	orgRelationId = $("#vendorOrgRelationId").val();
+	if(orgRelationId == null){
+		orgRelationId = dbOrgRelationId;
+	}
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getAllPaymentAccountList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		success :function(json) {
+			var result = "";
+// 			   result = result +"<option>-- Select Account --</option>";
+			   for (var i=0; i<json.length; i++)
+				{
+				  var report = json[i];
+				  var selected = '';
+					if((paymentAccoutId != null && paymentAccoutId != "" && paymentAccoutId !="undefined" && paymentAccoutId == report.id) || (report.defaultAccount == 1)){
+						selected = 'selected';
+					}
+					if(report.accountType === 'WEPAY'){
+						  result = result +'<option value='+report.id+' '+selected+'> '+report.email+'</option>';
+					  }else{
+						  result = result +'<option value='+report.id+' '+selected+'>'+report.accountNumber+' ('+report.bankName+')</option>';
+					  }
+				}
+			   
+			     $("#paymentAccountId").empty();
+		         $("#paymentAccountId").append(result);
+		}
+	});
 }
 </script>
 

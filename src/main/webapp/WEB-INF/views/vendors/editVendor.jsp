@@ -164,7 +164,7 @@
 							
 							result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 							result = result + '<label>Website</label>';
-							result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" onblur="validateWebsite()" data-validation="required validate_Space validate_length length2-50 validate_domain" data-validation-optional="true"  value="'+website+'" placeholder="website" ></div>';
+							result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" onkeyup="validateWebsite()" data-validation="required validate_Space validate_length length2-50 validate_domain" data-validation-optional="true"  value="'+website+'" placeholder="website" ></div>';
 							result = result + '</div>';
 							
 							
@@ -248,7 +248,7 @@
                         result = result + ' </select>';
                         result = result + ' </div>'; 
 						
-                        result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth"  id="customFieldDataId"></div>';
+                        result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth customElements-fields"  id="customFieldDataId"></div>';
                         
 						 result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta pull-right">';
@@ -366,7 +366,7 @@ function preapareCustomFieldDetails(vendorLocationId,orgRelationId,sectionId){
 		var website = document.getElementById("companyWebsite").value;
 		if(website.match(/^[^\s-](.*)*$/) != null){
 		var sourceleadBLockedwebsites = '${sourceLeadBlockedSocialDomains}';
-		$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+		//$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
 		$("#save_vendor").attr("disabled", "disabled");
 		if (website != null && website != '') {
 			//$("#save_client").attr("disabled", "disabled");
@@ -378,7 +378,8 @@ function preapareCustomFieldDetails(vendorLocationId,orgRelationId,sectionId){
 					var result = data;
 					if (result == "Website Duplicated" || result == "Invalid Website") {
 						//existed website
-						$("input#companyWebsite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
+						$('#companyWebsiteDiv').find('p.jquery_form_error_message').remove();
+					    $("input#companyWebsite").after("<p class='jquery_form_error_message'>"+ website+ " is "+result+"</span>");
 						document.getElementById("companyWebsite").setAttribute('record-exist', 'yes');
 						document.getElementById("companyWebsite").setAttribute('record-exist-errorMsg',website + ' is '+result);
 						$('input#companyWebsite').removeAttr( "record-exist record-exist-errormsg");

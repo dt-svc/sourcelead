@@ -42,6 +42,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.DataMigrationDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dto.AssetAssignDTO;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.AssetsDataImportDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
@@ -69,7 +71,9 @@ import com.bis.sourcelead.util.DataMigrationCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 @Service
 public class DataMigrationServiceImpl implements DataMigrationService {
@@ -169,6 +173,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		Sheet firstSheet = workbook.getSheetAt(0);
 		Iterator<Row> rowIterator = firstSheet.iterator();
 		int colCount = 0;
+		Boolean isEmptyExcel = true;
 		while (rowIterator.hasNext()) {
 			Row nextRow = rowIterator.next();
 			if(nextRow.getRowNum()+1 == Integer.parseInt(dataMigrationDTO.getHeaderPosition()) ) {
@@ -180,6 +185,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 			}
 			if(nextRow.getRowNum()+1 > Integer.parseInt(dataMigrationDTO.getHeaderPosition()) ) {
+				isEmptyExcel = false;
 				HashMap< String, String> errorSet = new HashMap< String, String>();
 				Gson gson = new Gson();
 				String gsonOutput = gson.toJson(dataMigrationDTO);
@@ -201,6 +207,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				    	  while (cellIterator.hasNext()) {
 								Cell cell = cellIterator.next();
 								if (dataMigrationDTOJson.get((String) k) != null) {
+									
+									/*if(k.equalsIgnoreCase("assignAsset")) {
+					               //gson.fromJson(dataMigrationDTOJson.get((String) k), AssetAssign.class);
+										System.out.println(dataMigrationDTOJson.get((String) k).toString());
+										System.out.println(dataMigrationDTOJson.get((String) k).toString().getClass());
+										ArrayList<AssetAssign> assignList =  gson.fromJson(dataMigrationDTOJson.get((String) k).toString(), new TypeToken<List<AssetAssign>>(){}.getType());
+										//System.out.println(dataMigrationDTOJson.getJSONArray("assignAsset"));
+										 dataMigrationDTOJson.get((String) k);
+										 
+									}*/
 									if ((dataMigrationDTOJson.get((String) k).toString().replaceAll("\\d", "")).equalsIgnoreCase(CellReference.convertNumToColString(cell.getColumnIndex()))) {
 										try {
 											if (DateUtil.isCellDateFormatted(cell)) {
@@ -282,7 +298,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		}
 		workbook.close();
 		inputStream.close();
-		if(finalImportStatus != null) {
+		if(isEmptyExcel) {
+			return "fail";
+		}else if(finalImportStatus != null) {
 			return finalImportStatus;
 		}else {
 			return importStatus;
@@ -372,12 +390,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				assetDTO.setMemory(assetMigDTO.getMemory());
 				assetDTO.setModel(assetMigDTO.getModel());
 				assetDTO.setMake(assetMigDTO.getMake());
-				assetDTO.setShiftAEmp(assetMigDTO.getShiftAEmp());
-				assetDTO.setShiftBEmp(assetMigDTO.getShiftBEmp());
 				assetDTO.setDescription(assetMigDTO.getDescription());
 				assetDTO.setHarddisk(assetMigDTO.getHarddisk());
 				
-				Asset asset = assetService.saveAssetDetails(assetDTO, null, user, orgLocation);
+				Asset asset = assetService.saveAssetDetails(assetDTO, user, orgLocation);
 		    	break;
 		    
 		    case "timesheetUpload": 

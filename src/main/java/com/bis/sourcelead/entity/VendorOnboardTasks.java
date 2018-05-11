@@ -47,7 +47,7 @@ public class VendorOnboardTasks implements Serializable{
 	@JoinColumn(name = "VENDOR_ON_BOARDING_ID", nullable = false)
 	private VendorOnboarding vendorOnboardingId;
     
-    @Column(name = "ASSIGN_TO_USERS")
+    @Column(name = "ASSIGN_TO_USERS", columnDefinition = "TEXT default NULL")
    	private String assignToUsers;
 	
 	@Column(name = "ASSIGN_TO_VENDOR")

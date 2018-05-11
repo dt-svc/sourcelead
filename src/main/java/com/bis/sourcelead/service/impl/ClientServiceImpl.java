@@ -1,5 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -11,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -230,6 +234,9 @@ public class ClientServiceImpl implements ClientService {
 
 	@Autowired
 	VendorOnboardService vendorOnboardService;
+	
+	@Value("${static.path}")
+    private String staticPath;
 
 
 	/**
@@ -604,6 +611,8 @@ public class ClientServiceImpl implements ClientService {
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Client SOW Template",Constants.Client_SOW);
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Vendor SOW Template",Constants.Vendor_SOW);
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default NDA Template",Constants.NDA);
+			
+			commonUtil.saveDefaultEmployeeVerificationTemplate(org, clientOrgLocations, spocUser, "Default Employee Verification Template");
 		}
 		
 		if(Constants.GUEST.equalsIgnoreCase(org.getOrgType())) {
@@ -1530,29 +1539,10 @@ public class ClientServiceImpl implements ClientService {
 		globalVarsMap.put("loginLink", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
 				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
 				.toString());
-		// setting the Recipient information
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-
-		// getting the current EmailScenario by EmailScenario unique name and entity
-		// type
-		EmailScenario emailScenario = null;
-		emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CLIENT_OWNER_UPDATEMAIL,
-				Constants.ENTITY_TYPE_EMAIL);
-
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				signature, url, orgLocation.getOrg(), orgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
+		
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, orgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.CLIENT_OWNER_UPDATEMAIL,new ArrayList<EmailAttachment>());
 
 		EmailScenario noificationEmailScenario = emailScenarioService
 				.getEmailScenarioByUniqueName(Constants.CLIENT_OWNER_UPDATEMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
@@ -1562,7 +1552,7 @@ public class ClientServiceImpl implements ClientService {
 			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
 		else
 			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
-		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(), globalVarsMap,noificationEmailScenario);
 		noificationEmailScenario.setBody(notificationbody);
 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, changedUser, orgLocation, noificationEmailScenario,new HashMap<String,String>());
@@ -1604,36 +1594,17 @@ public class ClientServiceImpl implements ClientService {
 			}
 		}
 
-		globalVarsMap.put("clientFirstName", emailMessage.getFirstName());
-		globalVarsMap.put("clientLastName", emailMessage.getLastName());
-		globalVarsMap.put("loginUser", emailMessage.getFromName());
-		globalVarsMap.put("loginOrgName", orgLocation.getOrgLocationName());
-		globalVarsMap.put("ownerName", user.getFirstName());
+		globalVarsMap.put("ClientFirstName", emailMessage.getFirstName());
+		globalVarsMap.put("ClientLastName", emailMessage.getLastName());
+		globalVarsMap.put("LoginUser", emailMessage.getFromName());
+		globalVarsMap.put("LoginOrgName", orgLocation.getOrgLocationName());
+		globalVarsMap.put("OwnerName", user.getFirstName());
 		globalVarsMap.put("ownerEmail", user.getEmail());
 
-		// setting the Recipient information
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
-		// getting the current EmailScenario by EmailScenario unique name and entity
-		// type
-		EmailScenario emailScenario = null;
-		emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT,
-				Constants.ENTITY_TYPE_EMAIL);
-
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				signature, url, orgLocation.getOrg(), orgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, orgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.EDIT_CLIENTCONTACT,new ArrayList<EmailAttachment>());
 
 		EmailScenario noificationEmailScenario = emailScenarioService
 				.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT, Constants.ENTITY_TYPE_NOTIFICATION);
@@ -1646,7 +1617,7 @@ public class ClientServiceImpl implements ClientService {
 			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard?contactsTab=contactsTab&orgRelationUUID="+orgSpoc.getOrgRelations().getUUID()).toString();
 		 String rejectActionLink = "";
 		String spocUUID = "";
-		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(), globalVarsMap,noificationEmailScenario);
 		noificationEmailScenario.setBody(notificationbody);
 
 		OrgLocations clientOrgLocation = null;
@@ -1741,8 +1712,8 @@ public class ClientServiceImpl implements ClientService {
 					.toString());
 
 		} else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			globalVarsMap.put("firstName", emailMessage.getFirstName());
-			globalVarsMap.put("lastName", emailMessage.getLastName());
+			globalVarsMap.put("FirstName", emailMessage.getFirstName());
+			globalVarsMap.put("LastName", emailMessage.getLastName());
 			globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());
 			globalVarsMap.put("clientLastName", orgSpoc.getVendorUser().getLastName());
 			globalVarsMap.put("clientOrgName", orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
@@ -1797,18 +1768,24 @@ public class ClientServiceImpl implements ClientService {
 		EmailScenario emailScenario = null;
 
 		if (Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT,
-					Constants.ENTITY_TYPE_EMAIL);
+			 if(orgLocations != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ACCEPT_CLIENT,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+				   }
 		} else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR,
-					Constants.ENTITY_TYPE_EMAIL);
+			 if(orgLocations != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ACCEPT_VENDOR,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+				   }
+			
 		}
-
 		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
+		 String url = sourceleadUrl;
 
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
@@ -1867,8 +1844,8 @@ public class ClientServiceImpl implements ClientService {
 				emailMessage.setFromName(
 						orgSpocUser.append(orgSpoc.getVendorUser().getFirstName()).toString());
 			}
-			globalVarsMap.put("firstName", emailMessage.getFirstName());
-			globalVarsMap.put("lastName", emailMessage.getLastName());
+			globalVarsMap.put("FirstName", emailMessage.getFirstName());
+			globalVarsMap.put("LastName", emailMessage.getLastName());
 			globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());
 			globalVarsMap.put("clientLastName", orgSpoc.getVendorUser().getLastName());
 			globalVarsMap.put("clientOrgName", orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
@@ -1880,21 +1857,30 @@ public class ClientServiceImpl implements ClientService {
 
 		// getting the current EmailScenario by EmailScenario unique name and entity
 		// type
-		EmailScenario emailScenario = null;
-
+		
+		//getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = null;
 		if (Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_CLIENT,
-					Constants.ENTITY_TYPE_EMAIL);
+			//getting the current EmailScenario by EmailScenario unique name and entity type
+			 if(orgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.REJECT_CLIENT,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		} else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_VENDOR,
-					Constants.ENTITY_TYPE_EMAIL);
+			 if(orgLocations != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.REJECT_VENDOR,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+				   }
 		}
+		
 
 		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
+		 String url = sourceleadUrl;
 
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,

@@ -23,43 +23,12 @@ $(function(){
 </script>
 
 <style>
-.viewTemplate .sjfb-field {
-float: left; min-height: 36px; margin-bottom: 15px;
+.datatable_filter {
+position: relative !important; top:0 !important;
 }
-.viewTemplate .sjfb-field textarea {
-max-height: 65px;
-}
-.viewTemplate .sjfb-field  {
-width: 80%;
-margin: 0 0 10px 15px;
-}
-.viewTemplate .sjfb-field:nth-child(2n+2) {
-    margin-left: 15px;
-}
-.viewTemplate .sjfb-field label {
-float: left; width: 30%;
-}
-.sjfb-radio .choices-radio, .sjfb-checkbox .choices-checkbox {
-float: left; width: 70%;
-}
-.sjfb-radio .choices-radio label, .sjfb-checkbox .choices-checkbox label {
-	min-width: 20%;
-	width: 25%;
-	max-width: 50%;
-	position:relative;
-	padding-right: 10px;
-	padding-left: 30px;
-}
-.choices input[type="checkbox"], .choices input[type="radio"] {
-float: left;
-position: absolute;
-left:0;
-}
-.viewTemplate .sjfb-field select {
--webkit-appearance: none; -moz-appearance: none; -ms-appearance: none; -o-appearance: none;
-}
-.viewTemplate .sjfb-field select::-ms-expand {
-    display: none;
+
+.datatable_filter input {
+position: relative !important; top:0 !important;
 }
 </style>
 
@@ -86,7 +55,7 @@ left:0;
 				  {	 
 	        		var opt = json[i];
 	        		result = result + '<tr>';
-	                result = result + '<td><div><span class="mid-span">'+opt.scenarioName+'</span></a></div></td>';
+	                result = result + '<td><div><span class="mid-span" title="'+opt.scenarioName+'">'+opt.scenarioName+'</span></a></div></td>';
 	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.entityType+'"><span class="mid-span">'+opt.entityType+'</span></div></td>';
 	                result = result + '<td><div>';
 	                    result = result + '<a class="fa fa-eye text-blue ml" title="summary" onclick="viewEmailTemplate('+opt.id+',\''+opt.uniqueScenarioName+'\')"></a>';
@@ -129,19 +98,23 @@ function templatepagination(){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
-    <div class="pull-left">
+    <div class="pull-left" id="emailtemplate" style="display:block">
       <h2>Email Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Interview Templates</div>
-    
+    <div class="pull-left" id="emailSummary" style="display:none">
+            <h2>Email Template Summary</h2>
+          </div>
+    <div class="pull-right brud-crum"  id="emailTemplates" style="display:block"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates</a>&raquo; Email Templates</div>
+    <div class="pull-right brud-crum" id="emailSumm" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates</a>&raquo; <a href="<c:url value='${appPath}/emailTemplates'/>" class="paddingLeft">Email TemplatesList</a> &raquo; emailTemplateSummary </div>
+         
   </section>
-  
+  	
   <div class="timesheet_out">
-    <div class="vendor_wrap">
-	       <div class="project_tabs_inn_table vendor_wrap_inn_table">
-	          <div id="emailTemplateList" class="datatable_filter"></div>
-	          
-	       </div> 
+  <div class="clearfix"></div>
+    <div class="project_wrap">
+	       <div class="project_wrap_table datatable_filter mt">
+	    				<div id="emailTemplateList" class="datatable_filter datatable_filter-cutom"></div>
+				</div>	
 	       
        </div>
   </div>
@@ -165,6 +138,13 @@ function viewEmailTemplate(id,uniqueScenarioName){
 			var subject = "";
 			var body = "";
 			var signature="";
+			var title="";
+			
+			if (json.scenarioName != null && json.scenarioName != '' && json.scenarioName != 'undefined') {
+				title = json.scenarioName;
+				} else {
+					title = "--";
+				}
 			
 			if (json.subject != null && json.subject != '' && json.subject != 'undefined') {
 				subject = json.subject;
@@ -183,28 +163,42 @@ function viewEmailTemplate(id,uniqueScenarioName){
 				}
 			
 			var result = "";
-			result = result	+ '<div class="project_tabs_inn_table">';
-			result = result + '<div class="project_details">';
+			result = result	+ '<div class="project_tabs_inn_table clearfix">';
+			result = result + '<div class="mt col-md-10">';
 			
-			result = result	+ '<div  id="ProjectIdDiv">';
-			result = result + '<strong>subject:</strong>';
-			result = result + '<span>'+subject+'</span>';
+			result = result	+ '<div id="ProjectIdDiv" class="mb">';
+			result = result + '<label class="clearfix">Template Name:</label>';
+			result = result + '<div class="clearfix"><input type="text" value="'+title+'" class="form-control" readonly="true"></div>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
 			result = result + '<div class="clearfix"></div>';
 			
-			result = result	+ '<div  id="ProjectIdDiv">';
+			result = result	+ '<div id="ProjectIdDiv" class="mb">';
+			result = result + '<label class="clearfix">Subject:</label>';
+			result = result + '<div class="clearfix"><textarea class="form-control" rows="2" readonly="true">'+subject+'</textarea></div>';
+			result = result + '<div class="clearfix"></div>';
+			result = result + '</div>';
+			
+			result = result + '<div class="clearfix"></div>';
+			
+			 result = result	+ '<div class="mb" id="ProjectIdDiv">';
+			result = result + '<label class="clearfix">Email Body:</label>';
+			result = result + '<div class="clearfix"><textarea class="form-control" rows="10" readonly="true">'+body+'</textarea></div>';
+			result = result + '<div class="clearfix"></div>';
+			result = result + '</div>'; 
+			
+			/* result = result	+ '<div class="blogWrap" id="ProjectIdDiv">';
 			result = result + '<strong>Email Body:</strong>';
-			result = result + '<span>'+body+'</span>';
 			result = result + '<div class="clearfix"></div>';
-			result = result + '</div>';
+			result = result + '<div class="blogpreviewContent">'+body+'</div>';
+			result = result + '</div>'; */
 			
 			result = result + '<div class="clearfix"></div>';
 			
-			result = result	+ '<div class="clearfix templateName" id="ProjectIdDiv">';
-			result = result + '<strong>Email Signature:</strong>';
-			result = result + '<span>'+signature+'</span>';
+			result = result	+ '<div class="mb" id="ProjectIdDiv">';
+			result = result + '<label class="clearfix">Email Signature:</label>';
+			result = result + '<div class="clearfix"><textarea class="form-control" rows="3" readonly="true">'+signature+'</textarea></div>';
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
@@ -212,6 +206,10 @@ function viewEmailTemplate(id,uniqueScenarioName){
 			
 			$("#emailTemplateList").empty();  
 			$("#emailTemplateList").append(result); 
+			 document.getElementById("emailtemplate").style.display="none";
+			 document.getElementById("emailSummary").style.display="block";
+			 document.getElementById("emailTemplates").style.display="none";
+			 document.getElementById("emailSumm").style.display="block";
 			
 			}
 	});

@@ -18,9 +18,9 @@ $(document).ready(function(){
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Missing last_years</h2>
+        <h2>Missing Invoice</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Missing last_years</div>
+      <div class="pull-right brud-crum">Home &raquo; Missing Invoice</div>
     </section>
     <!-- hiring Process  -->
     <div class="clearfix">

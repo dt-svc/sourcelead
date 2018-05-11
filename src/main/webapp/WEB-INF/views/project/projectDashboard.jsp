@@ -641,7 +641,16 @@ function projectsPagination(url,sourceleadUrl){
     $("input[type=search]").hide();
     $("#projectsDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
-    		   projectDataTableList();
+    		   
+    		   $('#projectsDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+    	    	var searchData = $('#projectsDataTableSearch').val();
+    	    	var regex =  new RegExp(/[\\-]/g);
+    	    	if(regex.test(searchData) == false){
+    	    		 projectDataTableList();
+    	    	}else{
+    	    		$("#projectsDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+    	    	}
+    	    	$('#projectsDataTableSearch').val(searchData);
     	   }
     	});
 }
