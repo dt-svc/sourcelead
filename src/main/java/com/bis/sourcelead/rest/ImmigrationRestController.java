@@ -518,15 +518,17 @@ public class ImmigrationRestController {
 			String[] tableColumns = { "name", "country", "petitionType", "description", "docsCount", "formsCount",
 					"tasksCount", "status", "id" };// should be
 			// entity names
-			int sortColumnIndex = 0; // by default sorting using updated date
+			int sortColumnIndex = -1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default ascending order
 			if (templateListDTO.getOrder() != null && !templateListDTO.getOrder().isEmpty()) {
 				sortColumnIndex = Integer.parseInt(templateListDTO.getOrder().get(0).get("column"));
 				sortColumnOrder = templateListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means direction
+				templateListDTO.setSortOrder(sortColumnOrder);
 				// of the sorting.
 			}
+			if(sortColumnIndex != -1) {
 			templateListDTO.setSortColumn(tableColumns[sortColumnIndex]);
-			templateListDTO.setSortOrder(sortColumnOrder);
+			}
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 
