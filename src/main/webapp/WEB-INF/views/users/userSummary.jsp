@@ -1483,6 +1483,8 @@ $("#editRoleDetailsList").empty();
 						result = result + '<option  '+(json.userEmploymentType == "Full Time" ? "selected" : '') +'>Full Time</option>';
 						result = result + '<option  '+(json.userEmploymentType == "Offshore C2C" ? "selected" : '') +'>Offshore C2C</option>';
 						result = result + '<option  '+(json.userEmploymentType == "Other" ? "selected" : '') +'>Other</option>';
+						result = result + '<option  '+(json.userEmploymentType == "Contract" ? "selected" : '') +'>Contract</option>';
+						
 						result = result + ' </select>';
 						result = result + '</div>';
 						result = result + '<div class="clearfix"></div>';
