@@ -249,7 +249,11 @@ public class CandidateOnBoardingDaoImpl  implements CandidateOnBoardingDao{
 					 query1.append("OR onboarding.candidateOnBoardStatus like '%Finished%' ");
 				 }else if(candidateOnBoardingDTO.getSearchValue().toLowerCase().equalsIgnoreCase("Accepted") || candidateOnBoardingDTO.getSearchValue().toLowerCase().equalsIgnoreCase("Completed")) {
 					 query1.append("OR onboarding.candidateOnBoardStatus like '%Accepted%' ");
-				 }else {
+				 }else if(candidateOnBoardingDTO.getSearchValue().toLowerCase().equalsIgnoreCase("Rejected")) {
+					 query1.append("OR onboarding.candidateOnBoardStatus like '%Rejected%' ");
+				 }
+				 
+				 else {
 					 query1.append("OR onboarding.candidateOnBoardStatus like '%" + Project_Status.getNameByValue(candidateOnBoardingDTO.getSearchValue()) + "%' ");
 				 }
 				 
