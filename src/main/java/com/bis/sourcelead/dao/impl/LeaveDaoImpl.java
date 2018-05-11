@@ -542,7 +542,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		/*if("Holiday".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.holidayName = :name ";
 		else*/ if("Shift".equalsIgnoreCase(fromTable))
-			subQuery = " and frm.shiftName = :name ";
+			subQuery = " and frm.shiftName = :name and frm.status = 1";
 		else if("LeaveType".equalsIgnoreCase(fromTable))
 			subQuery = " and frm.name = :name ";
 			

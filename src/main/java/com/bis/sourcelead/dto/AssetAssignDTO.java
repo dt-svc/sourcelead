@@ -12,6 +12,8 @@ public class AssetAssignDTO extends SearchDTO implements Serializable {
 	    private String shift;
 	
 		private String shiftEmp;
+		
+		private String xlCol;
 		 
 		private List<FileInfo> fileInfo;
 
@@ -55,6 +57,14 @@ public class AssetAssignDTO extends SearchDTO implements Serializable {
 
 		public void setId(Long id) {
 			this.id = id;
+		}
+
+		public String getXlCol() {
+			return xlCol;
+		}
+
+		public void setXlCol(String xlCol) {
+			this.xlCol = xlCol;
 		}
 
 }
