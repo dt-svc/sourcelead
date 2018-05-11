@@ -1057,6 +1057,13 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			/*============================from immigration Table=================*/
 			immigrationDTO.setImmigrationId(immigration.getId().toString());
 			immigrationDTO.setCandidateId(immigration.getCandidate().getId().toString());
+			// check whether the template id own or not
+			Integer count = immigrationCommonDao.getTableRecordCountByTemplateId("ImmigrationTemplate", immigration.getImmigrationTemplateId().getId(), " where id =:templateId and orgLocations.id="+orgLocations.getId());
+			if (count == null)// no record found for current user.
+				immigrationDTO.setIsOwnTemplateId("N");
+			else
+				immigrationDTO.setIsOwnTemplateId("Y");
+
 			immigrationDTO.setTemplateId(immigration.getImmigrationTemplateId().getId().toString());
 			immigrationDTO.setTemplateName(immigration.getImmigrationTemplateId().getName());
 			immigrationDTO.setPetitionType(immigration.getPetitionType().getId().toString());
@@ -1068,7 +1075,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				immigrationDTO.setArrivalDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), immigration.getDateOfArrival()));
 			}
 			immigrationDTO.setEntryPlace(immigration.getPlaceOfEntry());
-			immigrationDTO.setTemplateId(immigration.getImmigrationTemplateId().getId().toString());
+		//	immigrationDTO.setTemplateId(immigration.getImmigrationTemplateId().getId().toString());
 			immigrationDTO.setAttorneyId(immigration.getOrgRelations().getId().toString());
 			immigrationDTO.setAttorneyContact(immigration.getOrgSpoc().getId().toString());
 			immigrationDTO.setReceiptNo(immigration.getReceiptNo());
