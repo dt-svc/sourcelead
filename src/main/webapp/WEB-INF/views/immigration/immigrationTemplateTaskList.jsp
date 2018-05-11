@@ -100,7 +100,7 @@
                             <label class="paddingRight checkBox"><input id="reminder" name="Reminder" type="checkbox">Reminder</label>
                         </div>
                         <div class="mt5" id="reminderdropdown" style="display:none;">
-                            <select class="chosen-select" id="taskReminderSelect" name="taskReminder"  multiple>
+                            <select class="chosen-select" id="taskReminderSelect" field-name= "Reminder" name="taskReminder"  multiple>
                                 <option value="1-days">1 days</option>
                                 <option value="1-Week">1 Week</option>
                                 <option value="15-days">15 days</option>
@@ -110,13 +110,6 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-12 mt">
-                        <label>Alert</label>
-                        <div class="mt2">
-                            <label class="paddingRight"><input id="taskEmail" name="taskEmail"  type="checkbox" value="N" onclick="validateTaskEmail();"> Email </label>
-                            <label class="paddingLeft"><input id="taskNotification" name="taskNotification"  type="checkbox" value="N" onclick="validateTaskNotification();"> Notification </label>
-                        </div>
-                    </div>															
                 </div>
 
                 <div class="col-md-6 noPad">
@@ -359,9 +352,15 @@
         $("#reminder").click(function () {
             if ($(this).is(":checked")) {
                 $("#reminderdropdown").show();
+                $("#taskReminderSelect").attr("data-validation","required");
+                $("#taskReminderSelect option:selected").prop("selected", false);
+                $('#taskReminderSelect').trigger("chosen:updated");
             } else {
                 $("#taskReminderSelect").val("")
                 $("#reminderdropdown").hide();
+                $("#taskReminderSelect").removeAttr("data-validation","required");
+                $("#taskReminderSelect option:selected").prop("selected", false);
+                $('#taskReminderSelect').trigger("chosen:updated");
             }
         });
     });
@@ -468,44 +467,18 @@
     }
 </script>  
 <script>
-    function validateTaskEmail() {
-        var taskEmail = document.getElementById("taskEmail").checked;
-        if (taskEmail == 1) {
-            document.getElementById("taskEmail").value = 'Y';
-        } else {
-            document.getElementById("taskEmail").value = 'N';
-        }
-
-    }
-</script>
-<script>
     function validateAssignToType(assignToType) {
         if (assignToType == 'assingToUser') {
             $("#assignToUserDiv").show();
             $("#petitionAssignedTo1 option:selected").prop("selected", false);
-            $('#taskReminderSelect').trigger("chosen:updated");
+            $('#petitionAssignedTo1').trigger("chosen:updated");
 
         } else {
             $("#assignToUserDiv").hide();
             $("#petitionAssignedTo1 option:selected").prop("selected", false);
-            $('#taskReminderSelect').trigger("chosen:updated");
+            $('#petitionAssignedTo1').trigger("chosen:updated");
+
         }
     }
 </script>
 
-<script>
-    function validateTaskNotification() {
-        var taskEmail = document.getElementById("taskNotification").checked;
-        if (taskEmail == 1) {
-            document.getElementById("taskNotification").value = 'Y';
-        } else {
-            document.getElementById("taskNotification").value = 'N';
-        }
-
-    }
-</script>
-<script>
-    /* $(document).ready(function(){
-     //$("#templateId").val(jsonObj.id);
-     }); */
-</script> 
