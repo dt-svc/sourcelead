@@ -107,6 +107,9 @@ public class LoginSessionController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Value("${sourceleadSocketUrl}")
+	private String sourceleadSocketUrl;
+	
 	@Value("${GoogleMaps_Location_API_KEY}")
 	private String googleMapsLocationApiKey;
 	
@@ -371,6 +374,7 @@ public class LoginSessionController {
 				SourceLeadSessionManager.removeSessionAttribute(request, "resetPwdMsg");
 			}
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("sourceleadSocketUrl", sourceleadSocketUrl);
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String currentDate = sdf.format(new Date());
