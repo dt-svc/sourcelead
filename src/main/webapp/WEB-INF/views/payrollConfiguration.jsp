@@ -25,7 +25,7 @@
            <i class="fa fa-inr fa-2x text-muted"></i>
         </div>
 		<div class="pull-left">
-		<h2 class="text-primary">Payhead</h2>
+		<h2 class="text-primary">Payheads</h2>
 		<p>Manage your payheads</p>
 		<span>
 			<a class="btn btn-info btn-sm mr10" href="#">Add</a>
