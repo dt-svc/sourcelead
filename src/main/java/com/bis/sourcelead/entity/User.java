@@ -108,6 +108,21 @@ public class User implements Serializable{
 	@Type(type="text")
 	private String location;
 	
+	@Column(name = "ADDRESS")
+	private String address;
+	
+	@Column(name = "STREET_ADDRESS")
+	private String streetAddress;
+	
+	@Column(name = "STATE")
+	private String state;
+	
+	
+	@Column(name = "CITY")
+	private String city;
+	
+	@Column(name = "ZIP_CODE")
+	private String zipCode;
 	
 	@Column(name = "LINKEDIN")
 	@Type(type="text")
