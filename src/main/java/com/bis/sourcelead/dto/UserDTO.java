@@ -50,6 +50,8 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String dateofJoin;
 	private String dateOfTermination;
 	private String employmentType;
+	
+	private String userCode;
 
 
 	
@@ -437,5 +439,15 @@ public class UserDTO extends SearchDTO implements Serializable {
 	public void setEmploymentType(String employmentType) {
 		this.employmentType = employmentType;
 	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
+	}
+	
+	
 
 }
