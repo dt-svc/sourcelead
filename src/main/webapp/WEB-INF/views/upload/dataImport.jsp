@@ -105,6 +105,11 @@
           				$("#msgDiv").html("Data imported successfully");
           				$('#errorDownloadDiv').removeAttr("style");
           				$('#errorDownloadDiv').prepend("<span class='text-green'>Data imported successfully</span>");
+          			}else if(importStatus == "fail"){
+          				$('#selector11').removeClass('success_pop').addClass('bg-red');
+          				$("#msgDiv").html("Should upload file with valid data");
+          				$('#errorDownloadDiv').removeAttr("style");
+          				$('#errorDownloadDiv').prepend("<span class='colorRed'>Should upload file with valid data</span>");
           			}else if(importStatus != ''){
           				$('#selector11').removeClass('success_pop').addClass('bg-red');
           				$("#msgDiv").html("Some data is failed to import");

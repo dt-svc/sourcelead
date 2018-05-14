@@ -513,23 +513,43 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             
             StringBuilder linkSB=new StringBuilder();
             globalVarsMap.put("link",linkSB.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+            // setting the Recipient information
+            InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+
+            // getting the current EmailScenario by EmailScenario unique name and
             // entity type
+            EmailScenario  emailScenario = null;
+			 if(loginOrgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.OFFER_MAIL_TO_VENDORS,Constants.ENTITY_TYPE_EMAIL, loginOrgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS,Constants.ENTITY_TYPE_EMAIL);
+			   }
             EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFER_MAIL_TO_VENDORS, Constants.ENTITY_TYPE_NOTIFICATION);
 
-            String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
-            notificationScenario.setBody(notificationbody);
+
+            //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+			 String signature = null;
+			 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+				 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+			 }
+			 String url = sourceleadUrl;
+            
+			 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,emailScenario);
+		        notificationScenario.setBody(notificationbody);
 
 
             // construct HTML template using required data
-           // String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocations.getOrg(),loginOrgLocations);
+            String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocations.getOrg(),loginOrgLocations);
+            emailMessage.setSubject(subject);
+            emailMessage.setMessageBody(emailTemplate);
 
             // calling the sendEmail method of emailScenerioUtil
             
             try {
     			
-            	 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocations.getOrg(),loginOrgLocations,Constants.OFFER_MAIL_TO_VENDORS,new ArrayList<EmailAttachment>());
-            	
-               // emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+                emailScenerioUtil.sendEmail(emailMessage,loginOrgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
                 StringBuilder actionLinkBuilder = new StringBuilder();
                 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+clientrequirement.getRequirementUUID()).toString();	 
                OrgLocations vendorLocation = clientrequirement.getOrgLocationId();
@@ -632,19 +652,54 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
             globalVarsMap.put(" ",attachmentLinkBuilder.append("<a href='").append(sourceleadUrl).append("/").append("ws/downloadOfferAttachment?offerId=").append(requirementOffers.getId()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center;letter-spacing:2px;'>Attachment").append("<br/></div></a>").toString());
 
         }*/
-            EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+        // setting the Recipient information
+        InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
-            commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ADD_OFFER_MAIL,new ArrayList<EmailAttachment>());
+        // getting the current EmailScenario by EmailScenario unique name and
+        // entity type
+        EmailScenario  emailScenario = null;
+		 if(orgLocations != null)
+		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ADD_OFFER_MAIL,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+		  if(emailScenario == null){
+				emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL,Constants.ENTITY_TYPE_EMAIL);
+		   }
+        EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ADD_OFFER_MAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 
-            String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
-            notificationScenario.setBody(notificationbody);
-          
-         // emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-    		StringBuilder actionLinkBuilder = new StringBuilder();                          
-			String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+applicant.getRequirement().getRequirementUUID()).toString();	 
-            User applicantuser = applicant.getOrgLocations().getOrg().getUser();
-			emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario,new HashMap<String,String>());
-    }
+
+        //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = null;
+		 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+			 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+		 }
+		 String url = sourceleadUrl;
+        
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,emailScenario);
+        notificationScenario.setBody(notificationbody);
+
+
+        // construct HTML template using required data
+        String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, orgLocations.getOrg(),orgLocations);
+        emailMessage.setSubject(subject);
+        emailMessage.setMessageBody(emailTemplate);
+
+
+		try {
+			
+        emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		}catch (MessagingException e) {
+			logger.error(ExceptionUtils.getFullStackTrace(new RuntimeException(e)));
+		} catch (UnsupportedEncodingException e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		StringBuilder actionLinkBuilder = new StringBuilder();                          
+		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?type=OFFERMADE&requirementUUID="+applicant.getRequirement().getRequirementUUID()).toString();	 
+        User applicantuser = applicant.getOrgLocations().getOrg().getUser();
+		emailScenerioUtil.sendNotification(actionLink, loginUser, applicantuser, orgLocations, notificationScenario,new HashMap<String,String>());
+        
+        
+}
 	
 	
 	
@@ -1396,15 +1451,34 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setCandidateType("Candidate");
     		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
     		
-    		if(StringUtils.isNotBlank(requirementOffers.getOtherPositionType())) {
-    			candidate.setDesignationOtherType(requirementOffers.getOtherPositionType());
+    		if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
+        			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
+    			
+    			if(StringUtils.isNotBlank(requirementOffers.getOtherPositionType())) {
+        			candidate.setDesignationOtherType(requirementOffers.getOtherPositionType());
+        		}
+        		
+    			if(StringUtils.isBlank(candidate.getDesignationType())) {
+    				if(StringUtils.isNotBlank(requirementOffers.getPositionType())) {
+            			candidate.setDesignationType(requirementOffers.getPositionType());
+            		}else {
+            			candidate.setDesignationType("C2C");
+            		}
+    			}
+    			
+    		}else {
+    			if(StringUtils.isNotBlank(requirementOffers.getOtherPositionType())) {
+        			candidate.setDesignationOtherType(requirementOffers.getOtherPositionType());
+        		}
+        		
+        		if(StringUtils.isNotBlank(requirementOffers.getPositionType())) {
+        			candidate.setDesignationType(requirementOffers.getPositionType());
+        		}else {
+        			candidate.setDesignationType("C2C");
+        		}
     		}
     		
-    		if(StringUtils.isNotBlank(requirementOffers.getPositionType())) {
-    			candidate.setDesignationType(requirementOffers.getPositionType());
-    		}else {
-    			candidate.setDesignationType("C2C");
-    		}
+    		
     		
     		candidate.setStatus(Constants.RECORD_ACTIVE);
     		candidate.setCurrentRate(requirementOffers.getAmount());
@@ -1434,6 +1508,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     				candidate.setOrgRelationId(requirementOffers.getSubmissionId().getRequirement().getClientId());
     				candidate.setSpocId(requirementOffers.getSubmissionId().getRequirement().getSpocId());
     				candidate.setOrgLocationId(clientSubmission.getOrgLocations());
+    				if(candidate.getParentCandidateId() == null && clientSubmission.getCandidate() != null) {
+    					candidate.setParentCandidateId(clientSubmission.getCandidate());
+    				}
 				}else{
     				candidate.setOrgLocationId(orgLocations);
 				}
@@ -1463,7 +1540,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     			vendorCandidate.setEmail(requirementSubmission.getSourceSubmission().getCandidate().getEmail());
     			vendorCandidate.setCountry(requirementSubmission.getSourceSubmission().getCandidate().getCountry());
     			vendorCandidate.setStatus(1);
-    			candidateService.saveOrUpdateCandidate(vendorCandidate);
+    			vendorCandidate = candidateService.saveOrUpdateCandidate(vendorCandidate);
     			candidateService.saveOrUpdateCandidateElkDocument(vendorCandidate);
     		 }
     		}

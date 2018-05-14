@@ -3,6 +3,7 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page trimDirectiveWhitespaces="true" %>
 
 <style type="text/css">
@@ -49,13 +50,19 @@ $(document).ready(function(){
       
       <ul>
         <li>
-          <a href="javascript:void(0)" class="addcon-pop"  onClick="addAssetManagementPopup();"><i class="fa fa-plus"></i>Add Asset</a> 
-           <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+        <sec:authorize access="hasRole('ROLE_ADD_ASSET')"> 
+        <a href="javascript:void(0)" class="addcon-pop"  onClick="addAssetManagementPopup();"><i class="fa fa-plus"></i>Add Asset</a> 
+        </sec:authorize>
+          
+         <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
          <!-- Add Asset Popup -->
         </li>
+        <sec:authorize access="hasRole('ROLE_ADD_ASSET_CATEGORY')"> 
         <li>
         <a href="<c:url value='${appPath}/assetCategory'/>" class=""><i class="fa fa-plus"></i>Categories</a>
         </li>
+        </sec:authorize>
+        
         <div class="clearfix"></div>
       </ul>
       </div>
@@ -480,7 +487,17 @@ function projectAssetPaginations(url){
 			  	"sortable": false,
 			  	"render": function(data, type, report) {
 			  		var result = "";
-				   	result = result+'<td><div class="tblminwidth-50"><a class="glyphicon glyphicon-edit" title="Edit" onclick="addAndEditAssetAssign(\''+report.id+'\');"></a> <i class="glyphicon glyphicon-trash text-danger ml" onClick="deleteAsset(\''+report.id+'\')";></i></div></td>';
+				   	result = result+'<td><div class="tblminwidth-50">';
+				    '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSET\')">' 
+				   			result = result+'<a class="glyphicon glyphicon-edit" title="Edit" onclick="addAndEditAssetAssign(\''+report.id+'\');"></a> ';
+				   	'</sec:authorize>';
+				   	
+				   	'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSET\')">' 
+				   	   result = result+'<i class="glyphicon glyphicon-trash text-danger ml" onClick="deleteAsset(\''+report.id+'\')";></i>';
+				   	'</sec:authorize>';
+				   	
+				   	
+				   	result = result+'</div></td>';
 		           return result;
 		  	  }
 	  		} ],

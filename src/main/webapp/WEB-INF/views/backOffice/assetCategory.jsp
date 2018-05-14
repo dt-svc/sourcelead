@@ -100,9 +100,13 @@ $(document).ready(function(){
 					   			result = result +'In-Active';
 					   		}
 					   		else{
-					   		result = result +'<a href="javascript:void(0)" class="addcon-pop1"  onClick="deleteCategory('+report.id+');"><i class="fa fa-trash removeIcon"></i>';
+					   		 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSET_CATEGORY\')">' 
+					   			result = result +'<a href="javascript:void(0)" class="addcon-pop1"  onClick="deleteCategory('+report.id+');"><i class="fa fa-trash removeIcon"></i>&nbsp;&nbsp;';
+					   		 '</sec:authorize>';
 					   		}
-					   		result = result +'&nbsp;|&nbsp;<a href="javascript:void(0)" class="addcon-pop1" onClick="addCategoryDoc('+report.id+');editCategory('+report.orgLocationId+','+report.id+');"><i class="glyphicon glyphicon-pencil" ></i></div>';
+					   		'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSET_CATEGORY\')">' 
+					   		result = result +'<a href="javascript:void(0)" class="addcon-pop1" onClick="addCategoryDoc('+report.id+');editCategory('+report.orgLocationId+','+report.id+');"><i class="glyphicon glyphicon-pencil" ></i></div>';
+					   		'</sec:authorize>';
 					   	}else{
 					   		result = result +'---';
 					   	}

@@ -213,6 +213,7 @@ function getTicketCustomDates(){
 		var url = sourceleadUrl+"/getSourceleadTicketList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&dateSelection="+dateSelection+"&selectCompanyIds="+selectCompanyIds+"&fromDate="+fromDate+"&toDate="+toDate;
 		prepareSourceleadTicketList(url);
 	  }
+	  $("#customSearch").hide();
   }
   </script>
 <script>

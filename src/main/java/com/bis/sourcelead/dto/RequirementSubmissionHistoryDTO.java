@@ -36,7 +36,11 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String paymentType;
 	private String paymentMode;
 	private String experienceMonths;
-	
+	private Long orgLocationId;
+	private String tabType;
+	private String frequency;
+	private String fromDate;
+	private String toDate;
  
 	public String getCandidateName()
 	{
@@ -286,6 +290,44 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	{
 		this.experienceMonths = experienceMonths;
 	}
-	
-	
+	public Long getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+	public void setOrgLocationId(Long orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+	public String getTabType()
+	{
+		return tabType;
+	}
+	public void setTabType(String tabType)
+	{
+		this.tabType = tabType;
+	}
+	public String getFrequency()
+	{
+		return frequency;
+	}
+	public void setFrequency(String frequency)
+	{
+		this.frequency = frequency;
+	}
+	public String getFromDate()
+	{
+		return fromDate;
+	}
+	public void setFromDate(String fromDate)
+	{
+		this.fromDate = fromDate;
+	}
+	public String getToDate()
+	{
+		return toDate;
+	}
+	public void setToDate(String toDate)
+	{
+		this.toDate = toDate;
+	}
 }
