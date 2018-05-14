@@ -178,7 +178,7 @@ function getPaidBillDetailReport(){
 		var billType ='${billType}';
 		var searchValue = $("#dataTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/getPaidBillDetailReport?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&billType="+billType;
+		var url = sourceleadUrl+"/getPaidBillDetailReport?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&billType="+billType+"&searchValue="+searchValue;
 		getPaidBillDetailReportList(url);
 }
 </script>
@@ -288,7 +288,7 @@ function paidBillDetailReportList(url){
     } );
     $("#apagingPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#paidBillDetailPagination").keyup(function(e) {
+    $("#dataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   getPaidBillDetailReport();
     	   }

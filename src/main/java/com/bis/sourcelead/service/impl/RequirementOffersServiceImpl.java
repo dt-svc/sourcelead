@@ -1451,15 +1451,34 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setCandidateType("Candidate");
     		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
     		
-    		if(StringUtils.isNotBlank(requirementOffers.getOtherPositionType())) {
-    			candidate.setDesignationOtherType(requirementOffers.getOtherPositionType());
+    		if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
+        			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
+    			
+    			if(StringUtils.isNotBlank(requirementOffers.getOtherPositionType())) {
+        			candidate.setDesignationOtherType(requirementOffers.getOtherPositionType());
+        		}
+        		
+    			if(StringUtils.isBlank(candidate.getDesignationType())) {
+    				if(StringUtils.isNotBlank(requirementOffers.getPositionType())) {
+            			candidate.setDesignationType(requirementOffers.getPositionType());
+            		}else {
+            			candidate.setDesignationType("C2C");
+            		}
+    			}
+    			
+    		}else {
+    			if(StringUtils.isNotBlank(requirementOffers.getOtherPositionType())) {
+        			candidate.setDesignationOtherType(requirementOffers.getOtherPositionType());
+        		}
+        		
+        		if(StringUtils.isNotBlank(requirementOffers.getPositionType())) {
+        			candidate.setDesignationType(requirementOffers.getPositionType());
+        		}else {
+        			candidate.setDesignationType("C2C");
+        		}
     		}
     		
-    		if(StringUtils.isNotBlank(requirementOffers.getPositionType())) {
-    			candidate.setDesignationType(requirementOffers.getPositionType());
-    		}else {
-    			candidate.setDesignationType("C2C");
-    		}
+    		
     		
     		candidate.setStatus(Constants.RECORD_ACTIVE);
     		candidate.setCurrentRate(requirementOffers.getAmount());
@@ -1489,6 +1508,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     				candidate.setOrgRelationId(requirementOffers.getSubmissionId().getRequirement().getClientId());
     				candidate.setSpocId(requirementOffers.getSubmissionId().getRequirement().getSpocId());
     				candidate.setOrgLocationId(clientSubmission.getOrgLocations());
+    				if(candidate.getParentCandidateId() == null && clientSubmission.getCandidate() != null) {
+    					candidate.setParentCandidateId(clientSubmission.getCandidate());
+    				}
 				}else{
     				candidate.setOrgLocationId(orgLocations);
 				}
@@ -1518,7 +1540,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     			vendorCandidate.setEmail(requirementSubmission.getSourceSubmission().getCandidate().getEmail());
     			vendorCandidate.setCountry(requirementSubmission.getSourceSubmission().getCandidate().getCountry());
     			vendorCandidate.setStatus(1);
-    			candidateService.saveOrUpdateCandidate(vendorCandidate);
+    			vendorCandidate = candidateService.saveOrUpdateCandidate(vendorCandidate);
     			candidateService.saveOrUpdateCandidateElkDocument(vendorCandidate);
     		 }
     		}

@@ -3,6 +3,7 @@ package com.bis.sourcelead.web;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
@@ -274,6 +275,16 @@ public class FileController {
 	@RequestMapping(value = "/viewFile")
 	public void viewFile(HttpServletResponse response, String documentPath, String contentType) {
 		// String ac= staticPath.Remove(staticPath.lastIndexOf('/'));
+		
+		if(contentType.startsWith("image/")) {
+				try {
+				response.sendRedirect(sourceleadUrl.replace("/app", "")+documentPath);
+				return;
+				} catch (IOException e) {
+				e.printStackTrace();
+				}
+			}
+		
 		String ac = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
 		File file = new File(ac, documentPath);
 		try (FileInputStream fis = new FileInputStream(file);) {
