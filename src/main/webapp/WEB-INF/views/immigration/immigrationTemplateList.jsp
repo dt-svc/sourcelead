@@ -29,14 +29,14 @@
     </section>
 
     <section class="immigraTabsWrap">
-        <div class="cusFielInn">
+        <div class="clearfix positionRelative">
 
             <div class="immigraTabsHead">
             <div class="pull-left">
 				<div onclick="columPop();" title="Column Chooser" class="btn btn-sm btn-default pull-left"><i class="fa fa-table"></i></div>
 			</div>
 			<div class="colPop">
-	<div class="colPopMid">
+	<div class="colPopMid coldropdown-parent">
 	<div class="clearfix">
 		<div class="row">
 				<div class="col-md-10 mb10 mt5 col-md-offset-2">
@@ -51,6 +51,7 @@
 			</div>
 		</div>
 	<div class="clearfix"></div>
+	<div class="coldropdown-inner">
 		<ul>
 			<!-- <li>
 				<div class="checkbox-new clearfix">
@@ -113,6 +114,7 @@
 				</div>
 			</li> -->
 		</ul>
+		</div>
 	</div>
 	<div class="colPopFot">
 		<a href="javascript:void(0)" onclick="columHide();">Apply</a>
