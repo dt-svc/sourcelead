@@ -332,6 +332,7 @@ function saveOnboardTask(){
 			        	document.getElementById("selector").style.display = 'block';
 			        	$("#selector").fadeIn(150);
 			        	$('#selector').delay(1000).fadeOut('slow');
+			        	$("body").removeClass("modal-open");
 		        	}
 		        	
 		        },

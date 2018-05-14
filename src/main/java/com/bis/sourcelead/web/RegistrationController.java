@@ -309,10 +309,13 @@ public class RegistrationController {
 					orgLocations.setStatus(Status.ACTIVE);
 					orgLocationService.updateOrgLocations(orgLocations);
 					
-					EmployeeVerificationTemplate empTemp = employeeVerificationTemplateService.getEmploymentVerificationtemplateByLocationId(orgLocations.getId());
-					empTemp.setSignatory(orgLocations.getUser());
-					employeeVerificationTemplateService.updateEmployMentTemplate(empTemp);
-					
+					if(orgLocations != null) {
+						EmployeeVerificationTemplate empTemp = employeeVerificationTemplateService.getEmploymentVerificationtemplateByLocationId(orgLocations.getId());
+						if(empTemp != null) {
+							empTemp.setSignatory(orgLocations.getUser());
+							employeeVerificationTemplateService.updateEmployMentTemplate(empTemp);
+						}
+					}
 		    	}
 				 
 				
