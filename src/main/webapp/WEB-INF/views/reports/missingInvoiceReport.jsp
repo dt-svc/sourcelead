@@ -161,7 +161,7 @@ function prepareMissingInvoiceData(url){
 function missingInvoice(url){
 	var colIndex = 0;
 	var apagingTotal = 0;
-	/* var total = 0; */
+	
     $('#missingInvoicePagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -231,10 +231,11 @@ function missingInvoice(url){
             	"sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
-                		if(opt.totalAmount !=null && opt.totalAmount !='' && opt.totalAmount != 'undefined'){
-                			 result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.totalAmount+'</div></td>';	
-                			/*  total = parseFloat(total)+parseFloat(opt.totalAmount);
-                			  $("#total").html(total.toFixed(2)); */
+                		var total = 0; 
+                		if(opt.invoiceAmount !=null && opt.invoiceAmount !='' && opt.invoiceAmount != 'undefined'){
+                			 result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.invoiceAmount+'</div></td>';	
+                			 total = parseFloat(total)+parseFloat(opt.invoiceAmount);
+                			 $("#total").html(total.toFixed(2));
                 		}else{
                 			 result = result + ' <td><div class="tbldata-dotdot-sm"">0.00</div></td>';
                 		}
