@@ -399,6 +399,8 @@ function addCertification(candidateId) {
 		result  = result + '                     data-validation-optional="true" data-validation="required validate_length length2-250"></textarea>';
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
+		
+		
 		result  = result + '                 <div class="clearfix mb10">';
 		result  = result + '                   <div class="col-md-6">';
 		result  = result + '                   <div>';
@@ -417,6 +419,8 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                   <div>';
 		result  = result + '                 </div>';
+		result  = result + '               </div>';
+		result  = result + '               </div>';
 		result  = result + '                 <div class="clearfix mr">';
 		if(candidateType == "Candidates"){
 			result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
@@ -429,7 +433,7 @@ function addCertification(candidateId) {
 		}
 		
 		result  = result + '                 </div>';
-		result  = result + '               </div>';
+
 		result  = result + '              </form>';
 		$("#popUpDivEmp").empty();
 		$("#popUpDivEmp").append(result);
@@ -591,12 +595,13 @@ function addCertification(candidateId) {
 	    			}
 	    			result  = result + '                   </div>';
 	    			result  = result + '                 </div>';
+	    			result  = result + '               </div>';
 	    			result  = result + '                 <div class="clearfix mr">';
 	    			result = result	+ '	                   <input type="hidden"  value="'+candidateCertificationId+'" id="candidateCertificationId"  name="candidatecertificateID" >';
 	    			result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
 	    			result  = result + '                   <button type="button"  id="addCandidate"  onClick ="updateCandidateCertification('+ candidateId+ ','+ candidateCertificationId+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
 	    			result  = result + '                 </div>';
-	    			result  = result + '               </div>';
+
 	    			result  = result + '              </form>';
 	    			$("#popUpDivEmp").empty();
 	    			$("#popUpDivEmp").append(result);

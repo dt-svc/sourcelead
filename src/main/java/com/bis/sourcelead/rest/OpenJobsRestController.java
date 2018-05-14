@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -117,6 +118,7 @@ public class OpenJobsRestController {
 			BoolQueryBuilder combinedQueryBuilder = QueryBuilders.boolQuery();
 
 			BoolQueryBuilder openJobsRequirementQueryBuilder = QueryBuilders.boolQuery();
+			if(StringUtils.isNotEmpty(openJobsRequirementTitle))
 			 openJobsRequirementQueryBuilder.must(QueryBuilders.matchQuery("jobTitle",openJobsRequirementTitle));
 
 			JSONObject jsonObj = new JSONObject();
@@ -168,15 +170,23 @@ public class OpenJobsRestController {
 					BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 					for (String keywd : anyKeyWordArray) {
 						BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-						ArrayList<QueryBuilder> QueryBuilderList = new ArrayList<QueryBuilder>();
-						QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
-						QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
-						if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
-							for (QueryBuilder QueryBuilder : QueryBuilderList) {
-								anyBoolSubQueryBuilder.should(QueryBuilder);
-							}
-							anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
-						}
+						
+						BoolQueryBuilder anyBoolSubQueryBuilder1 = QueryBuilders.boolQuery();
+						anyBoolSubQueryBuilder1.must(QueryBuilders.rangeQuery("minExperience").lte(keywd));
+						anyBoolSubQueryBuilder1.must(QueryBuilders.rangeQuery("maxExperience").gte(keywd));
+						anyBoolSubQueryBuilder.should(anyBoolSubQueryBuilder1);
+						
+						BoolQueryBuilder anyBoolSubQueryBuilder2 = QueryBuilders.boolQuery();
+						anyBoolSubQueryBuilder2.must(QueryBuilders.matchPhraseQuery("minExperience", keywd));
+						anyBoolSubQueryBuilder2.mustNot(QueryBuilders.existsQuery("maxExperience"));
+						anyBoolSubQueryBuilder.should(anyBoolSubQueryBuilder2);
+						
+						BoolQueryBuilder anyBoolSubQueryBuilder3 = QueryBuilders.boolQuery();
+						anyBoolSubQueryBuilder3.mustNot(QueryBuilders.existsQuery("minExperience"));
+						anyBoolSubQueryBuilder3.must(QueryBuilders.rangeQuery("maxExperience").gte(keywd));
+						anyBoolSubQueryBuilder.should(anyBoolSubQueryBuilder3);
+						
+						anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 					}
 					boolQueryBuilder.must(anyBoolQueryBuilder);
 				}

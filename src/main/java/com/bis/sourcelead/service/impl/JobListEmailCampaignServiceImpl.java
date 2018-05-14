@@ -185,7 +185,12 @@ public class JobListEmailCampaignServiceImpl implements JobListEmailCampaignServ
 			 globalVarsMap.put("hotlistTable", table);
 			 globalVarsMap.put("requestResume","<a href='"+sourceleadUrl+"/"+"requestForCandidateResume?UUID="+UUID+"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Request For Resume</div></a>");
 			 
-			 EmailScenario emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.HOT_LIST_CAMPAIGN,Constants.ENTITY_TYPE_EMAIL);
+			 EmailScenario emailScenario =  null;
+			 if(orgLocation != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.HOT_LIST_CAMPAIGN,Constants.ENTITY_TYPE_EMAIL, orgLocation.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.HOT_LIST_CAMPAIGN,Constants.ENTITY_TYPE_EMAIL);
+				   }
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidSubject(jobListEmailCampaignDTO.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);

@@ -1148,7 +1148,7 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 			leaveDto.setLeaveType(leave.getLeaveType().getName());
 			totalLeaves = totalLeaves + leave.getNumberOfDays();
-			leaveDto.setTotalLeaves(String.valueOf(leave.getNumberOfDays()));
+			leaveDto.setTotalLeaves(String.valueOf(totalLeaves));
 			leaveDto.setColorCode(leave.getLeaveType().getColorCode());
 			reportMap.put(leave.getLeaveType().getId(), leaveDto);
 		}
@@ -1575,7 +1575,7 @@ public class LeaveServiceImpl implements LeaveService{
 			
 //			leaveDto.setLeaveTypeNoOfDays(leave.getLeaveType().getNoOfDays());
 			leaveDto.setDuration(date.toString());
-			leaveDto.setUserId(String.valueOf(leave.getUser().getId()));
+			leaveDto.setUserId(emp.getEmployeeId());
 			leaveDto.setEmpName(sb.toString());
 			leaveDto.setEmpEmail(leave.getUser().getEmail());
 			leaveDto.setLeaveType(leave.getLeaveType().getName());

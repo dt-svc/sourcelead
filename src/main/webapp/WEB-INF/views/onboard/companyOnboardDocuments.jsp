@@ -146,7 +146,10 @@ $(function(){
 				       <ul>
 						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
 						  <li class="actLi">Locations<i class="fa fa-check-circle"></i></li>
-						  <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
+						  <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+						  <li class="actLi">Information<i class="fa fa-check-circle"></i></li>
+						  </c:if>
+						  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 						  <li class="actLi">Federal & state taxes<i class="fa fa-check-circle"></i></li>
 						  </c:if>
 						   <li class="actLi">Banking details<i class="fa fa-check-circle"></i></li>

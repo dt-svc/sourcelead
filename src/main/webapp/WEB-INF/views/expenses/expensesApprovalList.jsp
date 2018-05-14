@@ -311,11 +311,11 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	}
     $(document).on("mouseover", ".glyphicon-comment", function() { 
 		var localId = $(this).attr('id');
-		$("#rejectedMessage"+localId).addClass('app_error_mes_active');
+		$("#rejectedMessage"+localId).addClass('app_error_mes_active app_error_mes_full');
 		});	
 		$(document).on("mouseleave", ".glyphicon-comment", function() { 
 		var localId = $(this).attr('id');
-		$("#rejectedMessage"+localId).removeClass('app_error_mes_active');
+		$("#rejectedMessage"+localId).removeClass('app_error_mes_active  app_error_mes_full');
     });	
 	function rejectedMessage(local){ 
 	   $("#"+local).slideToggle(200);

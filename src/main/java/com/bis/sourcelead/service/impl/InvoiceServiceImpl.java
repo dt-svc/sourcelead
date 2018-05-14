@@ -1468,9 +1468,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				vendorOrgLocation = orgRelation.getLocationId();
 				if(orgSpocList !=null && !orgSpocList.isEmpty()) {
 					if(Constants.VENDOR.equalsIgnoreCase(orgRelation.getResponderType())) {
-						contactUser = orgSpocList.get(0).getVendorUser();
-					}else{
 						contactUser = orgSpocList.get(0).getClientUser();
+					}else{
+						contactUser = orgSpocList.get(0).getVendorUser();
 					}
 					
 				}
@@ -1841,9 +1841,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					projectMember.setUserId(projectMember.getProjectMemberCandidteId().toString());
 					projectMember.setStartDate(startDateStr);
 					projectMember.setEndDate(endDateStr);
-					String billableHours = String.valueOf(sah.getBillableHours());;
-					String arr[] = billableHours.split("\\.");
+					String billableHours = String.valueOf(sah.getBillableHours());
 					StringBuilder sb = new StringBuilder();
+					if(!"null".equalsIgnoreCase(billableHours))
+					{
+					String arr[] = billableHours.split("\\.");
 					if (arr[0].length() == 2) {
 						sb.append("0").append(arr[0]);
 					}
@@ -1858,6 +1860,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					}
 					else {
 						sb.append(":").append(arr[1]);
+					}
+					} else{
+						sb.append("0");
 					}
 					projectMember.setTotalHours(sb.toString());
 					Candidate candidate = projectMember.getProjectMemberCandidteId();

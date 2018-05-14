@@ -360,6 +360,7 @@ public class RequirementRestController {
 						if(isLoginUserAsAdmin.equalsIgnoreCase("true")){
 							if (status.equalsIgnoreCase("APPROVED")) {
 								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+								requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
 							} else if (status.equalsIgnoreCase("REJECTED")) {
 								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
 							}

@@ -991,7 +991,7 @@ function getContactsList(){
 	 	result = result +" <input type='text' placeholder='Search' id='contactsDataTableSearch'/>";
 	 	result = result +"</div>";
 	 	
-	 	result = result +'       <div class="col-xs-12 col-md-4 paddingLeft selectpicker100 mb10 mt">';
+	 	result = result +'       <div class="col-xs-12 col-md-4 paddingLeft selectpicker100 mb10 mt" id="groupPopUpId">';
  		result = result +'     <select id="groupsFilter" name="groupsFilter" class="selectpicker" multiple data-actions-box="true" onchange="contactsDataTableList();" style="display:block !important" title="--Select Group--">';
 		
  		<c:forEach var="conGroup" items="${contactsGroupList}">
@@ -1021,8 +1021,8 @@ function getContactsList(){
     	result = result +'</div>';
     	
     	result = result +'<div class="clearfix pull-right mr mb">';
-     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="assignbtnId" onclick="getAllEmailContacts();">Add</button>';
-     	result = result +' <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
+     	result = result +'<button class="btn btn-primary"  type="button" id="assignbtnId" onclick="getAllEmailContacts();">Add</button>';
+     	result = result +' <button class="btn btn-default" type="button">Close</button>';
      	result = result +' </div>'; 
      	
      	$("#mailBoxVendorsList").append(result);
@@ -1362,6 +1362,7 @@ function getVendorContactEmails(){
 
 <script>
 function getAllEmailContacts(){
+	$('#groupPopUpId').parent().find('p.jquery_form_error_message').remove();
 	var internalOutput = "";
 	
 	for(var e in contactUsers) {
@@ -1378,6 +1379,13 @@ function getAllEmailContacts(){
 			}
 	  }
 	}
+	
+	if($("input[name='checkAllContacts']:checked").length == 0){
+    	$("#groupPopUpId").after("<p class='jquery_form_error_message'><span>Select Atleast One Client Contact</span>");
+	}else{
+		$("#multiplemail").modal('hide');
+		$('#groupPopUpId').parent().find('p.jquery_form_error_message').remove();
+	}	
 	
 	    $("#recipientEmail").append(internalOutput);
 		$("#recipientEmail").trigger("chosen:updated");

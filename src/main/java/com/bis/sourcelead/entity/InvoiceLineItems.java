@@ -126,14 +126,13 @@ public class InvoiceLineItems {
 	@JsonProperty
 	private String startDateStr;
 	
-	@Transient
-	@JsonProperty
-	private String endDtaeStr;
+	
 	
 	@Transient
 	private String employeeId;
 
 	@Transient
+	@JsonProperty 
 	private String endDateStr;
 	
 	@Transient
@@ -359,14 +358,6 @@ public class InvoiceLineItems {
 		this.startDateStr = startDateStr;
 	}
 
-
-	public String getEndDtaeStr() {
-		return endDtaeStr;
-	}
-
-	public void setEndDtaeStr(String endDtaeStr) {
-		this.endDtaeStr = endDtaeStr;
-	}
 
 	public String getEmployeeId() {
 		return employeeId;

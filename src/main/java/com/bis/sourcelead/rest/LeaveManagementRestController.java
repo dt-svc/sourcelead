@@ -1201,18 +1201,34 @@ public class LeaveManagementRestController {
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_APPLY_LEAVE')")
 	@RequestMapping(value = { "/saveApplyLeave", "/rest/saveApplyLeave" }, method = RequestMethod.POST)
-	@ResponseBody
-	public boolean applyLeave(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
-
-		boolean isInserted = false;
-		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
-		User user = userService.getUserById(Long.parseLong(leaveDTO.getUserId()));
-		leaveDTO.setStaticPath(staticPath);
-		Leave leave = leaveService.saveLeave(leaveDTO, orgLocations, user);
-		if (leave != null) {
-			isInserted = true;
+	public @ResponseBody Response<String> applyLeave(LeaveDTO leaveDTO, HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
+		try {
+			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
+			User user = userService.getUserById(Long.parseLong(leaveDTO.getUserId()));
+			if (user != null && Validator.validate(leaveDTO)) {
+				leaveDTO.setStaticPath(staticPath);
+				Leave leave = leaveService.saveLeave(leaveDTO, orgLocations, user);
+				if (leave != null) {
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
+			} else if (user == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		return isInserted;
+		return response;
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_LEAVE_CONFIGURE')")
@@ -2227,7 +2243,7 @@ public class LeaveManagementRestController {
 		}
 		for (HolidayAndRestrictday holidayAndRestrictday : listFilter) {
 			if (holidayAndRestrictday.getHoliday() != null) {
-				if (id != null || id > 0) {
+				if (id != null) {
 					if (holidayAndRestrictday.getHoliday().getHolidayName().equalsIgnoreCase(name.trim())
 							&& holidayAndRestrictday.getHoliday().getId().longValue() == id.longValue()) {
 						flag = false;

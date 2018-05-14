@@ -13,21 +13,25 @@ public class LeaveTypeDTO {
 	private String hoursType;
 	private String billingType;
 	private String applicableToUsers;
+	@Required(desc = "Department", dependsOn="applicableToUsers",parentValue="N")
 	private String department;
+	@Required(desc = "Roles", dependsOn="applicableToUsers",parentValue="N")
 	private List<String> roles;
 	private String carryforward;
 	private String noOfLeavesPerYear;
 	private String description;
 	private String leavePolicy;
+	@Required(desc = "Policy Name", dependsOn="leavePolicy",parentValue="Y")
 	private String policyName;
 	private String visibilityToAllUsers;
+	@Required(desc = "Policy Description", dependsOn="leavePolicy",parentValue="Y")
 	private String leavePolicyDescription;
 	private String orgLocationId;
 	private String noOfLeavesPerMonth;
 	private String loginUserId;
 	private long leaveTypeId;
 	private String deleteReason;
-	@Required(desc = "Color Code")
+	@Required(desc = "Color Code",dependsOn="leaveEffective",parentValue={"All Employees","Experienced"})
 	private String colorCode;
 	private int approvedCount;
 	private int pendingCount;
@@ -39,20 +43,27 @@ public class LeaveTypeDTO {
 	private String period;
 	@Required(desc = "Leave Effective")
 	private String leaveEffective;
+	@Required(desc = "New Joinee",dependsOn="leaveEffective",parentValue="Experienced")
 	private String newJoinee;
+	@Required(desc = "Min Days",dependsOn="leaveEffective",parentValue="Experienced")
 	private String experiencedType;
+	@Required(desc = "Min Days",dependsOn="leaveEffective",parentValue="Experienced")
 	private String experiencedDuration;
+	@Required(desc = "Min Days",dependsOn="leaveEffective",parentValue="Experienced")
 	private String experiencedApplicableDays;
 	private String reasonRequired;
 	private String attachmentRequired;
 	private String overdrawLeaves;
 	private String donateLeave;
 	private String priorLeaveApplying;
+	@Required(desc = "Min Days", dependsOn="priorLeaveApplying",parentValue="Y")
 	private String priorDays;
 	private String leaveDuration;
+	@Required(desc = "Min Days", dependsOn="leaveDuration",parentValue="Y")
 	private String minDays;
+	@Required(desc = "Max Days", dependsOn="leaveDuration",parentValue="Y")
 	private String maxDays;
-	@Required(desc = "No. of Days")
+	@Required(desc = "No. of Days",dependsOn="leaveEffective",parentValue="All Employees")
 	private String noOfDays;
 	private String leaveTypeUUID;
 	
@@ -477,6 +488,5 @@ public class LeaveTypeDTO {
 	{
 		this.updatedUser = updatedUser;
 	}
-	
 	
 }

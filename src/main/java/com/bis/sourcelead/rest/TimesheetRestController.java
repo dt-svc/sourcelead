@@ -52,6 +52,7 @@ import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimeSheetSubmissionDTO;
+import com.bis.sourcelead.dto.TimeSheetSubmissionDayEntryDTO;
 import com.bis.sourcelead.dto.TimesheetEntriesDTO;
 import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.TimesheetExpenseEntryDetailsUtilDTO;
@@ -2008,7 +2009,18 @@ public class TimesheetRestController {
 						if (StringUtils.isNotEmpty(currentFrequencyEndDate)) {
 							Date frequencyEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
 									currentFrequencyEndDate.replaceAll("/", "-"));
-							if (frequencyEndDate.equals(actualEndDate))
+							Date terminationDate = null;
+							if(projectMemberId != null) {
+								ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMemberId);
+								if(pmh == null) {
+									pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMemberId);
+								}
+								 terminationDate = pmh.getProjectTerminationDate();
+							}
+							
+							if ( frequencyEndDate.equals(actualEndDate) || 
+									(terminationDate != null &&(terminationDate.equals(actualStartDate) || terminationDate.equals(actualEndDate) || (terminationDate.before(actualEndDate) && terminationDate.after(actualStartDate))))
+							   )
 								tsDTO.setSubmitButtonVisible(true);
 						}
 
@@ -3183,8 +3195,7 @@ public class TimesheetRestController {
 
 	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
 	@RequestMapping(value = "/rest/saveTimesheetDayEntries", method = RequestMethod.POST)
-	public @ResponseBody TimesheetEntryDetailsDTO saveTimesheetDayEntryMobile(
-			@RequestBody TimeSheetSubmissionDTO tsDTO, HttpServletRequest request) throws Exception {
+	public TimesheetEntryDetailsDTO saveTimesheetDayEntryMobile(@RequestBody TimeSheetSubmissionDayEntryDTO tsDTO, HttpServletRequest request) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (loginUser == null && tsDTO.getUserId() != null) {
 			loginUser = userService.getUserById(tsDTO.getUserId());
@@ -3398,7 +3409,7 @@ public class TimesheetRestController {
 		 */
 		ProjectTasks projectTasks =  null;
 		if(taskId != null) {
-			projectTasks = projectTasksService.getProjectTasksByUUID(taskId.toString());
+			projectTasks = projectTasksService.getTasksId(taskId.toString());
 		}else {
 			projectTasks = projectTasksService.getProjectTasksByUUID(taskUUID);
 		}

@@ -114,7 +114,7 @@ window.onload = function() {
               <label class="col-md-3" id="attachmentN" style="display:none">Attachment</label>
               <div class="col-md-9 errorInptgroup errorInptgroup-bottom" id="attachmentId">
                   <div style="float:left; width:100%; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#fff; color:#333; ">
-                      <input  type="file" class="pull-left valid" id="uploadBtn" field-name="Attachment"  onchange="uploadButton(0);">
+                      <input  type="file" class="pull-left valid" id="uploadBtn" field-name="Attachment"  onchange="uploadButton(0);" data-validation="required" >
                       <a id="Button0value">
                       <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" title="clear" onClick="removedocfile();"></i>
                       </a>
@@ -387,34 +387,44 @@ function removeEndValid(){
         	  }
         	  output = output +'</select>';
         	  $("#leaveTypeIdDiv").empty();
+        	  
         	  $("#leaveTypeIdDiv").append(output);
         	  $('#leaveType').chosen();
         	  $("#leaveType").trigger("chosen:updated");
 //         	  $('#leaveType').prop('disabled', true).trigger("chosen:updated");
         	  
-        	  var counts = json[json.length-1];
-        	  var totalBalanceCounts = counts.totalBalanceLeaveCounts;
-        	  var totalPendingCounts = counts.pendingLeaveCounts;
-        	  var totalTakenCounts = counts.takenLeaves;
-        	  getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts);
+        	  if(json.length > 0){
+        		  var counts = json[json.length-1];
+            	  var totalBalanceCounts = counts.totalBalanceLeaveCounts;
+            	  var totalPendingCounts = counts.pendingLeaveCounts;
+            	  var totalTakenCounts = counts.takenLeaves;
+        		  getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts);
+        		  
+        		  
+        		  var result = "";
+    	    	  result = result +' <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">';
+    	    	  result = result +'			<label>Balance Leaves :</label>';
+    	          for (var i = 0; i < json.length; i++) { 
+    	        		  var leaveType = json[i];
+    				        result = result +'	<li>';
+    				  		result = result +'			<label>'+leaveType.name+'</label>';
+    				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
+    				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount+'</span>';
+    				  		result = result +'	</li>'; 
+    	        	  }
+   	        	  result = result +'	</ul>'; 
+   	        	  $("#leaveStatusIdDiv").empty();
+   	        	  $("#leaveStatusIdDiv").append(result);
+        		  
+        	  }else{
+        		  var res = ""
+	        		  res = res +'<div class="text-center mt25 well"><i class="fa fa-calendar-minus-o fa-5x text-muted"></i>';
+	        		  res = res +'<p class="clearfix mt text-muted small">No Active Leave Types Found !</p>';
+	        		  res = res +'</div>';
+        		  $("#leavestatsu").empty();
+        		  $("#leavestatsu").append(res);
+        	  }
         	  
-        	  var result = "";
-	    	  result = result +' <ul class="list-unstyled leavelist col-md-10 mt25 col-md-offset-1 list-group">';
-	    	  result = result +'			<label>Balance Leaves :</label>';
-	          for (var i = 0; i < json.length; i++) { 
-	        		  var leaveType = json[i];
-				        result = result +'	<li>';
-				  		result = result +'			<label>'+leaveType.name+'</label>';
-				  		var leaveTypeName = leaveType.name.replace(/ /g,"_");
-				  		result = result +'			<span class="label label-info pull-right" id="'+leaveTypeName+'Span" style="background-color: '+leaveType.colorCode+';" >'+leaveType.leaveTypeBalanceLeaveCount+'</span>';
-				  		result = result +'	</li>'; 
-	        	  }
-	        	  result = result +'	</ul>'; 
-	        	  $("#leaveStatusIdDiv").empty();
-	        	  $("#leaveStatusIdDiv").append(result);
-
-	        	  
-	        	 
          },
           
      });
@@ -422,6 +432,7 @@ function removeEndValid(){
 	 
 function getpieChar(totalBalanceCounts,totalPendingCounts,totalTakenCounts){
 	//ApplyLeves piechart
+	//
 	AmCharts.makeChart("leavestatsu",
 		{
 			"type": "pie",
@@ -509,10 +520,18 @@ function applyLeave(){
 		if ($('#apply_leave_form').validate(false, validationSettings)) {
 	  	var formData = $($('#apply_leave_form')[0]).serialize();
 		$("#leaveLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
-			if(data == true){
-				location.replace(sourceleadUrl+ "/leaveManagementReports");
-			}
+		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(result) {
+			if (result && result.response === "INVALID_DATA") {
+    		    showError(result.responseMessage);
+    		} else if (result.response === "AWKWARD") {
+    		    location.href = "/errorPage";
+    		} else if (result.response === "SUCCESS") {
+    			location.replace(sourceleadUrl+ "/leaveManagementReports");
+    		} else if (result.indexOf('Sign In') !== -1) {
+    			location.replace(sourceleadUrl);
+    		} else {
+    		    showError("Operation failed, please try again");
+    		}
 		}); 
 		return true;
 		} else {
@@ -620,7 +639,6 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	}else{
     		    		$("#applyId").prop("disabled", false);
     		    	}
-    		    	alert(report.priorLeaveApplying)
     		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
     		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
     		    		
@@ -679,14 +697,11 @@ function validateOverDrawLeaves(leaveTypeName){
 <script>
 var errorMessage = "";
 function validatePriorDays(priorDays,finalDateFormatEndDate){
-	alert("hai");
 	var currentDate = new Date();
 	
 	$( "#fromDate" ).datepicker({ dateFormat: finalDateFormatEndDate });
 	var start = $('#fromDate').datepicker('getDate');
     var diffDays = parseInt((start - currentDate) / (1000 * 60 * 60 * 24)); 
-    alert(diffDays)
-    alert(diffDays)
     if(priorDays > diffDays){
     	errorMessage += "You need to apply this Leave Type "+priorDays+" earlier.";
     }

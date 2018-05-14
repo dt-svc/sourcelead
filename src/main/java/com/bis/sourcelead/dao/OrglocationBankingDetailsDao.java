@@ -1,5 +1,8 @@
 package com.bis.sourcelead.dao;
 
+import java.util.List;
+
+import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 
 public interface OrglocationBankingDetailsDao {
@@ -9,4 +12,8 @@ public interface OrglocationBankingDetailsDao {
 	OrglocationBankingDetails getOrglocationBankingDetailsByUUID(String uuid) throws Exception;
 	
 	OrglocationBankingDetails getOrglocationBankingDetailsByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	List<OrgLocationBankingDetailsDTO> getOrglocationBankingDetailsListByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	OrglocationBankingDetails deleteOrglocationBankingDetails(OrglocationBankingDetails orglocationBankingDetails) throws Exception;
 }

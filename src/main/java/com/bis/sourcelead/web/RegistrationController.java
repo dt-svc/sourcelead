@@ -309,10 +309,13 @@ public class RegistrationController {
 					orgLocations.setStatus(Status.ACTIVE);
 					orgLocationService.updateOrgLocations(orgLocations);
 					
-					EmployeeVerificationTemplate empTemp = employeeVerificationTemplateService.getEmploymentVerificationtemplateByLocationId(orgLocations.getId());
-					empTemp.setSignatory(orgLocations.getUser());
-					employeeVerificationTemplateService.updateEmployMentTemplate(empTemp);
-					
+					if(orgLocations != null) {
+						EmployeeVerificationTemplate empTemp = employeeVerificationTemplateService.getEmploymentVerificationtemplateByLocationId(orgLocations.getId());
+						if(empTemp != null) {
+							empTemp.setSignatory(orgLocations.getUser());
+							employeeVerificationTemplateService.updateEmployMentTemplate(empTemp);
+						}
+					}
 		    	}
 				 
 				
@@ -420,7 +423,7 @@ public class RegistrationController {
 				List<OrgLicenseSubscriptionTypes> dataStorageTypeList = orgLicenseSubscriptionTypesService.getLicenseSubscriptionTypesByCategory(Constants.DATA_STORAGE);
 				model.addObject("dataStorageTypeList", dataStorageTypeList);
 				
-				List<String> orgSubscribedCountriesList = orgLicenseSubscriptionService.getOrgLicenseSubscribedCountriesByOrgId(org.getId());
+				List<String> orgSubscribedCountriesList = orgLicenseSubscriptionService.getOrgLicenseSubscribedAndRegisteredCountriesByOrgId(org.getId());
 				model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
 				
 				model.addObject("sourceleadUrl", sourceleadUrl);

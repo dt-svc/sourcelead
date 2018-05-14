@@ -464,8 +464,8 @@ public class BackOfficeRestController {
 	  * @throws Exception
 	  * To remove Asset Management
 	  */
-	 @RequestMapping(value = "/removeAssetManagement", method = RequestMethod.POST)
-	 @ResponseBody  Response<String> removeAssetManagement(@RequestParam(value = "assignAssetId", required = false) Long assignAssetId,HttpServletRequest request) throws Exception {
+	 @RequestMapping(value = "/removeAssocateAssingAssetManagement", method = RequestMethod.POST)
+	 @ResponseBody  Response<String> removeAssocateAssingAssetManagement(@RequestParam(value = "assignAssetId", required = false) Long assignAssetId,HttpServletRequest request) throws Exception {
 		 
 		    Response<String> response = new Response<>();
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -492,6 +492,42 @@ public class BackOfficeRestController {
 			return response;
 	 }
 	
+	 
+	 @RequestMapping(value = "/removeAssetManagement", method = RequestMethod.POST)
+	 @ResponseBody  Response<String> removeAssetManagement(@RequestParam(value = "assetId", required = false) Long assetId,HttpServletRequest request) throws Exception {
+		 
+		 Response<String> response = new Response<>();
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			try {
+				if (loginUser != null) {
+					Asset asset = assetService.getAssetById(assetId);
+					
+					if(asset != null){
+						asset.setStatus(Constants.RECORD_INACTIVE);
+						assetService.saveAsset(asset);
+						
+						List<AssetAssign> assetList =  assetService.getAssignAssetListByAssetId(asset.getId());
+						for(AssetAssign aa :assetList) {
+						  assetService.deleteAssignAssetByAssignId(aa);
+						}
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());	
+				}
+				}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());	
+				}
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			return response;
+	 }
+	 
 	/**
 	 * @author Prasad Salina
 	 * @param request

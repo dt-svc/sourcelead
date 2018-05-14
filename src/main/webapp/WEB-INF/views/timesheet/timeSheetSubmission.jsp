@@ -241,7 +241,7 @@
 			<div id="timesheetDivByTab">
 				<div class="project_tabs">
 					<div id="tab-1" class="project_tabs_inn" style="display: block;">
-						<div class="timesheet_tableNew overflow_inherint">
+						<div class="timesheet_tableNew">
 						   <input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='${timesheetSubmissionDTO.maxRowCount > 0 ? timesheetSubmissionDTO.maxRowCount : 1}' />
 							<table id="timesheet" cellspacing="0" cellpadding="0">
 								<tbody>
@@ -1333,7 +1333,12 @@ function addTimeSheetRow(projectId) {
 	  		    	    	for (var i=0; i<json.length; i++)
 	  					 	{
 	  			        		var opt = json[i];
-	  			        		result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.taskName+"</option>";
+	  			        		if(opt.generatedId != null && opt.generatedId !='undefined' && opt.generatedId !=''){
+	  			        			result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.generatedId+"-"+opt.taskName+"</option>";
+	  			        		}else{
+	  			        			result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.taskName+"</option>";
+	  			        		}
+	  			        		
 	  						}
 	  		    	    	
  				    	 	$("#"+localId).append(result);

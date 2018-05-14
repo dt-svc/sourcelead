@@ -451,9 +451,8 @@
     --%>
 <script type="text/javascript">
 	function storeCandidate() {
-		var candidateId = '${candidateId}'
+		var candidateId = '${SourceLeadWeb_candidateId}';
 		rateValidations();
-		
 		var validationSettings = {
 				errorMessagePosition : 'element',
 				borderColorOnError : '',
@@ -687,33 +686,33 @@ function getDesignationType(designationType){
 <script>
 
 function rateValidations(){
+	
 var rateType = document.getElementById("rateType").value; 
-if(rateType != null && rateType != ""){
-	 $('#expectedRate').removeAttr('data-validation-optional');
-	 $('#expectedRate').attr("data-validation","required"); 
-}else{
-	 $('#expectedRate').removeAttr('data-validation');
-	 $('#expectedRate').attr("data-validation-optional","true");
-	 $('#rateType').removeAttr('data-validation');
-	 $('#rateType').attr("data-validation-optional","true"); 
-} 
+	
+	if(rateType != null && rateType != ""){
+		 $('#expectedRate').removeAttr('data-validation-optional');
+		 $('#expectedRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
+	}else{
+		 $('#expectedRate').removeAttr('data-validation');
+		 $('#expectedRate').attr("data-validation-optional","true");
+		 $('#rateType').removeAttr('data-validation');
+		 $('#rateType').attr("data-validation-optional","true"); 
+	} 
 
 var expectedRate = document.getElementById("expectedRate").value; 
-if(expectedRate != null && expectedRate != ""){
-	
-	 $('#rateType').removeAttr('data-validation-optional');
-	 $('#rateType').attr("data-validation","required"); 
-}else{
-$('#rateType').removeAttr('data-validation');
-$('#rateType').attr("data-validation-optional","true"); 
-}
-
-
+	if(expectedRate != null && expectedRate != ""){
+		 $('#rateType').removeAttr('data-validation-optional');
+		 $('#rateType').attr("data-validation","required"); 
+		 $('#expectedRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
+	}else{
+		$('#rateType').removeAttr('data-validation');
+		$('#rateType').attr("data-validation-optional","true"); 
+	}
 
 var currentRateType = document.getElementById("currentRateType").value; 
 	if(currentRateType != null && currentRateType != ""){
 		$('#currentRate').removeAttr('data-validation-optional');
-		$('#currentRate').attr("data-validation","required"); 
+		$('#currentRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
 	}else{
 		$('#currentRate').removeAttr('data-validation');
 	 	$('#currentRate').attr("data-validation-optional","true"); 
@@ -721,18 +720,14 @@ var currentRateType = document.getElementById("currentRateType").value;
 	 	$('#currentRateType').attr("data-validation-optional","true"); 
 	} 
 
-
 var currentRate = document.getElementById("currentRate").value; 
 	 if(currentRate != null && currentRate != ""){
-		
 		 $('#currentRateType').removeAttr('data-validation-optional');
 		 $('#currentRateType').attr("data-validation","required"); 
-		 
+		 $('#currentRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
 	 }else{
-		 
-			 $('#currentRateType').removeAttr('data-validation');
-			 $('#currentRateType').attr("data-validation-optional","true"); 
-	 
+		 $('#currentRateType').removeAttr('data-validation');
+		 $('#currentRateType').attr("data-validation-optional","true"); 
 	 }
 	 
 }

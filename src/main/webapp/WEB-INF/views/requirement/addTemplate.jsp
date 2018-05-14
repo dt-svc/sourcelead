@@ -4,6 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <style type="text/css">
 .pras.req-title p{
 bottom:-14px;
@@ -502,10 +503,9 @@ width: 100% !important;
 	       $("#state").on('change', function (e) {
 	    	   getCities();
 	       });
-		       
 	       
            
-            //Adding Customized Educations to the list
+/*             //Adding Customized Educations to the list
 	        var selectone, chosenone;
 	        selectone = $("#education");
 	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
@@ -558,7 +558,7 @@ width: 100% !important;
 				        		
 			        }
 		    	 }
-		    });
+		    }); */
 		    
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
@@ -569,6 +569,15 @@ width: 100% !important;
 			})
 			
 </script>
+
+
+ <script>
+	       $(function() { 
+	     	  tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education');
+	     	  tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+	     	});
+ </script>
+
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
 
 <script>

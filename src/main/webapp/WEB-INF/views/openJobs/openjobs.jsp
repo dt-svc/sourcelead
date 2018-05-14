@@ -44,7 +44,11 @@
 <link rel="stylesheet"3
 	href="/resources/css/timesheet.css?staticTime=${staticTime}"
 	type="text/css">
-
+<style type="text/css">
+.jobDesc b {
+display: inline-block;
+}
+</style>
 <script
 	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE"
 	type="text/javascript"></script>
@@ -1007,18 +1011,14 @@ function clearFilters(){
 <script>
 	function getDropDownCount() {
 		var selectedExperience = '${openJobsExperience}';
-		if(selectedExperience == null || selectedExperience == '' || selectedExperience == 'undefined'){
-			selectedExperience = 0;
-		}
-		
 		var i = "";
 		result = "";
 		result = result
 				+ '<select class="searchHome searchHomeE" id="openJobsExperienceId">';
 		result = result
 				+ '("<option selected value="">--Select Experience--</option>")';
-		for (var i = 1; i <= 25; i++) {
-			if(i == selectedExperience){
+		for (var i = 0; i <= 25; i++) {
+			if(selectedExperience != null && selectedExperience != '' && selectedExperience != 'undefined' && (parseInt(i) == parseInt(selectedExperience))){
 				result = result + '("<option selected value='+i+'>' + i + '</option>")';
 			}
 			else{
@@ -1311,15 +1311,16 @@ function prepareOpenJobsElkList(data,offset){
 				}else{
 					rateType ="--";
 				}
-				
 				if(requirements.minExperience != null && requirements.minExperience != '' && requirements.minExperience != 'undefined' && requirements.maxExperience != null && requirements.maxExperience != '' && requirements.maxExperience != 'undefined'){
 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
+				}else if(requirements.minExperience != null && requirements.minExperience != '' && requirements.minExperience != 'undefined'){
+					experience = requirements.minExperience+" Years";
 				}else if(requirements.maxExperience != null && requirements.maxExperience != '' && requirements.maxExperience != 'undefined'){
-					experience = requirements.maxExperience+" Years";
+					experience = "0-"+requirements.maxExperience+" Years";
 				}else{
 					experience = 'No Data';
 				}
-				
+	
 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
 					location = requirements.state+", "+requirements.country;
 				}else{
@@ -1639,6 +1640,7 @@ function getOpenJobsRequirementSummary(requirementsUUID){
 		    	if(json.requirementOrgName != null && json.requirementOrgName != '' && json.requirementOrgName !='undefined'){
 				result = result +'<input type="hidden" id="locationId" value="'+json.orgLocationId.id+'"/>';
 				/* result = result +'	<h4 onClick="getPostedOrgJobs();">'+json.requirementOrgName+'</h4>'; */
+				result = result +' <div class="clearfix"></div>';
 				result = result +'<a target="_blank" href="'+sourceleadUrl+'/ws/'+json.requirementOrgName+'-'+json.orgLocationId.id+'"><h4 class="orgLink">'+json.requirementOrgName+'</h4></a>';
 				description =  description+'Posted By :'+json.requirementOrgName+";";
 		    	}else{

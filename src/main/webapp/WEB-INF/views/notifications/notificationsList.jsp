@@ -86,7 +86,7 @@ window.onload = function () {
                 </div>
               </div>
               <div class="clearfix"></div>
-			<div class="notification-table mt" id="notificationListDiv">
+			<div class="notification-table mt datatable_filter"  id="notificationListDiv">
                 
               </div>
 			</div>
@@ -220,7 +220,6 @@ function notificationPagination(){
     $('#notificationList').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": false,
     	"oLanguage": {

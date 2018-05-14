@@ -623,8 +623,8 @@ function invoicePagination(url){
 				result = result +'     <div class="tblminwidth-90">';
 				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
 				 if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected" ){
-					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
-						result = result +'  <div id="popupDiv'+report.id+'" class="invoicePopRg"></div>';
+					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
+						result = result +'  <div id="popupDiv'+report.invoiceUUID+'" class="invoicePopRg"></div>';
 				} 
 				result = result +'  </div> ';
 				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
@@ -632,7 +632,7 @@ function invoicePagination(url){
 						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="text-primary primary pull-left" >Receive</span>   ';
 						}else if(report.invoiceStatus == "DRAFT"){
-							result = result +'           <span class="successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Invoice" onClick="deleteInvoice('+report.id+');";></i>';	
+							result = result +'           <span class="successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Invoice" onClick="deleteInvoice(\''+report.invoiceUUID+'\');";></i>';	
 						}else if(report.invoiceStatus == "Rejected"){
 							result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';	
 						}else{
@@ -641,7 +641,7 @@ function invoicePagination(url){
 							
 					}else{
 						if(report.invoiceStatus == "Linked"){
-							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
+							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 						}else{
 							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
 						}
@@ -651,17 +651,19 @@ function invoicePagination(url){
 						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class=" primary pull-left">paid</span>   ';	
 						}else{
-							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">pay</span> </td>';
+							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
 						}
 						
 					}else{
 						if(report.invoiceStatus == "Rejected"){
 							result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';	
 						}else if(report.invoiceStatus == "Linked"){
-							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice('+report.id+')">UnLink</a>  ';
+							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 						}else{
 							result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
-						}
+
+						}                                                                         
+
 						
 					}
 				}
@@ -1579,7 +1581,7 @@ function generateAutomaticInvoice(){
             	  $("#invoiceLoading").removeAttr("style");
 					$("#selector1").removeAttr("style");
 	    			$("#selector1").css("display", "block");
-	    			$("#msgDiv").html(json.data+" Invoice(s) Generated Successfully.");
+	    			$("#msgDiv").html(json.object.count+" Invoice(s) Generated Successfully.");
 					msgFadein();
             	 location.replace(sourceleadUrl+"/invoiceList");	            	 
         },

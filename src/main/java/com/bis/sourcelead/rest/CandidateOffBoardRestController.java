@@ -680,19 +680,16 @@ public class CandidateOffBoardRestController {
 			throws Exception {
 		Response<String> response = new Response<>();
 		try {
-			OffboardCheckList checkList = offboardCheckListService.getOffboardCheckListByTemplateId(templateId);
-			if (null != checkList) {
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
-				response.setObject(checkList.getCheckListJsonString());
-			}
-			/*
-			 * else { return null; }
-			 */
-		} catch (Exception e) {
-			response.setResponse(Result.AWKWARD.name());
-			response.setResponseMessage(Result.AWKWARD.getValue());
-			logger.error(ExceptionUtils.getFullStackTrace(e));
+				OffboardCheckList checkList = offboardCheckListService.getOffboardCheckListByTemplateId(templateId);
+				if (null != checkList) {
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+					response.setObject(checkList.getCheckListJsonString());
+				}
+		 }catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return response;
 	}
@@ -993,7 +990,7 @@ public class CandidateOffBoardRestController {
 						documents.setCreatedBy(loginUser.getUserCode());
 						documents.setUpdatedDate(CommonUtil.currentDate());
 						documents.setUpdatedBy(loginUser.getUserCode());
-						offBoardingDocumentsService.saveOffBoardingDocuments(templateDocument);
+						offBoardingDocumentsService.saveOffBoardingDocuments(documents);
 					}
 				}
 				// Offboard Package documetns saving....
@@ -1038,7 +1035,7 @@ public class CandidateOffBoardRestController {
 						documents.setCreatedBy(loginUser.getUserCode());
 						documents.setUpdatedDate(CommonUtil.currentDate());
 						documents.setUpdatedBy(loginUser.getUserCode());
-						offBoardingDocumentsService.saveOffBoardingDocuments(templateDocument);
+						offBoardingDocumentsService.saveOffBoardingDocuments(documents);
 					}
 				}
 				response.setObject("success");
