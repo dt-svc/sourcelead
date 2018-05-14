@@ -28,126 +28,127 @@ import com.bis.sourcelead.util.ReportsUtil;
  * @date: 27-May-2016
  */
 
+
 @Service
 public class UserLoginLogoutSessionServiceImpl implements UserLoginLogoutSessionService {
 
 
-	@Autowired
-	private UserLoginLogoutSessionDao userLoginLogoutSessionDao;
-	
-	@Autowired
-	ActionHistoryService actionHistoryService;
-	
-	@Autowired
-	CommonUtil commonUtil;
-	
-	@Autowired
-	ReportsUtil reportsUtil;
+    @Autowired
+    private UserLoginLogoutSessionDao userLoginLogoutSessionDao;
+    
+    @Autowired
+    ActionHistoryService actionHistoryService;
+    
+    @Autowired
+    CommonUtil commonUtil;
+    
+    @Autowired
+    ReportsUtil reportsUtil;
 
-	@Override
-	public UserLoginLogoutSession storeUserLoginLogoutSession(UserLoginLogoutSession userLoginLogoutSession) {
-		return userLoginLogoutSessionDao.storeUserLoginLogoutSession(userLoginLogoutSession);
-	}
+    @Override
+    public UserLoginLogoutSession storeUserLoginLogoutSession(UserLoginLogoutSession userLoginLogoutSession) {
+        return userLoginLogoutSessionDao.storeUserLoginLogoutSession(userLoginLogoutSession);
+    }
 
-	@Override
-	public UserLoginLogoutSession getLastLoginRecord(Long userId) {
-		return userLoginLogoutSessionDao.getLastLoginRecord(userId);
-	}
-	
-	@Override
-	public UserLoginLogoutSession getUserLoginLogoutSessionById(Long userSessionId) {
-		return userLoginLogoutSessionDao.getUserLoginLogoutSessionById(userSessionId);
-	}
-	
-	@Override
-	public UserLoginLogoutSession getUserLoginLogoutSessionByActionUUID(String actionUUID) {
-		return userLoginLogoutSessionDao.getUserLoginLogoutSessionByActionUUID(actionUUID);
-	}
+    @Override
+    public UserLoginLogoutSession getLastLoginRecord(Long userId) {
+        return userLoginLogoutSessionDao.getLastLoginRecord(userId);
+    }
+    
+    @Override
+    public UserLoginLogoutSession getUserLoginLogoutSessionById(Long userSessionId) {
+        return userLoginLogoutSessionDao.getUserLoginLogoutSessionById(userSessionId);
+    }
+    
+    @Override
+    public UserLoginLogoutSession getUserLoginLogoutSessionByActionUUID(String actionUUID) {
+        return userLoginLogoutSessionDao.getUserLoginLogoutSessionByActionUUID(actionUUID);
+    }
 
-	@Override
-	public boolean validatePreviouslyAuthenticatedByUserIdAndIpAddress(String ipAddress, Long userId)
-	{
-		return userLoginLogoutSessionDao.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress, userId);
-	}
+    @Override
+    public boolean validatePreviouslyAuthenticatedByUserIdAndIpAddress(String ipAddress, Long userId)
+    {
+        return userLoginLogoutSessionDao.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress, userId);
+    }
 
-	@Override
-	public ResponseList<UsersUsageReportDTO> getMultipleIps(UsersUsageReportDTO usersUsageReportDTO, OrgLocations orgLocation)throws Exception
-	{
-		
-		Date[] freqDates = new Date[2];
-		if("Custom".equalsIgnoreCase(usersUsageReportDTO.getCustomDates())){
-			freqDates[0] = commonUtil.getDateFormat(usersUsageReportDTO.getFromDate());
-			freqDates[1] = commonUtil.getDateFormat(usersUsageReportDTO.getToDate());
-		}else{
-			freqDates = reportsUtil.getJobFilterDate(usersUsageReportDTO.getCustomDates(),orgLocation);
-		}
-		ResponseList<UsersUsageReportDTO> responseList = new ResponseList<>();
-		usersUsageReportDTO.setFreqDates(freqDates);
-		List<String> iplist =  userLoginLogoutSessionDao.getMultipleIps(usersUsageReportDTO);
-		List<UsersUsageReportDTO> list = new ArrayList<>();
-		for(String str : iplist){
-			UsersUsageReportDTO usagedto = new UsersUsageReportDTO();
-			usagedto.setIpAddress(str);
-			List<Long> ipAddressIdsList = getUsersListByIpAddress(str);
-			usagedto.setNoOfUsers(ipAddressIdsList.size());
-			int totalActivities = 0;
-			for (Long id : ipAddressIdsList) {
-				try {
-					UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(id);
-					totalActivities += Integer.parseInt(actionHistory.getNoOfActivities());
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-			}
-			usagedto.setNoOfActivities(String.valueOf(totalActivities)); 
-			
-			
-//			UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
-//			usagedto.setNoOfActivities(actionHistory.getNoOfActivities());
-			
-			list.add(usagedto);
-		}
-		responseList.setRecordsFiltered(iplist.size());
-		responseList.setRecordsTotal(iplist.size());
-		responseList.setData(list);
-		return responseList;
-	}
+    @Override
+    public ResponseList<UsersUsageReportDTO> getMultipleIps(UsersUsageReportDTO usersUsageReportDTO, OrgLocations orgLocation)throws Exception
+    {
+        
+        Date[] freqDates = new Date[2];
+        if("Custom".equalsIgnoreCase(usersUsageReportDTO.getCustomDates())){
+            freqDates[0] = commonUtil.getDateFormat(usersUsageReportDTO.getFromDate());
+            freqDates[1] = commonUtil.getDateFormat(usersUsageReportDTO.getToDate());
+        }else{
+            freqDates = reportsUtil.getJobFilterDate(usersUsageReportDTO.getCustomDates(),orgLocation);
+        }
+        ResponseList<UsersUsageReportDTO> responseList = new ResponseList<>();
+        usersUsageReportDTO.setFreqDates(freqDates);
+        List<String> iplist =  userLoginLogoutSessionDao.getMultipleIps(usersUsageReportDTO);
+        List<UsersUsageReportDTO> list = new ArrayList<>();
+        for(String str : iplist){
+            UsersUsageReportDTO usagedto = new UsersUsageReportDTO();
+            usagedto.setIpAddress(str);
+            List<Long> ipAddressIdsList = getUsersListByIpAddress(str,usersUsageReportDTO.getOrgId());
+            usagedto.setNoOfUsers(ipAddressIdsList.size());
+            int totalActivities = 0;
+            for (Long id : ipAddressIdsList) {
+                try {
+                    UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(id);
+                    totalActivities += Integer.parseInt(actionHistory.getNoOfActivities());
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                
+            }
+            usagedto.setNoOfActivities(String.valueOf(totalActivities));
+            
+            
+//            UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
+//            usagedto.setNoOfActivities(actionHistory.getNoOfActivities());
+            
+            list.add(usagedto);
+        }
+        responseList.setRecordsFiltered(iplist.size());
+        responseList.setRecordsTotal(iplist.size());
+        responseList.setData(list);
+        return responseList;
+    }
 
-	private List<Long> getUsersListByIpAddress(String str)
-	{
-		return userLoginLogoutSessionDao.getUsersListByIpAddress(str);
-	}
+    private List<Long> getUsersListByIpAddress(String str, List<Long> list)
+    {
+        return userLoginLogoutSessionDao.getUsersListByIpAddress(str,list);
+    }
 
-	@Override
-	public ResponseList<UsersUsageReportDTO> getUsersByipAddress(UsersUsageReportDTO usersUsageReportDTO)
-	{
-		ResponseList<UsersUsageReportDTO> responseList = new ResponseList<>();
-		List<UserLoginLogoutSession> ipUserslist =  userLoginLogoutSessionDao.getUsersByipAddress(usersUsageReportDTO);
-		List<UsersUsageReportDTO> list = new ArrayList<>();
-		for(UserLoginLogoutSession userLoginLogout : ipUserslist){
-			UsersUsageReportDTO userusagedto = new UsersUsageReportDTO();
-			
-			StringBuilder sb = new StringBuilder();
-			if(StringUtils.isNotBlank(userLoginLogout.getUserId().getLastName())){
-				userusagedto.setUserName(sb.append(userLoginLogout.getUserId().getFirstName()).append(" ").append(userLoginLogout.getUserId().getLastName()).toString());
-			}else{
-				userusagedto.setUserName(sb.append(userLoginLogout.getUserId().getFirstName()).toString());
-			}
-			
-			userusagedto.setUserEmail(userLoginLogout.getUserId().getEmail());
-			
-			if(StringUtils.isNotBlank(userLoginLogout.getUserId().getMobilePhone())){
-			  userusagedto.setMobilePhone(userLoginLogout.getUserId().getMobilePhone());
-			}
-			
-			list.add(userusagedto);
-		}
-		responseList.setRecordsFiltered(ipUserslist.size());
-		responseList.setRecordsTotal(ipUserslist.size());
-		responseList.setData(list);
-		return responseList;
-	}
-	
+    @Override
+    public ResponseList<UsersUsageReportDTO> getUsersByipAddress(UsersUsageReportDTO usersUsageReportDTO)
+    {
+        ResponseList<UsersUsageReportDTO> responseList = new ResponseList<>();
+        List<UserLoginLogoutSession> ipUserslist =  userLoginLogoutSessionDao.getUsersByipAddress(usersUsageReportDTO);
+        List<UsersUsageReportDTO> list = new ArrayList<>();
+        for(UserLoginLogoutSession userLoginLogout : ipUserslist){
+            UsersUsageReportDTO userusagedto = new UsersUsageReportDTO();
+            
+            StringBuilder sb = new StringBuilder();
+            if(StringUtils.isNotBlank(userLoginLogout.getUserId().getLastName())){
+                userusagedto.setUserName(sb.append(userLoginLogout.getUserId().getFirstName()).append(" ").append(userLoginLogout.getUserId().getLastName()).toString());
+            }else{
+                userusagedto.setUserName(sb.append(userLoginLogout.getUserId().getFirstName()).toString());
+            }
+            
+            userusagedto.setUserEmail(userLoginLogout.getUserId().getEmail());
+            
+            if(StringUtils.isNotBlank(userLoginLogout.getUserId().getMobilePhone())){
+              userusagedto.setMobilePhone(userLoginLogout.getUserId().getMobilePhone());
+            }
+            
+            list.add(userusagedto);
+        }
+        responseList.setRecordsFiltered(ipUserslist.size());
+        responseList.setRecordsTotal(ipUserslist.size());
+        responseList.setData(list);
+        return responseList;
+    }
+    
 }
