@@ -135,7 +135,7 @@
                    <div class="col-md-9">
                    <div class="row">
                     <div class="col-md-6 paddingRight">
-                    <input type="text" class="form-control" id="phone" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
+                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                      <input type="hidden" name="country" id="CountryAutocomplete" value ="${SourceLeadWeb_country}" />
                     </div>
@@ -667,11 +667,11 @@ function getEmployeementType(designationType){
 		        		}
 		        		
 		        		if(json.mobilePhone != null && json.mobilePhone != ''){
-		        			$("#phone").val(json.mobilePhone);
-				        	$("#phone").attr("readonly", "readonly");
+		        			$("#phoneNumber").val(json.mobilePhone);
+				        	$("#phoneNumber").attr("readonly", "readonly");
 		        		}else{
-		        			 $("#phone").removeAttr("readonly", "readonly");
-		        			 //$("#phone").val('');
+		        			 $("#phoneNumber").removeAttr("readonly", "readonly");
+		        			 //$("#phoneNumber").val('');
 		        		}
 		        		$("#loading").removeAttr('style');
 		        		
@@ -686,8 +686,8 @@ function getEmployeementType(designationType){
 		 $("#lastName").attr("disabled", false);
 		 $("#lastName").val('');
 		 
-		 $("#phone").attr("disabled", false);
-		 $("#phone").val('');
+		 $("#phoneNumber").attr("disabled", false);
+		 $("#phoneNumber").val('');
 		 
 		
 		 $("#role").val('');
@@ -728,11 +728,12 @@ function getAssociateUserDetails(){
 	        success: function(data) {
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
+
 	        		  $("#associateId").val(json['id']);
 	        		  $("#FirstName").val(json['firstName']);
 	        		  $("#lastName").val(json['lastName']);
 	        		  $("#EmailId").val(json['email']);
-	        		  $("#phone").val(json['mobilePhone']);
+	        		  $("#phoneNumber").val(json['mobilePhone']);
 	        		  $("#designationType").val(json['designationType']);
 	        		  if(json['currentRate'] != null && json['currentRate'] !='undefined' && json['currentRate'] !=''){
 	        		  $("#Rate").val(json['currentRate']);
