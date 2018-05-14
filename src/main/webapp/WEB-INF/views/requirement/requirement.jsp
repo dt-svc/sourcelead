@@ -33,8 +33,13 @@ $(document).ready(function() {
 	zipcodeMask('${requirement.country}','ReqZipCode');
 });
 </script>
+<script>
+  $(function() { 
+		tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+		tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education Options');
 
-
+	});
+ </script>
 <script type="text/javascript">
 		window.onload = function () {
 			getNoticePeriodList();
@@ -1534,15 +1539,16 @@ $(document).ready(function () {
 <script>
 function changeValidationType() {
 	var isVisible	= $("div[name=fieldVisible]").attr("data-visible");
-	
 	if(isVisible == 'N'){
 		$("div[name=fieldVisible] input").each(function() {
 			if($(this).attr('data-check') && ($(this).attr('data-check') === true || $(this).attr('data-check') === "true")){
-				if($(this).attr('data-validation') && $(this).attr('data-validation') === "required") {
+				if($(this).attr('data-validation') && $(this).attr('data-validation').indexOf("required") !== -1) {
 					$(this).attr('data-validation-optional', 'true');
+					$(this).attr('data-valid1', $(this).attr('data-validation'))
 					$(this).removeAttr('data-validation');
 				} else if($(this).attr('data-validation-optional')) {
-					$(this).attr('data-validation', 'required');
+					$(this).attr('data-validation', $(this).attr('data-valid1'));
+					$(this).removeAttr('data-valid1');
 					$(this).removeAttr('data-validation-optional');
 				}
 			}
@@ -1861,14 +1867,6 @@ function storeTeam(){
 		};
 	})(jQuery);
 </script>
-
-<script>
-  $(function() { 
-		tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
-		tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education Options');
-
-	});
- </script>
 
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->

@@ -8,8 +8,9 @@
 
 <style type="text/css">
 .chosen-container {
-    width: 100% !important;
+    width: 100% !important;        
 }
+
 .fullWid {width: 100% !important;}
 .viewontracts .tab-content {
 background-color: #fff;

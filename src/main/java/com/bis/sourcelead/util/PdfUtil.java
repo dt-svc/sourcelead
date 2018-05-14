@@ -795,7 +795,7 @@ public class PdfUtil {
         try {
         	    Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 		        PdfPCell cell1 = new PdfPCell(new Phrase(title,font));
-		        cell1.setColspan(6);
+		        cell1.setColspan(8);
 		        headerCellStyle(cell1);
 	            table.addCell(cell1);
 			table.setWidths(columnWidths);

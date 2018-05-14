@@ -6,8 +6,8 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script type="text/javascript">
-$(document).ready(function(){
-	
+$(document).ready(function(){           
+	                   
 	var status='${status}'
 	var contractType='${contractType}'
 	if(status == "waiting"){

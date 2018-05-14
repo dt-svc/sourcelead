@@ -5,7 +5,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
-.edit-details {
+.edit-details {                 
 text-align:left;
 }
 .edit-details ul {

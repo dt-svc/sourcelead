@@ -616,7 +616,7 @@ function getEmailDetails(uuid,type){
 	   			result = result +'</div>';
 	   			result = result +'</div>'; 
 	   			  
-	   			result = result +'<div class="mailbox-read-message clearfix borderbottm-none">';
+	   			result = result +'<div class="mailbox-read-message clearfix borderbottm-none wordWrap-breakword">';
 	   			
 	   		 if(opt.salutation != null && opt.salutation != 'undefined' && opt.salutation != ""){
 	   			result = result +'<p>'+opt.salutation+',</p>';

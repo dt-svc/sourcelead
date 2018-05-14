@@ -175,7 +175,8 @@ display: none;
                              <option value="openHotlist">Open Hotlist</option>
                            <!-- <option value="hotlistConsultants">Hotlist Associates</option> -->
                           </select>
-                        </div>                    
+                        </div>
+                        <div id="popupId"></div>                    
                      <div id="candidatesList" class="mailFil datatable_filter"></div>
                      <div id="candidatesLoading"></div>
                     </div>
@@ -963,8 +964,8 @@ function getCandidates(candidatesListType){
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="clearfix">';
 	                 	 result = result +'   <div class="pull-right mr">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="getCheckedCandidates();">Assign</button>';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>';
+	                 	 result = result +'     <button class="btn btn-primary" type="button" onClick="getCheckedCandidates();">Assign</button>';
+	                 	 result = result +'     <button id="closePopUp" class="btn btn-default" onClick="removeMessage();" type="button">Cancel</button>';
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 $("#candidatesList").empty(); 
@@ -1002,6 +1003,12 @@ function getCandidates(candidatesListType){
             
        }); 
   } 
+</script>
+<script>
+	function removeMessage() {
+		$('#popupId').parent().find('p.jquery_form_error_message').remove();
+		$("#requirement").modal('hide');
+	}
 </script>
 
 
@@ -1201,6 +1208,7 @@ function loadHotMailBoxDetails(UUID){
 <script>
 function getCheckedCandidates(){
 	
+	$('#popupId').parent().find('p.jquery_form_error_message').remove();
 	var oTable = $('#candidates').dataTable();
 	var rowcollection =  oTable.$("input[name='candidatesIds[]']:checked", {"page": "all"});
 	
@@ -1210,13 +1218,19 @@ function getCheckedCandidates(){
 		 var checkbox_value = $(elem).val().split(",");
 		 internalOutput = internalOutput+"<option value='" +checkbox_value[0]+ "' selected>"+checkbox_value[1]+"</option>";
 	});
-	 
-	  
-	    $("#selectedCandidates").append(internalOutput);
-		$("#selectedCandidates").trigger("chosen:updated");
-		
-		$("input[name='candidatesIds[]']:checked").removeAttr('checked');
-		$('#checkAllCandidates').removeAttr('checked'); 
+	    if($("input[name='candidatesIds[]']:checked").length == 0){
+	    	$("#popupId").after("<p class='jquery_form_error_message'><span>Select Atleast One Candidate/Associates</span>");
+	    }else{
+	    	$("#requirement").modal('hide');
+	    	$('#popupId').parent().find('p.jquery_form_error_message').remove();
+	    }
+	    	$("#selectedCandidates").append(internalOutput);
+			$("#selectedCandidates").trigger("chosen:updated");
+			
+			$("input[name='candidatesIds[]']:checked").removeAttr('checked');
+			$('#checkAllCandidates').removeAttr('checked'); 
+	    
+	    
 		
 }
 </script>
