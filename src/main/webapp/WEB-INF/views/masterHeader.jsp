@@ -777,6 +777,8 @@ function preventTabkey(e){
                        <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value='${sourceleadUrl}/emailTemplates'/>" ><i class="fa fa-key" aria-hidden="true"></i>Email Templates</a></li>
                        </sec:authorize>
+                       
+                       <li><a href="<c:url value='${sourceleadUrl}/payrollConfiguration'/>" ><i class="fa fa-key" aria-hidden="true"></i>Payroll Configuration</a></li>
 	              </ul>
 	            </div>
 	          </li>
