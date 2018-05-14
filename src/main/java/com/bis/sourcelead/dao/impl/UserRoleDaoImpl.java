@@ -1131,9 +1131,9 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			countMap.put("NOT_LOGGEDIN", notLoggedinUserList.size());
 			
 			List<String> ipList = new ArrayList<>();
-			String query3 = "select uLoginSession.ipaddress from UserLoginLogoutSession uLoginSession group by uLoginSession.ipaddress";
-			ipList = session.createQuery(query3).list();
-			countMap.put("MULTIPLE_IPS", ipList.size());
+            String query3 = "select userLogin.ipaddress from UserLoginLogoutSession userLogin where userLogin.userId.id IN (select userRole.user.id from UserRole userRole where  userRole.orgLocations.org.id IN (:orgList)) group by userLogin.ipaddress";
+            ipList = session.createQuery(query3).setParameterList("orgList", orgId).list();
+            countMap.put("MULTIPLE_IPS", ipList.size());
 			
 			
 		}else{

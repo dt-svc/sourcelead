@@ -71,6 +71,7 @@ z-index: 1000 !important;
                             </div>
                             <div class="clearfix mr">
                               <button type="submit" id="add_user"  class="btn btn-sm btn-primary pull-right">Add</button>
+                              <button type="button" onclick="removeAddUserPopUp();flushUser();" class="btn btn-sm btn-primary pull-right mr">Cancel</button>
                             </div>
                           </form:form>  
                             

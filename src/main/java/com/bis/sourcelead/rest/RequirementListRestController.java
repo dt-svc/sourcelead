@@ -1831,10 +1831,10 @@ public class RequirementListRestController {
 				
 				  //requirementPriority
 		
-						if(StringUtils.isNotEmpty(search.getRequirementStatus()) || StringUtils.isNotEmpty(search.getFilterStatus())){
+						if(StringUtils.isNotEmpty(search.getFilterPriority()) || StringUtils.isNotEmpty(search.getFilterPriority())){
 							String priority = "";
-							if(StringUtils.isNotEmpty(search.getRequirementStatus())){
-								priority = search.getRequirementStatus();
+							if(StringUtils.isNotEmpty(search.getFilterPriority())){
+								priority = search.getFilterPriority();
 							}
 							else{
 								priority = search.getFilterPriority();
@@ -2094,8 +2094,8 @@ public class RequirementListRestController {
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("generatedId", keywd));
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("manager", keywd));
 			QueryBuilderList.add(QueryBuilders.matchPhraseQuery("requirementStatus", keywd));
-			Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
-			if(matcher.find()){
+			//Matcher matcher = Pattern.compile("\\d+").matcher(keywd);
+			if(StringUtils.isNumeric(keywd)){
 //				Float expYears = Float.valueOf(matcher.group());
 				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("minExperience", keywd));
 				QueryBuilderList.add(QueryBuilders.matchPhraseQuery("maxExperience", keywd));
