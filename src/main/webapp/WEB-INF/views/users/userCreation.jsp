@@ -97,7 +97,7 @@
                          <div class="col-md-9">
                            <div class="input-group">
                               <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly">
-                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                              <span class="input-group-addon" onClick="clearDateofJoin();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
                   </div>
@@ -1107,7 +1107,7 @@ function refreshRoleList(){
 	
 
 <script>
-function clearDate(){
+function clearDateofJoin(){
 	$("#DateofJoin").val("");
 	};
 </script>
