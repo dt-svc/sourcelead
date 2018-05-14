@@ -635,4 +635,12 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		
 		return immigrationTemplateFormsList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public ImmigrationTemplateTasks getImmigratonTemplateTasksById(Long id) {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 ImmigrationTemplateTasks immigrationTemplateTasks = (ImmigrationTemplateTasks) session.get(ImmigrationTemplateTasks.class, id);
+	     return immigrationTemplateTasks;
+	}
 }

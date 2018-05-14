@@ -79,4 +79,6 @@ public interface ImmigrationTemplateDao {
     public boolean validateTemplateNameExistance(String templateName, Long templateId);
 
 	List<LookUpData> getLookupDataByTypeAndLocation(String petitionType, String locationVal);
+
+	ImmigrationTemplateTasks getImmigratonTemplateTasksById(Long id);
 }

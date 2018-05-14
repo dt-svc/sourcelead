@@ -60,6 +60,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "DUE_AFTER_MINUTES")
    	private Integer dueAfterMinutes;
 	
+	@Column(name = "DUE_AFTER_DATE")
+   	private Date dueAfterDate;
+	
 	@Column(name = "TASK_REPEAT")
    	private String taskRepeat;
 	
@@ -254,7 +257,12 @@ private static final long serialVersionUID = 1L;
 		this.updatedBy = updatedBy;
 	}
 
-	
-   
+	public Date getDueAfterDate() {
+		return dueAfterDate;
+	}
+
+	public void setDueAfterDate(Date dueAfterDate) {
+		this.dueAfterDate = dueAfterDate;
+	}
 
 }
