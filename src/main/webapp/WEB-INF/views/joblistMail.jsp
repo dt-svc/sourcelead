@@ -361,7 +361,7 @@ function jobListChange(type){
     	result = result +'</div>';
     	result = result +'<div class="clearfix pull-right mr mb">';
      	result = result +'<button class="btn btn-primary"  type="button" id="assignbtnId" onclick="getCheckedJobs();">Add</button>';
-     	result = result +' <button class="btn btn-default" type="button">Close</button>';
+     	result = result +' <button class="btn btn-default" type="button" onclick="removeMessage();">Close</button>';
      	result = result +' </div>'; 
 	    $("#mailBoxJobsList").empty();
 	    $("#mailBoxJobsList").append(result);

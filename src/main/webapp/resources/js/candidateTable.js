@@ -101,7 +101,8 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter;
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
 	  		prepareCandidateList(url);
-//	  		closePop();
+	  		// advanced search pop up close 
+	  		closePop();
 			return true;
 		 }else{ 
 				return false;
