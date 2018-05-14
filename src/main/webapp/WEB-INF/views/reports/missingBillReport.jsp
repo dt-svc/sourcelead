@@ -85,7 +85,7 @@ $(document).ready(function(){
         <div class="clearfix dashboard-widget mt25 col-md-12">
           <div class="clearfix">
           <p class="col-md-2 mb0 margin-top0 padding_left fontSize20">
-         	 	<span class="text-muted">Total:</span><span class="ml"><strong>250</strong></span>
+         	 	<span class="text-muted">Total:</span><span class="ml"><strong>0</strong></span>
          	 </p>
           	<div class="remove_search pull-right">
                   <input placeholder="Search" type="text">
