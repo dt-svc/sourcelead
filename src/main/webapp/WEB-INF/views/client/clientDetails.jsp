@@ -194,22 +194,13 @@ margin-bottom: 15px;
 						}
 						result = result + '</div>';
 						
-						/* for (var key in json.clientCustomFieldlabelNameAndValue) {
-							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>'+key+' :</strong>';
-							if(json.clientCustomFieldlabelNameAndValue != null && json.clientCustomFieldlabelNameAndValue !='' && json.clientCustomFieldlabelNameAndValue !='undefined'){
-								result = result + '<span>'+json.clientCustomFieldlabelNameAndValue[key]+'</span><div class="clearfix"></div>';
-							}else{
-								result = result + '<span> --- </span><div class="clearfix"></div>';
-							}
-							result = result + '</div>';
-						} */
-						
 						if(json.clientCustomFieldlabelNameAndValue != null && json.clientCustomFieldlabelNameAndValue != "" && json.clientCustomFieldlabelNameAndValue != 'undefined'){
 				              $.each(json.clientCustomFieldlabelNameAndValue, function(key, value) {
 				            	  var labelNameAndlabelData = value.split("$");
 				            	  result = result + '	<div class="project_details_cta">';
-				            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">'+labelNameAndlabelData[1]+'</span><div class="clearfix"></div>';
+					            	  if(labelNameAndlabelData[1] != null && labelNameAndlabelData[1] != '' && labelNameAndlabelData[1] !='undefined'){
+					            	  	result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">'+labelNameAndlabelData[1]+'</span><div class="clearfix"></div>';
+					            	  }
 				            	  result = result + '	</div>';
 				              });
 			              }
@@ -574,7 +565,9 @@ function preapareCustomFieldDetails(clientLocationId,orgRelationID,sectionId){
 <script type="text/javascript">
 	function storeClientDetails(orgRelationId,clientLocationId) {
          if ($('#editClient_form').validate(false, validationSettings)){
-             var formData = getFormData("editClient_form");
+            // var formData = getFormData("editClient_form");
+            //for custom fields changed serilized method.
+             var formData = $($('#editClient_form')[0]).serialize();
              var sourceleadUrl ='${sourceleadUrl}';
 		 $.post(sourceleadUrl+"/clientDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+clientLocationId+"&orgRelationId="+orgRelationId, formData, function(data) {
 			 clientDetails(clientLocationId,orgRelationId);
