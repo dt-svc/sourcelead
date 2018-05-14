@@ -14,10 +14,10 @@
 <!-- Content Area -->
 <script>
  $(document).ready(function() {
-	 usageReportList("ACTIVE");
-// 	 getCountList();
-	 getAllOrgs();
-	 
+     usageReportList("ACTIVE");
+//      getCountList();
+     getAllOrgs();
+    
  });
  
  </script>
@@ -35,23 +35,23 @@
       <div class="clearfix"></div>
 <div class="clearfix">
       <div class="ReqRepHead clearfix mb reports-head">
-    		      <div class="col-md-2 pull-left reqListBtn">
+                  <div class="col-md-2 pull-left reqListBtn">
           <a  title="Graph View" id="GView" class="btn btn-default" onclick="usageReportsGraph();"><i class="fa fa-pie-chart"></i></a>
           <a  title="List View" id="LView" class="btn btn-default rAct" onclick="usageReportsShowList();"><i class="fa fa-list"></i></a>
-    		      </div>
-     		<!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
+                  </div>
+             <!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
        
         <div class="col-md-4 col-md-offset-2">
     <div class="dropdown-scroll">
     <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
-		<select class="chosen-select form-control" multiple data-placeholder="Select Org" name="orgId" id="orgs">
-		</select>
-		</sec:authorize>
-		
-		<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')">
-		<input type="hidden" name="orgId" id="orgs" value="${SourceLeadWeb_orgLocations.org.id}">
-		</sec:authorize>
-	</div>
+        <select class="chosen-select form-control" multiple data-placeholder="Select Org" name="orgId" id="orgs">
+        </select>
+        </sec:authorize>
+        
+        <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')">
+        <input type="hidden" name="orgId" id="orgs" value="${SourceLeadWeb_orgLocations.org.id}">
+        </sec:authorize>
+    </div>
         </div>
         
           <div class="col-md-2">
@@ -60,7 +60,7 @@
         <button type="button" class="btn btn-primary mt2  pull-left mr" id="reportCustomize" onclick="usageReportList('ACTIVE');">Customize</button>
         </sec:authorize>
         
-		</div> 
+        </div>
          <div class="col-md-2 dropdown-select">
         <div class="dropdown-select positionRelative">
         <select class="form-control" id="customGraphDates" style= display:none onchange="showCustomFieldsGraph();">
@@ -72,22 +72,22 @@
         <!-- Top Leave Takers Custom Date -->
         
     <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-select" style="display: none; width: 346px;" >
-		<div class="pull-left">
-		<div class="pull-left mr5" style="width: 140px" id="custFromDate1Div">
-		<input value="" name="Date" id="custFromDate1" placeholder="From" class="form-control calendar input-sm" type="text">
-		</div>
-		<div class="pull-left mr5" style="width: 140px" id="custToDate1Div">
-		<input value="" name="Date" id="custToDate1" placeholder="To" class="form-control calendar input-sm" type="text">
-		</div>
-		<button type="button" class="btn btn-primary btn-sm" onclick="validateCustDatesGraph();"><i class="fa fa-search"></i></button>
-		</div>
+        <div class="pull-left">
+        <div class="pull-left mr5" style="width: 140px" id="custFromDate1Div">
+        <input value="" name="Date" id="custFromDate1" placeholder="From" class="form-control calendar input-sm" type="text">
+        </div>
+        <div class="pull-left mr5" style="width: 140px" id="custToDate1Div">
+        <input value="" name="Date" id="custToDate1" placeholder="To" class="form-control calendar input-sm" type="text">
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" onclick="validateCustDatesGraph();"><i class="fa fa-search"></i></button>
+        </div>
     </div>
 <!-- Top Leave Takers Custom Date  -->
       </div>
 
         </div>
      
-<!-- 		<div class="col-md-1"> -->
+<!--         <div class="col-md-1"> -->
 <!--           <div class="btn-group bootstrap_dropdownMenu dropdownPadding"> -->
 <!--             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-download"></i></button> -->
 <!--             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button> -->
@@ -102,7 +102,7 @@
                  <div class="dashboard-widget" >
                  
                  <div id="userUsageReportsListSection">
-                 <div class="positionRelative"> 
+                 <div class="positionRelative">
 <div class="col-md-12 mt">
   <ul class="list-unstyled list-inline col-md-offset-2">
     <li class="col-md-2">
@@ -150,13 +150,13 @@
     <ul>
         <li>
     <div title="Export" class="mrPOP mt10 pull-right" id="mypop"><i class="glyphicon glyphicon-export"></i>
-			     	<div id="exportPop" class="ExpPop" style="left: 0px; display: none;">
-			           <ul>
-			             <li onclick="exportUserUsageReportPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-			     <li onclick="exportUserUsageReportExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
-			    </ul>
-			  </div>
-			</div>
+                     <div id="exportPop" class="ExpPop" style="left: 0px; display: none;">
+                       <ul>
+                         <li onclick="exportUserUsageReportPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+                 <li onclick="exportUserUsageReportExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+                </ul>
+              </div>
+            </div>
     </li>
     <li>
     <div class="col-md-12 dropdown-select">
@@ -172,17 +172,17 @@
         </select>
         <!-- Top Leave Takers Custom Date -->
     <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-selects" style="display: none; width: 346px;" >
-		<div class="pull-left">
-		<div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
-		<input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar input-sm margin-top0" type="text">
-		</div>
-		<div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
-		<input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar input-sm margin-top0" type="text">
-		</div>
-		<button type="button" class="btn btn-primary btn-sm" onclick="validateCustDatesList();"><i class="fa fa-search"></i></button>
-		</div>
+        <div class="pull-left">
+        <div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
+        <input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar input-sm margin-top0" type="text">
+        </div>
+        <div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
+        <input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar input-sm margin-top0" type="text">
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" onclick="validateCustDatesList();"><i class="fa fa-search"></i></button>
+        </div>
     </div>
-<!-- Top Leave Takers Custom Date --> 
+<!-- Top Leave Takers Custom Date -->
       </div>
         </div>
     </li>
@@ -191,20 +191,20 @@
      
   </div>
   <div class="require_wrap_table datatable_filter">
-  
+ 
   <div id="activeDiv"></div>
   <div id="multipleIpsDiv"></div>
-  
-  
+ 
+ 
   </div>
-  
+ 
   </div>
-  
+ 
   <div id="popUp"></div>
-  
+ 
 
-  
-  
+ 
+ 
     
 <!-- <div class="timesheet_out clearfix userlistGrid" id="multipleList" style="display: none">
   <div class="timesheet_head">
@@ -216,7 +216,7 @@
    
    <div id="multipleIpsDiv"></div>
    
-   </div> 
+   </div>
    
    </div> -->
    
@@ -226,106 +226,106 @@
                  
           <div id="useractiveGraph" style="width: 100%; height: 300px; display:none"></div>
         </div>
-      <!-- Tabs html --> 
+      <!-- Tabs html -->
       
       
       
   </section>
-  
+ 
  <script>
  function usageReportsGraph(){
-	 $('#reportCustomize').removeAttr("onclick");
-	 $('#reportCustomize').attr("onclick", "usageReportsGraph()");
-	 $("#custom-select").hide();
+     $('#reportCustomize').removeAttr("onclick");
+     $('#reportCustomize').attr("onclick", "usageReportsGraph()");
+     $("#custom-select").hide();
      $('#custFromDate1').removeAttr('data-validation');
      $('#custToDate1').attr('data-validation',"required");
-	 $("#customGraphDates").show();
-	 $("#customDates").hide();
-	 $("#GView").addClass("rAct");
-	 $("#LView").removeClass("rAct");
-	 $("#useractiveGraph").show();
-	 $("#activeDiv").hide();
-	 $("#userUsageReportsListSection").hide();
-	 
-	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		var fromDate = $("#custFromDate1").val();
-	    var toDate = $("#custToDate1").val();
-	    var sourceleadUrl ='${sourceleadUrl}';
-	    var customGraphDates = $("#customGraphDates").val();
-	    var orgId = $("#orgs").val();
-	    if(orgId != null && orgId != '' && orgId != 'undefined'){
-	    	orgId = $("#orgs").val();
-	    }else{
-	    	orgId = "";
-	    }
-	    var url = sourceleadUrl+"/userUsageGraph?locationId="+orgLocationId+"&customDates="+customGraphDates+"&fromDate="+fromDate+"&toDate="+toDate+"&orgId="+orgId;
-	    $.get(url, function(data) {
-	     prepareAmchart(data);
-		});
+     $("#customGraphDates").show();
+     $("#customDates").hide();
+     $("#GView").addClass("rAct");
+     $("#LView").removeClass("rAct");
+     $("#useractiveGraph").show();
+     $("#activeDiv").hide();
+     $("#userUsageReportsListSection").hide();
+    
+     var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+        var fromDate = $("#custFromDate1").val();
+        var toDate = $("#custToDate1").val();
+        var sourceleadUrl ='${sourceleadUrl}';
+        var customGraphDates = $("#customGraphDates").val();
+        var orgId = $("#orgs").val();
+        if(orgId != null && orgId != '' && orgId != 'undefined'){
+            orgId = $("#orgs").val();
+        }else{
+            orgId = "";
+        }
+        var url = sourceleadUrl+"/userUsageGraph?locationId="+orgLocationId+"&customDates="+customGraphDates+"&fromDate="+fromDate+"&toDate="+toDate+"&orgId="+orgId;
+        $.get(url, function(data) {
+         prepareAmchart(data);
+        });
  }
  
  function usageReportsShowList(){
-	 $("#custom-selects").hide();
-	 $('#reportCustomize').removeAttr("onclick");
-	 $('#reportCustomize').attr("onclick", "usageReportList(\'ACTIVE\')");
+     $("#custom-selects").hide();
+     $('#reportCustomize').removeAttr("onclick");
+     $('#reportCustomize').attr("onclick", "usageReportList(\'ACTIVE\')");
      $('#custFromDate').removeAttr('data-validation');
      $('#custToDate').attr('data-validation',"required");
-	 $("#customGraphDates").hide();
-	 $("#customDates").show();
-	 $("#LView").addClass("rAct");
-	 $("#GView").removeClass("rAct");
-	 $("#useractiveGraph").hide();
-	 $("#activeDiv").show();
-	 $("#userUsageReportsListSection").show();
+     $("#customGraphDates").hide();
+     $("#customDates").show();
+     $("#LView").addClass("rAct");
+     $("#GView").removeClass("rAct");
+     $("#useractiveGraph").hide();
+     $("#activeDiv").show();
+     $("#userUsageReportsListSection").show();
  }
  </script>
-  
+ 
   <script type="text/javascript">
        function usageReportList(userType){
-    	   $("#emptyUserUsageReportsId").val(0);
-    	   $("#userTypeId").val(userType);
-    	    var fromDate = $("#custFromDate").val();
-    	    var toDate = $("#custToDate").val();
-		    var sourceleadUrl ='${sourceleadUrl}';
-	        var orgId = $("#orgs").val();
-		    if(orgId != null && orgId != '' && orgId != 'undefined'){
-		    	orgId = $("#orgs").val();
-		    }else{
-		    	orgId = "";
-		    }
-		    var customDates = $("#customDates").val();
-			var searchValue = $("#dataTableSearch").val();
-			var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-			searchValue = searchValue ? searchValue : "";
-			var url = sourceleadUrl+"/userUsageReportList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userType="+userType+"&orgId="+orgId+"&customDates="+customDates+"&fromDate="+fromDate+"&toDate="+toDate;
-		    prepareUsageReportList(url, userType);
+           $("#emptyUserUsageReportsId").val(0);
+           $("#userTypeId").val(userType);
+            var fromDate = $("#custFromDate").val();
+            var toDate = $("#custToDate").val();
+            var sourceleadUrl ='${sourceleadUrl}';
+            var orgId = $("#orgs").val();
+            if(orgId != null && orgId != '' && orgId != 'undefined'){
+                orgId = $("#orgs").val();
+            }else{
+                orgId = "";
+            }
+            var customDates = $("#customDates").val();
+            var searchValue = $("#dataTableSearch").val();
+            var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+            searchValue = searchValue ? searchValue : "";
+            var url = sourceleadUrl+"/userUsageReportList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&userType="+userType+"&orgId="+orgId+"&customDates="+customDates+"&fromDate="+fromDate+"&toDate="+toDate;
+            prepareUsageReportList(url, userType);
 }
-</script> 
+</script>
 
 
 <script>
 function prepareUsageReportList(url, userType){
         var result = "";
- 	    result = result +' <div class="clearfix">';
- 	    result = result +' <div class="remove_search mt">';
- 	    result = result +' <input type="text" placeholder="Search" id="dataTableSearch"/>';
- 	    result = result +'</div>';
- 	    result = result +'</div>';
-        result = result +'<table id="activePagination" class="display" cellspacing="0" width="100%" >'; 
-        result = result +'<thead>'; 
+         result = result +' <div class="clearfix">';
+         result = result +' <div class="remove_search mt">';
+         result = result +' <input type="text" placeholder="Search" id="dataTableSearch"/>';
+         result = result +'</div>';
+         result = result +'</div>';
+        result = result +'<table id="activePagination" class="display" cellspacing="0" width="100%" >';
+        result = result +'<thead>';
         result = result + '<tr>';
-		result = result + '<th>Users</th>';
-		result = result + '<th>Email</th>';
-		result = result + '<th>User Type</th>';
-		result = result + '<th>Org</th>';
-		result = result + '<th>No.of Activities</th>';
-		result = result + '<th>Multiple Ips</th>';
-		result = result + '<th>Created On</th>';
-		result = result + '<th>Last Activity On</th>';
-		result = result + '<th>Action</th>';
-		result = result + '</tr>';
+        result = result + '<th>Users</th>';
+        result = result + '<th>Email</th>';
+        result = result + '<th>User Type</th>';
+        result = result + '<th>Org</th>';
+        result = result + '<th>No.of Activities</th>';
+        result = result + '<th>Multiple Ips</th>';
+        result = result + '<th>Created On</th>';
+        result = result + '<th>Last Activity On</th>';
+        result = result + '<th>Action</th>';
+        result = result + '</tr>';
         result = result +'</thead>';
-        result = result +'<tbody>'; 
+        result = result +'<tbody>';
         result = result +' </tbody>';
         result = result +'</table>';
         $("#activeDiv").empty();
@@ -336,9 +336,9 @@ function prepareUsageReportList(url, userType){
 
 <script>
 function activePagination(url, userType){
-	var colIndex = 0;
-    $('#activePagination').DataTable( { 
-    		"processing": true,
+    var colIndex = 0;
+    $('#activePagination').DataTable( {
+            "processing": true,
         "serverSide": true,
         "searching": false,
         "ajax": $.fn.dataTable.pipeline( {
@@ -358,189 +358,189 @@ function activePagination(url, userType){
             
         ],
         "columnDefs": [ {
-	    	  	"targets": colIndex++,
-	    	  	"data": "users",
-	    	  	"render": function(data, type, opt, meta) {
-	    	  		$("#emptyUserUsageReportsId").val(1);
-	    	  		  var result = "";
-	    	  		 if(opt.userName !=null && opt.userName !='' && opt.userName !='undefined'){
-							result = result + ' <td><div><span>'+opt.userName+'</span></div></td>';
-						}else{
-							result = result + ' <td><div>--</div></td>';
-						}
-		             return result;
-	    	  	}
-	      },{
-	    	  "targets": colIndex++,
+                  "targets": colIndex++,
+                  "data": "users",
+                  "render": function(data, type, opt, meta) {
+                      $("#emptyUserUsageReportsId").val(1);
+                        var result = "";
+                       if(opt.userName !=null && opt.userName !='' && opt.userName !='undefined'){
+                            result = result + ' <td><div><span>'+opt.userName+'</span></div></td>';
+                        }else{
+                            result = result + ' <td><div>--</div></td>';
+                        }
+                     return result;
+                  }
+          },{
+              "targets": colIndex++,
               "data": "email",
               "render": function ( data, type, opt, meta ) {
-            	  var result = "";
-            	  if(opt.userEmail !=null && opt.userEmail !='' && opt.userEmail !='undefined'){
-            		  result = result + ' <td><div><span>'+opt.userEmail+'</span></div></td>';
-					}else{
-						result = result + ' <td><div>--</div></td>';
-					}
-            	  return result;
-              		
+                  var result = "";
+                  if(opt.userEmail !=null && opt.userEmail !='' && opt.userEmail !='undefined'){
+                      result = result + ' <td><div><span>'+opt.userEmail+'</span></div></td>';
+                    }else{
+                        result = result + ' <td><div>--</div></td>';
+                    }
+                  return result;
+                      
               }
-	          },{
+              },{
             "targets": colIndex++,
             "data": "userType",
             "render": function ( data, type, opt, meta ) {
-            	var result = "";
-            	
-   				if(opt.userType != null && opt.userType != '' && opt.userType !='undefined'){
-   					result = result + '<td><div><span>'+opt.userType+' </span></div></td>';
-            	 }else{
-            		 result = result + '<td><div><span>---</span></div></td>';
-            	 }
-   				return result;
+                var result = "";
+                
+                   if(opt.userType != null && opt.userType != '' && opt.userType !='undefined'){
+                       result = result + '<td><div><span>'+opt.userType+' </span></div></td>';
+                 }else{
+                     result = result + '<td><div><span>---</span></div></td>';
+                 }
+                   return result;
             }
           }, {
               "targets": colIndex++,
               "data": "org",
               "render": function ( data, type, opt, meta ) {
-            	  var result = "";
-            	  
-            	  result = result +'<td>';
- 		        	result = result +'<div class="positionRelative">';
-	   		         for(var k=0; k<1; k++){
-	   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.enrolledOrgs[k].orgName+'</p>';
-	   		         }
- 		    	
-	   		        result = result +'<div class="show_Empdetails showjoblist">';
- 		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+                  var result = "";
+                  
+                  result = result +'<td>';
+                     result = result +'<div class="positionRelative">';
+                        for(var k=0; k<1; k++){
+                           result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.enrolledOrgs[k].orgName+'</p>';
+                        }
+                 
+                       result = result +'<div class="show_Empdetails showjoblist">';
+                     result = result +'<i class="fa fa-ellipsis-v"></i>';
 
- 		        	result = result +'<div class="emailvalues emailvaluesNew">';
- 		        	
-					for(var k=0; k<opt.enrolledOrgs.length; k++){
-						result = result +'<p><i class="fa fa-map-marker"></i>'+opt.enrolledOrgs[k].orgName+'</p>';
-	   		        	
- 		    	 	}
- 		        	result = result +'</div>';
- 		        	result = result +'</div>';
+                     result = result +'<div class="emailvalues emailvaluesNew">';
+                     
+                    for(var k=0; k<opt.enrolledOrgs.length; k++){
+                        result = result +'<p><i class="fa fa-map-marker"></i>'+opt.enrolledOrgs[k].orgName+'</p>';
+                           
+                      }
+                     result = result +'</div>';
+                     result = result +'</div>';
  
 
-		        	result = result +'</div>';
-		        	result = result +'</td>';
-		        	
-            	  return result;
+                    result = result +'</div>';
+                    result = result +'</td>';
+                    
+                  return result;
               }
             }, {
                 "targets": colIndex++,
                 "data": "noOfActivities",
                 "render": function ( data, type, opt, meta ) {
-                		var result = "";
-                		if(userType != "NOT_LOGGEDIN"){
-                		if(opt.noOfActivities !=null && opt.noOfActivities !='' && opt.noOfActivities !='undefined'){
-							result = result + ' <td><div><span>'+opt.noOfActivities+'</span></div></td>';
-						}else{
-							result = result + ' <td><div><span>---</span></div></td>';
-						}
-                		}else{
-                			result = result + ' <td><div><span>---</span></div></td>';
-                		}
-    	              return result;
+                        var result = "";
+                        if(userType != "NOT_LOGGEDIN"){
+                        if(opt.noOfActivities !=null && opt.noOfActivities !='' && opt.noOfActivities !='undefined'){
+                            result = result + ' <td><div><span>'+opt.noOfActivities+'</span></div></td>';
+                        }else{
+                            result = result + ' <td><div><span>---</span></div></td>';
+                        }
+                        }else{
+                            result = result + ' <td><div><span>---</span></div></td>';
+                        }
+                      return result;
                 }
           },{
               "targets": colIndex++,
               "data": "multipleIps",
               "render": function ( data, type, opt, meta ) {
-              		var result = "";
-              		if(userType != "NOT_LOGGEDIN"){
-              		if(opt.multipleIps !=null && opt.multipleIps !='' && opt.multipleIps !='undefined'){
-							result = result + ' <td><div><span>'+opt.multipleIps+'</span></div></td>';
-						}else{
-							result = result + ' <td><div><span>---</span></div></td>';
-						}
-              		}else{
-              			result = result + ' <td><div><span>---</span></div></td>';
-              		}
-  	              return result;
+                      var result = "";
+                      if(userType != "NOT_LOGGEDIN"){
+                      if(opt.multipleIps !=null && opt.multipleIps !='' && opt.multipleIps !='undefined'){
+                            result = result + ' <td><div><span>'+opt.multipleIps+'</span></div></td>';
+                        }else{
+                            result = result + ' <td><div><span>---</span></div></td>';
+                        }
+                      }else{
+                          result = result + ' <td><div><span>---</span></div></td>';
+                      }
+                    return result;
               }
         },
           {
-	    	  	"targets": colIndex++,
-	    	  	"data": "createdOn",
-	    	  	"render": function(data, type, opt, meta) {
-	    	  		var result = "";
-	    	  		if(opt.createdOn !=null && opt.createdOn !='' && opt.createdOn !='undefined'){
-	    	  			result = result + ' <td><div><span>'+opt.createdOn+'</span></div></td>';
-					}else{
-						result = result + ' <td><div>--</div></td>';
-					}
-  	              return result;
-	    	  	}
-	    	  },{
-	    	  	"targets": colIndex++,
-	    	  	"data": "lastActivityOn",
-	    	  	"render": function(data, type, opt, meta) {
-	    	  		var result = "";
-	    	  		if(userType != "NOT_LOGGEDIN"){
-	    	  		if(opt.lastActivity != null && opt.lastActivity !='' && opt.lastActivity != 'undefined'){
-	    	  			result = result + ' <td><div><span>'+opt.lastActivity+'</span></div></td>';
-	    	  		}else{
-	    	  			result = result + ' <td><div><span>---</span></div></td>';
-	    	  		}
-	    	  		}else{
-	    	  			result = result + ' <td><div><span>---</span></div></td>';
-	    	  		}
-	    	  		return result;
-	    	  	}
-	    	  }, {
+                  "targets": colIndex++,
+                  "data": "createdOn",
+                  "render": function(data, type, opt, meta) {
+                      var result = "";
+                      if(opt.createdOn !=null && opt.createdOn !='' && opt.createdOn !='undefined'){
+                          result = result + ' <td><div><span>'+opt.createdOn+'</span></div></td>';
+                    }else{
+                        result = result + ' <td><div>--</div></td>';
+                    }
+                    return result;
+                  }
+              },{
+                  "targets": colIndex++,
+                  "data": "lastActivityOn",
+                  "render": function(data, type, opt, meta) {
+                      var result = "";
+                      if(userType != "NOT_LOGGEDIN"){
+                      if(opt.lastActivity != null && opt.lastActivity !='' && opt.lastActivity != 'undefined'){
+                          result = result + ' <td><div><span>'+opt.lastActivity+'</span></div></td>';
+                      }else{
+                          result = result + ' <td><div><span>---</span></div></td>';
+                      }
+                      }else{
+                          result = result + ' <td><div><span>---</span></div></td>';
+                      }
+                      return result;
+                  }
+              }, {
                   "targets": colIndex++,
                   "data": "action",
                   "render": function ( data, type, opt, meta ) {
-                	  var result = "";
-  	    	  				result = result + ' <td>';
-  	    	  		 if(userType == 'ACTIVE'){
-  	    	  			result = result + ' <div class="tblminwidth-75" title="Closed">';
-    	  		    	result = result + '<label class="switch mt10">';
-    	  		     	result = result + '<input type="checkbox" onclick="blockActiveUser('+opt.userRoleId+','+opt.locationId+');" checked>';
-    	  		    	result = result + '<span class="slider round"></span> </label>';
-    	  		    	result = result + ' </div>';
-  	    	  		    
-	                  }else{
-	                	  result = result + '<span> --- </span>';
-	                  }
-    	  		        result = result + ' </td>';
-	                  
-  	    	  		return result;
+                      var result = "";
+                                result = result + ' <td>';
+                         if(userType == 'ACTIVE'){
+                            result = result + ' <div class="tblminwidth-75" title="Closed">';
+                          result = result + '<label class="switch mt10">';
+                           result = result + '<input type="checkbox" onclick="blockActiveUser('+opt.userRoleId+','+opt.locationId+');" checked>';
+                          result = result + '<span class="slider round"></span> </label>';
+                          result = result + ' </div>';
+                            
+                      }else{
+                          result = result + '<span> --- </span>';
+                      }
+                          result = result + ' </td>';
+                      
+                        return result;
                   }
                 }],
-	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-// 	    	"aaSorting": [[3,'desc']],
-	    	"bLengthChange": true,
-	    	"bDestroy": true,
-	    	"ordering": true,
-	    	"oLanguage": {
-	     		"sSearch": "",
-	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
+            "scrollCollapse": false,
+            "lengthMenu": [[10, 15, 20], [10, 15, 20]],
+//             "aaSorting": [[3,'desc']],
+            "bLengthChange": true,
+            "bDestroy": true,
+            "ordering": true,
+            "oLanguage": {
+                 "sSearch": "",
+                  "sZeroRecords": "", "sEmptyTable": "",
+                  "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+         }
     } );
-    $("#activePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("#activePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
     $("input[type=search]").hide();
     $("#dataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   usageReportList(userType);
-    	   }
-    	});
+           if(e.which === 13) {
+               usageReportList(userType);
+           }
+        });
     
     if(userType == "ACTIVE"){
-    	$("#listNamediv").html("Active Users List");
+        $("#listNamediv").html("Active Users List");
     }else if(userType == "INACTIVE"){
-    	$("#listNamediv").html("Inactive Users List");
+        $("#listNamediv").html("Inactive Users List");
     }else if(userType == "NOT_LOGGEDIN"){
-    	$("#listNamediv").html("Not Logged In Users List");
+        $("#listNamediv").html("Not Logged In Users List");
     }
     getCountList();
 }
 
 </script>
-  
-  
+ 
+ 
   <script>
         //Usage User show hide script
         function usageactiveList(){
@@ -570,8 +570,8 @@ function activePagination(url, userType){
         function usagenotloginList(){
 //             $("#inactiveList").hide();
             $("#activeDiv").show();
-// 	           $("#notloginList").show();
-	           $("#multipleIpsDiv").hide();
+//                $("#notloginList").show();
+               $("#multipleIpsDiv").hide();
 //             $("#totalList").hide();
 
             $("#activeLi").removeClass("usageGrid");
@@ -581,7 +581,7 @@ function activePagination(url, userType){
             $("#totalLi").removeClass("usageGrid");
         }
         function usagemultipleipslist(userType){
-        	$("#userTypeId").val(userType);
+            $("#userTypeId").val(userType);
             $("#inactiveList").hide();
             $("#activeDiv").hide();
             $("#notloginList").hide();
@@ -595,46 +595,52 @@ function activePagination(url, userType){
             $("#totalLi").removeClass("usageGrid");
             
          var fromDate = $("#custFromDate").val();
-    	 var toDate = $("#custToDate").val();
-    	 var customDates = $("#customDates").val();
+         var toDate = $("#custToDate").val();
+         var customDates = $("#customDates").val();
          var sourceleadUrl ='${sourceleadUrl}';
-       	 var searchValue = $("#dataaTableSearch").val();
-       	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-       	 searchValue = searchValue ? searchValue : "";
-       	 
-       	 var url = sourceleadUrl+"/multipleIpsList?searchValue="+searchValue+"&fromDate="+fromDate+"&toDate="+toDate+"&customDates="+customDates;
-       	 prepareMultipleIpsList(url);
+            var searchValue = $("#dataaTableSearch").val();
+            var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+           var orgId = $("#orgs").val();
+        if(orgId != null && orgId != '' && orgId != 'undefined'){
+            orgId = $("#orgs").val();
+        }else{
+            orgId = "";
+        }
+            searchValue = searchValue ? searchValue : "";
+           
+            var url = sourceleadUrl+"/multipleIpsList?searchValue="+searchValue+"&fromDate="+fromDate+"&toDate="+toDate+"&customDates="+customDates+"&orgId="+orgId;
+            prepareMultipleIpsList(url);
         }
         
         function prepareMultipleIpsList(url){
         var result= "";
-       	 result = result +' <div class="clearfix">';
-       	 result = result +' <div class="remove_search mt">';
-       	 result = result +' <input type="text" placeholder="Search" id="dataaTableSearch"/>';
-       	 result = result +'</div>';
-       	 result = result +'</div>';
-       	 result = result +'<table id="multipleIpsPagination" class="display" cellspacing="0" width="100%" >'; 
-       	 result = result +'<thead>'; 
-       	 result = result + '<tr>';
-       	 result = result + '<th>IP Address</th>';
-       	 result = result + '<th>No. of Users</th>';
-       	 result = result + '<th>Location</th>';
-       	 result = result + '<th>No.of Activities</th>';
-       	 result = result + '</tr>';
-       	 result = result +'</thead>';
-       	 result = result +'<tbody>'; 
-       	 result = result +' </tbody>';
-       	 result = result +'</table>';
-       	 $("#multipleIpsDiv").empty();
-       	 $("#multipleIpsDiv").append(result);
-       	 multipleIpsPagination(url);
-       	$("#listNamediv").html("Ip List");
+            result = result +' <div class="clearfix">';
+            result = result +' <div class="remove_search mt">';
+            result = result +' <input type="text" placeholder="Search" id="dataaTableSearch"/>';
+            result = result +'</div>';
+            result = result +'</div>';
+            result = result +'<table id="multipleIpsPagination" class="display" cellspacing="0" width="100%" >';
+            result = result +'<thead>';
+            result = result + '<tr>';
+            result = result + '<th>IP Address</th>';
+            result = result + '<th>No. of Users</th>';
+            result = result + '<th>Location</th>';
+            result = result + '<th>No.of Activities</th>';
+            result = result + '</tr>';
+            result = result +'</thead>';
+            result = result +'<tbody>';
+            result = result +' </tbody>';
+            result = result +'</table>';
+            $("#multipleIpsDiv").empty();
+            $("#multipleIpsDiv").append(result);
+            multipleIpsPagination(url);
+           $("#listNamediv").html("Ip List");
         }
         
         function multipleIpsPagination(url){
-        	var colIndex = 0;
-            $('#multipleIpsPagination').DataTable( { 
-            		"processing": true,
+            var colIndex = 0;
+            $('#multipleIpsPagination').DataTable( {
+                    "processing": true,
                 "serverSide": true,
                 "searching": false,
                 "ajax": $.fn.dataTable.pipeline( {
@@ -650,78 +656,78 @@ function activePagination(url, userType){
                     
                 ],
                 "columnDefs": [ {
-        	    	  	"targets": colIndex++,
-        	    	  	"data": "ipAddress",
-        	    	  	"render": function(data, type, opt, meta) {
-        	    	  		  var result = "";
-        	    	  		$("#emptyUserUsageReportsId").val(1);
-        	    	  		 if(opt.ipAddress !=null && opt.ipAddress !='' && opt.ipAddress !='undefined'){
-        							result = result + ' <td><div><span>'+opt.ipAddress+'</span></div></td>';
-        						}else{
-        							result = result + ' <td><div>--</div></td>';
-        						}
-        		             return result;
-        	    	  	}
-        	      },{
-        	    	  "targets": colIndex++,
+                          "targets": colIndex++,
+                          "data": "ipAddress",
+                          "render": function(data, type, opt, meta) {
+                                var result = "";
+                              $("#emptyUserUsageReportsId").val(1);
+                               if(opt.ipAddress !=null && opt.ipAddress !='' && opt.ipAddress !='undefined'){
+                                    result = result + ' <td><div><span>'+opt.ipAddress+'</span></div></td>';
+                                }else{
+                                    result = result + ' <td><div>--</div></td>';
+                                }
+                             return result;
+                          }
+                  },{
+                      "targets": colIndex++,
                       "data": "noOfUsers",
                       "render": function ( data, type, opt, meta ) {
-                    	  var result = "";
-                    	  if(opt.noOfUsers !=null && opt.noOfUsers !='' && opt.noOfUsers !='undefined'){
-                    		  result = result + ' <td><div><a class="cursorPointer" onClick="showIp(\''+opt.ipAddress+'\');">'+opt.noOfUsers+'</a></div></td>';
-        					}else{
-        						result = result + ' <td><div>--</div></td>';
-        					}
-                    	  return result;
-                      		
+                          var result = "";
+                          if(opt.noOfUsers !=null && opt.noOfUsers !='' && opt.noOfUsers !='undefined'){
+                              result = result + ' <td><div><a class="cursorPointer" onClick="showIp(\''+opt.ipAddress+'\');">'+opt.noOfUsers+'</a></div></td>';
+                            }else{
+                                result = result + ' <td><div>--</div></td>';
+                            }
+                          return result;
+                              
                       }
-        	          },{
+                      },{
                     "targets": colIndex++,
                     "data": "location",
                     "render": function ( data, type, opt, meta ) {
-                    	var result = "";
-                    	
-           				if(opt.userType != null && opt.userType != '' && opt.userType !='undefined'){
-           					result = result + '<td><div><span>'+opt.userType+' </span></div></td>';
-                    	 }else{
-                    		 result = result + '<td><div><span>---</span></div></td>';
-                    	 }
-           				return result;
+                        var result = "";
+                        
+                           if(opt.userType != null && opt.userType != '' && opt.userType !='undefined'){
+                               result = result + '<td><div><span>'+opt.userType+' </span></div></td>';
+                         }else{
+                             result = result + '<td><div><span>---</span></div></td>';
+                         }
+                           return result;
                     }
                   }, {
                         "targets": colIndex++,
                         "data": "noOfActivities",
                         "render": function ( data, type, opt, meta ) {
-                        		var result = "";
-                        		if(opt.noOfActivities !=null && opt.noOfActivities !='' && opt.noOfActivities !='undefined'){
-        							result = result + ' <td><div><span>'+opt.noOfActivities+'</span></div></td>';
-        						}else{
-        							result = result + ' <td><div><span>---</span></div></td>';
-        						}
-            	              return result;
+                                var result = "";
+                                if(opt.noOfActivities !=null && opt.noOfActivities !='' && opt.noOfActivities !='undefined'){
+                                    result = result + ' <td><div><span>'+opt.noOfActivities+'</span></div></td>';
+                                }else{
+                                    result = result + ' <td><div><span>---</span></div></td>';
+                                }
+                              return result;
                         }
                   }],
                   
                   "scrollCollapse": false,
-      	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//       	    	"aaSorting": [[3,'desc']],
-      	    	"bLengthChange": true,
-      	    	"bDestroy": true,
-      	    	"ordering": true,
-      	    	"oLanguage": {
-      	     		"sSearch": "",
-      	     		 "sZeroRecords": "", "sEmptyTable": "", 
-      	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-      	     }
+                  "lengthMenu": [[10, 15, 20], [10, 15, 20]],
+//                   "aaSorting": [[3,'desc']],
+                  "bLengthChange": true,
+                  "bDestroy": true,
+                  "ordering": true,
+                  "oLanguage": {
+                       "sSearch": "",
+                        "sZeroRecords": "", "sEmptyTable": "",
+                        "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+               }
           } );
-          $("#multipleIpsPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+          $("#multipleIpsPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
           $("input[type=search]").hide();
           $("#dataaTableSearch").keyup(function(e) {
-          	   if(e.which === 13) {
-          		 prepareMultipleIpsList(url);
-//           		   usageReportList(userType);
-          	   }
-          	});
+                 if(e.which === 13) {
+                   prepareMultipleIpsList(url);
+//                      usageReportList(userType);
+                 }
+              });
           
       }
         
@@ -854,55 +860,55 @@ var config = {
 
 <script type="text/javascript">
        function getCountList(){
-		var sourceleadUrl ='${sourceleadUrl}';
-		var orgId = $("#orgs").val();
-	    if(orgId != null && orgId != '' && orgId != 'undefined'){
-	    	orgId = $("#orgs").val();
-	    }else{
-	    	orgId = "";
-	    }
-		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		$.get(sourceleadUrl+"/getCountList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&orgId="+orgId, function(data) {
-			 $("#activeCount").html(data.activeCount);
-			 $("#inActiveCount").html(data.inactiveCount);
-	    	 $("#notLoggedInCount").html(data.notLoggedinCount);
-	    	 $("#multipleIpsCount").html(data.multipleIps);
-	    	 
-	    	 var totalCount = data.activeCount + data.inactiveCount + data.notLoggedinCount;
-	    	 
-	    	 $("#totalUserCount").html(totalCount);
-		}); 
+        var sourceleadUrl ='${sourceleadUrl}';
+        var orgId = $("#orgs").val();
+        if(orgId != null && orgId != '' && orgId != 'undefined'){
+            orgId = $("#orgs").val();
+        }else{
+            orgId = "";
+        }
+        var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+        $.get(sourceleadUrl+"/getCountList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&orgId="+orgId, function(data) {
+             $("#activeCount").html(data.activeCount);
+             $("#inActiveCount").html(data.inactiveCount);
+             $("#notLoggedInCount").html(data.notLoggedinCount);
+             $("#multipleIpsCount").html(data.multipleIps);
+            
+             var totalCount = data.activeCount + data.inactiveCount + data.notLoggedinCount;
+            
+             $("#totalUserCount").html(totalCount);
+        });
 }
 </script>
 
 <script type="text/javascript">
        function getAllOrgs(){
-		var sourceleadUrl ='${sourceleadUrl}';
-		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		$.get(sourceleadUrl+"/getAllOrgs?"+tokenParamName+"="+tokenValue, function(data) {
-			
-			var output = "";
-	           for(var i=0; i<data.length;i++){
-	              var opt = data[i];
-	                output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
-	           }
-	           $("#orgs").empty();
-	          $("#orgs").append(output);
-	         $("#orgs").trigger("chosen:updated");
-			
-		}); 
+        var sourceleadUrl ='${sourceleadUrl}';
+        var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+        $.get(sourceleadUrl+"/getAllOrgs?"+tokenParamName+"="+tokenValue, function(data) {
+            
+            var output = "";
+               for(var i=0; i<data.length;i++){
+                  var opt = data[i];
+                    output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+               }
+               $("#orgs").empty();
+              $("#orgs").append(output);
+             $("#orgs").trigger("chosen:updated");
+            
+        });
 }
-</script> 
+</script>
 
 <script>
 function blockActiveUser(userRoleId,locationId){
-	var sourceleadUrl ='${sourceleadUrl}';
-	$.get(sourceleadUrl+"/blockActiveUser?"+tokenParamName+"="+tokenValue+"&orgLocationId="+locationId+"&userRoleId="+userRoleId,function(data) {
-		if(data == "success"){
-		   usageReportList("ACTIVE");
-		}
-	});
-  
+    var sourceleadUrl ='${sourceleadUrl}';
+    $.get(sourceleadUrl+"/blockActiveUser?"+tokenParamName+"="+tokenValue+"&orgLocationId="+locationId+"&userRoleId="+userRoleId,function(data) {
+        if(data == "success"){
+           usageReportList("ACTIVE");
+        }
+    });
+ 
 }
 </script>
 
@@ -924,16 +930,16 @@ function showCustomFields(){
 //         usagemultipleipslist();
     }
     
-    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}';
       var finalDateFormatEndDate = '';
       if(locationDate.match("yyyy-MM-dd")){
           finalDateFormatEndDate = 'yy-mm-dd';
       }if(locationDate.match("dd-MM-yyyy")){
-          finalDateFormatEndDate = 'dd-mm-yy'; 
+          finalDateFormatEndDate = 'dd-mm-yy';
       }if(locationDate.match("MM-dd-yyyy")){
-          finalDateFormatEndDate = 'mm-dd-yy'; 
+          finalDateFormatEndDate = 'mm-dd-yy';
       }if(locationDate.match("yyyy-dd-MM")){
-          finalDateFormatEndDate = 'yy-dd-mm'; 
+          finalDateFormatEndDate = 'yy-dd-mm';
       }
 
       $( "#custFromDate" ).datepicker({
@@ -946,7 +952,7 @@ function showCustomFields(){
             dt.setDate(dt.getDate());
             $("#custToDate").datepicker("option", "minDate", dt);
              removeStartValid();
-            } 
+            }
       
       });
       
@@ -971,7 +977,7 @@ function removeEndValid(){
 }
 
 function validateCustDatesList(){
-	var userType = $("#userTypeId").val();
+    var userType = $("#userTypeId").val();
     var frequency = $("#customDates").val();
     var fromDate = $("#custFromDate").val();
     var toDate = $("#custToDate").val();
@@ -988,10 +994,10 @@ function validateCustDatesList(){
             $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
             $('#custToDateDiv').find('p.jquery_form_error_message').remove();
             if(userType == "MULTIPLE_IP"){
-            	usagemultipleipslist();
+                usagemultipleipslist();
             }else{
-            	usageReportList(userType);
-            	$("#custom-selects").hide();
+                usageReportList(userType);
+                $("#custom-selects").hide();
             }
         }
     }else{
@@ -999,20 +1005,20 @@ function validateCustDatesList(){
         $('#custToDateDiv').find('p.jquery_form_error_message').remove();
         usageReportList(userType);
         usagemultipleipslist()
-    } 
+    }
 }
 </script>
 
 <script>
 $('#mypop').click(function(){
-		$("#exportPop").toggle();
-		$("#filter2ApprovedPop, #filter1ApprovedPop, .action-pop, .approved_pop").slideUp();
+        $("#exportPop").toggle();
+        $("#filter2ApprovedPop, #filter1ApprovedPop, .action-pop, .approved_pop").slideUp();
  });
  $("html").click(function(){
-	$("#exportPop, .ExpPop").hide(200);
+    $("#exportPop, .ExpPop").hide(200);
  });
  $(".billing_dashboard, .nav-tabs").click(function(){
-	$("#exportPop, .ExpPop").hide(200);
+    $("#exportPop, .ExpPop").hide(200);
  });
  
  $("#exportPop, #mypop, .nav-tabs, .billing_dashboard").click(function(e) {  
@@ -1023,53 +1029,53 @@ $('#mypop').click(function(){
 
 <script>
 function exportUserUsageReportPdf(){
-		var emptyExport = $("#emptyUserUsageReportsId").val();
-		var customDates = $('#customDates').val();
-		
-		var fromDate = $("#custFromDate").val();
-		var toDate = $("#custToDate").val();
-		var userType = $("#userTypeId").val();
-		
-		if(emptyExport > 0){
-			window.location.href = sourceleadUrl+"/getUserUsageReportExportList?"+tokenParamName+"="+tokenValue+"&customDates="+customDates+"&fromDate="+fromDate+"&toDate="+toDate+"&userType="+userType+"&exportType=pdf";
-		}else{
-			 var result = "";
-				result = result +"	<div class='project_inn_mask'></div>";
-				result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>User Usage Report List is Empty</p>";
-				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
-				result = result +"	</div>";
-				$("#popUp").append(result);
-				$("#empty_receivable_pop").slideDown(200);
-				$(".project_inn_mask").fadeIn(200);
-		}
-	
+        var emptyExport = $("#emptyUserUsageReportsId").val();
+        var customDates = $('#customDates').val();
+        
+        var fromDate = $("#custFromDate").val();
+        var toDate = $("#custToDate").val();
+        var userType = $("#userTypeId").val();
+        
+        if(emptyExport > 0){
+            window.location.href = sourceleadUrl+"/getUserUsageReportExportList?"+tokenParamName+"="+tokenValue+"&customDates="+customDates+"&fromDate="+fromDate+"&toDate="+toDate+"&userType="+userType+"&exportType=pdf";
+        }else{
+             var result = "";
+                result = result +"    <div class='project_inn_mask'></div>";
+                result = result +"       <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
+                result = result +"        <p>User Usage Report List is Empty</p>";
+                result = result +"        <div>&nbsp;&nbsp;&nbsp;</div>";
+                result = result +"        <b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+                result = result +"    </div>";
+                $("#popUp").append(result);
+                $("#empty_receivable_pop").slideDown(200);
+                $(".project_inn_mask").fadeIn(200);
+        }
+    
 }
 </script>
 
 <script>
 function exportUserUsageReportExcel(){
-		var emptyExport = $('#emptyUserUsageReportsId').val();
-		var customDates = $('#customDates').val();
-		
-		var fromDate = $("#custFromDate").val();
-		var toDate = $("#custToDate").val();
-		var userType = $("#userTypeId").val();
-		
-		if(emptyExport > 0){
-			window.location.href = sourceleadUrl+"/getUserUsageReportExportList?"+tokenParamName+"="+tokenValue+"&customDates="+customDates+"&fromDate="+fromDate+"&toDate="+toDate+"&userType="+userType+"&exportType=xls";
-		}else{	
-				var result = "";
-				result = result +"	<div class='project_inn_mask'></div>";
-				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
-				result = result +"		<p>Receivables List is Empty</p>";
-				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
-				result = result +"	</div>";
-				$("#popUpp").append(result);
-				$("#empty_requirement_pop").slideDown(200);
-				$(".project_inn_mask").fadeIn(200);
+        var emptyExport = $('#emptyUserUsageReportsId').val();
+        var customDates = $('#customDates').val();
+        
+        var fromDate = $("#custFromDate").val();
+        var toDate = $("#custToDate").val();
+        var userType = $("#userTypeId").val();
+        
+        if(emptyExport > 0){
+            window.location.href = sourceleadUrl+"/getUserUsageReportExportList?"+tokenParamName+"="+tokenValue+"&customDates="+customDates+"&fromDate="+fromDate+"&toDate="+toDate+"&userType="+userType+"&exportType=xls";
+        }else{    
+                var result = "";
+                result = result +"    <div class='project_inn_mask'></div>";
+                result = result +"       <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
+                result = result +"        <p>Receivables List is Empty</p>";
+                result = result +"        <div>&nbsp;&nbsp;&nbsp;</div>";
+                result = result +"        <b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+                result = result +"    </div>";
+                $("#popUpp").append(result);
+                $("#empty_requirement_pop").slideDown(200);
+                $(".project_inn_mask").fadeIn(200);
   }
 }
 </script>
@@ -1088,13 +1094,13 @@ function exportUserUsageReportExcel(){
           </div>
           <!-- <table class="table table-bordered">
           <thead>
-          	<tr>
-          	<th>Name</th><th>Email</th><th>Phone</th><th>Company</th>
-          	</tr>
+              <tr>
+              <th>Name</th><th>Email</th><th>Phone</th><th>Company</th>
+              </tr>
           </thead>
           <tbody>
           <tr>
-          	<td>Name</td><td>Email</td><td>Phone</td><td>Company</td>
+              <td>Name</td><td>Email</td><td>Phone</td><td>Company</td>
           </tr>
           </tbody>
           </table> -->
@@ -1108,55 +1114,60 @@ function exportUserUsageReportExcel(){
 
 <script type="text/javascript">
 function cancelExport(){
-	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+    $("#popUp").empty();
+    $(".project_inn_mask").fadeOut(200);
 }
 function showIp(ipAddress){
-	$(".sideMask").fadeIn(200);
-	$(".multipleipsList").fadeIn(200);
-	
-// 	var fromDate = $("#custFromDate").val();
-// 	 var toDate = $("#custToDate").val();
-// 	 var customDates = $("#customDates").val();
+    $(".sideMask").fadeIn(200);
+    $(".multipleipsList").fadeIn(200);
+    
+//     var fromDate = $("#custFromDate").val();
+//      var toDate = $("#custToDate").val();
+//      var customDates = $("#customDates").val();
     var sourceleadUrl ='${sourceleadUrl}';
-  	 var searchValue = $("#dataaTableSearch").val();
-  	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-  	 searchValue = searchValue ? searchValue : "";
-  	 
-  	 var url = sourceleadUrl+"/multipleIpsUsersList?searchValue="+searchValue+"&ipAddress="+ipAddress;
-  	 prepareMultipleIpsUsersList(url);
+       var searchValue = $("#dataaTableSearch").val();
+       var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+       searchValue = searchValue ? searchValue : "";
+      var orgId = $("#orgs").val();
+    if(orgId != null && orgId != '' && orgId != 'undefined'){
+        orgId = $("#orgs").val();
+    }else{
+        orgId = "";
+    }
+       var url = sourceleadUrl+"/multipleIpsUsersList?searchValue="+searchValue+"&ipAddress="+ipAddress+"&orgId="+orgId;
+       prepareMultipleIpsUsersList(url);
 }
 
 function prepareMultipleIpsUsersList(url){
-	
-	 var result= "";
-   	 result = result +' <div class="modal-header">';
-   	 result = result +' <div class="remove_search">';
-   	 result = result +' <input type="text" placeholder="Search" id="dataa1TableSearch"/>';
-   	 result = result +'</div>';
-   	 result = result +'</div>';
-   	 result = result +'<table id="multipleIpsUsersPagination" class="display" cellspacing="0" width="100%" >'; 
-   	 result = result +'<thead>'; 
-   	 result = result + '<tr>';
-   	 result = result + '<th>Name</th>';
-   	 result = result + '<th>Email</th>';
-   	 result = result + '<th>Phone</th>';
-//    	 result = result + '<th>Company Name</th>';
-   	 result = result + '</tr>';
-   	 result = result +'</thead>';
-   	 result = result +'<tbody>'; 
-   	 result = result +' </tbody>';
-   	 result = result +'</table>';
-   	 $("#multipleIpsUsersDiv").empty();
-   	 $("#multipleIpsUsersDiv").append(result);
-   	multipleIpsUsersPagination(url);
-	
+    
+     var result= "";
+        result = result +' <div class="modal-header">';
+        result = result +' <div class="remove_search">';
+        result = result +' <input type="text" placeholder="Search" id="dataa1TableSearch"/>';
+        result = result +'</div>';
+        result = result +'</div>';
+        result = result +'<table id="multipleIpsUsersPagination" class="display" cellspacing="0" width="100%" >';
+        result = result +'<thead>';
+        result = result + '<tr>';
+        result = result + '<th>Name</th>';
+        result = result + '<th>Email</th>';
+        result = result + '<th>Phone</th>';
+//         result = result + '<th>Company Name</th>';
+        result = result + '</tr>';
+        result = result +'</thead>';
+        result = result +'<tbody>';
+        result = result +' </tbody>';
+        result = result +'</table>';
+        $("#multipleIpsUsersDiv").empty();
+        $("#multipleIpsUsersDiv").append(result);
+       multipleIpsUsersPagination(url);
+    
 }
 
 function multipleIpsUsersPagination(url){
-	var colIndex = 0;
-    $('#multipleIpsUsersPagination').DataTable( { 
-    		"processing": true,
+    var colIndex = 0;
+    $('#multipleIpsUsersPagination').DataTable( {
+            "processing": true,
         "serverSide": true,
         "searching": false,
         "ajax": $.fn.dataTable.pipeline( {
@@ -1168,76 +1179,76 @@ function multipleIpsUsersPagination(url){
             { "data": "userName" },
              { "data": "userEmail"},
             { "data": "mobilePhone"},
-//             { "data": "companyName"}, 
+//             { "data": "companyName"},
             
         ],
         "columnDefs": [ {
-	    	  	"targets": colIndex++,
-	    	  	"data": "userName",
-	    	  	"render": function(data, type, opt, meta) {
-	    	  		  var result = "";
-	    	  		 if(opt.userName !=null && opt.userName !='' && opt.userName !='undefined'){
-							result = result + ' <td><div><span>'+opt.userName+'</span></div></td>';
-						}else{
-							result = result + ' <td><div>--</div></td>';
-						}
-		             return result;
-	    	  	}
-	      },
-	       {
-	    	  "targets": colIndex++,
+                  "targets": colIndex++,
+                  "data": "userName",
+                  "render": function(data, type, opt, meta) {
+                        var result = "";
+                       if(opt.userName !=null && opt.userName !='' && opt.userName !='undefined'){
+                            result = result + ' <td><div><span>'+opt.userName+'</span></div></td>';
+                        }else{
+                            result = result + ' <td><div>--</div></td>';
+                        }
+                     return result;
+                  }
+          },
+           {
+              "targets": colIndex++,
               "data": "userEmail",
               "render": function ( data, type, opt, meta ) {
-            	  var result = "";
-            	  if(opt.userEmail !=null && opt.userEmail !='' && opt.userEmail !='undefined'){
-            		  result = result + ' <td><div><span>'+opt.userEmail+'</span></div></td>';
-					}else{
-						result = result + ' <td><div>--</div></td>';
-					}
-            	  return result;
-              		
+                  var result = "";
+                  if(opt.userEmail !=null && opt.userEmail !='' && opt.userEmail !='undefined'){
+                      result = result + ' <td><div><span>'+opt.userEmail+'</span></div></td>';
+                    }else{
+                        result = result + ' <td><div>--</div></td>';
+                    }
+                  return result;
+                      
               }
-	          },{
+              },{
             "targets": colIndex++,
             "data": "mobilePhone",
             "render": function ( data, type, opt, meta ) {
-            	var result = "";
-   				if(opt.mobilePhone != null && opt.mobilePhone != '' && opt.mobilePhone !='undefined'){
-   					result = result + '<td><div><span>'+opt.mobilePhone+' </span></div></td>';
-            	 }else{
-            		 result = result + '<td><div><span>---</span></div></td>';
-            	 }
-   				return result;
+                var result = "";
+                   if(opt.mobilePhone != null && opt.mobilePhone != '' && opt.mobilePhone !='undefined'){
+                       result = result + '<td><div><span>'+opt.mobilePhone+' </span></div></td>';
+                 }else{
+                     result = result + '<td><div><span>---</span></div></td>';
+                 }
+                   return result;
             }
-          }], 
+          }],
           
           "scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-// 	    	"aaSorting": [[3,'desc']],
-	    	"bLengthChange": true,
-	    	"bDestroy": true,
-	    	"ordering": true,
-	    	"oLanguage": {
-	     		"sSearch": "",
-	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-	     }
+            "lengthMenu": [[10, 15, 20], [10, 15, 20]],
+//             "aaSorting": [[3,'desc']],
+            "bLengthChange": true,
+            "bDestroy": true,
+            "ordering": true,
+            "oLanguage": {
+                 "sSearch": "",
+                  "sZeroRecords": "", "sEmptyTable": "",
+                  "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+         }
     } );
-    $("#multipleIpsUsersPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("#multipleIpsUsersPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
     $("input[type=search]").hide();
     $("#dataa1TableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   prepareMultipleIpsUsersList(url);
-    	   }
-    	});
+           if(e.which === 13) {
+               prepareMultipleIpsUsersList(url);
+           }
+        });
 }
 
     
 
 
 function closeIp(){
-	$(".sideMask").fadeOut(200);
-	$(".multipleipsList").fadeOut(200);
+    $(".sideMask").fadeOut(200);
+    $(".multipleipsList").fadeOut(200);
 }
 </script>  
 
@@ -1256,16 +1267,16 @@ function showCustomFieldsGraph(){
         usageReportsGraph();
     }
     
-    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}';
     var finalDateFormatEndDate = '';
     if(locationDate.match("yyyy-MM-dd")){
         finalDateFormatEndDate = 'yy-mm-dd';
     }if(locationDate.match("dd-MM-yyyy")){
-        finalDateFormatEndDate = 'dd-mm-yy'; 
+        finalDateFormatEndDate = 'dd-mm-yy';
     }if(locationDate.match("MM-dd-yyyy")){
-        finalDateFormatEndDate = 'mm-dd-yy'; 
+        finalDateFormatEndDate = 'mm-dd-yy';
     }if(locationDate.match("yyyy-dd-MM")){
-        finalDateFormatEndDate = 'yy-dd-mm'; 
+        finalDateFormatEndDate = 'yy-dd-mm';
     }
 
     $( "#custFromDate1" ).datepicker({
@@ -1278,7 +1289,7 @@ function showCustomFieldsGraph(){
           dt.setDate(dt.getDate());
           $("#custToDate1").datepicker("option", "minDate", dt);
            removeStartValid();
-          } 
+          }
     
     });
     
@@ -1303,7 +1314,7 @@ function removeEndValid(){
 }
 
 function validateCustDatesGraph(){
-	var userType = $("#userTypeId").val();
+    var userType = $("#userTypeId").val();
   var frequency = $("#customGraphDates").val();
   var fromDate = $("#custFromDate1").val();
   var toDate = $("#custToDate1").val();
@@ -1320,9 +1331,9 @@ function validateCustDatesGraph(){
           $('#custFromDate1Div').find('p.jquery_form_error_message').remove();
           $('#custToDate1Div').find('p.jquery_form_error_message').remove();
           if(userType == "MULTIPLE_IP"){
-          	usagemultipleipslist();
+              usagemultipleipslist();
           }else{
-        	  usageReportsGraph();
+              usageReportsGraph();
           }
       }
   }else{
@@ -1330,7 +1341,7 @@ function validateCustDatesGraph(){
       $('#custToDate1Div').find('p.jquery_form_error_message').remove();
       usageReportsGraph();
 //       usagemultipleipslist()
-  } 
+  }
 }
     
     </script>

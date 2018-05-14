@@ -26,6 +26,7 @@
     this.opts = opts;
     this.defaultOptions = {
       'nodeTitle': 'name',
+      'nodeCode':'userCode',
       'nodeId': 'id',
       'toggleSiblingsResp': false,
       'depth': 999,
@@ -705,7 +706,7 @@
    	        	//subeles = "<img src='"+(sourceleadUrl.replace("/app", "")+"/resources/css/static-web/images/user-m.png")+"' class='orgchart hassub'/>"
  	        	subeles = "<div class='fa fa-users hasUsers'></div>"
     	  }
-        $nodeDiv.append('<div class="content_div positionRelative"><div class="title"><a target="_blank" href="'+sourceleadUrl+'/userSummaryDetails?userId='+nodeData[opts.nodeId]+'">' + nodeData[opts.nodeTitle] + '</a></div>' +
+        $nodeDiv.append('<div class="content_div positionRelative"><div class="title"><a target="_blank" href="'+sourceleadUrl+'/userSummaryDetails?userCode='+nodeData[opts.nodeCode]+'">' + nodeData[opts.nodeTitle] + '</a></div>' +
         		(typeof opts.nodeContent !== 'undefined' ? '<div class="content">' + (nodeData[opts.nodeContent] || '') + '</div>'+subeles+'</div>' : ''));
       }
       // append 4 direction arrows or expand/collapse buttons

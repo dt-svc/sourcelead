@@ -335,7 +335,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 				result = result + '</div>';
 				result = result + '<div class="clearfix"></div>';
 				/* New comments div creation Nov 8th, 2016 */ 
-	            result = result+'<div class="comments-div clearfix mr" id="latestMessage">';
+	            /* result = result+'<div class="comments-div clearfix mr" id="latestMessage">';
 	            result = result+'    <div class="commentsimg">';
 	            result = result+'    <i class="fa fa-comments"></i>';
 	            result = result+'        <div class="commentsimg-inner">';
@@ -360,7 +360,7 @@ function getSubmissionDetailsSideBar(submissionId,candidateId,requirementId){
 	            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+','+submissionId+');">View more <span class="label label-warning">'+json.candidateCommentsCount+'</span></a>';
 	 			result = result+'		</div>';
 	            result = result+'     </div>';
-	            result = result+'</div>';
+	            result = result+'</div>'; */
 	 		    /* New comments div creation Nov 8th, 2016 */
 			
 		       result = result + '</div>';
@@ -1747,7 +1747,7 @@ function getApplicantOtherizationRejectedCategory(){
 </script>
 
 <script>
-function showComment(candidateId,submissionId){
+/* function showComment(candidateId,submissionId){
 	var result = "";
 		result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
 	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_length length2-500" field-name="Comment"></textarea>';
@@ -1759,7 +1759,7 @@ function showComment(candidateId,submissionId){
 	$('.add-comment').empty();
 	$('.add-comment').append(result);
 	$('.add-comment').toggle(200);
-}
+} */
 function closeComment(){
 	$('.add-comment').toggle(200);
 }
