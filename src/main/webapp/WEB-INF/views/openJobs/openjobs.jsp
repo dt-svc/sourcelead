@@ -44,7 +44,11 @@
 <link rel="stylesheet"3
 	href="/resources/css/timesheet.css?staticTime=${staticTime}"
 	type="text/css">
-
+<style type="text/css">
+.jobDesc b {
+display: inline-block;
+}
+</style>
 <script
 	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE"
 	type="text/javascript"></script>

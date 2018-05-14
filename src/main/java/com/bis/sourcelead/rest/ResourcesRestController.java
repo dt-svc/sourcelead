@@ -102,6 +102,17 @@ public class ResourcesRestController {
 	public ResponseList<SourceleadBlogDTO> blogsList(SourceleadBlogDTO sourceleadBlogDTO) throws Exception {
 		ResponseList<SourceleadBlogDTO> responseList = new ResponseList<>();
 		try {
+			String[] tableColumns = {"blogTitle", "categoryId", "createdBy"};
+				int sortColumnIndex = 5; //by default sorting using updated date
+				String sortColumnOrder = "asc"; //by default descending order
+				
+				if(sourceleadBlogDTO.getOrder() != null && !sourceleadBlogDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(sourceleadBlogDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = sourceleadBlogDTO.getOrder().get(0).get("dir");
+				}
+				sourceleadBlogDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				sourceleadBlogDTO.setSortOrder(sortColumnOrder);
+			
 			responseList = sourceleadBlogService.getAllSourceleadBlogsByStatus(sourceleadBlogDTO);
 			responseList.setResponse(Result.SUCCESS.name());
 			responseList.setResponseMessage(Result.SUCCESS.getValue());
