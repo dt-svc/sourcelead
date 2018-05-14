@@ -150,7 +150,7 @@ function removeAssetManagement(assignAssetId){
 	 $("#loading"+assignAssetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assignAssetId="+assignAssetId,	    	   
+	    url: sourceleadUrl+"/removeAssocateAssingAssetManagement?"+tokenParamName+"="+tokenValue+"&assignAssetId="+assignAssetId,	    	   
 	    success: function(data) {
 	    	 var table = $('#assetManagementListPagination').DataTable();
   		     table.row("#asset"+assignAssetId).remove().draw( false );

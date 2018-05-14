@@ -94,10 +94,10 @@ public class AddElkRequirement {
 				}
 				requirementIndex.setRateType(rs.getString("RATE_TYPE"));
 				if(null != rs.getString("MIN_EXP") && !"".equalsIgnoreCase(rs.getString("MIN_EXP"))){
-					requirementIndex.setMinExperience(rs.getString("MIN_EXP"));
+					requirementIndex.setMinExperience(Integer.parseInt(rs.getString("MIN_EXP")));
 				}
 				if(null != rs.getString("MAX_EXP") && !"".equalsIgnoreCase(rs.getString("MAX_EXP"))){
-					requirementIndex.setMaxExperience(rs.getString("MAX_EXP"));
+					requirementIndex.setMaxExperience(Integer.parseInt(rs.getString("MAX_EXP")));
 				}
 				requirementIndex.setRequirementStatus(rs.getString("REQUIREMENT_SUBMISSION_STATUS"));
 				requirementIndex.setUrl(rs.getString("URL"));

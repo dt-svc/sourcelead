@@ -1468,9 +1468,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				vendorOrgLocation = orgRelation.getLocationId();
 				if(orgSpocList !=null && !orgSpocList.isEmpty()) {
 					if(Constants.VENDOR.equalsIgnoreCase(orgRelation.getResponderType())) {
-						contactUser = orgSpocList.get(0).getVendorUser();
-					}else{
 						contactUser = orgSpocList.get(0).getClientUser();
+					}else{
+						contactUser = orgSpocList.get(0).getVendorUser();
 					}
 					
 				}

@@ -1575,7 +1575,7 @@ public class LeaveServiceImpl implements LeaveService{
 			
 //			leaveDto.setLeaveTypeNoOfDays(leave.getLeaveType().getNoOfDays());
 			leaveDto.setDuration(date.toString());
-			leaveDto.setUserId(String.valueOf(leave.getUser().getId()));
+			leaveDto.setUserId(emp.getEmployeeId());
 			leaveDto.setEmpName(sb.toString());
 			leaveDto.setEmpEmail(leave.getUser().getEmail());
 			leaveDto.setLeaveType(leave.getLeaveType().getName());

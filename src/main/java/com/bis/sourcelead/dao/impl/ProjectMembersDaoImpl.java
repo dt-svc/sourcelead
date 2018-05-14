@@ -363,7 +363,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		StringBuilder searchCountQuery = new StringBuilder();
 		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
 		searchCountQuery.append("and ( (pm.projectMemberCandidteId.firstName like '" + searchValue + "%' OR pm.projectMemberCandidteId.lastName like '%" + searchValue + "' )")
-					.append("OR (concat(pm.projectMemberCandidteId.firstName,pm.projectMemberCandidteId.lastName) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
+					.append("OR (concat(REPLACE(pm.projectMemberCandidteId.firstName,' ',''),REPLACE(pm.projectMemberCandidteId.lastName,' ','')) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
 					.append("OR pm.projectMemberCandidteId.email like '%" + searchValue + "%' ")
 					.append("OR pm.projectMemberCandidteId.mobilePhone like '%" + searchValue + "%' ")
 					.append("OR pm.projectMemberCandidteId.designationType like '%" + searchValue + "%' ")

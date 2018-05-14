@@ -1007,18 +1007,14 @@ function clearFilters(){
 <script>
 	function getDropDownCount() {
 		var selectedExperience = '${openJobsExperience}';
-		if(selectedExperience == null || selectedExperience == '' || selectedExperience == 'undefined'){
-			selectedExperience = 0;
-		}
-		
 		var i = "";
 		result = "";
 		result = result
 				+ '<select class="searchHome searchHomeE" id="openJobsExperienceId">';
 		result = result
 				+ '("<option selected value="">--Select Experience--</option>")';
-		for (var i = 1; i <= 25; i++) {
-			if(i == selectedExperience){
+		for (var i = 0; i <= 25; i++) {
+			if(selectedExperience != null && selectedExperience != '' && selectedExperience != 'undefined' && (parseInt(i) == parseInt(selectedExperience))){
 				result = result + '("<option selected value='+i+'>' + i + '</option>")';
 			}
 			else{
@@ -1311,15 +1307,16 @@ function prepareOpenJobsElkList(data,offset){
 				}else{
 					rateType ="--";
 				}
-				
 				if(requirements.minExperience != null && requirements.minExperience != '' && requirements.minExperience != 'undefined' && requirements.maxExperience != null && requirements.maxExperience != '' && requirements.maxExperience != 'undefined'){
 					experience = requirements.minExperience+" to "+requirements.maxExperience+" Years";
+				}else if(requirements.minExperience != null && requirements.minExperience != '' && requirements.minExperience != 'undefined'){
+					experience = requirements.minExperience+" Years";
 				}else if(requirements.maxExperience != null && requirements.maxExperience != '' && requirements.maxExperience != 'undefined'){
-					experience = requirements.maxExperience+" Years";
+					experience = "0-"+requirements.maxExperience+" Years";
 				}else{
 					experience = 'No Data';
 				}
-				
+	
 				if(requirements.state != null && requirements.state != '' && requirements.state != 'undefined'){
 					location = requirements.state+", "+requirements.country;
 				}else{

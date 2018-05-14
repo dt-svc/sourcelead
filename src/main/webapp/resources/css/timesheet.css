@@ -2730,7 +2730,9 @@ margin: 6px 0px 0px 0px;
      right:160px; 
     display:block;
     }
-     
+.app_error_mes_full {
+	white-space: normal !important;
+} 
 .ts_app_error_mes {
     width: 300px; background-color: #FFF; border-radius: 3px;position: absolute;right: 0px; top: 15px;z-index: 1000;
     padding: 15px 20px; box-shadow: 0px 0px 8px rgba(0,0,0,0.5);font-size: 14px; border: 1px solid #368ee0;
@@ -4643,7 +4645,15 @@ display:none;
 .editNewDat .fa-floppy-o {
     float: right; color: #368ee0; cursor: pointer; padding: 4px 5px 0px 0px; font-size: 18px;
 }
- 
+.editSignature {
+    position: absolute; top: -5px; left: 22px; width: 80%; display: none;
+}
+.editSignature .fa-floppy-o {
+    color: #368ee0; cursor: pointer; padding: 4px 5px 0px 0px; font-size: 18px;
+}
+.editSignature .chosen-container-single .chosen-single {
+    height: 30px !important; line-height: 30px !important;
+} 
  
 .ExpBudget {
     padding-top:15px;

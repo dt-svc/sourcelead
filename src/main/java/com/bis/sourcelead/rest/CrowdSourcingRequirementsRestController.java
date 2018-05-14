@@ -435,8 +435,12 @@ public class CrowdSourcingRequirementsRestController {
     					 requirementIndex.setPostedOrg(refer.getRequirementId().getPostedOrgName());
     					 requirementIndex.setJobType(refer.getRequirementId().getJobType());
     					 requirementIndex.setJobId(refer.getRequirementId().getJobId());
-    					 requirementIndex.setMinExperience(refer.getRequirementId().getMinExp());
-    					 requirementIndex.setMaxExperience(refer.getRequirementId().getMaxExp());
+    					 if(StringUtils.isNotEmpty(refer.getRequirementId().getMinExp())) {
+    						 requirementIndex.setMinExperience(Integer.parseInt(refer.getRequirementId().getMinExp()));
+    					 }
+    					 if(StringUtils.isNotEmpty(refer.getRequirementId().getMaxExp())) {
+    						 requirementIndex.setMaxExperience(Integer.parseInt(refer.getRequirementId().getMaxExp())); 
+    					 }
     					 requirementIndex.setCountry(refer.getRequirementId().getCountry());
     					 requirementIndex.setState(refer.getRequirementId().getState());
     					 requirementIndex.setCity(refer.getRequirementId().getCity());
@@ -549,8 +553,12 @@ public class CrowdSourcingRequirementsRestController {
     					 requirementIndex.setPostedOrg(savedJobs.getRequirementId().getPostedOrgName());
     					 requirementIndex.setJobType(savedJobs.getRequirementId().getJobType());
     					 requirementIndex.setJobId(savedJobs.getRequirementId().getJobId());
-    					 requirementIndex.setMinExperience(savedJobs.getRequirementId().getMinExp());
-    					 requirementIndex.setMaxExperience(savedJobs.getRequirementId().getMaxExp());
+    					 if(StringUtils.isNotEmpty(savedJobs.getRequirementId().getMinExp())) {
+    						 requirementIndex.setMinExperience(Integer.parseInt(savedJobs.getRequirementId().getMinExp()));
+    					 }
+    					 if(StringUtils.isNotEmpty(savedJobs.getRequirementId().getMaxExp())) {
+    						 requirementIndex.setMaxExperience(Integer.parseInt(savedJobs.getRequirementId().getMaxExp()));
+    					 }
     					 requirementIndex.setCountry(savedJobs.getRequirementId().getCountry());
     					 requirementIndex.setState(savedJobs.getRequirementId().getState());
     					 requirementIndex.setCity(savedJobs.getRequirementId().getCity());

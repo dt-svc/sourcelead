@@ -602,7 +602,7 @@ function getViewInvoice(){
                             result = result +'                         <div class="tbldata-dotdot_80" title="'+sowName+'">'+sowName+'</div>       ';
                             result = result +'                     </td>                                                     ';
                             result = result +'                     <td>                                                      ';
-                            result = result +'                         <div class="tbldata-dotdot_80" title="'+startDateStr+'  '+endDtaeStr+'" >'+startDateStr+' &nbsp; '+endDtaeStr+'</div>       ';
+                            result = result +'                         <div class="tbldata-dotdot_80" title="'+startDateStr+'  '+endDateStr+'" >'+startDateStr+' &nbsp; '+endDateStr+'</div>       ';
                             result = result +'                     </td>                                                     ';
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';
@@ -1080,7 +1080,7 @@ function paymentHistroy(){
 				result = result +'           </tbody>        ';
 				result = result +'       </table>  ';     
 				$("#paymentHistorytId").empty();  
-			    $("#paymentHistorytId").append(result)
+			    $("#paymentHistorytId").append(result);
 			    paymentHistoryPagination()
 	        }
 	  });
