@@ -121,16 +121,21 @@
                   </div>
                   
 
-                 <div class="form-group" id="EmailIdDiv">
-                  <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9">
+                 <div class="col-md-5" id="EmailIdDiv">
+                  <label class="clearfix">Email Id<span class="text-danger">&nbsp;*</span></label>
+                  <div class="clearfix">
 	                  <div class="input-group errorInptgroup">
 	                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email"  onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();" >
 	                    <span id="emailStatusIconDiv" class="input-group-addon">
 	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
 	                  	</span>
 	                  </div>
-
+                  </div>
+                  </div>
+                  <div class="col-md-5" id="EmailIdDiv">
+                  <label class="clearfix">SSN<span class="text-danger">&nbsp;*</span></label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control" id="ssn" name="SSN" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
                   </div>
                   </div>
                   
@@ -138,7 +143,6 @@
                   <label class="clearfix">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="clearfix">
                     <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*"  field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
-
                   </div>
                 </div>
                 
@@ -149,7 +153,20 @@
                   </div>
                 </div>
                 
-               
+               <div class="col-md-5">
+                  <label class="clearfix">Work Location<span class="text-danger">&nbsp;*</span></label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control" id="workLocation" name="workLocation" field-name="Work Location" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                  </div>
+                </div>
+                 
+                 <div class="col-md-5">
+                  <label class="clearfix">Residence Location<span class="text-danger">&nbsp;*</span></label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control" id="residenceLocation" name="Residence Location" field-name="Residence Location" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                  </div>
+                </div>
+                  
                  <div class="col-md-5">
                   <label class="clearfix">Phone Number</label>
                    <div class="clearfix">
