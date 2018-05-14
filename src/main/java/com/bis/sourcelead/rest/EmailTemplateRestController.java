@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.dto.EmailScenarioDTO;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -43,10 +44,11 @@ public class EmailTemplateRestController {
 				throws Exception {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		 List<EmailScenario> emailScenarioList=new ArrayList<>();
 		 List<EmailScenario> emailScenarioDefList=null;
 		 List<EmailScenario> emailScenarioOrgList=null;
-		 if(user.getUserCode().equalsIgnoreCase("sladmin")){
+		 if(org.getOrgCode().equalsIgnoreCase("slead")){
 			 emailScenarioList= emailScenarioService.getEmailScenarioList("sourcelead");
 		 }else{
 			 emailScenarioDefList=emailScenarioService.getEmailScenarioList("org");
@@ -81,11 +83,12 @@ public class EmailTemplateRestController {
 				throws Exception {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		 EmailScenario emailScenario=null;
 		 if(emailScenarioDTO.getId() != null){
 			  emailScenario=emailScenarioService.getEmailTemplateById(Long.parseLong(emailScenarioDTO.getId()));
 		 }
-		 if(user.getUserCode().equalsIgnoreCase("sladmin") && emailScenario != null&& emailScenario.getDefaultTemplate().equalsIgnoreCase("Y")){
+		 if(org.getOrgCode().equalsIgnoreCase("slead") && emailScenario != null&& emailScenario.getDefaultTemplate().equalsIgnoreCase("Y")){
 			 
 				emailScenario.setScenarioName(emailScenarioDTO.getScenarioName());
 				emailScenario.setBody(emailScenarioDTO.getBody());
