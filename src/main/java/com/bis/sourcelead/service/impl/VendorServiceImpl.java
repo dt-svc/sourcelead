@@ -134,7 +134,7 @@ public class VendorServiceImpl implements VendorService{
 		 }
 		 
 		 orgLocationsDao.updateOrgLocations(vendorOrgLocations);
-		 OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByOrgIdAndCountry(org.getId(),country);
+		 OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByOrgIdAndCountry(vendorOrgLocations.getOrg().getId(),country);
 		 orgLicenseSubscription.setCountry(vendorOrgLocations.getCountry());
 		 orgLicenseSubscriptionDao.saveOrgLicenseSubscription(orgLicenseSubscription);
 		 
