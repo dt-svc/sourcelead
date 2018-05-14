@@ -399,6 +399,8 @@ function addCertification(candidateId) {
 		result  = result + '                     data-validation-optional="true" data-validation="required validate_length length2-250"></textarea>';
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
+		
+		
 		result  = result + '                 <div class="clearfix mb10">';
 		result  = result + '                   <div class="col-md-6">';
 		result  = result + '                   <div>';
@@ -417,6 +419,7 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                   <div>';
 		result  = result + '                 </div>';
+		result  = result + '               </div>';
 		result  = result + '               </div>';
 		result  = result + '                 <div class="clearfix mr">';
 		if(candidateType == "Candidates"){

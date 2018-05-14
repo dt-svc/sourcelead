@@ -1184,6 +1184,7 @@ function getOffboardingCheckList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
+	
 	result = result + '<div class="clearfix">';
 	        result = result + '</div>';
 	        result = result + '<div id="sjfb-wrap">';
@@ -1235,8 +1236,9 @@ function getOffboardingCheckList(){
 	           $("#offboardingCheckList").empty();
 	           $("#offboardingCheckList").append(result); 
 	           $("#offboardTasksList").empty();
-	           customizeFields(templateId,sourceleadUrl,"template");
-	           
+	           if(templateId){
+	           		customizeFields(templateId,sourceleadUrl,"template");
+				}     
 	
 }
 </script>
