@@ -26,7 +26,7 @@
         </div>
 		<div class="pull-left">
 		<h2 class="text-primary">Payhead</h2>
-		<p>Manage Your payheads</p>
+		<p>Manage your payheads</p>
 		<span>
 			<a class="btn btn-info btn-sm mr10" href="#">Add</a>
 			<a class="btn btn-primary btn-sm" href="#">View</a>
@@ -39,7 +39,7 @@
         </div>
 		<div class="pull-left">
 		<h2 class="text-info">Pay Slips</h2>
-		<p>Manage Your pay slips</p>
+		<p>Manage your pay slips</p>
 		<span>
 			<a class="btn btn-info btn-sm mr10" href="#">Add</a> 
 			<a class="btn btn-primary btn-sm" href="#">View</a>
@@ -52,7 +52,7 @@
         </div>
 		<div class="pull-left">
 		<h2 class="text-success">Bonus</h2>
-		<p>Manage Your bonus</p>
+		<p>Manage your bonus</p>
 		<span>
 			<a class="btn btn-info btn-sm mr10" href="#">Add</a> 
 			<a class="btn btn-primary btn-sm" href="#">View</a>
@@ -65,7 +65,7 @@
         </div>
 		<div class="pull-left">
 		<h2 class="text-danger">Loan & Advances</h2>
-		<p>Manage Your loan & advances</p>
+		<p>Manage your loan & advances</p>
 		<span>
 			<a class="btn btn-info btn-sm mr10" href="#">Add</a>
 			<a class="btn btn-primary btn-sm" href="#">View</a>
@@ -78,7 +78,7 @@
         </div>
 		<div class="pull-left">
 		<h2 class="text-warning">Taxes</h2>
-		<p>Manage Your taxes</p>
+		<p>Manage your taxes</p>
 		<span>
 			<a  class="btn btn-info btn-sm mr10" href="#">Add</a> 
 			<a  class="btn btn-primary btn-sm" href="#">View</a>
