@@ -272,7 +272,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields">';
-							result = result + '<input class="form-control" id="cpZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter Zip code" type="text"></input>';
+							result = result + '<input class="form-control" id="cpZipCode" name="zipcode" value="'+zipCode+'" placeholder="Enter Zip code" type="text" field-name="ZipCode" data-validation-optional="true" data-validation="validate_length length5-8 validate_int"></input>';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6 custom-fields hidden">';
@@ -495,7 +495,7 @@ function editCandidate(candidateId){
 							
 							$("#profileEditPopup").empty(); 
 							$("#profileEditPopup").append(result); 
-							initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude','','address');
+							initLocationAuto('cpLocation','cpCountry','cpState','cpCity','cpZipCode','cpLatitude','cpLongitude','editAssociate','address');
 							//zipcodeMask(json.country,'cpZipCode');
 							/* updateDesignationType(json.designationType); */
 							
