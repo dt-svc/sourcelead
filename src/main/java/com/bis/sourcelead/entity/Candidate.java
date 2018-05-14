@@ -30,6 +30,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -838,7 +839,7 @@ public class Candidate implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 
-
+	@JsonIgnore
 	public Set<CandidateEducation> getCandidateEducation() {
 		return candidateEducation;
 	}
@@ -858,7 +859,7 @@ public class Candidate implements Serializable{
 		this.candidateSkills = candidateSkills;
 	}
 */
-
+	@JsonIgnore
 	public Set<CandidateResumes> getCandidateResumes() {
 		return candidateResumes;
 	}
@@ -868,7 +869,7 @@ public class Candidate implements Serializable{
 		this.candidateResumes = candidateResumes;
 	}
 
-
+	@JsonIgnore
 	public Set<CandidateEmployers> getCandidateEmployers() {
 		return candidateEmployers;
 	}

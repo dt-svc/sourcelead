@@ -101,7 +101,8 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  		var url = sourceleadUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter;
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
 	  		prepareCandidateList(url);
-//	  		closePop();
+	  		// advanced search pop up close 
+	  		closePop();
 			return true;
 		 }else{ 
 				return false;
@@ -217,9 +218,11 @@ function cpagination(url){
 	    	  		var result = "";
 	    	  		var isFavourite = "";
 	    	  		var isFavClass = "";
+	    	  		var title = "title = 'Add as Favourite'";
 	    	  		if(full.isFavourite == '1' && isAssociate == "N"){
 	            		isFavourite = "checked";
 	            		isFavClass = "activestar-rating";
+	            		title = "title = 'Change to un Favourite'";
 	            	} else if(full.isFavouriteAssociate == '1' && isAssociate == "Y") {
 	            		isFavourite = "checked";
 	            		isFavClass = "activestar-rating";
@@ -228,10 +231,9 @@ function cpagination(url){
 	    	  		if(data == "Y" && isAssociate == 'N'){
 		            	  result = result +"<i class='fa fa-black-tie pull-right mt10' title='Added as Associate'></i> ";  
 		             }
-	
 		              result = result +"<div class='iconClass pull-left star-rating "+isFavClass+"' id='favourite"+full.candidateId+"'>";
 		              if(associateFlag)
-		            	  	result = result +"   <input type='checkbox' id='fav"+full.candidateId+"' "+isFavourite+" onclick='addFavourite("+full.candidateId+")'></input>";
+		            	  	result = result +"   <input type='checkbox' id='fav"+full.candidateId+"' "+isFavourite+" "+title+" onclick='addFavourite("+full.candidateId+")'></input>";
 		             
 		              result = result +" <label></label>";
 		              result = result +"</div>";

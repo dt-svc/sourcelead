@@ -69,19 +69,6 @@
 	</div>
 </div>
 
-<%-- <div class="form-group">
-	<label class="col-md-4 text-right mt5">Name</label>
-	<div class="col-md-8 dropdown-select">
-		<select class="chosen-select form-control" name="name" field-name="Name">
-			<option value="">- - - Select - - -</option>
-			<c:forEach var="map" items="${dataWithCellId}">
-				<option value="${map.key}">${map.value}(column-${map.key})</option>
-			</c:forEach>
-		</select>
-	</div>
-</div> --%>
-
-
 <div class="form-group">
 	<label class="col-md-4 text-right mt5">Memory</label>
 	<div class="col-md-8 dropdown-select">
@@ -152,7 +139,7 @@
 <label class="col-md-4 text-right mt5">${shift.shiftName}</label>
 <div class="col-md-8 dropdown-select">
  <input type="hidden" name="assignAsset[${shiftOrder.index}].shift" value="${shift.id}"/>
-		<select class="chosen-select form-control" name="shiftAEmp" field-name="ShiftA Employee">
+		<select class="chosen-select form-control" name="assignAsset[${shiftOrder.index}].xlCol">
 			<option value="">- - - Select - - -</option>
 			<c:forEach var="map" items="${dataWithCellId}">
 				<option value="${map.key}">${map.value}(column-${map.key})</option>

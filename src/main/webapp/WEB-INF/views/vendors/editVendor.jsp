@@ -248,7 +248,7 @@
                         result = result + ' </select>';
                         result = result + ' </div>'; 
 						
-                        result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth"  id="customFieldDataId"></div>';
+                        result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth customElements-fields"  id="customFieldDataId"></div>';
                         
 						 result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta pull-right">';

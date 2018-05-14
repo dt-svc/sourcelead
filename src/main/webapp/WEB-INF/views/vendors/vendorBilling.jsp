@@ -6,10 +6,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link rel="stylesheet" href="/resources/css/style.css" />
-<style type="text/css">
+<link rel="stylesheet" href="/resources/css/style.css" />    
+<style type="text/css"> 
 
-.timesheet_head ul.nav-tabs, .timesheet_head ul.invoiceHdr  {
+.timesheet_head ul.nav-tabs, .timesheet_head ul.invoiceHdr  { 
 padding: 5px; float: none; clear: both;
 }
 .billing_dashboard {
@@ -41,6 +41,9 @@ z-index: 9999999;
 
 
 <input type="hidden" id="emptyPayableInvoiceId" name="emptyPayableInvoiceId"/>
+<div class="success_pop" id="selector13" style="display: none;">
+		<i class="fa fa-check-circle"></i><span id="msgdiv1"></span>
+  </div>
 <script>
 function getVendorInvoiceList(orgRelationId,vendorLocationId){
 var result = "";
@@ -133,7 +136,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			            </div>                                                                                                                                                                                                 ';
  result = result + '			          </ul>                                                                                                                                                                                                    ';
  result = result + '			          <div class="tab-content">                                                                                                                                                                                ';
- result = result + '			                                                                                                                                                                                                                   ';
+ result = result + '			           <div id="invoiceLoading"></div>                                                                                                                                                                                                        ';
  result = result + '			            <!-- Employee Details -->                                                                                                                                                                              ';
  result = result + '			            <div class="tab-pane active" id="unbilled">                                                                                                                                                            ';
  result = result + '			              <div class="timesheet_out">                                                                                                                                                                       ';
@@ -424,15 +427,17 @@ result = result  +'    <div class="billingArea"> ';
 					result = result +'         <td> ';
 					result = result +'     <div class="tblminwidth-90">';
 					 result = result +'  <div class="pull-right positionRelative menuWidget" >';
-					if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted"){
+					 if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected"){
 						 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
 							result = result +'  <div id="popupDiv'+report.invoiceUUID+'"></div>';
 					} 
 					result = result +'  </div> ';  
 					
 					if(report.invoiceType=="Payables" && report.invoiceParentId != null && report.invoiceParentId != '' && report.invoiceParentId != "undefined"){
-						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="successBtn primary pull-left" title="Paid">Paid</span> </td>          ';	
+						}else if(report.invoiceStatus == "DRAFT"){
+							result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
 						}else{
 							if(report.invoiceStatus == "Accepted"){
 								result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>';
@@ -447,8 +452,10 @@ result = result  +'    <div class="billingArea"> ';
 						}
 						
 					}else{
-						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT"){
+						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
+						}else if(report.invoiceStatus == "DRAFT"){
+							result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
 						}else{
 							result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
 						}
@@ -653,6 +660,55 @@ function vendorInvoicePagination(){
 }
 </script>
 
+<div id="popUp"></div>
+
+<script>
+function deleteBill(invoiceUUID){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+
+	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result +"		<textarea  id='reasonForBill' name='reasonForBill'  placeholder='Comments here' ></textarea>";
+	result = result + ' <div id="reasonForBillDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveBillRejectedReason(\''+invoiceUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function saveBillRejectedReason(invoiceUUID){
+	var reason = $("#reasonForBill").val();
+	if(reason != null && reason != ''){
+		 $("#reasonForBillDiv").empty();
+		if(reason.length > 250){
+		$("#reasonForBillDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
+		}else{
+			 $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/deleteInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=payables&invoiceUUID="+invoiceUUID+"&reason="+reason,
+		   		    success: function(data) {
+		   		    	$("#popUp").empty();
+		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 	location.replace(sourceleadUrl+"/payablesList");	
+		   		    }
+			     });
+		}
+	}
+	else{
+			$("#reasonForBillDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
+	
+}
+</script>
+
+
 <!-- modal pop -->
 <div class="side_mask" style="display: none"></div>
 <div class="modal modal_invoice" style="display: none;">
@@ -817,7 +873,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              <label><strong>Attachments</strong></label>                         ';
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
-	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment"> ';
+	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment" onchange="getfileUrl()"> ';
 	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
@@ -948,6 +1004,30 @@ function rejectInvoice(invoiceUUID){
 }
 </script>
 
+<script type="text/javascript">
+function generateAutomaticInvoice(){
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/generateAutomaticInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable&contractType=clientSow", 
+             success: function(json) {
+            	  $("#invoiceLoading").removeAttr("style");
+					$("#selector13").removeAttr("style");
+	    			$("#selector13").css("display", "block");
+	    			$("#msgdiv1").html(json.object.count+" Bill(s) Generated Successfully.");
+					msgFadein();
+            	 location.replace(sourceleadUrl+"/payablesList");	            	 
+        },
+    });  
+}
+</script>
+<script>
+	function msgFadein() {
+		$("#selector13").fadeIn(200);
+        $('#selector13').delay(2000).fadeOut('slow');
+	}
+</script>
 <script>
 function saveReasonforReceivable(invoiceUUID){
 	var sourceleadUrl = '${sourceleadUrl}';
@@ -991,6 +1071,9 @@ function cancelTermination(){
 </script>
 
 <script>
+function getfileUrl(){
+	fileUpload("paymentAttachment", "incoiceDocuments", "receivePayment-form");
+}
 function removeValidate(){
 	$('#errPaymentDate').find('p.jquery_form_error_message').remove(); 
 }
@@ -1037,11 +1120,18 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount){
 	     if(invoiceParentId == 'undefined'){
 	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
 	     }else{
-	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
+	    	 if(invoiceStatus == 'DRAFT'){
+	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_1"> ';
+	    	  }else if(invoiceParentId != 'null'){
+	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
+	    	  }else{
+	    		  result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
+
+	    	  }
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
-		 if(invoiceParentId == 'undefined'){
+		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
 			 result = result +'      <li onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
 			 '</sec:authorize>'

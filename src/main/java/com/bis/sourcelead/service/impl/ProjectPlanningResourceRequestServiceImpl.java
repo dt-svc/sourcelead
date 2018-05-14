@@ -99,15 +99,24 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
         EmailScenario  notificationScenario = null;
         if(!"".equalsIgnoreCase(projectPlanningRequest.getRejectedReason()) && projectPlanningRequest.getRejectedReason() != null){
           	 globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
-        	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_BULK_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_BULK_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+        	 if(orgLocations != null)
+    			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.REJECT_BULK_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+    			  if(emailScenario == null){
+    					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_BULK_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+    			   }
+        	 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_BULK_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
         }else{
         	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_BULK_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_BULK_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+        	 if(orgLocations != null)
+    			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ACCEPT_BULK_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+    			  if(emailScenario == null){
+    					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_BULK_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+    			   }
+        	 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_BULK_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
            
         }
          
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
         
         //covert subject,body and signature
@@ -252,7 +261,7 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
 
        }
         
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
         
         //covert subject,body and signature

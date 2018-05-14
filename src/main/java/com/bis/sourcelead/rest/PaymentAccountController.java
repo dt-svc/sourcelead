@@ -57,7 +57,7 @@ public class PaymentAccountController {
     private String wepaySecret;
     
     @Value("${wepay.url}")
-    private String WEPAY_URL;
+    private String wepayURL;
     
     @Value("${sourceleadUrl}")
     private String sourceleadURL;
@@ -98,7 +98,7 @@ public class PaymentAccountController {
         response.setResponse(Result.INVALID_DATA.name());
         response.setResponseMessage(Result.INVALID_DATA.getValue());
         if (org != null) {
-            response.setData(orgService.getPaymentAccountList(org.getId(), 0,false));
+            response.setData(orgService.getPaymentAccountList(org.getId(), 0, false));
             response.setResponse(Result.SUCCESS.name());
             response.setResponseMessage(Result.SUCCESS.getValue());
         } else {
@@ -252,7 +252,7 @@ public class PaymentAccountController {
             json.put("tos_acceptance_time", 1209600);
             json.put("redirect_uri", sourceleadURL.replace("/app", "") + wepaySuccessLink + "?id=" + account.getId() + "&orgId=" + orgId);
             RequestBody body = RequestBody.create(JSON, json.toString());
-            Request req = new Request.Builder().url(WEPAY_URL + "/v2/user/register")
+            Request req = new Request.Builder().url(wepayURL + "/v2/user/register")
                     .addHeader("Authorization", "Bearer " + wepayAccessToken)
                     .addHeader("Content-Type", "application/json")
                     .post(body)
@@ -267,7 +267,7 @@ public class PaymentAccountController {
             json.put("name", account.getFirstName() + " " + account.getLastName());
             json.put("description", "SourceLead Invoicing Account");
             body = RequestBody.create(JSON, json.toString());
-            req = new Request.Builder().url(WEPAY_URL + "/v2/account/create")
+            req = new Request.Builder().url(wepayURL + "/v2/account/create")
                     .addHeader("Authorization", "Bearer " + accessToken)
                     .addHeader("Content-Type", "application/json")
                     .post(body)
@@ -295,7 +295,7 @@ public class PaymentAccountController {
     private boolean sendMail(String accessToken) {
         try {
             OkHttpClient client = new OkHttpClient();
-            Request req = new Request.Builder().url(WEPAY_URL + "/v2/user/send_confirmation")
+            Request req = new Request.Builder().url(wepayURL + "/v2/user/send_confirmation")
                     .addHeader("Authorization", "Bearer " + accessToken)
                     .addHeader("Content-Type", "application/json")
                     .build();
@@ -311,31 +311,5 @@ public class PaymentAccountController {
             Logger.getLogger(PaymentAccountController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
-    }
-    
-    @RequestMapping(value = "/app/change-active-payment-account", method = RequestMethod.POST)
-    @ResponseBody
-    public com.bis.sourcelead.dto.Response changeActiveAccount(HttpServletRequest request,  long id) {
-        com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();
-        Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-        response.setResponse(Result.INVALID_DATA.name());
-        response.setResponseMessage(Result.INVALID_DATA.getValue());
-        if (org != null) {
-            int flag = orgService.changePaymentAccountStatus(id, org.getId());
-            if (flag > 0) {
-                response.setResponse(Result.SUCCESS.name());
-                response.setResponseMessage(Result.SUCCESS.getValue());
-            } else if (flag < 0) {
-                response.setResponse(Result.DUPLICATE_EMAIL.name());
-                response.setResponseMessage(Result.DUPLICATE_EMAIL.getValue());
-            } else if (flag == 0) {
-                response.setResponse(Result.FAILED.name());
-                response.setResponseMessage(Result.FAILED.getValue());
-            }
-        } else {
-            response.setResponse(Result.SESSION_TIMEDOUT.name());
-            response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-        }
-        return response;
     }
 }

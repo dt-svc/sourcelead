@@ -670,12 +670,24 @@ public class FinanceDaoImpl implements FinanceDao{
 		ResponseList<Invoice> response = new ResponseList<>();
 		String query = "from Invoice invoice where invoice.orgRelationID.id = :orgRelationId and invoice.invoiceType = :billType";
 		String countQuery = "from Invoice invoice where invoice.orgRelationID.id = :orgRelationId and invoice.invoiceType = :billType";
-		StringBuilder query1 = new StringBuilder("");
-		Query queryObj = session.createQuery(query + query1.toString());
+
+
+		StringBuilder searchQuery = new StringBuilder("");
+		 if(paidBillDTO.getSearchValue() !=null && !"".equalsIgnoreCase(paidBillDTO.getSearchValue())) {
+						searchQuery.append(" and (invoice.projectID.projectName like '%" + paidBillDTO.getSearchValue() + "%' )");
+//						.append("OR invoice.orgLocation.orgLocationName like '%" + paidBillDTO.getSearchValue() + "%' ")
+//						.append("OR invoice.total like '%" + paidBillDTO.getSearchValue() + "%' ")
+//						.append("OR invoice.invoiceId like '%" + paidBillDTO.getSearchValue() + "%' ")
+//						.append("OR invoice.dueAmount like '%" + paidBillDTO.getSearchValue() + "%' )");
+//					}
+			}
+		
+		Query queryObj = session.createQuery(query + searchQuery.toString());
 		if (paidBillDTO != null && paidBillDTO.getLength() > 0) {
 			queryObj.setFirstResult(paidBillDTO.getStart());
 			queryObj.setMaxResults(paidBillDTO.getLength());
 		}
+		
 		invoiceList = queryObj.setLong("orgRelationId", paidBillDTO.getOrgRelationId()).setString("billType", paidBillDTO.getBillType()).list();
 		int count = 0;
 		int filteredCount = 0;
@@ -685,7 +697,7 @@ public class FinanceDaoImpl implements FinanceDao{
 		}
 		response.setRecordsTotal(count);
 		if (paidBillDTO != null) {
-			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery+ query1.toString()).setLong("orgRelationId", paidBillDTO.getOrgRelationId()).setString("billType", paidBillDTO.getBillType()).list();
+			List<Long> filteredCountlist = session.createQuery("select count(*) " + countQuery+ searchQuery.toString()).setLong("orgRelationId", paidBillDTO.getOrgRelationId()).setString("billType", paidBillDTO.getBillType()).list();
 			if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
 				filteredCount = filteredCountlist.iterator().next().intValue();
 			}

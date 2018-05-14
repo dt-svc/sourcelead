@@ -98,7 +98,7 @@ public class BillingDTO {
 	private String memberId;
 	private String expensesFrequency;
 	private String expId;
-	
+	private PaymentAccountDTO paymentAccountDTO;
 	private String orgRelationUUID;
 	
 	public Long getId()
@@ -773,5 +773,10 @@ public class BillingDTO {
 	{
 		this.orgRelationUUID = orgRelationUUID;
 	}
-	
+	public PaymentAccountDTO getPaymentAccountDTO() {
+		return paymentAccountDTO;
+	}
+	public void setPaymentAccountDTO(PaymentAccountDTO paymentAccountDTO) {
+		this.paymentAccountDTO = paymentAccountDTO;
+	}
 }

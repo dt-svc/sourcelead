@@ -448,7 +448,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		StringBuilder searchCountQuery = new StringBuilder();
 		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
 		searchCountQuery.append("and ( (pm.projectMemberCandidteId.firstName like '" + searchValue + "%' OR pm.projectMemberCandidteId.lastName like '%" + searchValue + "' )")
-					.append("OR (concat(pm.projectMemberCandidteId.firstName,pm.projectMemberCandidteId.lastName) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
+					.append("OR (concat(REPLACE(pm.projectMemberCandidteId.firstName,' ',''),REPLACE(pm.projectMemberCandidteId.lastName,' ','')) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
 					.append("OR pm.projectMemberCandidteId.email like '%" + searchValue + "%' ")
 					.append("OR pm.projectMemberCandidteId.mobilePhone like '%" + searchValue + "%' ")
 					.append("OR pm.projectMemberCandidteId.designationType like '%" + searchValue + "%' ")
@@ -479,7 +479,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		StringBuilder searchQuery = new StringBuilder();
 		if(StringUtils.isNotEmpty(searchValue) && searchValue != null) {
 		 searchQuery.append("and( (candidate.firstName like '" + searchValue + "%' OR candidate.lastName like '%" + searchValue + "' )")
-					.append("OR (concat(candidate.firstName,candidate.lastName) like '%" + searchValue.replaceAll("[\\s]+", "").trim() + "%')" )
+					.append("OR (concat(candidate.firstName,' ',candidate.lastName) like '%" + searchValue.trim().replaceAll(" +", " ")+ "%')" )
 					.append("OR candidate.email like '%" + searchValue + "%' ")
 					.append("OR candidate.mobilePhone like '%" + searchValue + "%' ")
 					.append("OR candidate.designationType like '%" + searchValue + "%' ")

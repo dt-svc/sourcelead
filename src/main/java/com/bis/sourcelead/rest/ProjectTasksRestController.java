@@ -1326,8 +1326,7 @@ public class ProjectTasksRestController {
 					.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), timeDayEntries.getTimesheetDate()));
 			timeSheetDayEntriesDtoList.setHours(timeDayEntries.getTotalHours());
 			timeSheetDayEntriesDtoList.setComments(timeDayEntries.getComments());
-			timeSheetDayEntriesDtoList
-					.setProjectMemberId(timeDayEntries.getTimesheetSubmissions().getProjectMembers().getId());
+			timeSheetDayEntriesDtoList.setProjectMemberId(timeDayEntries.getTimesheetSubmissions().getProjectMembers().getId());
 			timeSheetDayEntriesDtoListData.add(timeSheetDayEntriesDtoList);
 		}
 
@@ -1488,20 +1487,25 @@ public class ProjectTasksRestController {
 	@RequestMapping(value = "/calculateTotalTaskHoursForADay", method = RequestMethod.POST)
 	public String calculateTotalTaskHoursForADay(@RequestParam(value = "timeDate", required = false) String timeDate,
 			@RequestParam(value = "projectMember", required = false) Long projectMember,
-			@RequestParam(value = "timesheetHour", required = false) String timesheetHour, HttpServletRequest request)
+			@RequestParam(value = "timesheetHour", required = false) String timesheetHour,
+			@RequestParam(value = "editTaskTime", required = false) String editTaskTime,
+			HttpServletRequest request)
 			throws Exception {
 		String falg = "false";
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		ProjectMembers proMember = projectMembersService.getProjectMemberById(projectMember);
 		if (timeDate != null && StringUtils.isNotBlank(timeDate)) {
-			if (proMember != null && proMember.getProjects() != null
-					&& proMember.getMasterCandidateId().getId() != null) {
+			if (proMember != null && proMember.getProjects() != null && proMember.getMasterCandidateId().getId() != null) {
 				Float totalHours = timeSheetDayEntriesService.getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(
-						proMember.getProjects().getId(), proMember.getMasterCandidateId().getId(),
-						commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), timeDate));
-				totalHours = CommonUtil.getCombinedHours(Float.parseFloat(timesheetHour.replaceAll(":", ".")),
-						totalHours);
+				proMember.getProjects().getId(), proMember.getMasterCandidateId().getId(),commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), timeDate));
+				if(editTaskTime != null && StringUtils.isNotEmpty(editTaskTime) && editTaskTime.equalsIgnoreCase("edit")) {
+					totalHours = CommonUtil.getCombinedHours(Float.parseFloat(timesheetHour.replaceAll(":", ".")),0f);
+				}else {
+					totalHours = CommonUtil.getCombinedHours(Float.parseFloat(timesheetHour.replaceAll(":", ".")),totalHours);
+				}
+				
+				
 				if (totalHours != null && totalHours >= 24) {
 					falg = "false";
 				} else {

@@ -3,7 +3,7 @@ package com.bis.sourcelead;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -24,7 +24,7 @@ import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 
-@ServerEndpoint("/app/dashBoardDynamicCount")
+@ServerEndpoint("/app/ws/dashBoardDynamicCount")
 public class DashBoardSocketCount {
 	
 	private UserService userService = BeanUtil.getBean(UserService.class);
@@ -33,7 +33,7 @@ public class DashBoardSocketCount {
 	private CandidateService candidateService = BeanUtil.getBean(CandidateService.class);
 	private CommonUtil commonUtil = BeanUtil.getBean(CommonUtil.class);
 	
-	private static Map<String, Session> sessionMap = new HashMap<>();
+	private static ConcurrentHashMap<String, Session> sessionMap = new ConcurrentHashMap<>();
 	private Thread rateThread;
 	private volatile boolean runnable = true;
 	
@@ -84,7 +84,7 @@ public class DashBoardSocketCount {
 		DashBoardSocketCountDTO dashBoardCountDto = getDetails(userId,orgLocationCode,candiadteId,timesheetType);
 		dashBoardCountDto.setSession(session);
 		sessionMap.put(userId, session);
-		System.out.println("New session opened: " + session.getId());
+		/*System.out.println("New session opened: " + session.getId());*/
 		initThread(dashBoardCountDto);
 	}
 
@@ -104,9 +104,8 @@ public class DashBoardSocketCount {
 	public void error(Session session, Throwable t) throws IOException {
 		String userId = session.getRequestParameterMap().get("userId").get(0);
 		sessionMap.remove(userId);
-		sessionMap.get(userId).close();
 		runnable = false;
-		System.err.println("Error on session " + session.getId());
+		/*System.err.println("Error on session " + session.getId());*/
 	}
 
 	@OnClose
@@ -122,7 +121,7 @@ public class DashBoardSocketCount {
 			}
 		}
 		runnable = false;
-		System.out.println("session closed: " + session.getId());
+		/*System.out.println("session closed: " + session.getId());*/
 	}
 
 	private void triggerCount(DashBoardSocketCountDTO dashBoardSocketCountDTO) {
@@ -143,7 +142,7 @@ public class DashBoardSocketCount {
 					
 					
 				} else {
-					System.err.println("Closed session: " + dashBoardSocketCountDTO.getSession().getId());
+					/*System.err.println("Closed session: " + dashBoardSocketCountDTO.getSession().getId());*/
 					sessionMap.remove(dashBoardSocketCountDTO.getUserId());
 				}
 			

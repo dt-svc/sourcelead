@@ -567,13 +567,19 @@ public class CandidateServiceImpl implements CandidateService {
 			candidate.setExperienceMonths(null);	
 		}
 		
-			if(candidate.getNoticePeriod() != null  && candidate.getNoticePeriod() != "" && !candidateDto.getNoticePeriod().equalsIgnoreCase(candidate.getNoticePeriod())){
-				activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getNoticePeriod()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}else if((candidate.getNoticePeriod() != null || candidate.getNoticePeriod() != "" ||  candidateDto.getNoticePeriod().equalsIgnoreCase(candidate.getNoticePeriod())) && candidateDto.getNoticePeriod() !="" ){
-				activitySummary.append("Notice Period").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getNoticePeriod()).append(Constants.NEW_VALUE_TAG_END).append(" ");
-			}else
-				activitySummary.append("Notice Period").append(" : ").append("---").append(" ");
-			candidate.setNoticePeriod(candidateDto.getNoticePeriod());	
+		 String noticePeriod = null;
+		if(candidateDto.getNoticePeriod() != null)
+			noticePeriod = candidateDto.getNoticePeriod().replaceAll("\\s+", " ");
+		
+	    if(noticePeriod != null) {
+		if(candidate.getNoticePeriod() != null  && candidate.getNoticePeriod() != "" && !noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())){
+			 activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(noticePeriod).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		}else if((candidate.getNoticePeriod() != null || candidate.getNoticePeriod() != "" ||  noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())) && noticePeriod !="" ){
+			  activitySummary.append("Notice Period").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(noticePeriod).append(Constants.NEW_VALUE_TAG_END).append(" ");
+		}else 
+			activitySummary.append("Notice Period").append(" : ").append("---").append(" ");
+			candidate.setNoticePeriod(noticePeriod);	
+	     }
 		
 		if(candidateDto.getAddress() !=null){
 			if(candidate.getAddress() != null   && candidate.getAddress() != "" && !candidateDto.getAddress().equalsIgnoreCase(candidate.getAddress())){
@@ -581,9 +587,9 @@ public class CandidateServiceImpl implements CandidateService {
 			}else if((candidate.getAddress() != null || candidate.getAddress() != "" ||  candidateDto.getAddress().equalsIgnoreCase(candidate.getAddress())) && candidateDto.getAddress() !="" ){
 				activitySummary.append("Address").append(" : ").append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}else
-				activitySummary.append("Address").append(" : ").append("---").append(" ");
+			activitySummary.append("Address").append(" : ").append("---").append(" ");
 			candidate.setAddress(candidateDto.getAddress());
-		}
+		  }
 		
 		UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(),orgLocations.getId(),"Recruiter");
 		if(null != userRole && userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){

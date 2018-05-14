@@ -126,7 +126,7 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
           }
      
         
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
        
        /* Commented by Pradeep Konda -- We are not maintaining the Resource Requested User Details in database.
@@ -215,10 +215,15 @@ public class ProjectPlanningNewResourceRequestServiceImpl implements ProjectPlan
         globalVarsMap.put("resourceTable", resourceTable);
         globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
         
-        EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+        EmailScenario  emailScenario = null;
+        if(orgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+			   }
         EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
             
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
         
         //covert subject,body and signature

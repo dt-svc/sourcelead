@@ -380,7 +380,7 @@ padding-left: 25px;
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
 	        	} else if (response.response === "SUCCESS") {
-	        		var json = JSON.parse(response.data);
+	        		var json = JSON.parse(response.object);
 		        	 var result = "";
 		        	 result = result +'<div class="form-group">';
 		        	 result = result +'<label class="clearfix"> <strong>Resignation / Termination Documents</strong> </label>';

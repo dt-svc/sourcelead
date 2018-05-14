@@ -841,7 +841,7 @@ function editClientProjectDetails(projectId){
 						
 						result = result + '</div>';
 						result = result + '<div class="clearfix"></div>';
-						result = result + '<div id="customFieldDataId"></div>';
+						result = result + '<div id="customFieldDataId" class="customFieldDataId-3column"></div>';
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="width100percnt col-md-12 mb txtEditor_p">';

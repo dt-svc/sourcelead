@@ -363,8 +363,9 @@ function validateShortCode(){
 								</div>
 							</div>
 						</div>
-						
-						<div class="clearfix mb">
+					</div>	
+						<div class="clearfix mb myForm">
+						<div class="clearfix"></div>
 			            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 			               <c:if test="${sectionOrder.index == 0}">
 			                  <div id="customDiv${section.id}"></div>
@@ -372,7 +373,7 @@ function validateShortCode(){
 			            </c:forEach>
 						</div>
 						
-					</div>
+					
 				</div>
 				
 				<!--  div row end -->

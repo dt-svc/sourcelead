@@ -144,7 +144,7 @@ function prepareapagingGraph(data){
 				"enabled": true
 			},
 			"export": {
-				"enabled": true.
+				"enabled": true,
 				"fileName":"A/P Aging"
 			},
 			"categoryAxis": {

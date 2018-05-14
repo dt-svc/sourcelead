@@ -146,7 +146,7 @@ public class RequirementInterviewerServiceImpl implements RequirementInterviewer
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_FEEDBACK_NOTIFICATIONTO_REQUIREMENTOWNER,Constants.ENTITY_TYPE_NOTIFICATION);
 
 		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
 		 
 		OrgLocations OrgLoc = requirement.getOrgLocationId();

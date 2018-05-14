@@ -335,7 +335,7 @@ function filterStatus() {
 	  }
 	 var sourceleadUrl ='${sourceleadUrl}';
 	    $.ajax({
-	    	type: "POST",
+	    	type: "GET",
 	        url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values+"&roleIds="+roleIds+"&teamIds="+teamIds, 
 	        success: function(json) {
 	        	
