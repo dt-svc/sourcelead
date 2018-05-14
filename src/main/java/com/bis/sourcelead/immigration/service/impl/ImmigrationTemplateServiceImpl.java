@@ -65,6 +65,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         if (!templateId.equalsIgnoreCase("null") && !templateId.isEmpty()) {
         	immigrationTemplate =  new ImmigrationTemplate();
         	immigrationTemplate.setId(Long.parseLong(templateId));
+        	immigrationTemplate = immigrationTemplateDao.getImmigrationTemplateById(Long.parseLong(templateId));
             //immigrationTemplate.setStatus(1);
         }else {
         	immigrationTemplate = new ImmigrationTemplate();
@@ -174,8 +175,8 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         immigrationTemplateTask.setDueAfterMonths(templateDTO.getDueAfterMonths());
         immigrationTemplateTask.setDueAfterDays(templateDTO.getDueAfterDays());
         immigrationTemplateTask.setTaskRepeat(templateDTO.getTaskRepeat());
-        immigrationTemplateTask.setTaskEmail(templateDTO.getTaskEmail());
-        immigrationTemplateTask.setTaskNotification(templateDTO.getTaskNotification());
+        immigrationTemplateTask.setTaskEmail(Constants.YES);
+        immigrationTemplateTask.setTaskNotification(Constants.YES);
         immigrationTemplateTask.setDescription(templateDTO.getTaskDescription());
         immigrationTemplateTask.setStatus(Constants.RECORD_ACTIVE);// 1 for active
 
