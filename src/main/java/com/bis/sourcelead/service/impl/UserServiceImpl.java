@@ -349,6 +349,28 @@ public class UserServiceImpl implements UserService {
 				candidate.setUpdatedBy(loginuser.getUserCode());
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setIsAssociate(Constants.YES);
+				
+				if(StringUtils.isNotBlank(addUserDTO.getVendors())){
+					OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(addUserDTO.getVendors()));
+					candidate.setOrgRelationId(orgRelation);
+				}else{
+					candidate.setOrgRelationId(null);
+				}
+				
+				if(StringUtils.isNotBlank(addUserDTO.getVendorcontact())){
+					OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(addUserDTO.getVendorcontact()));
+					candidate.setSpocId(orgspoc);
+				}else{
+					candidate.setSpocId(null);
+				}
+				if(StringUtils.isNotBlank(addUserDTO.getDesignationType())){
+					candidate.setDesignationType(addUserDTO.getDesignationType());
+				}
+				
+				if(StringUtils.isNotBlank(addUserDTO.getDesignationOtherType())){
+					candidate.setDesignationOtherType(addUserDTO.getDesignationOtherType());
+				}
+				
 				candidateService.saveOrUpdateCandidate(candidate);
 				candidateService.saveOrUpdateCandidateElkDocument(candidate);
 			}	

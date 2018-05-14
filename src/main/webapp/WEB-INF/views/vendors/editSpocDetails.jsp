@@ -237,9 +237,9 @@
 						
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + ' <div class="row">';
-						result = result + ' <div class="col-md-7">';
+						result = result + ' <div class="col-md-7 phoneValid">';
 						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" readonly="readonly" >';
+						result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true">';
 						result = result + '</div>';
 						
 						result = result + ' <div class="col-md-5 errBotVal">';

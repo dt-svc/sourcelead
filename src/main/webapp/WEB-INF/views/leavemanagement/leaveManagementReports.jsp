@@ -1022,6 +1022,7 @@ function getPieChartBasedOnUser(){
 
 <script>	
 	function prepareTopLeaveTakersList(url) {
+		$("#leaveEmptyMessage").val(0);
 		$("#topLeaveTakersDiv").empty();
 		var result = "";
 		result = result + "<table id='topLeaveTakersTable' class='display' cellspacing='0' width='100%' >";
@@ -1232,7 +1233,7 @@ function leavePdfExport(){
 	var reportMonth = "";
 	var reportFromDate = "";
 	var reportEndDate = "";
-	var leaveEmptyMessage = $("#leaveEmptyMessage").val();
+	var emptyExport = $("#leaveEmptyMessage").val();
 	
 	if($("#topLeaveTakersreportYear").val() !=null && $("#topLeaveTakersreportYear").val() != 'undefined' && $("#topLeaveTakersreportYear").val() != ''){
 		reportYear = $("#topLeaveTakersreportYear").val();
@@ -1247,7 +1248,7 @@ function leavePdfExport(){
 		 reportEndDate = $("#reportEndDate").val();	
 	}
 
-	if(leaveEmptyMessage > 0){
+	if(emptyExport > 0){
 	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=PDF";
 	}else{
 		var result = "";
@@ -1276,7 +1277,7 @@ function leaveExcelExport(){
 	var reportMonth = "";
 	var reportFromDate = "";
 	var reportEndDate = "";
-	var leaveEmptyMessage = $("#leaveEmptyMessage").val();
+	var emptyExport = $("#leaveEmptyMessage").val();
 	
 	if($("#topLeaveTakersreportYear").val() !=null && $("#topLeaveTakersreportYear").val() != 'undefined' && $("#topLeaveTakersreportYear").val() != ''){
 		reportYear = $("#topLeaveTakersreportYear").val();
@@ -1290,7 +1291,7 @@ function leaveExcelExport(){
 	if($("#reportEndDate").val() !=null && $("#reportEndDate").val() != 'undefined' && $("#reportEndDate").val() != ''){
 		 reportEndDate = $("#reportEndDate").val();	
 	}
-	if(leaveEmptyMessage > 0){
+	if(emptyExport > 0){
 	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=EXCEL";
 	}else{
 		var result = "";

@@ -1,6 +1,6 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
-<meta http-equiv="Expires" content="0">
+<meta http-equiv="Expires" content="0">                            
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -49,6 +49,9 @@ z-index: 9999999;
 
 
 <input type="hidden" id="emptyInvoiceId" name="emptyInvoiceId"/>
+<div class="success_pop" id="selector12" style="display: none;">
+		<i class="fa fa-check-circle"></i><span id="msgdiv"></span>
+  </div>
 <script>
 function getClientInvoiceList(orgRelationId,clientLocationId){
 var result = "";
@@ -141,12 +144,12 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			            </div>                                                                                                                                                                                                 ';
  result = result + '			          </ul>                                                                                                                                                                                                    ';
  result = result + '			          <div class="tab-content">                                                                                                                                                                                ';
- result = result + '			                                                                                                                                                                                                                   ';
+ result = result + '			          <div id="invoiceLoading"></div>                                                                                                                                                                                                         ';
  result = result + '			            <!-- Employee Details -->                                                                                                                                                                              ';
  result = result + '			            <div class="tab-pane active" id="unbilled">                                                                                                                                                            ';
  result = result + '			              <div class="timesheet_out">                                                                                                                                                                       ';
  result = result + '			                <div class="clearfix">                                                                                                                                                                             ';
- result = result + '			                  <div class="timesheet_head timesheetHead-UL exportUl">                                                                                                                                                                     ';
+ result = result + '			                  <div class="timesheet_head timesheetHead-UL">                                                                                                                                                                     ';
  result = result + '			                    <ul>                                                                                                                                                                                           ';
  result = result + '			                                                                                                                                                                                                                   ';
  result = result + '			                    	                                                                                                                                                                                           ';
@@ -407,7 +410,7 @@ result = result  +'    <div class="billingArea"> ';
 					result = result +'     <div class="tblminwidth-75">';
 					 result = result +'  <div class="pull-right positionRelative menuWidget" >';
 					 if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
-						result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
+						result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
 						result = result +'  <div id="popupDiv'+report.invoiceUUID+'"></div>';
 					} 
 					result = result +'  </div> ';                                                                                                    
@@ -606,8 +609,29 @@ function searchResults(orgRelationId,clientLocationId){
 
 </script>
 
-
-
+<script type="text/javascript">
+function generateAutomaticInvoice(){
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/generateAutomaticInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable&contractType=clientSow", 
+             success: function(json) {
+            	  $("#invoiceLoading").removeAttr("style");
+					$("#selector12").removeAttr("style");
+					$("#msgdiv").html(json.object.count+" Invoice(s) Generated Successfully.");
+					msgFadein();
+            	 location.replace(sourceleadUrl+"/invoiceList");	            	 
+        },
+    });  
+}
+</script>
+<script>
+	function msgFadein() {
+		$("#selector12").fadeIn(200);
+        $('#selector12').delay(2000).fadeOut('slow');
+	}
+</script>
 
 <script>
 function clientInvoicePagination(){  
@@ -1011,7 +1035,7 @@ function cancelbtn(){
 </script>
   
 <script>
-function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount){
+function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 		 removePopup();
 	     result = "";
 	     if(invoiceParentId == 'undefined'){
@@ -1027,11 +1051,11 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount){
 			 '</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_INVOICE\')">';
-		 result = result +'      <li onclick="getPrint('+invoiceUUID+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+		 result = result +'      <li><a class="" target="_blank" href="'+fileUrl+'" title="Print"><i class="fa fa-print paddingLeft paddingRight"></i>Print</a></li>';
 		 '</sec:authorize>'
 		
 		 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
-		 result = result +'      <li onclick="downloadInvoice('+invoiceUUID+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+		 result = result +'      <li><a target="_blank" href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
 		 '</sec:authorize>'
 		 
 		 result = result +'      <li onclick="linkInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';

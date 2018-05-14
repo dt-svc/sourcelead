@@ -190,7 +190,7 @@
 		                          <div class="input-group">
 		                             <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		                             <input type="text"  id = "date${customForm.id}" readonly value="${dataMap.value[1]}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" class="form-control calendar customDate" onclick="dateScriptsCustomDate('${customForm.id}');" id="${customForm.fieldName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''}>
-		                             <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+		                             <span class="input-group-addon" onClick="clearDate(${customForm.id});"><i class="colorRed fa fa-times cursorPointer"></i></span>
 		                          </div>
 		                       </div>
 		                 </div>
@@ -204,7 +204,7 @@
                           <div class="input-group">
                              <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
                              <input type="text" id ="date${customForm.id}" readonly value="" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" class="form-control calendar customDate" onclick="dateScriptsCustomDate('${customForm.id}');" id="${customForm.fieldName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''}>
-                             <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                             <span class="input-group-addon" onClick="clearDate(${customForm.id});"><i class="colorRed fa fa-times cursorPointer"></i></span>
                           </div>
                        </div>
                  </div>
@@ -348,8 +348,8 @@ $(function(){
 </script>
 
  <script>
-function clearDate(){
-	$('.customDate').val('');
+function clearDate(customId){
+	$('#date'+customDateId).val('');
 }
 
 </script> 

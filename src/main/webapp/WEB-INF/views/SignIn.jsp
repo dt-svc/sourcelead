@@ -58,6 +58,10 @@
 			<c:if test="${!empty login_blocked_error}">
 					 <div class="error">Your user account is locked. Please contact your customer relationship manager</div>
 	      	</c:if>
+	      	
+	      	<c:if test="${!empty login_offboardUser_error}">
+	      			<div class="error"><font color="red">You are off boarded user</font></div>
+	    	</c:if>
 	      		
 	      	<c:if test="${!empty login_inActive_error}">
 	      			<div class="error"><font color="red">You are In active user</font></div>
