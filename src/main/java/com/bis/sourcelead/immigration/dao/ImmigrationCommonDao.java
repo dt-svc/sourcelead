@@ -19,8 +19,10 @@ import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
+import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 /**
  * @author Srinivas.Sabbu
@@ -116,5 +118,7 @@ public interface ImmigrationCommonDao {
 	ResponseList<MyImmigrationViewDTO> getMyImmigrationsList(MyImmigrationViewDTO immigrationListDTO,	OrgLocations orgLocations, Long userId);
 
 	Integer getTableRecordCountByTemplateId(String entityName, Long templateId, String condition);
+
+	void saveImmigrationTasksAndTasks(List<ImmigrationTasks> immigrationTasksList, List<Tasks> tasksList);
 
 }
