@@ -97,7 +97,7 @@ function clientContracts(orgRelationId){
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
-	    result = result + '<input type="checkbox" value="WAITING_FOR_APPROVAL" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
+	    result = result + '<input type="checkbox" value="WAITING_FOR_APPROVER" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
 	    result = result + '<label class="paddingLeft" for="onboard1">Waiting For Approval <b class="badge" id="WFACount">0</b></label>';
 	    result = result + '</li>';
 	    

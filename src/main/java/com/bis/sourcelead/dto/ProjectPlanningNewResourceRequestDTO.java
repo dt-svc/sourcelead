@@ -54,6 +54,8 @@ public class ProjectPlanningNewResourceRequestDTO implements Serializable{
 	 
 	 private String projectUUID;
 	 
+	 private String approvedUser;
+	 
 	 
 	public String getProjectPlanningRequestId() {
 		return projectPlanningRequestId;
@@ -237,6 +239,14 @@ public class ProjectPlanningNewResourceRequestDTO implements Serializable{
 
 	public void setProjectUUID(String projectUUID) {
 		this.projectUUID = projectUUID;
+	}
+
+	public String getApprovedUser() {
+		return approvedUser;
+	}
+
+	public void setApprovedUser(String approvedUser) {
+		this.approvedUser = approvedUser;
 	}
 	
 }

@@ -183,7 +183,6 @@ function generateForm(sourceleadUrl,templateId) {
 function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript) {
     //empty out the preview area
     $("#sjfb-fields").empty();
-    
     $.ajax({
     	type: "GET",
         url: sourceleadUrl+"/getRequirmentOrgSubmissionTemplate?requirementId="+requirementId, 

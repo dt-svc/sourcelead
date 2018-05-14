@@ -340,7 +340,8 @@ function validateTimeZone(){
 </div>
 
 <div id="divTaskTd3" style="display: none; float: left;">
-   	 <select class="form-control input-sm"  id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType" onchange="interviewType(this);">
+<small class='requiresymbol text-danger'>*</small>
+   	 <select class="form-control input-sm"  id="REPLACEROWIDinterviewType" name="REPLACEROWIDinterviewType" onchange="interviewType(this);" field-name="Interview type" data-validation="required">
 		<option value="">--Select Type--</option>
 		<option value="F2F">F2F</option>
 		<option value="Telephonic">Telephonic</option>
@@ -350,7 +351,7 @@ function validateTimeZone(){
 		<option value="Webex/GoToMeeting">Webex/GoTo Meeting</option>
 		<option value="Other">Other</option>
 	</select>
-	<div id="REPLACEROWIDinterviewTypeCheck" style="display: none; "><input value=""  type="text" id="REPLACEROWIDinterviewTypeother" name="REPLACEROWIDinterviewTypeother" class="form-control input-sm pavInp" placeholder="Interview type" field-name="Interview type" data-validation-optional="true"></div>
+	<div id="REPLACEROWIDinterviewTypeCheck" style="display: none; "><input value=""  type="text" id="REPLACEROWIDinterviewTypeother" name="REPLACEROWIDinterviewTypeother" class="form-control input-sm pavInp" placeholder="Interview type" field-name="Interview type" data-validation="required"></div>
 </div>
 
 <div id="divTaskTd5" style="display: none; float: left;">

@@ -651,7 +651,7 @@ function invoicePagination(url){
 						if(report.paymentStatus == "Paid"){
 							result = result +'           <span class=" primary pull-left">paid</span>   ';	
 						}else{
-							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">pay</span> </td>';
+							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
 						}
 						
 					}else{
@@ -1581,7 +1581,7 @@ function generateAutomaticInvoice(){
             	  $("#invoiceLoading").removeAttr("style");
 					$("#selector1").removeAttr("style");
 	    			$("#selector1").css("display", "block");
-	    			$("#msgDiv").html(json.data.count+" Invoice(s) Generated Successfully.");
+	    			$("#msgDiv").html(json.object.count+" Invoice(s) Generated Successfully.");
 					msgFadein();
             	 location.replace(sourceleadUrl+"/invoiceList");	            	 
         },

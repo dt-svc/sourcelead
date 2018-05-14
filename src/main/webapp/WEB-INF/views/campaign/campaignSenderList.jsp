@@ -52,7 +52,7 @@ $(document).ready(function(){
       <!-- Project --> 
     </div>
   </section>
-  <div id="popUp"></div>
+  <div id="deleteSenderId"></div>
 
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
@@ -164,6 +164,7 @@ function getSendersList(type){
 
 <script>
 function deleteIdentity(senderId){
+	$("#deleteSenderId").show();
 	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
@@ -173,7 +174,7 @@ function deleteIdentity(senderId){
 	result = result + ' <div id="deleteIdentityDiv"/>';
 	result = result + "<b href='javascript:void(0)'><input id='confirm-id1' type='button' value='Delete' onclick='deleteSenderIdentity(\""+senderId+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDeleteIdentity();'></b>";
     result = result +"	</div>";
- 	$("#popUp").append(result);
+ 	$("#deleteSenderId").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
@@ -188,7 +189,7 @@ function deleteIdentity(senderId){
 				 $("#campainSenderAlertMsg").removeAttr("style");
 	  			 $("#campainSenderAlertMsg").css({ display: "block" });
 	  			 $("#campainSenderAlertMsgDiv").html("Successfully deleted sender identity");
-	  			 $("#popUp").empty();
+	  			 $("#deleteSenderId").hide();
 	 			 $(".project_inn_mask").fadeOut(200);
 	             campainSenderAlertMsgFadein();	
 	             location.replace(sourceleadUrl+ "/campaignSendersList");
@@ -201,7 +202,7 @@ function deleteIdentity(senderId){
  
  <script>
 function cancelDeleteIdentity(){
-	$("#popUp").empty();
+	$("#deleteSenderId").hide();
 	 $(".project_inn_mask").fadeOut(200);
 }
 

@@ -834,8 +834,11 @@ public class RequirementController {
 			}
 			 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
 		     model.addObject("actionId",action.getId());
+		     
+		    List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+		    model.addObject("sourceleadSectionList",sections);
 		   
-			if(action != null && action.getId()!= null){
+			/*if(action != null && action.getId()!= null){
 				 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
 				 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 				 if(sections != null && !sections.isEmpty()) {
@@ -864,7 +867,7 @@ public class RequirementController {
 					 	}
 					 }
 				 }
-				}
+				}*/
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}

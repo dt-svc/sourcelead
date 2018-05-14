@@ -1670,7 +1670,7 @@ function subTasksAssignList(projectId){
 	
 	var values = "Active";
 	$.ajax({
-    	type: "POST",
+    	type: "GET",
         url: sourceleadUrl+"/getProjectEmployeeListById?${_csrf.parameterName}=${_csrf.token}&projectId="+projectId+"&status="+values, 
         success: function(json) {
         	var output = "";

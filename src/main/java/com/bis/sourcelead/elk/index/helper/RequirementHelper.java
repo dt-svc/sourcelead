@@ -124,10 +124,10 @@ public class RequirementHelper {
 				requirementIndex.setRateType(requirement.getRateType());
 			}
 			if (StringUtils.isNotEmpty(requirement.getMinExp())) {
-				requirementIndex.setMinExperience(Integer.parseInt(requirement.getMinExp()));
+				requirementIndex.setMinExperience(Float.parseFloat(requirement.getMinExp()));
 			}
 			if (StringUtils.isNotEmpty(requirement.getMaxExp())) {
-				requirementIndex.setMaxExperience(Integer.parseInt(requirement.getMaxExp()));
+				requirementIndex.setMaxExperience(Float.parseFloat(requirement.getMaxExp()));
 			}
 			if(null != requirement.getCurrencyCode() && !"".equalsIgnoreCase(requirement.getCurrencyCode())){
 				requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());

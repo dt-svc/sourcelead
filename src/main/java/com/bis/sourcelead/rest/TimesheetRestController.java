@@ -2011,7 +2011,18 @@ public class TimesheetRestController {
 						if (StringUtils.isNotEmpty(currentFrequencyEndDate)) {
 							Date frequencyEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
 									currentFrequencyEndDate.replaceAll("/", "-"));
-							if (frequencyEndDate.equals(actualEndDate))
+							Date terminationDate = null;
+							if(projectMemberId != null) {
+								ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMemberId);
+								if(pmh == null) {
+									pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMemberId);
+								}
+								 terminationDate = pmh.getProjectTerminationDate();
+							}
+							
+							if ( frequencyEndDate.equals(actualEndDate) || 
+									(terminationDate != null &&(terminationDate.equals(actualStartDate) || terminationDate.equals(actualEndDate) || (terminationDate.before(actualEndDate) && terminationDate.after(actualStartDate))))
+							   )
 								tsDTO.setSubmitButtonVisible(true);
 						}
 

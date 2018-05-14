@@ -4,8 +4,18 @@
  <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
- <jsp:include page="recommendationListTable.jsp"></jsp:include>
  <jsp:include page="requirementAssignedTo.jsp"></jsp:include>
+ 
+ 
+ <script>
+		$(document).ready(function() {
+			 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			  var sectionId = '${section.id}';
+			  getCustomDependentField(sectionId);
+			 </c:forEach>
+		});
+ </script> 
+ 
  
 <div class="profile_details requirement_details clearfix reqrementsummary">
 	 <a href="#" onClick="openTopDiv();">
@@ -250,14 +260,14 @@
 				            	<div class="clearfix"></div> 
 				            </div>
 				            
-				            <c:if test="${not empty dataMapListJobs}">
-				            <c:forEach var="customJobData" items="${dataMapListJobs}">
-				            	<c:set var="labelnameAndLabelData" value="${fn:split(customJobData.value, '$')}" />
-					             <div class="require_wrap_details_cta"> <b>${labelnameAndLabelData[0]}:</b><span>${labelnameAndLabelData[1]}</span>
-					            	<div class="clearfix"></div> 
-					            </div>
-				            </c:forEach> 
-				            </c:if>
+				            <c:if test="${!empty sourceleadSectionList}">
+						            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+						               <c:if test="${sectionOrder.index == 0}">
+						                  <div id="customDiv${section.id}"></div>
+						               </c:if>
+						            </c:forEach>
+						   	</c:if>
+				            
 				             			            
 				            <div class="clearfix"></div> 
 			            </div> 
@@ -396,6 +406,14 @@
 			            		<div class="clearfix"></div> 
 			              </div> 
 			              <div class="clearfix"></div>
+			              
+			              <c:if test="${!empty sourceleadSectionList}">
+						            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+						               <c:if test="${sectionOrder.index == 1}">
+						                  <div id="customDiv${section.id}"></div>
+						               </c:if>
+						            </c:forEach>
+						   	</c:if>
 			              </div>
 			         </c:if>
 			         <div class="clearfix"></div> 
@@ -428,7 +446,17 @@
                     <div class="clearfix"></div>
                     
                     <div class="require_wrap_details_cta"> <b>Assign to all :</b><span>${requirement.releaseJobToAllUsers  == 'Y' ? 'YES' : 'NO'}</span></div>
-			        <div class="clearfix"></div>			            
+                    
+                    <c:if test="${!empty sourceleadSectionList}">
+						            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+						               <c:if test="${sectionOrder.index == 2}">
+						                  <div id="customDiv${section.id}"></div>
+						               </c:if>
+						            </c:forEach>
+					</c:if>
+                    
+			        <div class="clearfix"></div>
+			        			            
                 </div> 							            
            
                    <div class="clearfix"></div> 
@@ -537,6 +565,23 @@
 	
 	<input type="hidden" name="assignedTeamId" id="assignedTeamId" value=""/>
 </div>
+
+
+<script>
+function getCustomDependentField(sectionId){
+	console.log(sourceleadUrl);
+	var requirementId = '${requirement.id}';
+	var type= 'view';
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&requirementId="+requirementId+"&requestFrom=requirement&requestType="+type,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 <script>
 function hideButtonOnClick(){

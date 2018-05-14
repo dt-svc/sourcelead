@@ -479,11 +479,12 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 emailMessage.setUserType(user.getUserType());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailMessage.setFromName(loginUser.toString());
+		 emailMessage.setFirstName(professionalName);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("requirementTitle", requirement.getJobTitle());
 		 globalVarsMap.put("professinalName", professionalName);
-		 globalVarsMap.put("referedProfessionalName", user.getUserName());
+		 globalVarsMap.put("referedProfessionalFirstName", user.getFullName());
 		 if(requirement.getDescription() !=null && !"".equalsIgnoreCase(requirement.getDescription())){
 			 globalVarsMap.put("jobDescription", requirement.getDescription()); 
 		 }
@@ -520,9 +521,12 @@ public class RequirementReferServiceImpl implements RequirementReferService {
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REFER_REQUIREMENT_TO_PROFESSIONAL,Constants.ENTITY_TYPE_EMAIL);
 		
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = null;
+		 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+			 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+		 }
 		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data

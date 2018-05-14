@@ -1333,7 +1333,12 @@ function addTimeSheetRow(projectId) {
 	  		    	    	for (var i=0; i<json.length; i++)
 	  					 	{
 	  			        		var opt = json[i];
-	  			        		result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.taskName+"</option>";
+	  			        		if(opt.generatedId != null && opt.generatedId !='undefined' && opt.generatedId !=''){
+	  			        			result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.generatedId+"-"+opt.taskName+"</option>";
+	  			        		}else{
+	  			        			result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.taskName+"</option>";
+	  			        		}
+	  			        		
 	  						}
 	  		    	    	
  				    	 	$("#"+localId).append(result);

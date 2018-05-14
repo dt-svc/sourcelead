@@ -6,10 +6,11 @@ function campaignSender(ele,senderId, fromType) {
 			$(".popMask").fadeIn(200);
 			$("#campaignSender").fadeIn(100);
 			$("#campaignSender").html(data);
+			$("#campaignSender").parent().append("<div class='project_inn_mask' style='display:block;'></div>");
 			// save sender details
 			 $("#saveCampaignSender").click(function () {
-				 $('#saveCampaignSender').attr("disabled","disabled");
 				 if ($('#capn_add_sender').validate(false, validationSettings)) {
+					 $('#saveCampaignSender').attr("disabled","disabled");
 					  /*	var formData = $($('#capn_add_sender')[0]).serialize();*/
 					 var formData = getFormData('capn_add_sender');
 						$("#senderLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -31,13 +32,13 @@ function campaignSender(ele,senderId, fromType) {
 					  			 $(".project_inn_mask").fadeOut(200);
 								 campainSenderAlertMsgFadein();	
 					             	
-							}else if(data == '400Body'){
+							}else if(data == '403Body'){
 								$("#senderLoading").removeAttr("style");
 								$('#nickNameDiv').find('p.jquery_form_error_message').remove();
 								$("input#cpnNickName").after( "<p class='jquery_form_error_message'>You already have a sender identity with the same nickname.</span>");
-							}else if(data == '403Body'){
+							}else if(data == '400Body'){
 								$("#senderLoading").removeAttr("style");
-								$("#campaignSender").hide();
+								/*$("#campaignSender").hide();*/
 								maxAlertSenderPopUp();
 							}
 						});
@@ -57,7 +58,8 @@ function campaignSender(ele,senderId, fromType) {
 				 $("#cpnNickName").val('');
 				 $("#cpnSenderFromMail").val('');
 				 $("#cpnSenderName").val('');
-				  $("#recipientEmail").trigger("chosen:updated");
+				 $("#recipientEmail").trigger("chosen:updated");
+				 $("#saveCampaignSender").removeAttr("disabled");
 			 });
 			
 	            
@@ -73,6 +75,7 @@ $('body').on('blur', '#capn_add_sender', function() {
 function senderClose() {
 	$(".popMask").fadeOut(200);
 	$("#campaignSender").fadeOut(100);
+	$(".project_inn_mask").remove();
 };
 
 
@@ -167,10 +170,10 @@ function validateReplyMail(toWhom,id){
 
 function maxAlertSenderPopUp(){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	<div class='project_inn_mask zInPop'></div>";
+	result = result +"	   <div id='remove_user_pop' class='zInPop remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You have reached maximum number of sender List</p>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelMaxAlert();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMaxAlert();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelMaxAlert();' style='width:100%;'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
