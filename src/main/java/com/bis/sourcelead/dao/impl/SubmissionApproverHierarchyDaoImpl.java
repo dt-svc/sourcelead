@@ -44,6 +44,7 @@ import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.service.TimesheetActivityService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
@@ -67,7 +68,11 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@Autowired
 	private CommonUtil commonUtil;
 	@Autowired
-	TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
+	private TimesheetFrequencyGeneratorUtil timesheetFrequencyGeneratorUtil;
+	@Autowired
+	private TimesheetActivityService timesheetActivityService;
+	
+	
 	@Value("${SourceLead.100}")
 	private String notFound;
 	@Value("${SourceLead.101}")
@@ -615,8 +620,12 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 						sah.setReopenReason(null);
 					}
 				}
+				
 				try {
 					session.saveOrUpdate(sah);
+					TimesheetActivities ta = CommonUtil.getTimesheetActivity(sah, type);
+			        timesheetActivityService.saveTimesheetActivity(ta);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -694,6 +703,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				}
 				try {
 					updateSubmissionApproverHierarchy(sah);
+					TimesheetActivities ta = CommonUtil.getTimesheetActivity(sah, status);
+			        timesheetActivityService.saveTimesheetActivity(ta);
 				} catch (Exception e) {
 				}
 				// Get Max Level in Current Location

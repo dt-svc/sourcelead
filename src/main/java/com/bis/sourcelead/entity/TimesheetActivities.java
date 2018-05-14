@@ -11,9 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
-import org.joda.time.DateTime;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "TIMESHEET_ACTIVITIES")
 public class TimesheetActivities {
@@ -104,12 +107,14 @@ public class TimesheetActivities {
 	@Type(type="text")
 	private String actionPerformedBy;
 	
+	@Column(name = "ACTION_PERFORMEDBY_USERID")
+	private Long actionPerformedbyUserId;
+	
 	@Column(name = "ACTION_BY_ORGLOC_ID")
 	private Long actionPerformedByOrgLocationId;
 	
 	@Column(name = "STATUS")
 	private String status;
-	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "REOPENED_USER_ID", nullable = false)
@@ -128,6 +133,21 @@ public class TimesheetActivities {
 	
 	@Column(name = "CREATED_BY")
 	private String createdBy;
+	
+	@Transient
+	@JsonProperty
+	@JsonBackReference
+	private String displayDate;
+	
+	@Transient
+	@JsonProperty
+	@JsonBackReference
+	private String displayTime;
+	
+	@Transient
+	@JsonProperty
+	@JsonBackReference
+	private String userFullName;
 	
 	/*@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
@@ -253,6 +273,38 @@ public class TimesheetActivities {
 
 	public void setMasterCandidate(MasterCandidate masterCandidate) {
 		this.masterCandidate = masterCandidate;
+	}
+
+	public String getDisplayDate() {
+		return displayDate;
+	}
+
+	public void setDisplayDate(String displayDate) {
+		this.displayDate = displayDate;
+	}
+
+	public String getDisplayTime() {
+		return displayTime;
+	}
+
+	public void setDisplayTime(String displayTime) {
+		this.displayTime = displayTime;
+	}
+
+	public Long getActionPerformedbyUserId() {
+		return actionPerformedbyUserId;
+	}
+
+	public void setActionPerformedbyUserId(Long actionPerformedbyUserId) {
+		this.actionPerformedbyUserId = actionPerformedbyUserId;
+	}
+
+	public String getUserFullName() {
+		return userFullName;
+	}
+
+	public void setUserFullName(String userFullName) {
+		this.userFullName = userFullName;
 	}
 	
 }
