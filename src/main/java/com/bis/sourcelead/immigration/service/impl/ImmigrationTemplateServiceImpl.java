@@ -4,6 +4,7 @@
 package com.bis.sourcelead.immigration.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -160,7 +161,13 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         Date date = new Date();
         Date latestDate = commonUtil.orgLocationCommonDate(date, orgLocations);
         if (templateDTO.getId() != null) {
-            immigrationTemplateTask.setId(templateDTO.getId());
+        	immigrationTemplateTask = immigrationTemplateDao.getImmigratonTemplateTasksById(templateDTO.getId());
+        	immigrationTemplateTask.setUpdatedDate(latestDate);
+            immigrationTemplateTask.setUpdatedBy(user);
+        }
+        if(immigrationTemplateTask.getUpdatedDate() == null) {
+        	immigrationTemplateTask.setUpdatedDate(latestDate);
+            immigrationTemplateTask.setUpdatedBy(user);
         }
         immigrationTemplateTask.setTaskName(templateDTO.getTaskName());
         if (StringUtils.isNotBlank(templateDTO.getPetitionAssignedTo())) {
@@ -174,17 +181,23 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         immigrationTemplateTask.setPriority(templateDTO.getPriority());
         immigrationTemplateTask.setDueAfterMonths(templateDTO.getDueAfterMonths());
         immigrationTemplateTask.setDueAfterDays(templateDTO.getDueAfterDays());
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(immigrationTemplateTask.getUpdatedDate());
+        if(templateDTO.getDueAfterMonths() != null) {
+        	cal.add(Calendar.MONTH, templateDTO.getDueAfterMonths());
+        }
+        if(templateDTO.getDueAfterDays() != null) {
+        	cal.add(Calendar.DATE, templateDTO.getDueAfterDays());
+        }
+        immigrationTemplateTask.setDueAfterDate(cal.getTime());
         immigrationTemplateTask.setTaskRepeat(templateDTO.getTaskRepeat());
         immigrationTemplateTask.setTaskEmail(Constants.YES);
         immigrationTemplateTask.setTaskNotification(Constants.YES);
         immigrationTemplateTask.setDescription(templateDTO.getTaskDescription());
         immigrationTemplateTask.setStatus(Constants.RECORD_ACTIVE);// 1 for active
-
+        
         immigrationTemplateTask.setCreatedDate(latestDate);
         immigrationTemplateTask.setCreatedBy(user);
-        immigrationTemplateTask.setUpdatedDate(latestDate);
-        immigrationTemplateTask.setUpdatedBy(user);
-
         immigrationTemplateDao.savePetitionTemplateTaskDetails(immigrationTemplateTask);
     }
 
