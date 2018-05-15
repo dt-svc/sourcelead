@@ -1115,22 +1115,21 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	@Override
-	public String updateUscisTypeDropDown(Long immigrationId, Long uscisId, Long uscisOldId,User user,OrgLocations orgLocations) {
+	public String updateUscisTypeDropDown(Long immigrationId, Long uscisId, Long uscisOldId, User user,	OrgLocations orgLocations) throws Exception {
 		Immigration immigration = immigrationCommonDao.getImmigrationById(immigrationId);
 		String returnVal;
 		StringBuilder actionDesc = new StringBuilder();
 		String actionOn = null;
-		try {
-			LookUpData	lookUpdata = lookUpDataService.getTasksById(uscisId);
-			LookUpData	lookUpdataOld = lookUpDataService.getTasksById(uscisOldId);
-			immigration.setCurrUscisStauts(lookUpdata);
-			 actionDesc.append("Status Changed").append(" ").append(lookUpdataOld.getName()).append(" ").append("to").append(" ").append(lookUpdata.getName()).toString();
-			 immigrationActivityCommonUtil.saveImmigrationActivities(user, orgLocations, immigration, actionOn, actionDesc.toString());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		LookUpData lookUpdata = lookUpDataService.getTasksById(uscisId);
+		LookUpData lookUpdataOld = lookUpDataService.getTasksById(uscisOldId);
+		immigration.setCurrUscisStauts(lookUpdata);
+		actionDesc.append("Changed Status").append(" ").append(lookUpdataOld.getName()).append(" ").append("to").append(" ").append(lookUpdata.getName()).toString();
+
 		returnVal = immigrationCommonDao.updateUscisTypeDropDown(immigration);
+
+		immigrationActivityCommonUtil.saveImmigrationActivities(user, orgLocations, immigration, actionOn,actionDesc.toString());
+
 		return returnVal;
 	}
 

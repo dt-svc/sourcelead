@@ -81,8 +81,8 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.paypal.api.openidconnect.Session;
 
 @RestController
 @RequestMapping("/app/immigration")
@@ -133,6 +133,9 @@ public class ImmigrationRestController {
 
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	ImmigrationActivityCommonUtil immigrationActivityCommonUtil;
 
 	@Autowired
 	private RequirementService requirementService;
@@ -1583,6 +1586,11 @@ public class ImmigrationRestController {
 				}
 				immigration.setCurrUscisStauts(data); // updating with Filled status.
 				immigrationCommonService.updateImigrationDetatils(immigration);
+				StringBuilder actionDesc = new StringBuilder();
+				actionDesc.append("Changed Status").append(" ").append("Request to fill").append(" ").append("to").append(" ").append(data.getName()).toString();
+				immigrationActivityCommonUtil.saveImmigrationActivities(user, orgLocations, immigration, null,actionDesc.toString());
+
+				
 				System.out.println("Immigartion details udated successfully for the immigration id ID :::--> : "
 						+ immigration.getId());
 		} catch (Exception e) {
