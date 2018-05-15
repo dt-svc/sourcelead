@@ -175,7 +175,7 @@
 		    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		     	 	<c:forEach var="optionValue" items="${customForm.optionData}">
 			     	 			<span class="mr">
-			     	 			<input type="radio" value="${optionValue.option}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" field-name="${customForm.labelName}">${optionValue.option}
+			     	 			<input type="radio" value="${optionValue.option}" checked="checked" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" field-name="${customForm.labelName}">${optionValue.option}
 			     	 			</span> 
 			     	</c:forEach>
 		    	</div>
