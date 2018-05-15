@@ -37,5 +37,16 @@ public class PayrollConfigurationController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
+	
+	
+	@RequestMapping(value = "/payrollBonus")
+	public ModelAndView payrollBonus(HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		model.setViewName("indPayroll/payrollBonus");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
 
 }
