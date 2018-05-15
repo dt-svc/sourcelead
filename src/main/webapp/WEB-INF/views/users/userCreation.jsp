@@ -95,7 +95,7 @@
                 <div class="form-group">
                       <label class="col-md-3">Date of Join</label>
                          <div class="col-md-9">
-                           <div class="input-group">
+                           <div class="input-group errorInptgroup">
                               <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly">
                               <span class="input-group-addon" onClick="clearDateofJoin();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
