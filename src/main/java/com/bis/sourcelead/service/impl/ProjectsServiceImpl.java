@@ -1001,12 +1001,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("firstName", emailMessage.getFirstName());
-		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 globalVarsMap.put("FirstName", emailMessage.getFirstName());
+		 globalVarsMap.put("LastName",emailMessage.getLastName());
 		 globalVarsMap.put("administratorFirstName", "SourceLead");
 		 globalVarsMap.put("administratorLastName","Admin");
 		 globalVarsMap.put("role",user.getUserType());
-		 globalVarsMap.put("userEmailId",user.getEmail()); //
+		 globalVarsMap.put("UserEmailId",user.getEmail()); //
 		 LinkedList<String> frequency = new LinkedList<>();
 		 StringBuilder tempHTML = new StringBuilder();
 		 tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
@@ -2290,13 +2290,13 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 globalVarsMap.put("firstName", emailMessage.getFirstName());
-			 globalVarsMap.put("lastName",emailMessage.getLastName());
+			 globalVarsMap.put("FirstName", emailMessage.getFirstName());
+			 globalVarsMap.put("LastName",emailMessage.getLastName());
 			 globalVarsMap.put("administratorFirstName", user.getFirstName());
 			 globalVarsMap.put("administratorLastName",user.getLastName());
 			 globalVarsMap.put("role",user.getUserType());
-			 globalVarsMap.put("userEmailId",user.getEmail()); //
-			 globalVarsMap.put("weekFrequency",tempHTML.toString());
+			 globalVarsMap.put("UserEmailId",user.getEmail()); //
+			 globalVarsMap.put("WeekFrequency",tempHTML.toString());
 			 //setting the Recipient information
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
