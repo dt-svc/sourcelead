@@ -1797,7 +1797,9 @@ public class ImmigrationRestController {
 			@RequestParam(value = "uscisOldId", required = false) Long uscisOldId, HttpServletRequest request)
 			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		String resultVal = immigrationCommonService.updateUscisTypeDropDown(templateId, uscisId,uscisOldId,user.getId());
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		String resultVal = immigrationCommonService.updateUscisTypeDropDown(templateId, uscisId,uscisOldId,user,loginOrgLocation);
 		return resultVal;
 	}
 

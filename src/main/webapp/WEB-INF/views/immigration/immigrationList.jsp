@@ -700,7 +700,6 @@
 	}
  
  function changeSaveUscisStatus(idVal,templateId,uscisOldId){
-	 alert("111>>>");
 	 var uscisId = idVal.val();
 	 $.ajax({
 	    	type: "GET",

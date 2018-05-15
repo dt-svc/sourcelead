@@ -1115,17 +1115,21 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	@Override
-	public String updateUscisTypeDropDown(Long immigrationId, Long uscisId, Long uscisOldId,Long userId) {
+	public String updateUscisTypeDropDown(Long immigrationId, Long uscisId, Long uscisOldId,User user,OrgLocations orgLocations) {
 		Immigration immigration = immigrationCommonDao.getImmigrationById(immigrationId);
 		String returnVal;
+		StringBuilder actionDesc = new StringBuilder();
+		String actionOn = null;
 		try {
 			LookUpData	lookUpdata = lookUpDataService.getTasksById(uscisId);
+			LookUpData	lookUpdataOld = lookUpDataService.getTasksById(uscisOldId);
 			immigration.setCurrUscisStauts(lookUpdata);
+			 actionDesc.append("Status Changed").append(" ").append(lookUpdataOld.getName()).append(" ").append("to").append(" ").append(lookUpdata.getName()).toString();
+			 immigrationActivityCommonUtil.saveImmigrationActivities(user, orgLocations, immigration, actionOn, actionDesc.toString());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//immigrationActivityCommonUtil.saveImmigrationActivities(user, orgLocations, immigration, actionOn, actionDesc);
 		returnVal = immigrationCommonDao.updateUscisTypeDropDown(immigration);
 		return returnVal;
 	}
