@@ -374,7 +374,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		List<String> submissionApproverHierarchyIds = new ArrayList<>();
 		List<TimesheetSubmissionsDocuments> docusList = new ArrayList<TimesheetSubmissionsDocuments>();
 		
-		// storing invoive line items
+		// storing invoice line items
 		List<Long> invoiceLineItemsIdsList = null;
 		 if(null != invoice.getId()){
 	    	  invoiceLineItemsIdsList = invoiceLineItemDao.getInvoiceLineItemsIdsByInvoiceId(invoice.getId());
