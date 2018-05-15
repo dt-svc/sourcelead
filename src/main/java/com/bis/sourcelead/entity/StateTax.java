@@ -1,0 +1,76 @@
+package com.bis.sourcelead.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+@Entity
+@Table(name = "STATE_TAX")
+public class StateTax implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID", nullable = false)
+	private long id;
+
+	@Column(name = "FINANCIAL_YEAR")
+	private String financialYear;
+
+	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TAX_TYPE_ID", nullable = false)
+	private SourceleadTaxType sourceleadTaxType;
+
+	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STATE_ID", nullable = false)
+	private States states;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getFinancialYear() {
+		return financialYear;
+	}
+
+	public void setFinancialYear(String financialYear) {
+		this.financialYear = financialYear;
+	}
+
+	public SourceleadTaxType getSourceleadTaxType() {
+		return sourceleadTaxType;
+	}
+
+	public void setSourceleadTaxType(SourceleadTaxType sourceleadTaxType) {
+		this.sourceleadTaxType = sourceleadTaxType;
+	}
+
+	public States getStates() {
+		return states;
+	}
+
+	public void setStates(States states) {
+		this.states = states;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+}

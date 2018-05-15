@@ -354,7 +354,7 @@
 		          	</c:if>	
 
           </c:forEach>
-            
+             <li class="${sessionData.nav == 'Taxes' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/stateTax/list'/>" title="Taxes"><span><i class="fa fa-dashboard"></i></span><i class="subMenu">Taxes</i></a></li>
           	
 <%--            	<sec:authorize access="hasRole('ROLE_HOTLIST_CAMPAIGN')">
 			
