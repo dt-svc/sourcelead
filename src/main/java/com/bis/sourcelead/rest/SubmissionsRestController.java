@@ -943,7 +943,7 @@ public class SubmissionsRestController {
 				Constants.ENTITY_TYPE_NOTIFICATION);
 
 
-		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getSubject(),globalVarsMap,notificationScenario);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		
 
