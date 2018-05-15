@@ -47,5 +47,11 @@ public interface RequirementOffersService {
 	List<RequirementOffers> getOfferAcceptedVendorCandidatesByOrgLocationId(Long locationId) throws Exception;
 	
 	Candidate addCandidateToClientAfterOfferAccepted(RequirementOffers requirementOffers,OrgLocations orgLocations) throws Exception;
+	
+	void sendApplicantOfferAcceptMail(RequirementOffers requirementOffers) throws Exception;
+
+	void sendApplicantOfferRejectMail(RequirementOffers requirementOffers) throws Exception;
+	
+	RequirementOffers getOnboardRequirementOfferId(Long offerId)throws Exception;
 }
 

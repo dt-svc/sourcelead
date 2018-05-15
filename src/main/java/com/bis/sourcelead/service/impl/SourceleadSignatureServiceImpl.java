@@ -265,7 +265,7 @@ public class SourceleadSignatureServiceImpl implements SourceleadSignatureServic
 	    	 
 	    	 if(signature.getLabelName().equalsIgnoreCase("Logo") && signature.getStatus() == 1 && !isNullOrEmpty(orgLocations.getOrg().getFileContentType())){
 	    		 
-	    		 signatureHTML.append("<p><img src='"+sourceleadUrl+"/"+"displayOrgImageInMail/"+orgLocations.getOrg().getOrgCode()+"'  style='height:60px; width: 100px; '></p>");
+	    		 signatureHTML.append("<p><img src='"+orgLocations.getOrg().getFileUrl()+"'  style='height:60px; width: 100px; '></p>");
 	    	 
 	    	 }
 	     

@@ -6,30 +6,38 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<!-- Content Area -->
+
+<style>
+#billing_chartdiv {
+  	width:100%; height:300px;
+}																		
+</style>
+
 <script type="text/javascript">
 window.onload = function() { 
-	getApplicantReceivedReports();
+	getDayWiseReports();
 	}
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 function getApplicantReceivedReports(){
 	getDayWiseReports();
 }
 
 
 </script>
-
+ -->
 <script>
 function prepareReportDataDiv(data){
+	var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	var appListDate = getOrgDateFormat(locationList);
 	var result = '';
 	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
 	result = result + '   <tr>';
 	result = result + '    <th>Applicant Name</th>';
 	result = result + '    <th>Source</th>';
-	result = result + '    <th>Received on</th>';
+	result = result + '    <th>Received on <br>(<small class="custom-small">'+appListDate+'</small>)</th>';
 	result = result + '    <th>Job Title</th>';
 	result = result + '    <th>Stage</th>';
 	result = result + '   </tr>';
@@ -104,7 +112,7 @@ function requirementReportPagination(){
 		
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -117,40 +125,7 @@ function requirementReportPagination(){
 }
 
 </script>
-<script>
-	$(function() {
-		$('#ExportStartDate').datepicker({
-			changeMonth: true,
-			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
-			onSelect : function(selected) {
-				var dt = new Date(selected);
-				var dt = toDate("#ExportStartDate");
-				dt.setDate(dt.getDate() + 1); 
-				$("#ExportEndDate").datepicker("option", "minDate", dt);
-				addValidClass();
-			}
-		
-		});
-		
-		$('#ExportEndDate').datepicker({
-			changeMonth: true,
-			changeYear: true, 
-			dateFormat : 'dd-mm-yy',
-			beforeShow: function(){
-		           this.value='';
-		     },
-			onSelect : function(selected) {
-				var dt = new Date(selected);
-				var dt = toDate("#ExportEndDate");
-				dt.setDate(dt.getDate() - 1);
-				$("#ExportStartDate").datepicker("option", "maxDate", dt);
-				addValidClass();
-			}
-		});
-		
-	});
-</script>	
+ 
 <script>
 function toDate(selector) {
     var from = $(selector).val().split("-");
@@ -160,32 +135,18 @@ function toDate(selector) {
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2 class="pull-left">Reports</h2>
-		<div class=" pull-left reportsH">
-			<a title="Reports"><i class="fa fa-pie-chart"></i>Applicants Received</a>
-			<div class="RePop">
-				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
-<%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
-				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
-				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li> --%>
-				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
-				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
-				</ul>
-			</div>
-		</div>
+      <h2 class="pull-left">Applicants Received Reports</h2>
+		
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Applicants Received</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants Received Reports </div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
      
       <div class="timesheet_head">
 
-<div class="pull-left reportBtns">
-	  <div class="reportBtn dropdown-select">
+<div class="pull-left reportBtns reportBtns_custom mt5">
+	  <div class="reportBtn dropdown-select reportBtn_custom_btn">
 		<select class="form-control" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
 <!-- 		<option value="">-- Select --</option> -->
 		  <option value="today">Today</option>
@@ -197,20 +158,24 @@ function toDate(selector) {
 		   <option value="custom">Custom</option> 
 		</select>
 	 </div>	
-	 <span class="dashboard-datepkr cusShow">
-	 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-	 <p id="reportStartDate" class="ReError"></p>
-	 </span>
-	<span class="dashboard-datepkr cusShow">
-	<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="reportEndDate" class="ReError"></p>
-	</span>
-	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	<span class="repoBtns">
-		<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
-		<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart()" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
-	</span>	
-</div>
+			<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
+			<a href="javascript:void(0)" class="oneB" onclick="getDefaultChart()" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
+			</span>	
+	<div class="col-md-7">
+		 <span class="dashboard-datepkr cusShow">
+		 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
+		 <p id="reportStartDate" class="ReError" style="display: none"></p>
+		 </span>
+		<span class="dashboard-datepkr cusShow">
+		<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
+		<p id="reportEndDate" class="ReError" style="display: none"></p>
+		</span>
+		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+		</div>
+		
+		
+	</div>
                      
         <!-- <ul style="padding: 2px 300px 2px 0px;">
           <li><i class="fa fa-filter"></i><span class="padFil"></span><i class="glyphicon glyphicon-play" id="status-pop"></i>|
@@ -228,7 +193,7 @@ function toDate(selector) {
         <div class="clearfix"></div>
       </div>
      
-   <div class="repTab1">    
+   <div class="repTab1  clearfix mt10">    
 	<div class="reportsCount">
 		<ul>
 		
@@ -246,7 +211,7 @@ function toDate(selector) {
 				<span><i class="glyphicon glyphicon-send"></i></span><b id="submitToClientCount">0</b>
 			</li>
 			<li title="Interviews" id="interviewli" class="colorTwo">
-				<span><img src="resources/images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
+				<span><img src="/resources/images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
 			</li>
 			<li title="Offers" id="offermadeli">
 				<span><i class="fa fa-tags"></i></span><b id="offerCount">0</b>
@@ -265,6 +230,7 @@ function toDate(selector) {
  </div>
 </div>
 <div class="repTab2">
+ <div id="applicantsLoderDiv"></div>
   	<div class="chatNew" id="container"></div>	 
   </div>                 
       
@@ -284,9 +250,37 @@ function custDates(){
 	var reportType = $("#reportTypeId").val();
 	if(reportType=="custom"){
 	    $(".cusShow").show();
+	    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatAppreports = getJSDateFormat(locationDate);
+		$('#ExportStartDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : finalDateFormatAppreports,
+			onSelect : function(selected) {
+				 var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+				$("#ExportEndDate").datepicker("option", "minDate", dt);
+				addValidClass();
+			}
+		
+		});
+		
+		$('#ExportEndDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : finalDateFormatAppreports,
+			onSelect : function(selected) {
+				 var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+				$("#ExportStartDate").datepicker("option", "maxDate", dt);
+				addValidClass();
+			}
+		});
 	}
 	if(reportType!="custom"){
 	    $(".cusShow").hide();
+	    $("#ExportStartDate").datepicker("destroy");
+		 $("#ExportEndDate").datepicker("destroy");
 	}
 }
 </script>
@@ -515,14 +509,18 @@ function getDayWiseReports(){
 	$('#container').empty();
 	$('#reportStartDate').empty();
 	$('#reportEndDate').empty(); 
+	document.getElementById("reportStartDate").style.display="none";
+	document.getElementById("reportEndDate").style.display="none";
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
 	if(reportType!="custom"){
-	$.ajax({
+		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
          type : "POST",
          url: sourceleadUrl+"/getApplicantReceivedReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
+        	  $("#applicantsLoderDiv").removeAttr("style");
 	        	 prepareReportDataDiv(data);
 	        	 var json = JSON.parse(data);
 	        	 getAllCounts(json.length,reportType,startDate,endDate);
@@ -582,12 +580,15 @@ function getCustomReports(){
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		document.getElementById("reportStartDate").style.display="block";
 		$("#reportStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		document.getElementById("reportEndDate").style.display="block";
 		$("#reportEndDate").empty().append("End Date is Required") ; 
 	}
 	else{
+		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
 	         /*  url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, */  
@@ -672,8 +673,9 @@ var chart = AmCharts.makeChart("chartdiv", {
 </script>  --> 
 
 
-<script src="resources/reports/highcharts.js"></script>
-<script src="resources/reports/exporting.js"></script> 
+
+<!-- <script src="resources/reports/highcharts.js"></script>
+<script src="/resources/reports/exporting.js"></script>  -->
   
 	<script>
 	function applicantReceivedReportLineChart(chartData,applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData,requestSentData){
@@ -822,6 +824,8 @@ function getDayWiseAppRecReports(){
 					result = result + ' </div>                                                      ';
 				  $("#container").empty();
 				    $("#container").append(result);
+				    $("#applicantsLoderDiv").empty();
+				    $("#applicantsLoderDiv").removeAttr('style');
         	 }
         	// getAllCounts(json.length,reportType,startDate,endDate);
          },
@@ -837,4 +841,4 @@ function getDayWiseAppRecReports(){
 }
 
 </script>
-
+<jsp:include page="../masterFooter.jsp"></jsp:include>

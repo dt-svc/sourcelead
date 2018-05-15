@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class AddUserProfileDTO{
 	
 	private String id;
 	
+	@Required(desc="firstName")
 	private String firstName;
 	
 	private String staticPath;
@@ -37,6 +40,10 @@ public class AddUserProfileDTO{
 	private String googlePlus;
 	
 	private String designation;
+	private Long userId;
+	private String orgLocationId;
+	
+	private String loginSecurity;
 
 	public String getId() {
 		return id;
@@ -165,7 +172,33 @@ public class AddUserProfileDTO{
 	public void setFileInfo(List<FileInfo> fileInfo) {
 		this.fileInfo = fileInfo;
 	}
+
 	
-	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getLoginSecurity()
+	{
+		return loginSecurity;
+	}
+
+	public void setLoginSecurity(String loginSecurity)
+	{
+		this.loginSecurity = loginSecurity;
+	}
 	
 }

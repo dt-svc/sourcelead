@@ -17,8 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "BO_UPLOADED_FILES", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "boUploadedFiles")
+@Table(name = "BO_UPLOADED_FILES")
 public class BoUploadedFiles implements Serializable{
 	
 	private static final long serialVersionUID = 1L;

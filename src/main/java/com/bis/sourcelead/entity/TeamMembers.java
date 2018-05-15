@@ -25,9 +25,7 @@ import org.hibernate.annotations.NotFoundAction;
  */
 
 @Entity
-@Table(name = "TEAM_MEMBERS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "teamMembers")
-
+@Table(name = "TEAM_MEMBERS")
 public class TeamMembers implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -37,13 +35,13 @@ public class TeamMembers implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="TEAM_ID", nullable=false )        
     private Team teamId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="MEMBER_USER_ID", nullable=false )        
     private User memberUserId;
 	

@@ -2,26 +2,33 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
-<title>Welcome to Source Lead :: The Recruitment Application</title>
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/bootstrap-select.css" rel="stylesheet">
-<link href="resources/css/jquery.dataTables.min.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/jquery-1.11.1.min.js"></script>
-<script src="resources/js/formvalidator.js"></script>
-<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyDzIM1uth14u-kSIN_jZ75pRelInyGnYWU" type="text/javascript"></script>
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+ 
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<title>Welcome to Source Lead :: The Recruitment Application</title>
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+<!-- Bootstrap -->
+
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+
+
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
 
 <script type="text/javascript">
 		window.onload = function () {
@@ -30,6 +37,10 @@
 			getOnBoardCandidateStates('${SourceLeadWeb_candidateOnBoarding.country}','${SourceLeadWeb_candidateOnBoarding.state}');
 			getOnBoardCandidateCities('${SourceLeadWeb_candidateOnBoarding.country}','${SourceLeadWeb_candidateOnBoarding.state}','${SourceLeadWeb_candidateOnBoarding.city}');
 		 };
+</script>
+
+<script type="text/javascript">
+ var sourceleadUrl ='${sourceleadUrl}';
 </script>
 
 <style>
@@ -59,7 +70,7 @@
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 				                     </div>
 				                   </div>
 				                   <div class="pull-left mt5">
@@ -78,7 +89,7 @@
 				
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
-					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" />
 					</div>
 				</c:if>
 				
@@ -127,7 +138,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Street Address 1 <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="address1" data-validation="required validate_Space"  id="address1" value="${SourceLeadWeb_candidateOnBoarding.address1}">
+				<input type="text" class="form-control input-sm" name="address1" data-validation="required validate_Space" field-name="Street Address 1" id="address1" value="${!empty candidateOnBoarding.address1 ? candidateOnBoarding.address1 : ''}">
 			  </div>
 			</div>
 		</div>
@@ -135,7 +146,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Street Address 2</label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="address2" data-validation-optional="true" data-validation="validate_Space" id="address1" value="${SourceLeadWeb_candidateOnBoarding.address2}">
+				<input type="text" class="form-control input-sm" name="address2" data-validation-optional="true" data-validation="validate_Space" id="address1" value="${candidateOnBoarding.address2}">
 			  </div>
 			</div>
 		</div>
@@ -184,7 +195,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Zipcode</label>
 			  <div class="col-md-8">
-				 <input type="text" class="form-control input-sm" id="onBoardZipCode" name="zipCode" value="${SourceLeadWeb_candidateOnBoarding.zipCode}"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-10" >
+				 <input type="text" class="form-control input-sm" id="onBoardZipCode" name="zipCode" value="${!empty candidateOnBoarding.zipCode ? candidateOnBoarding.zipCode : '' }"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-10" >
 			  </div>
 			</div>
 		</div>	
@@ -192,7 +203,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" id="mobileNumber" value="${SourceLeadWeb_candidateOnBoarding.mobileNumber}" name="mobileNumber" >
+				<input type="text" class="form-control input-sm" id="mobileNumber" value="${candidateOnBoarding.mobileNumber}" name="mobileNumber" >
 			  </div>
 			</div>
 		</div>
@@ -339,7 +350,7 @@
 
 		  
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDetails();" class="Brig">
 	<div class="clearfix"></div>
 </div>
@@ -352,15 +363,19 @@
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
   
-  
+  				<div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
+  		  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-  <script src="resources/js/jquery.dataTables.min.js"></script> 
-  <script src="resources/js/moment.min.js"></script> 
-  <script src="resources/js/jquery-ui.min.js"></script> 
-  <script src="resources/js/bootstrap-select.min.js"></script> 
-  <script src="resources/js/bootstrap.min.js"></script> 
-  <script src="resources/js/masterHeaderAction.js"></script> 
-  <script src="resources/js/chosen.jquery.min.js"></script> 
+  <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
   <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -377,9 +392,12 @@
 				$this.next().css({'width': '100%'});
 
 });
+			  $(".loc-alertclose").click(function(){
+					 $(".location-alert").fadeOut();
+				})		 
 </script> 
 
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 
 
 
@@ -500,27 +518,30 @@ function getOnBoardCandidateCities(country,state,city){
 	         }; 
 	 
 	 if ($('#onboardCandidate_form').validate(false, validationSettings)){ 
-		    var frm = $('#onboardCandidate_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        
-	        var jsonData = encodeURIComponent(con);
-	        
-	        var sourceleadUrl ='${sourceleadUrl}';
-	        
-	       
-	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        var formData = getFormData("onboardCandidate_form");
+	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/saveOnboardingCandidateStepDetails?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-		        success: function(onboardId) {
-		        	
-		        	location.replace(sourceleadUrl+"/onboardingCandidateSetp3");  
+		    	data: formData,
+		    	 url: sourceleadUrl+"/saveOnboardingCandidateStepDetails?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(response) {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+      	    		    showError(response.responseMessage);
+      	    		    $("#loading").removeAttr('style');
+      	    		}
+		        	else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		location.replace(sourceleadUrl+"/onboardingCandidateStep3");  
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
 		        },
 		    });  
 	        return true;
-		
-	  }else{
+	  } else {
 		return false;
 	  }
  }
@@ -645,7 +666,7 @@ function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId)
   
  <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
@@ -657,3 +678,4 @@ function refreshGoogleApiLocation(locationId,countryId,stateId,cityId,zipCodeId)
 <form action="${logoutUrl}" method="post" id="logoutForm">
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
+<script src="/resources/js/slead-common.js?staticTime=${staticTime}"></script>

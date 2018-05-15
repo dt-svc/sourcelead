@@ -1,8 +1,8 @@
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS sourcelead.AlterTableAddColumn 
+DROP PROCEDURE IF EXISTS AlterTableAddColumn 
 $$
-create procedure sourcelead.AlterTableAddColumn(
+create procedure AlterTableAddColumn(
 	    IN dbName text,
 		IN tableName text,
 		IN fieldName text,
@@ -24,9 +24,9 @@ end;
 $$
 
 
-DROP PROCEDURE IF EXISTS sourcelead.AlterTableRemoveColumn 
+DROP PROCEDURE IF EXISTS AlterTableRemoveColumn 
 $$
-create procedure sourcelead.AlterTableRemoveColumn(
+create procedure AlterTableRemoveColumn(
 	    IN dbName text,
 		IN tableName text,
 		IN fieldName text)
@@ -48,8 +48,8 @@ $$
 
 
 
-DROP PROCEDURE IF EXISTS sourcelead.DropColumnIndex $$
-CREATE PROCEDURE sourcelead.DropColumnIndex (IN  dbName varchar(64), IN  tableName varchar(64), IN colmnName varchar(64))
+DROP PROCEDURE IF EXISTS DropColumnIndex $$
+CREATE PROCEDURE DropColumnIndex (IN  dbName varchar(64), IN  tableName varchar(64), IN colmnName varchar(64))
 BEGIN
 
     DECLARE IndexColumnCount INT;
@@ -73,8 +73,8 @@ INDEX `',colmnName,'`');
 end;
 $$
 
-DROP PROCEDURE IF EXISTS sourcelead.AddColumnIndex$$
-CREATE PROCEDURE sourcelead.AddColumnIndex(IN  dbName varchar(64), IN  tableName varchar(64), IN colmnName varchar(64))
+DROP PROCEDURE IF EXISTS AddColumnIndex$$
+CREATE PROCEDURE AddColumnIndex(IN  dbName varchar(64), IN  tableName varchar(64), IN colmnName varchar(64))
 BEGIN
 
     SELECT @indexes := COUNT(1)
@@ -95,8 +95,8 @@ end;
 $$
 
 
-DROP PROCEDURE IF EXISTS sourcelead.AddColumnIndexWithUNIQUE$$
-CREATE PROCEDURE sourcelead.AddColumnIndexWithUNIQUE(IN  dbName varchar(64), IN  tableName varchar(64), IN colmnName varchar(64))
+DROP PROCEDURE IF EXISTS AddColumnIndexWithUNIQUE$$
+CREATE PROCEDURE AddColumnIndexWithUNIQUE(IN  dbName varchar(64), IN  tableName varchar(64), IN colmnName varchar(64))
 BEGIN
 
     SELECT @indexes := COUNT(1)

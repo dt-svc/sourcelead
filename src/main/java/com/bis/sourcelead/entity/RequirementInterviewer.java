@@ -20,9 +20,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 	@Entity
-	@Table(name = "REQUIREMENT_INTERVIEWER", catalog = "sourcelead")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementInterviewer")
+	@Table(name = "REQUIREMENT_INTERVIEWER")
 	public class RequirementInterviewer implements Serializable{
 
 	
@@ -33,13 +34,13 @@ import org.hibernate.annotations.NotFoundAction;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INTERVIEW_ID", nullable=false )        
     private RequirementInterview requirementInterview;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INTERVIEWER_USER_ID", nullable=false )        
     private User interviewerUser;
 	
@@ -59,31 +60,40 @@ import org.hibernate.annotations.NotFoundAction;
 	private String updatedBy;
 	
 	@Transient
+	@JsonProperty
 	private String interviewerName;
 	
 	@Transient
+	@JsonProperty
 	private String feedbackDate;
 	
 	@Transient
+	@JsonProperty
 	private String feedbackStatus;
 	
 	@Transient
+	@JsonProperty
 	private String interviewStartTime;
 	
 	@Transient
+	@JsonProperty
 	private String interviewEndTime;
 	
 	@Transient
+	@JsonProperty
 	private String requirementTitle;
 	
 	
 	@Transient
+	@JsonProperty
 	private String interviewType;
 
 	@Transient
+	@JsonProperty
 	private List<RequirementInterviewer> interviewerList;
 	
 	@Transient
+	@JsonProperty
 	private List<RequirementInterview> applicantsList;
 	
 	

@@ -6,10 +6,10 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script type="text/javascript">
+    var invoiceType = '${invoiceType}';
 $(document).ready(function(){
 	getViewInvoice();
-	var invoiceType = '${invoiceType}';
-	if(invoiceType == "Receivable"){
+	if(invoiceType === "Receivable"){
 		document.getElementById("invoiceIdHidden").style.display="block";
 		document.getElementById("BillIdHidden").style.display="none";
 		
@@ -17,7 +17,7 @@ $(document).ready(function(){
 		document.getElementById("BillIdBr").style.display="none";
 		
 	}
-	if(invoiceType == "Payables"){
+	if(invoiceType === "Payables"){
 		document.getElementById("BillIdHidden").style.display="block";
 		document.getElementById("invoiceIdHidden").style.display="none";
 		
@@ -40,9 +40,9 @@ $(document).ready(function(){
           <h2>Bill Id: <span><input class="ReadTextFliA" id="billIdDiv" readonly="readonly"></span></h2>
       </div>
       
-      <div class="pull-right brud-crum" style="display:none" id="invoiceIdBr"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/invoiceList'/>">Receivable List</a> » Invoice View</div>
+      <div class="pull-right brud-crum" style="display:none" id="invoiceIdBr"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/invoiceList'/>">Receivable List</a> » Invoice View</div>
       
-      <div class="pull-right brud-crum" style="display:none" id="BillIdBr" ><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/payablesList'/>">Payable List</a> » Bill View</div>
+      <div class="pull-right brud-crum" style="display:none" id="BillIdBr" ><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/payablesList'/>">Payable List</a> » Bill View</div>
       
     </section>
     <div class="content-area content-new clearfix">
@@ -100,8 +100,133 @@ $(document).ready(function(){
       </div>
     </div>
   </section>
-  
+<div class="modal-backdrop" style="display: none"></div>
+<div id="recvPymntpopOnline" class="modal" style="display: none;">
+    
+    <div class="modal-dialog modal-lg ">
+        <div class="modal-content">                                                     
+            <div class="modal-header">                                                    
+                <button type="button" class="close" data-dismiss="modal" onclick="cancelbtn();">×</button>         
+                <h4 class="modal-title">Payment</h4>                                
+            </div>                                                                        
+            <div class="modal-body clearfix">                                             
+                <div id="wepay_checkout" class="col-md-12 clearfix" ></div>
+                <!-- Add New Task Widget -->                                                
+                <div class="col-md-12 clearfix" id="paymentInfoOnline">                                            
+                    <form class="form-horizontal clearfix" id="receivePaymentOnline-form" name="receivePaymentOnline-form">                                     
+                                
+                        <div class="row mt">                                 
+                            <div class="col-md-12">                             
+                                <div class="row">                                
+                                    <div class="col-md-6">                        
+                                        <label>Amount</label>               
+                                        <div class="row">                            
+                                            <div class="col-md-6">                     
+                                                <input   type="radio" name="paymentAmountOnline" value="total" checked onclick="validMask();"> 
+                                                Total Due:          
+                                                <input type="text" value="" placeholder="Total Due" class="form-control input-sm mt10" id="totalAmountOnline" name="totalAmountOnline" readonly> 
+                                                <span class="addon-currency">$</span>
+                                            </div>              
+                                            <div class="col-md-6">      
+                                                <input  type="radio" name="paymentAmountOnline" value="custom" onclick="removeMask();" >     
+                                                Custom:
+                                                <input type="text" value="" placeholder="Custom Due" class="form-control input-sm mt10 allownumericwithdecimal" id="customeAmountOnline" name="customeAmountOnline" readonly>       
+                                                <span class="addon-currency">$</span>
+                                            </div>                      
+                                        </div>                        
+                                    </div>                          
+                                    <div class="col-md-6 mt">      
+                                        <label>Memo</label>           
+                                        <textarea rows="2" class="form-control" placeholder="Memo" id="paymentMemoOnline" name="paymentMemoOnline" data-validation="validate_length length2-500" data-validation-optional="true"></textarea>
+                                    </div>                                                            
+                                </div>                                                              
+                            </div>                                                     
+                        </div>  
+                        
+                        <div class="clearfix"></div>                                            
+                        <div class="clearfix mt col-md-12 mb">                                  
+                            <div class="pull-right">                                              
+                                <sec:authorize access="hasAnyRole(\'ROLE_RECEIVE_PAYMENT\')">
+                                    <input class="btn btn-primary btn-sm" value="Continue to Payment" type="button" id="save_paymentOnline" onclick="continuePaymentOnline();">   
+                                </sec:authorize>
+                                <input class="btn btn-default btn-sm ml10" value="Cancel" type="button" onclick="cancelbtn();">   
+                            </div>                                                                                              
+                        </div>                                                                                                
+                    </form>                                                                                                 
+                </div>                                                                                                    
+            </div>                                                                                                      
+        </div>                                                                                                        
+    </div>
+</div>
 <script>
+var finalDateFormatEduUpdate = '';
+if(locationDate.match("yyyy-MM-dd")){
+    finalDateFormatEduUpdate = 'yy-mm-dd';
+} else if(locationDate.match("dd-MM-yyyy")){
+    finalDateFormatEduUpdate = 'dd-mm-yy'; 
+} else if(locationDate.match("MM-dd-yyyy")){
+    finalDateFormatEduUpdate = 'mm-dd-yy'; 
+} else if(locationDate.match("yyyy-dd-MM")){
+    finalDateFormatEduUpdate = 'yy-dd-mm'; 
+}
+function cancelbtn(){
+    $("#recvPymntpopOnline").fadeOut(200);
+    $('.modal-backdrop').fadeOut(200).removeClass('in');
+}
+
+function continuePaymentOnline() {
+        var amount = $("[name=paymentAmountOnline][value=custom]").is(":checked") ? $("#customeAmountOnline").val() : $("#totalAmountOnline").val();
+    if(amount === "") {
+        showError("Enter payment amount");
+        return;
+    }
+    $("#save_paymentOnline").attr("disabled", "disabled");
+    $.post(sourceleadUrl+"/wepay-iframe-payment", {notes: $("#paymentMemoOnline").val(), paymentType: $("[name=paymentAmountOnline][value=custom]").is(":checked") ? 0 : 1, invoiceUUID: $("#paymentInfoOnline").data('invoiceid'), amount: amount}, function(data) {
+        if(data && data === "FAILED") {
+            
+        } else if(data) {
+            $("#paymentInfoOnline").hide();
+            WePay.iframe_checkout("wepay_checkout", data);
+            $("#save_paymentOnline").removeAttr("disabled", "disabled");
+        }
+    });
+}
+function initPaymentOnline(invoiceId, dueAmount) {
+    $("#totalAmountOnline").val(dueAmount);
+    $("#paymentInfoOnline").data('invoiceid', invoiceId);
+    $("#recvPymntpopOnline").fadeIn(200);
+    $('.modal-backdrop').fadeIn(200).addClass('in');
+}
+function removeMask(){
+	 $("#customeAmountOnline").removeAttr("readonly");
+	/*  $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+	        $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+	            if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+	                event.preventDefault();
+	            }
+	        }); */
+	        
+	 $("#customeAmountOnline").keydown(function (e) {
+	        // Allow: backspace, delete, tab, escape, enter and .
+	        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+	             // Allow: Ctrl+A, Command+A
+	            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) || 
+	             // Allow: home, end, left, right, down, up
+	            (e.keyCode >= 35 && e.keyCode <= 40)) {
+	                 // let it happen, don't do anything
+	                 return;
+	        }
+	        // Ensure that it is a number and stop the keypress
+	        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+	            e.preventDefault();
+	        }
+	    });
+	 
+	 
+}
+function validMask(){
+    $('#customeAmountOnline').attr("readonly","readonly");    
+}
 function getViewInvoice(){
 	  var invoiceUUID ='${invoiceUUID}';
 	  var invoiceType = '${invoiceType}';
@@ -119,12 +244,12 @@ function getViewInvoice(){
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getViewInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,
-	        success: function(data) {
-	        	var json = JSON.parse(data);
+	        success: function(json) {
+// 	        	var json = JSON.parse(data);
 	        	var result = "";
-	        	for (var i=0; i<json.length; i++)
+	        	for (var i=0; i<json.data.length; i++)
 	    		{  
-	        		var report = json[i];
+	        		var report = json.data[i];
 	        		$("#invoiceIdDiv").val(report.invoiceId)
 	        		$("#billIdDiv").val(report.invoiceId)
 	        		if(report.dueDateStr != null && report.dueDateStr != '' && report.dueDateStr !='undefined'){
@@ -158,6 +283,11 @@ function getViewInvoice(){
 	        		}else{
 	        			convertAmount = "--";
 	        		}
+                                if(report.dueAmount != null && report.dueAmount != '' && report.dueAmount != 'undefined' && parseFloat(report.dueAmount) > 0){
+	        			dueAmount = parseFloat(report.dueAmount);
+	        		}else{
+	        			dueAmount = "--";
+	        		}
 	        		
 	        		if(report.convertCurrencyCode != null && report.convertCurrencyCode != '' && report.convertCurrencyCode != 'undefined'){
 	        			convertCurrencyCode = report.convertCurrencyCode;
@@ -181,14 +311,28 @@ function getViewInvoice(){
 					result = result +'<div class="invoiceview_area clearfix">';
 					result = result +'<div class="form-horizontal row">';
 					result = result +'<div class="col-md-6"> ';
-					if(report.invoiceType == "Receivable"){
+					if(invoiceType == "Receivable"){
 						result = result +' <label class="col-md-4 control-label">Client :</label>';
 					}
-					if(report.invoiceType == "Payables"){
+					if(invoiceType == "Payables"){
 						result = result +'<label class="col-md-4 control-label">Vendor :</label>                ';
 					}
-					result = result +'<div class="col-md-8">                                               ';
-					result = result +'<label><strong>'+report.clientName+'</strong></label>  ';
+					result = result +'<div class="col-md-8"> ';
+					if(invoiceType == "Receivable"){
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\')">';
+					result = result +'<label><strong> <a href="'+sourceleadUrl+'/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+' </a></strong></label>  ';
+					'</sec:authorize>';
+					}
+					
+					if(invoiceType == "Payables"){
+					'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_VENDOR\')">';
+					result = result +'<label><strong> <a href="'+sourceleadUrl+'/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.clientName+'">'+report.clientName+' </a></strong></label>  ';
+					'</sec:authorize>';
+					}
+					'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_VENDOR\')">';
+					result = result +'<label><strong> '+report.clientName+'</strong></label>  ';
+					'</sec:authorize>';
+					
 					result = result +'</div>                                                               ';
 					result = result +'</div>                                                                 ';
 					result = result +'<div class="col-md-6">                                                 ';
@@ -243,6 +387,15 @@ function getViewInvoice(){
 					result = result +'                <label>'+dueDateStr+'</label>                                          ';
 					result = result +'              </div>                                                               ';
 					result = result +'            </div>                                                                 ';
+                                        if(report.invoiceCategory != "expenses" || invoiceType == "Payables"){
+                                            result = result +'            <div class="col-md-6">                                                 ';
+                                            result = result +'              <label class="col-md-4 control-label">Due Amount :</label>               ';
+                                            result = result +'              <div class="col-md-8">';
+                                            result = result +'                <label>'+( typeof dueAmount === 'number' ? dueAmount.toFixed(2) : dueAmount)+'</label>';
+                                            result = result +'                <label>'+(report.invoiceStatus == "Accepted" && report.paymentAccountDTO != null && typeof dueAmount === 'number' && report.paymentAccountDTO.accountType == "WEPAY" && invoiceType === "Payables" ? "<span class='receiveBtn pull-left' onclick='initPaymentOnline(\""+invoiceUUID+"\", "+dueAmount+");'>Pay</span>" : "")+'</label>';
+                                            result = result +'              </div>                                                               ';
+                                            result = result +'            </div>';
+                                        }
 					if(invoiceType == "Payables"){
 						result = result +'            <div class="col-md-6">                                                 ';
 						result = result +'              <label class="col-md-4 control-label">Billing Address :</label>        ';
@@ -251,25 +404,88 @@ function getViewInvoice(){
 						result = result +'              </div>';
 						result = result +'            </div>';
 					}else{
-						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'            <div class="col-md-6">';
 						result = result +'              <label class="col-md-4 control-label">Invoice Address :</label>        ';
 						result = result +'              <div class="col-md-8 addressInvoice">                                ';
 						result = result +'                <p>'+billingAddress+'</p>';
 						result = result +'              </div>';
 						result = result +'            </div>';
 					}
-				
+					
+
+					
+					
+					
+					
 					result = result +'          </div>';
 					result = result +'      </div>';
 					
+					if(report.paymentAccountDTO != null){
+					result = result +  '<h4 class="accDetHead">Account Details</h4>';
+					result = result +'<div class="invoiceview_area clearfix">';
+					result = result +'<div class="form-horizontal row">';
 					
+					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">Account Type :</label>        ';
+					result = result +'              <div class="col-md-8 addressInvoice">                                ';
+					result = result +'                <p>'+report.paymentAccountDTO.accountType+'</p>';
+					result = result +'              </div>';
+					result = result +'            </div>';
+					if(report.paymentAccountDTO.accountType == "WEPAY"){
+						result = result +'            <div class="col-md-6">                                                 ';
+						result = result +'              <label class="col-md-4 control-label">Email :</label>        ';
+						result = result +'              <div class="col-md-8 addressInvoice">                                ';
+						result = result +'                <p>'+report.paymentAccountDTO.email+'</p>';
+						result = result +'              </div>';
+						result = result +'            </div>';
+					}else{
+					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">Bank Name :</label>        ';
+					result = result +'              <div class="col-md-8 addressInvoice">                                ';
+					result = result +'                <p>'+report.paymentAccountDTO.bankName+'</p>';
+					result = result +'              </div>';
+					result = result +'            </div>';
+					
+					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">Account Number :</label>        ';
+					result = result +'              <div class="col-md-8 addressInvoice">                                ';
+					result = result +'                <p>'+report.paymentAccountDTO.accountNumber+'</p>';
+					result = result +'              </div>';
+					result = result +'            </div>';
+					
+					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">IFSC Code :</label>        ';
+					result = result +'              <div class="col-md-8 addressInvoice">                                ';
+					result = result +'                <p>'+report.paymentAccountDTO.routingNumber+'</p>';
+					result = result +'              </div>';
+					result = result +'            </div>';	
+						
+					}
+					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">First Name :</label>        ';
+					result = result +'              <div class="col-md-8 addressInvoice">                                ';
+					result = result +'                <p>'+report.paymentAccountDTO.firstName+'</p>';
+					result = result +'              </div>';
+					result = result +'            </div>';					
+					
+					
+					result = result +'            <div class="col-md-6">                                                 ';
+					result = result +'              <label class="col-md-4 control-label">Last Name :</label>        ';
+					result = result +'              <div class="col-md-8 addressInvoice">                                ';
+					result = result +'                <p>'+report.paymentAccountDTO.lastName+'</p>';
+					result = result +'              </div>';
+					result = result +'            </div>';					
+					
+					
+					result = result +'          </div>';
+					result = result +'      </div>';
+					}
 					
 					/* ======================== InvoiceItem List start============================ */
 					result = result +'	     <div class="invoiceGridview clearfix">                                  ';
 					result = result +'         <table width="100%" cellpadding="0" cellspacing="0">                  ';
 					result = result +'             <thead>                                                           ';
 					result = result +'                 <tr>                                                          ';
-					
 					if(report.invoiceCategory != null && report.invoiceCategory != '' && report.invoiceCategory != 'undefined' && report.invoiceCategory == "expenses"){
                         result = result +'<th>Date</th>';
                         result = result +'<th>Category</th>';
@@ -304,15 +520,14 @@ function getViewInvoice(){
 							sowName = "--";
 						}
 						if(items.startDateStr != null && items.startDateStr != '' && items.startDateStr != 'undefined'){
-							startDateStr = items.startDateStr +' To';
+							startDateStr = items.startDateStr;
 						}else{
 							startDateStr = "-";
 						}
-						
-						if(items.endDtaeStr != null && items.endDtaeStr != '' && items.endDtaeStr != 'undefined'){
-							endDtaeStr = items.endDtaeStr;
+						if(items.endDateStr != null && items.endDateStr != '' && items.endDateStr != 'undefined'){
+							endDateStr = items.endDateStr;
 						}else{
-							endDtaeStr = "-";
+							endDateStr = "-";
 						}
 						if(items.rate != null && items.rate != '' && items.rate != 'undefined'){
 							rate = items.rate;
@@ -360,7 +575,7 @@ function getViewInvoice(){
                             result = result +'</td>';
                             
                             result = result +'<td>';
-                            result = result +'<div class="tbldata-dotdot_50" title="'+quantity+'">'+quantity+'</div>';
+                            result = result +'<div class="tbldata-dotdot_50" title="'+items.inlineDescription+'">'+items.inlineDescription+'</div>';
                             result = result +'</td>';
                         }else{
                             result = result +'                     <td>                                                      ';
@@ -370,9 +585,8 @@ function getViewInvoice(){
                             result = result +'                         <div class="tbldata-dotdot-sm" title="'+candidateName+'">'+candidateName+'</div>       ';
                             result = result +'                     </td>                                                     ';
                         }
-                        
                         result = result +'                     <td>                                                     ';
-                        result = result +'                         <div class="tbldata-dotdot_80" title="'+items.inlineDescription+'">'+items.inlineDescription+'</div>       ';
+                        result = result +'                         <div class="tbldata-dotdot_80" title="'+quantity+'">'+quantity+'</div>       ';
                         result = result +'                     </td>                                                     ';
                         
                         if(report.invoiceCategory != null && report.invoiceCategory != '' && report.invoiceCategory != 'undefined' && report.invoiceCategory == "expenses"){
@@ -388,7 +602,7 @@ function getViewInvoice(){
                             result = result +'                         <div class="tbldata-dotdot_80" title="'+sowName+'">'+sowName+'</div>       ';
                             result = result +'                     </td>                                                     ';
                             result = result +'                     <td>                                                      ';
-                            result = result +'                         <div class="tbldata-dotdot_80" title="'+startDateStr+'  '+endDtaeStr+'" >'+startDateStr+' &nbsp; '+endDtaeStr+'</div>       ';
+                            result = result +'                         <div class="tbldata-dotdot_80" title="'+startDateStr+'  '+endDateStr+'" >'+startDateStr+' &nbsp; '+endDateStr+'</div>       ';
                             result = result +'                     </td>                                                     ';
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_50" title="'+rate+'">'+rate+'</div>       ';
@@ -426,7 +640,6 @@ function getViewInvoice(){
 				}else{
 					discountValue = "0";
 				}
-				
 				result = result +'			<div class="row">';
 				result = result +'	          <div class="col-md-5">';
 				result = result +'	              <div class="col-md-12 mt">';
@@ -441,10 +654,9 @@ function getViewInvoice(){
 					for (var j=0; j<report.invoiceDocumentsList.length; j++)
 		    		{
 						var doc = report.invoiceDocumentsList[j]; 
-						
 						result = result +'	                  <div class="clearfix attachfile_invoice">                                               ';
 						result = result +'	                      <p class="pull-left" title="'+doc.fileName+'">'+doc.fileName+'</p>                                         ';
-						result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+doc.id+"\"></a><a class='fa fa-eye ml10' onclick='viewInvoiceDocView("+doc.id+",\""+doc.fileName+"\");'></a></i>";
+						result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\'"+doc.fileUrl+"\' title='download' download></a><a class='fa fa-eye ml10' onClick='viewFile(\""+doc.fileUrl+"\",\""+doc.fileName+"\",\""+doc.fileContentType+"\");'title='preview'></a></i>";
 						result = result +'	                  </div>                                                                                  ';
 		    		}
 				}
@@ -478,7 +690,6 @@ function getViewInvoice(){
 					result = result +'	                    </div>                                                                                ';
 					result = result +'	                  </div>                                                                                  ';
 				}
-				
 				
 				
 				result = result +'	                </div>                                                                                    ';
@@ -651,7 +862,11 @@ function invoiceNotes(){
    	    output = output+'    <div class="commentsimg">';
    	    output = output+'    <i class="fa fa-comments"></i>';
    	    output = output+'        <div class="commentsimg-inner">';
+   	    if(report.commentAuthorImage != null && report.commentAuthorImage != '' && report.commentAuthorImage != 'undefined'){
    	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
+   	    }else{
+   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
+   	    }
    	    output = output+'        </div>';
    	    output = output+'    </div>';
    	    output = output+'     <div class="comments-content">';
@@ -765,8 +980,19 @@ function addNotes() {
 		    	        contentType:false,
 						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"&userId="+userId+"locationCode="+locationCode,
 						success : function(result) {
-							closeDocPopup();
-							invoiceNotes();
+							
+							if (result && result.response === "INVALID_DATA") {
+							    showError(result.responseMessage);
+							} else if (result.response === "AWKWARD") {
+							    location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								closeDocPopup();
+								invoiceNotes();
+							} else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+							    showError("Operation failed, please try again");
+							}
 							
 						},
 					});
@@ -790,8 +1016,8 @@ function paymentHistroy(){
 	  $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getViewPaymentHistory?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&locationId="+locationId,
-	        success: function(data) {
-	        	var json = JSON.parse(data);
+	        success: function(json) {
+// 	        	var json = JSON.parse(data);
 	        	var result = "";                                                                                                
 				result = result +'       	<table width="100%" cellpadding="0" cellspacing="0" id="paymentHistoryPagination"> ';
 				result = result +'           <thead>                                ';
@@ -806,9 +1032,9 @@ function paymentHistroy(){
 				result = result +'               </tr>                              ';
 				result = result +'           </thead>                               ';
 				result = result +'           <tbody>                                ';
-				for (var i=0; i<json.length; i++)
+				for (var i=0; i<json.data.length; i++)
 	    		{  
-	        		var report = json[i];
+	        		var report = json.data[i];
 	        		if(report.paymentAmount != null && report.paymentAmount !='' && report.paymentAmount != 'undefined'){
 	        			paymentAmount = report.paymentAmount;
 	        		}else{
@@ -832,8 +1058,9 @@ function paymentHistroy(){
 					result = result +'              <td>                                                          ';
 					result = result +'                <a class="tbldata-dotdot-vsm download_attachment" title="Download Attachment">      ';
 // 					result = result +'                <p class="pull-left">'+fileName+'</p>                           ';
-					if(report.fileName != null && report.fileName != '' && report.fileName != 'undefined'){
-					result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoicePaymentDocument?paymentHistoryId="+report.id+"\"></a></i>";
+					if(report.fileURL != null && report.fileURL != '' && report.fileURL != 'undefined'){
+// 					result = result +" <span class='pull-right'> <i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoicePaymentDocument?paymentHistoryId="+report.id+"\"></a></i>";
+					result = result+' <a download class="glyphicon glyphicon-download-alt" href="'+report.fileURL+'" title="Download"></a>';
 					}else{
 						result = result +" --";	
 					}
@@ -841,7 +1068,7 @@ function paymentHistroy(){
 					result = result +'              </td>                                 ';
 					result = result +'              <td><div class="tbldata-dotdot-me">   ';
 					result = result +'                      <a class="memo_text">         ';
-					result = result +'                          <p class="pull-left" title="LoremIpsumhasbeentheindustry" title="'+paymentComment+'">'+paymentComment+'</p>';
+					result = result +'                          <p class="pull-left" title="'+paymentComment+'">'+paymentComment+'</p>';
 					result = result +'                         <i class="fa fa-comments pull-right" title="Memo"></i>  ';
 					result = result +'                      </a> ';
 					result = result +'                  </div>   ';
@@ -853,7 +1080,7 @@ function paymentHistroy(){
 				result = result +'           </tbody>        ';
 				result = result +'       </table>  ';     
 				$("#paymentHistorytId").empty();  
-			    $("#paymentHistorytId").append(result)
+			    $("#paymentHistorytId").append(result);
 			    paymentHistoryPagination()
 	        }
 	  });
@@ -875,4 +1102,6 @@ function paymentHistoryPagination(){
     } );
 }
 </script>
- <jsp:include page="../masterFooter.jsp" />	
+
+<script type="text/javascript" src="https://www.wepay.com/min/js/iframe.wepay.js">
+<jsp:include page="../masterFooter.jsp" />	

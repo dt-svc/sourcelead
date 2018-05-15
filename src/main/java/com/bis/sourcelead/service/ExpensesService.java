@@ -1,10 +1,11 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
-import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntries;
@@ -13,7 +14,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface ExpensesService {
 	
-	public List<Expenses> getAllExpenses(OrgLocations orgLoc, User loginUser, String expenseStatus, String startDate, String endDate) throws Exception;
+	public ResponseList<Expenses> getAllExpenses(OrgLocations orgLoc, User loginUser, String expenseStatus, String startDate, String endDate, String searchValue, int start, int length) throws Exception;
 
 	public List<Expenses> getIndividualExpense(OrgLocations orgLoc, User loginUser, String expenseId);
 
@@ -33,11 +34,16 @@ public interface ExpensesService {
 	
 	public  List<ExpensesApproverHierarchy>  getEmployeeExpensesApproverHierarchyListByuserIdAndOrgLocationIdForApproverLogin(Long userId,Long orgLocationId, String expenseStatus)throws Exception;
 	
-	public List<Expenses>  getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(Long userId,Long orgLocationId, String expenseStatus)throws Exception;
+	public List<Expenses>  getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(Long masterCandidateId, String expenseStatus)throws Exception;
 
 	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType)throws Exception;
 
-	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId)throws Exception;
+	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId,Long locationsId)throws Exception;
+	
+	public List<Expenses> getExpensesByProjectIdAndMasterCandidateId(Long projectId,Long masterCandidateId) throws Exception;
 
+	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	public List<Expenses> getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(Long projectId, Long OrglocationId,Date startDate,Date endDate)throws Exception;
 	
 }

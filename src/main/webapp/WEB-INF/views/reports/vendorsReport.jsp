@@ -1,17 +1,101 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
 
+
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="/resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
+
+<style>
+#billing_chartdiv {
+  	width:100%; height:300px;
+}
+.reportBtns {
+</style>
 <script type="text/javascript">
 window.onload = function() { 
 	getVendorsReportList();
 	}
 </script>
 
+
+
+<section class="content-wraper">
+<section class="content-header clearfix">
+			<div class="pull-left">
+				<h2>Vendors Report </h2>
+			</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Vendors Reports </div>
+</section>
+
+
+<div class="timesheet_out">
+    <div class="vendor_wrap positionRelative">
+      <div class="timesheet_head clearfix">
+<div class="pull-left reportBtns reportBtns_custom mt5">
+<h4 class="pull-left mr">Vendors Report</h4>
+	  <div class="reportBtn reportBtn_custom_btn select-field pull-left">
+		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custVendorDates();">
+		  <option value="today">Today</option>
+		  <option value="yesterday">Yesterday</option>
+		  <option value="week">1 Week ago</option>
+		  <option value="twoweeks">2 Weeks ago</option>
+		  <option value="month">1 Month ago</option>
+		  <option value="twomonths">2 Months ago</option>
+		   <option value="custom">Custom</option> 
+		</select>
+	 </div>	
+	 <!-- <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker"><i class="fa fa-calendar"></i></span>
+	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker1"><i class="fa fa-calendar"></i></span>	 -->
+	 <div id="dateShow" style="display:none">
+	 <span class="dashboard-datepkr">
+	 <input type="text" class="form-control" value="" id="vendorStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
+	 <p id="vendorreportStartDate" class="ReError" style="display: none"></p>
+	 </span>
+	<span class="dashboard-datepkr">
+	<input type="text"  class="form-control" value="" id="vendorEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
+	<p id="vendorreportEndDate" class="ReError" style="display: none"></p>
+	</span>
+	<span class=""><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getVendorCustomReports();" /></span>
+	</div>
+	
+        <div class="clearfix"></div>
+      </div>
+   </div>
+ 
+<section class="candidate_wrap_table recruiterReports_table minHeight">
+<div class="clearfix mt10"></div>
+<div id ="vendorLoderDiv"></div>
+<div id="vendorReportsDiv" class="datatable_filter"></div>
+<div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
+</section>    
+ 
+      
+
+
+
+  </div>
+  </div>
+</section>
 <script>
 function getVendorsReportList(){
-	$('#reportStartDate').empty();
-	$('#reportEndDate').empty();
+	$('#vendorreportStartDate').empty();
+	$('#vendorreportEndDate').empty();
+	document.getElementById("vendorreportStartDate").style.display="none";
+	document.getElementById("vendorreportEndDate").style.display="none";
 	var reportType = $("#vendorreportTypeId").val();
 	var startDate = $("#vendorStartDate").val();
 	var endDate = $("#vendorEndDate").val();
+	if(reportType != "custom"){
+	$("#vendorLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
          type : "POST",
           url: sourceleadUrl+"/getVendorRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&customStartDate="+startDate+"&customEndDate="+endDate,    
@@ -20,6 +104,7 @@ function getVendorsReportList(){
          },
           
      }); 
+	}
 }
 </script>
 <script>
@@ -108,16 +193,18 @@ function prepareReportDataDiv(data){
 	result = result + '</table>';
 	$("#vendorReportsDiv").empty();
     $("#vendorReportsDiv").append(result);
+    $("#vendorLoderDiv").empty();
+    $("#vendorLoderDiv").removeAttr('style');
     vendorReportPagination();
 }
 
 </script>
 <script>
 function vendorReportPagination(){
-	$('#vendorReportPagination').DataTable({ 
+	$('#vendorReportPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -598,12 +685,15 @@ function getVendorCustomReports(){
 	var startDate = $("#vendorStartDate").val();
 	var endDate = $("#vendorEndDate").val();
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		document.getElementById("vendorreportStartDate").style.display="block";
 		$("#vendorreportStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		document.getElementById("vendorreportEndDate").style.display="block";
 		$("#vendorreportEndDate").empty().append("End Date is Required") ; 
 	}
 	else{
+		$("#vendorLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
 	          url: sourceleadUrl+"/getVendorRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&customStartDate="+startDate+"&customEndDate="+endDate,    
@@ -644,3 +734,4 @@ function getVendorCustomReports(){
 		$(".repTab1").show();
 	});		
 	</script>
+<jsp:include page="../masterFooter.jsp" />

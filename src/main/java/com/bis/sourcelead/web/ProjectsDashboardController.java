@@ -24,20 +24,25 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
+import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 
 @Controller
+@RequestMapping("/app")
 public class ProjectsDashboardController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardController.class);
@@ -61,6 +66,12 @@ public class ProjectsDashboardController {
 	 
 	 @Autowired
 	 private ClientVendorExport clientVendorExport;
+	 
+	 @Autowired
+	 private ProjectClientService projectClientService;
+	 
+	 @Autowired
+	 UserRoleService userRoleService;
 	 
 	 /**
 	 * This method for redirect projectDashboard
@@ -93,7 +104,7 @@ public class ProjectsDashboardController {
         sessionData.setNav(Constants.Projects);
         request.getSession().setAttribute("sessionData",sessionData);
         
-        List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
+        List<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId()); 
         for(OrgRelations orgRelations:orgClientList){
         	//orgRelations.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
         	if(null != orgRelations.getLocationId() && orgRelations.getLocationId().getId() != null && orgRelations.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
@@ -106,8 +117,11 @@ public class ProjectsDashboardController {
 					orgRelations.setClientName(orgRelations.getLocationId().getOrgLocationName());
 				}
 			}
+			
+			
         }
         model.addObject("add_client", orgClientList);
+        model.addObject("clientListSize", orgClientList.size());
         model.addObject(orgClientList);
         
         if(null != searchResult && null != searchValue){
@@ -124,7 +138,10 @@ public class ProjectsDashboardController {
 			model.addObject("endDate",endDate);
 			model.addObject("status",status);
 		}
-
+        
+        List<User> projectManagersList = userRoleService.getAllProjectManagersAssignedToProjects(loginOrgLocations.getId());
+        model.addObject("projectManagersList", projectManagersList);
+        model.addObject("projectManagersListSize", projectManagersList.size());
         
        /* List<Long> projectIds = projectsService.getProjectIdsByOrgLocationsId(loginOrgLocations.getId());
         
@@ -201,12 +218,15 @@ public class ProjectsDashboardController {
 	  */
 	 @PreAuthorize("hasAnyRole('ROLE_EXPORT_EMPLOYEE')")
 	 @RequestMapping(value = "/exportProjectEmployeeList")
-	 public void  exportProjectEmployeeList(@RequestParam(value="projectId", required=false) Long projectId,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
-		 ProjectMembers employeeList = projectsService.getProjectEmployeeListByProjectId(projectId);
-		 List<ProjectMembers> list = employeeList.getProjectMembersList();
+	 public void  exportProjectEmployeeList(@RequestParam(value="projectId", required=false) Long projectId,
+			 @RequestParam(value="status", required=false) String status,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, orgLocations.getId());
+		 List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status);
 		 Projects project = projectsService.getProjectById(projectId);
 		 
-		 File file = clientVendorExport.getexportProjectEmployeeFile(list,exportType,project); 
+		 File file = clientVendorExport.getexportProjectEmployeeFile(projectMembersList,exportType,project,projectClients); 
 		 String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
 				mimeType = "application/octet-stream";

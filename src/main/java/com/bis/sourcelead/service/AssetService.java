@@ -2,11 +2,14 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
-import org.json.JSONObject;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
+import com.bis.sourcelead.dto.AssetDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 
 public interface AssetService {
@@ -23,6 +26,13 @@ public interface AssetService {
 	 */
 	Asset getAssetById(Long Id) throws Exception;
 	
+	public Asset getAssetByAssetSnoAndId(String assetSno, Long assetId, Long orgLocationsId) throws Exception;
+	
+	public Asset validateAssetSno(String assetSno, Long orgLocationsId) throws Exception;
+	
+	public Boolean validateAssetId(String assetSno, Long orgLocationsId) throws Exception;
+
+	
 	/**
 	 * 
 	 * @param orgLocationId
@@ -35,7 +45,21 @@ public interface AssetService {
 	 */
 	List<Asset> getAssetFilterListByLocationId(Long orgLocationId, String categoryIds, String workingStatus) throws Exception;
 	
+	ResponseList<Asset> getDynamicAssetFilterListByLocationId(Long orgLocationId,AssetDTO assetDTO) throws Exception;
+	
 	List<Asset> getAssetListByLocationId(Long orgLocationId) throws Exception;
 	
-	public void saveAssetDetails(JSONObject jsonObj,String assetId, User user,OrgLocations orgLocations,MultipartHttpServletRequest request) throws Exception;
+	public Asset saveAssetDetails(AssetDTO assetDTO,User user,OrgLocations orgLocations) throws Exception;
+	
+	List<AssetAssign> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long UserId) throws Exception;
+	
+	List<AssetAssign> getAssignAssetListByAssetId(Long assetId);
+	
+	AssetAssign saveAssetAssign(AssetAssign assetAssign) throws Exception;
+	
+	AssetAssign getAssignAssetByAssetId(Long assetId)throws Exception;
+	
+	List<AssetAssign> getAssignAssetListByShiftId(Long shiftId)throws Exception;
+	
+	void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception;
 }

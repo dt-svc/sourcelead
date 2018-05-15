@@ -117,7 +117,7 @@ function getClientContactList(){
 		    	  	   $("#clientContactLength").val(1);
 		    	  		 var result = "";
 		    	  		 result = result +'<input type="hidden" value="row'+report.id+'" id="row'+report.id+'">';
-		    	  		result = result +'<td><div><span title="'+report.orgName+'">'+report.orgName+'</span></div></td>';
+		    	  		result = result +'<td><div class="tbldata-dotdot-sm" title="'+report.orgName+'">'+report.orgName+'</div></td>';
 			             return  result;
 		    	  	}
 		      },{
@@ -168,6 +168,7 @@ function getClientContactList(){
 		    	  },{
 		    	  	"targets": colIndex++,
 		    	  	"data": "spocStatus",
+		    	  	"sortable": false,
 		    	  	"render": function(data, type, report, meta) {
 		    	  		 var result = "";
 		    	  		result = result + ' <td><div>';
@@ -187,11 +188,12 @@ function getClientContactList(){
 		    	  },{
 			    	  	"targets": colIndex++,
 			    	  	"data": "invitationStatus",
+			    	  	"sortable": false,
 			    	  	"render": function(data, type, report, meta) {
 			    	  		 var result = "";
 			    	  		result = result + ' <td><div id="invitationStatus'+report.id+'">';
 					   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'Sent'){
-					   		  result = result +' <i class="fa fa-check" alt="Accept" onclick="acceptInvitation('+report.id+');"></i>|<i class="fa fa-times" alt="Rejected" onclick="rejectInvitation('+report.id+');"></i>';
+					   		  result = result +' <a class="fa fa-check" alt="Accept" href="'+sourceleadUrl+'/acceptVendorOnboardInvitation?onboardUUID='+report.onboardUUID+'&notificationUUID='+report.notificationUUID+'"></a>|<a class="fa fa-times" alt="Rejected" href="'+sourceleadUrl+'/rejectVendorOnboardInvitation?onboardUUID='+report.onboardUUID+'&notificationUUID='+report.notificationUUID+'&orgSpocUUID='+report.orgSpocUUUID+'"></a>';
 					   		}
 					   		
 					   		if(report.spocUserId == "${SourceLeadWeb_userId}" && report.invitationStatus == 'New'){
@@ -228,15 +230,15 @@ function getClientContactList(){
 				    	  	"targets": colIndex++,
 				    	  	"data": "action",
 				    	  	"sortable": false,
-				    	  	"render": function(data, type, report, meta) {
+				    	  	"render": function(data, type, report, meta) {   
 				    	  		 var result = "";
-				    	  		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
-						   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')"; title="Remove client contact"></i></div></td>';
+				    	  		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
+						   	    result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\',\''+report.spocEmail+'\')"; title="Remove client contact"></i></div></td>';
 						   	 '</sec:authorize>';
 						   	 
-						   	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
-							    result = result + '<td><div>---</div></td>';
-							 '</sec:authorize>';
+						   //	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_CLIENT_CONTACT\')">';
+							 //   result = result + '<td><div>---</div></td>';
+							 //'</sec:authorize>';
 				    	  		 return result; 
 				    	  	}
 		    	  }],

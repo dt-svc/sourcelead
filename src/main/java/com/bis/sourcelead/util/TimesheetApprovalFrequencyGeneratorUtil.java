@@ -130,7 +130,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 								 Date previousMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(cal.getTime(),Constants.PREVIOUS_MONTH).get("STARTDATE");
 								 Date nextMonthEndDate = CalendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.NEXT_MONTH).get("ENDDATE");
 						   					    
-								 
+								
 								  /**
 								  *calculating previous month startDate,15thDate
 								  * 
@@ -200,7 +200,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 								  *
 							      *
 							    */
-						    	Date biweeklyCurrentStartMonDayDate =  getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(project);
+						    	Date biweeklyCurrentStartMonDayDate =  getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(project,CommonUtil.currentDate());
 						    	Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 								cal.setLenient(false);
 								cal.setTime(biweeklyCurrentStartMonDayDate);
@@ -475,7 +475,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 		return timesheetFrequencyList;
 		
 	}*/
-	public Date getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(Projects projects) throws Exception{
+	public Date getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(Projects projects,Date date) throws Exception{
 		Date biWeeklyStartMondayDate = null;
 		Calendar projCal = Calendar.getInstance(TimeZone.getDefault());
 		projCal.setLenient(false);
@@ -485,7 +485,7 @@ public  class TimesheetApprovalFrequencyGeneratorUtil {
 		
 		Calendar cal = Calendar.getInstance(TimeZone.getDefault());
 		cal.setLenient(false);
-		cal.setTime(CommonUtil.currentDate());
+		cal.setTime(date);
 		Calendar currentMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
 		if(projectStartMonday.before(currentMonday)){
 			while(projectStartMonday.before(currentMonday)){

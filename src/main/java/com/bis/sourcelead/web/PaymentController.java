@@ -1,0 +1,517 @@
+package com.bis.sourcelead.web;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.InvoicePaymentDTO;
+import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
+import com.bis.sourcelead.entity.Invoice;
+import com.bis.sourcelead.entity.InvoicePayment;
+import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionHistory;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.InvoicePaymentService;
+import com.bis.sourcelead.service.InvoiceService;
+import com.bis.sourcelead.service.OrgLicensePaymentTransactionHistoryService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionHistoryService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.ibm.icu.text.DecimalFormat;
+import com.ibm.icu.util.Calendar;
+import com.paypal.api.payments.Amount;
+import com.paypal.api.payments.Details;
+import com.paypal.api.payments.Item;
+import com.paypal.api.payments.ItemList;
+import com.paypal.api.payments.Links;
+import com.paypal.api.payments.Payer;
+import com.paypal.api.payments.Payment;
+import com.paypal.api.payments.PaymentExecution;
+import com.paypal.api.payments.RedirectUrls;
+import com.paypal.api.payments.RelatedResources;
+import com.paypal.api.payments.Transaction;
+import com.paypal.base.rest.APIContext;
+import com.paypal.base.rest.PayPalRESTException;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+import java.util.Objects;
+import org.json.JSONObject;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@RequestMapping("/app")
+@Controller
+public class PaymentController {
+
+    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+    @Autowired
+    private InvoiceService invoiceService;
+
+    @Autowired
+    OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+
+    @Autowired
+    OrgLicenseSubscriptionTypesService orgLicenseSubscriptionTypesService;
+
+    @Autowired
+    OrgLicenseSubscriptionHistoryService orgLicenseSubscriptionHistoryService;
+
+    @Autowired
+    OrgLicensePaymentTransactionHistoryService orgLicensePaymentTransactionHistoryService;
+
+    @Autowired
+    private InvoicePaymentService invoicePaymentService;
+    
+    @Autowired
+    private UserService userService;
+
+    @Value("${sourceleadUrl}")
+    private String sourceleadUrl;
+
+    @Autowired
+    private CommonUtil commonUtil;
+
+    @Value("${paypal.clientId}")
+    private String clientId;
+
+    @Value("${wepay.accountid}")
+    private String wepayAccountId;
+
+    @Value("${wepay.accesstoken}")
+    private String wepayAccessToken;
+
+    @Value("${wepay.url}")
+    private String wepayURL;
+
+    @Value("${paypal.clientSecret}")
+    private String clientSecret;
+
+    @Value("${paypal.paymentMode}")
+    private String paymentMode;
+
+    @Value("${env}")
+    private String environment;
+
+    @RequestMapping("/license")
+    public String license(HttpServletRequest request, ModelMap map) {
+        return "payment/license";
+    }
+
+    @RequestMapping("/init-payment")
+    @ResponseBody
+    public String initPayment(HttpServletRequest request, String type, @RequestParam(defaultValue = "") String subscriptionUUID,
+            @RequestParam(defaultValue = "0") int model, @RequestParam(defaultValue = "") String registeredModules, OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO) {
+
+        OrgLicenseSubscription orgLicenseSubscription = null;
+        Payer payer = new Payer();
+        payer.setPaymentMethod("paypal");
+
+        Payment payment = new Payment();
+        payment.setIntent("sale");
+        payment.setPayer(payer);
+
+        RedirectUrls redirectUrls = new RedirectUrls();
+        String guid = UUID.randomUUID().toString().replaceAll("-", "");
+        redirectUrls.setCancelUrl(sourceleadUrl + "/payment-failed.html");
+        redirectUrls.setReturnUrl(sourceleadUrl + "/processPayment.html?guid=" + guid);
+        if (subscriptionUUID != null && !subscriptionUUID.isEmpty()) {
+            try {
+                orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(subscriptionUUID);
+                if (orgLicenseSubscriptionDTO.getInvoiceAmount() != null) {
+                    payment.setTransactions(getTransactions(guid, type, orgLicenseSubscriptionDTO.getInvoiceAmount()));
+                } else {
+                    payment.setTransactions(getTransactions(guid, type, orgLicenseSubscription.getInvoiceAmount()));
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            payment.setTransactions(getTransactions(guid, type, model == 1 ? 10 : model == 2 ? 20 : 30));
+        }
+
+        payment.setRedirectUrls(redirectUrls);
+
+        APIContext apiContext = new APIContext(clientId, clientSecret, paymentMode);
+        request.getSession().setAttribute("apiContext", apiContext);
+        try {
+            Payment createdPayment = payment.create(apiContext);
+            request.getSession().setAttribute("model", model);
+            request.getSession().setAttribute(guid, createdPayment.getId());
+            request.getSession().setAttribute("type", type);
+            request.getSession().setAttribute("orgLicenseSubscriptionDTO", orgLicenseSubscriptionDTO);
+            if (orgLicenseSubscription != null) {
+                request.getSession().setAttribute("subscriptionUUID", subscriptionUUID);
+                request.getSession().setAttribute("subscriptionId", orgLicenseSubscription.getId());
+            }
+
+            System.out.println("Created payment with id = " + createdPayment.getId() + " and status = " + createdPayment.getState());
+            Iterator<Links> links = createdPayment.getLinks().iterator();
+            while (links.hasNext()) {
+                Links link = links.next();
+                if (link.getRel().equalsIgnoreCase("approval_url")) {
+                    return link.getHref();
+                }
+            }
+        } catch (PayPalRESTException e) {
+            return "redirect:/app/payment-failed.html";
+        }
+        return null;
+    }
+
+    @RequestMapping(value = "/processPayment.html")
+    public String processPayment(HttpServletRequest req, HttpServletResponse resp, String guid) {
+        if (req.getParameter("PayerID") != null) {
+            Payment payment = new Payment();
+            if (req.getParameter("guid") != null) {
+                payment.setId(req.getSession().getAttribute(req.getParameter("guid")).toString());
+            }
+            int model = (Integer) req.getSession().getAttribute("model");
+            String type = (String) req.getSession().getAttribute("type");
+            payment.setTransactions(getTransactions(guid, type, model));
+
+            PaymentExecution paymentExecution = new PaymentExecution();
+            paymentExecution.setPayerId(req.getParameter("PayerID"));
+            APIContext apiContext = (APIContext) req.getSession().getAttribute("apiContext");
+            try {
+                req.getSession().setAttribute("payId", payment.getId());
+                Payment createdPayment = payment.execute(apiContext, paymentExecution);
+                if (createdPayment != null && createdPayment.getState().equalsIgnoreCase("approved")) {
+
+                    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
+                    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(req, "org");
+                    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+
+                    req.getSession().setAttribute("createdPayment", createdPayment);
+                    OrgLicensePaymentTransactionHistory paymentHistory = getTransactionPaymentHistory(createdPayment, req);
+                    try {
+                        orgLicensePaymentTransactionHistoryService.saveOrgLicensePaymentTransactionHistory(paymentHistory);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    req.getSession().setAttribute("orderId", paymentHistory.getOrderId());
+                    req.getSession().setAttribute("transactionId", paymentHistory.getTransactionId());
+                    req.getSession().setAttribute("amount", paymentHistory.getInvoiceAmount());
+                    Transaction transactions = createdPayment.getTransactions().iterator().next();
+                    Item item = transactions.getItemList().getItems().iterator().next();
+                    req.getSession().setAttribute("subscriptionType", item.getName());
+                    paymentHistory.setSubscriptionType(item.getName());
+
+                    try {
+                        commonUtil.paymentAcknowledgementMail(paymentHistory, loginUser, org, orgLocations);
+                        if(orgLocations.getUser() != null) {
+                      		  User locationPrimaryUser = userService.getUserById(orgLocations.getUser().getId());
+                      		  paymentHistory.setTransactionUser(locationPrimaryUser.getFullName());
+                      		  paymentHistory.setTransactionUserEmail(locationPrimaryUser.getEmail());
+                        	  commonUtil.paymentAcknowledgementMail(paymentHistory, loginUser, org, orgLocations);
+                        }
+                        
+                        if(org.getUser() != null) {
+                        	  User orgPrimaryUser = userService.getUserById(org.getUser().getId());
+                     		  paymentHistory.setTransactionUser(orgPrimaryUser.getFullName());
+                     		  paymentHistory.setTransactionUserEmail(orgPrimaryUser.getEmail());
+                       	      commonUtil.paymentAcknowledgementMail(paymentHistory, loginUser, org, orgLocations);
+                        }
+
+                        if (environment.equalsIgnoreCase("prod")) {
+                            commonUtil.paymentAcknowledgementDetailsMail(paymentHistory, loginUser, org, orgLocations);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    return "redirect:/app/payment-success.html";
+                } else {
+                    return "redirect:/app/payment-failed.html";
+                }
+            } catch (PayPalRESTException e) {
+                return "redirect:/payment-failed.html";
+            }
+        }
+        return null;
+    }
+
+    @RequestMapping(value = {"/payment-success.html", "/payment-failed.html"})
+    public String paymentResponse(HttpServletRequest request, ModelMap map) {
+
+        boolean success = request.getRequestURI().contains("success");
+        Payment payment = (Payment) request.getSession().getAttribute("createdPayment");
+        if (payment != null && success == true && payment.getState().equalsIgnoreCase("approved")) {
+            User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+            Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+            String type = (String) request.getSession().getAttribute("type");
+            OrgLicenseSubscriptionDTO orgLicenseSubscriptionDTO = (OrgLicenseSubscriptionDTO) request.getSession().getAttribute("orgLicenseSubscriptionDTO");
+
+            String subscriptionUUID = (String) request.getSession().getAttribute("subscriptionUUID");
+            if (subscriptionUUID != null && !subscriptionUUID.isEmpty()) {
+                try {
+
+                    if (type.equalsIgnoreCase("renewal")) {
+                        OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(subscriptionUUID);
+                        OrgLicenseSubscriptionHistory orgLicenseSubscriptionHistory = commonUtil.getOrgLicenseSubscriptionHistory(orgLicenseSubscription, loginUser);
+                        Date subscriptionDate = null;
+                        Date subscribedToDate = orgLicenseSubscription.getToDate();
+                        if (subscribedToDate.after(new Date()) || subscribedToDate.equals(new Date())) {
+                            String toDateStr = commonUtil.dateStrFromOrgDateFormatter("dd-MM-yyyy", orgLicenseSubscription.getToDate());
+                            subscriptionDate = commonUtil.orgLocationDateFormat("dd-MM-yyyy", toDateStr);
+                            subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscription.getTimezone().getTimeZoneId(), subscriptionDate, "dd-MM-yyyy");
+                            //orgLicenseSubscription.setFromDate(subscriptionDate);
+                        } else {
+                            subscriptionDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscription.getTimezone().getTimeZoneId(), new Date(), "dd-MM-yyyy");
+                            //orgLicenseSubscription.setFromDate(subscriptionDate);
+                        }
+
+                        Calendar toDate = Calendar.getInstance();
+                        toDate.setTime(subscriptionDate);
+
+                        OrgLicenseSubscriptionTypes orgLicenseSubscriptionTypes = orgLicenseSubscriptionTypesService.getOrgLicenseSubscriptionTypesById(orgLicenseSubscription.getSubscriptionType().getId());
+
+                        if (orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("Free Trail") || orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("1 Month")) {
+                            toDate.add(Calendar.MONTH, +1);
+                        } else if (orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("6 Months")) {
+                            toDate.add(Calendar.MONTH, +6);
+                        } else if (orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("1 Year")) {
+                            toDate.add(Calendar.YEAR, +1);
+                        } else if (orgLicenseSubscriptionTypes.getName().equalsIgnoreCase("2 Years")) {
+                            toDate.add(Calendar.YEAR, +2);
+                        }
+
+                        Date subscriptionToDate = commonUtil.getOrgLocationCurrentDate("dd-MM-yyyy", toDate.getTime());
+                        subscriptionToDate = CalendarUtil.getDateTimeForGivenTimeZone(orgLicenseSubscription.getTimezone().getTimeZoneId(), subscriptionToDate, "dd-MM-yyyy");
+                        orgLicenseSubscription.setToDate(subscriptionToDate);
+                        orgLicenseSubscription.setInvoiceAmount(0d);
+                        orgLicenseSubscription.setIsInvoiceAmountPaid(Constants.YES);
+                        orgLicenseSubscriptionHistoryService.saveOrgLicenseSubscriptionHistory(orgLicenseSubscriptionHistory);
+                        orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
+                    } else if (type.equalsIgnoreCase("pay")) {
+                        OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(subscriptionUUID);
+                        OrgLicenseSubscriptionHistory orgLicenseSubscriptionHistory = commonUtil.getOrgLicenseSubscriptionHistory(orgLicenseSubscription, loginUser);
+                        orgLicenseSubscription.setInvoiceAmount(0d);
+                        orgLicenseSubscription.setIsInvoiceAmountPaid(Constants.YES);
+                        orgLicenseSubscriptionHistoryService.saveOrgLicenseSubscriptionHistory(orgLicenseSubscriptionHistory);
+                        orgLicenseSubscriptionService.saveOrgLicenseSubscription(orgLicenseSubscription);
+                    } else if (type.equalsIgnoreCase("upgrade")) {
+                        orgLicenseSubscriptionService.upgradeLicenseSubscription(orgLicenseSubscriptionDTO, loginUser, org.getId(), subscriptionUUID);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return success ? "payment/subscriptionPaymentSuccess" : "payment/failed";
+    }
+
+    private List<Transaction> getTransactions(String guid, String type, double amt) {
+        Transaction transaction = new Transaction();
+        transaction.setDescription("This is the payment transaction description.");
+
+        List<Item> items = new ArrayList<>();
+        ItemList itemList = new ItemList();
+
+        DecimalFormat f = new DecimalFormat("##.00");
+        Item item = new Item();
+
+        if (type.equalsIgnoreCase("license")) {
+            item.setName("Licence Upgrade");
+        } else if (type.equalsIgnoreCase("renewal")) {
+            item.setName("Licence Renewal");
+        } else if (type.equalsIgnoreCase("pay")) {
+            item.setName("Licence Payment");
+        } else if (type.equalsIgnoreCase("upgrade")) {
+            item.setName("Licence Upgrade");
+        }
+
+        item.setQuantity("1").setCurrency("USD").setPrice(f.format(amt));
+        items.add(item);
+        itemList.setItems(items);
+
+        transaction.setItemList(itemList);
+
+        Details details = new Details();
+        details.setShipping("0");
+        details.setSubtotal(f.format(amt));
+        details.setTax("0");
+
+        Amount amount = new Amount();
+        amount.setCurrency("USD");
+        amount.setTotal(f.format(amt));
+        amount.setDetails(details);
+        transaction.setAmount(amount);
+        transaction.setInvoiceNumber(guid);
+        List<Transaction> transactions = new ArrayList<>();
+        transactions.add(transaction);
+        return transactions;
+    }
+
+    public OrgLicensePaymentTransactionHistory getTransactionPaymentHistory(Payment createdPayment, HttpServletRequest req) {
+        OrgLicensePaymentTransactionHistory paymentHistory = new OrgLicensePaymentTransactionHistory();
+        String type = (String) req.getSession().getAttribute("type");
+        Long subscriptionId = (Long) req.getSession().getAttribute("subscriptionId");
+        if (subscriptionId != null) {
+            OrgLicenseSubscription subscription = new OrgLicenseSubscription();
+            subscription.setId(subscriptionId);
+            paymentHistory.setOrgLicenseSubscriptionId(subscription);
+        }
+        paymentHistory.setPaymentId(createdPayment.getId());
+        paymentHistory.setLinenseType(type);
+        StringBuilder transactionUser = new StringBuilder();
+        String paymentUser = transactionUser.append(createdPayment.getPayer().getPayerInfo().getFirstName()).append(" ").append(createdPayment.getPayer().getPayerInfo().getLastName()).toString();
+        paymentHistory.setTransactionUser(paymentUser);
+        paymentHistory.setTransactionUserEmail(createdPayment.getPayer().getPayerInfo().getEmail());
+
+        Transaction transactions = createdPayment.getTransactions().iterator().next();
+        RelatedResources resources = transactions.getRelatedResources().iterator().next();
+        paymentHistory.setOrderId(SourceLeadRandomCodeHelper.generateRandomTransactionOrderId());
+        paymentHistory.setTransactionId(resources.getSale().getId());
+        paymentHistory.setCurrency(resources.getSale().getAmount().getCurrency());
+        paymentHistory.setInvoiceAmount(Double.valueOf(resources.getSale().getAmount().getTotal()));
+        paymentHistory.setReceiptId(resources.getSale().getReceiptId());
+        paymentHistory.setTransactionPayerId(createdPayment.getPayer().getPayerInfo().getPayerId());
+        paymentHistory.setInvoiceNumber(transactions.getInvoiceNumber());
+        paymentHistory.setTransactionDate(new Date());
+        return paymentHistory;
+    }
+
+    @RequestMapping(value = "/wepay-iframe-payment", method = RequestMethod.POST)
+    @ResponseBody
+    public String wePayIFamePayment(HttpServletRequest request, String invoiceUUID, double amount, String notes, int paymentType) {
+        try {
+            Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
+            if (invoice.getPaymentAccount() == null) {
+                invoice = invoiceService.getInvoicetByParentInvoiceId(invoice.getParentInvoiceId().getId());
+            }
+            OkHttpClient client = new OkHttpClient();
+            JSONObject json = new JSONObject();
+            json.put("account_id", invoice.getPaymentAccount().getAccountId());
+            json.put("type", "donation");
+            json.put("short_description", "Invoice Payment");
+            json.put("currency", "USD");
+            json.put("amount", amount);
+
+            JSONObject hostedCheckout = new JSONObject();
+            hostedCheckout.put("redirect_uri", sourceleadUrl + "/wepay-success.html?invoiceId=" + invoice.getId());
+            json.put("hosted_checkout", hostedCheckout);
+
+            JSONObject fee = new JSONObject();
+            fee.put("fee_payer", "payee_from_app");
+//            fee.put("app_fee", 0);
+            json.put("fee", fee);
+
+            RequestBody body = RequestBody.create(JSON, json.toString());
+            Request req = new Request.Builder().url(wepayURL + "/v2/checkout/create")
+                    .addHeader("Authorization", "Bearer " + invoice.getPaymentAccount().getAccessToken())
+                    .addHeader("Content-Type", "application/json")
+                    .post(body)
+                    .build();
+            Response res = client.newCall(req).execute();
+            JSONObject resp = new JSONObject(res.body().string());
+            if (resp.has("state") && (resp.getString("state").equalsIgnoreCase("new"))) {
+                OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+                InvoicePaymentDTO payment = new InvoicePaymentDTO();
+                payment.setInvoiceId(invoice.getInvoiceId());
+                payment.setPaymentAmount(paymentType == 1 ? "total" : "custom");
+                payment.setTotalAmount(invoice.getDueAmount());
+                payment.setCustomeAmount("" + (paymentType == 1 ? 0 : amount));
+                payment.setPaymentMemo(notes);
+                payment.setPaymentMethod("Online (WePay)");
+                payment.setReferenceNumber(resp.get("checkout_id").toString());
+                payment.setPaymentDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), new Date()));
+                request.getSession().setAttribute("invoice", invoice);
+                request.getSession().setAttribute("payment", payment);
+                return resp.getJSONObject("hosted_checkout").getString("checkout_uri");
+            }
+            request.getSession().removeAttribute("invoice");
+            request.getSession().removeAttribute("payment");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "FAILED";
+    }
+
+    @RequestMapping(value = {"/wepay-success.html"})
+    public String wepaySuccess(HttpServletRequest request, ModelMap map, Long invoiceId) {
+        try {
+            Invoice invoice = (Invoice) request.getSession().getAttribute("invoice");
+            InvoicePaymentDTO payment = (InvoicePaymentDTO) request.getSession().getAttribute("payment");
+            if (invoice != null && Objects.equals(invoice.getId(), invoiceId)) {
+                List<InvoicePayment> list = invoicePaymentService.getInvoicePaymentList(invoiceId);
+                boolean flag = true;
+                if (list != null) {
+                    for (InvoicePayment ip : list) {
+                        if (ip.getPaymentReferenceNumber().equals(payment.getReferenceNumber())) {
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+                if (flag) {
+                    OkHttpClient client = new OkHttpClient();
+                    JSONObject json = new JSONObject();
+                    json.put("checkout_id", payment.getReferenceNumber());
+
+                    RequestBody body = RequestBody.create(JSON, json.toString());
+                    Request req = new Request.Builder().url(wepayURL + "/v2/checkout")
+                            .addHeader("Authorization", "Bearer " + invoice.getPaymentAccount().getAccessToken())
+                            .addHeader("Content-Type", "application/json")
+                            .post(body)
+                            .build();
+
+                    Response res = client.newCall(req).execute();
+                    JSONObject resp = new JSONObject(res.body().string());
+                    if (resp.has("state") && (resp.getString("state").equalsIgnoreCase("authorized")
+                            || resp.getString("state").equalsIgnoreCase("captured")
+                            || resp.getString("state").equalsIgnoreCase("released"))) {
+                        OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+                        User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+                        InvoicePayment invoicePayment = invoicePaymentService.saveInvoicePayment(payment, user, orgLocation, null, invoice.getId());
+                        request.getSession().removeAttribute("invoice");
+                        request.getSession().removeAttribute("payment");
+                        if (null != invoicePayment) {
+                            map.addAttribute("invoice", invoice);
+                            map.addAttribute("payment", payment);
+                            return "payment/success";
+                        }
+
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        request.getSession().removeAttribute("invoice");
+        request.getSession().removeAttribute("payment");
+        return "payment/failed";
+    }
+
+}

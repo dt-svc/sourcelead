@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateCommentsDao;
+import com.bis.sourcelead.dto.CandidateCommentsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -62,12 +63,12 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public CandidateComments storeCandidateComments(JSONObject jsonObj, User user, Candidate candidate, OrgLocations orgLocations, RequirementSubmission submission) throws Exception {
+	public CandidateComments storeCandidateComments(CandidateCommentsDTO candidateCommentsDTO, User user, Candidate candidate, OrgLocations orgLocations, RequirementSubmission submission) throws Exception {
 		CandidateComments candidateComments = new CandidateComments();
 		StringBuffer activitySummary = new StringBuffer();
-			if(jsonObj.has("comment")){
-				activitySummary.append("Comment").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(jsonObj.getString("comment")).append(Constants.NEW_VALUE_TAG_END).append(" ");
-				candidateComments.setComment(jsonObj.getString("comment"));
+			if(candidateCommentsDTO.getComment() != null){
+				activitySummary.append("Comment").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateCommentsDTO.getComment()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				candidateComments.setComment(candidateCommentsDTO.getComment());
 			}
 			if(candidate != null){
 				candidateComments.setCandidateId(candidate);

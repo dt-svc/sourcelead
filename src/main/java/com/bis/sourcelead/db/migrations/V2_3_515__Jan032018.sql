@@ -1,0 +1,1 @@
+CALL AlterTableAddColumn ('sourcelead','TIMESHEET_DAY_ENTRIES','IS_MANUALLY_ADDED','VARCHAR(10) NULL');

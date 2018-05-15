@@ -27,6 +27,8 @@ function prepareWagesAndTaxList(url){
 	
 	 $("#wagesAndTaxListDiv").removeAttr("style");
  	 $("#wagesAndTaxListDiv").empty();
+ 	$("#payrollCycleDiv").find('p.jquery_form_error_message').remove();
+	$('#payrollCycle').val('').trigger("chosen:updated");
  	 var result = "";
  	result = result +" <div class='modal-header'>";
  	result = result +" <div class='remove_search'>";
@@ -98,6 +100,7 @@ function wagesTaxpagination(url){
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
 	    	  	"data": "fromDate",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 	    	  		 if(opt.fromDateStr !=null && opt.fromDateStr !='' && opt.fromDateStr !='undefined'){
@@ -110,6 +113,7 @@ function wagesTaxpagination(url){
 	      },{
 	    	  "targets": colIndex++,
               "data": "toDate",
+              "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.toDateStr !=null && opt.toDateStr !='' && opt.toDateStr !='undefined'){
@@ -135,6 +139,7 @@ function wagesTaxpagination(url){
             }, {
                 "targets": colIndex++,
                 "data": "ssnNumber",
+                "sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		if(opt.ssnNumber !=null && opt.ssnNumber !='' && opt.ssnNumber !='undefined'){
@@ -159,54 +164,69 @@ function wagesTaxpagination(url){
 	    	  },{
 	    	  	"targets": colIndex++,
 	    	  	"data": "checkNo",
+	    	  	"sortable": false,
 	    	  	"render": function(data, type, opt, meta) {
-	    	  		return ' <td><div class="tblminwidth-75">'+opt.checkNo+'</div></td>';
+	    	  		var result = "";
+	    	  		if(opt.checkNo != null && opt.checkNo !='' && opt.checkNo != 'undefined'){
+	    	  			result = result + ' <td><div class="tblminwidth-75">'+opt.checkNo+'</div></td>';
+	    	  		}else{
+	    	  			result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+	    	  		}
+	    	  		return result;
 	    	  	}
 	    	  }, {
                   "targets": colIndex++,
                   "data": "gross",
+                  "sortable": false,
                   "render": function ( data, type, opt, meta ) {
                 	  return '<td><div class="tblminwidth-75">'+opt.gross.toFixed(2)+'</div></td>';
                   }
                 },{
                     "targets": colIndex++,
                     "data": "fwt",
+                    "sortable": false,
                     "render": function ( data, type, opt, meta ) {
                     	return '<td><div class="tblminwidth-75">'+opt.fwt.toFixed(2)+'</div></td>';
                     }
                   },{
                       "targets": colIndex++,
                       "data": "ssec",
+                      "sortable": false,
                       "render": function ( data, type, opt, meta ) {
                     	  return ' <td><div class="tblminwidth-75">'+opt.ssec.toFixed(2)+'</div></td>';
                       }
                     },{
                         "targets": colIndex++,
                         "data": "med",
+                        "sortable": false,
                         "render": function ( data, type, opt, meta ) {
                         	return '<td><div class="tblminwidth-75">'+opt.med.toFixed(2)+'</div></td>';
                         }
                       },{
                           "targets": colIndex++,
                           "data": "swt",
+                          "sortable": false,
                           "render": function ( data, type, opt, meta ) {
                         	 return' <td><div class="tblminwidth-75">'+opt.swt.toFixed(2)+'</div></td>';
                           }
                         },{
                             "targets": colIndex++,
                             "data": "sdiSui",
+                            "sortable": false,
                             "render": function ( data, type, opt, meta ) {
                             	return '<td><div class="tblminwidth-75">'+opt.sdiSui.toFixed(2)+'</div></td>';
                             }
                           },{
                               "targets": colIndex++,
                               "data": "local",
+                              "sortable": false,
                               "render": function ( data, type, opt, meta ) {
                             	  return '<td><div class="tblminwidth-75">'+opt.local.toFixed(2)+'</div></td>';
                               }
                             },{
                                 "targets": colIndex++,
                                 "data": "deds",
+                                "sortable": false,
                                 "render": function ( data, type, opt, meta ) {
                                 	var result = "";
                                 	result = result + '<td><div class="deeds tblminwidth-125">'+opt.deds.toFixed(2)+'</div>';
@@ -216,6 +236,7 @@ function wagesTaxpagination(url){
                               },{
                                   "targets": colIndex++,
                                   "data": "net",
+                                  "sortable": false,
                                   "render": function ( data, type, opt, meta ) {
                                 	 return '<td><div class="tblminwidth-75">'+opt.net.toFixed(2)+'</div></td>';
                                   }
@@ -235,14 +256,14 @@ function wagesTaxpagination(url){
                 } ],
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	    	"aaSorting": [[0,'desc']],
+	    	"aaSorting": [[3,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#wageTaxPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -258,7 +279,7 @@ function wagesTaxpagination(url){
 <script>
 function wagesAndTaxListRajashekar(){
 	$("#addPayrollDiv").hide();
-	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",

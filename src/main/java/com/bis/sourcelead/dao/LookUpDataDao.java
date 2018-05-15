@@ -27,4 +27,10 @@ public interface LookUpDataDao {
 
 	public List<String> getAllVisaByCategory()throws Exception;
 	
+	LookUpData getTasksById(Long id) throws Exception;
+	
+	LookUpData getTasksTypeByUniqueKey(String uniqueKey) throws Exception;
+	
+	LookUpData getRequirementExperienceLevelyUniqueKey(String uniqueKey) throws Exception;
+
 }

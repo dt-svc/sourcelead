@@ -1,8 +1,8 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -29,8 +29,16 @@ window.onload = function() {
 	  $.ajax({
            type : "POST",
             url: sourceleadUrl+"/getCandidateReportsListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateType="+candidateType,       
-            success :function(data) {
-            	prepareCandidateReportsDataDiv(data);
+            success :function(response) {
+            	if (response.response === "AWKWARD") {
+            	    location.href = "/errorPage";
+            	} else if (response.response === "SUCCESS") {
+            		prepareCandidateReportsDataDiv(response.data);            		
+            	} else if (response.indexOf('Sign In') !== -1) {
+            		location.replace(sourceleadUrl);
+            	} else {
+            	    showError("Operation failed, please try again");
+            	}
            },
             
        }); 
@@ -43,16 +51,7 @@ window.onload = function() {
 	  $("#candidateList").removeAttr("style");
 	     	 $("#candidateList").empty();
 	    	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	   	  if(locationList.match("yyyy-MM-dd")){
-	   		  reqListDate = 'YYYY-MM-DD';
-	   	  }if(locationList.match("dd-MM-yyyy")){
-	   		  reqListDate = 'DD-MM-YYYY'; 
-	   	  }if(locationList.match("MM-dd-yyyy")){
-	   		  reqListDate = 'MM-DD-YYYY'; 
-	   	  }if(locationList.match("yyyy-dd-MM")){
-	   		  reqListDate = 'YYYY-DD-MM'; 
-	   	  }  
-	   	
+	    	 var reqListDate= getOrgDateFormat(locationList);
 	     	 var result = "";
 	     	  result = result +"<table id='candidatePagination' class='display' cellspacing='0' width='100%' >"; 
 	          result = result +"<thead>"; 
@@ -61,7 +60,7 @@ window.onload = function() {
 	          result = result +"    <th>Mobile</th>";
 	          result = result +"    <th>Primary Skill</th>";
 	          result = result +"    <th>Experience</th>"; 
-	          result = result +"    <th>No of Jobss</th>"; 
+	          result = result +"    <th>No of Jobs</th>"; 
 	          result = result +"    <th>Owner</th>"; 
 	          result = result +"    <th>Last Update <br>(<small class='custom-small'>"+reqListDate+"</small>)</th>";
 	          result = result +"  </tr>"; 
@@ -111,7 +110,7 @@ window.onload = function() {
 		            	}
 		            	
 	                result = result +"<tr>";
-	                result = result +"  <td><div class='proj_show divmax-width' ><span title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
+	                result = result +"  <td><div class='proj_show divmax-width' ><div class='text-center tbldata-dotdot-sm pull-left' title='"+opt.firstName+" "+lastName+"'>"+opt.firstName+" "+lastName+"</div></div></td>";
 	                result = result +"  <td><div>"+mobilePhone+"</div></td>";
 	              
 		              if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill != "undefined")
@@ -136,6 +135,8 @@ window.onload = function() {
 	          result = result +"</table>";
 	          $("#noCandidates").val('');
 	          $("#candidateList").append(result);
+	          $("#candidateLoderDiv").empty();
+	          $("#candidateLoderDiv").removeAttr('style');
 	          cpagination(SourceLeadWeb_loginOrg);  
 	 
   }
@@ -163,7 +164,7 @@ function cpagination(SourceLeadWeb_loginOrg){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [2, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -180,16 +181,7 @@ function cpagination(SourceLeadWeb_loginOrg){
 	$(function() {
 		
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatreports = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatreports = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatreports = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatreports = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatreports = 'yy-dd-mm'; 
-		  }
+		  var finalDateFormatreports = getJSDateFormat(locationDate);
 		
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
@@ -236,24 +228,10 @@ function toDate(selector) {
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2 class="pull-left">Reports</h2>
-		 <div class=" pull-left reportsH">
-			<a title="Reports"><i class="fa fa-pie-chart"></i>Added Candidates</a>
-			<div class="RePop">
-				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
-<%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
-<%-- 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li> --%>
-				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Assign To</a></li> --%>
-				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
-				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
-				</ul>
-			</div>
-		</div>  
+      <h2 class="pull-left">Candidate Reports</h2>
+		  
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Added Candidates </div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Added Candidate Reports </div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -277,11 +255,11 @@ function toDate(selector) {
 	 <div class="cusShow pull-left">
 	 <span class="dashboard-datepkr">
 	 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-	 <p id="reportStartDate" class="ReError"></p>
+	 <p id="reportStartDate" class="ReError" style="display: none"></p>
 	 </span>
 	<span class="dashboard-datepkr">
 	<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="reportEndDate" class="ReError"></p>
+	<p id="reportEndDate" class="ReError" style="display: none"></p>
 	</span>
 	<span><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	</div>
@@ -329,6 +307,7 @@ function toDate(selector) {
 	</div>
 
   <div class="project_tabs_inn_table vendor_wrap_inn_table">
+   <div id="candidateLoderDiv"></div>
                  <div id="candidateList" class="repoPositiAs"></div>
                 </div>      
                 
@@ -375,16 +354,23 @@ function toDate(selector) {
 </script> 
 <script type="text/javascript">
 function getCandidatesByOwners(){
-		var ownersList = $("#user").val();
-		var reportType = "Candidate";
- 		$.ajax({
- 	         type : "POST",
-				url: sourceleadUrl+"/getOwnersByCandidates?"+tokenParamName+"="+tokenValue+"&ownersList="+ownersList+"&reportType="+reportType,
- 	         success :function(data) {
-  		        	 prepareCandidateReportsDataDiv(data);
-  	        },
- 	          
- 	     }); 
+	var ownersList = $("#user").val();
+	var reportType = "Candidate";
+	$.ajax({
+		type : "POST",
+		url: sourceleadUrl+"/getOwnersByCandidates?"+tokenParamName+"="+tokenValue+"&ownersList="+ownersList+"&reportType="+reportType,
+	    success :function(response) {
+        	if (response.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (response.response === "SUCCESS") {
+        		prepareCandidateReportsDataDiv(response.data);
+        	} else if (response.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+ 		},
+	}); 
 }
 
 </script>
@@ -410,7 +396,8 @@ function reset(){
 function getDayWiseReports(){
 	$('#reportStartDate').empty();
 	$('#reportEndDate').empty(); 
-	
+	document.getElementById("reportStartDate").style.display="none";
+	document.getElementById("reportEndDate").style.display="none";
 	var ownersList = $("#user").val();
 	var userList = "";
 	if(ownersList != null && ownersList != ''){
@@ -419,17 +406,25 @@ function getDayWiseReports(){
 	 var reportType = $("#reportTypeId").val(); 
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
+	
 	if(reportType != "custom"){
-	$.ajax({
+		$("#candidateLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
          type : "POST",
          url: sourceleadUrl+"/getCandidateReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+userList,     
-         success :function(data) {
-	        	 prepareCandidateReportsDataDiv(data);
+         success :function(response) {
+        	 	if (response.response === "AWKWARD") {
+	       		    location.href = "/errorPage";
+	       		} else if (response.response === "SUCCESS") {
+	       			prepareCandidateReportsDataDiv(response.data);
+	       		} else if (response.indexOf('Sign In') !== -1) {
+	       			location.replace(sourceleadUrl);
+	       		} else {
+	       		    showError("Operation failed, please try again");
+	       		}
         },
-          
      });  
 	}
-	
 }
 
 </script>
@@ -457,21 +452,30 @@ function getCustomReports(){
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		document.getElementById("reportStartDate").style.display="block";
 		$("#reportStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		document.getElementById("reportEndDate").style.display="block";
 		$("#reportEndDate").empty().append("End Date is Required") ; 
 	}else{
+		$("#candidateLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
 	         url: sourceleadUrl+"/getCandidateReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&ownersList="+userList,     
-	         success :function(data) {
-		        	 prepareCandidateReportsDataDiv(data);
+	         success :function(response) {
+	        	 	if (response.response === "AWKWARD") {
+	        		    location.href = "/errorPage";
+	        		} else if (response.response === "SUCCESS") {
+	        			 prepareCandidateReportsDataDiv(response.data);
+	        		} else if (response.indexOf('Sign In') !== -1) {
+	        			location.replace(sourceleadUrl);
+	        		} else {
+	        		    showError("Operation failed, please try again");
+	        		}
 	        },
-	          
 	     });  
 	}
-	 
 }
 </script>
 <script type="text/javascript"> 

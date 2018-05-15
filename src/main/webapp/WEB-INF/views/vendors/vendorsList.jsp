@@ -10,6 +10,19 @@ overflow-x: auto;
 .dropdown-select.paddingNone select {
 border:none; background-color: none !important; padding:0 5px !important;
 }
+
+.NewStyleFullWidth {
+	width: 100%; padding: 0px 0px; margin: 0px auto;
+}
+.NewStyleFullWidth .col-md-9 {
+	width: 100%; padding: 0px 0px;
+}
+.NewStyleFullWidth .form-group {
+	width: 50%; margin-bottom: 15px; float: left; padding: 0px 2%;
+}
+.dynamic_search .fa-search {
+position: absolute !important;
+}
 </style>
     <!-- Content Area -->
       <section class="content-wraper">
@@ -33,7 +46,7 @@ border:none; background-color: none !important; padding:0 5px !important;
                 </span>            	
             </h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendors list </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/vendorsList'/>"> Vendor List</a></div>
         </section>
 		<!-- Project -->
 		 <div id="loading"></div>
@@ -43,9 +56,16 @@ border:none; background-color: none !important; padding:0 5px !important;
   <div class="clearfix">
   <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
-          <div class="cand-advsrch-popup"> <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
+          </div>
+          <div class="cand-advsrch-popup advancedsearch-popup">
+          
+          <h5 class="headerAdsrch">Advanced Search
+          <a href="javascript:void(0)" class="close-div" onClick="closePop();"><i class="fa fa-close"></i></a>
+          </h5>
+          
+          
           <form:form id="vendorList_form" name="vendorList_form"  enctype='multipart/form-data' >
-           
+          <div class="addInner"> 
             <div class="row">
               <div class="col-md-4">
                 <label>Any of Keyword</label>
@@ -82,50 +102,13 @@ border:none; background-color: none !important; padding:0 5px !important;
                   <label>Vendor Name</label>
                   <div class="clearfix">
                     <select class="chosen-select form-control input-sm" multiple data-placeholder="Vendor Name" id="orgNameAdvanced" name="orgNameAdvanced">
-                        <c:forEach var="vendor" items="${vendor_list}">
-                                <option value="${vendor.clientName}">${vendor.clientName}</option>
+                        <c:forEach var="vendorList" items="${vendor_list}">
+                                <option value="${vendorList.vendorNameForList}">${vendorList.vendorNameForList}</option>
                          </c:forEach>
                     </select>
                   </div>
                 </div>
                 
-              </div>
-              <div class="clearfix">
-                
-              </div>
-              <div class="clearfix">
-                <div class="col-md-4">
-                  <label>Country </label>
-                  <div class="clearfix">
-                    <select class="chosen-select" name="country" id="country" field-name="Country"  >
-						     <c:forEach var="cntry" items="${countryList}">
-					                     <option value="${cntry.name}" ${cntry.name  == loginCountryName ? 'selected' : ''}>${cntry.name}</option>
- 
-				             </c:forEach>
-				     </select>
-                  </div>
-                </div>
-             <div class="col-md-4"> 
-							  <label>State</label>
-							  <div class="clearfix">
-								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
-								        <option value="">---select state---</option>
-								        <c:forEach var="state" items="${statesList}">
-							                     <option value="${state.stateName}">${state.stateName}</option>
-						                </c:forEach>
-                                 </select>
-							  </div>
-						  </div>
-						  <div class="col-md-4">
-							  <label>City</label>
-							  <div class="clearfix">
-								  <select  class="chosen-select" name="city" id="city" field-name="City"  >
-								      <option value="">---select city---</option>
-                                  </select>
-							  </div>
-						  </div>
-              </div>
-              <div class="clearfix">
                 <div class="col-md-4">
                   <label>Tier</label>
                   <div class="clearfix">
@@ -150,6 +133,44 @@ border:none; background-color: none !important; padding:0 5px !important;
               </div>
              
                </div>
+               
+              <div class="clearfix">
+                
+              </div>
+              <div class="clearfix">
+                <div class="col-md-4">
+                  <label>Country </label>
+                  <div class="clearfix">
+                    <select class="chosen-select" name="searchCountry" id="country" field-name="Country">
+                          <option value="" selected>---select country---</option>
+						     <c:forEach var="cntry" items="${countryList}">
+					                     <option value="${cntry.name}">${cntry.name}</option>
+ 
+				             </c:forEach>
+				     </select>
+                  </div>
+                </div>
+             <div class="col-md-4"> 
+							  <label>State</label>
+							  <div class="clearfix">
+								  <select  class="chosen-select" name="searchState" id="state" field-name="State"  >
+								         <option value="">---select state---</option>
+								       <%-- <c:forEach var="state" items="${statesList}">
+							                     <option value="${state.stateName}">${state.stateName}</option>
+						                </c:forEach> --%>
+                                 </select>
+							  </div>
+						  </div>
+						  <div class="col-md-4">
+							  <label>City</label>
+							  <div class="clearfix">
+								  <select  class="chosen-select" name="searchCity" id="city" field-name="City"  >
+								      <option value="">---select city---</option>
+                                  </select>
+							  </div>
+						  </div>
+              </div>
+              
                 
                 <div class="clearfix">
                
@@ -204,7 +225,7 @@ border:none; background-color: none !important; padding:0 5px !important;
                   <div class="clearfix">
                      <select class="chosen-select form-control input-sm" multiple data-placeholder="Vendor" id="orgAdvanced" name="orgAdvanced">
                         <c:forEach var="vendor" items="${vendor_list}">
-                                <option value="${vendor.clientName}">${vendor.clientName}</option>
+                                <option value="${vendor.vendorNameForList}">${vendor.vendorNameForList}</option>
                          </c:forEach>
                     </select>
                   </div>
@@ -238,24 +259,24 @@ border:none; background-color: none !important; padding:0 5px !important;
             </div>  
               
             </div>
-            <div class="row form-footer custom_formfooter">
+            </div>
+            <div class="advancedsearch-footer clearfix">
               <div class="pull-right mr"> 
                <!--  <input type="button" value="Search" id="search_vendor" onclick="getVendorList();" class="btn btn-sm btn-success"/>
                  <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> -->
               <div id="enableVendorAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getVendorList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               	<div id="enableVendorContactAdvancedSearch"> 
               	<input type="button" value="Search" id="search_client" onclick="getVendorContactList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Clear" id="clear_search" onclick="closePop();" class="btn btn-sm btn-primary"/>
+              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
               	</div>
               
             </div>
+            </div>
             </form:form>
           </div>
-        </div>
-        </div>
 <!-- Advanced Search Ends -->
 
 
@@ -317,14 +338,14 @@ border:none; background-color: none !important; padding:0 5px !important;
 		                </li>  
 		                    
 		          <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')">
-				       <li><a href="<c:url value='/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
+				       <li><a href="<c:url value='${appPath}/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
 					</sec:authorize>
 					
 				<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-                       <li><a href="<c:url value='/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
+                       <li><a href="<c:url value='${appPath}/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
                        </sec:authorize>
                         <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
-                       <li title="Import"><a href="<c:url value='/uploadVendorForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+                       <li title="Import"><a href="<c:url value='${appPath}/uploadVendorForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
                  	   </sec:authorize> 
                  
                  <sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
@@ -350,11 +371,11 @@ border:none; background-color: none !important; padding:0 5px !important;
 				    </div>
 		            </li> 
 		          </sec:authorize>
-		            
             </ul>
             <div class="clearfix"></div>
-             <div class='remove_search'>
-        		          <input type='text' placeholder='search' id='dataTableSearch'/>
+             <div class='dynamic_search dynamic_search-new'>
+        		   <input type='text' placeholder='Search' id='dataTableSearch'/>
+        		   <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getVendorList();"></i></span>     
                 </div> 
         </div>
         
@@ -368,10 +389,10 @@ border:none; background-color: none !important; padding:0 5px !important;
    
 </div>
 
-<div class="side_mask"><div class="proj_close"></div></div>
+<div class="side_mask" style="z-index:10000;"><div class="proj_close" onclick="refresh();"></div></div>
 
 <!-- Client Side Nav Div -->
-<div class="clients_side_wrap">
+<div class="clients_side_wrap clientspagedrop">
 			<div class="clients_side_wrap_inn">
 				<h1 id="vendorNameDiv"></h1>
 				<div class="proj_close">
@@ -417,9 +438,11 @@ function clearSearch(){
 	$('#allKeywords').val('').trigger('chosen:updated');
 	$('#excludeKeyWord').val('').trigger('chosen:updated');
 	$('#orgNameAdvanced').val('').trigger('chosen:updated');
-/* 	$('#country').val('').trigger('chosen:updated'); */
-	$('#state').val('').trigger('chosen:updated');
-	$('#city').val('').trigger('chosen:updated');
+ 	$('#country').val('').trigger('chosen:updated'); 
+	//$('#state').val('').trigger('chosen:updated');
+	 getStates();
+	//$('#city').val('').trigger('chosen:updated');
+	 getCities();
 	$('#tierAdvanced').val('').trigger('chosen:updated');
 	$('#createdByAdvanced').val('').trigger('chosen:updated');
 	$('#emailAdvanced').val('').trigger('chosen:updated');
@@ -516,265 +539,54 @@ function clearSearch(){
 </script> -->
 
 
+
+<script>
+  $(function() { 
+	       //Adding Customized Any KeyWord Title list this method is slead-common.js
+		   tagIt("anyOfKeyword", 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:', 'tagItBykeyForSkills','skills','Any Keyword');
+	       
+		 //Adding Customized All KeyWord  list this method is slead-common.js
+		   tagIt("allKeywords", 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:', 'tagItBykeyForSkills','skills','All Keywords');
+		 
+		 //Adding Customized All KeyWord  list this method is slead-common.js
+		   tagIt("excludeKeyWord", 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:', 'tagItBykeyForSkills','skills','Exclude Keyword');
+		 
+		 //Adding Customized Vendor Name list this method is slead-common.js
+		   tagIt("orgNameAdvanced", 'Press Enter-Key Or Comma(,) Or Tab  To Add Vendor Name:', 'tagItBykeyForSkills','skills','Vendor Name');
+		 
+		 //Adding Customized createdBy Name list this method is slead-common.js
+		   tagIt("createdByAdvanced", 'Press Enter-Key Or Comma(,) Or Tab To Add Document Type:', 'tagItBykeyForSkills','skills','Created By');
+		 
+		 
+		 //vendor contact customize details
+		 
+		  //Adding Customized vendor contact Name list this method is slead-common.js
+		   tagIt("contactNameAdvanced", 'Press Enter-Key Or Comma(,) Or Tab To Add Document Type:', 'tagItBykeyForSkills','skills','Contact Name');
+		 
+		   //Email
+		   tagIt("emailAdvanced", 'Press Enter-Key Or Comma(,) To Add Email:', 'tagItBykeyForSkills','skills','Email');
+		   
+		   //Phone Number
+		   tagIt("phoneNumberAdvanced", 'Press Enter-Key Or Comma(,) To Add Phone Number:', 'tagItBykeyForSkills','skills','Phone Number');
+		   
+		 //Owner Name
+		   tagIt("ownerAdvanced", 'Press Enter-Key Or Comma(,) To Add Owner:', 'tagItBykeyForSkills','skills','Owner');
+		   
+		   //Owner Name
+		   tagIt("orgAdvanced", 'Press Enter-Key Or Comma(,) To Add Vendor:', 'tagItBykeyForSkills','skills','Vendor');
+		   
+  });
+  </script>
+  
+  	       
 <script type="text/javascript">
-    	   var config = {
-    				  '.chosen-select'           : {},
-    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-    				  '.chosen-select-no-single' : {disable_search_threshold:10},
-    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-    				  '.chosen-select-width'     : {width:"95%"}
-    	   }
-			//Adding Customized Any Of Keyword to the list 
-		    var select, chosen;
-		    select = $("#anyOfKeyword");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.on('keydown keyup', function(e)
-		    {
-		    	var anyKeyword = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
-		        {
-		        	preventTabkey(e); 
-		        	var par = this.parent;
-		            var option = $("<option>").val(anyKeyword).text(anyKeyword);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-                    $("#anyOfKeyword option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#anyOfKeyword").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		  //Adding Customized Any Of Keyword to the list
-		    var selectone, chosenone;
-		    selectone = $("#allKeywords");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:' });
-		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keydown keyup', function(e1)
-		    {
-		    	var allKeyword = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e1) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
-		        {
-		        	preventTabkey(e1); 
-		        	var par = this.parent;
-		            var option = $("<option>").val(allKeyword).text(allKeyword);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-                    $("#allKeywords option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#allKeywords").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    var selecttwo, chosentwo;
-		    selecttwo = $("#excludeKeyWord");
-		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab  To Add Keyword:' });
-		    chosentwo = selecttwo.data('chosen');
-		    chosentwo.search_field.on('keydown keyup', function(e2)
-		    {
-		    	var excludeKeyword = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e2) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
-		        {
-		        	preventTabkey(e2); 
-		        	var par = this.parent;
-		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
-		            selecttwo.append(option);
-		            selecttwo.find(option).prop('selected', true);
-                    $("#excludeKeyWord option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#excludeKeyWord").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    // These are choosen fields for vendor List Multiselect
-		    
-		    
-		    // This is for vendorName 
-		    
-		    var selectthree, chosenthree;
-		    selectthree = $("#orgNameAdvanced");
-		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab  To Add Vendor Name:' });
-		    chosenthree = selectthree.data('chosen');
-		    chosenthree.search_field.on('keydown keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e3) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	preventTabkey(e3); 
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectthree.append(option);
-		            selectthree.find(option).prop('selected', true);
-                    $("#orgNameAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#orgNameAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		   // This is for Created By 
-		    var selectcreatedByAdvanced, chosencreatedByAdvanced;
-		    selectcreatedByAdvanced = $("#createdByAdvanced");
-		    selectcreatedByAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add Document Type:' });
-		    chosencreatedByAdvanced = selectcreatedByAdvanced.data('chosen');
-		    chosencreatedByAdvanced.search_field.on('keydown keyup', function(e4)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e4) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	preventTabkey(e4); 
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectcreatedByAdvanced.append(option);
-		            selectcreatedByAdvanced.find(option).prop('selected', true);
-                    $("#createdByAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#createdByAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    
-		    
-		    //  This is for contact Name
-		    var selectcontactNameAdvanced, chosencontactNameAdvanced;
-		    selectcontactNameAdvanced = $("#contactNameAdvanced");
-		    selectcontactNameAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Contact Name:' });
-		    chosencontactNameAdvanced = selectcontactNameAdvanced.data('chosen');
-		    chosencontactNameAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectcontactNameAdvanced.append(option);
-		            selectcontactNameAdvanced.find(option).prop('selected', true);
-                    $("#contactNameAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#contactNameAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    //  This is for Email
-		    var selectemailAdvanced, chosenemailAdvanced;
-		    selectemailAdvanced = $("#emailAdvanced");
-		    selectemailAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Email:' });
-		    chosenemailAdvanced = selectemailAdvanced.data('chosen');
-		    chosenemailAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectemailAdvanced.append(option);
-		            selectemailAdvanced.find(option).prop('selected', true);
-                    $("#emailAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#emailAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    //  This is for Phone Number
-		    var selectphoneNumberAdvanced, chosenphoneNumberAdvanced;
-		    selectphoneNumberAdvanced = $("#phoneNumberAdvanced");
-		    selectphoneNumberAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Phone Number:' });
-		    chosenphoneNumberAdvanced = selectphoneNumberAdvanced.data('chosen');
-		    chosenphoneNumberAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectphoneNumberAdvanced.append(option);
-		            selectphoneNumberAdvanced.find(option).prop('selected', true);
-                    $("#phoneNumberAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#phoneNumberAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    //  This is for Owner
-		    var selectownerAdvanced, chosenownerAdvanced;
-		    selectownerAdvanced = $("#ownerAdvanced");
-		    selectownerAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Owner:' });
-		    chosenownerAdvanced = selectownerAdvanced.data('chosen');
-		    chosenownerAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectownerAdvanced.append(option);
-		            selectownerAdvanced.find(option).prop('selected', true);
-                    $("#ownerAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#ownerAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		//  This is for Vendor
-		    var selectvendorAdvanced, chosenvendorAdvanced;
-		    selectvendorAdvanced = $("#orgAdvanced");
-		    selectvendorAdvanced.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Vendor:' });
-		    chosenvendorAdvanced = selectvendorAdvanced.data('chosen');
-		    chosenvendorAdvanced.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectvendorAdvanced.append(option);
-		            selectvendorAdvanced.find(option).prop('selected', true);
-                    $("#orgAdvanced option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#orgAdvanced").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    
-		  
-		      $("#country").on('change', function (e) {
-		    	   getStates();
-		       });
-		       $("#state").on('change', function (e) {
-		    	   getCities();
-		       });
-				for (var selector in config) {
-				  $(selector).chosen(config[selector]);
-				}
-				$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
+     $("#country").on('change', function (e) {
+  	   getStates();
+     });
+     $("#state").on('change', function (e) {
+  	   getCities();
+     });
+				 
 </script> 
 
 
@@ -1407,10 +1219,10 @@ function resendVendorSpocInvitation(spocUserId,orgSpocId,orgRelationId){
 	 $("#row"+orgSpocId).empty();
 	 $("#row"+orgSpocId).html("<td colspan='8'  id='loading"+orgSpocId+"'></td>");
 	if(spocUserId != null && spocUserId != ""){
-		$("#loading"+orgSpocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		$("#loading"+orgSpocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Vendor&orgRelationID="+orgRelationId, 
+			        url: sourceleadUrl+"/resendVendorSpocInvitationEmail?"+tokenParamName+"="+tokenValue+"&spocUserId="+spocUserId+"&orgSpocId="+orgSpocId+"&responderType=Vendor&orgRelationID="+orgRelationId, 
 			        success: function(result) {
 			        	 $("#row"+orgSpocId).empty();
 			    	     $("#row"+orgSpocId).html(rowHtmlContent);
@@ -1436,7 +1248,7 @@ function cancelTerminationReson(){
 </script>
 
 <script>
-function terminateSpoc1(spocId, orgRelationID){
+function terminateSpoc1(spocId, orgRelationID,spocEmail){
 	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
@@ -1444,7 +1256,7 @@ function terminateSpoc1(spocId, orgRelationID){
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
 	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2' onkeypress='vendorDashboardRemoveSpacesForRejectReason();'></textarea>";
 	result = result + ' <div id="reasonForVendorSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+",\""+spocEmail+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1461,9 +1273,11 @@ function terminateSpoc1(spocId, orgRelationID){
 	}
 </script>
 <script>
-function saveReason1(spocId, orgRelationID){
+function saveReason1(spocId, orgRelationID,spocEmail){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForSpoc").value;
+	var userId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 reason = reason.replace(/\s/g, "")
 	 var reason1 = document.getElementById("reasonForSpoc").value;
 	 var userId = '${SourceLeadWeb_user.id}';
@@ -1472,7 +1286,7 @@ function saveReason1(spocId, orgRelationID){
 		$("#reasonForVendorSpocDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&responderType=Vendor",	    	   
+		 	url: sourceleadUrl+"/terminateSpoc?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId+"&spocEmail="+spocEmail+"&responderType=Vendor+",	    	   
 		    success: function(data) {
 		    	getVendorContactList();
 		    	 $("#venselector").removeAttr("style");
@@ -1509,7 +1323,7 @@ function updateSpocStatus(spocId){
 	 var rowHtmlContent =  $("#row"+spocId).html();
 	 $("#row"+spocId).empty();
 	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
-	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	
 	$.ajax({
 	   	type: "POST",
@@ -1726,7 +1540,7 @@ function getVendorDashboardName(vendorDashboardName){
 		result = result + '<li class="current"><a href="#tab-1" onClick="vendorDetailsbyLocationId(' + vendorLocationId + ','+ orgRelationId + ');">Details</a></li>';
 		'</sec:authorize>';
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_CONTACT\",\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
-		result = result + '<li><a href="#tab-2" onclick="vendorContacts('+ orgRelationId + ','+vendorLocationId+');">Contacts</a></li>'; 
+		result = result + '<li id="vendorContactsLi"><a href="#tab-2" onclick="vendorContacts('+ orgRelationId + ','+vendorLocationId+');">Contacts</a></li>'; 
 		'</sec:authorize>';
 		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_DOCUMENT\")">';
 		result = result + '<li><a href="#tab-3" onclick="vendorDocuments('+orgRelationId+','+vendorLocationId+');">Documents</a></li>'; 
@@ -1742,7 +1556,7 @@ function getVendorDashboardName(vendorDashboardName){
 		'</sec:authorize>';
 		
 		
-		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Billing</a></li>';
+		 result = result + '<li><a href="#tab-4" onClick="getVendorInvoiceList('+orgRelationId+','+vendorLocationId+');">Bills</a></li>';
 		
 		 // vendors associates list
 		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_ASSOCIATE\")">';
@@ -1752,7 +1566,10 @@ function getVendorDashboardName(vendorDashboardName){
 		 // vendors notes list
 		
 		 result = result + '<li><a href="#tab-8" onClick="vendorNotesList('+orgRelationId+','+vendorLocationId+');">Notes</a></li>';
+		 
+		 result = result + '<li><a href="#tab-9" onClick="vendorOnboardDocumentsList('+orgRelationId+');">Onboard Documents</a></li>';
 		
+		 result = result + '<li><a href="#tab-10" onClick="vendorOnboardTasksList('+orgRelationId+');">Onboard Tasks</a></li>';
 
 
 		result = result + '<div class="clearfix"></div>'
@@ -1791,6 +1608,21 @@ function getVendorDashboardName(vendorDashboardName){
 		//for vendor notes list tab
 		result = result + '<div id="tab-8" class="project_tabs_inn">';
 		result = result + '</div>';
+		
+		
+		//for vendor onboard Documents list tab
+		  result = result + '<div class="tab-pane clearfix emp_onboarddocs" id="vendorDocuments">';
+		  result = result + '<div class="col-md-12 clearfix mt">';
+		  result = result + '<div class="form-group">';
+		  result = result + '<div id="tab-9" class="project_tabs_inn">';
+		  result = result + '</div>';
+		  result = result + '</div>';
+		  result = result + '</div>';
+		  result = result + '</div>';
+		  
+		  result = result + '<div class="tab-panes" id="tasks"> ';
+		  result = result + '<div id="tab-10" class="project_tabs_inn">';
+          result = result + '</div>';
 
 		result = result + '</div>';
 		result = result + '</div>'
@@ -1804,7 +1636,15 @@ function getVendorDashboardName(vendorDashboardName){
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 		
-		vendorDetailsbyLocationId(vendorLocationId,orgRelationId);
+		if ('${contactsTab}' == "contactsTab") {
+			$(".project-tabs-menu li").removeClass("current");
+			$("#vendorContactsLi").addClass("current");
+			$("#tab-2").show();
+			vendorContacts(orgRelationId, vendorLocationId);
+		} else {
+			vendorDetailsbyLocationId(vendorLocationId, orgRelationId);
+		}
+
 	}
 </script>
 
@@ -1822,10 +1662,9 @@ function getVendorOrgname(vendorOrgname){
 		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId,
-					success : function(data) {
+					url : sourceleadUrl+"/getClientAndVendorOrgDeatilsById?"+tokenParamName+"="+tokenValue+"&vendorLocationId="+vendorLocationId+"&orgRelationId="+orgRelationId+"&requestType=Vendor",
+					success : function(json) {
 						
-						var json = JSON.parse(data);
 						getVendorOrgname(json.orgName);
 						var result = "";
 						var city = "";
@@ -1902,8 +1741,8 @@ function getVendorOrgname(vendorOrgname){
 							
 							result = result + '<div class="project_details_cta">';
 							result = result + '<strong>Vendor Zip Code:</strong>';
-							if(json.zipCode != null && json.zipCode !='' && json.zipCode !='undefined'){
-								result = result + '<span>'+json.zipCode+'</span><div class="clearfix"></div>';
+							if(json.zipcode != null && json.zipcode !='' && json.zipcode !='undefined'){
+								result = result + '<span>'+json.zipcode+'</span><div class="clearfix"></div>';
 							}else{
 								result = result + '<span> --- </span><div class="clearfix"></div>';
 							}
@@ -1939,7 +1778,7 @@ function getVendorOrgname(vendorOrgname){
 							}
 							result = result + '</div>';
 							result = result + '<div class="project_details_cta">';
-							result = result + '<strong>Address :</strong>';
+							result = result + '<strong>Street Address :</strong>';
 							if(json.address != null && json.address !='' && json.address !='undefined'){
 								result = result + '<span title="'+json.address+'">'+json.address+'</span><div class="clearfix"></div>';
 							}else{
@@ -1965,7 +1804,165 @@ function getVendorOrgname(vendorOrgname){
 							}
 							result = result + '</div>';
 							
+							
+							
+							if(json.isVendorOnboardSubmitted == 'Y'){
+							result = result + '<div class="clearfix mt10"></div>';
+							result = result +'<h4 class="pull-left">Onboard Details</h4>';
 							result = result + '<div class="clearfix"></div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Nature Of Business :</strong>';
+							if(json.industryName != null && json.industryName !='' && json.industryName !='undefined'){
+								result = result + '<span title="'+json.industryName+'">'+json.industryName+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Currency :</strong>';
+							if(json.currency != null && json.currency !='' && json.currency !='undefined'){
+								result = result + '<span title="'+json.currency+'">'+json.currency+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>SIC Code :</strong>';
+							if(json.sicCode != null && json.sicCode !='' && json.sicCode !='undefined'){
+								result = result + '<span title="'+json.sicCode+'">'+json.sicCode+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>NAICS Code :</strong>';
+							if(json.naicsCode != null && json.naicsCode !='' && json.naicsCode !='undefined'){
+								result = result + '<span title="'+json.naicsCode+'">'+json.naicsCode+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>EIN Code :</strong>';
+							if(json.einCode != null && json.einCode !='' && json.einCode !='undefined'){
+								result = result + '<span title="'+json.einCode+'">'+json.einCode+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Tax Reg Number :</strong>';
+							if(json.taxRegistrationNumber != null && json.taxRegistrationNumber !='' && json.taxRegistrationNumber !='undefined'){
+								result = result + '<span title="'+json.taxRegistrationNumber+'">'+json.taxRegistrationNumber+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>DUNS Number :</strong>';
+							if(json.dunsNumber != null && json.dunsNumber !='' && json.dunsNumber !='undefined'){
+								result = result + '<span title="'+json.dunsNumber+'">'+json.dunsNumber+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Account Name :</strong>';
+							if(json.accountName != null && json.accountName !='' && json.accountName !='undefined'){
+								result = result + '<span title="'+json.accountName+'">'+json.accountName+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Account Number :</strong>';
+							if(json.accountNumber != null && json.accountNumber !='' && json.accountNumber !='undefined'){
+								result = result + '<span title="'+json.accountNumber+'">'+json.accountNumber+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Bank Name :</strong>';
+							if(json.bankName != null && json.bankName !='' && json.bankName !='undefined'){
+								result = result + '<span title="'+json.bankName+'">'+json.bankName+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Branch Number :</strong>';
+							if(json.branchNumber != null && json.branchNumber !='' && json.branchNumber !='undefined'){
+								result = result + '<span title="'+json.branchNumber+'">'+json.branchNumber+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>SWIFT Bank Identifier Code (BIC) :</strong>';
+							if(json.bankIdentifierCode != null && json.bankIdentifierCode !='' && json.bankIdentifierCode !='undefined'){
+								result = result + '<span title="'+json.bankIdentifierCode+'">'+json.bankIdentifierCode+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Email Address For PO :</strong>';
+							if(json.poEmail != null && json.poEmail !='' && json.poEmail !='undefined'){
+								result = result + '<span title="'+json.poEmail+'">'+json.poEmail+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Email Address For Payment Remittance :</strong>';
+							if(json.paymentRemittanceEmail != null && json.paymentRemittanceEmail !='' && json.paymentRemittanceEmail !='undefined'){
+								result = result + '<span title="'+json.paymentRemittanceEmail+'">'+json.paymentRemittanceEmail+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							
+							result = result + '<div class="project_details_cta">';
+							result = result + '<strong>Building No/Name & Street  :</strong>';
+							if(json.bankAddress != null && json.bankAddress !='' && json.bankAddress !='undefined'){
+								result = result + '<span title="'+json.bankAddress+'">'+json.bankAddress+'</span><div class="clearfix"></div>';
+							}else{
+								result = result + '<span> --- </span><div class="clearfix"></div>';
+							}
+							result = result + '</div>';
+							}
+							
+							if(json.clientCustomFieldlabelNameAndValue != null && json.clientCustomFieldlabelNameAndValue != "" && json.clientCustomFieldlabelNameAndValue != 'undefined'){
+					              $.each(json.clientCustomFieldlabelNameAndValue, function(key, value) {
+					            	  var labelNameAndlabelData = value.split("$");
+					            	  result = result + '	<div class="project_details_cta">';
+					            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">'+labelNameAndlabelData[1]+'</span><div class="clearfix"></div>';
+					            	  result = result + '	</div>';
+					              });
+				              }
+							
 							result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editVendorDetailsDiv"></div>';
 							result = result + '</div>';
 						result = result + '</div>';
@@ -2048,7 +2045,7 @@ document.getElementById("advanceSearchDiv").style.display="block";
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
-<script src="resources/js/jquery-fun.js"></script> 
+<script src="/resources/js/jquery-fun.js"></script> 
 <script>
 
 // Approved Popup
@@ -2139,7 +2136,7 @@ $(document).ready(function() {
 $(document).ready(function() {
     $(".proj_show").click(function(){
 		$(".clients_side_wrap").addClass("clients_side_wrap_active");
-		$(".side_mask").fadeIn(200);
+		//$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 	});
     $(".proj_close, .side_mask").click(function(){
@@ -2151,13 +2148,26 @@ $(document).ready(function() {
 		if(vendorCont == "listbyContact"){
 			getVendorContactListsELK();
 		}if(vendorCont == "listbyVendor" ){
-			getVendorListsElk();
+			
    		}
 	});	
 });
 
+function refresh(){
+	if($("#listOfVendors").val() == 'listbyContact')
+		getVendorContactListsELK();
+	else
+		getVendorListsElk();
+}
+
 // project side bar tabs
 $(document).ready(function() {
+	
+	if('${orgRelationUUID}' != null && '${orgRelationUUID}' != '' && '${orgRelationUUID}' != 'undefined'){
+		vendorSideBar('${vendorLocationId}','${orgRelationId}','${vendorName}');
+	}
+	
+	
 	$("#tab-1").show()
     $(".project-tabs-menu a").click(function(event) {
         event.preventDefault();
@@ -2205,6 +2215,9 @@ $(".addcon-pop").click(function(){
 <jsp:include page="vendorNotesList.jsp" />
 <jsp:include page="vendorListDatatable.jsp" />
 <jsp:include page="vendorContactsDataTable.jsp" />
+<jsp:include page="vendorOnboardSubmittedDocuments.jsp" />
+<jsp:include page="vendorOnboardSubmittedTasks.jsp" />
+
 
 <!-- Scripts for invitations  -->
 <script>
@@ -2213,7 +2226,7 @@ function acceptInvitation(spocId){
 	 var rowHtmlContent =  $("#row"+spocId).html();
 	 $("#row"+spocId).empty();
 	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
-	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Accepted",	    	   
@@ -2237,7 +2250,7 @@ function rejectInvitation(spocId){
 	 var rowHtmlContent =  $("#row"+spocId).html();
 	 $("#row"+spocId).empty();
 	 $("#row"+spocId).html("<td colspan='8'  id='loading"+spocId+"'></td>");
-	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+	 $("#loading"+spocId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/saveInvitationStatus?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&invitationStaus=Rejected",
@@ -2448,14 +2461,22 @@ function cancelTermination(){
 	}
 </script> 
 
+ <div class="advancedsearch-mask" onClick="closeAdsrch()"></div>
+
 <script>
     // Close Advanced Search
     function closePop(){
     $("div.cand-advsrch-popup").hide();
+    $(".advancedsearch-mask").fadeOut();
     };
     function openPop(){
     $("div.cand-advsrch-popup").toggle();
+    $(".advancedsearch-mask").fadeIn();
     };
+	function closeAdsrch(){
+		$("div.cand-advsrch-popup").fadeOut();
+		$(".advancedsearch-mask").fadeOut();
+	};
 </script> 
 
 <script>
@@ -2565,6 +2586,9 @@ function releasedJobsCountByOrgRelationId(orgRelationId){
 	    $('#country').val('${loginCountryName}'); 
 	    $('#state').val(''); 
 	    $('#city').val(''); 
+	    
+	    $("#ownerAdvanced").empty();
+		 $("#ownerAdvanced").val('').trigger("chosen:updated");
 	    
 	    $("#orgAdvanced").val('').trigger("chosen:updated");
 	    $("#orgNameAdvanced").val('').trigger("chosen:updated");

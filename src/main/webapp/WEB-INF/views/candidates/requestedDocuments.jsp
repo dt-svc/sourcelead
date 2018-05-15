@@ -12,23 +12,23 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead :: Documents Request</title>
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
-<script src="resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
+<script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 </head>
  
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
-<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
 
 
 <style type="text/css">
@@ -52,11 +52,14 @@ top: 20%; right: auto; left: 40%;
 </style>
 
 <body>
+<script type="text/javascript">
+var sourceleadUrl ='${sourceleadUrl}';
+</script>
 <div class="clearfix"> 
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/SourceLead-logo.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/SourceLead-logo.png" alt="Source Lead"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -92,22 +95,20 @@ top: 20%; right: auto; left: 40%;
 					   				
 					   				<td>
 					   				<c:if test="${!empty docs.description}">
-					   				<div class="tbldata-dotdot-big" title="${docs.description}">${docs.description}</div>
+					   				<div class="tbldata-dotdot-big" title="'${docs.description}'">${docs.description}</div>
 					   				</c:if>
 					   				<c:if test="${empty docs.description}">
 					   				<div class="tbldata-dotdot-big">-------</div>
 					   				</c:if>
 					   				</td>
 								    <td class="text-center">
-								    <div class="width300px mt5">
+								    <div class="width300px mt5" id="attachmentDiv${docs.id}">
 								        <c:if test="${docs.isRequestedDocRequired == 'Y'}">
-								            <%-- <input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}" name="docFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf" onchange="uploadFileReqDoc();"> --%>
-								        	<input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}"    placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf" onchange="uploadFileReqDoc(${docs.id});">
+								        	<input type="file"  class="form-control welFile"  id="uploadDocFile${docs.id}"    placeholder="Upload Resume ..." field-name="Document" data-validation="required validate_docimgpdf" onchange="uploadFileReqDoc(${docs.id});">
 								        </c:if>
 								        
 								        <c:if test="${docs.isRequestedDocRequired == 'N'}">
-								           <%--  <input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}" name="docFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validatedoc" data-validation-optional="true" onchange="uploadFileReqDoc();"> --%>
-								        	<input type="file"  class="form-control welFile" readonly id="uploadDocFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validatedoc" data-validation-optional="true" onchange="uploadFileReqDoc(${docs.id});">
+								        	<input type="file"  class="form-control welFile"  id="uploadDocFile${docs.id}"   placeholder="Upload Resume ..." field-name="Document" data-validation="validate_docimgpdf" data-validation-optional="true" onchange="uploadFileReqDoc(${docs.id});">
 								        </c:if>
 								     </div>
 								    </td>
@@ -119,7 +120,7 @@ top: 20%; right: auto; left: 40%;
 		   	</table>
 		   	<div class="clearfix mt mb">
 		   	<div class="pull-right">
-		   		<button type="submit" id="submit_docs" class="btn btn-primary">Upload</button>
+		   		<button type="button" id="submit_docs" onclick="requestDocSave();" class="btn btn-primary">Upload</button>
 		   	</div>
 		   	</div>
 		   </div>
@@ -134,67 +135,64 @@ top: 20%; right: auto; left: 40%;
         </div>
     </c:if>
    
-   <script type="text/javascript">
-   var validationSettings = {
+<script type="text/javascript">
+   function requestDocSave(){
+	   var validationSettings = {
 	        errorMessagePosition : 'element',
 	        borderColorOnError : '',
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
         }; 
-$('body').on('submit', '#requestForDocs_form', function(e){
-	
-	  if ($("#requestForDocs_form").validate(false, validationSettings)){
-      e.preventDefault();
-     
-     /*  var frm = $('#requestForDocs_form').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
-      
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
-      
-      var form = $('#requestForDocs_form')[0];
-	  var formData = new FormData(form);  */
-	  var requestDocUUID = '${requestDocUUID}';
-	    var formData = getFormData1("requestForDocs_form");
-		var sourceleadUrl = '${sourceleadUrl}';
-		$("#save_doc").attr("disabled", "disabled");
-		$("#save_doc" ).addClass('button').val('Processing..');
-		
-		$.ajax({
-				 type : "POST",
-				 data: formData,
-		         processData: false,
-		         contentType:false, 
-			url : sourceleadUrl+"/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"",
-			success : function(data) {
-				 location.replace(sourceleadUrl+"/requestedDocuments?requestDocUUID="+requestDocUUID); 
-
-			},
-		});
-		
-	/* 	
-      $.post(sourceleadUrl+"/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"", formData,processData: false,contentType:false, function(data) {
-    	  location.replace(sourceleadUrl+"/requestedDocuments?requestDocUUID="+requestDocUUID); 
-      }); */
-     
-      return true; 
-    }
-    else{
-    	return false;	
-       }
-  });
-
+		if ($("#requestForDocs_form").validate(false, validationSettings)){
+		  	var requestDocUUID = '${requestDocUUID}';
+		    var formData = getFormData1("requestForDocs_form");
+			$("#submit_docs").attr("disabled", "disabled");
+			$("#submit_docs" ).addClass('button').val('Processing..');
+			$.ajax({
+				type : "POST",
+				data: formData,
+			    processData: false,
+			    contentType:false, 
+				url : sourceleadUrl+"/ws/uploadRequestedDocuments?"+tokenParamName+"="+tokenValue+"",
+				success : function(response) {
+					if (response && response.response === "INVALID_DATA") {
+					    showError(response.responseMessage);
+					} else if (response.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (response.response === "SUCCESS") {
+						location.replace(sourceleadUrl+"/ws/requestedDocuments?requestDocUUID="+requestDocUUID); 
+					} else if (response.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+				},
+			});
+			return true;
+    	} else {
+			return false;
+		}
+	}
 	$('body').on('blur', '#requestForDocs_form', function() {
 		$("#requestForDocs_form").showHelpOnFocus();
 		$("#requestForDocs_form").validateOnBlur(false, validationSettings);
 	});
-  </script>
-  
+</script>
+  <script type="text/javascript">
+var tokenParamName = "${_csrf.parameterName}";
+var tokenValue = "${_csrf.token}";
+
+function tagItBykeyForEmails(e){
+	if(e.which == 0 || e.which == 13 || e.which == 9 || e.which == 32 || e.which == 188){
+		 $(document).click();
+		 return true;
+	}
+}
+</script>
 <script>
 function uploadFileReqDoc(id){
-	var sourceleadUrl ='${sourceleadUrl}';
 	fileUpload("uploadDocFile"+id+"", "requestedDocuments", "requestForDocs_form", '', '${orgId}', '${orgLocationId}');
+	$('#attachmentDiv'+id).find('p.jquery_form_error_message').remove();
 }
 </script> 
   
@@ -225,6 +223,6 @@ function uploadFileReqDoc(id){
     <div class="pull-right"> Powered by: businessintelli.com </div>
     </div>
   </footer>
-  <script type="text/javascript" src='resources/js/slead-common.js'></script>
+  <script type="text/javascript" src='/resources/js/slead-common.js'></script>
 </div>
 </body>

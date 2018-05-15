@@ -1,15 +1,32 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -18,13 +35,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UsersUsageReportDTO;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -33,10 +56,13 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -48,17 +74,31 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Font.FontFamily;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.html.WebColors;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @RestController
+@RequestMapping("/app")
 public class ReportRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReportRestController.class);
@@ -120,6 +160,15 @@ public class ReportRestController {
 	@Autowired
 	ClientVendorContactsIndexHelper clientVendorContactsIndexHelper;
 	
+	@Autowired
+	OrgService orgService;
+	
+	@Autowired
+	UserRoleDao userRoleDao;
+	
+	@Autowired
+	UserLoginLogoutSessionService userLoginLogoutSessionService;
+	
 	
 	/**
 	 * To get All the Users by filtering
@@ -141,8 +190,8 @@ public class ReportRestController {
 	    
 		 Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
 		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		 Date endDateUTC =null ;
 		 String filterDate = null;
@@ -150,61 +199,46 @@ public class ReportRestController {
 		 //SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(timePeriod)){
 			 String endDate = outputFormatter1.print(zoned);
-			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-			 endDateUTC = TZ_DF_TS.parse(endDateString);
+			 endDateUTC = TZ_DF_TS.parse(endDate);
 		 }
 			
 			if(null != timePeriod && !"".equals(timePeriod)){
 				if("today".equals(timePeriod)){
 					String startDate = outputFormatter.print(zoned);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-					filterDate = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
+					filterDate = startDate;
+					startDateUTC = TZ_DF_TS.parse(startDate);
 				}else if("yesterday".equals(timePeriod)){
 					DateTime yesterDayZoned = zoned.minusDays(1);
 					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 					
 				}else if("week".equals(timePeriod)){
 					DateTime yesterDayZoned = zoned.minusDays(7);
 					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else if("twoweeks".equals(timePeriod)){
 					DateTime yesterDayZoned = zoned.minusDays(14);
 					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else if("month".equals(timePeriod)){
 					DateTime yesterDayZoned = zoned.minusDays(30);
 					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else if("twomonths".equals(timePeriod)){
 					DateTime yesterDayZoned = zoned.minusDays(60);
 					String yesterDayDate = outputFormatter.print(yesterDayZoned);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, yesterDayDate);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else{
 					 if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
-						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
-						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+						
 						Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
 						Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
-						String customStartTimeStr = null;
-						String customEndTimeStr = null;
-						if(null !=startTime){
-						 customStartTimeStr = TZ_DF_CSD.format(startTime);  
-						}
-						
-						if(null != endTime){
-						 customEndTimeStr = TZ_DF_CED.format(endTime);  
-						}
-						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
-						String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customEndTimeStr);
-						startDateUTC = TZ_DF_TS.parse(startDateString);
-						endDateUTC = TZ_DF_TS.parse(endDateString);
+						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+						String customEndTimeStr = TZ_DF_CED.format(endTime);  
+						startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+						endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
 					 }
 					
 				}
@@ -272,8 +306,8 @@ public class ReportRestController {
 	    
 		 Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
+		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
 		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		 Date endDateUTC =null ;
 		 Date startDateUTC = null;
@@ -281,37 +315,43 @@ public class ReportRestController {
 
 		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)&&!"".equalsIgnoreCase(reportType)){
 			 String endDate = outputFormatter1.print(zoned);
-			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-			 endDateUTC = TZ_DF_TS.parse(endDateString);
+			 endDateUTC = TZ_DF_TS.parse(endDate);
 		 }
 			
 			if(null != reportType && !"".equals(reportType)){
 				if("today".equals(reportType)){
 					String startDate = outputFormatter.print(zoned);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
+					startDateUTC = TZ_DF_TS.parse(startDate);
 				}else if(Constants.YESTER_DAY.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 1);
+					DateTime yesterDayZoned = zoned.minusDays(1);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else if(Constants.ONE_WEEK.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 7);
+					DateTime yesterDayZoned = zoned.minusDays(7);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else if(Constants.TWO_WEEKS.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 14);
+					DateTime yesterDayZoned = zoned.minusDays(14);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else if(Constants.ONE_MONTH.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
+					DateTime yesterDayZoned = zoned.minusDays(30);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else if(Constants.TWO_MONTHS.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
+					DateTime yesterDayZoned = zoned.minusDays(60);
+					String yesterDayDate = outputFormatter.print(yesterDayZoned);
+					startDateUTC = TZ_DF_TS.parse(yesterDayDate);
 				}else{
 					 if(customStartDate  != null && !"".equalsIgnoreCase(customStartDate) && customStartDate  != "undefined" && customEndDate != null && !"".equalsIgnoreCase(customEndDate) && customEndDate  != "undefined"){
-						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
-						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
 						Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
 						Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
 						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 						String customEndTimeStr = TZ_DF_CED.format(endTime);  
-						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
-						String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customEndTimeStr);
-						startDateUTC = TZ_DF_TS.parse(startDateString);
-						endDateUTC = TZ_DF_TS.parse(endDateString);
+						startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+						endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
 					 }
 					
 				}
@@ -549,4 +589,374 @@ public class ReportRestController {
 		return (str == null || "".equals(str.trim()));
 	}
 
+	@RequestMapping(value ="/userUsageReportList")
+	public @ResponseBody ResponseList<UsersUsageReportDTO> userUsageReportList(UsersUsageReportDTO usersUsageReportDTO,@RequestParam (value = "orgLocationId", required = false)Long orgLocationId,@RequestParam (value = "customDates", required = false)String customDates, HttpServletRequest request)throws Exception{
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		usersUsageReportDTO.setId(loginUser.getId());
+	ResponseList<UsersUsageReportDTO> userCount = userRoleService.getUserRoleListByLocationIdAndUserType(usersUsageReportDTO,orgLocations);
+	
+	return userCount;
+	
+	}
+	
+	@RequestMapping(value ="/getCountList")
+	public @ResponseBody UserDTO getCountList(@RequestParam (value = "orgLocationId", required = false)Long orgLocationId,@RequestParam (value = "orgId", required = false)List<Long> orgId, HttpServletRequest request)throws Exception{
+		Map<String, Integer> count = userRoleService.getUserCountListByOrgLocationId(orgLocationId, orgId);
+		
+		UserDTO usDTO = new UserDTO();
+		
+		usDTO.setActiveCount(count.get("ACTIVE"));
+		usDTO.setInactiveCount(count.get("INACTIVE"));
+		usDTO.setNotLoggedinCount(count.get("NOT_LOGGEDIN"));
+		usDTO.setMultipleIps(count.get("MULTIPLE_IPS"));
+		
+		
+		return usDTO;
+		
+	}
+	
+	@RequestMapping (value ="/getAllOrgs")
+	public @ResponseBody List<Org> getAllOrgs(HttpServletRequest request)throws Exception{
+		List<Org> orgList = orgService.getOrgs();
+		
+		return orgList;
+		
+	}
+	
+	@RequestMapping (value ="/blockActiveUser")
+	public @ResponseBody String blockActiveUser(@RequestParam (value = "orgLocationId", required = false)Long orgLocationId,@RequestParam (value = "userRoleId", required = false)Long userRoleId,HttpServletRequest request)throws Exception{
+		
+		UserRole userRole =  userRoleService.getUserRoleById(userRoleId);
+		userRole.setUserState(Status.INACTIVE);
+		userRoleService.addUserRole(userRole);
+		return "success";
+		
+	}
+	
+	@RequestMapping (value ="/multipleIpsList")
+	public @ResponseBody ResponseList<UsersUsageReportDTO> multipleIpsList(UsersUsageReportDTO usersUsageReportDTO, HttpServletRequest request)throws Exception{
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		ResponseList<UsersUsageReportDTO> multipleIps = userLoginLogoutSessionService.getMultipleIps(usersUsageReportDTO,orgLocations);
+		return multipleIps;
+		
+	}
+	
+	@RequestMapping (value = "/getUserUsageReportExportList")
+	public void getUserUsageReportExportList(UsersUsageReportDTO usersUsageReportDTO,HttpServletRequest request,HttpServletResponse response)throws Exception{
+		
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+//		usersUsageReportDTO.setId(loginUser.getId());
+		ResponseList<UsersUsageReportDTO>  usageList = userRoleService.getUserRoleListByLocationIdAndUserType(usersUsageReportDTO,orgLocations);
+	
+	File file = getExportUsageReport(usageList,orgLocations,usersUsageReportDTO);
+
+	String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+	if (mimeType == null) {
+	mimeType = "application/octet-stream";
+	}
+	response.setContentType(mimeType);
+	StringBuilder fileName = new StringBuilder();
+	response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+	response.setContentLength((int) file.length());
+	InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+	FileCopyUtils.copy(inputStream, response.getOutputStream());
+	inputStream.close();
+	response.getOutputStream().close();
+	response.getOutputStream().flush();	
+	if(file != null){
+	file.delete();
+	}
+}
+	
+	@RequestMapping (value = "/multipleIpsUsersList")
+		public @ResponseBody ResponseList<UsersUsageReportDTO>multipleIpsUsersList (UsersUsageReportDTO usersUsageReportDTO,@RequestParam (value = "ipAddress", required = false)String ipAddress,HttpServletRequest request,HttpServletResponse response)throws Exception{
+	
+		ResponseList<UsersUsageReportDTO> userLoginLogout = userLoginLogoutSessionService.getUsersByipAddress(usersUsageReportDTO);
+		return userLoginLogout;
+	}
+	
+	@RequestMapping (value = "/userUsageGraph")
+	public @ResponseBody List<UsersUsageReportDTO> userUsageGraph(UsersUsageReportDTO usersUsageReportDTO,HttpServletRequest request)throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<UsersUsageReportDTO> count = userRoleService.getUsageReportUserCountListByOrgLocationId(usersUsageReportDTO.getLocationId(), usersUsageReportDTO,orgLocations);
+	
+//	UsersUsageReportDTO useDTO = new UsersUsageReportDTO();
+//	
+//	useDTO.setActiveCount(count.get("ACTIVE"));
+//	useDTO.setInactiveCount(count.get("INACTIVE"));
+//	useDTO.setNotLoggedinCount(count.get("NOT_LOGGEDIN"));
+//	useDTO.setMultipleIps(count.get("MULTIPLE_IPS"));
+	
+	
+	return count;
+	}
+
+
+	private File getExportUsageReport(ResponseList<UsersUsageReportDTO> usageList, OrgLocations orgLocations, UsersUsageReportDTO usersUsageReportDTO) throws Exception
+	{
+		File file = null;
+		if (!"pdf".equalsIgnoreCase(usersUsageReportDTO.getExportType())) {
+			Workbook createExcelworkbook = new XSSFWorkbook();
+			
+			Sheet createExcelsheet = createExcelworkbook.createSheet(orgLocations.getOrgLocationName() + "_"
+					+ commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), new Date()));
+			Row writeRow = null;
+			createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook, usageList, orgLocations);
+			int column = 0;
+			for (UsersUsageReportDTO usageExcel : usageList.getData()) {
+				writeRow = createExcelsheet.createRow(column + 1);
+				createExcelsheet = createXlsSheet(createExcelsheet, writeRow, usageExcel, usageList, orgLocations);
+				column++;
+			
+			file = File.createTempFile(orgLocations.getOrgLocationName() + Constants.ACTIVE_USAGE_LIST + commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()),".xls");
+			 file.setReadable(true);
+			FileOutputStream fos = new FileOutputStream(file);
+			try {
+				createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		}else{
+			file = getUsageReportPdf(usageList,orgLocations);
+		}
+			return file;
+	}
+		
+		private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, UsersUsageReportDTO usageExcel, ResponseList<UsersUsageReportDTO> usageList, OrgLocations orgLocations)
+	{
+			
+			if(null != usageExcel.getUserName() && !"".equalsIgnoreCase(usageExcel.getUserName())){
+				writeRow.createCell(0).setCellValue(usageExcel.getUserName());
+			}else{
+				writeRow.createCell(0).setCellValue("--");
+			}
+			
+			if( null != usageExcel.getUserEmail() && !"".equalsIgnoreCase(usageExcel.getUserEmail())){
+				writeRow.createCell(1).setCellValue(usageExcel.getUserEmail());
+			}else{
+				writeRow.createCell(1).setCellValue("--");
+			}
+			
+			if(null != usageExcel.getUserType() && !"".equalsIgnoreCase(usageExcel.getUserType())){
+				writeRow.createCell(2).setCellValue(usageExcel.getUserType());
+			}else{
+				writeRow.createCell(2).setCellValue("--");
+			}
+			
+			if(usageExcel.getEnrolledOrgs() != null){
+				for (UserRole role : usageExcel.getEnrolledOrgs()) {
+					writeRow.createCell(3).setCellValue(role.getOrgName());
+				}
+			}else{
+				writeRow.createCell(3).setCellValue("--");
+			}
+			
+			if(null != usageExcel.getNoOfActivities() && !"".equalsIgnoreCase(usageExcel.getNoOfActivities())){
+				writeRow.createCell(4).setCellValue(usageExcel.getNoOfActivities());
+			}else{
+				writeRow.createCell(4).setCellValue("--");
+			}
+			
+			writeRow.createCell(5).setCellValue(usageExcel.getMultipleIps());
+			
+			if(null != usageExcel.getCreatedOn() && !"".equalsIgnoreCase(usageExcel.getCreatedOn())){
+				writeRow.createCell(6).setCellValue(usageExcel.getCreatedOn());
+			}else{
+				writeRow.createCell(6).setCellValue("--");
+			}
+				
+			if(null != usageExcel.getLastActivity() && !"".equalsIgnoreCase(usageExcel.getLastActivity())){
+				writeRow.createCell(7).setCellValue(usageExcel.getLastActivity());
+			}else{
+				writeRow.createCell(7).setCellValue("--");
+			}
+			
+			return createExcelsheet;
+	}
+
+
+
+		private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, ResponseList<UsersUsageReportDTO> usageList, OrgLocations orgLocations)
+	{
+
+			CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+
+			writeRow = createExcelsheet.createRow(1);
+			createExcelsheet.setColumnWidth(0, 10000);
+			createExcelsheet.setColumnWidth(1, 10000);
+			
+			String[] headers  = Constants.USERS_USAGE_REPORT_EXPORT;
+			createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,0);
+			return createExcelsheet;
+	}
+
+
+
+		private File getUsageReportPdf(ResponseList<UsersUsageReportDTO> usageList, OrgLocations orgLocations) throws Exception
+	{
+			String[] headers = Constants.USERS_USAGE_REPORT_EXPORT;
+			Document document = new Document(PageSize.LETTER.rotate());
+
+			StringBuilder fileSB = new StringBuilder();
+			File file = File.createTempFile(fileSB.append(orgLocations.getOrgLocationName()).append(Constants.ACTIVE_USAGE_LIST).append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+
+			file.setReadable(true);
+			try {
+				// Get an instance of PdfWriter and create a Table.pdf file as an
+				// output.
+				PdfWriter.getInstance(document, new FileOutputStream(file));
+				document.open();
+				Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+
+				BaseColor myBordColor = WebColors.getRGBColor("#000000");
+				boldFont.setColor(myBordColor);
+
+				StringBuilder orgNameSB = new StringBuilder();
+				Paragraph para = new Paragraph(orgNameSB.append(orgLocations.getOrgLocationName()).append(" ").append(Constants.ACTIVE_USAGE_LIST).toString(),
+						boldFont);
+
+				para.setAlignment(Element.ALIGN_CENTER);
+				document.add(para);
+
+
+				PdfPTable table = new PdfPTable(headers.length);
+				Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+				PdfPCell cell1 = new PdfPCell(new Phrase(Constants.ACTIVE_USAGE_LIST, font));;
+				cell1.setColspan(8);
+				headerCellStyle(cell1);
+				table.setWidthPercentage(100);
+				table.setWidths(new int[] { 3, 5, 3, 5, 5, 3, 5, 3});
+				table.addCell(cell1);
+				for (int i = 0; i < headers.length; i++) {
+					String header = headers[i];
+					PdfPCell cell = new PdfPCell();
+					cell.setGrayFill(0.9f);
+					cell.setPhrase(new Phrase(header, new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+					BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+					cell.setBackgroundColor(myColor);
+					table.addCell(cell);
+				}
+				table.completeRow();
+				java.util.List<String[]> leaves = new ArrayList<>();
+				for (UsersUsageReportDTO usagePdf : usageList.getData()) {
+					leaves.add(prepareBillingToArray(usagePdf,orgLocations));
+				}
+
+				for (String[] leaveArray : leaves) {
+					for (int i = 0; i < leaveArray.length; i++) {
+						String datum = leaveArray[i];
+						PdfPCell cell = new PdfPCell();
+						cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+						table.addCell(cell);
+					}
+					table.completeRow();
+				}
+
+				document.addTitle("Leaves List Table");
+				table.setSpacingBefore(15f);
+				document.add(table);
+				logger.info("Pdf table created !!");
+			} catch (DocumentException e) {
+				logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+			} catch (FileNotFoundException e) {
+				logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+			} finally {
+				document.close();
+			}
+			return file;
+	}
+
+
+
+		private String[] prepareBillingToArray(UsersUsageReportDTO usagePdf, OrgLocations orgLocations)
+		{
+			String billingArray[] = new String[Constants.USERS_USAGE_REPORT_EXPORT.length];
+			
+			if(usagePdf.getUserName() != null && !"".equalsIgnoreCase(usagePdf.getUserName())){
+				billingArray[0] = usagePdf.getUserName();
+			}else{
+				billingArray[0] = "--";
+			}
+			
+			if(usagePdf.getUserEmail() != null && !"".equalsIgnoreCase(usagePdf.getUserEmail())){
+				billingArray[1] = usagePdf.getUserEmail();
+			}else{
+				billingArray[1] = "--";
+			}
+			
+			if(usagePdf.getUserType() != null && !"".equalsIgnoreCase(usagePdf.getUserType())){
+				billingArray[2] = usagePdf.getUserType();
+			}else{
+				billingArray[2] = "--";
+			}
+//			List<UserRole> userRoleList =  userRoleDao.getUsersListByUserId(user.getId());
+//			for(UserRole ur:userRoleList){
+//				ur.setOrgName(ur.getOrgLocations().getOrgLocationName());
+//			}
+//			
+			if(usagePdf.getEnrolledOrgs() != null){
+				for (UserRole role : usagePdf.getEnrolledOrgs()) {
+					billingArray[3] = role.getOrgName();
+				}
+			}else{
+				billingArray[3] = "--";
+			}
+			
+			if(usagePdf.getNoOfActivities() != null && !"".equalsIgnoreCase(usagePdf.getNoOfActivities())){
+				billingArray[4] = usagePdf.getNoOfActivities();
+			}else{
+				billingArray[4] = "--";
+			}
+			
+				billingArray[5] = String.valueOf(usagePdf.getMultipleIps());
+			
+			if(usagePdf.getCreatedOn() != null && !"".equalsIgnoreCase(usagePdf.getCreatedOn())){
+				billingArray[6] = usagePdf.getCreatedOn();
+			}else{
+				billingArray[6] = "--";
+			}
+			
+			if(usagePdf.getLastActivity() != null && !"".equalsIgnoreCase(usagePdf.getLastActivity())){
+				billingArray[7] = usagePdf.getLastActivity();
+			}else{
+				billingArray[7] = "--";
+			}
+			
+			return billingArray;
+		}
+
+
+
+		private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, UsersUsageReportDTO usageExcel)
+	{
+			
+			return createExcelsheet;
+	}
+
+
+
+		private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook) {
+			CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+			String[] headers  = Constants.TOP_TAKERS_LEAVE_HEADERS;
+			createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,0);
+			return createExcelsheet;
+		}
+		
+		private static void headerCellStyle(PdfPCell cell) {
+			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			cell.setPaddingTop(0f);
+			cell.setPaddingBottom(7f);
+			cell.setBackgroundColor(new BaseColor(0, 121, 182));
+			cell.setBorder(0);
+			cell.setBorderWidthBottom(2f);
+		}
+		
+		
+		
 }

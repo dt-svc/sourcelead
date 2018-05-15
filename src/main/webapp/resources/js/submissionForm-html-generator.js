@@ -7,11 +7,8 @@
 
 //generates the form HTML
 function generateForm(sourceleadUrl,templateId) {
-
     //empty out the preview area
     $("#sjfb-fields").empty();
-    
-    
     $.ajax({
     	type: "GET",
         url: sourceleadUrl+"/loadSavedSubmissionTemplate?templateId="+templateId, 
@@ -184,10 +181,8 @@ function generateForm(sourceleadUrl,templateId) {
 // To Generate Org SubmissionForm
 
 function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatScript) {
-
     //empty out the preview area
     $("#sjfb-fields").empty();
-    
     $.ajax({
     	type: "GET",
         url: sourceleadUrl+"/getRequirmentOrgSubmissionTemplate?requirementId="+requirementId, 
@@ -336,6 +331,7 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
             		 var stateUniqueID = Math.floor(Math.random()*999999)+1;
             		 var cityUniqueID = Math.floor(Math.random()*999999)+1;
             		 var zipCodeUniqueID = Math.floor(Math.random()*999999)+1;
+            		 var addreessUniqueID = Math.floor(Math.random()*999999)+1;
             	 }
             	 else{
             		 var uniqueID = Math.floor(Math.random()*999999)+1;
@@ -490,22 +486,22 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
                     		 
                     		 '<div id="sjfb-' + countryUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>Country'+reqSymbol+'</label>' +
-                             '<input  type="text" class="form-control"  readonly '+datavalidation2+' '+novalidation+'  name="country" id="submissionCountry" field-name="Country" readonly />'+
+                             '<input  type="text" class="form-control"   '+datavalidation2+' '+novalidation+'  name="country" id="submissionCountry" field-name="Country" />'+
                              '</div>'+
                              
                              '<div id="sjfb-' + stateUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>State'+reqSymbol+'</label>' +
-                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="state" id="submissionState" field-name="State" readonly />'+
+                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="state" id="submissionState" field-name="State" />'+
                              '</div>'+
                              
                              '<div id="sjfb-' + cityUniqueID + '" '+novalidation+' class="sjfb-field sjfb-text">' +
                              '<label>City'+reqSymbol+'</label>' +
-                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="city" id="submissionCity" field-name="City" readonly/>'+
+                             '<input  type="text" class="form-control" '+datavalidation2+' '+novalidation+'  name="city" id="submissionCity" field-name="City"/>'+
                              '</div>'+
                              
                              '<div id="sjfb-' + zipCodeUniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label>ZipCode'+reqSymbol+'</label>' +
-                             '<input type="text" class="form-control positionRelative"  '+datavalidation2+' '+novalidation+'  name="zipcode" id="submissionZipCode" field-name="Zipcode" readonly />'+
+                             '<input type="text" class="form-control positionRelative"  '+datavalidation2+' '+novalidation+'  name="zipcode" id="submissionZipCode" field-name="Zipcode" />'+
                              '</div>';
                     		 
                     		 
@@ -522,16 +518,26 @@ function generateOrgSubmissionForm(sourceleadUrl,requirementId,finalDateFormatSc
                  }
              }
              init();
-             changeRateLabels();
+//             changeRateLabels();
              var d = new Date();
              var year = d.getFullYear() - 18;
              d.setFullYear(year);
              $(".DatePicker").datepicker({
             	 dateFormat: finalDateFormatScript,
-            	 yearRange: "-70Y:-18Y" ,
-            	 defaultDate: d,
+            	 //yearRange: "-70Y:-18Y" ,
+            	// defaultDate: d,
             	 changeMonth: true,
-                 changeYear: true
+                 changeYear: true,
+                 showOn: 'focus',
+                 showButtonPanel: true,
+                 closeText: 'Clear',
+                 onClose : function(selected) {
+                	  var event = arguments.callee.caller.caller.arguments[0];
+                     if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+                         $(this).val('');
+                     }
+                	 $('p.jquery_form_error_message').remove();
+                 }
                  
              });
         },

@@ -28,8 +28,7 @@ import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 
 @Entity
-@Table(name = "SUBMISSION_APPROVER_HIERARCHY", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionApproverHeirarchy")
+@Table(name = "SUBMISSION_APPROVER_HIERARCHY")
 public class SubmissionApproverHierarchy implements  Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -39,13 +38,13 @@ public class SubmissionApproverHierarchy implements  Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "HIERARCHY_ID", nullable = false)
 	private ProjectApproverHierarchy hierarchyId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "SUBMISSION_ID", nullable = false)
 	private TimesheetSubmissions submissionId;
 	
@@ -63,6 +62,23 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	
 	@Column(name = "BILLING_STATUS")
     private String billingStatus;
+	
+	@Column(name = "INVOICE_DATE")
+	private Date invoiceDate;
+	
+	@Column(name = "BILL_DATE")
+	private Date billDate;
+	
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "INVOICE_ID", nullable = false)
+	private Invoice invoiceId;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+   	@JoinColumn(name = "BILL_ID", nullable = false)
+	private Invoice billId;
 	
 	@Column(name = "FREQUENCY_START_DATE")
     private Date frequencyStartDate;
@@ -82,11 +98,14 @@ public class SubmissionApproverHierarchy implements  Serializable{
 	@Type(type="text")
 	private String actionPerformedBy;
 	
+	@Column(name = "ACTION_BY_ORGLOC_ID")
+	private Long actionPerformedByOrgLocationId;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "REOPENED_USER_ID", nullable = false)
 	private User reopenedUser;
 	
@@ -154,25 +173,33 @@ public class SubmissionApproverHierarchy implements  Serializable{
     
     
     @Transient
-	private Float previousMonthBillableHours;
+	private float previousMonthBillableHours;
     
     @Transient
-	private Float previousMonthNonBillableHours;
+	private float previousMonthNonBillableHours;
     
     @Transient
-	private Float previousMonthTotalHours;
+	private float previousMonthTotalHours;
     
     @Transient
-	private Float projectToDateBillableHours;
+	private float projectToDateBillableHours;
     
     @Transient
-	private Float projectToDateNonBillableHours;
+	private float projectToDateNonBillableHours;
     
     @Transient
-	private Float projectToDateTotalHours;
+	private float projectToDateTotalHours;
     
-	
+	@Transient
+	private float currentMonthBillableHours;
 
+	@Transient
+	private float currentMonthNonBillableHours;
+
+	@Transient
+	private float currentMonthTotalHours;
+
+	
 	public Long getId() {
 		return id;
 	}
@@ -421,54 +448,6 @@ public class SubmissionApproverHierarchy implements  Serializable{
 		this.weekTotalHoursMap = weekTotalHoursMap;
 	}
 
-	public Float getPreviousMonthBillableHours() {
-		return previousMonthBillableHours;
-	}
-
-	public void setPreviousMonthBillableHours(Float previousMonthBillableHours) {
-		this.previousMonthBillableHours = previousMonthBillableHours;
-	}
-
-	public Float getPreviousMonthNonBillableHours() {
-		return previousMonthNonBillableHours;
-	}
-
-	public void setPreviousMonthNonBillableHours(Float previousMonthNonBillableHours) {
-		this.previousMonthNonBillableHours = previousMonthNonBillableHours;
-	}
-
-	public Float getPreviousMonthTotalHours() {
-		return previousMonthTotalHours;
-	}
-
-	public void setPreviousMonthTotalHours(Float previousMonthTotalHours) {
-		this.previousMonthTotalHours = previousMonthTotalHours;
-	}
-
-	public Float getProjectToDateBillableHours() {
-		return projectToDateBillableHours;
-	}
-
-	public void setProjectToDateBillableHours(Float projectToDateBillableHours) {
-		this.projectToDateBillableHours = projectToDateBillableHours;
-	}
-
-	public Float getProjectToDateNonBillableHours() {
-		return projectToDateNonBillableHours;
-	}
-
-	public void setProjectToDateNonBillableHours(Float projectToDateNonBillableHours) {
-		this.projectToDateNonBillableHours = projectToDateNonBillableHours;
-	}
-
-	public Float getProjectToDateTotalHours() {
-		return projectToDateTotalHours;
-	}
-
-	public void setProjectToDateTotalHours(Float projectToDateTotalHours) {
-		this.projectToDateTotalHours = projectToDateTotalHours;
-	}
-
 	public Float getBillableHours()
 	{
 		return billableHours;
@@ -509,8 +488,122 @@ public class SubmissionApproverHierarchy implements  Serializable{
 		this.billingStatus = billingStatus;
 	}
 
+	public Date getInvoiceDate() {
+		return invoiceDate;
+	}
 
-	
-	
-	
+	public void setInvoiceDate(Date invoiceDate) {
+		this.invoiceDate = invoiceDate;
+	}
+
+	public Date getBillDate() {
+		return billDate;
+	}
+
+	public void setBillDate(Date billDate) {
+		this.billDate = billDate;
+	}
+
+	public Invoice getInvoiceId() {
+		return invoiceId;
+	}
+
+	public void setInvoiceId(Invoice invoiceId) {
+		this.invoiceId = invoiceId;
+	}
+
+	public Invoice getBillId() {
+		return billId;
+	}
+
+	public void setBillId(Invoice billId) {
+		this.billId = billId;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public Long getActionPerformedByOrgLocationId() {
+		return actionPerformedByOrgLocationId;
+	}
+
+	public void setActionPerformedByOrgLocationId(Long actionPerformedByOrgLocationId) {
+		this.actionPerformedByOrgLocationId = actionPerformedByOrgLocationId;
+	}
+
+	public float getPreviousMonthBillableHours() {
+		return previousMonthBillableHours;
+	}
+
+	public void setPreviousMonthBillableHours(float previousMonthBillableHours) {
+		this.previousMonthBillableHours = previousMonthBillableHours;
+	}
+
+	public float getPreviousMonthNonBillableHours() {
+		return previousMonthNonBillableHours;
+	}
+
+	public void setPreviousMonthNonBillableHours(float previousMonthNonBillableHours) {
+		this.previousMonthNonBillableHours = previousMonthNonBillableHours;
+	}
+
+	public float getPreviousMonthTotalHours() {
+		return previousMonthTotalHours;
+	}
+
+	public void setPreviousMonthTotalHours(float previousMonthTotalHours) {
+		this.previousMonthTotalHours = previousMonthTotalHours;
+	}
+
+	public float getProjectToDateBillableHours() {
+		return projectToDateBillableHours;
+	}
+
+	public void setProjectToDateBillableHours(float projectToDateBillableHours) {
+		this.projectToDateBillableHours = projectToDateBillableHours;
+	}
+
+	public float getProjectToDateNonBillableHours() {
+		return projectToDateNonBillableHours;
+	}
+
+	public void setProjectToDateNonBillableHours(float projectToDateNonBillableHours) {
+		this.projectToDateNonBillableHours = projectToDateNonBillableHours;
+	}
+
+	public float getProjectToDateTotalHours() {
+		return projectToDateTotalHours;
+	}
+
+	public void setProjectToDateTotalHours(float projectToDateTotalHours) {
+		this.projectToDateTotalHours = projectToDateTotalHours;
+	}
+
+	public float getCurrentMonthBillableHours() {
+		return currentMonthBillableHours;
+	}
+
+	public void setCurrentMonthBillableHours(float currentMonthBillableHours) {
+		this.currentMonthBillableHours = currentMonthBillableHours;
+	}
+
+	public float getCurrentMonthNonBillableHours() {
+		return currentMonthNonBillableHours;
+	}
+
+	public void setCurrentMonthNonBillableHours(float currentMonthNonBillableHours) {
+		this.currentMonthNonBillableHours = currentMonthNonBillableHours;
+	}
+
+	public float getCurrentMonthTotalHours() {
+		return currentMonthTotalHours;
+	}
+
+	public void setCurrentMonthTotalHours(float currentMonthTotalHours) {
+		this.currentMonthTotalHours = currentMonthTotalHours;
+	}
+
+
+
 }

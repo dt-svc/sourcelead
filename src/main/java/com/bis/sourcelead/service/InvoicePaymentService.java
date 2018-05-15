@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -12,9 +13,12 @@ import com.bis.sourcelead.entity.User;
 
 public interface InvoicePaymentService {
 	
-	InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO, JSONObject jsonObj, User user, OrgLocations orgLocation,MultipartFile attachedfileList,Long invoiceId)throws Exception;
+	InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,MultipartFile attachedfileList,Long invoiceId)throws Exception;
 	
 	List<InvoicePayment>  getInvoicePaymentList(Long invoiceId)throws Exception;
 
 	InvoicePayment invoicePaymentById(Long id)throws Exception;
+	
+	List<InvoicePayment> getInvoicePaymentListByOrgloactionIdAndDates(Long orgLocationId,Date startDate,Date endDate) throws Exception;
+
 }

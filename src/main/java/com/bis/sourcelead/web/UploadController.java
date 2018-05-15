@@ -36,6 +36,7 @@ import com.bis.sourcelead.validation.FileValidator;
  * Handles uploads
  */
 @Controller
+@RequestMapping("/app")
 public class UploadController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
@@ -71,11 +72,11 @@ public class UploadController {
 		
 		try {
 			String isFileCreated = uploadFileService.uploadFile(uploadedFile.getFile(), orgLocations,user,uploadedFile.getEmail(),org,roleHierarchyId);
-			if ("FailureUsersForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
+			if ("FailureAssociatesForCheck.xlsx".equalsIgnoreCase(isFileCreated)) {
 				model.addAttribute("errorMessage", "Please download Error file here");
                  model.addAttribute("fileName", "xlsx");
 				return "upload/uploadForm";
-			}else if("FailureUsersForCheck.xls".equalsIgnoreCase(isFileCreated)){
+			}else if("FailureAssociatesForCheck.xls".equalsIgnoreCase(isFileCreated)){
 				model.addAttribute("errorMessage", "Please download Error file here");
                 model.addAttribute("fileName", "xls");
 				return "upload/uploadForm";
@@ -85,8 +86,8 @@ public class UploadController {
 		}
 		model.addAttribute("msg", "successfully uploaded");
 		 model.addAttribute("fileName", "");
-		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a user");
-		return "redirect:/usersList";
+		 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New Associate Created");
+		return "redirect:/app/usersList";
 	}
 /**
  * Handles Errored file Download
@@ -100,9 +101,9 @@ public class UploadController {
 		
 			File file;
 			if("xlsx".equalsIgnoreCase(fileName)){
-				file = new File("FailureUsersForCheck.xlsx");
+				file = new File("FailureAssociatesForCheck.xlsx");
 			}else{
-				 file = new File("FailureUsersForCheck.xls");
+				 file = new File("FailureAssociatesForCheck.xls");
 			}
 			
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
@@ -122,12 +123,10 @@ public class UploadController {
 /**
  * Handles Temaplate download
  * @param response
- * @throws IOException 
- * @throws URISyntaxException 
  * @throws Exception 
  */
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
-	public void downloadCreateUserTemplate(HttpServletRequest request,HttpServletResponse response) throws IOException, URISyntaxException{
+	public void downloadCreateUserTemplate(HttpServletRequest request,HttpServletResponse response) throws Exception{
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");

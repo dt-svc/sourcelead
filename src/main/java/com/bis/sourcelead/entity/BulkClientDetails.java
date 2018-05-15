@@ -32,8 +32,7 @@ import org.hibernate.annotations.Type;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 	@Entity
-	@Table(name = "BULK_CLIENT_DETAILS", catalog = "sourcelead")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "bulkClientDetails")
+	@Table(name = "BULK_CLIENT_DETAILS")
 	public class BulkClientDetails implements Serializable{
 
 	
@@ -79,6 +78,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Column(name = "PHONE")
 	private String phone;
+
+	@Column(name = "EXTENSION_NUMBER")
+	private String extensionNumber;
 	
 	@Column(name = "STATUS") 
 	private String status;
@@ -109,6 +111,9 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	
 	@Column(name = "PAYMENT_TERM")
 	private String paymentTerm;
+	
+	@Column(name = "FILE_REASON")
+	private String fileReason;
 	
 	@Transient
 	private String reason;
@@ -241,6 +246,17 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 		this.phone = phone;
 	}
 
+	
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
+	}
+
 	public String getStatus()
 	{
 		return status;
@@ -344,5 +360,12 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 	public void setPaymentTerm(String paymentTerm) {
 		this.paymentTerm = paymentTerm;
 	}
-	
+
+	public String getFileReason() {
+		return fileReason;
+	}
+
+	public void setFileReason(String fileReason) {
+		this.fileReason = fileReason;
+	}
 }

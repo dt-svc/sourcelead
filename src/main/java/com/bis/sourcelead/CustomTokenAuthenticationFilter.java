@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.filter.GenericFilterBean;
@@ -29,11 +28,12 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 	@Autowired
 	AuthenticationService authenticationService;
 
-	private  String logoutLink = "/logout";
+	private  String logoutLink = "/app/rest/logout";
 	
 	private static final String HEADER_TOKEN = "X-CustomToken";
 	private static final String HEADER_USERNAME = "X-Username";
 	private static final String HEADER_PASSWORD = "X-Password";
+	private static final String HEADER_LOGOUT_STATUS = "LOGOUT_STATUS";
  
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -44,12 +44,14 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 
 		boolean authenticated = checkToken(httpRequest, httpResponse);
 		if (authenticated) {
-			checkLogout(httpRequest);
+			checkLogout(httpRequest,httpResponse);
 		}
 		checkLogin(httpRequest, httpResponse,chain);
 		if (canRequestProcessingContinue(httpRequest)) {
 			chain.doFilter(request, response);
 		}
+		//System.out.println(((HttpServletRequest) request).getSession().getAttribute("validUsers"));
+		
 	}
 	private void checkLogin(HttpServletRequest httpRequest, HttpServletResponse httpResponse,FilterChain chain) throws IOException, ServletException {
 		String username = httpRequest.getHeader(HEADER_USERNAME);
@@ -64,7 +66,7 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 	}
 	private void checkUsernameAndPassword(String username, String password,HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
 		try{
-			TokenInfo tokenInfo = authenticationService.authenticate(username, password);
+			TokenInfo tokenInfo = authenticationService.authenticate(username, password,httpRequest,httpRequest.getSession());
 			if (tokenInfo != null) {
 				httpResponse.setHeader(HEADER_TOKEN, tokenInfo.getToken());
 			}
@@ -91,7 +93,7 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 			}
 		}
 
-		if (authenticationService.checkToken(token)) {
+		if (authenticationService.checkToken(token,httpRequest.getSession())) {
 			return true;
 		} else {
 			httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -100,11 +102,12 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 		return false;
 	}
 
-   private void checkLogout(HttpServletRequest httpRequest) {
+   private void checkLogout(HttpServletRequest httpRequest,HttpServletResponse httpResponse) {
 		if (currentLink(httpRequest).equals(logoutLink)) {
 			String token = httpRequest.getHeader(HEADER_TOKEN);
-			authenticationService.logout(token);
+			authenticationService.logout(token,httpRequest.getSession());
 			doNotContinueWithRequestProcessing(httpRequest);
+			httpResponse.setHeader(HEADER_LOGOUT_STATUS,"success");
 		}
 	}
 

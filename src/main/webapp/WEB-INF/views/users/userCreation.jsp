@@ -2,8 +2,9 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
 <!-- <script src="resources/js/masklist.js" type="text/javascript"></script>
 <script src="resources/js/jquery.inputmask.js" type="text/javascript"></script> 
@@ -15,7 +16,7 @@
 </script>  -->
 <script type="text/javascript">
 		window.onload = function () {
-			getAssociateList();
+			getDesignationType();
 			getDepartmentsList();
 			maskme();
 			editMe(this);
@@ -24,6 +25,10 @@
 <script>
 	$(document).ready(function() {
 		document.getElementById("createUser_form").reset();
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
 	});
 </script>
 <style type="text/css">
@@ -33,54 +38,53 @@
     bottom: -14px;
 }
 </style>
-
   <!-- Content Area -->
   <section class="content-wraper">
         <section class="content-header clearfix">
           <div class="pull-left">
-            <h2>Add User</h2>
+            <h2>Add Associate</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/usersList'/>">Users List</a> &raquo; Add User </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Associates List</a> &raquo; Add Associate </div>
         </section>
         <div class="content-area clearfix">
         <div id="loading"></div> 
+        <div id="candidatesLoading"></div> 
           
         <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
           <form:form id="createUser_form"  name="createUser_form" method="post">
+          <input type="hidden" id="actionId" value="${actionId}">
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
-                <div class="col-md-12 clearfix">
-        <div class="well clearfix">
-          
-          <div class="col-md-6 er selectUser col-md-offset-3">
-          <div class="row">
-          <div class="col-md-4 paddingRight">
-             <select class="selectpicker pull-left form-control" id="employmentDesignationType" name="employmentDesignationType" onChange="getDesignationType(this);">
-                <option value="">All</option>
-                 <option>C2C</option>
-                 <option>C2C-1099</option>
-                 <option>W-2</option>
-                 <option>C2H</option>
-                 <option>C2H -1099</option>
-                 <option>Part Time</option>
-                 <option>Full Time</option>
-                 <option>Other</option>
-             </select>
-             </div>
-             <div class="col-md-8 paddingLeft">
-           <select class="chosen-select pull-left" id="employeementType" name="employeementType" field-name="EmployeementType" onchange="getAssociateUserDetails();" data-validation-optional="true" >
-	          <!--   <option value="">-Select Employment Type-</option> -->
-	            <option value=" " selected>-Select Associate-</option>
-	            <c:forEach var="option" items="${associateList}">
-					<option value="${option.id}">${option.displayName}</option>
-				</c:forEach>
-           </select>
-          </div> </div>
-          </div>
-           <input type="hidden" id="associateId" name="associateId"/>
-          </div>
-        </div>
+		        <div class="col-md-12 clearfix">
+		        <div class="well clearfix">
+		          
+		          <div class="col-md-8 er selectUser col-md-offset-3">
+		          <div class="row">
+		          <div class="col-md-4 paddingRight">
+		             <select class="selectpicker pull-left form-control" id="employmentDesignationType" name="employmentDesignationType" onChange="getDesignationType();">
+		                 <option value="employeementType" selected>--Employment Type--</option>
+		                 <option value="All">All</option>
+		                 <option value="C2C">C2C</option>
+		                 <option value="C2C-1099">C2C-1099</option>
+		                 <option value="W-2">W-2</option>
+		                 <option value="C2H">C2H</option>
+		                 <option value="C2H -1099">C2H -1099</option>
+		                 <option value="Part Time">Part Time</option>
+		                 <option value="Full Time">Full Time</option>
+		                 <option value="Other">Other</option>
+		             </select>
+		             </div>
+		           <div class="col-md-5 paddingLeft">
+		           <select class="chosen-select pull-left" id="employeementType" name="employeementType" field-name="EmployeementType" onchange="getAssociateUserDetails();" data-validation-optional="true" >
+			            <option value=" " selected>-Select Candidate-</option>
+			            
+		           </select>
+		          </div> </div>
+		          </div>
+		           <input type="hidden" id="associateId" name="associateId"/>
+		          </div>
+		        </div>  
               
                 <div class="form-group" id="EmployeeIdDiv">
                   <label class="col-md-3">Employee Id</label>
@@ -92,30 +96,36 @@
                       <label class="col-md-3">Date of Join</label>
                          <div class="col-md-9">
                            <div class="input-group">
-                              <input type="text" value="" name="dateofJoin" class="form-control" id="DateofJoin" readonly="readonly">
-                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                              <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
                   </div>
                   
                  <div class="form-group" id="EmailIdDiv">
-                  <label class="col-md-3">Email Id<span class="text-danger">*</span></label>
+                  <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email"  onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();" >
+	                  <div class="input-group errorInptgroup">
+	                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email"  onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();" >
+	                    <span id="emailStatusIconDiv" class="input-group-addon">
+	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                  	</span>
+	                  </div>
                   </div>
                   </div>
                   
                 <div class="form-group" id="FirstNameDiv">
-                  <label class="col-md-3">First Name<span class="text-danger">*</span></label>
+                  <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*" maxlength="100" required>
+                    <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*"  field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+
                   </div>
                 </div>
                 
                 <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*" maxlength="100" required>
+                    <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*"   field-name="Last Name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
                   </div>
                 </div>
                 
@@ -123,25 +133,40 @@
                  <div class="form-group">
                   <label class="col-md-3">Phone Number</label>
                    <div class="col-md-9">
+                   <div class="row">
+                    <div class="col-md-6 paddingRight">
                     <input type="text" class="form-control" id="phone" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                      <input type="hidden" name="country" id="CountryAutocomplete" value ="${SourceLeadWeb_country}" />
+                    </div>
+                    <div class="col-md-6 paddingLeft">
+                    <div class="row">
+                    <div class="col-md-12">
+                    <input type="text" class="form-control" id="extensionNumber" placeholder="Extension Number" name="extensionNumber" data-validation="validate_Space validate_extno validate_length length1-5" data-validation-optional="true">
+                    </div>
+                    </div>
+                    </div>
+                     </div>
                   </div>
                 </div> 
                 
                <div class="form-group">
                   <label class="col-md-3">Department </label>
-                  <div class="col-md-9" id="chosen-role">
+                  <div class="col-md-9 chooRadius" id="chosen-role">
+                   <div class="input-group col-md-10 pull-left">
                          <select class="form-control chosen-select" id="department" name="department" field-name="Department" onchange="getReportingManager()" data-validation-optional="true" >
-		                        
 			              </select>
+			               <span class="input-group-addon cursorPointer bg-blue" onclick="getDepartmentsList();"><i class="fa fa-refresh "></i></span>
                   </div>
+                  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+			<a href="<c:url value="/app/addDepartment " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			</sec:authorize>
                 </div> 
-                
+                 </div> 
                 <div class="form-group">
-         <label class="col-md-3">Employment type<span class="text-danger"></span></label>
+         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
-             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getEmployeementType(this);" field-name="Employment type" >
+             <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getEmployeementType(this);" field-name="Employment type" data-validation="required">
                 <option value="">--Select Employment type--</option>
                  <option>C2C</option>
                  <option>C2C-1099</option>
@@ -155,18 +180,23 @@
          </div>
        </div>
                 
-                <div class="form-group">
-                  <label class="col-md-3">Role<span class="text-danger">*</span></label>
-                  <div class="col-md-9" id="chosen-role">
-                         <select class="form-control select-bg" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
+                <div class="form-group errorInptgroup">
+                  <label class="col-md-3">Role<span class="text-danger">&nbsp;*</span></label>
+                  <div class="col-md-9 chooRadius chooErrorMessage" id="chosen-role">
+                   <div class="input-group col-md-10 pull-left">
+                         <select class="form-control select-bg selectField" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
 		                        <c:forEach var="option" items="${rolesList}">
 									<option value="${option.id}">${option.displayName}</option>
 								</c:forEach>
 			              </select>
+			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshRoleList();managerListEmpty();"><i class="fa fa-refresh "></i></span>
                   </div>
+                       <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE ')"> 
+			             <a href="<c:url value="/app/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			           </sec:authorize>
                 </div>
-               
+                </div> 
                
                <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
             <label class="col-md-3">Employment Other Type</label>
@@ -177,26 +207,42 @@
        
        <span id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
-			<div class="col-md-9" id="errorvendor">
-			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();">
+			<label class="col-md-3" ><span class="pull-left">Vendor <i class='fa fa-info-circle' title='Select/Add the vendor details of the respective associate. (This applies to C2C and C2C 1099 employment types)'></i></span><span class="text-danger pull-left" id="man1">*</span></label>
+			<div class="col-md-9 chooRadius" id="errorvendor">
+			 <div class="input-group col-md-10 pull-left">
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();vendorContactEmpty();removeValiationVendor();">
                  </select>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocationId();vendorContactEmpty();"><i class="fa fa-refresh "></i></span>
 			</div>
+			
+			<span class="col-md-2 noPad clearfix">
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+			<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			</sec:authorize>
+			</span>
 		</div>
-		
+		</div>
 		 <div class="form-group">
 			<label class="col-md-3 paddingRight" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-			<div class="col-md-9" id="errorvendorContact">
+			<div class="col-md-9 chooRadius" id="errorvendorContact">
+			<div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
 			</div>
+			<span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			</sec:authorize>
+		 </span>
+		</div>
 		</div>
 		</span>
                
               <div class="form-group">
-                  <label class="col-md-3">Manager</label>
+                  <label class="col-md-3">Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the reporting manager for a associate in organisation'></i></label>
                   <div class="col-md-9">
-                      <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager">
+                      <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager" data-validation="required">
                         <option value="">-Select Manager-</option>
                         <%-- <c:forEach var="option" items="${reportingManagersList}">
 								<option value="${option.id}">${option.firstName} ${option.lastName} (${option.userType})</option>
@@ -204,7 +250,7 @@
                       </select>
                   </div>
             </div>
-            
+            		
             
                 
                  <div class="form-group">
@@ -253,10 +299,17 @@
 		                <div class="checkbox checkBox">
 		                  <label>
 		                    <input type="checkbox" value="Y" name="isMailSent" checked="checked">
-		                    Send Mail to User</label>
+		                    Send Mail to Associate</label>
 		                </div>
 		                 </div>
                </div>
+                <c:if test="${!empty sourceleadSectionList}">
+	            	<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               		<c:if test="${sectionOrder.index == 0}">
+	                		  <div id="customDiv${section.id}"></div>
+	              		 </c:if>
+	            	</c:forEach>
+	   			</c:if>
             </div>
             </div>
                 
@@ -264,7 +317,7 @@
               <div class="col-lg-12">
                 <div class="pull-right">
                   <input type="button" value="Save" id="create_user" onclick="createUser();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/usersList'/>'"  class="btn btn-default ml">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/usersList'/>'"  class="btn btn-default ml">
                 </div>
               </div>
             </div>
@@ -278,6 +331,19 @@
       <jsp:include page="../masterFooter.jsp" />
       <!-- Footer Area -->
 
+
+<script>
+function getCustomDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 <script>
  function employementType(type){
@@ -297,20 +363,19 @@ if(type == 'C2C' || type == 'C2C-1099'){
 
 <script>
  function getVendorsByOrgLocationId(){
-		 $.ajax({
+	 
+	 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getVendorsByOrgLocationId?", 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#vendors').empty();
-		        	$('#vendors').append('<option value="">--select Vendor --</option>');
+		        	$('#vendors').append('<option value="">--Select Vendor --</option>');
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
 		            }
 		            $('#vendors').trigger("chosen:updated");
-		            
-		            
 		        }
 		 });
  }
@@ -318,20 +383,28 @@ if(type == 'C2C' || type == 'C2C-1099'){
  <script>
  function getVendorContactList(){
 	 var orgRelationID = $('#vendors').val();
+	 
+	 if(orgRelationID != null && orgRelationID !='' && orgRelationID !='undefined'){
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");
 		        }
-		 }); 
+		 });
+	 }else{
+		 $('#vendorcontact').empty();
+		 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+		 $('#vendorcontact').trigger("chosen:updated");
+	 }
+		  
  }
  </script>
 
@@ -458,12 +531,27 @@ function getEmployeementType(designationType){
 	   if ($('#createUser_form').validate(false, validationSettings)){ 
 		
 		    var formData = getFormData("createUser_form");
-			$("#createUser_form").attr("disabled", "disabled");
+			$("#create_user").attr("disabled", "disabled");
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $( "#create_user" ).addClass('button').val('Processing..');
-			$.post(sourceleadUrl+"/createUser?${_csrf.parameterName}=${_csrf.token}", formData, function(data) {
-				location.replace(sourceleadUrl+"/usersList");	
+            
+            $.ajax({
+				type : "POST",
+        	    data: formData,
+				url : sourceleadUrl+"/createUser?"+tokenParamName+"="+tokenValue+"",
+				success : function(result) {
+					if(result && result === "DataMissing") {
+						$("#create_user").removeAttr("disabled");
+						$("#create_user").removeAttr('button').val('Save');	
+						showError("Invalid data");
+						$("#loading").removeAttr('style');
+					} 
+					else {
+						location.replace(sourceleadUrl+"/usersList");
+					}
+				},
 			});
-			
+            
 	        return true;
 		
 	  }else{
@@ -555,12 +643,11 @@ function getEmployeementType(designationType){
  function getUserByUserEmail() {
 	 var EmailId = document.getElementById("EmailId").value; 
 	 if(EmailId != null && EmailId != ""){
+		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/getUserByUserEmail?"+tokenParamName+"="+tokenValue+"&EmailId="+EmailId, 
-		        success: function(data) {
-		        	if(data != null && data != ''){
-		        		var json = JSON.parse(data);
+		        success: function(json) {
 		        		
 		        		if(json.firstName != null && json.firstName != ''){
 		        			$("#FirstName").val(json.firstName);
@@ -586,8 +673,10 @@ function getEmployeementType(designationType){
 		        			 $("#phone").removeAttr("readonly", "readonly");
 		        			 //$("#phone").val('');
 		        		}
+		        		$("#loading").removeAttr('style');
 		        		
-		        	}
+		        		validateEmailForExistenceUniversally(EmailId, "input#EmailId");
+		        		
 		        },
 		    });
 	 }else{
@@ -611,7 +700,8 @@ function getEmployeementType(designationType){
 		 $("#employeementType").val('');
 	     $('#employeementType').trigger("chosen:updated");
 	     
-		 
+	     $("#emailStatusIconDiv").find("i").remove();
+		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	 }
  }
  </script>   
@@ -730,12 +820,12 @@ function getAssociateUserDetails(){
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+vendorOrgRelationId+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        	//var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 if(vendorContactName != null && vendorContactName != 'undefined' && vendorContactName  != ''){
 		            		 $('#vendorcontact').append('<option '+ (opt.id == vendorSpocId ? "selected" : '') +' value="'+opt.id+'">'+opt.spocName+'</option>');
 			            	}else{
@@ -809,13 +899,15 @@ function getAssociateUserDetails(){
  <script>
  function getDesignationType(){
 	 var employmentDesignationType = $("#employmentDesignationType").val();
+	 if(employmentDesignationType){
+	 $("#candidatesLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getActiveAssociateList?"+tokenParamName+"="+tokenValue+"&employeementType="+employmentDesignationType,
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
-	        	output = output + "<option value=''>-- Select Associate --</option>"; 
+	        	output = output + "<option value=''>-- Select Candidate --</option>"; 
 	        	for (var i=0; i<json.length; i++)
 				{
 	        		var opt = json[i];
@@ -831,9 +923,13 @@ function getAssociateUserDetails(){
 	        	$("#employeementType").empty();
 		        $("#employeementType").append(output);
 		        $('#employeementType').trigger("chosen:updated");
+		        $("#candidatesLoading").removeAttr('style');
 	        },
 	    });
 	 
+	 }else{
+		 $("#employeementType").empty();
+	 }
  }
  
  
@@ -844,16 +940,9 @@ function getAssociateUserDetails(){
 <script>
   $( function() {
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormat = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormat = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormat = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormat = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormat = 'yy-dd-mm'; 
-	  }
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
 	  $('#DateofJoin').datepicker({
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
@@ -881,7 +970,12 @@ function getAssociateUserDetails(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"&nbsp;("+opt.userType+")</option>";
+			        		if(opt.lastName !=null && opt.lastName !='undefined' && opt.lastName !=''){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"&nbsp;("+opt.userType+")</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"&nbsp;("+opt.userType+")</option>";
+			        		}
+			        		
 					}
 		        	$("#reportingManager").empty();
 			        $("#reportingManager").append(output);
@@ -898,27 +992,6 @@ function getAssociateUserDetails(){
 	
  }
 </script>
-<script type="text/javascript">
-$(function(){
-	       var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-	       $("#reportingManager").chosen();
-	       $("#role").chosen();
-	       $("#invoiceFrequency").chosen();
-	       
-	      
-	       $('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-		  })
-});
-</script>
- 
 
 <script>
 function maskme(){
@@ -986,3 +1059,56 @@ function editMe(local){
 	 }
 	 }
 	 </script>
+
+	 <script>
+	 function vendorContactEmpty(){
+		 $('#vendorcontact').empty();
+		 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+		 $('#vendorcontact').trigger("chosen:updated");
+	 }
+	 </script>
+	 <script>
+function refreshRoleList(){
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRoleList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Role</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	       			output = output + "<option value='"+opt.id+"'>"+opt.displayName+"</option>";
+				}
+	        	$("#role").empty();
+		        $("#role").append(output);
+		        $('#role').trigger("chosen:updated");
+	        }
+		 });
+	
+}
+</script>
+<script>
+	 function managerListEmpty(){
+		 $('#reportingManager').empty();
+		 $('#reportingManager').append('<option value="">--Select Manager--</option>');
+		 $('#reportingManager').trigger("chosen:updated");
+	 }
+	 </script>
+	 
+	 
+	 
+	 <script>
+	 function selectedVendor(){
+		 var vid = $('#vendors').val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+	 </script>
+	
+
+<script>
+function clearDate(){
+	$("#DateofJoin").val("");
+	};
+</script>
+

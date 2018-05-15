@@ -20,9 +20,13 @@ public interface TimesheetSubmissionsDao {
     
     public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissions(Date startDate,Date endDate,Long userId)throws Exception;
     
-    public TimesheetSubmissions getAllEmployeeTimesheetSubmissionsByProjectMemberId(Date startDate,Date endDate,Long projectMemberId) throws Exception;
+   // public TimesheetSubmissions getAllEmployeeTimesheetSubmissionsByProjectMemberId(Date startDate,Date endDate,Long projectMemberId) throws Exception;
+    
+    public TimesheetSubmissions getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(Date startDate, Date endDate,Long projectId,Long masterCandidateId) throws Exception;
     
     public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissionsByProjectMemberIdForUpdation(Date startDate,Date endDate,Long projectMemberId) throws Exception;
+    
+    public List<TimesheetSubmissions> getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateIdForUpdation(Date startDate,Date endDate,  Long  projectId,Long masterCandidateId)throws Exception;
     
     public TimesheetSubmissions getAllApprovalEmployeeTimesheetSubmissions(Date startDate,Date endDate,Long userId)throws Exception;
     
@@ -36,7 +40,7 @@ public interface TimesheetSubmissionsDao {
     
     Date getRightNavStartDateForApproverBasedOnCurrentStartDate(Long  approverUserId,Long empUserId,Date currentStartDate);
     
-    public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception;
+    public List<TimesheetSubmissions> saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception;
 
     public Date getNextMondayByProjectMemberId(Long pojectMemberId) throws Exception; 
     
@@ -73,6 +77,10 @@ public interface TimesheetSubmissionsDao {
 	public HashSet<TimesheetSubmissions> getWeekFrequencyByProjMemId(Long projectId) throws Exception;
 	
 	public List<TimesheetSubmissions> getTimeSheetSubmissionByProjectMemberId(Long pojectMemberId) throws Exception;
+	
+	public List<TimesheetSubmissions> getTimesheetSubmissionsByProjectIdAndMasterCandidateId(Long projectId,Long masterCandidateId) throws Exception;
+
+	public TimesheetSubmissions getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(Long projectId,Long masterCanidateId, Date frequencyStartDate, Date frequencyEndDate);
 
 
 }

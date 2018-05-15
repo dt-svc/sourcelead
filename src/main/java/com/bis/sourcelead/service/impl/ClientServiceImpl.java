@@ -1,5 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -11,68 +14,98 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ExpensesCategoryDao;
+import com.bis.sourcelead.dao.LookUpDataDao;
+import com.bis.sourcelead.dao.ReferContactsDao;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ClientCustomFieldData;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.ExpensesCategory;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLicenseSubscriptionTypes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.OrglocationFormFields;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RoleHierarchy;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.VendorOnboarding;
+import com.bis.sourcelead.enums.Contact_Source;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ClientCustomFieldDataService;
 import com.bis.sourcelead.service.ClientService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RoleHierarchyService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
+import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibm.icu.util.Calendar;
 
 /**
  * 
@@ -148,7 +181,22 @@ public class ClientServiceImpl implements ClientService {
 	
 	@Autowired
 	private RequirementService requirementService;
+	
+	@Autowired
+	private CandidateService candidateService;
+	
+	@Autowired
+	private ClientCustomFieldDataService clientCustomFieldDataService;
 
+	@Autowired
+	private OrglocationFormFieldsService orglocationFormFieldsService;
+	
+	@Autowired
+	ReferContactsDao referContactsDao;
+	
+	@Autowired
+	UserDao userDao;
+	
 	@Value("${SourceLead.100}")
 	private String notFound;
 	@Value("${SourceLead.101}")
@@ -162,6 +210,34 @@ public class ClientServiceImpl implements ClientService {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
+	@Autowired
+	ProjectsService projectsService;
+	
+	@Autowired
+	CountriesService countriesService;
+	
+	@Autowired
+	ExpensesCategoryDao expensesCategoryDao;
+	
+	@Autowired
+	LookUpDataDao lookUpDataDao;
+	
+	@Autowired
+	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	
+	@Autowired
+	TabsService tabsService;
+
+	@Autowired
+	VendorOnboardService vendorOnboardService;
+	
+	@Value("${static.path}")
+    private String staticPath;
+
 
 	/**
 	 * @author VenkatKesav
@@ -179,7 +255,7 @@ public class ClientServiceImpl implements ClientService {
 	 */
 	@SuppressWarnings("unused")
 	@Override
-	public void storeClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String responderType,
+	public OrgLocations storeClient(ClientDTO clientDTO,AddUserDTO addUserDTO,CandidateDTO candidateDTO, User user, OrgLocations orgLocations, String responderType,
 			Org loginOrg) throws Exception {
 		HashSet<OrgLocations> orgLocationsList = new HashSet<OrgLocations>();
 		OrgLocations clientOrgLocations = null;
@@ -189,6 +265,18 @@ public class ClientServiceImpl implements ClientService {
 		OrgSpoc orgSpoc = null;
 		SubmissionTemplate submissionTemplate = null;
 		SubmissionTemplate sourceLeadDefaultTemplate = null;
+
+		String newlyRegistred = "N";
+		
+		
+		if (StringUtils.isBlank(clientDTO.getOrgLocationId())) {
+			OrgLocations invitedOrgLocation = orgLocationService.getOrgLocationsByOrgLocationName(clientDTO.getOrgName());
+			if(invitedOrgLocation != null) {
+				clientDTO.setOrgLocationId(invitedOrgLocation.getId().toString());
+			}
+		}
+		
+	
 		if (StringUtils.isNotBlank(clientDTO.getOrgLocationId())) {
 			clientOrgLocations = orgLocationService.getOrgLocations(Long.parseLong(clientDTO.getOrgLocationId()));
 			if (StringUtils.isNotBlank(clientDTO.getOrgCountry())) {
@@ -197,12 +285,12 @@ public class ClientServiceImpl implements ClientService {
 				clientOrgLocations.setCountry(clientDTO.getCountry());
 			}else
 			{
-				clientOrgLocations.setCountry("--");
+				clientOrgLocations.setCountry("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getOrgState())) {
 				clientOrgLocations.setState(clientDTO.getOrgState());
 			} else {
-				clientOrgLocations.setState("--");
+				clientOrgLocations.setState("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getOrgCity())) {
 				clientOrgLocations.setCity(clientDTO.getOrgCity());
@@ -210,7 +298,7 @@ public class ClientServiceImpl implements ClientService {
 				clientOrgLocations.setCity(clientDTO.getCity());
 			}else
 			{
-				clientOrgLocations.setCity("--");
+				clientOrgLocations.setCity("");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getOrgZipcode())) {
@@ -219,7 +307,7 @@ public class ClientServiceImpl implements ClientService {
 				clientOrgLocations.setZipCode(clientDTO.getZipcode());
 			}else
 			{
-				clientOrgLocations.setZipCode("--");
+				clientOrgLocations.setZipCode("");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getOrgLocation())) {
@@ -227,20 +315,20 @@ public class ClientServiceImpl implements ClientService {
 			} else if (StringUtils.isNotBlank(clientDTO.getLocation())) {
 				clientOrgLocations.setLocation(clientDTO.getLocation());
 			}else{
-				clientOrgLocations.setLocation("--");
+				clientOrgLocations.setLocation("");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getLatitude())) {
 				clientOrgLocations.setLatitude(clientDTO.getLatitude());
 			}else
 			{
-				clientOrgLocations.setLatitude("--");
+				clientOrgLocations.setLatitude("");
 			}
 
 			if (StringUtils.isNotBlank(clientDTO.getLongitude())) {
 				clientOrgLocations.setLongitude(clientDTO.getLongitude());
 			}else{
-				clientOrgLocations.setLongitude("--");
+				clientOrgLocations.setLongitude("");
 			}
 
 		}
@@ -257,7 +345,7 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getOrgName())) {
 				clientOrgLocations.setOrgLocationName(clientDTO.getOrgName());
 			}else{
-				clientOrgLocations.setOrgLocationName("--");
+				clientOrgLocations.setOrgLocationName("");
 			}
 			if (responderType.equalsIgnoreCase("Client")) {
 				clientOrgLocations.setModulesId(Integer.toString(Constants.MODULE_VMS));
@@ -270,14 +358,50 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
 				org.setWebSite(convertWebsite(clientDTO.getWebSite()));
 			}
+			clientOrgLocations.setLoginSecurity(Constants.NO);
 			clientOrgLocations.setIsPrimary(Constants.YES);
+			clientOrgLocations.setIsCompanyOnboarded(Constants.NO);
 			clientOrgLocations.setCoolingOffPeriod("3 Months");
+			clientOrgLocations.setRegistrationStatus("Registered");
 			orgLocationsList.add(clientOrgLocations);
 			org.setOrgLocationsList(orgLocationsList);
-			orgService.addOrganization(org);
+			Org savedClient = orgService.addOrganization(org);
+			
+			if(clientDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+					if(customFields != null && customFields.getCustomFormFieldId() > 0) {
+					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
+					 clientCustomFields.setOrg(savedClient);
+					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					 clientCustomFields.setOrglocationsFormFields(orgFormField);
+					 clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					 clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					}
+					
+				}	
+			}
+			
+			List<LookUpData> lookUpExpCatList = lookUpDataDao.getLookUpDataByCategory(Constants.EXPENSESCATEGORY);
+		    for(LookUpData lookUpData:lookUpExpCatList){
+			    ExpensesCategory expensesCategory = new ExpensesCategory();
+			    expensesCategory.setExpensesName(lookUpData.getName());
+			    expensesCategory.setAmountType("Flat");
+			    expensesCategory.setOrgLocationId(clientOrgLocations);
+			    expensesCategory.setStatus(Constants.MEMBER_ACTIVE);
+				expensesCategory.setCreatedBy(user.getUserCode());
+				expensesCategory.setCreatedDate(commonUtil.currentDate());
+				expensesCategory.setUpdatedBy(user.getUserCode());
+				expensesCategory.setUpdatedDate(commonUtil.currentDate());
+				expensesCategoryDao.storeExpenseCategory(expensesCategory); 
+		    }
 			saveOrgRoleHierarchy(clientOrgLocations, user);
-			saveOrgBasedRoles(org, clientOrgLocations, user);
+			saveOrgBasedRoles(org, clientOrgLocations, user,responderType);
+			newlyRegistred = "Y";
 		} else {
+			
+			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
+				clientOrgLocations.setBillingAddress(clientDTO.getBillingAddress());
+			}
 			orgRelationsList = orgRelationsService.orgRelationsListByJson(clientDTO, clientOrgLocations, orgLocations,
 					user.getUserCode(), responderType);
 			clientOrgLocations.setOrgRelationsList(orgRelationsList);
@@ -292,28 +416,44 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getAddress())) {
 				org.setClientAddress(clientDTO.getAddress());
 			}else{
-				org.setClientAddress("--");
+				org.setClientAddress("");
 			}
 			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
 				org.setClientBillingAddress(clientDTO.getBillingAddress());
 			}else{
-				org.setClientBillingAddress("--");
+				org.setClientBillingAddress("");
 			}
-			if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-				org.setPaymentTerm(clientDTO.getPaymentTerm());
+			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
+				org.setPaymentTerm(clientDTO.getPaymentTerms());
 			}else{
-				org.setPaymentTerm("--");
+				org.setPaymentTerm("");
 			}
 			org.setId(org.getId());
 			org.setOrgLocationsList(orgLocationsList);
-			orgService.addOrganization(org);
+			Org savedClient =  orgService.addOrganization(org);
+			
+			if(clientDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
+					 clientCustomFields.setOrg(savedClient);
+					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					 clientCustomFields.setOrglocationsFormFields(orgFormField);
+					 clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					 clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					}
+					
+				}	
+			}
+			
 		}
 		
 		if (StringUtils.isNotBlank(clientDTO.getEmail())) {
 			spocUser = userService.storeUser(addUserDTO,candidateDTO, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
 
 		}
-
+		
+		
 		if(clientDTO.getOwner() != null && !clientDTO.getOwner().isEmpty()){
 			for(String owners :clientDTO.getOwner()){
 				orgSpoc = new OrgSpoc();
@@ -359,7 +499,7 @@ public class ClientServiceImpl implements ClientService {
 				orgSpoc.setUpdatedBy(user.getUserCode());
 				orgSpocService.addOrgSpoc(orgSpoc);
 
-				if (("Client".equals(responderType) || "Vendor".equals(responderType))	&& (StringUtils.isNotBlank(clientDTO.getIsMailSent()) && ("Y".equals(clientDTO.getIsMailSent())))) {
+				if (("Client".equals(responderType)) && (StringUtils.isNotBlank(clientDTO.getIsMailSent()) && ("Y".equals(clientDTO.getIsMailSent())))) {
 					userService.sendEmailToClientOrVendor(orgSpoc.getUUID(), spocUser, ownerUser, user,
 							spocUser.getTempPwd(), responderType, loginOrg, clientOrgLocations.getOrg(),
 							clientOrgLocations, orgLocations);
@@ -367,6 +507,15 @@ public class ClientServiceImpl implements ClientService {
 			}
 		}
 
+		
+		if ("BulkVendorSaving".equalsIgnoreCase(clientDTO.getClientSaveFromType())) {
+			clientOrgLocations.setVendorOrgRelationId(orgSpoc.getOrgRelations().getId());
+			clientOrgLocations.setVendorSpocId(spocUser.getId());
+			User bulkUser = userService.getUserById(spocUser.getId());
+			VendorOnboarding vendorOnboarding = vendorOnboardService.saveVendorOnboarding(clientOrgLocations, orgLocations, user);
+			vendorOnboardService.saveVendorOnboardForVendorBulkImports(vendorOnboarding.getId(),user,bulkUser,orgLocations);
+			}
+		
 		// store default submission template in guest
 		if (Constants.GUEST.equalsIgnoreCase(org.getOrgType())) {
 			submissionTemplate = new SubmissionTemplate();
@@ -380,6 +529,7 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 			submissionTemplate.setOrgLocationId(clientOrgLocations);
 			submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+			submissionTemplate.setIsDefault(Constants.YES);
 			submissionTemplate.setTemplateType("Submission");
 			submissionTemplate.setCreatedBy(user.getUserCode());
 			submissionTemplate.setUpdatedBy(user.getUserCode());
@@ -399,6 +549,7 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplate.setOrgLocationId(clientOrgLocations);
 			submissionTemplate.setJsonString(sourceLeadDefaultTemplate.getJsonString());
 			submissionTemplate.setStatus(Constants.CANDIDATE_ACTIVE);
+			submissionTemplate.setIsDefault(Constants.YES);
 			submissionTemplate.setUpdatedBy(user.getUserCode());
 			submissionTemplate.setTemplateType("Feedback");
 			submissionTemplate.setUpdatedDate(new Date());
@@ -453,14 +604,209 @@ public class ClientServiceImpl implements ClientService {
 			submissionTemplateService.addSubmissionTemplate(submissionTemplate);
 
 		}
+		
+		if(Constants.GUEST.equalsIgnoreCase(org.getOrgType())) {
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Client MSA Template",Constants.CLIENT_MSA);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Vendor MSA Template",Constants.VENDOR_MSA);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Client SOW Template",Constants.Client_SOW);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Vendor SOW Template",Constants.Vendor_SOW);
+			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default NDA Template",Constants.NDA);
+			
+			commonUtil.saveDefaultEmployeeVerificationTemplate(org, clientOrgLocations, spocUser, "Default Employee Verification Template");
+		}
+		
+		if(Constants.GUEST.equalsIgnoreCase(org.getOrgType())) {
+			if(clientOrgLocations.getGeneratedUserId()== null || StringUtils.isBlank(clientOrgLocations.getGeneratedUserId())) {
+			Boolean validateShortCode = true;
+	 		while(validateShortCode){
+	 			String orgShortCode = RandomStringUtils.randomAlphabetic(4);
+	 			 boolean validateGeneratedUserId = orgLocationService.validateOrgShortCode(orgShortCode);
+	 			 if(validateGeneratedUserId == true){
+	 					validateShortCode = true;
+	 				}else {
+	 					validateShortCode = false;
+	 					clientOrgLocations.setGeneratedUserId(orgShortCode.toUpperCase());
+	 					orgLocationService.updateOrgLocations(clientOrgLocations);
+	 				}
+	 		 }
+		   }
+		}
+		
+		if(newlyRegistred.equalsIgnoreCase(Constants.YES)){
+			saveOrgLocationDefaultProject(clientOrgLocations, spocUser,responderType);
+			commonUtil.storeVendorOnboardDefaultTemplate(spocUser, clientOrgLocations);
+		}
 
 		for (OrgRelations orgRelation : orgRelationsList) {
-
+			clientOrgLocations.setVendorOrgRelationId(orgRelation.getId());
 			saveOrUpdateClientVendorElkDocument(org, clientOrgLocations, responderType, orgSpoc, orgRelation,
 					submissionTemplate, user, orgLocations);
 
 		}
+		clientOrgLocations.setVendorSpocId(spocUser.getId());
+		 ReferContacts referContacts=referContactsDao.getReferContactsByEmails(user.getId(), clientDTO.getEmail());
+		
+			if(referContacts !=null){
+				if(clientDTO.getFirstName() != null){
+					referContacts.setFirstName(clientDTO.getFirstName());
+				}
+				if(clientDTO.getLastName() != null){
+					referContacts.setLastName(clientDTO.getLastName());
+				}
+				if(clientDTO.getPhoneNumber() != null){
+					referContacts.setContactUserPhone(clientDTO.getPhoneNumber());
+				}
+				referContacts.setUpdatedDate(new Date());
+				referContacts.setUpdatedBy(user.getUserCode());
+				if(clientDTO.getResponderType() != null){
+					if(clientDTO.getResponderType().equalsIgnoreCase("vendor")){
+						referContacts.setVendorType(1);
+					}else{
+						referContacts.setClientType(1);
+					}
+				}else{
+					if(responderType !=null){
+						if(responderType.equalsIgnoreCase("vendor")){
+							referContacts.setVendorType(1);
+						}else{
+							referContacts.setClientType(1);
+						}
+					}
+				}
+			}else{
+				 referContacts = new ReferContacts();
+				
+				if(clientDTO.getEmail() != null){
+					referContacts.setContactUserEmail(clientDTO.getEmail());
+				}
+				if(clientDTO.getOrgName() != null){
+					referContacts.setCompanyName(clientDTO.getOrgName());
+				}
+				if(clientDTO.getFirstName() != null){
+					referContacts.setFirstName(clientDTO.getFirstName());
+				}
+				if(clientDTO.getLastName() != null){
+					referContacts.setLastName(clientDTO.getLastName());
+				}
+				if(clientDTO.getPhoneNumber() != null){
+					referContacts.setContactUserPhone(clientDTO.getPhoneNumber());
+				}
+				if(clientDTO.getOrgName() != null){
+					referContacts.setCompanyName(clientDTO.getOrgName());
+				}
+				if(StringUtils.isNotBlank(clientDTO.getEmail())){
+					referContacts.setContactUserEmail(clientDTO.getEmail());
+					User contactUser = userDao.getUserByEmail(clientDTO.getEmail());
+					if(null != contactUser){
+						referContacts.setContactUser(contactUser);
+					}
+				}
+				referContacts.setReferFromUser(user);
+				String contactUUID = SourceLeadRandomCodeHelper.generateUUID();
+				referContacts.setContactUserUUID(contactUUID);
+				referContacts.setCreatedDate(new Date());
+				if(clientDTO.getResponderType() != null){
+					if(clientDTO.getResponderType().equalsIgnoreCase("vendor")){
+						referContacts.setVendorType(1);
+					}else{
+						referContacts.setClientType(1);
+					}
+				}else{
+					if(responderType !=null){
+						if(responderType.equalsIgnoreCase("vendor")){
+							referContacts.setVendorType(1);
+						}else{
+							referContacts.setClientType(1);
+						}
+					}
+				}
+				
+				referContacts.setCreatedBy(user.getUserCode());
+			}
+		
+		referContactsDao.addReferContacts(referContacts);
+		return clientOrgLocations;
 	}
+	
+	
+	
+	 public Projects  saveOrgLocationDefaultProject(OrgLocations orgLocations,User approverUser,String responderType) throws Exception {
+		 	
+	    	Projects projects = new Projects();
+	    	StringBuilder defaultProjectName = new  StringBuilder();
+	    	projects.setProjectName(defaultProjectName.append(orgLocations.getOrgLocationName().trim()).append(" ").append("Default Project").toString());
+	    	StringBuilder defaultProjectNameDesc = new  StringBuilder();
+
+	    	projects.setDescription(defaultProjectNameDesc.append(orgLocations.getOrgLocationName().trim()).append(" ").append("Default Project").toString());
+	    	projects.setStartDate(new Date());
+
+	    	Calendar cal = Calendar.getInstance();
+	    	cal.add(Calendar.MONTH, -2);
+	    	Date startDate = cal.getTime();
+	    	Date projStartDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(),startDate);
+	    	
+	    	projects.setStartDate(projStartDate);
+	    	
+	    	if (responderType.equalsIgnoreCase("Client")) {
+	    		projects.setIsTimesheetAttachmentRequired(1);
+	    	}
+
+	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    	projects.setTimesheetFrequency(Constants.MONTHLY);
+	    	projects.setProjectStatus(Project_Status.INPROGRESS);
+	    	projects.setIsDefaultProject(Constants.YES);
+	    	projects.setIsPrimary(1);
+	    	projects.setCreatedDate(new Date());
+	    	projects.setUpdatedDate(new Date());
+	    	projects.setOrgLocationsId(orgLocations);
+	    	Set<ProjectClients> projectClientsList = getProjectClientsForProject(projects,orgLocations,approverUser);
+	    	projects.setProjectClients(projectClientsList);
+			projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projects.setIsClientProject(Constants.NO);
+			projects.setProjectMode("Finished");
+			projects.setCreatedDate(new Date());
+			projects.setUpdatedDate(new Date());
+			projects.setProjectShortCode("DFP");
+			Countries countires = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(countires != null) {
+				projects.setCurrency(countires.getCurrency());
+			}
+			
+			Projects updatedProjects = projectsService.saveProject(projects);
+			projectsService.saveOrUpdateProjectElkDocument(updatedProjects);
+			commonUtil.storeSourceleadTasks(approverUser, updatedProjects);
+			return updatedProjects;
+	}
+	 
+	 
+		private Set<ProjectClients> getProjectClientsForProject(Projects projects,OrgLocations orglocations,User approverUser) throws Exception {
+			Set<ProjectClients> projectClientsSet = new HashSet<>();
+			
+			ProjectClients projectClients = new ProjectClients();
+			projectClients.setProjectId(projects);
+			projectClients.setOrgLocationsId(orglocations);
+			projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectClients.setStatus(1);
+			projectClients.setLevel(1);
+			projectClients.setCreatedDate(new Date());
+			projectClients.setUpdatedDate(new Date());
+			projectClients.setCreatedBy(approverUser);
+			projectClients.setUpdatedBy(approverUser);
+			
+			//prepare ProjectApproverHierarchy
+			Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+			ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+			pah.setProjectId(projects);
+			pah.setProjectClientsId(projectClients);
+			pah.setApproverUserId(approverUser);
+			pah.setLevel(1);
+			pah.setStatus("1");
+			projectApproverHierarchyList.add(pah);
+			
+			projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+	    	projectClientsSet.add(projectClients);
+			return projectClientsSet;
+		}
 
 
 	/**
@@ -476,15 +822,6 @@ public class ClientServiceImpl implements ClientService {
 
 		if (StringUtils.isNotBlank(clientDTO.getOrgName())) {
 			org.setOrgName(clientDTO.getOrgName());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getAddress())) {
-			org.setClientAddress(clientDTO.getAddress());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
-			org.setClientBillingAddress(clientDTO.getBillingAddress());
-		}
-		if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-			org.setPaymentTerm(clientDTO.getPaymentTerm());
 		}
 		if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
 			org.setWebSite(convertWebsite(clientDTO.getCompanyWebsite()));
@@ -527,8 +864,26 @@ public class ClientServiceImpl implements ClientService {
 
 	}
 
-	public void saveOrgBasedRoles(Org org, OrgLocations orgLocations, User user) throws Exception {
+	public void saveOrgBasedRoles(Org org, OrgLocations orgLocations, User user,String responderType) throws Exception {
 		List<SourceleadRoles> rolesList = sourceleadRolesService.getSourceleadRoles();
+		List<Long> soureleadActionIdList = new ArrayList<>();
+		String[] actionsIds = null;
+		SourceleadRoles sourceleadRoles = null;
+		if(responderType.equalsIgnoreCase("Vendor")) {
+			 sourceleadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_VENDOR);
+			 actionsIds = sourceleadRoles.getActionId().split(",");
+			 for(int i=0 ; i < actionsIds.length; i++) {
+				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+			 }
+		}else if(responderType.equalsIgnoreCase("Client")) {
+			sourceleadRoles = sourceleadRolesService.getSourceleadRolesByRoleName(Constants.ROLE_GUEST_CLIENT);
+			 actionsIds = sourceleadRoles.getActionId().split(",");
+			 for(int i=0 ; i < actionsIds.length; i++) {
+				 soureleadActionIdList.add(Long.parseLong(actionsIds[i]));
+			 }
+		}
+		
+		
 		if (null != rolesList) {
 			for (SourceleadRoles roles : rolesList) {
 				Roles orgRoles = new Roles();
@@ -550,11 +905,9 @@ public class ClientServiceImpl implements ClientService {
 					}
 				}
 
-				List<SourceleadActions> sourceLeadActionsList = sourceleadActionsService
-						.getAllSourceleadActionsByOrgLocationId(orgLocations);
-				for (SourceleadActions actions : sourceLeadActionsList) {
-					if (roleActonsList.contains(actions.getId())) {
-						strbul.append(actions.getId()).append(",");
+				for (Long actionId : soureleadActionIdList) {
+					if (roleActonsList.contains(actionId)) {
+						strbul.append(actionId).append(",");
 					}
 				}
 
@@ -573,6 +926,59 @@ public class ClientServiceImpl implements ClientService {
 			}
 		}
 
+		saveLincenseSubscription(org,orgLocations,soureleadActionIdList);
+	}
+	
+	
+	public void saveLincenseSubscription(Org org,OrgLocations orgLocations,List<Long> soureleadActionIdList) throws Exception {
+		OrgLicenseSubscription subscription = new OrgLicenseSubscription();
+		subscription.setOrg(org);
+		OrgLicenseSubscriptionTypes subscriptionTypeLookUpData = new OrgLicenseSubscriptionTypes();
+		subscriptionTypeLookUpData.setId(6L);
+		subscription.setSubscriptionType(subscriptionTypeLookUpData);
+		subscription.setCountry(orgLocations.getCountry());
+		subscription.setTimezone(orgLocations.getTimezone());
+		
+		OrgLicenseSubscriptionTypes userData = new OrgLicenseSubscriptionTypes();
+		userData.setId(8L);
+		subscription.setUserSubscriptionType(userData);
+		
+		OrgLicenseSubscriptionTypes storageLookUpData = new OrgLicenseSubscriptionTypes();
+		storageLookUpData.setId(10L);
+		subscription.setStorageSubscriptionType(storageLookUpData);
+		subscription.setFromDate(new Date());
+		
+		Calendar toDate = Calendar.getInstance();
+		toDate.setTime(new Date());
+		toDate.add(Calendar.MONTH, +1); 
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date endDate = dateFormat.parse(dateFormat.format(toDate.getTime()));
+		subscription.setToDate(endDate);
+		subscription.setCurrency("USD");
+		subscription.setInvoiceAmount(0d);
+		
+		StringBuilder tabIds = new StringBuilder();
+		List<Tabs> tabsList =  tabsService.getTabListByActionsIds(soureleadActionIdList);
+		Set<Long> tabIdsList = new HashSet<>();
+		if(tabsList != null && !tabsList.isEmpty()) {
+			for(Tabs tabs : tabsList) {
+				if(tabs.getTabs() != null) {
+					tabIdsList.add(tabs.getTabs().getId());
+				}else {
+					tabIdsList.add(tabs.getId());
+				}
+			}
+		}
+		
+		for(Long tab :tabIdsList) {
+			tabIds = tabIds.append(tab).append(",");
+		}
+	
+		String enrolledTabs = tabIds.toString();
+		enrolledTabs = enrolledTabs.substring(0, enrolledTabs.length()-1);
+		subscription.setSubscriptionTabs(enrolledTabs);
+		subscription.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
 	}
 
 	// This method is not in use so commented by David S
@@ -704,6 +1110,10 @@ public class ClientServiceImpl implements ClientService {
 					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
 			}
+			
+			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
+				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
+			}
 
 			orgRelationsForElk = orgRelationsService.addOrgRelations(orgRelation);
 
@@ -722,9 +1132,8 @@ public class ClientServiceImpl implements ClientService {
 				}
 				if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
 					org.setClientBillingAddress(clientDTO.getBillingAddress());
-				}
-				if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-					org.setPaymentTerm(clientDTO.getPaymentTerm());
+				}else {
+					org.setClientBillingAddress("");
 				}
 				orgForElk = orgService.updateOrg(org);
 			}
@@ -733,7 +1142,7 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgLocations.setCity("");
 			}
-			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
+			if (clientDTO.getWebSite()!=null) {
 				orgLocations.setWebsite(clientDTO.getWebSite());
 			}
 			if (StringUtils.isNotBlank(clientDTO.getState())) {
@@ -742,13 +1151,11 @@ public class ClientServiceImpl implements ClientService {
 
 				orgLocations.setState("");
 			}
-			if (StringUtils.isNotBlank(clientDTO.getCountry())) {
+			if(StringUtils.isNotBlank(clientDTO.getCountry())){
 				orgLocations.setCountry(clientDTO.getCountry());
-			} else {
-
+			}else{
 				orgLocations.setCountry("");
 			}
-
 			if (StringUtils.isNotBlank(clientDTO.getLocation())) {
 				orgLocations.setLocation(clientDTO.getLocation());
 			} else {
@@ -762,7 +1169,33 @@ public class ClientServiceImpl implements ClientService {
 
 				orgLocations.setZipCode("");
 			}
+			
+			if (StringUtils.isNotBlank(clientDTO.getAddress())) {
+				orgLocations.setOrgLocationAddress(clientDTO.getAddress());
+			}
+			if (StringUtils.isNotBlank(clientDTO.getBillingAddress())) {
+				orgLocations.setBillingAddress(clientDTO.getBillingAddress());
+			} else {
+
+				orgLocations.setBillingAddress("");
+			}
 			orgLocationForELk = orgLocationService.updateOrgLocations(orgLocations);
+			
+			if(clientDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+					if(customFields != null && customFields.getCustomFormFieldId() > 0 ) {
+					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
+					 clientCustomFields.setOrg(orgLocationForELk.getOrg());
+					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					 clientCustomFields.setOrglocationsFormFields(orgFormField);
+					 clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					 clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					}
+					
+				}	
+			}
+			
+			
 		} else {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "ORG RELATIONS"));
 			throw new SourceLeadObjectNotFoundException(message.toString());
@@ -819,6 +1252,10 @@ public class ClientServiceImpl implements ClientService {
 					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
 			}
+			
+			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
+				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
+			}
 			// orgRelation.setLevel(jsonObj.getString(level));
 			orgRelationsForElk = orgRelationsService.addOrgRelations(orgRelation);
 
@@ -842,9 +1279,7 @@ public class ClientServiceImpl implements ClientService {
 				}else{
 					org.setClientBillingAddress(null);
 				}
-				if (StringUtils.isNotBlank(clientDTO.getPaymentTerm())) {
-					org.setPaymentTerm(clientDTO.getPaymentTerm());
-				}
+				
 				orgForElk = orgService.updateOrg(org);
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
@@ -863,12 +1298,7 @@ public class ClientServiceImpl implements ClientService {
 
 				orgLocations.setState("");
 			}
-			if (StringUtils.isNotBlank(clientDTO.getCountry())) {
-				orgLocations.setCountry(clientDTO.getCountry());
-			} else {
-
-				orgLocations.setCountry("");
-			}
+			
 			if (StringUtils.isNotBlank(clientDTO.getLocation())) {
 				orgLocations.setLocation(clientDTO.getLocation());
 			}else if (StringUtils.isNotBlank(clientDTO.getOrgLocation())) {
@@ -882,6 +1312,17 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgLocations.setZipCode("");
 			}
+			
+			 if(StringUtils.isNotBlank(clientDTO.getAddress())){
+				 orgLocations.setOrgLocationAddress(clientDTO.getAddress());
+			 }
+			 
+			 if(StringUtils.isNotBlank(clientDTO.getBillingAddress())){
+				 orgLocations.setBillingAddress(clientDTO.getBillingAddress());
+			 }else{
+				 orgLocations.setBillingAddress("");
+			 }
+			
 
 			/*
 			 * if(jsonObj.getString(emailId) !=null &&
@@ -890,6 +1331,27 @@ public class ClientServiceImpl implements ClientService {
 			 * orgLocations.setEmail(""); }
 			 */
 			orgLocationsForElk = orgLocationService.updateOrgLocations(orgLocations);
+			
+			if(clientDTO.getCustomFormData() !=null) {
+				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+					if(customFields!= null && customFields.getCustomFormFieldId() > 0) {
+						ClientCustomFieldData clientCustomFields = null;
+						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+							clientCustomFields = clientCustomFieldDataService.getClientCustomFieldDataById(customFields.getEntityId());
+						}else {
+							clientCustomFields = new ClientCustomFieldData();
+						}
+					clientCustomFields.setOrg(orgLocationsForElk.getOrg());
+					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					clientCustomFields.setOrglocationsFormFields(orgFormField);
+					clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					}
+					
+				}	
+			}
+			
+			
 		} else {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "ORG RELATIONS"));
 			throw new SourceLeadObjectNotFoundException(message.toString());
@@ -927,8 +1389,21 @@ public class ClientServiceImpl implements ClientService {
 			User editUser = null;
 			if (StringUtils.isNotBlank(clientDTO.getExistingSpocUserId())) {
 				User existingUser = userService.getUserById(Long.parseLong(clientDTO.getExistingSpocUserId()));
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(loginUser.getId(),
-						orgLocation.getId());
+				UserRole userRole = null;
+				Candidate candidate = null;
+				Employees employee = null;
+				
+				if (null != type && !"".equalsIgnoreCase(type) && "Client".equalsIgnoreCase(type)) {
+					userRole = userRoleService.getUserRoleByUserIdAndLocationId(existingUser.getId(),
+							orgSpoc.getClientLocationId().getId());
+					candidate = candidateService.getCandidateByConsultantUserId(existingUser.getId(), orgSpoc.getClientLocationId().getId());
+					employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(existingUser.getId(), orgSpoc.getClientLocationId().getId());
+				}else {
+					userRole = userRoleService.getUserRoleByUserIdAndLocationId(existingUser.getId(),
+							orgSpoc.getVendorLocationId().getId());
+					candidate = candidateService.getCandidateByConsultantUserId(existingUser.getId(), orgSpoc.getVendorLocationId().getId());
+					employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(existingUser.getId(), orgSpoc.getVendorLocationId().getId());
+				}
 
 				if (StringUtils.isNotBlank(clientDTO.getFirstName())) {
 					existingUser.setFirstName(clientDTO.getFirstName());
@@ -940,20 +1415,44 @@ public class ClientServiceImpl implements ClientService {
 				} else {
 					existingUser.setLastName("");
 				}
+				
 				if (StringUtils.isNotBlank(clientDTO.getPhoneNumber())) {
 					existingUser.setMobilePhone(clientDTO.getPhoneNumber());
 				} else {
 					existingUser.setMobilePhone("");
 				}
+				
+				if(StringUtils.isNotBlank(clientDTO.getExtensionNumber())){
+					existingUser.setExtensionNumber(clientDTO.getExtensionNumber());
+				}else{
+					existingUser.setExtensionNumber("");
+				}
+				
 				if (StringUtils.isNotBlank(clientDTO.getEmail())) {
 					existingUser.setEmail(clientDTO.getEmail());
 				} else {
 					existingUser.setEmail("");
 				}
 				editUser = userService.addUser(existingUser);
-
-				Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(editUser.getId(),
-						orgLocation.getId());
+				
+				
+				if(candidate != null) {
+					if (StringUtils.isNotBlank(clientDTO.getFirstName())) {
+						candidate.setFirstName(clientDTO.getFirstName());
+					} else {
+						candidate.setFirstName("");
+					}
+					if (StringUtils.isNotBlank(clientDTO.getLastName())){
+						candidate.setLastName(clientDTO.getLastName());
+					} else {
+						candidate.setLastName("");
+					}
+					
+					Candidate savedCandidate = candidateService.addCandidate(candidate);
+					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
+				}
+				
+				
 				// Update the user details for Elk search
 				commonUtil.commonUserUpdate(editUser);
 				userService.saveOrUpdateUserElkDocument(userRole, employee, editUser.getUserCode());
@@ -978,7 +1477,7 @@ public class ClientServiceImpl implements ClientService {
 
 				if (null != orgSpoc.getTempOwnerId()&& orgSpoc.getTempOwnerId().longValue() != orgSpoc.getVendorUser().getId().longValue()) {
 					user = userService.getUserById(Long.parseLong(owners));
-					sendEmailToClientContact(user, editUser, orgLocation, loginUser, orgSpoc);
+					sendEmailToClientContact(user, editUser, orgLocation, loginUser, orgSpoc, type);
 				}
 				}
 			} else if (null != type && !"".equalsIgnoreCase(type) && "Vendor".equalsIgnoreCase(type)) {
@@ -995,7 +1494,7 @@ public class ClientServiceImpl implements ClientService {
 				if (null != orgSpoc.getTempOwnerId()
 						&& orgSpoc.getTempOwnerId().longValue() != orgSpoc.getClientUser().getId().longValue()) {
 					user = userService.getUserById(Long.parseLong(owners));
-					sendEmailToClientContact(user, editUser, orgLocation, loginUser, orgSpoc);
+					sendEmailToClientContact(user, editUser, orgLocation, loginUser, orgSpoc, type);
 				}
 			}
 			}
@@ -1007,17 +1506,18 @@ public class ClientServiceImpl implements ClientService {
 		for(String owners : clientDTO.getOwner()){
 		User changedUser = userService.getUserById(Long.parseLong(owners));
 		if (!loginUser.getId().equals(changedUser.getId())) {
-			sendupdatedownerMailTopocUser(loginUser, spocId, owners, orgLocation);
+			sendupdatedownerMailTopocUser(loginUser, spocId, owners, orgLocation, type);
 		}
 		}
 		return orgSpoc;
 
 	}
 
-	private void sendupdatedownerMailTopocUser(User loginUser, Long spocId, String owner, OrgLocations orgLocation)
+	private void sendupdatedownerMailTopocUser(User loginUser, Long spocId, String owner, OrgLocations orgLocation,String type)
 			throws NumberFormatException, Exception {
 		User changedUser = userService.getUserById(Long.parseLong(owner));
 		OrgSpoc orgSpocLocation = orgSpocService.getOrgSpocById(spocId);
+		User spocUser = userService.getUserById(orgSpocLocation.getVendorUser().getId());
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(changedUser.getFirstName());
 		emailMessage.setLastName(changedUser.getLastName());
@@ -1036,45 +1536,31 @@ public class ClientServiceImpl implements ClientService {
 		globalVarsMap.put("changedOwnerName", changedUser.getFullName());
 		globalVarsMap.put("loginUser", loginUser.getFirstName());
 		StringBuilder loginBuilder = new StringBuilder();
-		globalVarsMap.put("loginLink", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append(
+		globalVarsMap.put("loginLink", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
 				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
 				.toString());
-		// setting the Recipient information
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-
-		// getting the current EmailScenario by EmailScenario unique name and entity
-		// type
-		EmailScenario emailScenario = null;
-		emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.CLIENT_OWNER_UPDATEMAIL,
-				Constants.ENTITY_TYPE_EMAIL);
-
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				signature, url, orgLocation.getOrg(), orgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
+		
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, orgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.CLIENT_OWNER_UPDATEMAIL,new ArrayList<EmailAttachment>());
 
 		EmailScenario noificationEmailScenario = emailScenarioService
 				.getEmailScenarioByUniqueName(Constants.CLIENT_OWNER_UPDATEMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = "";
-		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
+		if("Client".equalsIgnoreCase(type))
+			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
+		else
+			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpocLocation.getOrgRelations().getUUID()).toString();
+		String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(), globalVarsMap,noificationEmailScenario);
 		noificationEmailScenario.setBody(notificationbody);
 
-		emailScenerioUtil.sendNotification(actionLink, loginUser, changedUser, orgLocation, noificationEmailScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, changedUser, orgLocation, noificationEmailScenario,new HashMap<String,String>());
 
 	}
 
 	private void sendEmailToClientContact(User user, User editUser, OrgLocations orgLocation, User loginUser,
-			OrgSpoc orgSpoc) throws Exception {
+			OrgSpoc orgSpoc,String type) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(editUser.getFirstName());
 		emailMessage.setLastName(editUser.getLastName());
@@ -1108,43 +1594,30 @@ public class ClientServiceImpl implements ClientService {
 			}
 		}
 
-		globalVarsMap.put("clientFirstName", emailMessage.getFirstName());
-		globalVarsMap.put("clientLastName", emailMessage.getLastName());
-		globalVarsMap.put("loginUser", emailMessage.getFromName());
-		globalVarsMap.put("loginOrgName", orgLocation.getOrgLocationName());
-		globalVarsMap.put("ownerName", user.getFirstName());
+		globalVarsMap.put("ClientFirstName", emailMessage.getFirstName());
+		globalVarsMap.put("ClientLastName", emailMessage.getLastName());
+		globalVarsMap.put("LoginUser", emailMessage.getFromName());
+		globalVarsMap.put("LoginOrgName", orgLocation.getOrgLocationName());
+		globalVarsMap.put("OwnerName", user.getFirstName());
 		globalVarsMap.put("ownerEmail", user.getEmail());
 
-		// setting the Recipient information
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
-		// getting the current EmailScenario by EmailScenario unique name and entity
-		// type
-		EmailScenario emailScenario = null;
-		emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT,
-				Constants.ENTITY_TYPE_EMAIL);
-
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
-				signature, url, orgLocation.getOrg(), orgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, orgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.EDIT_CLIENTCONTACT,new ArrayList<EmailAttachment>());
 
 		EmailScenario noificationEmailScenario = emailScenarioService
 				.getEmailScenarioByUniqueName(Constants.EDIT_CLIENTCONTACT, Constants.ENTITY_TYPE_NOTIFICATION);
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		//&clientOrgLocationId="+orgSpoc.getOrgRelations().getResponderLocationId()+"&orgRelationId="+orgSpoc.getOrgRelations().getId()+"&clientName="+"reject client"
 		String actionLink = "";
-		String rejectActionLink = "";
+		if("Client".equalsIgnoreCase(type))
+			  actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("vendorsList?contactsTab=contactsTab&orgRelationUUID="+orgSpoc.getOrgRelations().getUUID()).toString();
+		else
+			actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("clientDashboard?contactsTab=contactsTab&orgRelationUUID="+orgSpoc.getOrgRelations().getUUID()).toString();
+		 String rejectActionLink = "";
 		String spocUUID = "";
-		String notificationbody = emailScenerioUtil.buildTempBody(noificationEmailScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(), globalVarsMap,noificationEmailScenario);
 		noificationEmailScenario.setBody(notificationbody);
 
 		OrgLocations clientOrgLocation = null;
@@ -1210,11 +1683,11 @@ public class ClientServiceImpl implements ClientService {
 
 			StringBuilder linkBuilder = new StringBuilder();
 			globalVarsMap.put("faqLink", linkBuilder.append(
-					"<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>Click Here</a>")
+					"<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>Click Here</a>")
 					.toString());
 
 			StringBuilder loginBuilder = new StringBuilder();
-			globalVarsMap.put("loginURL", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append(
+			globalVarsMap.put("loginURL", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
 					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
 					.toString());
 
@@ -1239,8 +1712,8 @@ public class ClientServiceImpl implements ClientService {
 					.toString());
 
 		} else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			globalVarsMap.put("firstName", emailMessage.getFirstName());
-			globalVarsMap.put("lastName", emailMessage.getLastName());
+			globalVarsMap.put("FirstName", emailMessage.getFirstName());
+			globalVarsMap.put("LastName", emailMessage.getLastName());
 			globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());
 			globalVarsMap.put("clientLastName", orgSpoc.getVendorUser().getLastName());
 			globalVarsMap.put("clientOrgName", orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
@@ -1257,7 +1730,7 @@ public class ClientServiceImpl implements ClientService {
 
 			StringBuilder linkBuilder = new StringBuilder();
 			globalVarsMap.put("faqLink", linkBuilder.append(
-					"<a href='http://support.sourcelead.com/faq' target='_blank' style='outline:none; border:none;'>Click Here</a>")
+					"<a href='http://www.sourcelead.com/contact.html' target='_blank' style='outline:none; border:none;'>Click Here</a>")
 					.toString());
 
 			StringBuilder fbLinkBuilder = new StringBuilder();
@@ -1281,7 +1754,7 @@ public class ClientServiceImpl implements ClientService {
 					.toString());
 
 			StringBuilder loginBuilder = new StringBuilder();
-			globalVarsMap.put("loginURL", loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append(
+			globalVarsMap.put("loginURL", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
 					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
 					.toString());
 		}
@@ -1295,18 +1768,24 @@ public class ClientServiceImpl implements ClientService {
 		EmailScenario emailScenario = null;
 
 		if (Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT,
-					Constants.ENTITY_TYPE_EMAIL);
+			 if(orgLocations != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ACCEPT_CLIENT,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+				   }
 		} else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR,
-					Constants.ENTITY_TYPE_EMAIL);
+			 if(orgLocations != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ACCEPT_VENDOR,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+				   }
+			
 		}
-
 		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
+		 String url = sourceleadUrl;
 
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
@@ -1333,22 +1812,40 @@ public class ClientServiceImpl implements ClientService {
 		emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		emailMessage.setCreatedBy(loginUser.getUserCode());
 		StringBuilder emailMsgBuilder = new StringBuilder();
-		emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ")
-				.append(loginUser.getLastName()).toString());
+		/*emailMessage.setFromName(emailMsgBuilder.append(loginUser.getFirstName()).append(" ")
+				.append(loginUser.getLastName()).toString());*/
 
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
+		StringBuilder orgSpocUser = new StringBuilder();
+		
 		if (Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())) {
+			if (null != orgSpoc.getVendorUser().getLastName()) {
+				emailMessage.setFromName(orgSpocUser.append(orgSpoc.getVendorUser().getFirstName())
+						.append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+			} else {
+				emailMessage.setFromName(
+						orgSpocUser.append(orgSpoc.getVendorUser().getFirstName()).toString());
+			}
 			globalVarsMap.put("firstName", emailMessage.getFirstName());
 			globalVarsMap.put("lastName", emailMessage.getLastName());
 			globalVarsMap.put("vendorFirstName", orgSpoc.getClientUser().getFirstName());
 			globalVarsMap.put("vendorLastName", orgSpoc.getClientUser().getLastName());
 			globalVarsMap.put("vendorOrgName", orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
 			globalVarsMap.put("signature", "Sourcelead Team");
-		} else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			globalVarsMap.put("firstName", emailMessage.getFirstName());
-			globalVarsMap.put("lastName", emailMessage.getLastName());
+		}
+		
+		else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
+			if (null != orgSpoc.getVendorUser().getLastName()) {
+				emailMessage.setFromName(orgSpocUser.append(orgSpoc.getVendorUser().getFirstName())
+						.append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+			} else {
+				emailMessage.setFromName(
+						orgSpocUser.append(orgSpoc.getVendorUser().getFirstName()).toString());
+			}
+			globalVarsMap.put("FirstName", emailMessage.getFirstName());
+			globalVarsMap.put("LastName", emailMessage.getLastName());
 			globalVarsMap.put("clientFirstName", orgSpoc.getVendorUser().getFirstName());
 			globalVarsMap.put("clientLastName", orgSpoc.getVendorUser().getLastName());
 			globalVarsMap.put("clientOrgName", orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
@@ -1360,21 +1857,30 @@ public class ClientServiceImpl implements ClientService {
 
 		// getting the current EmailScenario by EmailScenario unique name and entity
 		// type
-		EmailScenario emailScenario = null;
-
+		
+		//getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = null;
 		if (Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_CLIENT,
-					Constants.ENTITY_TYPE_EMAIL);
+			//getting the current EmailScenario by EmailScenario unique name and entity type
+			 if(orgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.REJECT_CLIENT,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_CLIENT,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		} else if (Constants.VENDOR.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_VENDOR,
-					Constants.ENTITY_TYPE_EMAIL);
+			 if(orgLocations != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.REJECT_VENDOR,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_VENDOR,Constants.ENTITY_TYPE_EMAIL);
+				   }
 		}
+		
 
 		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
+		 String url = sourceleadUrl;
 
 		// construct HTML template using required data
 		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,
@@ -1421,11 +1927,11 @@ public class ClientServiceImpl implements ClientService {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : anyKeyWordArray) {
 				BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper
-						.getMatchQueryBuilderListForClientVendor(keywd);
-				if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						anyBoolSubQueryBuilder.should(matchQueryBuilder);
+				ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper
+						.getQueryBuilderListForClientVendor(keywd);
+				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						anyBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}
@@ -1524,13 +2030,13 @@ public class ClientServiceImpl implements ClientService {
 			BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 			for (String keywd : anyKeyWordArray) {
 				BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-				// ArrayList<MatchQueryBuilder> matchQueryBuilderList =
-				// getMatchQueryBuilderList(keywd);
-				ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper
-						.getMatchQueryBuilderListForClientVendor(keywd);
-				if (matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()) {
-					for (MatchQueryBuilder matchQueryBuilder : matchQueryBuilderList) {
-						anyBoolSubQueryBuilder.should(matchQueryBuilder);
+				// ArrayList<QueryBuilder> QueryBuilderList =
+				// getQueryBuilderList(keywd);
+				ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper
+						.getQueryBuilderListForClientVendor(keywd);
+				if (QueryBuilderList != null && !QueryBuilderList.isEmpty()) {
+					for (QueryBuilder QueryBuilder : QueryBuilderList) {
+						anyBoolSubQueryBuilder.should(QueryBuilder);
 					}
 					anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 				}

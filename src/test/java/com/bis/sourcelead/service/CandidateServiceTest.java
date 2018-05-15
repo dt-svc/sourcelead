@@ -124,7 +124,7 @@ public class CandidateServiceTest {
 		public void getCandidatesListByOrgLocationID() throws Exception{
 			
 			List<Candidate> candidateList = new ArrayList<>();
-			candidateList = candidateService.getCandidatesListByOrgLocationID(1l,1l,Constants.CANDIDATE_ACTIVE,"","All","Y");
+			candidateList = candidateService.getCandidatesListByOrgLocationID(1l,1l,Constants.CANDIDATE_ACTIVE,"","All","Y","","","");
 			logger.info("getCandidatesListByOrgLocationID " + candidateList.size());
 
 			

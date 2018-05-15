@@ -180,7 +180,7 @@ public class Html2PdfUtil {
 						}
 		            }
 	                else if(matchPattern.group().equalsIgnoreCase("[Associate Name]") || matchPattern.group().equalsIgnoreCase("[Employee Name]")){
-		            	if(null != contracts.getRequirementSubmission().getId()){
+		            	if(contracts.getRequirementSubmission() != null && null != contracts.getRequirementSubmission().getId()){
 			            	RequirementSubmission reqSub = requirementSubmissionService.getRequirementSubmissionById(contracts.getRequirementSubmission().getId());
 			            	if(null != reqSub.getCandidate().getLastName()){
 								matchPattern.appendReplacement(sb, reqSub.getCandidate().getFirstName()+" "+reqSub.getCandidate().getLastName());	
@@ -192,8 +192,8 @@ public class Html2PdfUtil {
 		            		matchPattern.appendReplacement(sb,"");
 		            	}
 	                }
-		            else if(matchPattern.group().equalsIgnoreCase("[Requirement Title]")){
-		            	if(null !=contracts.getRequirementSubmission().getRequirement().getId()){
+		            else if(matchPattern.group().equalsIgnoreCase("[Job Title]") || matchPattern.group().equalsIgnoreCase("[Requirement Title]")){
+		            	if(contracts.getRequirementSubmission() != null && null !=contracts.getRequirementSubmission().getRequirement().getId()){
 				            	Requirement req = requirementService.getRequirementByRequirementId(contracts.getRequirementSubmission().getRequirement().getId());
 			                    matchPattern.appendReplacement(sb, req.getJobTitle());
 		            	}
@@ -205,7 +205,7 @@ public class Html2PdfUtil {
 	                }
 	                // need to know about offer rate
 		           else if(matchPattern.group().equalsIgnoreCase("[Offer Rate]")){
-		        	   if(null !=contracts.getRequirementSubmission().getId()){
+		        	   if(contracts.getRequirementSubmission() != null && null !=contracts.getRequirementSubmission().getId()){
 		        		   RequirementOffers requirementOffers =  requirementOffersService.getRequirementOfferSubmissionById(contracts.getRequirementSubmission().getId());
 		        		   matchPattern.appendReplacement(sb,requirementOffers.getAmount());
 		        	   }
@@ -217,19 +217,23 @@ public class Html2PdfUtil {
 	                   matchPattern.appendReplacement(sb, contracts.getBillingRateType());
 	                }
 	                
-		            else if(matchPattern.group().equalsIgnoreCase("[Billing Rate]")||matchPattern.group().equalsIgnoreCase("[Rate]")){
+		            else if(matchPattern.group().equalsIgnoreCase("[Billing Rate]")||matchPattern.group().equalsIgnoreCase("[Rate]") || matchPattern.group().equalsIgnoreCase("[Billing Amount]")){
 		            	if(null !=contracts.getBillingAmount()){
 		            		matchPattern.appendReplacement(sb, contracts.getBillingAmount());
 		            	}
 	                }
-		            else if(matchPattern.group().equalsIgnoreCase("[Overtime]")){
+		            else if(matchPattern.group().equalsIgnoreCase("[Overtime]") || matchPattern.group().equalsIgnoreCase("[Overtime Hours]")){
 		            	if(null !=contracts.getOverTimeHours()){
 		            		matchPattern.appendReplacement(sb, contracts.getOverTimeHours());
+		            	}else {
+		            		matchPattern.appendReplacement(sb, "");
 		            	}
 	                }
-		            else if(matchPattern.group().equalsIgnoreCase("[Payment Term]")){
+		            else if(matchPattern.group().equalsIgnoreCase("[Payment Term]") || matchPattern.group().equalsIgnoreCase("[Payment Frequency]")){
 		            	if(null !=contracts.getPaymentTerm()){
 		            		matchPattern.appendReplacement(sb, contracts.getPaymentTerm());
+		            	}else {
+		            		matchPattern.appendReplacement(sb, "");
 		            	}
 	                }
 	              
@@ -270,8 +274,8 @@ public class Html2PdfUtil {
 		            	}
 		            } 
 		            else if(matchPattern.group().equalsIgnoreCase("[Billing Cycle]")){
-		            	if(null != contracts.getBillingPer()){
-		            		matchPattern.appendReplacement(sb, contracts.getBillingPer());
+		            	if(null != contracts.getInvoiceFrequency()){
+		            		matchPattern.appendReplacement(sb, contracts.getInvoiceFrequency());
 		            	}
 		            } 
 	        		else if(matchPattern.group().equalsIgnoreCase("[Employee Location]")){

@@ -3,10 +3,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
-<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
-<script src="resources/js/light.js?staticTime=${staticTime}"></script>
-<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -166,7 +163,7 @@ $(document).ready(function(){
 
 
 <jsp:include page="../masterFooter.jsp" />
-<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div> 
+<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div> 
 
 
 
@@ -362,7 +359,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-success">Submitted</span>';
                         
-              result = result +'<img src="resources/images/applied_icon.png" title="Submitted" alt="Submitted">';
+              result = result +'<img src="/resources/images/applied_icon.png" title="Submitted" alt="Submitted">';
               if(json['submittedByMeJobs'] > 0){
             	  result = result +'<a href="#" onClick="recruiterSubmttedJobList(\''+startDate+'\',\''+endDate+'\',\'\');"><span class="count text-primary">'+json['submittedByMeJobs']+'</span></a>';  
               }else{
@@ -374,7 +371,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-info">Shortlisted</span>';
-              result = result +'<img src="resources/images/short_listed.png" title="Shortlisted" alt="Shortlisted">';
+              result = result +'<img src="/resources/images/short_listed.png" title="Shortlisted" alt="Shortlisted">';
               if(json['shortlistJobs'] > 0){
             	  result = result +'<a href="#" onClick="recruiterSubmttedJobList(\''+startDate+'\',\''+endDate+'\',\'SHORTLIST\');"><span class="count text-primary">'+json['shortlistJobs']+'</span></a>';  
               }else{
@@ -387,7 +384,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-success">Interviews</span>';
-              result = result +'<img src="resources/images/interview_icons.png" title="Interviews" alt="Interviews">';
+              result = result +'<img src="/resources/images/interview_icons.png" title="Interviews" alt="Interviews">';
               if(json['interviews'] > 0){
             	  result = result +'<a href="#" onClick="recruiterSubmttedJobList(\''+startDate+'\',\''+endDate+'\',\'INTERVIEW\');"><span class="count text-primary">'+json['interviews']+'</span></a>';  
               }else{
@@ -401,7 +398,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-info">Offered</span>';
                         
-              result = result +'<img src="resources/images/offered_icon.png" title="Offered" alt="Offered">';
+              result = result +'<img src="/resources/images/offered_icon.png" title="Offered" alt="Offered">';
               if(json['offeredJobs'] > 0){
             	  result = result +'<a href="#" onClick="recruiterSubmttedJobList(\''+startDate+'\',\''+endDate+'\',\'OFFERMADE\');"><span class="count text-primary">'+json['offeredJobs']+'</span></a>';  
               }else{
@@ -411,21 +408,23 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'</div>';
 
               result = result +'</div>';
-              result = result +'<div class="col-sm-6 col-md-3">';
+              
+            /*   result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-primary">Hired</span>';
               
-              result = result +'<img src="resources/images/hired_icon.png" title="Hired" alt="Hired">';
+              result = result +'<img src="/resources/images/hired_icon.png" title="Hired" alt="Hired">';
               result = result +'<span class="count">0</span>';
               result = result +'</div>';
 
-              result = result +'</div>';
+              result = result +'</div>'; */
+              
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-danger">Rejected';
               result = result +'</span>';
               
-              result = result +'<img src="resources/images/reject_icon.png" title="Rejected" alt="Rejected">';
+              result = result +'<img src="/resources/images/reject_icon.png" title="Rejected" alt="Rejected">';
               if(json['rejectedJobs'] > 0){
             	  result = result +'<a href="#" onClick="recruiterSubmttedJobList(\''+startDate+'\',\''+endDate+'\',\'REJECTED\');"><span class="count text-primary">'+json['rejectedJobs']+'</span></a>';
               }else{
@@ -469,7 +468,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-warning">Referred By Me</span>';
-              result = result +'<img src="resources/images/refer-icon.png" title="Referrals" alt="Referrals">';
+              result = result +'<img src="/resources/images/refer-icon.png" title="Referrals" alt="Referrals">';
               if(json['referByMeJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredByMeProtletList(\''+startDate+'\',\''+endDate+'\',\'referByMe\');"><span class="count text-primary">'+json['referByMeJobs']+'</span></a>';  
               }else{
@@ -481,7 +480,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-success">Applied</span>';
                         
-              result = result +'<img src="resources/images/applied_icon.png" title="Applied" alt="Applied">';
+              result = result +'<img src="/resources/images/applied_icon.png" title="Applied" alt="Applied">';
               if(json['appliedJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredByMeProtletList(\''+startDate+'\',\''+endDate+'\',\'\');"><span class="count text-primary">'+json['appliedJobs']+'</span></a>';  
               }else{
@@ -493,7 +492,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-info">Shortlisted</span>';
-              result = result +'<img src="resources/images/short_listed.png" title="Shortlisted" alt="Shortlisted">';
+              result = result +'<img src="/resources/images/short_listed.png" title="Shortlisted" alt="Shortlisted">';
               if(json['shortlistJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredByMeProtletList(\''+startDate+'\',\''+endDate+'\',\'SHORTLIST\');"><span class="count text-primary">'+json['shortlistJobs']+'</span></a>';  
               }else{
@@ -506,7 +505,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-success">Interviews</span>';
-              result = result +'<img src="resources/images/interview_icons.png" title="Interviews" alt="Interviews">';
+              result = result +'<img src="/resources/images/interview_icons.png" title="Interviews" alt="Interviews">';
               if(json['interviews'] > 0){
             	  result = result +'<a href="#" onClick="getReferredByMeProtletList(\''+startDate+'\',\''+endDate+'\',\'INTERVIEW\');"><span class="count text-primary">'+json['interviews']+'</span></a>';  
               }else{
@@ -520,7 +519,7 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-info">Offered</span>';
                         
-              result = result +'<img src="resources/images/offered_icon.png" title="Offered" alt="Offered">';
+              result = result +'<img src="/resources/images/offered_icon.png" title="Offered" alt="Offered">';
               if(json['offeredJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredByMeProtletList(\''+startDate+'\',\''+endDate+'\',\'OFFERMADE\');"><span class="count text-primary">'+json['offeredJobs']+'</span></a>';  
               }else{
@@ -530,21 +529,25 @@ function loadJobSummaryDoNutChart(appliedJobs,submittedByMeJobs,referByMeJobs){
               result = result +'</div>';
 
               result = result +'</div>';
+              
+/*               
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-primary">Hired</span>';
               
-              result = result +'<img src="resources/images/hired_icon.png" title="Hired" alt="Hired">';
+              result = result +'<img src="/resources/images/hired_icon.png" title="Hired" alt="Hired">';
               result = result +'<span class="count">0</span>';
               result = result +'</div>';
 
-              result = result +'</div>';
+              result = result +'</div>'; */
+              
+              
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-danger">Rejected';
               result = result +'</span>';
               
-              result = result +'<img src="resources/images/reject_icon.png" title="Rejected" alt="Rejected">';
+              result = result +'<img src="/resources/images/reject_icon.png" title="Rejected" alt="Rejected">';
               if(json['rejectedJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredByMeProtletList(\''+startDate+'\',\''+endDate+'\',\'REJECTED\');"><span class="count text-primary">'+json['rejectedJobs']+'</span></a>';
               }else{

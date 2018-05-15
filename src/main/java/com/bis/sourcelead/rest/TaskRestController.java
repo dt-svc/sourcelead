@@ -9,7 +9,11 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.xmlbeans.impl.xb.xmlschema.SpaceAttribute.Space;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -19,12 +23,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AddTaskDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -34,8 +42,10 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
 @PropertySource("${propertyLocation:app.properties}")
+@RequestMapping("/app")
 public class TaskRestController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(TaskRestController.class);
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -61,11 +71,31 @@ public class TaskRestController {
 	  * @throws Exception
 	  */
 	 @RequestMapping(value = "/storeTasks" , method = RequestMethod.POST)
-	 public @ResponseBody  String storeTasks(@RequestParam(value="json", required=false) String json,HttpServletRequest request) throws Exception {
-		    String json1 = "{"+json+"}";
-		    JSONObject jsonObj = new JSONObject(json1);
-		    String tasks =  taskService.saveTasks(jsonObj);
-		    return tasks;		
+	 public @ResponseBody  Response<String> storeTasks(AddTaskDTO addTaskDTO,HttpServletRequest request) throws Exception {
+		 Response<String> response=new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 try{
+			if(user != null){
+				if(Validator.validate(addTaskDTO)){
+					 String tasks =  taskService.saveTasksDTO(addTaskDTO);
+					 response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					
+				}else{
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} else{
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		 }catch (Exception e) {
+			 response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		    return response;		
 			 
 	   }
 	 
@@ -138,7 +168,7 @@ public class TaskRestController {
 				ur.setUserId(ur.getUser().getId());
 				if(null != ur.getUser()){
 					if(null != ur.getUser().getLastName()){
-						ur.setUserName(userName.append(ur.getUser().getFirstName()).append("").append(ur.getUser().getLastName()).toString());
+						ur.setUserName(userName.append(ur.getUser().getFirstName()).append(" ").append(ur.getUser().getLastName()).toString());
 					}else{
 						ur.setUserName(userName.append(ur.getUser().getFirstName()).toString());
 					}

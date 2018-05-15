@@ -13,6 +13,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,11 +47,13 @@ import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ConnectionsService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -69,11 +72,13 @@ import com.bis.sourcelead.service.TeamMembersService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.util.UserLoginHelper;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
@@ -95,6 +100,9 @@ public class LoginSessionController {
 	
 	@Autowired
 	TabsService  tabsService;
+	
+	@Autowired
+	UserLoginHelper userLoginHelper;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -161,37 +169,98 @@ public class LoginSessionController {
 	
 	@Autowired
 	OrgService orgService;
-
+	
+	@Autowired
+	ConnectionsService connectionsService;
+	
+	@Autowired
+	UserLoginLogoutSessionService userLoginLogoutSessionService;
 	
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
 	
-	@RequestMapping(value = "/dashboard" , method = RequestMethod.GET)
+	@RequestMapping(value = "/app/dashboard" , method = { RequestMethod.GET, RequestMethod.POST })
 	   public ModelAndView loginSession(HttpServletRequest request,Authentication authentication,
 			   @RequestParam(value = "requirementUUID", required = false) String requirementUUID,
-			   @RequestParam(value = "referUUID", required = false) String referUUID,HttpServletResponse response) throws Exception {
+			   @RequestParam(value = "referUUID", required = false) String referUUID,HttpServletResponse response,
+			   @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
+			   @RequestParam(value = "userRoleId", required = false) Long userRoleId,
+			   @RequestParam(value = "switchUserType", required = false) String switchUserType,
+			   @RequestParam(value = "loginOrgLocatonId", required = false) Long loginOrgLocatonId) throws Exception {
 		
-		User user = userService.findByUserName(authentication.getName());
-		UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+		
 		ModelAndView model = new ModelAndView();
+		if(authentication == null) {
+			model.setViewName("login");
+			return model;
+		}
+		SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
+		User user = userService.findByUserName(authentication.getName());
+		UserRole userRole = null;
+		OrgLocations orgLocations = null;
+		if(orgLocationId != null){
+			orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+			userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocationId);
+		}else{
+			if(userRoleId == null){
+				userRoleId =  (Long) request.getSession().getAttribute("userRoleId");
+				if(userRoleId == null)
+					userRoleId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userRoleId");
+				if(userRoleId != null){
+					userRole = userRoleService.getUserRoleById(userRoleId);
+					user = userRole.getUser();
+					orgLocations = userRole.getOrgLocations();
+					request.getSession().removeAttribute("userRoleId");
+				}else{
+					userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+				}
+			}else{
+				userRole = userRoleService.getUserRoleById(userRoleId);
+				user = userRole.getUser();
+				orgLocations = userRole.getOrgLocations();
+			}
+		}
+		
+		
 		Collection<Tabs> tabsList = null;
-		Integer associatesTabsCount = 0;
+		Integer associatesTabsCount = 0; 
 		Integer billingTabsCount = 0;
 		Integer expensesTabCount = 0;
+		Integer resourcesTabCount = 0;
+		
+		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
+		if(userLoginSession != null){
+			SourceLeadSessionManager.setSessionAttribute(request, "isAuthenticated", userLoginSession.getAuthenticated());
+		}
+		
+		/*if(userLoginSession != null && userLoginSession.getAuthenticated() != null){
+			if(!Constants.YES.equalsIgnoreCase(userLoginSession.getAuthenticated())){
+				if(Constants.YES.equalsIgnoreCase(orgLocations.getLoginSecurity())){
+					model.addObject("userId",user.getId());
+					model.addObject("userRoleId",userRole.getId());
+					model.addObject("emailId",user.getEmail());
+					if(StringUtils.isNotBlank(user.getMobilePhone()))
+						model.addObject("mobilePhone",user.getMobilePhone());
+					model.setViewName("otpVerification");
+					return model;
+				}
+			}
+		}*/
+		
+		//commented By Pavan jampana -- switchuserType value will be available in the session no-need to set again.
+//		SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
+		List<SourceleadActions> actionsList = null;
 		
 		if(!userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){
-			OrgLocations orgLocations = userRole.getOrgLocations();
+			orgLocations = userRole.getOrgLocations();
 			Org org = orgLocations.getOrg();
 			List<Long> modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
+			actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
 			if(org.getOrgType().equalsIgnoreCase("Company")){
-				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
+				tabsList = tabsService.getTabsListByOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
 				for(Tabs tabs : tabsList){
-					
-					if(tabs.getTabName().equalsIgnoreCase("Associates List") || tabs.getTabName().equalsIgnoreCase("On & Off Boarding")){
-						associatesTabsCount = associatesTabsCount+1;
-					}
 					
 					if(tabs.getTabName().equalsIgnoreCase("Receivable") || tabs.getTabName().equalsIgnoreCase("Payables")){
 						billingTabsCount = billingTabsCount+1;
@@ -200,12 +269,16 @@ public class LoginSessionController {
 					if(tabs.getTabName().equalsIgnoreCase("My Expenses") || tabs.getTabName().equalsIgnoreCase("Expenses Approval")){
 						expensesTabCount = expensesTabCount+1;
 					}
+					
+					if(tabs.getTabName().equalsIgnoreCase("Blog") || tabs.getTabName().equalsIgnoreCase("User Manuals")){
+						resourcesTabCount = resourcesTabCount+1;
+					}
 				}
 				
 			}
 
 			SourceLeadSessionManager.setSessionAttribute(request, "sourceleadUrl", sourceleadUrl);
-			SourceLeadSessionManager.setSessionAttribute(request, "googleMapsLocationApiKey", googleMapsLocationApiKey);
+			
 			
 			if(isNullOrEmpty(orgLocations.getDateFormat()) || isNullOrEmpty(orgLocations.getGeneratedUserId())){
 				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "N");
@@ -224,8 +297,9 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
 			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
+			SourceLeadSessionManager.setSessionAttribute(request, "resourcesTabCount", resourcesTabCount);
 			
-			Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+			Candidate candidate = candidateService.getCandidateByConsultantUserId(userRole.getUser().getId(), orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 			
@@ -234,10 +308,10 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
 			
 			
-			boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(user.getId(),orgLocations.getId());
+			boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(userRole.getUser().getId(),orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "isSuperUser", isSuperUser);
 			
-			boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(user.getId(),org.getId());
+			boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(userRole.getUser().getId(),org.getId());
 			if(isSuperAdmin == true){
 				SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.YES);
 			}else{
@@ -263,6 +337,9 @@ public class LoginSessionController {
 			userRole.setNewlyLoginUser(Constants.NO);
 			userRoleService.addUserRole(userRole);
 			
+
+			String userName = (String) authentication.getPrincipal();
+			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
 			setLoginSession(request, authentication,user,userRole);
 			
 			if("ROLE_PRODUCTION_SUPPORT".equalsIgnoreCase(userRole.getRoles().getRoleName())){
@@ -271,10 +348,12 @@ public class LoginSessionController {
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", orgLocationsList);
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", orgLocationsList.size());
 					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", userRole.getRoles().getRoleName());
+					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserDisplayName", userRole.getRoles().getDisplayName());
+					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginOrgName", userRole.getRoles().getOrgLocations().getOrgLocationName());
 					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportOrgLocationId", userRole.getRoles().getOrgLocations().getId());
 				}
 			}else{
-				List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
+				List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(userRole.getUser().getId());
 				if(userSpocRolesList.size() > 1){
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
@@ -283,6 +362,7 @@ public class LoginSessionController {
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
+			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 			
 			
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");
@@ -296,50 +376,66 @@ public class LoginSessionController {
 			String currentDate = sdf.format(new Date());
 			Date todayDate = sdf.parse(currentDate);
 			
-			CandidateOffBoarding candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
-			if(null != candidateOffBoarding){
-				
-				String endDate = sdf.format(candidateOffBoarding.getEndDate());
-				Date onboardEndDte = sdf.parse(endDate);
-				if(onboardEndDte.equals(todayDate) || todayDate.after(onboardEndDte)){
-					SourceLeadSessionManager.setSessionAttribute(request, "candidateOffBoarding", candidateOffBoarding);
-					if(candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("N")){
-						model.setViewName("offboard/offboardStep1");
-					}else{
-						model.setViewName("offboard/offboardUser");
-					}
-				}else{
-					model.setViewName("dashboard");
-				}
+			
+			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded()) && orgLocations.getIsCompanyOnboarded().equalsIgnoreCase(Constants.NO)) {
+				List<LookUpData> bussinessTypesList = lookUpDataService.getLookUpDataByCategory(Constants.COMPANY_ONBOARD_BUSINESS_TYPE);
+				model.addObject("bussinessTypesList", bussinessTypesList);
+				List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
+				model.addObject("timezoneList", timezoneList);
+				model.setViewName("onboard/companyOnboard");
 			}else{
-				
-				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				if(null != candidateOnBoarding){
-					SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
-					if(candidateOnBoarding.getManagerUserId()!=null){
-						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
-					}
-					if(candidateOnBoarding.getOnBoardTeamId()!=null){
-						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId", candidateOnBoarding.getOnBoardTeamId());
-					}
-					if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
-					   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
-					   model.setViewName("onboard/welcomeStep1");
+				CandidateOffBoarding candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
+				if(null != candidateOffBoarding){
+					
+					String endDate = sdf.format(candidateOffBoarding.getEndDate());
+					Date onboardEndDte = sdf.parse(endDate);
+					if(onboardEndDte.equals(todayDate) || todayDate.after(onboardEndDte)){
+						SourceLeadSessionManager.setSessionAttribute(request, "candidateOffBoarding", candidateOffBoarding);
+						if(candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("N")){
+							model.setViewName("offboard/offboardStep1");
+						}else{
+							model.setViewName("offboard/offboardUser");
+						}
 					}else{
 						model.setViewName("dashboard");
 					}
 				}else{
-					model.setViewName("dashboard");
+					
+					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(userRole.getUser().getId(), orgLocations.getId());
+					if(null != candidateOnBoarding && requirementUUID == null){
+						SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
+						if(candidateOnBoarding.getManagerUserId()!=null){
+							SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
+						}
+						if(candidateOnBoarding.getOnBoardTeamId()!=null){
+							SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId", candidateOnBoarding.getOnBoardTeamId());
+						}
+						if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
+						   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
+						   model.setViewName("onboard/welcomeStep1");
+						}else{
+							model.setViewName("dashboard");
+						}
+					}
+					else if(requirementUUID !=null && requirementUUID != ""){
+						StringBuilder redirectUrl = new StringBuilder();
+						response.sendRedirect(redirectUrl.append("requirementProfileDetails?requirementUUID=").append(requirementUUID).toString());
+						model.setViewName("professional/professionalRequirements");
+					}
+					else{
+						model.setViewName("dashboard");
+					}
+					
 				}
 			}
 			
 			List<LookUpData> skillList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 			model.addObject("skillList", skillList);
 			
-			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
+			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(userRole.getUser().getId(), orgLocations.getId());
 			model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
 			
-			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(user.getId(),orgLocations.getId());
+			Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(userRole.getUser().getId(),orgLocations.getId());
 			model.addObject("isAdmin",isAdmin);
 			SourceLeadSessionManager.setSessionAttribute(request,"isAdmin",isAdmin);
 			
@@ -348,6 +444,12 @@ public class LoginSessionController {
 		}
 		else{
 			commonUtil.highLightMenu(Constants.Dashboard, request);
+			
+			actionsList = sourceleadActionsService.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(userRole.getRoles().getId());
+			String userName = (String) authentication.getPrincipal();
+			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
+			
+			
 			setSessionUserAttributes(user,request,sourceleadUrl);
 			setSessionOrgAttributes(userRole.getOrgId(),userRole.getOrgLocations(),request);
 			tabsList = tabsService.getCrowdSourcingTabsListByRoleId(userRole.getRoles().getId());
@@ -355,15 +457,16 @@ public class LoginSessionController {
 			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
+			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "loginUserRoleId", userRole.getRoles().getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", null);
 
 			SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
-			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getUserType());
+			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 			SourceLeadSessionManager.setSessionAttribute(request, "country", user.getCountry());
 			
-			OrgLocations orgLocations = userRole.getOrgLocations();
+			orgLocations = userRole.getOrgLocations();
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 			SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
@@ -400,14 +503,17 @@ public class LoginSessionController {
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
 				StringBuilder redirectUrl = new StringBuilder();
 				if(!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)){
-					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					model.setViewName("professional/professionalRequirements");
 				}
 				else if(!isNullOrEmpty(requirementUUID) && !isNullOrEmpty(referUUID)){
-					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
+					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
+					model.setViewName("professional/professionalRequirements");
 				}
 				else{
 					if(!isNullOrEmpty(userRole.getNewlyLoginUser()) && userRole.getNewlyLoginUser().equalsIgnoreCase("Y")){
-						response.sendRedirect(redirectUrl.append("/sourcelead/professionalPraseCandidate").toString());
+						model.setViewName("professional/professionalPraseCandidate");
+						//response.sendRedirect(redirectUrl.append("/app/professionalPraseCandidate").toString());
 					}else{
 						model.setViewName("professional/professionalDashboard");
 					}
@@ -424,7 +530,8 @@ public class LoginSessionController {
 				candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.INDIVIDUAL_RECRUITER);
 				if(!isNullOrEmpty(requirementUUID)){
 					StringBuilder redirectUrl = new StringBuilder();
-					response.sendRedirect(redirectUrl.append("/sourcelead/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
+					model.setViewName("professional/professionalRequirements");
 				}else{
 					model.setViewName("recruiter/recruiterDashboard");
 				}
@@ -441,7 +548,6 @@ public class LoginSessionController {
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
-			
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
 			setTimeZone(request,orgLocations, model);
@@ -452,316 +558,6 @@ public class LoginSessionController {
 		return model;
 		
 	}
-	
-	
-	
-	@RequestMapping(value = "/dashboardLinks" , method = RequestMethod.GET)
-	   public ModelAndView loginSessionLinks(HttpServletRequest request,HttpServletResponse response,Authentication authentication,
-			   @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			   @RequestParam(value = "switchUserType", required = false) String switchUserType,
-			   @RequestParam(value = "loginOrgLocatonId", required = false) Long loginOrgLocatonId) throws Exception {
-		
-		ModelAndView model = new ModelAndView();
-		User user = userService.findByUserName(authentication.getName());
-		UserRole userRole = null;
-		UserRole productionUserRole = null;
-		Candidate candidate = null;
-		if(isNullOrEmpty(switchUserType)){
-			if(null != loginOrgLocatonId){
-				productionUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), loginOrgLocatonId);
-				if(null != productionUserRole && "ROLE_PRODUCTION_SUPPORT".equalsIgnoreCase(productionUserRole.getRoles().getRoleName())){
-					OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-					userRole = userRoleService.getUserDetailsByUserIdAndLocationId(orgLocations.getUser().getId(), orgLocationId);
-				}
-			}else{
-				userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocationId);
-			}
-			
-		}else{
-			userRole = userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(), orgLocationId, switchUserType);
-		}
-		
-		SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
-		
-		Collection<Tabs> tabsList = null;
-		List<SourceleadActions> actionsList = null;
-		if(null != userRole){
-			
-		  if(!userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){
-			
-			OrgLocations orgLocations = userRole.getOrgLocations();
-			Org org = orgLocations.getOrg();
-			
-			List<Long> modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
-			actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
-			
-			Integer associatesTabsCount = 0;
-			Integer billingTabsCount = 0;
-			Integer expensesTabCount = 0;
-			
-			if(null == productionUserRole){
-				userRole.setNewlyLoginUser(Constants.NO);
-				userRoleService.addUserRole(userRole);
-			}
-			
-			
-			if(org.getOrgType().equalsIgnoreCase("Company")){
-				tabsList = tabsService.getTabsListByOrgLocationId(modulesId, userRole.getRoles().getId(), orgLocations.getId());
-				for(Tabs tabs : tabsList){
-					
-					if(tabs.getTabName().equalsIgnoreCase("Associates List") || tabs.getTabName().equalsIgnoreCase("On & Off Boarding")){
-						associatesTabsCount = associatesTabsCount+1;
-					}
-					
-					if(tabs.getTabName().equalsIgnoreCase("Receivable") || tabs.getTabName().equalsIgnoreCase("Payables")){
-						billingTabsCount = billingTabsCount+1;
-					}
-					
-					if(tabs.getTabName().equalsIgnoreCase("My Expenses") || tabs.getTabName().equalsIgnoreCase("Expenses Approval")){
-						expensesTabCount = expensesTabCount+1;
-					}
-				}
-				
-			}
-			
-			if(isNullOrEmpty(orgLocations.getDateFormat()) || isNullOrEmpty(orgLocations.getGeneratedUserId())){
-				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "N");
-			}else{
-				SourceLeadSessionManager.setSessionAttribute(request, "settingsConfigured", "Y");
-			}
-			
-			SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
-			SourceLeadSessionManager.setSessionAttribute(request, "associatesTabsCount", associatesTabsCount);
-			SourceLeadSessionManager.setSessionAttribute(request, "billingTabsCount", billingTabsCount);
-			SourceLeadSessionManager.setSessionAttribute(request, "expensesTabCount", expensesTabCount);
-			
-			
-			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
-            SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
-            SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
-            SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
-
-			if(null != productionUserRole && "ROLE_PRODUCTION_SUPPORT".equalsIgnoreCase(productionUserRole.getRoles().getRoleName())){
-				candidate = candidateService.getCandidateByConsultantUserId(orgLocations.getUser().getId(), orgLocations.getId());
-				SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", orgLocations.getUser().getFirstName());
-				SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", orgLocations.getUser().getLastName());
-				SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", orgLocations.getUser().getEmail());
-			}else{
-				candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
-				SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
-				SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
-				SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
-			}
-			
-			
-			SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
-			SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
-			
-			boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(user.getId(),orgLocations.getId());
-			SourceLeadSessionManager.setSessionAttribute(request, "isSuperUser", isSuperUser);
-			
-			boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(user.getId(),org.getId());
-			if(isSuperAdmin == true){
-				SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.YES);
-			}else{
-				SourceLeadSessionManager.setSessionAttribute(request, "isSuperAdmin", Constants.NO);
-			}
-			
-			String[] modules = orgLocations.getModulesId().split(",");
-			for(int i = 0 ; i< modules.length ; i++){
-				if(modules[i].equalsIgnoreCase(Constants.MODULE_ATS_STR)){
-					SourceLeadSessionManager.setSessionAttribute(request, "ats", "Y");
-				}
-				
-				if(modules[i].equalsIgnoreCase(Constants.MODULE_VMS_STR)){
-					SourceLeadSessionManager.setSessionAttribute(request, "vms", "Y");
-				}
-				
-				if(modules[i].equalsIgnoreCase(Constants.MODULE_TIMESHEET_STR)){
-					SourceLeadSessionManager.setSessionAttribute(request, "timesheet", "Y");
-				}
-			}
-			
-			String userName = (String) authentication.getPrincipal();
-			SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
-			setLoginSession(request, authentication,user,userRole);
-			model.addObject("sourceleadUrl", sourceleadUrl);
-			
-			
-			if(null == productionUserRole){
-				if("ROLE_PRODUCTION_SUPPORT".equalsIgnoreCase(userRole.getRoles().getRoleName())){
-					List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredOrgLocations();
-					if(orgLocationsList.size() > 1){
-						SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", orgLocationsList);
-						SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", orgLocationsList.size());
-						SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", userRole.getRoles().getRoleName());
-						SourceLeadSessionManager.setSessionAttribute(request, "prodSupportOrgLocationId", userRole.getRoles().getOrgLocations().getId());
-						
-					}
-				}else{
-					List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
-					if(userSpocRolesList.size() > 1){
-						SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
-						SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
-						SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", null);
-						
-					}
-				}
-				
-				SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
-			}else{
-				if("ROLE_PRODUCTION_SUPPORT".equalsIgnoreCase(productionUserRole.getRoles().getRoleName())){
-					List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredOrgLocations();
-					if(orgLocationsList.size() > 1){
-						SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", orgLocationsList);
-						SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", orgLocationsList.size());
-						SourceLeadSessionManager.setSessionAttribute(request, "displayName", productionUserRole.getRoles().getDisplayName());
-					}
-				}
-				
-			}
-			
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			String currentDate = sdf.format(new Date());
-			Date todayDate = sdf.parse(currentDate);
-			
-			CandidateOffBoarding candidateOffBoarding =  candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
-			if(null != candidateOffBoarding){
-				
-				String endDate = sdf.format(candidateOffBoarding.getEndDate());
-				Date onboardEndDte = sdf.parse(endDate);
-				if(onboardEndDte.equals(todayDate) || todayDate.after(onboardEndDte)){
-					SourceLeadSessionManager.setSessionAttribute(request, "candidateOffBoarding", candidateOffBoarding);
-					if(candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("N")){
-						model.setViewName("offboard/offboardStep1");
-					}else{
-						model.setViewName("offboard/offboardUser");
-					}
-				}else{
-					model.setViewName("dashboard");
-				}
-			}else{
-				CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				if(null != candidateOnBoarding){
-					SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding", candidateOnBoarding);
-					if(candidateOnBoarding.getManagerUserId() != null){
-						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId", candidateOnBoarding.getManagerUserId().getId());
-					}
-					if(candidateOnBoarding.getOnBoardTeamId() != null){
-						SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId", candidateOnBoarding.getOnBoardTeamId());
-					}
-					if(candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")){
-					   getOnboardingDetails(candidateOnBoarding,user,orgLocations,request);
-					   model.setViewName("onboard/welcomeStep1");
-					}else{
-						model.setViewName("dashboard");
-					}
-				}else{
-					model.setViewName("dashboard");
-				}
-			}
-			
-			List<LookUpData> skillList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
-			model.addObject("skillList", skillList);
-			
-			Boolean isManagerWithSubmissionRateStatusAsRequestOrAccept = requirementService.checkLoginUserAsRequirementManagerAndSubmissionStatusAsRequestOrAccepted(user.getId(), orgLocations.getId());
-			model.addObject("isManagerWithSubmissionRateStatusAsRequestOrAccept", isManagerWithSubmissionRateStatusAsRequestOrAccept);
-			
-			setTimeZone(request,orgLocations, model);
-			
-			}
-			else{
-				commonUtil.highLightMenu(Constants.Dashboard, request);
-				
-				actionsList = sourceleadActionsService.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(userRole.getRoles().getId());
-				String userName = (String) authentication.getPrincipal();
-				SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(userName,null, buildUserAuthority(actionsList)));
-				
-				setSessionUserAttributes(user,request,sourceleadUrl);
-				setSessionOrgAttributes(userRole.getOrgId(),userRole.getOrgLocations(), request);
-				tabsList = tabsService.getCrowdSourcingTabsListByRoleId(userRole.getRoles().getId());
-				
-				SourceLeadSessionManager.setSessionAttribute(request, "tabsList", tabsList);
-				
-				SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
-				SourceLeadSessionManager.setSessionAttribute(request, "loginUserRoleId", userRole.getRoles().getId());
-				SourceLeadSessionManager.setSessionAttribute(request, "prodSupportLoginUserRole", null);
-
-				SourceLeadSessionManager.setSessionAttribute(request, "userType", userRole.getUserType());
-				SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getUserType());
-				SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
-				
-				OrgLocations orgLocations = userRole.getOrgLocations();
-				SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
-				SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
-				SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
-				SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
-				
-				SourceLeadSessionManager.setSessionAttribute(request, "loginUserFirstName", user.getFirstName());
-				SourceLeadSessionManager.setSessionAttribute(request, "loginUserLastName", user.getLastName());
-				SourceLeadSessionManager.setSessionAttribute(request, "loginUserEmail", user.getEmail());
-				
-				List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
-				if(userSpocRolesList.size() > 1){
-					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
-					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
-				}
-				
-				try {
-					Countries countries = countriesService.getCountriesByCountryName(user.getCountry());
-					if(null != countries){
-						SourceLeadSessionManager.setSessionAttribute(request, "currencyCode", countries.getCurrency());
-						SourceLeadSessionManager.setSessionAttribute(request, "loginCountryName", countries.getName());
-					}
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-							
-				if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")){
-					candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.PROFESSIONAL);
-					StringBuilder redirectUrl = new StringBuilder();
-					
-					model.setViewName("professional/professionalDashboard");
-					if(isNullOrEmpty(user.getProfessionalRegisterCountry())){
-						SourceLeadSessionManager.setSessionAttribute(request, "country", user.getLocation());
-					}else{
-						SourceLeadSessionManager.setSessionAttribute(request, "country", user.getProfessionalRegisterCountry());
-					}
-					
-					
-				}else if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
-					candidate = candidateService.getProfessionalInfoByLoginUserIdAndCandidateType(user.getId(), Constants.INDIVIDUAL_RECRUITER);
-					
-					model.setViewName("recruiter/recruiterDashboard");
-					
-					if(isNullOrEmpty(user.getRecruiterRegisterCountry())){
-						SourceLeadSessionManager.setSessionAttribute(request, "country", user.getLocation());
-					}else{
-						SourceLeadSessionManager.setSessionAttribute(request, "country", user.getRecruiterRegisterCountry());
-					}
-				}
-				
-				userRole.setNewlyLoginUser(Constants.NO);
-				userRoleService.addUserRole(userRole);
-				
-				SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
-				SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
-				
-				model.addObject("sourceleadUrl", sourceleadUrl);
-				setTimeZone(request,orgLocations, model);
-				
-			}
-		   
-		}else{
-			model.setViewName("registration/persmissionDenied");
-		}
-		
-	    return model;
-		
-	}
-	
 	
 	private void setTimeZone(HttpServletRequest request,OrgLocations orgLocations,ModelAndView model) throws Exception{
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
@@ -835,9 +631,15 @@ public class LoginSessionController {
 		//get notification count
 		String orgCode = loginOrgCode;
 		String locationCode = loginOrgLocation;
+		
 		Integer notificationCount = notificationsService.getNotificationsCountByUserId(loginUser.getId(),orgCode,locationCode);
+		
 		SourceLeadSessionManager.removeSessionAttribute(request, "notificationCount");
 		SourceLeadSessionManager.setSessionAttribute(request, "notificationCount",notificationCount);
+		
+		Long receivedConnectionCount = connectionsService.getConnectionReceivedCount(loginUser.getId());
+		SourceLeadSessionManager.removeSessionAttribute(request, "connectionReceivedCount");
+		SourceLeadSessionManager.setSessionAttribute(request, "connectionReceivedCount", receivedConnectionCount);
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		
@@ -978,6 +780,10 @@ public class LoginSessionController {
 		SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
 		SourceLeadSessionManager.setSessionAttribute(request, "orgName", orgLocations.getOrgLocationName());
 		SourceLeadSessionManager.setSessionAttribute(request, "address", orgLocations.getOrgLocationAddress());
+		  if(orgLocations.getDba() == null || orgLocations.getDba().isEmpty()){
+			  SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
+		  }
+		
 	}
 	
 	
@@ -1068,5 +874,33 @@ public class LoginSessionController {
     	List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
     	return Result;
     }
+  
+  
+
+  @RequestMapping(value = "/app/ws/userEnrolledOrgLocations" , method = RequestMethod.POST)
+  public ModelAndView userEnrolledOrgLocations(@RequestParam(value = "userName", required = false) String userName,@RequestParam(value = "password", required = false) String password ,@RequestParam(value = "requirementUUID", required = false) String requirementUUID,HttpServletRequest request) throws Exception {
+	  ModelAndView model = new ModelAndView();
+	  User user = userService.findByUserName(userName);
+
+		List<UserRole> userSpocRolesList = null;
+		if (user != null)
+			userSpocRolesList = userRoleService.getUserSpocsListByUserId(user.getId());
+		
+		String ipAddress = userLoginHelper.getClientIpAddr(request);
+		
+		boolean alreadyVerifiedBefore = userLoginLogoutSessionService.validatePreviouslyAuthenticatedByUserIdAndIpAddress(ipAddress,user.getId());
+		model.addObject("alreadyVerifiedBefore", alreadyVerifiedBefore);
+		model.addObject("username", userName);
+//		model.addObject("password", password);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("requirementUUID", requirementUUID);
+		model.addObject("roleList", userSpocRolesList);
+		model.setViewName("userEnrolledLocations");
+		return model;
+	}
+
+  
+  
+  
 	
 }

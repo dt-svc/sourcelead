@@ -44,19 +44,19 @@
                value: "java",
                label: "Java",
                desc: "write once run anywhere",
-               img : "resources/images/at.png",
+               img : "/resources/images/at.png",
             },
             {
                value: "jquery-ui",
                label: "jQuery UI",
                desc: "the official user interface library for jQuery",
-	       img : "resources/images/in.png"	
+	       img : "/resources/images/in.png"	
             },
             {
                value: "Bootstrap",
                label: "Twitter Bootstrap",
                desc: "popular front end frameworks ",
-               img : "resources/images/tr.png",
+               img : "/resources/images/tr.png",
             }
          ];
          $( "#project" ).autocomplete({
@@ -73,7 +73,7 @@
                return false;
             }
          }).data("ui-autocomplete")._renderItem = function (ul, item) {     
-            var inner_html = '<a><div class="list_item_container"><div class="image"><img src="http://localhost:8080/sourcelead/userImage"></div><div class="label"><h3> Reputation:  ' + item.desc + '</h3></div><div class="description">' + item.label + '</div></div></a><hr/>';
+            var inner_html = '<a><div class="list_item_container"><div class="image"><img src="http://localhost:8080/app/userImage"></div><div class="label"><h3> Reputation:  ' + item.desc + '</h3></div><div class="description">' + item.label + '</div></div></a><hr/>';
             return $("<li></li>")
                     .data("item.autocomplete", item)
                     .append(inner_html)

@@ -5,8 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
@@ -14,10 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,8 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgLocationsDao;
-import com.bis.sourcelead.dto.AddExpensesDTO;
-import com.bis.sourcelead.dto.CategoryDTO;
+import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
+import com.bis.sourcelead.dao.ProjectMembersDao;
+import com.bis.sourcelead.dto.ExpensesDTO;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -36,11 +40,13 @@ import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.AddExpensesService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntryDocumentsService;
@@ -56,6 +62,7 @@ import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/app")
 public class AddExpensesRestController {
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
 	@Value("${sourceleadUrl}")
@@ -69,6 +76,10 @@ public class AddExpensesRestController {
 	
 	@Autowired
 	private OrgLocationService orgLocationService;
+	
+	@Autowired
+	private CountriesService countriesService;
+	
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -99,6 +110,12 @@ public class AddExpensesRestController {
 	
 	@Autowired
 	OrgLocationsDao orgLocationsDao;
+	
+	@Autowired
+	ProjectMembersDao projectMembersDao;
+	
+	@Autowired
+	ProjectApproverHierarchyDao projectApproverHierarchyDao;
 	
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
@@ -139,7 +156,7 @@ public class AddExpensesRestController {
 	}
 	
 	
-	@RequestMapping(value = "/acceptOrRejectReopenExpenseBySuperUser", method = RequestMethod.POST)
+	@RequestMapping(value = "/ws/acceptOrRejectReopenExpenseBySuperUser", method = RequestMethod.POST)
 	public @ResponseBody void acceptOrRejectReopenExpenseBySuperUser(@RequestParam(value="expenseId", required=false) Long expenseId,
 			@RequestParam(value="reOpenedUserId", required=false) Long reOpenedUserId,
 			@RequestParam(value="type", required=false) String type,
@@ -154,7 +171,7 @@ public class AddExpensesRestController {
 			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
 				Expenses expense = expensesService.getExpenseById(expenseId);
 				User superUser = userService.getUserById(reOpenedUserId);
-				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
+				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId());
 				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
 			  	
 			}else if(expenseId != null &&  null != type && "reject".equalsIgnoreCase(type) && null != reason && !"".equalsIgnoreCase(reason)){
@@ -163,7 +180,7 @@ public class AddExpensesRestController {
 			  	//submissionApproverHierarchyService.sendReopenTimeSheetAcceptOrRejectMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,type,reopenedUser);
 				Expenses expense = expensesService.getExpenseById(expenseId);
 				User superUser = userService.getUserById(reOpenedUserId);
-				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
+				ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId());
 				expensesApprovalService.sendReopenExpenseAcceptOrRejectMail(expense,reason,superUser,orgLoc,type,reopenedUser, sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
 
 			}
@@ -183,22 +200,19 @@ public class AddExpensesRestController {
 		    
 		    String isSuperUser = Constants.NO;
 		   // SimpleDateFormat simpleDateFormat = orgLoc.getLocFullFormDateFormatter();
-		    if(null != orgLoc.getUser() && null != orgLoc.getUser().getId() && orgLoc.getUser().getId().longValue() == loginUser.getId().longValue()){
-		    	isSuperUser = Constants.YES;
-		    }
+		    
 		    
 			//DateFormat format = simpleDateFormat;
 			if(expenseId != null){
-			 	
-				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
 				Expenses expenses = expensesService.getExpenseById(expenseId);
-				expenses.setExpenseStatus(Submission_Status.SUBMITTED);
-				addExpensesService.storeAddExpensesData(expenses);
-				sendEmailToSuperUserForReOpenExpenseApprovalStatus(expenseId,loginUser,orgLoc,reason,currencyCode);
+				if(commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(expenses.getProjectMembers().getId(), loginUser,orgLoc)){
+			    	isSuperUser = Constants.YES;
+			    }
+				expensesApprovalService.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId,reason,loginUser,"notify",isSuperUser);
 			    //send mail & notification logic
-			  	/*if(isSuperUser.equalsIgnoreCase(Constants.NO)){
-			  		submissionApproverHierarchyService.sendReopenTimeSheetMail(projectMemberId,reason,loginUser,orgLoc,timesheetFrequency,totalHours);
-			  	}*/
+			  	if(isSuperUser.equalsIgnoreCase(Constants.NO)){
+			  		sendEmailToSuperUserForReOpenExpenseApprovalStatus(expenses.getProjectMembers().getId(),expenses,loginUser,orgLoc,reason,currencyCode);
+			  	}
 			  	
 			}
 		
@@ -234,55 +248,81 @@ public class AddExpensesRestController {
 	    }
 		return projectId;
     }
+
 	
+	@RequestMapping(value = "/rest/storeAddExpensesData",method = RequestMethod.POST)
+	public @ResponseBody String storeAddExpensesMobileData(HttpServletRequest request,@RequestBody ExpensesDTO expensesDTO) throws Exception {
+		return storeAddExpensesData(request, expensesDTO);
+	}
 	
+	/**
+	 * This method serves the request for store expenses
+	 * 
+	 * @param request
+	 * @param status
+	 * @param expensesDTO
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/storeAddExpensesData",method = RequestMethod.POST)
-	public @ResponseBody String storeAddExpensesData(HttpServletRequest request,@RequestParam(value="status", required=false) String status,AddExpensesDTO addExpensesDTO) throws Exception {
+	public @ResponseBody String storeAddExpensesData(HttpServletRequest request, ExpensesDTO expensesDTO) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(loginUser == null && expensesDTO.getUserId() != null){
+			loginUser = userService.getUserById(expensesDTO.getUserId());
+		}
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		if(orgLoc == null && StringUtils.isNotEmpty(expensesDTO.getLocationCode())){
+			orgLoc = orgLocationService.getOrgLocationsByLocationCode(expensesDTO.getLocationCode());
+			Countries countries = countriesService.getCountriesByCountryName(orgLoc.getCountry());
+			currencyCode = countries.getCurrency();
+		}
+		 
+		if(loginUser != null && orgLoc != null){
+			addExpensesService.storeAddExpensesData(expensesDTO,loginUser,orgLoc,request,currencyCode);
+			return "success";
+		}
+		else{
+			return "failure";
+		}
 		//JSONObject jsonObj = new JSONObject(request.getParameter("json"));
-		addExpensesService.storeAddExpensesData(addExpensesDTO,loginUser,orgLoc,request,status,currencyCode);
-		return "DataSaved";
-}
 	
+		
+   }
+ 	
 	
 	@RequestMapping(value = "/deleteDocumentByDocumentId",method = RequestMethod.POST)
 	public @ResponseBody String deleteDocumentByDocumentId(@RequestParam(value="documentId", required=false) String documentId) throws Exception {
 		addExpensesService.deleteDocumentByDocumentId(documentId);
 		return "DataSaved";
-}
+    }
 	
 	
 	
 	 @RequestMapping(value = "/getMembersForSelectedProject",  method = RequestMethod.GET)
-	 public @ResponseBody  String getMembersForSelectedProject(
+	 public @ResponseBody  List<ProjectMembers> getMembersForSelectedProject(
 			@RequestParam(value="projectId", required=false) Long projectId, HttpServletRequest request) throws Exception {
 	 	
-		 	Collection<ProjectMembers> projectMembers = null;
+		 	List<ProjectMembers> projectMembers = null;
 		 	if(projectId != null){
-				projectMembers = projectMembersService.getAllProjectMembersByProjectId(projectId);
-				
-				if(null != projectMembers && projectMembers.size() > 0){
-					for(ProjectMembers pm : projectMembers){
-						if(null != pm.getEmployee().getUser()){
-							StringBuilder eName = new StringBuilder();
-							
-							if(null != pm.getEmployee().getUser() && (pm.getEmployee().getUser().getFirstName() != null && pm.getEmployee().getUser().getFirstName() != "" && pm.getEmployee().getUser().getLastName() != null && pm.getEmployee().getUser().getLastName() != "" )){
-								pm.setEmpName(eName.append(pm.getEmployee().getUser().getFirstName()).append(" ").append(pm.getEmployee().getUser().getLastName()).toString());
-							}else{
-								pm.setEmpName(eName.append(pm.getEmployee().getUser().getFirstName()).toString());
-							}
-							
-						}
-					}
+		 		Projects project = projectsService.getProjectById(projectId);
+		 	    OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				projectMembers = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLoc.getId());
+				for(ProjectMembers pm:projectMembers) {
+					pm.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), pm.getProjectAssignedDate()));
+				if(pm.getProjectEndDate() != null) {
+					pm.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(), pm.getProjectEndDate()));
+				}else {
+					pm.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),project.getEndDate()));
 				}
+			}
+				
 		 	}
-		 	return commonUtil.toJSON(projectMembers);
+			return projectMembers ;
 	}
 	 
 	 
-	 @RequestMapping(value = "/downloadExpensesEntryDocument", method = RequestMethod.GET)
+	 /*@RequestMapping(value = "/downloadExpensesEntryDocument", method = RequestMethod.GET)
 	    public void downloadExpensesEntryDocument(@RequestParam(value="entryDocumentId", required=false) Long entryDocumentId ,HttpServletResponse response) throws Exception {
 			
 			
@@ -309,22 +349,24 @@ public class AddExpensesRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
 
-		} 
+		} */
 	 
 	 
 	
 	 
-	 private void sendEmailToSuperUserForReOpenExpenseApprovalStatus(Long expenseId, User loginUser, OrgLocations orgLoc, String reason, String currencyCode) throws Exception {
+	 private void sendEmailToSuperUserForReOpenExpenseApprovalStatus(Long projectMemberId,Expenses expenses, User loginUser, OrgLocations orgLoc, String reason, String currencyCode) throws Exception {
+		 ProjectMembers clientProjectMember = projectMembersDao.getClientProjectMemberByProjectMemberId(projectMemberId);
+		 ProjectApproverHierarchy pah =  projectApproverHierarchyDao.getApproverUsersByProjectIdAndProjectClientId(clientProjectMember.getProjects().getId(), clientProjectMember.getProjectClientsId().getId());	
 			
-			ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId);
+		// ExpensesApproverHierarchy sah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId,orgLoc.getId());
 			
 		 		 EmailMessage emailMessage = new EmailMessage();
-		     	 emailMessage.setFirstName(sah.getExpenseId().getProjectMembers().getEmployee().getUser().getFirstName());
-			 	 emailMessage.setLastName(sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
+		     	 emailMessage.setFirstName(pah.getApproverUserId().getFirstName());
+			 	 emailMessage.setLastName(pah.getApproverUserId().getLastName());
 			 	 
 			// 	OrgLocations ol = orgLocationsDao.getOrgLocations(orgLoc.getId());
 			 	 
-			 	 emailMessage.setToEmail(orgLoc.getUser().getEmail());
+			 	 emailMessage.setToEmail(pah.getApproverUserId().getEmail());
 			 	 emailMessage.setFromEmail(loginUser.getEmail());
 			 	 emailMessage.setCreatedBy(loginUser.getUserCode());
 			 	 
@@ -338,6 +380,7 @@ public class AddExpensesRestController {
 				// globalVarsMap.put("loginUserLastName",loginUser.getLastName());
 				 
 				 
+				 
 				 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
 					 StringBuilder manager =new StringBuilder();
 					 globalVarsMap.put("managerUser", manager.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -346,27 +389,20 @@ public class AddExpensesRestController {
 				 }
 				 
 				 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
-//					 StringBuilder manager =new StringBuilder();
+//					 StringBuilder manager =new StringBuilder();`
 					 globalVarsMap.put("superUser", orgLoc.getUser().getFullName());
 				 }else{
 					 globalVarsMap.put("superUser",orgLoc.getUser().getFullName());
 				 }
 				 
-				 if(null != sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName() && !"".equalsIgnoreCase(sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName())){
-					 StringBuilder employee =new StringBuilder();
-					 globalVarsMap.put("employeeUser", employee.append(sah.getExpenseId().getProjectMembers().getEmployee().getUser().getFirstName()).append(" ").append(sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName()).toString());
-				 }else{
-					 globalVarsMap.put("employeeUser",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getFirstName());
+				 if(null != clientProjectMember.getProjectMemberCandidteId().getConsultantUser().getFullName()){
+					 globalVarsMap.put("employeeUser",clientProjectMember.getProjectMemberCandidteId().getConsultantUser().getFullName());
 				 }
 				 
 				 
-				 if(null !=sah.getExpenseId()){
-					 if(null != sah.getExpenseId().getProjectMembers()){
-						 if(null != sah.getExpenseId().getProjectMembers().getProjects()){
-					      globalVarsMap.put("projectName",sah.getExpenseId().getProjectMembers().getProjects().getProjectName());
+						 if(null != clientProjectMember.getProjects()){
+					      globalVarsMap.put("projectName",clientProjectMember.getProjectName());
 					 }
-					}
-				 }
 				 
 //				 if(null != sah.getExpenseId()){
 //					 if(null != sah.getExpenseId().getExpenseId()){
@@ -374,19 +410,19 @@ public class AddExpensesRestController {
 //					 }
 //				 }
 				 //SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
-				 if(null != sah.getExpenseId()){
-					 if(null != sah.getExpenseId().getStartDate()){
-				 globalVarsMap.put("startDate",commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),sah.getExpenseId().getStartDate()));
+				 if(null != expenses.getExpenseId()){
+					 if(null != expenses.getStartDate()){
+				 globalVarsMap.put("startDate",commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getStartDate()));
 					 }
 				 }	 
-				 if(null != sah.getExpenseId()){
-					 if(null != sah.getExpenseId().getEndDate()){
-				 globalVarsMap.put("endDate",commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),sah.getExpenseId().getEndDate()));
+				 if(null != expenses.getExpenseId()){
+					 if(null != expenses.getEndDate()){
+				 globalVarsMap.put("endDate",commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getEndDate()));
 					 }
 				 }
 				 
 				 StringBuilder amopuntRate = new StringBuilder();
-				 amopuntRate.append(Float.toString(sah.getExpenseId().getTotalAmount())).append(" ").append(currencyCode);
+				 amopuntRate.append(Float.toString(expenses.getTotalAmount())).append(" ").append(currencyCode);
 				 
 				 globalVarsMap.put("amount",amopuntRate.toString());
 				 
@@ -410,8 +446,8 @@ public class AddExpensesRestController {
 //				 }
 				 StringBuilder acceptBuilder=new StringBuilder();
 			     StringBuilder rejectBuilder=new StringBuilder();
-			     globalVarsMap.put("accept",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=accept&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&orgLocId=").append(orgLoc.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-				 globalVarsMap.put("reject",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/acceptOrRejectReopenExpense?type=rejecting&expenseId=").append(expenseId).append("&reOpenedUserId=").append(loginUser.getId()).append("&orgLocId=").append(orgLoc.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
+			     globalVarsMap.put("accept",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectReopenExpense?type=accept&expenseId=").append(expenses.getId()).append("&reOpenedUserId=").append(loginUser.getId()).append("&orgLocId=").append(orgLoc.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
+				 globalVarsMap.put("reject",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/ws/acceptOrRejectReopenExpense?type=rejecting&expenseId=").append(expenses.getId()).append("&reOpenedUserId=").append(loginUser.getId()).append("&orgLocId=").append(orgLoc.getId()).append("&reason=").append(reason).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
 			
 				 
 //				 StringBuilder loginURLSB = new StringBuilder();
@@ -452,7 +488,7 @@ public class AddExpensesRestController {
 				notificationScenario.setBody(notificationBody);
 				notificationScenario.setOrgCode(orgLoc.getOrg().getOrgCode());
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink,loginUser,orgLoc.getUser(), orgLoc, notificationScenario) ;
+				emailScenerioUtil.sendNotification(actionLink,loginUser,orgLoc.getUser(), orgLoc, notificationScenario,new HashMap<String,String>()) ;
 		 	   
 			
 		}

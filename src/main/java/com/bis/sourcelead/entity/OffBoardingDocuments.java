@@ -27,8 +27,7 @@ import org.hibernate.annotations.Type;
 import com.bis.sourcelead.enums.OnboardStatus;
 
 @Entity
-@Table(name = "OFF_BOARDING_DOCUMENTS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="offBoardingDocuments")
+@Table(name = "OFF_BOARDING_DOCUMENTS")
 public class OffBoardingDocuments implements Serializable{
 
 private static final long serialVersionUID = 1L;
@@ -38,12 +37,12 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_OFF_BOARDING_ID", nullable = false)
 	private CandidateOffBoarding candidateOffBoardingId;
     
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "OFF_BOARDING_TEMPLATE_ID", nullable = false)
 	private OffBoardingTemplate offboardingTemplateId;
@@ -52,10 +51,6 @@ private static final long serialVersionUID = 1L;
     @Column(name = "DOCUMENT_TYPE")
 	private String documentType;
     
-    @Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
@@ -84,6 +79,9 @@ private static final long serialVersionUID = 1L;
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = "FILE_URL", columnDefinition = "TEXT default NULL")
+	private String fileURL;
 	
 	@Transient
 	private String offboardDocumentType;
@@ -116,14 +114,6 @@ private static final long serialVersionUID = 1L;
 
 	public void setDocumentType(String documentType) {
 		this.documentType = documentType;
-	}
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
 	}
 
 	public String getFileContentType() {
@@ -230,7 +220,11 @@ private static final long serialVersionUID = 1L;
 		this.offboardPackDocumentsList = offboardPackDocumentsList;
 	}
 
-	
-	
-	
+	public String getFileURL() {
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL) {
+		this.fileURL = fileURL;
+	}
 }

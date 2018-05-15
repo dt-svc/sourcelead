@@ -1,6 +1,6 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
-<meta http-equiv="Expires" content="0">
+<meta http-equiv="Expires" content="0">                            
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -10,7 +10,7 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
 
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}"/>
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}"/>
 
 <style type="text/css">
 
@@ -41,6 +41,7 @@ z-index: 9999999;
 .exlpdf_btns table tr td div i {
     color: #333;
 }
+
 </style>
 
 
@@ -48,6 +49,9 @@ z-index: 9999999;
 
 
 <input type="hidden" id="emptyInvoiceId" name="emptyInvoiceId"/>
+<div class="success_pop" id="selector12" style="display: none;">
+		<i class="fa fa-check-circle"></i><span id="msgdiv"></span>
+  </div>
 <script>
 function getClientInvoiceList(orgRelationId,clientLocationId){
 var result = "";
@@ -140,18 +144,18 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			            </div>                                                                                                                                                                                                 ';
  result = result + '			          </ul>                                                                                                                                                                                                    ';
  result = result + '			          <div class="tab-content">                                                                                                                                                                                ';
- result = result + '			                                                                                                                                                                                                                   ';
+ result = result + '			          <div id="invoiceLoading"></div>                                                                                                                                                                                                         ';
  result = result + '			            <!-- Employee Details -->                                                                                                                                                                              ';
  result = result + '			            <div class="tab-pane active" id="unbilled">                                                                                                                                                            ';
  result = result + '			              <div class="timesheet_out">                                                                                                                                                                       ';
  result = result + '			                <div class="clearfix">                                                                                                                                                                             ';
- result = result + '			                  <div class="timesheet_head timesheetHead">                                                                                                                                                                     ';
+ result = result + '			                  <div class="timesheet_head timesheetHead-UL">                                                                                                                                                                     ';
  result = result + '			                    <ul>                                                                                                                                                                                           ';
  result = result + '			                                                                                                                                                                                                                   ';
  result = result + '			                    	                                                                                                                                                                                           ';
  result = result + '			                      <li class="dropdown"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></div>';
  result = result + '			                        <div class="dropdown-menu bootstrap_dropdownMenu">                                                                                                                                              ';
- result = result + '			                          <ul>                                                                                                                                                                                     ';
+ result = result + '			                          <ul  class="paddingLi">                                                                                                                                                                                     ';
  result = result + '			                            <li>                                                                                                                                                                                   ';
  result = result + '			                              <input type="checkbox" value="DRAFT" name="invoiceStatus" id="" onclick="getInvoiceListBasedonClient('+orgRelationId+','+clientLocationId+');" >                                                                                        ';
  result = result + '			                              <label for="onboard1">Draft</label>                                                                                                                                                  ';
@@ -182,7 +186,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			                                                                                                                                                                                                                   ';
  result = result + '			                      <li class="dropdown"><div class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Payment</span><i class="glyphicon glyphicon-play"></i></div>';
  result = result + '			                        <div class="dropdown-menu bootstrap_dropdownMenu">                                                                                                                                              ';
- result = result + '			                          <ul>                                                                                                                                                                                     ';
+ result = result + '			                          <ul  class="paddingLi">                                                                                                                                                                                     ';
  result = result + '			                            <li>                                                                                                                                                                                   ';
  result = result + '			                              <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getInvoiceListBasedonClient('+orgRelationId+','+clientLocationId+');">                                                                                          ';
  result = result + '			                              <label for="onboard3">Paid</label>                                                                                                                                                   ';
@@ -288,7 +292,7 @@ result = result  +'    <div class="billingArea"> ';
 		$.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getInvoiceListBasedOnOrgrelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&clientLocationId="+clientLocationId+"&dayWisetype="+dayWisetype+"&startDate="+startDate+"&endDate="+endDate+"&invoiceStatus="+invoice+"&paymentStatus="+payment+"&invoiceType=receivable", 
-	        success: function(data) {
+	        success: function(json) {
 	        
 	        var draftCount = 0;
         	var draftTotalAmount = 0;
@@ -307,7 +311,7 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'	<table id="invoiceListPagination">                                                                                                         ';
 			result = result +'     <thead>                            ';
 			result = result +'       <tr>                             ';
-			result = result +'         <th>Invoice ID</th>                    ';
+			result = result +'         <th>Reference ID</th>                    ';
 			result = result +'         <th>Client Contact</th>               ';
 			result = result +'         <th>Invoice Date <br>(<small class="custom-small">'+billingClientDate+'</small>)</th>               ';
 			result = result +'         <th>Total</th>                 ';
@@ -319,11 +323,11 @@ result = result  +'    <div class="billingArea"> ';
 			result = result +'       </tr>                            ';
 			result = result +'     </thead>                           ';
 			result = result +'     <tbody>                            ';
-			if(data != null && data != ''){
-				var json = JSON.parse(data);
-	        	for (var i=0; i<json.length; i++)
+			if(json.data != null && json.data != ''){
+// 				var json = JSON.parse(data);
+	        	for (var i=0; i<json.data.length; i++)
 				  {	        		
-	        		var report = json[i];
+	        		var report = json.data[i];
 	        		
 	        		draftCount = parseInt(draftCount) + parseInt(report.draftInvoiceCount);
 	       			if(report.draftInvoiceAmount != null && report.draftInvoiceAmount != '' && report.draftInvoiceAmount != 'undefined'){
@@ -364,7 +368,7 @@ result = result  +'    <div class="billingArea"> ';
 					}
 					if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" || report.invoiceStatus == "Linked" ){
 						'<sec:authorize access="hasAnyRole(\'ROLE_INVOICE_PAYMENT_HISTORY\')">';
-						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
+						result = result +'           <div class="tbldata-dotdot_80 invoiceId_Anchor"><a href="<c:url value="/app/viewInvoice?invoiceUUID='+report.invoiceUUID+'&invoiceType=Receivable"/>">'+report.invoiceId+'</a></div>   ';				
 						'</sec:authorize>' ;
 					}
 					result = result +'         </td>  ';
@@ -406,33 +410,35 @@ result = result  +'    <div class="billingArea"> ';
 					result = result +'     <div class="tblminwidth-75">';
 					 result = result +'  <div class="pull-right positionRelative menuWidget" >';
 					 if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
-						result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp('+report.id+',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
-						result = result +'  <div id="popupDiv'+report.id+'"></div>';
+						result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
+						result = result +'  <div id="popupDiv'+report.invoiceUUID+'"></div>';
 					} 
 					result = result +'  </div> ';                                                                                                    
 					if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 							if(report.paymentStatus == "Paid"){
-							result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
+							result = result +'           <span class="successBtn primary pull-left" >Receive</span>   ';	
 						}else{
-							result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>   ';	
+							result = result +'           <span class="successBtn primary pull-left" >Send</span>   ';	
 						}
+						}else if(report.invoiceStatus == "Linked"){
+							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
 						}else{
-							result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
+							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
 						}
 					}else{
 						if(report.invoiceStatus == "Accepted"){
 							if(report.paymentStatus == "Paid"){
-								result = result +'           <span class="text-primary successBtn primary pull-left" >Receive</span>   ';	
+								result = result +'           <span class="successBtn primary pull-left" >Receive</span>   ';	
 							}else{
-								result = result +'           <span class="text-primary receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
+								result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
 							}
 							
 						}else{
 							if(report.invoiceStatus == "Rejected"){
-								result = result +'           <span class="text-primary successBtn primary pull-left" >Send</span>           ';	
+								result = result +'           <span class="successBtn primary pull-left" >Send</span>           ';	
 							}else{
-								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice('+report.id+');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice('+report.id+');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
+								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 							}
 							
 						}
@@ -603,8 +609,29 @@ function searchResults(orgRelationId,clientLocationId){
 
 </script>
 
-
-
+<script type="text/javascript">
+function generateAutomaticInvoice(){
+	 $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+    	 type: "POST",
+	     dataType : 'json',
+	    	 url: sourceleadUrl+"/generateAutomaticInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable&contractType=clientSow", 
+             success: function(json) {
+            	  $("#invoiceLoading").removeAttr("style");
+					$("#selector12").removeAttr("style");
+					$("#msgdiv").html(json.object.count+" Invoice(s) Generated Successfully.");
+					msgFadein();
+            	 location.replace(sourceleadUrl+"/invoiceList");	            	 
+        },
+    });  
+}
+</script>
+<script>
+	function msgFadein() {
+		$("#selector12").fadeIn(200);
+        $('#selector12').delay(2000).fadeOut('slow');
+	}
+</script>
 
 <script>
 function clientInvoicePagination(){  
@@ -621,10 +648,14 @@ function clientInvoicePagination(){
             }
         ],
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": false,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 8
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -650,27 +681,36 @@ function clientInvoicePagination(){
 		    //addcandidate-popup script
 		    function createBill(orgRelationId){
 		        
-		      var result = '';
-		      result = result +'<div class="addcandidate-popup">';
+		   	 var result = '';
+		        result = result +'<div class="addcandidate-popup">';
 			  result = result +'  <div class="row">';
-			  result = result +'    <div class="col-md-offset-2 col-md-10"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>';
-			  result = result +'    <div class="col-md-5 mt25">';
+			  result = result +'    <div class="col-md-offset-0 col-md-12"> <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()">&times;</a>';
+			  result = result +'    <div class="col-md-4 mt25">';
 			  result = result +'      <div class="small-widget bgGreen">';
-			  result = result +'          <a onClick="createClientInvoice('+orgRelationId+',\'custom\');" title="Create custom invoice">';
+			  result = result +'          <a onClick="createClientInvoice('+orgRelationId+',\'custom\');" title="Create custom bill">';
 			  result = result +'        <div class="clearfix mb10"> ';
-			  result = result +'            <img src="resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
+			  result = result +'            <img src="/resources/images/invoice_icon.png" class="text-center" alt="create_receivables">';
 			  result = result +'        </div>';
-			  result = result +'        <strong class="clearfix">Custom</strong></a>';
+			  result = result +'        <strong class="clearfix">Client Based</strong></a>';
 			  result = result +'        </div>';
 			  result = result +'    </div>';
-			  result = result +'      <div class="col-md-5 mt25">';
+			  result = result +'      <div class="col-md-4 mt25">';
 			  result = result +'        <div class="small-widget bg-yellow"> ';
-			  result = result +'        <a onClick="createClientInvoice('+orgRelationId+',\'project\');" title="Create project based invoice">';
+			  result = result +'        <a onClick="createClientInvoice('+orgRelationId+',\'project\');" title="Create project based bill">';
 			  result = result +'          <div class="clearfix mb10">';
 			  result = result +'              <!--<i class="fa fa-usd fa-3x"></i>-->';
-			  result = result +'              <img src="resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
+			  result = result +'              <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
 			  result = result +'          </div>';
 			  result = result +'          <strong class="clearfix">Project Based </strong> </a> </div>';
+			  result = result +'      </div>';
+			  result = result +'      <div class="col-md-4 mt25">';
+			  result = result +'        <div class="small-widget bg-purple"> ';
+			  result = result +'        <a onClick="createClientInvoice('+orgRelationId+',\'other\');" title="Create Other Bill">';
+			  result = result +'          <div class="clearfix mb10">';
+			  result = result +'              <!--<i class="fa fa-usd fa-3x"></i>-->';
+			  result = result +'              <img src="/resources/images/invoice_icon.png" class="text-center" alt="Invoice">';
+			  result = result +'          </div>';
+			  result = result +'          <strong class="clearfix">Other </strong> </a> </div>';
 			  result = result +'      </div>';
 			  result = result +'        </div>';
 			  result = result +'  </div>';
@@ -776,7 +816,7 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'              <label><strong>Attachments</strong></label>                         ';
 	result = result +'              <div class="timesheet_week_comm col-md-12 ">                        ';
 	result = result +'                <div class="form-group"> <span>                                   ';
-	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment"> ';
+	result = result +'                  <input type="file"  id="paymentAttachment" name="paymentAttachment" onchange="getfileUrl()"> ';
 	result = result +'                  <i class="fa fa-plus"></i></span> </div>                        ';
 	result = result +'              </div>                                                              ';
 	result = result +'            </div>                                                                ';
@@ -804,12 +844,12 @@ function receivePaymentPop1(invoiceId,total){
     $('.modal-backdrop').fadeIn(200).addClass('in');
     
     $('#paymentDate').datepicker({
-		dateFormat : recievePaymentPopUpDate,
+ 	dateFormat : recievePaymentPopUpDate,
 		changeMonth: true,
 		changeYear: true, 
 		onSelect : function(selected) {
 			removeValidate();
-		}
+		} 
 	});
     
     
@@ -840,8 +880,18 @@ function saveReceivePayment(invoiceId){
 			      dataType : 'json',
 		    	 url: sourceleadUrl+"/saveInvoicePayment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&invoiceId="+invoiceId, 
 		        success: function(result) {
-		     		location.replace(sourceleadUrl+"/invoiceList");
-		     		
+		        	 if (result && result.response === "INVALID_DATA") {
+		          		    showError(result.responseMessage);
+		          		} else if (result.response === "AWKWARD") {
+		          		    location.href = "/errorPage";
+		          		} else if (result.response === "SUCCESS") {
+		          			location.replace(sourceleadUrl+"/invoiceList");
+		          		} else if (result.indexOf('Sign In') !== -1) {
+		          			location.replace(sourceleadUrl);
+		          		} else {
+		          		    showError("Operation failed, please try again");
+		          		}
+		        	
 		        },
 		    });  
 	         return true; 
@@ -858,15 +908,25 @@ $('body').on('blur', '#receivePayment-form', function() {
 
 
 <script>
-function acceptedInvoice(id){
+function acceptedInvoice(invoiceUUID){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/acceptedInvoice?"+tokenParamName+"="+tokenValue+"&invoiceId="+id, 
+	    	 url: sourceleadUrl+"/acceptedInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
              success: function(result) {
-        	location.replace(sourceleadUrl+"/invoiceList");
-     		
+            	 if (result && result.response === "INVALID_DATA") {
+	          		    showError(result.responseMessage);
+	          		} else if (result.response === "AWKWARD") {
+	          		    location.href = "/errorPage";
+	          		} else if (result.response === "SUCCESS") {
+	          			location.replace(sourceleadUrl+"/invoiceList");
+	          		} else if (result.indexOf('Sign In') !== -1) {
+	          			location.replace(sourceleadUrl);
+	          		} else {
+	          		    showError("Operation failed, please try again");
+	          		} 
+            	 
         },
     });  
 }
@@ -874,14 +934,14 @@ function acceptedInvoice(id){
 </script>
 
 <script>
-function rejectInvoice(id){
+function rejectInvoice(invoiceUUID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
 	result = result +"		<textarea id='reasonForDelete' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result + ' <div id="reasonForRejectDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonforReceivable("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReasonforReceivable(\""+invoiceUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -890,7 +950,7 @@ function rejectInvoice(id){
 </script>
 
 <script>
-function saveReasonforReceivable(id){
+function saveReasonforReceivable(invoiceUUID){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var reason = document.getElementById("reasonForDelete").value;
 	if(reason == null || reason == '' || reason == 'undefined'){
@@ -902,11 +962,22 @@ function saveReasonforReceivable(id){
 		  $("#reasonForRejectDiv").find('p.jquery_form_error_message').remove();
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceId="+id+"&reason="+reason,	    	   
+		   	url: sourceleadUrl+"/rejectInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&reason="+reason,	    	   
 		    success: function(data) {
-		    	$("#popUp").empty();
-	 			 $(".project_inn_mask").fadeOut(200);
-		    	location.replace(sourceleadUrl+"/invoiceList");
+		    	if (result && result.response === "INVALID_DATA") {
+          		    showError(result.responseMessage);
+          		} else if (result.response === "AWKWARD") {
+          		    location.href = "/errorPage";
+          		} else if (result.response === "SUCCESS") {
+          			$("#popUp").empty();
+   	 			    $(".project_inn_mask").fadeOut(200);
+   		    	    location.replace(sourceleadUrl+"/invoiceList");
+          		} else if (result.indexOf('Sign In') !== -1) {
+          			location.replace(sourceleadUrl);
+          		} else {
+          		    showError("Operation failed, please try again");
+          		}
+		    	
 		    }
 	   });
 	}
@@ -921,6 +992,9 @@ function cancelTermination(){
 </script>
 
 <script>
+function getfileUrl(){
+	fileUpload("paymentAttachment", "incoiceDocuments", "receivePayment-form");
+}
 function removeValidate(){
 	$('#errPaymentDate').find('p.jquery_form_error_message').remove(); 
 }
@@ -930,7 +1004,7 @@ function removeErr(){
 </script>  
   <!-- modal pop -->
 <div class="modal-backdrop" style="display: none"></div>
-<div id="recvPymntpop" class="modal" style="display: none;">
+<div id="recvPymntpop" class="modal zInd" style="display: none;">
    <div id="receivePaymentId" ></div>
 </div>
 <!-- modal pop --> 
@@ -961,32 +1035,32 @@ function cancelbtn(){
 </script>
   
 <script>
-function showPopUp(id,invoiceStatus,invoiceParentId,totalAmount){
+function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
 		 removePopup();
 	     result = "";
 	     if(invoiceParentId == 'undefined'){
 	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_2"> ';
 	     }else{
-	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_1"> ';
+	    	 result = result +'    <ul class="list-inline list-unstyled menupop menupop_3"> ';
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
-		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+id+'"> ';
+		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
 		 if(invoiceParentId == 'undefined'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_INVOICE_REMINDER\')">';
-			 result = result +'      <li onclick="sendReminder('+id+');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+			 result = result +'      <li onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
 			 '</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_INVOICE\')">';
-		 result = result +'      <li onclick="getPrint('+id+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+		 result = result +'      <li><a class="" target="_blank" href="'+fileUrl+'" title="Print"><i class="fa fa-print paddingLeft paddingRight"></i>Print</a></li>';
 		 '</sec:authorize>'
 		
 		 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
-		 result = result +'      <li onclick="downloadInvoice('+id+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+		 result = result +'      <li><a target="_blank" href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
 		 '</sec:authorize>'
 		 
-		 result = result +'      <li onclick="linkInvoice('+id+',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
+		 result = result +'      <li onclick="linkInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
 	     result = result +'    </ul>';
-    	 $("#popupDiv"+id+"").append(result);
+    	 $("#popupDiv"+invoiceUUID+"").append(result);
     	 showMenu();
 }
 </script>
@@ -1019,13 +1093,24 @@ function removePopup(){
 </script>
 
 <script>
-function sendReminder(id){
+function sendReminder(invoiceUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/sendReminder?"+tokenParamName+"="+tokenValue+"&invoiceId="+id, 
+	    	 url: sourceleadUrl+"/sendReminder?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
              success: function(result) {
+            	 if (result && result.response === "INVALID_DATA") {
+           		    showError(result.responseMessage);
+           		} else if (result.response === "AWKWARD") {
+           		    location.href = "/errorPage";
+           		} else if (result.response === "SUCCESS") {
+           			
+           		} else if (result.indexOf('Sign In') !== -1) {
+           			location.replace(sourceleadUrl);
+           		} else {
+           		    showError("Operation failed, please try again");
+           		}
             	 removePopup();
         },
     });  
@@ -1033,32 +1118,32 @@ function sendReminder(id){
 </script>
 
 <script type="text/javascript">
-function getPrint(id) {
+function getPrint(invoiceUUID) {
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.open(sourceleadUrl+'/getPrint/'+id+'','_newtab');
+	window.open(sourceleadUrl+'/getPrint/'+invoiceUUID+'','_newtab');
 }
 </script>
 
 <script>
-function downloadInvoice(id){
+function downloadInvoice(invoiceUUID){
 	var sourceleadUrl ='${sourceleadUrl}';
-	window.location.href = sourceleadUrl+"/downloadInvoice?"+tokenParamName+"="+tokenValue+"&invoiceId="+id;
+	window.location.href = sourceleadUrl+"/downloadInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID;
 }
 
 </script>
 
 <script type="text/javascript">
-function linkInvoice(invoiceId,totalAmount){
+function linkInvoice(invoiceUUID,totalAmount){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
     	 type: "POST",
 	     dataType : 'json',
-	     url : sourceleadUrl+"/getClientBasedInvoiceList?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=receivable",
-			success: function(data) {
+	     url : sourceleadUrl+"/getClientBasedInvoiceList?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID+"&invoiceType=receivable",
+			success: function(json) {
 			var result = "";
 			result = result +'  <div class="modal-dialog modal-lg">                                                                                         ';
 			result = result +'    <div class="modal-content">                                                                                               ';
-			result = result +' <input type="hidden" value='+invoiceId+' name="masterInvoiceId" id="masterInvoiceId">   ';
+			result = result +' <input type="hidden" value='+invoiceUUID+' name="masterInvoiceId" id="masterInvoiceId">   ';
 			result = result +'      <div class="modal-header" id="clientInvoicelinkId">                                                                                              ';
 			result = result +'        <button type="button" class="close" data-dismiss="modal" onClick="closeLinkInvoice();">×</button>                                                   ';
 			result = result +'        <h4 class="modal-title">Link Invoice</h4>                                                                             ';
@@ -1082,10 +1167,10 @@ function linkInvoice(invoiceId,totalAmount){
 			result = result +'          </tr>                                                                                                               ';
 			result = result +'        </thead>                                                                                                              ';
 			result = result +'        <tbody>                                                                                                               ';
-			if(data != null && data != 'undefined' && data != ""){ 
-			var json = JSON.parse(data);
-			for (var i = 0; i < json.length; i++) { 
-			var opt = json[i]; 
+			if(json.data != null && json.data != 'undefined' && json.data != ""){ 
+// 			var json = JSON.parse(data);
+			for (var i = 0; i < json.data.length; i++) { 
+			var opt = json.data[i]; 
 			result = result +'          <tr>                                                                                                                ';
 			result = result +'            <td>                                                                                                              ';
 			result = result +'                <input type="radio" value='+opt.id+' name="linkedInvoice">                                                                     ';
@@ -1161,7 +1246,7 @@ function linkInvoice(invoiceId,totalAmount){
     
 <script>
 function mergeInvoice(parentTotalAmount){
-	var masterInvoiceId = $('#masterInvoiceId').val();
+	var invoiceUUID = $('#masterInvoiceId').val();
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var linkRadio = $('input[name=linkedInvoice]');
 	var checkVal = linkRadio.filter(':checked').val();
@@ -1174,8 +1259,8 @@ function mergeInvoice(parentTotalAmount){
 	 $.ajax({
    	 type: "POST",
 	     dataType : 'json',
-	    	 url: sourceleadUrl+"/linkInvoice?"+tokenParamName+"="+tokenValue+"&checkVal="+checkVal+"&invoiceType=Receivable&masterInvoiceId="+masterInvoiceId, 
-            success: function(data) {
+	    	 url: sourceleadUrl+"/linkInvoice?"+tokenParamName+"="+tokenValue+"&checkVal="+checkVal+"&invoiceType=Receivable&invoiceUUID="+invoiceUUID, 
+            success: function(json) {
            	
        },
    }); 
@@ -1189,14 +1274,15 @@ function mergeInvoice(parentTotalAmount){
 <script>
 function showDiffAmountPopup(calculatedAmount,currencyCode){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	<div class='project_inn_mask zInMask'></div>";
+	result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a zInPop'>";
 	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#invoice_pop").slideDown(200);
+	$(".project_inn_mask").show();
 }
 
 </script>
@@ -1207,6 +1293,20 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 	var sourceleadUrl ='${sourceleadUrl}';
 	location.replace(sourceleadUrl+"/invoiceList");	
+}
+</script>
+
+
+<script>
+function unLinkInvoice(invoiceUUID){
+	$.ajax({
+	   	 type: "POST",
+		     dataType : 'json',
+		    	 url: sourceleadUrl+"/unLinkInvoice?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
+	            success: function(data) {
+	            	location.replace(sourceleadUrl+"/invoiceList");	
+	       },
+	   });  
 }
 </script>
 

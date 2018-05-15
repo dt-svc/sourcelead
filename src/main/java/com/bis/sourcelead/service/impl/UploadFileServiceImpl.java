@@ -8,32 +8,38 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.CellRangeAddressList;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
@@ -54,6 +60,8 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -61,7 +69,10 @@ import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
-import com.bis.sourcelead.service.MasterCandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.service.UserRoleService;
@@ -104,6 +115,18 @@ public class UploadFileServiceImpl implements UploadFileService {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+	@Autowired
+	RegistrationService registrationService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
+	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -137,6 +160,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 		String isFileCreated = null;
 		boolean isValidated = false;
 		 boolean isUserFound = false;
+		 int savedRecordCount = 0;
 		Workbook createExcelworkbook =  new XSSFWorkbook();
 		Sheet createExcelsheet = createExcelworkbook.createSheet("createuser");
 		createExcelsheet = setExcelHeader(createExcelsheet);
@@ -170,6 +194,14 @@ public class UploadFileServiceImpl implements UploadFileService {
 					}else{
 						userImport.setMobileNumber("");
 					}
+					
+					if(record.get(Constants.EXTENSION_NUMBER) !=null || !"".equalsIgnoreCase(record.get(Constants.EXTENSION_NUMBER))){
+						userImport.setExtensionNumber(record.get(Constants.EXTENSION_NUMBER));
+					}else{
+						userImport.setExtensionNumber("");
+					}
+					
+					
 					if(record.get(Constants.RATE) != null || !"".equalsIgnoreCase(record.get(Constants.RATE))){
 						userImport.setRate(record.get(Constants.RATE));
 					}else{
@@ -186,6 +218,8 @@ public class UploadFileServiceImpl implements UploadFileService {
 						userImport.setDateOfJoin(null);
 					}
 					userImport.setRole(record.get(Constants.ROLE));
+					
+					userImport.setManager(record.get(Constants.MANAGER));
 					/*if(record.get(Constants.INVOICE_FREQUENCY) !=null || !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))){
 						userImport.setInvoiceFrequency(record.get(Constants.INVOICE_FREQUENCY));
 					}else{
@@ -201,7 +235,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 					 if(isUserFound){
 								createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
 					 }else{
-						 saveBulkUser(userImport,orgLocations,user,isMailChecked);
+						 savedRecordCount = saveBulkUser(userImport,orgLocations,user,isMailChecked,savedRecordCount);
 					 }
 				}else{
 					createXlsxSheetFromCsv(userImport, createExcelsheet, i,record);
@@ -270,7 +304,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 		String isFileCreated = "failure";
 		String fileName = multipartFile.getOriginalFilename();
 		Workbook createExcelworkbook = null ;
-
+		int savedRecordCount = 0;
 		if (fileName.endsWith("xlsx")) {
 			createExcelworkbook = new XSSFWorkbook();
 		} else if (fileName.endsWith("xls")) {
@@ -298,7 +332,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 					UsersImport userImport = new UsersImport();
 					Row row = rowIterator.next();
 					if (row.getRowNum() > 0) {
-						isValidated = validateExeclData(row,userImport,fileName);
+						isValidated = validateExeclData(row,userImport,fileName,orgLocations);
 					}
 					if (isValidated) {
 						if (row.getRowNum() > 0) { // Excluding column names
@@ -323,37 +357,73 @@ public class UploadFileServiceImpl implements UploadFileService {
 							} else {
 								userImport.setMobileNumber("");
 							}
-							if (row.getCell(5) != null) {
-								String rate = getCellValueAsString(row.getCell(5),fileName);
+							
+							if(row.getCell(5) != null){
+								String extensionNumber =getCellValueAsString(row.getCell(5), fileName);
+								userImport.setExtensionNumber(extensionNumber); 
+							}else{
+								userImport.setExtensionNumber("");
+							}
+							
+							if (row.getCell(6) != null) {
+								String rate = getCellValueAsString(row.getCell(6),fileName);
 								userImport.setRate(rate);
 							} else {
 								userImport.setRate("");
 							}
-							if (row.getCell(6) == null || "".equalsIgnoreCase(row.getCell(6).toString())) {
+							if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString())) {
 								userImport.setRatePer("");
 							} else {
 								
-								userImport.setRatePer(row.getCell(6).toString());
+								userImport.setRatePer(row.getCell(7).toString());
 							}
 							
-							if (row.getCell(7) == null || "".equalsIgnoreCase(row.getCell(7).toString())) {
+							if (row.getCell(8) == null || "".equalsIgnoreCase(row.getCell(8).toString())) {
 								userImport.setDateOfJoin(null);
 							} else {
-								Date hireDate = getCellDate(row.getCell(7),fileName);
+								Date hireDate = getCellDate(row.getCell(8),fileName);
 								userImport.setDateOfJoin(hireDate);
 							}
-							userImport.setRole(row.getCell(8).toString());
+							userImport.setRole(row.getCell(9).toString());
+							
 							/*if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
 								userImport.setInvoiceFrequency("");
 							} else {
 								userImport.setInvoiceFrequency(row.getCell(9).toString());
 							}*/
-							if (row.getCell(9) != null) {
-								String dayHours = getCellValueAsString(row.getCell(9),fileName);
+							if (row.getCell(10) != null) {
+								String dayHours = getCellValueAsString(row.getCell(10),fileName);
 								userImport.setDayHours(dayHours);
 							} else {
 								userImport.setDayHours("");
 							}
+							
+							userImport.setManager(row.getCell(11).toString());
+							
+							if(row.getCell(12) != null) {
+						    String employmentType = getCellValueAsString(row.getCell(12),fileName);
+							userImport.setEmploymentType(employmentType);
+							}else {
+								userImport.setEmploymentType("");
+							}
+							
+							// Cell Vendor
+							if(row.getCell(13) != null) {
+								String vendor = getCellValueAsString(row.getCell(13), fileName);
+								userImport.setVendor(vendor);
+							}else {
+								userImport.setVendor("");
+							}
+							
+							// Cell Vendor Contact
+							
+							if(row.getCell(14) != null) {
+								String vendorContact = getCellValueAsString(row.getCell(14), fileName);
+								userImport.setVendorContact(vendorContact);
+							}else {
+								userImport.setVendorContact("");
+							}
+							
 							  isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport.getEmployeeId(),userImport,orgLocations);
 							 if(isUserFound){
 								 if (row.getRowNum() > 0) {
@@ -366,7 +436,7 @@ public class UploadFileServiceImpl implements UploadFileService {
 								 }else{
 									 userImport.setIsMailChecked(Status.N);
 								 }
-								 saveBulkUser(userImport,orgLocations,user,isMailChecked);
+								 savedRecordCount = saveBulkUser(userImport,orgLocations,user,isMailChecked,savedRecordCount);
 							 }
 						}
 					} else {
@@ -376,28 +446,22 @@ public class UploadFileServiceImpl implements UploadFileService {
 						}
 					}
 				}
-				if (count > 0) {
+				if (count >= 0) {
 					FileOutputStream fos = null;
 					if(!fileName.endsWith("xlsx")){
-						fos = new FileOutputStream("FailureUsersForCheck.xls");
-						isFileCreated = "FailureUsersForCheck.xls";
+						fos = new FileOutputStream("FailureAssociatesForCheck.xls");
+						isFileCreated = "FailureAssociatesForCheck.xls";
 					}else{
-						 fos = new FileOutputStream("FailureUsersForCheck.xlsx");
-						 isFileCreated = "FailureUsersForCheck.xlsx";
+						 fos = new FileOutputStream("FailureAssociatesForCheck.xlsx");
+						 isFileCreated = "FailureAssociatesForCheck.xlsx";
 					}
 					
 					createExcelworkbook.write(fos);
 					fos.close();
+				}if(savedRecordCount >0){
+					isFileCreated = "failure";
 				}
-//				if(count > 0){
-//					if(!fileName.endsWith("xlsx")){
-//					isFileCreated = "FailureUsersForCheck.xls";
-//					}else{
-//						isFileCreated = "FailureUsersForCheck.xlsx";
-//					}
-//				}else{
-//					isFileCreated = "failed";
-//				}
+
 			}
 			fis.close();
 		} catch (IOException e) {
@@ -456,14 +520,19 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @param orgLocations
  * @param loginUser 
  * @param isMailChecked 
+ * @param savedRecordCount 
  * @param fileName 
  * @throws Exception
  */
-	private void saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked) throws Exception {
+	private int saveBulkUser(UsersImport userImport, OrgLocations orgLocations, User loginUser, String isMailChecked, int savedRecordCount) throws Exception {
 		UserRole userRole = new UserRole();
 		Employees employee = new Employees();
+		OrgRelations orgRelation = null;
+		OrgSpoc orgspoc = null;
+		
 		Roles role = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(userImport.getRole(), orgLocations.getId());
-		userRole.setIsPrimary(1);
+		User reportUser = userService.findByEmailAndOrgLocationsId(userImport.getManager(), orgLocations.getId());
+		userRole.setReportingManager(reportUser);
 		userRole.setRoles(role);
 		userRole.setUserType(role.getDisplayName());
 		userRole.setCreatedDate(new Date());
@@ -475,25 +544,45 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		employee.setDailyHours(userImport.getDayHours());
 		employee.setOrgLocations(orgLocations);
 		
+		employee.setUserEmploymentType(userImport.getEmploymentType());
+		
+		if("C2C".equalsIgnoreCase(userImport.getEmploymentType())) {
+			Map<String,Long> vendors = getVendorAndVendorContacts(userImport.getEmploymentType(), userImport.getVendor(), userImport.getVendorContact(), orgLocations.getId());
+			if(vendors != null) {
+				orgRelation = orgRelationsService.getOrRelationsById(vendors.get("vendorId"));
+				employee.setOrgRelationId(orgRelation);
+				
+				orgspoc = orgSpocService.getOrgSpocById(vendors.get("spocId"));
+				employee.setSpocId(orgspoc);
+			}
+			
+		}
+		
 		employee.setHireDate(userImport.getDateOfJoin());
-		String password = SourceLeadRandomCodeHelper.generateRandomPassword();
+		
+		
+		
+		String password = null;
 		
 		User userExisted = userService.findByEmail(userImport.getEmailId());
 		
 		if(null !=  userExisted){
-			//User user1 = userService.findByEmail(userImport.getEmailId());
-			UserRole userRole1 = userRoleService.getUserByUserId(userExisted.getId());
-			if(userRole1.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRole1.getUserState().toString())){
-				userRole.setUserState(Status.NOT_LOGGEDIN);
+			UserRole userRole1 = userRoleService.getLoginUserPrimaryRole(userExisted.getId());
+			if(userRole1 != null && userRole1.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRole1.getUserState().toString())){
+				password = SourceLeadRandomCodeHelper.generateRandomPassword();
 				userExisted.setPassword(sourceleadPasswordEncoder.encode(password));
 				userService.addUser(userExisted);
+				userRole.setIsPrimary(0);
 			}else{
-				userRole.setUserState(Status.NOT_LOGGEDIN);
+				userRole.setIsPrimary(1);
 			}
+			userRole.setUserState(Status.NOT_LOGGEDIN);
 			userRole.setUser(userExisted);
+			userRole.setIsMailSent(userImport.getIsMailChecked());
 			userRoleService.addUserRole(userRole);
 			employee.setUser(userExisted);
 			employeesService.addEmployee(employee);
+			
 			if(isMailChecked !=null){
 				userService.sendEmail(userExisted, loginUser, password,orgLocations.getId());
 			}
@@ -503,29 +592,38 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			if(null == masterCandidate){
 				masterCandidate = storeMasterCandidate(userExisted);
 			}
-			storeCandidate(userExisted, orgLocations, masterCandidate);
 			
+			storeCandidate(userExisted, orgLocations, masterCandidate,orgRelation,orgspoc,userImport);
+			savedRecordCount++;
 		}else{
 			User user  = new User();
 			user.setFirstName(userImport.getFirstName());
 			user.setLastName(userImport.getLastName());
 			user.setEmail(userImport.getEmailId());
 			user.setMobilePhone(userImport.getMobileNumber());
+			user.setExtensionNumber(userImport.getExtensionNumber());
+			user.setEmploymentType(userImport.getEmploymentType());
 			user.setCreatedDate(new Date());
 			user.setCreatedBy(loginUser.getUserCode());
 			user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 			user.setUserName(userImport.getEmailId());
-			
+			password = SourceLeadRandomCodeHelper.generateRandomPassword();
 			user.setPassword(sourceleadPasswordEncoder.encode(password));
-			user.setIsMailSent(userImport.getIsMailChecked());
+			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
+	 		user.setUrlSentTime(new Date());
+	 		user.setIsVerified(Constants.NO);
+			userRole.setIsPrimary(1);
 			userRole.setUserState(Status.NOT_LOGGEDIN);
 			userRole.setUser(user);
+			userRole.setIsMailSent(userImport.getIsMailChecked());
 		    userService.addUser(user);	
 		    userRoleService.addUserRole(userRole);
+		   
 			employee.setUser(user);
 			employeesService.addEmployee(employee);
 			if(isMailChecked !=null){
 				userService.sendEmail(user, loginUser, password,orgLocations.getId());
+				registrationService.sendActivationEmail(user);
 			}
 			userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
 			
@@ -534,9 +632,10 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			if(null == masterCandidate){
 				masterCandidate = storeMasterCandidate(user);
 			}
-			storeCandidate(user, orgLocations, masterCandidate);
-				
+			storeCandidate(user, orgLocations, masterCandidate,orgRelation,orgspoc,userImport);
+			savedRecordCount++;
 		}
+		return savedRecordCount;
 
 	}
 	
@@ -580,6 +679,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		}
 		
 		
+	  // add employmentType,vendor,vendor contact
+		
 		masterCandidate.setStatus(Constants.RECORD_ACTIVE);
 		masterCandidate.setCreatedBy(user.getUserCode());
 		masterCandidate.setCreatedDate(commonUtil.currentDate());
@@ -593,8 +694,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		return masterCandidate;
 	}
 	
-	private void storeCandidate(User user,OrgLocations orgLocations,MasterCandidate masterCandidate) throws Exception{
-		    Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+	private void storeCandidate(User user,OrgLocations orgLocations,MasterCandidate masterCandidate,OrgRelations orgRelations, OrgSpoc orgspoc,UsersImport userImport) throws Exception{
+		    Candidate candidate = candidateService.getCandidateByEmailAndOrgLocationId(user.getEmail(), orgLocations.getId());
 		    if(null == candidate){
 		    	candidate = new Candidate();
 				candidate.setConsultantUser(user);
@@ -606,15 +707,54 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setCountry(orgLocations.getCountry());
 				candidate.setIsAssociate(Constants.YES);
 				candidate.setEmail(user.getEmail());
+				candidate.setDesignationType(userImport.getEmploymentType());
 				candidate.setStatus(Constants.RECORD_ACTIVE);
 				candidate.setCreatedBy(user.getUserCode());
 				candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				candidate.setCreatedDate(commonUtil.currentDate());
+				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setMobilePhone(user.getMobilePhone());
 				candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
+				
 		    }else{
 		    	candidate.setConsultantUser(user);
 				candidate.setMasterCandidateId(masterCandidate);
+		    }
+		    
+		    if(orgRelations != null) {
+		    	OrgLocations vendorOrgLocations = null;
+		    	if(orgRelations.getLocationId().getId().equals(orgLocations.getId())) {
+		    		vendorOrgLocations = orgRelations.getResponderLocationId();
+		    	}else {
+		    		vendorOrgLocations = orgRelations.getLocationId();
+		    	}
+		    	 Candidate vendorCandidate = candidateService.getCandidateByEmailAndOrgLocationId(user.getEmail(), vendorOrgLocations.getId());
+		    	 if(vendorCandidate == null) {
+		    		 vendorCandidate = new Candidate();
+		    		 vendorCandidate.setMasterCandidateId(masterCandidate);
+		    		 vendorCandidate.setOrgLocationId(vendorOrgLocations);
+		    		 vendorCandidate.setCandidateType(Constants.CANDIDATE);
+		    		 vendorCandidate.setFirstName(user.getFirstName());
+		    		 vendorCandidate.setLastName(user.getLastName());
+		    		 vendorCandidate.setCountry(vendorOrgLocations.getCountry());
+		    		 vendorCandidate.setIsAssociate(Constants.YES);
+		    		 vendorCandidate.setEmail(user.getEmail());
+		    		 vendorCandidate.setStatus(Constants.RECORD_ACTIVE);
+		    		 vendorCandidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		    		 vendorCandidate.setCreatedDate(commonUtil.currentDate());
+		    		 vendorCandidate.setUpdatedDate(commonUtil.currentDate());
+		    		 vendorCandidate.setMobilePhone(user.getMobilePhone());
+		    		 vendorCandidate.setDesignationType("Full Time");
+		    		 vendorCandidate.setGeneratedId(candidateService.getCandidateId(vendorOrgLocations));
+		    		 vendorCandidate =  candidateService.addCandidate(vendorCandidate);
+		    		 candidateService.saveOrUpdateCandidateElkDocument(vendorCandidate);
+		    		 
+		    	 }
+		    	 
+		    	 candidate.setParentCandidateId(vendorCandidate);
+		    	 candidate.setDesignationType(userImport.getEmploymentType());
+		    	 candidate.setOrgRelationId(orgRelations);
+		    	 candidate.setSpocId(orgspoc);
 		    }
 		    
 		    candidateService.addCandidate(candidate);
@@ -632,10 +772,15 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @param orgLocations 
  * @param roleHierarchyId 
  * @param org 
- * @throws IOException
+ * @throws Exception 
  */
-	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport, String fileName, Org org, Long roleHierarchyId, OrgLocations orgLocations) throws IOException {
+	private void createXlsSheet(Row row, Sheet createExcelsheet, int rowIndex, UsersImport userImport, String fileName, Org org, Long roleHierarchyId, OrgLocations orgLocations) throws Exception {
 		String[] rolesList = getRolesList(org,orgLocations.getId(),roleHierarchyId);
+	
+		//	String[] usersList = getUsersList(orgLocations.getId());
+		
+		String[] employmentTyesList = getEmploymentTypeList();
+		
 		Row writeRow = createExcelsheet.createRow(rowIndex);
 		if (row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString())) {
 			
@@ -660,87 +805,120 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		} else {
 			 writeRow.createCell(3).setCellValue("");
 		}
-			if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
-				String mobileNumber = getCellValueAsString(row.getCell(4), fileName);
-			      writeRow.createCell(4).setCellValue(mobileNumber);
-			} else {
-			    writeRow.createCell(4).setCellValue("");
-			}
-			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
-				String rate = getCellValueAsString(row.getCell(5), fileName);
-				 writeRow.createCell(5).setCellValue(rate);
-			} else {
-			  writeRow.createCell(5).setCellValue("");
-			}
-		if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
-			if(!fileName.endsWith("xlsx")){
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6,fileName));
-			}else{
-				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.RATEPER_LIST,6,createExcelsheet));
-			}
-			
-		    writeRow.createCell(6).setCellValue(row.getCell(6).toString());
+		
+		if (row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString())) {
+			String mobileNumber = getCellValueAsString(row.getCell(4), fileName);
+		      writeRow.createCell(4).setCellValue(mobileNumber);
 		} else {
-			if(!fileName.endsWith("xlsx")){
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6,fileName));
-			}else{
-				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.RATEPER_LIST,6,createExcelsheet));
-			}
-			 writeRow.createCell(6).setCellValue("");
+		    writeRow.createCell(4).setCellValue("");
 		}
-		if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
-			
-			boolean isValidate = isCellValueDate(row.getCell(7), fileName);
-			if(isValidate){
-				 Date date = getCellDate(row.getCell(7), fileName);
-				 DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
-	             String strDate = dateFormat.format(date);
-				 writeRow.createCell(7).setCellValue(strDate);
-			}else{
-				 writeRow.createCell(7).setCellValue(row.getCell(7).toString());
-			}
+		
+		if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString())) {
+			String extensionNumber = getCellValueAsString(row.getCell(5), fileName);
+		      writeRow.createCell(5).setCellValue(extensionNumber);
 		} else {
-			writeRow.createCell(7).setCellValue("");
+		    writeRow.createCell(5).setCellValue("");
+		}
+			
+			if (row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString())) {
+				String rate = getCellValueAsString(row.getCell(6), fileName);
+				 writeRow.createCell(6).setCellValue(rate);
+			} else {
+			  writeRow.createCell(6).setCellValue("");
+			}
+		if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,7,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.RATEPER_LIST,7,createExcelsheet));
+			}
+			
+		    writeRow.createCell(7).setCellValue(row.getCell(7).toString());
+		} else {
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,7,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.RATEPER_LIST,7,createExcelsheet));
+			}
+			 writeRow.createCell(7).setCellValue("");
 		}
 		if (row.getCell(8) != null && !"".equalsIgnoreCase(row.getCell(8).toString())) {
-			if(!fileName.endsWith("xlsx")){
-				createExcelsheet.addValidationData(getDropDownListForCell(rolesList,8,fileName));
+			
+			boolean isValidate = isCellValueDate(row.getCell(8), fileName,orgLocations);
+			if(isValidate){
+				 Date date = getCellDate(row.getCell(8), fileName);
+				 String userDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), date);
+				 /*DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyy");
+	             String strDate = dateFormat.format(date);*/
+				 writeRow.createCell(8).setCellValue(userDate);
 			}else{
-				createExcelsheet.addValidationData(getXssfDropDownlist(rolesList,8,createExcelsheet));
+				 writeRow.createCell(8).setCellValue(row.getCell(8).toString());
 			}
-	        writeRow.createCell(8).setCellValue(row.getCell(8).toString());
 		} else {
-			if(!fileName.endsWith("xlsx")){
-				createExcelsheet.addValidationData(getDropDownListForCell(rolesList,8,fileName));
-			}else{
-				createExcelsheet.addValidationData(getXssfDropDownlist(rolesList,8,createExcelsheet));
-			}
 			writeRow.createCell(8).setCellValue("");
 		}
-	/*	if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
+		
+		if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
 			if(!fileName.endsWith("xlsx")){
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,fileName));
+				createExcelsheet.addValidationData(getDropDownListForCell(rolesList,9,fileName));
 			}else{
-				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.INVOICE_FREQUENCY_LIST,9,createExcelsheet));
+				createExcelsheet.addValidationData(getXssfDropDownlist(rolesList,9,createExcelsheet));
 			}
-			writeRow.createCell(9).setCellValue(row.getCell(9).toString());
+	        writeRow.createCell(9).setCellValue(row.getCell(9).toString());
 		} else {
 			if(!fileName.endsWith("xlsx")){
-				createExcelsheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,fileName));
+				createExcelsheet.addValidationData(getDropDownListForCell(rolesList,9,fileName));
 			}else{
-				createExcelsheet.addValidationData(getXssfDropDownlist(Constants.INVOICE_FREQUENCY_LIST,9,createExcelsheet));
+				createExcelsheet.addValidationData(getXssfDropDownlist(rolesList,9,createExcelsheet));
 			}
-		     writeRow.createCell(9).setCellValue("");
-		}*/
-			if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
-
-                String dayHours = getCellValueAsString(row.getCell(9), fileName);
-                  writeRow.createCell(9).setCellValue(dayHours);
-			} else {
-				writeRow.createCell(9).setCellValue("");
+			writeRow.createCell(9).setCellValue("");
+		}
+		
+		if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
+            String dayHours = getCellValueAsString(row.getCell(10), fileName);
+              writeRow.createCell(10).setCellValue(dayHours);
+		} else {
+			writeRow.createCell(10).setCellValue("");
+		}
+		
+		if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
+			 writeRow.createCell(11).setCellValue(row.getCell(11).toString());
+		} else {
+			 writeRow.createCell(11).setCellValue("");
+		}
+		
+		if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(employmentTyesList,12,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(employmentTyesList,12,createExcelsheet));
 			}
+	        writeRow.createCell(12).setCellValue(row.getCell(12).toString());
+		} else {
+			if(!fileName.endsWith("xlsx")){
+				createExcelsheet.addValidationData(getDropDownListForCell(employmentTyesList,12,fileName));
+			}else{
+				createExcelsheet.addValidationData(getXssfDropDownlist(employmentTyesList,12,createExcelsheet));
+			}
+			writeRow.createCell(12).setCellValue("");
+		}
+		
+		if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
+			String vendor = getCellValueAsString(row.getCell(13), fileName);
+			 writeRow.createCell(13).setCellValue(vendor);
+		} else {
+		  writeRow.createCell(13).setCellValue("");
+		}
+		
+		if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
+			String vendorContact = getCellValueAsString(row.getCell(14), fileName);
+			 writeRow.createCell(14).setCellValue(vendorContact);
+		} else {
+		  writeRow.createCell(14).setCellValue("");
+		}
+			
 		if (userImport.getReason() !=null) {
-			writeRow.createCell(10).setCellValue(userImport.getReason());
+			writeRow.createCell(15).setCellValue(userImport.getReason());
 		} 
 	}
 	/**
@@ -748,24 +926,37 @@ private String getCellValueAsString(Cell cell, String fileName) {
  * @param row
  * @param userImport 
  * @param fileName 
+	 * @param orgLocations 
  * @return
+	 * @throws Exception 
  */
-	private boolean validateExeclData(Row row, UsersImport userImport, String fileName) {
+	private boolean validateExeclData(Row row, UsersImport userImport, String fileName, OrgLocations orgLocations) throws Exception {
 
 		boolean isValidated; 
 		if (row.getRowNum() > 0) { // Excluding column names
-
+			
+           
+			if(row.getCell(0) != null && !"".equalsIgnoreCase(row.getCell(0).toString()))
+			{
+				isValidated = isIdValid(row.getCell(0).toString());
+				if(isValidated == false){
+					userImport.setReason("should contain 2-20 characters");
+					return isValidated;
+				}
+			}
+			
 			if (row.getCell(1) == null || "".equalsIgnoreCase(row.getCell(1).toString())) {
 				userImport.setReason("Required fields is not filled");
 				return false;
 			}else if(row.getCell(1) != null && !"".equalsIgnoreCase(row.getCell(1).toString())){
 				isValidated = isFnameLnameValid(row.getCell(1).toString());
 				if(isValidated == false){
-					userImport.setReason("should contain above 2 char");
+					userImport.setReason("should contain above 2 char and should not allowed special charecters");
 					return isValidated;
 				}
 			}
 			
+					
 			if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString())) {
 				userImport.setReason("Email fields is not filled");
 				return false;
@@ -786,7 +977,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 			/*code to check Rate validation*/
 			if (row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString().trim())) {
-				if(row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString().trim())){
+				if(row.getCell(5) != null && !"".equalsIgnoreCase(row.getCell(5).toString().trim())){
 					String rate = getCellValueAsString(row.getCell(5), fileName);
 					if (rate != null && !"".equalsIgnoreCase(rate)) {
 						isValidated = isRateLengthValid(rate);
@@ -801,39 +992,118 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				}
 			}
 			if(row.getCell(6) != null && !"".equalsIgnoreCase(row.getCell(6).toString().trim())){
-				if(row.getCell(5) == null || "".equalsIgnoreCase(row.getCell(5).toString().trim())){
+				if(row.getCell(6) == null || "".equalsIgnoreCase(row.getCell(6).toString().trim())){
 					userImport.setReason("Rate is Required");
 					return false;
 				}
 			}
 			if (row.getCell(7) != null && !"".equalsIgnoreCase(row.getCell(7).toString())) {
-				isValidated = isCellValueDate(row.getCell(7),fileName);
+				/*isValidated = isCellValueDate(row.getCell(8),fileName,orgLocations);
 				if(isValidated == false){
 					userImport.setReason("Invalid Date");
 					return isValidated;
-				}
+				}*/
 			}
-			if (row.getCell(8) == null || "".equalsIgnoreCase(row.getCell(8).toString())) {
-				userImport.setReason("Required fields is not filled");
+			
+			
+			if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
+				userImport.setReason("Role is Required");
 				return false;
 			}
-				if (row.getCell(9) != null && !"".equalsIgnoreCase(row.getCell(9).toString())) {
-					String dayHours = getCellValueAsString(row.getCell(9), fileName);
-					if (dayHours != null && !"".endsWith(dayHours)) {
-						isValidated = isDayHourValid(dayHours);
-						if (isValidated == false) {
-							userImport.setReason("Invalid Day Hours");
-							return isValidated;
+			
+			
+			if (row.getCell(11) == null || "".equalsIgnoreCase(row.getCell(11).toString())) {
+				userImport.setReason("Manager is Required");
+				return false;
+			}else if(row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString()) && !validateEmail(row.getCell(11).toString())){
+				userImport.setReason("Invalid Email");
+				return false;
+			}else {
+				User user = userService.findByEmailAndOrgLocationsId(row.getCell(11).toString(), orgLocations.getId());
+				if(user == null) {
+					userImport.setReason("Manager is not a current org user");
+					return false;
+				}
+			}
+			
+			if (row.getCell(12) == null || "".equalsIgnoreCase(row.getCell(12).toString())) {
+				userImport.setReason("Employment Type is Required");
+				return false;
+			}
+			
+		// Employment Type,Vendor,Vendor Contact Name
+			
+			if("C2C".equalsIgnoreCase(row.getCell(12).getStringCellValue())) {
+				
+				if(row.getCell(13) !=null && !"".equalsIgnoreCase(row.getCell(13).toString())){
+					List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+					Long vendorId = 0l;
+					boolean flag = false;
+					for(OrgRelations rel : vendorsList) {
+						if((row.getCell(13).toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (row.getCell(13).toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+							vendorId = rel.getId();
+							flag = true;
+							break;
+						}else {
+							flag = false;
 						}
 					}
+					if(!flag) {
+						userImport.setReason("No vendor exists..");
+						return flag;
+					}
+					
+					if(row.getCell(14) !=null && !"".equalsIgnoreCase(row.getCell(14).toString())){
+						List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
+						
+						for(OrgSpoc vendorContacts : vendorContactsList) {
+							if(row.getCell(14).toString().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
+								return true;
+							}else {
+								userImport.setReason("No contact exists with entered email");
+								return false;
+							}
+						}
+						if(vendorContactsList == null || vendorContactsList.size() == 0) {
+							userImport.setReason("No Active contacts exists with this vendor");
+							return false;
+						}
+					}else if(vendorId != 0) {
+						userImport.setReason("Contact is mandatory");
+						return false;
+					}
+					
+				}else {
+					if(row.getCell(14) !=null && !"".equalsIgnoreCase(row.getCell(14).toString())){
+						userImport.setReason("vendor is mandatory if you have entered contact");
+						return false;
+					}else {
+						userImport.setReason("vendor details are mandatory.");
+						return false;
+					}
 				}
+			}else {
+				if(row.getCell(13) !=null && !"".equalsIgnoreCase(row.getCell(13).toString())){
+					if(row.getCell(14) !=null && !"".equalsIgnoreCase(row.getCell(14).toString())){
+						userImport.setReason("Employment type should be C2C if you have entered vendor details");
+						return false;
+					}else {
+						userImport.setReason("Employment type should be C2C if you have entered vendor details");
+						return false;
+					}
+				}
+			}
+			
+			
 		}
 		return true;
 	}
 
-	private boolean isCellValueDate(Cell cell, String fileName) {
+
+	private boolean isCellValueDate(Cell cell, String fileName, OrgLocations orgLocations) {
 	
 		boolean isCellValueDate = false;
+		  
 		   if(fileName.toLowerCase().endsWith("xls")){
 			   HSSFCell hssfCell = (HSSFCell) cell;
 				if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC && DateUtil.isCellDateFormatted((Cell) hssfCell)) {
@@ -923,33 +1193,46 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		excelHeader.createCell(2).setCellValue(Constants.LAST_NAME);
 		excelHeader.createCell(3).setCellValue(Constants.EMAIL_ID);
 		excelHeader.createCell(4).setCellValue(Constants.PHONE_NUMBER);
-		excelHeader.createCell(5).setCellValue(Constants.RATE);
-		excelHeader.createCell(6).setCellValue(Constants.RATEPER);
-		excelHeader.createCell(7).setCellValue(Constants.DATEOFJOIN);
-		excelHeader.createCell(8).setCellValue(Constants.ROLE);
-		excelHeader.createCell(9).setCellValue(Constants.DAY_HOURS);
-		excelHeader.createCell(10).setCellValue(Constants.FAILED_REASON);
+		excelHeader.createCell(5).setCellValue(Constants.EXTENSION_NUMBER);
+		excelHeader.createCell(6).setCellValue(Constants.RATE);
+		excelHeader.createCell(7).setCellValue(Constants.RATEPER);
+		excelHeader.createCell(8).setCellValue(Constants.DATEOFJOIN);
+		excelHeader.createCell(9).setCellValue(Constants.ROLE);
+		excelHeader.createCell(10).setCellValue(Constants.DAY_HOURS);
+		excelHeader.createCell(11).setCellValue(Constants.MANAGER);
+		excelHeader.createCell(12).setCellValue(Constants.EMPLOYMENT_TYPE);
+		excelHeader.createCell(13).setCellValue(Constants.ASSOCIATE_VENDOR);
+		excelHeader.createCell(14).setCellValue(Constants.ASSOCIATE_VENDOR_CONTACT);
+		excelHeader.createCell(15).setCellValue(Constants.FAILED_REASON);
 		return createExcelsheet;
 	}
 	
 	/**
 	 * Prepares Headers for xls template
+	 * @param orglocation 
 	 * @param createExcelsheet
 	 * @return
 	 */
-	private Sheet setTemplateHeaders(Sheet sheet) {
+	private Sheet setTemplateHeaders(Sheet sheet, OrgLocations orglocation) {
 		
 		Row excelHeader = sheet.createRow(0);
+		StringBuilder format = new StringBuilder();
+//		String dateFormate = format.append("( ").append(orglocation.getDateFormat()).append(" )").toString();
 		excelHeader.createCell(0).setCellValue(Constants.EMPLOYEE_ID);
 		excelHeader.createCell(1).setCellValue(Constants.FIRST_NAME);
 		excelHeader.createCell(2).setCellValue(Constants.LAST_NAME);
 		excelHeader.createCell(3).setCellValue(Constants.EMAIL_ID);
 		excelHeader.createCell(4).setCellValue(Constants.PHONE_NUMBER);
-		excelHeader.createCell(5).setCellValue(Constants.RATE);
-		excelHeader.createCell(6).setCellValue(Constants.RATEPER);
-		excelHeader.createCell(7).setCellValue(Constants.DATEOFJOIN);
-		excelHeader.createCell(8).setCellValue(Constants.ROLE);
-		excelHeader.createCell(9).setCellValue(Constants.DAY_HOURS);
+		excelHeader.createCell(5).setCellValue(Constants.EXTENSION_NUMBER);
+		excelHeader.createCell(6).setCellValue(Constants.RATE);
+		excelHeader.createCell(7).setCellValue(Constants.RATEPER);
+		excelHeader.createCell(8).setCellValue(Constants.DATEOFJOIN);
+		excelHeader.createCell(9).setCellValue(Constants.ROLE);
+		excelHeader.createCell(10).setCellValue(Constants.DAY_HOURS);
+		excelHeader.createCell(11).setCellValue(Constants.MANAGER+"(Email)");
+		excelHeader.createCell(12).setCellValue(Constants.EMPLOYMENT_TYPE);
+		excelHeader.createCell(13).setCellValue(Constants.ASSOCIATE_VENDOR);
+		excelHeader.createCell(14).setCellValue(Constants.ASSOCIATE_VENDOR_CONTACT);
 		return sheet;
 	}
 	
@@ -992,6 +1275,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			Cell cell3 = writeRow.createCell(3);
 			cell3.setCellValue("");
 		}
+		
 		if (record.get(Constants.PHONE_NUMBER) != null && !"".equalsIgnoreCase(record.get(Constants.PHONE_NUMBER)) ) {
 			Cell cell4 = writeRow.createCell(4);
 			cell4.setCellValue(record.get(Constants.PHONE_NUMBER));
@@ -999,35 +1283,47 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			Cell cell4 = writeRow.createCell(4);
 			cell4.setCellValue("");
 		}
-		if (record.get(Constants.RATE) != null && !"".equalsIgnoreCase(record.get(Constants.RATE))) {
+		
+		
+		if (record.get(Constants.EXTENSION_NUMBER) != null && !"".equalsIgnoreCase(record.get(Constants.EXTENSION_NUMBER)) ) {
 			Cell cell5 = writeRow.createCell(5);
-			cell5.setCellValue(record.get(Constants.RATE));
+			cell5.setCellValue(record.get(Constants.EXTENSION_NUMBER));
 		} else {
 			Cell cell5 = writeRow.createCell(5);
 			cell5.setCellValue("");
 		}
-		if (record.get(Constants.RATEPER) != null && !"".equalsIgnoreCase(record.get(Constants.RATEPER))) {
+		
+		
+		if (record.get(Constants.RATE) != null && !"".equalsIgnoreCase(record.get(Constants.RATE))) {
 			Cell cell6 = writeRow.createCell(6);
-			cell6.setCellValue(record.get(Constants.RATEPER));
+			cell6.setCellValue(record.get(Constants.RATE));
 		} else {
 			Cell cell6 = writeRow.createCell(6);
 			cell6.setCellValue("");
 		}
-		if (record.get(Constants.DATEOFJOIN) != null && !"".equalsIgnoreCase(record.get(Constants.DATEOFJOIN))) {
-			
-			
+		
+		if (record.get(Constants.RATEPER) != null && !"".equalsIgnoreCase(record.get(Constants.RATEPER))) {
 			Cell cell7 = writeRow.createCell(7);
-			cell7.setCellValue(record.get(Constants.DATEOFJOIN));
+			cell7.setCellValue(record.get(Constants.RATEPER));
 		} else {
 			Cell cell7 = writeRow.createCell(7);
 			cell7.setCellValue("");
 		}
-		if (record.get(Constants.ROLE) != null && !"".equalsIgnoreCase(record.get(Constants.ROLE))) {
+		
+		if (record.get(Constants.DATEOFJOIN) != null && !"".equalsIgnoreCase(record.get(Constants.DATEOFJOIN))) {
+			
 			Cell cell8 = writeRow.createCell(8);
-			cell8.setCellValue(record.get(Constants.ROLE));
+			cell8.setCellValue(record.get(Constants.DATEOFJOIN));
 		} else {
 			Cell cell8 = writeRow.createCell(8);
 			cell8.setCellValue("");
+		}
+		if (record.get(Constants.ROLE) != null && !"".equalsIgnoreCase(record.get(Constants.ROLE))) {
+			Cell cell9 = writeRow.createCell(9);
+			cell9.setCellValue(record.get(Constants.ROLE));
+		} else {
+			Cell cell9 = writeRow.createCell(9);
+			cell9.setCellValue("");
 		}
 		/*if (record.get(Constants.INVOICE_FREQUENCY) != null && !"".equalsIgnoreCase(record.get(Constants.INVOICE_FREQUENCY))) {
 			Cell cell9 = writeRow.createCell(9);
@@ -1037,14 +1333,51 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			cell9.setCellValue("");
 		}*/
 		if (record.get(Constants.DAY_HOURS) != null && !"".equalsIgnoreCase(record.get(Constants.DAY_HOURS))) {
-			Cell cell9 = writeRow.createCell(9);
-			cell9.setCellValue(record.get(Constants.DAY_HOURS));
+			Cell cell10 = writeRow.createCell(10);
+			cell10.setCellValue(record.get(Constants.DAY_HOURS));
 		} else {
-			Cell cell9 = writeRow.createCell(9);
-			cell9.setCellValue("");
+			Cell cell10 = writeRow.createCell(10);
+			cell10.setCellValue("");
 		}
+		
+		if (record.get(Constants.MANAGER) != null && !"".equalsIgnoreCase(record.get(Constants.MANAGER))) {
+			Cell cell11 = writeRow.createCell(11);
+			cell11.setCellValue(record.get(Constants.MANAGER));
+		} else {
+			Cell cell11 = writeRow.createCell(11);
+			cell11.setCellValue("");
+		}
+		
+		// Employment Type,Vendor,Vendor Contact
+		
+		if (record.get(Constants.EMPLOYMENT_TYPE) != null && !"".equalsIgnoreCase(record.get(Constants.EMPLOYMENT_TYPE))) {
+			Cell cell12 = writeRow.createCell(12);
+			cell12.setCellValue(record.get(Constants.EMPLOYMENT_TYPE));
+		} else {
+			Cell cell12 = writeRow.createCell(12);
+			cell12.setCellValue("");
+		}
+		
+		
+		if (record.get(Constants.ASSOCIATE_VENDOR) != null && !"".equalsIgnoreCase(record.get(Constants.ASSOCIATE_VENDOR))) {
+			Cell cell13 = writeRow.createCell(13);
+			cell13.setCellValue(record.get(Constants.ASSOCIATE_VENDOR));
+		} else {
+			Cell cell13 = writeRow.createCell(13);
+			cell13.setCellValue("");
+		}
+		
+		if (record.get(Constants.ASSOCIATE_VENDOR_CONTACT) != null && !"".equalsIgnoreCase(record.get(Constants.ASSOCIATE_VENDOR_CONTACT))) {
+			Cell cell14 = writeRow.createCell(14);
+			cell14.setCellValue(record.get(Constants.ASSOCIATE_VENDOR_CONTACT));
+		} else {
+			Cell cell14 = writeRow.createCell(13);
+			cell14.setCellValue("");
+		}
+		
+		
 		if (userImport.getReason() !=null) {
-			writeRow.createCell(10).setCellValue(userImport.getReason());
+			writeRow.createCell(15).setCellValue(userImport.getReason());
 		} 
 	
 	}
@@ -1097,7 +1430,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	private boolean isMobileNumberValid(String mobileNmber){
 		
 		String phoneNumber = mobileNmber.trim();
-		String regex = "([\\.\\-\\s+\\/()]*[0-9][\\.\\-\\s+\\/()]*){8,15}";
+		String regex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
 		boolean flag;
 		if(phoneNumber.length() > 9 && phoneNumber.length() <= 20){
 			flag = phoneNumber.matches(regex);
@@ -1110,16 +1443,32 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	
 	private boolean isFnameLnameValid(String name){
 		boolean flag = false;
-		boolean istabSpace = name.matches("\\s*");
-		if(istabSpace){
+		boolean istabSpace = name.matches("^[A-Za-z][A-Z a-z 0-9]*$");
+		if(istabSpace==false){
 			flag = false;
 		}else{
 			if(name.length() > 2 && name.length() <= 200){
 				flag = true;
 			}
 	}
+		
 		return flag;
 	}
+	
+
+	private boolean isIdValid(String id)
+	{		
+		String Id=id.substring(0, id.length() - 2);
+		boolean flag = false;
+		if(Id.length()<2){
+			flag = false;
+		}else{
+			flag = true;
+			}
+		
+		return flag;
+	}
+	
 	
 	private boolean isDayHourValid(String dayHours) {
 		String regex = "\\d+";
@@ -1174,15 +1523,122 @@ private String getCellValueAsString(Cell cell, String fileName) {
 	}
 
 	@Override
-	public File getUserTemplate(Org org, Long orgLocationId, Long roleHierarchyId) throws FileNotFoundException {
+	public File getUserTemplate(Org org, Long orgLocationId, Long roleHierarchyId) throws Exception {
+		OrgLocations orglocation = null;
+		try {
+			orglocation = orgLocationService.getOrgLocations(orgLocationId);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		Workbook wb = (Workbook) new HSSFWorkbook();
-		Sheet sheet = wb.createSheet("createuser");
-		sheet = setTemplateHeaders(sheet);
-		sheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,6,"xls"));
-		String[] rolesList = getRolesList(org,orgLocationId,roleHierarchyId);
-	    sheet.addValidationData(getDropDownListForCell(rolesList,8,"xls"));
-		//sheet.addValidationData(getDropDownListForCell(Constants.INVOICE_FREQUENCY_LIST,9,"xls"));
-		File file = new File("createuser.xls");
+		Sheet sheet = wb.createSheet("createAssociates");
+		sheet = setTemplateHeaders(sheet,orglocation);
+		sheet.addValidationData(getDropDownListForCell(Constants.RATEPER_LIST,7,"xls"));
+		
+		CreationHelper creationHelper = wb.getCreationHelper();
+		
+//		Row dateRow = sheet.createRow(1);
+		 
+		// Create Cell and set value as new Date()
+//		Cell dateCell = dateRow.createCell((short) 7);
+//		dateCell.setCellValue(new Date());
+//		CellStyle style1 = wb.createCellStyle();
+//		String dtaeForm = orglocation.getDateFormat();
+//		style1.setDataFormat(creationHelper.createDataFormat().getFormat(dtaeForm));
+//		dateCell.setCellStyle(style1);
+//		sheet.setDefaultColumnStyle(8, style1);
+		
+		
+		
+		
+//		sheet.addValidationData(Constants.RATEPER_LIST,7,"xls");
+		//Roles list 
+		String[] rolesList = getRolesList(org,orgLocationId,roleHierarchyId); 
+		HSSFSheet rolehidden = (HSSFSheet) wb.createSheet("rolehidden");
+		HSSFRow roleRow = rolehidden.createRow(0);
+		for (int i = 0, length= rolesList.length; i < length; i++) {
+		   String name = rolesList[i];
+		   try {
+		   HSSFCell cell = roleRow.createCell(i);
+		   cell.setCellValue(name);
+		   }catch (Exception e) {
+		    }
+		 }
+		 Name namedRoleCel = wb.createName();
+		 namedRoleCel.setNameName("rolehidden");
+		 namedRoleCel.setRefersToFormula("rolehidden!$A$1:$DZ$1" + rolesList.length);
+		 DVConstraint rolConstraint = DVConstraint.createFormulaListConstraint("rolehidden");
+		 CellRangeAddressList roleAddressList = new CellRangeAddressList(1, 1000, 9, 9);
+		 HSSFDataValidation roleValidation = new HSSFDataValidation(roleAddressList, rolConstraint);
+		 wb.setSheetHidden(1, true);
+		 sheet.addValidationData(roleValidation);
+		 
+		 // manager user list
+		 	/* String[] usersList = getUsersList(orgLocationId); 
+			HSSFSheet userhidden = (HSSFSheet) wb.createSheet("userhidden");
+			HSSFRow userRow = userhidden.createRow(0);
+			for (int i = 0, length= usersList.length; i < length; i++) {
+			   String name = usersList[i];
+			   try {
+			   HSSFCell cell = userRow.createCell(i);
+			   cell.setCellValue(name);
+			   }catch (Exception e) {
+				
+			    }
+			 }
+			 Name namedUserCel = wb.createName();
+			 namedUserCel.setNameName("userhidden");
+			 namedUserCel.setRefersToFormula("userhidden!$A$1:$DZ$1" + usersList.length);
+			 DVConstraint userConstraint = DVConstraint.createFormulaListConstraint("userhidden");
+			 CellRangeAddressList userAddressList = new CellRangeAddressList(1, 1000, 11, 11);
+			 HSSFDataValidation userValidation = new HSSFDataValidation(userAddressList, userConstraint);
+			 wb.setSheetHidden(2, true);
+			 sheet.addValidationData(userValidation);*/
+			 
+			 // Employment Type List
+			 
+		 String[] employmentTypesList = getEmploymentTypeList();
+		 HSSFSheet employmentTypehidden = (HSSFSheet) wb.createSheet("employmentTypehidden");
+			HSSFRow employmentTypeRow = employmentTypehidden.createRow(0);
+			for (int i = 0, length= employmentTypesList.length; i < length; i++) {
+			   String name = employmentTypesList[i];
+			   try {
+			   HSSFCell cell = employmentTypeRow.createCell(i);
+			   cell.setCellValue(name);
+			   }catch (Exception e) {
+				
+			    }
+			 }
+			
+			 Name namedEmploymentTypeCel = wb.createName();
+			 namedEmploymentTypeCel.setNameName("employmentTypehidden");
+			 namedEmploymentTypeCel.setRefersToFormula("employmentTypehidden!$A$1:$DZ$1" + employmentTypesList.length);
+			 DVConstraint employmentTypeConstraint = DVConstraint.createFormulaListConstraint("employmentTypehidden");
+			 CellRangeAddressList empTypeAddressList = new CellRangeAddressList(1, 1000, 12, 12);
+			 HSSFDataValidation empTypeValidation = new HSSFDataValidation(empTypeAddressList, employmentTypeConstraint);
+			 wb.setSheetHidden(2, true);
+			 sheet.addValidationData(empTypeValidation);
+			 
+		 
+	    //Day hours list
+	    HSSFSheet hidden = (HSSFSheet) wb.createSheet("hidden");
+	    HSSFRow row = hidden.createRow(0);
+		for (int i = 0, length= Constants.DAY_HOURS_LIST.length; i < length; i++) {
+		   String name = Constants.DAY_HOURS_LIST[i];
+		   HSSFCell cell = row.createCell(i);
+		   cell.setCellValue(name);
+		 }
+		 Name namedCell = wb.createName();
+		 namedCell.setNameName("hidden");
+		 namedCell.setRefersToFormula("hidden!$A$1:$AU$1" + Constants.DAY_HOURS_LIST.length);
+		 DVConstraint constraint = DVConstraint.createFormulaListConstraint("hidden");
+		 CellRangeAddressList addressList = new CellRangeAddressList(1, 1000, 10, 10);
+		 HSSFDataValidation validation = new HSSFDataValidation(addressList, constraint);
+		 
+		 wb.setSheetHidden(3, true);
+		 sheet.addValidationData(validation);
+		 
+		File file = new File("createAssociates.xls");
 		FileOutputStream fos = new FileOutputStream(file);
 		try {
 			wb.write(fos);
@@ -1208,5 +1664,64 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		}
 		String [] roleList = list.toArray(new String[list.size()]);
 		 return roleList;
+	}
+	
+	private String[] getUsersList(Long orgLocationId) throws Exception {
+		List<String> list = new ArrayList<>();  
+		List<User> usersList = userService.getAllUsersByOrgLocationCode(orgLocationId);
+		for(User user :usersList){
+			list.add(user.getEmail());
+		}
+		String [] userList = list.toArray(new String[list.size()]);
+		 return userList;
+	}
+	
+	private String[] getEmploymentTypeList() throws Exception {
+		List<String> list = new ArrayList<>();  
+		String[] employmentTypeList = {"W-2","C2H","C2H-1099","C2C","C2C-1099","Part Time","Full Time","Other"};
+		for(String empType :employmentTypeList){
+			list.add(empType);
+		}
+		String [] employmentTypesList = list.toArray(new String[list.size()]);
+		 return employmentTypesList;
+	}
+	
+	private Map<String, Long> getVendorAndVendorContacts(String empType, String vendor, String vendorContact,
+			Long orgLocationId) throws Exception {
+		Map<String, Long> vendors = new HashMap<>();
+
+		// Employment Type,Vendor,Vendor Contact Name
+
+		if ("C2C".equalsIgnoreCase(empType)) {
+
+			if (vendor != null && !"".equalsIgnoreCase(vendor)) {
+				List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocationId);
+				Long vendorId = 0l;
+				for (OrgRelations rel : vendorsList) {
+					if ((vendor.toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (vendor
+							.toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+						vendorId = rel.getId();
+						vendors.put("vendorId", vendorId);
+						break;
+					}
+				}
+
+				if (vendorContact != null && !"".equalsIgnoreCase(vendorContact.toString())) {
+					List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
+
+					for (OrgSpoc vendorContacts : vendorContactsList) {
+						if (vendorContact.toString().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
+							vendors.put("spocId", vendorContacts.getId());
+						}
+					}
+
+				}
+
+			}else {
+				return null;
+			}
+		}
+
+		return vendors;
 	}
 }

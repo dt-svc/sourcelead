@@ -58,16 +58,24 @@ public class CandidateActivityCommonUtil {
 		
 		candidateTimelineActivity.setCandidate(candidate);
 		candidateTimelineActivity.setOrgLocationId(orgLocations);
-		candidateTimelineActivity.setActionBy(user.getFullName());
+		if(user !=null){
+			candidateTimelineActivity.setActionBy(user.getFullName());
+			candidateTimelineActivity.setCreatedUser(user);
+			candidateTimelineActivity.setCreatedBy(user.getUserCode());
+			candidateTimelineActivity.setUpdatedBy(user.getUserCode());
+		}
+		else{
+			candidateTimelineActivity.setActionBy(null);
+			candidateTimelineActivity.setCreatedUser(null);
+			candidateTimelineActivity.setCreatedBy(null);
+			candidateTimelineActivity.setUpdatedBy(null);
+		}
 		candidateTimelineActivity.setActionOn(actionOn);
 		candidateTimelineActivity.setActionDesc(actionDesc);
 		candidateTimelineActivity.setActionSummary(actionSummary);
 		candidateTimelineActivity.setActionIcon(actionIcon);
-		candidateTimelineActivity.setCreatedUser(user);
 		candidateTimelineActivity.setStatus(Constants.RECORD_ACTIVE);
-		candidateTimelineActivity.setCreatedBy(user.getUserCode());
 		candidateTimelineActivity.setCreatedDate(commonUtil.currentDate());
-		candidateTimelineActivity.setUpdatedBy(user.getUserCode());
 		candidateTimelineActivity.setUpdatedDate(commonUtil.currentDate());
 		
 		candidateTimelineActivityDao.storeCandidateTimelineActivity(candidateTimelineActivity);
@@ -116,7 +124,12 @@ public class CandidateActivityCommonUtil {
 		candidateHistory.setIsAssociate(candidate.getIsAssociate());
 		candidateHistory.setStatus(candidate.getStatus());
 		candidateHistory.setCreatedUser(user);
+		if(user != null){
 		candidateHistory.setCreatedBy(user.getUserCode());
+		}
+		else{
+			candidateHistory.setCreatedBy(null);	
+		}
 		candidateHistory.setCreatedDate(commonUtil.currentDate());
 		candidateHistoryDao.storeCandidateHistory(candidateHistory);
 		storeCandidateEducationListHistory(candidate.getCandidateEducation(), user);
@@ -213,8 +226,15 @@ public class CandidateActivityCommonUtil {
 		candidateEducationHistory.setInstitute(candidateEducation.getInstitute());
 		candidateEducationHistory.setAddress(candidateEducation.getAddress());
 		candidateEducationHistory.setStatus(candidateEducation.getStatus());
+		if(user !=null){
 		candidateEducationHistory.setCreatedUser(user);
 		candidateEducationHistory.setCreatedBy(user.getUserCode());
+		}
+		else{
+			candidateEducationHistory.setCreatedUser(null);
+			candidateEducationHistory.setCreatedBy(null);	
+			
+		}
 		candidateEducationHistory.setCreatedDate(commonUtil.currentDate());
 		candidateHistoryDao.storeCandidateEducationHistory(candidateEducationHistory);
 	}
@@ -235,8 +255,14 @@ public class CandidateActivityCommonUtil {
 		candidateEmployersHistory.setEndMonth(candidateEmployers.getEndMonth());
 		candidateEmployersHistory.setEndYear(candidateEmployers.getEndYear());
 		candidateEmployersHistory.setStatus(candidateEmployers.getStatus());
-		candidateEmployersHistory.setCreatedUser(user);
-		candidateEmployersHistory.setCreatedBy(user.getUserCode());
+		if(user != null){
+			candidateEmployersHistory.setCreatedUser(user);
+			candidateEmployersHistory.setCreatedBy(user.getUserCode());
+		}
+		else{
+			candidateEmployersHistory.setCreatedUser(null);
+			candidateEmployersHistory.setCreatedBy(null);
+		}
 		candidateEmployersHistory.setCreatedDate(commonUtil.currentDate());
 		candidateHistoryDao.storeCandidateEmployersHistory(candidateEmployersHistory);
 	}
@@ -254,8 +280,15 @@ public class CandidateActivityCommonUtil {
 		candidateResumesHistory.setResumeStatus(candidateResumes.getResumeStatus());
 		candidateResumesHistory.setResumeUUID(candidateResumes.getResumeUUID());
 		candidateResumesHistory.setStatus(candidateResumes.getStatus());
+		if(user !=null){
 		candidateResumesHistory.setCreatedUser(user);
 		candidateResumesHistory.setCreatedBy(user.getUserCode());
+		}
+		else{
+			candidateResumesHistory.setCreatedUser(null);
+			candidateResumesHistory.setCreatedBy(null);
+			
+		}
 		candidateResumesHistory.setCreatedDate(commonUtil.currentDate());
 		candidateHistoryDao.storeCandidateResumesHistory(candidateResumesHistory);
 	}
@@ -289,7 +322,6 @@ public class CandidateActivityCommonUtil {
 		candidateDocumentsHistory.setRequestedDocRejectedReason(candidateDocuments.getRequestedDocRejectedReason());
 		candidateDocumentsHistory.setDocumentType(candidateDocuments.getDocumentType());
 		candidateDocumentsHistory.setDocumentOtherType(candidateDocuments.getDocumentOtherType());
-		candidateDocumentsHistory.setDocFile(candidateDocuments.getDocFile());
 		candidateDocumentsHistory.setFileContentType(candidateDocuments.getFileContentType());
 		candidateDocumentsHistory.setFileName(candidateDocuments.getFileName());
 		candidateDocumentsHistory.setDescription(candidateDocuments.getDescription());

@@ -12,14 +12,13 @@
 function applicantQuickViewProfile(submissionId,candidateId){
 	  var skillsList = '${skillsList}'; 
 	  
-	  $("#quickLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#quickLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getSubmissionDetails?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,        
          success :function(data) {  
-        	 if(data != null && data != 'undefined' && data != ""){  
-              	
-               var json = JSON.parse(data);
+        	 if(data != null){  
+              var json = JSON.parse(data);
  	    	   
  	    	   if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
 			 		designationType =json.designationType+',';
@@ -135,7 +134,7 @@ function applicantQuickViewProfile(submissionId,candidateId){
 					  if(json.candidate.fileUrl != null && json.candidate.fileUrl !='' && json.candidate.fileUrl !="undefined"){
 					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="'+json.candidate.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
 					  }else{
-					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
+					result = result+'<img  data-id="profileImage" id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
   
 					  } 
 					if(json.candidateScore != null && json.candidateScore != '' && json.candidateScore != 'undefined'){
@@ -218,7 +217,7 @@ function applicantQuickViewProfile(submissionId,candidateId){
   				    $("#applicantQuickViewDiv").append(result); 
   				    $("#recapplicantQuickViewDiv").empty();
 				    $("#recapplicantQuickViewDiv").append(result);
-  				  reqQvemployeeSubmission(candidateId);
+  				 reqQvemployeeSubmission(candidateId);
   				 reqQveducationSubmission(candidateId);
   				reqQwikCertificates(candidateId);
   				 $("#quickLoading").removeAttr("style");
@@ -250,75 +249,83 @@ function applicantQuickViewProfile(submissionId,candidateId){
 				$.ajax({
 					type : "POST",
 					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
-					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
-								$("#reqQvemployeeSubmission").empty();
-								var result = "";
-								var json = JSON.parse(data);
-								result = result +'            <div class="col-md-12">';
-								result = result +' 				<h4>Work Experience</h4>';
+					success : function(response) {
+						if (response && response.response === "INVALID_DATA") {
+						    showError(response.responseMessage);
+						} else if (response && response.response === "INVALID_USER") {
+						    showError(response.responseMessage);
+						} else if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (response.response === "SUCCESS") {
+							$("#reqQvemployeeSubmission").empty();
+							var result = "";
+							result = result +'            <div class="col-md-12">';
+							result = result +' 				<h4>Work Experience</h4>';
 
-								for (var i = 0; i < json.length; i++) {
-									if(i < 4){
-									var opt = json[i];
-									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
-										name = opt.name;
-									} else {
-										name = " ";
-									}
-									if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
-										designation = opt.designation;
-									} else {
-										designation = " "; 
-									}
-									
-									
-									/*  if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
-										startMonth=   opt.startMonth +' - ';
-									}else{
-										startMonth = " ";
-									} */
-									
-									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										startYear=   opt.startYear  +' To '+opt.endYear;
-									}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
-										startYear = opt.startYear;
-									}else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
-										startYear = opt.endYear;
-									}else{
-										startYear=" ";
-									}
-									
-									/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
-										endMonth = opt.endMonth +' - ';  
-									} else {
-										endMonth = " ";
-									} */
-									
-									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
-										endYear = opt.endYear;  
-									} else {
-										endYear = " ";
-									}
-									if (opt.address != null && opt.address != '' && opt.address != 'undefined') {
-										address=   opt.address;
-									}else{
-										address = " ";
-									}
-									result = result +'<div class="resume-widget">';
-									result = result +'  <p><small>'+startYear+'</small>';
-									result = result +'  <small class="pull-right address" title="'+address+'">'+address+'</small></p>';
-									result = result +'  <h4>'+designation+'</h4>';
-									result = result +'  <h5>'+name+'</h5>';
-									result = result +'</div>';
+							for (var i = 0; i < response.data.length; i++) {
+								if(i < 4){
+								var opt = response.data[i];
+								if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
+									name = opt.name;
+								} else {
+									name = " ";
 								}
+								if (opt.designation != null	&& opt.designation!='' && opt.designation != 'undefined') {
+									designation = opt.designation;
+								} else {
+									designation = " "; 
+								}
+								
+								
+								/*  if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
+									startMonth=   opt.startMonth +' - ';
+								}else{
+									startMonth = " ";
+								} */
+								
+								if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+									startYear=   opt.startYear  +' To '+opt.endYear;
+								}else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+									startYear = opt.startYear;
+								}else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+									startYear = opt.endYear;
+								}else{
+									startYear=" ";
+								}
+								
+								/* if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
+									endMonth = opt.endMonth +' - ';  
+								} else {
+									endMonth = " ";
+								} */
+								
+								if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
+									endYear = opt.endYear;  
+								} else {
+									endYear = " ";
+								}
+								if (opt.address != null && opt.address != '' && opt.address != 'undefined') {
+									address=   opt.address;
+								}else{
+									address = " ";
+								}
+								result = result +'<div class="resume-widget">';
+								result = result +'  <p><small>'+startYear+'</small>';
+								result = result +'  <small class="pull-right address" title="'+address+'">'+address+'</small></p>';
+								result = result +'  <h4>'+designation+'</h4>';
+								result = result +'  <h5>'+name+'</h5>';
+								result = result +'</div>';
+							}
+					}
+//								result = result +'          </div>';
+							result = result +'        </div>';
+							$("#reqQvemployeeSubmission").append(result);
+						} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
 						}
-// 								result = result +'          </div>';
-								result = result +'        </div>';
-								$("#reqQvemployeeSubmission").append(result);
-						}
-					},
-
+					}
 				});
 	}
 </script>
@@ -326,71 +333,76 @@ function applicantQuickViewProfile(submissionId,candidateId){
 <script>
 function reqQveducationSubmission(candidateId){
 	 $.ajax({  
-          type : "POST",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
-	                	 $("#reqQveducationSubmission").empty();
-	                	 var result = "";
-	                	 
-							result = result +'            <div class="col-md-12">';
-							result = result +'              <h4>Education</h4>';
-							
-							 var json = JSON.parse(data);
-		                     for (var i = 0; i < json.length; i++) {
-		                    	 if(i < 3){
-			                    	 var opt = json[i];  
-			                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
-		                    		        EducationName = opt.name;
-			                    	    }else{
-			                    	    	EducationName = " ";
-			                    	    }
-				                     if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
-				                    	 specialization= '(' + opt.specialization +')';
-			                    	  }else{
-			                    		  specialization= " ";
-			                       	 }
-				                     if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
-				                    	 institute = opt.institute;
-			                    	 }else{
-			                    		 institute = " ";
-			                    	 }
-				                     if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
-				                    	 Educationgrade= opt.grade + ' , ';
-			                    	 }else{
-			                    		 Educationgrade = ""; 
-			                    	 }
-			                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
-			                    		 EducationgradeType  = opt.gradeType + ' - ';
-					                 }else{
-					                	 EducationgradeType = " "; 
-					                 }
-			                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
-			                    		 Educationaddress = ' , ' +opt.address;
-			                    	 }else{
-			                    		 Educationaddress = " ";
-			                    	 }
-			                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-			                    		 EducationstartDateStr = opt.startDateStr +' To '+opt.endDateStr;
-			                    	 }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-			                    		 EducationstartDateStr = opt.startDateStr;
-			                    	 }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
-			                    		 EducationstartDateStr = opt.endDateStr;
-			                    	 }else{
-			                    		 EducationstartDateStr = " ";
-			                    	 }
-										result = result +'<div class="resume-widget">';
-										result = result +'<p><small>'+EducationstartDateStr+'</small></p>';
-										result = result +'<h5>'+EducationName+' '+specialization+'</h5>';
-										result = result +'</div>';
-		                     	}
-		                     }
-							
-							result = result +'        </div>';
-	                     $("#reqQveducationSubmission").append(result); 
-        	  }
+          success :function(response) {
+        	  	if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        				$("#reqQveducationSubmission").empty();
+               	 		var result = "";
+						result = result +'            <div class="col-md-12">';
+						result = result +'              <h4>Education</h4>';
+	                     for (var i = 0; i < response.data.length; i++) {
+	                    	 if(i < 3){
+		                    	 var opt = response.data[i];  
+		                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
+	                    		        EducationName = opt.name;
+		                    	    }else{
+		                    	    	EducationName = " ";
+		                    	    }
+			                     if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
+			                    	 specialization= '(' + opt.specialization +')';
+		                    	  }else{
+		                    		  specialization= " ";
+		                       	 }
+			                     if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
+			                    	 institute = opt.institute;
+		                    	 }else{
+		                    		 institute = " ";
+		                    	 }
+			                     if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
+			                    	 Educationgrade= opt.grade + ' , ';
+		                    	 }else{
+		                    		 Educationgrade = ""; 
+		                    	 }
+		                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
+		                    		 EducationgradeType  = opt.gradeType + ' - ';
+				                 }else{
+				                	 EducationgradeType = " "; 
+				                 }
+		                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
+		                    		 Educationaddress = ' , ' +opt.address;
+		                    	 }else{
+		                    		 Educationaddress = " ";
+		                    	 }
+		                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.startDateStr +' To '+opt.endDateStr;
+		                    	 }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+		                    		 EducationstartDateStr = opt.startDateStr;
+		                    	 }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
+		                    		 EducationstartDateStr = opt.endDateStr;
+		                    	 }else{
+		                    		 EducationstartDateStr = " ";
+		                    	 }
+									result = result +'<div class="resume-widget">';
+									result = result +'<p><small>'+EducationstartDateStr+'</small></p>';
+									result = result +'<h5>'+EducationName+' '+specialization+'</h5>';
+									result = result +'</div>';
+	                     	}
+	                     }
+						result = result +'        </div>';
+                    $("#reqQveducationSubmission").append(result);
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      }); 
 }
 </script> 
@@ -400,50 +412,55 @@ function reqQwikCertificates(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
-	                	 $("#reqQvcertificationSubmission").empty();
-	                	 var result = "";
-	                	 result = result +'<div class="col-md-12">';
-						 result = result +' <h4>Certifications</h4>';
-							var json = JSON.parse(data);
-							for (var i = 0; i < json.length; i++) { 
-								if(i < 3){
-		                    	var opt = json[i];  
-								result = result +'<div class="resume-widget resumewidget">';
-								
-								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-									result = result +'  <p><small>'+opt.candidatevalidFromDateToString+' - '+opt.candidatevalidToDateToString+'</small></p>';
-								}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != '' && opt.candidatevalidFromDateToString !='undefined'){
-									result = result +'  <p><small>'+opt.candidatevalidFromDateToString+'</small></p>';
-								}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != '' && opt.candidatevalidToDateToString !='undefined'){
-									result = result +'  <p><small>'+opt.candidatevalidToDateToString+'</small></p>';
-								}else{
-									result=' ';
-								}
-								
-								if(opt.name != null && opt.name != 'undefined' && opt.name != ""){
-									name = opt.name;
-								}else{
-									name = '';
-								}
-								if(opt.scoreType == 'Percentage'){
-									result = result +' <h4>'+name+' ('+opt.score+' %) </h4>';
-								}else{
-									result = result +' <h4>'+name+' ('+opt.score+' - '+opt.scoreType+') </h4>';
-								}
-								/* result = result +'<div class="description">';
-								result = result +'  <p>'+opt.provider+'</p>';
-								result = result +'</div>';   */
-								result = result +'                  </div>';
-							} 
-        	  }
-							result = result +'        </div>';
+          success :function(response) {
+        	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			$("#reqQvcertificationSubmission").empty();
+               	 	var result = "";
+               	 	result = result +'<div class="col-md-12">';
+					 result = result +' <h4>Certifications</h4>';
+						for (var i = 0; i < response.data.length; i++) {
+							if(i < 3){
+	                    	var opt = response.data[i];  
+							result = result +'<div class="resume-widget resumewidget">';
 							
-							$("#reqQvcertificationSubmission").append(result); 
-          }
+							if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+								result = result +'  <p><small>'+opt.candidatevalidFromDateToString+' - '+opt.candidatevalidToDateToString+'</small></p>';
+							}else if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != '' && opt.candidatevalidFromDateToString !='undefined'){
+								result = result +'  <p><small>'+opt.candidatevalidFromDateToString+'</small></p>';
+							}else if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != '' && opt.candidatevalidToDateToString !='undefined'){
+								result = result +'  <p><small>'+opt.candidatevalidToDateToString+'</small></p>';
+							}else{
+								result=' ';
+							}
+							
+							if(opt.name != null && opt.name != 'undefined' && opt.name != ""){
+								name = opt.name;
+							}else{
+								name = '';
+							}
+							if(opt.scoreType == 'Percentage'){
+								result = result +' <h4>'+name+' ('+opt.score+' %) </h4>';
+							}else{
+								result = result +' <h4>'+name+' ('+opt.score+' - '+opt.scoreType+') </h4>';
+							}
+							/* result = result +'<div class="description">';
+							result = result +'  <p>'+opt.provider+'</p>';
+							result = result +'</div>';   */
+							result = result +'                  </div>';
+						} 
+   	  				}
+						result = result +'        </div>';
+						$("#reqQvcertificationSubmission").append(result);
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      });
 }
 </script>

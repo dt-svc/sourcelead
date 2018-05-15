@@ -1,14 +1,20 @@
 package com.bis.sourcelead.elk.setup;
 
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Requests;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,13 +49,13 @@ public class SourceleadELKBaseIndexer<T> {
 	 * @purpose : For To Save/Update Elk Document Based On id
 	 */
 	public void saveOrUpdateElkDocument(T entityClass, String index, String type, String id) {
-		String entityInJson = null;
+		String value = "";
 		try {
-			entityInJson = toJSON(entityClass);
-			sourceleadELKTransportClient.getClient().prepareUpdate(index, type, id).setDoc(entityInJson).get();
+			value = toJSON(entityClass); //new ObjectMapper().writeValueAsString(entityClass);
+			sourceleadELKTransportClient.getClient().prepareUpdate(index, type, id).setDoc(value, XContentType.JSON).get();
 			logger.info(type + " has been updated.");
 		} catch (DocumentMissingException e) {
-			sourceleadELKTransportClient.getClient().prepareIndex(index, type, id).setSource(entityInJson).execute()
+			sourceleadELKTransportClient.getClient().prepareIndex(index, type, id).setSource(value, XContentType.JSON).execute()
 					.actionGet();
 			logger.info(type + " has been indexed.");
 		} catch (Exception e) {
@@ -57,7 +63,7 @@ public class SourceleadELKBaseIndexer<T> {
 		}
 
 	}
-
+	
 	/**
 	 * @param entityClass
 	 * @param index

@@ -33,7 +33,7 @@ function clientRequirementList(orgRelationId){
 	    
 	    result = result + '	<li><a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i></a>';
 	    result = result + '   	<div class="filterLi dropdown-menu bootstrap_dropdownMenu">';
-		result = result + '       	<ul>';
+		result = result + '       	<ul class="paddingLi">';
 		result = result + '           	<li><input type="checkbox" value="OPEN"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Open  </label></li>';
 		result = result + '           	<li><input type="checkbox" value="NEW"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">New  </label></li>';
 		result = result + '           	<li><input type="checkbox" value="SUBMITTED"  name="requirementStatusFilter" onclick="clientReqList(this)"><label class="paddingLeft">Submitted </label></li>';
@@ -95,9 +95,8 @@ function clientRequirementList(orgRelationId){
 		$.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getClientReleasedRequirementList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&status="+status, 
-	        success: function(data) {
+	        success: function(json) {
 	        	
-	        var json = JSON.parse(data);
     			$("#clientSubmissionRequirementList").empty();
     			
     			
@@ -120,31 +119,46 @@ function clientRequirementList(orgRelationId){
 	            result = result + '<th>Type</th>';
 	            result = result + '<th>Posted Date <br>(<small class="custom-small">'+reqListClientDate+'</small>)</th>';
 	            result = result + '<th>Owner</th>';
-	            result = result + '<th>Submissions</th>';
+	            result = result + '<th>Applicants</th>';
+	            result = result + '<th>Submit to client</th>';
 	            result = result + '<th>Offer</th>';
-	            //result = result + '<th>Back-out</th>';
 	            result = result + '<th>Interview</th>';
 	            result = result + '<th>Status</th>';
 	        	result = result +'</tr>';
 	        	result = result +'</thead>';
 	        	result = result +'<tbody>';
 
-	        	for (var i=0; i<json.length; i++)
+	        	for (var i=0; i<json.data.length; i++)
 				  {	        		
-	        		var opt = json[i];
+	        		var opt = json.data[i];
 	        		
 	        		
 	        		result = result + '<tr>';
                		result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 	                
-	                if(opt.state!=null && opt.state !='' && opt.state !='undefined' &&  opt.city !='undefined' && opt.city !='' &&  opt.city!=null){
-	                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
-	                }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
-	                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
+               		
+               		result = result +'<td>';
+   		        	result = result +'<div class="positionRelative">';
+	   		         for(var k=0; k<1; k++){
+	   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.locationsList[k]+'</p>';
+	   		         }
+   		    	
+	   		        result = result +'<div class="show_Empdetails showjoblist">';
+   		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
 
-	                }else{
-	                    result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
-	                }
+   		        	result = result +'<div class="emailvalues">';
+   		        	
+						for(var k=0; k<opt.locationsList.length; k++){
+							result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
+		   		        	
+   		    	 	}
+   		        	result = result +'</div>';
+   		        	result = result +'</div>';
+   
+
+		        	result = result +'</div>';
+		        	result = result +'</td>';
+	                
 	                if(opt.jobType != null && opt.jobType != '' && opt.jobType != "undefined")
 	           	 {
 	          	  if(opt.otherJobType !=null && opt.otherJobType !='' && opt.otherJobType !="undefined"){
@@ -155,11 +169,11 @@ function clientRequirementList(orgRelationId){
 	           	 }else{
 	           		 result = result +"  <td><div class='tblminwidth-75'>----</div></td>"; 
 	           	 }
-	                result = result +"<td><div class='tblminwidth-75'>"+opt.postedDateStr+"</div></td>";
+	                result = result +"<td><div class='tblminwidth-100'>"+opt.postedDateStr+"</div></td>";
 	                result = result + '<td><div class="tbldata-dotdot-vsm"><span title="'+opt.manager+'">'+opt.manager+'</span</div></td>';
-	               	result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
+	               	result = result + '<td><div>'+opt.noOfApplicants+'</div></td>';
+	            	result = result +"<td><div>"+opt.noOfSubmittedApplicants+"</div></td>";
 	                result = result + '<td><div>'+opt.noOfOfferedApplicants+'</div></td>';
-	               // result = result + '<td><div>'+opt.noOfBackOutApplicants+'</div></td>';
 	                result = result + '<td><div>'+opt.noOfInterviewedApplicants+'</div></td>';
 	               // result = result + '<td><div class="tblminwidth-75"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
 	                
@@ -183,7 +197,7 @@ function clientRequirementList(orgRelationId){
    		        	 }else if(opt.requirementSubmissionStatus == "CANCEL"){
    		        		cancelCount = cancelCount +1;   
    		        	 } */
- 	                result = result + '<td><div class="tblminwidth-75"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
+ 	                result = result + '<td><div class="width50px"><span title="'+opt.requirementSubmissionStatus+'">'+opt.requirementSubmissionStatus+'</span</div></td>';
    		         }
    		         else{
    		        	result = result + '<div class="tblminwidth-75 ">---</div>';
@@ -218,7 +232,7 @@ function clientRequirementList(orgRelationId){
 function clientRequirementListpagination(){  
 	$('#listReqPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,

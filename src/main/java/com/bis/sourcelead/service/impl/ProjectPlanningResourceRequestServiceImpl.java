@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectPlanningResourceRequestDao;
+import com.bis.sourcelead.dto.ProjectPlanningResourceRequestDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -23,6 +25,7 @@ import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ProjectPlanningResourceRequestService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 
 @Service
@@ -34,11 +37,17 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	@Autowired
 	EmailScenarioService emailScenarioService;
 	
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
+	
+	 @Autowired
+	 CommonUtil commonUtil;
 	
 	@Override
 	public List<Long> getProjectPlanningResourceRequestIdsByRequestId(Long projectPlanningRequestId) throws Exception {
@@ -79,7 +88,7 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
         globalVarsMap.put("estimatedHours", String.valueOf(projectPlanningRequest.getEstimatedHours()));
         globalVarsMap.put("estimatedBudget", projectPlanningRequest.getEstimatedBudgetCurrency()+" "+projectPlanningRequest.getEstimatedBudget());
         StringBuilder linkBuild = new StringBuilder();
-        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
         
         Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
         globalVarsMap.put("resourceCount", String.valueOf(projectPlanningResourceRequestList.size()));
@@ -90,15 +99,24 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
         EmailScenario  notificationScenario = null;
         if(!"".equalsIgnoreCase(projectPlanningRequest.getRejectedReason()) && projectPlanningRequest.getRejectedReason() != null){
           	 globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
-        	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_BULK_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_BULK_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+        	 if(orgLocations != null)
+    			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.REJECT_BULK_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+    			  if(emailScenario == null){
+    					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_BULK_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+    			   }
+        	 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_BULK_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
         }else{
         	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_BULK_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_BULK_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+        	 if(orgLocations != null)
+    			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ACCEPT_BULK_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+    			  if(emailScenario == null){
+    					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_BULK_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+    			   }
+        	 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_BULK_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
            
         }
          
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
         
         //covert subject,body and signature
@@ -117,7 +135,7 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
-        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 		
 	}
 	
@@ -142,7 +160,7 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
         globalVarsMap.put("estimatedHours", String.valueOf(projectPlanningRequest.getEstimatedHours()));
         globalVarsMap.put("estimatedBudget", projectPlanningRequest.getEstimatedBudgetCurrency()+" "+projectPlanningRequest.getEstimatedBudget());
         StringBuilder linkBuild = new StringBuilder();
-        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
         
         Set<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = projectPlanningRequest.getProjectPlanningResourceRequestList();
         globalVarsMap.put("resourceCount", String.valueOf(projectPlanningResourceRequestList.size()));
@@ -150,29 +168,17 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
         globalVarsMap.put("resourceTable", resourceTable);
         
       	globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
-      	EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
       	EmailScenario   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
          
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
-        
-        //covert subject,body and signature
-        String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-        String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-        String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-        String url = sourceleadUrl;
        
-        InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-       
-        String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-        emailMessage.setSubject(subject);
-        emailMessage.setMessageBody(emailTemplate);
-       
-        emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ONHOLD_BULK_RESOURCE_REQUEST,new ArrayList<EmailAttachment>());
+
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
-        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
 		
 	}
 	
@@ -235,21 +241,27 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
         globalVarsMap.put("estimatedHours", String.valueOf(projectPlanningRequest.getEstimatedHours()));
         globalVarsMap.put("estimatedBudget", projectPlanningRequest.getEstimatedBudgetCurrency()+" "+projectPlanningRequest.getEstimatedBudget());
         StringBuilder linkBuild = new StringBuilder();
-        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+        globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
         
         EmailScenario  emailScenario = null;
         EmailScenario  notificationScenario  = null;
-        if(projectPlanningRequest.getRejectedReason() != null){
-        	   globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
-        	   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-              notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-        }else{
-        	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
-             notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-            
-        }
+        if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("Approved")){
+       	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ACCEPT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+        }if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("On hold")){
+       	globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
+       	 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ONHOLD_BULK_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+       }if(projectPlanningRequest.getResourceStatus().equalsIgnoreCase("Rejected")){
+       	 globalVarsMap.put("rejectReason", projectPlanningRequest.getRejectedReason());
+     	   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST,Constants.ENTITY_TYPE_EMAIL);
+  		   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECT_SINGLE_NEW_RESOURCE_REQUEST_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+
+       }
         
-        String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+        String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
         notificationScenario.setBody(notificationbody);
         
         //covert subject,body and signature
@@ -268,7 +280,20 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
         StringBuilder notificationLink = new StringBuilder();
         String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requestedAssociatesList?requestUUID="+projectPlanningRequest.getRequestUUID()).toString();
          
-        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getProjectPlanningRequestId().getApproverUser(), orgLocations, notificationScenario);
+        emailScenerioUtil.sendNotification(actionLink, loginUser, projectPlanningRequest.getProjectPlanningRequestId().getApproverUser(), orgLocations, notificationScenario,new HashMap<String,String>());
+	}
+
+	@Override
+	public ResponseList<ProjectPlanningResourceRequestDTO> getResourceRequestListByApproverIdAndOrgLocationId(
+			ProjectPlanningResourceRequestDTO resourceRequestDTO, Long approverUserId, Long orgLocationId,
+			String userRole) throws Exception {
+		return projectPlanningResourceRequestDao.getResourceRequestListByApproverIdAndOrgLocationId(resourceRequestDTO, approverUserId, orgLocationId, userRole);
+	}
+
+	@Override
+	public List<ProjectPlanningResourceRequest> getResourceRequestListByApproverIdAndOrgLocationIdAndStatus(
+			Long approverUserId, Long orgLocationId, String userRole) throws Exception {
+		return projectPlanningResourceRequestDao.getResourceRequestListByApproverIdAndOrgLocationIdAndStatus(approverUserId, orgLocationId, userRole);
 	}
 	
 }

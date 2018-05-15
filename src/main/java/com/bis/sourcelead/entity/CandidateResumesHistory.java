@@ -21,16 +21,15 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "CANDIDATE_RESUMES_HISTORY", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateResumesHistory")
+@Table(name = "CANDIDATE_RESUMES_HISTORY")
 public class CandidateResumesHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_RESUMES", nullable = false)
 	private CandidateResumes candidateResumes;
 	@Transient
@@ -39,9 +38,6 @@ public class CandidateResumesHistory implements Serializable {
 	private String title;
 	@Column(name = "DESCRIPTION ")
 	private String description;
-	@Column(name = " DOC_FILE", columnDefinition = "mediumblob")
-	@Lob
-	private byte[] docFile;
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	@Column(name = "FILE_NAME", columnDefinition = "TEXT default NULL")
@@ -56,7 +52,7 @@ public class CandidateResumesHistory implements Serializable {
 	private Date createdDate;
 	@Column(name = "CREATED_BY")
 	private String createdBy;
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_USER")
 	private User createdUser;
@@ -92,16 +88,6 @@ public class CandidateResumesHistory implements Serializable {
 	public void setDescription(String description)
 	{
 		this.description = description;
-	}
-	
-	public byte[] getDocFile()
-	{
-		return docFile;
-	}
-	
-	public void setDocFile(byte[] docFile)
-	{
-		this.docFile = docFile;
 	}
 	
 	public String getFileContentType()

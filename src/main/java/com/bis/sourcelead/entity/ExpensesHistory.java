@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,8 +24,7 @@ import org.hibernate.annotations.NotFoundAction;
  *
  */
 @Entity
-@Table(name = "EXPENSES_HISTORY", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesHistory")
+@Table(name = "EXPENSES_HISTORY")
 public class ExpensesHistory implements Serializable {
 
 private static final long serialVersionUID = 1L;
@@ -35,43 +35,43 @@ private static final long serialVersionUID = 1L;
 @Column(name = "ID", nullable = false)
 private Long id;
 
-@NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+
+@ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name="EXPENSE_ID", nullable=false )        
 private Expenses expenseId;
 
-@NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+
+@ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name="LOCATION_ID", nullable=false )        
 private OrgLocations orgLocationId;
 
-@NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+
+@ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
 private ProjectMembers projectMembers;
 
-@NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+
+@ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name = "EXPENSE_ENTRY_ID", nullable=false)
 private ExpensesEntries expensesEntries;
 
-@NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+
+@ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name = "EXPENSE_CATEGORY_ID", nullable=false)
 private ExpensesCategory expensesCategory;
 
-@NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+
+@ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name = "EXPENSE_APPROVER_HIERARCHY_ID", nullable=false)
 private ExpensesApproverHierarchy expensesApproverHierarchy;
 
-@NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+
+@ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name = "UPDATED_BY_USER", nullable=false)
 private User user;
 
-@NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne
+
+@ManyToOne(fetch = FetchType.LAZY)
 @JoinColumn(name = "EXPENSE_ENTRIES_DOCUMENTS_ID", nullable=false)
 private ExpensesEntryDocuments expensesEntryDocuments;
 

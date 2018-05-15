@@ -15,14 +15,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "ORG_SPOC")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgSpoc")
 public class OrgSpoc implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -32,33 +29,35 @@ public class OrgSpoc implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_RELATION_ID")
+	@JsonBackReference
 	private OrgRelations orgRelations;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
-    @JoinColumn(name="VENDOR_LOCATION_ID", nullable=false )        
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="VENDOR_LOCATION_ID") 
+	@JsonBackReference
     private OrgLocations vendorLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
-    @JoinColumn(name="CLIENT_LOCATION_ID", nullable=false )        
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="CLIENT_LOCATION_ID")        
     private OrgLocations clientLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "VENDOR_USER_ID")
 	private User vendorUser;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CLIENT_USER_ID")
 	private User clientUser;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "OWNER_USER_ID")
 	private User ownerUser;
 	
@@ -90,10 +89,16 @@ public class OrgSpoc implements Serializable{
 	private String UUID;
 	
 	@Transient
+	@JsonProperty
 	private String spocName;
 	
 	@Transient
+	@JsonProperty
 	private Long spocUserId;
+	
+	@Transient
+	@JsonProperty
+	private String spocUserCode;
 	
 	public String getVendorCurrency() {
 		return vendorCurrency;
@@ -104,101 +109,137 @@ public class OrgSpoc implements Serializable{
 	}
 
 	@Transient
+	@JsonProperty
 	private String ownerName;
 	
 	@Transient
+	@JsonProperty
 	private String spocEmail;
 	
 	@Transient
+	@JsonProperty
 	private String spocMobilePhone;
 	
 	@Transient
+	@JsonProperty
+	private String spocExtensionNumber;
+	
+	@Transient
+	@JsonProperty
 	private String orgName;
 
 	@Transient
+	@JsonProperty
 	private String ownerUserId;
 
 	@Transient
+	@JsonProperty
 	private List<User> userList;
 	
 
 	@Transient
+	@JsonProperty
 	private String spocFirstName;
 	
 	@Transient
+	@JsonProperty
 	private String spocLastName;
 
 	@Transient
+	@JsonProperty
 	private Long orgRelationId;
 
 	@Transient
+	@JsonProperty
 	private String userState;
 
 	@Transient
+	@JsonProperty
 	private Long userId;
 	
 	@Transient
+	@JsonProperty
 	private Long spocLocationId;
 	
 	@Transient
+	@JsonProperty
 	private Long tempOwnerId;
 	
 	@Transient
+	@JsonProperty
 	private Long tempSpocId;
 	
 	@Transient
+	@JsonProperty
 	private String releasedRequirement;
 	
 	@Transient
+	@JsonProperty
 	private String clientCurrencyCode;
 	
 	@Transient
+	@JsonProperty
 	private String clientRate;
 	
 	@Transient
+	@JsonProperty
 	private String clientRateType;
 	
 	@Transient
+	@JsonProperty
 	private String msg;
 	
 	@Transient
+	@JsonProperty
 	private Integer reqReleasedCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer submittedCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer shortlistedCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer interviewedCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer offeredCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer rejectedCount;
 	
 	@Transient
+	@JsonProperty
 	private Integer backoutCount;
 	
 	@Transient
+	@JsonProperty
 	private String ownerUserName;
 	
 	@Transient
+	@JsonProperty
 	private String billingAddress;
 	
 	@Transient
+	@JsonProperty
 	private String stringDate;
 
 
 	@Transient
+	@JsonProperty
 	private String paymentTerms;
 	
 	@Transient
+	@JsonProperty
 	private String vendorCurrency;
 	
 	@Transient
+	@JsonProperty
 	private String clientCurrency;
 
 	public Long getSpocLocationId() {
@@ -592,6 +633,26 @@ public class OrgSpoc implements Serializable{
 
 	public void setClientCurrency(String clientCurrency) {
 		this.clientCurrency = clientCurrency;
+	}
+
+	public String getSpocUserCode()
+	{
+		return spocUserCode;
+	}
+
+	public void setSpocUserCode(String spocUserCode)
+	{
+		this.spocUserCode = spocUserCode;
+	}
+
+	public String getSpocExtensionNumber()
+	{
+		return spocExtensionNumber;
+	}
+
+	public void setSpocExtensionNumber(String spocExtensionNumber)
+	{
+		this.spocExtensionNumber = spocExtensionNumber;
 	}
 	
 }

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 	import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.bis.sourcelead.annotations.Email;
@@ -9,7 +10,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.UserRole;
 
-	public class AddUserDTO {
+	public class AddUserDTO extends CommonDTO {
 
 		@Required(desc = "first name")
 		private String firstName;
@@ -63,6 +64,8 @@ import com.bis.sourcelead.entity.UserRole;
 		private String professionalRegisterCountry;
 		
 		private String recruiterRegisterCountry;
+		
+		private String ssn;
 		
 		private Set<UserRole> userRole = new HashSet<UserRole>(0);
 		
@@ -123,6 +126,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String phoneNumber;
 		
+		private String extensionNumber;
+		
 		private String assignReportingManagers;
 		
 		private String managerUsers;
@@ -148,7 +153,12 @@ import com.bis.sourcelead.entity.UserRole;
 		private String registeredOrgLocationId;
 		
 		private String registredOrgId;
+		
+		private String userId;
 
+		private List<CustomFormFieldDTO> customFormData;
+		
+		
 		public String getFirstName() {
 			return firstName;
 		}
@@ -565,6 +575,16 @@ import com.bis.sourcelead.entity.UserRole;
 		public void setPhoneNumber(String phoneNumber) {
 			this.phoneNumber = phoneNumber;
 		}
+		
+		public String getExtensionNumber()
+		{
+			return extensionNumber;
+		}
+
+		public void setExtensionNumber(String extensionNumber)
+		{
+			this.extensionNumber = extensionNumber;
+		}
 
 		public String getAssignReportingManagers() {
 			return assignReportingManagers;
@@ -669,7 +689,29 @@ import com.bis.sourcelead.entity.UserRole;
 		public void setRegistredOrgId(String registredOrgId) {
 			this.registredOrgId = registredOrgId;
 		}
-		
-		
+
+		public String getSsn() {
+			return ssn;
+		}
+
+		public void setSsn(String ssn) {
+			this.ssn = ssn;
+		}
+		public String getUserId(){
+			return userId;
+		}
+
+		public void setUserId(String userId){
+			this.userId = userId;
+
+		}
+
+		public List<CustomFormFieldDTO> getCustomFormData() {
+			return customFormData;
+		}
+
+		public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+			this.customFormData = customFormData;
+		}
 		
 }

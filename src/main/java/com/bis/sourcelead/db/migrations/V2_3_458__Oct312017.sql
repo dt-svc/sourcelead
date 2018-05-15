@@ -1,0 +1,3 @@
+set SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `SUBJECT` ='Invitation from {{inviteCompany.LoginUser}}' , `Body` ='Dear {{inviteCompany.Name}},\n\n I am delighted to Introduce Platform to Manage Day to day Operations,SourceLead \n is a Software as a Service talent acquisition platform that helps you attract, source,\n onboard and manage talent. Our platform provides the business insight needed to\n track the processes with in talent ecosystem. {{inviteCompany.ServicesList}}\n If you have any questions please refer to our Blog and FAQ sections here' ,`SIGNATURE`='Best Regards,\n{{inviteCompany.LoginUser}}\n{{inviteCompany.LoginOrg}}' WHERE `UNIQUE_SCENARIO_NAME`='inviteCompany' and `ENTITY_TYPE`='Email';
+set SQL_SAFE_UPDATES=1;

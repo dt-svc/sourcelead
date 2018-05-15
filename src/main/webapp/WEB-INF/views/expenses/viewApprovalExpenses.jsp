@@ -17,51 +17,17 @@
       <div class="pull-left">
         <h2>View Expense</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expensesApprovalList'/>">Expenses Approval</a> &raquo; View Expense</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/expensesApprovalList'/>">Expenses Approval</a> &raquo; View Expense</div>
     </section> 
    <div id='reOpenPopup'></div>
     <div id='reOpenRejectedPopup'></div>
     <div class="project_tabs"> 
-            <div class="project_tabs_inn_table">
+            <div class="clearfix">
 				<div class="project_details project_detailsExp">
                 
                 
-					<div class="Expdit pull-right mr">
-					
-					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED'}">
-					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseId}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
-					     </c:if>
-					     
-					      <c:if test="${isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">
-						        <c:if test="${!empty eah.reopenRejectedReason}">
-						            <i class='glyphicon glyphicon-comment rejectedHover'>
-						               <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenRejectedReason}</div>
-						             </i>
-						        </c:if>
-					      
-						     <div class="timeNewSe pull-right">
-						      <b class='proj_withdraw pull-right' onClick='reOpenMyExpense(${expenses.id});'>Re-open</b>
-						     </div>
-					     </c:if> 
-					     
-					     <c:if test="${isSahReopened && !isSuperUser && !empty eah.reopenReason}">
-					          <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp'>
-					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
-						      </i>
-						      <p class='pull-right ml' style='width: 146px;'>Re-Open Request sent</p>
-					     </c:if>
-					      <c:if test="${submissionStatus != 'SUBMITTED' && isSahReopened && isSuperUser && !empty eah.reopenedUser}">
-					           <i class='pull-right  glyphicon glyphicon-comment rejectedHover'>
-					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
-					            </i>
-					            <div id ='acceptReopenExpenseBySuperUserDiv' class='pull-right  sm text-center Expreopen'>
-					                  <label class='clearfix reopen-label'>RE-OPEN</label>
-					                  <i class='reopen-text-success fa fa-check' title='Accept' alt='Accept'  id ='acceptReopenExpenseBySuperUserId' onclick='acceptReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>|
-					                  <i class='reopen-text-danger fa fa-times' title='Reject' alt='Reject' id='rejectReopenExpenseBySuperUserId' onclick='rejectReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>
-					           </div> 
-					      </c:if>
-					     
-					     <div class="timeNewSe pull-right">
+					<div class="Expdit pull-right">
+					<div class="timeNewSe mr25">
 						  <c:if test="${submissionStatus == 'NEW'}">
 						       <b class='proj_new pull-right'>${submissionStatus}</b>
 						  </c:if>
@@ -76,11 +42,47 @@
 						  </c:if>
 						  <c:if test="${submissionStatus == 'REJECTED'}">
 						       <b class='proj_closed pull-right'>${submissionStatus}</b>
-						        <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp'>
+						        <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp colB'>
 					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${eah.rejectedReason}</div>
 						      </i>
 						  </c:if>
 						</div>
+					
+					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED'}">
+					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
+					     </c:if>
+					     
+					      <c:if test="${isReopenButtonVisible && isExpenseTotallyApproved && submissionStatus == 'APPROVED' && empty eah.reopenReason}">
+						        <c:if test="${!empty eah.reopenRejectedReason}">
+						            <i class='glyphicon glyphicon-comment rejectedHover'>
+						               <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenRejectedReason}</div>
+						             </i>
+						        </c:if>
+					      
+						     <div class="timeNewSe pull-right">
+						      <b class='proj_withdraw pull-right' onClick='reOpenMyExpense(${expenses.id});'>Re-open</b>
+						     </div>
+					     </c:if> 
+					     
+					     <c:if test="${isReopenButtonVisible && isSahReopened && !isSuperUser && !empty eah.reopenReason}">
+						      <p class=' ml' style='width: 165px;'>Re-Open Request sent</p>
+						      <i class=' glyphicon glyphicon-comment rejectedHover'>
+					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
+						      </i>
+						      <!-- <p class='pull-right ml' style='width: 165px;'>Re-Open Request sent<i class='pull-right glyphicon glyphicon-comment text-danger cursorPointer'></i></p> -->
+					     </c:if>
+					      <c:if test="${isReopenButtonVisible && submissionStatus != 'SUBMITTED' && isSahReopened && isSuperUser && !empty eah.reopenedUser}">
+					           <i class='glyphicon glyphicon-comment rejectedHover'>
+					            <div class='app_error_mes' id="rejectedMessage${expenses.id}">${eah.reopenReason}</div>
+					            </i>
+					            <div id ='acceptReopenExpenseBySuperUserDiv' class='pull-right  sm text-center Expreopen'>
+					                  <label class='clearfix reopen-label'>RE-OPEN</label>
+					                  <i class='reopen-text-success fa fa-check' title='Accept' alt='Accept'  id ='acceptReopenExpenseBySuperUserId' onclick='acceptReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>|
+					                  <i class='reopen-text-danger fa fa-times' title='Reject' alt='Reject' id='rejectReopenExpenseBySuperUserId' onclick='rejectReopenExpenseBySuperUser(${expenses.id},${eah.reopenedUser.id});'></i>
+					           </div> 
+					      </c:if>
+					     
+					     
 					</div>                
 
 					   <ul class="UiPado">
@@ -97,35 +99,53 @@
 
                     <div class="clearfix"></div>
 					<div class="project_details_cta">
-						<strong>Expense Id:</strong><span>${expenses != null ? expenses.expenseId : ExpensesId}</span><div class="clearfix"></div>
+						<strong>Expense Id:</strong><span>${expenses != null ? expenses.expenseAutoId : ExpensesId}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Purpose:</strong><span>${expenses.purpose}</span><div class="clearfix"></div>
+						<strong>Purpose:</strong><span>${expenses.expensePurpose}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Project Name:</strong><span>${expenses.projectMembers.projects.projectName}</span><div class="clearfix"></div>
+						<strong>Project Name:</strong><span>${expenses.projectName}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Employee:</strong><span>${expenses.projectMembers.employee.user.fullName}</span><div class="clearfix"></div>
+						<strong>Employee:</strong><span>${expenses.projectMemberName}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Client:</strong><span>${expenses.clientName}</span><div class="clearfix"></div>
+						<strong>Client:</strong><span> 
+						
+						<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
+						 <c:forEach var="project" items="${expEntry.projectsList}">
+						      <c:if test="${project.id == expenses.projectId}">
+						      <a href="<c:url value="${appPath}/clientDashboard?orgRelationUUID=${project.orgRelationUUID}"/>">${project.client}</a>
+						      </c:if>
+		                  </c:forEach>
+		                </sec:authorize>  
+		                
+		                <sec:authorize access="!hasAnyRole(\'ROLE_VIEW_CLIENT\',\'ROLE_VIEW_EDIT_CLIENT\')">
+						 <c:forEach var="project" items="${expEntry.projectsList}">
+						      <c:if test="${project.id == expenses.projectId}">
+						      ${project.client}
+						      </c:if>
+		                  </c:forEach>
+		                </sec:authorize>  
+		                
+		            </span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Start date:</strong><span>${expenses.startDateStr}</span><div class="clearfix"></div>
+						<strong>Start date:</strong><span>${expenses.startDate}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>End date:</strong><span>${expenses.endDateStr}</span><div class="clearfix"></div>
+						<strong>End date:</strong><span>${expenses.endDate}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
 						<strong>No of Expenses:</strong><span>${expenses.noOfExpenses}</span><div class="clearfix"></div>
 					</div>
 					<div class="project_details_cta">
-						<strong>Amount:</strong><span>${expenses.totalAmountRoundoffValue}</span><div class="clearfix"></div>
+						<strong>Amount:</strong><span>${expenses.expenseAmountDivId}</span><div class="clearfix"></div>
 					</div>
 					
 					<div class="project_details_cta">
-						<strong>Exp Created By:</strong><span>${expensesCreatedBy}</span><div class="clearfix"></div>
+						<strong>Exp Created By:</strong><span>${expenses.createdBy}</span><div class="clearfix"></div>
 					</div>
 						                    			
 					<div class="clearfix"></div>
@@ -135,62 +155,59 @@
 	<table id="categoryTable">
 	    <thead>
 			<tr id="divEntityTsRow0">
-				<th>Date</th>
+			    <th>Date</th>
 				<th>Exp Category</th>
 				<th>Description</th>
 				<th>Amount</th>
 				<th>Currency</th>
 				<th>Payment Mode</th>
+				<th>Paid By</th>
 			</tr>
 		</thead>	
 			<tbody>
-			     <c:forEach var="entry" items="${expenses.expensesEntries}" varStatus="entryCount">
+			     <c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
-			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"><i class="fa fa-plus-square-o" aria-hidden="true"></i>${entry.expenseDateStr}</div></td>
-			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.expensesCategoryId.expensesName}</div></td>
-			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.description}">${entry.description}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}"> <fmt:formatNumber value="${entry.amount}" minFractionDigits="2" maxFractionDigits="2"/></div></td>
-			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
-			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
+			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.dateOccurred}</div></td>
+			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.categoryName}</div></td>
+			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
+			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amountRoundOff}</div></td>
+			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
+			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
+			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
-				        <td colspan="6">
+				        <td colspan="7">
 						<div class="expDetails">
 							<ul>
-							    <li><strong>Date :</strong><span>${entry.expenseDateStr}</span><div class="clearfix"></div></li>
-								<li><strong>Exp Category :</strong><span>${entry.expensesCategoryId.expensesName}</span><div class="clearfix"></div></li>
-								<li><strong>Description :</strong><span title="${entry.description}">${entry.description}</span>
+							    <li><strong>Date :</strong><span>${entry.dateOccurred}</span><div class="clearfix"></div></li>
+								<li><strong>Exp Category :</strong><span>${entry.categoryName}</span><div class="clearfix"></div></li>
+								<li><strong>Description :</strong><span title="${entry.entryDescription}">${entry.entryDescription}</span>
 								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
-								<li><strong>Amount :</strong><span> <fmt:formatNumber value="${entry.amount}" minFractionDigits="2" maxFractionDigits="2"/></span><div class="clearfix"></div></li>
-								<li><strong>Currency :</strong><span>${entry.currencyType}</span><div class="clearfix"></div></li>
-								<li><strong>Payment Mode :</strong><span>${entry.paymentMode.value}</span><div class="clearfix"></div></li>
+								<li><strong>Amount :</strong><span>${entry.amountRoundOff}</span><div class="clearfix"></div></li>
+								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
+								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
+								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>
 								<div class="clearfix"></div>
 								</li>
 								<div class="clearfix">
-								<div id='attachmentSection' class='col-md-4 mt10 noPad'>
-				                   <div class="uploadFile timesheet_week_comm">
-				                     <input type='hidden' name='dbAttachmentMaxRowNumber${entryCount.count}'  id='dbAttachmentMaxRowNumber${entryCount.count}' value='${entry.expensesEntryDocuments.size()}' />
-					                 <input type='hidden' name='attcahmentMaxRowNumber${entryCount.count}'  id='attcahmentMaxRowNumber${entryCount.count}' value='1' />
-					                 <div id='timesheetDocumentsId' class=''>
-					                       <c:forEach var="entryDoc" items="${entry.expensesEntryDocuments}" varStatus="entryDocCount">
-					                       <c:if test = '${entryDoc.status == 1}'>
-					                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
-					                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${entryCount.count}' id='${entryDocCount.index}DbdocFileId${entryCount.count}' value='${entryDoc.id}'/>
-					                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' id='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' value='N'/>
-					                             <%-- <a class='downicon' href='<c:url value="/downloadExpensesEntryDocument?entryDocumentId=${entryDoc.id}"/>'> --%>
-					                             <a class='downicon' href='${entryDoc.fileURL}'>
-					                                 <i class='glyphicon glyphicon-save'></i>
-										             <input type='button' class='padLeft' value='${entryDoc.fileName}'/>
-										        </a>
-										        <%-- <a class="fa fa-eye expAttView" onclick="viewDocument('${entryDoc.fileName}','${entryDoc.id}');"></a> --%>
-										        <a class="fa fa-eye expAttView" onclick="viewFile('${entryDoc.fileURL}','${entryDoc.fileName}','${entryDoc.fileContentType}');"></a>
-					                         </strong>
+								<div id='attachmentSection' class='col-md-4 noPad mt10'>
+				                   <div class="uploadFile timesheet_week_comm edit-Expense-upload">
+					                <div id='timesheetDocumentsId' class=''>
+					                       <c:forEach var="entryDoc" items="${entry.fileInfo}" varStatus="entryDocCount">
+					                        <c:if test = '${entryDoc.status == 1}'>
+						                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
+						                               <a class='downicon' href='${entryDoc.fileURL}' download>
+							                                 <i class='glyphicon glyphicon-save'></i>
+												             <input type='button' value='${entryDoc.fileName}'/>
+												        </a>
+											           <a class="fa fa-eye expAttView" onclick="viewFile('${entryDoc.fileURL}','${entryDoc.fileName}','${entryDoc.contentType}');"></a>
+						                         </strong>
 					                         </c:if>
 					                       </c:forEach>
 					                 </div> 
 					             </div>
-					             </div> 
-					             </div>  				
+					             </div>
+					             </div>   				
 								<div class="clearfix"></div>
 							</ul>
 						</div>

@@ -40,5 +40,7 @@ public interface RolesService {
 	List<Roles> getUserRolesListByRoleHierarchyIdAndOrgLocationId(Long orgLocationId,Long hierarchyId,String orgCode) throws Exception;
 	
 	Roles getRolesByRoleNameAndOrgId(String roleName,Long orgId) throws Exception;
+	
+	List<Roles> getAllRolesListByOrgLocationIdList(List<Long> orgLocationIdsList) throws Exception;
 
 }

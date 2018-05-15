@@ -2,12 +2,12 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
-<link href="resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 
 	<script type="text/javascript">
 		window.onload = function () {
-			initLocationAuto('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','candidateLatitude','candidateLongitude');
+			initLocationAuto('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','candidateLatitude','candidateLongitude','','address');
 			disableMonths();
 		 };
 	</script>
@@ -25,11 +25,11 @@
       <h2>Import Candidate</h2>
     </div>
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    	<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
+    	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/app/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
      </c:if>
       
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    	<div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home</a>&raquo;<a href="<c:url value='/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
+    	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}'/>">Home</a>&raquo;<a href="<c:url value='/app/candidatesList'/>"> Candidate List</a> &raquo; Import Candidate</div>
      </c:if>
   </section>
   <div class="content-area content-new clearfix">
@@ -40,14 +40,15 @@
         
         <!-- upload file html need to add bottom JavaScript otherwise it will not work -->
         <div class="col-md-12 clearfix">
-        <div class="well">
+        <div class="well positionRelative">
           <div class="input-group col-md-6" id="uploadFileGroup" style="margin:0 auto; position:relative;">
             <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File<span class="text-danger">&nbsp;*</span>
               <input type="file" name="uploadBtn" id="uploadBtn" class="hidden upload">
               </span> 
            </label>
-
+            
              <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="file"  name="" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validate_Space validatedoc " >
+             <div class="clearUpload"></div>
          </div>
           </div>
         </div>
@@ -84,8 +85,17 @@
         <div class="form-group" id="emailDiv">
           <label class="col-md-3">Email<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9">
-            <input type="text" class="form-control" id="email" name="email" value="${email}"  field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email" onblur="validateCandidateEmail();" onmouseout="validateCandidateEmail();" value="">
-          <span class="hidden">Valid Email</span>
+          <div class="input-group errorInptgroup">
+                  <input type="text" class="form-control" id="email" name="email"
+					value="${email}" field-name="Email"
+					data-validation="required validate_length length2-100 validate_email"
+					onblur="validateCandidateEmail();"
+					 value=""> <span
+					class="hidden">Valid Email</span>
+                  <span id="emailStatusIconDiv" class="input-group-addon">
+                  	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+                	</span>
+                </div>
           </div>
         </div>
 						
@@ -104,41 +114,47 @@
         </div>
         
         <div class="form-group">
-          <label class="col-md-3">Location<span class="text-danger">&nbsp;*</span></label>
+          <label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
           <div class="col-md-9" id="locationField">
           <div class="positionRelative">
-          <input class="form-control positionRelative" id="candidateLocation" name="location" placeholder="Enter your address" type="text" field-name="Locatin" data-validation="required"></input>
-          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode');"></i>
+          <input class="form-control positionRelative" id="candidateLocation" name="location" placeholder="Enter address" type="text" field-name="Address" data-validation="required"></input>
+          <i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('candidateLocation','candidateCountry','candidateState','candidateCity','candidateZipCode','address');"></i>
           </div>
           </div>
         </div>
-		
 		
 		<div class="form-group">
-          <label class="col-md-3">Country</label>
+          <label class="col-md-3">Street Address</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateCountry" name="country" placeholder="Enter your Country" value ="${loginCountryName}"  type="text" readonly></input>
-          </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="col-md-3">State</label>
-          <div class="col-md-9">
-          <input class="form-control" id="candidateState" name="state" placeholder="Enter your State" type="text" readonly></input>
+           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Street Address" placeholder="Enter Street Addres" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
           </div>
         </div>
         
         <div class="form-group">
           <label class="col-md-3">City</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateCity" name="city" placeholder="Enter your City" type="text" readonly></input>
+          <input class="form-control" id="candidateCity" name="city" placeholder="Enter City" type="text" ></input>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-3">State</label>
+          <div class="col-md-9">
+          <input class="form-control" id="candidateState" name="state" placeholder="Enter State" type="text" ></input>
+          </div>
+        </div>
+        
+		<div class="form-group">
+          <label class="col-md-3">Country<span class="text-danger">&nbsp;*</span></label>
+          <div class="col-md-9">
+          <input class="form-control" id="candidateCountry" name="country" placeholder="Enter your Country" field-name="Country" data-validation="required" value ="${loginCountryName}"  type="text"></input>
           </div>
         </div>
         
         <div class="form-group">
           <label class="col-md-3">ZipCode</label>
           <div class="col-md-9">
-          <input class="form-control" id="candidateZipCode" name="zipcode" placeholder="Enter your Zip code" type="text" readonly></input>
+          <input class="form-control" id="candidateZipCode" name="zipcode" placeholder="Enter Zip code" type="text"></input>
           </div>
         </div>
         
@@ -157,12 +173,7 @@
           </div>
         </div> 
           
-        <div class="form-group">
-          <label class="col-md-3">Address</label>
-          <div class="col-md-9">
-           <input type="text" class="form-control" id="address" name="address" value="${address}"  field-name="Address" data-validation="validate_Space validate_length length2-250" data-validation-optional="true">
-          </div>
-        </div>
+        
         
         <div class="form-group">
          <label class="col-md-3">Designation</label>
@@ -195,14 +206,14 @@
              <div class="col-xs-6 col-md-6">
              		<select class="form-control selectpicker" id="experienceYears" name="experienceYears" onchange="disableMonths();">
              		  <option value="">Years</option>
-             		  <c:forEach begin="0" end="25" varStatus="loop">
+             		  <c:forEach begin="0" end="50" varStatus="loop">
 						    <option>${loop.index}</option>
 						</c:forEach>
              		</select>
              </div>
              
              <div class="col-xs-6 col-md-6">
-             		<select class="form-control selectpicker" id="experienceMonths" name="experienceMonths">
+             		<select class="form-control selectpicker experienceMonths" id="experienceMonths" name="experienceMonths">
              		<option value="">Months</option>
              		 <c:forEach begin="0" end="11" varStatus="loop">
 						    <option>${loop.index}</option>
@@ -223,19 +234,37 @@
        <c:if test="${SourceLeadWeb_userType != 'Recruiter'}">
        <div class="clearfix" id="hideVendor" style="display:none">
        <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor</span><span class="text-danger pull-left" id="man1">*</span></label>
-			<div class="col-md-9" id="errorvendor">
-			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();" >
+			<label class="col-md-3" ><span class="pull-left">Vendor</span></label>
+			<div class="col-md-9 chooRadius" id="errorvendor">
+			     <div class="input-group col-md-10 pull-left chooRadius">
+			     <select  class="chosen-select form-control" name="vendors" id="vendors" data-validation-optional="true" placeholder="Select Vendor" field-name="Vendor" onchange="getVendorContactList();removeValiationVendor();" >
                  </select>
+            	 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();candidateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
+               </div>  
+			
+			<span class="col-md-2 noPad clearfix">
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+			<a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			</sec:authorize>
+			</span>
 			</div>
 		</div>
 		
 		 <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-			<div class="col-md-9" id="errorvendorContact">
-			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="Select Vendor Contact" onchange="removeValiationVendorContact();">
+			<label class="col-md-3" ><span class="pull-left">Vendor Contact</span></label>
+			<div class="col-md-9 chooRadius" id="errorvendorContact">
+			<div class="input-group col-md-10 pull-left chooRadius">
+			     <select  class="chosen-select form-control" name="vendorcontact" data-validation-optional="true" id="vendorcontact" field-name="Vendor Contact"  placeholder="Select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
+                <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
+                 
 			</div>
+			<span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			</sec:authorize>
+			 </span>
+			 </div>
 		</div>
 		</div>
 		 </c:if>
@@ -416,8 +445,8 @@
                </div>
                 </div>
          </div>
-        
-        
+        <!-- this "candidateCreationType" field is used for candidate creation type -->
+         <input type="hidden" id="candidateCreationType" name="candidateCreationType" value="import">
         <div class="clearfix"></div>
       </div> 
     </div>
@@ -427,7 +456,7 @@
       <div class="col-lg-12">
         <div class="pull-right">
           <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/candidatesList'/>'" class="btn btn-default ml">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/candidatesList'/>'" class="btn btn-default ml">
         </div>
       </div>
     </div>
@@ -451,7 +480,6 @@
     --%>
 <script type="text/javascript">
 	function storeCandidate() {
-		
 		rateValidations();
 		var validationSettings = {
 				errorMessagePosition : 'element',
@@ -460,34 +488,38 @@
 				dateFormat : 'yyyy/mm/dd'
 			};
 		
-		 if ($('#candidate_form').validate(false, validationSettings)){ 
+		if ($('#candidate_form').validate(false, validationSettings)){ 
 			
-			var frm = $('#candidate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, ""); 
-			
-			//It will escape all the special characters
-		    var jsonData = encodeURIComponent(con);
-			
-			var form = $('#candidate_form')[0];
-      		var formData = new FormData(form); 
-			
-			$("#store_candidate").attr("disabled", "disabled");
-			$("#store_candidate").addClass('button').val('Processing..');
+			    var form = $('#candidate_form')[0];
+	      		var formData = new FormData(form); 
+				$("#store_candidate").attr("disabled", "disabled");
+				$("#store_candidate").addClass('button').val('Processing..');
 
-			$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		        	    enctype: 'multipart/form-data',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue+"&"+$($('#candidate_form')[0]).serialize(),
-						success : function(result) {
-								location.replace(sourceleadUrl+"/candidatesList");
+				$.ajax({
+						 type : "POST",
+						 data: formData,
+			    	     processData: false,
+			    	     contentType:false,
+			        	    	url : sourceleadUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue,
+						        success : function(result) {
+						        	
+						        	if (result.response === "AWKWARD") {
+						        	    location.href = "/errorPage";
+						        	} else if (result.response === "SUCCESS") {
+						        		if(result.object === "DataMissing") {
+											$("#store_candidate").removeAttr("disabled");
+											$("#store_candidate").removeAttr('button').val('Save');	
+											showError("Invalid data");
+										}else{
+											location.replace(sourceleadUrl+"/candidatesList");	
+										}
+						        	} else if (result.indexOf('Sign In') !== -1) {
+						        		location.replace(sourceleadUrl);
+						        	} else {
+						        	    showError("Operation failed, please try again");
+						        	}
 						},
-					});
+				});
 			return true;
 		 }else{ 
 				return false;
@@ -540,144 +572,40 @@ function validate_fileupload(fileName)
 }
 </script>
  
+<script>
+  $(function() { 
+	  tagIt("candidateSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+		tagIt("candidateEducation", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education');
 
+	});
+  </script>
 
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			
-		 /*   $("#country").chosen();
-	       $("#state").chosen();
-	       $("#city").chosen(); */
-	       
-	       
-	       
-	        //Adding Customized Skills to the list
-	         var select, chosen;
-		    select = $("#candidateSkills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    chosen = select.data('chosen');
-		    
-		    $("#candidateSkills").chosen().change(function(event) {
-		    	var allSkills = $(event.target).val();
-		   
-		    	
-		    	$.ajax({
-			    	type: "POST",
-			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
-			        success: function(data) {
-			        	var primarySkill = data;
-			        	      $("#primarySkill").val(primarySkill);
-			        	
-			        },
-			    });
-		    	
-		    });
-		    
-		   // chosen.search_field.on('keyup keydown', function(e)
-		    		chosen.search_field.on('keydown keyup', function(e)
-				    {
-				    	   var skillsArray = this.value.split(",");
-					    	 if(skillsArray.length > 1){
-				        		 for (var i=0; i < skillsArray.length; i++) {
-				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-				        			 select.append(option);
-				 		             select.find(option).prop('selected', true);
-				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-				 	        		 $("#candidateSkills").trigger("chosen:updated");
-				                 }
-					    	 }else{
-					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
-				    			var newSkill = this.value.replace(","," ");
-				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				                 {
-				    				 preventTabkey(e);
-				                   // below code manually enter skills are taken
-				    				  
-				                   var isNewSkill = true;
-									 $("#candidateSkills option:selected").each(function(){
-										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-											 isNewSkill = false;
-											 return false;
-										 }
-				                    
-				                   });
-									
-										if(focussedSkills.length > 0){
-											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
-											select.append(skillOption);
-											select.find(skillOption).prop('selected',true);
-											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
-											$("#candidateSkills").trigger("chosen:updated");
-									   }
-									   else{
-										   if(isNewSkill){
-											var option = $("<option>").val(newSkill).text(newSkill);
-											select.append(option);
-											select.find(option).prop('selected', true);
-										   }
-									   }
-									
-					               $("#candidateSkills").trigger("chosen:updated"); 
-				                   
-				                }
-						       
-			    	         }
-		    	});
-		    
-		    
-		    //Adding Customized Skills to the list
-		    
-		    //Adding Customized Educations to the list
-	        var selectone, chosenone;
-	        selectone = $("#candidateEducation");
-	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
-	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keydown keyup', function(e1)
-		    {
-		    	var newEducation = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-		        {
-		        	preventTabkey(e1);
-		        	var par = this.parent;
-		            var option = $("<option>").val(newEducation).text(newEducation);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-		          //to doesn't allow duplicates
-                    $("#candidateEducation option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-                    //end
-	        		$("#candidateEducation").trigger("chosen:updated");
-	        		
-		        }
-		    }); 
-		    //Adding Customized Educations to the list
-	      
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			})
-			
-			$("#candidateSkills").val('').trigger("chosen:updated");
-	       $("#candidateEducation").val('').trigger("chosen:updated");
-				
-				
+    $("#candidateSkills").chosen().change(function(event) {
+    	var allSkills = $(event.target).val();
+	   	$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		var primarySkill = response.object;
+		        	$("#primarySkill").val(primarySkill);			        		
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+	        },
+	    });
+    });
+	$("#candidateSkills").val('').trigger("chosen:updated");
+	$("#candidateEducation").val('').trigger("chosen:updated");
 </script> 
-<!-- Eductions and Skills Autocomplete Scripts End Here -->
-
-<!-- Candidate Email validation script starts here -->
-
+ 
 <script type="text/javascript">
  function validateCandidateEmail() {
 	 var email = document.getElementById("email").value; 
@@ -687,21 +615,32 @@ function validate_fileupload(fileName)
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=Candidate", 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-						  document.getElementById("email").setAttribute('record-exist','yes');
-						  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
-		        	}
-		        	else{
-		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#store_candidate" ).addClass('button').val('Save');
-                         $("#store_candidate").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'true'){
+			        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+							  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  document.getElementById("email").setAttribute('record-exist','yes');
+							  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+			        	} else {
+			        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#store_candidate" ).addClass('button').val('Save');
+	                         $("#store_candidate").removeAttr("disabled");
+	                         validateEmailForExistenceUniversally(email, "input#email");
+			        	}
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });
+	 }else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
 	 }
  }
  </script>     
@@ -710,123 +649,25 @@ function validate_fileupload(fileName)
  
  <!-- Experience Years and Months validation Script years greater than  20 the months dropdown disabled script here -->
  <script type="text/javascript">
-		 function disableMonths() {
-		     $("#experienceYears").change(function() {
-		         if ($("#experienceYears").val() == '25'){
-		        	 $("#experienceMonths").val('');  
-		        	 $('#experienceMonths').selectpicker('refresh');
-		        	/*  $('#experienceMonths').attr("disabled", true);
-		             $('#experienceMonths').val("disabled", true); */
-		         }else{
-		        	 $("#experienceMonths").val('');  
-		        	 $('#experienceMonths').selectpicker('refresh');
-		        	 $("#experienceMonths").attr("disabled", false); 
-		         }
-		     });
-		 }
-		   
- 
-	      var selectedFile = document.getElementById("uploadBtn");
-	      selectedFile.addEventListener("change", function() {
-	      	 $("#uploadFile").focus();
-	      	 if(validate_fileupload(this.value)){
-	      		 
-	      		 var docSize = this.files[0].size;
-	     	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	     	      
-	     	      if(docSize > 2097152){
-	     	    	  document.getElementById("uploadFile").value = '';
-	     	    	 /*  $("#uploadFileGroup").append("<p class='jquery_form_error_message'></p>"); */
-	     	    	  $('#uploadFileGroup').find('p.jquery_form_error_message').remove();
-	     			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-	     			  document.getElementById("uploadFile").setAttribute('record-exist','yes');
-	     			  document.getElementById("uploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	     	      }else{
-	     	    	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	     	    	 $('input#uploadFile').removeAttr( "record-exist record-exist-errormsg");
-	        		 $('#uploadFileGroup').find('p.jquery_form_error_message').remove(); 
-	     		var form = $('#candidate_form')[0];
-	       		var formData = new FormData(form); 
-	     		   $.ajax({
-	     					type : "POST",
-	     	        	    data: formData,
-	     	        	    contentType : 'application/json; charset=utf-8',
-	     	        	    enctype: 'multipart/form-data',
-	     	    	        processData: false,
-	     	    	        contentType:false,
-	     	        	    dataType : 'json',
-	     				 	url : sourceleadUrl+"/parseResume?"+tokenParamName+"="+tokenValue+"", 
-	     					success : function(data) {
-	     						var json = JSON.parse(data);
-	     						var name = json.name;
-	     						var firstName = '';
-	     						var lastName = '';
-	     						if(name != null && name != 'undefined' && name != ''){
-	     							 firstName = name.split(".")[0]; 
-	     							 lastName = name.split(".")[1]; 
-	     							 if(firstName == null || firstName ==  'undefined' || firstName == '' ||
-	     									 lastName ==  null || lastName ==  'undefined'|| lastName ==  ''){
-	     								 firstName = name;
-	     							 }
-	     						}
-	     						
-	     						$("#firstName").val(firstName);
-	     						$("#lastName").val(lastName);
-	     						$("#email").val(json.email);
-	     						$("#mobilePhone").val(json.phoneNumbers);
-	     						validateCandidateEmail();
-	     						$("#candidateSkills").empty();
-	     						 var internalOutput = "";
-	     						var skills = json.skills;
-	     						 <c:forEach var="skill" items="${skillsList}">
-		     						var existed = 0;
-		     						if(skills != null && skills != 'undefined' && skills != ''){
-		     							var str_array = skills.split(',');
-		     							for(var i = 0; i < str_array.length; i++) {
-		     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-		     							  if(str_array[i] == "${skill.name}"){
-		     								 existed = 1;
-		     								internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-		     							  }
-		     							}
-		     						}
-		     						if(existed == 0){
-		     							internalOutput = internalOutput+"<option value='${skill.name}'>${skill.name}</option>";
-					                }
-	     	                     </c:forEach>
-	     						
-	     						$("#candidateSkills").append(internalOutput);
-	     		        		$("#candidateSkills").trigger("chosen:updated");
-	     		        		$("#candidateEducation").trigger("chosen:updated");
-	     		        		
-	     		        		$("#candidateEducation").empty();
-	     						 var internalOutput = "";
-	     						 <c:forEach var="edu" items="${educationsList}">
-	     						    internalOutput = internalOutput+"<option value='${edu.name}'>${edu.name}</option>";
-	     	                     </c:forEach>
-	     						var edu = json.edu;
-	     						if(edu != null && edu != 'undefined' && edu != ''){
-	     							var str_array = edu.split(',');
-	     							for(var i = 0; i < str_array.length; i++) {
-	     							   str_array[i] = str_array[i].replace(/^\s*/, "").replace(/\s*$/, "");
-	     							   internalOutput = internalOutput+"<option value='" +str_array[i]+ "' selected>"+str_array[i]+"</option>";
-	     							}
-	     						}
-	     						$("#candidateEducation").append(internalOutput);
-	     		        		
-	     						$("#loading").removeAttr("style");
-	     						
-	     					},
-	     				});
-	      	 }
-	      	 }
-	      });
-
-	     /* upload file script */
-	     document.getElementById("uploadBtn").onchange = function () {
-	     	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
-	       // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
-	     };
+ function disableMonths(){
+ $("#experienceYears").change(function() {
+     if ($('#experienceYears').val()=='50'){
+    	 $("#experienceMonths").val('');
+    	 $('#experienceMonths').selectpicker('refresh');
+    	 $('#experienceMonths').attr("disabled", "disabled");
+    	
+     }else{
+    	 $('#experienceMonths').val("");  
+    	 $('#experienceMonths').selectpicker('refresh');
+    	 $("#experienceMonths").attr("disabled", false); 
+     }
+ });
+}
+    /* upload file script */
+    document.getElementById("uploadBtn").onchange = function () {
+    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+      // document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+    };
 
  
 </script>
@@ -852,31 +693,17 @@ function getDesignationType(designationType){
 	
 	if(designationType.value == 'C2C'){
 		 document.getElementById("hideVendor").style.display="block";
-		 $('#vendors').attr("data-validation","required"); 
-		 $('#vendorcontact').attr("data-validation","required"); 
-		 document.getElementById("man1").style.display="block";
-		 document.getElementById("man2").style.display="block";
 		  getVendorsByOrgLocation();
 	}else{
 		 document.getElementById("hideVendor").style.display="none";
-		 $('#vendors').removeAttr("data-validation","required"); 
-		 $('#vendorcontact').removeAttr("data-validation","required"); 
 	}
 	
 	if(designationType.value == 'C2C-1099'){
 		 document.getElementById("hideVendor").style.display="block";
-		 document.getElementById("man1").style.display="none";
-		 document.getElementById("man2").style.display="none";
-		 $('#vendors').attr("data-validation-optional", "true"); 
-		 $('#vendorcontact').attr("data-validation-optional", "true");  
 		 $("#errorvendor").find("p.jquery_form_error_message").remove();
 			$("#errorvendorContact").find("p.jquery_form_error_message").remove();
 		  getVendorsByOrgLocation();
-	}else{
-		// document.getElementById("hideVendor").style.display="none";
-		 $('#vendors').removeAttr("data-validation-optional", "true"); 
-		 $('#vendorcontact').removeAttr("data-validation-optional", "true");  
-	} 
+	}
 	
 	
 	
@@ -889,32 +716,28 @@ function getDesignationType(designationType){
 
 function rateValidations(){
 var rateType = document.getElementById("rateType").value; 
-if(rateType != null && rateType != ""){
-	 $('#expectedRate').removeAttr('data-validation-optional');
-	 $('#expectedRate').attr("data-validation","required"); 
-}else{
-	 $('#expectedRate').removeAttr('data-validation');
-	 $('#expectedRate').attr("data-validation-optional","true");
-	 $('#rateType').removeAttr('data-validation');
-	 $('#rateType').attr("data-validation-optional","true"); 
-} 
+	if(rateType != null && rateType != ""){
+		 $('#expectedRate').removeAttr('data-validation-optional');
+		 $('#expectedRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
+	}else{
+		 $('#expectedRate').removeAttr('data-validation');
+		 $('#expectedRate').attr("data-validation-optional","true");
+	} 
 
 var expectedRate = document.getElementById("expectedRate").value; 
-if(expectedRate != null && expectedRate != ""){
-	
-	 $('#rateType').removeAttr('data-validation-optional');
-	 $('#rateType').attr("data-validation","required"); 
-}else{
-$('#rateType').removeAttr('data-validation');
-$('#rateType').attr("data-validation-optional","true"); 
-}
-
-
+    if(expectedRate != null && expectedRate != ""){
+		 $('#rateType').removeAttr('data-validation-optional');
+		 $('#rateType').attr("data-validation", "required");
+	     $('#expectedRate').attr("data-validation", "required validate_Space validate_int validate_length length1-8");
+	}else{
+		$('#rateType').removeAttr('data-validation');
+		$('#rateType').attr("data-validation-optional","true"); 
+	}
 
 var currentRateType = document.getElementById("currentRateType").value; 
 	if(currentRateType != null && currentRateType != ""){
 		$('#currentRate').removeAttr('data-validation-optional');
-		$('#currentRate').attr("data-validation","required"); 
+		$('#currentRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
 	}else{
 		$('#currentRate').removeAttr('data-validation');
 	 	$('#currentRate').attr("data-validation-optional","true"); 
@@ -925,15 +748,12 @@ var currentRateType = document.getElementById("currentRateType").value;
 
 var currentRate = document.getElementById("currentRate").value; 
 	 if(currentRate != null && currentRate != ""){
-		
 		 $('#currentRateType').removeAttr('data-validation-optional');
-		 $('#currentRateType').attr("data-validation","required"); 
-		 
+		 $('#currentRateType').attr("data-validation", "required");
+		 $('#currentRate').attr("data-validation","required validate_Space validate_int validate_length length1-8"); 
 	 }else{
-		 
-			 $('#currentRateType').removeAttr('data-validation');
-			 $('#currentRateType').attr("data-validation-optional","true"); 
-	 
+		 $('#currentRateType').removeAttr('data-validation');
+		 $('#currentRateType').attr("data-validation-optional","true"); 
 	 }
 	 
 }
@@ -977,21 +797,81 @@ function  removeValiationVendorContact() {
 		 $.ajax({
 			    type: "POST",
 		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        success: function(json) {
+		        //	var json = JSON.parse(data);
 		        	$('#vendorcontact').empty();
 		        	$('#vendorcontact').append('<option value="">--Select Vendor contact--</option>');
-		             for(var i=0;i<json.length;i++){
-		            	 var opt = json[i];
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
 		            	 $('#vendorcontact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 		            } 
 		            $('#vendorcontact').trigger("chosen:updated");
 		        }
 		 }); 
  }
- $(function() {
-		$("#uploadBtn").change(function() {
-			fileUpload("uploadBtn", "resumes", "candidate_form");
-		});
-	 });
+  
+   var educationList = [];
+   var skillList = [];
+   $(function() {
+	 var i= 0;
+	 <c:forEach var="skill" items="${skillsList}">
+	 	skillList[i++] = "${skill.name}";
+	 </c:forEach>
+	 var i= 0;
+	 <c:forEach var="edu" items="${educationsList}">
+	 	educationList[i++] = "${edu.name}";
+	 </c:forEach>
+	 
+	 uploadResumeOnSelect("candidate_form");
+	 
+ });
  </script>
+ <script>
+function candidateEmptyVendorContact(){
+	$("#vendorcontact").empty();
+	 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorcontact').trigger("chosen:updated");
+}
+</script>
+<script>
+	 function selectedVendor(){
+		 var vid =  $('#vendors').val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+	 </script>
+	 
+<script>
+    $(function () {
+        $("#uploadBtn").change(function () {
+            fileUpload("uploadBtn", "resumes", "candidate_form");
+            $(".clearUpload").show();
+        });
+    });
+</script>
+<script>
+    $(".clearUpload").click(function () {
+        $("#uploadFile").val('');
+        $(".clearUpload").hide();
+        $("#candidate_form input[data-id*=uploadBtn]").remove();
+        $("#firstName").val('');
+        $("#lastName").val('');
+        $("#email").val('');
+        $("#mobilePhone").val('');
+        $('#candidateSkills').val('').trigger('chosen:updated');
+        $('#emailDiv').find('p.jquery_form_error_message').remove();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".clearUpload").hide();
+        document.getElementById("candidate_form").reset();
+   
+    });
+</script>
+<!-- <script>
+	$(".clearUpload").click(function(){
+		$("#uploadFile").val("");
+	        $("#candidate_form input[data-id*=uploadBtn]").remove();
+	});
+</script> -->

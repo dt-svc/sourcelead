@@ -2,13 +2,18 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.CleanHtml;
+
 public class ContractDocumentsDTO {
 	private String staticPath;
 	private String docId;
 	private String documentName;
 	private String docFileName;
 	private String candiDoc;
+	
+	@CleanHtml(escape=false)
 	private String description;
+	
 	private String fileUrl;
 	private List<String> docFile;
 	private List<FileInfo> fileInfo;

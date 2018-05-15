@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -11,11 +12,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.AddExpensesDao;
-import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
+import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 @Repository
 public class AddExpensesDaoImpl implements AddExpensesDao {
@@ -46,6 +47,23 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 		try {
 			if (expenses != null) {
 				session.saveOrUpdate(expenses);
+				if(expenses.getExpensesEntries() != null && !expenses.getExpensesEntries().isEmpty()) {
+					for(ExpensesEntries ee :expenses.getExpensesEntries()) {
+						ee.setExpensesId(expenses);
+						session.saveOrUpdate(ee);
+						if(ee.getExpensesEntryDocuments() != null && !ee.getExpensesEntryDocuments().isEmpty()) {
+							for(ExpensesEntryDocuments documents:ee.getExpensesEntryDocuments()) {
+								  documents.setExpensesEntriesId(ee);
+										session.saveOrUpdate(documents);
+								}
+						}
+					}
+				}
+				if(expenses.getApproverHierarchyList() != null && !expenses.getApproverHierarchyList().isEmpty()) {
+					for(ExpensesApproverHierarchy eah : expenses.getApproverHierarchyList()) {
+						session.saveOrUpdate(eah);
+					}
+				}
 			}
 		} catch (Exception exception) {
 			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"expenses"));
@@ -57,17 +75,32 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 		
 	}
 
-	@Override
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Expenses checkExpensIdNumberInDatebase(Long orgLocationId) {
+	public Long checkExpensIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers left join fetch proMembers.employee left join fetch expenses.orgLocationId  where  expenses.id =(SELECT MAX(exp.id)  FROM Expenses exp where exp.orgLocationId.id =:orgLocationId)";  
-		List<Expenses> expenses  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Expenses> expenses  =  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		if(expenses.isEmpty()){
 			return null;
 		}
 		return expenses.iterator().next();		
+	}*/
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long checkExpensIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(EXPENSE_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM sourcelead.EXPENSES WHERE LOCATION_ID = '"+ orgLocationId + "'";
+		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
+		Long count = 0L;
+		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+			count = (Long) maxCountList.iterator().next().longValue();
+		}
+		return count;	
 	}
+	
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

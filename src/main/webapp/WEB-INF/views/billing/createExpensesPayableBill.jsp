@@ -5,8 +5,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/jquery.mask.min.js"></script>
-<script src="resources/js/jquery.maskedinput-1.3.min.js"></script>
+<script src="/resources/js/jquery.mask.min.js"></script>
+<script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 
 <style type="text/css">
 .inline_field, .inline_field:focus {
@@ -54,43 +54,59 @@ function checkBox(){
 }
 </script>
 
-
+<div id="popUp"></div>
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Create Bill</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/payablesList'/>">Bills List</a> &raquo; Project Based Bill</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/payablesList'/>">Bill List</a> &raquo; Create Bill</div>
+    <div class="success_pop" id="selector1" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+       </div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="clearfix form-horizontal inner-content">
        <div id="invoiceLoading"></div>
+       <div id="expenseAlertPopUp"></div>
        <form:form id="project_payable_invoice_form"  name="project_payable_invoice_form" method="post"  enctype='multipart/form-data'> 
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
             <div class="form-group">
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9 select-field">
-								<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
-									data-validation="required" field-name="Vendor">
-								</select>
-							</div>
+              <div class="col-md-9 chooRadius">
+              <div class="input-group col-md-10 pull-left">
+			<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();getPaymentAccountList();"
+		         	data-validation="required" field-name="Vendor">
+		      </select>
+		       <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();creatExpPayBilsEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
+			</div>
+			 <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a></span> 
+			</sec:authorize>
                <input type="hidden" name="savedInvoiceId" id="savedInvoiceId">
                <input type="hidden" name="vendorCurrency" id="vendorCurrency">
             </div>
-              
+                   </div>
             <div class="form-group">
               <label class="col-md-3">Vendor Contact<span class="text-danger">*</span></label>
-              <div class="col-md-9 select-field">
+              <div class="col-md-9 chooRadius">
+              <div class="input-group col-md-10 pull-left">
                 <select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="required" field-name="Vendor Contact">
                 </select>
+                <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
               </div>
+              <span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+			        <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			         <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			       </sec:authorize>
+		     </span>
             </div>
-              
+                   </div> 
             <div class="form-group">
               <label class="col-md-3">Bill Id<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-9">
-                <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Bill Id" type="text" data-validation="required" field-name="Bill Id">
+              <div class="col-md-9" id="invoiceIdDiv">
+                <input class="form-control" id="invoiceId" name="invoiceId" placeholder="Bill Id" type="text" onkeyup="validateBillId();" data-validation="required" field-name="Bill Id">
               </div>
             </div>
             <div class="form-group">
@@ -127,20 +143,29 @@ function checkBox(){
                 <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" name="billingAddress"></textarea>
               </div>
             </div>
-            <div class="form-group">
+             <div class="form-group">
+	              <label class="col-md-3">Payment Account</label>
+	              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+	                <select class="form-control" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
+	                   <option value="">--Select Account--</option>
+	                </select>
+	              </div>
+	            </div>
+	            
+            <!-- <div class="form-group">
 							<label class="col-md-3">Account Details</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
 									name="accountDetails" placeholder="Account Details"></textarea>
 							</div>
-			</div>
+			</div> -->
 			
 			<div class="clearfix mb"></div>
 			<div class="form-group">
               <label class="col-md-3">&nbsp;</label>
               <div class="col-md-9 checkBox">
                   <input type="checkbox"  name="invoiceforexpenses" value="N" class="paddingRight" id="invoiceforexpenses" onclick="checkBox()">
-                  Invoice for Expenses
+                  Bill for Expenses
               </div>
             </div>
             
@@ -155,7 +180,7 @@ function checkBox(){
                   <div class="form-group">
               <label class="col-md-3">Associate<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field" id="projectMemberIdDiv">
-                <select class="chosen-select form-control" id="projectMemberId" name="projectMemberId" onchange="getExpenses();" field-name="projectMemberId Name">
+                <select class="chosen-select form-control" id="projectMemberId" name="projectMemberId" onchange="getExpenses();" field-name="Associate">
                 </select>
               </div>
             </div>
@@ -197,7 +222,7 @@ function checkBox(){
             <tbody>
               <tr id='divAttachmentTsRow0'>
             	<td>
-              	<label><strong>Attachments</strong></label>
+              	<label class="pull-left"><strong>Attachments</strong></label>
               	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs">
                 <span><div id="savedAttachments"></div></span></div> </div>
 	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add" >
@@ -224,13 +249,13 @@ function checkBox(){
                 <div class="col-md-7 select-field">
                   <div class="row">
                     <div class="col-md-7 paddingRight">
-                      <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDisCount();">
+                      <select class="form-control input-sm" id="disCount" name="disCount" onchange="calculateDisCount();validateDiscount();">
                         <option value="percentage">Discount %</option>
                         <option value="flat">Discount Value</option>
                       </select>
                     </div>
-                    <div class="col-md-5 paddingLeft">
-                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" name="discountValue" placeholder="Flat / Discount" type="text" onblur="calculateDisCount();">
+                    <div class="col-md-5 paddingLeft" id="discountValueDiv">
+                      <input class="form-control input-sm allownumericwithdecimal" id="discountValue" name="discountValue" placeholder="Flat / Discount" type="text" onblur="calculateDisCount();" onkeyup="validateDiscount();">
                     </div>
                   </div>
                 </div>
@@ -263,9 +288,9 @@ function checkBox(){
       
           <footer class="form-footer">
               <div class="pull-right mr">
-                  <button type="button" class="btn btn-sm btn-primary" onclick="saveInvoice('DRAFT');">Save</button>
-                  <button type="button" class="btn btn-sm btn-success ml" onclick="saveInvoice('SENT')">Send</button>
-                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '<c:url value='/payablesList'/>'">Cancel</button>
+                  <button type="button" class="btn btn-sm btn-primary" id="saveButtonId" onclick="saveInvoice('DRAFT');">Save</button>
+                  <button type="button" class="btn btn-sm btn-success ml" id="sendButtonId" onclick="saveInvoice('SENT')">Send</button>
+                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/payablesList'/>'">Cancel</button>
               </div>
           </footer>
           </form:form>
@@ -289,13 +314,13 @@ function getProjectsList(projectName){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getAllProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"",
-	success :function(data) {
-	var json = JSON.parse(data);
+	success :function(json) {
+// 	var json = JSON.parse(data);
 	var output = "";
 	output = output + "<option value=''>Select Project</option>";
-	for (var i=0; i<json.length; i++)
+	for (var i=0; i<json.data.length; i++)
 	{
-	var opt = json[i];
+	var opt = json.data[i];
 	/* output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>"; */
 	var selected = "";
 	if(projectName != null && projectName != "" && projectName !="undefined" && projectName == opt.projectName){
@@ -326,13 +351,13 @@ function getProjectMemberByVendor(pid,projectMemberName){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getVendorAssignedMembersForProjects?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&orgRelationId="+orgRelationId+"&userId="+userId+"&orgLocationId="+orgLocationId,
-	success :function(data) {
+	success :function(json) {
 		var output = "";
 		output = output + "<option value=''>--Select Associate--</option>";
-		if(data !=null){
-			for (var i=0; i<data.length; i++)
+		if(json.data !=null){
+			for (var i=0; i<json.data.length; i++)
 			{
-			var opt = data[i];
+			var opt = json.data[i];
 			var selected = "";
 			  if(projectMemberName = opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
 				 selected = 'selected';
@@ -416,9 +441,9 @@ function cancelPayableAlert(){
 		   $.ajax({
 				type : "GET",
 				url: sourceleadUrl+"/getConversionExchangeRate?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId+"&grandTotal="+grandTotal,
-				success :function(data) {
-					if(data !='' && data != 'undefined' && data != null){
-						var json = JSON.parse(data);
+				success :function(json) {
+					if(json.data !='' && json.data != 'undefined' && json.data != null){
+// 						var json = JSON.parse(data);
 						$("#exchangeRate").html(json.exchangeRate);
 						$("#exchangeCurrency").html(json.exchangeCurrency);
 						$("#vendorCurrencyCode").html(json.vendorCurrencyCode);
@@ -492,7 +517,44 @@ function calculateSum(){
  <!-- Calculationg Total Discount With Sub Total --> 
 <script type="text/javascript">
 function calculateDisCount(){
+	
+	var discountType = $("#disCount").val();
+	var subTotal = $("#subTotal").val();
 	var discountValue = $("#discountValue").val();
+	var total ='';
+	if(discountType == 'flat'){
+		if(discountValue && subTotal > 0){
+			total = subTotal-discountValue;
+			$("#discountTotal").val(discountValue);
+			$("#grandTotal").val(total);
+			$("#conversionFrom").val(total);
+			$("#afterDiscountTotal").val(total.toFixed(2));
+		}else{
+			$("#discountTotal").val("00.00");
+			$("#grandTotal").val(subTotal);
+			$("#conversionFrom").val(subTotal);
+			$("#afterDiscountTotal").val(subTotal);
+		}
+		
+	}
+	if(discountType == 'percentage'){
+		if(discountValue && subTotal > 0){
+			var perCentValue = (subTotal * discountValue)/100;
+			total = subTotal - perCentValue;
+			$("#discountTotal").val(perCentValue.toFixed(2));
+			$("#grandTotal").val(total);
+			$("#conversionFrom").val(total);
+			$("#afterDiscountTotal").val(total.toFixed(2));
+		}else{
+			$("#discountTotal").val("00.00");
+			$("#conversionFrom").val(subTotal);
+			$("#afterDiscountTotal").val(subTotal);
+		}
+		
+	}
+	 calculateTaxDiscount();
+	 conversion();
+	/* var discountValue = $("#discountValue").val();
 	if(discountValue !='' && discountValue !='undefined' ){
 		var subTotal = $("#subTotal").val();
 		var disCountType = $("#disCount").val();
@@ -515,7 +577,7 @@ function calculateDisCount(){
 
 					 	 calculateTaxDiscount();
 					 	conversion();
-}
+} */
 }
 </script>
 
@@ -525,7 +587,7 @@ function calculateDisCount(){
   <div id="divTaxTd1" style="display: none; float: left;">
 	<div class="select-field tblminwidth-75">
 		  <div class="tblminwidth-50">
-		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType' id='REPLACEROWIDtaxType'>
+		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType' id='REPLACEROWIDtaxType' data-validation="required" field-name="Tax Type">
 		        <input type="hidden" name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 		  
 		  </div>
@@ -534,7 +596,7 @@ function calculateDisCount(){
 
   <div id="divTaxTd2" style="display: none; float: left;">
 	 <div class="btn-group tblminwidth-75">
-	 <select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="invoiceTax[REPLACEROWID].taxdiscountType" onchange="calculateTaxDiscount();">
+	 <select class="form-control input-sm" id="REPLACEROWIDtaxdiscountType" name="invoiceTax[REPLACEROWID].taxdiscountType" onchange="calculateTaxDiscount();validateRowDiscount(REPLACEROWID);">
 		 <option value="percentage">Percentage</option>
 		 <option value="flat">Flat</option>
  		  </select>
@@ -542,8 +604,8 @@ function calculateDisCount(){
   </div>
   
   <div id="divTaxTd3" style="display: none; float: left;">
-     <div class="tblminwidth-75">
-        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount();">
+     <div class="tblminwidth-75" id="REPLACEROWIDdiscountRowDiv">
+        <input type="text" class="form-control input-sm allownumericwithdecimal" value="" placeholder="Flat / Discount" name='invoiceTax[REPLACEROWID].taxdiscountvalue' id='REPLACEROWIDtaxdiscountvalue' onblur="calculateTaxDiscount();" onkeyup="validateRowDiscount(REPLACEROWID)">
     </div>
   </div>
   
@@ -608,7 +670,7 @@ function calculateDisCount(){
         $("#conversionFrom").val(total);
         conversion();
 		document.getElementById('divTaxRow' + rowId).style.display = 'none';
-		var r = document.getElementById('addTaxTbl').rows[rowId];
+		var r = document.getElementById('addTaxTbl').rows[rowId+1];
 		var count = 2 * (r.cells.length);
 		for (i = 0; i <= count; i++) {
 			r.deleteCell(0);
@@ -733,22 +795,75 @@ function calculateTaxDiscount(){
 	}
 </script>
 
+<script type="text/javascript">
+ function validateBillId() {
+	 var invoiceId = document.getElementById("invoiceId").value; 
+	
+	 if(invoiceId != null && invoiceId != ""){
+		 $("#saveButtonId").attr("disabled", "disabled");
+		 $("#sendButtonId").attr("disabled", "disabled");
+		
+         //$("#create_user" ).addClass('button').val('Processing..');
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/validateInvoiceId?"+tokenParamName+"="+tokenValue+"&invoiceId="+invoiceId+"&invoiceType=payables", 
+		        success: function(data) {
+		        	 if(data == true){
+		        		  $('#invoiceIdDiv').find('p.jquery_form_error_message').remove();
+						  $("input#invoiceId").after("<p class='jquery_form_error_message'>"+invoiceId+" is Already Existed</span>");
+						  document.getElementById("invoiceId").setAttribute('record-exist','yes');
+						  document.getElementById("invoiceId").setAttribute('record-exist-errorMsg',invoiceId+' is Already Existed'); 
+		        	}
+		        	else{
+		        		 $('input#invoiceId').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#invoiceIdDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $("#saveButtonId" ).addClass('us-btn').val('Save');
+                         $("#saveButtonId").removeAttr("disabled");
+                         $("#sendButtonId" ).addClass('us-btn').val('Send');
+                         $("#sendButtonId").removeAttr("disabled");
+		        	}
+		        },
+		    });
+	 }
+ }
+ </script>  
+
+
 <script>
 function saveInvoice(saveType){
 	
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
+	var maxTsRowNum = parseInt($("input[name = 'invoiceExpMaxRowNumber']").val());
          if ($('#project_payable_invoice_form').validate(false, validationSettings)){  
  	 	    var formData = getFormData("project_payable_invoice_form");
-		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 	 	  if(maxTsRowNum==0){
+	        	var result = "";
+	     		result = result +"	<div class='project_inn_mask'></div>";
+	     		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
+	     		result = result +"		<p>At least one Add column Receivables Line Item</p>";
+	     		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	     		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	     		result = result +"	</div>";
+	     		$("#popUp").append(result);
+	     		$("#invoice_pop").slideDown(200);
+	     		$(".project_inn_mask").fadeIn(200);
+		        }else{
+		        	  $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        	  $.post(sourceleadUrl+"/saveExpensesInvoice?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&saveType="+saveType+"&currencyCode="+currencyCode+"&invoiceType=payable&type=expenses", formData, function(data) {
-			  				if(data == "success"){
-			  					$("#invoiceLoading").removeAttr("style");
+			          			if(data == "success"){
+			          			$("#invoiceLoading").removeAttr("style");
 	    		     			location.replace(sourceleadUrl+"/payablesList");
-			  				}
+	    		     			$("#selector1").removeAttr("style");
+					    		$("#selector1").css({ display: "block" });
+					    	    $("#msgDiv").html("Successfully you have created a Bill..");
+	    		     			msgFadein();
+			          			}
+		        		  
 			  			   }); 
 		    	         return true; 
+		        }
          }else{
 	    		return false;
 	    	  } 
@@ -759,6 +874,11 @@ $('body').on('blur', '#project_payable_invoice_form', function() {
 	$("#project_payable_invoice_form").showHelpOnFocus();
 	$("#project_payable_invoice_form").validateOnBlur(false, validationSettings);  
 }); 
+
+function msgFadein() {
+	$("#selector1").fadeIn(200);
+    $('#selector1').delay(2000).fadeOut('slow');
+}
 </script>
  
 <script>
@@ -815,6 +935,10 @@ function toDate(selector) {
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	 var result = '';
+		        	 if(json.paymentAccountId > 0) {
+		        		 getPaymentAccountList(json.vendorOrgRelationId,json.paymentAccountId)
+		        	 }
+		        	 
 		        	 var selected = 'selected';
 		        	 result = result +'<option disabled selected>--Select Client--</option>';
 		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
@@ -861,7 +985,7 @@ function toDate(selector) {
 		        	$("#discountValue").val(json['discountAmount']);
 		        	$("#discountTotal").val(json['discountValue']);
 		        	$("#comment").val(json['invoiceComment']);
-		        	$("#afterDiscountTotal").val(json['afterDiscountValue']);http://localhost:8080/sourcelead/getReceivableInvoiceByUUID?invoiceUUID=sTljRS5n&projectId=15
+		        	$("#afterDiscountTotal").val(json['afterDiscountValue']);http://localhost:8080/app/getReceivableInvoiceByUUID?invoiceUUID=sTljRS5n&projectId=15
 		        	
 		        	editTax(json['invoiceTaxList'])
 		        	
@@ -874,7 +998,14 @@ function toDate(selector) {
 		        	
 		        	$("#savedInvoiceId").val(json['id']); 
 		        	
-		        	
+		        	var test = json['invoiceParentId'];
+		        	if(json['invoiceStatus'] == "Rejected" && test != null){
+			   			 document.getElementById("sendButtonId").style.display="none";
+			   			 document.getElementById("saveButtonId").style.display="none";
+			       	}else{
+			       		document.getElementById("sendButtonId").style.display="inline-block";
+			   			document.getElementById("saveButtonId").style.display="inline-block";
+			       	}
 		        	
 		        } 
     		});
@@ -889,6 +1020,10 @@ $(document).ready(function(){
 	}else{
 		getVendors();
 		getProjectsList();
+		$("#invoiceId").val("");
+		$("#paymentFrequency").val("");
+		$("#paymentFrequency").trigger("chosen:updated");
+		$("#dueDate").val("");
 	}
 	
 });
@@ -992,7 +1127,7 @@ function getVendors(){
 				 var opt = invoiceDocumentsList[i]; 
 	    		
 				 result = result +"<strong id='invoiceDocument"+opt.id+"'>";
-	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadInvoiceDocument?documentId="+opt.id+"\"></a></i>";
+	    		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\'"+opt.fileUrl+"\' title='download' download></a></i>";
 					 result = result +"<input type='button' value='"+opt.fileName+"'>";
 					 result = result +"</a>";
 					 result = result +"<input class='dele' type='button' onClick='deleteDocument("+opt.id+");' >";
@@ -1040,6 +1175,7 @@ function getVendors(){
 	
 	<script type="text/javascript">
 function cancel(){
+	$("#popUp").empty();
 	$("#lineItemPopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }
@@ -1119,7 +1255,7 @@ function getDueDateByFrequency(){
 	 var paymentFrequency = document.getElementById("paymentFrequency").value;
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 if(paymentFrequency && invoiceDate){
-	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    $("#invoiceLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 	    $.ajax({
 			type : "GET",
@@ -1141,7 +1277,7 @@ function getDueDateByFrequency(){
 <script>
 function flushValues(){
 	$("#invoiceId").val('');
-	$("#invoiceDate").val('');
+	//$("#invoiceDate").val('');
 	$("#dueDate").val('');
 	$("#paymentFrequency").val('');
 	$("#frequency").val('').trigger("chosen:updated");
@@ -1200,19 +1336,19 @@ function getVendorContacts(vendorContactId){
 
 <div id="divInvoiceExpTd1" style="display: none; float: left;">
 	<div class="tbldata-dotdot-big">        
-	 <textarea placeholder="Description" class="form-control" rows="1" name="expenseInvoice[REPLACEROWID].description" id='REPLACEROWIDdescription'></textarea>     
+	 <textarea placeholder="Description" class="form-control" rows="1" name="expenseInvoice[REPLACEROWID].description" id='REPLACEROWIDdescription' data-validation="required validate_length length1-100" field-name="Description"></textarea>     
 	</div>
 </div>
 
 <div id="divInvoiceExpTd2" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">     
-	   <input type="text" class="form-control input-sm valid" placeholder="Quantity" name="expenseInvoice[REPLACEROWID].quantity" id='REPLACEROWIDquantity' onblur="totalHoursCalculateAmount(REPLACEROWID);">  
+	   <input type="text" class="form-control input-sm valid" placeholder="Quantity" name="expenseInvoice[REPLACEROWID].quantity" id='REPLACEROWIDquantity' onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Quantity">  
 	 </div>
 </div>
 
 <div id="divInvoiceExpTd3" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">     
-	   <input type="text" class="form-control input-sm valid" placeholder="Rate" name="expenseInvoice[REPLACEROWID].rate" id='REPLACEROWIDrate' onblur="totalHoursCalculateAmount(REPLACEROWID);">  
+	   <input type="text" class="form-control input-sm valid allownumericwithdecimal" placeholder="Rate" name="expenseInvoice[REPLACEROWID].rate" id='REPLACEROWIDrate' onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Rate">  
 	 </div>
 </div>
 
@@ -1233,7 +1369,7 @@ function getVendorContacts(vendorContactId){
 				var maxRowNum = parseInt($("input[name = 'invoiceExpMaxRowNumber']").val());
 				$("input[name = 'invoiceExpMaxRowNumber']").val(maxRowNum + 1);
 				
-				var row = tbl.insertRow(maxRowNum);
+				var row = tbl.insertRow(maxRowNum+1);
 				row.setAttribute("id", "divInvoiceExpTsRow" + maxRowNum);
 				
 				var text = "";
@@ -1278,6 +1414,17 @@ function getVendorContacts(vendorContactId){
 					  onSelect : function(selected) {
 				 	  }
 				    });
+				
+				$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+					 var v = this.value;
+					   if($.isNumeric(v) === false) {
+					        //chop off the last char entered
+					        this.value = this.value.slice(0,-1);
+					   }
+					   $('input.quantity').bind('cut copy paste', function (e) {
+						    e.preventDefault(); //disable cut,copy,paste
+						});
+					    });
 	}			
 </script>
 
@@ -1290,7 +1437,7 @@ function getVendorContacts(vendorContactId){
 function populateInlineItemsGrid(){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
            var result = '';
-           result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value="1" />';
+           result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value="0" />';
             result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceExpTbl">';
             result = result +' <thead>';
             result = result +' <tr>';
@@ -1334,8 +1481,11 @@ function populateInlineItemsGrid(){
 <!-- Remove attachment Div Ids -->
 <script type="text/javascript">
 	function removeExpenseInvoiceRow(rowId) {
-		
-		 var rate = $("#"+rowId+"rate").val();
+		if(rowId!=0)
+		{
+	$("input[name = 'invoiceExpMaxRowNumber']").val(rowId-1);
+		 }
+	     var rate = $("#"+rowId+"rate").val();
 		 var quantity = $("#"+rowId+"quantity").val();
 		 var subTotal = $("#inoviceTotal").val();
 		 if(quantity != ''){
@@ -1401,10 +1551,11 @@ function populateExpensesDetailsGrid(data){
             result = result +' </thead>';
             result = result +' <tbody>';
             if(data !=null && data !=''){
+            	var subTotal = 0;
             	 for(var i=0;i < data.length;i++){
                  	/* S.no. Date, category, description , amount  */
                  	  var opt = data[i];
-                 	  subTotal = opt.subTotal;
+                 	  var subTotal = subTotal + opt.amount;
                  	  result = result +'   <tr>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">'+i+'</div>';
@@ -1477,13 +1628,13 @@ function getExpenses(projectMemberId,expensesFrequency){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&invoiceType=payable",
-		success :function(data) {
+		success :function(json) {
 			var output = "";
 			output = output + "<option value=''>--Select Expenses--</option>";
-			if(data !=null){
-				for (var i=0; i<data.length; i++)
+			if(json.data !=null){
+				for (var i=0; i<json.data.length; i++)
 				{
-				var opt = data[i];
+				var opt = json.data[i];
 				var selected = "";
 				 if(expensesFrequency = opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
 					selected = 'selected';
@@ -1509,8 +1660,12 @@ function getExpensesDetails(expId){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getExpensesEntries?"+tokenParamName+"="+tokenValue+"&expensesId="+expensesId,
-		success :function(data) {
-			populateExpensesEntriesGrid(data);
+		success :function(json) {
+			if(json !=null && json !=''){
+			populateExpensesEntriesGrid(json);
+			}else{
+                alertMessageInExpense();
+          }
 		},
 		});	
 }
@@ -1519,11 +1674,11 @@ function getExpensesDetails(expId){
 
 
 <script>
-function populateExpensesEntriesGrid(data){
+function populateExpensesEntriesGrid(json){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
            var result = '';
-           var subTotal = '0';
-            result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+data.length+' />';
+           var subTotal = 0;
+            result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+json.data.length+' />';
             result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceExpTbl">';
             result = result +' <thead>';
             result = result +' <tr>';
@@ -1535,10 +1690,10 @@ function populateExpensesEntriesGrid(data){
             result = result +' </tr>';
             result = result +' </thead>';
             result = result +' <tbody>';
-            if(data !=null && data !=''){
-            	 for(var i=0;i < data.length;i++){
-                 	  var opt = data[i];
-                 	  subTotal = opt.subTotal;
+            if(json.data !=null && json.data !=''){
+            	 for(var i=0;i < json.data.length;i++){
+                 	  var opt = json.data[i];
+                 	  subTotal += opt.amount;
                  	  result = result +'   <tr>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">'+(i+1)+'</div>';
@@ -1546,30 +1701,30 @@ function populateExpensesEntriesGrid(data){
          		      
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
-         		      if(opt.date !=null && opt.date != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.date+'" id="'+i+'edate" name="expenseInvoice['+i+'].edate" placeholder="S.No">';	  
+         		      if(opt.dateOccurred !=null && opt.dateOccurred != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.dateOccurred+'" id="'+i+'edate" name="expenseInvoice['+i+'].edate" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
-         		      if(opt.category !=null && opt.category != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.category+'" id="'+i+'category" name="expenseInvoice['+i+'].category" placeholder="S.No">';	  
+         		      if(opt.categoryName !=null && opt.categoryName != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.categoryName+'" id="'+i+'category" name="expenseInvoice['+i+'].category" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
-         		      if(opt.description !=null && opt.description != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.description+'" id="'+i+'description" name="expenseInvoice['+i+'].description" placeholder="S.No">';	  
+         		      if(opt.entryDescription !=null && opt.entryDescription != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.entryDescription+'" id="'+i+'description" name="expenseInvoice['+i+'].description" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
          		      
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
-         		      if(opt.amount !=null && opt.amount != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.amount+'" id="'+i+'total" name="expenseInvoice['+i+'].total" placeholder="S.No">';	  
+         		      if(opt.categoryAmount !=null && opt.categoryAmount != ''){
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" readonly="readonly" value="'+opt.categoryAmount+'" id="'+i+'total" name="expenseInvoice['+i+'].total" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
@@ -1584,7 +1739,7 @@ function populateExpensesEntriesGrid(data){
         result = result +' <tr>';
         result = result +' <td colspan="3"></td>';
         result = result +'<td><strong>Sub Total</strong></td>';
-        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">INR</span> <input type="text" value = '+subTotal+' id="inoviceTotal" name="inoviceTotal" class="ReadTextFli"></div></td>';
+        result = result +' <td><div class="tblminwidth-150"><span class="pull-left paddingRight">INR</span> <input type="text" value = '+subTotal+' id="inoviceTotal" name="inoviceTotal" class="ReadTextFli" readonly="readonly"></div></td>';
         result = result +'  <input type="hidden" value = "" id="hiddenTotal">';
         result = result +' </tr>';
         result = result +' </tfoot> ';
@@ -1599,6 +1754,29 @@ function populateExpensesEntriesGrid(data){
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
         addConversionDiv();
+}
+</script>
+
+<script type="text/javascript">
+function alertMessageInExpense(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>No Members Found</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelPayableAlert();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPayableAlert();'></b>";
+	result = result +"	</div>";
+	$("#expenseAlertPopUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+}
+</script>
+
+<script type="text/javascript">
+function cancelPayableAlert(){
+	$("#expenseAlertPopUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 
@@ -1798,6 +1976,146 @@ function attachFile(id){
 }
 </script>
 
+<script>
+function maskme(){
 
+	$.mask.definitions['H'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['h'] = "[0-9]";
+    $.mask.definitions['M'] = "[0-9]";
+    $.mask.definitions['m'] = "[0-9]";
+    $.mask.definitions['P'] = "[AaPp]";
+    $.mask.definitions['p'] = "[Mm]";
+    $(".inline_field").mask("Hhh:Mm"); 
+	
+//     $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+//     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
+//         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
+//             event.preventDefault();
+//         }
+//     });
+}
+</script>
+
+<script>
+$(document).ready(function() {  
+	maskme();    
+ });
+</script>
+
+<script>
+
+function creatExpPayBilsEmptyVendorContact(){
+	$("#vendorContact").empty();
+	 $('#vendorContact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorContact').trigger("chosen:updated");
+}
+</script>
+<script>
+	 function selectedVendor(){
+		 var vid =   $("#vendorOrgRelationId").val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+</script>
+
+<!-- <script>
+function clearDate(){
+	$("#dueDate").val("");
+	};	
+</script> -->
+
+<script>
+function validateDiscount() {
+	$('#discountValueDiv').parent().find('p.jquery_form_error_message').remove(); 
+	 var selectedTextInvoice = document.getElementById("disCount").value;
+	 var enteredValue = document.getElementById("discountValue").value;
+	 
+	 if(selectedTextInvoice =='percentage'){
+		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		  if(enteredValue.match(floatNum)){
+			  $("#saveButtonId").removeAttr("disabled", "disabled");
+				$("#sendButtonId").removeAttr("disabled", "disabled");
+			   return true;
+		  }		  
+		 else{
+				$("#discountValueDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+				$("#saveButtonId").attr("disabled", "disabled");
+				$("#sendButtonId").attr("disabled", "disabled");
+				return false; 
+		 	 }
+	  }if(selectedTextInvoice =='flat'){
+			  $("#saveButtonId").removeAttr("disabled", "disabled");
+			  $("#sendButtonId").removeAttr("disabled", "disabled");
+		  }		  
+}
+</script>
+
+<script>
+function validateRowDiscount(maxRowNum) {
+$('#'+maxRowNum+'discountRowDiv').parent().find('p.jquery_form_error_message').remove();
+var selectedTextInvoice = $("#"+maxRowNum+"taxdiscountType").val();
+var enteredValue = $("#"+maxRowNum+"taxdiscountvalue").val();
+
+if(selectedTextInvoice =='percentage'){
+	  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+	  if(enteredValue.match(floatNum)){
+		  $("#saveButtonId").removeAttr("disabled", "disabled");
+			$("#sendButtonId").removeAttr("disabled", "disabled");
+		   return true;
+	  }		  
+	 else{
+			$("#"+maxRowNum+"discountRowDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+			$("#saveButtonId").attr("disabled", "disabled");
+			$("#sendButtonId").attr("disabled", "disabled");
+			return false; 
+	 	 }
+}if(selectedTextInvoice =='flat'){
+	/* var floatNum = /^[0-9]*$/
+		if(enteredValue.match(floatNum)){
+			  $("#saveButtonId").attr("disabled", "disabled");
+				$("#sendButtonId").attr("disabled", "disabled");
+			   return false;
+		  }
+		else{ */
+			$("#saveButtonId").removeAttr("disabled", "disabled");
+			  $("#sendButtonId").removeAttr("disabled", "disabled");
+// 		}
+	  }		
+	  
+ 
+}
+</script>
+<script>
+function getPaymentAccountList(dbOrgRelationId,paymentAccoutId){
+	var	orgRelationId = $("#vendorOrgRelationId").val();
+	if(orgRelationId == null){
+		orgRelationId = dbOrgRelationId;
+	}
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getAllPaymentAccountList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		success :function(json) {
+			var result = "";
+// 			   result = result +"<option>-- Select Account --</option>";
+			   for (var i=0; i<json.length; i++)
+				{
+				  var report = json[i];
+				  var selected = '';
+					if((paymentAccoutId != null && paymentAccoutId != "" && paymentAccoutId !="undefined" && paymentAccoutId == report.id) || (report.defaultAccount == 1)){
+						selected = 'selected';
+					}
+					if(report.accountType === 'WEPAY'){
+						  result = result +'<option value='+report.id+' '+selected+'> '+report.email+'</option>';
+					  }else{
+						  result = result +'<option value='+report.id+' '+selected+'>'+report.accountNumber+' ('+report.bankName+')</option>';
+					  }
+				}
+			   
+			     $("#paymentAccountId").empty();
+		         $("#paymentAccountId").append(result);
+		}
+	});
+}
+</script>
 
  <jsp:include page="../masterFooter.jsp" />	

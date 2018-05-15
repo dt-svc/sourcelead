@@ -58,21 +58,21 @@ public class ExpensesApproverHierarchyServiceImpl implements ExpensesApproverHie
 	 * 
 	 */
 	@Override
-	public ExpensesCount getExpensesCountByUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+	public ExpensesCount getExpensesCountByMasterCandidateId(Long masterCandidateId) throws Exception {
 		    
 		    ExpensesCount expCount = new ExpensesCount();
 		 
-			Collection<Expenses> draftMyexpensesList = expensesApproverHierarchyDao.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "DRAFT");
+			Collection<Expenses> draftMyexpensesList = expensesApproverHierarchyDao.getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(masterCandidateId, "DRAFT");
 			Integer expensesDraftCount = draftMyexpensesList.size();
 			expCount.setExpensesDraftCount(expensesDraftCount);
 			
-			Collection<Expenses> submittedMyexpensesList = expensesApproverHierarchyDao.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "SUBMITTED");
+			Collection<Expenses> submittedMyexpensesList = expensesApproverHierarchyDao.getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(masterCandidateId, "SUBMITTED");
 			expCount.setExpensesSubmittedForApprovalCount(submittedMyexpensesList.size());
 			
-			Collection<Expenses> approvedMyexpensesList = expensesApproverHierarchyDao.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "APPROVED");
+			Collection<Expenses> approvedMyexpensesList = expensesApproverHierarchyDao.getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(masterCandidateId, "APPROVED");
 			expCount.setExpensesApprovedCount(approvedMyexpensesList.size());
 			
-			Collection<Expenses> rejectedMyexpensesList = expensesApproverHierarchyDao.getTotalMyExpensesListByuserIdAndOrgLocationIdForEmployeeLogin(userId, orgLocationId, "REJECTED");
+			Collection<Expenses> rejectedMyexpensesList = expensesApproverHierarchyDao.getTotalMyExpensesListByMasterCandidateIdForEmployeeLogin(masterCandidateId, "REJECTED");
 			expCount.setExpensesRejectCount(rejectedMyexpensesList.size());
 			
 			return expCount;

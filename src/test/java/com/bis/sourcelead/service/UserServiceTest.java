@@ -86,11 +86,10 @@ public class UserServiceTest {
 
 		user.setCreatedBy("ajith");
 		user.setCreatedDate(new Date());
-		user.setDocFile(new byte[4096]);
+//		user.setDocFile(new byte[4096]);
 		user.setEmail("ajith@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("matta");
-		user.setIsMailSent(Status.N);
 		user.setJobTitle("developer");
 		user.setLastName("reddy");
 		user.setLocation("hyderabad");
@@ -144,11 +143,10 @@ public class UserServiceTest {
 		user.setId(1l);
 		user.setCreatedBy("srinivas");
 		user.setCreatedDate(new Date());
-		user.setDocFile(new byte[4096]);
+//		user.setDocFile(new byte[4096]);
 		user.setEmail("srinivas@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("pradeeop");
-		user.setIsMailSent(Status.Y);
 		user.setJobTitle("tester");
 		user.setLastName("reddy");
 		user.setLocation("rangareddy");
@@ -210,11 +208,10 @@ public class UserServiceTest {
 //		user.setId(10l);
 		user.setCreatedBy("srinivas");
 		user.setCreatedDate(new Date());
-		user.setDocFile(new byte[4096]);
+//		user.setDocFile(new byte[4096]);
 		user.setEmail("srinivas@gmail.com");
 		user.setFileContentType("open");
 		user.setFirstName("pradeeop");
-		user.setIsMailSent(Status.Y);
 		user.setJobTitle("tester");
 		user.setLastName("reddy");
 		user.setLocation("rangareddy");
@@ -241,7 +238,7 @@ public class UserServiceTest {
 		userProfile.setLocation("kolkatta");
 		userProfile.setMobilePhone("54789562123");
 		userProfile.setPassword("Bis@123");
-		
+
 		assertSame(user, userService.saveUserProfile(userProfile,user));
 
 	}

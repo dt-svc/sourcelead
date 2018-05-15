@@ -1,0 +1,80 @@
+package com.bis.sourcelead.service;
+
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+
+import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.LeaveReportsDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.HolidayAndRestrictday;
+import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.entity.LeaveManagementHistory;
+import com.bis.sourcelead.entity.LeaveRole;
+import com.bis.sourcelead.entity.MonthlyLeaves;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+
+public interface LeaveService {
+
+	Leave saveLeave(LeaveDTO leaveDTO, OrgLocations orgLocations, User user) throws Exception;
+
+	ResponseList<LeaveDTO> getEmployeeRequestedLeavesBylocationId(LeaveDTO leaveDTO, OrgLocations orgLocations)throws Exception;
+
+	Leave getLeaveByLeavId(Long leaveId) throws Exception;
+
+	boolean approveRequestLeave(OrgLocations orgLocations, User user, String leaveUUID, Long leaveTypeId,String approveStatus, int numberOfDays, String reason) throws Exception;
+
+	ResponseList<LeaveDTO> getLeavesListByLocationIdAndStatus(Long orgLocationId, String status, Long userId) throws Exception;
+
+	List<LeaveReportsDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status, String department, String leaveDate) throws Exception;
+	
+	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(Long leaveTypeId, Long orgLocationId, Long userId);
+
+	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
+
+
+	LeaveDTO getAllEmployeesLeavesCounts(Long orgLocationId,Long userId);
+
+	LeaveDTO getAllSelfLeavesCounts(Long orgLocationId, Long userId) throws Exception;
+
+	List<LeaveDTO> getLeaveTakersBarChat(OrgLocations orgLocation, LeaveDTO leaveDTO)throws Exception;
+
+	void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc, User approverUser) throws Exception;
+	
+	void LeaveCancelEmailToUser(User loginUser, LeaveManagementHistory leaveManagementHistory,String reason) throws Exception;
+
+	boolean getWithdrawLeave(OrgLocations orgLocations, String leaveUUID, User user, String reason) throws Exception;
+
+	boolean validateNameByOrgLocationIdandFromTable(String name, Long orgLocationId, String fromTable, String id);
+
+	boolean deleteAllLeaveRolesByParticularTableId(String from,Long fromId);
+
+	void storeHolidayOrRestrictDays(OrgLocations orgLocations,User user,Object object) throws Exception;
+
+	List<HolidayAndRestrictday> getAllHolidayAndRestrictDaysInDuration(String fromDate, String string, OrgLocations orgLocations);
+
+	List<User> getApproversListBasedonHierarchyExceptLoginUser(Long loginUserId, Long roleId, Long locationId) throws Exception;
+
+	List<HolidayAndRestrictday> getHolidayOrRestrictDaysListById(Long id, String type);
+
+	List<LeaveRole> getLeaveRolesByRestrictDayId(Long restrictDayId)throws Exception;
+	
+	public void deleteAllHolidayOrRestrictDayById(Long id,String type);
+
+	List<Leave> getAllLeavesByLocationIdAndStatus(Long locationId, String status);
+
+	List<Leave> getLeavesListByTypeIdAndDuration(Long leaveTypeId, Long orgLocationId, Long userId, Date startDate, Date endDate);
+
+	MonthlyLeaves saveMonthlyLeaves(MonthlyLeaves monthlyLeaves);
+	
+	MonthlyLeaves getMonthlyLeavesByLeaveId(Long leaveId);
+
+	Leave getLeaveByLeaveUUId(String leaveUUID);
+	
+	File getLeaveExport(OrgLocations orgLocations, LeaveDTO leaveDTO) throws Exception;
+	
+	List<Leave> getAllLeave();
+
+	List<Leave> getLeaveByUserIdOrglocationIdandStatus(User consultantUser, Long orglocationId, String approved);
+}

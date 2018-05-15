@@ -33,7 +33,7 @@ $(document).ready(function(){
 		<div class="pull-left">
 			<h2>Universal Search Results</h2>
 		</div>
-		<div class="pull-right brud-crum hide"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/projectDashboard'/>">ProjectList</a> &raquo;Create Project
+		<div class="pull-right brud-crum hide"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/projectDashboard'/>">ProjectList</a> &raquo;Create Project
 	</section>
 	<div class="clearfix">
 <div id="loading"></div>	
@@ -79,9 +79,9 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	   			    	
 	   			    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 	   			    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
-	   			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
+	   			    		result = result+'<p><label><strong><a href="/app/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
 	   			    	}else{
-	   			    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label></p>';	
+	   			    		result = result+'<p><label><strong><a href="/app/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label></p>';	
 	   			    	}
 	   			    	if(report.city !=null && report.city != '' && report.city !="undefined"){
 	   			    		result = result+'          <p><label>'+report.city+' , '+report.state+' , '+report.country+'</label>';
@@ -119,7 +119,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	   	    	 }
 	   	    	
 	    		}else{
-	    			result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';
+	    			result = result+'<div class="noRecords"><img src="/resources/images/norecords.jpg" alt=""/></div>';
 	    		}
 	    	}
 	    	
@@ -193,7 +193,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	            	}
 		    	 
 	    		}else{
-	    			result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';
+	    			result = result+'<div class="noRecords"><img src="/resources/images/norecords.jpg" alt=""/></div>';
 	    		}
 	    	}
 	    	 /*========== Universal Search list of Candidate End ==========*/ 
@@ -246,7 +246,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	    			}
 		    		
 	    		}else{
-	    			result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';
+	    			result = result+'<div class="noRecords"><img src="/resources/images/norecords.jpg" alt=""/></div>';
 	    		}
 	    	}
 	    	 /*========== Universal Search list of Client End ==========*/
@@ -295,7 +295,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	    		}
 	    		
 	    		}else{
-	    			result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';
+	    			result = result+'<div class="noRecords"><img src="/resources/images/norecords.jpg" alt=""/></div>';
 	    		}
 	    	}
 	    	 /*========== Universal Search list of Vendor End ==========*/
@@ -362,7 +362,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 		    	        }
 		    	 		
 	    		}else{
-	    			result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';
+	    			result = result+'<div class="noRecords"><img src="/resources/images/norecords.jpg" alt=""/></div>';
 	    		}
 	    	}
 	    	/*========== Universal Search list of Projects End ==========*/ 
@@ -370,7 +370,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 	    	/*========== Universal Search list of Users ==========*/ 
 	    	else if(searchType =='Users'){
 	    		if(checkSize > 0){
-	    		result = result+'   <h4>Users</h4>';
+	    		result = result+'   <h4>Associates</h4>';
 		    	 for (var i = 0; i < checkSize; i++) {
 		             var report= json[i];
 				    	result = result+'  <div class="srchresult clearfix">';
@@ -382,9 +382,9 @@ function getSearchResults(searchType,searchValue,isAssociate){
 				    	
 				    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 				    	if(report.firstName !=null && report.firstName != '' && report.firstName !="undefined" && report.lastName !=null && report.lastName !='' && report.lastName !='undefined'){
-				    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+' '+report.lastName+'</a></strong></label>';
+				    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect(\''+report.userCode+'\');">'+report.firstName+' '+report.lastName+'</a></strong></label>';
 				    	}else{
-				    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+'</a></strong></label>';
+				    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect(\''+report.userCode+'\');">'+report.firstName+'</a></strong></label>';
 				    	}
 				    	result = result+'</p>'; 
 				    	if(report.email !=null && report.email != '' && report.email !="undefined" && report.mobilePhone !=null && report.mobilePhone != '' && report.mobilePhone !="undefined"){
@@ -406,7 +406,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 		    	        }
 		    		 
 	    		}else{
-	    			result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';
+	    			result = result+'<div class="noRecords"><img src="/resources/images/norecords.jpg" alt=""/></div>';
 	    		}
 	    	}
 	    	
@@ -424,7 +424,7 @@ function getSearchResults(searchType,searchValue,isAssociate){
 
 <script type="text/javascript">
 function getSearchResultsForAll(searchType,searchValue){
-	$("#loading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	
 	  $.ajax({
 	   	type: "GET",
@@ -466,9 +466,9 @@ function getSearchResultsForAll(searchType,searchValue){
 						            	 
 									    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 									    	if(report.jobTitle !=null && report.jobTitle != '' && report.jobTitle !="undefined" && report.jobType !=null && report.jobType != '' && report.jobType !="undefined"){
-									    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
+									    		result = result+'<p><label><strong><a href="/app/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>, <label>'+report.jobType+'</label>';	
 									    	}else{
-									    		result = result+'<p><label><strong><a href="/sourcelead/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>';	
+									    		result = result+'<p><label><strong><a href="/app/requirementSummary?requirementUUID='+report.requirementUUID+'">'+report.jobTitle+'</a></strong></label>';	
 									    	}
 									    	
 									    	if(report.city !=null && report.city != '' && report.city !="undefined"){
@@ -502,7 +502,7 @@ function getSearchResultsForAll(searchType,searchValue){
 									    	
 									    	if(opt.length>5 && j==4){
 								                result = result+'  <div class="clearfix">';
-										    	result = result+'      <a href="/sourcelead/requirementList" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
+										    	result = result+'      <a href="/app/jobs" title="View More" class="pull-right btn btn-sm btn-default">View More</a>';
 										    	result = result+'  </div>';
 								             }
 									    	
@@ -514,7 +514,7 @@ function getSearchResultsForAll(searchType,searchValue){
 				            	 if(report.searchType=="User"){
 				            		 	if((report.searchType=="User") && j == 0){
 				            		 		result = result+'  <div class="clearfix">';
-						            		 result = result+'   <h4>Users</h4>';
+						            		 result = result+'   <h4>Associates</h4>';
 						            		result = result+'  </div>'; 
 						            	 }
 				            			result = result+'  <div class="srchresult clearfix">';
@@ -527,9 +527,9 @@ function getSearchResultsForAll(searchType,searchValue){
 				            			
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
 								    	if(report.firstName !=null && report.firstName != '' && report.firstName !="undefined" && report.lastName !=null && report.lastName !='' && report.lastName !='undefined'){
-								    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+' '+report.lastName+'</a></strong></label>';
+								    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect(\''+report.userCode+'\');">'+report.firstName+' '+report.lastName+'</a></strong></label>';
 								    	}else{
-								    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect('+report.userId+');">'+report.firstName+'</a></strong></label>';
+								    		result = result+'<p><label><strong><a href="#" onClick="userSummaryRedirect(\''+report.userCode+'\');">'+report.firstName+'</a></strong></label>';
 								    	}
 								    	result = result+'</p>'; 
 								    	if(report.email !=null && report.email != '' && report.email !="undefined" && report.mobilePhone !=null && report.mobilePhone != '' && report.mobilePhone !="undefined"){
@@ -551,8 +551,10 @@ function getSearchResultsForAll(searchType,searchValue){
 				            	 }
 				            	 /*========== Universal Search list of User End ==========*/ 
 				            	 
+				            	 
+				            	 //dont remove the code because projects are changing 
 				            	 /*========== Universal Search list of Projects ==========*/ 
-				            	 if(report.searchType=="Projects"){
+				            	/*  if(report.searchType=="Projects"){
 				            		 if((report.searchType=="Projects") && j == 0){
 				            			 result = result+'  <div class="clearfix">'; 
 					            		 result = result+'   <h4>Projects</h4>';
@@ -615,7 +617,7 @@ function getSearchResultsForAll(searchType,searchValue){
 							                result = result+'<a href="#" title="View More" class="pull-right btn btn-sm btn-default" onclick="loadProjects();">View More</a>';
 									    	result = result+'  </div>';
 							             }
-				            	 }
+				            	 } */
 				            	 /*========== Universal Search list of Projects End ==========*/ 
 				            	 
 				            	 /*========== Universal Search list of Candidate ==========*/ 
@@ -637,6 +639,12 @@ function getSearchResultsForAll(searchType,searchValue){
 								    	
 								    	
 								    	result = result+'      <div class="srchresult-content col-xs-12 col-md-12">';
+								    	
+								    	if(report.designationType != null && report.designationType != '' && report.designationType !='undefined'){
+								    		designationType=','+report.designationType;
+								    	}else{
+								    		designationType='';
+								    	}
 								    	
 								    	if(report.experienceYears !=null && report.experienceYears !='' && report.experienceYears !='undefined' && report.experienceMonths !=null && report.experienceMonths !='' && report.experienceMonths !='undefined'){
 			 				    		result = result+'<p><label><strong><a href="#" onclick="candidateSearchSideBar('+report.candidateId+')">'+report.candidateName+'</a></strong></label>, <label>'+report.designationType+'</label>, <label>'+report.experienceYears+' Years - '+report.experienceMonths+' Months</label>';
@@ -783,7 +791,7 @@ function getSearchResultsForAll(searchType,searchValue){
 	    	}
 	    	// to add no more records image if no records found in all universal search 
 	    	if(count==0){
-	    		result = result+'<div class="noRecords"><img src="resources/images/norecords.jpg" alt=""/></div>';	
+	    		result = result+'<div class="noRecords"><img src="/resources/images/norecords.jpg" alt=""/></div>';	
 	    	}
 	    	 result = result+'</div>';
 	    	 $("#searchList").empty();
@@ -820,7 +828,10 @@ function loadRequirement(){
 function loadUsers(){
 	var searchResult = "searchresult";
 	var searchValue = "${searchValue}";
-	window.location.href = sourceleadUrl + "/usersList?&searchResult="+searchResult+"&searchValue="+searchValue;
+	var searchType = "Associates";
+	window.location.href = sourceleadUrl + "/usersList?&searchResult="+searchResult+"&searchValue="+searchValue+"&searchType="+searchType;
+
+	//usersList
 }
 </script>
 
@@ -875,16 +886,16 @@ function candidateSearchSideBar(candidateIdSearchId,isAssociate){
 	var candidateKeyword = "candidateSearch";
 	if(isAssociate == "Y"){
 		//Highlighting associate tab when search for associates through universal search
-		window.location.href = sourceleadUrl + "/associatesList?&candidateKeyword="+candidateKeyword+"&candidateIdSearchId="+candidateIdSearchId;
+		window.location.href = sourceleadUrl + "/associatesList?&candidateIdSearchId="+candidateIdSearchId+"&candidateKeyword="+candidateKeyword;
 	}else{
-		window.location.href = sourceleadUrl + "/candidatesList?&candidateKeyword="+candidateKeyword+"&candidateIdSearchId="+candidateIdSearchId;
+		window.location.href = sourceleadUrl + "/candidatesList?&candidateIdSearchId="+candidateIdSearchId+"&candidateKeyword="+candidateKeyword;
 	}
 }
 </script>
 
 <script>
-function userSummaryRedirect(userId){
-	window.location.href = sourceleadUrl +"/userSummary/"+userId;
+function userSummaryRedirect(userCode){
+	window.location.href = sourceleadUrl +"/userSummary/"+userCode;
 }
 </script>
 

@@ -18,9 +18,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "PROJECT_MEMBERS_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectMembersHistory")
 public class ProjectMembersHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -30,10 +31,21 @@ public class ProjectMembersHistory implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="PROJECT_MEMBERS_ID", nullable=false )	
 	private ProjectMembers projectMemberId;
+	
+	/*
+	@ManyToOne
+	@JoinColumn(name = "PROJECT_CLIENTS_ID")
+	@JsonBackReference
+    private ProjectClients projectClientsId;
+	
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="CANDIDATE_ID", nullable=false )	
+	private Candidate candidateId;*/
 	
 	
 	@Column(name = "PROJECT_ASSIGNED_DATE")
@@ -128,6 +140,22 @@ public class ProjectMembersHistory implements Serializable{
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
+/*	public ProjectClients getProjectClientsId() {
+		return projectClientsId;
+	}
+
+	public void setProjectClientsId(ProjectClients projectClientsId) {
+		this.projectClientsId = projectClientsId;
+	}
+
+	public Candidate getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Candidate candidateId) {
+		this.candidateId = candidateId;
+	}*/
 
 
 }

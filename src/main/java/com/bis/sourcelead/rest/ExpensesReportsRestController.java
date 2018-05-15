@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -16,6 +15,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
@@ -31,14 +31,13 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.ExpensesReportService;
-import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @RestController
+@RequestMapping("/app")
 public class ExpensesReportsRestController {
 
 	@Value("${sourceleadUrl}")
@@ -53,11 +52,8 @@ public class ExpensesReportsRestController {
 	@Autowired
 	private ProjectMembersService projectMembersService;
 	
-	@Autowired
-	private OrgRelationsService orgRelationsService;
-
 	@RequestMapping(value = "/getExpensesReportList")
-	public String getExpensesApprovalList(HttpServletRequest request,@RequestParam(value="datequarterly", required=false) String datequarterly) throws Exception {
+	public LinkedHashSet<ProjectMembers> getExpensesApprovalList(HttpServletRequest request,@RequestParam(value="datequarterly", required=false) String datequarterly) throws Exception {
 		LinkedHashSet<ProjectMembers> finalProjectMemberList = new LinkedHashSet<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -134,30 +130,55 @@ public class ExpensesReportsRestController {
 			 Float expenseUnApprovedAmount = 0f;
 			 Float claimedExpenseApprovedAmount = 0f;
 			 Float claimedExpenseUnApprovedAmount = 0f;
-			 Float claimedExpenseAmount = 0f;
+			 //Float claimedExpenseAmount = 0f;
 			 if(count == 0)
 				 projectMember.setMonthsStringFormat(dateList);
 			 List<Expenses> expenses  = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(),convertedStartDate,convertedEndDate);
-			 List<Expenses> expensesClaimendAmount  = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDate(projectMember.getId(),projectMember.getProjects().getStartDate(),new Date());
+			 List<Expenses> expensesClaimendAmount  = expensesReportService.getExpensesByProjectMemberIdAndExpenseStartAndEndDateForClaimedExpenses(projectMember.getId(),projectMember.getProjects().getStartDate(),new Date());
 			 if(expenses != null && !expenses.isEmpty()){
+				 Float janApprovedTotal = 0f;
+				 Float janUnApprovedTotal = 0f;
+				 Float febApprovedTotal = 0f;
+				 Float febUnApprovedTotal = 0f;
+				 Float marApprovedTotal = 0f;
+				 Float marUnApprovedTotal = 0f;
+				 Float aprApprovedTotal = 0f;
+				 Float aprUnApprovedTotal = 0f;
+				 Float mayApprovedTotal = 0f;
+				 Float mayUnApprovedTotal = 0f;
+				 Float junApprovedTotal = 0f;
+				 Float jununApprovedTotal = 0f;
+				 Float julApprovedTotal = 0f;
+				 Float julUnApprovedTotal = 0f;
+				 Float augApprovedTotal = 0f;
+				 Float augUnApprovedTotal = 0f;
+				 Float sepApprovedTotal = 0f;
+				 Float sepUnApprovedTotal = 0f;
+				 Float octApprovedTotal = 0f;
+				 Float octUnApprovedTotal = 0f;
+				 Float novApprovedTotal = 0f;
+				 Float novUnApprovedTotal = 0f;
+				 Float decApprovedTotal = 0f;
+				 Float decUnApprovedTotal = 0f;
+				 
 			 for(Expenses exp:expenses){
-				 if(null != projectMember.getEmployee()){
-						if(null != projectMember.getEmployee().getUserEmploymentType()){
-							projectMember.setEmployementType(exp.getProjectMembers().getEmployee().getUserEmploymentType());
+				 if(null != projectMember.getProjectMemberCandidteId()){
+						if(null != projectMember.getProjectMemberCandidteId().getDesignationType()){
+							projectMember.setEmployementType(projectMember.getProjectMemberCandidteId().getDesignationType());
 						}
-						if(null != projectMember.getEmployee().getEmployeeId()){
-							projectMember.setEmployeeIdForExpenses(exp.getProjectMembers().getEmployee().getEmployeeId());
+						if(projectMember.getEmployee() != null && projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotEmpty(projectMember.getEmployee().getEmployeeId())){
+							projectMember.setEmployeeIdForExpenses(projectMember.getEmployee().getEmployeeId());
 						}
-						if(null != projectMember.getEmployee().getUser()){
-							if(null != projectMember.getEmployee().getUser().getLastName()){
+						if(null != projectMember.getProjectMemberCandidteId()){
+							if(null !=projectMember.getProjectMemberCandidteId().getLastName()){
 								StringBuilder nameBuilder = new StringBuilder();
-								projectMember.setUserName(nameBuilder.append(projectMember.getEmployee().getUser().getFirstName()).append(projectMember.getEmployee().getUser().getLastName()).toString());
+								projectMember.setUserName(nameBuilder.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(projectMember.getProjectMemberCandidteId().getLastName()).toString());
 							}else{
-								projectMember.setUserName(projectMember.getEmployee().getUser().getFirstName());
+								projectMember.setUserName(projectMember.getProjectMemberCandidteId().getFirstName());
 							}
 							
-							if(null != projectMember.getEmployee().getUser().getEmail()){
-								projectMember.setUserEmail(projectMember.getEmployee().getUser().getEmail());
+							if(null != projectMember.getProjectMemberCandidteId().getEmail()){
+								projectMember.setUserEmail(projectMember.getProjectMemberCandidteId().getEmail());
 							}else{
 								projectMember.setUserEmail("--");
 							}
@@ -169,302 +190,294 @@ public class ExpensesReportsRestController {
 						}
 					}
 				 
-				 if(exp.getClientName() != null){
-					 projectMember.setClientNameExpenses(exp.getClientName());
+				 if(projectMember.getProjectClientsId() != null && projectMember.getProjectClientsId().getOrgRelationId() !=null && projectMember.getProjectClientsId().getOrgRelationId().getClientName() != null){
+					 projectMember.setClientNameExpenses(projectMember.getProjectClientsId().getOrgRelationId().getClientName());
 				 }
 				 
-				 if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
+				 /*if(null != projectMember.getEmployee().getOrgLocations() && null != projectMember.getEmployee().getOrgRelationId() && (projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C-1099")||projectMember.getEmployee().getUserEmploymentType().equalsIgnoreCase("C2C"))){
 						OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById(projectMember.getEmployee().getOrgLocations().getId(), projectMember.getEmployee().getOrgRelationId().getId());
 						projectMember.setEmploymentTypeVendors(orgRelation.getResponderLocationId().getOrg().getOrgName());
 				 
-				 }				 
+				 }*/
+				 
+			    StringBuilder vendor=new StringBuilder();
+			 	if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType()) && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
+     			  OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
+     			  if(orgRelation != null) {
+     				  vendor.append(projectMember.getProjectMemberCandidteId().getDesignationType()).append(",").append(orgRelation.getResponderLocationId().getOrgLocationName()).toString();
+     			  }else {
+     				 vendor.append(projectMember.getProjectMemberCandidteId().getDesignationType());
+     			  }
+           	     }else{
+           	    	vendor.append("--").toString(); 
+           	     }
+				 
+				 
+				 
 				 Date d = new Date(exp.getEndDate().getTime());
 				 if(CalendarUtil.isDateBetweenTwoDates(janStartDate, janEndDate, d)){
-					 Float approvedTotal = 0f;
-					 Float unApprovedTotal = 0f;
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getJanExpenseApprovedTotal() != null){
-							 approvedTotal = projectMember.getJanExpenseApprovedTotal();
+							 janApprovedTotal = projectMember.getJanExpenseApprovedTotal();
 						 }
-						  approvedTotal = approvedTotal+exp.getTotalAmount();
-						  projectMember.setJanExpenseApprovedTotal(approvedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+approvedTotal;
+						  janApprovedTotal = janApprovedTotal+exp.getTotalAmount();
+						  projectMember.setJanExpenseApprovedTotal(janApprovedTotal);
+						  expenseApprovedAmount = expenseApprovedAmount+janApprovedTotal;
 					 }
 					 else{
 						 if(projectMember.getJanExpenseUnApprovedTotal() != null){
-							 unApprovedTotal = projectMember.getJanExpenseUnApprovedTotal();
+							 janUnApprovedTotal = projectMember.getJanExpenseUnApprovedTotal();
 						 }
-						 unApprovedTotal = unApprovedTotal+exp.getTotalAmount();
-						 projectMember.setJanExpenseUnApprovedTotal(unApprovedTotal);
-						 expenseUnApprovedAmount = expenseUnApprovedAmount+unApprovedTotal;
+						 janUnApprovedTotal = janUnApprovedTotal+exp.getTotalAmount();
+						 projectMember.setJanExpenseUnApprovedTotal(janUnApprovedTotal);
+						 expenseUnApprovedAmount = expenseUnApprovedAmount+janUnApprovedTotal;
 					 }
-					 projectMember.setJanExpenseTotal(approvedTotal+unApprovedTotal);
+					 projectMember.setJanExpenseTotal(janApprovedTotal+janUnApprovedTotal);
 					
 				 }
 				 
 				 else if(CalendarUtil.isDateBetweenTwoDates(febStartDate, febEndDate, d)){
-					 Float approvedTotal = 0f;
-					 Float unApprovedTotal = 0f;
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getFebExpenseApprovedTotal() != null){
-							 approvedTotal = projectMember.getFebExpenseApprovedTotal();
+							 febApprovedTotal = projectMember.getFebExpenseApprovedTotal();
 						 }
-						  approvedTotal = approvedTotal+exp.getTotalAmount();
-						  projectMember.setFebExpenseApprovedTotal(approvedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+approvedTotal;
+						  febApprovedTotal = febApprovedTotal+exp.getTotalAmount();
+						  projectMember.setFebExpenseApprovedTotal(febApprovedTotal);
+						  expenseApprovedAmount = expenseApprovedAmount+febApprovedTotal;
 					 }
 					 else{
 						 if(projectMember.getFebExpenseUnApprovedTotal() != null){
-							 unApprovedTotal = projectMember.getFebExpenseUnApprovedTotal();
+							 febUnApprovedTotal = projectMember.getFebExpenseUnApprovedTotal();
 						 }
-						 unApprovedTotal = unApprovedTotal+exp.getTotalAmount();
-						 projectMember.setFebExpenseUnApprovedTotal(unApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+unApprovedTotal;
+						 febUnApprovedTotal = febUnApprovedTotal+exp.getTotalAmount();
+						 projectMember.setFebExpenseUnApprovedTotal(febUnApprovedTotal);
+						  expenseUnApprovedAmount = expenseUnApprovedAmount+febUnApprovedTotal;
 					 }
-					 projectMember.setFebExpenseTotal(approvedTotal+unApprovedTotal);
+					 projectMember.setFebExpenseTotal(febApprovedTotal+febUnApprovedTotal);
 					
 				 }
 				 
 				 else if(CalendarUtil.isDateBetweenTwoDates(marStartDate, marEndDate, d)){
-					 Float approvedTotal = 0f;
-					 Float unApprovedTotal = 0f;
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getMarExpenseApprovedTotal() != null){
-							 approvedTotal = projectMember.getMarExpenseApprovedTotal();
+							 marApprovedTotal = projectMember.getMarExpenseApprovedTotal();
 						 }
-						  approvedTotal = approvedTotal+exp.getTotalAmount();
-						  projectMember.setMarExpenseApprovedTotal(approvedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+approvedTotal;
+						  marApprovedTotal = marApprovedTotal+exp.getTotalAmount();
+						  projectMember.setMarExpenseApprovedTotal(marApprovedTotal);
+						  expenseApprovedAmount = expenseApprovedAmount+marApprovedTotal;
 					 }
 					 else{
 						 if(projectMember.getMarExpenseUnApprovedTotal() != null){
-							 unApprovedTotal = projectMember.getMarExpenseUnApprovedTotal();
+							 marUnApprovedTotal = projectMember.getMarExpenseUnApprovedTotal();
 						 }
-						 unApprovedTotal = unApprovedTotal+exp.getTotalAmount();
-						 projectMember.setMarExpenseUnApprovedTotal(unApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+unApprovedTotal;
+						 marUnApprovedTotal = marUnApprovedTotal+exp.getTotalAmount();
+						 projectMember.setMarExpenseUnApprovedTotal(marUnApprovedTotal);
+						  expenseUnApprovedAmount = expenseUnApprovedAmount+marUnApprovedTotal;
 					 }
-					 projectMember.setMarExpenseTotal(approvedTotal+unApprovedTotal);
+					 projectMember.setMarExpenseTotal(marApprovedTotal+marUnApprovedTotal);
 					
 				 }
 				 else if(CalendarUtil.isDateBetweenTwoDates(aprStartDate, aprEndDate, d)){
-					 Float approvedTotal = 0f;
-					 Float unApprovedTotal = 0f;
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getAprExpenseApprovedTotal() != null){
-							 approvedTotal = projectMember.getAprExpenseApprovedTotal();
+							 aprApprovedTotal = projectMember.getAprExpenseApprovedTotal();
 						 }
-						  approvedTotal = approvedTotal+exp.getTotalAmount();
-						  projectMember.setAprExpenseApprovedTotal(approvedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+approvedTotal;
+						  aprApprovedTotal = aprApprovedTotal+exp.getTotalAmount();
+						  projectMember.setAprExpenseApprovedTotal(aprApprovedTotal);
+						  expenseApprovedAmount = expenseApprovedAmount+aprApprovedTotal;
 					 }
 					 else{
 						 if(projectMember.getAprExpenseUnApprovedTotal() != null){
-							 unApprovedTotal = projectMember.getAprExpenseUnApprovedTotal();
+							 aprUnApprovedTotal = projectMember.getAprExpenseUnApprovedTotal();
 						 }
-						 unApprovedTotal = unApprovedTotal+exp.getTotalAmount();
-						 projectMember.setAprExpenseUnApprovedTotal(unApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+unApprovedTotal;
+						 aprUnApprovedTotal = aprUnApprovedTotal+exp.getTotalAmount();
+						 projectMember.setAprExpenseUnApprovedTotal(aprUnApprovedTotal);
+						  expenseUnApprovedAmount = expenseUnApprovedAmount+aprUnApprovedTotal;
 					 }
-					 projectMember.setAprExpenseTotal(approvedTotal+unApprovedTotal);
+					 projectMember.setAprExpenseTotal(aprApprovedTotal+aprUnApprovedTotal);
 					
 				 }
 				 
 				 else if(CalendarUtil.isDateBetweenTwoDates(mayStartDate, mayEndDate, d)){
-					 Float approvedTotal = 0f;
-					 Float unApprovedTotal = 0f;
+					 
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getMayExpenseApprovedTotal() != null){
-							 approvedTotal = projectMember.getMayExpenseApprovedTotal();
+							 mayApprovedTotal = projectMember.getMayExpenseApprovedTotal();
 						 }
-						  approvedTotal = approvedTotal+exp.getTotalAmount();
-						  projectMember.setMayExpenseApprovedTotal(approvedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+approvedTotal;
+						  mayApprovedTotal = mayApprovedTotal+exp.getTotalAmount();
+						  projectMember.setMayExpenseApprovedTotal(mayApprovedTotal);
+						  expenseApprovedAmount = expenseApprovedAmount+mayApprovedTotal;
 					 }
 					 else{
 						 if(projectMember.getMayExpenseUnApprovedTotal() != null){
-							 unApprovedTotal = projectMember.getMayExpenseUnApprovedTotal();
+							 mayUnApprovedTotal = projectMember.getMayExpenseUnApprovedTotal();
 						 }
-						 unApprovedTotal = unApprovedTotal+exp.getTotalAmount();
-						 projectMember.setMayExpenseUnApprovedTotal(unApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+unApprovedTotal;
+						 mayUnApprovedTotal = mayUnApprovedTotal+exp.getTotalAmount();
+						 projectMember.setMayExpenseUnApprovedTotal(mayUnApprovedTotal);
+						  expenseUnApprovedAmount = expenseUnApprovedAmount+mayUnApprovedTotal;
 					 }
-					 projectMember.setMayExpenseTotal(approvedTotal+unApprovedTotal);
+					 projectMember.setMayExpenseTotal(mayApprovedTotal+mayUnApprovedTotal);
 					
 				 }
 				 
 				 else if(CalendarUtil.isDateBetweenTwoDates(junStartDate, junEndDate, d)){
-					 Float approvedTotal = 0f;
-					 Float unApprovedTotal = 0f;
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getJunExpenseApprovedTotal() != null){
-							 approvedTotal = projectMember.getJunExpenseApprovedTotal();
+							 junApprovedTotal = projectMember.getJunExpenseApprovedTotal();
 						 }
-						  approvedTotal = approvedTotal+exp.getTotalAmount();
-						  projectMember.setJunExpenseApprovedTotal(approvedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+approvedTotal;
+						  junApprovedTotal = junApprovedTotal+exp.getTotalAmount();
+						  projectMember.setJunExpenseApprovedTotal(junApprovedTotal);
+						  expenseApprovedAmount = expenseApprovedAmount+junApprovedTotal;
 					 }
 					 else{
 						 if(projectMember.getJunExpenseUnApprovedTotal() != null){
-							 unApprovedTotal = projectMember.getJunExpenseUnApprovedTotal();
+							 jununApprovedTotal = projectMember.getJunExpenseUnApprovedTotal();
 						 }
-						 unApprovedTotal = unApprovedTotal + exp.getTotalAmount();
-						 projectMember.setJunExpenseUnApprovedTotal(unApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+unApprovedTotal;
+						 jununApprovedTotal = jununApprovedTotal + exp.getTotalAmount();
+						 projectMember.setJunExpenseUnApprovedTotal(jununApprovedTotal);
+						  expenseUnApprovedAmount = expenseUnApprovedAmount+jununApprovedTotal;
 					 }
-					 projectMember.setJunExpenseTotal(approvedTotal+unApprovedTotal);
+					 projectMember.setJunExpenseTotal(junApprovedTotal+jununApprovedTotal);
 					
 				 }
 				 
 				 else if(CalendarUtil.isDateBetweenTwoDates(julStartDate, julEndDate, d)){
-					 Float approvedTotal = 0f;
-					 Float unApprovedTotal = 0f;
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getJulExpenseApprovedTotal() != null){
-							 approvedTotal = projectMember.getJulExpenseApprovedTotal();
+							 julApprovedTotal = projectMember.getJulExpenseApprovedTotal();
 						 }
-						  approvedTotal = approvedTotal+exp.getTotalAmount();
-						  projectMember.setJulExpenseApprovedTotal(approvedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+approvedTotal;
+						  julApprovedTotal = julApprovedTotal+exp.getTotalAmount();
+						  projectMember.setJulExpenseApprovedTotal(julApprovedTotal);
+						  expenseApprovedAmount = expenseApprovedAmount+julApprovedTotal;
 					 }
 					 else{
 						 
 						 if(projectMember.getJulExpenseUnApprovedTotal() != null){
-							 unApprovedTotal = projectMember.getJulExpenseUnApprovedTotal();
+							 julUnApprovedTotal = projectMember.getJulExpenseUnApprovedTotal();
 						 }
-						 unApprovedTotal = unApprovedTotal+exp.getTotalAmount();
-						 projectMember.setJulExpenseUnApprovedTotal(unApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+unApprovedTotal;
+						 julUnApprovedTotal = julUnApprovedTotal+exp.getTotalAmount();
+						 projectMember.setJulExpenseUnApprovedTotal(julUnApprovedTotal);
+						  expenseUnApprovedAmount = expenseUnApprovedAmount+julUnApprovedTotal;
 					 }
-					 projectMember.setJulExpenseTotal(approvedTotal+unApprovedTotal);
+					 projectMember.setJulExpenseTotal(julApprovedTotal+julUnApprovedTotal);
 					
 				 }
 				 
 				 else if(CalendarUtil.isDateBetweenTwoDates(augStartDate, augEndDate, d)){
-					 Float approvedTotal = 0f;
-					 Float unApprovedTotal = 0f;
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getAugExpenseApprovedTotal() != null){
-							 approvedTotal = projectMember.getAugExpenseApprovedTotal();
+							 augApprovedTotal = projectMember.getAugExpenseApprovedTotal();
 						 }
-						  approvedTotal = approvedTotal+exp.getTotalAmount();
-						  projectMember.setAugExpenseApprovedTotal(approvedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+approvedTotal;
+						  augApprovedTotal = augApprovedTotal+exp.getTotalAmount();
+						  projectMember.setAugExpenseApprovedTotal(augApprovedTotal);
+						  expenseApprovedAmount = expenseApprovedAmount+augApprovedTotal;
 					 }
 					 else{
 						 if(projectMember.getAugExpenseUnApprovedTotal() != null){
-							 unApprovedTotal = projectMember.getAugExpenseUnApprovedTotal();
+							 augUnApprovedTotal = projectMember.getAugExpenseUnApprovedTotal();
 						 }
-						 unApprovedTotal = unApprovedTotal+exp.getTotalAmount();
-						 projectMember.setAugExpenseUnApprovedTotal(unApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+unApprovedTotal;
+						 augUnApprovedTotal = augUnApprovedTotal+exp.getTotalAmount();
+						 projectMember.setAugExpenseUnApprovedTotal(augUnApprovedTotal);
+						  expenseUnApprovedAmount = expenseUnApprovedAmount+augUnApprovedTotal;
 					 }
-					 projectMember.setAugExpenseTotal(approvedTotal+unApprovedTotal);
+					 projectMember.setAugExpenseTotal(augApprovedTotal+augUnApprovedTotal);
 					
 				 }
 				 
 				 else if(CalendarUtil.isDateBetweenTwoDates(sepStartDate, sepEndDate, d)){
-					 Float approvedTotal = 0f;
-					 Float unApprovedTotal = 0f;
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getSepExpenseApprovedTotal() != null){
-							 approvedTotal = projectMember.getSepExpenseApprovedTotal();
+							 sepApprovedTotal = projectMember.getSepExpenseApprovedTotal();
 						 }
-						  approvedTotal = approvedTotal+exp.getTotalAmount();
-						  projectMember.setSepExpenseApprovedTotal(approvedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+approvedTotal;
+						  sepApprovedTotal = sepApprovedTotal+exp.getTotalAmount();
+						  projectMember.setSepExpenseApprovedTotal(sepApprovedTotal);
+						  expenseApprovedAmount = expenseApprovedAmount+sepApprovedTotal;
 					 }
 					 else{
 						 if(projectMember.getSepExpenseUnApprovedTotal() != null){
-							 unApprovedTotal = projectMember.getSepExpenseUnApprovedTotal();
+							 sepUnApprovedTotal = projectMember.getSepExpenseUnApprovedTotal();
 						 }
-						 unApprovedTotal = unApprovedTotal+exp.getTotalAmount();
-						 projectMember.setSepExpenseUnApprovedTotal(unApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+unApprovedTotal;
+						 sepUnApprovedTotal = sepUnApprovedTotal+exp.getTotalAmount();
+						 projectMember.setSepExpenseUnApprovedTotal(sepUnApprovedTotal);
+						  expenseUnApprovedAmount = expenseUnApprovedAmount+sepUnApprovedTotal;
 					 }
-					 projectMember.setSepExpenseTotal(approvedTotal+unApprovedTotal);
+					 projectMember.setSepExpenseTotal(sepApprovedTotal+sepUnApprovedTotal);
 					
 				 }
 				 
 				 
 				 else if(CalendarUtil.isDateBetweenTwoDates(octStartDate, octEndDate, d)){
-					 Float approvedTotal = 0f;
-					 Float unApprovedTotal = 0f;
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getOctExpenseApprovedTotal() != null){
-							 approvedTotal = projectMember.getOctExpenseApprovedTotal();
+							 octApprovedTotal = projectMember.getOctExpenseApprovedTotal();
 						 }
-						  approvedTotal = approvedTotal+exp.getTotalAmount();
-						  projectMember.setOctExpenseApprovedTotal(approvedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+approvedTotal;
+						  octApprovedTotal = octApprovedTotal+exp.getTotalAmount();
+						  projectMember.setOctExpenseApprovedTotal(octApprovedTotal);
+						  expenseApprovedAmount = expenseApprovedAmount+octApprovedTotal;
 					 }
 					 else{
 						 if(projectMember.getOctExpenseUnApprovedTotal() != null){
-							 unApprovedTotal = projectMember.getOctExpenseUnApprovedTotal();
+							 octUnApprovedTotal = projectMember.getOctExpenseUnApprovedTotal();
 						 }
-						 unApprovedTotal = unApprovedTotal+exp.getTotalAmount();
-						 projectMember.setOctExpenseUnApprovedTotal(unApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+unApprovedTotal;
+						 octUnApprovedTotal = octUnApprovedTotal+exp.getTotalAmount();
+						 projectMember.setOctExpenseUnApprovedTotal(octUnApprovedTotal);
+						  expenseUnApprovedAmount = expenseUnApprovedAmount+octUnApprovedTotal;
 					 }
-					 projectMember.setOctExpenseTotal(approvedTotal+unApprovedTotal);
+					 projectMember.setOctExpenseTotal(octApprovedTotal+octUnApprovedTotal);
 					 
 				 }
 				 
 				 else if(CalendarUtil.isDateBetweenTwoDates(novStartDate, novEndDate, d)){
-					 Float approvedTotal = 0f;
-					 Float unApprovedTotal = 0f;
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getNovExpenseApprovedTotal() != null){
-							 approvedTotal = projectMember.getNovExpenseApprovedTotal();
+							 novApprovedTotal = projectMember.getNovExpenseApprovedTotal();
 						 }
-						  approvedTotal = approvedTotal+exp.getTotalAmount();
-						  projectMember.setNovExpenseApprovedTotal(approvedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+approvedTotal;
+						  novApprovedTotal = novApprovedTotal+exp.getTotalAmount();
+						  projectMember.setNovExpenseApprovedTotal(novApprovedTotal);
+						  expenseApprovedAmount = expenseApprovedAmount+novApprovedTotal;
 					 }
 					 else{
 						 if(projectMember.getNovExpenseUnApprovedTotal() != null){
-							 unApprovedTotal = projectMember.getNovExpenseUnApprovedTotal();
+							 novUnApprovedTotal = projectMember.getNovExpenseUnApprovedTotal();
 						 }
-						 unApprovedTotal = unApprovedTotal+exp.getTotalAmount();
-						 projectMember.setNovExpenseUnApprovedTotal(unApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+unApprovedTotal;
+						 novUnApprovedTotal = novUnApprovedTotal+exp.getTotalAmount();
+						 projectMember.setNovExpenseUnApprovedTotal(novUnApprovedTotal);
+						  expenseUnApprovedAmount = expenseUnApprovedAmount+novUnApprovedTotal;
 					 }
-					 projectMember.setNovExpenseTotal(approvedTotal+unApprovedTotal);
+					 projectMember.setNovExpenseTotal(novApprovedTotal+novUnApprovedTotal);
 					 
 				 }
 				 
 				 else if(CalendarUtil.isDateBetweenTwoDates(decStartDate, decEndDate, d)){
-					 Float approvedTotal = 0f;
-					 Float unApprovedTotal = 0f;
 					 
 					 if(exp.getExpenseStatus() != null && exp.getExpenseStatus().equals(Submission_Status.APPROVED)){
 						 if(projectMember.getDecExpenseApprovedTotal() != null){
-							 approvedTotal = projectMember.getDecExpenseApprovedTotal();
+							 decApprovedTotal = projectMember.getDecExpenseApprovedTotal();
 						 }
-						  approvedTotal = approvedTotal+exp.getTotalAmount();
-						  projectMember.setDecExpenseApprovedTotal(approvedTotal);
-						  expenseApprovedAmount = expenseApprovedAmount+approvedTotal;
+						  decApprovedTotal = decApprovedTotal+exp.getTotalAmount();
+						  projectMember.setDecExpenseApprovedTotal(decApprovedTotal);
+						  expenseApprovedAmount = expenseApprovedAmount+decApprovedTotal;
 					 }
 					 else{
 						 if(projectMember.getDecExpenseUnApprovedTotal() != null){
-							 unApprovedTotal = projectMember.getDecExpenseUnApprovedTotal();
+							 decUnApprovedTotal = projectMember.getDecExpenseUnApprovedTotal();
 						 }
-						 unApprovedTotal = unApprovedTotal+exp.getTotalAmount();
-						 projectMember.setDecExpenseUnApprovedTotal(unApprovedTotal);
-						  expenseUnApprovedAmount = expenseUnApprovedAmount+unApprovedTotal;
+						 decUnApprovedTotal = decUnApprovedTotal+exp.getTotalAmount();
+						 projectMember.setDecExpenseUnApprovedTotal(decUnApprovedTotal);
+						  expenseUnApprovedAmount = expenseUnApprovedAmount+decUnApprovedTotal;
 					 }
-					 projectMember.setDecExpenseTotal(approvedTotal+unApprovedTotal);
+					 projectMember.setDecExpenseTotal(decApprovedTotal+decUnApprovedTotal);
 					 
 				  } 
 			     }
@@ -508,8 +521,10 @@ public class ExpensesReportsRestController {
 						 if(projectMember.getClaimedExpenseTotal() != null){
 							 expenseClaimedTotal = projectMember.getClaimedExpenseTotal();
 						 }
-						 expenseClaimedTotal = expenseClaimedTotal+exp.getTotalAmount();
-						 projectMember.setClaimedExpenseTotal(expenseClaimedTotal);
+						 if(exp.getExpenseStatus().equals(Submission_Status.APPROVED)) {
+							 expenseClaimedTotal = expenseClaimedTotal+exp.getTotalAmount();
+							 projectMember.setClaimedExpenseTotal(expenseClaimedTotal);
+						 }
 				   }
 			      finalProjectMemberList.add(projectMember);
 			      count++;
@@ -517,7 +532,7 @@ public class ExpensesReportsRestController {
 			 }
 		    }
 		}
-	   return commonUtil.toJSON(finalProjectMemberList);
+	   return finalProjectMemberList;
 	}
 	
 	

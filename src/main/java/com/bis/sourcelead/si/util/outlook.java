@@ -145,7 +145,7 @@ class outlook {
 									mobilePhoneIndex = i;
 								}
 							}
-							else if(columnName.contains("primary phone") || columnName.contains("phone1") || columnName.contains("home phone") || columnName.contains("telefon privat")){
+							else if(columnName.contains("primary phone") || columnName.contains("phone1") || columnName.contains("home phone") || columnName.contains("telefon privat")||columnName.contains("phone number")){
 								if(primaryPhoneIndex==-1){
 									primaryPhoneIndex = i;
 								}

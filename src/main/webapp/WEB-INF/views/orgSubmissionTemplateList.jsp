@@ -6,9 +6,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
- <link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
- <script src="resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
- <script src="resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
+ <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+ <script src="/resources/js/submissionFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form builder -->
+ <script src="/resources/js/submissionForm-html-generator.js?staticTime=${staticTime}" type="text/javascript" ></script> <!-- form generator -->
 
 <script type="text/javascript">
 //On document ready
@@ -448,6 +448,11 @@ function validateTemplateName(){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
+  <c:if test="${!empty msg}"> 
+<div class="success_pop" id="selector" style="display: block;"> 
+<i class="fa fa-check-circle"></i><span>${msg}</span> 
+</div> 
+</c:if> 
     <div class="pull-left">
       <!-- <h2>Submission Templates</h2> -->
       <h2 class="pull-left">Submission Templates</h2>
@@ -458,13 +463,15 @@ function validateTemplateName(){
 			</div>
 		</div>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/orgTemplates'/>"> Templates</a> &raquo;Submission Templates List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo;Submission Templates List</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
 	      <div class="timesheet_head timesheet_head_11"  id="addTemplate">
 	        <ul>
+	         <sec:authorize access="hasRole('ROLE_CREATE_APPLICANT_TEMPLATE')"> 
 	          <li><a onClick="addSubmissionTemplateFields();" id="add-tm"><i class="fa fa-plus"></i>Add Template</a></li>
+	          </sec:authorize>
 	          <div class="clearfix"></div>
 	        </ul>
 	        <div class="clearfix"></div>
@@ -484,7 +491,11 @@ function validateTemplateName(){
   </div>
   
 </section>
+<script> 
+$("#selector").fadeIn(200); 
+$('#selector').delay(2000).fadeOut('slow'); 
 
+</script> 
 <script>
 $("#add-tm").click(function(){
 	$("#clientSubmissionTemplateList").hide();
@@ -513,7 +524,7 @@ function scrollToBottom(){
 
 
 <jsp:include page="masterFooter.jsp" />
-<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
 </html>
 
 

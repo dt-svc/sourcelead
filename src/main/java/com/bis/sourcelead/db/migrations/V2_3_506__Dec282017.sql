@@ -1,0 +1,1 @@
+CALL AlterTableAddColumn ('sourcelead','PROJECTS','WEEK_START_DATE','DATE DEFAULT NULL AFTER `START_DATE`');

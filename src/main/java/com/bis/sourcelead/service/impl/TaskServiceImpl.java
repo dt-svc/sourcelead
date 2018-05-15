@@ -1,5 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,11 +11,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TaskDao;
+import com.bis.sourcelead.dto.AddTaskDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -78,6 +84,9 @@ public class TaskServiceImpl implements TaskService{
 	
 	@Autowired
 	TimeZoneService timeZoneService;
+	
+	@Value("${static.path}")
+    private String staticPath;
 	
 	@Override
 	public Tasks saveTasks(Tasks tasks) throws Exception {
@@ -168,102 +177,91 @@ public class TaskServiceImpl implements TaskService{
 		
 	}
 
-	public String saveTasks(JSONObject jsonObj) throws Exception {
-		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Timezone timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
-		//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
-	 	//String pattern = "dd-MM-yy";
-        //SimpleDateFormat format = new SimpleDateFormat(pattern);
-        
-       
-        if(jsonObj.has("assignTo") && !jsonObj.getString("assignTo").isEmpty()){
-        	String assignOwnersId =null;
-			try{
-				JSONArray jsonArray = jsonObj.getJSONArray("assignTo");
-				assignOwnersId = jsonArray.toString();
-			}
-			catch(JSONException e){
-				assignOwnersId =jsonObj.getString("assignTo");
-			}
-			assignOwnersId = assignOwnersId.replaceAll("\\[", "").replaceAll("\\]","");
-			String[] owners = assignOwnersId.split(",");
-			
-			for(int i=0 ;i<owners.length;i++ ){
-				 Tasks task = new Tasks();
-				 User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
-				 task.setAssignedUserId(ownerUser);
-				 task.setOwnerOrglocationId(loginOrgLocation);
-				 task.setTaskOwnerId(user);
-				 UserRole assignedUser =  userRoleService.getUserByUserId(ownerUser.getId());
-				 if(assignedUser != null && assignedUser.getOrgLocations() != null){
-					 task.setAssignedOrglocationId(assignedUser.getOrgLocations());	 
-				 }
-				 
-				 if(jsonObj.has("priority") && !jsonObj.getString("priority").isEmpty()){
-		        	 task.setPriority(jsonObj.getString("priority"));
-		          }
-			 
-				 if(jsonObj.has("description") && !jsonObj.getString("description").isEmpty()){
-		        	 task.setDescription(jsonObj.getString("description"));
-		        }
-
-		        /*if(jsonObj.has("taskDatpicker") && !jsonObj.getString("taskDatpicker").isEmpty()){
-		    		Date taskDate = format.parse(jsonObj.getString("taskDatpicker"));
-		    		task.setTaskDate(taskDate);
-		    	}
-
-		        if(jsonObj.has("timepicker") && !jsonObj.getString("timepicker").isEmpty()){
-		    		task.setTaskTime(jsonObj.getString("timepicker"));
-		    	}*/
+	 public String saveTasksDTO(AddTaskDTO addTaskDTO) throws Exception {
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Timezone timezone = timeZoneService.getTimezone(loginOrgLocation.getTimezone().getId());
+			//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
+		 	//String pattern = "dd-MM-yy";
+	        //SimpleDateFormat format = new SimpleDateFormat(pattern);
+	        
+			 if(addTaskDTO.getAssignTo() != null ){
+	        	String assignOwnersId =null;
+					assignOwnersId = addTaskDTO.getAssignTo().toString();
+				assignOwnersId = assignOwnersId.replaceAll("\\[", "").replaceAll("\\]","");
+				String[] owners = assignOwnersId.split(",");
 				
-				if(jsonObj.has("taskDatpicker") && !jsonObj.getString("taskDatpicker").isEmpty() && jsonObj.has("timepicker") && !jsonObj.getString("timepicker").isEmpty()){
-				Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),jsonObj.getString("taskDatpicker")),jsonObj.getString("timepicker"));
-				String currentTimeStr = Constants.TZ_DF.format(startTime);  
-				String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE , currentTimeStr);
-				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
-				task.setTaskDate(convertedDate);
-						if(jsonObj.has("timepicker") && !jsonObj.getString("timepicker").isEmpty()){
-								String splitDate = convertedDate.toString();
-								String[] timeFormat = splitDate.split(" ");
-								task.setTaskTime(timeFormat[3]);
-						}
-				 }
-			
-		        
-		        if(jsonObj.has("repeat") && !jsonObj.getString("repeat").isEmpty()){
-		    		task.setTaskRepeat(jsonObj.getString("repeat"));
-		    	}
-		        
-		        if(jsonObj.has("subject") && !jsonObj.getString("subject").isEmpty()){
-		    		task.setSubject(jsonObj.getString("subject"));
-		    	}
-		        
-		        //Email and Notification conditions
-		        if(jsonObj.has("email") && !jsonObj.getString("email").isEmpty() && jsonObj.has("notification") && !jsonObj.getString("notification").isEmpty()){
-		        	 task.setAlertType(jsonObj.getString("email")+","+jsonObj.getString("notification"));
-		        }else if(jsonObj.has("email") && !jsonObj.getString("email").isEmpty()){
-		        	task.setAlertType(jsonObj.getString("email"));
-		        }else if(jsonObj.has("notification") && !jsonObj.getString("notification").isEmpty()){
-		        	task.setAlertType(jsonObj.getString("notification"));
-		        }
-		         if(user.getUserCode() != null){
-		        	task.setCreatedBy(user.getUserCode());	
-		    	}
-		        task.setTaskStatus(Constants.TASK_STATUS_OPEN);
-		        task.setCreatedDate(commonUtil.currentDate());
-		        task.setUpdatedDate(commonUtil.currentDate());
-     	        taskDao.saveTasks(task);
-				 //mail logic for users
-     	        if(null != task.getAlertType() && !"".equalsIgnoreCase(task.getAlertType())){
-     	        	mailToUserTask(task);
-     	        }
-			}
-        }
-        
-		return "success";
-	}
+				for(int i=0 ;i<owners.length;i++ ){
+					 Tasks task = new Tasks();
+					 User ownerUser = userService.getUserById(Long.parseLong(owners[i].replace("\"", "")));
+					 task.setAssignedUserId(ownerUser);
+					 task.setOwnerOrglocationId(loginOrgLocation);
+					 task.setTaskOwnerId(user);
+					 UserRole assignedUser =  userRoleService.getUserByUserId(ownerUser.getId());
+					 if(assignedUser != null && assignedUser.getOrgLocations() != null){
+						 task.setAssignedOrglocationId(assignedUser.getOrgLocations());	 
+					 }
+					 if(StringUtils.isNotBlank(addTaskDTO.getPriority())){
+			        	 task.setPriority(addTaskDTO.getPriority());
+			          }
+					 if(StringUtils.isNotBlank(addTaskDTO.getDescription())){
+			        	 task.setDescription(addTaskDTO.getDescription());
+			        }
+
+			        /*if(jsonObj.has("taskDatpicker") && !jsonObj.getString("taskDatpicker").isEmpty()){
+			    		Date taskDate = format.parse(jsonObj.getString("taskDatpicker"));
+			    		task.setTaskDate(taskDate);
+			    	}
+
+			        if(jsonObj.has("timepicker") && !jsonObj.getString("timepicker").isEmpty()){
+			    		task.setTaskTime(jsonObj.getString("timepicker"));
+			    	}*/
+					
+					if(addTaskDTO.getTaskDatpicker() != null && addTaskDTO.getTimepicker() != null){
+					Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),addTaskDTO.getTaskDatpicker().toString()),addTaskDTO.getTimepicker().toString());
+					String currentTimeStr = Constants.TZ_DF.format(startTime);  
+					String startTimeUTC= CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE , currentTimeStr);
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+					task.setTaskDate(convertedDate);
+							if(addTaskDTO.getTimepicker() != null){
+									String splitDate = convertedDate.toString();
+									String[] timeFormat = splitDate.split(" ");
+									task.setTaskTime(timeFormat[3]);
+							}
+					 }
+				
+					if(StringUtils.isNotBlank(addTaskDTO.getRepeat())){
+			    		task.setTaskRepeat(addTaskDTO.getRepeat());
+			    	}
+					if(StringUtils.isNotBlank(addTaskDTO.getSubject())){
+			    		task.setSubject(addTaskDTO.getSubject());
+			    	}
+			        
+			        //Email and Notification conditions
+			    if(StringUtils.isNotEmpty(addTaskDTO.getEmail()) && StringUtils.isNotEmpty(addTaskDTO.getNotification())){
+			        	 task.setAlertType(addTaskDTO.getEmail()+","+addTaskDTO.getNotification());
+			        }else if(StringUtils.isNotEmpty(addTaskDTO.getEmail())){
+			        	task.setAlertType(addTaskDTO.getEmail());
+			        }else if(StringUtils.isNotEmpty(addTaskDTO.getNotification())){
+			        	task.setAlertType(addTaskDTO.getNotification());
+			        }
+			         if(user.getUserCode() != null){
+			        	task.setCreatedBy(user.getUserCode());	
+			    	}
+			        task.setTaskStatus(Constants.TASK_STATUS_OPEN);
+			        task.setCreatedDate(commonUtil.currentDate());
+			        task.setUpdatedDate(commonUtil.currentDate());
+	     	        taskDao.saveTasks(task);
+					 //mail logic for users
+	     	        if(null != task.getAlertType() && !"".equalsIgnoreCase(task.getAlertType())){
+	     	        	mailToUserTask(task);
+	     	        }
+				}
+	        }
+	        
+			return "success";
+		}
 
 	
 
@@ -346,16 +344,21 @@ public class TaskServiceImpl implements TaskService{
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+			 EmailScenario  emailScenario = null;
+			 if(orglo != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.TASK_MECHANISM_EMAIL,Constants.ENTITY_TYPE_EMAIL, orglo.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+				   }
 			 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
 			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+			 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 			 String url = sourceleadUrl;
 			 
-			 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+			 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 			 notificationScenario.setBody(notificationbody);
 			 
 			 //construct HTML template using required data
@@ -368,15 +371,15 @@ public class TaskServiceImpl implements TaskService{
 				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 }
 			 //calling the Notification 
-			 if(task.getAlertType().equalsIgnoreCase("Notification") && null !=task.getAlertType()){
+			 if(task.getAlertType() != null && task.getAlertType().equalsIgnoreCase("Notification")){
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario,new HashMap<String,String>());
 			 }
 			 //calling the Email  and notification 
-			 if(task.getAlertType().equalsIgnoreCase("Email,Notification") && null !=task.getAlertType()){
+			 if(task.getAlertType() != null && task.getAlertType().equalsIgnoreCase("Email,Notification")){
 				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario,new HashMap<String,String>());
 			 }
 
 	}
@@ -422,6 +425,18 @@ public List<Tasks> getTasksListOnboardingId(Long onboardingId) throws Exception 
 @Override
 public List<Tasks> getTaskListByRepeatStatus(String taskRepeatStatus) throws Exception {
 	return taskDao.getTaskListByRepeatStatus(taskRepeatStatus);
+}
+
+@Override
+public List<Tasks> getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(Long orgLocationId, Long userId,
+		Long vendorOnboardingId) throws Exception {
+	return taskDao.getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(orgLocationId, userId, vendorOnboardingId);
+}
+
+@Override
+public Long taskCountByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId,Long userId,String status) throws Exception{
+	
+	return taskDao.taskCountByIdAndOrgLocationIdAssignedUserId(OrgLocationId, userId, status);
 }
 }
 	

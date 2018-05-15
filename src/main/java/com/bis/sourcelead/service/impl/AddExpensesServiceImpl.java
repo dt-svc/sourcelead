@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AddExpensesDao;
-import com.bis.sourcelead.dto.AddExpensesDTO;
+import com.bis.sourcelead.dto.ExpensesDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -39,7 +39,6 @@ import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.ibm.icu.math.BigDecimal;
@@ -69,13 +68,13 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	private EmailScenarioService emailScenarioService;
 	
 	@Autowired
-	private UserService userService;
-	
-	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;	
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -83,7 +82,7 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 	@Override
 	public String getExpenseId(OrgLocations orgLoc) {
 		//String expensesId = SourceLeadRandomCodeHelper.generateRandomExpensesIdCode();
-		Long number = 000001L;
+		/*Long number = 000001L;
 		String expensesId = null;
 		Expenses checkNumber = addExpensesDao.checkExpensIdNumberInDatebase(orgLoc.getId());
 		if(checkNumber == null){
@@ -93,12 +92,38 @@ public class AddExpensesServiceImpl implements AddExpensesService{
 		Long expId = Long.parseLong(expIdNumber)+1;
 			expensesId = expId.toString();
 		}
-		
         final DecimalFormat decimalFormat = new DecimalFormat("0000");                
         String ConvetredexpensesId = decimalFormat.format(Long.parseLong(expensesId));
+		return ConvetredexpensesId;*/
 		
-		return ConvetredexpensesId;
-		
+		String companyShortCode = null;
+    	Long number = 1L;
+		String expId = null;
+		Integer generatedIdcount =0;
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(orgLoc.getGeneratedUserId()).append(Constants.EXPENSES_ENTITY);
+		String generatedUsreId = sbuilder.toString();
+		for(int i=0;i< generatedUsreId.length();i++){
+			char ch = generatedUsreId.charAt(i);
+			if(Character.isAlphabetic(ch)){
+				generatedIdcount++;
+			}
+		}
+		generatedIdcount = generatedIdcount+1;
+		Long checkNumber = addExpensesDao.checkExpensIdNumberInDatebase(orgLoc.getId(),generatedIdcount);
+		if(checkNumber == null){
+			expId = number.toString();
+		}else{
+		Long reqId = checkNumber+1;
+		expId = reqId.toString();
+		}
+		final DecimalFormat decimalFormat = new DecimalFormat("0");                
+        String convetredExpId = decimalFormat.format(Long.parseLong(expId));
+        StringBuffer sb = new StringBuffer();
+        if(orgLoc.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLoc.getGeneratedUserId())){
+        	 companyShortCode = orgLoc.getGeneratedUserId();
+        }
+		return sb.append(companyShortCode).append(Constants.EXPENSES_ENTITY).append(convetredExpId).toString();
 	}
 	
 @Override
@@ -115,41 +140,42 @@ public Expenses storeAddExpensesData(Expenses expenses) throws Exception{
 }
 
 @Override
-public void storeAddExpensesData(AddExpensesDTO addExpensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String status,String currencyCode) throws NumberFormatException, Exception {
+public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLocations orgLoc,HttpServletRequest request,String currencyCode) throws NumberFormatException, Exception {
 	Expenses expenses = null;
 	ProjectMembers projMembers = null;
-	
+	String status = "draft";
+	if(StringUtils.isNotEmpty(expensesDTO.getExpenseStatus())){
+		status = expensesDTO.getExpenseStatus();
+	}
 	//SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 	
-	if(StringUtils.isNotBlank(addExpensesDTO.getExpenseId())){
-		expenses = expensesService.getExpenseById(Long.parseLong(addExpensesDTO.getExpenseId()));
+	if(expensesDTO.getId() != null){
+		expenses = expensesService.getExpenseById(expensesDTO.getId());
 	}else {
 		expenses = new Expenses();
 	}
-	if (StringUtils.isNotBlank(addExpensesDTO.getExpenseAutoId())){
-		expenses.setExpenseId(addExpensesDTO.getExpenseAutoId());	
+	if (StringUtils.isNotBlank(expensesDTO.getExpenseAutoId())){
+		expenses.setExpenseId(expensesDTO.getExpenseAutoId());	
 	 }
-	if (StringUtils.isNotBlank(addExpensesDTO.getExpensePurpose())){
-		expenses.setPurpose(addExpensesDTO.getExpensePurpose());	
+	if (StringUtils.isNotBlank(expensesDTO.getExpensePurpose())){
+		expenses.setPurpose(expensesDTO.getExpensePurpose());	
 	 }
-	if (StringUtils.isNotBlank(addExpensesDTO.getProjectMemberId())){
-		projMembers = projectMembersService.getProjectMemberById(Long.parseLong(addExpensesDTO.getProjectMemberId()));
+	if (expensesDTO.getProjectMemberId()!= null){
+		projMembers = projectMembersService.getProjectMemberById(expensesDTO.getProjectMemberId());
 		expenses.setProjectMembers(projMembers);	
 	 }
-	if (StringUtils.isNotBlank(addExpensesDTO.getClientNameExpense())){
-		expenses.setClientName(addExpensesDTO.getClientNameExpense());	
+	if (StringUtils.isNotBlank(expensesDTO.getClientName())){
+		expenses.setClientName(expensesDTO.getClientName());	
 	 }
-	if (StringUtils.isNotBlank(addExpensesDTO.getStartDateExpense())){
-		 Date startdate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addExpensesDTO.getStartDateExpense());
+	if (StringUtils.isNotBlank(expensesDTO.getStartDate())){
+		 Date startdate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), expensesDTO.getStartDate());
 		expenses.setStartDate(startdate);	
 	 }
-	if (StringUtils.isNotBlank(addExpensesDTO.getEndDateExpense())){
-		Date enddate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), addExpensesDTO.getEndDateExpense());
+	if (StringUtils.isNotBlank(expensesDTO.getEndDate())){
+		Date enddate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), expensesDTO.getEndDate());
 		expenses.setEndDate(enddate);	
 	 }
-	if(null != orgLoc){
-		expenses.setOrgLocationId(orgLoc);
-	}
+	
 	if(null == expenses.getId()){
 		expenses.setCreatedBy(loginUser.getUserCode());
 	}
@@ -174,7 +200,7 @@ public void storeAddExpensesData(AddExpensesDTO addExpensesDTO, User loginUser, 
 		
 	}*/
 	expenses.setStatus(Constants.EXPENSES_STATUS);
-	Set<ExpensesEntries>  expensesEntriesList = expensesEntriesService.prepareExpensesEntriesListByJson(addExpensesDTO, request, expenses);
+	Set<ExpensesEntries>  expensesEntriesList = expensesEntriesService.prepareExpensesEntriesListByJson(expensesDTO, request, expenses);
 	expenses.setExpensesEntries(expensesEntriesList);
 	
 	expenses.setNoOfExpenses(String.valueOf(expensesEntriesList.size()));
@@ -182,13 +208,15 @@ public void storeAddExpensesData(AddExpensesDTO addExpensesDTO, User loginUser, 
 	for(ExpensesEntries expensesEntry : expensesEntriesList){
 		totalAmount = Float.sum(totalAmount, expensesEntry.getAmount());
 	}
-	expenses.setTotalAmount(totalAmount);
+	BigDecimal bd = new BigDecimal(Double.toString(totalAmount));
+	bd = bd.setScale(2,BigDecimal.ROUND_UP);
+	expenses.setTotalAmount(bd.floatValue());
 	
 	if(projMembers != null){
 		ArrayList<User> managers = new ArrayList<User>() ;
 		HashSet<ExpensesApproverHierarchy> eaHierarchyList = new HashSet<ExpensesApproverHierarchy>();
-		if (StringUtils.isNotBlank(addExpensesDTO.getExpenseId())){
-		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(Long.parseLong(addExpensesDTO.getExpenseId()));
+		if (expensesDTO.getId() != null){
+		   List<ExpensesApproverHierarchy>eaSubHierarchyList  = expensesApprovalService.getExpensesApproverHierarchyListByExpenseId(expensesDTO.getId());
 		   if(eaSubHierarchyList != null && !eaSubHierarchyList.isEmpty()){
 			   for(ExpensesApproverHierarchy eaHierarchy : eaSubHierarchyList){
 					if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue()) || status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
@@ -207,7 +235,8 @@ public void storeAddExpensesData(AddExpensesDTO addExpensesDTO, User loginUser, 
 		   }
 		}
 		else{
-			List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projMembers.getProjects().getId());
+			/*List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getApproverUsersByProjectId(projMembers.getProjects().getId());*/
+			List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(projMembers.getMasterCandidateId().getId(),projMembers.getProjects().getId());
 			 if(hierarchyList != null && !hierarchyList.isEmpty()){
 		        	
 						for(ProjectApproverHierarchy hierarchy : hierarchyList){
@@ -241,9 +270,19 @@ public void storeAddExpensesData(AddExpensesDTO addExpensesDTO, User loginUser, 
 			expenses.setProjectManagerUserList(managers);
 		}
 	 }
+	
+	expenses.setMasterCandidateId(projMembers.getMasterCandidateId());
+	expenses.setProjects(projMembers.getProjects());
+	if(null != expenses.getProjects() && expenses.getProjects().getOrgLocationsId() != null){
+		expenses.setOrgLocationId(expenses.getProjects().getOrgLocationsId());
+	}
+	else{
+		expenses.setOrgLocationId(orgLoc);
+	}
+	
 	 expenses = addExpensesDao.storeAddExpensesData(expenses);
 	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
-		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "");
+		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "",orgLoc);
 	 }
 	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
 		 sendExpensesEmailToManager(loginUser,expenses,orgLoc,currencyCode);
@@ -253,14 +292,11 @@ public void storeAddExpensesData(AddExpensesDTO addExpensesDTO, User loginUser, 
 @Override
 public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLocations orgLoc,String currencyCode) throws Exception {
 	
-	 
-	
 	 EmailMessage emailMessage = new EmailMessage();
-	
 	 if(null != expenses.getProjectManagerUserList()){
 	for(User managerUser :expenses.getProjectManagerUserList()){
-		
-		 StringBuilder sb = new StringBuilder();
+
+		StringBuilder sb = new StringBuilder();
 		 emailMessage.setFirstName(managerUser.getFirstName());
 		 if(null != managerUser.getLastName()){
 			emailMessage.setLastName(managerUser.getLastName());
@@ -312,37 +348,23 @@ public void sendExpensesEmailToManager(User loginUser, Expenses expenses, OrgLoc
 			cg = cg.setScale(2,BigDecimal.ROUND_HALF_UP );		
 			
 		 globalVarsMap.put("totalAmount",str.append(cg).append(" ").append(currencyCode).toString());
-		 
-		 
 
 			StringBuilder stringBuildforLink = new StringBuilder();
-			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-
-		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_EMAIL_TO_MANAGER,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_EMAIL_TO_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,orgLoc.getOrg(),orgLoc);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
-		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLoc.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		//calling the sendNotification method of emailScenerioUtil
-			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
-			notificationScenario.setBody(notificationBody);
-			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, orgLoc, notificationScenario);
+
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLoc.getOrg(),orgLoc,Constants.EXPENSES_EMAIL_TO_MANAGER,new ArrayList<EmailAttachment>());
+			
+		 String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,emailScenario);
+			 notificationScenario.setBody(notificationBody);
+			 StringBuilder notificationLink = new StringBuilder();
+			 String actionLink="";
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
+
+			emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, orgLoc, notificationScenario,new HashMap<String,String>());
 	}
 }
 }

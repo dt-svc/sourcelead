@@ -45,6 +45,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  *
  */
 @Controller
+@RequestMapping("/app")
 public class PayrollController {
 	
 	@Value("${sourceleadUrl}")
@@ -105,14 +106,11 @@ public class PayrollController {
 		   ModelAndView model = new ModelAndView();
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		   List<User> usersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		   List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
 		   usersList.sort((User report1, User report2)-> report1.getFirstName().compareToIgnoreCase(report2.getFirstName()));
 		   
 		   List<WageTaxSummary> wageTaxSummaryList = wageTaxSummaryService.getAllImportedUsers(orgLocations);
 		   
-//		   List<WageTaxSummary> distinctList = getUniqueWageTaxSummary(wageTaxSummaryList);
-		   
-//		   List<BisUserMapping> masterUserList = bisUserMappingService.getBisUserListByOrgLocationId(orgLocations.getId());
 		 //lambda here!
 		   wageTaxSummaryList.sort((WageTaxSummary report1, WageTaxSummary report2)-> report1.getEmployeeName().compareToIgnoreCase(report2.getEmployeeName()));
 			
@@ -153,13 +151,11 @@ public class PayrollController {
 			{
 				sessionData = new SessionMaintainanceData();
 			}
-			sessionData.setNav(Constants.PAYROLL);
+			//sessionData.setNav(Constants.PAYROLL);
 			
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			List<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
-
-//			List<WageTaxSummary> distinctList = getUniqueWageTaxSummary(wageTaxSummaryList);
 			
 			if(wageTaxSummaryList !=null){
 				model.addObject("wageTaxSummaryList", wageTaxSummaryList);
@@ -204,6 +200,54 @@ public class PayrollController {
 				return model;
 
 			}
+
+		 
+		 
+		 /**
+			 * Returns all payroll balance reports for all employess jsp
+			 * @param request
+			 * @return ModelAndView
+			 * @throws Exception 
+			 */
+			 @RequestMapping(value = "/payrollAllBalanceReport")
+				public ModelAndView allPayrollReportsJsp(HttpServletRequest request) throws Exception {
+				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+				 ModelAndView model = new ModelAndView();	
+				 if(sessionData == null)
+					{
+						sessionData = new SessionMaintainanceData();
+					}
+					//sessionData.setNav(Constants.PAYROLL);
+					request.getSession().setAttribute("sessionData",sessionData);
+					
+					model.setViewName("payroll/allPayrollReports");
+					model.addObject("sourceleadUrl", sourceleadUrl);
+					return model;
+
+				}
+			 
+			 	/**
+				 * Returns search based payroll reports
+				 * @param request
+				 * @return ModelAndView
+				 * @throws Exception 
+				 */
+				 @RequestMapping(value = "/searchBasedReport")
+					public ModelAndView searchBasedReport(HttpServletRequest request) throws Exception {
+					 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+					 ModelAndView model = new ModelAndView();	
+					 if(sessionData == null)
+						{
+							sessionData = new SessionMaintainanceData();
+						}
+						//sessionData.setNav(Constants.PAYROLL);
+						request.getSession().setAttribute("sessionData",sessionData);
+						
+						model.setViewName("payroll/searchPayrollReport");
+						model.addObject("sourceleadUrl", sourceleadUrl);
+						return model;
+
+					}
 
 
 }

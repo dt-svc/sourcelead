@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.DepartmentDTO;
 import com.bis.sourcelead.entity.Department;
 
 public interface DepartmentService {
@@ -16,7 +17,7 @@ public interface DepartmentService {
 	
 	List<Department>  getDepartmentByOrgLocationIdAndStatus(Long orgLocationId,String status) throws Exception;
 	
-	String  saveDepartment(JSONObject jsonObj) throws Exception;
+	String  saveDepartmentDTO(DepartmentDTO  departmentDTO) throws Exception;
 	
 	Department validateDepartmentnameByDepartmentIdAndDepartmentName(Long departmentId,String departmentName) throws Exception;
 	

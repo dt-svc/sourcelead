@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,8 +31,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.bis.sourcelead.enums.PaymentModes;
 
 @Entity
-@Table(name = "EXPENSES_ENTRIES", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesEntries")
+@Table(name = "EXPENSES_ENTRIES")
 public class ExpensesEntries implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -40,13 +40,13 @@ public class ExpensesEntries implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "EXPENSESID", nullable = false)
 	private Expenses expensesId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "EXPENSE_CATEGORY_ID", nullable = false)
 	private ExpensesCategory expensesCategoryId;
 
@@ -57,8 +57,8 @@ public class ExpensesEntries implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private PaymentModes paymentMode;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy = "expensesEntriesId", cascade = CascadeType.ALL)
+	
+	@OneToMany(mappedBy = "expensesEntriesId")
 	//@Fetch(FetchMode.SELECT)
 	private Set<ExpensesEntryDocuments> expensesEntryDocuments;
 
@@ -70,6 +70,9 @@ public class ExpensesEntries implements Serializable {
 
 	@Column(name = "AMOUNT")
 	private Float amount;
+	
+	@Column(name = "PAID_BY")
+	private String paidBy;
 
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
@@ -246,4 +249,13 @@ public class ExpensesEntries implements Serializable {
 		this.expenseIndList = expenseIndList;
 	}
 
+	public String getPaidBy() {
+		return paidBy;
+	}
+
+	public void setPaidBy(String paidBy) {
+		this.paidBy = paidBy;
+	}
+	
+	
 }

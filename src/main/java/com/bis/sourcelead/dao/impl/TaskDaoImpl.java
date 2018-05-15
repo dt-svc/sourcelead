@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -92,16 +93,16 @@ public class TaskDaoImpl implements TaskDao{
 		}
 		if(null != date && "" != date){
 			if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)){
-				tasksList = session.createQuery(query).setLong( "userId", userId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setLong( "OrgLocationId", OrgLocationId).setCacheable(true).list();
+				tasksList = session.createQuery(query).setLong( "userId", userId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setLong( "OrgLocationId", OrgLocationId).list();
 			}else{
-				tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).setCacheable(true).list();	
+				tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();	
 			}
 			 	
 		}else{
 			if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)){
-				tasksList = session.createQuery(query).setLong( "userId", userId).setLong( "OrgLocationId", OrgLocationId).setCacheable(true).list();	
+				tasksList = session.createQuery(query).setLong( "userId", userId).setLong( "OrgLocationId", OrgLocationId).list();	
 			}else{
-				tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).setCacheable(true).list();
+				tasksList = session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).list();
 			}
 			
 		}
@@ -116,7 +117,7 @@ public class TaskDaoImpl implements TaskDao{
 	public List<Tasks> getTaskByScheduledTime(String currentTime) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		 String query ="from Tasks tasks left join fetch tasks.ownerOrglocationId orglocation left join fetch tasks.taskOwnerId user left join fetch tasks.assignedUserId assignUser where tasks.taskDate = :currentTime";
-		List<Tasks> tasksScheduledList = session.createQuery(query).setString("currentTime",currentTime).setCacheable(true).list();
+		List<Tasks> tasksScheduledList = session.createQuery(query).setString("currentTime",currentTime).list();
 		return tasksScheduledList;
 	}
 
@@ -141,7 +142,7 @@ public class TaskDaoImpl implements TaskDao{
  		 }
 		
 	    String query ="select count(*) from Tasks tasks where  DATE(tasks.updatedDate) =:sqlCurrentDate and tasks.ownerOrglocationId =:orgLocationId  and tasks.taskStatus = 'Closed' and tasks.assignedUserId.id =:assignUserId";
-		List<Long> results = session.createQuery(query).setDate("sqlCurrentDate",sq).setLong("orgLocationId", orglocationCode.getId()).setLong("assignUserId", user.getId()).setCacheable(true).list();
+		List<Long> results = session.createQuery(query).setDate("sqlCurrentDate",sq).setLong("orgLocationId", orglocationCode.getId()).setLong("assignUserId", user.getId()).list();
 		logger.debug("..getCandidatesCount() Method Ended..");
 		return results.get(0);
 		
@@ -155,7 +156,7 @@ public class TaskDaoImpl implements TaskDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		 String query ="from Tasks tasks left join fetch tasks.ownerOrglocationId orglocation  left join fetch tasks.assignedUserId assignUser "
 		 		+ " where assignUser.id = :userId and orglocation.id = :orgLocationId";
-		List<Tasks> tasksScheduledList = session.createQuery(query).setLong("userId",userId).setLong("orgLocationId",orgLocationId).setCacheable(true).list();
+		List<Tasks> tasksScheduledList = session.createQuery(query).setLong("userId",userId).setLong("orgLocationId",orgLocationId).list();
 		return tasksScheduledList;
 	}
 
@@ -170,7 +171,7 @@ public class TaskDaoImpl implements TaskDao{
 		 String query ="from Tasks tasks left join fetch tasks.ownerOrglocationId orglocation  left join fetch tasks.assignedUserId assignUser "
 		 		+ " left join fetch tasks.onboardingId where assignUser.id = :userId and orglocation.id = :orgLocationId "
 		 		+ " and tasks.onboardingId.id = :onboardingId";
-		List<Tasks> tasksScheduledList = session.createQuery(query).setLong("userId",userId).setLong("orgLocationId",orgLocationId).setLong("onboardingId", onboardingId).setCacheable(true).list();
+		List<Tasks> tasksScheduledList = session.createQuery(query).setLong("userId",userId).setLong("orgLocationId",orgLocationId).setLong("onboardingId", onboardingId).list();
 		return tasksScheduledList;
 	}
 
@@ -185,7 +186,7 @@ public class TaskDaoImpl implements TaskDao{
 		 String query ="from Tasks tasks left join fetch tasks.ownerOrglocationId orglocation  left join fetch tasks.assignedUserId assignUser "
 		 		+ " left join fetch tasks.offboardingId where assignUser.id = :userId and orglocation.id = :orgLocationId "
 		 		+ " and tasks.offboardingId.id = :offboardingId";
-		List<Tasks> tasksScheduledList = session.createQuery(query).setLong("userId",userId).setLong("orgLocationId",orgLocationId).setLong("offboardingId", offboardingId).setCacheable(true).list();
+		List<Tasks> tasksScheduledList = session.createQuery(query).setLong("userId",userId).setLong("orgLocationId",orgLocationId).setLong("offboardingId", offboardingId).list();
 		return tasksScheduledList;
 	}
 
@@ -197,7 +198,7 @@ public class TaskDaoImpl implements TaskDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		 String query ="from Tasks tasks left join fetch tasks.offboardingId left join fetch tasks.assignedUserId where tasks.offboardingId.id = :offboardingId";
-		List<Tasks> tasksList = session.createQuery(query).setLong("offboardingId", offboardingId).setCacheable(true).list();
+		List<Tasks> tasksList = session.createQuery(query).setLong("offboardingId", offboardingId).list();
 		return tasksList;
 	}
 
@@ -209,7 +210,7 @@ public class TaskDaoImpl implements TaskDao{
 	
 		Session session = this.sessionFactory.getCurrentSession();
 		 String query ="from Tasks tasks left join fetch tasks.onboardingId left join fetch tasks.assignedUserId where tasks.onboardingId.id = :onboardingId";
-		List<Tasks> tasksList = session.createQuery(query).setLong("onboardingId", onboardingId).setCacheable(true).list();
+		List<Tasks> tasksList = session.createQuery(query).setLong("onboardingId", onboardingId).list();
 		return tasksList;
 	}
 
@@ -219,11 +220,47 @@ public class TaskDaoImpl implements TaskDao{
 	public List<Tasks> getTaskListByRepeatStatus(String taskRepeatStatus) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		 String query ="from Tasks tasks  where tasks.taskRepeat = :taskRepeatStatus and tasks.taskStatus ='Open'";
-		List<Tasks> tasksScheduledList = session.createQuery(query).setString("taskRepeatStatus",taskRepeatStatus).setCacheable(true).list();
+		List<Tasks> tasksScheduledList = session.createQuery(query).setString("taskRepeatStatus",taskRepeatStatus).list();
 		return tasksScheduledList;
 	}
 
 
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Tasks> getTaskByAssignedUserIdAndOrgLocationIdAndVendorOnboardingId(Long orgLocationId, Long userId,
+			Long vendorOnboardingId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		 String query ="from Tasks tasks left join fetch tasks.ownerOrglocationId orglocation  left join fetch tasks.assignedUserId assignUser "
+		 		+ " left join fetch tasks.onboardingId where assignUser.id = :userId and orglocation.id = :orgLocationId "
+		 		+ " and tasks.vendorOnboardingId.id = :vendorOnboardingId";
+		List<Tasks> tasksScheduledList = session.createQuery(query).setLong("userId",userId).setLong("orgLocationId",orgLocationId).setLong("vendorOnboardingId", vendorOnboardingId).list();
+		return tasksScheduledList;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long taskCountByIdAndOrgLocationIdAssignedUserId(Long OrgLocationId, Long userId, String taskStatus) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query = null;
+		if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)){
+			query = "from Tasks tasks where tasks.assignedUserId =:userId and ((tasks.ownerOrglocationId =:OrgLocationId) OR (tasks.assignedOrglocationId =:OrgLocationId)) and  tasks.taskStatus = 'Open' ";
+		}else if(Constants.TASK_STATUS_ASSIGNTASK.equalsIgnoreCase(taskStatus)){
+			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and tasks.taskOwnerId =:userId and  tasks.taskStatus = 'Open' ";
+		}else if(Constants.TASK_STATUS_CLOSEDTASK.equalsIgnoreCase(taskStatus)){
+			query = "from Tasks tasks where tasks.ownerOrglocationId = :OrgLocationId and (tasks.taskOwnerId =:userId OR tasks.assignedUserId =:userId) and  tasks.taskStatus = 'Closed' ";
+		}
+		
+		if(Constants.TASK_STATUS_MYTASK.equalsIgnoreCase(taskStatus)){
+			return (Long)session.createQuery(query).setLong( "userId", userId).setLong( "OrgLocationId", OrgLocationId).uniqueResult();
+		}else{
+			return (Long)session.createQuery(query).setLong( "OrgLocationId", OrgLocationId).setLong( "userId", userId).uniqueResult();
+		}
+	}
 
 }
 

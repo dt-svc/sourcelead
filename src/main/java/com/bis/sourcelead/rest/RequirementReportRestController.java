@@ -58,6 +58,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  * Handles reports for Requirement
  */
 @RestController
+@RequestMapping("/app")
 public class RequirementReportRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RequirementReportRestController.class);
@@ -282,6 +283,7 @@ public class RequirementReportRestController {
 			int filledclosedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "FILLEDCLOSED");
 			int cancelCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "CANCEL");
 			int unfilledclosedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "UNFILLEDCLOSED");
+			int closedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "CLOSED");
 			requirementStagesReport.setCancelRequirementsCount(cancelCount);
 			requirementStagesReport.setDraftRequirementsCount(draftCount);
 			requirementStagesReport.setFilledclosedRequirementsCount(filledclosedCount);
@@ -292,6 +294,7 @@ public class RequirementReportRestController {
 			requirementStagesReport.setUnfilledclosedRequirementsCount(unfilledclosedCount);
 			requirementStagesReport.setApprovedRequirementsCount(approvedCount);
 			requirementStagesReport.setRejectedRequirementsCount(rejectedCount);
+			requirementStagesReport.setClosedRequirementsCount(closedCount);
 			reqStageReport = commonUtil.toJSON(requirementStagesReport);
 		}
 		else {

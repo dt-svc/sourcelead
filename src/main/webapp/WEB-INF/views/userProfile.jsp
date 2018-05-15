@@ -1,7 +1,6 @@
 <jsp:include page="masterHeader.jsp" />
 <jsp:include page="masterSideNav.jsp" />
 
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,9 +12,10 @@
 <meta charset="utf-8">
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
  
- <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+ <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
     <script type="text/javascript">
 		window.onload = function () {
 			initLocationAuto('userLocation','','','','','','');
@@ -23,7 +23,7 @@
 	</script>
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 
@@ -31,6 +31,7 @@
 	$(document).ready(function() {
 		document.getElementById("profileSettings_form").reset();
 		document.getElementById("passwordSettings_form").reset();
+		getLoginUserProfile();
 	});
 </script>
 
@@ -44,11 +45,19 @@ function resetPassword(){
     $('#currentPwdDiv').find('p.jquery_form_error_message').remove();
     $('#newPwdDiv').find('p.jquery_form_error_message').remove();
     $('#confirmPwdDiv').find('p.jquery_form_error_message').remove();
-   
+    $('#profile').show();
+    $('#updatepassword').hide();
+    $('#configure').hide();
+    $('#unsubscribe').hide();
     $("#save_button").removeAttr("disabled");
+    
 }
 
 function resetProfile(){
+	$('#profile').hide();
+    $('#updatepassword').show();
+    $('#configure').hide();
+    $('#unsubscribe').hide();
 	document.getElementById("profileSettings_form").reset();
 	
 	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
@@ -63,7 +72,22 @@ function resetProfile(){
 	$('#gplusDiv').find('p.jquery_form_error_message').remove();
 	
 }
+function getConfiguredList(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').show();
+    $('#unsubscribe').hide();
+}
+
+function getUnsubscribeList(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').hide();
+    $('#unsubscribe').show();
+}
 </script>
+
+
 
 <body>
   <!-- Content Area -->
@@ -71,19 +95,19 @@ function resetProfile(){
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Profile Settings</h2>
+        <h2>Account Settings</h2>
       </div>
     
      <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Account Settings</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='/app/professionalProfile'/>">Home</a> &raquo; Account Settings</div>
      </c:if>
    
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='/professionalDashboard'/>">Home </a> &raquo; Account Settings  </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home </a> &raquo; Account Settings  </div>
       </c:if>
       
       <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home </a> &raquo; Account Settings  </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home </a> &raquo; Account Settings  </div>
       </c:if>
     
     </section>
@@ -95,8 +119,10 @@ function resetProfile(){
 		    <!-- Tab for Profile setting-area -->
 		  <div class="accountsettings-tab">
 		  <ul class="nav nav-tabs">
-			<li class="active" onclick="resetPassword();"><a data-toggle="tab" href="#profile">Profile</a></li>
-			<li onclick="resetProfile();"><a data-toggle="tab" href="#password">Password</a></li>
+			<li class="active" onclick="resetPassword();"><a data-toggle="tab" href="#profile">Details</a></li>
+			<li onclick="resetProfile();"><a data-toggle="tab" href="#updatepassword">Password</a></li>
+			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
+			<li onclick="getUnsubscribeList();"><a data-toggle="tab" href="#unsubscribe">Unsubscribe</a></li>
 		  </ul>
 
 		  <div class="tab-content panel-body">
@@ -114,7 +140,7 @@ function resetProfile(){
 				  <button type="button" class="btn btn-sm btn-primary">
 				  <i class="fa fa-upload"></i></button>
 				  <label class="btn btn-sm btn-primary">
-                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'profileSettings_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'profileImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
                   </label>
                   <c:if test="${!empty SourceLeadWeb_user.fileContentType}">
                   <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
@@ -127,8 +153,6 @@ function resetProfile(){
 				 </form:form>	
 			  
 				  <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>
-				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>
-				  <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>
 			  </div>
 			 <div id="popUp" ></div>  
 			  
@@ -139,13 +163,13 @@ function resetProfile(){
 					<div class="form-group" id="firstNameDiv">
 					<label class="col-md-4">First Name<span class="text-danger paddingLeft">*</span></label>
 					<div class="col-md-8">
-					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length2-100"  >
+					  <input type="text" name="firstName" value="${SourceLeadWeb_user.firstName}" field-name="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_Space validate_length length1-100"  >
 					</div>
 					</div>
 				   <div class="form-group" id="lastNameDiv">
 					<label class="col-md-4">Last Name</label>
 					<div class="col-md-8">
-					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphanumeric validate_Space validate_length length2-100" data-validation-optional="true" />
+					  <input type="text" name="lastName" value="${SourceLeadWeb_user.lastName}" field-name="Last Name" class="form-control" data-validation="validate_Alphanumeric validate_Space validate_length length1-100" data-validation-optional="true" />
 					</div>
 				   </div>
 				  <div class="form-group">
@@ -220,7 +244,7 @@ function resetProfile(){
 						 <hr>
 							<div class="pull-right">
 							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
-							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'" >
+							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/dashboard'" >
 							</div>
 					  </div>
 			 </div>
@@ -231,7 +255,7 @@ function resetProfile(){
 	
 	
 			</div>
-			<div id="password" class="tab-pane fade">
+			<div id="updatepassword" class="tab-pane fade">
 			  <div class="col-xs-12 col-sm-3 col-md-3 text-center well">
 				  <div class="password-icon mt mb text-center">
 				    <i class="fa fa-lock" aria-hidden="true"></i>
@@ -249,16 +273,26 @@ function resetProfile(){
 						  <input type="password" id="currentPassword" name="currentPassword" field-name="Current Password"   class="form-control"  onblur="validateCurrentPassword();" data-validation="required" />
 						</div>
 						</div>
-						<div class="form-group" id="newPwdDiv">
+						<div class="form-group " id="newPwdDiv">
 						<label class="col-md-4">New Password<span class="text-danger paddingLeft">*</span></label>
-						<div class="col-md-6">
-						  <input type="password" name="password" id="password" field-name="New Password" class="form-control" data-validation="required validate_length length6-100"   />
+						
+						<div class="col-md-6 posiRela positionRelative">
+						  <input type="password" name="password" id="password" field-name="New Password" class="form-control" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,}$" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" data-validation="required validate_length length8-100"  onkeyup="passwordValidation_pf('password','np_letter','np_capital','np_number','np_special','np_length');" />
+	             	    <div id="np_message" class="passHintNew">
+				  			<p  id="np_letter" class="invalid">At least one lowercase letter</p>
+				  			<p  id="np_capital" class="invalid">At least one uppercase letter</p>
+				  			<p  id="np_number" class="invalid">At least one number</p>
+				  			<p  id="np_special" class="invalid">At least one special character</p>
+				  			<p  id="np_length" class="invalid">Minimum 8 characters required</p>
 						</div>
+	             			<i class="fa fa-eye showPassword-usr" onclick="showPassword();"></i>
+						</div> 
 				       </div>
 					  <div class="form-group" id="confirmPwdDiv">
 						<label class="col-md-4">Confirm Password<span class="text-danger paddingLeft">*</span></label>
-						<div class="col-md-6">
+						<div class="col-md-6 positionRelative">
 						<input type="password"  value="" id="confirmPassword" class="form-control" field-name="Confirm Password" onblur="checkPass();" data-validation="required"/>
+						<i class="fa fa-eye showPassword-usr" onclick="showConfirmPassword();"></i>
 						</div>
 				      </div>
 				     </div> 
@@ -267,7 +301,7 @@ function resetProfile(){
 				 <hr class="mr">
 					<div class="pull-right mr">
 					  <input type="submit" value="Save" id="save_button" onclick="checkPass();" class="btn btn-primary mr" />
-					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/sourcelead/dashboard'">
+					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='/app/dashboard'">
 					</div>
 				  </div>
 				  </form:form>
@@ -275,7 +309,140 @@ function resetProfile(){
 				 </div>
 			</div>
 			</div>
+			
+			
+			<div id="configure" class="tab-pane fade">
+			  <div class="tab-content panel-body">
+                  <div class="clearfix mb">
+                      <div class="pull-left">
+                          <h4>Login Security</h4>
+                      </div>
+                  </div>
+			<div class="col-xs-12 col-sm-9 col-md-9">
+				<div class="form-group">
+					<label class="col-md-3">Login Security<i class="" title="Login Security"></i></label>
+					<div class="col-md-7 toggle-button">
+						<label class="switch">
+						<c:if test="${SourceLeadWeb_user.loginSecurity == 'Y'}">
+						<input type="checkbox" checked id="loginSecurityId" onclick="switchLoginSecurity();">
+						</c:if>
+						<c:if test="${SourceLeadWeb_user.loginSecurity == 'N'}">
+						<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+						</c:if>	
+						<c:if test="${empty SourceLeadWeb_user.loginSecurity}">
+						<input type="checkbox" id="loginSecurityId" onclick="switchLoginSecurity();">
+						</c:if>	
+							<div class="slider round"></div>
+						</label>
+					</div>
+					
+			</div>
+			</div>
+			</div>
 		   </div>
+		   
+		   <div id="unsubscribe" class="tab-pane fade">
+			  <div class="tab-content panel-body">
+                  <div class="clearfix mb">
+                      <div class="pull-left">
+                          <h4>Unsubscribe</h4>
+                      </div>
+                  </div>
+					<div class="col-xs-12 col-sm-9 col-md-9">
+						<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
+							<c:if test="${userTabs.tabName == 'Jobs' || userTabs.tabName == 'Projects' || userTabs.tabName == 'Contracts' || userTabs.tabName == 'Campaigns'}">
+								<div class="form-group">
+									<label class="col-md-3">${userTabs.tabName}<i class="" title="${userTabs.tabName}"></i></label>
+									<div class="col-md-7 toggle-button">
+										<label class="switch">
+											<c:set var="disabled" value=""/>
+											<c:forEach var="unsubscriptionTabId" items="${unsubscriptionTabIds}">
+										      	 <c:if test="${userTabs.id == unsubscriptionTabId}">
+										      	 	<c:set var="disabled" value="checked"/>
+										      	 </c:if>
+			   								</c:forEach>
+											<input name="chkChangeSubscription" type="checkbox" ${disabled} id="${userTabs.tabName}" value="${userTabs.id}" onclick="changeSubscription(this);">
+											<div class="slider round"></div>
+										</label>
+									</div>
+								</div>
+							</c:if>
+							
+							<c:if test="${userTabs.tabName == 'My Timesheets'}">
+								<div class="form-group">
+									<label class="col-md-3">Timesheets<i class="" title="Timesheets"></i></label>
+									<div class="col-md-7 toggle-button">
+										<label class="switch">
+											<c:set var="disabled" value=""/>
+											<c:forEach var="unsubscriptionTabId" items="${unsubscriptionTabIds}">
+										      	 <c:if test="${4 == unsubscriptionTabId}">
+										      	 	<c:set var="disabled" value="checked"/>
+										      	 </c:if>
+			   								</c:forEach>
+											<input name="chkChangeSubscription" type="checkbox" id="Timesheets" ${disabled} value="4" onclick="changeSubscription(this);">
+											<div class="slider round"></div>
+										</label>
+									</div>
+								</div>
+							</c:if>
+							
+							<c:if test="${userTabs.tabName == 'My Expenses'}">
+								<div class="form-group">
+									<label class="col-md-3">Expenses<i class="" title="Expenses"></i></label>
+									<div class="col-md-7 toggle-button">
+										<label class="switch">
+											<c:set var="disabled" value=""/>
+											<c:forEach var="unsubscriptionTabId" items="${unsubscriptionTabIds}">
+										      	 <c:if test="${23 == unsubscriptionTabId}">
+										      	 	<c:set var="disabled" value="checked"/>
+										      	 </c:if>
+			   								</c:forEach>
+											<input name="chkChangeSubscription" type="checkbox" id="Expenses" ${disabled} value="23" onclick="changeSubscription(this);">
+											<div class="slider round"></div>
+										</label>
+									</div>
+								</div>
+							</c:if>
+						</c:forEach>
+						
+						<c:if test="${SourceLeadWeb_billingTabsCount > 1}">
+								<div class="form-group">
+									<label class="col-md-3">Invoice & Billing<i class="" title="Invoice & Billing"></i></label>
+									<div class="col-md-7 toggle-button">
+										<label class="switch">
+											<c:set var="disabled" value=""/>
+											<c:forEach var="unsubscriptionTabId" items="${unsubscriptionTabIds}">
+										      	 <c:if test="${20 == unsubscriptionTabId}">
+										      	 	<c:set var="disabled" value="checked"/>
+										      	 </c:if>
+			   								</c:forEach>
+											<input name="chkChangeSubscription" type="checkbox" id="Finance" ${disabled} value="20" onclick="changeSubscription(this);">
+											<div class="slider round"></div>
+										</label>
+									</div>
+								</div>
+						</c:if>
+						
+						<div class="form-group">
+							<label class="col-md-3">Others<i class="" title="Others"></i></label>
+							<div class="col-md-7 toggle-button">
+								<label class="switch">
+									<c:set var="disabled" value=""/>
+									<c:set var="othersId" value="0"/>
+									<c:forEach var="unsubscriptionTabId" items="${unsubscriptionTabIds}">
+								      	 <c:if test="${unsubscriptionTabId == othersId}">
+								      	 	<c:set var="disabled" value="checked"/>
+								      	 </c:if>
+	   								</c:forEach>
+									<input name="chkChangeSubscription" type="checkbox" id="Other" ${disabled} value="0" onclick="changeSubscription(this);">
+									<div class="slider round"></div>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+		   </div>
+		   
 		</div>
 			<!-- Tab for Profile setting-area ends -->
 		  </div>
@@ -288,6 +455,31 @@ function resetProfile(){
   <!-- Content Area Ends--> 
 
 <jsp:include page="masterFooter.jsp" />
+
+<script>
+function showPassword(){
+	var passwordInput = document.getElementById('password');
+	if(passwordInput.type === "password"){
+		passwordInput.type = "text"
+	}else{
+		passwordInput.type = "password"
+	}
+	
+	
+}
+</script>
+
+<script>
+function showConfirmPassword(){
+	var confPasswordInput = document.getElementById('confirmPassword');
+	if(confPasswordInput.type === "password"){
+		confPasswordInput.type = "text"
+	}else{
+		confPasswordInput.type = "password"
+	}
+	
+}
+</script>
 
 
 <script type="text/javascript">
@@ -329,6 +521,44 @@ function resetProfile(){
 	 }
  </script>
 
+<script>
+function switchLoginSecurity(){
+	var ckbox = $('#loginSecurityId');
+	var security = "";
+	if (ckbox.is(':checked')) {
+		security = "Y";
+	}
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/updateUserLoginSecurity?loginSecurity="+security,        
+	       success :function(data) {
+	       if(data == "success"){
+	       		//TO-DO
+	       	} 
+	      },
+	  }); 
+}
+</script>
+
+<script>
+function changeSubscription(source){
+	var tabIds = [];
+	$('input:checkbox[name=chkChangeSubscription]:checked').each(function(){
+		tabIds.push($(this).val());
+	});
+	
+	$('#unsubscribe :input').attr('disabled', true);
+	$.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/updateUserEmailUnsubscription?tabIds="+tabIds,        
+	       success :function(data) {
+	       if(data == "Success"){
+	    	   $('#unsubscribe :input').removeAttr('disabled');
+	       	} 
+	      },
+	  });
+}
+</script>
 
 
 <script type="text/javascript">
@@ -422,7 +652,7 @@ function deleteImage(){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
@@ -510,25 +740,38 @@ var validationSettings = {
          $('body').on('submit', '#passwordSettings_form', function(e){
         	  if ($(this).validate(false, validationSettings)){
         		    e.preventDefault(); 
-            		
-            		var frm = $('#passwordSettings_form').serializeFormJSON();
-                	var con = JSON.stringify(frm);
-    			    con = con.replace(/[{}]/g, ""); 
-    			    
-    			    //It will escape all the special characters
-    		        var jsonData = encodeURIComponent(con);
-            		
+        		    var formData = getFormData("passwordSettings_form");
             		var sourceleadUrl ='${sourceleadUrl}';
             		
-             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             		
                     $.ajax({
                 	      type: "POST",
-                	      contentType : 'application/json; charset=utf-8',
-                	      dataType : 'json',
-                      	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
-                        	success: function(result) {
-    			        	 if(result == 'home'){
+                      	  url: sourceleadUrl+"/passwordSettings?${_csrf.parameterName}=${_csrf.token}",
+                      	  data: formData,
+                        	success: function(data) {
+    			        	 
+                        		if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+             		        		showError(data.responseMessage);
+                  	    		    $("#loading").removeAttr('style');
+                  	    		}
+                            		else if (data.response === "AWKWARD") {
+                            			location.href = "/errorPage";
+                  	    		}
+                            		else if(data.response === "SUCCESS"){
+                            			$("#loading").removeAttr('style');
+                            			location.replace(sourceleadUrl+"/dashboard"); 
+            			        	    }
+                            		else if (data.indexOf('Sign In') !== -1) {
+                            			location.replace(sourceleadUrl);
+                  				} else {
+                  					showError("Operation failed, please try again");
+                  				    $("#loading").removeAttr('style');
+                  				}
+                        		
+                        		
+                        		
+                        /* 		if(result == 'success'){
     			        		location.replace(sourceleadUrl+"/dashboard");  
     			        	}else if(result == 'Invalid Password'){
     			        		 $('#passwordDiv').find('span.jquery_form_error_message').remove();
@@ -538,7 +781,7 @@ var validationSettings = {
                  				 document.getElementById("currentPassword").setAttribute('pass-exist-errorMsg', ' Invalid Password'); 
                  				 $("input#currentPassword").removeAttr("style");
                  				 $("#loading").removeAttr("style");
-    			        	} 
+    			        	}  */
     			        },  
                     });
                 
@@ -561,21 +804,39 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
    };  
          $('body').on('submit', '#profileSettings_form', function(e){
+        	 var userId = '${SourceLeadWeb_user.id}';
+        	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+        	 
         	  if ($('#profileSettings_form').validate(false, validationSettings)){
         		    e.preventDefault(); 
             		
              		var formData = getFormData('profileSettings_form');
              		
-             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+             		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
             		
                     $.ajax({
                 	      type: "POST",
                 	      data: formData,
-                      	  url: sourceleadUrl+"/saveUserProfile?${_csrf.parameterName}=${_csrf.token}",
-                        	success: function(result) {
-    			        	 if(result == 'home'){
-    			        		location.replace(sourceleadUrl+"/userProfile");  
-    			        	}
+                      	  url: sourceleadUrl+"/saveUserProfile?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId,
+                        	success: function(data) {
+                        		if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+             		        		showError(data.responseMessage);
+                  	    		    $("#loading").removeAttr('style');
+                  	    		}
+                            		else if (data.response === "AWKWARD") {
+                            			location.href = "/errorPage";
+                  	    		}
+                            		else if(data.response === "SUCCESS"){
+                            			$("#loading").removeAttr('style');
+                            			location.replace(sourceleadUrl+"/userProfile");  
+            			        	    }
+                            		else if (data.indexOf('Sign In') !== -1) {
+                            			location.replace(sourceleadUrl);
+                  				} else {
+                  					showError("Operation failed, please try again");
+                  				    $("#loading").removeAttr('style');
+                  				}
+                        	
     			        },  
                     });
                 
@@ -617,6 +878,74 @@ function refreshLocation(){
 	$("#userLocation").val('');
 }
 </script>
+
+<script>
+function getLoginUserProfile(){
+		$.ajax({
+		   	type: "GET",
+		   	url: sourceleadUrl+"/getLoginUserProfile?"+tokenParamName+"="+tokenValue,	    	   
+		    success: function(data) {
+		    }
+	   });
+}
+</script>
+
+<script>
+$(document).ready(function(){
+	$(".posiRela input").focus(function(){
+		$(".passHintNew").show();
+	});
+	$(".posiRela input").blur(function(){
+		$(".passHintNew").hide();
+	});	
+});
+</script>
+
+<script>
+function passwordValidation_pf(idValue,np_letter,np_capital,np_number,np_special,np_length){
+	var myInput = $("#"+idValue).val();
+	 
+	if(myInput.match(/[a-z]/g)){
+		$("#"+np_letter).removeClass("invalid");
+		$("#"+np_letter).addClass("actTe");
+	}else{
+		$("#"+np_letter).removeClass("actTe");
+		$("#"+np_letter).addClass("invalid");
+	} 
+	if(myInput.match(/[A-Z]/g)){
+		$("#"+np_capital).removeClass("invalid");
+		$("#"+np_capital).addClass("actTe");
+	}else{
+		$("#"+np_capital).removeClass("actTe");
+		$("#"+np_capital).addClass("invalid");
+	}
+	if(myInput.match(/[0-9]/g)){
+		$("#"+np_number).removeClass("invalid");
+		$("#"+np_number).addClass("actTe");
+	}else{
+		$("#"+np_number).removeClass("actTe");
+		$("#"+np_number).addClass("invalid");
+	}
+	if(myInput.match(/[$&+,:;=?@#|'<>.^*()%!-]/g)){
+		$("#"+np_special).removeClass("invalid");
+		$("#"+np_special).addClass("actTe");
+	}else{
+		$("#"+np_special).removeClass("actTe");
+		$("#"+np_special).addClass("invalid");
+	}
+	if(myInput.length >= 8){
+		$("#"+np_length).removeClass("invalid");
+		$("#"+np_length).addClass("actTe");
+	}else{
+		$("#"+np_length).removeClass("actTe");
+		$("#"+np_length).addClass("invalid");
+	}
+	
+}
+
+
+</script>
+
 
 
 </html>

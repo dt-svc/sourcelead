@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
 .chosen-container {
@@ -12,12 +13,54 @@
 </style>
 
 <script>
+		$(document).ready(function() {
+			 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			  var sectionId = '${section.id}';
+			  getCustomDependentField(sectionId);
+			 </c:forEach>
+		});
+</script> 
+
+<script>
  window.onload = function() {
+// 	 getContractTemplates();
 	 changeSaveButton();
 	 var relationId = '${orgRelationId}';
+	 var spocUserCode = '${spocUserCode}';
 	 var type = '${contract.contractType}';
-	 if(relationId != null && relationId != ''){
-		 getVendorContacts();
+	 var contractType = '${contractType}';
+
+	 if(contractType != '' && contractType != 'undefined' && contractType != null)
+	 $("#contractType").val(contractType);
+
+	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){
+	 	 $("#billingDiv").hide();
+	 	 $('#billingRateType').removeAttr('data-validation');
+	 		$('#billingRateType').attr('data-validation-optional',"true");
+	 		
+	 		$('#flatReward').removeAttr('data-validation');
+	 		$('#flatReward').attr('data-validation-optional',"true");
+	 		
+	 		$('#billingRatePer').removeAttr('data-validation');
+	 		$('#billingRatePer').attr('data-validation-optional',"true");
+	 		
+	 		$('#invoiceFrequency').removeAttr('data-validation');
+	 		$('#invoiceFrequency').attr('data-validation-optional',"true");
+	 		
+	 		$('#paymentFrequency').removeAttr('data-validation');
+	 		$('#paymentFrequency').attr('data-validation-optional',"true");
+	 		
+	 		$('#candiFlatReward').removeAttr('data-validation');
+	 		$('#candiFlatReward').attr('data-validation-optional',"true");
+
+	 }
+	 
+	 if(contractType != null && contractType != 'undefined' && contractType !=''){
+// 	 	 getContractTemplates();
+	 	 contractTypeLabels()
+	 }
+	 if(relationId != null && relationId != '' && spocUserCode != null && spocUserCode != ''){
+		 getVendorContacts(spocUserCode);
 	 }
 };
 </script>
@@ -28,11 +71,12 @@
       <div class="pull-left">
         <h2>New Contract</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/contractListbyStatus'/>">Contracts</a> &raquo; New Contract</div>
+     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/contractListbyStatus'/>">Contracts</a> &raquo; New Contract</div>
     </section>
     <div class="content-area content-new clearfix">
-     <div id="loading"></div>
+     <div id="contractLoading"></div>
      <form:form id="newcontract_form" name="newcontract_form" method="post">
+     <input type="hidden" id="actionId" value="${actionId}">
       <div class="clearfix form-horizontal">
        
         <div class="row newContrWrap">
@@ -45,7 +89,16 @@
               <div class="col-md-8">
               	<c:choose>
 				    <c:when test="${!empty contract.contractType}">
-				    	<input type="text" readonly class="form-control" id="contractType" name="contractType" value="${contract.contractType == 'Vendor NDA' ? 'NDA' : contract.contractType == 'Vendor NSA' ? 'NSA' : contract.contractType}" data-validation="required" field-name="Contract Type">
+				    <select class="chosen-select form-control" id="contractType" name="contractType" onchange="contractTypeLabels();" data-validation="required" field-name="Contract Type">
+		                    <option value=''>Contract Type</option>
+		                    <option ${contract.contractType == 'Client MSA' ? 'selected' : ''}>Client MSA</option>
+		                    <option ${contract.contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
+		                    <option ${contract.contractType == 'Client SOW' ? 'selected' : ''}>Client SOW</option>
+		                    <option ${contract.contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
+		                    <option ${contract.contractType == 'Vendor NDA' ? 'selected' : ''}>NDA</option>
+		                    <option ${contract.contractType == 'Vendor NSA' ? 'selected' : ''}>NSA</option>
+		                    <option ${contract.contractType == 'Full time offer' ? 'selected' : ''}>Full time offer</option>
+		                 </select>
 				    </c:when>
 				    <c:otherwise>
 				    <c:if test = "${!empty contractType}">
@@ -54,7 +107,7 @@
 		                    <option>Client MSA</option>
 		                    <option ${contractType == 'Vendor MSA' ? 'selected' : ''}>Vendor MSA</option>
 		                    <option>Client SOW</option>
-		                    <option>Vendor SOW</option>
+		                    <option ${contractType == 'Vendor SOW' ? 'selected' : ''}>Vendor SOW</option>
 		                    <option>NDA</option>
 		                    <option>NSA</option>
 		                    <option>Full time offer</option>
@@ -94,9 +147,8 @@
                        
               <div class="form-group">
               <label class="col-md-4">Template<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8">
-                <div class="form-icon">
-                <span class="icon-inside">
+              <div class="col-md-8 chooRadius">
+                <div class="input-group col-md-8 pull-left errorInptgroup">
 				    	<select class="chosen-select form-control" id="template" name="template" value="${element.templateName}" data-validation="required" field-name="Template" onchange="previewTemplateEye()">
 					        <option value=''>Select Template</option>
 						    <c:forEach var="element" items="${contractsTemplateList}" >
@@ -107,18 +159,21 @@
 							         <option value="${element.id}" id="${element.templateUUID}">${element.templateName}</option>
 							    </c:if>
 							</c:forEach>
-						</select>                
-                  </span>
+						</select>   
+					 <span class="input-group-addon cursorPointer bg-blue" onclick="getContractTemplates();"><i class="fa fa-refresh "></i></span>
+					 </div>
+					  <sec:authorize access="hasAnyRole('ROLE_ADD_CONTRACT_TEMPLATE')"> 
+					 <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addContractTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>           
+                   </sec:authorize>
                   <c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
-				    	<span title="View Template" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
+				    	<span title="View Template" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default pull-right minHeBtn formic1" onclick="previewTemplatePDF()"></i> </span>
 				    </c:when>
 				    <c:otherwise>
-				        <span title="View Template" id="tempEye" style="display:none"> <i class="fa fa-eye btn btn-default formic1" onclick="previewTemplatePDF()"></i> </span>
+				        <span title="View Template" id="tempEye" style="display:block"> <i class="fa fa-eye btn btn-default pull-right minHeBtn formic1" onclick="previewTemplatePDF()"></i> </span>
 				    </c:otherwise>
 				 </c:choose>
-                  
-                  </div>              
+                              
 <%--               	<c:choose>
 				    <c:when test="${fn:length(contractsTemplateList) gt 0}">
 				    	<select class="chosen-select form-control" id="template" name="template" value="${element.templateName}" data-validation="required" field-name="Template">
@@ -219,7 +274,10 @@
 					  </div>
 					  <div class="col-lg-6">
 						<div id="endDateDiv">
+						<div class="input-group errorInptgroup">
 						  <input type="text" class="form-control calendar" value="${contract.endDateStr}" id="endDate" name="endDate" placeholder="End date" readonly="readonly">
+						   <span class="input-group-addon" onClick="clearEndDt();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						  </div>
 						</div>
 					  </div>
 					</div>
@@ -228,7 +286,8 @@
           
          <div class="form-group" id="vendorDiv" style="display: ${!empty contractType || contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8" id="errorVendor">
+              <div class="col-md-8 chooRadius" id="errorVendor">
+                <div class="input-group col-md-10 pull-left errorInptgroup">
                   <select class="chosen-select form-control" id="orgRelationId" name="orgRelationId" onchange="getVendorContacts();" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' ? 'required' : ''}" field-name="Vendor Name">
                    <option value=''>Select Vendor</option>
 	                   <c:forEach var="orgrelations" items="${orgRelationsList}">
@@ -240,12 +299,18 @@
 	                   	</c:if>
 	                   </c:forEach>
                   </select>
+                  <span class="input-group-addon cursorPointer bg-blue" onclick="refreshVendorList();addCustomEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
               </div>
-          </div>                      
+              <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+                 </sec:authorize>
+          </div> 
+           </div>                     
                       
             <div class="form-group" id="vendorContactDiv"  style="display: ${!empty contractType || contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
               <label class="col-md-4">Vendor Contact<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8" id="errorvendorContact">
+              <div class="col-md-8 chooRadius" id="errorvendorContact">
+               <div class="input-group col-md-10 pull-left errorInptgroup">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="vendorContact" name="vendorContact" data-validation="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'required' : ''}" field-name="Vendor Contact">
@@ -265,25 +330,37 @@
 					        <option value=''>Select Vendor Contact</option></select>
 					    </c:otherwise>
 					 </c:choose>
+					 <span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContacts();"><i class="fa fa-refresh "></i></span>
               </div>
+             <span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			</sec:authorize>
+		 </span>
             </div>
-            
+             </div>
             
              <div class="form-group" id="clientDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8" id="errorClient">
+              <div class="col-md-8 chooRadius" id="errorClient">
+               <div class="input-group col-md-10 pull-left errorInptgroup">
                   <select class="chosen-select form-control" id="clientOrgRelationId" name="clientOrgRelationId" onchange="getClientContacts();" data-validation="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Name">
                     <option value=''>Select Client</option>
                    <c:forEach var="orgrelations" items="${clientList}">
                          <option value="${orgrelations.id}" ${orgrelations.id  == contract.orgRelations.id ? 'selected' : ''}>${orgrelations.orgName}</option>
                   </c:forEach>
                   </select>
+                   <span class="input-group-addon cursorPointer bg-blue" onclick="refreshClientList();addCustomEmptyClientContact()"><i class="fa fa-refresh "></i></span>
               </div>
+               <sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT')"> 
+               <span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/client" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>
+             </sec:authorize>
           </div>                      
-                      
+              </div>               
             <div class="form-group" id="clientContactDiv" style="display: ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Client Contact<span class="text-danger">&nbsp;*</span></label>
-              <div class="col-md-8" id="errorClientContact">
+              <div class="col-md-8 chooRadius" id="errorClientContact">
+               <div class="input-group col-md-10 pull-left errorInptgroup">
               		<c:choose>
 	              		<c:when test="${fn:length(orgSpocList) gt 0}">
 		              		<select class="chosen-select form-control" id="clientContact" name="clientContact" data-validation=" ${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW' ? 'required' : ''}" field-name="Client Contact">
@@ -302,9 +379,16 @@
 					        <option value=''>Select Client Contact</option></select>
 					    </c:otherwise>
 					 </c:choose>
+					  <span class="input-group-addon cursorPointer bg-blue" onclick="getClientContacts();"><i class="fa fa-refresh "></i></span>
               </div>
+              
+              <span class="col-md-2 noPad clearfix" onclick="selectedClient();">
+			<sec:authorize access="hasAnyRole('ROLE_CREATE_CLIENT_CONTACT')"> 
+			<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			</sec:authorize>
+		 </span>
             </div>
-        
+               </div>
             
           <div class="form-group">
               <label class="col-md-4">Approver</label>
@@ -363,7 +447,7 @@
             <div class="form-group" id="descriptionDiv"  style="display: ${contract.contractType == 'Full time offer' ? 'none' : 'block'};">
               <label class="col-md-4">Description</label>
               <div class="col-md-8">
-					<textarea class="form-control" rows="3" id="description" name="description" data-validation-optional="true" data-validation="validate_length length1-250">${contract.description}</textarea>
+					<textarea class="form-control" rows="3" id="mainDescription" name="description" data-validation-optional="true" data-validation="validate_length length1-250">${contract.description}</textarea>
               </div>
             </div>    
             
@@ -387,6 +471,14 @@
                 <input type="text" class="form-control" value="${contract.stateJurisdiction}" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction" data-validation="validate_length length0-250">
               </div>
             </div>         
+            
+             <c:if test="${!empty sourceleadSectionList}">
+	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               <c:if test="${sectionOrder.index == 0}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+	   		</c:if>
             
         </div>
       </div>
@@ -413,7 +505,7 @@
             <div class="form-group" id="totalHoursEstimatedDiv" style="display: ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' ? 'block' : 'none'};">
               <label class="col-md-4">Total Hours Estimated</label>
               	<div class="col-md-8">
-					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" data-validation-optional="true" data-validation="validate_int validate_length length1-3" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
+					  	<input type="text" class="form-control" id="totalHoursEstimated" name="totalHoursEstimated" value="${contract.totalHours}" data-validation-optional="true" data-validation="validate_int" placeholder="Enter Total Estimated Hours" field-name="Total Estimated Hours">
               	</div>
             </div>
            
@@ -560,6 +652,15 @@
                         </div>
                       </div>
                     </div>
+                    
+                <c:if test="${!empty sourceleadSectionList}">
+	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               <c:if test="${sectionOrder.index == 1}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+	   			</c:if>
+                    
             </div>
         </div>
         <!-- billing end -->
@@ -632,6 +733,22 @@
     </form:form>
   </section>
 
+
+
+<script>
+function getCustomDependentField(sectionId){
+	var contractId = '${contract.id}';
+	
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&contractId="+contractId+"&requestFrom=contract",
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
 
 <script type="text/javascript">
 			var config = {
@@ -823,7 +940,7 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 </script> -->
 
 <script>
-function getVendorContacts(){
+function getVendorContacts(spocUserCode){
 	$('#errorVendor').find('p.jquery_form_error_message').remove();
 	var orgRelationId = $("#orgRelationId").val();
 	if("" != orgRelationId){
@@ -834,13 +951,19 @@ function getVendorContacts(){
 	       success :function(data) {
 	    	var json = JSON.parse(data);
 	       	var output = "";
-	       	output = output + "<option value=''>Select Vendor Contact</option>";
+	       	if(spocUserCode == null && spocUserCode != ''){
+	       		output = output + "<option value=''>Select Vendor Contact</option>";
+	       	}
 	       	for (var i=0; i<json.length; i++)
 				{
 		        var opt = json[i];
 		            // need to use in edit
 	       			//output = output + "<option value='" +opt.vendorUser.id+ "' selected>"+opt.spocName+"</option>";
-	       			output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+		        if(spocUserCode != null && opt.spocUserCode == spocUserCode){
+       				output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+       			}else{
+       				output = output + "<option value='" +opt.tempOwnerId+ "'>"+opt.spocName+" ("+opt.ownerUserName+")</option>";
+       			}
 				}
 	       	    $("#vendorContact").empty();
 		        $("#vendorContact").append(output);
@@ -1101,7 +1224,7 @@ function getContractTemplates(){
 
 <script>
 function contractTypeLabels(){
-	$("#tempEye").hide();
+	$("#tempEye").show();
 	var contractType = $("#contractType").val();
 /* 	if(contractType == ""){
 		$('#orgRelationId').removeAttr('data-validation');
@@ -1142,6 +1265,24 @@ function contractTypeLabels(){
 		$('#paymentFrequency').removeAttr('data-validation');
 		$('#paymentFrequency').attr('data-validation-optional',"true");
 		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
+
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
 		//commented by Pavan Jampana for change request #5851(taiga Id)
 		/* $('#flatReward').removeAttr('data-validation-optional');
 		$('#flatReward').attr('data-validation',"required validate_int validate_length length1-8");
@@ -1166,6 +1307,8 @@ function contractTypeLabels(){
 		
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 		hideCommonSOWFields();
 	}
@@ -1223,6 +1366,20 @@ function contractTypeLabels(){
 		$('#candiRatePer').removeAttr('data-validation');
 		$('#candiRatePer').attr('data-validation-optional',"true");
 		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
 		hideCommonSOWFields();
 	}
 	if(contractType == "Client SOW"){
@@ -1262,9 +1419,29 @@ function contractTypeLabels(){
 		$('#paymentFrequency').removeAttr('data-validation-optional');
 		$('#paymentFrequency').attr('data-validation',"required");
 		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val('');    
+		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
+		
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#clientContact").val('');
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val('');
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
 		hideCommonSOWFields();
 		showCommonSOWFields();
 		getRequirements("Client SOW");
+		
 	}
 	if(contractType == "Vendor SOW"){
 		$('#candiFlatReward').removeAttr('data-validation');
@@ -1301,6 +1478,28 @@ function contractTypeLabels(){
 		
 		$('#paymentFrequency').removeAttr('data-validation-optional');
 		$('#paymentFrequency').attr('data-validation',"required");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		$("#hoursPerWeek").val('');
+		$("#paymentFrequency").val(''); 
+		$("#taxPercentageRewardValue").val('');
+		$("#taxFlatRewardValue").val('');
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");   
+		
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
+		
+		var contractType = '${contractType}';
+		if(contractType == null && contractType == '' && contractType == 'undefined'){
+			$("#orgRelationId").val('');
+			$("#vendorContact").val('');
+		}
 		
 		hideCommonSOWFields();
 		showCommonSOWFields();
@@ -1390,6 +1589,25 @@ function contractTypeLabels(){
 		//$('#overtimeRateType').removeAttr('data-validation');
 		//$('#overtimeRateType').attr('data-validation-optional',"true");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		
 	}
 	if(contractType == "Full time offer"){
@@ -1464,6 +1682,26 @@ function contractTypeLabels(){
 		
 		$('#overtimeRate').val("");
 		$('#overtimeRateDiv').find('p.jquery_form_error_message').remove();
+		
+		$("#vendorContact").val(''); 
+		$('#vendorContact').trigger("chosen:updated");
+		
+		$("#clientContact").val(''); 
+		$('#clientContact').trigger("chosen:updated");
+		
+		$("#orgRelationId").val(''); 
+		$('#orgRelationId').trigger("chosen:updated");
+		
+		$("#clientOrgRelationId").val(''); 
+		$('#clientOrgRelationId').trigger("chosen:updated");
+		
+		$("#jurisdiction").val(''); 
+		$("#mainDescription").val(''); 
+		
+		$("#approver").val('');
+		$('#approver').trigger("chosen:updated");
+		
+		$("#addTaxTbl").find("tr:not(:first)").empty();
 		getRequirements("Vendor SOW");
 	}
 	getContractTemplates();
@@ -1528,7 +1766,7 @@ function hideCommonSOWFields(){
 		if ($('#newcontract_form').validate(false, validationSettings)) {
 			  var formData = getFormData("newcontract_form");
 			var sourceleadUrl = '${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#contractLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             $.post( sourceleadUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType, formData, function(data) {
                        if(data == true){
                     	   location.replace(sourceleadUrl+"/contractListbyStatus");
@@ -1603,7 +1841,7 @@ function hideCommonSOWFields(){
 	    $("#billingRatePer").val("").trigger('change');
 		$.ajax({
 	        type : "GET",
-	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?requirementId="+requirementId+"&sowType="+sowType,    
+	        url: sourceleadUrl+"/getSubmissionsForSOWByRequirementId?&requirementId="+requirementId+"&sowType="+sowType,    
 	         success :function(data) {
 	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
 	            	  var json = JSON.parse(data);
@@ -1618,6 +1856,7 @@ function hideCommonSOWFields(){
 	                  $("#submissionOffersList").append(result);
 	                  $("#submissionOffersList").chosen();
 	              	  $("#submissionOffersList").trigger('chosen:update');
+	              	  refreshClientList(json[0].orgRelationId);
 	              }else{
 	            	  var result = "";
 	            	  result = result + '<option value="">Select Applicant</option>';
@@ -1670,7 +1909,7 @@ function hideCommonSOWFields(){
 	        type : "GET",
 	        url: sourceleadUrl+"/getSubmissionOfferForSOWByRequirementSubmissionId?reqSubId="+reqSubId+"&locationId="+locationId,    
 	         success :function(data) {
-		              if(data != null && data != 'undefined' && data != "" && data != '[]'){
+		              if(data != null && data != 'undefined' && data != "" && data != '[]' && data != '{}'){
 		            	  var json = JSON.parse(data);
 		            	  document.getElementById("offerRateDiv").style.display="block";
 		            	  if(sowType!="Full time offer"){
@@ -1722,17 +1961,16 @@ function hideCommonSOWFields(){
 
 	}
 	
-	/* function getVendor(){
-		var sourceleadUrl ='${sourceleadUrl}';
+	function getVendor(){
 		var reqSubId = $("#submissionOffersList").val();
 		var sowType = $("#contractType").val();
 		if(sowType == "Vendor SOW"){
 			$.ajax({
 		        type : "GET",
 		        url: sourceleadUrl+"/getVendorForSOWByRequirementSubmissionId?reqSubId="+reqSubId,    
-		         success :function(data) {
-	              if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	            	 var json = JSON.parse(data);
+		         success :function(json) {
+	              if(json != null && json != 'undefined' && json != "" && json != '[]'){
+// 	            	 var json = JSON.parse(data);
 		             <c:forEach var="vendor" items="${orgRelationsList}">
 		    	          if('${vendor.initiatorType}' == "Client" && '${vendor.locationId.id}' == '${orgLocation.id}'){
 		    	        	  if(json.vendorLocationCode == '${vendor.responderLocationId.locationCode}'){
@@ -1746,11 +1984,12 @@ function hideCommonSOWFields(){
 		    	        	  }
 		    	          }
 		              </c:forEach>
+		              getVendorContacts(json.createdBy);
 	              }
 		       },
 		    });
 		}
-	} */
+	} 
 </script>
 
 
@@ -1950,14 +2189,13 @@ function flush(){
 	document.getElementById("submissionOffersList").value="";
 	document.getElementById("startDate").value="";
 	document.getElementById("endDate").value="";
-	
 	document.getElementById("orgRelationId").value="";
 	
 	document.getElementById("vendorContact").value="";
 	document.getElementById("clientOrgRelationId").value="";
 	document.getElementById("clientContact").value="";
 	document.getElementById("approver").value="";
-	document.getElementById("description").value="";
+	document.getElementById("mainDescription").value="";
 	
 	//document.getElementById("hoursPerWeek").value="";
 	document.getElementById("overTimeHours").value="";
@@ -1996,16 +2234,19 @@ function validateContractTitle(){
 		        success: function(data) {
 		        	if(data == 'true'){
 		        		 // $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
-		        		  $('#titleDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 						  $("input#contractTitle").after("<p class='jquery_form_error_message'>"+contractTitle+" is Already Existed</span>");
-						 // $("#save_template").attr("disabled", "disabled");
+						 $("#save_template").attr("disabled", "disabled");
+						 $("#draft_template").attr("disabled", "disabled");
 						 // $("#draft_template").attr("disabled", "disabled");
-		        	}
+		
+				}
 		        	else{
-		        		 $('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
+		        		$('input#contractTitle').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#titleDiv').find('p.jquery_form_error_message').remove(); 
 		        		 $("#save_template" ).addClass('button').val('Send');
                          $("#save_template").removeAttr("disabled");
+                         $("#draft_template").removeAttr("disabled");
                         //$("#draft_template").removeAttr("disabled");
 		        	}
 		        	}
@@ -2052,7 +2293,106 @@ $('#startDateDiv').find('p.jquery_form_error_message').remove();
 
 }
 </script>
+<script>
+function refreshVendorList(){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var selectedOrgId = '${contract.orgRelations.id}';
+		 $.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/refreshVendorList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Vendor</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(opt.id == selectedOrgId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
+		        		}
+				}
+	        	$("#orgRelationId").empty();
+		        $("#orgRelationId").append(output);
+		        $('#orgRelationId').trigger("chosen:updated");
+		        getVendorContacts();
+	        }
+		 });
+} 
 
+</script>
+<script>
+function refreshClientList(autoPopClientId){
+		 var sourceleadUrl ='${sourceleadUrl}';
+		 var selectedOrgId = '${contract.orgRelations.id}';
+		 if(selectedOrgId == null || selectedOrgId == '' || selectedOrgId == 'undefined'){
+			 selectedOrgId = autoPopClientId;
+		 }
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshClientList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Client</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		if(opt.id == selectedOrgId){
+		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
+		        		}
+				}
+	        	$("#clientOrgRelationId").empty();
+		        $("#clientOrgRelationId").append(output);
+		        $('#clientOrgRelationId').trigger("chosen:updated");
+		        getClientContacts();
+	        }
+		 });
+		 
+	
+	
+}
+
+		 
+
+</script>
+<script>
+function addCustomEmptyVendorContact(){
+	$("#vendorContact").empty();
+	 $('#vendorContact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorContact').trigger("chosen:updated");
+}
+
+/* function clearStartDt(){
+	$("#startDate").val("");
+}; */
+function clearEndDt(){
+	$("#endDate").val("");
+	};
+
+</script>
+
+<script>
+function addCustomEmptyClientContact(){
+	$("#clientContact").empty();
+	 $('#clientContact').append('<option value="">--select Client contact--</option>');
+    $('#clientContact').trigger("chosen:updated");
+}
+
+</script>
+<script>
+	 function selectedVendor(){
+		 var vid =  $("#orgRelationId").val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+	 </script>
+<script>
+	 function selectedClient(){
+		 var cid =  $("#clientOrgRelationId").val();
+		 window.open(sourceleadUrl+"/addClientContact?cid="+cid,'_blank');
+	 }
+	 </script>
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

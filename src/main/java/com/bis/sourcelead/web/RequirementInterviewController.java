@@ -69,7 +69,7 @@ public class RequirementInterviewController {
 	CommonUtil commonUtil;
 	
 	
-	@RequestMapping(value = "/acceptOrRejectInterview")
+	@RequestMapping(value = "/app/ws/acceptOrRejectInterview")
 	 @ResponseBody  ModelAndView acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {
@@ -81,8 +81,8 @@ public class RequirementInterviewController {
 		    	 requirementInterview.setInterviewStatus(null);	 
 		     }else{
 		    	 requirementInterview.setInterviewStatus(interviewStatus);
-		     }
-			 
+		     } 
+			  
 			 requirementInterviewService.saveRequirementInterview(requirementInterview);
 			 DateFormat DATE_TIME = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			 //bellow dates are convert to sql dates to current date
@@ -99,7 +99,9 @@ public class RequirementInterviewController {
 		    	 
 		    	 Date convertedDateStart = null;
 		    	 Date convertedDateEnd = null;
-		    	 Timezone timezone = timeZoneService.getTimezone(requirementInterview.getSubmissionId().getOrgLocations().getTimezone().getId());
+		    	 Date dateDateFormatEnd = null;
+		    	 Date dateDateFormatTimeEnd = null;
+		    	 Timezone timezone = timeZoneService.getTimezone(requirementInterview.getTimezone().getId());
 					if(requirementInterview.getStartTime() != null){
 				    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
 						String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());  
@@ -132,36 +134,47 @@ public class RequirementInterviewController {
 				String stringDateFormatTimeStart =  DATE_TIME.format(convertedDateStartSqlFormatTime);
 				Date dateDateFormatTimeStart =  DATE_TIME.parse(stringDateFormatTimeStart);
 				
+				
+				if(convertedDateEnd != null) {
 				java.sql.Date convertedDateEndSQlFormat = new java.sql.Date(convertedDateEnd.getTime());
 				String stringDateFormatEnd =  Constants.DMY.format(convertedDateEndSQlFormat);
-				Date dateDateFormatEnd =  Constants.DMY.parse(stringDateFormatEnd);
+				dateDateFormatEnd =  Constants.DMY.parse(stringDateFormatEnd);
 				
 				
 				java.sql.Timestamp convertedDateEndSqlFormatTime = new java.sql.Timestamp(convertedDateEnd.getTime());
 				String stringDateFormatTimeEnd =  DATE_TIME.format(convertedDateEndSqlFormatTime);
-				Date dateDateFormatTimeEnd =  DATE_TIME.parse(stringDateFormatTimeEnd);
+				dateDateFormatTimeEnd =  DATE_TIME.parse(stringDateFormatTimeEnd);
+				}
 				
-			     if(dateDateFormat != null){
-			    	 if((dateDateFormatCurrentDate.equals(dateDateFormat) && dateDateFormatTimeStart.after(dateDateFormatCurTime))|| dateDateFormatTimeStart.after(dateDateFormatCurTime)){
-			    		 requirementInterview.setStartTimeStr("interviewStartTime");
-			      }
-			     }
-			     if(dateDateFormatEnd != null){
-			    	 if(dateDateFormatCurrentDate.equals(dateDateFormatEnd) &&  dateDateFormatCurTime.before(dateDateFormatTimeEnd)|| dateDateFormatTimeEnd.after(dateDateFormatCurTime)){
-			    		 requirementInterview.setEndTimeStr("interviewEndTime");
-			    	 }
-	    	     }
-			     
+				if(requirementInterview.getStartTime() != null && requirementInterview.getEndTime() == null){
+					  if(dateDateFormat != null){
+					    if(dateDateFormatCurrentDate.equals(dateDateFormat) || dateDateFormatCurrentDate.before(dateDateFormat)){
+					    		 requirementInterview.setStartTimeStr("interviewStartTime");
+					      }
+					  }
+				}
+				 if(requirementInterview.getEndTime() != null){
+				     if(dateDateFormat != null){
+				    	 if((dateDateFormatCurrentDate.equals(dateDateFormat) && dateDateFormatTimeStart.after(dateDateFormatCurTime))|| dateDateFormatTimeStart.after(dateDateFormatCurTime)){
+				    		 requirementInterview.setStartTimeStr("interviewStartTime");
+				      }
+				     }
+				     if(dateDateFormatEnd != null){
+				    	 if(dateDateFormatCurrentDate.equals(dateDateFormatEnd) &&  dateDateFormatCurTime.before(dateDateFormatTimeEnd)|| dateDateFormatTimeEnd.after(dateDateFormatCurTime)){
+				    		 requirementInterview.setEndTimeStr("interviewEndTime");
+				    	 }
+		    	     }
+				 }
 			     //stroe  requirementSubmissionHistoryService 
 			     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			     RequirementSubmission  requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementInterview.getSubmissionId().getId());
 			     RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 				 requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.INTERVIEW.toString());
-				 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.ATTENDING.toString()) && dateDateFormatTimeEnd.after(dateDateFormatCurTime)){
+				 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.ATTENDING.toString()) && ((dateDateFormatTimeEnd != null && dateDateFormatTimeEnd.after(dateDateFormatCurTime))||(dateDateFormatTimeStart != null && dateDateFormatTimeStart.after(dateDateFormatCurTime)))){
 					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_ACCEPT);
 					 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
 				 }
-				 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.NOT_ATTENDING.toString()) && dateDateFormatTimeEnd.after(dateDateFormatCurTime)){
+				 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.NOT_ATTENDING.toString()) && ((dateDateFormatTimeEnd != null && dateDateFormatTimeEnd.after(dateDateFormatCurTime))||(dateDateFormatTimeStart != null && dateDateFormatTimeStart.after(dateDateFormatCurTime)))){
 					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_REJECT);
 					 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
 				 }
@@ -193,7 +206,7 @@ public class RequirementInterviewController {
 	
 	
 	
-	@RequestMapping(value = "/proposeNewTimePublicpage")
+	@RequestMapping(value = "/app/ws/proposeNewTimePublicpage")
 	 @ResponseBody  ModelAndView proposeNewTimePublicpage(@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {
 		     ModelAndView model = new ModelAndView();
@@ -226,7 +239,7 @@ public class RequirementInterviewController {
 				Date dateTimeCurrentDate =  DATE_TIME.parse(currentDateFormatTimeStart);
 			     
 			     
-				Timezone timezone = timeZoneService.getTimezone(requirementInterview.getSubmissionId().getOrgLocations().getTimezone().getId());
+				Timezone timezone = timeZoneService.getTimezone(requirementInterview.getTimezone().getId());
 				if(requirementInterview.getStartTime() != null){
 			    	DateFormat DF_DMY = new SimpleDateFormat("hh:mma");
 					String currentTimeStr = Constants.TZ_DF.format(requirementInterview.getStartTime());  
@@ -267,26 +280,36 @@ public class RequirementInterviewController {
 		    	String startDateFormatTimeStart =  DATE_TIME.format(startDateSql);
 				Date dateTimeFormatstartDate =  DATE_TIME.parse(startDateFormatTimeStart);
 				
+				if(requirementInterview.getStartTime() != null && requirementInterview.getEndTime() == null) {
+					if(convertedDateStart != null){
+				    	 if(dateFormatCurrentDate.equals(dateFormatstartDate) || dateFormatCurrentDate.before(dateFormatstartDate)){
+				    		 requirementInterview.setStartTimeStr("interviewStartTime");
+				      }
+				     }
+				}
 				
-				if(convertedDateStart != null){
-			    	 if((dateFormatCurrentDate.equals(dateFormatstartDate) && dateTimeFormatstartDate.after(dateTimeCurrentDate)) || dateTimeFormatstartDate.after(dateTimeCurrentDate)){
-			    		 requirementInterview.setStartTimeStr("interviewStartTime");
-			      }
-			     }
-			     if(convertedDateEnd != null){
-						java.sql.Date endDatesqlformat = new java.sql.Date(convertedDateEnd.getTime());
-				    	String stringDateFormatendDate =  Constants.DMY.format(endDatesqlformat);
-						Date dateFormatendDate =  Constants.DMY.parse(stringDateFormatendDate);
-						 
-						/*date-time format*/
-				    	java.sql.Timestamp endDateSql = new java.sql.Timestamp(convertedDateEnd.getTime());
-				    	String endDateFormatTimeStart =  DATE_TIME.format(endDateSql);
-						Date dateTimeFormatendDate =  DATE_TIME.parse(endDateFormatTimeStart);
-						
-			    	 if(dateFormatCurrentDate.equals(dateFormatendDate) && dateTimeCurrentDate.before(dateTimeFormatendDate) || dateTimeCurrentDate.before(dateTimeFormatendDate)){
-			    		 requirementInterview.setEndTimeStr("interviewEndTime");
-			    	 }
-	    	     }
+				if(requirementInterview.getEndTime() != null) {
+					if(convertedDateStart != null){
+				    	 if((dateFormatCurrentDate.equals(dateFormatstartDate) && dateTimeFormatstartDate.after(dateTimeCurrentDate)) || dateTimeFormatstartDate.after(dateTimeCurrentDate)){
+				    		 requirementInterview.setStartTimeStr("interviewStartTime");
+				      }
+				     }
+				     if(convertedDateEnd != null){
+							java.sql.Date endDatesqlformat = new java.sql.Date(convertedDateEnd.getTime());
+					    	String stringDateFormatendDate =  Constants.DMY.format(endDatesqlformat);
+							Date dateFormatendDate =  Constants.DMY.parse(stringDateFormatendDate);
+							 
+							/*date-time format*/
+					    	java.sql.Timestamp endDateSql = new java.sql.Timestamp(convertedDateEnd.getTime());
+					    	String endDateFormatTimeStart =  DATE_TIME.format(endDateSql);
+							Date dateTimeFormatendDate =  DATE_TIME.parse(endDateFormatTimeStart);
+							
+				    	 if(dateFormatCurrentDate.equals(dateFormatendDate) && dateTimeCurrentDate.before(dateTimeFormatendDate) || dateTimeCurrentDate.before(dateTimeFormatendDate)){
+				    		 requirementInterview.setEndTimeStr("interviewEndTime");
+				    	 }
+		    	     }
+				}
+				
 				
 				
 				
