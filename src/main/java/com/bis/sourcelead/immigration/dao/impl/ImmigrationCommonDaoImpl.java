@@ -914,8 +914,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	public String updateUscisTypeDropDown(Immigration immigration) {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			if(immigration != null)
-			session.update(immigration);
+			if (immigration != null)
+				session.update(immigration);
 			logger.debug("updateUscisTypeDropDown updated Successfully");
 		} catch (Exception exception) {
 			StringBuilder message = new StringBuilder(
@@ -1167,16 +1167,19 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	public void saveImmigrationTasksAndTasks(List<ImmigrationTasks> immigrationTasksList, List<Tasks> tasksList) {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			for (ImmigrationTasks immigrationTasks : immigrationTasksList) {
-				session.saveOrUpdate(immigrationTasks);
+			if (!immigrationTasksList.isEmpty()) {
+				for (ImmigrationTasks immigrationTasks : immigrationTasksList) {
+					session.saveOrUpdate(immigrationTasks);
+				}
 			}
-			for (Tasks tasks : tasksList) {
-				session.saveOrUpdate(tasks);
+			if (!tasksList.isEmpty()) {
+				for (Tasks tasks : tasksList) {
+					session.saveOrUpdate(tasks);
+				}
 			}
 		} catch (Exception exception) {
 			logger.error("Exception caught while saving immigration information " + exception.getMessage());
 			exception.printStackTrace();
 		}
-
 	}
 }
