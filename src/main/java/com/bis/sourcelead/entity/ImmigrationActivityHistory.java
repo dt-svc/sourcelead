@@ -52,6 +52,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "ACTION_BY")
    	private String actionBy;
 	
+	@Column(name = "STATUS")
+	private Integer status;
+	
 	@Column(name = "ACTION_DESC")
 	@Type(type="text")
    	private String actionDesc;
@@ -158,6 +161,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	

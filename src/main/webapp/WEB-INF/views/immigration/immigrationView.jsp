@@ -61,7 +61,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
   			<div class="col-md-2 immHeadactions clearfix">
   			
   			
-  			<select id="uscisStatusId" onchange="changeUscisStatusForImmigration($(this).val());" <c:if test = "${myImmigrationPage =='Y'}">disabled</c:if> class="form-control selectdisabled selstyles-new">
+  			<select id="uscisStatusId" onchange="changeUscisStatusForImmigration($(this).val(),${immigration.currUscisStatusId});" <c:if test = "${myImmigrationPage =='Y'}">disabled</c:if> class="form-control selectdisabled selstyles-new">
   				<c:forEach var="item" items="${uscisStatusList}">
   					<option ${immigration.currUscisStatusId == item.id ? 'selected' : '' } value="${item.id}">${item.name}</option>
   				</c:forEach>
@@ -338,10 +338,10 @@ $("#packageZipfile").click(function() {
 	}
 
 	
-	function changeUscisStatusForImmigration(uscisStatusId){
+	function changeUscisStatusForImmigration(uscisStatusId,uscisOldId){
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/immigration/updateUscisTypeDropDown?templateId="+immigrationId+"&uscisId="+uscisStatusId, 
+		        url: sourceleadUrl+"/immigration/updateUscisTypeDropDown?templateId="+immigrationId+"&uscisId="+uscisStatusId+"&uscisOldId="+uscisOldId, 
 		        success: function(data) {
 		        	if(data == "success"){
 		        		location.reload();

@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.entity.Candidate;
@@ -51,6 +53,7 @@ public class ImmigrationActivityCommonUtil {
 		immigrationActivityHistory.setUserId(canUser);
 		immigrationActivityHistory.setCreatedBy(user);
 		immigrationActivityHistory.setUpdatedBy(user);
+		immigrationActivityHistory.setStatus(ImmigrationConstants.STATUS_ACTIVE);
 		immigrationActivityHistory.setCreatedDate(new Date());
 		immigrationActivityHistory.setUpdatedDate(new Date());
 		immigrationActivityDao.storeImmigrationActivities(immigrationActivityHistory);
