@@ -103,12 +103,19 @@ public class VendorServiceImpl implements VendorService{
 			 orgRelations.setPaymentTerm(clientDTO.getPaymentTerms());
 		 }
 		 
-		 if((clientDTO.getIsAccountingFirm() != null && clientDTO.getIsLawFirm() != null) &&(clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y") &&  clientDTO.getIsLawFirm().equalsIgnoreCase("Y"))){
-			   orgRelations.setIsLawFirm(Constants.YES);
-			   orgRelations.setIsAccountingFirm(Constants.YES);
-			}else{
-				orgRelations.setIsAccountingFirm(Constants.NO);
+		 if (StringUtils.isNotBlank(clientDTO.getIsLawFirm())) {
+				if (clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
+					orgRelations.setIsLawFirm(Constants.YES);
+				}
+			} else {
 				orgRelations.setIsLawFirm(Constants.NO);
+			}
+			if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm())) {
+				if (clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
+					orgRelations.setIsAccountingFirm(Constants.YES);
+				}
+			} else {
+				orgRelations.setIsAccountingFirm(Constants.NO);
 			}
 		 
 		 orgRelationsDao.addOrgRelations(orgRelations);

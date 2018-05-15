@@ -433,7 +433,7 @@
      result = result + '<th>Email</th>';
      result = result + '<th>Phone</th>';
      result = result + '<th>On Date</th>';
-     if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y' && '${SourceLeadWeb_orgLocations.isAccountingFirm}' == 'Y'){
+     if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
      result = result + '<th>Company</th>';
      }else{
      result = result + '<th>Attorney</th>'; 

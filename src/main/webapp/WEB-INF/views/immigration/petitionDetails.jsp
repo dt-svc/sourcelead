@@ -855,7 +855,7 @@
 
 var candidateByOrgObject = {};
 function getCandidatesByOrgLocation(candidateId){
-	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y' && '${SourceLeadWeb_orgLocations.isAccountingFirm}' == 'Y'){
+	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
 	var locationId = responderLocationId;
 	}else{
 	var locationId ='${SourceLeadWeb_orgLocations.id}';
@@ -990,7 +990,7 @@ $("#experienceValue").change(function () {
 	}
 	
 	function jobTitleDropDown(jobId){
-		if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y' && '${SourceLeadWeb_orgLocations.isAccountingFirm}' == 'Y'){
+		if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
 			var locationId = responderLocationId;
 			}else{
 			var locationId ='${SourceLeadWeb_orgLocations.id}';
@@ -1042,7 +1042,7 @@ $("#experienceValue").change(function () {
  function getAllRelationssByOrgLocation(attorneyId){
 	 console.log(" before function calling ---->");
 	var type = null ;
-	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y' && '${SourceLeadWeb_orgLocations.isAccountingFirm}' == 'Y'){
+	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
 		type = "Client";
 	}else{
 		type = "Vendor";
@@ -1081,7 +1081,7 @@ $("#experienceValue").change(function () {
 			var orgRelationID = $('#attorneyId').val();
 	 	}
 	 	
-	 	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y' && '${SourceLeadWeb_orgLocations.isAccountingFirm}' == 'Y'){
+	 	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
 			type = "Client";
 		}else{
 			type = "Vendor";
