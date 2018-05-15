@@ -128,7 +128,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Autowired
 	EmailScenarioService emailScenarioService;
-
+	
 	@Override
 	public List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations) {
 		
@@ -185,7 +185,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	private void copyImmigrationTemplateTaskToImmigrationTaskAndTask(Immigration immigrationObj, User user,
-			OrgLocations orgLocations) {
+			OrgLocations orgLocations) throws NumberFormatException, Exception {
 		List<ImmigrationTasks> immigrationTasksList = new ArrayList<>();
 		List<Tasks> tasksList = new ArrayList<>();
 		List<ImmigrationTemplateTasks> templateTasksList = immigrationTemplateDao.getImmigratonTemplateTasksByTemplateId(immigrationObj.getImmigrationTemplateId().getId());
@@ -224,8 +224,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					tasks.setOwnerOrglocationId(orgLocations);
 					tasks.setAssignedOrglocationId(orgLocations);
 					tasks.setTaskOwnerId(user);
-					User AssignedUserObj = new User();
-					user.setId(Long.parseLong(users));
+					User AssignedUserObj = userDao.getUserById(Long.parseLong(users));
 					tasks.setAssignedUserId(AssignedUserObj);
 					tasks.setPriority(templateTasks.getPriority());
 					tasks.setTaskDate(templateTasks.getDueAfterDate());
