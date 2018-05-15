@@ -900,11 +900,11 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 			 if(requirementSubmission.getRequirement().getJobId() !=null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobId())){
 				 StringBuilder reqsb=new StringBuilder();
 				 
-				 globalVarsMap.put("requirementTitle",reqsb.append(requirementSubmission.getRequirement().getJobId()).append("-").append(requirementSubmission.getRequirement().getJobTitle()).toString());
+				 globalVarsMap.put("RequirementTitle",reqsb.append(requirementSubmission.getRequirement().getJobId()).append("-").append(requirementSubmission.getRequirement().getJobTitle()).toString());
 			 }
 			 
 			 else{
-				 globalVarsMap.put("requirementTitle", requirementSubmission.getRequirement().getJobTitle()); 
+				 globalVarsMap.put("RequirementTitle", requirementSubmission.getRequirement().getJobTitle()); 
 				 
 			 }
 			 
@@ -1002,14 +1002,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 		 }
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 globalVarsMap.put("interviewerFirstName", emailMessage.getFirstName());
-			 globalVarsMap.put("interviewerLastName",emailMessage.getLastName());
-			 globalVarsMap.put("loginUser", emailMessage.getFromName());
-			 globalVarsMap.put("interviewDate", dateOfInterviewValue);
-			 globalVarsMap.put("interviewType",interviewTypeValue);
-			 globalVarsMap.put("applicantName",candidateName);
+			 globalVarsMap.put("InterviewerFirstName", emailMessage.getFirstName());
+			 globalVarsMap.put("InterviewerLastName",emailMessage.getLastName());
+			 globalVarsMap.put("LoginUser", emailMessage.getFromName());
+			 globalVarsMap.put("InterviewDate", dateOfInterviewValue);
+			 globalVarsMap.put("InterviewType",interviewTypeValue);
+			 globalVarsMap.put("ApplicantName",candidateName);
 			 globalVarsMap.put("Details",requirementInterview.getLocation());
-			 globalVarsMap.put("requirementTitle", requirementSubmission.getRequirement().getJobTitle());
+			 globalVarsMap.put("RequirementTitle", requirementSubmission.getRequirement().getJobTitle());
 			 
 		 
 		 //calling the sendEmail method of emailScenerioUtil
