@@ -736,10 +736,8 @@ function getViewInvoice(){
 					
 					result = result +'	                            <tr>                                                                   ';
 					result = result +'	                                <td>                                                               ';
-					result = result +'	                                   <div class="select-field tblminwidth-75">                       ';
-					result = result +'	                                       <div class="tblminwidth-50">                                ';
+					result = result +'	                                   <div class="tbldata-dotdot" title="'+taxName+'">                       ';
 					result = result +'	                                        '+taxName+'                                               ';
-					result = result +'	                                    </div>                                                         ';
 					result = result +'	                                   </div>                                                          ';
 					result = result +'	                                </td>                                                              ';
 					result = result +'	                                <td>                                                               ';
