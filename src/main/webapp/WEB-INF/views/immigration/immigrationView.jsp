@@ -79,6 +79,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
               <li><a href="#familiesTab" class="${familyOnLoadCount==null?'disabledLink':''}"><i id ="familyfilled" class="fa fa-check-circle-o"></i>Family</a></li>
               <li><a href="#formsTab"><i id="allFormsfilled" class="fa fa-check-circle-o"></i>Forms</a></li>
               <li><a href="#docsTab"><i id="allDocsfilled" class="fa fa-check-circle-o"></i>Documents</a></li>
+              <li><a href="#tasksTab"><i id="tasksInfoTab" class="fa fa-check-circle-o"></i>Tasks</a></li>
               <li><a href="#notesTab">Notes</a></li>
               <li><a href="#activitiesTab" id= "#activitiesId">Activities</a></li>
               <div class="clearfix"></div>
@@ -134,6 +135,10 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 	  
 	   <div id="formsTab" class="immigraTabs_inn">
 		<jsp:include page="formDetailsTab.jsp" />
+	  </div>
+	  
+	  <div id="tasksTab" class="immigraTabs_inn">
+		<jsp:include page="taskDetailsTab.jsp" />
 	  </div>
 
 	</section>
@@ -213,8 +218,11 @@ $(document).ready(function() {
         	console.log("immigrationId --->"+immigrationId)
         }else if(tab=='#activitiesTab'){
         	getImmigrationActivies();
+        }else if(tab=='#tasksTab'){
+        	
+        	getImmigrationTasks(immigrationId,"${myImmigrationPage}","");
         }
-		
+        
        
         $(tab).fadeIn();
     });
