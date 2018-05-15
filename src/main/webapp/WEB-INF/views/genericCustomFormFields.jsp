@@ -113,9 +113,10 @@
 		                  <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		                    <c:forEach var="optionValue" items="${customForm.optionData}">
 		     	 				<span class="mr">
-		     	 				<input type="checkbox" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" value="${optionValue.option}" ${fn:contains(dataMap.value[1],optionValue.option) ? 'checked="checked"':''} ${customForm.isRequired == 1 ? 'data-validation="required"':''} placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}">${optionValue.option}
+		     	 				<input type="checkbox"  onclick="validateCheck('${customForm.id}')" class='customCheck${customForm.id}' value="${optionValue.option}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" value="${optionValue.option}" ${fn:contains(dataMap.value[1],optionValue.option) ? 'checked="checked"':''}>${optionValue.option}
 		     	 			</span>
 		     	 			</c:forEach>
+		     	 			<input type="hidden" value="${not empty dataMap.value[1] ? 'Y':''}" id="customCheckErrorMsg${customForm.id}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} field-name="${customForm.labelName}" />
 		                    </div>
 		                </div>
 		             </div>
@@ -133,9 +134,10 @@
 		                  <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		                    <c:forEach var="optionValue" items="${customForm.optionData}">
 			     	 		<div class="clearfix">
-			     	 			<input type="checkbox" value="${optionValue.option}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" ${customForm.isRequired == 1 ? 'data-validation="required"':''} field-name="${customForm.labelName}">${optionValue.option}<br>
+			     	 			<input type="checkbox" class='customCheck${customForm.id}' value="${optionValue.option}" onclick="validateCheck('${customForm.id}')" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" >${optionValue.option}<br>
 			     	 		</div>
 			     	 		</c:forEach>
+			     	 		<input type="hidden" id="customCheckErrorMsg${customForm.id}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} field-name="${customForm.labelName}" />
 		                </div>
 		             </div>
 	   	  </c:if>
@@ -153,7 +155,9 @@
 				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 				    		<input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
 				     	 	<c:forEach var="optionValue" items="${customForm.optionData}">
-			     	 			<input type="radio" value="${optionValue.option}" ${customForm.isRequired == 1 ? 'data-validation="required"':''} name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData"   ${fn:contains(dataMap.value[1],optionValue.option) ? 'checked="checked"':''} field-name="${customForm.labelName}">&nbsp;&nbsp;${optionValue.option}
+				     	 		<c:if test="${not empty optionValue.option}">
+			     	 				<input type="radio" value="${optionValue.option}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData"   ${fn:contains(dataMap.value[1],optionValue.option) ? 'checked="checked"':''} field-name="${customForm.labelName}">&nbsp;&nbsp;${optionValue.option}
+			     	 			</c:if>
 			     	 		</c:forEach>
 			     	 		</div>
 				    	</div>
@@ -372,6 +376,20 @@ $(function(){
  <script>
 function clearDate(customId){
 	$('#date'+customDateId).val('');
+}
+
+function validateCheck(custId){
+	var isChecked = "false";
+	$('.customCheck'+custId).each( function () {
+	    if($(this).is(':checked'))
+	    	isChecked = "true";
+	});
+	if(isChecked == "true"){
+		$('#customCheckErrorMsg'+custId).val('Y');
+    }
+    else {
+    	$('#customCheckErrorMsg'+custId).val('');
+    }
 }
 
 </script> 
