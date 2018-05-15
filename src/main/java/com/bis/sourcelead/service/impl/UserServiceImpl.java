@@ -51,6 +51,7 @@ import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -72,6 +73,7 @@ import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -84,6 +86,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserCustomFieldDataService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -190,6 +193,12 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserCustomFieldDataService userCustomFieldDataService;
 	
+	@Autowired
+	StatesService statesService;
+	
+	@Autowired
+	CountriesService countriesService;
+	
 	@Override
 	public User findByUserName(String username) {
 		logger.debug("In UserService class...");
@@ -272,6 +281,24 @@ public class UserServiceImpl implements UserService {
 	 		user.setUserType("Employee");
 	    } 
 		
+	    if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
+	    	user.setWorkLocation(orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation())));
+	    }
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
+	    	user.setResidenceAddress(addUserDTO.getResidenceAddress());
+	    	user.setResidenceCountry(addUserDTO.getResidenceCountry());
+	    	user.setResidenceState(addUserDTO.getResidenceState());
+	    	user.setResidenceCity(addUserDTO.getResidenceCity());
+	    	user.setResidenceLatitude(addUserDTO.getResidenceLatitude());
+	    	user.setResidenceLongitude(addUserDTO.getResidenceLongitude());
+	    	user.setResidenceZipCode(addUserDTO.getResidenceZipCode());
+	    	user.setResidenceStreetAddress(addUserDTO.getResidenceAddress());
+	    	
+	    	Countries country = countriesService.getCountriesByCountryName(addUserDTO.getResidenceCountry());
+	    	String stateCode = statesService.getStateCodeByCountryCodeAndState(country.getCode2(),addUserDTO.getResidenceState());
+	    	user.setResidenceStateCode(stateCode);
+	    }
 	    
        //For saving the User Role 
 	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());

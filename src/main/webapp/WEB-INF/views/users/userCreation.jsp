@@ -16,6 +16,7 @@
 </script>  -->
 <script type="text/javascript">
 		window.onload = function () {
+			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','','');
 			getDesignationType();
 			getDepartmentsList();
 			maskme();
@@ -156,14 +157,26 @@
                <div class="col-md-5">
                   <label class="clearfix">Work Location<span class="text-danger">&nbsp;*</span></label>
                   <div class="clearfix">
-                    <input type="text" class="form-control" id="workLocation" name="workLocation" field-name="Work Location" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                   	<select class="form-control chosen-select" id="workLocation" name="workLocation" field-name="Work Location" data-validation="required" >
+                        <option value="">--Select Location--</option>
+                        <c:forEach var="option" items="${locationList}">
+							<option value="${option.id}">${option.orgLocationAddress}</option>
+						</c:forEach>
+              		</select>
                   </div>
                 </div>
                  
                  <div class="col-md-5">
                   <label class="clearfix">Residence Location<span class="text-danger">&nbsp;*</span></label>
-                  <div class="clearfix">
-                    <input type="text" class="form-control" id="residenceLocation" name="Residence Location" field-name="Residence Location" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                  <div class="clearfix positionRelative">
+                    <input type="text" class="form-control" id="residenceLocation" name="residenceAddress" field-name="Residence Location" data-validation="required">
+                     <input type="hidden" id="residenceCountry" name="residenceCountry" />
+                     <input type="hidden" id="residenceState" name="residenceState" />
+                     <input type="hidden" id="residenceCity" name="residenceCity" />
+                     <input type="hidden" id="residenceZipCode" name="residenceZipCode" />
+                     <input type="hidden" id="residenceLatitude" name="residenceLatitude" />
+                     <input type="hidden" id="residenceLongitude" name="residenceLongitude" />
+                  <i class="fa fa-refresh btn btn-primary refresh-icon bg-blue" title="Refresh" onClick="refreshGoogleApiLocation('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','');"></i>
                   </div>
                 </div>
                   
