@@ -45,6 +45,7 @@ import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadNotesDTO;
+import com.bis.sourcelead.dto.TaskDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -65,6 +66,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadNotes;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
@@ -78,6 +80,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadNotesService;
+import com.bis.sourcelead.service.TaskService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -143,6 +146,9 @@ public class ImmigrationRestController {
 
 	@Autowired
 	private SourceleadNotesService sourceleadNotesService;
+	
+	@Autowired
+	private TaskService taskService;
 
 	// ====================immigration view startviewImmigration if you don't
 	// required comment below code start here==============================
@@ -1419,6 +1425,8 @@ public class ImmigrationRestController {
 		model.addObject("candidatesEducationList", candidatesEducationList);
 		return model;
 	}
+	
+	
 
 	@RequestMapping(value = { "/getCandidateEmployerList" })
 	public ModelAndView getCandidateEmployerList(@RequestParam(value = "candidateId", required = true) Long candidateId,
@@ -1952,6 +1960,21 @@ public class ImmigrationRestController {
 		fileNameParameters.put("lastName", immigration.getCandidate().getLastName());
 		return FileUploadUtil.getImmigrationFormZipFiles(staticPath, orgId, orgLocationId, immigrationId,
 				immigrationCandidateForms, fileNameParameters);
+	}
+	
+	@RequestMapping(value = { "/getImmigrationTasksList" })
+	public ModelAndView getImmigrationTasksList(
+			@RequestParam(value = "immigrationId", required = false) String immigrationId,
+			@RequestParam(value = "taskStatus", required = false) String taskStatus, 
+			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
+	
+			throws Exception {
+		ModelAndView model = new ModelAndView();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		model.setViewName("/immigration/taskDetailsTab");
+		List<TaskDTO> tasksList = taskService.getTasksListByImmigrationIdAndCandidateId(immigrationId,user,taskStatus,searchVal);
+		model.addObject("tasksList", tasksList);
+		return model;
 	}
 
 }

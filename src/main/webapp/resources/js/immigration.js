@@ -1023,6 +1023,17 @@ function getCandidateEducationList(candidateId){
     });
 }
 
+function getImmigrationTasks(immigrationId, status, searchVal){
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getImmigrationTasksList?immigrationId="+immigrationId+"&taskStatus="+status+"&searchVal="+searchVal,
+        type: "GET",
+        success: function (result) {
+            $("#tasksTab").html(result);
+            $("#tasksSearchVal").val(searchVal);
+        }
+    });
+}
+
 function getCandidateEmployerList(candidateId){
 	console.log(" inside getCandidateEmployerList"+candidateId);
 	var searchEmployerVal = $("#employersDataSearch").val();

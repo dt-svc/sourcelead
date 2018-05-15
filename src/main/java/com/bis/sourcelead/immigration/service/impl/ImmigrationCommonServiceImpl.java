@@ -168,6 +168,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		List<CandidateResidence> residenceList = new ArrayList<CandidateResidence>(); // add residences to immigration candidate tables
 		residenceList = savePetitionResidenceList(immigrationDTO,candidate, user, orgLocations);
 		
+		
+		
+		
 		 immigrationObj = immigrationCommonDao.savePetitionDetails(immigration,candidate,candidateIdendities,candidateResume,lcaSummaryLst, residenceList);
 		 //Copy IMMIGRATION_TEMPLATE_DOCUMENTS data to  IMMIGRATION_CANDIDATE_DOCS table based on templateId 
 		 copyImmigrationConfiguredDocsToCandidate(immigrationObj,user,orgLocations);
@@ -175,7 +178,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		 //Copy IMMIGRATION_TEMPLATE_FORMS data to  IMMIGRATION_CANDIDATE_FORMS table based on templateId 
 		 copyImmigrationConfiguredFormsToCandidate(immigrationObj,user,orgLocations);
 		 
-		 copyImmigrationTemplateTaskToImmigrationTaskAndTask(immigrationObj,user,orgLocations);
+		 if(StringUtils.isEmpty(immigrationDTO.getImmigrationId()) ) {
+				copyImmigrationTemplateTaskToImmigrationTaskAndTask(immigrationObj,user,orgLocations);
+		 }
 		 
 		}catch(Exception e) {
 			logger.error("Exception caugth in savePetitionDetails service"+ e.getMessage());
@@ -194,9 +199,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			BeanUtils.copyProperties(templateTasks, immigrationTasks);
 			immigrationTasks.setImmigration(immigrationObj);
 			immigrationTasksList.add(immigrationTasks);
-			Tasks tasks = new Tasks();
 			String[] assignedUsers = null;
 			if(templateTasks.getAssignToCandidate() != null && templateTasks.getAssignToCandidate().equalsIgnoreCase("Y")) {
+				Tasks tasks = new Tasks();
 				tasks.setOwnerOrglocationId(orgLocations);
 				tasks.setImmigrationId(immigrationObj);
 				tasks.setAssignedOrglocationId(orgLocations);
@@ -217,9 +222,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				tasks.setCreatedBy(user.getUserUUID());
 				tasks.setUpdatedDate(currentDate);
 				tasks.setUpdatedBy(user.getUserUUID());
-			}else if(StringUtils.isNotBlank(templateTasks.getAssignToUsers())) {
+				tasksList.add(tasks);
+			}else if(!StringUtils.isBlank(templateTasks.getAssignToUsers())) {
 				assignedUsers = templateTasks.getAssignToUsers().split(",");
 				for(String users : assignedUsers) {
+					Tasks tasks = new Tasks();
 					tasks.setImmigrationId(immigrationObj);
 					tasks.setOwnerOrglocationId(orgLocations);
 					tasks.setAssignedOrglocationId(orgLocations);
@@ -241,9 +248,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					tasks.setCreatedBy(user.getUserUUID());
 					tasks.setUpdatedDate(currentDate);
 					tasks.setUpdatedBy(user.getUserUUID());
+					tasksList.add(tasks);
 				}
 			}
-			tasksList.add(tasks);
+			
 		}
 		immigrationCommonDao.saveImmigrationTasksAndTasks(immigrationTasksList,tasksList);
 	}

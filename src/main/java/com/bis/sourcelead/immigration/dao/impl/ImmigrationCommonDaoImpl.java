@@ -1166,12 +1166,13 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		try {
 			if (!immigrationTasksList.isEmpty()) {
 				for (ImmigrationTasks immigrationTasks : immigrationTasksList) {
-					session.saveOrUpdate(immigrationTasks);
+					session.save(immigrationTasks);
 				}
 			}
 			if (!tasksList.isEmpty()) {
 				for (Tasks tasks : tasksList) {
-					session.saveOrUpdate(tasks);
+					session.save(tasks);
+					System.out.println(tasks.getId());
 				}
 			}
 		} catch (Exception exception) {
