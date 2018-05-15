@@ -1035,12 +1035,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigrationCandidateDocuments.setCreatedDate(currentDate);
 			immigrationCandidateDocuments.setCreatedBy(user);
 		}
-		Candidate candidate =  new Candidate();
-		candidate.setId(Long.parseLong(immigrationTemplateDocDTO.getImmigrationcandidateId()));
+		Candidate candidate =  candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationTemplateDocDTO.getImmigrationcandidateId()));
 		ImmigrationTemplate immigrationTemplate = new ImmigrationTemplate ();
 		immigrationTemplate.setId(Long.parseLong(immigrationTemplateDocDTO.getImmigrationTempplateId()));
-		Immigration immigration = new Immigration();
-		immigration.setId(Long.parseLong(immigrationTemplateDocDTO.getImmigrationId()));
+		Immigration immigration = immigrationCommonDao.getImmigrationById(Long.parseLong(immigrationTemplateDocDTO.getImmigrationId()));
 		immigrationCandidateDocuments.setCandidateId(candidate);
 		immigrationCandidateDocuments.setImmigrationTemplateId(immigrationTemplate);
 		immigrationCandidateDocuments.setImmigrationId(immigration);
@@ -1101,12 +1099,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigrationCandidateForms.setCreatedDate(currentDate);
 
 		}
-		Candidate candidate =  new Candidate();
-		candidate.setId(Long.parseLong(immigrationTemplateFormDTO.getImmigrationcandidateId()));
+		Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationTemplateFormDTO.getImmigrationcandidateId()));
 		ImmigrationTemplate immigrationTemplate = new ImmigrationTemplate ();
 		immigrationTemplate.setId(Long.parseLong(immigrationTemplateFormDTO.getImmigrationTempplateId()));
-		Immigration immigration = new Immigration();
-		immigration.setId(Long.parseLong(immigrationTemplateFormDTO.getImmigrationId()));
+		Immigration immigration = immigrationCommonDao.getImmigrationById(Long.parseLong(immigrationTemplateFormDTO.getImmigrationId()));
 		immigrationCandidateForms.setCandidate(candidate);
 		immigrationCandidateForms.setImmigrationTempId(immigrationTemplate);
 		immigrationCandidateForms.setImmigration(immigration);
