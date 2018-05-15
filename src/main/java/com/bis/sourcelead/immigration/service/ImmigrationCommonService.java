@@ -37,11 +37,11 @@ public interface ImmigrationCommonService {
 
 	ImmigrationDTO getImmigrationDetails(String immigrationId, OrgLocations orgLocations);
 	
-	String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO, OrgLocations orgLocations, User user) throws Exception;
+	String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO, OrgLocations orgLocations, User user,Long immigrationId) throws Exception;
 
 	CandidatePassportVisa savePassportDetails(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, User user, OrgLocations orgLocations,Long immigrationId)throws Exception;
 	
-	CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId) throws Exception;
+	CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId,Long immigrationId) throws Exception;
 
 	List<CandidateFamilyDetails> getCandidateFamilyDetails(Long candidateId, String searchVal);
 
