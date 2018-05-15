@@ -33,7 +33,7 @@ public class PayrollConfigurationController {
 	{
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
-		model.setViewName("payrollConfiguration");
+		model.setViewName("indPayroll/payrollConfiguration");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}

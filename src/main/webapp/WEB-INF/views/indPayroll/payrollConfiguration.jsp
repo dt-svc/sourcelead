@@ -1,12 +1,11 @@
-<jsp:include page="masterHeader.jsp" />
-<jsp:include page="masterSideNav.jsp" />
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <section class="content-wraper">
-    <div id="onboardingLoading"></div>
     <section class="content-header clearfix">
           <div class="pull-left">
       <!-- <h2>Submission Templates</h2> -->
@@ -80,8 +79,7 @@
 		<h2 class="text-warning">Taxes</h2>
 		<p>Manage your taxes</p>
 		<span>
-			<a  class="btn btn-info btn-sm mr10" href="#">Add</a> 
-			<a  class="btn btn-primary btn-sm" href="#">View</a>
+			<a  class="btn btn-info btn-sm mr10" href="#">Configure</a> 
 		</span>
 		</div>
 	</div>
@@ -98,4 +96,4 @@
 
 
 
-<jsp:include page="masterFooter.jsp" />
+<jsp:include page="../masterFooter.jsp" />
