@@ -718,6 +718,7 @@ public class SubmissionsRestController {
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch(Exception e) {
+				e.printStackTrace();
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
@@ -943,7 +944,7 @@ public class SubmissionsRestController {
 				Constants.ENTITY_TYPE_NOTIFICATION);
 
 
-		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getSubject(),globalVarsMap,notificationScenario);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		
 
