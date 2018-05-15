@@ -196,9 +196,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			String[] assignedUsers = null;
 			if(templateTasks.getAssignToCandidate() != null && templateTasks.getAssignToCandidate().equalsIgnoreCase("Y")) {
 				tasks.setOwnerOrglocationId(orgLocations);
+				tasks.setImmigrationId(immigrationObj);
 				tasks.setAssignedOrglocationId(orgLocations);
-				tasks.setTaskOwnerId(immigrationObj.getCandidate().getConsultantUser());
-				tasks.setAssignedUserId(null);
+				tasks.setTaskOwnerId(user);
+				tasks.setAssignedUserId(immigrationObj.getCandidate().getConsultantUser());
 				tasks.setPriority(templateTasks.getPriority());
 				tasks.setTaskDate(templateTasks.getDueAfterDate());
 				SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -217,9 +218,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			}else if(StringUtils.isNotBlank(templateTasks.getAssignToUsers())) {
 				assignedUsers = templateTasks.getAssignToUsers().split(",");
 				for(String users : assignedUsers) {
+					tasks.setImmigrationId(immigrationObj);
 					tasks.setOwnerOrglocationId(orgLocations);
 					tasks.setAssignedOrglocationId(orgLocations);
-					tasks.setTaskOwnerId(immigrationObj.getCandidate().getConsultantUser());
+					tasks.setTaskOwnerId(user);
 					User AssignedUserObj = new User();
 					user.setId(Long.parseLong(users));
 					tasks.setAssignedUserId(AssignedUserObj);
