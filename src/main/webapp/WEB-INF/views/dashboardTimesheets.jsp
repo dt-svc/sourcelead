@@ -237,7 +237,8 @@ var userId = '${SourceLeadWeb_user.id}';
 var orgLocationCode = '${SourceLeadWeb_locationCode}';
 var candiadteId = '${SourceLeadWeb_candidateId}';
 var timesheetType;
-var sourceleadWebSocketUrl ='${sourceleadSocketUrl}';
+var sourceleadUrl ='${sourceleadUrl}';
+var sourceleadWebSocketUrl = sourceleadUrl.replace("http","ws");
 
 
   function timeSheetSubmissionStatusCount(type) { 
