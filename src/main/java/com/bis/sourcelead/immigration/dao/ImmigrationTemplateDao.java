@@ -81,4 +81,6 @@ public interface ImmigrationTemplateDao {
 	List<LookUpData> getLookupDataByTypeAndLocation(String petitionType, String locationVal);
 
 	ImmigrationTemplateTasks getImmigratonTemplateTasksById(Long id);
+
+	List<ImmigrationTemplateTasks> getImmigratonTemplateTasksByTemplateId(Long templateId);
 }

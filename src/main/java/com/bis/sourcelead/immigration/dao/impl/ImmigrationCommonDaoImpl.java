@@ -48,11 +48,13 @@ import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.ImmigrationListView;
+import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MyImmigrationView;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
@@ -1158,5 +1160,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			e.printStackTrace();
 		}
 		return immigrationCandidateDocumentsHistory;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public void saveImmigrationTasksAndTasks(List<ImmigrationTasks> immigrationTasksList, List<Tasks> tasksList) {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			for (ImmigrationTasks immigrationTasks : immigrationTasksList) {
+				session.saveOrUpdate(immigrationTasks);
+			}
+			for (Tasks tasks : tasksList) {
+				session.saveOrUpdate(tasks);
+			}
+		} catch (Exception exception) {
+			logger.error("Exception caught while saving immigration information " + exception.getMessage());
+			exception.printStackTrace();
+		}
+
 	}
 }

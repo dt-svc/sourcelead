@@ -5,6 +5,7 @@ package com.bis.sourcelead.immigration.service.impl;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -50,14 +52,17 @@ import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
+import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
 import com.bis.sourcelead.entity.ImmigrationTemplateDocs;
 import com.bis.sourcelead.entity.ImmigrationTemplateForms;
+import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.dao.ImmigrationCommonDao;
 import com.bis.sourcelead.immigration.dao.ImmigrationTemplateDao;
@@ -168,6 +173,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		 //Copy IMMIGRATION_TEMPLATE_FORMS data to  IMMIGRATION_CANDIDATE_FORMS table based on templateId 
 		 copyImmigrationConfiguredFormsToCandidate(immigrationObj,user,orgLocations);
 		 
+		 copyImmigrationTemplateTaskToImmigrationTaskAndTask(immigrationObj,user,orgLocations);
+		 
 		}catch(Exception e) {
 			logger.error("Exception caugth in savePetitionDetails service"+ e.getMessage());
 			e.printStackTrace();
@@ -175,6 +182,68 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationObj;
 	}
 
+	private void copyImmigrationTemplateTaskToImmigrationTaskAndTask(Immigration immigrationObj, User user,
+			OrgLocations orgLocations) {
+		List<ImmigrationTasks> immigrationTasksList = new ArrayList<>();
+		List<Tasks> tasksList = new ArrayList<>();
+		List<ImmigrationTemplateTasks> templateTasksList = immigrationTemplateDao.getImmigratonTemplateTasksByTemplateId(immigrationObj.getImmigrationTemplateId().getId());
+		for(ImmigrationTemplateTasks templateTasks : templateTasksList) {
+			ImmigrationTasks immigrationTasks = new ImmigrationTasks();
+			BeanUtils.copyProperties(templateTasks, immigrationTasks);
+			immigrationTasks.setImmigration(immigrationObj);
+			immigrationTasksList.add(immigrationTasks);
+			Tasks tasks = new Tasks();
+			String[] assignedUsers = null;
+			if(templateTasks.getAssignToCandidate() != null && templateTasks.getAssignToCandidate().equalsIgnoreCase("Y")) {
+				tasks.setOwnerOrglocationId(orgLocations);
+				tasks.setAssignedOrglocationId(orgLocations);
+				tasks.setTaskOwnerId(immigrationObj.getCandidate().getConsultantUser());
+				tasks.setAssignedUserId(null);
+				tasks.setPriority(templateTasks.getPriority());
+				tasks.setTaskDate(templateTasks.getDueAfterDate());
+				SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+		        String time = localDateFormat.format(templateTasks.getDueAfterDate());
+				tasks.setTaskTime(time);
+				tasks.setSubject(templateTasks.getTaskName());
+				tasks.setAlertType(Constants.ENTITY_TYPE_EMAIL+","+Constants.ENTITY_TYPE_NOTIFICATION);
+				tasks.setTaskRepeat(templateTasks.getTaskRepeat());
+				tasks.setDescription(templateTasks.getDescription());
+				tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
+				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+				tasks.setCreatedDate(currentDate);
+				tasks.setCreatedBy(user.getUserUUID());
+				tasks.setUpdatedDate(currentDate);
+				tasks.setUpdatedBy(user.getUserUUID());
+			}else if(StringUtils.isNotBlank(templateTasks.getAssignToUsers())) {
+				assignedUsers = templateTasks.getAssignToUsers().split(",");
+				for(String users : assignedUsers) {
+					tasks.setOwnerOrglocationId(orgLocations);
+					tasks.setAssignedOrglocationId(orgLocations);
+					tasks.setTaskOwnerId(immigrationObj.getCandidate().getConsultantUser());
+					User AssignedUserObj = new User();
+					user.setId(Long.parseLong(users));
+					tasks.setAssignedUserId(AssignedUserObj);
+					tasks.setPriority(templateTasks.getPriority());
+					tasks.setTaskDate(templateTasks.getDueAfterDate());
+					SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+			        String time = localDateFormat.format(templateTasks.getDueAfterDate());
+					tasks.setTaskTime(time);
+					tasks.setSubject(templateTasks.getTaskName());
+					tasks.setAlertType(Constants.ENTITY_TYPE_EMAIL+","+Constants.ENTITY_TYPE_NOTIFICATION);
+					tasks.setTaskRepeat(templateTasks.getTaskRepeat());
+					tasks.setDescription(templateTasks.getDescription());
+					tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
+					Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+					tasks.setCreatedDate(currentDate);
+					tasks.setCreatedBy(user.getUserUUID());
+					tasks.setUpdatedDate(currentDate);
+					tasks.setUpdatedBy(user.getUserUUID());
+				}
+			}
+			tasksList.add(tasks);
+		}
+		immigrationCommonDao.saveImmigrationTasksAndTasks(immigrationTasksList,tasksList);
+	}
 	void copyImmigrationConfiguredDocsToCandidate(Immigration immigrationObj,User user,OrgLocations orgLocations){
 		List <ImmigrationTemplateDocs> immigrationTemplateDocsDocList =immigrationTemplateDao.getImmigrationTemplateDocsList(immigrationObj.getImmigrationTemplateId().getId());
 		ImmigrationCandidateDocuments immCanObj =null; 
