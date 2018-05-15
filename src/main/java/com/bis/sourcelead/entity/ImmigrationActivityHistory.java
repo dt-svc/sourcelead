@@ -50,7 +50,7 @@ private static final long serialVersionUID = 1L;
 	private OrgLocations orgLocationId;
 	
 	@Column(name = "ACTION_BY")
-   	private String priority;
+   	private String actionBy;
 	
 	@Column(name = "ACTION_DESC")
 	@Type(type="text")
@@ -110,12 +110,14 @@ private static final long serialVersionUID = 1L;
 		this.orgLocationId = orgLocationId;
 	}
 
-	public String getPriority() {
-		return priority;
+	
+
+	public String getActionBy() {
+		return actionBy;
 	}
 
-	public void setPriority(String priority) {
-		this.priority = priority;
+	public void setActionBy(String actionBy) {
+		this.actionBy = actionBy;
 	}
 
 	public String getActionDesc() {

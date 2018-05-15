@@ -118,7 +118,13 @@ function getVendorDetails(){
 		        	   $("input[name=orgName]").val(json.orgName);
 		        	   $("input[name=orgName]").attr("readonly","readonly");
 	        		   $('#orgName').removeAttr('onblur');
-		        	   
+		        	   var isLawFirm = json.isLawFirm;
+		        	   var isAccountingFirm = json.isAccountingFirm;
+	        		   $("#isLawFirm").attr('checked', isLawFirm);
+				        $("#isAccountingFirm").attr('checked', isAccountingFirm);
+				        $("#isLawFirm").val(isLawFirm?'Y':'N');
+				        $("#isAccountingFirm").val(isAccountingFirm?'Y':'N');
+	        		   
 	        		   if(json.webSite != null && json.webSite != 'undefined' && json.webSite != ''){
 	        			   $("input[name=webSite]").val(json.webSite);
 	        		   }
@@ -223,6 +229,7 @@ function getVendorDetails(){
 	        
 	        document.getElementById("update_vendor").style.display="";
 	    	document.getElementById("save_vendor").style.display="none";
+	    	allowIsLawFirm();
      } 
 }
 </script>

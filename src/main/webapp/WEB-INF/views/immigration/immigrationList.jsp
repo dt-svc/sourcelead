@@ -491,7 +491,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.currUscisStatusId !== null && opt.currUscisStatusId !== '' && opt.currUscisStatusId !== 'undefined') {
-                    	 result = result + "<td><div class='mt5 mb5 dropdown-select' style='width:150px;'><select id='currUscisStatus' title='"+opt.currUscisStatus+"' onchange='changeSaveUscisStatus($(this),"+opt.id+");' name='currUscisStatus' class='form-control'>";
+                    	 result = result + "<td><div class='mt5 mb5 dropdown-select' style='width:150px;'><select id='currUscisStatus' title='"+opt.currUscisStatus+"' onchange='changeSaveUscisStatus($(this),"+opt.id+","+opt.currUscisStatusId+");' name='currUscisStatus' class='form-control'>";
                     	 //alert(opt.currUscisStatusId);
                     	 for(var i=0;i<opt.currUsicisStatusList.length;i++){
                         	data = opt.currUsicisStatusList[i];
@@ -699,11 +699,12 @@
 		$(".project_inn_mask").fadeIn(200);
 	}
  
- function changeSaveUscisStatus(idVal,templateId){
+ function changeSaveUscisStatus(idVal,templateId,uscisOldId){
+	 alert("111>>>");
 	 var uscisId = idVal.val();
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/immigration/updateUscisTypeDropDown?templateId="+templateId+"&uscisId="+uscisId, 
+	        url: sourceleadUrl+"/immigration/updateUscisTypeDropDown?templateId="+templateId+"&uscisId="+uscisId+"&uscisOldId="+uscisOldId, 
 	        success: function(data) {
 	        	if(data == "success"){
 	        		//getDynamicImmigrationList();

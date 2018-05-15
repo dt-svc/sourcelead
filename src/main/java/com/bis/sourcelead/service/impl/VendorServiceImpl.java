@@ -103,6 +103,14 @@ public class VendorServiceImpl implements VendorService{
 			 orgRelations.setPaymentTerm(clientDTO.getPaymentTerms());
 		 }
 		 
+		 if((clientDTO.getIsAccountingFirm() != null && clientDTO.getIsLawFirm() != null) &&(clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y") &&  clientDTO.getIsLawFirm().equalsIgnoreCase("Y"))){
+			   orgRelations.setIsLawFirm(Constants.YES);
+			   orgRelations.setIsAccountingFirm(Constants.YES);
+			}else{
+				orgRelations.setIsAccountingFirm(Constants.NO);
+				orgRelations.setIsLawFirm(Constants.NO);
+			}
+		 
 		 orgRelationsDao.addOrgRelations(orgRelations);
 		 
 		 OrgLocations vendorOrgLocations = null;
@@ -118,6 +126,16 @@ public class VendorServiceImpl implements VendorService{
 		 vendorOrgLocations.setCountry(clientDTO.getCountry());
 		 vendorOrgLocations.setState(clientDTO.getState());
 		 vendorOrgLocations.setCity(clientDTO.getCity());
+		 
+		 if((StringUtils.isNotBlank(clientDTO.getIsLawFirm())) && (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()))){
+		 if(clientDTO.getIsLawFirm().equalsIgnoreCase("Y") && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")){
+			vendorOrgLocations.setIsLawFirm(Constants.YES);
+			vendorOrgLocations.setIsAccountingFirm(Constants.YES);
+		}
+		}else{
+			vendorOrgLocations.setIsLawFirm(Constants.NO);
+			vendorOrgLocations.setIsAccountingFirm(Constants.NO);	
+		}
 		
 		 if(StringUtils.isNotBlank(clientDTO.getWebSite())){
 			 if(StringUtils.isNotBlank(clientDTO.getWebSite())){
@@ -134,7 +152,7 @@ public class VendorServiceImpl implements VendorService{
 		 }
 		 
 		 orgLocationsDao.updateOrgLocations(vendorOrgLocations);
-		 OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByOrgIdAndCountry(org.getId(),country);
+		 OrgLicenseSubscription orgLicenseSubscription = orgLicenseSubscriptionDao.getOrgLicenseSubscriptionByOrgIdAndCountry(vendorOrgLocations.getOrg().getId(),country);
 		 orgLicenseSubscription.setCountry(vendorOrgLocations.getCountry());
 		 orgLicenseSubscriptionDao.saveOrgLicenseSubscription(orgLicenseSubscription);
 		 
