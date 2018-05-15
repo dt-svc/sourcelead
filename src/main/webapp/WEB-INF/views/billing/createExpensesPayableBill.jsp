@@ -1754,6 +1754,7 @@ function populateExpensesEntriesGrid(json){
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
         addConversionDiv();
+        calculateDisCount();
 }
 </script>
 
