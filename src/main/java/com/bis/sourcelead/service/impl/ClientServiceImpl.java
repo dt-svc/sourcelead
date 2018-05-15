@@ -360,15 +360,20 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
 				org.setWebSite(convertWebsite(clientDTO.getWebSite()));
 			}
-			if((StringUtils.isNotBlank(clientDTO.getIsLawFirm())) && (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()))){
-			if(clientDTO.getIsLawFirm().equalsIgnoreCase("Y") && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")){
-			clientOrgLocations.setIsLawFirm(Constants.YES);
-			clientOrgLocations.setIsAccountingFirm(Constants.YES);
+			if(StringUtils.isNotBlank(clientDTO.getIsLawFirm())){
+			if(clientDTO.getIsLawFirm().equalsIgnoreCase("Y"))	{
+				clientOrgLocations.setIsLawFirm(Constants.YES);	
 			}
 			}else{
-			clientOrgLocations.setIsLawFirm(Constants.NO);
-			clientOrgLocations.setIsAccountingFirm(Constants.NO);	
+				clientOrgLocations.setIsLawFirm(Constants.NO);	
 			}
+			if(StringUtils.isNotBlank(clientDTO.getIsAccountingFirm())){
+				if(clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y"))	{
+					clientOrgLocations.setIsAccountingFirm(Constants.YES);	
+				}
+				}else{
+					clientOrgLocations.setIsAccountingFirm(Constants.NO);	
+				}
 			clientOrgLocations.setLoginSecurity(Constants.NO);
 			clientOrgLocations.setIsPrimary(Constants.YES);
 			clientOrgLocations.setIsCompanyOnboarded(Constants.NO);
