@@ -117,11 +117,52 @@ $(document).ready(function(){
     </div>
   </section>
   <!-- Content Area Ends--> 
+  
+  <script>
+  $( function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
+	  $('#DateofJoin').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+  } );
+</script>
 
 <script>
 	$(function() {
 		
-		$('#payrollStartDate').datepicker({
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  // written common method in slead-common.js for date formats start
+		  var finalDateFormat = getJSDateFormat(locationDate);
+		  //end
+		  $('#payrollStartDate').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      //minDate: 0  this line for to restrict selection of previous dates
+		  });
+		  
+		  $('#payrollEndDate').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      //minDate: 0  this line for to restrict selection of previous dates
+		  });
+		  
+		  $('#payrollPayDate').datepicker({
+		      dateFormat: finalDateFormat,
+		      changeMonth: true,
+		  	  changeYear: true, 
+		      //minDate: 0  this line for to restrict selection of previous dates
+		  });
+		
+		/* $('#payrollStartDate').datepicker({
 			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
 			changeYear: true, 
@@ -131,9 +172,9 @@ $(document).ready(function(){
 				$("#payrollEndDate").datepicker("option", "minDate", dt);
 				addValidClass();
 			}
-		});
+		}); */
 		
-		$('#payrollEndDate').datepicker({
+		/* $('#payrollEndDate').datepicker({
 			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
 			changeYear: true, 
@@ -143,9 +184,10 @@ $(document).ready(function(){
 				$("#startDate").datepicker("option", "maxDate", dt);
 				addValidClass();
 			}
-		});
+		}); */
 		
-		$('#payrollPayDate').datepicker({
+		
+	/* 	$('#payrollPayDate').datepicker({
 			dateFormat : 'dd-mm-yy',
 			changeMonth: true,
 			changeYear: true, 
@@ -155,7 +197,7 @@ $(document).ready(function(){
 				$("#payrollPayDate").datepicker("option", "maxDate", dt);
 				addValidClass();
 			}
-		});
+		}); */
 		
 	});
 </script>
