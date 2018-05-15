@@ -97,7 +97,7 @@ public interface ImmigrationCommonDao {
 
 	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO,	String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal)throws Exception;
 
-	String updateUscisTypeDropDown(Long templateId, Long uscisId);
+	String updateUscisTypeDropDown(Immigration immigration);
 
 	ImmigrationDashboardView getImmigrationDashBoardDetails(OrgLocations orgLocations);
 	

@@ -139,8 +139,17 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			}else{
 				orgRelations.setInitiatorType("Client"); 
 				orgRelations.setResponderType("Vendor");
-				orgRelations.setIsAccountingFirm(clientDTO.getIsAccountingFirm());
-				orgRelations.setIsLawFirm(clientDTO.getIsLawFirm());
+				if((StringUtils.isNotBlank(clientDTO.getIsLawFirm())) && (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()))){
+					if(clientDTO.getIsLawFirm().equalsIgnoreCase("Y") && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")){
+						orgRelations.setIsLawFirm(Constants.YES);
+						orgRelations.setIsAccountingFirm(Constants.YES);
+					}
+					}else{
+						orgRelations.setIsLawFirm(Constants.NO);
+						orgRelations.setIsAccountingFirm(Constants.NO);	
+					}
+				/*orgRelations.setIsAccountingFirm(clientDTO.getIsAccountingFirm());
+				orgRelations.setIsLawFirm(clientDTO.getIsLawFirm());*/
 				if(StringUtils.isNotBlank(clientDTO.getClientSaveFromType()) && "BulkVendorSaving".equalsIgnoreCase(clientDTO.getClientSaveFromType())){
 					orgRelations.setVendorRelationStatus("Sent");
 					orgRelations.setIsVendorDetailsFilled(Constants.YES);
