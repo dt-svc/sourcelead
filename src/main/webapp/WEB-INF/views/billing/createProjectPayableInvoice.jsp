@@ -74,8 +74,11 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             <div class="form-group">
               <label class="col-md-3">Bill Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field" id="errInvoiceDate">
+              <div class="input-group">
                 <input class="form-control calendar" id="invoiceDate" name="invoiceDate" placeholder="Bill Date" value="${currentDate}"  type="text" data-validation="required" field-name="Bill Date" readonly>
+                <span class="input-group-addon" onClick="clearInvoiceDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
               </div>
+            </div>
             </div>
               
            <div class="form-group">
@@ -94,7 +97,10 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
             <div class="form-group">
                          <label class="col-md-3">Due Date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The deadline for the bill payment'></i></label>
                             <div class="col-md-9" id="errDuedate">
+                            <div class="input-group">
                                  <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
+                                  <span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                           </div>
                            </div>
                      </div>
               
@@ -261,7 +267,15 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
     
 <!-- Diplays client contacts details when clien selected -->
 
-
+<script>
+function clearInvoiceDate(){
+	$("#invoiceDate").val("");
+	};
+	
+function clearDueDate(){
+	$("#dueDate").val("");
+	};
+</script>
 
 <script>
 function getProjectsList(projectName){

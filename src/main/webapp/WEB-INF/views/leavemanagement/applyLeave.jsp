@@ -69,7 +69,10 @@ window.onload = function() {
               <div class="col-md-9">
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="fromDateDiv">
+                  <div class="input-group errorInptgroup">
                     <input type="text" class="form-control calendar" id="fromDate" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required" readonly>
+                    <span class="input-group-addon" onClick="clearFromDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                   </div> 
                   </div>
                   <div class="col-md-5 paddingLeft"  id="fromHalfDayDiv">
                     <label class="checkBox mt5">
@@ -87,7 +90,10 @@ window.onload = function() {
               <div class="col-md-9">
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="toDateDiv">
-                    <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required" readonly>
+                    <div class="input-group errorInptgroup">
+                     <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required" readonly>
+                     <span class="input-group-addon" onClick="clearToDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                    </div>
                   </div>
                   <div class="col-md-5 paddingLeft" id="toHalfDayDiv">
                     <label class="checkBox mt5">
@@ -860,6 +866,14 @@ function getApproversList(){
 }
 </script>
 
-
+<script>
+function clearFromDate(){
+	$("#fromDate").val("");
+	};
+	
+function clearToDate(){
+	$("#toDate").val("");
+	};
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

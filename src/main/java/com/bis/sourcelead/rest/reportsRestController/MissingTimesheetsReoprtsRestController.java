@@ -25,6 +25,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.reportsDTO.MissingTimesheetRepotDTO;
 import com.bis.sourcelead.reportsDTO.MissingTimesheetResultRepotDTO;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -72,7 +73,8 @@ public class MissingTimesheetsReoprtsRestController {
 	@RequestMapping(value = "/getMissingTimesheetReoportsList", method = RequestMethod.POST)
 	public  @ResponseBody List<MissingTimesheetResultRepotDTO> getMissingTimesheetReoportsList(MissingTimesheetRepotDTO missingTimesheetRepotDTO,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
          Date[] searchDates = null;
          if(StringUtils.isNotBlank(missingTimesheetRepotDTO.getDateSelection())){
         	 if(!missingTimesheetRepotDTO.getDateSelection().equalsIgnoreCase("custom")) {
@@ -115,7 +117,7 @@ public class MissingTimesheetsReoprtsRestController {
 		List<MissingTimesheetResultRepotDTO> missingTimesheetResultRepotList = new ArrayList<>();
 		if(projectIds != null && !projectIds.isEmpty()) {
 			for(Long projectId :projectIds) {
-				HashSet<ProjectMembers> prjectMembers =  userRoleService.getAllProjectMembersByProjectIdForMissingTSReports(projectId, orgLocations.getId());
+				HashSet<ProjectMembers> prjectMembers =  userRoleService.getAllProjectMembersByProjectIdForMissingTSReports(projectId, orgLocations.getId(),user.getId());
 				if(prjectMembers != null && !prjectMembers.isEmpty()) {
 					for(ProjectMembers pm :prjectMembers) {
 						String frequency = pm.getProjects().getInvoiceFrequency();
@@ -174,6 +176,7 @@ public class MissingTimesheetsReoprtsRestController {
 	@RequestMapping(value = "/getpendingForApprovalTimesheetReportList", method = RequestMethod.POST)
 	public  @ResponseBody List<MissingTimesheetResultRepotDTO> getpendingForApprovalTimesheetReportList(MissingTimesheetRepotDTO missingTimesheetRepotDTO,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
         Date[] searchDates = null;
         if(StringUtils.isNotBlank(missingTimesheetRepotDTO.getDateSelection())){
@@ -217,7 +220,7 @@ public class MissingTimesheetsReoprtsRestController {
 		List<MissingTimesheetResultRepotDTO> missingTimesheetResultRepotList = new ArrayList<>();
 		if(projectIds != null && !projectIds.isEmpty()) {
 			for(Long projectId :projectIds) {
-				HashSet<ProjectMembers> prjectMembers =  userRoleService.getAllProjectMembersByProjectIdForMissingTSReports(projectId, orgLocations.getId());
+				HashSet<ProjectMembers> prjectMembers =  userRoleService.getAllProjectMembersByProjectIdForMissingTSReports(projectId, orgLocations.getId(),user.getId());
 				
 				if(prjectMembers != null && !prjectMembers.isEmpty()) {
 					for(ProjectMembers pm :prjectMembers) {
