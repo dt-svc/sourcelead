@@ -1280,6 +1280,19 @@ function getContactEmails(){
 		 }
 	  }
 	 
+	 var elist=$("#recipientEmail").chosen().find("option:selected" ).text();
+	 if(elist == '' && orgRelationIds.length == 0)
+	 {
+		 $('#vendorsListDiv').find('p.jquery_form_error_message').remove();
+		  $("#vendorbtnId").attr("disabled", "disabled");
+		  $("#vendorListType").after( "<p class='jquery_form_error_message'>Select atleast one vendor</p>");
+	 }
+	 else
+	  {
+	 var recipientsEmails = '';
+	 if($("#recipientEmail").val() != null){
+		  recipientsEmails = $("#recipientEmail").val();
+	 }
 	 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
@@ -1302,6 +1315,7 @@ function getContactEmails(){
           
      }); 
 	 
+}
 }
 </script>
 
@@ -1381,7 +1395,7 @@ function getAllEmailContacts(){
 	}
 	
 	if($("input[name='checkAllContacts']:checked").length == 0){
-    	$("#groupPopUpId").after("<p class='jquery_form_error_message'><span>Select Atleast One Client Contact</span>");
+    	$("#groupPopUpId").after("<p class='jquery_form_error_message'><span>Select Atleast One Vendor Contact</span>");
 	}else{
 		$("#multiplemail").modal('hide');
 		$('#groupPopUpId').parent().find('p.jquery_form_error_message').remove();
@@ -1425,7 +1439,6 @@ function getClientEmails(){
 	 if($("#recipientEmail").val() != null){
 		  recipientsEmails = $("#recipientEmail").val();
 	 }
-	 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
          type : "POST",
