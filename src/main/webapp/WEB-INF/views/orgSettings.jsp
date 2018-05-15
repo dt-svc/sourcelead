@@ -177,15 +177,15 @@ function cancelOrgImg(){
         	<li><a data-toggle="tab" href="#orgRegisteredlocations" onclick="loadRegisteredOrgs();">Locations</a></li>
         </c:if>
         <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
-        <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Federal And State Taxes</a></li>
+        <li><a data-toggle="tab" href="#federalAndStateTaxes" onclick="getStateTaxes();">Taxes</a></li>
         </c:if>
         <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
         <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments">Documents</a></li>
         <li><a data-toggle="tab" href="#orglocationSignatory" onclick="getAllSignatory();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
-        <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li>
-         <%-- <li><a href="${appPath}/emailNontificationConfigure" >Email Notifications</a></li> --%>
+        <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> 
+        <%-- <li><a href="${appPath}/emailNontificationConfigure" >Email Notifications</a></li>  --%>
         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
         	<li><a data-toggle="tab" href="#whiteListIp" onclick="getWhiteListIps();">Whitelist Ips</a></li>
         </c:if>
@@ -858,7 +858,9 @@ function cancelOrgImg(){
      		 <jsp:include page="orglocationDocuments.jsp" />
      		 <jsp:include page="orglocationSignatory.jsp" />
      		 <jsp:include page="googleApiLocation.jsp" />
-     		  <jsp:include page="emailNontificationConfigure.jsp" />
+     		 
+   			<jsp:include page="emailNontificationConfigure.jsp" />
+    		
      		 
      		 
     			</div>
@@ -3403,6 +3405,31 @@ function financialYear(){
         $('#selector1').delay(2000).fadeOut('slow');
 	}
 </script> 
+
+<!-- <script>
+function loadEmailConfig(){
+	alert("hello")
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/emailNontificationConfigure",        
+	       success :function(data) {
+//	    	   $("#loading").removeAttr('style');
+	    	  /*  $("#enrolledLocDiv").removeAttr("style");
+	    	   $("#enrolledLocDiv").attr("style","display : block");
+	    	   $("#enrolledLocDiv").empty(); */
+	    	   //$("#emailNotifications").empty();
+	    	   $("#emailNotifications").append(data);
+	    	  /*  $(".signWrap").addClass("orgOutWrap");
+	    	   $(".SignSlide").hide();
+	    	   $(".orgWrap").show(); */
+//	    	   $(".signWrap").addClass("orgOutWrap");
+	      },
+	  }); 
+
+}
+
+</script> -->
 
 <jsp:include page="masterFooter.jsp" />
 

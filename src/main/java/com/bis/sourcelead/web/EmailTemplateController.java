@@ -68,8 +68,8 @@ public class EmailTemplateController {
 			 
 			
 		}
-		String emailBody = null;
-		if(emailScenario!=null && emailScenario.getBodyUrl()!= null ){
+		String emailBody = emailScenario.getBody();
+		/*if(emailScenario!=null && emailScenario.getBodyUrl()!= null ){
 			String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
 			 try {
 				    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
@@ -79,7 +79,7 @@ public class EmailTemplateController {
 				} catch (IOException ex) {
 				    System.err.println(ex);
 				}
-		}
+		}*/
 		ModelAndView model = new ModelAndView();
 		model.addObject("emailScenario",emailScenario);
 		model.addObject("sourceleadUrl", sourceleadUrl);
