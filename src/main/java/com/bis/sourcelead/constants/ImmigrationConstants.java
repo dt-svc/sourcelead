@@ -26,8 +26,8 @@ public class ImmigrationConstants {
 	public static final String SEND_REQUEST = "sendRequest";
 	public static final Integer STATUS_ACTIVE = 1;
 	public static final Integer STATUS_IN_ACTIVE = 0;
+	public static final String IMMIGRATION_UPLOAD ="immigrationUpload";
 	
-
 	public static final String[] IMPORT_IMMIGRATION_EXCEL_HEADERS = { "Emp ID", "Beneficiary First Name","Beneficiary Last name",
 			 "Beneficiary Email", "Experience", "SSN", "I-94 Number",	"I-20 SEVIS Number If Student", "EAD Number If Student", "DOB",	
 			 "Marital status", "Petition Type", "Template", "Date of arrival", "Open on", "Status","Visa No.", "Visa Start Date", "Visa End Date","Law Firm/Client",
