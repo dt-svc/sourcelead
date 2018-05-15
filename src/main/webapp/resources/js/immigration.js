@@ -1319,6 +1319,19 @@ function getNotesListByImmigration(candidateId){
    });
 }
 
+function getImmigrationActivies(){
+	 var immigrationId = $('#immigrationID').val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/getImmigrationActiviesList?" + tokenParamName + "=" + tokenValue +"&immigrationId="+immigrationId,
+       type: "GET",
+        success: function (result) {
+       	  console.log("Before  loading result---->");
+           $("#activitiesTab").html(result);
+           console.log("After loading result---->");
+       }
+   });
+}
+
 function searchPassportValue(){
 	var validationSettings = {
             errorMessagePosition: 'element',

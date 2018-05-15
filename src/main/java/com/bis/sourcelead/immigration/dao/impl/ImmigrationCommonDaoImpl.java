@@ -1,17 +1,14 @@
 package com.bis.sourcelead.immigration.dao.impl;
 
 import java.math.BigInteger;
-import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +25,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.UserRoleDao;
@@ -43,6 +39,7 @@ import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationActivityHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
@@ -1181,5 +1178,37 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("Exception caught while saving immigration information " + exception.getMessage());
 			exception.printStackTrace();
 		}
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ImmigrationActivityHistory storeImmigrationActivities(ImmigrationActivityHistory immigrationActivityHistory) throws Exception {
+		logger.debug("Storing ImmigrationActivityHistory");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (immigrationActivityHistory != null) {
+				session.saveOrUpdate(immigrationActivityHistory);
+			}
+			logger.debug("ImmigrationActivityHistory Stored Successfully");
+		} catch (Exception exception) {
+			    StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ImmigrationActivityHistory"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return immigrationActivityHistory;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationActivityHistory> getImmigrationActivitiesList(Long immigrationId, Long orgLocationId) throws Exception
+	{
+		logger.debug("Fetching Candidate Activities");
+		Session session = this.sessionFactory.getCurrentSession();
+		List<ImmigrationActivityHistory> immigrationActivityHistory = null;
+		if (immigrationId != null) {
+			String query = "from ImmigrationActivityHistory iah  where iah.orgLocationId.id =:orgLocationId and iah.immigrationId.id =:immigrationId ORDER BY iah.createdDate DESC";
+			immigrationActivityHistory = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("immigrationId", immigrationId).list();
+		}
+		logger.debug("Successfully Fetched Candidate Activities");
+		return immigrationActivityHistory;
 	}
 }

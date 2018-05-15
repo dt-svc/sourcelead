@@ -54,6 +54,7 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationActivityHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
@@ -81,8 +82,8 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.paypal.api.openidconnect.Session;
 
 @RestController
 @RequestMapping("/app/immigration")
@@ -133,6 +134,9 @@ public class ImmigrationRestController {
 
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	ImmigrationActivityCommonUtil immigrationActivityCommonUtil;
 
 	@Autowired
 	private RequirementService requirementService;
@@ -1161,7 +1165,7 @@ public class ImmigrationRestController {
 					} else if (immigrationPassportVisaDTO.getIdType().trim().equalsIgnoreCase(Constants.ID_TYPE_VISA)) {
 						immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_VISA);
 					}
-					immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations);
+					immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations,Long.parseLong(immigrationId));
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
@@ -1583,6 +1587,11 @@ public class ImmigrationRestController {
 				}
 				immigration.setCurrUscisStauts(data); // updating with Filled status.
 				immigrationCommonService.updateImigrationDetatils(immigration);
+				StringBuilder actionDesc = new StringBuilder();
+				actionDesc.append("Changed Status").append(" ").append("Request to fill").append(" ").append("to").append(" ").append(data.getName()).toString();
+				immigrationActivityCommonUtil.saveImmigrationActivities(user, orgLocations, immigration, null,actionDesc.toString());
+
+				
 				System.out.println("Immigartion details udated successfully for the immigration id ID :::--> : "
 						+ immigration.getId());
 		} catch (Exception e) {
@@ -1767,6 +1776,20 @@ public class ImmigrationRestController {
 		List<SourceleadNotes> candidatesNotesList = sourceleadNotesService.getNotesListByImmigrationId(immigrationId,
 				orgLocations.getId());
 		model.addObject("candidatesNotesList", candidatesNotesList);
+		return model;
+	}
+	
+	@RequestMapping(value = { "/getImmigrationActiviesList" })
+	public ModelAndView getImmigrationActiviesList(
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId, HttpServletRequest request)
+			throws Exception {
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		model.setViewName("/immigration/activityDetailsTab");
+		List<ImmigrationActivityHistory> immigrationActivitiesList = immigrationCommonService.getImmigrationActivitiesList(immigrationId,
+				orgLocations.getId());
+		model.addObject("immigrationActivitiesList", immigrationActivitiesList);
 		return model;
 	}
 
