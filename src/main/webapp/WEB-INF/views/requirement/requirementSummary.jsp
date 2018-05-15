@@ -1029,12 +1029,13 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 	 document.getElementById("rejectOtherCategoryDiv").style.display="none";
 	 $("#rejectedCategory").val("");
 	 
-	 //script for backOut
-	 $("#backOutApplicant"+submissionId).fadeOut(200);    
-	 $("#backOutCategorytDiv").find('p.jquery_form_error_message').remove();
-	 document.getElementById("backOutOtherCategoryDiv").style.display="none";
-	 $("#backOutCategory").val("");
-	 
+	 if(document.getElementById("backOutOtherCategoryDiv")!==null){
+		 //script for backOut
+		 $("#backOutApplicant"+submissionId).fadeOut(200);    
+		 $("#backOutCategorytDiv").find('p.jquery_form_error_message').remove();
+		 document.getElementById("backOutOtherCategoryDiv").style.display="none";
+		 $("#backOutCategory").val("");
+	 }
 	if(submissionType == 'all'){
 		requirementPipeline(requirementId,submissionType);
 	}else if(submissionType == 'DUPLICATE_APPLICANTS'){

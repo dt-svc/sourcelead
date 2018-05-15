@@ -196,7 +196,7 @@ function cancelOrgImg(){
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
 
-        <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li>
+        <!-- <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> -->
          <%-- <li><a href="${appPath}/emailNontificationConfigure" >Email Notifications</a></li> --%>
 <%--         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}"> --%>
 
@@ -902,7 +902,7 @@ function cancelOrgImg(){
      		 <jsp:include page="orglocationDocuments.jsp" />
      		 <jsp:include page="orglocationSignatory.jsp" />
      		 <jsp:include page="googleApiLocation.jsp" />
-     		  <jsp:include page="emailNontificationConfigure.jsp" />
+     		 <%--  <jsp:include page="emailNontificationConfigure.jsp" /> --%>
      		 
      		 
     			</div>
