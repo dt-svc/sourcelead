@@ -2102,7 +2102,7 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
   if(type == "invite"){
 	  getTimezonesList();
   }
-  zipcodeMask(address.country,zipCodeId);	
+//   zipcodeMask(address.country,zipCodeId);	
   
 });
 }
