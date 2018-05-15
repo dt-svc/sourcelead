@@ -4,9 +4,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-
+<!-- below rows.count are equal to column indexes in excel and those fields are mandatory-->
 <c:forEach var="columnHeader" items="${columnHeaders}" varStatus="rows">
-	<c:choose><!-- below row numbers are equal to column indexes in excel and those fields are mandatory-->
+	<c:choose>
 		<c:when test="${rows.count == 4 || rows.count == 10 || rows.count == 11
 		  || rows.count == 12 || rows.count == 13|| rows.count == 15|| 
 			 rows.count == 16|| rows.count == 20 || rows.count == 22}">
