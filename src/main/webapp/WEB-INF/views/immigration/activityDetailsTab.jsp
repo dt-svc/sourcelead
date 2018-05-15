@@ -8,9 +8,9 @@
 		 <table>
 			<tbody>
 			  <tr>
-				<td><div class="">${activiesItems.actionBy}</div></td>
-				<td><div class="">${activiesItems.actionDesc}</div></td>
-				<td><div class="">${activiesItems.createdDateString}</div></td>
+				<td><div class="tbldata-dotdot-custom">${activiesItems.actionBy}</div></td>
+				<td><div class="tbldata-dotdot-custom">${activiesItems.actionDesc}</div></td>
+				<td><div class="tbldata-dotdot-custom">${activiesItems.createdDateString}</div></td>
 				<!-- <td class="immigraAction"><a href="javascript:void(0)" class="fa fa-trash"></a></td -->
 			  </tr>  			  			  
 			</tbody>

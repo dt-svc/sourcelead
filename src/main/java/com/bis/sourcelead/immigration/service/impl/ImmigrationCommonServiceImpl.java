@@ -840,7 +840,6 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			actionDesc.append("Residence Details Updated").toString();
 		immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());	
 		}else{
-		actionDesc.append("Residence Details Updated").toString();
 		actionDesc.append("New Residence Details Added").toString();
 		immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());		
 		}
@@ -1078,7 +1077,16 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigrationCandidateDocuments.setUpdatedBy(user);
 		immigrationCandidateDocuments.setUpdatedDate(currentDate);
 		
-		return immigrationCommonDao.saveImmigrationCandidateDocs(immigrationCandidateDocuments);
+		immigrationCommonDao.saveImmigrationCandidateDocs(immigrationCandidateDocuments);
+		StringBuilder actionDesc = new StringBuilder();
+		if(immigrationTemplateDocDTO.getImmigrationCandidateDocId() !=null){
+			actionDesc.append("Document Details Updated").toString();	
+		immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());	
+		}else{
+			actionDesc.append("New Document Details Added").toString();	
+		immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());	
+		}
+		return immigrationCandidateDocuments;
 	}
 	@Override
 	public ImmigrationCandidateForms saveImmigrationCandidateForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, User user, OrgLocations orgLocations)
@@ -1122,8 +1130,18 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 		immigrationCandidateForms.setUpdatedBy(user);
 		immigrationCandidateForms.setUpdatedDate(currentDate);
+		immigrationCommonDao.saveImmigrationCandidateForms(immigrationCandidateForms);
+		StringBuilder actionDesc = new StringBuilder();
+		if(immigrationTemplateFormDTO.getImmigrationCandidateFormId() !=null){
+			actionDesc.append("Form Details Updated").toString();
+			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());
+		}else{
+			actionDesc.append("New Form Details Added").toString();
+			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());
+
+		}
 		
-		return immigrationCommonDao.saveImmigrationCandidateForms(immigrationCandidateForms);
+		return immigrationCandidateForms;
 	}
 	 @Override
 		public Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception {
