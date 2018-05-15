@@ -21,6 +21,9 @@
 .project_details.project_detailsHei {
 	min-height: 675px;
 }
+.main-header{
+	z-index: 999;
+}
 </style>
 
 <div id="projectDetailsLoading"></div>
@@ -838,7 +841,7 @@ function editClientProjectDetails(projectId){
 						
 						result = result + '</div>';
 						result = result + '<div class="clearfix"></div>';
-						result = result + '<div id="customFieldDataId"></div>';
+						result = result + '<div id="customFieldDataId" class="customFieldDataId-3column"></div>';
 						
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="width100percnt col-md-12 mb txtEditor_p">';

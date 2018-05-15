@@ -55,7 +55,7 @@ public class OpenJobsController {
 		List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 		model.addObject("skillsList", skillsList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("openJobs/sourceleadJobPage");
+		model.setViewName("openJobs/search-jobs");
 		return model;
 	}
 	

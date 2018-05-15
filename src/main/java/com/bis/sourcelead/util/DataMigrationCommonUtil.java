@@ -57,6 +57,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -76,6 +77,7 @@ import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -134,6 +136,9 @@ public class DataMigrationCommonUtil {
 	
 	@Autowired
 	private ProjectTasksService  projectTasksService;
+	
+	@Autowired
+	private UserRoleService  userRoleService;
 	
 	@Autowired
 	private TimesheetApprovalFrequencyGeneratorUtil timesheetApprovalFrequencyGeneratorUtil;
@@ -1512,12 +1517,16 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 				}
 				
+				
+				
+				
 				if(!dataMigrationDTOJsonCopy.getString("shiftAEmp").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftAEmp"))) {
 					User user1= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftAEmp"), orgLocation.getId());
 					if(user1 == null){
 					errorSet.put("shiftAEmp", dataMigrationDTOJsonCopy.getString("shiftAEmp")+" is Not Exist");	
 					}else{
-						dataMigrationDTOJsonCopy.put("shiftAEmp", user1.getId().toString());	
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user1.getId(), orgLocation.getId());
+						dataMigrationDTOJsonCopy.put("shiftAEmp", userRole.getId().toString());	
 					}
 				}
 				

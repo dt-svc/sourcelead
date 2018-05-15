@@ -14,19 +14,18 @@
  
 	<section class="testiWrap dashboard-widget clearfix">
 		<section class="blogWrap">
-			<div class="blogInn">
 
-				<h4 class="margin-top0">${sourceleadBlog.blogTitle}</h4>
+				<h4 class="blHd">${sourceleadBlog.blogTitle}</h4>
 				
 				<c:if test="${!empty sourceleadBlog.blogImage}">
 				<div class="blogImg mb">
-					<img src="${sourceleadBlog.blogImage}" alt="" class="img-responsive">
+					<img src="${sourceleadBlog.blogImage}" alt="" class="">
 				</div>
                 </c:if>
                 
                 <c:if test="${empty sourceleadBlog.blogImage}">
 				<div class="blogImg mb">
-					<img src="#" alt="" class="img-responsive">
+					<img src="#" alt="" class="">
 				</div>
                 </c:if>
                 
@@ -43,9 +42,6 @@
 				</div>
 				</c:if>
 				
-			</div>
-
-
 		</section>
 	</section>
 

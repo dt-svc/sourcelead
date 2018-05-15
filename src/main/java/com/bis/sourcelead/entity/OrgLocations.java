@@ -45,6 +45,7 @@ public class OrgLocations implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID")
+	@JsonProperty
     private Org org;
 	
 	

@@ -115,6 +115,7 @@
 				<li><a href="${appPath}/expensesReportsList">Expenses</a></li>
                 <li><a href="${appPath}/missingTimesheetsReport">Missing Timesheets</a></li>
 				<li><a href="${appPath}/pendingForApprovalReport">Pending for Approval</a></li>
+				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
 				<!-- <li><a href="#">Employment Verficication</a></li>
 				<li><a href="#">Wage and Tax</a></li>
 				<li><a href="#">Associate Onboard</a></li>

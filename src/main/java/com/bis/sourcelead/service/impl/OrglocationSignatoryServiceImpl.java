@@ -152,6 +152,7 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 		
 		for(OrglocationSignatory sign : signatoryList){
 			OrglocationSignatoryDTO signDto = new OrglocationSignatoryDTO();
+			signDto.setAssociateId(sign.getUserId().getId());
 			signDto.setFirstName(sign.getUserId().getFirstName());
 			if(StringUtils.isNotBlank(sign.getUserId().getLastName()))
 				signDto.setLastName(sign.getUserId().getLastName());
@@ -207,6 +208,41 @@ public class OrglocationSignatoryServiceImpl implements OrglocationSignatoryServ
 		
 		return result;
 	
+	}
+
+
+	@Override
+	public String addLoginUserAsCompanyOrglocationSignatory(User loginUser, OrgLocations orgLocations)
+			throws Exception {
+		
+		String result = "invalid";
+		
+		try {
+			
+			OrglocationSignatory signatory = new OrglocationSignatory();
+			signatory.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			signatory.setStatus(Constants.RECORD_ACTIVE);
+			signatory.setFirstName(loginUser.getFirstName());
+			signatory.setLastName(loginUser.getLastName());
+			signatory.setEmail(loginUser.getEmail());
+			signatory.setSsn(loginUser.getSsn());
+			
+			UserRole userRole = userRoleService.getUserDetailsByEmailAndLocationId(loginUser.getEmail(), orgLocations.getId());
+			signatory.setUserRoleId(userRole);
+			signatory.setUserId(userRole.getUser());
+		
+			if(StringUtils.isNotBlank(loginUser.getMobilePhone())) {
+				signatory.setPhone(loginUser.getMobilePhone());
+			}
+			orgLocations.setIsCompanyOnboarded(Constants.YES);
+			orgLocationsDao.updateOrgLocations(orgLocations);
+			saveOrglocationSignatory(signatory);
+			
+			result = "success";
+		} catch (Exception e) {
+			
+		}
+		return result;
 	}
 
 }

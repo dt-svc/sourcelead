@@ -110,6 +110,7 @@ public class EmailServiceImpl implements EmailService {
 			 emailMessage.setCreatedBy(user.getUserCode());
 			 emailMessage.setFromEmail(user.getEmail());
 			 emailMessage.setFromName(fullName);
+			 emailMessage.setFirstName(fullName);
 			 emailMessage.setEmailType(Constants.EMAIL_CAMPAIGN);
 			 
 			 signature = sourceleadSignatureService.buildSignature(user, orgLocation);
@@ -119,14 +120,16 @@ public class EmailServiceImpl implements EmailService {
 			 globalVarsMap.put("salutation", hotListEmailCampaignDTO.getSaluation());
 			 globalVarsMap.put("body", hotListEmailCampaignDTO.getBodytext());
 			 
-			 EmailScenario emailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.EMAIL_TO_USERS,Constants.ENTITY_TYPE_EMAIL);
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(hotListEmailCampaignDTO.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 
-			
-			 
-			 String url = sourceleadUrl;
+			 EmailScenario  emailScenario = null;
+			 if(orgLocation != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.EMAIL_TO_USERS,Constants.ENTITY_TYPE_EMAIL, orgLocation.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EMAIL_TO_USERS,Constants.ENTITY_TYPE_EMAIL);
+			   }
+			  //covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidTemplateSubject(hotListEmailCampaignDTO.getSubject(),globalVarsMap,emailScenario);
+				 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+				 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg(),orgLocation);

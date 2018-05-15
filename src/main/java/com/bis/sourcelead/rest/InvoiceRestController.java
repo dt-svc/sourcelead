@@ -46,6 +46,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.dto.PaymentAccountDTO;
+import com.bis.sourcelead.entity.PaymentAccount;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
@@ -115,6 +118,8 @@ import com.bis.sourcelead.web.LoginSessionController;
 public class InvoiceRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(InvoiceRestController.class);
+	@Autowired
+	private OrgService orgService;
 	@Autowired
 	private CommonUtil commonUtil;
 	@Autowired
@@ -445,6 +450,9 @@ public class InvoiceRestController {
 		for (Invoice invoice : invoiceFilterList) {
 			BillingDTO billingDto = new BillingDTO();
 			boolean isInvoiceDueDate = false;
+                        if(invoice.getPaymentAccount() != null) {
+				invoice.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null));
+			}
 			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(invoice.getOrgRelationID().getId());
 			if (orgRelations.getLocationId().getId().longValue() == orgLocations.getId().longValue()) {
 				billingDto.setClientName(orgRelations.getResponderLocationId().getOrgLocationName());
@@ -493,6 +501,11 @@ public class InvoiceRestController {
 			}
 			if (null != invoice.getRejectReason()) {
 				billingDto.setRejectReason(invoice.getRejectReason());
+			}
+			if(invoice.getParentInvoiceId() != null) {
+				if(invoice.getParentInvoiceId().getPaymentAccount() != null) {
+					billingDto.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getParentInvoiceId().getPaymentAccount().getId(), null));
+				}
 			}
 			billingDto.setInvoiceUUID(invoice.getInvoiceUUID());
 			billingDto.setTotal(String.format("%.2f", Float.valueOf(invoice.getTotal())));
@@ -672,6 +685,9 @@ public class InvoiceRestController {
 			invoice.setCurrencyCode(invoice.getCurrencyCode());
 			invoice.setDueDateStr(formatter.format(invoice.getDueDate()));
 			invoice.setInvoiceDateStr(formatter.format(invoice.getInvoiceDate()));
+			if(invoice.getPaymentAccount() != null) {
+				invoice.setPaymentAccountDTO(orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null));
+			}
 			// get the Invoice Items List
 			List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.invoiceLineItemsByInvoiceIdAndOrglocationId(Id, orgLocations.getId());
 			for (InvoiceLineItems inviceLine : invoiceLineItemsList) {
@@ -696,7 +712,7 @@ public class InvoiceRestController {
 					inviceLine.setStartDateStr(formatter.format(inviceLine.getStartDate()));
 				}
 				if (null != inviceLine.getEndDate()) {
-					inviceLine.setEndDtaeStr(formatter.format(inviceLine.getEndDate()));
+					inviceLine.setEndDateStr(formatter.format(inviceLine.getEndDate()));
 				}
 				if (null != inviceLine.getCandidate()) {
 					if (null != inviceLine.getCandidate().getConsultantUser()) {
@@ -936,7 +952,7 @@ public class InvoiceRestController {
 				// Candidate candidate =
 				// candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
 				Candidate candidate = projectMember.getProjectMemberCandidteId();
-				if (candidate != null && "C2C".equalsIgnoreCase(candidate.getDesignationType())) {
+				if (candidate != null && ("C2C".equalsIgnoreCase(candidate.getDesignationType()) || "C2C-1099".equalsIgnoreCase(candidate.getDesignationType()))) {
 					projectMember.setSubmissionApproverHierarchyId(sah.getId());
 					projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
 					/*
@@ -1135,36 +1151,24 @@ public class InvoiceRestController {
 		StringBuilder stringBuildforLink = new StringBuilder();
 		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		EmailScenario emailScenario = null;
+		
+		//send mail logic
+		List<EmailAttachment> attachmentList = new ArrayList<>();
+		
+		//send notification logic
 		EmailScenario notificationScenario = null;
-		// getting the current EmailScenario by EmailScenario unique name and
-		// entity type
-		// using same migration which has been already used in
-		// updatedRequirementMailToManager method
 		if (invoiceType.equalsIgnoreCase("Payables")) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_EMAIL);
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList);
 			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 		}
 		else {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,attachmentList);
 			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 		}
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 		notificationScenario.setBody(notificationbody);
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
-		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		StringBuilder notificationLink = new StringBuilder();
 		String actionLink = "";
-		// Invoice invoice2=getInvoicetByParentId(invoice.getId());
+		StringBuilder notificationLink = new StringBuilder();
 		if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
 			actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
 					+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
@@ -1174,6 +1178,8 @@ public class InvoiceRestController {
 					+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
 		}
 		emailScenerioUtil.sendNotification(actionLink, loginUser, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
+		
+		
 	}
 	
 	@RequestMapping(value = "/rejectInvoice", method = RequestMethod.POST)
@@ -1248,44 +1254,33 @@ public class InvoiceRestController {
 		StringBuilder stringBuildforLink = new StringBuilder();
 		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		EmailScenario emailScenario = null;
-		EmailScenario notificationScenario = null;
-		// getting the current EmailScenario by EmailScenario unique name and
-		// entity type
-		// using same migration which has been already used in
-		// updatedRequirementMailToManager method
-		if (invoiceType.equalsIgnoreCase("Payables")) {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_EMAIL);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-		}
-		else {
-			emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_EMAIL);
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
-		}
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
-		notificationScenario.setBody(notificationbody);
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
-		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-		StringBuilder notificationLink = new StringBuilder();
-		String actionLink = "";
-		if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
-			actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
-					+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
-		}
-		else {
-			actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
-					+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
-		}
-		emailScenerioUtil.sendNotification(actionLink, loginUser, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
+		
+			    //send mail logic
+		        List<EmailAttachment> attachmentList = new ArrayList<>();
+			    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL,attachmentList);
+		
+		        //send notification logic
+				EmailScenario notificationScenario = null;
+				if (invoiceType.equalsIgnoreCase("Payables")) {
+					notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+				}
+				else {
+					notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
+				}
+				String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+				notificationScenario.setBody(notificationbody);
+				String actionLink = "";
+				StringBuilder notificationLink = new StringBuilder();
+				if (Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)) {
+					actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+							+ invoice.getInvoiceUUID() + "&invoiceType=Payables").toString();
+				}
+				else {
+					actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="
+							+ invoice.getInvoiceUUID() + "&invoiceType=Receivable").toString();
+				}
+				emailScenerioUtil.sendNotification(actionLink, loginUser, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
+		
 	}
 	
 	/**
@@ -1534,16 +1529,18 @@ public class InvoiceRestController {
 	 */
 	@RequestMapping(value = "/generateAutomaticInvoice", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Integer> generateAutomaticInvoice(@RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request) throws Exception
+	public Response<InvoiceDTO> generateAutomaticInvoice(@RequestParam(value = "invoiceType", required = false) String invoiceType, @RequestParam(value = "contractType", required = false) String contractType, HttpServletRequest request) throws Exception
 	{
-		Response<Integer> response = new Response<>();
+		Response<InvoiceDTO> response = new Response<>();
+		InvoiceDTO invoiceDTO = new InvoiceDTO();
 //		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Integer savedInvoiceCount = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user, contractType);
 //		resultJson = commonUtil.toJSON(savedInvoiceCount);
-		response.setObject(savedInvoiceCount);
+		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
+		response.setObject(invoiceDTO);
 		return response;
 	}
 	
@@ -1916,5 +1913,13 @@ public class InvoiceRestController {
 		List<ProjectMembers> associatesList = projectMembersService.getVendorAssignedMembersForProjects(projectId, orgLocationId, orgRelationId);
 		responseList.setData(associatesList);
 		return responseList;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/getAllPaymentAccountList", method = RequestMethod.GET)
+	public List<PaymentAccountDTO> getAllPaymentAccountList(@RequestParam(value = "orgRelationId", required = false) Long orgRelationId) throws Exception {
+		OrgRelations orgRealation =  orgRelationsService.getOrgRelationById(orgRelationId); 
+		List<PaymentAccountDTO> paymentAccountList = orgService.getPaymentAccountList(orgRealation.getResponderLocationId().getOrg().getId(), orgRealation.getResponderLocationId().getId(),true);
+		return paymentAccountList;
 	}
 }

@@ -1,8 +1,11 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -20,9 +23,13 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
+import com.bis.sourcelead.entity.InvoiceTax;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -37,6 +44,9 @@ public class AssetDaoImpl implements AssetDao{
 	
 	@Autowired
 	private UserRoleDao userRoleDao;
+	
+	@Autowired
+    OrgLocationService orgLocationService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -241,22 +251,39 @@ public class AssetDaoImpl implements AssetDao{
 			subquery2 = " and " +subquery2;
 		}
 		
+		
+		Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+	   Matcher matcher = pattern.matcher(assetDTO.getSearchValue());
+	   java.sql.Date sqlDate = null;
+	    if(matcher.matches() == true) {
+					if(assetDTO.getSearchValue().contains("/")||(assetDTO.getSearchValue().contains("-"))) {
+						String replacedValue = assetDTO.getSearchValue().replaceAll("/", "-");
+						    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
+							SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+					        java.util.Date utilDate = format.parse(replacedValue);
+					        sqlDate = new java.sql.Date(utilDate.getTime());
+					}
+	    }
 		StringBuilder query1 = new StringBuilder("");
 		if(assetDTO.getSearchValue() !=null && !"".equalsIgnoreCase(assetDTO.getSearchValue())) {
 		 query1.append("and (asset.slno like '%" + assetDTO.getSearchValue() + "%' ")
 		       .append("OR asset.assetCategory.categoryName like '%" + assetDTO.getSearchValue() + "%' ")
 		       .append("OR asset.model like '%" + assetDTO.getSearchValue() + "%' ")
-		       .append("OR (shiftAUser.firstName like '" + assetDTO.getSearchValue() + "%' OR shiftAUser.lastName like '%" + assetDTO.getSearchValue() + "' )")
-			   .append("OR (concat(shiftAUser.firstName,shiftAUser.lastName) like '%" + assetDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
-			   .append("OR (shiftBUser.firstName like '" + assetDTO.getSearchValue() + "%' OR shiftBUser.lastName like '%" + assetDTO.getSearchValue() + "' )")
-			   .append("OR (concat(shiftBUser.firstName,shiftBUser.lastName) like '%" + assetDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
+		       .append("OR asset.macAddress like '%" + assetDTO.getSearchValue() + "%' ")
 			   .append("OR asset.workingStatus like '%" + assetDTO.getSearchValue() + "%' )");
+		    if(sqlDate != null) {
+		    	query1.append("OR asset.issueDate like '%" + sqlDate + "%' ");
+			 }
 					
 		}
-		String query = "from Asset asset left join fetch asset.shiftAEmployee.user shiftAUser left join fetch asset.shiftBEmployee.user  shiftBUser where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subquery1+" "+subquery2+" "+query1+" "+sortingQry+""; 
+		String subQuery = "";
+		if(StringUtils.isNotEmpty(assetDTO.getShiftIds())) {
+			subQuery = " and asset.id NOT IN ( select aa.asset.id from AssetAssign aa where aa.shift.id IN("+assetDTO.getShiftIds()+"))";
+		}
+		String query = "from Asset asset  where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subQuery+subquery1+" "+subquery2+" "+query1+" "+sortingQry+""; 
 		List<Asset> assetList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		
-		String queryStrForCount = "Select count (*) from Asset asset   where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subquery1+" "+subquery2+" " ;
+		String queryStrForCount = "Select count (*) from Asset asset   where asset.orgLocations.id = :orgLocationId and asset.status = '1' "+subQuery+subquery1+" "+subquery2+" " ;
 		countlist = session.createQuery(queryStrForCount.toString()).setLong("orgLocationId", orgLocationId).list();
 		
 		int totalCount = 0;
@@ -281,12 +308,75 @@ public class AssetDaoImpl implements AssetDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional
-	public List<Asset> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long userId) throws Exception {
+	public List<AssetAssign> getUserBasedAssetManagementListandOrgLocation(Long orgLocationId, Long userId) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String subQuery = "select employee.id from Employees employee where employee.user.id = :userId and  employee.orgLocations.id = :orgLocationId";
-		String query = "from Asset asset where asset.orgLocations.id = :orgLocationId and ((asset.shiftAEmployee.id IN("+subQuery+")) OR (asset.shiftBEmployee.id IN("+subQuery+") )) and asset.status = '1' ";
-		List<Asset> assetList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+		String query = "from AssetAssign assetAssign left join fetch assetAssign.asset where assetAssign.asset.orgLocations.id = :orgLocationId and assetAssign.userRole.user.id =:userId ";
+		List<AssetAssign> assetList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
       return assetList;
 	}
 
+	@Override
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<AssetAssign> getAssignAssetListByAssetId(Long assetId) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from AssetAssign assetAssign left join fetch assetAssign.shift left join fetch assetAssign.userRole where assetAssign.asset.id = :assetId and assetAssign.status = '1'";
+		List<AssetAssign> assignAssetList = session.createQuery(query).setLong("assetId", assetId).list();
+		return assignAssetList;
+	}
+
+	@Override
+	@Transactional
+	public AssetAssign getAssignAssetByAssetId(Long assetId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		return (AssetAssign) session.get(AssetAssign.class, assetId);
+	}
+
+	@Override
+	@Transactional
+	public AssetAssign saveAssetAssign(AssetAssign assetAssign) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (assetAssign != null) {
+				session.saveOrUpdate(assetAssign);
+			}
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ASSET_ASSIGN"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return assetAssign;
+	}
+
+	@Override
+	@Transactional
+	public List<AssetAssign> getAssignAssetListByShiftId(Long shiftId) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from AssetAssign assetAssign where assetAssign.shift.id = :shiftId ";
+		List<AssetAssign> assignAssetList = session.createQuery(query).setLong("shiftId", shiftId).list();
+		return assignAssetList;
+	}
+
+	@Override
+	@Transactional
+	public void deleteAssignAssetByAssignId(AssetAssign assetAssign) throws Exception {
+		Session session =  this.sessionFactory.getCurrentSession();
+		try {
+			if(assetAssign != null) {
+				session.delete(assetAssign);
+			}
+		}catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"ASSET_ASSIGN"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+	}
+
+	@Override
+	@Transactional
+	public AssetAssign getAssignAssetById(Long id) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		return (AssetAssign) session.get(AssetAssign.class, id);
+	}
+	 
+	
+	 
 }

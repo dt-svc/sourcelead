@@ -87,6 +87,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -180,6 +181,8 @@ public class RequirementServiceImpl implements RequirementService {
 	
 	@Autowired
 	private RequirementLocationsService requirementLocationsService;
+	@Autowired
+	private OrgSpocService orgSpocService;
 	
 	
 	@Override
@@ -494,8 +497,7 @@ public class RequirementServiceImpl implements RequirementService {
 			client = requirementDTO.getSelectClient().split(",")[0];
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getSelectContact())) {
-			OrgSpoc orgSpoc = new OrgSpoc();
-			orgSpoc.setId(Long.parseLong(requirementDTO.getSelectContact()));
+			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(requirementDTO.getSelectContact()));
 			requirement.setSpocId(orgSpoc);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getClientCurrencyCode())) {
@@ -836,7 +838,7 @@ public class RequirementServiceImpl implements RequirementService {
 					}
 				}
 			}
-				
+			
 			if(UUIDList != null && !UUIDList.isEmpty()) {
 				UUIDList.retainAll(savedUUIDList);
 				savedUUIDList.removeAll(UUIDList);
@@ -981,6 +983,13 @@ public class RequirementServiceImpl implements RequirementService {
 		 */
 		
 		Requirement savedRequirement = requirementDao.storeRequirement(requirement);
+		
+		List<RequirementLocations> requirementLocationList = requirementLocationsService.getRequirementLocationsListByRequirementId(savedRequirement.getId());
+		if(requirementLocationList != null && !requirementLocationList.isEmpty()) {
+			for(RequirementLocations requirementLocation : requirementLocationList) {
+				location.append(requirementLocation.getLocation()).append("<br>");
+			}
+		}
 		
 		if(requirementDTO.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:requirementDTO.getCustomFormData()) {
@@ -1148,16 +1157,8 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("RequirementTitle", requirement.getJobTitle());
 		}
-		StringBuilder stringBuild = new StringBuilder();
-		if (requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
-		}
-		else if (requirement.getState() != null && !"".equalsIgnoreCase(requirement.getState())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
-		}
-		else if (requirement.getCountry() != null
-				&& !"".equalsIgnoreCase(requirement.getCountry())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).toString());
+		if (location != null) {
+			globalVarsMap.put("RequirementLocation",location.toString() );
 		}
 		else {
 			globalVarsMap.put("RequirementLocation", "--");
@@ -1229,26 +1230,16 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("LoginOrgName", "--");
 		}
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
 		// using same migration which has been already used in
 		// updatedRequirementMailToManager method
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_EMAIL_TO_MANAGER, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER, Constants.ENTITY_TYPE_NOTIFICATION);
 		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.UPDATED_REQUIREMENT_EMAIL_TO_MANAGER,new ArrayList<EmailAttachment>());
 		String actionLink = "";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, assUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
@@ -1306,6 +1297,7 @@ public class RequirementServiceImpl implements RequirementService {
 		if(requirement.getSpocId() != null){
 			globalVarsMap.put("clientContactname", requirement.getSpocId().getClientLocationId().getOrgLocationName());
 		}
+			globalVarsMap.put("managerName", managerUser.getFullName());
 		/*if (managerUser.getFirstName() != null && managerUser.getLastName() != null
 				&& !"".equalsIgnoreCase(managerUser.getFirstName())
 				&& !"".equalsIgnoreCase(managerUser.getLastName())) {
@@ -1354,24 +1346,12 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("LoginOrgName", "--");
 		}
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		// getting the current EmailScenario by EmailScenario unique name and
-		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_EMAIL_TO_MANAGER, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATED_REQUIREMENT_NOTIFICATION_TO_MANAGER, Constants.ENTITY_TYPE_NOTIFICATION);
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.UPDATED_REQUIREMENT_EMAIL_TO_MANAGER,null);
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
 	     actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
@@ -1400,20 +1380,29 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("RequirementTitle", "--");
 		}
-		StringBuilder stringBuild = new StringBuilder();
-		if (requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
-		}
-		else if (requirement.getState() != null && !"".equalsIgnoreCase(requirement.getState())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
-		}
-		else if (requirement.getCountry() != null
-				&& !"".equalsIgnoreCase(requirement.getCountry())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).toString());
-		}
-		else {
-			globalVarsMap.put("RequirementLocation", "--");
-		}
+		
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String location = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							location = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							location = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+			globalVarsMap.put("RequirementLocation", location);
 		StringBuilder sb = new StringBuilder();
 		if ((requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()))
 				&& (requirement.getMaxRate() != null
@@ -1481,26 +1470,16 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("requirementManagerName", "--");
 		}
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR, Constants.ENTITY_TYPE_NOTIFICATION);
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		// OrgLocations vendorOrgLoc =
 		// requirement.getSpocId().getVendorLocationId();
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR,new ArrayList<EmailAttachment>());
 		String actionLink = "";
 		// emailScenerioUtil.sendNotification(actionLink, loginUser, vendorUser,
 		// vendorOrgLoc, notificationScenario);
@@ -1646,6 +1625,26 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("requirementName", "--");
 		}
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String Reqlocation = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							Reqlocation = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							Reqlocation = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		if (location != null) {
 			globalVarsMap.put("requirementLocation", location.toString());
 		}
@@ -1707,7 +1706,7 @@ public class RequirementServiceImpl implements RequirementService {
 			globalVarsMap.put("loginUserName", userBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
 		}
 		else {
-			globalVarsMap.put("loginUserName", loginUser.getLastName());
+			globalVarsMap.put("loginUserName", loginUser.getFirstName());
 		}
 		if (loginOrgLocation.getOrgLocationName() != null
 				&& !"".equalsIgnoreCase(loginOrgLocation.getOrgLocationName())) {
@@ -1734,29 +1733,20 @@ public class RequirementServiceImpl implements RequirementService {
 		 * .append(" ").append(emailMessage.getLastName()).toString());
 		 * emailRecipientList.add(emailRecipient);
 		 */
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		StringBuilder actionLinkStringBuilder = new StringBuilder();
 		String actionLink = actionLinkStringBuilder.append(sourceleadUrl).append("/requirementSummary?requirementUUID=").append(requirement.getRequirementUUID()).toString();
 		// String actionLink=
 		// sourceleadUrl"/requirementSummary?requirementUUID="+requirement.getRequirementUUID()+"";
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendNotification(actionLink, loginUser, approverUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.REQUIREMENT_EMAIL_NOTIFICATION,new ArrayList<EmailAttachment>());
 	}
 	
 	@Override
@@ -1775,8 +1765,31 @@ public class RequirementServiceImpl implements RequirementService {
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		globalVarsMap.put("requirementName", requirement.getJobTitle());
-		if (location != null) {
-			globalVarsMap.put("requirementLocation", location.toString());
+		
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String Reqlocation = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							Reqlocation = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							Reqlocation = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		
+		if (Reqlocation != null) {
+			globalVarsMap.put("requirementLocation", Reqlocation);
 		}
 		else {
 			globalVarsMap.put("requirementLocation", "--");
@@ -1830,24 +1843,13 @@ public class RequirementServiceImpl implements RequirementService {
 		 * .append(" ").append(emailMessage.getLastName()).toString());
 		 * emailRecipientList.add(emailRecipient);
 		 */
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocations.getOrg(), orgLocations);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.REQUIREMENT_SEQUENTIAL_EMAIL_NOTIFICATION,new ArrayList<EmailAttachment>());
 		StringBuilder notificationLink = new StringBuilder();
 		 String actionLink = notificationLink.append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 
@@ -1942,24 +1944,11 @@ public class RequirementServiceImpl implements RequirementService {
 		 * .append(" ").append(emailMessage.getLastName()).toString());
 		 * emailRecipientList.add(emailRecipient);
 		 */
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		// getting the current EmailScenario by EmailScenario unique name and
-		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVED_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPROVED_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocations.getOrg(), orgLocations);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.APPROVED_EMAIL_NOTIFICATION,new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();
 		emailScenerioUtil.sendNotification(actionLink, loginUser, intiatorUser, orgLocations, notificationScenario,new HashMap<String,String>());
@@ -2156,10 +2145,10 @@ public class RequirementServiceImpl implements RequirementService {
 		if (managerUser.getFirstName() != null
 				&& !"".equalsIgnoreCase(managerUser.getFirstName())) {
 			StringBuilder sb = new StringBuilder();
-			globalVarsMap.put("OwnerName", sb.append(managerUser.getFirstName()).append(" ").append(managerUser.getLastName()).toString());
+			globalVarsMap.put("Ownername", sb.append(managerUser.getFirstName()).append(" ").append(managerUser.getLastName()).toString());
 		}
 		else {
-			globalVarsMap.put("OwnerName", "--");
+			globalVarsMap.put("Ownername", "--");
 		}
 		if (loginUser.getFirstName() != null && !"".equalsIgnoreCase(loginUser.getFirstName())) {
 			globalVarsMap.put("JobInitiator", loginUser.getFirstName());
@@ -2273,24 +2262,14 @@ public class RequirementServiceImpl implements RequirementService {
 		 * .append(" ").append(emailMessage.getLastName()).toString());
 		 * emailRecipientList.add(emailRecipient);
 		 */
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAILREQUIREMENTTOMANAGER, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAILREQUIREMENTTOMANAGER, Constants.ENTITY_TYPE_NOTIFICATION);
 		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAILREQUIREMENTTOMANAGER,new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();		 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, managerUser, loginOrgLocation, notificationScenario,new HashMap<String,String>());
@@ -2430,24 +2409,14 @@ public class RequirementServiceImpl implements RequirementService {
 		 * .append(" ").append(emailMessage.getLastName()).toString());
 		 * emailRecipientList.add(emailRecipient);
 		 */
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ASSIGNTEAMMEMBERSFORREQUIREMENT, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ASSIGNTEAMMEMBERSFORREQUIREMENT, Constants.ENTITY_TYPE_NOTIFICATION);
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocations.getOrg(), orgLocations);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.ASSIGNTEAMMEMBERSFORREQUIREMENT,new ArrayList<EmailAttachment>());
+
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();		 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, assUser, orgLocations, notificationScenario,new HashMap<String,String>());
@@ -2545,24 +2514,13 @@ public class RequirementServiceImpl implements RequirementService {
 		 * .append(" ").append(emailMessage.getLastName()).toString());
 		 * emailRecipientList.add(emailRecipient);
 		 */
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTED_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTED_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.REJECTED_EMAIL_NOTIFICATION,new ArrayList<EmailAttachment>());
 
 		StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
@@ -2664,24 +2622,15 @@ public class RequirementServiceImpl implements RequirementService {
 		 * .append(" ").append(emailMessage.getLastName()).toString());
 		 * emailRecipientList.add(emailRecipient);
 		 */
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTED_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REJECTED_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.REJECTED_EMAIL_NOTIFICATION,new ArrayList<EmailAttachment>());
+
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, requirement.getManagerUserId(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
@@ -2714,20 +2663,18 @@ public class RequirementServiceImpl implements RequirementService {
 		else {
 			globalVarsMap.put("RequirementTitle", "--");
 		}
+		
 		StringBuilder stringBuild = new StringBuilder();
-		if (requirement.getCity() != null && !"".equalsIgnoreCase(requirement.getCity())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).append(",").append(requirement.getCity()).toString());
-		}
-		else if (requirement.getState() != null && !"".equalsIgnoreCase(requirement.getState())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).append(",").append(requirement.getState()).toString());
-		}
-		else if (requirement.getCountry() != null
-				&& !"".equalsIgnoreCase(requirement.getCountry())) {
-			globalVarsMap.put("RequirementLocation", stringBuild.append(requirement.getCountry()).toString());
-		}
-		else {
+		List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+		if(locationsList != null && !locationsList.isEmpty()) {
+			for(RequirementLocations location : locationsList) {
+				stringBuild.append(location.getLocation()).append("<br>");
+			}
+			globalVarsMap.put("RequirementLocation", stringBuild.toString());
+		}else {
 			globalVarsMap.put("RequirementLocation", "--");
 		}
+		
 		StringBuilder sb = new StringBuilder();
 		if ((requirement.getRate() != null && !"".equalsIgnoreCase(requirement.getRate()))
 				&& (requirement.getMaxRate() != null
@@ -2801,22 +2748,31 @@ public class RequirementServiceImpl implements RequirementService {
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RELEASEMECHANISM_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.RELEASEMECHANISM_EMAIL_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
 		// covert subject,body and signature
+		
+	/*	
 		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
 		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
 		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
 		String url = sourceleadUrl;
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		*/
+		
+		
+		
+		
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
 		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
+		//String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(), loginOrgLocation);
+		//emailMessage.setSubject(subject);
+		//emailMessage.setMessageBody(emailTemplate);
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.RELEASEMECHANISM_EMAIL_NOTIFICATION,new ArrayList<EmailAttachment>());
+		
+		//emailScenerioUtil.sendEmail(emailMessage, loginOrgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContactUser, vendorOrgLoc, notificationScenario,new HashMap<String,String>());
@@ -3186,11 +3142,14 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getJobType())) {
 			reqTemplate.setJobType(requirementDTO.getJobType());
+		}else {
+			reqTemplate.setJobType(null);
+			reqTemplate.setOtherJobType(null);
 		}
-		if (StringUtils.isNotBlank(requirementDTO.getOtherJobType())
+		if (StringUtils.isNotBlank(requirementDTO.getJobOtherType())
 				&& StringUtils.isNotBlank(requirementDTO.getJobType())
 				&& "Other".equalsIgnoreCase(requirementDTO.getJobType())) {
-			reqTemplate.setOtherJobType(requirementDTO.getOtherJobType());
+			reqTemplate.setOtherJobType(requirementDTO.getJobOtherType());
 		}
 		else {
 			reqTemplate.setOtherJobType(null);
@@ -3209,9 +3168,13 @@ public class RequirementServiceImpl implements RequirementService {
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationYears())) {
 			reqTemplate.setProjectDurationYears(requirementDTO.getProjectDurationYears());
+		}else {
+			reqTemplate.setProjectDurationYears(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getProjectDurationMonths())) {
 			reqTemplate.setProjectDurationMonths(requirementDTO.getProjectDurationMonths());
+		}else {
+			reqTemplate.setProjectDurationMonths(null);
 		}
 	
 		if (StringUtils.isNotBlank(requirementDTO.getRate())) {
@@ -3800,22 +3763,12 @@ public class RequirementServiceImpl implements RequirementService {
 		
 		StringBuilder linkBuild = new StringBuilder();
 		globalVarsMap.put("viewJobLink", linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("jobCampaignSummary?requirementUUID=").append(requirement.getRequirementUUID()).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Job</div></a>").toString());
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHARE_RECOMENDED_APPLICANT, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHARE_RECOMENDED_APPLICANT_NOTIFICATION,
 				Constants.ENTITY_TYPE_NOTIFICATION);
 		 
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
- 
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url, orgLocation.getOrg(), orgLocation);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
-		emailScenerioUtil.sendEmail(emailMessage, orgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.SHARE_RECOMENDED_APPLICANT,new ArrayList<EmailAttachment>());
 		// calling the sendNotification method of emailScenerioUtil
-		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append(sourceleadUrl).append("/jobCampaignSummary?requirementUUID=").append(requirement.getRequirementUUID()).toString();
@@ -3854,6 +3807,12 @@ public class RequirementServiceImpl implements RequirementService {
     public ResponseList<RequirementDTO> getRequirementList(Long id, String search, Long location, String employmentType, int pageNo, int pageSize) {
         return requirementDao.getRequirementList(id, search, location, employmentType, pageNo, pageSize);
     }
+
+	@Override
+	public List<RequirementDTO> getAllManagerRequirementForJobSharing(Date[] searchDates,
+			Long managerUserId,Long orgLocationId) throws Exception {
+		return requirementDao.getAllManagerRequirementForJobSharing(searchDates, managerUserId,orgLocationId);
+	}
         
         
 	

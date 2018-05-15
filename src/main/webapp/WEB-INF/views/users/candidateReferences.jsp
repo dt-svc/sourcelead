@@ -308,10 +308,17 @@
 		result = result + '</div>';
 		result = result + '</div>';
 
-		result = result + '<div class="clearfix mb10">';
+		result = result + '<div class="clearfix mb">';
 		result = result + '<div class="col-md-12" id="emailDivId">';
-		result = result
-				+ '<input type="text" name="email" field-name="Email" id="email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+');">';
+		
+		result = result + '<div class="input-group errorInptgroup">';
+		result = result+ '<input type="text" name="email" field-name="Email" id="email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+');">';
+		result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
+		result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
+		result = result + '</i>';
+		result = result + '</span>';
+	  	result = result + '</div>';
+		
 		result = result + '</div>';
 		result = result + '</div>';
 
@@ -393,6 +400,7 @@ function validateReferenceEmail(candidateId,referId){
 	}
 	var email = $("#email").val();
 	 $('#emailDivId').find('p.jquery_form_error_message').remove();
+	 if (email != null && email != "") {
 	$.ajax({
 			type : "POST",
 			url : sourceleadUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email,
@@ -408,6 +416,7 @@ function validateReferenceEmail(candidateId,referId){
 		        	} else {
 		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#emailDivId').find('p.jquery_form_error_message').remove(); 
+		        		 validateEmailForExistenceUniversally(email, "input#email");
 		        	}
 				} else if (response.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
@@ -416,7 +425,10 @@ function validateReferenceEmail(candidateId,referId){
 				}
 			},
 		});
-	
+	 }else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
+	 }
 }
 </script>
 <script type="text/javascript">
@@ -679,12 +691,16 @@ function validateReferenceEmail(candidateId,referId){
 					result = result + '</div>';
 					result = result + '</div>';
 
-					result = result
-							+ '<div class="clearfix mb10">';
-					result = result
-							+ '<div class="col-md-12" id="emailDivId">';
-					result = result
-							+ '<input type="text" name="email" field-name="Email" id="email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+','+json.id+');">';
+					
+					result = result+ '<div class="clearfix mb10">';
+					result = result+ '<div class="col-md-12" id="emailDivId">';
+					result = result + '<div class="input-group errorInptgroup">';
+					result = result+ '<input type="text" name="email" id="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+','+json.id+');">';
+					result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
+					result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
+					result = result + '</i>';
+					result = result + '</span>';
+					result = result + '</div>';
 					result = result + '</div>';
 					result = result + '</div>';
 

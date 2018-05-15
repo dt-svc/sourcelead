@@ -59,7 +59,7 @@
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadProjectTasks'/>'">
+										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadProjectTasks?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}'/>'">
 								</div>
 							</div>
 						</div>

@@ -1682,9 +1682,9 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }  
           
 .remove_search input {
-    margin: 0px; border: none; border-bottom: 1px solid #bdbdbd; padding: 3px 25px 3px 5px; background-color: transparent;
+    margin: 0px; border: none; /*border-bottom: 1px solid #f2f2f2;*/ padding: 3px 25px 3px 5px; background-color: transparent;
     width: 210px; background-image: url("../images/search-icon.png"); background-repeat: no-repeat; background-position: 98% center;
-    background-size: 16px;         
+    background-size: 16px; border-bottom: 1px solid rgba(151,151,151, 0.2);
     }
 .remove_search input:focus {
     border-bottom: 1px solid #368ee0;
@@ -2730,7 +2730,9 @@ margin: 6px 0px 0px 0px;
      right:160px; 
     display:block;
     }
-     
+.app_error_mes_full {
+	white-space: normal !important;
+} 
 .ts_app_error_mes {
     width: 300px; background-color: #FFF; border-radius: 3px;position: absolute;right: 0px; top: 15px;z-index: 1000;
     padding: 15px 20px; box-shadow: 0px 0px 8px rgba(0,0,0,0.5);font-size: 14px; border: 1px solid #368ee0;
@@ -3484,16 +3486,16 @@ font-size: 20px; color: #FF4141; padding: 4px 0px 0px 0px; display: inline-block
     background-color:#454545;
 }
 .welBtns input.Brig {
-    background-color: #247ac9; border: 1px solid #1269b8; float: right;
+    background-color: #3EC9A7; border: 1px solid #3EC9A7; float: right;
 }
 .welBtns input.Brig:hover {
-    background-color:#1269b8;
+    background-color:#3ABE9E;
 }
 .welBtns input.skipBtn {
-    background-color: #c98124; border: 1px solid #b4711b; float: right; margin: 0px 6px 0px 0px;
+    background-color: #fff; border: 1px solid #C2C5C8; float: right; margin: 0px 6px 0px 0px; color: #6C7686;
 }
 .welBtns input.skipBtn:hover {
-    background-color:#b4711b;
+    background-color:#f1f1f1;
 }
 .welCo1 .jquery_form_error_message {
 font-size: 13px; color: #FF5722; position: absolute; line-height: 14px;
@@ -4643,7 +4645,15 @@ display:none;
 .editNewDat .fa-floppy-o {
     float: right; color: #368ee0; cursor: pointer; padding: 4px 5px 0px 0px; font-size: 18px;
 }
- 
+.editSignature {
+    position: absolute; top: -5px; left: 22px; width: 80%; display: none;
+}
+.editSignature .fa-floppy-o {
+    color: #368ee0; cursor: pointer; padding: 4px 5px 0px 0px; font-size: 18px;
+}
+.editSignature .chosen-container-single .chosen-single {
+    height: 30px !important; line-height: 30px !important;
+} 
  
 .ExpBudget {
     padding-top:15px;
@@ -4856,7 +4866,7 @@ float: none !important;
 }
 .landTempCta {
     width: 33%; float: left; margin:0px 0px 15px 0px !important; border-radius: 4px; padding:15px 20px;
-    border: 1px solid #ededed;
+    border: 1px solid #ededed; min-height: 115px;
 }
 .landTempCta h2 {
     padding: 0px 0px 8px 0px; margin: 0px 0px; font-size: 16px;
@@ -5533,10 +5543,10 @@ width: 95%; border: none; background: transparent; font-size: 14px; color: #666;
 font-size: 17px; font-weight: 500; color: #454545;
 }
 .timeAppUse-show ul li .fa {
-	width: 15px; text-align: right;
+width: 15px; text-align: right;
 }
-.taskDropDown  .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
-	width: 125px !important;
+.taskDropDown .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+width: 125px !important;
 }
 .erMesMid {
 position: relative;
@@ -5687,18 +5697,6 @@ padding:2px 10px 5px 10px;
 }
 .immigraTabsWrapFixed {
 	margin: 50px 0px 0px 0px !important;
-}
-.tableStyles-timesheet table thead th {
-	font-weight: 500px; font-size: 15px;
-}
-.tableStyles-timesheet table tbody tr th {
-	background: #0f9fa1; color: #fff;
-}
-.tableStyles-timesheet table tbody tr+tr th {
-	background: #e58339; color: #fff;
-}
-.tableStyles-timesheet table tbody tr+tr+tr th{
-	background: #18a245; color: #fff;
 }
 
 /*    Responsive CSS    */
@@ -6166,22 +6164,25 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	display:block; background-color: #fff; margin: 0px auto; position: relative; 
 	padding:10px 5px; font-size: 14px; font-weight: 400; color: #787878;
 	border-right: 1px solid #fff; border-bottom: 1px solid #dedede; border-top: 1px solid #dedede;
+	min-height: 60px;
 }
 .comLogHeadNew ul li {
 	width: 20% !important;  border-bottom: 1px solid #dedede; border-top: 1px solid #dedede;
 }
 .comLogHead ul li.hoverLi {
-    background-color: #f6f6f6; color: #368ee0; border-bottom: 1px solid #368ee0; border-top: 1px solid #368ee0;
+    background-color: #6C7686;; color: #fff; border-bottom: 1px solid #6C7686; border-top: 1px solid #6C7686;
 }
 .comLogHead ul li.actLi {
-    background-color: #398ddd; color: #fff; border-bottom: 1px solid #368ee0; border-top: 1px solid #368ee0;
+    background-color: #6C7686; color: #fff; border-top: 1px solid #6C7686; -webkit-box-shadow: inset 0 -15px 0px -6px #5ACC95;
+    -moz-box-shadow: inset 0 -15px 0px -6px #5ACC95; box-shadow: inset 0 -15px 0px -6px #5ACC95;
+	border-bottom: 1px solid #5ACC95;
 }
 .comLogHead ul li .fa-check-circle {
-	display: inline-block; padding: 0px 0px 0px 10px; font-size: 16px;
+	display: inline-block; padding: 0px 0px 0px 10px; font-size: 16px; color: #5ACC95;
 }
 .comLogContent {
     background-color: rgba(255,255,255,1); border-radius: 2px; padding: 20px 20px; margin: 3px 0px 0px 0px;
-    box-shadow: 0px 0px 3px rgba(0,0,0,0.3);
+    box-shadow: 0px 0px 3px rgba(0,0,0,0.3); color: #6C7686;
 }
 .comLogContent h2 {
 	padding: 0px 0px 20px 0px; margin: 0px 0px; font-size: 18px; color: #545454; font-weight: 400;
@@ -6190,10 +6191,10 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	padding: 10px 0px 10px 0px; margin: 0px 0px 10px; font-size: 17px; color: #545454; font-weight: 400;
 }
 .comLogContent h4 {
-	padding: 5px 0px 8px 0px; margin: 0px 0px 5px 0px; font-size: 16px; color: #545454; font-weight: 400;
+	padding: 5px 0px 8px 0px; margin: 0px 0px 0px 0px; font-size: 16px; color: #545454; font-weight: 400;
 }
 .comLogContent strong {
-	font-weight: 500; color: #454545;
+	font-weight: 500; color: #5D6388;
 }
 .comProImg {
 	padding: 12px; background-color: #fff; border-radius: 2px; box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
@@ -6375,6 +6376,9 @@ position: absolute;
 .immigraCountHead ul li:first-child + li + li + li + li {
 	border-top: 4px solid #ff8686;;
 }
+.immigraCountHead ul li:first-child + li + li + li + li + li{
+	border-top: 4px solid #dcd740;;
+}
 .immigraCountHead ul li span {
 	float: left; display: block; width: 50px; text-align: center;
 }
@@ -6401,6 +6405,9 @@ position: absolute;
 .immigraCountHead ul li:first-child + li + li + li + li p b {
 	color: #e96060;
 }
+.immigraCountHead ul li:first-child + li + li + li + li + li p b {
+	color: #dcd740;
+}
 .immigraInnWrap {
 }
 .immigraInnWrap .timesheet_head {
@@ -6417,26 +6424,29 @@ position: absolute;
 	padding: 52px 0px 0px 0px;
 }
 .content-wraperNew .content-header {
-	box-shadow: 0px 0px 3px #999; background-color: #fff; padding: 15px 20px 15px; border-bottom:2px solid #dedede;
+	box-shadow: 0px 0px 3px #999; background-color: #fff; padding: 15px 20px 15px; 
 }
 .immigraHead {
-	padding: 10px 0px 0px 0px;
+	padding: 10px 0px 0px 0px; background-color: #F8F8F8;
 }
 .immigraTabs {
-    margin:0px 0px; padding:0px 0px 0px 0px;
+    margin:0px; padding:0px 0px 0px 0px; text-align: center;
     }
 .immigraTabs li {
-    float:left; background-color:#fff; list-style-type:none; border-bottom:2px solid #dedede;
-	 position: relative; top: 2px;
+    background-color: #F8F8F8; list-style-type:none; border-bottom:2px solid #F8F8F8;
+	position: relative; display: inline-block;
     }
 .immigraTabs li.current {
-    position:relative; background-color:#fff; z-index:5; border-bottom:2px solid #368ee0;
+    position:relative; background-color:#F8F8F8; z-index:5; border-bottom:2px solid #3EC9A7;
     }
 .immigraTabs li a {
-    padding:7px 20px 9px; text-decoration:none; font-size:15px; color:#666; display:block;
+    padding:9px 15px; text-decoration:none; font-size:14px; color:#666; display:block;
     }
+.immigraTabs li a i {
+	display: inline-block; padding: 0px 5px 0px 0px;
+}
 .immigraTabs .current a{
-    color:#1d6cb5;
+    color:#3EC9A7;
     }
 .immigraTabsWrap {
     width:100%; box-sizing:border-box; padding: 15px 20px;
@@ -6537,7 +6547,7 @@ position: absolute;
 	overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 50%; display: inline-block;
 }
 .immigraPagi {
-	background-color: #fff; margin: 2px 0px 0px 0px;
+	background-color: #fff; margin: 1px 0px 0px 0px; border-bottom: 1px solid #e0e0e0;
 }
 .immiPagiText {
 	float: left; padding: 10px 15px 0px; font-size: 14px; font-weight: 400; color: #666;
@@ -6574,7 +6584,7 @@ position: absolute;
 }
 .immigraDetailsCta h2 {
 	position: relative; padding: 12px 16px; margin: 0px 0px; background-color: #f5f5f5; border-radius: 5px 5px 0px 0px;
-	font-size: 16px; font-weight: 500; color: #545454;
+	font-size: 15px; font-weight: 500; color: #545454;
 }
 .immigraDetailsCta h2 i {
 	position: absolute; top: 7px; right: 15px; color: #368ee0; padding: 5px; cursor: pointer;
@@ -7513,7 +7523,7 @@ font-weight: 500;
 }
 
 .cheBoxOut {
-	background-color: #fff; width: auto; margin: 15px 15px; padding: 10px 0px;
+	background-color: #E6E8F4; width: auto; margin: 15px 15px; padding: 10px 0px; border-radius: 3px;
 }
 .payRoTabs {
 	padding: 0px 0px 0px 3px; position: relative; z-index: 10;
@@ -7931,3 +7941,167 @@ text-align: center; color: #EF5350;
 .connCtaBtn u {
 	text-decoration: none; padding: 8px 0px 0px 0px; display: inline-block;
 }
+
+
+.colCho {
+padding: 7px 0px 0px 10px;
+}
+.colCho .fa-filter {
+padding: 0px 0px; font-size: 14px;
+}
+
+.colPop {
+position: absolute; width: 300px; left: 10px; right: 0px; top: 37px; background-color: #fff; z-index: 10000;
+box-shadow: 2px 6px 12px rgba(0,0,0,.175); display: none;
+}
+.colPopMid {
+padding: 15px; max-height: 280px; overflow: auto;
+}
+.colPopMid ul {
+float: none; padding: 0px 0px 0px 0px; width: 100%;
+}
+.colPopMid ul li {
+display: block; width: 100%; float: none; padding: 6px 0px; margin: 0px 0px;
+}
+.colPopMid .checkbox-custom:checked + .checkbox-custom-label:before{
+margin: 0px 15px 0px 0px;
+}
+.colPopMid .checkbox-custom + .checkbox-custom-label:before, .radio-custom + .radio-custom-label:before {
+margin: 0px 15px 0px 0px;
+}
+.colPopFot {
+padding: 8px 15px; border-top: 1px solid #c7c7c7; text-align: right;
+}
+.colPopFot a {
+display: inline-block; width: 100px; padding: 0px 0px; border: 1px solid #ccc; border-radius: 4px; text-align: center;
+font-size: 12px; color: #6C7686; margin: 0px 0px 0px 10px; height: 30px; line-height: 28px;
+}
+.colPopMid.coldropdown-parent {
+padding: 15px; overflow: inherit; max-height:350px; border: 1px solid #ddd;
+}
+.colPopMid.coldropdown-parent .coldropdown-inner {
+height: 250px; overflow: auto; border-top: 1px solid #c7c7c7;
+}
+.colPopMid.coldropdown-parent ul li{
+padding-bottom: 0;
+}
+.accDetHead {
+	margin: 0px 30px; padding: 0px 0px 5px 30px; font-size: 15px; font-weight: 500; color: #454545;
+}
+.invoicePopRg ul {
+	top: -24px !important; left: 15px !important;
+}
+.menupop_2 .close-div.closediv-small {
+	left: 440px !important;
+}
+.menupop_1 .close-div.closediv-small {
+	left: 190px !important;
+}
+.menupop_3 .close-div.closediv-small {
+	left: 290px !important;
+}
+
+
+
+.blogWrap {
+	padding: 5px 10px;
+}
+.blHd {
+	padding: 0px 0px 12px 0px; margin: 0px 0px; font-size: 18px; font-weight: 400; color: #3f625a;
+}
+.blogImg {
+	background: #f5f5f5; padding: 5px; text-align: center;
+}
+.blogImg img {
+	width: auto; max-width: 90%;
+}
+.blogpreviewContent p {
+	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 14px; line-height: 21px;
+}
+.blogpreviewContent h2, .blogpreviewContent h3, .blogpreviewContent h4, .blogpreviewContent h5 {
+	font-size: 18px; font-weight: 400; color: #454545; padding: 15px 0px 10px 0px;
+}
+.blogpreviewContent ul {
+	padding: 0px 0px 10px 20px; margin: 0px 0px 10px 0px;
+}
+.blogpreviewContent ul li {
+	list-style-type: disc; padding: 5px 0px;
+}
+.blogpreviewContent ul li a {
+	display: inline-block; color: #368ee0;
+}
+.blogpreviewContent ul li a:hover {
+	text-decoration: underline;
+}
+.blogpreviewContent ol {
+padding: 0px 0px 10px 20px; margin: 0px 0px 10px 0px;
+}
+.blogpreviewContent ol li {
+list-style-type: inherit; padding: 5px 0px;
+}
+.blogpreviewContent ol li a {
+display: inline-block; color: #368ee0;
+}
+.blogpreviewContent ol li a:hover {
+text-decoration: underline;
+}
+
+.blogpreviewContent iframe {
+	display: block; margin: 15px 0px;
+}
+
+
+.immHeadWrap {
+	padding: 0px 0px 10px 0px;
+}
+.immHead {
+	background-color: #5C6471; padding: 12px 2px;
+}
+.immHead h2, .immHead h3, .immHead p {
+	padding: 3px 0px; margin: 0px 0px; font-size: 16px; color: #fff; font-weight: 500;
+}
+.immHead h3 {
+	font-size: 13px; font-weight: 400;
+}
+.immHead p {
+	font-size: 13px; font-weight: 400; padding: 2px 0px;
+}
+.immHead p strong {
+	display: inline-block; width:80px; opacity: 0.8; font-weight: 400;
+}
+.immHeadactions {
+	padding: 10px 20px 0px 0px;
+}
+.immHead span {
+	background-color: #3EC9A7; padding: 5px 25px; border-radius: 13px; font-size: 14px; font-weight: 400;
+	color: #fff; float: right; 
+}
+.immHeadactions a {
+	position: relative; display: block; float: right; margin: 0px 0px 0px 10px; color: #fff;
+}
+.immHeadactions a i {
+	font-size: 20px; padding: 5px; display: inline-block;
+}
+.immHeadactions a ul {
+	position: absolute; width: 170px; background-color: #fff; top: 30px; right: -10px; z-index: 100; border-radius: 4px;
+	box-shadow: 0 6px 12px rgba(0,0,0,.175); padding: 6px; display: none;
+}
+.immHeadactions a ul li {
+	list-style-type: none; border-top: 1px solid #ccc; color: #454545; font-size: 13px; padding: 8px;
+}
+.immHeadactions a ul li:first-child {
+	border-top: none; 
+}
+.immHeadactions a ul li:hover {
+	color: #5ACC95;
+}
+.immFoot {
+	background-color: #f8f8f8; padding: 10px 15px;
+}
+.teHeight {
+min-height: 300px !important;
+}
+
+
+
+

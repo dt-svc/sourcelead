@@ -76,7 +76,7 @@
 					         <span class="pull-left">
 						         <c:forEach var="attachmentList" items="${sourceleadTicketsAttachmentsList}">
 							         <strong id='ticketDocument${attachmentList.id}'>
-					    		     <i class=''><a class='glyphicon glyphicon-save' href="${attachmentList.fileURL}" title='download'></a></i>
+					    		     <i class=''><a   class='glyphicon glyphicon-save' href="${attachmentList.fileURL}" title='download' download></a></i>
 									 <input type='button' title="${attachmentList.fileName}"   value='${attachmentList.fileName}' style="cursor:initial !important">
 									  <a href="javascript:void(0)" class="fa fa-eye pull-left paddingLeft ml5 mt anchorBlack" title="view attachment" onclick="viewFile('${attachmentList.fileURL}','${attachmentList.fileName}','${attachmentList.fileType}')"></a>
 									  </strong>

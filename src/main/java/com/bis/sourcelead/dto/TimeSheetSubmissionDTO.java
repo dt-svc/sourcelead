@@ -92,6 +92,17 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	
 	private int incrStartsFrom;
 
+	//Single Day Saving Purpose
+    private String timeFrequency;
+	
+	private Long projectMemberId;
+	
+    private Long userId;
+	
+	private String locationCode;
+	
+	String timesheetFor;
+	
 	public Long getId() {
 		return id;
 	}
@@ -402,6 +413,46 @@ public class TimeSheetSubmissionDTO implements Serializable{
 
 	public void setIncrStartsFrom(int incrStartsFrom) {
 		this.incrStartsFrom = incrStartsFrom;
+	}
+
+	public String getTimeFrequency() {
+		return timeFrequency;
+	}
+
+	public void setTimeFrequency(String timeFrequency) {
+		this.timeFrequency = timeFrequency;
+	}
+
+	public Long getProjectMemberId() {
+		return projectMemberId;
+	}
+
+	public void setProjectMemberId(Long projectMemberId) {
+		this.projectMemberId = projectMemberId;
+	}
+
+	public String getTimesheetFor() {
+		return timesheetFor;
+	}
+
+	public void setTimesheetFor(String timesheetFor) {
+		this.timesheetFor = timesheetFor;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getLocationCode() {
+		return locationCode;
+	}
+
+	public void setLocationCode(String locationCode) {
+		this.locationCode = locationCode;
 	}
 	
 	

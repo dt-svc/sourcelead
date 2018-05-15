@@ -29,6 +29,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * 
@@ -48,6 +49,7 @@ public class Org implements Serializable{
 	private Long id;
 	
 	@Column(name = "ORG_NAME")
+	@JsonProperty
 	private String orgName;
 	
 	@Column(name = "WEBSITE")

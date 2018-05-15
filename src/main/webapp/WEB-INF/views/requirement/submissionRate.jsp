@@ -131,7 +131,7 @@ width: auto;
 									  <p class="reason-msg">You are not interested for the position <B> ${requirementSubmission.requirement.jobTitle}</B></p>
 								  </div>
 								  <div class="col-md-6" id="rejectIdDiv">
-									  <div class="col-md-12">
+									  <div class="col-md-12" id="rejectReasonDiv">
 										  <label>Reason for Reject</label>
 										  <textarea class="form-control" rows="2" placeholder="Reason" id="rejectId"></textarea>	
 									  </div>
@@ -222,24 +222,28 @@ width: auto;
 			var submissionId = '${submissionId}';
 			var type = '${type}';
 			var rejectreason = document.getElementById("rejectId").value;
-			var frm = $('#reject_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+"/ws/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason+"&type="+type,
-						success : function(data) {
-							if(data == "success"){
-								$('#rejectIdDiv').empty();
-								$('#rejectIdDiv').append("<span>Your Rejected Reason is submitted successfully !!</span>");	
-							}else if(data == "failure"){
-								$('#rejectIdDiv').empty();
-								$('#rejectIdDiv').append("<span>Your decision is already submitted !!</span>");	
-							}
-						},
-					});
-			       
+			if(rejectreason != null && rejectreason != ''){
+				var frm = $('#reject_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				
+				$.ajax({
+							type : "POST",
+							url : sourceleadUrl+"/ws/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason+"&type="+type,
+							success : function(data) {
+								if(data == "success"){
+									$('#rejectIdDiv').empty();
+									$('#rejectIdDiv').append("<span>Your Rejected Reason is submitted successfully !!</span>");	
+								}else if(data == "failure"){
+									$('#rejectIdDiv').empty();
+									$('#rejectIdDiv').append("<span>Your decision is already submitted !!</span>");	
+								}
+							},
+						});
+			}else{
+				$("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
+				$("#rejectReasonDiv").after("<p class='jquery_form_error_message'>Rejected reason is required</p>");
+			}
 	} 
 </script>
 
@@ -291,7 +295,7 @@ width: auto;
 						data: formData,
 						processData: false,
 					    contentType:false, 
-						url : sourceleadUrl+'/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
+						url : sourceleadUrl+'/ws/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
 						success : function(data) {
 							if (data.response === "FAILED") {
 					    		showError(data.responseMessage);

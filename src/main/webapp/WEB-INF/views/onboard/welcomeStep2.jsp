@@ -138,7 +138,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Street Address 1 <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="address1" data-validation="required validate_Space" field-name="Street Address 1" id="address1" value="${SourceLeadWeb_candidateOnBoarding.address1}">
+				<input type="text" class="form-control input-sm" name="address1" data-validation="required validate_Space" field-name="Street Address 1" id="address1" value="${!empty candidateOnBoarding.address1 ? candidateOnBoarding.address1 : ''}">
 			  </div>
 			</div>
 		</div>
@@ -146,7 +146,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Street Address 2</label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" name="address2" data-validation-optional="true" data-validation="validate_Space" id="address1" value="${SourceLeadWeb_candidateOnBoarding.address2}">
+				<input type="text" class="form-control input-sm" name="address2" data-validation-optional="true" data-validation="validate_Space" id="address1" value="${candidateOnBoarding.address2}">
 			  </div>
 			</div>
 		</div>
@@ -195,7 +195,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Zipcode</label>
 			  <div class="col-md-8">
-				 <input type="text" class="form-control input-sm" id="onBoardZipCode" name="zipCode" value="${SourceLeadWeb_candidateOnBoarding.zipCode}"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-10" >
+				 <input type="text" class="form-control input-sm" id="onBoardZipCode" name="zipCode" value="${!empty candidateOnBoarding.zipCode ? candidateOnBoarding.zipCode : '' }"  data-validation-optional="true"  data-validation="validate_Space validate_length length1-10" >
 			  </div>
 			</div>
 		</div>	
@@ -203,7 +203,7 @@
 			<div class="form-group">
 			  <label class="col-md-4 control-label">Mobile number <span class="text-danger paddingLeft">*</span></label>
 			  <div class="col-md-8">
-				<input type="text" class="form-control input-sm" id="mobileNumber" value="${SourceLeadWeb_candidateOnBoarding.mobileNumber}" name="mobileNumber" >
+				<input type="text" class="form-control input-sm" id="mobileNumber" value="${candidateOnBoarding.mobileNumber}" name="mobileNumber" >
 			  </div>
 			</div>
 		</div>

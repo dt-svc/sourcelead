@@ -33,8 +33,13 @@ $(document).ready(function() {
 	zipcodeMask('${requirement.country}','ReqZipCode');
 });
 </script>
+<script>
+  $(function() { 
+		tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+		tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education Options');
 
-
+	});
+ </script>
 <script type="text/javascript">
 		window.onload = function () {
 			getNoticePeriodList();
@@ -389,7 +394,7 @@ $(document).ready(function () {
             </div>
             
         <div class="form-group" >
-            <label class="col-md-3">Experience Level ${requirement.experienceLevel.name}</label>
+            <label class="col-md-3">Experience Level</label>
             <div class="col-md-9 dropdown-select"> 
             <select name="experienceLevel" id="experienceLevel">
             	<option value="">--Select Level--</option>
@@ -519,7 +524,9 @@ $(document).ready(function () {
                          <div class="col-md-9">
                            <div class="input-group">
                               <input type="text"  name="closedDate" class="form-control calendar" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
-                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+
+                              <span class="input-group-addon" onClick="clearCloseDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+
                            </div>
                         </div>
                   </div>
@@ -1513,7 +1520,7 @@ $(document).ready(function () {
 </section>
 
 <div id="divLocTd1" style="display: none; float: left;">
-    <div class='positionRelative'>
+    <div class='positionRelative' id="locationErrMsgREPLACEROWID">
 		 <input type="text"  placeholder="Location" onclick="addLocationAuto('REPLACEROWIDaddlocation','REPLACEROWID','REPLACEROWIDlongitude','REPLACEROWIDlatitude')" class="form-control joblocinput" id="REPLACEROWIDaddlocation" name="locationInfo[REPLACEROWID].locationName"  data-validation="required" field-name="Location" > 
 	     <div class="fa fa-refresh btn btn-primary refresh-icon" title="Clear" onClick="refreshLocation('REPLACEROWID');"></div>
 	     <input type="hidden"  name="locationInfo[REPLACEROWID].country" id="REPLACEROWIDcountry">
@@ -1532,15 +1539,16 @@ $(document).ready(function () {
 <script>
 function changeValidationType() {
 	var isVisible	= $("div[name=fieldVisible]").attr("data-visible");
-	
 	if(isVisible == 'N'){
 		$("div[name=fieldVisible] input").each(function() {
 			if($(this).attr('data-check') && ($(this).attr('data-check') === true || $(this).attr('data-check') === "true")){
-				if($(this).attr('data-validation') && $(this).attr('data-validation') === "required") {
+				if($(this).attr('data-validation') && $(this).attr('data-validation').indexOf("required") !== -1) {
 					$(this).attr('data-validation-optional', 'true');
+					$(this).attr('data-valid1', $(this).attr('data-validation'))
 					$(this).removeAttr('data-validation');
 				} else if($(this).attr('data-validation-optional')) {
-					$(this).attr('data-validation', 'required');
+					$(this).attr('data-validation', $(this).attr('data-valid1'));
+					$(this).removeAttr('data-valid1');
 					$(this).removeAttr('data-validation-optional');
 				}
 			}
@@ -1860,14 +1868,6 @@ function storeTeam(){
 	})(jQuery);
 </script>
 
-<script>
-  $(function() { 
-		tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
-		tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education Options');
-
-	});
- </script>
-
 
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
 <script type="text/javascript">
@@ -2128,8 +2128,8 @@ function setTemplateValues(){
 			    	
 			    	//$("textarea#description").val(json.description);
 			    	if(json.description != null && json.description != '' && json.description != 'undefined'){
-			    	$('#txtEditor').text(json.description);
-			    	$('.Editor-editor').text(json.description);
+			    	$('#txtEditor').html(json.description);
+			    	$('.Editor-editor').html(json.description);
 			    	}else{
 			    	$('#txtEditor').text('');	
 			    	$('.Editor-editor').text('');
@@ -2845,7 +2845,11 @@ $(document).ready(function(){
 
 
 <script>
-function clearDate(){
+
+	
+
+function clearCloseDate(){
+
 	$("#closedDate").val("");
 	document.getElementById("receivingApplicantsDiv").style.display="none";
 	if (document.getElementById('receivingApplicantsId').checked){
@@ -2897,32 +2901,39 @@ function removeReqDoc(requirementId){
  <script>
 function refreshRequirementClientList(){
 		 var selectedOrgId = '${contract.orgRelations.id}';
+		 var loginOrgLocId = '${SourceLeadWeb_orgLocationId}';
 		 $.ajax({
 	      type : "POST",
 	       url: sourceleadUrl+"/refreshRequirementClientList",       
-	       success: function(json) {
-	        	var output = "";
-	        	output = output + "<option value=''>Select Client</option>"; 
-	        	for (var i=0; i<json.length; i++)
-				{
-		        		var opt = json[i];
-		        		if(opt.id == selectedOrgId){
-		        			output = output + "<option value='"+opt.id+"' selected>"+opt.orgName+"</option>";
-		        		}else{
-		        			output = output + "<option value='"+opt.id+"' >"+opt.orgName+"</option>";
-		        		}
-		        		
-				}
-	        	$("#addClientId").empty();
-	        	 $("#selectContact").empty();
-	        	 $("#selectContact").trigger("chosen:updated");
-		        $("#addClientId").append(output);
-		        $('#addClientId').trigger("chosen:updated");
-		        
+	       success: function(result) {
+	    	   if (result.response === "SESSION_TIMEDOUT") {
+	  				location.replace(sourceleadUrl);
+               } else if (result.response === "AWKWARD") {
+                   location.href = "/errorPage";
+               } else if (result.response === "SUCCESS") {
+            	    if(result.data != null && result.data != "" && result.data != 'undefined'){
+            	    	var json = result.data;
+			        	var output = "";
+			        	output = output + "<option value=''>--Select Client--</option>"; 
+			        	for (var i=0; i<json.length; i++)
+						{
+			        		var opt = json[i];
+			        		output = output + "<option value='"+opt.id+","+opt.locationID+"' >"+opt.orgName+"</option>";
+						}
+            	    }
+		        	$("#addClientId").empty();
+		        	$("#selectContact").empty();
+		        	$("#selectContact").trigger("chosen:updated");
+			        $("#addClientId").append(output);
+			        $('#addClientId').trigger("chosen:updated");
+               } else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+			   } else {
+                   showError("Operation failed, please try again");
+               }
 	        }
 		 });
-	
-}
+	}
 </script>
 
 <script>
@@ -3072,8 +3083,18 @@ function addNewLocation(){
 
 <script>
 function removeLocationRow(rowId){
+	$('#locationErrMsg'+rowId).find('p.jquery_form_error_message').remove();
 	
-	var addedDocumentsRowCount = document.getElementById("locationsRowCount").value;
+	 document.getElementById("divLocationRow"+rowId).style.display = 'none';
+	 document.getElementById("divLocationRow"+rowId).value= '';
+	 var  rId = "divLocationRow"+rowId;
+	  var r = document.getElementById("locationTable").rows[rId];
+     var count = 2*(r.cells.length);
+	    for(i=0;i<=count;i++){
+	        r.deleteCell(0);
+	    } 
+	    
+	/* var addedDocumentsRowCount = document.getElementById("locationsRowCount").value;
 	 $("input[id = 'locationsRowCount']").val(parseInt(addedDocumentsRowCount) - 1);
 	 
 	 var documentsRow = document.getElementById("locationsRowCount").value;
@@ -3082,10 +3103,11 @@ function removeLocationRow(rowId){
 	 document.getElementById("divLocationRow"+rowId).value= '';
 	 var  rId = "locationsRowCount"+rowId;
 	  var r = document.getElementById("locationsRowCount").rows[rId];
+	  
      var count = 2*(r.cells.length);
 	    for(i=0;i<=count;i++){
 	        r.deleteCell(0);
-	    } 
+	    }  */
 }
 </script>
 

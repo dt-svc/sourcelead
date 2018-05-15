@@ -1001,12 +1001,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("firstName", emailMessage.getFirstName());
-		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 globalVarsMap.put("FirstName", emailMessage.getFirstName());
+		 globalVarsMap.put("LastName",emailMessage.getLastName());
 		 globalVarsMap.put("administratorFirstName", "SourceLead");
 		 globalVarsMap.put("administratorLastName","Admin");
 		 globalVarsMap.put("role",user.getUserType());
-		 globalVarsMap.put("userEmailId",user.getEmail()); //
+		 globalVarsMap.put("UserEmailId",user.getEmail()); //
 		 LinkedList<String> frequency = new LinkedList<>();
 		 StringBuilder tempHTML = new StringBuilder();
 		 tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
@@ -1044,8 +1044,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
-		
+		 EmailScenario  emailScenario = null;
+		 if(orgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+			   }
 		 //covert subject,body and signature
 		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
@@ -1361,32 +1365,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 			}
 		 globalVarsMap.put("projectName", projects.getProjectName());
 		 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrgLocationName());
-		  
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_MANAGER,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 if(null != projects.getOrgLocationsId())
-		 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.EDITPROJECT_MAIL_MANAGER,new ArrayList<EmailAttachment>());
 		 
 		//calling the sendNotification method of emailScenerioUtil
 		EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
-		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
@@ -1434,31 +1419,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 globalVarsMap.put("projectName", projects.getProjectName());
 		 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrgLocationName());
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 if(null != projects.getOrgLocationsId())
-		 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.EDITPROJECT_MAIL_TEAMMEMBER,new ArrayList<EmailAttachment>());
 		 
 		//calling the sendNotification method of emailScenerioUtil
 		EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_NOTIFICATION);
-		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
@@ -1477,8 +1444,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	        	 
                if(StringUtils.isNotBlank(projectDTO.getProjectSequeneNumber())){
 			    	 projects.setProjectSequeneNumber(projectDTO.getProjectSequeneNumber());
+			     }else {
+			    	 projects.setProjectSequeneNumber(null); 
 			     }
-		        
 		        
 		    	projects.setProjectName(projectDTO.getProjectName());
 		    	
@@ -1659,7 +1627,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    			}
 			    		}
 			    		
-			    		if(templist != null && !templist.isEmpty()){
+			    	
+		    		/*if(templist != null && !templist.isEmpty()){
 			    			//getting projectmember userId's who are added to the project
 			    			freshlist.removeAll(templist);
 			    			if(freshlist != null && !freshlist.isEmpty()){
@@ -1671,7 +1640,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    				}
 			    			}
 			    			
-			    		}
+			    		}*/
+			    		
+			    		
+			    		
 			    		 /**
 			    		  * Storing Submission Approver Hierarchy Records based on Changes Made Against Level1 and Level2 Approvers
 			    		  */
@@ -2318,19 +2290,23 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 globalVarsMap.put("firstName", emailMessage.getFirstName());
-			 globalVarsMap.put("lastName",emailMessage.getLastName());
+			 globalVarsMap.put("FirstName", emailMessage.getFirstName());
+			 globalVarsMap.put("LastName",emailMessage.getLastName());
 			 globalVarsMap.put("administratorFirstName", user.getFirstName());
 			 globalVarsMap.put("administratorLastName",user.getLastName());
 			 globalVarsMap.put("role",user.getUserType());
-			 globalVarsMap.put("userEmailId",user.getEmail()); //
-			 globalVarsMap.put("weekFrequency",tempHTML.toString());
+			 globalVarsMap.put("UserEmailId",user.getEmail()); //
+			 globalVarsMap.put("WeekFrequency",tempHTML.toString());
 			 //setting the Recipient information
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_MANAGER_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
-			
+			 EmailScenario  emailScenario = null;
+			 if(orgLocations != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.TIMESHEET_MANAGER_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_MANAGER_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+				   }
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
 			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
@@ -2443,56 +2419,34 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			
 			
 			
-			private void assignedNewUserAsaassignedProjectManager(User loginUser, User assUserName, Long userId, OrgLocations orgLocations,Integer projectApproverCount) throws Exception {
-				 EmailMessage emailMessage = new EmailMessage();
-				 emailMessage.setFirstName(loginUser.getFirstName());
-				 emailMessage.setLastName(loginUser.getLastName());
-				 emailMessage.setToEmail(assUserName.getEmail());
-				 emailMessage.setFromEmail(loginUser.getEmail());
-				 emailMessage.setCreatedBy(loginUser.getUserCode());
-				 StringBuilder msgBuild = new StringBuilder();
-				emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-				emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-				//setting the class filed values
-				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 	 User termentaedUserName = userService.getUserById(userId);
-					 globalVarsMap.put("loginUser", loginUser.getFullName());
-					 globalVarsMap.put("assignedUser", assUserName.getFirstName());
-					 globalVarsMap.put("reqCount", projectApproverCount.toString());
-					 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
-					 StringBuilder loginBuilder = new StringBuilder();
-					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-				  
-				  
-				
-				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-				
-				 //getting the current EmailScenario by EmailScenario unique name and entity type
-				 //using same migration which has been already used in updatedRequirementMailToManager method
-				 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER,Constants.ENTITY_TYPE_EMAIL);
-				 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER,Constants.ENTITY_TYPE_NOTIFICATION);
-			
-				 
-				 //covert subject,body and signature
-				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-				 String url = sourceleadUrl;
-				 
-				 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
-				 notificationScenario.setBody(notificationbody);
-			
-				 //construct HTML template using required data
-				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-				 emailMessage.setSubject(subject);
-				 emailMessage.setMessageBody(emailTemplate);
-				 
-				 //calling the sendEmail method of emailScenerioUtil
-				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario,new HashMap<String,String>());
-				}
-			
+	private void assignedNewUserAsaassignedProjectManager(User loginUser, User assUserName, Long userId, OrgLocations orgLocations, Integer projectApproverCount) throws Exception
+	{
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(assUserName.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		User termentaedUserName = userService.getUserById(userId);
+		globalVarsMap.put("loginUser", loginUser.getFullName());
+		globalVarsMap.put("assignedUser", assUserName.getFirstName());
+		globalVarsMap.put("reqCount", projectApproverCount.toString());
+		globalVarsMap.put("terminatedUser", termentaedUserName.getFirstName());
+		StringBuilder loginBuilder = new StringBuilder();
+		globalVarsMap.put("loginURL", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER, Constants.ENTITY_TYPE_NOTIFICATION);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		notificationScenario.setBody(notificationbody);
+		// calling the sendEmail method of emailScenerioUtil
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER,new ArrayList<EmailAttachment>());
+		String actionLink = "";
+		emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario, new HashMap<String, String>());
+	}
 			
 
 			/*@Override

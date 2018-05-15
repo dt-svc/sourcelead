@@ -34,23 +34,23 @@ function userAssetManagement(userId){
 				    
 				    var report = json[i];
 				  
-					if (report.model != null && report.model != '' && report.model != 'undefined') {
-						model = report.model;
+					if (report.asset.model != null && report.asset.model != '' && report.asset.model != 'undefined') {
+						model = report.asset.model;
 					}
 					
-					if(report.workingStatus == 'Working'){
+					if(report.asset.workingStatus == 'Working'){
 						selected1 = 'selected';
 					} 
 				
-					if(report.workingStatus == 'Out Of Service'){
+					if(report.asset.workingStatus == 'Out Of Service'){
 						selected2 = 'selected';
 					} 
 
 					result = result+'<tr id="asset'+report.id+'">';
-		   	        result = result+'<td><a href="'+sourceleadUrl+'/assetManagementSummary?assetId='+report.id+'" target="_blank">';
-       		       	result = result +"<div class='proj_show tbldata-dotdot_140 tbldata-dotdot-sm'><span class='pull-left' title='"+report.slno+"'>"+report.slno+"</span><i class='fa fa-binoculars'></i></div>";
+		   	        result = result+'<td><a href="'+sourceleadUrl+'/assetManagementSummary?assetId='+report.asset.id+'" target="_blank">';
+       		       	result = result +"<div class='proj_show tbldata-dotdot_140 tbldata-dotdot-sm'><span class='pull-left' title='"+report.asset.slno+"'>"+report.asset.slno+"</span><i class='fa fa-binoculars'></i></div>";
 				   	result = result+'</a></td>';
-				   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.categoryName+'">'+report.categoryName+'</div></td>';
+				   	result = result+'<td><div class="tbldata-dotdot-sm" title="'+report.asset.categoryName+'">'+report.asset.categoryName+'</div></td>';
 					result = result+'<td><div class="tbldata-dotdot-vsm" title="'+model+'">'+model+'</div></td>';
 				   	
 				   	result = result + ' <td><div class="tbldata-dotdot-100">';
@@ -60,7 +60,7 @@ function userAssetManagement(userId){
 					result = result + ' </select>';
 					result = result + ' </div></td>';
 				   	
-				   	result = result+'<td><div class="tblminwidth-50"><i class="fa fa-trash-o text-danger cursorPointer" onClick="deleteAsset(\''+report.id+'\')";></i></div></td>';
+				   	result = result+'<td><div class="tblminwidth-50"> <a onClick="deleteAssignAsset(\''+report.id+'\')";>Un-Assign</a></div></td>';
 		   	        result = result +'</tr>';
                 }
                 
@@ -97,13 +97,13 @@ function assetmentPagination(){
 </script>
 
 <script type="text/javascript">
-function deleteAsset(assetId){
+function deleteAssignAsset(assignAssetId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure Un-Assign Asset ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement("+assetId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='assetCancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement("+assignAssetId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='assetCancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -142,20 +142,18 @@ function assetCancel(){
 <div id="popUp"></div>
 
 <script>
-function removeAssetManagement(assetId){
+function removeAssetManagement(assignAssetId){
 	 $("#popUp").empty();
 	 $(".project_inn_mask").fadeOut(200);
-	
-	 $("#asset"+assetId).empty();
-	 $("#asset"+assetId).html("<td colspan='7'  id='loading"+assetId+"'></td>");
-	 $("#loading"+assetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-	
+	 $("#asset"+assignAssetId).empty();
+	 $("#asset"+assignAssetId).html("<td colspan='7'  id='loading"+assignAssetId+"'></td>");
+	 $("#loading"+assignAssetId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/removeAssetManagement?"+tokenParamName+"="+tokenValue+"&assetId="+assetId,	    	   
+	    url: sourceleadUrl+"/removeAssocateAssingAssetManagement?"+tokenParamName+"="+tokenValue+"&assignAssetId="+assignAssetId,	    	   
 	    success: function(data) {
 	    	 var table = $('#assetManagementListPagination').DataTable();
-  		     table.row("#asset"+assetId).remove().draw( false );
+  		     table.row("#asset"+assignAssetId).remove().draw( false );
 	    }
    });
 }

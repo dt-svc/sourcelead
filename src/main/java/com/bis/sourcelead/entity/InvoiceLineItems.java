@@ -19,6 +19,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "INVOICE_LINE_ITEMS")
 public class InvoiceLineItems {
@@ -121,15 +123,16 @@ public class InvoiceLineItems {
 	private Long candidateId;
 		
 	@Transient
+	@JsonProperty
 	private String startDateStr;
 	
-	@Transient
-	private String endDtaeStr;
+	
 	
 	@Transient
 	private String employeeId;
 
 	@Transient
+	@JsonProperty 
 	private String endDateStr;
 	
 	@Transient
@@ -355,14 +358,6 @@ public class InvoiceLineItems {
 		this.startDateStr = startDateStr;
 	}
 
-
-	public String getEndDtaeStr() {
-		return endDtaeStr;
-	}
-
-	public void setEndDtaeStr(String endDtaeStr) {
-		this.endDtaeStr = endDtaeStr;
-	}
 
 	public String getEmployeeId() {
 		return employeeId;

@@ -45,6 +45,13 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String role;
 	private String subscribedOrgLocationRoles;
 	private String userloggedInStatus;
+	
+	private String employeeId;
+	private String dateofJoin;
+	private String dateOfTermination;
+	private String employmentType;
+	
+	private String userCode;
 
 
 	
@@ -401,5 +408,46 @@ public class UserDTO extends SearchDTO implements Serializable {
 
 	}
 
+	public String getEmployeeId() {
+		return employeeId;
+	}
+
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+
+	public String getDateofJoin() {
+		return dateofJoin;
+	}
+
+	public void setDateofJoin(String dateofJoin) {
+		this.dateofJoin = dateofJoin;
+	}
+
+	public String getDateOfTermination() {
+		return dateOfTermination;
+	}
+
+	public void setDateOfTermination(String dateOfTermination) {
+		this.dateOfTermination = dateOfTermination;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
+	}
 	
+	
+
 }

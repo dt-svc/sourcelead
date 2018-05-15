@@ -183,8 +183,8 @@ function requirementProfile(requirementUUID){
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +'                <div class="company-logo">';
-				 if(json.fileUrl != null && json.fileUrl != '' && json.fileUrl != 'undefined'){
-				 result = result +'                  <div class="orgImage"> <img onerror="predefineOrgProfileImage(this);" data-id="orgLogoImage" src="'+json.fileUrl+'" alt="Company" title="Company Logo" class="img-responsive"> </div>';
+				 if(json.orgImageUrl != null && json.orgImageUrl != '' && json.orgImageUrl != 'undefined'){
+				 result = result +'                  <div class="orgImage"> <img onerror="predefineOrgProfileImage(this);" data-id="orgLogoImage" src="'+json.orgImageUrl+'" alt="Company" title="Company Logo" class="img-responsive"> </div>';
 				 }
 				 result = result +'                 </div>';
 				 
@@ -580,7 +580,7 @@ function getSubmissionDetails(requirementUUID){
 			        	   result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.phoneNumber+'</div></td>';
 			        	   
 			        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
-			        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+			        	   if(report.submissionStatus == "REJECTED" && report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
 			        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
 			        	   }	
 			        	   result = result + '</div></td>';
@@ -838,16 +838,17 @@ function proposeNewRate(submissionId, candidateId) {
 			processData: false,
 		    contentType:false, 
 			data: formData,
-			url: sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&type="+type,
-				success: function(data) {
-					if (data.response === "FAILED") {
-			    		showError(data.responseMessage);
-			    	} else if (data.response === "AWKWARD") {
+			url : sourceleadUrl+'/ws/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
+				success: function(output) {
+					if (output.response === "FAILED") {
+			    		showError(output.responseMessage);
+			    	} else if (output.response === "AWKWARD") {
 			    		location.href = "/errorPage";
-			    	} else if (data.response === "SUCCESS") {
+			    	} else if (output.response === "SUCCESS") {
 			    		getRateNegotiationDetails(submissionId, candidateId);
 			    	}else {
 			    		showError("Operation failed, please try again");
+			    		$("#add_rate").removeAttr("disabled");
 			    	}
 				},
 			});

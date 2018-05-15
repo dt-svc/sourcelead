@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -63,6 +65,7 @@ import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementInterviewService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -154,6 +157,9 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	CandidateCommentsService candidateCommentsService;
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 
 	@RequestMapping(value = "/app/getCandidateResumes")
 	@ResponseBody ResponseList<CandidateResumes> getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
@@ -414,6 +420,9 @@ public class SubmissionsRestController {
 			Integer totalApplicatsCountForRequirement = 0;
 		   //updating total number of applicants for requrement
 			totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
+			
+			requirement.setRequirementLocations(new HashSet<RequirementLocations>(requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId())));
+			
 			if(totalApplicatsCountForRequirement > 0){
 				requirement.setTotalApplicants(totalApplicatsCountForRequirement); 
 				requirementService.updateRequirement(requirement);
@@ -781,7 +790,9 @@ public class SubmissionsRestController {
 	public RequirementSubmissionTemplateFields getSubmittedCandidateDetailsForRequriement(@RequestParam(value = "submissionId", required = true) Long submissionId) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
-		
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+		/*requirementSubmissionTemplateFields.setSubmissionJsonString(requirementSubmission.getSubmissionTemplateJsonString());
+		requirementSubmissionTemplateFields.setSubmissionJsonStringValue(requirementSubmission.getSubmissionTemplateJsonStringValue());*/
 		return requirementSubmissionTemplateFields;
 	}
 	
@@ -825,12 +836,15 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 				requirementSubmission.setUpdatedDate(new Date());
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
+				if(!orgLocations.getId().equals(requirementSubmission.getCandidate().getOrgLocationId().getId()) && requirementSubmission.getSourceSubmission() != null &&  !requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
+					requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
+				}
 				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
 				response.setObject("success");
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch(Exception e) {
+				e.printStackTrace();
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
@@ -856,17 +870,17 @@ public class SubmissionsRestController {
 		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
-		globalVarsMap.put("managerFirstName", emailMessage.getFirstName());
-		globalVarsMap.put("managerLastName", emailMessage.getLastName());
-		globalVarsMap.put("loginUser", emailMessage.getFromName());
+		globalVarsMap.put("ManagerFirstName", emailMessage.getFirstName());
+		globalVarsMap.put("ManagerLastName", emailMessage.getLastName());
+		globalVarsMap.put("LoginUser", emailMessage.getFromName());
 		//globalVarsMap.put("requirementName", requirement.getJobTitle());
 
 		
 		 if(requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())){
 			 StringBuilder builder=new StringBuilder();
-			 globalVarsMap.put("requirementName", builder.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
+			 globalVarsMap.put("RequirementName", builder.append(requirement.getJobId()).append("-").append(requirement.getJobTitle()).toString());
 		 }else{
-			 globalVarsMap.put("requirementName", requirement.getJobTitle());
+			 globalVarsMap.put("RequirementName", requirement.getJobTitle());
 		 }
 		 
 		 
@@ -887,69 +901,54 @@ public class SubmissionsRestController {
 			 globalVarsMap.put("EmploymentType","--");
 		 }
 		globalVarsMap.put("loginOrgName", loginOrgLocations.getOrgLocationName());
-		globalVarsMap.put("shortListApplicantCount", shotListCount.toString());
+		globalVarsMap.put("ShortListApplicantCount", shotListCount.toString());
 
 		if ((requirement.getMaxExp() == null || requirement.getMaxExp() == "" || requirement.getMaxExp() == "undefiend")
 				&& (requirement.getMinExp() == null || requirement.getMinExp() == ""
 						|| requirement.getMinExp() == "undefiend")) {
-			globalVarsMap.put("requirementExperience", " 0 ");
+			globalVarsMap.put("RequirementExperience", " 0 ");
 		} else if ((requirement.getMaxExp() != null && requirement.getMaxExp() != ""
 				&& requirement.getMaxExp() != "undefiend")
 				&& (requirement.getMinExp() != null && requirement.getMinExp() != ""
 						&& requirement.getMinExp() != "undefiend")) {
 			StringBuilder expSB = new StringBuilder();
-			globalVarsMap.put("requirementExperience", expSB.append(requirement.getMinExp()).append(" - " ).append(requirement.getMaxExp()).toString());
+			globalVarsMap.put("RequirementExperience", expSB.append(requirement.getMinExp()).append(" - " ).append(requirement.getMaxExp()).toString());
 		} else if ((requirement.getMaxExp() != null && requirement.getMaxExp() != ""
 				&& requirement.getMaxExp() != "undefiend")
 				&& (requirement.getMinExp() == null || requirement.getMinExp() == ""
 						|| requirement.getMinExp() == "undefiend")) {
-			globalVarsMap.put("requirementExperience", requirement.getMaxExp());
+			globalVarsMap.put("RequirementExperience", requirement.getMaxExp());
 		} else if ((requirement.getMaxExp() == null || requirement.getMaxExp() == ""
 				|| requirement.getMaxExp() == "undefiend")
 				&& (requirement.getMinExp() != null && requirement.getMinExp() != ""
 						&& requirement.getMinExp() != "undefiend")) {
-			globalVarsMap.put("requirementExperience", requirement.getMinExp());
+			globalVarsMap.put("RequirementExperience", requirement.getMinExp());
 		}
 		if (requirement.getRate() != null && requirement.getRate() != "" && requirement.getRate() != "undefiend") {
 			StringBuilder rateSB = new StringBuilder();
-			globalVarsMap.put("requirementRate", rateSB.append(requirement.getRate()).append(" ").append(requirement.getRateType()).toString());
+			globalVarsMap.put("RequirementRate", rateSB.append(requirement.getRate()).append(" ").append(requirement.getRateType()).toString());
 		}
 		if (requirement.getSkills() != null && requirement.getSkills() != ""
 				&& requirement.getSkills() != "undefiend") {
-			globalVarsMap.put("requirementSkill", requirement.getSkills());
+			globalVarsMap.put("RequirementSkill", requirement.getSkills());
 		}
 
 		StringBuilder loginURLBuilder = new StringBuilder();
 		globalVarsMap.put("LoginURL", loginURLBuilder.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		
-		// setting the Recipient information
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		EmailScenario emailScenario = null;
-		emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHORTLIST_APPLICANTS,
-				Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.SHORTLIST_NOTIFICATION_MANAGER,
 				Constants.ENTITY_TYPE_NOTIFICATION);
 
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
 
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getSubject(),globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getSubject(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 		
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, loginOrg,loginOrgLocations);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, loginOrgLocations.getId(), iAdressArray,
-				new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocations.getOrg(),loginOrgLocations,Constants.SHORTLIST_APPLICANTS,new ArrayList<EmailAttachment>());
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("requirementSummary?requirementUUID="+requirement.getRequirementUUID()).toString();	 
 		emailScenerioUtil.sendNotification(actionLink, user,requirement.getManagerUserId(), loginOrgLocations, notificationScenario,new HashMap<String,String>());

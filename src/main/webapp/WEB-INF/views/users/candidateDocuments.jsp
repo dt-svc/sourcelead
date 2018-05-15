@@ -128,11 +128,21 @@ function candDocumentsList(candidateId){
                     for (var i = 0; i < response.data.length; i++) { 
                    		var opt = response.data[i];  
                    	 	result  = result + ' <tr>';
-	                   	if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected" && opt.requestedDocStatus != "Accepted"){
+	                   	/* if(opt.requestedDocumentsId != null && opt.requestedDocStatus != "Rejected" && opt.requestedDocStatus != "Accepted"){
 	                   		result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
 	                   	} else {
 	                   		result = result +"  <td><div>--</div></td>"; 
+	                   	} */
+	                   	
+	                   	if(opt.isConfidential == 'N' || opt.docUploadStatus =="Requested"|| (opt.isConfidential == 'Y' && '${SourceLeadWeb_user.userCode}' == opt.userIdStr)) {
+                      		result  = result + ' <tr>';
+                      	if(opt.requestDocumentId != null && opt.requestedDocStatus == "Submitted"){
+                      		result = result +'<td><input id="'+opt.id+'" value="'+opt.id+'"  onclick="deleteRequestedDoc();" type="checkbox" name="documents[]" class="myCheckbox" >';
+                      	} else {
+                      		result = result +"  <td><div>--</div></td>"; 
+                      		}
 	                   	}
+	                   	
                    		if(opt.documentType != null && opt.documentType != '' && opt.documentType != "undefined") {
    	            			if(opt.documentOtherType !=null && opt.documentOtherType !='' && opt.documentOtherType !="undefined"){
    								result = result +"  <td><div title='"+opt.documentOtherType+"' class='tbldata-dotdot-me'>"+opt.documentOtherType+"</div></td>";
@@ -291,7 +301,7 @@ function deleteRequestedDoc(){
    	$.ajax({
     	type: "POST",
     	url: sourceleadUrl+"/acceptRequestedDocuments?"+tokenParamName+"="+tokenValue+"&documentsIds="+documentsIds+"&userId="+userId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId,
-        success: function(result) {
+        success: function(response) {
         	if (response && response.response === "INVALID_DATA") {
         	    showError(response.responseMessage);
         	} else if (response.response === "AWKWARD") {
@@ -304,8 +314,8 @@ function deleteRequestedDoc(){
         	    showError("Operation failed, please try again");
         	}
         },
-	});
- }
+    });
+}
  </script>
  
  
@@ -577,7 +587,7 @@ function getDocumentType(documentType){
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
 			 if ($('#documentType_form').validate(false, validationSettings)){
-				
+				 if(document.getElementById("uploadBtn") !== null){
 		        var frm = $('#documentType_form')[0];
 				var formData = new FormData(frm);
 				$("#save_doc").attr("disabled", "disabled");
@@ -642,9 +652,12 @@ function getDocumentType(documentType){
 					},
 				}); 
 			return true;
-		} else { 
+	       }else {
+				showError("Document file is missing");
+		    }
+	      } 
 			return false;
-		} 
+		
 	}
 	$('body').on('blur', '#documentType_form', function() {
 		$("#documentType_form").showHelpOnFocus();

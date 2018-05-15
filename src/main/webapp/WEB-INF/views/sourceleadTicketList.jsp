@@ -213,6 +213,7 @@ function getTicketCustomDates(){
 		var url = sourceleadUrl+"/getSourceleadTicketList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&dateSelection="+dateSelection+"&selectCompanyIds="+selectCompanyIds+"&fromDate="+fromDate+"&toDate="+toDate;
 		prepareSourceleadTicketList(url);
 	  }
+	  $("#customSearch").hide();
   }
   </script>
 <script>
@@ -388,6 +389,10 @@ function dynamicTicketListPagination(url){
     } );
     $("#dynamicTicketListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
+	
+}
+
+$(function() {
     $("#ticketDataTableSearch").keyup(function(e) {
     	   if(e.which === 13) {
     		   getSourceleadTicketList();
@@ -397,9 +402,7 @@ function dynamicTicketListPagination(url){
     				  } 
     	   }
     	});
-	
-}
-
+});
 function changeStatus(ticketUUID,e){
 	var ticketStatus = e.value;
 	var sourceleadUrl = '${sourceleadUrl}';

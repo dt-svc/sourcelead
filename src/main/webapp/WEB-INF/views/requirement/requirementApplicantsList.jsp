@@ -13,7 +13,37 @@
     <!-- Project -->
     <div class="timesheet_out">
       <div class="clients_wrap">
-       <jsp:include page="JobCountFilter.jsp"></jsp:include>
+      <div class="timesheet_head">
+      
+      <jsp:include page="JobCountFilter.jsp"></jsp:include>
+      
+      <div class="pull-left ml mt10 dropdown-select">
+	        <div class="dropdown-select positionRelative">
+	        <select class="form-control" id="customDates" onchange="showCustomFields();">
+	          <option value="Last_7_days" selected>Last 7 days</option>
+	          <option value="Last_15_days">Last 15 days</option>
+	          <option value="1_month">1 month</option>
+	          <option value="3_months">3 months</option>
+	          <option value="Last_Year">Last year</option>
+	          <option value="Custom">Custom</option>
+	        </select>
+	        <!-- Top Leave Takers Custom Date -->
+		    <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="custom-selects" style="display: none; width: 346px;" >
+				<div class="pull-left">
+				<div class="pull-left mr5" style="width: 140px" id="custFromDateDiv">
+				<input value="" name="Date" id="custFromDate" placeholder="From" class="form-control calendar input-sm margin-top0" type="text">
+				</div>
+				<div class="pull-left mr5" style="width: 140px" id="custToDateDiv">
+				<input value="" name="Date" id="custToDate" placeholder="To" class="form-control calendar input-sm margin-top0" type="text">
+				</div>
+				<button type="button" class="btn btn-primary btn-sm" onclick="validateCustDatesList();"><i class="fa fa-search"></i></button>
+				</div>
+		    </div>
+	      	</div>
+      	</div>
+      
+       
+       </div>
         <div class="clients_wrap_table datatable_filter">
         
         <div id="previousApplicantsDiv"></div>
@@ -36,11 +66,14 @@
        function requirementApplicantList(){
 		var sourceleadUrl ='${sourceleadUrl}';
 		// var tab = "previous";
-		 var tab = '${tab}';
+	 	var tab = '${tab}';
+	 	var fromDate = $("#custFromDate").val();
+ 	    var toDate = $("#custToDate").val();
+ 	   	var customDates = $("#customDates").val();
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tab="+tab+"&submissionStatus=SUBMISSION";
+		var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=SUBMISSION&frequency="+customDates+"&fromDate="+fromDate+"&toDate="+toDate;
 	    prepareApplicantList(url);
 }
 </script> 
@@ -48,10 +81,8 @@
 <script>
 function prepareApplicantList(url){
         var result = "";
- 	    result = result +' <div class="modal-header">';
- 	    result = result +' <div class="remove_search">';
+ 	    result = result +' <div class="remove_search mt10">';
  	    result = result +' <input type="text" placeholder="Search" id="dataTableSearch"/>';
- 	    result = result +'</div>';
  	    result = result +'</div>';
         result = result +'<table id="applicantpagination" class="display" cellspacing="0" width="100%" >'; 
         result = result +'<thead>'; 
@@ -108,7 +139,7 @@ function applicantpagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 	    	  		 if(opt.candidateName !=null && opt.candidateName !='' && opt.candidateName !='undefined'){
-							result = result + ' <td><div><span>'+opt.candidateName+'</span></div></td>';
+							result = result + ' <td><div><span title='+opt.candidateName+'>'+opt.candidateName+'</span></div></td>';
 						}else{
 							result = result + ' <td><div>--</div></td>';
 						}
@@ -120,7 +151,7 @@ function applicantpagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.requirementUUID !=null && opt.requirementUUID !='' && opt.requirementUUID !='undefined'){
-            		  result = result + '<td><div class="proj_show"><span><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.jobTitle+'<i class="fa fa-binoculars"></i></a></span></div></td>';
+            		  result = result + '<td><div class="proj_show"><span title='+opt.jobTitle+'><a href="'+sourceleadUrl+'/requirementSummary?type=applicants&requirementUUID='+opt.requirementUUID+'&candidateUUID='+opt.candidateUUID+'&submissionId='+opt.submissionId+'" >'+opt.jobTitle+'<i class="fa fa-binoculars"></i></a></span></div></td>';
 					}else{
 						result = result + ' <td><div>--</div></td>';
 					}
@@ -146,7 +177,7 @@ function applicantpagination(url){
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
             	  if(opt.email != null && opt.email != '' && opt.email !='undefined'){
-     					result = result + '<td><div><span>'+opt.email+'</span></div></td>';
+     					result = result + '<td><div><span title='+opt.email+'>'+opt.email+'</span></div></td>';
               	 }else{
               		 result = result + '<td><div><span>---</span></div></td>';
               	 }
@@ -261,6 +292,96 @@ function applicantpagination(url){
 			window.open(sourceleadUrl+'/viewInterviewListResumes/'+title+'?resumeUUID='+resumeUUID,title,"height=600,width=600");
 		}
  }
+</script>
+
+<script>
+function showCustomFields(){
+    var frequency = $("#customDates").val();
+    if(frequency == "Custom"){
+        $("#custom-selects").show();
+         $('#custFromDate').attr('data-validation',"required");
+         $('#custToDate').attr('data-validation',"required");
+    }else{
+        $("#custom-selects").hide();
+        $('#custFromDate').removeAttr('data-validation');
+        $('#custToDate').attr('data-validation',"required");
+        $('#custFromDate').val("");
+        $('#custToDate').val("");
+        requirementApplicantList();
+    }
+    
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+      var finalDateFormatEndDate = '';
+      if(locationDate.match("yyyy-MM-dd")){
+          finalDateFormatEndDate = 'yy-mm-dd';
+      }if(locationDate.match("dd-MM-yyyy")){
+          finalDateFormatEndDate = 'dd-mm-yy'; 
+      }if(locationDate.match("MM-dd-yyyy")){
+          finalDateFormatEndDate = 'mm-dd-yy'; 
+      }if(locationDate.match("yyyy-dd-MM")){
+          finalDateFormatEndDate = 'yy-dd-mm'; 
+      }
+
+      $( "#custFromDate" ).datepicker({
+           dateFormat : finalDateFormatEndDate,
+            changeMonth: true,
+            changeYear: true,
+            maxDate: new Date() ,
+            onSelect : function(selected) {
+            var dt = $(this).datepicker('getDate', '+1d');
+            dt.setDate(dt.getDate());
+            $("#custToDate").datepicker("option", "minDate", dt);
+             removeStartValid();
+            } 
+      
+      });
+      
+      $( "#custToDate" ).datepicker({
+           dateFormat : finalDateFormatEndDate,
+            changeMonth: true,
+            changeYear: true,
+          maxDate: new Date() ,
+      onSelect : function(selected) {
+            var dt = $(this).datepicker('getDate', '+1d');
+            dt.setDate(dt.getDate());
+            $("#custFromDate").datepicker("option", "maxDate", dt);
+             removeEndValid();
+            }});
+}
+function removeStartValid(){
+    $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+}
+function removeEndValid(){
+    $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+}
+
+
+function validateCustDatesList(){
+// 	var userType = $("#userTypeId").val();
+    var frequency = $("#customDates").val();
+    var fromDate = $("#custFromDate").val();
+    var toDate = $("#custToDate").val();
+    if(frequency == "Custom"){
+        if(fromDate == ''){
+            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+            $("input#custFromDate").after( "<p class='jquery_form_error_message'>FromDate is required.</span>");
+        }
+        if(toDate == ''){
+            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+            $("input#custToDate").after( "<p class='jquery_form_error_message'>ToDate is required.</span>");
+        }
+        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
+            $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+            $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+            requirementApplicantList();
+            $("#custom-selects").hide();
+        }
+    }else{
+        $('#custFromDateDiv').find('p.jquery_form_error_message').remove();
+        $('#custToDateDiv').find('p.jquery_form_error_message').remove();
+        requirementApplicantList();
+    } 
+}
 </script>
   
    

@@ -25,6 +25,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -72,6 +73,12 @@ public class Invoice {
 	@ManyToOne
     @JoinColumn(name="PROJECT_ID", nullable=true) 
 	private Projects projectID;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="PAYMENT_ACCOUNT_ID", nullable=false )     
+	private PaymentAccount paymentAccount;
+	
 	
 	@Column(name = "INVOICE_TYPE")
 	private String invoiceType;
@@ -231,6 +238,10 @@ public class Invoice {
 	
 	@Transient
 	@JsonProperty
+	private long paymentAccountId;
+
+	@Transient
+	@JsonProperty
 	private String dueDateStr;
 
 	@Transient
@@ -348,6 +359,9 @@ public class Invoice {
 	@JsonProperty
 	private String orgRelationUUID;
 	
+	@Transient
+	@JsonProperty
+	private PaymentAccountDTO paymentAccountDTO;
 	
 	public Long getId()
 	{
@@ -1105,5 +1119,28 @@ public class Invoice {
 	{
 		this.orgRelationUUID = orgRelationUUID;
 	}
-	
+
+	public PaymentAccount getPaymentAccount() {
+		return paymentAccount;
+	}
+
+	public long getPaymentAccountId() {
+		return paymentAccountId;
+	}
+
+	public void setPaymentAccount(PaymentAccount paymentAccount) {
+		this.paymentAccount = paymentAccount;
+	}
+
+	public void setPaymentAccountId(long paymentAccountId) {
+		this.paymentAccountId = paymentAccountId;
+	}
+
+	public PaymentAccountDTO getPaymentAccountDTO() {
+		return paymentAccountDTO;
+	}
+
+	public void setPaymentAccountDTO(PaymentAccountDTO paymentAccountDTO) {
+		this.paymentAccountDTO = paymentAccountDTO;
+	}
 }

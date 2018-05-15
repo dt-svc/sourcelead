@@ -83,6 +83,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
@@ -297,8 +298,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 		if(StringUtils.isNotBlank(invoiceDTO.getBillingAddress())){
 			invoice.setBillingAddress(invoiceDTO.getBillingAddress());
 		}
-		if(StringUtils.isNotBlank(invoiceDTO.getAccountDetails())){
+		/*if(StringUtils.isNotBlank(invoiceDTO.getAccountDetails())){
 			invoice.setAccountDetails(invoiceDTO.getAccountDetails());
+		}*/
+		
+		if(StringUtils.isNotBlank(invoiceDTO.getPaymentAccount())){
+			PaymentAccount paymentaccount = new PaymentAccount();
+			paymentaccount.setId(Long.valueOf(invoiceDTO.getPaymentAccount()));
+			invoice.setPaymentAccount(paymentaccount);
 		}
 		
 		if(StringUtils.isNotBlank(invoiceDTO.getInvoiceDate())){
@@ -313,7 +320,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 		
 		if(StringUtils.isNotBlank(invoiceDTO.getPaymentFrequency())){
 			invoice.setPaymentFrequency(invoiceDTO.getPaymentFrequency());
+		}else{
+			invoice.setPaymentFrequency(null);
 		}
+		
 		if(StringUtils.isNotBlank(invoiceDTO.getDisCount())){
 			invoice.setDiscountType(invoiceDTO.getDisCount());
 		}
@@ -364,7 +374,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		List<String> submissionApproverHierarchyIds = new ArrayList<>();
 		List<TimesheetSubmissionsDocuments> docusList = new ArrayList<TimesheetSubmissionsDocuments>();
 		
-		// storing invoive line items
+		// storing invoice line items
 		List<Long> invoiceLineItemsIdsList = null;
 		 if(null != invoice.getId()){
 	    	  invoiceLineItemsIdsList = invoiceLineItemDao.getInvoiceLineItemsIdsByInvoiceId(invoice.getId());
@@ -797,7 +807,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	public void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice,String invoiceType,List<TimesheetSubmissionsDocuments> docusList) throws Exception{
 
 		EmailScenario  emailScenario = null;
-		EmailScenario  notificationScenario = null;
+//		EmailScenario  notificationScenario = null;
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
@@ -816,10 +826,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
 		 globalVarsMap.put("LoginUser",user.getFirstName());
-		 globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
-		 globalVarsMap.put("grandTotal",invoice.getTotal());
+		 globalVarsMap.put("clientorVendorName",invoice.getContactUser().getFirstName());
+		 globalVarsMap.put("totalAmouprojectMembersListnt",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
-		 globalVarsMap.put("invoiceDate",invoiceDate); 
+		 globalVarsMap.put("date",invoiceDate); 
 		 globalVarsMap.put("orgName",orglocations.getOrgLocationName());
 		 //globalVarsMap.put("address",invoice.getBillingAddress());
 		 
@@ -831,7 +841,66 @@ public class InvoiceServiceImpl implements InvoiceService{
    */
 		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 if(invoiceType.equalsIgnoreCase("payable")){
+		 
+		//send mail logic
+			List<EmailAttachment> attachmentList2 = new ArrayList<>();
+		     
+			 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+			 ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
+			 EmailAttachment emailAttachment = new EmailAttachment();
+			 emailAttachment.setUUID(UUID);
+			 String ac = StringUtils.removeEnd(staticPath, "/slead-static");
+			 EmailAttachment attachmentZip = zipFiles(docusList);
+			 if(null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0 && !invoice.getInvoiceDocumentSet().isEmpty()){
+				 Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+				 for(InvoiceDocument doc:documenetSet){
+					 EmailAttachment docAttachment = new EmailAttachment();
+					 if(StringUtils.isNotBlank(doc.getFileUrl()))
+					 
+					 docAttachment.setDocFile(commonUtil.readBytesFromFile(ac+doc.getFileUrl()));
+					 docAttachment.setName(doc.getFileName());
+					 documentList.add(docAttachment);
+				 }
+			 }
+			 if(StringUtils.isNotBlank(invoice.getFileUrl()))
+			 emailAttachment.setDocFile(commonUtil.readBytesFromFile(ac+invoice.getFileUrl()));
+			 if(StringUtils.isNotBlank(invoice.getFileName()))
+			 emailAttachment.setName(invoice.getFileName());
+			 attachmentList.add(emailAttachment);
+
+			 if(null != attachmentZip){
+				 attachmentList.add(attachmentZip);
+			 }
+			 if(null != documentList && !documentList.isEmpty() && documentList.size() > 0){
+			 attachmentList.addAll(documentList);
+			 }
+		 
+			//send notification logic
+			EmailScenario notificationScenario = null;
+			if(invoiceType.equalsIgnoreCase("payable")){
+				   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList2);
+				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+			 }else{
+				   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations, Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,attachmentList2);
+				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_RECEIVABLE_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+			 }
+			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+			notificationScenario.setBody(notificationbody);
+			String actionLink = "";
+			StringBuilder notificationLink = new StringBuilder();
+			// Invoice invoice2=getInvoicetByParentId(invoice.getId());
+			 Invoice notificationInvoice = getInvoicetByParentId(invoice.getId());
+			 if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Payables").toString();
+			 }else{
+			 actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Receivable").toString();
+				 
+			 }
+			emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());
+			
+			
+			
+		/* if(invoiceType.equalsIgnoreCase("payable")){
 			   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_MAIL,Constants.ENTITY_TYPE_EMAIL);
 			   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }else{
@@ -895,7 +964,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Receivable").toString();
 			 
 		 }
-		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario,new HashMap<String,String>());
+		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario,new HashMap<String,String>());*/
 	}
 
 
@@ -1399,9 +1468,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				vendorOrgLocation = orgRelation.getLocationId();
 				if(orgSpocList !=null && !orgSpocList.isEmpty()) {
 					if(Constants.VENDOR.equalsIgnoreCase(orgRelation.getResponderType())) {
-						contactUser = orgSpocList.get(0).getVendorUser();
-					}else{
 						contactUser = orgSpocList.get(0).getClientUser();
+					}else{
+						contactUser = orgSpocList.get(0).getVendorUser();
 					}
 					
 				}
@@ -1772,9 +1841,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					projectMember.setUserId(projectMember.getProjectMemberCandidteId().toString());
 					projectMember.setStartDate(startDateStr);
 					projectMember.setEndDate(endDateStr);
-					String billableHours = String.valueOf(sah.getBillableHours());;
-					String arr[] = billableHours.split("\\.");
+					String billableHours = String.valueOf(sah.getBillableHours());
 					StringBuilder sb = new StringBuilder();
+					if(!"null".equalsIgnoreCase(billableHours))
+					{
+					String arr[] = billableHours.split("\\.");
 					if (arr[0].length() == 2) {
 						sb.append("0").append(arr[0]);
 					}
@@ -1789,6 +1860,9 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					}
 					else {
 						sb.append(":").append(arr[1]);
+					}
+					} else{
+						sb.append("0");
 					}
 					projectMember.setTotalHours(sb.toString());
 					Candidate candidate = projectMember.getProjectMemberCandidteId();
@@ -2262,7 +2336,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	public void sendInvoiceReminderMail(User user, OrgLocations orgLocation, Invoice invoice, String invoiceType, List<TimesheetSubmissionsDocuments> docusList) throws Exception
 	{
 		EmailScenario  emailScenario = null;
-		EmailScenario  notificationScenario = null;
+//		EmailScenario  notificationScenario = null;
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
@@ -2287,82 +2361,69 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 globalVarsMap.put("orgName",orgLocation.getOrgLocationName());
 		 //globalVarsMap.put("address",invoice.getBillingAddress());
 		 
-		/* StringBuilder acceptBuilder = new StringBuilder();
-		 globalVarsMap.put("acceptLink",acceptBuilder.append("<a href='").append(sourceleadUrl).append("/").append("acceptedInvoice?invoiceId=").append(invoice.getId()).append("'style='text-decoration:none;float:left; margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#5cb85c; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Accept</div></a>").toString());
-	        
-		StringBuilder  rejectBuilder = new StringBuilder();
-	     globalVarsMap.put("rejectLink",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/").append("rejectInvoice?invoiceId=").append(invoice.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
-   */
-		 
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 if(invoiceType.equalsIgnoreCase("payable")){
-			   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_EMAIL);
-			   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
-		 }else{
-			   emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_EMAIL);
-			   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
-		 }
-		
 		 
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
-		 notificationScenario.setBody(notificationbody);
-
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocation.getOrg(),orgLocation);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
-		 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
-		 ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
-		 EmailAttachment emailAttachment = new EmailAttachment();
-		 emailAttachment.setUUID(UUID);
-		 EmailAttachment attachmentZip = zipFiles(docusList);
-		 if(null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0 && !invoice.getInvoiceDocumentSet().isEmpty()){
-             Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
-             for(InvoiceDocument doc:documenetSet){
-                    EmailAttachment docAttachment = new EmailAttachment();
-                    String fileUrl = doc.getFileUrl();
-                    if(StringUtils.isNotBlank(fileUrl)){
-                          docAttachment.setDocFile(CommonUtil.readBytesFromFile(fileUrl));
-                          docAttachment.setName(doc.getFileName());
-                          documentList.add(docAttachment);
-                    }
-                   
-             }
-            
-              }
-             String invoiceFileUrl = invoice.getFileUrl();
-             if(StringUtils.isNotBlank(invoiceFileUrl)){
-                    emailAttachment.setDocFile(CommonUtil.readBytesFromFile(invoiceFileUrl));
-                    emailAttachment.setName(invoice.getFileName());
-                    attachmentList.add(emailAttachment);
-             }
-		 if(attachmentZip !=null){
-			 attachmentList.add(attachmentZip);
-		 }
-		 if(documentList !=null && !documentList.isEmpty() && documentList.size() > 0){
-		 attachmentList.addAll(documentList);
-		 }
-		 //calling the sendEmail method of emailScenerioUtil
-		 
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocation.getId(),iAdressArray,attachmentList);
-		 StringBuilder notificationLink = new StringBuilder();
-		 String actionLink="";
-		 Invoice notificationInvoice=getInvoicetByParentId(invoice.getId());
-		 if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
-		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Payables").toString();
-			 }else{
-				 actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Receivable").toString();
-				 
+		//send mail logic
+	     List<EmailAttachment> attachmentList1 = new ArrayList<>();
+	     
+		  //send notification logic
+			ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+			 ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
+			 EmailAttachment emailAttachment = new EmailAttachment();
+			 emailAttachment.setUUID(UUID);
+			 EmailAttachment attachmentZip = zipFiles(docusList);
+			 if(null != invoice.getInvoiceDocumentSet() && invoice.getInvoiceDocumentSet().size() > 0 && !invoice.getInvoiceDocumentSet().isEmpty()){
+	             Set<InvoiceDocument> documenetSet = invoice.getInvoiceDocumentSet();
+	             for(InvoiceDocument doc:documenetSet){
+	                    EmailAttachment docAttachment = new EmailAttachment();
+	                    String fileUrl = doc.getFileUrl();
+	                    if(StringUtils.isNotBlank(fileUrl)){
+	                          docAttachment.setDocFile(CommonUtil.readBytesFromFile(fileUrl));
+	                          docAttachment.setName(doc.getFileName());
+	                          documentList.add(docAttachment);
+	                    }
+	                   
+	             }
+	            
+	              }
+	             String invoiceFileUrl = invoice.getFileUrl();
+	             if(StringUtils.isNotBlank(invoiceFileUrl)){
+	                    emailAttachment.setDocFile(CommonUtil.readBytesFromFile(invoiceFileUrl));
+	                    emailAttachment.setName(invoice.getFileName());
+	                    attachmentList.add(emailAttachment);
+	             }
+			 if(attachmentZip !=null){
+				 attachmentList.add(attachmentZip);
 			 }
-		 emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario,new HashMap<String,String>());
-		
+			 if(documentList !=null && !documentList.isEmpty() && documentList.size() > 0){
+			 attachmentList.addAll(documentList);
+			 }
+			 
+			 EmailScenario notificationScenario = null;
+				if(invoiceType.equalsIgnoreCase("payable")){
+					commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(), orgLocation, Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL,attachmentList1);
+				    notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+				 }else{
+					 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(), orgLocation, Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL,attachmentList1);
+					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_RECEIVABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
+				 }
+			 
+			
+			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+			notificationScenario.setBody(notificationbody);
+			String actionLink = "";
+			StringBuilder notificationLink = new StringBuilder();
+			// Invoice invoice2=getInvoicetByParentId(invoice.getId());
+			Invoice notificationInvoice=getInvoicetByParentId(invoice.getId());
+			 if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
+			     actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Payables").toString();
+				 }else{
+					 actionLink = notificationLink.append(sourceleadUrl).append("/").append("viewInvoice?invoiceUUID="+notificationInvoice.getInvoiceUUID()+"&invoiceType=Receivable").toString();
+					 
+				 }
+			emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(), notificationScenario, new HashMap<String, String>());   
+		 
+			
 	}
 	@Override
 	public Invoice getInvoicetByParentId(Long invoiceId) throws Exception {
@@ -2500,6 +2561,12 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			invoice.setPaymentFrequency(null);
 		}
 
+		if(StringUtils.isNotBlank(invoiceDTO.getPaymentAccount())){
+			PaymentAccount paymentaccount = new PaymentAccount();
+			paymentaccount.setId(Long.valueOf(invoiceDTO.getPaymentAccount()));
+			invoice.setPaymentAccount(paymentaccount);
+		}
+		
 		if (StringUtils.isNotBlank(invoiceDTO.getDisCount())) {
 			invoice.setDiscountType(invoiceDTO.getDisCount());
 

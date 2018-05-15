@@ -2,8 +2,8 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.UserManualAttachment;
  
@@ -20,6 +20,7 @@ public class UserManualsDTO  extends SearchDTO implements Serializable{
 	@Required(desc = "title")
 	private String title;
 	
+	@CleanHtml(escape=true)
 	private String description;
 	
 	private String level;

@@ -58,7 +58,7 @@ public class EmailTemplateController {
 		
 		EmailScenario emailScenario=emailScenarioService.getEmailTemplateByUUID(templateUUID);
 		List<String> classFieldList=null;
-		
+		ModelAndView model = new ModelAndView();
 		if(emailScenario != null){
 			if(emailScenario.getParentId() != null){
 				classFieldList=classFieldService.getClassFieldsByEmailScenerioId(emailScenario.getParentId().getId());
@@ -68,23 +68,10 @@ public class EmailTemplateController {
 			 
 			
 		}
-		String emailBody = emailScenario.getBody();
-		/*if(emailScenario!=null && emailScenario.getBodyUrl()!= null ){
-			String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
-			 try {
-				    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
-				    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
-				   // System.out.println(emailBody);
-				   
-				} catch (IOException ex) {
-				    System.err.println(ex);
-				}
-		}*/
-		ModelAndView model = new ModelAndView();
+
 		model.addObject("emailScenario",emailScenario);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("classFieldList", classFieldList);
-		model.addObject("emailBody", emailBody);
 		model.setViewName("/editEmailTemplates");
 		return model;
 

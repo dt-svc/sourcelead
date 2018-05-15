@@ -25,6 +25,8 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 	@Entity
 	@Table(name = "REQUIREMENT_INTERVIEW")
 	public class RequirementInterview implements Serializable{
@@ -116,18 +118,22 @@ import org.hibernate.annotations.NotFoundAction;
 	private String interviewersList;
 	
 	@Transient
+	@JsonProperty
 	private String candidateName;
 	
 	@Transient
+	@JsonProperty
 	private String requirementTitle;
 	
 	@Transient
    	private String requirementId;
 	
 	@Transient
+	@JsonProperty
 	private String interviewStartDateTimeStr;
 	
 	@Transient
+	@JsonProperty
 	private String interviewEndtDateTimeStr;
 	
 	@Transient

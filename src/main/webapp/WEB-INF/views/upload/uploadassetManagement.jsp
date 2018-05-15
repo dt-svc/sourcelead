@@ -166,10 +166,7 @@ $('body').on('blur', '#upload_asset_form', function() {
 
 <script type="text/javascript">
 function cancelFileImport(){
-	/* $("#jobFieldsDiv").attr("style","display:none");
-	$('#jobFileImportDiv').removeAttr("style");
-	$('#jobFieldsDiv').empty(); */
-	location.replace(sourceleadUrl+"/uploadJobs");
+	location.replace(sourceleadUrl+"/uploadassetManagement");
 }
 </script>
 

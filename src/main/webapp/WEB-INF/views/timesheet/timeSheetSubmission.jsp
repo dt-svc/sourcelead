@@ -241,7 +241,7 @@
 			<div id="timesheetDivByTab">
 				<div class="project_tabs">
 					<div id="tab-1" class="project_tabs_inn" style="display: block;">
-						<div class="timesheet_tableNew overflow_inherint">
+						<div class="timesheet_tableNew">
 						   <input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='${timesheetSubmissionDTO.maxRowCount > 0 ? timesheetSubmissionDTO.maxRowCount : 1}' />
 							<table id="timesheet" cellspacing="0" cellpadding="0">
 								<tbody>
@@ -255,7 +255,7 @@
 									<c:set var="entryIndex" value="0"/>
 									<c:forEach var="entry" items="${entriesMap}" varStatus="entryCount">
 									    <tr id="timesheetRow${entryCount.index+1}">
-									      <td>
+									      <td id="${entryCount.index+1}taskTd">
 											<div class="taskDropDown">
 											  <c:set var="taskType" value=""/>
 											  <c:set var="taskId" value=""/>
@@ -279,7 +279,13 @@
 														         <option value='${pt.id}' selected>${pt.taskName}</option>
 														       </c:if>
 														       <c:if test="${pt.id != entry.key}">
-														          <option value='${pt.id},${pt.taskType},${pt.taskName}'>${pt.taskName}</option>
+														       <c:if test="${not empty pt.generatedId}" >
+														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
+														       </c:if>
+														        <c:if test="${empty pt.generatedId}" >
+														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'>${pt.taskName} </option>
+														       </c:if>
+														          
 														       </c:if>
 														   </c:forEach>
 														</c:if>
@@ -1097,7 +1103,7 @@ function addTimeSheetRow(projectId) {
 		    var cell2 = row.insertCell(2);
 			var isCell1Disabled = $("#1timeSheetDay1Id").prop('disabled');
 			if(isCell1Disabled){
-				$("#divadttTd3 :input").attr('disabled','disabled');
+				$("#divadttTd3 :input[type=text]").attr('disabled','disabled');
 				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon');
 			}
 			else{
@@ -1119,7 +1125,7 @@ function addTimeSheetRow(projectId) {
 			var cell3 = row.insertCell(3);
 			var isCell2Disabled = $("#1timeSheetDay2Id").prop('disabled');
 			if(isCell2Disabled){
-				$("#divadttTd4 :input").attr('disabled','disabled');
+				$("#divadttTd4 :input[type=text]").attr('disabled','disabled');
 				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon');
 			}
 			else{
@@ -1141,7 +1147,7 @@ function addTimeSheetRow(projectId) {
 			var cell4 = row.insertCell(4);
 			var isCell3Disabled = $("#1timeSheetDay3Id").prop('disabled');
 			if(isCell3Disabled){
-				$("#divadttTd5 :input").attr('disabled','disabled');
+				$("#divadttTd5 :input[type=text]").attr('disabled','disabled');
 				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon');
 			}
 			else{
@@ -1163,7 +1169,7 @@ function addTimeSheetRow(projectId) {
 			var cell5= row.insertCell(5);
 			 var isCell4Disabled = $("#1timeSheetDay4Id").prop('disabled');
 			if(isCell4Disabled){
-				$("#divadttTd6 :input").attr("disabled", "disabled");
+				$("#divadttTd6 :input[type=text]").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon');
 			}else{
 				$("#divadttTd6 :input").removeAttr('disabled');
@@ -1184,7 +1190,7 @@ function addTimeSheetRow(projectId) {
 			var cell6 = row.insertCell(6);
 			var isCell5Disabled = $("#1timeSheetDay5Id").prop('disabled'); 
 			 if(isCell5Disabled){
-				$("#divadttTd7 :input").attr("disabled", "disabled");
+				$("#divadttTd7 :input[type=text]").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon');
 			}
 			else{
@@ -1206,7 +1212,7 @@ function addTimeSheetRow(projectId) {
 			var cell7 = row.insertCell(7);
 			var isCell6Disabled = $("#1timeSheetDay6Id").prop('disabled');
 			if(isCell6Disabled){
-				$("#divadttTd8 :input").attr("disabled", "disabled");
+				$("#divadttTd8 :input[type=text]").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon');
 			}
 			else{
@@ -1228,7 +1234,7 @@ function addTimeSheetRow(projectId) {
 			var cell8 = row.insertCell(8);
 		    var isCell7Disabled = $("#1timeSheetDay7Id").prop('disabled');
 			if(isCell7Disabled){
-				$("#divadttTd9 :input").attr("disabled", "disabled");
+				$("#divadttTd9 :input[type=text]").attr("disabled", "disabled");
 				$('.timesheet_comm','#divadttTd9').find('i').attr('class','glyphicon');
 			}else{
 				$("#divadttTd9 :input").removeAttr('disabled');
@@ -1286,6 +1292,10 @@ function addTimeSheetRow(projectId) {
         }
 	   //get project tasks 
 	   function getProjectTasks(projectTaskId,projectId){
+		 /*   alert($("#"+projectTaskId).val($("#"+projectTaskId+" option:first").val())); 
+		 <i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
+*/         $("#"+projectTaskId).next('i').remove();
+		   $("#"+projectTaskId).after('<i class="fa fa-spinner fa-pulse"></i>');
 		   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		   if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
 			   var taskId = $("#" + projectTaskId).val().split(",");
@@ -1323,14 +1333,21 @@ function addTimeSheetRow(projectId) {
 	  		    	    	for (var i=0; i<json.length; i++)
 	  					 	{
 	  			        		var opt = json[i];
-	  			        		result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.taskName+"</option>";
+	  			        		if(opt.generatedId != null && opt.generatedId !='undefined' && opt.generatedId !=''){
+	  			        			result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.generatedId+"-"+opt.taskName+"</option>";
+	  			        		}else{
+	  			        			result = result + "<option value='" +opt.Id+","+opt.billableType+","+opt.taskName+"'>"+opt.taskName+"</option>";
+	  			        		}
+	  			        		
 	  						}
+	  		    	    	
  				    	 	$("#"+localId).append(result);
+ 				    	 	$("#"+localId).next('i').remove();
  			   	   }); 
  		    	   
  		      }
  	      	  
- 	       }); 
+ 	       });  
 		   
 	   }
 </script>
@@ -1426,6 +1443,7 @@ function editMe(local){
 		 }else if(isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
 		     $("#"+id).val("00:00");
 		     setTotals();
+		     checkHours(); 
 		 }
 		 
 		 /* else{
@@ -1437,6 +1455,10 @@ function editMe(local){
 }
 
 function checkHours(){ 
+	rowRemoveError();
+	 if ($('#timesheet_form').validate(false, validationSettings)){ 
+		 rowValidation();
+	 }
 	 var result = "";		
 	 var total; 
 	 var rowNum = $("#maxRowNumber").val();
@@ -1517,7 +1539,44 @@ function checkHours(){
 	    $("#timeSheetErrorMsg").empty();
 	}); 
 	
+	
 }
+</script>
+<script>
+   function rowValidation(){ 
+	     var rowNum = $("#maxRowNumber").val();
+		 var jValue = parseInt(rowNum)+1;
+		 for (var j = 1; j < jValue; j++){
+			 var isEmpty = true;
+			 for (var i = 1; i < 8; i++){
+				 var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
+				 if (btemp !== undefined && btemp !=='####' && btemp !=='') {
+					 isEmpty = false;
+					 break;
+				 }
+			 }
+			 if(isEmpty == true){
+				 $("#"+j+"taskTd").find('p.jquery_form_error_message').remove(); 
+				 $("#"+j+"task1Id").after("<p class='jquery_form_error_message'>Atleat One Date Should Be Filled</span>");
+				 $("#"+j+"task1Id").attr('record-exist','yes');
+				 $("#"+j+"task1Id").attr('record-exist-errorMsg','Atleat One Date Should Be Filled');
+			 }else{
+				 $("#"+j+"task1Id").removeAttr( "record-exist record-exist-errormsg");
+				 $("#"+j+"taskTd").find('p.jquery_form_error_message').remove();  
+			 }
+		 }
+   }
+
+</script>
+<script>
+   function rowRemoveError(){ 
+	     var rowNum = $("#maxRowNumber").val();
+		 var jValue = parseInt(rowNum)+1;
+		 for (var j = 1; j < jValue; j++){
+			 $("#"+j+"task1Id").removeAttr( "record-exist record-exist-errormsg");
+			 $("#"+j+"taskTd").find('p.jquery_form_error_message').remove();  
+		 }
+   }
 </script>
 <script>
 function addAttachment(){  

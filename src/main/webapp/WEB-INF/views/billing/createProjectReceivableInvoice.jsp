@@ -140,13 +140,26 @@ border:none; background: none; font-size:14px; font-weight:600; box-shadow: none
                     name="billingAddress" data-validation-optional="true" data-validation="validate_length length1-100" field-name="Invoice Address"></textarea>
               </div>
             </div>
+            
             <div class="form-group">
-							<label class="col-md-3">Account Details<span class="text-danger">&nbsp;</span></label>
-							<div class="col-md-9">
-								<textarea class="form-control" rows="2" id="accountDetails"
-									name="accountDetails" placeholder="Account Details" data-validation-optional="true" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
-							</div>
-			</div>
+              <label class="col-md-3">Payment Account</label>
+              <div class="col-md-9 select-field">
+                <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
+                   <option value="">--Select Account--</option>
+                    <c:forEach items="${paymentAccountList}" var="p">
+                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
+                    </c:forEach>
+                </select>
+              </div>
+            </div>
+            
+            <!-- <div class="form-group">
+				<label class="col-md-3">Account Details<span class="text-danger">&nbsp;</span></label>
+				<div class="col-md-9">
+					<textarea class="form-control" rows="2" id="accountDetails"
+						name="accountDetails" placeholder="Account Details" data-validation-optional="true" data-validation="validate_length length1-100" field-name="Account Details"></textarea>
+				</div>
+			</div> -->
           </div>
         </div>
         <div class="clearfix"></div>
@@ -1521,6 +1534,9 @@ function toDate(selector) {
 		    	 url: sourceleadUrl+"/getInvoiceDetailsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID, 
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
+		        	 if(json.paymentAccountId > 0) {
+		        		 $("#paymentAccountId").val(json.paymentAccountId);
+		        	 }
 		        	 var result = '';
 		        	 var selected = 'selected';
 		        	 result = result +'<option disabled selected>--Select Client--</option>';
@@ -1643,13 +1659,13 @@ function getClients(){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
-		success :function(data) {
-		var json = JSON.parse(data);
+		success :function(json) {
+// 		var json = JSON.parse(data);
 		var output = "";
 		output = output + "<option value=''>Select Client</option>";
-		for (var i=0; i<json.length; i++)
+		for (var i=0; i<json.data.length; i++)
 		{
-		var opt = json[i];
+		var opt = json.data[i];
 		if(orgRelationId == opt.id){
 			var selected = 'selected';
 			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";

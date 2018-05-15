@@ -24,8 +24,8 @@ $(document).ready(function(){
 <script>
 function checkBox(){
 	var invoiceforexpenses = $("#invoiceforexpenses").val();
-	if(invoiceforexpenses == 'Y'){
-		$('#projectIdDiv').find('p.jquery_form_error_message').remove();
+	 if(invoiceforexpenses == 'Y'){
+	    $('#projectIdDiv').find('p.jquery_form_error_message').remove();
 		$('#projectMemberIdDiv').find('p.jquery_form_error_message').remove();
 		$('#expensesIdDiv').find('p.jquery_form_error_message').remove();
 		$('#projectId').removeAttr('data-validation');
@@ -141,12 +141,24 @@ function checkBox(){
               </div>
             </div>
             <div class="form-group">
+              <label class="col-md-3">Payment Account</label>
+              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+                <select class="form-control" id="paymentAccountId"  field-name="paymentAccountId Name" name="paymentAccount">
+                   <option value="">--Select Account--</option>
+                    <c:forEach items="${paymentAccountList}" var="p">
+                        <option value="${p.id}" ${p.defaultAccount ? 'selected="selected"' : ""}>${p.accountType == "WEPAY" ? p.email.concat(" (WePay)") : p.accountNumber.concat(" (").concat(p.bankName).concat(")")}</option>
+                    </c:forEach>
+                </select>
+              </div>
+            </div>
+            
+            <!-- <div class="form-group">
 							<label class="col-md-3">Account Details</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
 									name="accountDetails" placeholder="Account Details"></textarea>
 		</div>
-			</div>
+			</div> -->
 			<div class="clearfix mb"></div>
 			<div class="form-group">
               <label class="col-md-3">&nbsp;</label>
@@ -155,6 +167,7 @@ function checkBox(){
                   Invoice for Expenses
               </div>
             </div>
+            
             
               <div id="associate-expenses" style="display: none">
                <div class="form-group">
@@ -206,7 +219,7 @@ function checkBox(){
             <tbody>
               <tr id='divAttachmentTsRow0'>
             	<td>
-              	<label><strong>Attachments</strong></label>
+              	<label class="pull-left"><strong>Attachments</strong></label>
               	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs">
                 <span><div id="savedAttachments"></div></span></div> </div>
 	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add" >
@@ -353,8 +366,13 @@ function getExpensesDetails(expId){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getExpensesEntries?"+tokenParamName+"="+tokenValue+"&expensesId="+expensesId,
-		success :function(data) {
-			populateExpensesDetailsGrid(data);
+		success :function(json) {
+			if(json.data !=null && json.data !=''){
+			populateExpensesDetailsGrid(json.data);
+			}else{
+                  alertMessageInExpense();
+            }
+			
 		},
 		});	
 }
@@ -364,7 +382,7 @@ function getExpensesDetails(expId){
 
 <script>
 function populateExpensesDetailsGrid(data){
-	var currencyCode = '${SourceLeadWeb_currencyCode}';
+  var currencyCode = '${SourceLeadWeb_currencyCode}';
            var result = '';
            var subTotal = 0;
             result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+data.length+' />';
@@ -422,8 +440,6 @@ function populateExpensesDetailsGrid(data){
          		      result = result +' </tr>';
          		      
                  }	
-            }else{
-                  alertMessageInExpense();
             }
            
             
@@ -566,12 +582,12 @@ function getExpenses(projectMemberId,expensesFrequency){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&invoiceType=Receivable",
-		success :function(data) {
+		success :function(json) {
 			var output = "";
 			output = output + "<option value=''>--Select Expenses--</option>";
-			for (var i=0; i<data.length; i++)
+			for (var i=0; i<json.data.length; i++)
 			{
-			var opt = data[i];
+			var opt = json.data[i];
 			var selected = "";
 			 if(expensesFrequency = opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
 				selected = 'selected';
@@ -597,12 +613,12 @@ function getProjectAssignMembers(pid,projectMemberName){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getProjectAssignMembers?"+tokenParamName+"="+tokenValue+"&projectId="+projectId,
-		success :function(data) {
+		success :function(json) {
 			var output = "";
 			output = output + "<option value=''>--Select Associate--</option>";
-			for (var i=0; i<data.length; i++)
+			for (var i=0; i<json.data.length; i++)
 			{
-			var opt = data[i];
+			var opt = json.data[i];
 			var selected = "";
 			 if(projectMemberName = opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
 				 selected = 'selected';
@@ -1386,6 +1402,9 @@ function toDate(selector) {
 		        	 var json = JSON.parse(data);
 		        	 var result = '';
 		        	 var selected = 'selected';
+		        	 if(json.paymentAccountId > 0) {
+		        		 $("#paymentAccountId").val(json.paymentAccountId);
+		        	 }
 		        	 result = result +'<option disabled selected>--Select Client--</option>';
 		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
 		        	 $("#clientOrgRelationId").empty();
@@ -1400,7 +1419,7 @@ function toDate(selector) {
 		           		getExpenses(json['memberId'],json['expensesFrequency']);
 		           		editExpensesDetailsEdit(json['invoiceLineItemsList']); 
 		           	}else{
-		           	 	editExpensesInlineItems(json['invoiceLineItemsList']);
+		           	 	editExpensesInlineItems(json.data['invoiceLineItemsList']);
 		           	}
 		           	$("#invoiceId").val(json['invoiceId']);
 		           	if(json['paymentFrequency'] != null && json['paymentFrequency'] != '' && json['paymentFrequency'] != 'undefined'){
@@ -1414,9 +1433,9 @@ function toDate(selector) {
 		           	if(json['billingAddress'] != null && json['billingAddress'] != '' && json['billingAddress'] != 'undefined'){
 		           		$("#billingAddress").val(json['billingAddress']);
 		           	}
-		           	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
+		          /*  	if(json['accountDetails'] != null && json['accountDetails'] != '' && json['accountDetails'] != 'undefined'){
 		           		$("#accountDetails").val(json['accountDetails']);
-		           	}
+		           	} */
 		           	/* buildLineItemAndTaxAddRows(); */
 		           	
 		           	/* editInvoice(json['invoiceLineItemsList']);*/
@@ -1500,6 +1519,7 @@ function getClientContactsExisted(clientContactId){
 	}
 </script>
 
+
 <!-- Get alla clients when editing -->
 <script>
 function getClients(){
@@ -1507,13 +1527,13 @@ function getClients(){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getClientList?"+tokenParamName+"="+tokenValue+"",
-		success :function(data) {
-		var json = JSON.parse(data);
+		success :function(json) {
+// 		var json = JSON.parse(data);
 		var output = "";
 		output = output + "<option value=''>Select Client</option>";
-		for (var i=0; i<json.length; i++)
+		for (var i=0; i<json.data.length; i++)
 		{
-		var opt = json[i];
+			var opt = json.data[i];
 		if(orgRelationId == opt.id){
 			var selected = 'selected';
 			output = output + "<option value='" +opt.id+ "'"+selected+">"+opt.orgName+"</option>";

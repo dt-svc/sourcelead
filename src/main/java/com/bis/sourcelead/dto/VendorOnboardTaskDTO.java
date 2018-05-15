@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.entity.User;
 
 public class VendorOnboardTaskDTO implements Serializable{
@@ -45,6 +46,7 @@ public class VendorOnboardTaskDTO implements Serializable{
 	
    	private String taskType;
 	
+   	@CleanHtml(escape=false)
 	private String description;
     
    	private Integer status;

@@ -236,15 +236,19 @@ function reactiveLeaveType(typeId, from){
 		$.ajax({
 		   	type: "POST",
 		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeUUID="+typeId+"&status=reactive",	    	   
-		    success: function(data) {
-	             if(data == true){
-	            	 if(from == "summary"){
+		    success: function(result) {
+		    	  if(result.response === "SUCCESS"){
+	                if(from == "summary"){
 	            		 openLeaveTypeSummary(typeId);
 	            		 getLeaveTypesList();
 	            	 }else{
 	 				 	location.replace(sourceleadUrl+ "/viewLeaveTypes");
 	            	 }
-	             }
+	             }else if (result.indexOf('Sign In') !== -1) {
+		 				location.replace(sourceleadUrl);
+		 		  } else {
+		 			    showError("Operation failed, please try again");
+		 		  }
 		    }
 		
 		});
@@ -284,10 +288,10 @@ function openLeaveTypeSummary(leaveTypeUUID){
 	    	if (response.response === "AWKWARD") {
 			    location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {	    	
-				if(response !=null && response !=''){
-					 for (var i=0; i<response.data.length; i++)
-						{
-			        		 var report = response.data[i];
+				 /* if(response !=null && response !=''){
+					 for (var i=0; i<response.data.length; i++) { 
+			        		 var report = response.data[i]; */
+			        		 var report = response.object;
 	    	var result = "";
 			result +='<div class="new_side_wrap">';
 			result +='  <div class="clients_side_wrap_inn">';
@@ -590,8 +594,8 @@ function openLeaveTypeSummary(leaveTypeUUID){
 			result +='  </div>';
 			result +='  </div>';
 			result +='</div>';
-						}
-				}
+						/* }
+				 } */ 
 			$("#typeSummaryDiv").empty();
 			$("#typeSummaryDiv").append(result);
 			$(".new_side_wrap").addClass("new_side_wrap_active");

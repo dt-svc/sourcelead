@@ -680,19 +680,16 @@ public class CandidateOffBoardRestController {
 			throws Exception {
 		Response<String> response = new Response<>();
 		try {
-			OffboardCheckList checkList = offboardCheckListService.getOffboardCheckListByTemplateId(templateId);
-			if (null != checkList) {
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
-				response.setObject(checkList.getCheckListJsonString());
-			}
-			/*
-			 * else { return null; }
-			 */
-		} catch (Exception e) {
-			response.setResponse(Result.AWKWARD.name());
-			response.setResponseMessage(Result.AWKWARD.getValue());
-			logger.error(ExceptionUtils.getFullStackTrace(e));
+				OffboardCheckList checkList = offboardCheckListService.getOffboardCheckListByTemplateId(templateId);
+				if (null != checkList) {
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+					response.setObject(checkList.getCheckListJsonString());
+				}
+		 }catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return response;
 	}
@@ -993,7 +990,7 @@ public class CandidateOffBoardRestController {
 						documents.setCreatedBy(loginUser.getUserCode());
 						documents.setUpdatedDate(CommonUtil.currentDate());
 						documents.setUpdatedBy(loginUser.getUserCode());
-						offBoardingDocumentsService.saveOffBoardingDocuments(templateDocument);
+						offBoardingDocumentsService.saveOffBoardingDocuments(documents);
 					}
 				}
 				// Offboard Package documetns saving....
@@ -1038,7 +1035,7 @@ public class CandidateOffBoardRestController {
 						documents.setCreatedBy(loginUser.getUserCode());
 						documents.setUpdatedDate(CommonUtil.currentDate());
 						documents.setUpdatedBy(loginUser.getUserCode());
-						offBoardingDocumentsService.saveOffBoardingDocuments(templateDocument);
+						offBoardingDocumentsService.saveOffBoardingDocuments(documents);
 					}
 				}
 				response.setObject("success");
@@ -1578,34 +1575,21 @@ public class CandidateOffBoardRestController {
 				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
 				.toString());
 
-		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 
 		// getting the current EmailScenario by EmailScenario unique name and entity
 		// type
-		EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(
-				Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATIONMAILTOREPORTINGMANAGER, Constants.ENTITY_TYPE_EMAIL);
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 				Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATIONMAILTOREPORTINGMANAGER, Constants.ENTITY_TYPE_NOTIFICATION);
 
-		// covert subject,body and signature
-		String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(), globalVarsMap);
-		String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(), globalVarsMap);
-		String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(), globalVarsMap);
-		String url = sourceleadUrl;
 
-		String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(), globalVarsMap);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationbody);
 
 		// OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
 
-		// construct HTML template using required data
-		String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, signature, url,
-				orgLocations.getOrg(), orgLocations);
-		emailMessage.setSubject(subject);
-		emailMessage.setMessageBody(emailTemplate);
 
 		// calling the sendEmail method of emailScenerioUtil
-		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,userRole.getOrgLocations().getOrg(),userRole.getOrgLocations(),Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATIONMAILTOREPORTINGMANAGER,new ArrayList<EmailAttachment>());
 		String actionLink = "";
 		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, orgLocations, notificationScenario,
 				new HashMap<String, String>());

@@ -1131,9 +1131,9 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			countMap.put("NOT_LOGGEDIN", notLoggedinUserList.size());
 			
 			List<String> ipList = new ArrayList<>();
-			String query3 = "select uLoginSession.ipaddress from UserLoginLogoutSession uLoginSession group by uLoginSession.ipaddress";
-			ipList = session.createQuery(query3).list();
-			countMap.put("MULTIPLE_IPS", ipList.size());
+            String query3 = "select userLogin.ipaddress from UserLoginLogoutSession userLogin where userLogin.userId.id IN (select userRole.user.id from UserRole userRole where  userRole.orgLocations.org.id IN (:orgList)) group by userLogin.ipaddress";
+            ipList = session.createQuery(query3).setParameterList("orgList", orgId).list();
+            countMap.put("MULTIPLE_IPS", ipList.size());
 			
 			
 		}else{
@@ -1427,109 +1427,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	
 
 	}
-	
-	/*
-     @SuppressWarnings("unchecked")
+    
+	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<UserRole> getUsersListByRoleAndNameAndLocationId1(Long roleId, String userName, Long locationId,
-			String userState, Long userId,String loginUserRole,String userCode,Integer offset,String viewType) throws Exception {
-
+	public List<UserRole> getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-        Map<String, Object> params = new HashMap<String,Object>();
-		
-        ArrayList<String> subquerys = new ArrayList<String>();
-       
-		String from = "from UserRole userRole where "; 
-		
-		String subQuery = "userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "
-				+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' " ;
-		params.put("locationId",locationId);
-		params.put("userId",userId);
-		subquerys.add(subQuery);
-		
+		String query = "from UserRole userRole left join fetch userRole.orgLocations orgLocation   where orgLocation.id =:orgLocationId and userRole.userState <> 'INACTIVE' ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+		return userRoleList;
+	}
 
-		String subQuery3 = "";
-		String subQuery4 = "";
-		String subQuery5 = ""; 
-		String firstWord="";
-		String lastWord="";
-		String subQuery8="";
-		
-		String s1 =userName;
-		String withoutWhitespace = s1.trim();
-		if(!"".equalsIgnoreCase(withoutWhitespace) && withoutWhitespace.contains(" "))
-		{
-			 
-			 String[] words =withoutWhitespace.split("\\s");
-				 firstWord = words[0];
-				 lastWord = words[1];
-		
-		
-		}
-		
-		if(!firstWord.equals("") && !lastWord.equals("")){
-			 subQuery8 = " and ((userRole.user.firstName LIKE '" + firstWord + "%') OR (userRole.user.firstName LIKE '" + lastWord + "%') OR  (userRole.user.lastName LIKE '"+ firstWord + "%') OR  (userRole.user.lastName LIKE '"+ lastWord + "%'))";
-			 subquerys.add(subQuery8);
-		 }
-		
-		else{
-			 subQuery8 =""; 
-		 }
-		
-		 if(!"".equalsIgnoreCase(withoutWhitespace) && !withoutWhitespace.contains(" ")){
-			 subQuery3 = " and ((userRole.user.firstName LIKE '" + withoutWhitespace + "%') OR  (userRole.user.lastName LIKE '"+ withoutWhitespace + "%') OR (userRole.user.email LIKE '" + withoutWhitespace + "'))";
-			 subquerys.add(subQuery3);
-		
-		 }else{
-			 subQuery3 =""; 
-		 }
-		 
-		if(!"".equalsIgnoreCase(userState)){
-			subQuery4 = " and userRole.userState = '" + userState + "'";
-			 subquerys.add(subQuery4);
-		}else{
-			 subQuery4 ="";
-		}
-		
-		 
-		if(roleId != null){
-			subQuery5 = " and userRole.roles.id = :roleId";
-			params.put("roleId",roleId);
-			subquerys.add(subQuery5);
-		}else{
-			 subQuery5 ="";
-		}
-		
-		StringBuilder whereCondition = new StringBuilder();
-		for (String s : subquerys){
-			whereCondition.append(s);
-	       }
-		
-		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY userRole.id DESC");
-		for (String str : query.getNamedParameters())
-        {
-			if(str.equalsIgnoreCase("locationId") || str.equalsIgnoreCase("userId")){
-				query.setLong(str, (long) params.get( str ));
-			}else{
-				query.setParameter( str, params.get( str ) );
-			}
-        	
-        }
-		List<UserRole>  list =null;
-		list = query.list();
-		if(viewType != null && viewType.equalsIgnoreCase(Constants.VIEW_TYPE)){
-			return list;
-		}else{
-			if(query.list().size() >= offset){
-				if(query.list().size() > offset + 10){
-					return   list.subList(offset, (offset+10));
-				}else{
-					return   list.subList(offset, (  offset + (query.list().size() - offset)));
-				}
-			}else{
-				return  null;
-			}
-		}
-	} */
+
 }

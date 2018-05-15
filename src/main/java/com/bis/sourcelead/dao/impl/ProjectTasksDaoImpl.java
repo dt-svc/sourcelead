@@ -448,12 +448,12 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 			 projectTasksList =query.setLong("projectId", projectId).setParameterList("teamsIdsList", teamsIdsList).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
 		 
 			 Query countQuery = session.createQuery(queryStrForCount+subQueryStr);
-			 countlist = countQuery.setLong("projectId", projectId).setParameterList("teamsIdsList", teamsIdsList).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
+			 countlist = countQuery.setLong("projectId", projectId).setParameterList("teamsIdsList", teamsIdsList).list();
 			 
 		 }else {
 			 projectTasksList =query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
 			 Query countQuery = session.createQuery(queryStrForCount+subQueryStr);
-			 countlist = countQuery.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
+			 countlist = countQuery.setLong("projectId", projectId).list();
 			 
 		 }
 		 

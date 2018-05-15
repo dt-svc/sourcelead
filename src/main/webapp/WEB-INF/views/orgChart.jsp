@@ -115,6 +115,7 @@ function filterNodes(keyWord) {
 	    		if(ds[i]["parentId"] == "0") {
 	    			var obj  = {};
 	    			obj.id = ds[i].id;
+	    			obj.userCode = ds[i].userCode;
 	    			obj.name = ds[i].name;
 	    			obj.designation = ds[i].designation;
 	    			if(ds[i].fileURL && ds[i].fileURL !== "")
@@ -158,12 +159,13 @@ function initChart(data) {
 	        'nodeTitle': 'name',
 	        'nodeContent': 'designation',
 	        'nodeID': 'id',
+	        'nodeCode': 'userCode',
 	        'createNode': function($node, data) {
 	          var nodePrompt = $('<i>', {
 	            'class': 'fa fa-info-circle second-menu-icon',
 	            'title': "Show Profile",
 	            click: function() {
-	              window.open('${sourceleadUrl}/userSummaryDetails?userId='+data["id"], "_blank");
+	            	window.open('${sourceleadUrl}/userSummaryDetails?userCode='+data["userCode"], "_blank");
 	            }
 	          });
 //	          var secondMenu = '<div class="second-menu">Extra Details</div>';

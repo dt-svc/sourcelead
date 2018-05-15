@@ -3,6 +3,8 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+
+import com.bis.sourcelead.annotations.CleanHtml;
 /**
  * DTO foe client and Vendor
  * Date :16-08-1989
@@ -24,6 +26,7 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	private String longitude;
 	private String level;
 	private String address;
+	@CleanHtml(escape=false)
 	private String billingAddress;
 	//private String PaymentTerm;
 	private String paymentTerms;

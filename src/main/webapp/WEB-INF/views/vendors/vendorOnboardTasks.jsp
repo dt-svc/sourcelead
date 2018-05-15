@@ -210,9 +210,9 @@ function getVendorOnboardTasksList(){
 			        		result = result +'<div class="clearfix taskheder">';
 			        		
 			        		if(report.taskType == 'Onboard Task'){
-			        			result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteOnboardTask('+report.id+');"></i></a></label>';
+			        			result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary" title="'+report.taskName+'" >'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteOnboardTask('+report.id+');"></i></a></label>';
 			        		}else{
-			        			result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i></a></label>';
+			        			result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary" title="'+report.taskName+'">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i></a></label>';
 			        		}
 			        		
 			        		
@@ -332,6 +332,7 @@ function saveOnboardTask(){
 			        	document.getElementById("selector").style.display = 'block';
 			        	$("#selector").fadeIn(150);
 			        	$('#selector').delay(1000).fadeOut('slow');
+			        	$("body").removeClass("modal-open");
 		        	}
 		        	
 		        },

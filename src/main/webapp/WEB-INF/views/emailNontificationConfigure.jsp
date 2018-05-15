@@ -113,6 +113,7 @@
 		          </div>
 		        </div> -->
 		        <div class="clearfix"></div>
+
 			</div>
 			<div class="modal-footer clearfix">
 				<div>
@@ -450,4 +451,15 @@ function addEmailPop(){
 </script>
 
 
-          
+<script type="text/javascript">
+function verifyEmails() {
+	var email = document.getElementById("email").value;
+	if(email != null && email != ''){
+	      validateEmailForExistenceUniversally(email, '#email');
+	}else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
+	}
+}
+
+</script>

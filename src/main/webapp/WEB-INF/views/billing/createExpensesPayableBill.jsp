@@ -76,7 +76,7 @@ function checkBox(){
               <label class="col-md-3">Vendor<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 chooRadius">
               <div class="input-group col-md-10 pull-left">
-			<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();"
+			<select class="chosen-select form-control" id="vendorOrgRelationId" name="vendorOrgRelationId" onchange="getVendorContacts();flushValues();getPaymentTerms();getPaymentAccountList();"
 		         	data-validation="required" field-name="Vendor">
 		      </select>
 		       <span class="input-group-addon cursorPointer bg-blue" onclick="getVendors();creatExpPayBilsEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
@@ -143,13 +143,22 @@ function checkBox(){
                 <textarea class="form-control" rows="2" placeholder="Billing Address" id="billingAddress" name="billingAddress"></textarea>
               </div>
             </div>
-            <div class="form-group">
+             <div class="form-group">
+	              <label class="col-md-3">Payment Account</label>
+	              <div class="col-md-9 select-field" id="projectMemberIdDiv">
+	                <select class="form-control" id="paymentAccountId"  field-name="paymentAccount Name" name="paymentAccount">
+	                   <option value="">--Select Account--</option>
+	                </select>
+	              </div>
+	            </div>
+	            
+            <!-- <div class="form-group">
 							<label class="col-md-3">Account Details</label>
 							<div class="col-md-9">
 								<textarea class="form-control" rows="2" id="accountDetails"
 									name="accountDetails" placeholder="Account Details"></textarea>
 							</div>
-			</div>
+			</div> -->
 			
 			<div class="clearfix mb"></div>
 			<div class="form-group">
@@ -171,7 +180,7 @@ function checkBox(){
                   <div class="form-group">
               <label class="col-md-3">Associate<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field" id="projectMemberIdDiv">
-                <select class="chosen-select form-control" id="projectMemberId" name="projectMemberId" onchange="getExpenses();" field-name="projectMemberId Name">
+                <select class="chosen-select form-control" id="projectMemberId" name="projectMemberId" onchange="getExpenses();" field-name="Associate">
                 </select>
               </div>
             </div>
@@ -213,7 +222,7 @@ function checkBox(){
             <tbody>
               <tr id='divAttachmentTsRow0'>
             	<td>
-              	<label><strong>Attachments</strong></label>
+              	<label class="pull-left"><strong>Attachments</strong></label>
               	<div id="timesheetDocumentsId"><div class="timesheet_week_comm invoiceDocs">
                 <span><div id="savedAttachments"></div></span></div> </div>
 	              <div class="timesheet_week_comm col-md-12 invoiceDocs invoiceDocs_add" >
@@ -342,13 +351,13 @@ function getProjectMemberByVendor(pid,projectMemberName){
 	$.ajax({
 	type : "GET",
 	url: sourceleadUrl+"/getVendorAssignedMembersForProjects?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&orgRelationId="+orgRelationId+"&userId="+userId+"&orgLocationId="+orgLocationId,
-	success :function(data) {
+	success :function(json) {
 		var output = "";
 		output = output + "<option value=''>--Select Associate--</option>";
-		if(data !=null){
-			for (var i=0; i<data.length; i++)
+		if(json.data !=null){
+			for (var i=0; i<json.data.length; i++)
 			{
-			var opt = data[i];
+			var opt = json.data[i];
 			var selected = "";
 			  if(projectMemberName = opt.empName && projectMemberName != null && projectMemberName !='' && projectMemberName !="undefined" ){
 				 selected = 'selected';
@@ -926,6 +935,10 @@ function toDate(selector) {
 		         success: function(data) {
 		        	 var json = JSON.parse(data);
 		        	 var result = '';
+		        	 if(json.paymentAccountId > 0) {
+		        		 getPaymentAccountList(json.vendorOrgRelationId,json.paymentAccountId)
+		        	 }
+		        	 
 		        	 var selected = 'selected';
 		        	 result = result +'<option disabled selected>--Select Client--</option>';
 		        	 result = result +'<option value='+json['vendorOrgRelationId']+' '+selected+' >'+json['orgName']+'</option>';
@@ -1615,13 +1628,13 @@ function getExpenses(projectMemberId,expensesFrequency){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getExpensesByProjectMemberId?"+tokenParamName+"="+tokenValue+"&memberId="+memberId+"&invoiceType=payable",
-		success :function(data) {
+		success :function(json) {
 			var output = "";
 			output = output + "<option value=''>--Select Expenses--</option>";
-			if(data !=null){
-				for (var i=0; i<data.length; i++)
+			if(json.data !=null){
+				for (var i=0; i<json.data.length; i++)
 				{
-				var opt = data[i];
+				var opt = json.data[i];
 				var selected = "";
 				 if(expensesFrequency = opt.dateFrequency && expensesFrequency !=null && expensesFrequency != '' && expensesFrequency !='undefined'){
 					selected = 'selected';
@@ -1647,8 +1660,12 @@ function getExpensesDetails(expId){
 	$.ajax({
 		type : "GET",
 		url: sourceleadUrl+"/getExpensesEntries?"+tokenParamName+"="+tokenValue+"&expensesId="+expensesId,
-		success :function(data) {
-			populateExpensesEntriesGrid(data);
+		success :function(json) {
+			if(json !=null && json !=''){
+			populateExpensesEntriesGrid(json);
+			}else{
+                alertMessageInExpense();
+          }
 		},
 		});	
 }
@@ -1657,11 +1674,11 @@ function getExpensesDetails(expId){
 
 
 <script>
-function populateExpensesEntriesGrid(data){
+function populateExpensesEntriesGrid(json){
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
            var result = '';
            var subTotal = 0;
-            result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+data.length+' />';
+            result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+json.data.length+' />';
             result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0"  id="invoiceExpTbl">';
             result = result +' <thead>';
             result = result +' <tr>';
@@ -1673,9 +1690,9 @@ function populateExpensesEntriesGrid(data){
             result = result +' </tr>';
             result = result +' </thead>';
             result = result +' <tbody>';
-            if(data !=null && data !=''){
-            	 for(var i=0;i < data.length;i++){
-                 	  var opt = data[i];
+            if(json.data !=null && json.data !=''){
+            	 for(var i=0;i < json.data.length;i++){
+                 	  var opt = json.data[i];
                  	  subTotal += opt.amount;
                  	  result = result +'   <tr>';
          		      result = result +'   <td>';
@@ -1715,8 +1732,6 @@ function populateExpensesEntriesGrid(data){
          		      result = result +' </tr>';
          		      
                  }	
-            }else{
-            	alertMessageInExpense();
             }
            
             
@@ -2070,6 +2085,37 @@ if(selectedTextInvoice =='percentage'){
  
 }
 </script>
-
+<script>
+function getPaymentAccountList(dbOrgRelationId,paymentAccoutId){
+	var	orgRelationId = $("#vendorOrgRelationId").val();
+	if(orgRelationId == null){
+		orgRelationId = dbOrgRelationId;
+	}
+	$.ajax({
+		type : "GET",
+		url: sourceleadUrl+"/getAllPaymentAccountList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
+		success :function(json) {
+			var result = "";
+// 			   result = result +"<option>-- Select Account --</option>";
+			   for (var i=0; i<json.length; i++)
+				{
+				  var report = json[i];
+				  var selected = '';
+					if((paymentAccoutId != null && paymentAccoutId != "" && paymentAccoutId !="undefined" && paymentAccoutId == report.id) || (report.defaultAccount == 1)){
+						selected = 'selected';
+					}
+					if(report.accountType === 'WEPAY'){
+						  result = result +'<option value='+report.id+' '+selected+'> '+report.email+'</option>';
+					  }else{
+						  result = result +'<option value='+report.id+' '+selected+'>'+report.accountNumber+' ('+report.bankName+')</option>';
+					  }
+				}
+			   
+			     $("#paymentAccountId").empty();
+		         $("#paymentAccountId").append(result);
+		}
+	});
+}
+</script>
 
  <jsp:include page="../masterFooter.jsp" />	

@@ -1,9 +1,12 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,11 +16,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
@@ -48,6 +52,7 @@ public class Asset implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ASSET_CATEGORY_ID")
 	@JsonBackReference
+	@JsonProperty
 	private AssetCategory assetCategory;
 	
 	@Column(name = "MAKE")
@@ -91,48 +96,17 @@ public class Asset implements Serializable{
 	@Column(name = "FILE_URL")
 	private String fileUrl;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SHIFT_A_EMPLOYEE")
-	@JsonProperty
-	private Employees shiftAEmployee;
-	
-	@Column(name = "SHIFT_A_ATTACHMENT",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] shiftADocFile;
-		
-	@Column(name = "SHIFT_A_FILE_CONTENT_TYPE")
-	private String shiftAFileContentType;
-	
-	@Column(name = "SHIFT_A_FILE_NAME")
-	private String shiftAFileName;
-	
-	@Column(name = "SHIFT_A_FILE_URL")
-	private String shiftAFileUrl;
-	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SHIFT_B_EMPLOYEE")
-	@JsonProperty
-	private Employees shiftBEmployee;
-	
-	@Column(name = "SHIFT_B_ATTACHMENT",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] shiftBDocFile;
-		
-	@Column(name = "SHIFT_B_FILE_CONTENT_TYPE")
-	private String shiftBFileContentType;
-	
-	@Column(name = "SHIFT_B_FILE_NAME")
-	private String shiftBFileName;
-	
-	@Column(name = "SHIFT_B_FILE_URL")
-	private String shiftBFileUrl;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocations;
+	
+	
+	@OneToMany(mappedBy="asset",cascade=CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    @JsonBackReference
+    private Set<AssetAssign> assetAssign;
 	
 	@Column(name = "DESCRIPTION")
 	@Type(type="text")
@@ -165,6 +139,10 @@ public class Asset implements Serializable{
 	@JsonProperty
 	private String categoryName;
 	
+	@Transient
+    @JsonProperty
+    private String issueDateStr;
+  
 	@Transient 
 	private List<Employees> employeesList;
 
@@ -259,54 +237,6 @@ public class Asset implements Serializable{
 		this.monitor = monitor;
 	}
 
-	public Employees getShiftAEmployee() {
-		return shiftAEmployee;
-	}
-
-	public void setShiftAEmployee(Employees shiftAEmployee) {
-		this.shiftAEmployee = shiftAEmployee;
-	}
-
-	public String getShiftAFileContentType() {
-		return shiftAFileContentType;
-	}
-
-	public void setShiftAFileContentType(String shiftAFileContentType) {
-		this.shiftAFileContentType = shiftAFileContentType;
-	}
-
-	public String getShiftAFileName() {
-		return shiftAFileName;
-	}
-
-	public void setShiftAFileName(String shiftAFileName) {
-		this.shiftAFileName = shiftAFileName;
-	}
-
-	public Employees getShiftBEmployee() {
-		return shiftBEmployee;
-	}
-
-	public void setShiftBEmployee(Employees shiftBEmployee) {
-		this.shiftBEmployee = shiftBEmployee;
-	}
-
-	public String getShiftBFileContentType() {
-		return shiftBFileContentType;
-	}
-
-	public void setShiftBFileContentType(String shiftBFileContentType) {
-		this.shiftBFileContentType = shiftBFileContentType;
-	}
-
-	public String getShiftBFileName() {
-		return shiftBFileName;
-	}
-
-	public void setShiftBFileName(String shiftBFileName) {
-		this.shiftBFileName = shiftBFileName;
-	}
-
 	public OrgLocations getOrgLocations() {
 		return orgLocations;
 	}
@@ -363,33 +293,7 @@ public class Asset implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 
-	public String getShiftAEmpName() {
-		if(shiftAEmployee != null){
-			if(shiftAEmployee.getUser().getLastName() != null) {
-				shiftAEmpName = shiftAEmployee.getUser().getFirstName() +" "+shiftAEmployee.getUser().getLastName();
-			}else {
-				shiftAEmpName = shiftAEmployee.getUser().getFirstName();
-			}
-			
-		}
-		return shiftAEmpName;
-	}
-
-	public void setShiftAEmpName(String shiftAEmpName) {
-		this.shiftAEmpName = shiftAEmpName;
-	}
-
-	public String getShiftBEmpName() {
-		if(shiftBEmployee != null){
-			if(shiftBEmployee.getUser().getLastName() != null) {
-				shiftBEmpName = shiftBEmployee.getUser().getFirstName() +" "+ shiftBEmployee.getUser().getLastName();
-			}else {
-				shiftBEmpName = shiftBEmployee.getUser().getFirstName();
-			}
-		}
-		return shiftBEmpName;
-	}
-
+	 
 	public void setShiftBEmpName(String shiftBEmpName) {
 		this.shiftBEmpName = shiftBEmpName;
 	}
@@ -439,26 +343,7 @@ public class Asset implements Serializable{
 		this.docFile = docFile;
 	}
 
-	public byte[] getShiftADocFile()
-	{
-		return shiftADocFile;
-	}
-
-	public void setShiftADocFile(byte[] shiftADocFile)
-	{
-		this.shiftADocFile = shiftADocFile;
-	}
-
-	public byte[] getShiftBDocFile()
-	{
-		return shiftBDocFile;
-	}
-
-	public void setShiftBDocFile(byte[] shiftBDocFile)
-	{
-		this.shiftBDocFile = shiftBDocFile;
-	}
-
+	 
 	public String getFileUrl() {
 		return fileUrl;
 	}
@@ -466,23 +351,6 @@ public class Asset implements Serializable{
 	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
 	}
-
-	public String getShiftAFileUrl() {
-		return shiftAFileUrl;
-	}
-
-	public void setShiftAFileUrl(String shiftAFileUrl) {
-		this.shiftAFileUrl = shiftAFileUrl;
-	}
-
-	public String getShiftBFileUrl() {
-		return shiftBFileUrl;
-	}
-
-	public void setShiftBFileUrl(String shiftBFileUrl) {
-		this.shiftBFileUrl = shiftBFileUrl;
-	}
-
 	public Date getIssueDate() {
 		return issueDate;
 	}
@@ -497,5 +365,25 @@ public class Asset implements Serializable{
 
 	public void setMacAddress(String macAddress) {
 		this.macAddress = macAddress;
+	}
+
+	public Set<AssetAssign> getAssetAssign() {
+		return assetAssign;
+	}
+
+	public void setAssetAssign(Set<AssetAssign> assetAssign) {
+		this.assetAssign = assetAssign;
+	}
+
+	public String getIssueDateStr() {
+		if(issueDate != null) {
+			SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+			issueDateStr = dateFormat.format(issueDate);	
+		}
+		return issueDateStr;
+	}
+
+	public void setIssueDateStr(String issueDateStr) {
+		this.issueDateStr = issueDateStr;
 	}
 }

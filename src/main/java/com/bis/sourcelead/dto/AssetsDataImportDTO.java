@@ -32,27 +32,7 @@ public class AssetsDataImportDTO {
 	
 	private List<FileInfo> attachmentUpload;
 	
-	private List<FileInfo> uploadBtndskAUpload;
-	
-	private List<FileInfo> uploadBtndskBUpload;
-	
 	private String fileUrl;
-	
-	private String shiftAFileContentType;
-	
-	private String shiftAFileUrl;
-	
-	private String shiftAFileName;
-	
-	private String shiftBFileContentType;
-	
-	private String shiftBFileUrl;
-	
-	private String shiftBFileName;
-	
-	private String shiftAEmpName;
-	
-	private String shiftBEmpName;
 	
 	private String categoryName;
 	
@@ -166,22 +146,7 @@ public class AssetsDataImportDTO {
 		this.attachmentUpload = attachmentUpload;
 	}
 
-	public List<FileInfo> getUploadBtndskAUpload() {
-		return uploadBtndskAUpload;
-	}
-
-	public void setUploadBtndskAUpload(List<FileInfo> uploadBtndskAUpload) {
-		this.uploadBtndskAUpload = uploadBtndskAUpload;
-	}
-
-	public List<FileInfo> getUploadBtndskBUpload() {
-		return uploadBtndskBUpload;
-	}
-
-	public void setUploadBtndskBUpload(List<FileInfo> uploadBtndskBUpload) {
-		this.uploadBtndskBUpload = uploadBtndskBUpload;
-	}
-
+	 
 	public String getFileUrl() {
 		return fileUrl;
 	}
@@ -189,70 +154,7 @@ public class AssetsDataImportDTO {
 	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
 	}
-
-	public String getShiftAFileContentType() {
-		return shiftAFileContentType;
-	}
-
-	public void setShiftAFileContentType(String shiftAFileContentType) {
-		this.shiftAFileContentType = shiftAFileContentType;
-	}
-
-	public String getShiftAFileUrl() {
-		return shiftAFileUrl;
-	}
-
-	public void setShiftAFileUrl(String shiftAFileUrl) {
-		this.shiftAFileUrl = shiftAFileUrl;
-	}
-
-	public String getShiftAFileName() {
-		return shiftAFileName;
-	}
-
-	public void setShiftAFileName(String shiftAFileName) {
-		this.shiftAFileName = shiftAFileName;
-	}
-
-	public String getShiftBFileContentType() {
-		return shiftBFileContentType;
-	}
-
-	public void setShiftBFileContentType(String shiftBFileContentType) {
-		this.shiftBFileContentType = shiftBFileContentType;
-	}
-
-	public String getShiftBFileUrl() {
-		return shiftBFileUrl;
-	}
-
-	public void setShiftBFileUrl(String shiftBFileUrl) {
-		this.shiftBFileUrl = shiftBFileUrl;
-	}
-
-	public String getShiftBFileName() {
-		return shiftBFileName;
-	}
-
-	public void setShiftBFileName(String shiftBFileName) {
-		this.shiftBFileName = shiftBFileName;
-	}
-
-	public String getShiftAEmpName() {
-		return shiftAEmpName;
-	}
-
-	public void setShiftAEmpName(String shiftAEmpName) {
-		this.shiftAEmpName = shiftAEmpName;
-	}
-
-	public String getShiftBEmpName() {
-		return shiftBEmpName;
-	}
-
-	public void setShiftBEmpName(String shiftBEmpName) {
-		this.shiftBEmpName = shiftBEmpName;
-	}
+  
 
 	public String getCategoryName() {
 		return categoryName;

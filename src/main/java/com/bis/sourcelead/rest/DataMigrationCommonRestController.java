@@ -43,8 +43,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.DataMigrationCommonDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.SourceleadFormFields;
 import com.bis.sourcelead.service.DataMigrationService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -70,9 +72,14 @@ public class DataMigrationCommonRestController {
 	@Autowired
 	DataMigrationService dataMigrationService;
 	
+	@Autowired
+	private ShiftService shiftService;
+	
 	@RequestMapping(value = {"/dataMigrationCommon","/rest/dataMigrationCommon"}, method = RequestMethod.POST)
 	public ModelAndView dataMigrationCommon(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
 	{
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		  
 		ModelAndView model = new ModelAndView();
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		Map<String, String> dataWithCellId = new TreeMap<String, String>();
@@ -105,6 +112,9 @@ public class DataMigrationCommonRestController {
 				formFields.add(field);
 			}
 		}
+		
+		List<Shift> shiftList = shiftService.getShiftList(orgLocations.getId());
+		model.addObject("shiftList", shiftList);
 		
 		model.setViewName("upload/dataImport");
 		model.addObject("sourceleadUrl", sourceleadUrl);

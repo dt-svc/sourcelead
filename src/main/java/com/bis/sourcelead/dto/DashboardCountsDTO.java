@@ -2,30 +2,70 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
-public class DashboardCountsDTO implements Serializable{
+public class DashboardCountsDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long interviewCount;
-	
+
 	private Long taskCount;
 
 	private float savedTimesheetCount;
-	
-	private float waitingForApprovalTimesheetCount;	
-	
-	private float approvedTimesheetCount;	
-	
+
+	private float waitingForApprovalTimesheetCount;
+
+	private float approvedTimesheetCount;
+
 	private float rejectedTimesheetCount;
 
-    private float expensesDraftCount;
-	
+	private float expensesDraftCount;
+
 	private float expensesSubmittedForApprovalCount;
-	
+
 	private float expensesApprovedCount;
-	
+
 	private float expensesRejectCount;
-	
+
 	private float empExpensesReopenCount;
+
+	private String leavesApprovedCount;
+
+	private String leavesRejectedCount;
+
+	private String leavesPendingCount;
+
+	private long leavesBalanceCount;
+
+	public String getLeavesApprovedCount() {
+		return leavesApprovedCount;
+	}
+
+	public void setLeavesApprovedCount(String leavesApprovedCount) {
+		this.leavesApprovedCount = leavesApprovedCount;
+	}
+
+	public String getLeavesRejectedCount() {
+		return leavesRejectedCount;
+	}
+
+	public void setLeavesRejectedCount(String leavesRejectedCount) {
+		this.leavesRejectedCount = leavesRejectedCount;
+	}
+
+	public String getLeavesPendingCount() {
+		return leavesPendingCount;
+	}
+
+	public void setLeavesPendingCount(String leavesPendingCount) {
+		this.leavesPendingCount = leavesPendingCount;
+	}
+
+	public long getLeavesBalanceCount() {
+		return leavesBalanceCount;
+	}
+
+	public void setLeavesBalanceCount(long leavesBalanceCount) {
+		this.leavesBalanceCount = leavesBalanceCount;
+	}
 
 	public float getSavedTimesheetCount() {
 		return savedTimesheetCount;
@@ -98,22 +138,21 @@ public class DashboardCountsDTO implements Serializable{
 	public void setEmpExpensesReopenCount(float empExpensesReopenCount) {
 		this.empExpensesReopenCount = empExpensesReopenCount;
 	}
-	
-	public Long getInterviewCount()
-	{
+
+	public Long getInterviewCount() {
 		return interviewCount;
 	}
-	public void setInterviewCount(Long interviewCount)
-	{
+
+	public void setInterviewCount(Long interviewCount) {
 		this.interviewCount = interviewCount;
 	}
-	public Long getTaskCount()
-	{
+
+	public Long getTaskCount() {
 		return taskCount;
 	}
-	public void setTaskCount(Long taskCount)
-	{
+
+	public void setTaskCount(Long taskCount) {
 		this.taskCount = taskCount;
 	}
-	
+
 }

@@ -113,14 +113,6 @@ logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCo
 	
 	}
 
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<EmailScenario> getEmailScenarioList() {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailScenario emailScenario  "; 
-		List<EmailScenario> emailScenarioList =session.createQuery(query).list();
-		return emailScenarioList;
-	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -159,10 +151,15 @@ logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCo
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<EmailScenario> getEmailScenarioList(String sourceLead) throws Exception {
+	public List<EmailScenario> getEmailScenarioList(String templateType) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailScenario emailScenario where templateType not in(:sourceLead) and orgLocationId is Null "; 
-		List<EmailScenario> emailScenarioList =session.createQuery(query).setString(sourceLead, sourceLead).list();
+		String query = null;
+		if(templateType.equalsIgnoreCase("sourcelead")) {
+			 query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y' "; 
+		}else if(templateType.equalsIgnoreCase("org")){
+			 query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y' and emailScenario.templateType = 'org' and emailScenario.entityType = 'Email' "; 
+		}
+		List<EmailScenario> emailScenarioList =session.createQuery(query).list();
 		return emailScenarioList;
 	}
 

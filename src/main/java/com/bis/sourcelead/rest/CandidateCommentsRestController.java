@@ -102,8 +102,8 @@ public class CandidateCommentsRestController {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				    }else {
-						response.setResponse(Result.INVALID_USER.name());
-						response.setResponseMessage(Result.INVALID_USER.getValue());
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
 					}
 				}
 			} else {

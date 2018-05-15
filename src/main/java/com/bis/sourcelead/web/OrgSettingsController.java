@@ -20,12 +20,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
+import com.bis.sourcelead.dto.OrgLocationIndiaBankingDetailsDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLicenseSubscription;
+import com.bis.sourcelead.entity.OrgLocationInformationDetails;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationBankingDetails;
 import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
@@ -43,6 +46,8 @@ import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
+import com.bis.sourcelead.service.OrgLocationIndiaBankingDetailsService;
+import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
@@ -117,6 +122,12 @@ public class OrgSettingsController {
 	
 	@Autowired
 	TabsService tabsService;
+	
+	@Autowired
+	OrgLocationInformationDetailsService orgLocationInformationDetailsService;
+	
+	@Autowired
+	OrgLocationIndiaBankingDetailsService orglocationIndiaBankingDetailsService;
 
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
@@ -139,10 +150,14 @@ public class OrgSettingsController {
 		model.addObject("bussinessTypesList", bussinessTypesList);
 		
 		
-		OrglocationBankingDetails bankingDetails = orglocationBankingDetailsService.getOrglocationBankingDetailsByOrgLocationId(orgLocations.getId());
-		if(bankingDetails != null) {
-			model.addObject("uuid", bankingDetails.getUuid());
-			SourceLeadSessionManager.setSessionAttribute(request, "bankingDetails", bankingDetails);
+		if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
+			List<OrgLocationIndiaBankingDetailsDTO> bankingDetailsDTOList =  orglocationIndiaBankingDetailsService.getOrglocationIndiaBankingDetailsList(orgLocations.getId());
+			model.addObject("bankingDetailsDTOList", bankingDetailsDTOList);
+			model.addObject("bankingDetailsDTOListSize", bankingDetailsDTOList.size());
+		}else {
+			List<OrgLocationBankingDetailsDTO> bankingDetailsDTOList =  orglocationBankingDetailsService.getOrglocationBankingDetailsListByOrgLocationId(orgLocations.getId());
+			model.addObject("bankingDetailsDTOList", bankingDetailsDTOList);
+			model.addObject("bankingDetailsDTOListSize", bankingDetailsDTOList.size());
 		}
 		
 		
@@ -182,6 +197,32 @@ public class OrgSettingsController {
 				model.addObject("role",signatory.getUserRoleId().getRoles().getDisplayName());
 			}
 		}*/
+	    
+	    
+	    
+	    if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
+	    	OrgLocationInformationDetails informationDetails = orgLocationInformationDetailsService.getOrgLocationInformationDetailsByOrgLocationId(orgLocations.getId());
+			if(informationDetails != null) {
+				
+				if(informationDetails.getIncorporationDate() != null) {
+					informationDetails.setIncorporationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),informationDetails.getIncorporationDate()));
+				}
+				
+				if(informationDetails.getPfRegistrationDate() != null) {
+					informationDetails.setPfRegistrationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),informationDetails.getPfRegistrationDate()));
+				}
+				
+				if(informationDetails.getEsiRegistrationDate() != null) {
+					informationDetails.setEsiRegistrationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),informationDetails.getEsiRegistrationDate()));
+				}
+				
+				if(informationDetails.getPtRegistrationDate() != null) {
+					informationDetails.setPtRegistrationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),informationDetails.getPtRegistrationDate()));
+				}
+				model.addObject("informationDetails", informationDetails);
+			}
+	    }
+	
 		
 		Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		if(countries != null){
