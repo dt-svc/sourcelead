@@ -909,13 +909,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public String updateUscisTypeDropDown(Long templateId, Long uscisId) {
+	public String updateUscisTypeDropDown(Immigration immigration) {
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			Immigration immigration = session.get(Immigration.class, templateId);
-			LookUpData uscisStatusId = new LookUpData();
-			uscisStatusId.setId(uscisId);
-			immigration.setCurrUscisStauts(uscisStatusId);
+			if(immigration != null)
 			session.update(immigration);
 			logger.debug("updateUscisTypeDropDown updated Successfully");
 		} catch (Exception exception) {

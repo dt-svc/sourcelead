@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.Consts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,6 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
@@ -69,6 +67,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 /**
@@ -92,6 +91,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private ImmigrationActivityCommonUtil immigrationActivityCommonUtil;
 	
 	@Autowired
 	private OrgRelationsDao orgRelationsDao; 
@@ -1044,8 +1046,19 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	@Override
-	public String updateUscisTypeDropDown(Long templateId, Long uscisId) {
-		return immigrationCommonDao.updateUscisTypeDropDown(templateId,uscisId);
+	public String updateUscisTypeDropDown(Long immigrationId, Long uscisId, Long uscisOldId,Long userId) {
+		Immigration immigration = immigrationCommonDao.getImmigrationById(immigrationId);
+		String returnVal;
+		try {
+			LookUpData	lookUpdata = lookUpDataService.getTasksById(uscisId);
+			immigration.setCurrUscisStauts(lookUpdata);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//immigrationActivityCommonUtil.saveImmigrationActivities(user, orgLocations, immigration, actionOn, actionDesc);
+		returnVal = immigrationCommonDao.updateUscisTypeDropDown(immigration);
+		return returnVal;
 	}
 
 	@Override

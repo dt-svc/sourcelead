@@ -82,6 +82,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.paypal.api.openidconnect.Session;
 
 @RestController
 @RequestMapping("/app/immigration")
@@ -1792,9 +1793,11 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = { "/updateUscisTypeDropDown" })
 	public String updateUscisTypeDropDown(@RequestParam(value = "templateId", required = false) Long templateId,
-			@RequestParam(value = "uscisId", required = false) Long uscisId, HttpServletRequest request)
+			@RequestParam(value = "uscisId", required = false) Long uscisId, 
+			@RequestParam(value = "uscisOldId", required = false) Long uscisOldId, HttpServletRequest request)
 			throws Exception {
-		String resultVal = immigrationCommonService.updateUscisTypeDropDown(templateId, uscisId);
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		String resultVal = immigrationCommonService.updateUscisTypeDropDown(templateId, uscisId,uscisOldId,user.getId());
 		return resultVal;
 	}
 
