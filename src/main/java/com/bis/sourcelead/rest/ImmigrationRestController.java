@@ -1110,7 +1110,8 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/saveCandidateFamilyDetails" })
 	public Response<String> saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO,
 			HttpServletRequest request, @RequestParam(value = "candidateId", required = true) Long candidateId,
-			@RequestParam(value = "memberId", required = false) Long id) { // memberId used for edit process.
+			@RequestParam(value = "memberId", required = false) Long id,
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId) { // memberId used for edit process.
 		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -1136,7 +1137,7 @@ public class ImmigrationRestController {
 				familyDetailsDTO.setRelation(Constants.RELATION_TYPE_FATHER);
 			}
 
-			immigrationCommonService.saveCandidateFamilyMemberDetails(familyDetailsDTO, orgLocations, user);
+			immigrationCommonService.saveCandidateFamilyMemberDetails(familyDetailsDTO, orgLocations, user,immigrationId);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
 		}else if (user == null) {
@@ -1248,7 +1249,7 @@ public class ImmigrationRestController {
 						candidateService.saveOrUpdateCandidate(candidate); // update the master candidate table.
 						
 					}else {
-					immigrationCommonService.saveResidenceDetails(residenceDTO, orgLocations, user, candidateId);
+					immigrationCommonService.saveResidenceDetails(residenceDTO, orgLocations, user, candidateId,Long.parseLong(immigrationId));
 					}
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());

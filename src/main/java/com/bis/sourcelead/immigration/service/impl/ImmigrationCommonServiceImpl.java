@@ -666,9 +666,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	@Override
-	public String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDto, OrgLocations orgLocations, User user) throws Exception {
+	public String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDto, OrgLocations orgLocations, User user,Long immigrationId) throws Exception {
+		String status = null;
 		CandidateFamilyDetails familyDetails = new CandidateFamilyDetails();
 		Candidate candidate = candidateDao.getCandidateByCandidateId(familyDetailsDto.getCandidateId());
+		Immigration immigration = immigrationCommonDao.getImmigrationById(immigrationId);
 		candidate.setCandidateId(familyDetailsDto.getCandidateId());
 		familyDetails.setCandidate(candidate);
 		familyDetails.setFirstName(familyDetailsDto.getFirstName());
@@ -700,8 +702,16 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		familyDetails.setCreatedBy(user);
 		familyDetails.setUpdatedDate(currentDate);
 		familyDetails.setUpdatedBy(user);
-		
-		return immigrationCommonDao.saveCandidateFamilyMemberDetails(familyDetails);
+		status = immigrationCommonDao.saveCandidateFamilyMemberDetails(familyDetails);
+		StringBuilder actionDesc = new StringBuilder();
+		if(familyDetailsDto.getId()!= null){
+			actionDesc.append("Family Details Updated").toString();
+			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());
+		}else{
+			actionDesc.append("New Family Member Added").toString();
+			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());	
+		}
+		return status;
 	}	
 	
 	@Override
@@ -778,11 +788,19 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		candidatePassportVisa = immigrationCommonDao.savePassportDetails(candidatePassportVisa);
 		StringBuilder actionDesc = new StringBuilder();
 		if(immigrationPassportVisaDTO.getCandidatePassportId() != null){
-			actionDesc.append("Passport Updated ").toString();
+			if(candidatePassportVisa.getIdType().equalsIgnoreCase(Constants.ID_TYPE_VISA)){
+				actionDesc.append("Visa Details Updated ").toString();	
+			}else{
+				actionDesc.append("Passport Details Updated ").toString();	
+			}
 			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations,candidate, immigration, actionDesc.toString());	
 			
 		}else{
-			actionDesc.append("New Passport Added").toString();
+				if(candidatePassportVisa.getIdType().equalsIgnoreCase(Constants.ID_TYPE_VISA)){
+					actionDesc.append("New Visa Added").toString();	
+				}else{
+					actionDesc.append("New Passport Added").toString();	
+				}
 			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations,candidate, immigration, actionDesc.toString());	
 		}
 		return candidatePassportVisa;
@@ -792,7 +810,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 	
 	@Override
-		public CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId)	throws Exception {
+		public CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId,Long immigrationId)	throws Exception {
 			CandidateResidence candidateResidence = null;
 			Date date = new Date();
 			if(residenceDTO.getResidenceId() != null){
@@ -804,6 +822,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 			}
 		Candidate candidate = candidateDao.getCandidateByCandidateId(candidateId);
+		Immigration immigration = immigrationCommonDao.getImmigrationById(immigrationId);
 		candidateResidence.setCandidate(candidate);
 		candidateResidence.setLocation(residenceDTO.getLocation());
 		candidateResidence.setStreetAddress(residenceDTO.getStreetAddress());
@@ -824,6 +843,14 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			candidateResidence.setUpdatedBy(user);
 		
 		immigrationCommonDao.saveResidenceDetails(candidateResidence);
+		StringBuilder actionDesc = new StringBuilder();
+		if(residenceDTO.getResidenceId() != null){
+			actionDesc.append("Residence Details Updated").toString();
+		immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());	
+		}else{
+		actionDesc.append("New Residence Details Added").toString();
+		immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());		
+		}
 		return candidateResidence;
 	}
 
@@ -1016,12 +1043,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigrationCandidateDocuments.setCreatedDate(currentDate);
 			immigrationCandidateDocuments.setCreatedBy(user);
 		}
-		Candidate candidate =  new Candidate();
-		candidate.setId(Long.parseLong(immigrationTemplateDocDTO.getImmigrationcandidateId()));
+		Candidate candidate =  candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationTemplateDocDTO.getImmigrationcandidateId()));
 		ImmigrationTemplate immigrationTemplate = new ImmigrationTemplate ();
 		immigrationTemplate.setId(Long.parseLong(immigrationTemplateDocDTO.getImmigrationTempplateId()));
-		Immigration immigration = new Immigration();
-		immigration.setId(Long.parseLong(immigrationTemplateDocDTO.getImmigrationId()));
+		Immigration immigration = immigrationCommonDao.getImmigrationById(Long.parseLong(immigrationTemplateDocDTO.getImmigrationId()));
 		immigrationCandidateDocuments.setCandidateId(candidate);
 		immigrationCandidateDocuments.setImmigrationTemplateId(immigrationTemplate);
 		immigrationCandidateDocuments.setImmigrationId(immigration);
@@ -1058,7 +1083,16 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigrationCandidateDocuments.setUpdatedBy(user);
 		immigrationCandidateDocuments.setUpdatedDate(currentDate);
 		
-		return immigrationCommonDao.saveImmigrationCandidateDocs(immigrationCandidateDocuments);
+		immigrationCommonDao.saveImmigrationCandidateDocs(immigrationCandidateDocuments);
+		StringBuilder actionDesc = new StringBuilder();
+		if(immigrationTemplateDocDTO.getImmigrationCandidateDocId() !=null){
+			actionDesc.append("Document Details Updated").toString();	
+		immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());	
+		}else{
+			actionDesc.append("New Document Details Added").toString();	
+		immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());	
+		}
+		return immigrationCandidateDocuments;
 	}
 	@Override
 	public ImmigrationCandidateForms saveImmigrationCandidateForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO, User user, OrgLocations orgLocations)
@@ -1073,12 +1107,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigrationCandidateForms.setCreatedDate(currentDate);
 
 		}
-		Candidate candidate =  new Candidate();
-		candidate.setId(Long.parseLong(immigrationTemplateFormDTO.getImmigrationcandidateId()));
+		Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationTemplateFormDTO.getImmigrationcandidateId()));
 		ImmigrationTemplate immigrationTemplate = new ImmigrationTemplate ();
 		immigrationTemplate.setId(Long.parseLong(immigrationTemplateFormDTO.getImmigrationTempplateId()));
-		Immigration immigration = new Immigration();
-		immigration.setId(Long.parseLong(immigrationTemplateFormDTO.getImmigrationId()));
+		Immigration immigration = immigrationCommonDao.getImmigrationById(Long.parseLong(immigrationTemplateFormDTO.getImmigrationId()));
 		immigrationCandidateForms.setCandidate(candidate);
 		immigrationCandidateForms.setImmigrationTempId(immigrationTemplate);
 		immigrationCandidateForms.setImmigration(immigration);
@@ -1102,8 +1134,18 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 		immigrationCandidateForms.setUpdatedBy(user);
 		immigrationCandidateForms.setUpdatedDate(currentDate);
+		immigrationCommonDao.saveImmigrationCandidateForms(immigrationCandidateForms);
+		StringBuilder actionDesc = new StringBuilder();
+		if(immigrationTemplateFormDTO.getImmigrationCandidateFormId() !=null){
+			actionDesc.append("Form Details Updated").toString();
+			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());
+		}else{
+			actionDesc.append("New Form Details Added").toString();
+			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());
+
+		}
 		
-		return immigrationCommonDao.saveImmigrationCandidateForms(immigrationCandidateForms);
+		return immigrationCandidateForms;
 	}
 	 @Override
 		public Immigration getImmigrationByImmigrationId(Long immigrationId) throws Exception {

@@ -107,6 +107,8 @@ import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.util.Calendar;
 
+import bsh.StringUtil;
+
 /**
  * 
  * @author : Venkat Idapalapati
@@ -358,15 +360,20 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
 				org.setWebSite(convertWebsite(clientDTO.getWebSite()));
 			}
-			if((StringUtils.isNotBlank(clientDTO.getIsLawFirm())) && (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()))){
-			if(clientDTO.getIsLawFirm().equalsIgnoreCase("Y") && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")){
-			clientOrgLocations.setIsLawFirm(Constants.YES);
-			clientOrgLocations.setIsAccountingFirm(Constants.YES);
+			if(StringUtils.isNotBlank(clientDTO.getIsLawFirm())){
+			if(clientDTO.getIsLawFirm().equalsIgnoreCase("Y"))	{
+				clientOrgLocations.setIsLawFirm(Constants.YES);	
 			}
 			}else{
-			clientOrgLocations.setIsLawFirm(Constants.NO);
-			clientOrgLocations.setIsAccountingFirm(Constants.NO);	
+				clientOrgLocations.setIsLawFirm(Constants.NO);	
 			}
+			if(StringUtils.isNotBlank(clientDTO.getIsAccountingFirm())){
+				if(clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y"))	{
+					clientOrgLocations.setIsAccountingFirm(Constants.YES);	
+				}
+				}else{
+					clientOrgLocations.setIsAccountingFirm(Constants.NO);	
+				}
 			clientOrgLocations.setLoginSecurity(Constants.NO);
 			clientOrgLocations.setIsPrimary(Constants.YES);
 			clientOrgLocations.setIsCompanyOnboarded(Constants.NO);
@@ -378,13 +385,22 @@ public class ClientServiceImpl implements ClientService {
 			
 			if(clientDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
-					if(customFields != null && customFields.getCustomFormFieldId() > 0) {
-					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
-					 clientCustomFields.setOrg(savedClient);
-					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-					 clientCustomFields.setOrglocationsFormFields(orgFormField);
-					 clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-					 clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					if(customFields!= null && customFields.getCustomFormFieldId() > 0) {
+						ClientCustomFieldData clientCustomFields = null;
+						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+							clientCustomFields = clientCustomFieldDataService.getClientCustomFieldDataById(customFields.getEntityId());
+						}else {
+							clientCustomFields = new ClientCustomFieldData();
+						}
+					clientCustomFields.setOrg(savedClient);
+					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					clientCustomFields.setOrglocationsFormFields(orgFormField);
+					if(customFields.getCustomFormFieldData() == null || StringUtils.isEmpty(customFields.getCustomFormFieldData())) {
+						clientCustomFields.setCustomFormFieldData("");
+					}else {
+						clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					}
+					clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
 					}
 					
 				}	
@@ -443,13 +459,22 @@ public class ClientServiceImpl implements ClientService {
 			
 			if(clientDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
-					if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
-					 clientCustomFields.setOrg(savedClient);
-					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-					 clientCustomFields.setOrglocationsFormFields(orgFormField);
-					 clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-					 clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					if(customFields!= null && customFields.getCustomFormFieldId() > 0) {
+						ClientCustomFieldData clientCustomFields = null;
+						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+							clientCustomFields = clientCustomFieldDataService.getClientCustomFieldDataById(customFields.getEntityId());
+						}else {
+							clientCustomFields = new ClientCustomFieldData();
+						}
+					clientCustomFields.setOrg(savedClient);
+					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					clientCustomFields.setOrglocationsFormFields(orgFormField);
+					if(customFields.getCustomFormFieldData() == null || StringUtils.isEmpty(customFields.getCustomFormFieldData())) {
+						clientCustomFields.setCustomFormFieldData("");
+					}else {
+						clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					}
+					clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
 					}
 					
 				}	
@@ -1192,13 +1217,22 @@ public class ClientServiceImpl implements ClientService {
 			
 			if(clientDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
-					if(customFields != null && customFields.getCustomFormFieldId() > 0 ) {
-					ClientCustomFieldData clientCustomFields = new ClientCustomFieldData();
-					 clientCustomFields.setOrg(orgLocationForELk.getOrg());
-					 OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-					 clientCustomFields.setOrglocationsFormFields(orgFormField);
-					 clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-					 clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					if(customFields!= null && customFields.getCustomFormFieldId() > 0) {
+						ClientCustomFieldData clientCustomFields = null;
+						if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+							clientCustomFields = clientCustomFieldDataService.getClientCustomFieldDataById(customFields.getEntityId());
+						}else {
+							clientCustomFields = new ClientCustomFieldData();
+						}
+					clientCustomFields.setOrg(orgLocationForELk.getOrg());
+					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+					clientCustomFields.setOrglocationsFormFields(orgFormField);
+					if(customFields.getCustomFormFieldData() == null || StringUtils.isEmpty(customFields.getCustomFormFieldData())) {
+						clientCustomFields.setCustomFormFieldData("");
+					}else {
+						clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					}
+					clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
 					}
 					
 				}	
@@ -1367,7 +1401,11 @@ public class ClientServiceImpl implements ClientService {
 					clientCustomFields.setOrg(orgLocationsForElk.getOrg());
 					OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
 					clientCustomFields.setOrglocationsFormFields(orgFormField);
-					clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					if(customFields.getCustomFormFieldData() == null || StringUtils.isEmpty(customFields.getCustomFormFieldData())) {
+						clientCustomFields.setCustomFormFieldData("");
+					}else {
+						clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+					}
 					clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
 					}
 					

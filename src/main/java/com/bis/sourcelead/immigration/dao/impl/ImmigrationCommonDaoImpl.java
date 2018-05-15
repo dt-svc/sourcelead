@@ -586,7 +586,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Immigration getImmigrationById(Long id) {
-		System.out.println("get CandidateFamilyDetails id ---> " + id);
 		Immigration immigration = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
