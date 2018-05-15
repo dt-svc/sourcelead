@@ -543,8 +543,9 @@ this.deletePassportVisaDetailsById=function(id,idType){
 			console.log(" inside function formId"+formId);
 			console.log(formData);
 			 var candidateId = $('#candidateID').val();
+			 var immigrationId = $('#immigrationID').val();
 			$.ajax({
-				url : sourceleadUrl + immiModulePath+ "/saveCandidateFamilyDetails?candidateId="+candidateId+"&relationType="+relationType+"&memberId="+familyMemberId,
+				url : sourceleadUrl + immiModulePath+ "/saveCandidateFamilyDetails?candidateId="+candidateId+"&relationType="+relationType+"&memberId="+familyMemberId+"&immigrationId="+immigrationId,
 				type : "POST",
 				data : formData,
 				success : function(result) {
