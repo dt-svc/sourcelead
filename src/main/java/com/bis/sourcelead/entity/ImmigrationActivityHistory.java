@@ -21,6 +21,8 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "IMMIGRATION_ACTIVITY_HISTORY", schema = "SOURCELEAD")
 public class ImmigrationActivityHistory implements Serializable{
@@ -52,6 +54,9 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "ACTION_BY")
    	private String actionBy;
 	
+	@Column(name = "STATUS")
+	private Integer status;
+	
 	@Column(name = "ACTION_DESC")
 	@Type(type="text")
    	private String actionDesc;
@@ -69,7 +74,15 @@ private static final long serialVersionUID = 1L;
    	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
-
+   	
+   	@Transient
+	@JsonProperty
+	private String commentedUser;
+   	
+   	@Transient
+	@JsonProperty
+	private String createdDateString;
+   	
 	public Long getId() {
 		return id;
 	}
@@ -158,6 +171,30 @@ private static final long serialVersionUID = 1L;
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public String getCommentedUser() {
+		return commentedUser;
+	}
+
+	public void setCommentedUser(String commentedUser) {
+		this.commentedUser = commentedUser;
+	}
+
+	public String getCreatedDateString() {
+		return createdDateString;
+	}
+
+	public void setCreatedDateString(String createdDateString) {
+		this.createdDateString = createdDateString;
 	}
 
 	

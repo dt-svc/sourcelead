@@ -61,7 +61,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
   			<div class="col-md-2 immHeadactions clearfix">
   			
   			
-  			<select id="uscisStatusId" onchange="changeUscisStatusForImmigration($(this).val());" <c:if test = "${myImmigrationPage =='Y'}">disabled</c:if> class="form-control selectdisabled selstyles-new">
+  			<select id="uscisStatusId" onchange="changeUscisStatusForImmigration($(this).val(),${immigration.currUscisStatusId});" <c:if test = "${myImmigrationPage =='Y'}">disabled</c:if> class="form-control selectdisabled selstyles-new">
   				<c:forEach var="item" items="${uscisStatusList}">
   					<option ${immigration.currUscisStatusId == item.id ? 'selected' : '' } value="${item.id}">${item.name}</option>
   				</c:forEach>
@@ -80,7 +80,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
               <li><a href="#formsTab"><i id="allFormsfilled" class="fa fa-check-circle-o"></i>Forms</a></li>
               <li><a href="#docsTab"><i id="allDocsfilled" class="fa fa-check-circle-o"></i>Documents</a></li>
               <li><a href="#notesTab">Notes</a></li>
-              <li><a href="#activitiesTab">Activities</a></li>
+              <li><a href="#activitiesTab" id= "#activitiesId">Activities</a></li>
               <div class="clearfix"></div>
             </ul>
 		</div>	
@@ -211,6 +211,8 @@ $(document).ready(function() {
         } else if(tab=='#formsTab'){
         	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"");
         	console.log("immigrationId --->"+immigrationId)
+        }else if(tab=='#activitiesTab'){
+        	getImmigrationActivies();
         }
 		
        
@@ -338,10 +340,10 @@ $("#packageZipfile").click(function() {
 	}
 
 	
-	function changeUscisStatusForImmigration(uscisStatusId){
+	function changeUscisStatusForImmigration(uscisStatusId,uscisOldId){
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/immigration/updateUscisTypeDropDown?templateId="+immigrationId+"&uscisId="+uscisStatusId, 
+		        url: sourceleadUrl+"/immigration/updateUscisTypeDropDown?templateId="+immigrationId+"&uscisId="+uscisStatusId+"&uscisOldId="+uscisOldId, 
 		        success: function(data) {
 		        	if(data == "success"){
 		        		location.reload();

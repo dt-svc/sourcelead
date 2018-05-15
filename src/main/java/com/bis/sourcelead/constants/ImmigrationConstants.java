@@ -25,5 +25,7 @@ public class ImmigrationConstants {
 	public static final String FILE_UPLOADED = "Uploaded";
 	public static final String PETITION_STATUS_REQUEST_TO_FILL = "Request to fill";
 	public static final String SEND_REQUEST = "sendRequest";
+	public static final Integer STATUS_ACTIVE = 1;
+	public static final Integer STATUS_IN_ACTIVE = 0;
 
 }

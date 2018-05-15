@@ -1,58 +1,31 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="immigraTabsHead">
 		  	<span><input class="immigraTabSerach" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable">
-		  <table>
+	  	 <c:forEach var="activiesItems" items="${immigrationActivitiesList}" varStatus="rows"> 
+		 <table>
 			<tbody>
 			  <tr>
-				<td><div class="">Vannam Mahesh</div></td>
-				<td><div class="">Changed status New to In-Progress</div></td>
-				<td><div class="">1 hour ago</div></td>
-				<td class="immigraAction"><a href="javascript:void(0)" class="fa fa-trash"></a></td>
+				<td><div class="">${activiesItems.actionBy}</div></td>
+				<td><div class="">${activiesItems.actionDesc}</div></td>
+				<td><div class="">${activiesItems.createdDateString}</div></td>
+				<!-- <td class="immigraAction"><a href="javascript:void(0)" class="fa fa-trash"></a></td -->
 			  </tr>  			  			  
-			  <tr>
-				<td><div class="">Vannam Mahesh</div></td>
-				<td><div class="">Changed status New to In-Progress</div></td>
-				<td><div class="">1 hour ago</div></td>
-				<td class="immigraAction"><a href="javascript:void(0)" class="fa fa-trash"></a></td>
-			  </tr>    
-			  <tr>
-				<td><div class="">Vannam Mahesh</div></td>
-				<td><div class="">Changed status New to In-Progress</div></td>
-				<td><div class="">1 hour ago</div></td>
-				<td class="immigraAction"><a href="javascript:void(0)" class="fa fa-trash"></a></td>
-			  </tr>   
-			  <tr>
-				<td><div class="">Vannam Mahesh</div></td>
-				<td><div class="">Changed status New to In-Progress</div></td>
-				<td><div class="">1 hour ago</div></td>
-				<td class="immigraAction"><a href="javascript:void(0)" class="fa fa-trash"></a></td>
-			  </tr>    
-			  <tr>
-				<td><div class="">Vannam Mahesh</div></td>
-				<td><div class="">Changed status New to In-Progress</div></td>
-				<td><div class="">1 hour ago</div></td>
-				<td class="immigraAction"><a href="javascript:void(0)" class="fa fa-trash"></a></td>
-			  </tr>   
-			  <tr>
-				<td><div class="">Vannam Mahesh</div></td>
-				<td><div class="">Changed status New to In-Progress</div></td>
-				<td><div class="">1 hour ago</div></td>
-				<td class="immigraAction"><a href="javascript:void(0)" class="fa fa-trash"></a></td>
-			  </tr>    
-			  <tr>
-				<td><div class="">Vannam Mahesh</div></td>
-				<td><div class="">Changed status New to In-Progress</div></td>
-				<td><div class="">1 hour ago</div></td>
-				<td class="immigraAction"><a href="javascript:void(0)" class="fa fa-trash"></a></td>
-			  </tr>   
-			  						
 			</tbody>
-		  </table>
+		  </table> 
 		  <!-- <div class="immFoot clearfix">
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#notesTab');" class="btn btn-default btn-sm">
             </div>
 		</div> -->
+		
+		<%-- <div class="immiNote clearfix">
+				<p>
+					<b>By <span>${activiesItems.actionBy}</span><u>${activiesItems.createdDateString}</u></b>
+					${activiesItems.actionDesc}
+				</p>
+ 			</div>  --%>
+ 			</c:forEach> 
 		</div>
