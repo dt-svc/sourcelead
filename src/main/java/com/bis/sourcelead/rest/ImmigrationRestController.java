@@ -54,6 +54,7 @@ import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationActivityHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
@@ -1164,7 +1165,7 @@ public class ImmigrationRestController {
 					} else if (immigrationPassportVisaDTO.getIdType().trim().equalsIgnoreCase(Constants.ID_TYPE_VISA)) {
 						immigrationPassportVisaDTO.setIdType(Constants.ID_TYPE_VISA);
 					}
-					immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations);
+					immigrationCommonService.savePassportDetails(immigrationPassportVisaDTO, user, orgLocations,Long.parseLong(immigrationId));
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
@@ -1775,6 +1776,20 @@ public class ImmigrationRestController {
 		List<SourceleadNotes> candidatesNotesList = sourceleadNotesService.getNotesListByImmigrationId(immigrationId,
 				orgLocations.getId());
 		model.addObject("candidatesNotesList", candidatesNotesList);
+		return model;
+	}
+	
+	@RequestMapping(value = { "/getImmigrationActiviesList" })
+	public ModelAndView getImmigrationActiviesList(
+			@RequestParam(value = "immigrationId", required = true) Long immigrationId, HttpServletRequest request)
+			throws Exception {
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		model.setViewName("/immigration/activityDetailsTab");
+		List<ImmigrationActivityHistory> immigrationActivitiesList = immigrationCommonService.getImmigrationActivitiesList(immigrationId,
+				orgLocations.getId());
+		model.addObject("immigrationActivitiesList", immigrationActivitiesList);
 		return model;
 	}
 

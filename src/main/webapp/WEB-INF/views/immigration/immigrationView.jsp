@@ -80,7 +80,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
               <li><a href="#formsTab"><i id="allFormsfilled" class="fa fa-check-circle-o"></i>Forms</a></li>
               <li><a href="#docsTab"><i id="allDocsfilled" class="fa fa-check-circle-o"></i>Documents</a></li>
               <li><a href="#notesTab">Notes</a></li>
-              <li><a href="#activitiesTab">Activities</a></li>
+              <li><a href="#activitiesTab" id= "#activitiesId">Activities</a></li>
               <div class="clearfix"></div>
             </ul>
 		</div>	
@@ -211,6 +211,8 @@ $(document).ready(function() {
         } else if(tab=='#formsTab'){
         	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"");
         	console.log("immigrationId --->"+immigrationId)
+        }else if(tab=='#activitiesTab'){
+        	getImmigrationActivies();
         }
 		
        

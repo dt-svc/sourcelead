@@ -1,6 +1,5 @@
 package com.bis.sourcelead.immigration.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +16,7 @@ import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationActivityHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
@@ -39,7 +39,7 @@ public interface ImmigrationCommonService {
 	
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO, OrgLocations orgLocations, User user) throws Exception;
 
-	CandidatePassportVisa savePassportDetails(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, User user, OrgLocations orgLocations)throws Exception;
+	CandidatePassportVisa savePassportDetails(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, User user, OrgLocations orgLocations,Long immigrationId)throws Exception;
 	
 	CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId) throws Exception;
 
@@ -112,4 +112,7 @@ public interface ImmigrationCommonService {
 	void sendEmailToImmigrationBeneficiary(Immigration immigration, User user, OrgLocations orgLocations) throws Exception;
 	
 	ResponseList<MyImmigrationViewDTO> getMyImmigrationsList(MyImmigrationViewDTO immigrationListDTO, OrgLocations orgLocations, Long userId) throws Exception;
+
+	List<ImmigrationActivityHistory> getImmigrationActivitiesList(Long immigrationId,Long orglocationId) throws Exception;
+
 }

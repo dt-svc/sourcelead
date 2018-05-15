@@ -48,6 +48,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationActivityHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
@@ -74,6 +75,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.ibm.icu.text.DateFormat;
 
 /**
  * @author Srinivas.Sabbu
@@ -695,7 +697,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	@Override
 	public CandidatePassportVisa savePassportDetails(ImmigrationPassportVisaDTO immigrationPassportVisaDTO, User user,
-			OrgLocations orgLocations) throws Exception {
+			OrgLocations orgLocations,Long immigrationId) throws Exception {
 		
 		CandidatePassportVisa candidatePassportVisa = null;
 		if(immigrationPassportVisaDTO.getCandidatePassportId() != null){
@@ -706,6 +708,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			candidatePassportVisa.setCreatedDate(commonUtil.currentDate());
 		}
 		Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(immigrationPassportVisaDTO.getCandidateId()));
+		Immigration immigration = immigrationCommonDao.getImmigrationById(immigrationId);
 		// SimpleDateFormat simpleDateFormat =
 		// orgLocationId.getLocFullFormDateFormatter();
 		StringBuffer activitySummary = new StringBuffer();
@@ -764,6 +767,15 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 		logger.debug("In CandidateCertificationsServiceImpl class save method");
 		candidatePassportVisa = immigrationCommonDao.savePassportDetails(candidatePassportVisa);
+		StringBuilder actionDesc = new StringBuilder();
+		if(immigrationPassportVisaDTO.getCandidatePassportId() != null){
+			actionDesc.append("Passport Updated ").toString();
+			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations,candidate, immigration, actionDesc.toString());	
+			
+		}else{
+			actionDesc.append("New Passport Added").toString();
+			immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations,candidate, immigration, actionDesc.toString());	
+		}
 		return candidatePassportVisa;
 
 	}
@@ -1379,6 +1391,41 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			OrgLocations orgLocations, Long userId) throws Exception {
 		  ResponseList<MyImmigrationViewDTO> immigartionList = immigrationCommonDao.getMyImmigrationsList(immigrationListDTO,  orgLocations, userId);
 		return immigartionList;
+	}
+
+	@Override
+	public List<ImmigrationActivityHistory> getImmigrationActivitiesList(Long immigrationId, Long orglocationId)
+			throws Exception {
+		List<ImmigrationActivityHistory> activityHistoryList = immigrationCommonDao.getImmigrationActivitiesList(immigrationId,orglocationId);
+		for(ImmigrationActivityHistory activityHistory : activityHistoryList){
+			activityHistory.setActionDesc(activityHistory.getActionDesc());
+			activityHistory.setActionBy(activityHistory.getActionBy());
+			// date time format conversion.
+						long diff = commonUtil.currentDate().getTime() - activityHistory.getCreatedDate().getTime();
+						long diffSeconds = diff / 1000 % 60;
+						long diffMinutes = diff / (60 * 1000) % 60;
+						long diffHours = diff / (60 * 60 * 1000) % 24;
+						long diffDays = diff / (24 * 60 * 60 * 1000);
+						StringBuilder timeBuilder = new StringBuilder();
+						if (diffDays == 0 && diffHours == 0 && diffMinutes == 0) {
+							activityHistory.setCreatedDateString(timeBuilder.append(diffSeconds).append("seconds ago").toString());
+						}
+						else if (diffDays == 0 && diffHours == 0) {
+							activityHistory.setCreatedDateString(timeBuilder.append(diffMinutes).append(" minutes ago").toString());
+						}
+						else if (diffDays == 0) {
+							activityHistory.setCreatedDateString(timeBuilder.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago").toString());
+						}
+						else if (diffDays < 7) {
+							activityHistory.setCreatedDateString(timeBuilder.append(diffDays).append(" days ").append(diffHours).append(" hours ago").toString());
+						}
+						else {
+							SimpleDateFormat standardFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss aa");
+							String commonDateFormat = standardFormat.format(activityHistory.getCreatedDate());
+							activityHistory.setCreatedDateString(commonDateFormat.toString());
+						}
+		}
+		return activityHistoryList;
 	}
 
 }
