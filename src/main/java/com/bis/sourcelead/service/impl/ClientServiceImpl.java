@@ -360,17 +360,13 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
 				org.setWebSite(convertWebsite(clientDTO.getWebSite()));
 			}
-			if(StringUtils.isNotBlank(clientDTO.getIsLawFirm())){
-			if(clientDTO.getIsLawFirm().equalsIgnoreCase("Y"))	{
+			if(StringUtils.isNotBlank(clientDTO.getIsLawFirm()) && clientDTO.getIsLawFirm().equalsIgnoreCase("Y")){
 				clientOrgLocations.setIsLawFirm(Constants.YES);	
-			}
 			}else{
 				clientOrgLocations.setIsLawFirm(Constants.NO);	
 			}
-			if(StringUtils.isNotBlank(clientDTO.getIsAccountingFirm())){
-				if(clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y"))	{
+			if(StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")){
 					clientOrgLocations.setIsAccountingFirm(Constants.YES);	
-				}
 				}else{
 					clientOrgLocations.setIsAccountingFirm(Constants.NO);	
 				}
@@ -1295,13 +1291,15 @@ public class ClientServiceImpl implements ClientService {
 					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
 			}
-			
-			if((clientDTO.getIsAccountingFirm() != null && clientDTO.getIsLawFirm() != null) &&(clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y") &&  clientDTO.getIsLawFirm().equalsIgnoreCase("Y"))){
-				orgRelation.setIsLawFirm(Constants.YES);
-				orgRelation.setIsAccountingFirm(Constants.YES);
-			}else{
-				orgRelation.setIsAccountingFirm(Constants.NO);
+			if (StringUtils.isNotBlank(clientDTO.getIsLawFirm()) && clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
+					orgRelation.setIsLawFirm(Constants.YES);
+			} else {
 				orgRelation.setIsLawFirm(Constants.NO);
+			}
+			if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
+					orgRelation.setIsAccountingFirm(Constants.YES);
+			} else {
+				orgRelation.setIsAccountingFirm(Constants.NO);
 			}
 			
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
@@ -1373,14 +1371,22 @@ public class ClientServiceImpl implements ClientService {
 			 }else{
 				 orgLocations.setBillingAddress("");
 			 }
-			
-			 if((clientDTO.getIsAccountingFirm() != null && clientDTO.getIsLawFirm() != null) &&(clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y") &&  clientDTO.getIsLawFirm().equalsIgnoreCase("Y"))){
-				 orgLocations.setIsLawFirm(Constants.YES);
-				 orgLocations.setIsAccountingFirm(Constants.YES);
-				}else{
-					orgLocations.setIsAccountingFirm(Constants.NO);
-					orgLocations.setIsLawFirm(Constants.NO);
+			 
+			if (StringUtils.isNotBlank(clientDTO.getIsLawFirm())) {
+				if (clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
+					orgLocations.setIsLawFirm(Constants.YES);
 				}
+			} else {
+				orgLocations.setIsLawFirm(Constants.NO);
+			}
+			if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm())) {
+				if (clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
+					orgLocations.setIsAccountingFirm(Constants.YES);
+				}
+			} else {
+				orgLocations.setIsAccountingFirm(Constants.NO);
+			}
+			 
 			/*
 			 * if(jsonObj.getString(emailId) !=null &&
 			 * !jsonObj.getString(emailId).isEmpty()){

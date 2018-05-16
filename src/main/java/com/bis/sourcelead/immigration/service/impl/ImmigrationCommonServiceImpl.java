@@ -572,7 +572,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigration.setCandidateUserId(candidateUser);
 			}
 		if(immigrationDTO.getEditMode().equalsIgnoreCase("false")){
-			if((orgLocations.getIsLawFirm() != null && orgLocations.getIsLawFirm().equalsIgnoreCase("Y")) && (orgLocations.getIsAccountingFirm() !=null &&  orgLocations.getIsAccountingFirm().equalsIgnoreCase("Y"))){
+			if(StringUtils.isNotBlank(orgLocations.getIsLawFirm()) && orgLocations.getIsLawFirm().equalsIgnoreCase("Y")){
 				immigration.setOrgLocationId(orgRelations.getLocationId());
 			}else{
 				immigration.setOrgLocationId(orgLocations);

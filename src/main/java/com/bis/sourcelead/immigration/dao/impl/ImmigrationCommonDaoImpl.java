@@ -303,8 +303,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	public Long getImmigrationGeneratedIdByOrgLocationId(OrgLocations orgLocations, Integer generatedIdCount) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
-		if ((orgLocations.getIsAccountingFirm() != null && orgLocations.getIsAccountingFirm().equalsIgnoreCase("Y"))
-				&& (orgLocations.getIsLawFirm() != null && orgLocations.getIsLawFirm().equalsIgnoreCase("Y"))) {
+		if(orgLocations.getIsLawFirm() != null && orgLocations.getIsLawFirm().equalsIgnoreCase("Y")) {
 			query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'" + generatedIdCount
 					+ "') AS UNSIGNED)) FROM sourcelead.IMMIGRATION WHERE ATTORNEY_LOCATION_ID = '"
 					+ orgLocations.getId() + "'";

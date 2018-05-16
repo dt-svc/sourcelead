@@ -426,6 +426,7 @@ public class Constants {
 	public static final int TAB_USER = 2;
 	public static final int TAB_PROJECTS = 3;
 	public static final int TAB_CONTRACTS = 16;
+	public static final int TAB_IMMIGRATION = 33;
 	public static final String Dashboard = "Dashboard";
 	public static final String Users = "Users";
 	public static final String Immigration = "Immigration";

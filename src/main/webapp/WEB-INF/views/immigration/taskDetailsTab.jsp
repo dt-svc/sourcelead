@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <div class="immigraTabsHead">
-		  	<!-- <a href="javascript:void(0)" id="addEdu"><i class="glyphicon glyphicon-plus"></i> Add Tasks</a> --> 
+		  	<!-- <a href="javascript:void(0)" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Tasks</a>  -->
 		  	<span><input class="immigraTabSerach" id="tasksSearchVal" type="text"></span>
 		</div>
 	  	<div class="immigraTable overflow_Auto">	
