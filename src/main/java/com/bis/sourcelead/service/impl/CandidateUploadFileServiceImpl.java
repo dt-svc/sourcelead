@@ -446,7 +446,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 			writeRow.createCell(15).setCellValue("");
 		}
 		
-		if (row.getCell(16) != null && !"".equalsIgnoreCase(row.getCell(164).toString())) {
+		if (row.getCell(16) != null && !"".equalsIgnoreCase(row.getCell(16).toString())) {
 			String education = getCellValueAsString(row.getCell(16), fileName);
 			writeRow.createCell(16).setCellValue(education);
 		}

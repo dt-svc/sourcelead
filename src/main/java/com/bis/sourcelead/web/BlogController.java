@@ -63,27 +63,30 @@ public class BlogController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView = staticWebController.setMetaProperties("all-blogs");
 		SourceleadBlogs blogDetails = sourceleadBlogService.getSourceleadBlogsByBlogTitle(blogTitle);
-
-		if (blogDetails.getCategoryId() != null) {
-			List<SourceleadBlogs> relatedBlogs = sourceleadBlogService
-					.getRelatedSourceleadBlogs(blogDetails.getId());
-			modelAndView.addObject("relatedBlogs", relatedBlogs);
-		}
-
-		List<BlogCategoryDTO> blogCategoryList = blogCategoryService.getBlogCategoryListByActiveBlogs();
-		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(blogDetails.getCreatedBy().getId(), 1l);
+		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		DateFormat dateFormatResult = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
-
-		if (blogDetails.getPublishOn() != null) {
-			String publishon = dateFormatResult.format(dateFormat.parse(blogDetails.getPublishOn().toString()));
-			modelAndView.addObject("publishon", publishon);
+        
+		if(blogDetails != null) {
+			
+			if (blogDetails.getCategoryId() != null) {
+				List<SourceleadBlogs> relatedBlogs = sourceleadBlogService
+						.getRelatedSourceleadBlogs(blogDetails.getId());
+				modelAndView.addObject("relatedBlogs", relatedBlogs);
+			}
+	
+			if (blogDetails.getPublishOn() != null) {
+				String publishon = dateFormatResult.format(dateFormat.parse(blogDetails.getPublishOn().toString()));
+				modelAndView.addObject("publishon", publishon);
+			}
+			modelAndView.addObject("blogDetails", blogDetails);
+		
 		}
-
+		
+		List<BlogCategoryDTO> blogCategoryList = blogCategoryService.getBlogCategoryListByActiveBlogs();
+		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(blogDetails.getCreatedBy().getId(), 1l);
 		String createdDate = dateFormatResult.format(dateFormat.parse(blogDetails.getCreatedDate().toString()));
 		modelAndView.addObject("blogCategoryList", blogCategoryList);
-
-		modelAndView.addObject("blogDetails", blogDetails);
 
 		modelAndView.addObject("createdDate", createdDate);
 		String sleadUrl = sourceleadUrl.replace("/app", "");
