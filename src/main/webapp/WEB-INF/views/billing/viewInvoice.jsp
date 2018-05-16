@@ -494,7 +494,7 @@ function getViewInvoice(){
                         result = result +'<th>Rate</th>';
                         result = result +'<th>Amount</th>';
                     }else{
-                        result = result +'<th>Id</th> ';
+                        result = result +'                     <th>Id</th> ';
                         result = result +'                     <th>Associates</th>';
                         result = result +'                     <th>Description</th>';
                         result = result +'                     <th>SOW/PO</th>                                          ';
@@ -514,13 +514,18 @@ function getViewInvoice(){
 						}else{
 							candidateName = "--";
 						}
+						if(items.inlineDescription != null && items.inlineDescription != '' && items.inlineDescription != 'undefined'){
+                        	inlineDescription = items.inlineDescription;
+                        }else{
+                        	inlineDescription = "--";
+                        }
 						if(items.sowName != null && items.sowName != '' && items.sowName != 'undefined'){
 							sowName = items.sowName;
 						}else{
 							sowName = "--";
 						}
 						if(items.startDateStr != null && items.startDateStr != '' && items.startDateStr != 'undefined'){
-							startDateStr = items.startDateStr;
+							startDateStr = items.startDateStr+' To';
 						}else{
 							startDateStr = "-";
 						}
@@ -573,10 +578,6 @@ function getViewInvoice(){
                             result = result +'<td>';
                             result = result +'<div class="tbldata-dotdot_50" title="'+expenseCategory+'">'+expenseCategory+'</div>';
                             result = result +'</td>';
-                            
-                            result = result +'<td>';
-                            result = result +'<div class="tbldata-dotdot_50" title="'+items.inlineDescription+'">'+items.inlineDescription+'</div>';
-                            result = result +'</td>';
                         }else{
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot_50" title="'+employeeId+'">'+employeeId+'</div>       ';
@@ -584,10 +585,14 @@ function getViewInvoice(){
                             result = result +'                     <td>                                                      ';
                             result = result +'                         <div class="tbldata-dotdot-sm" title="'+candidateName+'">'+candidateName+'</div>       ';
                             result = result +'                     </td>                                                     ';
+                            
                         }
-                        result = result +'                     <td>                                                     ';
-                        result = result +'                         <div class="tbldata-dotdot_80" title="'+quantity+'">'+quantity+'</div>       ';
-                        result = result +'                     </td>                                                     ';
+                        result = result +'<td>';
+                        result = result +'<div class="tbldata-dotdot_50" title="'+inlineDescription+'">'+inlineDescription+'</div>';
+                        result = result +'</td>';
+//                         result = result +'                     <td>                                                     ';
+//                         result = result +'                         <div class="tbldata-dotdot_80" title="'+quantity+'">'+quantity+'</div>       ';
+//                         result = result +'                     </td>                                                     ';
                         
                         if(report.invoiceCategory != null && report.invoiceCategory != '' && report.invoiceCategory != 'undefined' && report.invoiceCategory == "expenses"){
                             result = result +'                     <td>                                                      ';
