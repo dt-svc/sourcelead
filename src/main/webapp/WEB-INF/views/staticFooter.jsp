@@ -9,7 +9,7 @@
 		  <li><a href="/market-place.html">Marketplace</a></li>
 		  <li><a href="/about-us.html">About Us</a></li>
 		  <li><a href="/help.html">Help</a></li>
-		  <li><a href="/all.html">Blog</a></li>
+		  <li><a href="/blog/all.html" id="blogID">Blog</a></li>
 		  <li><a href="/contact.html">Contact</a></li>
 	</ul>
   	</div>
