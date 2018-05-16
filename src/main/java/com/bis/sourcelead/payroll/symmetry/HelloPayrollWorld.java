@@ -1,16 +1,26 @@
 package com.bis.sourcelead.payroll.symmetry;
 
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
+import com.bis.sourcelead.payroll.rest.USPayrollRestController;
 import com.symmetry.ste.*;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class HelloPayrollWorld {
+	
+	private static final Logger logger = LoggerFactory.getLogger(HelloPayrollWorld.class);
+	
 	STEPayrollCalculator STE;
 	
 	public HelloPayrollWorld() {
 	}
 	
-	public void hello(String locationCode)
+	public void runUSPayroll(User user, float totalHours, double amount, int payPeriod, AssociateTaxDTO associateTaxDTO)
+//	public void hello(String locationCode)
 	{
 		String STEhome = "/home/rajashekar/Desktop/Tools/ste/ste-root";
 		String jniHome = "/home/rajashekar/Desktop/Tools/ste/ste-interface-files/java/";
@@ -22,17 +32,27 @@ public class HelloPayrollWorld {
 		String FEDERAL_LOCATION_CODE = "00-000-0000";
 		try {
 			STEPayrollCalculator STE = new STEPayrollCalculator(jniHome, STEhome);
+			WebServiceLocationCodeV2 w = getLocationCode(STE,user);
+			String locationCode = w.getLocationCode();
 			Date today = new Date();
-			STE.setPayrollRunParameters(today, 52, 13);
+			STE.setPayrollRunParameters(today, 52, 0);
 			STE.clearPayrollCalculations();
 			STE.setCalculationMethod(FEDERAL_LOCATION_CODE, CalcMethod.ANNUALIZED, CalcMethod.NONE);
 			Money zero = Money.zero();
 			STE.setWages(FEDERAL_LOCATION_CODE, WageType.REGULAR, new Hours(40.00), new Money(5000.00), zero, zero, zero);
-			STE.setFederalParameters(false, FederalFilingStatus.MARRIED, 2, false, zero, zero, zero);
+			FederalFilingStatus federalFilingStatus = FederalFilingStatus.SINGLE;
+			if("MARRIED".equalsIgnoreCase(associateTaxDTO.getFederaltaxFillingStatus())){
+				federalFilingStatus = FederalFilingStatus.MARRIED;
+			}else if("MARRIED_USE_SINGLE_RATE".equalsIgnoreCase(associateTaxDTO.getFederaltaxFillingStatus())){
+				federalFilingStatus = FederalFilingStatus.MARRIED_USE_SINGLE_RATE;
+			}else if("NONRESIDENT_ALIEN".equalsIgnoreCase(associateTaxDTO.getFederaltaxFillingStatus())){
+				federalFilingStatus = FederalFilingStatus.NONRESIDENT_ALIEN;
+			}
+			STE.setFederalParameters(false, federalFilingStatus, 2, false, zero, zero, zero);
 			STE.setFICAParameters(false, false, zero, zero, true);
 			STE.setMedicareParameters(false, zero, zero);
 			STE.setEICParameters(EarnedIncomeCredit.SINGLE, zero, false);
-			// The code for Indianapolis, Indiana (Marion County) is
+			// The code for Indianapolis, Indiana (Marion County) is   MARRIED,SINGLE
 			// "18-097-452890"
 			// The state GNIS code is 18
 			// The county GNIS code is 097
@@ -50,6 +70,7 @@ public class HelloPayrollWorld {
 			
 			
 			String version = STE.getSTEVersion();
+			System.out.println("User Name : " +user.getFirstName() + " Id is "+user.getId());
 			System.out.println("STE Version: " + version);
 			System.out.println("FICA Withholding:" + STE.getFICACalc());
 			System.out.println("Medicare Withholding: " + STE.getMedicareCalc());
@@ -58,30 +79,35 @@ public class HelloPayrollWorld {
 			System.out.println("State Withholding: " + STE.getStateCalc(locationCode));
 			System.out.println("County Withholding:" + STE.getCountyCalc(locationCode));
 			System.out.println("");
-
-			
-			
-			
-			// Calcualting Location Code
-			System.out.println("--------- Calcualting Location Code ------------");
-			
-			STE.setWebService (WebServiceType.STE_LOC_CODE, "http://lcs2.symmetry.com/", null, "sourcelead", "s290sdq", null);
-			WebServiceLocationCodeV2  w = STE.webServiceLocationCodeV2("Arizona Mills, Tempe, AZ, USA", "Arizona Mills, Tempe, AZ, USA", "Tempe", "AR", "85282", null, null);
-			System.out.println("Country code     : "+w.getCountyCode());
-			System.out.println("City code        : "+w.getCityCode());
-			System.out.println("Location Code    : "+w.getLocationCode());
-			System.out.println("MunicipalityCode : "+w.getMunicipalityCode());
-			System.out.println("SchoolCode       : "+w.getSchoolCode());
-			
-			System.out.println("");
-			// End Of Location Code
-			
-			
-			
+			System.out.println("************************************************");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.exit(0);
+	}
+
+	private WebServiceLocationCodeV2 getLocationCode(STEPayrollCalculator STE, User user)
+	{
+		// Calcualting Location Code
+					System.out.println("--------- Calcualting Location Code ------------");
+			WebServiceLocationCodeV2  webServiceLocationCodeV2 = null;
+				try{
+					STE.setWebService (WebServiceType.STE_LOC_CODE, "http://lcs2.symmetry.com/", null, "sourcelead", "s290sdq", null);
+					webServiceLocationCodeV2 = STE.webServiceLocationCodeV2(user.getResidenceAddress(), user.getResidenceStreetAddress(), user.getResidenceCity(), user.getResidenceState(), user.getResidenceZipCode(), null, null);
+					System.out.println("Country code     : "+webServiceLocationCodeV2.getCountyCode());
+					System.out.println("City code        : "+webServiceLocationCodeV2.getCityCode());
+					System.out.println("Location Code    : "+webServiceLocationCodeV2.getLocationCode());
+					System.out.println("MunicipalityCode : "+webServiceLocationCodeV2.getMunicipalityCode());
+					System.out.println("SchoolCode       : "+webServiceLocationCodeV2.getSchoolCode());
+					
+					System.out.println("");
+				}catch(Exception e){
+					logger.error(e.getMessage());
+				}
+				return webServiceLocationCodeV2;
+					
+	// End Of Location Code
+		
 	}
 }

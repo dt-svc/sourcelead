@@ -207,6 +207,8 @@ public interface UserService  {
 
 	ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO, OrgLocations orgLocation) throws Exception;
 
+	User getUserbyConsultantUserId(Long consultantUserId);
+
 }	
 		
 	

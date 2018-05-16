@@ -1519,5 +1519,11 @@ public class UserServiceImpl implements UserService {
 	public ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation) throws Exception {
 		return userDao.getUsersResponseListByOrglocationId(userDTO,orgLocation);
 	}
+
+	@Override
+	public User getUserbyConsultantUserId(Long consultantUserId)
+	{
+		return userDao.getUserbyConsultantUserId(consultantUserId);
+	}
 	
 }

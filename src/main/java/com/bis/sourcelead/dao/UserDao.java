@@ -158,4 +158,6 @@ public interface UserDao {
 
 	ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO, OrgLocations orgLocation) throws Exception;
 
+	User getUserbyConsultantUserId(Long consultantUserId);
+
 }
