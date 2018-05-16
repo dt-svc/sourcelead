@@ -2,9 +2,22 @@
 	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 	<c:set var ="allDocsUploaded" value ="No"/>
 		<div class="immigraTabsHead">
-		<!-- <a href="javascript:void(0)" id="immDocu"><i class="glyphicon glyphicon-plus"></i> Request Document</a> 		 -->	  	
-		  	<a href="javascript:void(0)" id="addDocu"><i class="glyphicon glyphicon-plus"></i> Add Document</a> 
-		  	
+		<!-- <a href="javascript:void(0)" id="immDocu"><i class="glyphicon glyphicon-plus"></i> Request Document</a> 
+				 -->
+			<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <a href="javascript:void(0)" id="addDocu"><i class="glyphicon glyphicon-plus"></i> Add Document</a>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <a href="javascript:void(0)" id="addDocu"><i class="glyphicon glyphicon-plus"></i> Add Document</a>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+			</c:choose>	  	
 		  	<span id='docZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt paddingRight"></i>Download All Documents</span> 
 		  	
 		  	<span><input class="immigraTabSerach" id="immigraDocTabSerach" placeholder="Document Type/Description/Status" type="text"></span>
@@ -22,7 +35,20 @@
 				<th>Required</th>
 				<th>Document</th>
 				<th>Status</th>
-				<th>Action</th>
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <th>Action</th>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <th>Action</th>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 			  </tr>
 			  <c:forEach var="canDocList" items="${immigrationCanDocList}" varStatus="rows">			  			  
 			<tr docid="${canDocList.id}" allowMultpleDocs= "${canDocList.allowMultiple}" docsHistoryList = "${fn:escapeXml(canDocList.docsHistoryList)}">
@@ -61,20 +87,43 @@
 						</span>
 					</div>
 				</td> -->
-				<td>
-				<div class="tblminwidth-90">
-					<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
-					<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
-					<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
-					<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteDocumentDetailsByRowId(${canDocList.id});" ></i>
-				   
-				 </c:if>
-					 
-					</div>
-				</td>
-				<c:if test="${canDocList.isRequired == 'Y' and not empty canDocList.uplodedFileUrl}">
-					 <c:set var ="allDocsUploaded" value ="Yes"/>
-					 </c:if>
+				
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <td>
+							<div class="tblminwidth-90">
+								<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
+								<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
+								<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
+								<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteDocumentDetailsByRowId(${canDocList.id});" ></i>
+							 </c:if>
+								</div>
+							</td>
+							<c:if test="${canDocList.isRequired == 'Y' and not empty canDocList.uplodedFileUrl}">
+								 <c:set var ="allDocsUploaded" value ="Yes"/>
+								 </c:if>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <td>
+									<div class="tblminwidth-90">
+										<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
+										<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
+										<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
+										<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteDocumentDetailsByRowId(${canDocList.id});" ></i>
+									 </c:if>
+										</div>
+									</td>
+									<c:if test="${canDocList.isRequired == 'Y' and not empty canDocList.uplodedFileUrl}">
+										 <c:set var ="allDocsUploaded" value ="Yes"/>
+										 </c:if>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 			  </tr>  
 		</c:forEach>
 			  						

@@ -2,7 +2,20 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <c:set var ="residenceListCount" value ="${fn:length(candidatesResidenceList)}"/>
 <div class="immigraTabsHead">
-		  	<a href="javascript:void(0)" id="addResi"><i class="glyphicon glyphicon-plus"></i> Add Residence</a> 
+			<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <a href="javascript:void(0)" id="addResi"><i class="glyphicon glyphicon-plus"></i> Add Residence</a>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <a href="javascript:void(0)" id="addResi"><i class="glyphicon glyphicon-plus"></i> Add Residence</a>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 		  	<span><input class="immigraTabSerach" type="text" id="residenceSearch" placeholder="Location/Country"></span>
 		</div>
 		
@@ -14,8 +27,22 @@
 				<th>Country</th>
 				<th>From</th>
 				<th>To</th>
-				<th>Action</th>
-				<th>&nbsp;</th>
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <th>Action</th>
+						<th>&nbsp;</th>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <th>Action</th>
+								<th>&nbsp;</th>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 			  </tr>
 			  <c:forEach var="residitems" items="${candidatesResidenceList}" varStatus="rows"> 
 			  
@@ -25,17 +52,42 @@
 				<td><div class="tbldata-dotdot-vsm">${!empty residitems.startDateStr ? residitems.startDateStr : '---'}</div></td>				
 				<td><div class="tbldata-dotdot-vsm">${!empty residitems.endDateStr ? residitems.endDateStr : '---'}</div></td>
 				<c:choose>
-				<c:when test = "${residitems.isCurrAddress =='Y'}">
-				<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id},'${residitems.isCurrAddress}');"
-				class="glyphicon glyphicon-pencil cursorPointer"></i></div></td>
-				</c:when>
-				<c:otherwise>
-				<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id});"
-				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="deleteResidenceDetailsById(${residitems.id});" 
-				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
-				</c:otherwise>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <c:choose>
+						<c:when test = "${residitems.isCurrAddress =='Y'}">
+						<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id},'${residitems.isCurrAddress}');"
+						class="glyphicon glyphicon-pencil cursorPointer"></i></div></td>
+						</c:when>
+						<c:otherwise>
+						<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id});"
+						class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
+						 onclick="deleteResidenceDetailsById(${residitems.id});" 
+						 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+						</c:otherwise>
+						</c:choose>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <c:choose>
+									<c:when test = "${residitems.isCurrAddress =='Y'}">
+									<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id},'${residitems.isCurrAddress}');"
+									class="glyphicon glyphicon-pencil cursorPointer"></i></div></td>
+									</c:when>
+									<c:otherwise>
+									<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id});"
+									class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
+									 onclick="deleteResidenceDetailsById(${residitems.id});" 
+									 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+									</c:otherwise>
+								</c:choose>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
 				</c:choose>
+				
 				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">

@@ -27,6 +27,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 <c:set var ="resiOnLoadCount" value = "${tabRecordCountMap['Residence']}" scope="request"/>
 <c:set var ="eduOnLoadCount" value  = "${tabRecordCountMap['Education']}" scope="request"/>
 <c:set var ="familyOnLoadCount" value  = "${tabRecordCountMap['Family']}" scope="request"/>
+<c:set var ="curUscisMyImmi" value = "${immigration.currUscisStatus}" scope="session"/>
  <section class="content-wraper content-wraperNew">
    
     <section class="content-header clearfix">
@@ -183,7 +184,6 @@ var addfamilyPopupEventListener = function() {
 	});	
   }	
 </script>
-
 <script>
 // project side bar tabs
 $(document).ready(function() {
