@@ -360,17 +360,13 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
 				org.setWebSite(convertWebsite(clientDTO.getWebSite()));
 			}
-			if(StringUtils.isNotBlank(clientDTO.getIsLawFirm())){
-			if(clientDTO.getIsLawFirm().equalsIgnoreCase("Y"))	{
+			if(StringUtils.isNotBlank(clientDTO.getIsLawFirm()) && clientDTO.getIsLawFirm().equalsIgnoreCase("Y")){
 				clientOrgLocations.setIsLawFirm(Constants.YES);	
-			}
 			}else{
 				clientOrgLocations.setIsLawFirm(Constants.NO);	
 			}
-			if(StringUtils.isNotBlank(clientDTO.getIsAccountingFirm())){
-				if(clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y"))	{
+			if(StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")){
 					clientOrgLocations.setIsAccountingFirm(Constants.YES);	
-				}
 				}else{
 					clientOrgLocations.setIsAccountingFirm(Constants.NO);	
 				}
@@ -1295,17 +1291,13 @@ public class ClientServiceImpl implements ClientService {
 					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
 			}
-			if (StringUtils.isNotBlank(clientDTO.getIsLawFirm())) {
-				if (clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
+			if (StringUtils.isNotBlank(clientDTO.getIsLawFirm()) && clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
 					orgRelation.setIsLawFirm(Constants.YES);
-				}
 			} else {
 				orgRelation.setIsLawFirm(Constants.NO);
 			}
-			if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm())) {
-				if (clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
+			if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
 					orgRelation.setIsAccountingFirm(Constants.YES);
-				}
 			} else {
 				orgRelation.setIsAccountingFirm(Constants.NO);
 			}

@@ -110,9 +110,9 @@
 						if(json.location != null && json.location !='' && json.location !='undefined'){
 							location = json.location;
 						}
+						
 						isLawFirm = (json.isLawFirm =='Y' ? true : false);
 						isAccountingFirm = (json.isAccountingFirm =='Y' ? true :false);
-						
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						if(json.orgType == 'Company'){
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
@@ -278,7 +278,7 @@
 				        $("#editVendorDetailsDiv").append(result);
 				        $("#isLawFirm").attr('checked', isLawFirm);
 				        $("#isAccountingFirm").attr('checked', isAccountingFirm);
-				        $("#isLawFirm").val(isLawFirm?'Y':'N');
+				        $("#isLawFirm").val(isLawFirm?'Y':'N' );
 				        $("#isAccountingFirm").val(isAccountingFirm?'Y':'N');
 				        if(json.orgType == 'Company'){
 // 				        	initLocationAuto('existingLocation','existingCountry','existingState','existingCity','existingZipCode','','','invite','addressId');
@@ -308,7 +308,7 @@
 					}
 				}); 
 		      getAllCountries();
-		      allowIsLawFirm();
+		      //allowIsLawFirm();
 		      allowIsAccountFirm();
 	}
 function changeCountry(){
