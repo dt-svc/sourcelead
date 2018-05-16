@@ -96,10 +96,14 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 				
 				if(StringUtils.isNoneBlank(referContactsDTO.getLastName())){
 					referContacts.setLastName(referContactsDTO.getLastName());
+				}else {
+					referContacts.setLastName(null);
 				}
 				
 				if(StringUtils.isNoneBlank(referContactsDTO.getPhone())){
 					referContacts.setContactUserPhone(referContactsDTO.getPhone());
+				}else {
+					referContacts.setContactUserPhone(null);
 				}
 				if(StringUtils.isNoneBlank(referContactsDTO.getContactType())){
 					if(referContactsDTO.getContactType().equalsIgnoreCase("vendor")){
@@ -119,6 +123,8 @@ public class ReferContactsServiceImpl implements ReferContactsService{
 				}
 				if(StringUtils.isNoneBlank(referContactsDTO.getCompanyName())){
 					referContacts.setCompanyName(referContactsDTO.getCompanyName());
+				}else {
+					referContacts.setCompanyName(null);
 				}
 				referContacts.setUpdatedDate(new Date());
 				referContacts.setUpdatedBy(user.getUserCode());

@@ -759,7 +759,7 @@ function payablePagination(url){
 							result = result +'     <div class="tblminwidth-90">';
 							 result = result +'  <div class="pull-right positionRelative menuWidget" >';
 							if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected"){
-								 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
+								 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\',\''+report.paymentStatus+'\');" ></i>  ';
 									result = result +'  <div id="popupDiv'+report.invoiceUUID+'" class="invoicePopRg"></div>';
 							} 
 							result = result +'  </div> ';  
@@ -768,7 +768,7 @@ function payablePagination(url){
 									if(report.paymentStatus == "Paid"){
 										result = result +'           <span class="text-primary primary pull-left" title="Paid" >Paid</span> </td>          ';
 									}else if(report.invoiceStatus == "DRAFT"){
-										result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
+										result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
 									}else if(report.invoiceStatus == "Rejected"){
 										result = result +'           <div class="primary pull-left bg-red">Rejected</div>   ';	
 									}
@@ -792,9 +792,9 @@ function payablePagination(url){
 									if(report.paymentStatus == "Paid"){
 										result = result +'           <span class=" primary pull-left" title="Paid" >Paid</span> </td>          ';	
 									}else if(report.invoiceStatus == "DRAFT"){
-										result = result +'           <span class="successBtn primary pull-left" title="Paid">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
+										result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
 									}else if(report.invoiceStatus == "SENT"){
-										result = result +'           <span class=" primary pull-left" title="Paid" >Sent</span> </td>          ';
+										result = result +'           <span class=" primary pull-left" title="Sent" >Sent</span> </td>          ';
 									}else if(report.invoiceStatus == "Rejected"){
 										result = result +'           <div class=" primary pull-left bg-red">Rejected</div>   ';
 									}
@@ -1028,7 +1028,7 @@ function payablePagination(url){
 
 
 <script>
-function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
+function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl,paymentStatus){
 		 removePopup();
 	     result = "";
 	     if(invoiceParentId == 'undefined'){
@@ -1045,7 +1045,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
-		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT'){
+		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT' && paymentStatus != 'Paid'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
 			 result = result +'<li onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
 			 '</sec:authorize>'
