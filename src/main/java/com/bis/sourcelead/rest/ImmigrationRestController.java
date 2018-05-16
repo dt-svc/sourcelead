@@ -624,12 +624,23 @@ public class ImmigrationRestController {
 				"orgLocations");
 		// immigrationTemplateService.savePetitionTemplateTaskDetails(templateDTO,
 		// user);
+		Candidate candidate = null;
+		Immigration immigration = null;
 		try{
 		if (user != null && Validator.validate(candidateEmployerDTO)) {
 		candidateEmployerDTO.setStaticPath(staticPath);
+		candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
+		 immigration = immigrationCommonService.getImmigrationById(Long.parseLong(immigrationId));
 		candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO, user, loginOrglocation,	Long.parseLong(candidateId));
 		response.setResponse(Result.SUCCESS.name());
 		response.setResponseMessage(Result.SUCCESS.getValue());
+		StringBuilder actionDesc = new StringBuilder();
+		if(StringUtils.isNotBlank(candidateEmployerDTO.getCandidateEmployeeId())){
+			actionDesc.append("Employer Details Updated").toString();	
+		}else{
+			actionDesc.append("New Employer Details Added").toString();	
+		}
+		immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, loginOrglocation, candidate, immigration, actionDesc.toString());
 		}else if (user == null) {
 			response.setResponse(Result.SESSION_TIMEDOUT.name());
 			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -1200,13 +1211,24 @@ public class ImmigrationRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		Candidate candidate = null;
+		Immigration immigration = null;
 		try {
 			if (user != null && Validator.validate(candidateEducationDTO)) {
 				candidateEducationDTO.setStaticPath(staticPath);
+				 candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
+				 immigration = immigrationCommonService.getImmigrationById(Long.parseLong(immigrationId));
 				candidateEducationService.storeCandidateEducation(candidateEducationDTO, Long.parseLong(candidateId),
 						orgLocations.getId(), user);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
+				StringBuilder actionDesc = new StringBuilder();
+				if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateEduId())){
+					actionDesc.append("Education Details Updated").toString();	
+				}else{
+					actionDesc.append("New Education Details Added").toString();	
+				}
+				immigrationActivityCommonUtil.saveImmigrationCandidateActivities(user, orgLocations, candidate, immigration, actionDesc.toString());
 			} else if (user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -1219,8 +1241,7 @@ public class ImmigrationRestController {
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			e.printStackTrace();
 		}
-
-		return response;
+			return response;
 	}
 
 	@RequestMapping(value = { "/saveImmigrationResidenceDetails" })
