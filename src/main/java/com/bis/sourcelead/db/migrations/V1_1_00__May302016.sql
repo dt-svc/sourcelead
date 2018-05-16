@@ -12,10 +12,10 @@ begin
 			SELECT * FROM information_schema.COLUMNS
 			WHERE column_name=fieldName
 			and table_name=tableName
-			and table_schema=dbName
+			
 		)
 	THEN
-		set @ddl=CONCAT('ALTER TABLE ',dbName,'.',tableName,
+		set @ddl=CONCAT('ALTER TABLE ',tableName,
 			' ADD COLUMN ',fieldName,' ',fieldDef);
 		prepare stmt from @ddl;
 		execute stmt;
@@ -35,10 +35,10 @@ begin
 			SELECT * FROM information_schema.COLUMNS
 			WHERE column_name=fieldName
 			and table_name=tableName
-			and table_schema=dbName
+			
 		)
 	THEN
-		set @ddl=CONCAT('ALTER TABLE ',dbName,'.',tableName,
+		set @ddl=CONCAT('ALTER TABLE ',tableName,
 			' DROP COLUMN ',fieldName);
 		prepare stmt from @ddl;
 		execute stmt;
@@ -57,12 +57,11 @@ BEGIN
 
     SELECT COUNT(*) INTO IndexColumnCount
     FROM information_schema.statistics
-    WHERE table_schema = dbName
-    AND table_name = tableName
+    WHERE  table_name = tableName
     AND index_name = colmnName;
 
     IF IndexColumnCount > 0 THEN
-        SET SQLStatement = CONCAT('ALTER TABLE `',dbName,'`.`',tableName,'` DROP
+        SET SQLStatement = CONCAT('ALTER TABLE `',tableName,'` DROP
 INDEX `',colmnName,'`');
         SET @SQLStmt = SQLStatement;
         PREPARE s FROM @SQLStmt;
@@ -79,12 +78,11 @@ BEGIN
 
     SELECT @indexes := COUNT(1)
         FROM INFORMATION_SCHEMA.STATISTICS
-        WHERE table_schema = dbName
-        AND table_name = tableName
+        WHERE  table_name = tableName
         AND COLUMN_NAME = colmnName;
 
     IF @indexes = 0 THEN
-        SET @sql_cmd := CONCAT('CREATE INDEX `',colmnName,'` ON `',dbName,'`.`',tableName,'` ( `',colmnName,'`)');
+        SET @sql_cmd := CONCAT('CREATE INDEX `',colmnName,'` ON `',tableName,'` ( `',colmnName,'`)');
         SELECT @sql_cmd;
         PREPARE stmt FROM @sql_cmd;
         EXECUTE stmt;
@@ -101,12 +99,11 @@ BEGIN
 
     SELECT @indexes := COUNT(1)
         FROM INFORMATION_SCHEMA.STATISTICS
-        WHERE table_schema = dbName
-        AND table_name = tableName
+        WHERE table_name = tableName
         AND COLUMN_NAME = colmnName;
 
     IF @indexes = 0 THEN
-        SET @sql_cmd := CONCAT('ALTER TABLE `',dbName,'`.`',tableName,'` ADD UNIQUE INDEX `',colmnName,'_UNIQUE`',
+        SET @sql_cmd := CONCAT('ALTER TABLE `',tableName,'` ADD UNIQUE INDEX `',colmnName,'_UNIQUE`',
             '( `', colmnName, '` ASC)');
         SELECT @sql_cmd;
         PREPARE stmt FROM @sql_cmd;
