@@ -277,6 +277,9 @@
 						$("#editVendorDetailsDiv").empty();
 				        $("#editVendorDetailsDiv").append(result);
 				        $("#isLawFirm").attr('checked', isLawFirm);
+				        if(isLawFirm == true){
+				        	$("#isLawFirm").attr("disabled",true)	
+				        }
 				        $("#isAccountingFirm").attr('checked', isAccountingFirm);
 				        $("#isLawFirm").val(isLawFirm?'Y':'N' );
 				        $("#isAccountingFirm").val(isAccountingFirm?'Y':'N');

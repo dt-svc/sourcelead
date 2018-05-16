@@ -459,8 +459,12 @@ public class VendorRestController {
 			orgRelationDTO.setVendorlocationId(orgRelations.getLocationId().getId());
 			orgRelationDTO.setVendorOrgLocation(orgRelations.getLocationId().getLocation());
 		}
+		if(StringUtils.isNotBlank(orgRelations.getIsAccountingFirm()) && orgRelations.getIsAccountingFirm().equalsIgnoreCase("Y")){
 		orgRelationDTO.setIsAccountingFirm(orgRelations.getIsAccountingFirm());
+		}
+		if(StringUtils.isNotBlank(orgRelations.getIsLawFirm()) && orgRelations.getIsLawFirm().equalsIgnoreCase("Y")){
 		orgRelationDTO.setIsLawFirm(orgRelations.getIsLawFirm());
+		}
 		if(StringUtils.isNotBlank(orgRelations.getVendorOnboardTemplateId())) {
 			orgRelationDTO.setVendorOnboardTemplateId(orgRelations.getVendorOnboardTemplateId());
 		}
