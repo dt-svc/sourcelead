@@ -100,6 +100,7 @@ public class PayrollBonusDaoImpl implements PayrollBonusDao{
 		if(payrollBonusDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollBonusDTO.getSearchValue())) {
 			 query1.append(" bonus.fromMonth like '" + payrollBonusDTO.getSearchValue() + "%' OR bonus.toMonth like '%" + payrollBonusDTO.getSearchValue() + "' ")
 			    .append("OR bonus.paymentMonth like '%" + payrollBonusDTO.getSearchValue() + "%' ")
+			    .append("OR bonus.paymentYear like '%" + payrollBonusDTO.getSearchValue() + "%' ")
 				.append("OR bonus.minPercentage like '%" + payrollBonusDTO.getSearchValue() + "%' ")
 				.append("OR bonus.maxPercentage like '%" + payrollBonusDTO.getSearchValue() + "%' ");
 			

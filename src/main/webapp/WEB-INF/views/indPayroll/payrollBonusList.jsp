@@ -17,7 +17,7 @@
 <div class="pull-left">
 <h2>Bonus List</h2>
 </div>
- <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configuration</a>  &raquo; Bonus List</div>
+ <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configure</a>  &raquo; Bonus List</div>
 </section>
 
 <div class="clearfix"></div>
@@ -26,10 +26,18 @@
 	<div class="timesheetHead minHeight40 mt minHeight40">
 		<div class="pull-right">
 			<ul class="list-unstyled list-inline">
-				
-			<li>
-				<a href="${appPath}/payrollBonus" class="addBtn">+ Create</a>
-			</li>
+					
+				<li class="positionRelative paddingLeft">
+				  <div class="dynamic_search">
+		   			<input type='text' placeholder='Search' id='bonusDataTableSearch'/>
+		   			<span class="cursorPointer" title="Search"><i class="fa fa-search" onClick="payrollBonusList();"></i></span>
+				  </div>
+			    </li>
+			  
+			     <li class="positionRelative">
+					<a href="${appPath}/payrollBonus" class="addBtn">+ Create</a>
+				</li>
+			  
 			</ul>
 		</div>
 	</div>
@@ -68,8 +76,7 @@
 	  
 	  
 	    var result = "";
-	 	result = result +" <div class='remove_search' style='top:-40px; right:100px;'>";
-	 	result = result +" <input type='text' placeholder='Search' id='bonusDataTableSearch'/>";
+	 	result = result +" <div class='remove_search'>";
 	 	result = result +"</div>";
 	 	
 	 	result = result + '<table id="bonusListTable"  cellspacing="0" width="100%" >';
