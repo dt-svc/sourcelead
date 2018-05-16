@@ -172,6 +172,7 @@ function fileUpload(id, type, formId, name, orgId, orgLocationId,url) {
 		count ++;
 	}
 	if(count === 0) {
+		$("#"+formId+" input[data-id*="+id+"]").remove();
 		$(".file_mask").hide();
 		alert("Please select valid file (zip files and rar files are not allowed)");
 		return;
