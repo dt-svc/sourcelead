@@ -651,7 +651,12 @@
                 	 	$("#orgType").val(opt.orgNameSel);
                 	 }
                      var result = "";
-                     result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationId='+opt.id+'><i id="edit' + opt.id + '" class="glyphicon glyphicon-pencil"></i></a><i id="delete' + opt.id + '" onclick="deleteImmigrationListId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                     '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_PETITION\')">';
+                     result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationId='+opt.id+'><i id="edit' + opt.id + '" class="glyphicon glyphicon-pencil"></i></a>';
+                     '</sec:authorize>';
+                      '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION\')">';
+                     result = result + '<i id="delete' + opt.id + '" onclick="deleteImmigrationListId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                     '</sec:authorize>';
                      return result;
                  }
              }
