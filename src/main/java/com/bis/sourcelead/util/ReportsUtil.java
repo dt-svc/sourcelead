@@ -211,14 +211,16 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
 		
-		DateTime yesterdayDayZoned = zoned.minusDays(1);
-		String yesterdayDaysDate = outputFormatter.print(yesterdayDayZoned);
-		Date yesterdayDateUTC = TZ_DF_TS.parse(yesterdayDaysDate);
+		DateTime oneDayZoned = zoned.minusDays(1);
+		String oneDaysDate = outputFormatter.print(oneDayZoned);
+		Date oneDateUTC = TZ_DF_TS.parse(oneDaysDate);
 		
 		Date[] dates = new Date[2];
-		dates[0] = yesterdayDateUTC;
-		dates[1] = yesterdayDateUTC;
+		dates[0] = oneDateUTC;
+		dates[1] = startDateUTC;
 		return dates;
 	}
 	

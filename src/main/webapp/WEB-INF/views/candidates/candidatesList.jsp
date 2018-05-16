@@ -2414,7 +2414,7 @@ function sharejobpopup(candidateCount) {
 	 result = result+ '    <div class="dropdown-select col-md-9">';
 	 result = result+ '    <select class="form-control" id="requirementsTimeRange" onchange="getRequirements();rolecustomedates();">';
 	 result = result+ '    <option value="today">Today</option>';
-	 result = result+ '    <option value="yesterday">Yesterday</option>';
+	 result = result+ '    <option value="yesterday">1 Day Ago</option>';
 	 result = result+ '    <option value="1_week" selected="">1 week</option>';
 	 result = result+ '    <option value="2_weeks">2 weeks</option>';
 	 result = result+ '    <option value="1_month">1 month</option>';
