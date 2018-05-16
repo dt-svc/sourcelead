@@ -53,8 +53,8 @@
 		<h2 class="text-success">Bonus</h2>
 		<p>Manage your bonus</p>
 		<span>
-			<a class="btn btn-info btn-sm mr10" href="#">Add</a> 
-			<a class="btn btn-primary btn-sm" href="#">View</a>
+			<a class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/payrollBonus'/>">Add</a> 
+			<a class="btn btn-primary btn-sm" href="<c:url value='${appPath}/payrollBonusList'/>">View</a>
 		</span>
 		</div>
 	</div>

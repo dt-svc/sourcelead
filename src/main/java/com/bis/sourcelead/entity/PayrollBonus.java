@@ -11,9 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PAYROLL_BONUS")
@@ -52,8 +55,8 @@ public class PayrollBonus {
 	@Column(name = "TO_MONTH")
 	private String toMonth;
 	
-	@Column(name = "MAX_MONTH_SALARY")
-	private Double maxMonthSalary;
+	@Column(name = "MAX_SALARY")
+	private Double maxSalary;
 	
 	@Column(name = "PAYMENT_FREQUENCY")
 	private String paymentFrequency;
@@ -80,6 +83,10 @@ public class PayrollBonus {
     
     @Column(name = "UPDATED_DATE")
    	private Date updatedDate;
+    
+    @Transient
+    @JsonProperty
+    private String paymentDateStr;
     
     
     
@@ -156,12 +163,13 @@ public class PayrollBonus {
 		this.toMonth = toMonth;
 	}
 
-	public Double getMaxMonthSalary() {
-		return maxMonthSalary;
+
+	public Double getMaxSalary() {
+		return maxSalary;
 	}
 
-	public void setMaxMonthSalary(Double maxMonthSalary) {
-		this.maxMonthSalary = maxMonthSalary;
+	public void setMaxSalary(Double maxSalary) {
+		this.maxSalary = maxSalary;
 	}
 
 	public String getPaymentFrequency() {
@@ -226,6 +234,14 @@ public class PayrollBonus {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getPaymentDateStr() {
+		return paymentDateStr;
+	}
+
+	public void setPaymentDateStr(String paymentDateStr) {
+		this.paymentDateStr = paymentDateStr;
 	}
     
     

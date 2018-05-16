@@ -218,7 +218,7 @@ public class Validator {
 			String[] d = r.parentValue();
 			for (String d1 : d) {
 				if ((r.parentValueAny() && !value.toString().isEmpty())
-						|| value.toString().equals(d1)) {
+						|| (!d1.isEmpty() && value.toString().equals(d1))) {
 					flag = true;
 					break;
 				}
