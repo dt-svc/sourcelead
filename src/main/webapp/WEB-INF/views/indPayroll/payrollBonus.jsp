@@ -10,7 +10,7 @@
       <div class="pull-left">
         <h2>Bonus Setup</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; <a href="${appPath}/payrollBonusList">Bonus List</a> &raquo; Bonus Setup</div>
+      <div class="pull-right brud-crum">Home &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configuration</a>  &raquo; <a href="${appPath}/payrollBonusList">Bonus List</a> &raquo; Bonus Setup</div>
     </section>
   <div class="content-area content-new clearfix">
    <div id="loading"></div> 

@@ -17,7 +17,7 @@
 <div class="pull-left">
 <h2>Bonus List</h2>
 </div>
- <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; Bonus List</div>
+ <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/payrollConfiguration'/>">Payroll Configuration</a>  &raquo; Bonus List</div>
 </section>
 
 <div class="clearfix"></div>
