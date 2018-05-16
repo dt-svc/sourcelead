@@ -1246,6 +1246,7 @@ function linkInvoice(invoiceUUID,totalAmount){
     
 <script>
 function mergeInvoice(parentTotalAmount){
+	$('#clientInvoicelinkId').parent().find('p.jquery_form_error_message').remove();
 	var invoiceUUID = $('#masterInvoiceId').val();
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var linkRadio = $('input[name=linkedInvoice]');
