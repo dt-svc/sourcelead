@@ -971,30 +971,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
         
         String userType = "";
         if("ACTIVE".equalsIgnoreCase(usersUsageReportDTO.getUserType())){
-        	userType = " userRole.userState = 'ACTIVE' and";
+        	userType = " userRole.userState = 'ACTIVE'";
 		}else if("INACTIVE".equalsIgnoreCase(usersUsageReportDTO.getUserType())){
-			userType = " userRole.userState = 'INACTIVE' and";
+			userType = " userRole.userState = 'INACTIVE'";
 		}else if("NOT_LOGGEDIN".equalsIgnoreCase(usersUsageReportDTO.getUserType())){
 			userType = " userRole.userState = 'NOT_LOGGEDIN'";
 		}
-        
-//        Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
-//  	   Matcher matcher = pattern.matcher(usersUsageReportDTO.getSearchValue());
-//  	   java.sql.Date sqlDate = null;
-//  	    if(matcher.matches() == true) {
-//  					if(usersUsageReportDTO.getSearchValue().contains("/")||(usersUsageReportDTO.getSearchValue().contains("-"))) {
-//  						String replacedValue = usersUsageReportDTO.getSearchValue().replaceAll("/", "-");
-//  							SimpleDateFormat format = new SimpleDateFormat(orglocation.getDateFormat());
-//  					        java.util.Date utilDate = format.parse(replacedValue);
-//  					        sqlDate = new java.sql.Date(utilDate.getTime());
-//  					}
-//  	    }
+  
   	    
         StringBuilder query1 = new StringBuilder("");
 		if(usersUsageReportDTO.getSearchValue() !=null && !"".equalsIgnoreCase(usersUsageReportDTO.getSearchValue())) {
-		
-			
-			
 			query1.append("and( (uRole.user.firstName like '" + usersUsageReportDTO.getSearchValue() + "%' OR uRole.user.lastName like '%" + usersUsageReportDTO.getSearchValue() + "' )")
 			   .append("OR (concat(uRole.user.firstName,uRole.user.lastName) like '%" + usersUsageReportDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
 		       .append("OR uRole.user.email like '%" + usersUsageReportDTO.getSearchValue() + "%' ")
@@ -1010,94 +996,48 @@ public class UserRoleDaoImpl implements UserRoleDao {
     		String query = "";
     		String countQuery = "";
     		
-    		if(!"NOT_LOGGEDIN".equalsIgnoreCase(usersUsageReportDTO.getUserType())){
-    			if(usersUsageReportDTO.getOrgId() != null && usersUsageReportDTO.getOrgId().size() > 0){
-        			query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" userRole.user.id IN (:userIds)) "+query1+" and uRole.orgLocations.org.id IN (:orgList) group by uRole.user.id";
-        			userList =   session.createQuery(query.toString()).setParameterList("orgList", usersUsageReportDTO.getOrgId()).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
-        		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" userRole.user.id IN (:userIds)) and uRole.orgLocations.org.id IN (:orgList)";
-        		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
-        		    countlist =listCountQuery.setParameterList("orgList", usersUsageReportDTO.getOrgId()).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
-        		}else{
-        			if(usersUsageReportDTO.getUserIds() != null && !usersUsageReportDTO.getUserIds().isEmpty()){
-        				query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" userRole.user.id IN (:userIds)) "+query1+" group by uRole.user.id";
-            			userList =   session.createQuery(query.toString()).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
-            		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" userRole.user.id IN (:userIds)) ";
-            		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
-            		    countlist =listCountQuery.setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
-        			}
-        		}
-    		}else{
-    			if(usersUsageReportDTO.getOrgId() != null && usersUsageReportDTO.getOrgId().size() > 0){
-        			query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+") "+query1+" and uRole.orgLocations.org.id IN (:orgList) group by uRole.user.id";
-        			userList =   session.createQuery(query.toString()).setParameterList("orgList", usersUsageReportDTO.getOrgId()).list();
-        		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+") and uRole.orgLocations.org.id IN (:orgList)";
-        		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
-        		    countlist =listCountQuery.setParameterList("orgList", usersUsageReportDTO.getOrgId()).list();
-        		}else{
-//        			if(usersUsageReportDTO.getUserIds() != null && !usersUsageReportDTO.getUserIds().isEmpty()){
-        				query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+") "+query1+" group by uRole.user.id";
-            			userList =   session.createQuery(query.toString()).list();
-            		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+")";
-            		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
-            		    countlist =listCountQuery.list();
-//        			}
-        		}
+    		
+    		if((usersUsageReportDTO.getOrgId() != null && usersUsageReportDTO.getOrgId().size() > 0) && (usersUsageReportDTO.getUserIds() != null && usersUsageReportDTO.getUserIds().size() > 0) ){
+    			query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" and userRole.user.id IN (:userIds)) "+query1+" and uRole.orgLocations.org.id IN (:orgList) group by uRole.user.id";
+    			userList =   session.createQuery(query.toString()).setParameterList("orgList", usersUsageReportDTO.getOrgId()).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
+    		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" and  userRole.user.id IN (:userIds)) and uRole.orgLocations.org.id IN (:orgList)";
+    		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
+    		    countlist =listCountQuery.setParameterList("orgList", usersUsageReportDTO.getOrgId()).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
+    		}else if((usersUsageReportDTO.getOrgId() == null || usersUsageReportDTO.getOrgId().isEmpty() ) && (usersUsageReportDTO.getUserIds() != null && usersUsageReportDTO.getUserIds().size() > 0) ){
+    			query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" and userRole.user.id IN (:userIds)) "+query1+"  group by uRole.user.id";
+    			userList =   session.createQuery(query.toString()).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
+    		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+" and userRole.user.id IN (:userIds)) ";
+    		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
+    		    countlist =listCountQuery.setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
+    		}else if((usersUsageReportDTO.getOrgId() != null && usersUsageReportDTO.getOrgId().size() > 0) && (usersUsageReportDTO.getUserIds() == null || usersUsageReportDTO.getUserIds().isEmpty())){
+    			query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+")  "+query1+" and uRole.orgLocations.org.id IN (:orgList) group by uRole.user.id";
+    			userList =   session.createQuery(query.toString()).setParameterList("orgList", usersUsageReportDTO.getOrgId()).list();
+    		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+") and uRole.orgLocations.org.id IN (:orgList)";
+    		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
+    		    countlist =listCountQuery.setParameterList("orgList", usersUsageReportDTO.getOrgId()).list();
+    		}else {
+    			query = " from UserRole uRole where uRole.user.id <> 1 and uRole.user.id <> 2 and uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+")  "+query1+" group by uRole.user.id";
+    			userList =   session.createQuery(query.toString()).list();
+    		    countQuery ="select count(*) from UserRole uRole where uRole.user.id IN (select userRole.user.id from UserRole userRole where "+userType+") ";
+    		    Query listCountQuery = session.createQuery(countQuery + query1 + " group by uRole.user.id");
+    		    countlist =listCountQuery.list();
     		}
+    		 
     		
-   		int count = 0;
-		int filteredCount = 0;
-   		
-   		if(countlist != null && !countlist.isEmpty()) {
-			count = countlist.size();
-		}
-		response.setRecordsTotal(count);
-		if (!"NOT_LOGGEDIN".equalsIgnoreCase(usersUsageReportDTO.getUserType())) {
-			if (usersUsageReportDTO.getOrgId() != null
-					&& usersUsageReportDTO.getOrgId().size() > 0) {
-				if(usersUsageReportDTO.getUserIds() != null && usersUsageReportDTO.getUserIds().isEmpty()){
-				List<Long> filteredCountlist = session.createQuery(countQuery
-						+ query1).setParameterList("userIds", usersUsageReportDTO.getUserIds()).setParameterList("orgList", usersUsageReportDTO.getOrgId()).list();
-				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
-					filteredCount = filteredCountlist.iterator().next().intValue();
-				}
-				response.setRecordsFiltered(filteredCount);
-			 }
-				
-			}
-			else {
-				if(usersUsageReportDTO.getUserIds() != null && !usersUsageReportDTO.getUserIds().isEmpty()){
-				List<Long> filteredCountlist = session.createQuery(countQuery
-						+ query1).setParameterList("userIds", usersUsageReportDTO.getUserIds()).list();
-				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
-					filteredCount = filteredCountlist.iterator().next().intValue();
-				}
-				response.setRecordsFiltered(filteredCount);
-			 }
-			}
-		}
-		else {
-			if (usersUsageReportDTO.getOrgId() != null
-					&& usersUsageReportDTO.getOrgId().size() > 0) {
-//				if(usersUsageReportDTO.getUserIds() != null && usersUsageReportDTO.getUserIds().isEmpty()){
-				List<Long> filteredCountlist = session.createQuery(countQuery
-						+ query1).setParameterList("orgList", usersUsageReportDTO.getOrgId()).list();
-				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
-					filteredCount = filteredCountlist.iterator().next().intValue();
-				}
-				response.setRecordsFiltered(filteredCount);
-//				}
-			}
-			else {
-//				if(usersUsageReportDTO.getUserIds() != null && !usersUsageReportDTO.getUserIds().isEmpty()){
-				List<Long> filteredCountlist = session.createQuery(countQuery + query1).list();
-				if (filteredCountlist != null && !filteredCountlist.isEmpty()) {
-					filteredCount = filteredCountlist.iterator().next().intValue();
-				}
-				response.setRecordsFiltered(filteredCount);
-//				}
-			}
-		}
+    		int size = countlist.size();
+    		/*int totalCount = 0;
+    		if (usersUsageReportDTO != null) {
+    			if(countlist != null && !countlist.isEmpty()) {
+    				totalCount = countlist.iterator().next().intValue();
+    			}
+    		} */
+    		response.setRecordsTotal(size);
     		
+    		if(query1.toString() != null && !query1.toString().isEmpty()){
+    			response.setRecordsFiltered(filterCount);
+    		}else {
+    			response.setRecordsFiltered(size);
+    		}
     		response.setData(userList);
     		return response;
         
