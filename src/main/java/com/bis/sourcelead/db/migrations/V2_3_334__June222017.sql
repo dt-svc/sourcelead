@@ -1,4 +1,4 @@
-CALL AlterTableAddColumn ('sourcelead','LOOKUP_DATA','LOCATION','VARCHAR(200) NULL AFTER `CATEGORY`');
+CALL AlterTableAddColumn ('LOOKUP_DATA','LOCATION','VARCHAR(200) NULL AFTER `CATEGORY`');
 
 #VISA DETAILS DUMP FOR LOOP UP DATA
 INSERT INTO `LOOKUP_DATA` ( `NAME`, `DESCRIPTION`, `CATEGORY`, `LOCATION`) VALUES ( 'B-1 Visa(United States)', 'Temporary Visa for Business Travelers and domestic servant.', 'VisaCategory', 'United States');
@@ -49,5 +49,5 @@ INSERT INTO `LOOKUP_DATA` ( `NAME`, `CATEGORY`, `LOCATION`) VALUES ( 'Student Vi
 INSERT INTO `LOOKUP_DATA` ( `NAME`, `CATEGORY`, `LOCATION`) VALUES ( 'Tourist Visa(India)', 'VisaCategory', 'India');
 INSERT INTO `LOOKUP_DATA` ( `NAME`, `CATEGORY`, `LOCATION`) VALUES ( 'Transit Visa(India)', 'VisaCategory', 'India');
 
-CALL AlterTableAddColumn ('sourcelead','REQUIREMENT','VISA_TYPE','TEXT NULL AFTER `SKILLS`');
+CALL AlterTableAddColumn ('REQUIREMENT','VISA_TYPE','TEXT NULL AFTER `SKILLS`');
 
