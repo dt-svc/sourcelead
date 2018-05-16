@@ -48,6 +48,8 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 public class TransferBISAssociates {
 	private static final Logger logger = LoggerFactory.getLogger(AddClientVendorELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	private TransportClient client;
 	
 	 protected boolean isNullOrEmpty(String str) {
@@ -78,7 +80,7 @@ public void transferAssociates() throws IOException, SQLException {
 		
 	     System.out.println("----Adding BIS US locatino To IND Locations starts----");
 	     
-		 String sql1 = "SELECT * FROM sourcelead.ORG_RELATIONS orgRelations where (orgRelations.LOCATION_ID = '"+INDOrgLocation+"' and  orgRelations.RESPONDER_LOCATION_ID = '"+USOrgLocation+"'  and orgRelations.INITIATOR_TYPE = 'Vendor') "
+		 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_RELATIONS orgRelations where (orgRelations.LOCATION_ID = '"+INDOrgLocation+"' and  orgRelations.RESPONDER_LOCATION_ID = '"+USOrgLocation+"'  and orgRelations.INITIATOR_TYPE = 'Vendor') "
 		 		+ " OR (orgRelations.RESPONDER_LOCATION_ID = '"+INDOrgLocation+"' and orgRelations.LOCATION_ID = '"+USOrgLocation+"'  and orgRelations.RESPONDER_TYPE = 'Client') ";
 		 stmt1 = conn.createStatement();
 		 ResultSet rs1 = stmt1.executeQuery(sql1);
@@ -89,21 +91,21 @@ public void transferAssociates() throws IOException, SQLException {
 		 
 		if(rs1.next()) {
 			 orgRelationId = rs1.getLong("ID");
-			 String spocSql = "SELECT * FROM sourcelead.ORG_SPOC orgSpoc where orgSpoc.ORG_RELATION_ID = '"+orgRelationId+"' ";
+			 String spocSql = "SELECT * FROM "+dbconfig.getSchema()+".ORG_SPOC orgSpoc where orgSpoc.ORG_RELATION_ID = '"+orgRelationId+"' ";
     		 Statement spocStmt = conn.createStatement();
 			 ResultSet spocRs = spocStmt.executeQuery(spocSql);
 			 if(spocRs.next()) {
 				 spocId = spocRs.getLong("ID");
 			 }
 			 
-			 String sql14 = "SELECT * FROM sourcelead.ORG_LOCATIONS orgLocations where orgLocations.ID = '"+INDOrgLocation+"' ";
+			 String sql14 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orgLocations where orgLocations.ID = '"+INDOrgLocation+"' ";
 			 Statement stmt14 = conn.createStatement();
 			 ResultSet rs14 = stmt14.executeQuery(sql14);
 			
 			 if(rs14.next()) {
 				 shortCode = rs14.getString("GENERATED_USER_ID");
 				 userId = rs14.getLong("PRIMARY_CONTACT_USER_ID");
-				 String sql3 = "SELECT * FROM sourcelead.USER  user where  user.ID = '"+userId+"' ";
+				 String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".USER  user where  user.ID = '"+userId+"' ";
 				 Statement stmt16 = conn.createStatement();
 				 ResultSet rs15 = stmt16.executeQuery(sql3);
 				 if(rs15.next()) {
@@ -117,7 +119,7 @@ public void transferAssociates() throws IOException, SQLException {
 			 userId = null;
 			 Long clientUserId = 289L;
 			 
-			 String sql2 = "SELECT * FROM sourcelead.ORG_LOCATIONS orgLocations where orgLocations.ID = '"+INDOrgLocation+"' ";
+			 String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orgLocations where orgLocations.ID = '"+INDOrgLocation+"' ";
 			 Statement stmt2 = conn.createStatement();
 			 ResultSet rs2 = stmt2.executeQuery(sql2);
 			
@@ -125,7 +127,7 @@ public void transferAssociates() throws IOException, SQLException {
 			 if(rs2.next()) {
 				 shortCode = rs2.getString("GENERATED_USER_ID");
 				 userId = rs2.getLong("PRIMARY_CONTACT_USER_ID");
-				 String sql3 = "SELECT * FROM sourcelead.USER  user where  user.ID = '"+userId+"' ";
+				 String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".USER  user where  user.ID = '"+userId+"' ";
 				 Statement stmt3 = conn.createStatement();
 				 ResultSet rs3 = stmt3.executeQuery(sql3);
 				 if(rs3.next()) {
@@ -135,7 +137,7 @@ public void transferAssociates() throws IOException, SQLException {
 			 }
 			 
 			 
-			/* String sql3 = "SELECT * FROM sourcelead.ORG_LOCATIONS orgLocations where orgLocations.ID = '"+USOrgLocation+"' ";
+			/* String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orgLocations where orgLocations.ID = '"+USOrgLocation+"' ";
 			 Statement stmt4 = conn.createStatement();
 			 ResultSet rs3 = stmt4.executeQuery(sql3);
 			 if(rs3.next()) {
@@ -143,7 +145,7 @@ public void transferAssociates() throws IOException, SQLException {
 			 }*/
 			 
 			
-			String query2 = " insert into sourcelead.ORG_RELATIONS (RESPONDER_LOCATION_ID, LOCATION_ID, INITIATOR_TYPE, RESPONDER_TYPE, INITIATOR_LEVEL,  "
+			String query2 = " insert into "+dbconfig.getSchema()+".ORG_RELATIONS (RESPONDER_LOCATION_ID, LOCATION_ID, INITIATOR_TYPE, RESPONDER_TYPE, INITIATOR_LEVEL,  "
 					+ "RESPONDER_LEVEL, UUID, STATUS,CREATED_DATE,UPDATED_DATE,CREATED_BY,UPDATED_BY)"
 					+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     		
@@ -171,7 +173,7 @@ public void transferAssociates() throws IOException, SQLException {
     		if(rs4.next()) {
     			 orgRelationId = rs4.getLong("ID");
     			
-    			String query3 = " insert into sourcelead.ORG_SPOC (ORG_RELATION_ID, CLIENT_USER_ID, VENDOR_USER_ID, INVITATION_STATUS, SPOC_STATUS,  "
+    			String query3 = " insert into "+dbconfig.getSchema()+".ORG_SPOC (ORG_RELATION_ID, CLIENT_USER_ID, VENDOR_USER_ID, INVITATION_STATUS, SPOC_STATUS,  "
     					+ "STATUS, VENDOR_LOCATION_ID, CLIENT_LOCATION_ID,OWNER_USER_ID,UUID,CREATED_DATE,UPDATED_DATE,CREATED_BY,UPDATED_BY)"
     					+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         		
@@ -200,7 +202,7 @@ public void transferAssociates() throws IOException, SQLException {
     		
     		
     		
-    		 String sql4 = "SELECT * FROM sourcelead.ORG_RELATIONS orgRelations where orgRelations.ID = '"+orgRelationId+"' ";
+    		 String sql4 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_RELATIONS orgRelations where orgRelations.ID = '"+orgRelationId+"' ";
     		 Statement stmt5 = conn.createStatement();
 			 ResultSet rs5 = stmt5.executeQuery(sql4);
 			 
@@ -241,7 +243,7 @@ public void transferAssociates() throws IOException, SQLException {
 				    	}
 				    	
 				    	
-				    	String sql5 = "SELECT * FROM sourcelead.USER  user where  user.USER_CODE = '"+createdBy+"' ";
+				    	String sql5 = "SELECT * FROM "+dbconfig.getSchema()+".USER  user where  user.USER_CODE = '"+createdBy+"' ";
 				    	 Statement stmtt = conn.createStatement();
 							ResultSet rs6 = stmtt.executeQuery(sql5);
 							if(rs6 != null){
@@ -257,7 +259,7 @@ public void transferAssociates() throws IOException, SQLException {
 							    }
 		    	           }
 							
-							String sql6 = "SELECT * FROM sourcelead.ORG_LOCATIONS  responderLocationId where responderLocationId.ID = '"+responderLocationId+"' ";
+							String sql6 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS  responderLocationId where responderLocationId.ID = '"+responderLocationId+"' ";
 							Statement stmt6 = conn.createStatement();
 							ResultSet rs7 = stmt6.executeQuery(sql6);
 							if(rs7 != null){
@@ -283,7 +285,7 @@ public void transferAssociates() throws IOException, SQLException {
 							    }
 								
 		    	           }
-							String sql7 = "SELECT * FROM sourcelead.ORG_LOCATIONS  initiatorLocationId where initiatorLocationId.ID = '"+initiatorLocationId+"' ";
+							String sql7 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS  initiatorLocationId where initiatorLocationId.ID = '"+initiatorLocationId+"' ";
 							Statement stmt7 = conn.createStatement();
 							ResultSet rs8 = stmt7.executeQuery(sql7);
 							if(rs8 != null){
@@ -310,7 +312,7 @@ public void transferAssociates() throws IOException, SQLException {
 				    	
 							
 
-				    		 String sql8 = "SELECT * FROM sourcelead.ORG_SPOC orgSpoc where orgSpoc.ORG_RELATION_ID = '"+orgRelationId+"' ";
+				    		 String sql8 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_SPOC orgSpoc where orgSpoc.ORG_RELATION_ID = '"+orgRelationId+"' ";
 				    		 Statement stmt8 = conn.createStatement();
 							 ResultSet rs9 = stmt8.executeQuery(sql8);
 							 if(rs9.next()) {
@@ -341,7 +343,7 @@ public void transferAssociates() throws IOException, SQLException {
 								    	
 										
 										// saving responderLocationId and  Org Name
-										String sql9 = "SELECT * FROM sourcelead.ORG_LOCATIONS  responderLocationId where responderLocationId.ID = '"+spocresponderLocationId+"' ";
+										String sql9 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS  responderLocationId where responderLocationId.ID = '"+spocresponderLocationId+"' ";
 										
 										Statement stmt9 = conn.createStatement();
 										ResultSet rs10 = stmt9.executeQuery(sql9);
@@ -353,13 +355,13 @@ public void transferAssociates() throws IOException, SQLException {
 					    	           }
 										
 										// saving  the Initiator Location id and Org Name
-										String sql10 = "SELECT * FROM sourcelead.ORG_LOCATIONS  initiatorLocationId where initiatorLocationId.ID = '"+spocinitiatorLocationId+"' ";
+										String sql10 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS  initiatorLocationId where initiatorLocationId.ID = '"+spocinitiatorLocationId+"' ";
 										Statement stmt10 = conn.createStatement();
 										ResultSet rs11 = stmt10.executeQuery(sql10);
 										if(rs11 != null){
 											 while(rs11.next()){
 												   Long initiatororgId = rs11.getLong("ORG_ID");
-												   String sql11 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+initiatororgId+"' ";
+												   String sql11 = "SELECT * FROM "+dbconfig.getSchema()+".ORG  org where  org.ID = '"+initiatororgId+"' ";
 													Statement stmt11 = conn.createStatement();
 													ResultSet rs12 = stmt11.executeQuery(sql11);
 													if(rs12 != null){
@@ -374,7 +376,7 @@ public void transferAssociates() throws IOException, SQLException {
 							           }
 										
 									//  Storing the value of OrgRelations InitiatorType and ResponderType
-										String sql11= "SELECT * FROM sourcelead.ORG_RELATIONS relation where relation.ID = '"+spocorgRelationId+"' ";
+										String sql11= "SELECT * FROM "+dbconfig.getSchema()+".ORG_RELATIONS relation where relation.ID = '"+spocorgRelationId+"' ";
 										Statement stmt11 = conn.createStatement();
 										ResultSet rs12 = stmt11.executeQuery(sql11);
 										if(rs12 != null){
@@ -390,7 +392,7 @@ public void transferAssociates() throws IOException, SQLException {
 										
 										
 										// Saving  the OwnerUserId in ELk Search
-				  						String sql12 = "SELECT * FROM sourcelead.USER  user where user.ID = '"+ownerUserId+"' ";
+				  						String sql12 = "SELECT * FROM "+dbconfig.getSchema()+".USER  user where user.ID = '"+ownerUserId+"' ";
 				  						Statement stmt12 = conn.createStatement();
 										ResultSet rs13 = stmt12.executeQuery(sql12);
 										if(rs13 != null){
@@ -417,7 +419,7 @@ public void transferAssociates() throws IOException, SQLException {
 										
 										
 										// Saving  the spockUserId in ELk Search
-				  						String sql13 = "SELECT * FROM sourcelead.USER  user where user.ID = '"+spockUserId+"' ";
+				  						String sql13 = "SELECT * FROM "+dbconfig.getSchema()+".USER  user where user.ID = '"+spockUserId+"' ";
 				  						Statement stmt13 = conn.createStatement();
 										ResultSet rs14 = stmt13.executeQuery(sql13);
 											 while(rs14.next()){
@@ -458,7 +460,7 @@ public void transferAssociates() throws IOException, SQLException {
 		
 		String[] emailsList = BisAssociatesEmails.ASSOCIATE_EMAILS;
 		if(spocId == null) {
-			 String spocSql = "SELECT * FROM sourcelead.ORG_SPOC orgSpoc where orgSpoc.ORG_RELATION_ID = '"+orgRelationId+"' ";
+			 String spocSql = "SELECT * FROM "+dbconfig.getSchema()+".ORG_SPOC orgSpoc where orgSpoc.ORG_RELATION_ID = '"+orgRelationId+"' ";
 			 Statement spocStmt = conn.createStatement();
 			 ResultSet spocRs = spocStmt.executeQuery(spocSql);
 			 if(spocRs.next()) {
@@ -469,14 +471,14 @@ public void transferAssociates() throws IOException, SQLException {
 		for (String associateEmail : emailsList) {
 			
 			
-			 String existedcandidateSql = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+INDOrgLocation+"' ";
+			 String existedcandidateSql = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+INDOrgLocation+"' ";
 			 Statement existedcandidateStmt = conn.createStatement();
 			 ResultSet existedcandidateRs = existedcandidateStmt.executeQuery(existedcandidateSql);
 			 
 			 
 			if(!existedcandidateRs.next()) {
 				
-			 String countcandidateSql = "SELECT * FROM sourcelead.CANDIDATE candidate where  candidate.ORG_LOCATION_ID = '"+INDOrgLocation+"' ";
+			 String countcandidateSql = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE candidate where  candidate.ORG_LOCATION_ID = '"+INDOrgLocation+"' ";
 			 Statement countCandidateStmt = conn.createStatement();
 			 ResultSet countCandidateRs = countCandidateStmt.executeQuery(countcandidateSql);
 			 Integer canndidateCount = 0;
@@ -485,7 +487,7 @@ public void transferAssociates() throws IOException, SQLException {
 				 canndidateCount = canndidateCount+1;
 			 }
 				
-			 String candidateSql = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+USOrgLocation+"' ";
+			 String candidateSql = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+USOrgLocation+"' ";
 			 Statement candidateStmt = conn.createStatement();
 			 ResultSet candidateRs = candidateStmt.executeQuery(candidateSql);
 			 Long candidateId = null;
@@ -502,7 +504,7 @@ public void transferAssociates() throws IOException, SQLException {
 				 candidateId = candidateRs.getLong("ID");
 				 
 				 
-				 String query3 = " insert into sourcelead.CANDIDATE (MASTER_CANDIDATE_ID, CONSULTANT_USER_ID, FIRST_NAME, LAST_NAME, EMAIL,  "
+				 String query3 = " insert into "+dbconfig.getSchema()+".CANDIDATE (MASTER_CANDIDATE_ID, CONSULTANT_USER_ID, FIRST_NAME, LAST_NAME, EMAIL,  "
     					+ "COUNTRY,STATUS,CANDIDATE_UUID,CREATED_DATE,UPDATED_DATE,CREATED_BY,UPDATED_BY,ORG_LOCATION_ID,CANDIDATE_TYPE,DESIGNATION_TYPE,IS_ASSOCIATE,GENERATED_ID)"
     					+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         		
@@ -534,7 +536,7 @@ public void transferAssociates() throws IOException, SQLException {
         		 
         		 
         		 
-				 String query4 = " insert into sourcelead.USER_ROLE (USER_ID, REPORTING_MANAGER_ID, ROLE_ID, ORG_LOCATIONS_ID, IS_PRIMARY,  "
+				 String query4 = " insert into "+dbconfig.getSchema()+".USER_ROLE (USER_ID, REPORTING_MANAGER_ID, ROLE_ID, ORG_LOCATIONS_ID, IS_PRIMARY,  "
     					+ "USER_STATE,USER_TYPE,IS_MAIL_SENT,CREATED_DATE,UPDATED_DATE,CREATED_BY,UPDATED_BY)"
     					+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         		
@@ -559,7 +561,7 @@ public void transferAssociates() throws IOException, SQLException {
     			}
 				 
         		 
-    			 String query5 = " insert into sourcelead.EMPLOYEE (USER_ID, ORG_LOCATIONS_ID, "
+    			 String query5 = " insert into "+dbconfig.getSchema()+".EMPLOYEE (USER_ID, ORG_LOCATIONS_ID, "
      					+ "CREATED_DATE,UPDATED_DATE,CREATED_BY,UPDATED_BY)"
      					+ " values (?, ?, ?, ?, ?, ?)";
          		
@@ -580,7 +582,7 @@ public void transferAssociates() throws IOException, SQLException {
 			 
 			 
 			 try {
-				 String vendorcandidateSql = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+INDOrgLocation+"' ";
+				 String vendorcandidateSql = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+INDOrgLocation+"' ";
 				 Statement vendorCandidateStmt = conn.createStatement();
 				 ResultSet vendorCandidateRs = vendorCandidateStmt.executeQuery(vendorcandidateSql);
 				 
@@ -664,11 +666,11 @@ public void transferAssociates() throws IOException, SQLException {
 				 
 				 try {
 					 String designationType = "Offshore C2C";
-					 String clientCandidateQry = " update sourcelead.CANDIDATE candidate set candidate.PARENT_CANDIDATE_ID = '"+vendorCandidateId+"', candidate.DESIGNATION_TYPE = '"+designationType+"', candidate.ORG_RELATION_ID = '"+orgRelationId+"', candidate.SPOC_ID = '"+spocId+"' where candidate.ID = '"+candidateId+"' ";
+					 String clientCandidateQry = " update "+dbconfig.getSchema()+".CANDIDATE candidate set candidate.PARENT_CANDIDATE_ID = '"+vendorCandidateId+"', candidate.DESIGNATION_TYPE = '"+designationType+"', candidate.ORG_RELATION_ID = '"+orgRelationId+"', candidate.SPOC_ID = '"+spocId+"' where candidate.ID = '"+candidateId+"' ";
 			    	 java.sql.PreparedStatement clientCandidatePstmt = conn.prepareStatement(clientCandidateQry); 
 			    	 clientCandidatePstmt.executeUpdate(); 
 			    	 
-			    	 String clientcandidateSql = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+USOrgLocation+"' ";
+			    	 String clientcandidateSql = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE candidate where candidate.EMAIL = '"+associateEmail+"' and  candidate.ORG_LOCATION_ID = '"+USOrgLocation+"' ";
 					 Statement clientCandidateStmt = conn.createStatement();
 					 ResultSet clientCandidateRs = clientCandidateStmt.executeQuery(clientcandidateSql);
 					 
@@ -810,7 +812,7 @@ public void transferAssociates() throws IOException, SQLException {
 						    Long clientcandidateId = clientCandidateRs.getLong("ID");
 				    	    if(clientcandidateId != null && clientcandidateId != 0){
 									
-								    String sql2 = "SELECT * FROM sourcelead.CANDIDATE_EMPLOYERS candidateEmployers where candidateEmployers.CANDIDATE_ID = '"+ clientcandidateId+"' ";
+								    String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE_EMPLOYERS candidateEmployers where candidateEmployers.CANDIDATE_ID = '"+ clientcandidateId+"' ";
 									Statement stmt2 = conn.createStatement();
 									ResultSet rs2 = stmt2.executeQuery(sql2);
 									if(rs2 != null){
@@ -823,7 +825,7 @@ public void transferAssociates() throws IOException, SQLException {
 										}
 				    	           }
 									
-								   String sql3= "SELECT * FROM sourcelead.CANDIDATE_EDUCATION candidateEducation where candidateEducation.CANDIDATE_ID = '"+ clientcandidateId+"' ";
+								   String sql3= "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE_EDUCATION candidateEducation where candidateEducation.CANDIDATE_ID = '"+ clientcandidateId+"' ";
 								   Statement stmt3 = conn.createStatement();
 									ResultSet rs3 = stmt3.executeQuery(sql3);
 									if(rs3 != null){
@@ -836,7 +838,7 @@ public void transferAssociates() throws IOException, SQLException {
 										}
 				    	           }
 									
-								   String sql5= "SELECT * FROM sourcelead.CANDIDATE_CERTIFICATIONS candidateCertifications where candidateCertifications.CANDIDATE_ID = '"+ clientcandidateId+"' ";
+								   String sql5= "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE_CERTIFICATIONS candidateCertifications where candidateCertifications.CANDIDATE_ID = '"+ clientcandidateId+"' ";
 								   Statement stmt5 = conn.createStatement();
 									ResultSet rs5 = stmt5.executeQuery(sql5);
 									if(rs5 != null){
@@ -849,7 +851,7 @@ public void transferAssociates() throws IOException, SQLException {
 										}
 				    	           }
 										
-								   String sql4= "SELECT * FROM sourcelead.CANDIDATE_RESUMES candidateResumes where candidateResumes.CANDIDATE_ID = '"+ clientcandidateId+"'  and candidateResumes.CREATED_DATE IN (SELECT max(canresume.CREATED_DATE) FROM sourcelead.CANDIDATE_RESUMES canresume where canresume.CANDIDATE_ID = '"+ candidateId+"' and canresume.status = '1') and candidateResumes.status = '1' ";
+								   String sql4= "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE_RESUMES candidateResumes where candidateResumes.CANDIDATE_ID = '"+ clientcandidateId+"'  and candidateResumes.CREATED_DATE IN (SELECT max(canresume.CREATED_DATE) FROM "+dbconfig.getSchema()+".CANDIDATE_RESUMES canresume where canresume.CANDIDATE_ID = '"+ candidateId+"' and canresume.status = '1') and candidateResumes.status = '1' ";
 								   Statement stmt4 = conn.createStatement();
 									ResultSet rs4 = stmt4.executeQuery(sql4);
 									if(rs4 != null){
@@ -868,7 +870,7 @@ public void transferAssociates() throws IOException, SQLException {
 				    	    saveOrUpdateCandidateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getCandidateId().toString());
 				    	    
 				    	    
-				    	     String employeeSql = "SELECT * FROM sourcelead.EMPLOYEE employee  where employee.USER_ID = '"+associateUserId+"' and  employee.ORG_LOCATIONS_ID = '"+USOrgLocation+"' ";
+				    	     String employeeSql = "SELECT * FROM "+dbconfig.getSchema()+".EMPLOYEE employee  where employee.USER_ID = '"+associateUserId+"' and  employee.ORG_LOCATIONS_ID = '"+USOrgLocation+"' ";
 							 Statement employeeStmt = conn.createStatement();
 							 ResultSet employeeRs = employeeStmt.executeQuery(employeeSql);
 							 
@@ -877,7 +879,7 @@ public void transferAssociates() throws IOException, SQLException {
 				    	    	
 				    	    	 String empId = employeeRs.getString("ID");
 				    	    	
-				    	    	 String clientemplQry = " update sourcelead.EMPLOYEE employee set employee.EMPLOYMENT_TYPE = '"+designationType+"', employee.ORG_RELATION_ID = '"+orgRelationId+"', employee.SPOC_ID = '"+spocId+"' where employee.ID = '"+empId+"' ";
+				    	    	 String clientemplQry = " update "+dbconfig.getSchema()+".EMPLOYEE employee set employee.EMPLOYMENT_TYPE = '"+designationType+"', employee.ORG_RELATION_ID = '"+orgRelationId+"', employee.SPOC_ID = '"+spocId+"' where employee.ID = '"+empId+"' ";
 						    	 java.sql.PreparedStatement clientemplPstmt = conn.prepareStatement(clientemplQry); 
 						    	 clientemplPstmt.executeUpdate();
 				    	    }
@@ -1006,7 +1008,7 @@ private long getNumberOfContactsPerClient(long orgRelationId, Connection conn11)
 	 Statement stmt11 = null;
 	 try {
 		  //conn11 = dataSource1.getConnection();
-			String sql = "SELECT  count(*) FROM sourcelead.ORG_SPOC where ORG_RELATION_ID = "+orgRelationId;
+			String sql = "SELECT  count(*) FROM "+dbconfig.getSchema()+".ORG_SPOC where ORG_RELATION_ID = "+orgRelationId;
 			stmt11 = conn11.createStatement();
 			ResultSet rs = stmt11.executeQuery(sql);
 			while(rs.next()) {
@@ -1032,10 +1034,6 @@ private long getNumberOfContactsPerClient(long orgRelationId, Connection conn11)
  */ 
 @Bean
 public DataSource comboPooledDataSource() {
-	@SuppressWarnings("resource")
-	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 	this.comboPooledDataSource = new ComboPooledDataSource();
 	try {
 		comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

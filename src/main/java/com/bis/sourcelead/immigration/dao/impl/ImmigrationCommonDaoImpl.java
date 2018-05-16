@@ -91,6 +91,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 
+	@Value("${jdbc.schema}")
+	private String schema;
+	
 	private static final Logger logger = LoggerFactory.getLogger(ImmigrationCommonDaoImpl.class);
 
 	@Override
@@ -305,11 +308,11 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		String query = null;
 		if(orgLocations.getIsLawFirm() != null && orgLocations.getIsLawFirm().equalsIgnoreCase("Y")) {
 			query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'" + generatedIdCount
-					+ "') AS UNSIGNED)) FROM sourcelead.IMMIGRATION WHERE ATTORNEY_LOCATION_ID = '"
+					+ "') AS UNSIGNED)) FROM "+schema+".IMMIGRATION WHERE ATTORNEY_LOCATION_ID = '"
 					+ orgLocations.getId() + "'";
 		} else {
 			query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'" + generatedIdCount
-					+ "') AS UNSIGNED)) FROM sourcelead.IMMIGRATION WHERE ORG_LOCATION_ID = '" + orgLocations.getId()
+					+ "') AS UNSIGNED)) FROM "+schema+".IMMIGRATION WHERE ORG_LOCATION_ID = '" + orgLocations.getId()
 					+ "'";
 		}
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
