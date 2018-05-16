@@ -26,7 +26,7 @@
        	</div> -->
        	<div class="writer-name pull-left">
        		<h4>${blogDetails.createdBy.fullName}</h4>
-       		<p>${userRoleDisplayName}</p>
+       		<%-- <p>${userRoleDisplayName}</p> --%>
        	</div>
        </div>
        
