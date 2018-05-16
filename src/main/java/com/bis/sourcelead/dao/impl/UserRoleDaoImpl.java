@@ -102,11 +102,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId) throws Exception {
+	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId,Long locationId,Long userId) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 List<ProjectMembers> projectMemberList = null;
-		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc left join fetch can.masterCandidateId mc left join fetch pm.employee emp  where  proj.id = :projectId and loc.id = :locationId ";
-		 projectMemberList = session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).list(); 
+		 String query = "from ProjectMembers pm left join fetch pm.projects proj left join fetch pm.projectMemberCandidteId can left join fetch can.orgLocationId loc left join fetch can.masterCandidateId mc left join fetch pm.employee emp  where  proj.id = :projectId and loc.id = :locationId "
+					     + " and ( "
+						 + "  (proj.id IN ( select pah.projectId from ProjectApproverHierarchy pah where pah.approverUserId =:userId)) "
+						 + "   OR "
+						 +  ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = loc.id)"
+					     + ") ";
+		 projectMemberList = session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setLong("userId", userId).list(); 
 		 HashSet<ProjectMembers> projectMemberSet  = null;
 		 if(projectMemberList != null && !projectMemberList.isEmpty()){
 			 projectMemberSet = new HashSet<>(projectMemberList);

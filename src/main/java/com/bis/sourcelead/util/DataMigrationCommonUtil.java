@@ -909,7 +909,6 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 								  int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
 					    		  float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
 					    		  saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
-					    		  System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 						    		 
 							 }  else if(project.getInvoiceFrequency().equalsIgnoreCase("Semi-Monthly")){
 								   Date empMonth15thDate = CalendarUtil.getMonth15thDateByGivenDate(startDate,Constants.CURRENT_MONTH).get("STARTDATE");
@@ -934,7 +933,6 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 										   int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
 								    	   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
 								    	   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,subStartDate,subEndDate,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
-								    	   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 								    	   
 								    	   subStartDate = CalendarUtil.getMonth16thDateByGivenDate(startDate,Constants.CURRENT_MONTH).get("STARTDATE");
 										   subEndDate = value;
@@ -950,11 +948,9 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 										   int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
 								    	   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
 								    	   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
-								    	   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 									   }
 								   }
 								   
-						    	   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 							 }  
 							 else if(project.getInvoiceFrequency().equalsIgnoreCase("Bi-Weekly")) {
 								 
@@ -987,7 +983,6 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 								  int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
 					    		  float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
 					    		  saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
-					    		  System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 							 }
 							 else if(project.getInvoiceFrequency().equalsIgnoreCase("Monthly")){
 								   frequencyStartDate = startDate;
@@ -996,7 +991,6 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 								   int noOfBillableHours =  CalendarUtil.getNumberOfBillableDates(key,value); 
 						    	   float averageHours = getAverageHours(count,importTimeSheet,noOfBillableHours,timeFrequency);
 						    	   saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,subStartDate,subEndDate,key,value,averageHours,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
-						    	   System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 							 }
 							 
 							
@@ -1038,7 +1032,6 @@ private void timeSheetImportMonthSaving(ImportTimesheetDTO importTimeSheet, Date
 								 flag++;
 							 }
 							 saveImportedTimeSheetRecords(project,projectTask.getProjectTasksUUID(),projectMember,key,value,key,value,0f,user,orgLocation,frequencyStartDate,frequencyEndDate,importTimeSheet,timeFrequency);
-				    		 System.out.println(projectMember.getProjectMemberCandidteId().getFullName());
 						}
 					}
 			 }
@@ -1517,27 +1510,35 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 				}
 				
-				
-				
-				
-				if(!dataMigrationDTOJsonCopy.getString("shiftAEmp").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftAEmp"))) {
-					User user1= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftAEmp"), orgLocation.getId());
-					if(user1 == null){
-					errorSet.put("shiftAEmp", dataMigrationDTOJsonCopy.getString("shiftAEmp")+" is Not Exist");	
-					}else{
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user1.getId(), orgLocation.getId());
-						dataMigrationDTOJsonCopy.put("shiftAEmp", userRole.getId().toString());	
+				if(!dataMigrationDTOJsonCopy.getString("assignAssetStr").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("assignAssetStr"))) {
+					StringBuffer assignAssetStrSB = new StringBuffer();
+					String[] assignUsere = dataMigrationDTOJsonCopy.getString("assignAssetStr").split("&");
+					int assignUsereCoiunt = assignUsere.length;
+					int incr = 0;
+					for(String as:assignUsere) {
+						String[] email = as.split("#");
+						boolean emailVaild = isValidEmailAddress(email[0]);
+						if(emailVaild == true) {		 
+							User user2 = userService.findByEmailAndOrgLocationsId(email[0], orgLocation.getId());
+							if(user2 != null) {
+								incr++;
+								UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user2.getId(), orgLocation.getId());
+								email[0] = userRole.getId().toString();
+								assignAssetStrSB.append(email[0]).append("#").append(email[1]);
+								if(assignUsereCoiunt > 1 && incr < assignUsereCoiunt) {
+									assignAssetStrSB.append("&");
+								}
+							}else {
+								errorSet.put("employeeEmail",email[0]);
+							}
+							
+						}else {
+							errorSet.put("assignAssetStr", "invalid date");
+						}
 					}
+					dataMigrationDTOJsonCopy.put("assignAssetStr",assignAssetStrSB.toString());
 				}
-				
-				if(!dataMigrationDTOJsonCopy.getString("shiftBEmp").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("shiftBEmp"))) {
-					User user2= userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("shiftBEmp"), orgLocation.getId());
-					if(user2 == null){
-						errorSet.put("shiftBEmp", dataMigrationDTOJsonCopy.getString("shiftBEmp")+" is Not Exist");	
-					}else{
-						dataMigrationDTOJsonCopy.put("shiftBEmp", user2.getId().toString());	
-					}
-				}
+			 
 				
 				if(!dataMigrationDTOJsonCopy.getString("workingStatus").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("workingStatus"))) {
 					String status = dataMigrationDTOJsonCopy.getString("workingStatus").toLowerCase();
