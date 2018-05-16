@@ -72,7 +72,7 @@
 	 	result = result +" <input type='text' placeholder='Search' id='bonusDataTableSearch'/>";
 	 	result = result +"</div>";
 	 	
-	 	result = result + '<table id="bonusListTable" class="display mt10" cellspacing="0" width="100%" >';
+	 	result = result + '<table id="bonusListTable"  cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
 		result = result + '	<th>Payment Month</th>';

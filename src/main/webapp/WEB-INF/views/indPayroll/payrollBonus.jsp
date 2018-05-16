@@ -21,7 +21,7 @@
       		<div class="col-md-5 clearfix mt10">
               <label class="clearfix">Bonus Payment Date<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix" id="payDateDiv">
-                 <input type="text" value="" name="paymentDate" class="form-control calendar" id="paymentDate" data-validation="required" field-name="Bonus Payment Date" readonly="readonly">
+                 <input type="text" value="${payrollBonus.paymentDateStr}" name="paymentDate" class="form-control calendar" id="paymentDate" data-validation="required" field-name="Bonus Payment Date" readonly="readonly">
               </div>
             </div>
             
@@ -30,10 +30,10 @@
               <div class="clearfix">
                <div class="row">
 				   <div class="col-md-6">
-				   	  <input type="text" class="form-control" name="minPercentage" data-validation="required validate_Space validate_length length1-3 validate_int" onblur="minMaxRate()" field-name="Min Percentage" id="minPercentage" placeholder="Min %" value="">
+				   	  <input type="text" class="form-control" value="${payrollBonus.minPercentage}"  name="minPercentage" data-validation="required validate_Space validate_float" onblur="validateMinRate()" field-name="Min Percentage" id="minPercentage" placeholder="Min %" value="">
 				   </div>   	
 				   <div class="col-md-6">
-				   	<input type="text" class="form-control" name="maxPercentage" data-validation="required validate_Space validate_length length1-3 validate_int" onblur="minMaxRate()" field-name="Max Percentage" id="maxPercentage" placeholder="Max %" value="">
+				   	<input type="text" class="form-control" value="${payrollBonus.maxPercentage}" name="maxPercentage" data-validation="required validate_Space validate_float" onblur="validateMaxRate()" field-name="Max Percentage" id="maxPercentage" placeholder="Max %" value="">
 				   </div>   	
                </div>
               </div>
@@ -51,18 +51,18 @@
 						<div class="clearfix dropdown-select">
 							<select name="fromMonth" id="fromMonth" data-validation-optional="true" onchange="validateToMonth();" field-name="From Month">
 							  <option selected value=''>Select Month</option>
-							  <option value='January'>January</option>
-							  <option value='February'>February</option>
-							  <option value='March'>March</option>
-							  <option value='April'>April</option>
-							  <option value='May'>May</option>
-							  <option value='June'>June</option>
-							  <option value='July'>July</option>
-							  <option value='August'>August</option>
-							  <option value='September'>September</option>
-							  <option value='October'>October</option>
-							  <option value='November'>November</option>
-							  <option value='December'>December</option>
+							  <option  ${payrollBonus.fromMonth  == 'January' ? 'selected' : ''}>January</option>
+							  <option  ${payrollBonus.fromMonth  == 'February' ? 'selected' : ''}>February</option>
+							  <option  ${payrollBonus.fromMonth  == 'March' ? 'selected' : ''}>March</option>
+							  <option  ${payrollBonus.fromMonth  == 'April' ? 'selected' : ''}>April</option>
+							  <option  ${payrollBonus.fromMonth  == 'May' ? 'selected' : ''}>May</option>
+							  <option  ${payrollBonus.fromMonth  == 'June' ? 'selected' : ''}>June</option>
+							  <option  ${payrollBonus.fromMonth  == 'July' ? 'selected' : ''}>July</option>
+							  <option  ${payrollBonus.fromMonth  == 'August' ? 'selected' : ''}>August</option>
+							  <option  ${payrollBonus.fromMonth  == 'September' ? 'selected' : ''}>September</option>
+							  <option  ${payrollBonus.fromMonth  == 'October' ? 'selected' : ''}>October</option>
+							  <option  ${payrollBonus.fromMonth  == 'November' ? 'selected' : ''}>November</option>
+							  <option  ${payrollBonus.fromMonth  == 'December' ? 'selected' : ''}>December</option>
 							</select>
 						</div>
 				</div>
@@ -71,18 +71,18 @@
 						<div class="clearfix dropdown-select">
 							<select name="toMonth" id="toMonth" data-validation-optional="true" onchange="validateFromMonth()" field-name="To Month">
 							  <option selected value=''>Select Month</option>
-							  <option value='January'>January</option>
-							  <option value='February'>February</option>
-							  <option value='March'>March</option>
-							  <option value='April'>April</option>
-							  <option value='May'>May</option>
-							  <option value='June'>June</option>
-							  <option value='July'>July</option>
-							  <option value='August'>August</option>
-							  <option value='September'>September</option>
-							  <option value='October'>October</option>
-							  <option value='November'>November</option>
-							  <option value='December'>December</option>
+							  <option  ${payrollBonus.toMonth  == 'January' ? 'selected' : ''}>January</option>
+							  <option  ${payrollBonus.toMonth  == 'February' ? 'selected' : ''}>February</option>
+							  <option  ${payrollBonus.toMonth  == 'March' ? 'selected' : ''}>March</option>
+							  <option  ${payrollBonus.toMonth  == 'April' ? 'selected' : ''}>April</option>
+							  <option  ${payrollBonus.toMonth  == 'May' ? 'selected' : ''}>May</option>
+							  <option  ${payrollBonus.toMonth  == 'June' ? 'selected' : ''}>June</option>
+							  <option  ${payrollBonus.toMonth  == 'July' ? 'selected' : ''}>July</option>
+							  <option  ${payrollBonus.toMonth  == 'August' ? 'selected' : ''}>August</option>
+							  <option  ${payrollBonus.toMonth  == 'September' ? 'selected' : ''}>September</option>
+							  <option  ${payrollBonus.toMonth  == 'October' ? 'selected' : ''}>October</option>
+							  <option  ${payrollBonus.toMonth  == 'November' ? 'selected' : ''}>November</option>
+							  <option  ${payrollBonus.toMonth  == 'December' ? 'selected' : ''}>December</option>
 							</select>
 						</div>
 				</div>
@@ -95,19 +95,19 @@
               <div class="clearfix">
                <div class="row">
 				   <div class="col-md-6">
-				   	   <input type="text" class="form-control" name="maxSalary" id="maxSalary" field-name="Max Salary" onblur="validatePaymentFrequency()" data-validation-optional="true" data-validation="validate_Space validate_length length2-8 validate_int">
+				   	   <input type="text" class="form-control" value="${payrollBonus.maxSalary}" name="maxSalary" id="maxSalary" field-name="Max Salary" onblur="validatePaymentFrequency()" data-validation-optional="true" data-validation="validate_Space validate_length length2-8 validate_float">
 				   </div>   	
 				   <div class="col-md-6">
 						<div class="clearfix dropdown-select">
 							<select name="paymentFrequency" id="paymentFrequency" data-validation-optional="true" onchange="validateMaxSalary()" field-name="Payment Frequency">
 								<option selected value=''>Select Frequency</option>
-		                        <option value='Daily'>Daily</option>
-		                        <option value='Weekly'>Weekly</option>
-		                        <option value='Bi-Weekly'>Bi-Weekly</option>
-		                        <option value='Semi-Monthly'>Semi-Monthly</option>
-		                        <option value='Bi-Monthly'>Bi-Monthly</option>
-		                        <option value='Monthly'>Monthly</option>
-		                        <option value='Yearly'>Yearly</option>
+		                        <option  ${payrollBonus.paymentFrequency  == 'Daily' ? 'selected' : ''}>Daily</option>
+		                        <option  ${payrollBonus.paymentFrequency  == '>Weekly' ? 'selected' : ''}>Weekly</option>
+		                        <option  ${payrollBonus.paymentFrequency  == 'Bi-Weekly' ? 'selected' : ''}>Bi-Weekly</option>
+		                        <option  ${payrollBonus.paymentFrequency  == 'Semi-Monthly' ? 'selected' : ''}>Semi-Monthly</option>
+		                        <option  ${payrollBonus.paymentFrequency  == 'Bi-Monthly' ? 'selected' : ''}>Bi-Monthly</option>
+		                        <option  ${payrollBonus.paymentFrequency  == 'Monthly' ? 'selected' : ''}>Monthly</option>
+		                        <option  ${payrollBonus.paymentFrequency  == 'Yearly' ? 'selected' : ''}> Yearly</option>
 							</select>
 						</div>
 				</div> 	
@@ -121,7 +121,7 @@
         <div class="col-md-10">
               <label class="clearfix">Description</label>
               <div class="clearfix">
-				  <textarea class="form-control" data-validation="validate_space" field-name="Description" id="description" name="description" rows="5"></textarea>
+				  <textarea class="form-control" data-validation="validate_space"  field-name="Description" id="description" name="description" rows="5">${payrollBonus.description}</textarea>
               </div>
             </div>
             <div class="clearfix"></div>
@@ -167,6 +167,57 @@ function removePayDateValidation(){
 </script>
 
 <script>
+
+function validateMinRate(){
+	 var minRate = ($('#minPercentage').val());
+	 if(minRate > 100 || minRate < 0){
+		 if(minRate < 0){
+			    $('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+				$('input#rateValidation').attr('class','error signin_fild');
+				$("input#rateValidation").after("<p class='jquery_form_error_message'>Min Rate should not in negitive</p>");
+				$('input#rateValidation').attr('record-exist','yes');
+				$('input#rateValidation').attr('record-exist-errorMsg','Min Rate should not in negitive'); 
+		 }else{
+			 $('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+				$('input#rateValidation').attr('class','error signin_fild');
+				$("input#rateValidation").after("<p class='jquery_form_error_message'>Min Rate should not more than 100</p>");
+				$('input#rateValidation').attr('record-exist','yes');
+				$('input#rateValidation').attr('record-exist-errorMsg','Min Rate should not more than 100'); 
+		 }
+	 }else{
+		 
+	     $('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+    	 $('input#rateValidation').removeAttr( "class record-exist record-exist-errormsg");
+		 $('#rateValidateId').find('p.jquery_form_error_message').remove();
+		 minMaxRate();
+	 }
+}
+
+
+function validateMaxRate(){
+	 var maxRate = ($('#maxPercentage').val());
+	 if(maxRate > 100 || maxRate < 0){
+		 if(maxRate < 0){
+			    $('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+				$('input#rateValidation').attr('class','error signin_fild');
+				$("input#rateValidation").after("<p class='jquery_form_error_message'>Max Rate should not in negitive</p>");
+				$('input#rateValidation').attr('record-exist','yes');
+				$('input#rateValidation').attr('record-exist-errorMsg','Max Rate should not in negitive'); 
+		 }else{
+			    $('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+				$('input#rateValidation').attr('class','error signin_fild');
+				$("input#rateValidation").after("<p class='jquery_form_error_message'>Max Rate should not more than 100</p>");
+				$('input#rateValidation').attr('record-exist','yes');
+				$('input#rateValidation').attr('record-exist-errorMsg','Max Rate should not more than 100'); 
+		 }
+	 }else{
+	    $('#rateValidateId').find('p.jquery_form_error_message').remove(); 
+    	$('input#rateValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#rateValidateId').find('p.jquery_form_error_message').remove();
+		 minMaxRate();
+	 }
+}
+
 function minMaxRate(){
     var maxRate = ($('#maxPercentage').val());
     var minRate = ($('#minPercentage').val());
@@ -254,13 +305,13 @@ var validationSettings = {
         		e.preventDefault();
         		var formData = getFormData("createbonus_form");
          		var sourceleadUrl ='${sourceleadUrl}';
-         		
+         		var uuid = '${uuid}';
          		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
          		 	
-          		$.ajax({
+          		 $.ajax({
           	      type: "POST",
           	    	data: formData,
-                	  url: sourceleadUrl+"/saveBonus?${_csrf.parameterName}=${_csrf.token}",
+                	  url: sourceleadUrl+"/saveBonus?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
                   	success: function(result) {
                   		if (result && result.response === "INVALID_DATA") {
                             showError(result.responseMessage);
@@ -274,7 +325,7 @@ var validationSettings = {
     		        	    showError("Operation failed, please try again");
     		        	}
 			        },  
-               });   
+               });    
                 
             	    return true;
             }
