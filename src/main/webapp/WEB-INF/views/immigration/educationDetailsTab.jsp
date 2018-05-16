@@ -2,7 +2,20 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <c:set var ="educationListCount" value ="${fn:length(candidatesEducationList)}"/>
 <div class="immigraTabsHead">
-		  	<a href="javascript:void(0)" id="addEdu"><i class="glyphicon glyphicon-plus"></i> Add Education</a> 
+			<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <a href="javascript:void(0)" id="addEdu"><i class="glyphicon glyphicon-plus"></i> Add Education</a>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <a href="javascript:void(0)" id="addEdu"><i class="glyphicon glyphicon-plus"></i> Add Education</a>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 		  	<span><input class="immigraTabSerach" id="educationSearchVal" type="text"></span>
 		</div>
 		
@@ -18,7 +31,20 @@
 				<th>Score Type</th>
 				<th>Institute/University</th>
 				<th>Address</th>
-				<th>Action</th>
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <th>Action</th>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <th>Action</th>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 			  </tr>
 			   <c:forEach var="eduItems" items="${candidatesEducationList}" varStatus="rows">
 			  <tr>
@@ -30,10 +56,26 @@
 				<td><div class="tbldata-dotdot-80">${!empty eduItems.gradeType ? eduItems.gradeType : '---'}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.institute ? eduItems.institute : '---'}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.address ? eduItems.address : '---'}</div></td>
-				<td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"
-				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="deleteEDucationDetailsById(${eduItems.id});" 
-				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"
+								class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
+								 onclick="deleteEDucationDetailsById(${eduItems.id});" 
+								 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						       <td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"
+										class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
+										 onclick="dele	teEDucationDetailsById(${eduItems.id});" 
+										 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 			  </tr>  			  			  
 			   </c:forEach>
 			  						

@@ -2,7 +2,20 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <c:set var ="employersListCount" value ="${fn:length(candidatesEmployersList)}"/>
 <div class="immigraTabsHead">
-		  	<a href="javascript:void(0)" id="addEmpl"><i class="glyphicon glyphicon-plus"></i> Add Employer</a> 
+			<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <a href="javascript:void(0)" id="addEmpl"><i class="glyphicon glyphicon-plus"></i> Add Employer</a>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <a href="javascript:void(0)" id="addEmpl"><i class="glyphicon glyphicon-plus"></i> Add Employer</a>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>	
 		  	<span><input class="immigraTabSerach" id="employersDataSearch" type="text"></span>
 		</div>
 		
@@ -15,7 +28,20 @@
 				<th>Address</th>
 				<th>Start Date</th>
 				<th>End Date</th>
-				<th>Action</th>
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <th>Action</th>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						       <th>Action</th>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 			  </tr>
 			<c:forEach var="empItems" items="${candidatesEmployersList}" varStatus="rows">
 			  <tr>
@@ -24,10 +50,27 @@
 				<td><div class="tbldata-dotdot-me">${!empty empItems.address ? empItems.address : '---'}</div></td>
 				<td><div class="">${empItems.startMonth} ${empItems.startYear}</div></td>
 				<td><div class="">${empItems.endMonth} ${empItems.endYear}</div></td>
-				<td><div><i id="edit" onclick="editEmpDetailsByRowId(${empItems.id});"
-				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-				 onclick="deleteEmpDetailsById(${empItems.id});" 
-				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <td><div><i id="edit" onclick="editEmpDetailsByRowId(${empItems.id});"
+								class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
+								 onclick="deleteEmpDetailsById(${empItems.id});" 
+								 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						      <td><div><i id="edit" onclick="editEmpDetailsByRowId(${empItems.id});"
+										class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
+										 onclick="deleteEmpDetailsById(${empItems.id});" 
+										 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
+				
 				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
