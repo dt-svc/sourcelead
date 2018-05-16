@@ -3,7 +3,6 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS AlterTableAddColumn 
 $$
 create procedure AlterTableAddColumn(
-	    IN dbName text,
 		IN tableName text,
 		IN fieldName text,
 		IN fieldDef text)
@@ -27,7 +26,6 @@ $$
 DROP PROCEDURE IF EXISTS AlterTableRemoveColumn 
 $$
 create procedure AlterTableRemoveColumn(
-	    IN dbName text,
 		IN tableName text,
 		IN fieldName text)
 begin
@@ -49,7 +47,7 @@ $$
 
 
 DROP PROCEDURE IF EXISTS DropColumnIndex $$
-CREATE PROCEDURE DropColumnIndex (IN  dbName varchar(64), IN  tableName varchar(64), IN colmnName varchar(64))
+CREATE PROCEDURE DropColumnIndex (IN  tableName varchar(64), IN colmnName varchar(64))
 BEGIN
 
     DECLARE IndexColumnCount INT;
@@ -73,7 +71,7 @@ end;
 $$
 
 DROP PROCEDURE IF EXISTS AddColumnIndex$$
-CREATE PROCEDURE AddColumnIndex(IN  dbName varchar(64), IN  tableName varchar(64), IN colmnName varchar(64))
+CREATE PROCEDURE AddColumnIndex(IN  tableName varchar(64), IN colmnName varchar(64))
 BEGIN
 
     SELECT @indexes := COUNT(1)
@@ -94,7 +92,7 @@ $$
 
 
 DROP PROCEDURE IF EXISTS AddColumnIndexWithUNIQUE$$
-CREATE PROCEDURE AddColumnIndexWithUNIQUE(IN  dbName varchar(64), IN  tableName varchar(64), IN colmnName varchar(64))
+CREATE PROCEDURE AddColumnIndexWithUNIQUE(IN  tableName varchar(64), IN colmnName varchar(64))
 BEGIN
 
     SELECT @indexes := COUNT(1)
