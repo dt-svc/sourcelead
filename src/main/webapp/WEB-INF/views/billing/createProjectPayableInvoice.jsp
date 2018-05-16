@@ -1004,7 +1004,7 @@ function calculateDisCount(){
   <div id="divTaxTd1" style="display: none; float: left;">
 	<div class="select-field tblminwidth-75">
 		  <div class="tblminwidth-50">
-		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType' id='REPLACEROWIDtaxType' data-validation="required" field-name="Tax Type">
+		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType' id='REPLACEROWIDtaxType' data-validation="required validate_length length2-100" field-name="Tax Type">
 		        <input type="hidden" name="invoiceTax[REPLACEROWID].invoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 		  
 		  </div>
