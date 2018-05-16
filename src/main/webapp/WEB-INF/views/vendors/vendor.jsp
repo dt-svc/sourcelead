@@ -506,7 +506,7 @@ function getVendorDetails(){
 						<div class="form-group">
 							<label class="col-md-3">First Name<span
 								class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
+							<div class="col-md-9" id="nameIdDiv">
 								<input type="text" class="form-control" id="firstName"
 									name="firstName" pattern="[A-Za-z\s]*" maxlength="100" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
 
@@ -971,6 +971,7 @@ function getSpocUserDetails(){
 	        		 if(json[0] != null && json[0] != ''){
 	        			$("#firstName").attr("disabled", true);
 	        		    $("#firstName").val(json[0]);
+	        		    $('#nameIdDiv').find('p.jquery_form_error_message').remove();
 	        		 }else{
 	        			 $("#firstName").attr("disabled", false);
 	        			 //$("#firstName").val('');
