@@ -97,7 +97,7 @@
 								<div class="clearfix">
 									<div class="input-group">
 									<input type="text"  name="issueDate" placeholder = "Issue Date" class="form-control calendar input-sm" value="${issueDateStr}" id="issueDate" readonly="readonly">
-									<span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+									<span class="input-group-addon" onClick="clearIssueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 									</div>
 								</div>
 						</div>
@@ -334,3 +334,9 @@ function getCustomDependentField(sectionId){
            });
 	$(".selectpicker").selectpicker('refresh');
 </script> 
+
+<script>
+function clearIssueDate(){
+	$("#issueDate").val("");
+	};
+</script>

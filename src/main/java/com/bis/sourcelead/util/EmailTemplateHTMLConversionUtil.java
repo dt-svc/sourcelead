@@ -112,9 +112,9 @@ public class EmailTemplateHTMLConversionUtil implements Serializable {
 tempHTML.append("</table>");
 
 if(tabs != null) {
-	tempHTML.append("<div hidden><tabIdDiv>").append(tabs.getId().toString()).append("</tabIdDiv>").append("</div>");
+	tempHTML.append("<div style='display: none;'><tabIdDiv>").append(tabs.getId().toString()).append("</tabIdDiv>").append("</div>");
 }else {
-	tempHTML.append("<div hidden><tabIdDiv>").append("</tabIdDiv>").append("</div>");
+	tempHTML.append("<div style='display: none;'><tabIdDiv>").append("</tabIdDiv>").append("</div>");
 }
 
 		 return tempHTML.toString();
