@@ -456,7 +456,9 @@ result = result  +'    <div class="billingArea"> ';
 							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
 						}else if(report.invoiceStatus == "DRAFT"){
 							result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
-						}else{
+						}else if(report.invoiceStatus == "SENT"){
+							result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';
+						}else if(report.invoiceStatus == "Accepted"){
 							result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
 						}
 						

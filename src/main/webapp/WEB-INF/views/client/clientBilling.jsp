@@ -409,7 +409,7 @@ result = result  +'    <div class="billingArea"> ';
 					result = result +'         <td> ';
 					result = result +'     <div class="tblminwidth-75">';
 					 result = result +'  <div class="pull-right positionRelative menuWidget" >';
-					 if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
+					 if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected" ){
 						result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\',\''+report.paymentStatus+'\');" ></i>  ';
 						result = result +'  <div id="popupDiv'+report.invoiceUUID+'"></div>';
 					} 
@@ -423,6 +423,8 @@ result = result  +'    <div class="billingArea"> ';
 						}
 						}else if(report.invoiceStatus == "Linked"){
 							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
+						}else if(report.invoiceStatus == "SENT"){
+							result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';
 						}else{
 							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
 						}
@@ -437,7 +439,10 @@ result = result  +'    <div class="billingArea"> ';
 						}else{
 							if(report.invoiceStatus == "Rejected"){
 								result = result +'           <span class="successBtn primary pull-left" >Send</span>           ';	
-							}else{
+							}else if(report.invoiceStatus == "SENT"){
+								result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';
+							}
+							else{
 								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 							}
 							
