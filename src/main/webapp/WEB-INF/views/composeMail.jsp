@@ -20,7 +20,7 @@ display: none;
 .mt40{
  margin-top: 50px !important;
 }
-.chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+.compose-mail .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
     height: 35px;
     line-height: 35px;
     width: 500px !important;
@@ -893,9 +893,19 @@ document.getElementById("attachfileBtn").onchange = function () {
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
+</script> -->
+<script type="text/javascript">
+bkLib.onDomLoaded(function() {
+    nicEditors.editors.push(
+        new nicEditor().panelInstance(
+            document.getElementById('bodytext')
+        )
+    );
+});
 </script>
+
 
 <script>
 	$(".clearUpload").click(function(){
