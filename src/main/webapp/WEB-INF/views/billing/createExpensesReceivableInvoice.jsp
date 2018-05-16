@@ -110,7 +110,10 @@ function checkBox(){
             <div class="form-group">
               <label class="col-md-3">Invoice Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field" id="errInvoiceDate">
+              <div class="input-group">
                 <input class="form-control calendar" id="invoiceDate" name="invoiceDate" value="${currentDate}" placeholder="Invoice Date"  type="text" data-validation="required" field-name="Invoice Date">
+                <span class="input-group-addon" onClick="clearInvoiceDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+              </div>
               </div>
             </div>
               
@@ -130,10 +133,12 @@ function checkBox(){
             <div class="form-group">
               <label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9" id="errDuedate">
+              <div class="input-group">
                 <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
+              <span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
               </div>
             </div>
-            
+            </div>
             <div class="form-group">
               <label class="col-md-3">Invoice Address</label>
               <div class="col-md-9">
@@ -2024,6 +2029,15 @@ if(selectedTextInvoice =='percentage'){
 	  
  
 }
+</script>
+<script>
+function clearInvoiceDate(){
+	$("#invoiceDate").val("");
+	};
+	
+function clearDueDate(){
+	$("#dueDate").val("");
+	};
 </script>
     
  <jsp:include page="../masterFooter.jsp" />	

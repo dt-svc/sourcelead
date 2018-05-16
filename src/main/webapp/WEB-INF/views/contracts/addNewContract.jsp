@@ -269,7 +269,10 @@
 					<div class="row">
 					  <div class="col-lg-6">
 						<div id="startDateDiv">
+						<div class="input-group errorInptgroup">
 						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation=" ${contract.contractType == 'Full time offer'  ? '' : 'required'}" field-name="Start Date" readonly="readonly">
+						 <span class="input-group-addon" onClick="clearStartDt();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						</div>
 						</div>
 					  </div>
 					  <div class="col-lg-6">
@@ -2364,9 +2367,9 @@ function addCustomEmptyVendorContact(){
    $('#vendorContact').trigger("chosen:updated");
 }
 
-/* function clearStartDt(){
+ function clearStartDt(){
 	$("#startDate").val("");
-}; */
+}; 
 function clearEndDt(){
 	$("#endDate").val("");
 	};

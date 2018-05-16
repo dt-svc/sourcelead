@@ -149,7 +149,8 @@
 		  <c:if test="${not empty dataMapList}">
 		        <c:forEach var="dataMap" items="${dataMapList}">
 			        <c:if test="${customForm.id eq dataMap.key}">
-				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
+				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
+				         </label>
 				    	 <div class="col-md-9 radioIput">
 				    	 <div class="mr">
 				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
@@ -175,7 +176,7 @@
 		     	 	<c:forEach var="optionValue" items="${customForm.optionData}">
 			     	 			<span class="mr">
 			     	 			<input type="radio" value="${optionValue.option}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" field-name="${customForm.labelName}">${optionValue.option}
-			     	 			</span>
+			     	 			</span> 
 			     	</c:forEach>
 		    	</div>
 	    	</c:if>
@@ -187,11 +188,7 @@
 	 			 <c:forEach var="dataMap" items="${dataMapList}">
 	 			 	<c:if test="${customForm.id eq dataMap.key}">
 		 			 <div class="form-group">
-		                     <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
-		                      <c:if test="${not empty customForm.labelinfo}">
-				         		<i class="fa fa-info-circle" title="${customForm.labelinfo}"></i>
-	                          </c:if>
-		                      </label>
+		                     <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 		                        <div class="col-md-9">
 		                          <div class="input-group">
 		                             <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
@@ -205,11 +202,7 @@
  			 </c:if>
  			 <c:if test="${empty dataMapList}">
   			<div class="form-group">
-                     <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
-                      <c:if test="${not empty customForm.labelinfo}">
-				         		<i class="fa fa-info-circle" title="${customForm.labelinfo}"></i>
-				      </c:if>
-                     </label>
+                     <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
                         <div class="col-md-9">
                           <div class="input-group">
                              <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
@@ -227,11 +220,7 @@
 		  <c:if test="${not empty dataMapList}">
 		        <c:forEach var="dataMap" items="${dataMapList}">
 			        <c:if test="${customForm.id eq dataMap.key}">
-				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
-				          <c:if test="${not empty customForm.labelinfo}">
-				         		<i class="fa fa-info-circle" title="${customForm.labelinfo}"></i>
-				          </c:if>
-				         </label>
+				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 				    	 <div class="col-md-9">
 				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 				    		<input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
@@ -251,11 +240,7 @@
 		        </c:forEach>
 	        </c:if>
 	       <c:if test="${empty dataMapList}">
-		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
-		         <c:if test="${not empty customForm.labelinfo}">
-				         		<i class="fa fa-info-circle" title="${customForm.labelinfo}"></i>
-				 </c:if>
-		        </label>
+		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 		    	 <div class="col-md-9">
 		    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 				     	 	<c:choose>
@@ -279,11 +264,7 @@
 		  <c:if test="${not empty dataMapList}">
 		        <c:forEach var="dataMap" items="${dataMapList}">
 			        <c:if test="${customForm.id eq dataMap.key}">
-				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
-				          <c:if test="${not empty customForm.labelinfo}">
-				         		<i class="fa fa-info-circle" title="${customForm.labelinfo}"></i>
-			              </c:if>
-				         </label>
+				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 				    	 <div class="col-md-9 emailDiv">
 				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 				    		<input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
@@ -301,11 +282,7 @@
 		        </c:forEach>
 	        </c:if>
 	       <c:if test="${empty dataMapList}">
-		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
-		         <c:if test="${not empty customForm.labelinfo}">
-				         		<i class="fa fa-info-circle" title="${customForm.labelinfo}"></i>
-				</c:if>
-		        </label>
+		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 		    	 <div class="col-md-9 emailDiv">
 		    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		     	 			<c:choose>
