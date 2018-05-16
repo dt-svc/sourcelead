@@ -1070,6 +1070,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<MyImmigrationViewDTO> getMyImmigrationsList(MyImmigrationViewDTO immigrationListDTO,
 			OrgLocations orgLocations, Long userId) {
+		System.out.println("inside getMyImmigrationsList -->");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Long> countlist = null;
 		Integer filterCount = 0;
@@ -1085,9 +1086,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			sortingQry = " order by immView.updatedDate desc ";
 		}
 		String listQuery = "";
-
-		listQuery = "from MyImmigrationView immView  where immView.status = 1  and immView.candidateUserId =:candidateUserId and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
-		String listQueryCount = "select count(*) from MyImmigrationView immView where  immView.status = 1  and immView.candidateUserId =:candidateUserId and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId)  ";
+		listQuery = "from MyImmigrationView immView  where immView.status = 1 and UPPER(immView.currUscisStatus)<>'DRAFT'  and immView.candidateUserId =:candidateUserId and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
+		String listQueryCount = "select count(*) from MyImmigrationView immView where  immView.status = 1 and UPPER(immView.currUscisStatus)<>'DRAFT' and immView.candidateUserId =:candidateUserId and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId)  ";
 		String resultQuery = null;
 		String resultCountQuery = null;
 		Query hqlQuery = null;
