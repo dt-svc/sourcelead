@@ -92,8 +92,8 @@
             <div class="form-group">
               <label class="col-md-4">Choose Template<span class="text-danger paddingLeft">*</span></label>
               <c:if test="${empty immigrationDTO}">
-              <div class="col-md-8">
-               <select class="chosen-select form-control" id="templateId" name="templateId" data-placeholder="Choose Template" field-name="Template"  data-validation="required">
+              <div class="col-md-8" id="">
+               <select class="chosen-select form-control" id="templateSelect" name="templateId" data-placeholder="Choose Template" field-name="Template"  data-validation="required">
                	
                	<option value="" selected>--Choose Template--</option>
 							<c:forEach var="item" items="${templateList}">
@@ -112,8 +112,8 @@
               
                <c:if test="${immigrationDTO.orgloationId == SourceLeadWeb_orgLocations.id}">
               <c:if test="${immigrationDTO.isOwnTemplateId == 'Y'}">
-              <div class="col-md-8">
-               <select class="chosen-select form-control" id="templateId" name="templateId" data-placeholder="Choose Template" field-name="Template"  data-validation="required">
+              <div class="col-md-8" id="templateDIVId">
+               <select class="chosen-select form-control" id="templateSelect" name="templateId" data-placeholder="Choose Template" field-name="Template"  data-validation="required">
                	
                	<option value="" selected>--Choose Template--</option>
 							<c:forEach var="item" items="${templateList}">
@@ -1132,7 +1132,11 @@ $("#experienceValue").change(function () {
 		  getUscisTypeDropDown("${immigrationDTO.currUscisStatus}");
 		  employmentLevelDropDown("${immigrationDTO.employmentLevel}");
 		  jobTitleDropDown("${immigrationDTO.jobId}");
-		  
+		  if("${immigrationDTO.immigrationId}" == ""){
+			  $('#templateSelect').prop('disabled', false).trigger("chosen:updated");
+		  }else{
+			  $('#templateSelect').attr('disabled', true).trigger("chosen:updated");
+		  } 
 		  var sizeOfResidence = "${fn:length(immigrationDTO.residenceList)}";
 		  if(sizeOfResidence > 0){
 		  	var count = 1;
