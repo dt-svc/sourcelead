@@ -191,6 +191,8 @@ public class DataMigrationDTO extends CommonDTO {
 	
 	private List<AssetAssignDTO> assignAsset;
 	
+	private String assignAssetStr;
+	
 	/*Asset Uploads End*/
 	
    //	Project Tasks
@@ -1090,6 +1092,14 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setAssignAsset(List<AssetAssignDTO> assignAsset) {
 		this.assignAsset = assignAsset;
+	}
+
+	public String getAssignAssetStr() {
+		return assignAssetStr;
+	}
+
+	public void setAssignAssetStr(String assignAssetStr) {
+		this.assignAssetStr = assignAssetStr;
 	}
 
 	public String getTaskName() {
