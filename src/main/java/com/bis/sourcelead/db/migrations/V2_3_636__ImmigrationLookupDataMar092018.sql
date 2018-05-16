@@ -1,47 +1,47 @@
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Draft','Draft','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Request to fill','Request to fill','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Filled','Filled','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Reviewed & Send to attorney','Reviewed & Send to attorney','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Request for modifications','Request for modifications','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Reviewed & Filed','Reviewed & Filed','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE','RFE','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE Received','RFE Received','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Denied','Denied','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Motion to Re-Open','Motion to Re-Open','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE Approved','RFE Approved','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Approved','Approved','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE Denied','RFE Denied','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Revoked','Revoked','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Cancelled','Cancelled','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE Responded','RFE Responded','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Rejected','Rejected','USCISStatus');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Withdrawn','Withdrawn','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Draft','Draft','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Request to fill','Request to fill','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Filled','Filled','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Reviewed & Send to attorney','Reviewed & Send to attorney','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Request for modifications','Request for modifications','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Reviewed & Filed','Reviewed & Filed','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE','RFE','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE Received','RFE Received','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Denied','Denied','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Motion to Re-Open','Motion to Re-Open','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE Approved','RFE Approved','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Approved','Approved','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE Denied','RFE Denied','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Revoked','Revoked','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Cancelled','Cancelled','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('RFE Responded','RFE Responded','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Rejected','Rejected','USCISStatus');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Withdrawn','Withdrawn','USCISStatus');
 
 
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Level 1','Level 1','EmploymentLevel');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Level 2','Level 2','EmploymentLevel');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Level 3','Level 3','EmploymentLevel');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Level 4','Level 4','EmploymentLevel');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Level 1','Level 1','EmploymentLevel');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Level 2','Level 2','EmploymentLevel');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Level 3','Level 3','EmploymentLevel');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Level 4','Level 4','EmploymentLevel');
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('H1B Filing (Cap/Transfer)(United States)','H1B Filing (Cap/Transfer)','VisaCategory');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('H1B Filing (Amendment)(United States)','H1B Filing (Amendment)','VisaCategory');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('H1B Filing (Extension)(United States)','H1B Filing (Extension)','VisaCategory');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('H1B Filing (Cap/Transfer)(United States)','H1B Filing (Cap/Transfer)','VisaCategory');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('H1B Filing (Amendment)(United States)','H1B Filing (Amendment)','VisaCategory');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('H1B Filing (Extension)(United States)','H1B Filing (Extension)','VisaCategory');
 
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('C2C','C2C','EmploymentType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('W2','W2','EmploymentType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Full Time','Full Time','EmploymentType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Part Time','Part Time','EmploymentType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('1099','1099','EmploymentType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('C2C-1099','C2C-1099','EmploymentType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('C2H','C2H','EmploymentType');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('C2H-1099','C2H-1099','EmploymentType');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('C2C','C2C','EmploymentType');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('W2','W2','EmploymentType');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Full Time','Full Time','EmploymentType');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Part Time','Part Time','EmploymentType');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('1099','1099','EmploymentType');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('C2C-1099','C2C-1099','EmploymentType');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('C2H','C2H','EmploymentType');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('C2H-1099','C2H-1099','EmploymentType');
 
 
 set sql_safe_updates=0;
-UPDATE `sourcelead`.`LOOKUP_DATA` SET `LOCATION`='United States' WHERE `CATEGORY`='PetitionType';
+UPDATE `LOOKUP_DATA` SET `LOCATION`='United States' WHERE `CATEGORY`='PetitionType';
 set sql_safe_updates=1;
 
 #Role Actions
