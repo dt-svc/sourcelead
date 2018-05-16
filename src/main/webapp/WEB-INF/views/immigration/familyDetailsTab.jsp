@@ -2,16 +2,38 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <c:set var ="familyListCount" value ="${fn:length(familyList)}"/>
 <div class="immigraTabsHead">
-		  	<a href="javascript:void(0)" class="immMenuClick"><i class="glyphicon glyphicon-plus"></i> Add Family 
-				<div class="immiSubMenu">
-					<ul>
-						<li id="addSpou"><i class="fa fa-plus"></i> Add Spouse</li>
-						<li id="addChil"><i class="fa fa-plus"></i> Add Child</li>
-						<li id="addFath"><i class="fa fa-plus"></i> Add Father</li>
-						<li id="addMoth"><i class="fa fa-plus"></i> Add Mother</li>
-					</ul>
-				</div>
-		  	</a> 
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <a href="javascript:void(0)" class="immMenuClick"><i class="glyphicon glyphicon-plus"></i> Add Family 
+							<div class="immiSubMenu">
+								<ul>
+									<li id="addSpou"><i class="fa fa-plus"></i> Add Spouse</li>
+									<li id="addChil"><i class="fa fa-plus"></i> Add Child</li>
+									<li id="addFath"><i class="fa fa-plus"></i> Add Father</li>
+									<li id="addMoth"><i class="fa fa-plus"></i> Add Mother</li>
+								</ul>
+							</div>
+					  	</a>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <a href="javascript:void(0)" class="immMenuClick"><i class="glyphicon glyphicon-plus"></i> Add Family 
+									<div class="immiSubMenu">
+										<ul>
+											<li id="addSpou"><i class="fa fa-plus"></i> Add Spouse</li>
+											<li id="addChil"><i class="fa fa-plus"></i> Add Child</li>
+											<li id="addFath"><i class="fa fa-plus"></i> Add Father</li>
+											<li id="addMoth"><i class="fa fa-plus"></i> Add Mother</li>
+										</ul>
+									</div>
+							  	</a>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 		  	<span><input class="immigraTabSerach" id="familySerach" type="text" placeholder="Name/Relationship"></span>
 		</div>
 	  	<div class="immigraTable">
@@ -23,7 +45,20 @@
 				<th>Date of Birth</th>
 				<th>Place of Birth</th>
 				<th>Address</th>
-				<th>Action</th>
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <th>Action</th>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <th>Action</th>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 			  </tr>
 			  <c:forEach var="items" items="${familyList}" varStatus="rows">
 			  <tr>
@@ -32,10 +67,26 @@
 				<td><div class="tbldata-dotdot-vsm">${items.dateOfBirthStr}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${!empty items.placeOfBirth ? items.placeOfBirth : '---'}</div></td>
 				<td><div class="tbldata-dotdot-me">${!empty items.currentAddress ? items.currentAddress : '---'}</div></td>
-				<td><div><i id="edit" class="glyphicon glyphicon-pencil cursorPointer"onclick="immigration.editFamilyDetailsById(${items.id},'${items.relation}');"
-				></i><i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer"
-				 onclick="immigration.deleteFamilyDetailsById(${items.id});" 
-				 ></i></div></td>
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <td><div><i id="edit" class="glyphicon glyphicon-pencil cursorPointer"onclick="immigration.editFamilyDetailsById(${items.id},'${items.relation}');"
+							></i><i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer"
+							 onclick="immigration.deleteFamilyDetailsById(${items.id});" 
+							 ></i></div></td>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <td><div><i id="edit" class="glyphicon glyphicon-pencil cursorPointer"onclick="immigration.editFamilyDetailsById(${items.id},'${items.relation}');"
+									></i><i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer"
+									 onclick="immigration.deleteFamilyDetailsById(${items.id});" 
+									 ></i></div></td>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 			  </tr> 
 			  </c:forEach>
 			 </tbody>

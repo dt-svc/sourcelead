@@ -319,7 +319,6 @@ function Immigration() {
     }// immigration end if don't required comment above code end here.
     
     this.displayPetitionDetails = function(immigrationId){
-    	console.log("inside displayPetitionDetails function call immigrationId -->"+immigrationId);
     	$.ajax({
             url: sourceleadUrl + immiModulePath + "/viewImmigrationById?immigrationId="+immigrationId,
             type: "GET",
@@ -355,8 +354,6 @@ function Immigration() {
   		 	  	}
 	if ($('#'+formId).validate(false, validationSettings)) {
 			var formData = getFormData(formId);
-		    console.log(" inside function formId"+formId);
-		 	console.log(formData);
 		 	var candidateId = $('#candidateID').val();
             var immigrationId = $('#immigrationId').val();
             $.ajax({
@@ -364,7 +361,6 @@ function Immigration() {
             type : "POST",
 			data : formData,
 			success : function(result) {
-							console.log(" inside success function"+idType);
 							if (result && result.response === "INVALID_DATA") {
 		                    	 showError(result.responseMessage);
 		                    }else if (result.response === "AWKWARD") {
@@ -430,10 +426,8 @@ function Immigration() {
 	        url: sourceleadUrl + immiModulePath + "/editImmigrationCandidateFormDetailsById?id="+id,
 	        type: "GET",
 	        success: function (data) {
-	        	console.log(" inside success test --->" );
 	        	var formObj='';
 	        	if(data!= null){
-	        		console.log(" record successfully fetched by id  --> "+id);
 	        		
 	        			formObj = $('#formSave_Form')[0]; // load the child form
 	        			//var fomValues=["name","designation", "address","startMonth","startYear","endMonth","endYear"];
@@ -459,28 +453,23 @@ function Immigration() {
 	}
 	this.updateImmigrationStatus = function(immigrationId) {
 
-		console.log("inside updateImmigrationStatus function call  -->"+immigrationId)
 
 		$.ajax({
 			url : sourceleadUrl + immiModulePath+"/updateImmigrationStatus?id=" + immigrationId+"&candidateId="+candidateId+"&templateId="+templateId,
 			type : "GET",
 			success : function(data) {
-				console.log(" inside success" + data);
 				eval("jsonObj=" + data);
-				console.log(jsonObj);
 				if (typeof jsonObj.errorMsg != 'undefined') {
 					//alert(" error Msg"+jsonObj.errorMsg);
 					var warningMsg="Below Required Tab(s) Data is Missing!...\n"+jsonObj.errorMsg;
 					showWarningPopup("", warningMsg);
 				} else {
-					console.log(" No Errors found----->");
 					location.reload();
 				}
 			}
 		});
 	}
     this.displayPassportDetails=function(candidateId,Passport,searchValue){
-   	console.log("inside displayPassportDetails function call  -->")
    		$.ajax({
            url: sourceleadUrl + immiModulePath + "/getCandidatePassportVisaDetails?candidateId="+candidateId+ "&idType=" + Passport+ "&searchValue=" + searchValue,
            type: "GET",
@@ -493,7 +482,6 @@ function Immigration() {
     
     
    this.displayVisaDetails=function(candidateId,Visa,searchValue){
-   	console.log("inside displayVisaDetails function call  -->")
    		$.ajax({
            url: sourceleadUrl + immiModulePath + "/getCandidatePassportVisaDetails?candidateId="+candidateId+ "&idType=" + Visa+ "&searchValue=" + searchValue,
            type: "GET",
@@ -540,8 +528,6 @@ this.deletePassportVisaDetailsById=function(id,idType){
     	}
 		if ($('#'+formId).validate(false, validationSettings)) {
 			var formData = getFormData(formId);
-			console.log(" inside function formId"+formId);
-			console.log(formData);
 			 var candidateId = $('#candidateID').val();
 			 var immigrationId = $('#immigrationID').val();
 			$.ajax({
@@ -617,7 +603,6 @@ this.deletePassportVisaDetailsById=function(id,idType){
     }
     
     this.displayFamilyDetails=function(candidateId){
-    	console.log("inside displayFamilyDetails function call  -->")
     	var searchVal= $("#familySerach").val();
     	$.ajax({
             url: sourceleadUrl + immiModulePath + "/getCandidateFamilyDetails?candidateId="+candidateId+"&searchVal="+searchVal,
@@ -630,13 +615,11 @@ this.deletePassportVisaDetailsById=function(id,idType){
         });
     }	
 	this.deleteFamilyDetailsById = function(delId){
-		console.log(" inside delete record  "+delId);
 		$.ajax({
             url: sourceleadUrl + immiModulePath + "/deleteCandidateFamilyDetails?id="+delId,
             type: "GET",
             success: function (result) {
             	if(result=='success'){
-            		console.log(" record successfully delete id  --> "+delId);
             	     immigration.displayFamilyDetails(candidateId) //candidateId global variable
             	     
             	}
@@ -646,16 +629,13 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	
 	
 	this.editFamilyDetailsById = function(id, relationType){
-		console.log(" inside edit record  "+id);
 		familyMemberId = id; // update the variable with family member id in edit mode.
 		$.ajax({
             url: sourceleadUrl + immiModulePath + "/getCandidateFamilyDetailsById?id="+id,
             type: "GET",
             success: function (data) {
-            	console.log(" inside success test --->" );
             	var formObj='';
             	if(data!= null){
-            		console.log(" record successfully fetched by id  --> "+id);
             		if(relationType =='Child'){
             			formObj = $('#childDetailsForm')[0]; // load the child form
             			var childPopNames=["firstName","middleName", "lastName","placeOfBirth","currentAddress"];
@@ -690,14 +670,12 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	}
 	
 	this.displayImmigrationCandidateForms = function(candidateId,templateId, immigrationId,searchVal){
-		console.log(" inside forms list candidateId--->"+candidateId);
 		$.ajax({
 	        url: sourceleadUrl + immiModulePath + "/getCandidateImmigrationFormsList?candidateId="+candidateId+"&templateId="+templateId+"&immigrationId="+immigrationId+"&searchVal="+searchVal,
 	        type: "GET",
 	        success: function (result) {
 	            $("#formsTab").html(result);
 	            $("#immigraFormTabSerach").val(searchVal);
-	            console.log(" inside forms list success--->");
 	        }
 	    });
 	}
@@ -707,10 +685,8 @@ this.deletePassportVisaDetailsById=function(id,idType){
 		   $.each(formObj, function(key, value) {
 			var formElemName = value.name;
 			if (typeof formElemName!= 'undefined' && idsArray.indexOf(formElemName) > -1) {
-				console.log(" inside ** formElemId:-> "+formElemName +",  dataObj.formElemId: ->"+dataObj[formElemName]);
 				// below code added for date fields in forms based on name paroperty of the field. date should contain date string in filed name.
 				if(formElemName.toLowerCase().indexOf("date")>-1 && dataObj[formElemName] != null && typeof  dataObj[formElemName] != 'undefined' && dataObj[formElemName]!=''){
-					console.log(" inside date value---> ");
 					var dateVal =  moment(dataObj[formElemName]).format("DD-MM-YYYY");
 					$("#"+formId+" input[name='"+formElemName+"']").val(dateVal); // sets date values to the form.
 				}// above code checks the date field names and set the formatted date value to the popup.
@@ -751,17 +727,14 @@ function deleteEDucationDetailsById(id){
 }
 
 function editEducationDEtailsByRowId(id){
-	console.log(" inside edit record  "+id);
 	 // update the variable with family member id in edit mode.
 	var candidateId = $("#candidateID").val();
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/getCandidateEducationDetailsById?id="+id+"&candidateId="+candidateId,
         type: "GET",
         success: function (data) {
-        	console.log(" inside success test --->" );
         	var formObj='';
         	if(data!= null){
-        		console.log(" record successfully fetched by id  --> "+id);
         		
         			formObj = $('#eduSave_Form')[0]; // load the child form
         			var fomValues=["name","specialization", "startDate","endDate","gradeType","grade","institute","address"];
@@ -785,17 +758,14 @@ function editEducationDEtailsByRowId(id){
 }
 
 function editEmpDetailsByRowId(id){
-	console.log(" inside edit record  "+id);
 	 // update the variable with family member id in edit mode.
 	var candidateId = $("#candidateID").val();
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/getCandidateEmpDetailsById?id="+id+"&candidateId="+candidateId,
         type: "GET",
         success: function (data) {
-        	console.log(" inside success test --->" );
         	var formObj='';
         	if(data!= null){
-        		console.log(" record successfully fetched by id  --> "+id);
         		
         			formObj = $('#employerDetails_form')[0]; // load the child form
         			var fomValues=["name","designation", "address","startMonth","startYear","endMonth","endYear"];
@@ -821,7 +791,6 @@ function udpateEduFormdata (formObj, idsArray, dataObj) {
 	   $.each(formObj, function(key, value) {
 		var formElemName = value.name;
 		if (typeof formElemName!= 'undefined' && idsArray.indexOf(formElemName) > -1) {
-			console.log(" inside ** formElemId:-> "+formElemName +",  dataObj.formElemId: ->"+dataObj[formElemName]);
 			// below code added for date fields in forms based on name paroperty of the field. date should contain date string in filed name.
 			/*if(formElemName.toLowerCase().indexOf("date")>-1 && dataObj[formElemName] != null && typeof  dataObj[formElemName] != 'undefined' && dataObj[formElemName]!=''){
 				console.log(" inside date value---> ");
@@ -1036,7 +1005,6 @@ function getImmigrationTasks(immigrationId, status, searchVal){
 }
 
 function getCandidateEmployerList(candidateId){
-	console.log(" inside getCandidateEmployerList"+candidateId);
 	var searchEmployerVal = $("#employersDataSearch").val();
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/getCandidateEmployerList?candidateId="+candidateId+"&searchVal="+searchEmployerVal,
@@ -1044,7 +1012,6 @@ function getCandidateEmployerList(candidateId){
         success: function (result) {
             $("#employersTab").html(result);
             $("#employersDataSearch").val(searchEmployerVal);
-            console.log(" inside getCandidateEmployerList after success--> "+candidateId);
         }
     });
 }
@@ -1082,16 +1049,13 @@ function saveResidenceDetails(status) {
 }
 
 function getCandidateResidenceList(candidateId){
-	console.log("inside displayResidenceDetails function call test -->")
 	var searchVal= $("#residenceSearch").val();
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/getCandidateResidenceList?candidateId="+candidateId+"&searchVal="+searchVal,
        type: "GET",
         success: function (result) {
-       	  console.log("Before  loading result---->");
            $("#residencesTab").html(result);
            $("#residenceSearch").val(searchVal);
-           console.log("After loading result---->");
        }
    });
 }
@@ -1111,17 +1075,14 @@ function deleteResidenceDetailsById(id){
 }
 
 function editResidenceDEtailsByRowId(id, isCurr){
-	console.log(" inside edit record  "+id);
 	 // update the variable with residence member id in edit mode.
 	var candidateId = $("#candidateID").val();
 	$.ajax({
      url: sourceleadUrl + immiModulePath + "/getCandidateResidenceDetailsById?id="+id+"&isCurr="+isCurr,
      type: "GET",
      success: function (data) {
-     	console.log(" inside success test --->" );
      	var formObj='';
      	if(data!= null){
-     		console.log(" today  --> "+data.id);
      		
      			formObj = $('#residenceDetails_form')[0]; // load the child form
      			var fomValues=["location","streetAddress", "country","city","state","zipcode","startDate","endDate"];
@@ -1171,14 +1132,12 @@ function uploadRequestDoc(){
 }
 
 function editDocumentDetailsByRowId(id){
-	console.log(" inside edit record  "+id);
 	 // update the variable with residence member id in edit mode.
 	var candidateId = $("#candidateID").val();
 	$.ajax({
      url: sourceleadUrl + immiModulePath + "/editDocumentDetailsByRowId?id="+id,
      type: "GET",
      success: function (data) {
-     	console.log(" inside success test --->" );
      	var formObj='';
      	if(data!= null){
      		
@@ -1229,7 +1188,6 @@ function uploadRequestForm(){
 	var candidateId = $("#candidateID").val();
 	var immigrationId = $('#immigrationID').val();
 	var id = $("#uploadFormIdSave").val();
-	console.log(" id value is --->"+id);
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/uploadRequstedForm?id="+id+"&candidateId="+candidateId+"&immigrationId="+immigrationId,
         type: "POST",
@@ -1318,15 +1276,12 @@ function getPetitionTypeOnCountries(selectedCountry, selectedCountryOption){
 }
 
 function getNotesListByImmigration(candidateId){
-	console.log("inside displayNotesDetails function call test -->")
 	 var immigrationId = $('#immigrationID').val();
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/getNotesListByImmigrationId?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
        type: "GET",
         success: function (result) {
-       	  console.log("Before  loading result---->");
            $("#notesTab").html(result);
-           console.log("After loading result---->");
        }
    });
 }
@@ -1337,9 +1292,7 @@ function getImmigrationActivies(){
         url: sourceleadUrl + immiModulePath + "/getImmigrationActiviesList?" + tokenParamName + "=" + tokenValue +"&immigrationId="+immigrationId,
        type: "GET",
         success: function (result) {
-       	  console.log("Before  loading result---->");
            $("#activitiesTab").html(result);
-           console.log("After loading result---->");
        }
    });
 }
@@ -1353,7 +1306,6 @@ function searchPassportValue(){
         };
 	var searchValue =document.getElementById("searchValuePassport").value; 
 	var candidateId = $('#candidateID').val();
-	console.log("searchValue"+searchValue);
 	immigration.displayPassportDetails(candidateId,'Passport',searchValue);
 }
 
@@ -1366,7 +1318,6 @@ function searchVisaValue(){
         };
 	var searchValue =document.getElementById("searchValueVisa").value; 
 	var candidateId = $('#candidateID').val();
-	console.log("searchValue"+searchValue);
 	immigration.displayVisaDetails(candidateId,'Visa',searchValue);
 	
 }

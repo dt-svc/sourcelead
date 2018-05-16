@@ -772,7 +772,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 		Query vendorsListQuery = null;
 		if(type.equalsIgnoreCase("Client")){
 		    Session session = this.sessionFactory.getCurrentSession();
-		 vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type and orgrelation.isLawFirm ='Y' and orgrelation.isAccountingFirm = 'Y') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type )");
+		 vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type and orgrelation.isLawFirm ='Y') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type )");
 		}else{
 			 Session session = this.sessionFactory.getCurrentSession();
 			 vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type )");
