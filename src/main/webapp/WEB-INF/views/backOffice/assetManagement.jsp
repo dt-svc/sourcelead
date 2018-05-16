@@ -980,7 +980,7 @@ function deleteDocument(assetId,url){
 	document.getElementById("dbUploadFile").style.display="none";
 	 $.ajax({
    	  type: "POST",
-      url: sourceleadUrl+"/deleteDoc?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&url="+url, 	   
+      url: sourceleadUrl+"/deleteAssetDocument?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&url="+url, 	   
  	  success: function(data) {  },
 	   });	
 	}

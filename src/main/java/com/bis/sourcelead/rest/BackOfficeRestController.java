@@ -764,6 +764,20 @@ public class BackOfficeRestController {
 	}
 	
 	
+	@RequestMapping(value = "/deleteAssetDocument", method = RequestMethod.POST)
+	public String deleteDoc(@RequestParam(value="assetId", required=false) String assetId,@RequestParam(value="url", required=false) String url,HttpServletRequest request) throws Exception {
+	       Asset asset = assetService.getAssetById(Long.parseLong(assetId));
+	       if(url.equals(asset.getFileUrl())){
+	       asset.setFileUrl(null);
+	       asset.setFileContentType(null);
+	       asset.setFileName(null);
+	       } 
+	       assetDao.saveAsset(asset);	
+
+		return "success";
+
+	}
+	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
             public HierarchicalStreamWriter createWriter(Writer writer) {

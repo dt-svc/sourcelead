@@ -106,7 +106,7 @@ function closeCertificatePopup(){
 			var EMdata = endMonth.split('&');
 			var eMonthNumber = EMdata[0];
 			
-			 if( (startMonth > endMonth) && (startYear == endYear) ){
+			 if( (parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear == endYear) ){
 					 
 				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
 		
@@ -855,7 +855,7 @@ function removeEmployer(candidateemployerId, candidateId){
 			var EMdata = endMonth.split('&');
 			var eMonthNumber = EMdata[0];
 			
-			 if( (startMonth > endMonth) && (startYear == endYear) ){
+			 if( (parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear == endYear) ){
 					 
 				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
 		
@@ -1011,12 +1011,12 @@ function monthIfYearRequired(){
 	
 	if((startYear != '' && startYear != null && startYear != 'undefined' )&&(endYear != '' && endYear != null && endYear != 'undefined')){
 	
-	 if((sMonthNumber> eMonthNumber) && (startYear==endYear) ){
+	 if((parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear==endYear) ){
 		$("#err").empty();
 		 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
 			 
 		}
-	 if(sMonthNumber< eMonthNumber)
+	 if(parseInt(sMonthNumber) < parseInt(eMonthNumber))
 		 {
 		 $('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
 		 }
