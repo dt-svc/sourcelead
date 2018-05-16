@@ -2,8 +2,23 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <c:set var ="passListCount" value ="${fn:length(PassportList)}"/>
  
-<div class="immigraTabsHead">			  	
-		  	<a href="javascript:void(0)" id="addPass"><i class="glyphicon glyphicon-plus"></i> Add Passport</a> 
+<div class="immigraTabsHead">
+			<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <a href="javascript:void(0)" id="addPass"><i class="glyphicon glyphicon-plus"></i> Add Passport</a>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <a href="javascript:void(0)" id="addPass"><i class="glyphicon glyphicon-plus"></i> Add Passport</a>
+						    </c:when>
+						    <c:otherwise>
+						        
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>	
+		  	
 		  	<span><input class="immigraTabSerach"  id = "searchValuePassport" placeholder="Passport Id/Country" type="text"></span>
 		</div>
 		
@@ -15,7 +30,21 @@
 				<th>Country</th>
 				<th>Valid From</th>
 				<th>Valid To</th>
-				<th>Action</th>
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <th>Action</th>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						       <th>Action</th>
+						    </c:when>
+						    <c:otherwise>
+						        
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 			  </tr>
 			  <c:forEach var="passportdetails" items="${PassportList}" varStatus="rows">
 			  <tr>
@@ -23,10 +52,27 @@
 				<td><div class="tbldata-dotdot-me">${!empty passportdetails.country ? passportdetails.country : '---'}</div></td>
 				<td><div class="tbldata-dotdot-me">${!empty passportdetails.validFromDateStr ? passportdetails.validFromDateStr : '---'}</div></td>
 				<td><div class="tbldata-dotdot-me">${!empty passportdetails.validToDateStr ? passportdetails.validToDateStr : '---'}</div></td>
-         		<td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"
 				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
 				 onclick="immigration.deletePassportVisaDetailsById(${passportdetails.id},'${passportdetails.idType}');" 
 				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						       <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"
+				class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
+				 onclick="immigration.deletePassportVisaDetailsById(${passportdetails.id},'${passportdetails.idType}');" 
+				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+						    </c:when>
+						    <c:otherwise>
+						        
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 			  </tr>  
 			  </c:forEach>			 				
 			</tbody>

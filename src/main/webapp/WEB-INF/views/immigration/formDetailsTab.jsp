@@ -1,7 +1,20 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var ="allFormsUploaded" value ="No"/>
-<div class="immigraTabsHead">			  	
-		  	<a href="javascript:void(0)" id="addForm"><i class="glyphicon glyphicon-plus"></i> Add Form</a>
+<div class="immigraTabsHead">
+			<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <a href="javascript:void(0)" id="addForm"><i class="glyphicon glyphicon-plus"></i> Add Form</a>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <a href="javascript:void(0)" id="addForm"><i class="glyphicon glyphicon-plus"></i> Add Form</a>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+			</c:choose>			  	
 		  	<span id='formZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt paddingRight"></i>Download All Documents</span> 
 		  	<span><input class="immigraTabSerach" id="immigraFormTabSerach" placeholder="Form Name/Status" type="text"></span>
 		</div>
@@ -15,7 +28,20 @@
 				<th>File</th>
 				<th>Uploaded File</th>
 				<th>Status</th>
-				<th>Action</th>
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <th>Action</th>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <th>Action</th>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>
 			  </tr>
 			  <c:forEach var="items" items="${formsList}" varStatus="rows">
 			  <tr formid ="${items.id}" savedFormDocName = "${items.uploadFileName}">
@@ -31,17 +57,40 @@
 					<a class="glyphicon glyphicon-download-alt" title="Download" download href="${items.uploadedFileUrl}"></a></c:if></div>
 				</td>
 				<td><div class="tblminwidth-50">${items.formStatus}</div></td>
-				 <td><div>
-				 <a title="Upload" class="fa fa-upload uploadForm" onclick=""></a>
-				 <c:if test="${items.isTemplateConfigured =='N'}">
-				 <i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="immigration.editImmigrationCandidateForm(${items.id});"></i>
-				 <i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="immigration.deleteImmigrationCandidateForm(${items.id});" ></i>
-				 </c:if>
-				 </div>
-				 <c:if test="${items.isRequired == 'Y' and not empty items.uploadedFileUrl}">
-				 <c:set var ="allFormsUploaded" value ="Yes"/>
-				 </c:if>
-				 </td>
+				<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				        <td><div>
+							 <a title="Upload" class="fa fa-upload uploadForm" onclick=""></a>
+							 <c:if test="${items.isTemplateConfigured =='N'}">
+							 <i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="immigration.editImmigrationCandidateForm(${items.id});"></i>
+							 <i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="immigration.deleteImmigrationCandidateForm(${items.id});" ></i>
+							 </c:if>
+							 </div>
+							 <c:if test="${items.isRequired == 'Y' and not empty items.uploadedFileUrl}">
+							 <c:set var ="allFormsUploaded" value ="Yes"/>
+							 </c:if>
+							 </td>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <td><div>
+								 <a title="Upload" class="fa fa-upload uploadForm" onclick=""></a>
+								 <c:if test="${items.isTemplateConfigured =='N'}">
+								 <i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="immigration.editImmigrationCandidateForm(${items.id});"></i>
+								 <i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="immigration.deleteImmigrationCandidateForm(${items.id});" ></i>
+								 </c:if>
+								 </div>
+								 <c:if test="${items.isRequired == 'Y' and not empty items.uploadedFileUrl}">
+								 <c:set var ="allFormsUploaded" value ="Yes"/>
+								 </c:if>
+								 </td>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+				</c:choose>				
 			  </tr>  
 			 </c:forEach>			  			  
 			</tbody>
