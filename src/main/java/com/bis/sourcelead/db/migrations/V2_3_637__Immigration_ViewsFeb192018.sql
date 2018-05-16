@@ -11,33 +11,33 @@ CREATE OR REPLACE VIEW IMMIGRATION_TEMPLATE_VIEW AS
         TEMP.REJECT_REASON,
         (SELECT 
                 NAME
-           FROM  `SOURCELEAD`.`LOOKUP_DATA`
+           FROM  `LOOKUP_DATA`
             WHERE
                 ID = TEMP.PETITION_TYPE) AS PETITION_TYPE,
         
         (SELECT 
                 COUNT(DOCS.ID)
             FROM
-                `SOURCELEAD`.`IMMIGRATION_TEMPLATE_DOCUMENTS` DOCS
+                `IMMIGRATION_TEMPLATE_DOCUMENTS` DOCS
             WHERE
                 TEMP.ID = DOCS.IMMIGRATION_TEMPLATE_ID
                     AND DOCS.STATUS = 1) AS DOCS_COUNT,
         (SELECT 
                 COUNT(FORM.ID)
             FROM
-                `SOURCELEAD`.`IMMIGRATION_TEMPLATE_FORMS` FORM
+                `IMMIGRATION_TEMPLATE_FORMS` FORM
             WHERE
                 TEMP.ID = FORM.IMMIGRATION_TEMPLATE_ID
                     AND FORM.STATUS = 1) AS FORMS_COUNT,
         (SELECT 
                 COUNT(TASK.ID)
             FROM
-                `SOURCELEAD`.`IMMIGRATION_TEMPLATE_TASKS` TASK
+                `IMMIGRATION_TEMPLATE_TASKS` TASK
             WHERE
                 TEMP.ID = TASK.IMMIGRATION_TEMPLATE_ID
                     AND TASK.STATUS = 1) AS TASKS_COUNT
     FROM
-        `SOURCELEAD`.`IMMIGRATION_TEMPLATE` TEMP
+        `IMMIGRATION_TEMPLATE` TEMP
          
           ORDER BY TEMP.UPDATED_DATE DESC;
         
@@ -60,61 +60,61 @@ CREATE OR REPLACE VIEW IMMIGRATION_LIST_VIEW AS
         (SELECT 
                 NAME
             FROM
-                SOURCELEAD.LOOKUP_DATA
+                LOOKUP_DATA
             WHERE
                 ID = IMM.CURRENT_USCIS_STATUS) AS CURRENT_USCIS_STATUS,
         (SELECT 
                 NAME
             FROM
-                SOURCELEAD.LOOKUP_DATA
+                LOOKUP_DATA
             WHERE
                 ID = IMM.PETITION_TYPE) AS PETITON_TYPE,
         IMM.OPEN_DATE,
         (SELECT 
                 FIRST_NAME
             FROM
-                SOURCELEAD.CANDIDATE
+                CANDIDATE
             WHERE
                 ID = IMM.CANDIDATE_ID) AS FIRS_TNAME,
         (SELECT 
                 EMAIL
             FROM
-                SOURCELEAD.CANDIDATE
+                CANDIDATE
             WHERE
                 ID = IMM.CANDIDATE_ID) AS EMAIL,
         (SELECT 
                 MOBILE_PHONE
             FROM
-                SOURCELEAD.CANDIDATE
+                CANDIDATE
             WHERE
                 ID = IMM.CANDIDATE_ID) AS PHONE,
             (SELECT 
             START_DATE
         FROM
-            SOURCELEAD.CANDIDATE_LCA_I94_SUMMARY LCA
+            CANDIDATE_LCA_I94_SUMMARY LCA
         WHERE
             LCA.CANDIDATE_ID = IMM.CANDIDATE_ID
                 AND LCA.IS_CURR = 'Y') AS LCA_START_DATE,
     	(SELECT 
             END_DATE
         FROM
-            SOURCELEAD.CANDIDATE_LCA_I94_SUMMARY LCA
+            CANDIDATE_LCA_I94_SUMMARY LCA
         WHERE
             LCA.CANDIDATE_ID = IMM.CANDIDATE_ID
                 AND LCA.IS_CURR = 'Y') AS LCA_END_DATE,
       (SELECT 
             O.ORG_NAME
         FROM
-            SOURCELEAD.ORG_LOCATIONS OL,
-            SOURCELEAD.ORG O
+            ORG_LOCATIONS OL,
+            ORG O
         WHERE
             OL.ORG_ID = O.ID
                 AND OL.ID = IMM.ORG_LOCATION_ID) AS CLIENT,
     (SELECT 
             O.ORG_NAME
         FROM
-            SOURCELEAD.ORG_LOCATIONS OL,
-            SOURCELEAD.ORG O
+            ORG_LOCATIONS OL,
+            ORG O
         WHERE
             OL.ORG_ID = O.ID
                 AND OL.ID = IMM.ATTORNEY_LOCATION_ID) AS VENDOR,
@@ -130,7 +130,7 @@ CREATE OR REPLACE VIEW IMMIGRATION_LIST_VIEW AS
              AND OS.ID=IMM.ORG_SPOC_ID ) AS SPOC_NAME_VENDOR
                     
     FROM
-        SOURCELEAD.IMMIGRATION IMM
+        IMMIGRATION IMM
         
         ORDER BY IMM.UPDATED_DATE DESC;
 
@@ -203,50 +203,50 @@ CREATE OR REPLACE VIEW MY_IMMIGRATION_VIEW AS
         (SELECT 
                 NAME
             FROM
-                SOURCELEAD.LOOKUP_DATA
+                LOOKUP_DATA
             WHERE
                 ID = IMM.CURRENT_USCIS_STATUS) AS CURRENT_USCIS_STATUS,
         (SELECT 
                 NAME
             FROM
-                SOURCELEAD.LOOKUP_DATA
+                LOOKUP_DATA
             WHERE
                 ID = IMM.PETITION_TYPE) AS PETITON_TYPE,
         IMM.OPEN_DATE,
         (SELECT 
                 FIRST_NAME
             FROM
-                SOURCELEAD.CANDIDATE
+                CANDIDATE
             WHERE
                 ID = IMM.CANDIDATE_ID) AS FIRS_TNAME,
         (SELECT 
                 EMAIL
             FROM
-                SOURCELEAD.CANDIDATE
+                CANDIDATE
             WHERE
                 ID = IMM.CANDIDATE_ID) AS EMAIL,
         (SELECT 
                 MOBILE_PHONE
             FROM
-                SOURCELEAD.CANDIDATE
+                CANDIDATE
             WHERE
                 ID = IMM.CANDIDATE_ID) AS PHONE,
             (SELECT 
             START_DATE
         FROM
-            SOURCELEAD.CANDIDATE_LCA_I94_SUMMARY LCA
+            CANDIDATE_LCA_I94_SUMMARY LCA
         WHERE
             LCA.CANDIDATE_ID = IMM.CANDIDATE_ID
                 AND LCA.IS_CURR = 'Y') AS LCA_START_DATE,
     	(SELECT 
             END_DATE
         FROM
-            SOURCELEAD.CANDIDATE_LCA_I94_SUMMARY LCA
+            CANDIDATE_LCA_I94_SUMMARY LCA
         WHERE
             LCA.CANDIDATE_ID = IMM.CANDIDATE_ID
                 AND LCA.IS_CURR = 'Y') AS LCA_END_DATE
                     
     FROM
-        SOURCELEAD.IMMIGRATION IMM
+        IMMIGRATION IMM
         
         ORDER BY IMM.UPDATED_DATE DESC;
