@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.TimesheetActivityDao;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimesheetActivities;
+import com.bis.sourcelead.entity.TimesheetSubmissionsDocumentsHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.TimesheetActivityService;
+import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -27,6 +31,9 @@ public class TimesheetActivityServiceImpl implements TimesheetActivityService {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private TimesheetSubmissionsDocumentsService timesheetSubmissionsDocumentsService;
 	
 	@Override
 	public List<TimesheetActivities> getTimesheetActivityByProjectIdMasterCandidateIdFrequencyStartAndEndDate(Long projectId,Long masterCAndidateId,String timesheetFrequency,OrgLocations orgLocations) throws Exception {
@@ -48,6 +55,18 @@ public class TimesheetActivityServiceImpl implements TimesheetActivityService {
 				    	 userName.append(user.getFirstName());
 				     }
 				     activity.setUserFullName(userName.toString());
+			     }
+			     if(activity.getId() != null) {
+			    	 List<TimesheetSubmissionsDocumentsHistory> documentHistory = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsHistoryByTimesheetActivityId(activity.getId());
+			    	 List<FileInfo> fileUrl = new ArrayList<>();
+			    	 for(TimesheetSubmissionsDocumentsHistory docHistory:documentHistory){
+			    		 FileInfo file = new FileInfo();
+			    		 file.setFileURL(docHistory.getFileUrl());
+			    		 file.setFileName(docHistory.getFileName());
+			    		 file.setContentType(docHistory.getFileContentType());
+			    		 fileUrl.add(file);
+			    	 }
+			    	 activity.setTimesheetFileUrl(fileUrl);
 			     }
 			 }
 			return submissionHistory;

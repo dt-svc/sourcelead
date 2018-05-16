@@ -104,4 +104,15 @@ public class TimesheetSubmissionsDocumentsDaoImpl implements TimesheetSubmission
 	}
 
 
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimesheetSubmissionsDocumentsHistory> getAllTimesheetSubmissionsDocumentsHistoryByTimesheetActivityId(Long activityId) {
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from TimesheetSubmissionsDocumentsHistory tsdHistory where tsdHistory.timesheetActivity =:activityId) ";
+	    List<TimesheetSubmissionsDocumentsHistory> timesheetSubmissionsDocumentsHistory = session.createQuery(query.toString()).setLong("activityId", activityId).list();
+        return timesheetSubmissionsDocumentsHistory;
+	}
+
+
 }

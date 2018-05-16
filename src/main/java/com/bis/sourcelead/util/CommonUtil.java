@@ -66,6 +66,7 @@ import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -124,7 +125,9 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.text.DecimalFormat;
 import com.thoughtworks.xstream.XStream;
@@ -2228,15 +2231,44 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			timesheetActivity.setReopenedUser(sah.getReopenedUser());
 			timesheetActivity.setReopenReason(sah.getReopenReason());
 			timesheetActivity.setReopenRejectedReason(sah.getReopenRejectedReason());
-			timesheetActivity.setCreatedDate(sah.getCreatedDate());
+			Date createdDate = addCurrentTimeToDate(sah.getCreatedDate());
+			timesheetActivity.setCreatedDate(createdDate);
 			timesheetActivity.setCreatedBy(sah.getCreatedBy());
 			timesheetActivity.setActionPerformedbyUserId(sah.getTimesheetActivityLoginUser());
+			if(sah.getSubmissionId() != null) {
+				timesheetActivity.setWeekComments(sah.getSubmissionId().getWeekcomments());
+			}
+			timesheetActivity.setWeekTotal(sah.getSubmissionId().getTotalHours());
+			timesheetActivity.setWeekTotalBillable(sah.getSubmissionId().getBillableHours());
+			timesheetActivity.setWeekTotalNonBillable(sah.getSubmissionId().getNonBillableHours());
 		}
 		return timesheetActivity;
 	}
 	
 	
-  public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicenseSubscription orgLicenseSubscription,User loginUser) {
+  private static Date addCurrentTimeToDate(Date createdDate) {
+	  SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+	  Calendar cal = Calendar.getInstance();
+	  cal.setTime(createdDate);
+	  
+	  Calendar calender = Calendar.getInstance();
+	  calender.setTime(new Date());
+	     
+      String currentdate =  sdf.format(calender.getTime());
+      String hh = currentdate.split(":")[0];
+      String mm = currentdate.split(":")[1];
+      String ss = currentdate.split(":")[2];
+      
+      cal.add(Calendar.HOUR_OF_DAY, Integer.parseInt(hh));
+      cal.add(Calendar.MINUTE, Integer.parseInt(mm));
+      cal.add(Calendar.SECOND, Integer.parseInt(ss));
+      
+      Date newDate = cal.getTime();
+      System.out.println(newDate);
+      return newDate;
+	}
+
+public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicenseSubscription orgLicenseSubscription,User loginUser) {
 		
 		OrgLicenseSubscriptionHistory history = new OrgLicenseSubscriptionHistory();
 		history.setOrgLicenseSubscription(orgLicenseSubscription);
@@ -2366,6 +2398,4 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 	}
 	  
   }
-
-		
 }

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
+import com.bis.sourcelead.dto.FileInfo;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
@@ -134,6 +136,9 @@ public class TimesheetActivities {
 	@Column(name = "CREATED_BY")
 	private String createdBy;
 	
+	@Column(name="WEEK_COMMENTS",columnDefinition = "TEXT default NULL")
+	private String weekComments;
+	
 	@Transient
 	@JsonProperty
 	@JsonBackReference
@@ -148,6 +153,20 @@ public class TimesheetActivities {
 	@JsonProperty
 	@JsonBackReference
 	private String userFullName;
+	
+	@Transient
+	@JsonProperty
+	@JsonBackReference
+	private List<FileInfo> timesheetFileUrl;
+	
+	@Column(name = "WEEK_TOTAL")
+	private String weekTotal;
+	
+	@Column(name = "WEEK_TOTAL_BILLABLE")
+	private String weekTotalBillable;
+	
+	@Column(name = "WEEK_TOTAL_NON_BILLABLE")
+	private String weekTotalNonBillable;
 	
 	/*@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
@@ -305,6 +324,46 @@ public class TimesheetActivities {
 
 	public void setUserFullName(String userFullName) {
 		this.userFullName = userFullName;
+	}
+
+	public List<FileInfo> getTimesheetFileUrl() {
+		return timesheetFileUrl;
+	}
+
+	public void setTimesheetFileUrl(List<FileInfo> timesheetFileUrl) {
+		this.timesheetFileUrl = timesheetFileUrl;
+	}
+
+	public String getWeekComments() {
+		return weekComments;
+	}
+
+	public void setWeekComments(String weekComments) {
+		this.weekComments = weekComments;
+	}
+
+	public String getWeekTotal() {
+		return weekTotal;
+	}
+
+	public void setWeekTotal(String weekTotal) {
+		this.weekTotal = weekTotal;
+	}
+
+	public String getWeekTotalBillable() {
+		return weekTotalBillable;
+	}
+
+	public void setWeekTotalBillable(String weekTotalBillable) {
+		this.weekTotalBillable = weekTotalBillable;
+	}
+
+	public String getWeekTotalNonBillable() {
+		return weekTotalNonBillable;
+	}
+
+	public void setWeekTotalNonBillable(String weekTotalNonBillable) {
+		this.weekTotalNonBillable = weekTotalNonBillable;
 	}
 	
 }

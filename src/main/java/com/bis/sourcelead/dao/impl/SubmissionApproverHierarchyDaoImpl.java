@@ -594,6 +594,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		Query submissionApproverHierarchyListQuery = session.createQuery("from  SubmissionApproverHierarchy sah left join fetch sah.submissionId submission left join fetch submission.masterCandidateId mc left join fetch submission.projects projects left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user where project.id IN( select subPm.projects.id from ProjectMembers subPm where subPm.id = :projectMemberId ) and mc.id IN( select subPm.masterCandidateId.id from ProjectMembers subPm where subPm.id = :projectMemberId )  and  (ts.startDate between :startDate and :endDate OR ts.startDate = :startDate)");
 		List<SubmissionApproverHierarchy> submissionApproverHierarchyList = submissionApproverHierarchyListQuery.setLong("projectMemberId", projectMemberId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
 		if (submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()) {
+			TimesheetActivities ta = null;
 			for (SubmissionApproverHierarchy sah : submissionApproverHierarchyList) {
 				if (null != type && "notify".equalsIgnoreCase(type) && null != isSuperUser
 						&& isSuperUser.equalsIgnoreCase(Constants.YES)) {
@@ -623,12 +624,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				
 				try {
 					session.saveOrUpdate(sah);
-					TimesheetActivities ta = CommonUtil.getTimesheetActivity(sah, type);
-			        timesheetActivityService.saveTimesheetActivity(ta);
-					
+					ta = CommonUtil.getTimesheetActivity(sah, type);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}
+			if(ta != null) {
+			 timesheetActivityService.saveTimesheetActivity(ta);
 			}
 			return submissionApproverHierarchyList.get(0).getReopenedUser();
 		}
