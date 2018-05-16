@@ -19,9 +19,9 @@
                     <div>
                       <select class="sel" id="federaltaxFillingStatus" name="federaltaxFillingStatus" data-validation="required" field-name="Filling Status">
                         <option value="">--Select--</option>
-                        <option value="Single">Single</option>
-                        <option value="Married">Married</option>
-                        <option value="Married_Single_Income">Married Single Income</option>
+                        <option value="SINGLE">Single</option>
+                        <option value="MARRIED">Married</option>
+                        <option value="MARRIED_USE_SINGLE_RATE">Married Single Income</option>
                         <option value="Married_Dual_Income">Married Dual Income</option>
                         <option value="Head_of_Household">Head of Household</option>
                       </select>

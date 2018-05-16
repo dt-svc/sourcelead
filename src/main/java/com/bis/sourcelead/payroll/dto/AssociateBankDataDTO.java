@@ -4,30 +4,27 @@ import com.bis.sourcelead.annotations.Required;
 
 public class AssociateBankDataDTO {
 	
-	private long id;
+	private Long id;
 	
 	@Required(desc = "Account Type")
 	private String accountType;
 	
-	@Required(desc = "Bank Name")
 	private String bankName;
 	
-	@Required(desc = "Account Number")
 	private String accountNumber;
 	
-	@Required(desc = "Routing Number")
 	private String routingNumber;
 	
 	private String associateBankDataUUID;
 	
 	private String userId;
 	
-	public long getId()
+	public Long getId()
 	{
 		return id;
 	}
 
-	public void setId(long id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

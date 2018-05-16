@@ -8,7 +8,7 @@
                  <div class="col-md-5">
                   <label>Account Type<span class="text-danger">&nbsp;*</span></label>
                   <div>
-                    <select class="form-control chosen-select" id="accountType" name ="accountType" data-validation="required" field-name="Account Type">
+                    <select class="form-control chosen-select" id="accountType" name ="accountType" data-validation="required" onchange="showHideAccountTypes();" field-name="Account Type">
                       <option value="">Bank Transfer</option>
                       <option value="Direct Deposit">Direct Deposit</option>
                       <option value="Cheque">Cheque</option>
@@ -17,26 +17,28 @@
                   </div>
                 </div>
                
-                 <div class="col-md-5">
-                  <label>Bank Name<span class="text-danger">&nbsp;*</span></label>
-                  <div>
-                    <input type="text" class="form-control" id="bankName" name="bankName" value="" data-validation="required validate_Space validate_length length2-100" field-name="Bank Name">
-                  </div>
-                </div>
-
-               <div class="col-md-5">
-                  <label>Account Number<span class="text-danger">&nbsp;*</span></label>
-                  <div>
-                    <input type="text" class="form-control" id="accountNumber" name="accountNumber" value="" data-validation="required validate_Space validate_int validate_length length2-100" field-name="Account Number">
-                  </div>
-                </div>
-                
-                <div class="col-md-5">
-                  <label>Routing Number<span class="text-danger">&nbsp;*</span></label>
-                  <div>
-                    <input type="text" class="form-control" id="routingNumber" name="routingNumber" value="" data-validation="required validate_space validate_int validate_length length9-9" field-name="Routing Number">
-                  </div>
-                </div>
+               <div id="accountTypeChildDivs">
+	               <div class="col-md-5">
+	                  <label>Bank Name<span class="text-danger">&nbsp;*</span></label>
+	                  <div>
+	                    <input type="text" class="form-control" id="bankName" name="bankName" value="" data-validation="required validate_Space validate_length length2-100" field-name="Bank Name">
+	                  </div>
+	                </div>
+	
+	               <div class="col-md-5">
+	                  <label>Account Number<span class="text-danger">&nbsp;*</span></label>
+	                  <div>
+	                    <input type="text" class="form-control" id="accountNumber" name="accountNumber" value="" data-validation="required validate_Space validate_int validate_length length2-100" field-name="Account Number">
+	                  </div>
+	                </div>
+	                
+	                <div class="col-md-5">
+	                  <label>Routing Number<span class="text-danger">&nbsp;*</span></label>
+	                  <div>
+	                    <input type="text" class="form-control" id="routingNumber" name="routingNumber" value="" data-validation="required validate_space validate_int validate_length length9-9" field-name="Routing Number">
+	                  </div>
+	                </div>
+               </div>
                 
                  <div class="clearfix"></div>
                  <div class="clearfix footerstyelsNew">
@@ -63,7 +65,6 @@
 				$("#save_associate_bank_data_button").attr("disabled", "disabled");
 				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	            $( "#save_associate_bank_data_button" ).addClass('button').val('Processing..');
-	            
 	            $.ajax({
 					type : "POST",
 	        	    data: formData,
@@ -105,7 +106,33 @@
 		$("#associate_bank_data_form").validateOnBlur(false, validationSettings);  
    });
   
-</script>  
+</script> 
+
+<script>
+function showHideAccountTypes(){
+	var accountType = $("#accountType").val();
+	if(accountType == "Direct Deposit"){
+		$("#accountTypeChildDivs").hide();
+		$("#bankName").val('');
+		$("#accountNumber").val('');
+		$("#routingNumber").val('');
+		$("#bankName").removeAttr('data-validation');
+		$('#bankName').attr('data-validation-optional',"true");
+		$("#accountNumber").removeAttr('data-validation');
+		$('#accountNumber').attr('data-validation-optional',"true");
+		$("#routingNumber").removeAttr('data-validation');
+		$('#routingNumber').attr('data-validation-optional',"true");
+	}else{
+		$("#accountTypeChildDivs").show();
+		$("#bankName").removeAttr('data-validation-optional');
+		$('#bankName').attr('data-validation',"required");
+		$("#accountNumber").removeAttr('data-validation-optional');
+		$('#accountNumber').attr('data-validation',"required");
+		$("#routingNumber").removeAttr('data-validation-optional');
+		$('#routingNumber').attr('data-validation',"required");
+	}
+}
+</script> 
 <script>
 function skipAssociateBankDataJsp(){
 	var associateBanking = document.getElementById("associateTax");

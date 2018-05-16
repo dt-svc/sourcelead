@@ -22,7 +22,7 @@ function associateContributionSummary(userId){
             result = result + '</div>';
 
             result = result + '<div class="styleTables">';
-            result = result + '<table>';
+            result = result + "<table id='associateContributionListTable' class='display' cellspacing='0' width='100%' >";
             result = result + '<thead>';
             result = result + '<tr>';
             result = result + '<th>Type</th>';
@@ -87,13 +87,28 @@ function associateContributionSummary(userId){
                 $("#tab-23").empty(); 
                 $("#tab-24").empty(); 
                 $("#tab-24").append(result); 
+                associateContributionListPagination();
           },
             
        }); 
   } 
 </script>
 
-
+<script>
+function associateContributionListPagination(){  
+    $('#associateContributionListTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
 <script>
  function showEdit(id,dedVal){
 	 document.getElementById("preDedDiv"+id).style.display="none";

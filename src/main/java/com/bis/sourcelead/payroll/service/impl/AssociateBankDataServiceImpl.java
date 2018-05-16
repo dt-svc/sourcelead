@@ -3,6 +3,7 @@ package com.bis.sourcelead.payroll.service.impl;
 import java.util.Date;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.codehaus.plexus.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 		Response<AssociateBankDataDTO> resObj = new Response<>();
 		try {
 			if (Validator.validate(associateBankDataDTO)) {
-				if(associateBankDataDTO.getId() != 0){
+				if(associateBankDataDTO.getId() != null && associateBankDataDTO.getId() != 0){
 					associateBankData = associateBankDataDao.findAssociateBankDataById(associateBankDataDTO.getId());
 				}else {
 					associateBankData = new AssociateBankData();
@@ -47,9 +48,12 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 					associateBankData.setUserId(user);
 				}
 				associateBankData.setAccountType(associateBankDataDTO.getAccountType());
-				associateBankData.setBankName(associateBankDataDTO.getBankName());
-				associateBankData.setAccountNumber(associateBankDataDTO.getAccountNumber());
-				associateBankData.setRoutingNumber(associateBankDataDTO.getRoutingNumber());
+				if(StringUtils.isNotBlank(associateBankDataDTO.getBankName()))
+					associateBankData.setBankName(associateBankDataDTO.getBankName());
+				if(StringUtils.isNotBlank(associateBankDataDTO.getAccountNumber()))
+					associateBankData.setAccountNumber(associateBankDataDTO.getAccountNumber());
+				if(StringUtils.isNotBlank(associateBankDataDTO.getRoutingNumber()))
+					associateBankData.setRoutingNumber(associateBankDataDTO.getRoutingNumber());
 				associateBankData.setOrgLocationId(orgLocation);
 				associateBankData.setStatus(1);
 				associateBankData.setAssociateBankUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -81,13 +85,17 @@ public class AssociateBankDataServiceImpl implements AssociateBankDataService{
 	public AssociateBankDataDTO findAssociateBankDataByUserId(Long userId, OrgLocations orgLocation)
 	{
 		AssociateBankData associateBankData =  associateBankDataDao.findAssociateBankDataByUserId(userId,orgLocation);
-		AssociateBankDataDTO associateBankDataDTO = new AssociateBankDataDTO();
-		associateBankDataDTO.setId(associateBankData.getId());
-		associateBankDataDTO.setAccountType(associateBankData.getAccountType());
-		associateBankDataDTO.setBankName(associateBankData.getBankName());
-		associateBankDataDTO.setRoutingNumber(associateBankData.getRoutingNumber());
-		associateBankDataDTO.setAssociateBankDataUUID(associateBankData.getAssociateBankUuid());
-		associateBankDataDTO.setAccountNumber(associateBankData.getAccountNumber());
-		return associateBankDataDTO;
+		if(associateBankData != null){
+			AssociateBankDataDTO associateBankDataDTO = new AssociateBankDataDTO();
+			associateBankDataDTO.setId(associateBankData.getId());
+			associateBankDataDTO.setAccountType(associateBankData.getAccountType());
+			associateBankDataDTO.setBankName(associateBankData.getBankName());
+			associateBankDataDTO.setRoutingNumber(associateBankData.getRoutingNumber());
+			associateBankDataDTO.setAssociateBankDataUUID(associateBankData.getAssociateBankUuid());
+			associateBankDataDTO.setAccountNumber(associateBankData.getAccountNumber());
+			return associateBankDataDTO;
+		}else{
+			return null;
+		}
 	}
 }

@@ -32,35 +32,25 @@ $(document).ready(function(){
       
     </section>
       <div id="addContributionLoading"></div>
-    <div class="contentareaInner-styles clearfix">
       <form:form id="add_contribution_form" name="add_contribution_form" method="post">
-      <div class="clearfix form-horizontal minHeight_225">
-        <div class="clearfix row">
+      <div class="contentareaInner-styles clearfix">
+      <div class="clearfix minHeightcol5 row">
           <div class="col-md-5">
-			<div class="form-group">
-			<label class="col-md-12">For Deduction<span class="text-danger paddingLeft">&nbsp;*</span></label>
-			<div id="contributionNameDive">
-			<div class="col-md-12">
-			<select class="form-control chosen-select" id="deductionTypeId" name="deductionTypeId" data-validation="required" onchange="isValidContributionType();" field-name="Deduction Type">
-			</select>
-			<input type="hidden" value="${payrollContribution.contributionUUID }" id="contributionUUID" name="contributionUUID"/>
-			</div>
-			</div>
-			</div>
-			  <div class="form-group">
-              <label class="col-md-12">Amount<span class="text-danger paddingLeft">&nbsp;*</span></label>
-              <div class="col-md-12">
-                <input type="text" class="form-control" value="${payrollContribution.contributionAmount  }" id="contributionAmount" name="contributionAmount" data-validation="required validate_int" field-name="Amount">
-              </div>
-            </div>
+				<label class="clearfix">For Deduction<span class="text-danger paddingLeft">&nbsp;*</span></label>
+				<div id="contributionNameDive">
+				<div class="clearfix">
+				<select class="form-control chosen-select" id="deductionTypeId" name="deductionTypeId" data-validation="required" onchange="isValidContributionType();" field-name="Deduction Type">
+				</select>
+				<input type="hidden" value="${payrollContribution.contributionUUID }" id="contributionUUID" name="contributionUUID"/>
+				</div>
+				</div>
 			</div>          
 			
 			
 			<div class="col-md-5">
-			<div class="form-group">
-			<label class="col-md-12">Method</label>
-			<div class="col-md-12 dropdown-select">
-				<select class="form-control" id="payrollContributionMethod" name="payrollContributionMethod">
+			<label class="clearfix">Method</label>
+			<div class="clearfix dropdown-select">
+				<select class="form-control" id="payrollContributionMethod" name="payrollContributionMethod" onchange="validateContributionMethodType();">
 				<option>Select Method</option>
 				 <option ${payrollContribution.payrollContributionMethod == 'Fixed' ? 'selected' : ''} value = "Fixed">Fixed</option>
 				  <option ${payrollContribution.payrollContributionMethod == 'Percent' ? 'selected' : ''} value = "Percent">Percent</option>
@@ -68,25 +58,32 @@ $(document).ready(function(){
 			</div>
 			</div>
 			
-			<div class="form-group">
-			<label class="col-md-12">Description</label>
-			<div class="col-md-12">
+			<div class="col-md-5">
+              <label class="clearfix">Amount<span class="text-danger paddingLeft">&nbsp;*</span></label>
+              <div class="clearfix" id="contributionAmountDiv">
+                <input type="text" class="form-control" value="${payrollContribution.contributionAmount}" id="contributionAmount" name="contributionAmount" data-validation="required validate_int" onblur="validateContributionMethodType();" field-name="Amount">
+              </div>
+            </div>
+            
+			<div class="col-md-5">
+			<label class="clearfix">Description</label>
+			<div class="clearfix">
 			<textarea rows="2" class="form-control" id="description" name="description" data-validation="validate_length length1-250">${payrollContribution.description  }</textarea>
 			</div>
 			</div>
+			
+        
         </div>
-        </div>
+        <div class="clearfix footerstyelsNew">
+	        <div class="col-lg-12">
+	          <div class="pull-right">
+	            <input value="Save" class="btn btn-success btnSuccess" id="save_contributionType" type="button" onclick="saveContribution();">
+	            <input value="Cancel" class="btn btn-default ml10" onclick="window.location='${appPath}/payrollContribution';" type="button">
+	          </div>
+	        </div>
+      	</div>   
       </div>
-	<div class="clearfix footerstyelsNew">
-        <div class="col-lg-12">
-          <div class="pull-right">
-            <input value="Save" class="btn btn-success btnSuccess" id="save_contributionType" type="button" onclick="saveContribution();">
-            <input value="Cancel" class="btn btn-default ml10" type="button">
-          </div>
-        </div>
-      </div>   
       </form:form>   
-		</div>
       <!-- Content Area Ends--> 
     
   </section>
@@ -136,15 +133,39 @@ function saveContribution(){
 			     		   addContributeMsgFadein();
 		  			   }); 
 		    	         return true; 
-         }else{
+               }else{
 	    		return false;
 	    	  } 
 }
 
-$('body').on('blur', '#add_deduction_form', function() {
+$('body').on('blur', '#add_contribution_form', function() {
 	$("#add_contribution_form").showHelpOnFocus();
-	$("#add_contribution_form").validateOnBlur(false, validationSettings);  
-}); 
+	$("#add_contribution_form").validateOnBlur(false, validationSettings);
+});
+
+</script>
+
+<script>
+function validateContributionMethodType() {
+	$('#contributionAmountDiv').parent().find('p.jquery_form_error_message').remove(); 
+	 var selectedMethod = document.getElementById("payrollContributionMethod").value;
+	 var enteredValue = document.getElementById("contributionAmount").value;
+	 
+	 if(selectedMethod =='Percent'){
+		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		  if(enteredValue.match(floatNum)){
+			  $("#save_contributionType").removeAttr("disabled", "disabled");
+			   return true;
+		  }		  
+		 else{
+				$("#contributionAmountDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
+				$("#save_contributionType").attr("disabled", "disabled");
+				return false; 
+		 	 }
+	  }if(selectedMethod =='Fixed'){
+			  $("#save_contributionType").removeAttr("disabled", "disabled");
+		  }		  
+}
 </script>
 
 <script>

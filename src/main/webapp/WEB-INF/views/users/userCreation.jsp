@@ -1195,6 +1195,18 @@ function clearDate(){
 					associateDeduction.className = "disabledLink";
 				} 
 				
+				var associateContribution = document.getElementById("associateContribution");
+				if(associateContribution){
+					associateContribution.href = "#";
+					associateContribution.className = "disabledLink";
+				} 
+				
+				var associateAdvances = document.getElementById("associateAdvances");
+				if(associateAdvances){
+					associateAdvances.href = "#";
+					associateAdvances.className = "disabledLink";
+				} 
+				
 				// associateContribution associateAdvances
 
 $(document).ready(function() {
