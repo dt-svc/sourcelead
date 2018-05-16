@@ -197,6 +197,9 @@ public class ClientServiceImpl implements ClientService {
 	ReferContactsDao referContactsDao;
 	
 	@Autowired
+	private TabsService tabService;
+	
+	@Autowired
 	UserDao userDao;
 	
 	@Value("${SourceLead.100}")
@@ -1418,6 +1421,48 @@ public class ClientServiceImpl implements ClientService {
 				}	
 			}
 			
+			if(StringUtils.isNotBlank(orgRelation.getIsLawFirm()) && orgRelation.getIsLawFirm().equalsIgnoreCase(Constants.YES)){
+				OrgLicenseSubscription subscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(orgLocations.getOrg().getId(), orgLocations.getCountry());
+				String[] subscriptionTabs = subscription.getSubscriptionTabs().split(",");
+				List<Long> subscriptionTabIdsList = new ArrayList<>();
+				for(int i=0; i<subscriptionTabs.length;i ++){
+					subscriptionTabIdsList.add(Long.valueOf(subscriptionTabs[i]));
+				}
+				
+				if(!subscriptionTabIdsList.contains(Long.valueOf(Constants.TAB_IMMIGRATION))){
+					List<Long> tabsIds = new ArrayList<>();
+					List<Tabs> childTabsList = tabService.getClildTabsListByTabId(Long.valueOf(Constants.TAB_IMMIGRATION));
+					if(childTabsList.size() > 0) {
+						for(Tabs childTabs : childTabsList) {
+							tabsIds.add(childTabs.getId());
+						}
+					}
+					
+					List<Long> sourceLeadActionsIdsList =  sourceleadActionsService.getAllSourceleadActionsIdsByTabsList(tabsIds);
+					StringBuilder immigrationTabIds  = new StringBuilder();
+					for(Long tabId : sourceLeadActionsIdsList){
+						immigrationTabIds.append(tabId).append(",");
+					}
+					
+					String tabIds = immigrationTabIds.toString();
+					tabIds = tabIds.substring(0, tabIds.length()-1);
+					
+					Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+					String adminIds = adminrole.getActionId()+","+tabIds;
+					adminrole.setActionId(adminIds);
+					rolesService.storeRoles(adminrole);
+					
+					Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
+					String managerIds = managerrole.getActionId()+","+tabIds;
+					managerrole.setActionId(managerIds);
+					rolesService.storeRoles(managerrole);
+					
+					String subscriptionRegisteredTabs = subscription.getSubscriptionTabs();
+					subscriptionRegisteredTabs = subscriptionRegisteredTabs+","+Constants.TAB_IMMIGRATION;
+					subscription.setSubscriptionTabs(subscriptionRegisteredTabs);
+					orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
+				}
+			}
 			
 		} else {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "ORG RELATIONS"));
