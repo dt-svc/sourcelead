@@ -2,4 +2,4 @@ UPDATE `EMAIL_SCENARIO` SET `SUBJECT`='Invitation from {{CandidateInvitation.log
 UPDATE `EMAIL_SCENARIO` SET `SUBJECT`='Invitation from {{inviteCompany.LoginUser}}' WHERE `ID`='222';
 
 
-CALL AlterTableAddColumn ('sourcelead','USER_MAIL_BOX','FILE_URL','TEXT NULL  AFTER `FILE_NAME`');
+CALL AlterTableAddColumn ('USER_MAIL_BOX','FILE_URL','TEXT NULL  AFTER `FILE_NAME`');
