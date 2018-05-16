@@ -20,7 +20,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Missing Bills List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Report(s) Dashboard</a> &raquo; Missing Billing Lists </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Report(s) Dashboard</a> &raquo; Missing Bills List </div>
     </section>
     <!-- hiring Process  -->
     <div class="content-dashboard clearfix">
@@ -30,7 +30,7 @@ $(document).ready(function(){
         <a href='${appPath}/missingBillReport' title="List View" class="btn btn-default rAct"><i class="fa fa-list"></i></a>
         </div>
         <div class="col-md-4">
-          <select class="chosen-select form-control" multiple data-placeholder="Select Client" id="orgIds" name="orgIds">
+          <select class="chosen-select form-control" multiple data-placeholder="Select Vendor" id="orgIds" name="orgIds">
             <c:if test="${not empty vendorList}">
                <c:forEach items="${vendorList}" var="vendor">
    						<option value='${vendor.id }'>${vendor.orgName}</option>
@@ -69,7 +69,7 @@ $(document).ready(function(){
          <div class="col-md-2">
         <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingBillReportData();">Run</button>
 		</div>
-        <div class="col-md-1">
+       <!--  <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-download"></i></button>
             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
@@ -77,7 +77,7 @@ $(document).ready(function(){
               <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
             </ul>
           </div>
-        </div>
+        </div> -->
       </div>
       <!-- Best recruiters  -->
       <div class="content-dashboard clearfix"> 

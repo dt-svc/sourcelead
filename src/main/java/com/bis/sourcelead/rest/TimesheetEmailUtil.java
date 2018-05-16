@@ -492,7 +492,7 @@ public class TimesheetEmailUtil {
 				// calling the sendNotification method of emailScenerioUtil
 				EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 						Constants.MAIL_PROJECT_MANAGER_TIMESHEET, Constants.ENTITY_TYPE_NOTIFICATION);
-				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
+				String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 				notificationScenario.setBody(notificationBody);
 				notificationScenario.setOrgCode(loginOrgCode);
 				String actionLink = "";

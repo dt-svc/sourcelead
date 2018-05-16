@@ -468,6 +468,7 @@ function populateExpensesDetailsGrid(data){
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
         addConversionDiv();
+        calculateDisCount();
 }
 </script>
 
