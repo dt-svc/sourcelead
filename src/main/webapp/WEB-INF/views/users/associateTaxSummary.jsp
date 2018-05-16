@@ -16,39 +16,51 @@ function associateTaxSummary(userId){
        		result = result + '<div id="summaryBodyDiv">';
        		result = result + ' <div class="user_details_cta user_detailsCta userDetails-cta">';
        		result = result + ' <h4>Federal Tax</h4>';
-       		result = result + ' <div class="project_details_cta"> <strong>Filling Status:</strong> <span>';
-       		result = result + '  <input type="text" value='+json.federaltaxFillingStatus+' placeholder="Project name" class="project_detfield">';
-       		result = result + '  </span>';
+       		result = result + ' <div class="project_details_cta"> <strong>Filling Status:</strong>';
+       		if(json.federaltaxFillingStatus != null && json.federaltaxFillingStatus != '' && json.federaltaxFillingStatus != 'undefined')
+       			result = result + '  <span title="'+json.federaltaxFillingStatus+'" >'+json.federaltaxFillingStatus+'</span>';
+        	else
+        		result = result + ' <span>---</span>';
+       		
        		result = result + '   <div class="clearfix"></div>';
        		result = result + '   </div>';
-       		result = result + '   <div class="project_details_cta"> <strong>Allowances:</strong> <span>';
-       		result = result + '     <input type="text" value='+json.federaltaxAllowances+' placeholder="First name" class="project_detfield">';
-       		result = result + '      </span>';
+       		result = result + '   <div class="project_details_cta"> <strong>Allowances:</strong>';
+       		if(json.federaltaxAllowances != null && json.federaltaxAllowances != '' && json.federaltaxAllowances != 'undefined')
+       			result = result + '  <span title="'+json.federaltaxAllowances+'">'+json.federaltaxAllowances+'</span>';
+        	else
+        		result = result + '  <span>---</span>';
        		result = result + '     <div class="clearfix"></div>';
        		result = result + '    </div>';
-       		result = result + '    <div class="project_details_cta"> <strong>Additional with holding:</strong> <span>';
-       		result = result + '      <input type="text" value='+json.federaltaxAdditionalWithHolding+' placeholder="Client" class="project_detfield">';
-       		result = result + '      </span>';
+       		result = result + '    <div class="project_details_cta"> <strong>Additional with holding:</strong>';
+       		if(json.federaltaxAdditionalWithHolding != null && json.federaltaxAdditionalWithHolding != '' && json.federaltaxAdditionalWithHolding != 'undefined')
+       			result = result + '  <span title="'+json.federaltaxAdditionalWithHolding+'">'+json.federaltaxAdditionalWithHolding+'</span>';
+        	else
+        		result = result + '  <span>---</span>';
        		result = result + '      <div class="clearfix"></div>';
        		result = result + '   </div>';
        		result = result + '    </div>';
                          
        		result = result + '     <div class="user_details_cta user_detailsCta  userDetails-cta">';
        		result = result + '      <h4>State Tax</h4>';
-       		result = result + '    <div class="project_details_cta"> <strong>Filling Status:</strong> <span>';
-       		result = result + '     <input type="text" value='+json.stateTaxFillingStatus+' placeholder="DD/MM/YY" class="project_detfield">';
-       		result = result + '      </span>';
+       		result = result + '    <div class="project_details_cta"> <strong>Filling Status:</strong>';
+       		if(json.stateTaxFillingStatus != null && json.stateTaxFillingStatus != '' && json.stateTaxFillingStatus != 'undefined')
+       			result = result + '  <span title="'+json.stateTaxFillingStatus+'"> '+json.stateTaxFillingStatus+' </span>';
+        	else
+        		result = result + '  <span>---</span>';
        		result = result + '      <div class="clearfix"></div>';
        		result = result + '    </div>';
        		result = result + '    <div class="project_details_cta"> <strong>Allowances:</strong>';
-       		result = result + '    <span class="fix">';
-       		result = result + '      <input type="text" value='+json.stateTaxAllowances+' placeholder="DD/MM/YY" class="project_detfield">';
-       		result = result + '        </span>';
+       		if(json.stateTaxAllowances != null && json.stateTaxAllowances != '' && json.stateTaxAllowances != 'undefined')
+       			result = result + '  <span title="'+json.stateTaxAllowances+'"> '+json.stateTaxAllowances+'</span>';
+        	else
+        		result = result + '  <span>---</span>';
        		result = result + '     <div class="clearfix"></div>';
        		result = result + '   </div>';
-       		result = result + '   <div class="project_details_cta"> <strong>Additional with holding:</strong> <span>';
-       		result = result + '     <input type="text" value='+json.stateTaxAdditionalWithHolding+' placeholder="DD/MM/YY" class="project_detfield">';
-       		result = result + '    </span>';
+       		result = result + '   <div class="project_details_cta"> <strong>Additional with holding:</strong>';
+       		if(json.stateTaxAdditionalWithHolding != null && json.stateTaxAdditionalWithHolding != '' && json.stateTaxAdditionalWithHolding != 'undefined')
+       			result = result + '  <sapn title="'+json.stateTaxAdditionalWithHolding+'">'+json.stateTaxAdditionalWithHolding+'</span>';
+        	else
+        		result = result + '  <span>---</span>';
        		result = result + '    <div class="clearfix"></div>';
        		result = result + '   </div>';
        		result = result + ' </div>';
@@ -56,42 +68,64 @@ function associateTaxSummary(userId){
                         
        		result = result + '    <h4>Residence Location</h4>';
                          
-       		result = result + '   <div class="project_details_cta"> <strong>Filling Status:</strong> <span>';
-       		result = result + '     <input type="text" value='+json.residenceLocationFillingStatus+' placeholder="Project name" class="project_detfield">';
-       		result = result + '      </span>';
+       		result = result + '   <div class="project_details_cta"> <strong>Filling Status:</strong>';
+       		if(json.residenceLocationFillingStatus != null && json.residenceLocationFillingStatus != '' && json.residenceLocationFillingStatus != 'undefined')
+       			result = result + '  <span title="'+json.residenceLocationFillingStatus+'">'+json.residenceLocationFillingStatus+'</span>';
+        	else
+        		result = result + '  <span>---</span>';
        		result = result + '      <div class="clearfix"></div>';
        		result = result + '    </div>';
-       		result = result + '     <div class="project_details_cta"> <strong>Allowances:</strong> <span>';
-       		result = result + '       <input type="text" value='+json.residenceLocationAllowances+' placeholder="First name" class="project_detfield">';
-       		result = result + '         </span>';
+       		result = result + '     <div class="project_details_cta"> <strong>Allowances:</strong>';
+       		if(json.residenceLocationAllowances != null && json.residenceLocationAllowances != '' && json.residenceLocationAllowances != 'undefined')
+       			result = result + '  <span title="'+json.residenceLocationAllowances+'">'+json.residenceLocationAllowances+'</span>';
+        	else
+        		result = result + '  <span>---</span>';
        		result = result + '        <div class="clearfix"></div>';
        		result = result + '      </div>';
-       		result = result + '      <div class="project_details_cta"> <strong>Additional with holding:</strong> <span>';
-       		result = result + '        <input type="text" value='+json.residenceLocationAdditionalWithHolding+' placeholder="Client" class="project_detfield">';
-       		result = result + '        </span>';
+       		result = result + '      <div class="project_details_cta"> <strong>Additional with holding:</strong>';
+       		if(json.residenceLocationAdditionalWithHolding != null && json.residenceLocationAdditionalWithHolding != '' && json.residenceLocationAdditionalWithHolding != 'undefined')
+       			result = result + '  <span title="'+json.residenceLocationAdditionalWithHolding+'">'+json.residenceLocationAdditionalWithHolding+'</span>';
+        	else
+        		result = result + '  <span>---</span>';
        		result = result + '        <div class="clearfix"></div>';
        		result = result + '     </div>';
        		result = result + '     </div>';
        				
        		result = result + ' <div class="user_details_cta user_detailsCta  userDetails-cta">';
        		result = result + '   <h4>Additional</h4>';
-       		result = result + '     <div class="project_details_cta"> <strong>Federal:</strong><span>'+json.federalExempt+'</span>';
+       		result = result + '     <div class="project_details_cta"> <strong>Federal:</strong>';
+       		if(json.federalExempt != null && json.federalExempt != '' && json.federalExempt != 'undefined')
+       			result = result + '  <span title="'+json.federalExempt+'" >'+json.federalExempt+'</span>';
+        	else
+        		result = result + '  <span>---</span>';
        		result = result + '       <div class="clearfix"></div>';
        		result = result + '     </div>';
        		result = result + '     <div class="project_details_cta"> <strong>Mediacare:</strong>';
-       		result = result + '      <span>'+json.medicareExempt+'</span>';
+       		if(json.medicareExempt != null && json.medicareExempt != '' && json.medicareExempt != 'undefined')
+       			result = result + '  <span title="'+json.medicareExempt+'" >'+json.medicareExempt+'</span>';
+        	else
+        		result = result + '  <span>---</span>';
        		result = result + '      <div class="clearfix"></div>';
        		result = result + '    </div>';
        		result = result + '       <div class="project_details_cta"> <strong>Socail Security:</strong>';
-       		result = result + '        <span>'+json.socailSecurityExempt+'</span>';
+       		if(json.socailSecurityExempt != null && json.socailSecurityExempt != '' && json.socailSecurityExempt != 'undefined')
+       			result = result + '  <span title="'+json.socailSecurityExempt+'" >'+json.socailSecurityExempt+'</span>';
+        	else
+        		result = result + '  <span>---</span>';
        		result = result + '        <div class="clearfix"></div>';
        		result = result + '     </div>';
        		result = result + '     <div class="project_details_cta"> <strong>FUTA:</strong>';
-       		result = result + '      <span>'+json.futaExempt+'</span>';
+       		if(json.futaExempt != null && json.futaExempt != '' && json.futaExempt != 'undefined')
+       			result = result + '  <span title="'+json.futaExempt+'" >'+json.futaExempt+'</span>';
+        	else
+        		result = result + '  <span>---</span>';
        		result = result + '      <div class="clearfix"></div>';
        		result = result + '    </div>';
        		result = result + '    <div class="project_details_cta"> <strong>SUTA:</strong>';
-       		result = result + '     <span>'+json.sutaExempt+'</span>';
+       		if(json.sutaExempt != null && json.sutaExempt != '' && json.sutaExempt != 'undefined')
+       			result = result + '  <span title="'+json.sutaExempt+'" >'+json.sutaExempt+'</span>';
+        	else
+        		result = result + '  <span>---</span>';
        		result = result + '      <div class="clearfix"></div>';
        		result = result + '      </div>';
        		result = result + '    </div>';
@@ -125,7 +159,13 @@ function associateTaxSummary(userId){
         	  result = result + '<div id="loading"></div>';
         	  result = result + '<div class="clearfix row minHeightcol5">';
         	  result = result + '<form id="associate_tax_form"  name="associate_tax_form" method="post">';
-        	  result += '<input type="hidden" value='+json.id+' name="id" id="id"/>';
+        	  var id = "";
+              if(json.id != null && json.id != '' && json.id != 'undefined'){
+            	  id = json.id;
+              }else{
+            	  id = "";
+              }
+        	  result += '<input type="hidden" value=\''+id+'\' name="id" id="id"/>';
         	  result = result + '<div class="col-md-12 mb">';
         	  result = result + ' <div class="clearfix row">';
         	  result = result + '  <h4 class="col-md-12 mt">Federal Tax</h4>';
@@ -145,13 +185,25 @@ function associateTaxSummary(userId){
         	  result = result + '  <div class="col-md-5">';
         	  result = result + '    <label>Allowances<span class="text-danger">&nbsp;*</span></label>';
         	  result = result + '     <div>';
-        	  result = result + '     <input type="text" class="form-control" name="federaltaxAllowances" value='+json.federaltaxAllowances+' id="federaltaxAllowances" data-validation="required validate_Space validate_length length1-100" field-name="Allowances">';
+        	  var federaltaxAllowances = "";
+              if(json.federaltaxAllowances != null && json.federaltaxAllowances != '' && json.federaltaxAllowances != 'undefined'){
+            	  federaltaxAllowances = json.federaltaxAllowances;
+              }else{
+            	  federaltaxAllowances = "";
+              }
+        	  result = result + '     <input type="text" class="form-control" name="federaltaxAllowances" value=\''+federaltaxAllowances+'\' id="federaltaxAllowances" data-validation="required validate_Space validate_length length1-100" field-name="Allowances">';
         	  result = result + '    </div>';
         	  result = result + '  </div>';
         	  result = result + '   <div class="col-md-5">';
         	  result = result + '    <label>Additional with holding<span class="text-danger">&nbsp;*</span></label>';
               result = result + '    <div>';
-              result = result + '     <input type="text" class="form-control" name="federaltaxAdditionalWithHolding" value='+json.federaltaxAdditionalWithHolding+' id="federaltaxAdditionalWithHolding" data-validation="required validate_Space validate_length length1-100" field-name="Additional with holding">';
+              var federaltaxAdditionalWithHolding = "";
+              if(json.federaltaxAdditionalWithHolding != null && json.federaltaxAdditionalWithHolding != '' && json.federaltaxAdditionalWithHolding != 'undefined'){
+            	  federaltaxAdditionalWithHolding = json.federaltaxAdditionalWithHolding;
+              }else{
+            	  federaltaxAdditionalWithHolding = "";
+              }
+              result = result + '     <input type="text" class="form-control" name="federaltaxAdditionalWithHolding" value=\''+federaltaxAdditionalWithHolding+'\' id="federaltaxAdditionalWithHolding" data-validation="required validate_Space validate_length length1-100" field-name="Additional with holding">';
               result = result + '    </div>';
               result = result + '  </div>';
               result = result + '  <div class="clearfix"></div>';
@@ -172,13 +224,25 @@ function associateTaxSummary(userId){
               result = result + '  <div class="col-md-5">';
               result = result + '    <label>Allowances<span class="text-danger">&nbsp;*</span></label>';
               result = result + '    <div> ';
-              result = result + '      <input type="text" class="form-control" name="stateTaxAllowances" value='+json.stateTaxAllowances+' id="stateTaxAllowances" data-validation="required validate_Space validate_length length1-100" field-name="Allowances">';
+              var stateTaxAllowances = "";
+              if(json.stateTaxAllowances != null && json.stateTaxAllowances != '' && json.stateTaxAllowances != 'undefined'){
+            	  stateTaxAllowances = json.stateTaxAllowances;
+              }else{
+            	  stateTaxAllowances = "";
+              }
+              result = result + '      <input type="text" class="form-control" name="stateTaxAllowances" value=\''+stateTaxAllowances+'\' id="stateTaxAllowances" data-validation="required validate_Space validate_length length1-100" field-name="Allowances">';
               result = result + '     </div>';
               result = result + '   </div>';
               result = result + '   <div class="col-md-5">';
               result = result + '     <label>Additional with holding<span class="text-danger">&nbsp;*</span></label>';
               result = result + '<div>';
-              result = result + '     <input type="text" class="form-control" name="stateTaxAdditionalWithHolding" value='+json.stateTaxAdditionalWithHolding+' id="stateTaxAdditionalWithHolding" data-validation="required validate_Space validate_length length1-100" field-name="Additional with holding">';
+              var stateTaxAdditionalWithHolding = "";
+              if(json.stateTaxAdditionalWithHolding != null && json.stateTaxAdditionalWithHolding != '' && json.stateTaxAdditionalWithHolding != 'undefined'){
+            	  stateTaxAdditionalWithHolding = json.stateTaxAdditionalWithHolding;
+              }else{
+            	  stateTaxAdditionalWithHolding = "";
+              }
+              result = result + '     <input type="text" class="form-control" name="stateTaxAdditionalWithHolding" value=\''+stateTaxAdditionalWithHolding+'\' id="stateTaxAdditionalWithHolding" data-validation="required validate_Space validate_length length1-100" field-name="Additional with holding">';
               result = result + '  </div>';
               result = result + '  </div>';
                    
@@ -200,19 +264,31 @@ function associateTaxSummary(userId){
               result = result + '  <div class="col-md-5">';
               result = result + ' <label>Allowances<span class="text-danger">&nbsp;*</span></label>';
               result = result + '  <div> ';
-              result = result + '  <input type="text" class="form-control" name="residenceLocationAllowances" value='+json.residenceLocationAllowances+' id="residenceLocationAllowances" data-validation="required validate_Space validate_length length1-100" field-name="Allowances">';
+              var residenceLocationAllowances = "";
+              if(json.residenceLocationAllowances != null && json.residenceLocationAllowances != '' && json.residenceLocationAllowances != 'undefined'){
+            	  residenceLocationAllowances = json.residenceLocationAllowances;
+              }else{
+            	  residenceLocationAllowances = "";
+              }
+              result = result + '  <input type="text" class="form-control" name="residenceLocationAllowances" value=\''+residenceLocationAllowances+'\' id="residenceLocationAllowances" data-validation="required validate_Space validate_length length1-100" field-name="Allowances">';
               result = result + ' </div>';
               result = result + ' </div>';
-           result = result + '  <div class="col-md-5">';
+       		  result = result + '  <div class="col-md-5">';
               result = result + '    <label>Additional with holding<span class="text-danger">&nbsp;*</span></label>';
               result = result + '     <div>';
-              result = result + '       <input type="text" class="form-control" name="residenceLocationAdditionalWithHolding"  value='+json.residenceLocationAdditionalWithHolding+' id="residenceLocationAdditionalWithHolding" data-validation="required validate_Space validate_length length1-100" field-name="Additional with holding">';
+              var residenceLocationAdditionalWithHolding = "";
+              if(json.residenceLocationAdditionalWithHolding != null && json.residenceLocationAdditionalWithHolding != '' && json.residenceLocationAdditionalWithHolding != 'undefined'){
+            	  residenceLocationAdditionalWithHolding = json.residenceLocationAdditionalWithHolding;
+              }else{
+            	  residenceLocationAdditionalWithHolding = "";
+              }
+              result = result + '       <input type="text" class="form-control" name="residenceLocationAdditionalWithHolding"  value=\''+residenceLocationAdditionalWithHolding+'\' id="residenceLocationAdditionalWithHolding" data-validation="required validate_Space validate_length length1-100" field-name="Additional with holding">';
               result = result + '     </div>';
               result = result + '  </div>';
               result = result + '   <div class="col-md-5">';
               result = result + '    <label>Supplement Type<span class="text-danger">&nbsp;*</span></label>';
               result = result + '    <div>';
-              result = result + '      <select class="sel" id="residenceLocationSupplementType" name="residenceLocationSupplementType" value='+json.residenceLocationSupplementType+'  data-validation="required" field-name="Supplement Type"> ';
+              result = result + '      <select class="sel" id="residenceLocationSupplementType" name="residenceLocationSupplementType"  data-validation="required" field-name="Supplement Type"> ';
               result = result + '        <option  value="">--Select--</option>';
               result = result + '        <option '+ (json.residenceLocationSupplementType == "BONUS" ? "selected" : '') +' value="BONUS">Bonus</option>';
               result = result + '        <option '+ (json.residenceLocationSupplementType == "COMMISSION" ? "selected" : '') +' value="COMMISSION">Commission</option>';
@@ -227,7 +303,7 @@ function associateTaxSummary(userId){
               result = result + '     <option value="">--Select--</option>';
               if(json.localTax == 'NO'){
             	  result = result + ' <option selected value="NO_TAX">No Tax</option>';
-              }else{
+              }else if(json.localTax != null && json.localTax != '' && json.localTax != 'undefined'){
             	  result = result + '     <option selected value='+json.localTaxState+'>'+json.localTax+'</option>';
               }
               result = result + ' </select>';
@@ -383,7 +459,6 @@ function associateTaxSummary(userId){
  
  <script type="text/javascript">
  function saveAssociateTax(userId) {
-	 alert("userId");
 		 if ($('#associate_tax_form').validate(false, validationSettings)){ 
 			   var formData = getFormData("associate_tax_form");
 				$("#associate_tax_button").attr("disabled", "disabled");

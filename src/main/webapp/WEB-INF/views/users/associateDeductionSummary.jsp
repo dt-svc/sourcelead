@@ -22,7 +22,7 @@ function associateDeductionSummary(userId){
             result = result + '</div>';
 
             result = result + '<div class="styleTables">';
-            result = result + '<table>';
+            result = result + "<table id='associateDeductonListTable' class='display' cellspacing='0' width='100%' >";
             result = result + '<thead>';
             result = result + '<tr>';
             result = result + '<th>Type</th>';
@@ -81,6 +81,7 @@ function associateDeductionSummary(userId){
                 $("#tab-22").empty(); 
                 $("#tab-23").empty(); 
                 $("#tab-23").append(result); 
+                associateDeductonListPagination();
                 
           },
             
@@ -88,6 +89,21 @@ function associateDeductionSummary(userId){
   } 
 </script>
  
+ <script>
+function associateDeductonListPagination(){  
+    $('#associateDeductonListTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+     		"sSearch": "",
+     		 "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
  
  <script>
  function showEdit(id,dedVal){
