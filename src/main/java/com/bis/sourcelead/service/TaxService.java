@@ -7,8 +7,14 @@ import com.bis.sourcelead.entity.SourceleadTaxType;
 
 public interface TaxService {
 
+	SourceleadTaxType getTaxTypeById(long id);
+
 	List<SourceleadTaxType> getAllTaxesByType(long type);
 
 	List<StateTaxDTO> getStateTaxList(String yearFrequency, long stateId);
+
+	StateTaxDTO getStateTax(long stateTaxId);
+
+	long addStateTax(StateTaxDTO stateTaxDTO);
 
 }

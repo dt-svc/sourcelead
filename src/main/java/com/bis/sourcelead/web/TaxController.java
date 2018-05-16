@@ -32,6 +32,7 @@ import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTaxType;
+import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
@@ -54,31 +55,35 @@ public class TaxController {
 	@Autowired
 	private TaxService taxService;
 
+	private void setYears(ModelAndView modelAndView) {
+		Map<String, Boolean> yearList = new LinkedHashMap<>();
+		Calendar c = Calendar.getInstance();
+		c.roll(Calendar.YEAR, -2);
+		for (int i = 0; i < 4; i++) {
+			Calendar c1 = Calendar.getInstance();
+			boolean isCurrent = c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
+
+			String fromYear = c.get(Calendar.YEAR) + "";
+			c.roll(Calendar.YEAR, 1);
+			String toYear = c.get(Calendar.YEAR) + "";
+			yearList.put(fromYear + "-" + toYear, isCurrent);
+		}
+		modelAndView.addObject("yearList", yearList);
+	}
+
+	private void setStates(ModelAndView modelAndView) throws Exception {
+		List<States> stateList = statesService.getAllStatesByCountry("India");
+		modelAndView.addObject("stateList", stateList);
+	}
+
 	// state tab
 	@RequestMapping(value = "/stateTax/list")
 	public ModelAndView stateTaxList(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-			// List<String> yearList = new LinkedList<>();
-			Map<String, Boolean> yearList = new LinkedHashMap<>();
-			Calendar c = Calendar.getInstance();
-			c.roll(Calendar.YEAR, -2);
-			for (int i = 0; i < 4; i++) {
-				Calendar c1 = Calendar.getInstance();
-				boolean isCurrent = c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
-
-				String fromYear = c.get(Calendar.YEAR) + "";
-				c.roll(Calendar.YEAR, 1);
-				String toYear = c.get(Calendar.YEAR) + "";
-				// yearList.add(fromYear + "-" + toYear);
-				yearList.put(fromYear + "-" + toYear, isCurrent);
-			}
-			modelAndView.addObject("yearList", yearList);
-
-			List<States> stateList = statesService.getAllStatesByCountry("India");
-			modelAndView.addObject("stateList", stateList);
+			setYears(modelAndView);
+			setStates(modelAndView);
 			modelAndView.addObject("activeTaxTab", "state");
-
 			modelAndView.setViewName("tax/stateTax");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -87,11 +92,17 @@ public class TaxController {
 	}
 
 	@RequestMapping(value = "/stateTax/create")
-	public ModelAndView addStateTax(HttpServletRequest request) {
+	public ModelAndView addStateTaxPage(HttpServletRequest request, @RequestParam(defaultValue = "0") long stateTaxId) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
+			setYears(modelAndView);
+			setStates(modelAndView);
 			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(1);
 			modelAndView.addObject("taxTypes", taxTypeList);
+			if (stateTaxId > 0) {
+				StateTaxDTO stateTaxDTO = taxService.getStateTax(stateTaxId);
+				modelAndView.addObject("stateTax", stateTaxDTO);
+			}
 			modelAndView.addObject("activeTaxTab", "state");
 			modelAndView.setViewName("tax/addStateTax");
 		} catch (Exception e) {
@@ -100,10 +111,40 @@ public class TaxController {
 		return modelAndView;
 	}
 
+	@RequestMapping(value = "/stateTax/add")
+	@ResponseBody
+	public Response<String> addStateTax(HttpServletRequest request, StateTaxDTO stateTaxDTO) {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				long result = 0;
+//						taxService.addStateTax(stateTaxDTO);
+				if (result > 0) {
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
 	@RequestMapping(value = "/stateTax/taxSummary")
-	public ModelAndView stateTaxSummary(HttpServletRequest request) {
+	public ModelAndView stateTaxSummary(HttpServletRequest request, @RequestParam(defaultValue = "0") long stateTaxId) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
+			StateTaxDTO stateTaxDTO = taxService.getStateTax(stateTaxId);
+			modelAndView.addObject("stateTax", stateTaxDTO);
 			modelAndView.setViewName("tax/stateTaxSummary");
 		} catch (Exception e) {
 			logger.error(e.getMessage());

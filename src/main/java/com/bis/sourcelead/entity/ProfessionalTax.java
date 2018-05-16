@@ -36,6 +36,8 @@ public class ProfessionalTax implements Serializable {
 	private double amountTo;
 	@Column(name = "AMOUNT")
 	private double amount;
+	@Column(name = "MONTH_APPLICABLE")
+	private String monthApplicable;
 
 	public long getId() {
 		return id;
@@ -89,7 +91,6 @@ public class ProfessionalTax implements Serializable {
 		return serialVersionUID;
 	}
 
-	@Column(name = "MONTH_APPLICABLE")
-	private String monthApplicable;
+
 
 }

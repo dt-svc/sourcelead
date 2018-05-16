@@ -1,10 +1,45 @@
 var tax = new Tax();
+var pfRowId = 0;
 $(document).ready(function() {
 	if (activeTaxTab === "state") {
 		tax.getStateTaxList();
 	} else if (activeTaxTab === "central") {
 		alert("Central Tab");
+	} else if(activeTaxTab === "createStateTax") {
+		tax.addDynamicPTRow(true);
 	}
+	
+	$("#saveStateTax").click(function() {
+		if($('#addStateTaxForm').validate(false, validationSettings)) {
+			alert("ok");
+			$("#saveStateTax").attr("disabled","disabled");
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			var formData = getFormData("addStateTaxForm");
+			$.ajax({
+				type : "POST",
+        	    data: formData,
+				url : sourceleadUrl+"/stateTax/add",
+				success : function(response) {
+					if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		showError(response.responseMessage);      		
+		        	} else if(response.response === "FAILED") {
+		        		showError(response.responseMessage);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
+					$("#saveStateTax").removeAttr("disabled","disabled");
+					$("#loading").removeAttr("style");
+				},
+			});
+			return true;
+		} else {
+			return false;
+		}
+	});
 });
 function Tax() {
 
@@ -25,10 +60,10 @@ function Tax() {
 					for(var e in stList){
 						var result = "<tr><td>";
 						result += "<div>";
-						result += "<a href='taxSummary'>"+stList[e].stateName+"</a>";
+						result += "<a href='taxSummary?stateTaxId=" + stList[e].id + "'>" + stList[e].stateName + "</a>";
 						result += "</div>";
 						result += "</td>";
-						result += "<td><div>"+stList[e].taxType+"</div></td>";
+						result += "<td><div>" + stList[e].taxType + "</div></td>";
 						result += "<td>";
 						result += "<div>";
 						result += "<ul class='list-unstyled list-inline mb0'>";
@@ -49,5 +84,65 @@ function Tax() {
 				showError("Operation failed, please try again");
 			}
 		});
+	}
+	
+	this.addDynamicPTRow = function (isFirst) {
+		var result = "<div data-id=ptRow" + pfRowId + "><div class='col-md-3'>";
+		result += "<label class='clearfix'>" + (isFirst ? "From Amount" : "" ) + "</label>";
+		result += "<div class='clearfix'>";
+		result += "<input type='text' class='form-control' name='professionalTaxList["+pfRowId+"].amountFrom' value='' placeholder='Enter Amount' field-name='From Amount' data-validation='required validate_float'>";
+		result += "</div>";
+		result += "</div>";
+		result += "<div class='col-md-3'>";
+		result += "<label class='clearfix'>" + (isFirst ? "To Amount" : "" ) + "</label>";
+		result += "<div class='clearfix'>";
+		result += "<input type='text' class='form-control' name='professionalTaxList["+pfRowId+"].amountTo' value='' placeholder='Enter Amount' field-name='To Amount' data-validation='required validate_float'>";
+		result += "</div>";
+		result += "</div>";
+		result += "<div class='col-md-3'>";
+		result += "<label class='clearfix'>" + (isFirst ? "Amount" : "" ) + "</label>";
+		result += "<div class='clearfix'>";
+		result += "<input type='text' class='form-control' name='professionalTaxList["+pfRowId+"].amount' value='' placeholder='Enter Amount' field-name='Amount' data-validation='required validate_float'>";
+		result += "</div>";
+		result += "</div>";
+		result += "<div class='col-md-2'>";
+		result += "<label class='clearfix'>" + (isFirst ? "Month" : "" ) + "</label>";
+		result += "<div class='clearfix'>";
+		result += "<select class='width100percnt selectpicker' data-live-search='true' title='Select Month' name='professionalTaxList["+pfRowId+"].monthApplicable' field-name='Month' data-validation='required'>";
+		result += "<option>April</option>";
+		result += "<option>May</option>";
+		result += "<option>June</option>";
+		result += "<option>July</option>";
+		result += "<option>August</option>";
+		result += "<option>September</option>";
+		result += "<option>October</option>";
+		result += "<option>November</option>";
+		result += "<option>December</option>";
+		result += "<option>January</option>";
+		result += "<option>February</option>";
+		result += "<option>March</option>";
+		result += "</select>";
+		result += "</div>";
+		result += "</div>";
+		result += "<div class='col-md-1'>";
+		result += "<label class='clearfix'>" + (isFirst ? "Actions" : "" ) + "</label>";
+		result += "<ul class='list-unstyled list-inline mt5 text-center'>";
+		if(isFirst) {
+			result +="<li><a href='javascript:void(0)' class='cursorPointer'" +
+					" onclick='tax.addDynamicPTRow();' title='Add Row' style='font-size: 20px;'> + </a></li>";
+		} else {
+			result += "<li><a title='Delete Row' class='fa fa-trash text-danger deleteRow' onClick='tax.deletePTRow("+pfRowId+")'></a></li>";
+		}
+		result += "</ul>";
+		result += "</div>";
+		result += "<div class='clearfix'></div>";
+		result += "</div>";
+		$("#dynamicPTList").append(result);
+		$(".selectpicker").selectpicker('refresh');
+		pfRowId++;
+	}
+	
+	this.deletePTRow = function(rowId) {
+		$("div[data-id='ptRow"+rowId+"']").remove();
 	}
 }
