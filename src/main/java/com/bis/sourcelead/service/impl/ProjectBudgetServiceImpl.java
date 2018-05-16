@@ -148,7 +148,6 @@ public class ProjectBudgetServiceImpl implements ProjectBudgetService{
         emailMessage.setToEmail(approverUse.getEmail());
         emailMessage.setFromEmail(loginUser.getEmail());
         emailMessage.setCreatedBy(loginUser.getUserCode());
-        emailMessage.setFromEmail(loginUser.getEmail());
         emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
        
         Map<String, String> globalVarsMap = new HashMap<String, String>();

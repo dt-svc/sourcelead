@@ -1107,7 +1107,11 @@ function contactsPagination(url){
 	              "data": "source",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            		result = result + '<td><div class="tblminwidth-75"><span title="'+opt.source+'">'+opt.source+'</span></div></td>';
+	            	    if(opt.source != null && opt.source !="" && opt.source != "undefined"){
+		            		result = result + '<td><div class="tblminwidth-75"><span title="'+opt.source+'">'+opt.source+'</span></div></td>';
+	            	    }else{
+		            		result = result + '<td><div class="tblminwidth-75">--</div></td>';
+	            	    }
 	            		return result;
 	              }
 		     }],
