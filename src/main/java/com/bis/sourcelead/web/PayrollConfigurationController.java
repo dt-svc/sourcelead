@@ -16,7 +16,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollBonus;
+import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.service.PayrollBonusService;
+import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -35,6 +37,9 @@ public class PayrollConfigurationController {
 	
 	@Autowired
 	PayrollBonusService payrollBonusService;
+	
+	@Autowired
+	PayrollLoanAndAdvancesService payrollLoanAndAdvancesService;
 	
 	
 	@RequestMapping(value = "/payrollConfiguration")
@@ -107,6 +112,16 @@ public class PayrollConfigurationController {
 	{
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		
+		if(StringUtils.isNotBlank(uuid)) {
+			try {
+				PayrollLoanAndAdvances loanAndAdv = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesByUUID(uuid);
+				model.addObject("loanAndAdv", loanAndAdv);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 		model.setViewName("indPayroll/payrollLoanAndAdvances");
 		model.addObject("uuid", uuid);
 		model.addObject("sourceleadUrl", sourceleadUrl);
