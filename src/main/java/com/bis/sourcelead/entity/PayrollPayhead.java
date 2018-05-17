@@ -85,8 +85,166 @@ public class PayrollPayhead {
     
     @Column(name = "UPDATED_DATE")
    	private Date updatedDate;
-    
-    
-    
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getShortCode() {
+		return shortCode;
+	}
+
+	public void setShortCode(String shortCode) {
+		this.shortCode = shortCode;
+	}
+
+	public Date getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(Date effectiveDate) {
+		this.effectiveDate = effectiveDate;
+	}
+
+	public PayrollPaytype getPayType() {
+		return payType;
+	}
+
+	public void setPayType(PayrollPaytype payType) {
+		this.payType = payType;
+	}
+
+	public Double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Double amount) {
+		this.amount = amount;
+	}
+
+	public String getFormula() {
+		return formula;
+	}
+
+	public void setFormula(String formula) {
+		this.formula = formula;
+	}
+
+	public String getForm16() {
+		return form16;
+	}
+
+	public void setForm16(String form16) {
+		this.form16 = form16;
+	}
+
+	public String getTax() {
+		return tax;
+	}
+
+	public void setTax(String tax) {
+		this.tax = tax;
+	}
+
+	public String getApplicableFor() {
+		return applicableFor;
+	}
+
+	public void setApplicableFor(String applicableFor) {
+		this.applicableFor = applicableFor;
+	}
+
+	public String getComponent() {
+		return component;
+	}
+
+	public void setComponent(String component) {
+		this.component = component;
+	}
+
+	public String getPaidComponent() {
+		return paidComponent;
+	}
+
+	public void setPaidComponent(String paidComponent) {
+		this.paidComponent = paidComponent;
+	}
+
+	public String getPartOfCTC() {
+		return partOfCTC;
+	}
+
+	public void setPartOfCTC(String partOfCTC) {
+		this.partOfCTC = partOfCTC;
+	}
+
+	public String getFbpComponent() {
+		return fbpComponent;
+	}
+
+	public void setFbpComponent(String fbpComponent) {
+		this.fbpComponent = fbpComponent;
+	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public User getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(User updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+    
+    
 }
