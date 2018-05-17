@@ -1501,7 +1501,7 @@ function resetContactFilter(){
 		result = result  +'	                                                                                                                    ';
 		result = result  +'	<div class="col-md-12 mt10 clearfix">                                                                               ';
 		result = result  +'	<div class="pull-right">                                                                                            ';
-		result = result  +'	  <input type="button" value="save Contact" id="edit_contact" onclick="saveReEditContacts('+json.id+');" class="btn btn-primary"> ';
+		result = result  +'	  <input type="button" value="Update Contact" id="edit_contact" onclick="saveReEditContacts('+json.id+');" class="btn btn-primary"> ';
 		result = result  +'	  <input type="button" value="Cancel" onClick="closeEditContactDiv();" class="btn btn-default ml10 canBtn">           ';
 		result = result  +'	</div>                                                                                                               ';
 		result = result  +'	</div>                                                                                                               ';

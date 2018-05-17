@@ -269,7 +269,10 @@
 					<div class="row">
 					  <div class="col-lg-6">
 						<div id="startDateDiv">
+						<div class="input-group errorInptgroup">
 						  <input type="text" class="form-control calendar" value="${contract.startDateStr}" id="startDate" name="startDate" placeholder="Start date" data-validation=" ${contract.contractType == 'Full time offer'  ? '' : 'required'}" field-name="Start Date" readonly="readonly">
+						 <span class="input-group-addon" onClick="clearStartDt();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						</div>
 						</div>
 					  </div>
 					  <div class="col-lg-6">
@@ -690,14 +693,14 @@
 		 <%--  </c:if> --%>
             <c:forEach var="doc" items="${docList}">
 	                     <tr id="tr${doc.id}">
-    						<td><div class="tbldata-dotdot-me">${doc.fileName}</div></td>
+    						<td><div class="tbldata-dotdot-me" title="${doc.fileName}">${doc.fileName}</div></td>
 						<c:if test="${empty doc.docType}">
     						<td><div class="tbldata-dotdot-me">--</div></td>
 						</c:if>
 						<c:if test="${not empty doc.docType}">
     						<td><div class="tbldata-dotdot-me">${doc.docType}</div></td>
 						</c:if>
-	                     <td><div class="tbldata-dotdot-big">${doc.description}</div></td>
+	                     <td><div class="tbldata-dotdot-big" title="${doc.description}">${doc.description}</div></td>
 	                     <td><span title="Remove row" onclick="removeDocument(${doc.id})"><i class="fa fa-trash text-danger"></i></span></td>
 	                     </tr>
                 </c:forEach>
@@ -2364,9 +2367,9 @@ function addCustomEmptyVendorContact(){
    $('#vendorContact').trigger("chosen:updated");
 }
 
-/* function clearStartDt(){
+ function clearStartDt(){
 	$("#startDate").val("");
-}; */
+}; 
 function clearEndDt(){
 	$("#endDate").val("");
 	};

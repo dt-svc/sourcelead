@@ -114,12 +114,20 @@ $(document).ready(function(){
 	              <label class="col-md-3">Start & End date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='Expenditure particulars should be added between the specified duration only'></i></label>
 	              <div class="col-md-9" >
 						<div class="row">
+						  
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
+						    <div class="input-group errorInptgroup">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+						      <span class="input-group-addon" onClick="clearStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						  </div>
 						  </div>
 						  <div class="col-lg-6" id="errEnd">
+						  <div class="input-group errorInptgroup">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
-						  </div> 		  
+						      <span class="input-group-addon" onClick="clearEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						  </div> 
+						  </div>
+						  		  
 						</div>
 	              </div>
 	            </div>
@@ -623,4 +631,14 @@ function clearProjectEndDate(){
 		};	
 </script>
  -->
+ 
+ <script>
+function clearStartDate(){
+	$("#startDate").val("");
+	};
+	
+function clearEndDate(){
+	$("#endDate").val("");
+	};
+</script>
 <jsp:include page="../masterFooter.jsp" />
