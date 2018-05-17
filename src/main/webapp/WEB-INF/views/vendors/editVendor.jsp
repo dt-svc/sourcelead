@@ -108,6 +108,8 @@
 						}
 						if(json.location != null && json.location !='' && json.location !='undefined'){
 							location = json.location;
+						}else if(json.country != null && json.country !='' && json.country !='undefined'){
+							location = json.country;
 						}
 						
 						

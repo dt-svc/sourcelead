@@ -54,7 +54,7 @@
 			<li>Manage your contacts</li>
 		</ul>
 					<div class="clearfix text-center mt">
-				<a href="/register" class="btn btn-custom">Register</a>
+				<a href="/register?type=freelance" class="btn btn-custom">Register</a>
 				</div>
 	</div>
 	<div class="col-md-4 productfeatures col-md-offset-4 mb">
