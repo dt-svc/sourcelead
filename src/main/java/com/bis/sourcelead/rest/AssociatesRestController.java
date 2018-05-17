@@ -212,6 +212,29 @@ public class AssociatesRestController {
 
 		}
 	   
+	   @RequestMapping(value = "/getAllRelationsByOrgLocationAndType", method = RequestMethod.GET)
+		public String getAllRelationsByOrgLocationAndType(@RequestParam(value = "type", required = false) String type,
+				HttpServletRequest request) throws Exception {
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			String resultJson = null;
+			List<OrgRelations> orgRelationsList = orgRelationsService.getClientOrVendorListByOrgLocationIdForImmigration(orgLocations.getId(),type);
+			for(OrgRelations orgRelation:orgRelationsList){
+				if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
+					orgRelation.setImmigrationRelatedId(orgRelation.getResponderLocationId().getId());
+				}
+				if(orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+					orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
+					orgRelation.setImmigrationRelatedId(orgRelation.getLocationId().getId());
+				}
+				
+			}
+			
+			resultJson = toJSON(orgRelationsList);
+			return resultJson;
+
+		}
+	   
 	   @RequestMapping(value = "/getCandidateDetailsInAssociate")
 		public String getCandidateDetailsInAssociate(@RequestParam(value = "candidateId", required = false) Long candidateId,
 				HttpServletRequest request) throws Exception {

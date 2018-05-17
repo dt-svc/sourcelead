@@ -22,12 +22,9 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class GenerateContactsForConnectedList {
-
-
-	
-
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat
  * this method is using for update the UUID for Connections
@@ -40,14 +37,14 @@ public void addContactsFromConnections() throws IOException, SQLException {
 try {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql = "SELECT * FROM sourcelead.CONNECTIONS where CONNECTION_STATUS = 'CONNECTED'";
+			 String sql = "SELECT * FROM "+dbconfig.getSchema()+".CONNECTIONS where CONNECTION_STATUS = 'CONNECTED'";
 			 stmt1 = conn.prepareStatement(sql);
 			 ResultSet rs = stmt1.executeQuery();
 			 System.out.println("----Adding Contacts from connections  starts-----");
 			 while(rs.next()){
 				 Long FROM_UID = rs.getLong("FROM_UID");
 				 Long TO_UID = rs.getLong("TO_UID");
-				 String query = "SELECT COUNT(*) FROM sourcelead.REFER_CONTACTS where REFER_FROM_USER_ID = ? and CONTACT_USER_ID = ?";
+				 String query = "SELECT COUNT(*) FROM "+dbconfig.getSchema()+".REFER_CONTACTS where REFER_FROM_USER_ID = ? and CONTACT_USER_ID = ?";
 				 stmt1 = conn.prepareStatement(query);
 				 stmt1.setLong(1, FROM_UID);
 				 stmt1.setLong(2, TO_UID);
@@ -94,7 +91,7 @@ public void saveContacts(Long FROM_UID, Long TO_UID) {
 	DataSource dataSource = comboPooledDataSource();
 	try {
 		conn = dataSource.getConnection();
-	String fromUidQuery= "SELECT * FROM sourcelead.USER where ID = ?";
+	String fromUidQuery= "SELECT * FROM "+dbconfig.getSchema()+".USER where ID = ?";
 	 stmt1 = conn.prepareStatement(fromUidQuery);
 	 stmt1.setLong(1, TO_UID);
 	 ResultSet rs1 = stmt1.executeQuery();
@@ -104,7 +101,7 @@ public void saveContacts(Long FROM_UID, Long TO_UID) {
 		 String contactUserEmail = rs1.getString("EMAIL");
 		 Long contactUserId = TO_UID;
 		 String contactUserUUID = SourceLeadRandomCodeHelper.generateUUID();
-		 String toUidQuery = "SELECT * FROM sourcelead.USER where ID = ?";
+		 String toUidQuery = "SELECT * FROM "+dbconfig.getSchema()+".USER where ID = ?";
 		 stmt1 = conn.prepareStatement(toUidQuery);
 		 stmt1.setLong(1, FROM_UID);
 		 ResultSet rs2 = stmt1.executeQuery();
@@ -115,7 +112,7 @@ public void saveContacts(Long FROM_UID, Long TO_UID) {
 			 updatedBy = rs2.getString("USER_CODE");
 		 }
 		 String contactSource = Contact_Source.SELF.toString();
-		 String query = "insert into sourcelead.REFER_CONTACTS(REFER_FROM_USER_ID, CONTACT_USER_FIRSTNAME, CONTACT_USER_LASTNAME, CONTACT_USER_EMAIL, CONTACT_USER_ID, CONTACT_USER_UUID, CREATED_DATE, CREATED_BY, UPDATED_DATE, UPDATED_BY, CONTACT_SOURCE) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+		 String query = "insert into "+dbconfig.getSchema()+".REFER_CONTACTS(REFER_FROM_USER_ID, CONTACT_USER_FIRSTNAME, CONTACT_USER_LASTNAME, CONTACT_USER_EMAIL, CONTACT_USER_ID, CONTACT_USER_UUID, CREATED_DATE, CREATED_BY, UPDATED_DATE, UPDATED_BY, CONTACT_SOURCE) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 		 PreparedStatement pstmt = conn.prepareStatement(query);
 		 pstmt.setLong(1,FROM_UID);
 		 pstmt.setString(2, contactUserFirstName);
@@ -150,10 +147,6 @@ public void saveContacts(Long FROM_UID, Long TO_UID) {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

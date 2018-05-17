@@ -21,7 +21,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddPrimaryContactUserToOrgLocations {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat I
  * this method is adding primary user for org locations
@@ -37,7 +38,7 @@ public void dumpPrimaryUser() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM sourcelead.ORG_LOCATIONS";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -48,7 +49,7 @@ public void dumpPrimaryUser() throws IOException, SQLException {
 				 
 				 if(rs1.getString("PRIMARY_CONTACT_USER_ID") == null){
 					 
-					    String query1 = "SELECT * from sourcelead.ROLES where ORG_LOCATION_ID = ? and ROLE_NAME = ? ";
+					    String query1 = "SELECT * from "+dbconfig.getSchema()+".ROLES where ORG_LOCATION_ID = ? and ROLE_NAME = ? ";
 				    	java.sql.PreparedStatement pstmt2 = conn.prepareStatement(query1); 
 				    	pstmt2.setLong(1, orgLocId);
 				    	pstmt2.setString(2, "ROLE_MANAGER");
@@ -56,7 +57,7 @@ public void dumpPrimaryUser() throws IOException, SQLException {
 				    	
 				    	if (rs3.next()) {
 				    		Long  roleId = rs3.getLong("ID");
-				    		String query2 = "SELECT * from sourcelead.USER_ROLE where ORG_LOCATIONS_ID = ? and ROLE_ID = ? ";
+				    		String query2 = "SELECT * from "+dbconfig.getSchema()+".USER_ROLE where ORG_LOCATIONS_ID = ? and ROLE_ID = ? ";
 				    		java.sql.PreparedStatement pstmt3 = conn.prepareStatement(query2); 
 				    		pstmt3.setLong(1, orgLocId);
 				    		pstmt3.setLong(2, roleId);
@@ -64,7 +65,7 @@ public void dumpPrimaryUser() throws IOException, SQLException {
 				    		
 				    		if (rs4.next()) {
 				    			Long primaryUserId = rs4.getLong("USER_ID");
-				    			String query3 = " update sourcelead.ORG_LOCATIONS set PRIMARY_CONTACT_USER_ID = ? where ID = ? ";
+				    			String query3 = " update "+dbconfig.getSchema()+".ORG_LOCATIONS set PRIMARY_CONTACT_USER_ID = ? where ID = ? ";
 					    		java.sql.PreparedStatement pstmt4 = conn.prepareStatement(query3); 
 					    		pstmt4.setLong(1, primaryUserId);
 					    		pstmt4.setLong(2, orgLocId);
@@ -94,10 +95,6 @@ public void dumpPrimaryUser() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());
