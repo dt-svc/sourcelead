@@ -18,7 +18,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class UpdateEmailToContacts {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat I
  * this method is using for update email for contacts
@@ -34,7 +35,7 @@ public void updateContactEmail() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM sourcelead.REFER_CONTACTS contacts where contacts.CONTACT_USER_ID IS NOT NULL AND contacts.CONTACT_USER_EMAIL IS NULL ";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".REFER_CONTACTS contacts where contacts.CONTACT_USER_ID IS NOT NULL AND contacts.CONTACT_USER_EMAIL IS NULL ";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -44,7 +45,7 @@ public void updateContactEmail() throws IOException, SQLException {
 				 Long contactId =  rs1.getLong("ID");
 				 
 				 if(userId != null) {
-					 String sql2 = "SELECT * from sourcelead.USER where ID = '"+userId+"' ";
+					 String sql2 = "SELECT * from "+dbconfig.getSchema()+".USER where ID = '"+userId+"' ";
 					 Statement stmt2 = conn.createStatement();
 					 ResultSet rs2 = stmt2.executeQuery(sql2);
 					 
@@ -52,7 +53,7 @@ public void updateContactEmail() throws IOException, SQLException {
 						 
 						    String email = rs2.getString("EMAIL");
 						 
-						    String query1 = " update sourcelead.REFER_CONTACTS set CONTACT_USER_EMAIL = '"+email+"' where ID = '"+contactId+"' ";
+						    String query1 = " update "+dbconfig.getSchema()+".REFER_CONTACTS set CONTACT_USER_EMAIL = '"+email+"' where ID = '"+contactId+"' ";
 					    	java.sql.PreparedStatement pstmt2 = conn.prepareStatement(query1); 
 							pstmt2.executeUpdate(); 
 				    	} 
@@ -78,10 +79,6 @@ public void updateContactEmail() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());
