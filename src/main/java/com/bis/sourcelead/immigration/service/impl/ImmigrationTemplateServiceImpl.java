@@ -126,13 +126,13 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
             if(!StringUtils.isEmpty(tempObj.getOtherType())){ // if other the value is not empty overriding the description value.
            	 immigrationTemplateDocs.setDescription(tempObj.getDescriptionOther());	
             }
-            if (tempObj.getIsRequired() != null && "Y".equalsIgnoreCase(tempObj.getIsRequired())) {
-                immigrationTemplateDocs.setIsRequired(tempObj.getIsRequired());
+            if (StringUtils.isNotBlank(tempObj.getIsRequired()) && tempObj.getIsRequired().equalsIgnoreCase("Y")) {
+                immigrationTemplateDocs.setIsRequired(Constants.YES);
             } else {
                 immigrationTemplateDocs.setIsRequired(Constants.NO);
             }
-            if (tempObj.getMultiple() != null && "Y".equalsIgnoreCase(tempObj.getMultiple())) {
-                immigrationTemplateDocs.setIsMultipleRequired(tempObj.getMultiple());
+            if (StringUtils.isNotBlank(tempObj.getMultiple()) && tempObj.getMultiple().equalsIgnoreCase("Y")) {
+                immigrationTemplateDocs.setIsMultipleRequired(Constants.YES);
             } else {
                 immigrationTemplateDocs.setIsMultipleRequired(Constants.NO);
             }
