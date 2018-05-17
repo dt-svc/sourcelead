@@ -1029,8 +1029,12 @@ public class ClientRestController {
 			}
 		}
 		
-		
-		
+		if(StringUtils.isNotBlank(orgRelation.getIsLawFirm())){
+			clientVendorDTO.setIsLawFirm(orgRelation.getIsLawFirm());
+		}
+		if(StringUtils.isNotBlank(orgRelation.getIsAccountingFirm())){
+			clientVendorDTO.setIsAccountingFirm(orgRelation.getIsAccountingFirm());
+		}
 		
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "editClient");
 		SourceleadActions action = null;

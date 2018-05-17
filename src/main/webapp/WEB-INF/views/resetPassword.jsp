@@ -155,7 +155,7 @@ function applyInputSlide() {
 	    else{ 
 		        $('#passwordDiv').find('span.jquery_form_error_message').remove();
 		        document.getElementById("confirmPassword").setAttribute('class','error signin_fild');
-		        $("input#confirmPassword").after("<span class='jquery_form_error_message'> <font color='red'>Passwords Not Matched</font></span>");
+		        $("input#confirmPassword").after("<span class='jquery_form_error_message'> <font color='red'>Those passwords didn't matched.Try again.</font></span>");
 				document.getElementById("confirmPassword").setAttribute('pass-exist','yes');
 				document.getElementById("confirmPassword").setAttribute('pass-exist-errorMsg', ' Passwords Not Matched'); 
 				$("input#confirmPassword").removeAttr("style");

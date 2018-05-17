@@ -1651,7 +1651,7 @@ public class LeaveManagementRestController {
 				if (employees != null) {
 					leaveDto.setEmpid(employees.getEmployeeId());
 				}
-				UserRole userRole = userRoleService.getUserRoleByUserId(leave.getUser().getId());
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(leave.getUser().getId(),orgLocations.getId());
 				leaveDto.setEmpType(userRole.getUserType());
 			}
 			durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))

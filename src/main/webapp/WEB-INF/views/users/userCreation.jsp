@@ -123,6 +123,13 @@
                 </div>
                 
                 <div class="form-group">
+                  <label class="col-md-3">Middle Name</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" id="middleName" name="middleName" pattern="[A-Za-z\s]*"   field-name="Middle Name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
+                  </div>
+                </div>
+                
+                <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*"   field-name="Last Name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
@@ -149,7 +156,36 @@
                      </div>
                   </div>
                 </div> 
-                
+                <div class="form-group">
+						<label class="col-md-3">Gender<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9" id= "errorGenderMsg">
+						<label class="paddingRight"><input type="radio"  value="Male"  name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Male</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Female</label>
+						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Transgender</label>
+						<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Marital Status</label>
+						<div class="col-md-9">
+						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
+						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>
+						</div>
+					</div>
+					
+					<div class="form-group">
+                      <label class="col-md-3">Date of Birth</label>
+                         <div class="col-md-9">
+                           <div class="input-group">
+                              <input type="text" value="" name="dateofBirth" class="form-control calendar" id="dateofBirth" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDateOfBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                           </div>
+                        </div>
+                  </div>
+                  
                <div class="form-group">
                   <label class="col-md-3">Department </label>
                   <div class="col-md-9 chooRadius" id="chosen-role">
@@ -948,6 +984,7 @@ function getAssociateUserDetails(){
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  maxDate:0
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  
@@ -1106,7 +1143,42 @@ function refreshRoleList(){
 	 }
 	 </script>
 	
-
+<script type="text/javascript">
+	function genderCheckValidationAssociate(id){
+		 var gendersList = [];
+ 		 $("input[name='gender']:checked").each( function (i) {
+ 			gendersList[i] = $(this).val();
+ 		});
+ 		 
+		if (gendersList.length > 0) { 
+		document.getElementById("genderValue").value = id.value;
+		}else{
+			$('#genderValue').val(''); 
+		}
+	} 
+</script>
+<script>
+  $( function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
+	  $('#dateofBirth').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  yearRange: "-100:+0",
+	  	  maxDate:0
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+  } );
+  
+  function clearDateOfBirth(){
+		$("#dateofBirth").val("");
+		};
+		
+</script>
 <script>
 function clearDateofJoin(){
 	$("#DateofJoin").val("");
