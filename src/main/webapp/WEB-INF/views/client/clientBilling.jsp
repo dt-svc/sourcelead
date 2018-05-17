@@ -678,6 +678,7 @@ function generateAutomaticInvoice(){
              success: function(json) {
             	  $("#invoiceLoading").removeAttr("style");
 					$("#selector12").removeAttr("style");
+					$("#selector12").css("display", "block");
 					$("#msgdiv").html(json.object.count+" Invoice(s) Generated Successfully.");
 					msgFadein();
             	 location.replace(sourceleadUrl+"/invoiceList");	            	 

@@ -835,9 +835,11 @@ public class InvoiceRestController {
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
 		// String pattern = "dd-MM-yyyy";
-		SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
+		/*SimpleDateFormat format = orgLocation.getLocFullFormDateFormatter();
 		Date startDate = format.parse(startDateStr);
-		Date endDate = format.parse(endDateStr);
+		Date endDate = format.parse(endDateStr);*/
+		 Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), startDateStr);
+		 Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), endDateStr);
 		List<ProjectMembers> projectMembersList = new ArrayList<>();
 		List<SubmissionApproverHierarchy> sahList = null;
 		if (null != projectId && !"".equalsIgnoreCase(projectId)) {
