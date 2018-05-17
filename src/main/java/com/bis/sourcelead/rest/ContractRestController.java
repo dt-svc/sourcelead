@@ -49,9 +49,11 @@ import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.ContractOwnerHierarchy;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
@@ -66,6 +68,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractRequestDocumentsService;
 import com.bis.sourcelead.service.ContractsTemplateService;
@@ -354,15 +357,14 @@ public class ContractRestController {
 //	/saveNewContract
 	
 	@RequestMapping(value = "/saveNewContract", method = RequestMethod.POST)
-	public @ResponseBody boolean saveNewContract(ContractsDTO contractsDTO,@RequestParam(value = "saveType", required = false) String saveType,HttpServletRequest request) throws Exception {
+	public @ResponseBody boolean saveNewContract(ContractsDTO contractsDTO,HttpServletRequest request) throws Exception {
 
 		boolean isContractSaved = false;
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		MultipartFile multiFile = null;
-		Contracts contracts = contractsTemplateService.saveNewContract(contractsDTO,orgLocation,saveType,user,org,"");
+		Contracts contracts = contractsTemplateService.saveNewContract(contractsDTO,orgLocation,"",user,org,"");
 	   if(null != contracts){
 		   isContractSaved = true;
 	   }
@@ -371,7 +373,7 @@ public class ContractRestController {
 	
 	
 	@RequestMapping(value = "/saveCustomContract", method = RequestMethod.POST)
-	public @ResponseBody boolean saveCustomContract(ContractsDTO contractsDTO,@RequestParam(value = "saveType", required = false) String saveType,@RequestParam(value = "conType1", required = false) String conType,HttpServletRequest request) throws Exception {
+	public @ResponseBody boolean saveCustomContract(ContractsDTO contractsDTO,HttpServletRequest request) throws Exception {
 
 		boolean isContractSaved = false;
 //		String json1 = "{" + json + "}";
@@ -386,7 +388,7 @@ public class ContractRestController {
 //	        multiFile = request.getFile(itrator.next());
 //		} 
 		contractsDTO.setStaticPath(staticPath);
-		Contracts contracts = contractsTemplateService.saveNewContract(contractsDTO,orgLocation,saveType,user,org,conType);
+		Contracts contracts = contractsTemplateService.saveNewContract(contractsDTO,orgLocation,"",user,org,"");
 	   if(null != contracts){
 		   isContractSaved = true;
 	   }
@@ -720,14 +722,32 @@ public class ContractRestController {
 		 	
 		 	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 	
-		 	if(null != contract.getOwnerUserId()){
-		 		StringBuilder owner = new StringBuilder();
-		 		if(null != contract.getOwnerUserId().getLastName() && "" != contract.getOwnerUserId().getLastName()){
+		if (contract.getParentContractId() != null) {
+			StringBuilder owner = new StringBuilder();
+			if (null != contract.getOwnerUserId()) {
+				if (null != contract.getOwnerUserId().getLastName()
+						&& "" != contract.getOwnerUserId().getLastName()) {
 					contract.setOwnerName(owner.append(contract.getOwnerUserId().getFirstName()).append(" ").append(contract.getOwnerUserId().getLastName()).toString());
-				}else{
+				}
+				else {
 					contract.setOwnerName(owner.append(contract.getOwnerUserId().getFirstName()).toString());
 				}
-		 	}
+			}
+			contract.setIsParentContract(Constants.NO);
+		}
+		else {
+			StringBuilder owner = new StringBuilder();
+			for (ContractOwnerHierarchy coh : contract.getOwnerHierarchyList()) {
+				if (StringUtils.isNotBlank(coh.getOwnerUserId().getLastName()))
+					owner.append(coh.getOwnerUserId().getFirstName()).append(" ").append(coh.getOwnerUserId().getLastName()).append(", ");
+				else
+					owner.append(coh.getOwnerUserId().getFirstName()).append(", ");
+			}
+			contract.setOwnerName(owner.toString().replaceAll("\\s*,\\s*$", ""));
+			contract.setIsParentContract(Constants.YES);
+		}
+		 	
+		 	
 		 	if(null != contract.getOrgRelations()){
 		 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contract.getOrgRelations().getId());
 		 	if(null != orgRelations){
@@ -751,14 +771,31 @@ public class ContractRestController {
 					contract.setApproverUserName(approver.append(contract.getApproverUser().getFirstName()).toString());
 				}
 		 	}
-		 	if(null != contract.getContactUser()){
-		 		StringBuilder approver = new StringBuilder();
-		 		if(null != contract.getContactUser().getLastName() && "" != contract.getContactUser().getLastName()){
-					contract.setContactUserName(approver.append(contract.getContactUser().getFirstName()).append(" ").append(contract.getContactUser().getLastName()).toString());
-				}else{
-					contract.setContactUserName(approver.append(contract.getContactUser().getFirstName()).toString());
+		 	
+		 	
+		 	if (contract.getParentContractId() != null) {
+		 		StringBuilder contactUser = new StringBuilder();
+				for (ContractOwnerHierarchy coh : contract.getParentContractId().getOwnerHierarchyList()) {
+					if (StringUtils.isNotBlank(coh.getOwnerUserId().getLastName()))
+						contactUser.append(coh.getOwnerUserId().getFirstName()).append(" ").append(coh.getOwnerUserId().getLastName()).append(", ");
+					else
+						contactUser.append(coh.getOwnerUserId().getFirstName()).append(", ");
 				}
+				contract.setContactUserName(contactUser.toString().replaceAll("\\s*,\\s*$", ""));
+		 	}else{
+		 		if(null != contract.getContactUser()){
+			 		StringBuilder contactUser = new StringBuilder();
+			 		if(null != contract.getContactUser().getLastName() && "" != contract.getContactUser().getLastName()){
+						contract.setContactUserName(contactUser.append(contract.getContactUser().getFirstName()).append(" ").append(contract.getContactUser().getLastName()).toString());
+					}else{
+						contract.setContactUserName(contactUser.append(contract.getContactUser().getFirstName()).toString());
+					}
+			 	}
 		 	}
+		 	
+		 	
+		 	
+		 	
 		 	if(null != contract.getRequirementSubmission() && contract.getRequirementSubmission().getRequirement() != null){
 				contract.setRequirementName(contract.getRequirementSubmission().getRequirement().getJobTitle());
 		 	}
@@ -1095,10 +1132,10 @@ public class ContractRestController {
 			 	contracts.setUpdatedBy(user.getUserCode());
 				contractsTemplateDao.saveNewContract(contracts);
 				if(contracts.getContractType().equalsIgnoreCase(Constants.CLIENT_MSA) || contracts.getContractType().equalsIgnoreCase(Constants.VENDOR_MSA)){
-				contractsTemplateService.sendMSAEndDateModifiedMail(contracts,orgLocation,previousEndDate);
+				contractsTemplateService.sendMSAEndDateModifiedMail(contracts,orgLocation,previousEndDate,user);
 				}
 				if(contracts.getContractType().equalsIgnoreCase(Constants.Client_SOW) || contracts.getContractType().equalsIgnoreCase(Constants.Vendor_SOW)){
-				contractsTemplateService.sendSOWEndDateModifiedMail(contracts,orgLocation);
+				contractsTemplateService.sendSOWEndDateModifiedMail(contracts,orgLocation,user);
 				}
 		 	}
 			
@@ -1128,27 +1165,23 @@ public class ContractRestController {
 			 
 	 }
 	 
-	 @RequestMapping(value = "/refreshVendorList" , method = RequestMethod.GET)
-	 public @ResponseBody List<OrgRelations> refreshVendorList(HttpServletRequest request) throws Exception {
-	 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	 List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
-	 for (OrgRelations orgRelations : orgRelationsList) {
+	@RequestMapping(value = "/refreshVendorList", method = RequestMethod.GET)
+	public @ResponseBody List<OrgRelations> refreshVendorList(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+		for (OrgRelations orgRelations : orgRelationsList) {
 			String orgName = "";
-			if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
+			if (orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()) {
 				orgName = orgRelations.getLocationId().getOrgLocationName();
-			}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
+			}
+			if (orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()) {
 				orgName = orgRelations.getResponderLocationId().getOrgLocationName();
 			}
 			orgRelations.setOrgName(orgName);
- }
-	return orgRelationsList;
-	 
-	 }
-	 
-	 
-	 
-	 
-	 
+		}
+		return orgRelationsList;
+	}
 	 
 	 @RequestMapping(value = "/rest/getContractRequestDocumentsById")
 	 public ContractRequestDocuments getContractRequestDocumentsById(@RequestParam(value = "docId", required = true) Long docId) throws Exception {
@@ -1167,6 +1200,49 @@ public class ContractRestController {
 	{
 		List<Candidate> associateList = candidateService.getAssociatesListForSow(locationId,sowType);
 		return associateList;
+	}
+	
+	@RequestMapping(value = "/sendContractFromOwnertoReceiver")
+	public String sendContractFromOwnertoReceiver(ContractsDTO contractsDTO,HttpServletRequest request) throws Exception
+	{
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "displayName");
+		boolean flag = contractsTemplateService.sendContractFromOwnertoReceiver(contractsDTO,loginUser,loginOrgLocation,roleName);
+		return "success";
+	}
+	
+	@RequestMapping(value = "/validateAlreadyGeneratedContract")
+	public List<Contracts> validateAlreadyGeneratedContract(ContractsDTO contractsDTO,HttpServletRequest request) throws Exception
+	{
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		return contractsTemplateService.validateAlreadyGeneratedContract(contractsDTO,loginOrgLocation);
+	}
+	
+	@RequestMapping(value = "/reviseContract")
+	public boolean reviseContract(ContractsDTO contractsDTO,HttpServletRequest request) throws Exception
+	{
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		return contractsTemplateService.reviseContract(contractsDTO,loginOrgLocation,loginUser);
+	}
+	
+	@RequestMapping(value = "/updateContractSigner")
+	public Response<Contracts> updateContractSigner(ContractsDTO contractsDTO,HttpServletRequest request) throws Exception
+	{
+		Response<Contracts> response = new Response<>();
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(loginOrgLocation != null){
+			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Contracts contract =  contractsTemplateService.updateContractSigner(contractsDTO,loginOrgLocation,loginUser);
+			if(contract != null){
+				response.setResponse(Result.SUCCESS.name());
+				response.setObject(contract);
+			}
+		}else{
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+		}
+		return response;
 	}
 	 
 }
