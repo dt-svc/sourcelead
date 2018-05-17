@@ -62,6 +62,8 @@ public class PayrollConfigurationRestController {
 					}else {
 						payrollBonus = new PayrollBonus();
 						payrollBonus.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+						payrollBonus.setCreatedDate(new Date());
+						payrollBonus.setCreatedBy(user);
 					}
 					
 					Date paymentDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), payrollBonusDTO.getPaymentDate());
@@ -92,9 +94,7 @@ public class PayrollConfigurationRestController {
 					}
 					
 					payrollBonus.setOrgLocationId(orgLocations);
-					payrollBonus.setCreatedDate(new Date());
 					payrollBonus.setUpdatedDate(new Date());
-					payrollBonus.setCreatedBy(user);
 					payrollBonus.setUpdatedBy(user);
 					payrollBonus.setStatus(Constants.RECORD_ACTIVE);
 					payrollBonusService.savePayrollBonus(payrollBonus);
