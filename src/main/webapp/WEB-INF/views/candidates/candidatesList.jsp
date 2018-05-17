@@ -122,6 +122,7 @@ function candidateSideBar(candidateId){
 			            var city = '';
 			            var currencyCodes = '';
 			            var generatedId = '';
+			            var middleName = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'Month(s)';            			 		
          			 	}else{
@@ -144,6 +145,11 @@ function candidateSideBar(candidateId){
          			 		lastName = json.lastName;
          			 	}else{
          			 		lastName = "";
+         			 	}
+         			 	if(json.middelName != null && json.middelName !='' && json.middelName != 'undefined'){
+         			 		middleName = json.middelName;
+         			 	}else{
+         			 		middleName = "";
          			 	}
 
          			 	
@@ -269,6 +275,22 @@ function candidateSideBar(candidateId){
 						result = result+'   </div>  ';
 						result = result+' </div>                 ';                                                                                                                                                      
 						result = result+' </div> ';
+						result = result+'<div class="socialnetwork-details socialnetworkIcons">';
+			             result = result+'<ul class="list-inline list-unstyled">';
+			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
+				             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null && json.consultantUser.twitter !="undefined" && json.consultantUser.twitter != ""){
+				             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null && json.consultantUser.googlePlus !="undefined" && json.consultantUser.googlePlus != ""){
+				             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
+				             }
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null && json.consultantUser.linkedIn !="undefined" && json.consultantUser.linkedIn != ""){
+				             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
+				             }
+			             result = result+'</ul>';
+			             result = result+'                 </div>';
 						/* else{ 
 							result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
 							result = result+' <div class="progress nomr">                                                                                                                                                       ';
@@ -292,7 +314,7 @@ function candidateSideBar(candidateId){
 			             result = result+'                     </div>'; */
 			             result = result+'<div class="media-body candidate-details candidateDetails padding_left">';
 			            /*  result = result+'<h4 class="media-heading" title = "">'+json.generatedId+'</h4>'; */
-			             result = result+'<h4 class="media-heading" title = "'+json.firstName+' '+lastName+'">'+json.firstName+' '+lastName+'</h4>';
+			             result = result+'<h4 class="media-heading" title = "'+json.firstName+' '+middleName+' '+lastName+'">'+json.firstName+' '+middleName+' '+lastName+'</h4>';
 			            
 			             result = result+'<ul class="list-unstyled">';
 			             
@@ -354,24 +376,23 @@ function candidateSideBar(candidateId){
 			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Primary Skill</span><span class="col-md-7 padding_left padding_right">---</span</li>';  
 			             }
 			             
+			             if(json.gender != null && json.gender != '' && json.gender != 'undefined'){
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Gender</span><span class="padding_left padding_right">'+json.gender+'</span></li>';
+			             }else{
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Gender</span><span class="col-md-7 padding_left padding_right">---</span</li>';  
+			             }
+			             
+			             if(json.maritalStatus != null && json.maritalStatus != '' && json.maritalStatus != 'undefined'){
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Marital Status</span><span class="padding_left padding_right">'+json.maritalStatus+'</span></li>';
+			             }
+			             if(json.dateofBirthString != null && json.dateofBirthString != '' && json.dateofBirthString != 'undefined'){
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">DateOfBirth</span><span class="padding_left padding_right">'+json.dateofBirthString+'</span></li>';
+			             }else{
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">DateOfBirth</span><span class="col-md-7 padding_left padding_right">---</span</li>';  
+			             }
+			             
 			             result = result+'</ul>';
 			             result = result+'</div>';
-			             result = result+'<div class="socialnetwork-details socialnetworkIcons">';
-			             result = result+'<ul class="list-inline list-unstyled">';
-			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
-				             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
-				             }
-				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null && json.consultantUser.twitter !="undefined" && json.consultantUser.twitter != ""){
-				             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
-				             }
-				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null && json.consultantUser.googlePlus !="undefined" && json.consultantUser.googlePlus != ""){
-				             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
-				             }
-				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null && json.consultantUser.linkedIn !="undefined" && json.consultantUser.linkedIn != ""){
-				             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
-				             }
-			             result = result+'</ul>';
-			             result = result+'                 </div>';
 			             result = result+'                 </div>';
 			             result = result+'               </div>';
 			             result = result+'                   </div>';

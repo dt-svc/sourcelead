@@ -209,7 +209,7 @@ padding: 2px 300px 2px 0px;
 	
 <div class="content-area content-new clearfix">
  <div class="project_wrap">
-	<div class="timesheet_head">
+	<div class="timesheet_head exportUl">
 		<div class="ContrBut">
 		    <input type="hidden" name="tabType" id="tabType" value='Vendor'>
 			<!-- <a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
@@ -232,6 +232,10 @@ padding: 2px 300px 2px 0px;
 			</li>
 			<li id="filterContractTypePop-2" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play"></i>
 	           	<div class="statusFiler-3 approved_pop">
+	           		<ul class="list-unstyled" style="display:none" id="waitingLiDiv">
+						<li><input id="status5" type="checkbox" name="contractStatus" value="WAITING_TO_SEND" onclick="getTemplateList();"><label for="status5">Waiting to Send</label></li>
+					</ul>
+					
 					<ul class="list-unstyled" style="display:none" id="signedDiv">
 						<li><input id="status1" type="checkbox" name="contractStatus" value="PENDING" onclick="getTemplateList();"><label for="status1">Pending</label></li>
 						<li><input id="status3" type="checkbox" name="contractStatus" value="WAITING_TO_BE_SIGNED" onclick="getTemplateList();"><label for="status3">Waiting to be Sign</label></li>
@@ -243,6 +247,11 @@ padding: 2px 300px 2px 0px;
 					</ul>
 				</div>	                	
 			</li>
+			
+			<li id="addCustomContractFromWTV" style="display:none">
+				<a href="<c:url value="${appPath}/addCustomContract?contractFromType=WTVStage"/>" title="Custom Contract"><i class="fa fa-plus"></i>&nbsp;Add Custom Contact</a>
+			</li>
+			
 			<div class="clearfix"></div>
 		</ul>
 		<div class="clearfix"></div>
@@ -298,19 +307,6 @@ padding: 2px 300px 2px 0px;
 <script type="text/javascript">
 	function saveDocContract() {
 		if ($('#contractDoc_form').validate(false, validationSettings)) {
-			/* var frm = $('#contractDoc_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-	        var jsonData = encodeURIComponent(con);
-	        var form = $('#contractDoc_form')[0];
- 	 	    var formData = new FormData(form); 
- 	 	 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-			var sourceleadUrl = '${sourceleadUrl}';
-			$("#save_Doc").attr("disabled", "disabled");
-			$("#contractDoc_form").attr("disabled", "disabled");
-			$("#loadingDoc").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 		 */
-			
 			var formData = getFormData("contractDoc_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -427,13 +423,34 @@ function getTemplateList(){
 	if(contractSubmissionType == 'WAITING_TO_BE_SIGNED'){
 		$("#filterContractTypePop-2").css("display", "block");
 		$("#verifyDiv").css("display", "none");
+		$("#addCustomContractFromWTV").css("display", "none");
 		$("#signedDiv").css("display", "block");
+		$("#waitingLiDiv").css("display", "none");
+		$("#status1").prop("checked", "checked");
+		$("#status3").prop("checked", "checked");
+		$("#status5").removeAttr("checked");
 	}else if(contractSubmissionType == 'WAITING_TO_BE_VERIFY'){
 		$("#filterContractTypePop-2").css("display", "block");
 		$("#signedDiv").css("display", "none");
 		$("#verifyDiv").css("display", "block");
+		$("#addCustomContractFromWTV").css("display", "block");
+		$("#waitingLiDiv").css("display", "none");
+		$("#status5").removeAttr("checked");
+		$("#status1").removeAttr("checked");
+		$("#status3").removeAttr("checked");
+	}else if(contractSubmissionType == 'WAITING_FOR_APPROVER'){
+		$("#filterContractTypePop-2").css("display", "block");
+		$("#signedDiv").css("display", "none");
+		$("#waitingLiDiv").css("display", "block");
+		$("#verifyDiv").css("display", "none");
+		$("#addCustomContractFromWTV").css("display", "none");
+		$("#status5").prop("checked", "checked");
+		$("#status1").removeAttr("checked");
+		$("#status3").removeAttr("checked");
 	}else{
 		$("#filterContractTypePop-2").css("display", "none");
+		$("#waitingLiDiv").css("display", "none");
+		$("#status5").removeAttr("checked");
 	}
 	
 	
@@ -1024,10 +1041,13 @@ function preparedContractListWFA(json){
 		         result = result + '<td>';
 		         result = result + '<div class="tbldata-dotdot-vsm">';
 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
-	        		  
 	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.approverUserId){
-	      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+report.id+',\'REJECTED\');"></i></div></div>';
-	      	         }
+		      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+report.id+',\'REJECTED\');"></i></div></div>';
+		      	         }
+	        	  }else if(report.templateSubmissionStatus == "WAITING_TO_SEND" && (report.isOwner == "Y" || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN")){
+	        		  result = result + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+report.contractUUID+'\');"></i></a>';
+	        	  }
+	        		  
 	      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
 	      	     		if(report.typeOfContract == "New"){
 	      	     			result = result + '| <a href="<c:url value="/app/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -1044,7 +1064,7 @@ function preparedContractListWFA(json){
 	        			}
 	        			'</sec:authorize>';
 	        			
-	        	  }
+	        	  
 	        	  
 		     		 //result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.contractUUID+'\')"></i></a></div>';
 		     	  
@@ -1139,12 +1159,14 @@ function preparedContractListWFA(json){
 	         
 	         opt = opt + '<td>';//Waiting to be signed
 	         opt = opt + '<div class="tbldata-dotdot-vsm">';
-	         
-	         
         	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
         		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
-     	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+output.id+',\'REJECTED\');"></i></div></div>';
-     	         }
+      	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+output.id+',\'REJECTED\');"></i></div></div>';
+      	         }
+        	  }else if(output.templateSubmissionStatus == "WAITING_TO_SEND" && (output.isOwner == "Y" || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN")){
+        		  opt = opt + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+output.contractUUID+'\');"></i></a>';
+        	  }
+        		  
      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
      	     		if(output.typeOfContract == "New"){
      	     			opt = opt + '| <a href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
@@ -1160,7 +1182,7 @@ function preparedContractListWFA(json){
        			opt = opt + '|<a href="#" title="Preview"><i class="fa fa-eye paddingLeft" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a>';
        			}
        			'</sec:authorize>';
-        	  }
+        	 
 	     	 
 	     		opt = opt + '</div></td>';
 	     	
@@ -1456,11 +1478,11 @@ function preparedContractListWTS(json){
 		    	var report= json.vendorcontractsList[i];
 		    	result = result + '<tr id="row'+report.id+'">';
 		        result = result + '<td>';
-		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
+// 		        if(null == report.parentContractId || '' == report.parentContractId || 'undefined' == report.parentContractId){
 		        	result = result + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+report.contractUUID+'\',\'SIGN\');"><span title="'+report.contractTitle+'">'+report.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
-		        }else{
-		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
-		        }
+// 		        }else{
+// 		        	result = result + '<div class="tbldata-dotdot-sm proj_show" ><span title="'+report.contractTitle+'">'+report.contractTitle+'</span></div>';
+// 		        }
 		         result = result + '</td>';
 		         result = result + '<td>';
 		           	result = result + '<div class="tblminwidth-75">'+report.contractType+'</div>';
@@ -1512,13 +1534,31 @@ function preparedContractListWTS(json){
 		         
 		         result = result + '<td>';//Waiting to be signed
 		         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+		         result += '<div class="tbldata-dotdot_80">';
 		         if((report.typeOfContract == "New" || report.typeOfContract == "Custom") && (null != report.parentContractId && '' != report.parentContractId && 'undefined' != report.parentContractId)){
-		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a><a href="<c:url value="/app/docusign?contractUUID='+report.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
+		        	 result = result + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a><a href="<c:url value="/app/docusign?contractUUID='+report.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a>';
+		        	 result += ' <a title="Revise Contract" onclick="reviseContract(\''+report.contractUUID+'\')"><i class="fa fa-retweet"></i></a>';
 		         }else if(report.typeOfContract == "Existing"){
-		         result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a></div>';
+		         result = result + ' <a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+report.fileURL+'\', \''+report.fileName+'\', \''+report.fileType+'\')"></i></a>';
 		         }else{
-		        	 result = result + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a></div>';
+		        	 result = result + ' <a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+report.contractUUID+'\', \''+report.contractTitle+'\')"></i></a>';
 		         }
+		         
+		         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+		         if(report.templateSubmissionStatus == "PENDING"){
+		        	 if(report.typeOfContract == "New"){
+		  	     			result = result + '<a href="<c:url value="/app/addNewContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		  	     		}
+		  	     		if(report.typeOfContract == "Custom"){
+		  	     			result = result + '<a href="<c:url value="/app/addCustomContract?contractUUID='+report.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		  	     		}
+		         }
+    			'</sec:authorize>';
+		         
+		         if(report.revisedReason != null && report.revisedReason != '' && report.revisedReason != 'undefined'){
+		        	 result += ' <a><i class="fa fa-commenting-o edit-reason" aria-hidden="true"><div class="edit-status edit-status-top"><p><font color="red">Revise request reason</font>: <br>'+report.revisedReason+'</p></div></i></a>'; 
+		         }
+		         result += '</div>';
 		         '</sec:authorize>';
 		         result = result + '</td>';
 		     	 
@@ -1549,11 +1589,11 @@ function preparedContractListWTS(json){
 	    	var output= json.clientcontractsList[i];
 	    	opt = opt + '<tr id="row'+output.id+'">';
 	        opt = opt + '<td>';
-	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
+// 	        if(null == output.parentContractId || '' == output.parentContractId || 'undefined' == output.parentContractId){
 	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show" onclick="PopUp(\''+output.contractUUID+'\',\'SIGN\');"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span><i class="fa fa-binoculars"></i></div>';
-	        }else{
-	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
-	        }
+// 	        }else{
+// 	        	opt = opt + '<div class="tbldata-dotdot-sm proj_show"><span title="'+output.contractTitle+'">'+output.contractTitle+'</span></div>';
+// 	        }
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
        			 opt = opt + '<div class="tblminwidth-75">'+output.contractType+'</div>';
@@ -1608,13 +1648,31 @@ function preparedContractListWTS(json){
 	         
 	         opt = opt + '<td>';//Waiting to be signed
 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
+	         opt = opt + '<div class="tbldata-dotdot_80">';
 	         if((output.typeOfContract == "New" || output.typeOfContract == "Custom") && (null != output.parentContractId && '' != output.parentContractId && 'undefined' != output.parentContractId)){
-	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a><a href="<c:url value="/app/docusign?contractUUID='+output.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a></div>'; 
+	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a><a href="<c:url value="/app/docusign?contractUUID='+output.contractUUID+'" />" title="Signature"><i class="fa fa-pencil-square-o"></i></a>'; 
+	        	 opt += '<a title="Revise Contract" onclick="reviseContract(\''+output.contractUUID+'\')"><i class="fa fa-retweet"></i></a>';
 	         }else if(output.typeOfContract == "Existing"){
-	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a></div>';
+	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewContractPDF(\''+output.fileURL+'\', \''+output.fileName+'\', \''+output.fileType+'\')"></i></a>';
 	         }else{
-	        	 opt = opt + '<div class="tbldata-dotdot_80"><a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a></div>';
+	        	 opt = opt + '<a href="#" title="Preview"><i class="fa fa-eye" onclick="previewNewContractPDF(\''+output.contractUUID+'\', \''+output.contractTitle+'\')"></i></a>';
 	         }
+	         
+	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
+	         if(output.templateSubmissionStatus == "PENDING"){
+	        	 if(output.typeOfContract == "New"){
+		     			opt = opt + '<a href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+		     		if(output.typeOfContract == "Custom"){
+		     			opt = opt + '<a href="<c:url value="/app/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
+		     		}
+	         }
+ 			'</sec:authorize>';
+	         
+	         if(output.revisedReason != null && output.revisedReason != '' && output.revisedReason != 'undefined'){
+	        	 opt += '<a><i class="fa fa-commenting-o" aria-hidden="true"><div class="edit-status"><p><font color="red">Revise request reason</font>: <br>'+output.revisedReason+'</p></div></i></a>'; 
+	         }
+	         opt = opt + '</div>';
      		'</sec:authorize>';
      		 opt = opt + '</td>';
 	     	
@@ -3587,6 +3645,19 @@ function finalizeContract(recordId,status){
 }
 </script>
 
+<script>
+function sendContractFromOwner(contractUUID){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+      type : "POST",
+       url: sourceleadUrl+"/sendContractFromOwnertoReceiver?contractUUID="+contractUUID,       
+       success :function(data) {
+    	   if(data)
+	        getTemplateList();
+      },
+  }); 
+}
+</script>
 
 <script>
 function approveContract(recordId,status){
@@ -4004,7 +4075,7 @@ function editClo(contractId){
 	
 }
 </script>
-
+<script type="text/javascript" src="/resources/js/contractCommonScripts.js"></script>
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->

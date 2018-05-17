@@ -259,10 +259,16 @@ function cpagination(url){
             "render": function ( data, type, full, meta ) {
             		var result = "";
             		var lastName = "";
+            		var middleName = "";
             		if(full.lastName != null && full.lastName != "" && full.lastName != 'undefined'){
 	            		lastName = full.lastName;
 	            	}else{
 	            		lastName = "";
+	            	}
+            		if(full.middleName != null && full.middleName != "" && full.middleName != 'undefined'){
+	            		middleName = full.middleName;
+	            	}else{
+	            		middleName = "";
 	            	}
             		if(name1Flag)
 	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+full.candidateId+");'><span title='"+full.firstName+" "+lastName+"'>"+full.firstName+" "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";

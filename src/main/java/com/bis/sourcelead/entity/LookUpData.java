@@ -48,6 +48,9 @@ public class LookUpData implements Serializable{
 	@Column(name = "UNIQUE_KEY")
 	private String uniqueKey;
 	
+	@Column(name = "LOCATION")
+	private String location;
+	
 
 	public Long getId() {
 		return id;
@@ -104,4 +107,13 @@ public class LookUpData implements Serializable{
 	public void setUniqueKey(String uniqueKey) {
 		this.uniqueKey = uniqueKey;
 	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	
 }
