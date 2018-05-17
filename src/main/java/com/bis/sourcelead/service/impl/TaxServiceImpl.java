@@ -7,9 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.TaxDao;
+import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
+import com.bis.sourcelead.entity.CentralTax;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
+import com.bis.sourcelead.entity.Tds;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.TaxService;
 
 @Service
@@ -44,6 +49,32 @@ public class TaxServiceImpl implements TaxService {
 			e.printStackTrace();
 		}
 		return stateTaxList;
+	}
+
+	@Override
+	public void saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) {
+		CentralTax centralTax = null;
+		if(centralTaxDTO.getId() != null){
+			//service
+		}else{
+			centralTax = new CentralTax();
+		}
+		centralTax.setCeilvalueesi(centralTaxDTO.getCeilvalueEsi());
+		centralTax.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
+		centralTax.setEmployeeesi(centralTaxDTO.getEmployeeEsi());
+		centralTax.setEmployeepf(centralTaxDTO.getEmployeepf());
+		centralTax.setEmployeresi(centralTaxDTO.getEmployerEsi());
+		centralTax.setEmployerpf(centralTaxDTO.getEmployerpf());
+		centralTax.setNoofemployees(centralTaxDTO.getNoofemployees());
+		//centralTax.setSourceleadTaxType(centralTaxDTO.getSourceleadTaxType());
+		centralTax = taxDao.storeCentralTax(centralTax);
+		Tds tds = new Tds();
+		tds.setAge(centralTaxDTO.getAge());
+		tds.setFromamount(centralTaxDTO.getFromamount());
+		tds.setToamount(centralTaxDTO.getToamount());
+		tds.setPercentage(centralTaxDTO.getPercentage());
+		tds.setCentraltaxid(centralTax);
+		tds = taxDao.storeTds(tds);
 	}
 
 }

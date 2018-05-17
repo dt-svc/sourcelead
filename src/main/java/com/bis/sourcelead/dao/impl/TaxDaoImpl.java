@@ -5,17 +5,21 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TaxDao;
+import com.bis.sourcelead.entity.CentralTax;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
+import com.bis.sourcelead.entity.Tds;
 
 @Repository
 public class TaxDaoImpl implements TaxDao {
-
+	private static final Logger logger = LoggerFactory.getLogger(TaxDaoImpl.class);	
 	@Autowired
 	private SessionFactory sessionFactory;
 
@@ -63,5 +67,39 @@ public class TaxDaoImpl implements TaxDao {
 		}
 		return null;
 	}
+
+	@Override
+	@Transactional
+	public CentralTax storeCentralTax(CentralTax centralTax) {
+
+		logger.debug("CentralTax");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (centralTax != null) {
+				session.saveOrUpdate(centralTax);
+			}
+			logger.debug("Saving CentralTax");
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return centralTax;
+	}
+
+	@Override
+	@Transactional
+	public Tds storeTds(Tds tds) {
+		logger.debug("CentralTax");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (tds != null) {
+				session.saveOrUpdate(tds);
+			}
+			logger.debug("Saving CentralTax");
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return tds;
+	}
+
 
 }
