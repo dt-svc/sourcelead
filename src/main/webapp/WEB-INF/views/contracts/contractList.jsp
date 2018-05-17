@@ -2483,7 +2483,7 @@ function preparedContractListFinalize(json){
 	         opt = opt + '</td>';
 	         opt = opt + '<td>';
 	         if(output.reqDocCount!="0"){
-		         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');">'+output.reqDocCount+'</div>';
+		         	opt = opt + '<div class="tblminwidth-75 Cursor" onclick="CountClick(\''+output.contractUUID+'\',\''+output.parentId+'\');"><a>'+output.reqDocCount+'</a></div>';
 		         }
 		         else{
 		        	 opt = opt + '<div class="tblminwidth-75 ">'+output.reqDocCount+'</div>';
