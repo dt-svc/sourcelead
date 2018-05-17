@@ -98,4 +98,13 @@ public class SourceleadNotesDaoImpl implements SourceleadNotesDao {
 		List<SourceleadNotes> notesList = session.createQuery(query).setLong("assetId", assetId).setLong("orgLocationId", orgLocationId).list();
 		return notesList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<SourceleadNotes> getNotesListByImmigrationId(Long immigrationId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from SourceleadNotes sn where  sn.immigration.id =:immigrationId and sn.orgLocationID.id =:orgLocationId ORDER BY sn.id DESC";
+		List<SourceleadNotes> notesList = session.createQuery(query).setLong("immigrationId", immigrationId).setLong("orgLocationId", orgLocationId).list();
+		return notesList;
+	}
 }

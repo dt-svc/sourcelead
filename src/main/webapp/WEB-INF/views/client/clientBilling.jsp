@@ -149,7 +149,7 @@ result = result  +'    <div class="billingArea"> ';
  result = result + '			            <div class="tab-pane active" id="unbilled">                                                                                                                                                            ';
  result = result + '			              <div class="timesheet_out">                                                                                                                                                                       ';
  result = result + '			                <div class="clearfix">                                                                                                                                                                             ';
- result = result + '			                  <div class="timesheet_head timesheetHead-UL exportUl">                                                                                                                                                                     ';
+ result = result + '			                  <div class="timesheet_head timesheetHead-UL">                                                                                                                                                                     ';
  result = result + '			                    <ul>                                                                                                                                                                                           ';
  result = result + '			                                                                                                                                                                                                                   ';
  result = result + '			                    	                                                                                                                                                                                           ';
@@ -409,35 +409,45 @@ result = result  +'    <div class="billingArea"> ';
 					result = result +'         <td> ';
 					result = result +'     <div class="tblminwidth-75">';
 					 result = result +'  <div class="pull-right positionRelative menuWidget" >';
-					 if(report.invoiceStatus == "SENT" || report.invoiceStatus == "Received" || report.invoiceStatus == "Accepted" ){
-						result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\');" ></i>  ';
+					 if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected" ){
+						result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\',\''+report.paymentStatus+'\');" ></i>  ';
 						result = result +'  <div id="popupDiv'+report.invoiceUUID+'"></div>';
 					} 
 					result = result +'  </div> ';                                                                                                    
 					if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 						if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected"){
 							if(report.paymentStatus == "Paid"){
-							result = result +'           <span class="successBtn primary pull-left" >Receive</span>   ';	
+							result = result +'           <span class="successBtn primary pull-left" >Paid</span>   ';	
 						}else{
-							result = result +'           <span class="successBtn primary pull-left" >Send</span>   ';	
+							result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Invoice" onClick="deleteInvoice(\''+report.invoiceUUID+'\');";></i></td>          ';
 						}
 						}else if(report.invoiceStatus == "Linked"){
 							result = result +' <a class="successBtn primary pull-left" onClick="unLinkInvoice(\''+report.invoiceUUID+'\')">UnLink</a>  ';
+						}else if(report.invoiceStatus == "SENT"){
+							result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';
 						}else{
 							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span>';
 						}
 					}else{
 						if(report.invoiceStatus == "Accepted"){
 							if(report.paymentStatus == "Paid"){
-								result = result +'           <span class="successBtn primary pull-left" >Receive</span>   ';	
+								result = result +'           <span class="successBtn primary pull-left" >Paid</span>   ';	
 							}else{
 								result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
 							}
 							
 						}else{
 							if(report.invoiceStatus == "Rejected"){
+
 								result = result +'           <span class="successBtn primary pull-left" >Send</span>           ';	
+							}else if(report.invoiceStatus == "SENT"){
+								result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';
+							}
+							else{
+
+								result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Invoice" onClick="deleteInvoice(\''+report.invoiceUUID+'\');";></i></td>          ';	
 							}else{
+
 								result = result +'           <span class="clearfix" ><a onclick="acceptedInvoice(\''+report.invoiceUUID+'\');" title="Accept"><i class="fa fa-check text-success paddingRight"></i></a><a onclick="rejectInvoice(\''+report.invoiceUUID+'\');" title="Reject"><i class="paddingLeft fa fa-times text-danger"></i></a></span>';
 							}
 							
@@ -479,6 +489,55 @@ result = result  +'    <div class="billingArea"> ';
 	        },
 	    });
 	}
+</script>
+
+<div id="popUp"></div>
+
+<script>
+function deleteInvoice(invoiceUUID){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+
+	result = result +"		<p>Are you sure you want to delete ?</p>";
+	result = result +"		<textarea  id='reasonForInvoice' name='reasonForInvoice'  placeholder='Comments here' ></textarea>";
+	result = result + ' <div id="reasonForInvoiceDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveInvoiceRejectedReason(\''+invoiceUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+}
+
+function saveInvoiceRejectedReason(invoiceUUID){
+	var reason = $("#reasonForInvoice").val();
+	if(reason != null && reason != ''){
+		 $("#reasonForInvoiceDiv").empty();
+		if(reason.length > 250){
+		$("#reasonForInvoiceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>The Entered values should not be more than 250 characters</font>") ; 
+		}else{
+			 $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/deleteInvoice?"+tokenParamName+"="+tokenValue+"&invoiceType=Receivable&invoiceUUID="+invoiceUUID+"&reason="+reason,
+		   		    success: function(data) {
+		   		    	$("#popUp").empty();
+		   			 	$(".project_inn_mask").fadeOut(200);
+		   			 	location.replace(sourceleadUrl+"/invoiceList");	
+		   		    }
+			     });
+		}
+	}
+	else{
+			$("#reasonForInvoiceDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+	}
+	
+}
+
 </script>
 
 
@@ -1035,7 +1094,7 @@ function cancelbtn(){
 </script>
   
 <script>
-function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount){
+function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl,paymentStatus){
 		 removePopup();
 	     result = "";
 	     if(invoiceParentId == 'undefined'){
@@ -1045,17 +1104,17 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount){
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
-		 if(invoiceParentId == 'undefined'){
+		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT' && paymentStatus != 'Paid'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_INVOICE_REMINDER\')">';
 			 result = result +'      <li onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
 			 '</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_INVOICE\')">';
-		 result = result +'      <li onclick="getPrint('+invoiceUUID+');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+		 result = result +'      <li><a class="" target="_blank" href="'+fileUrl+'" title="Print"><i class="fa fa-print paddingLeft paddingRight"></i>Print</a></li>';
 		 '</sec:authorize>'
 		
 		 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_INVOICE\')">';
-		 result = result +'      <li onclick="downloadInvoice('+invoiceUUID+');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+		 result = result +'      <li><a target="_blank" href="'+fileUrl+'" title="Download"><i class="fa fa-download paddingLeft paddingRight"></i>Download</a></li>';
 		 '</sec:authorize>'
 		 
 		 result = result +'      <li onclick="linkInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
@@ -1246,6 +1305,7 @@ function linkInvoice(invoiceUUID,totalAmount){
     
 <script>
 function mergeInvoice(parentTotalAmount){
+	$('#clientInvoicelinkId').parent().find('p.jquery_form_error_message').remove();
 	var invoiceUUID = $('#masterInvoiceId').val();
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var linkRadio = $('input[name=linkedInvoice]');

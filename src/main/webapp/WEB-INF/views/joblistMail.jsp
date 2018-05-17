@@ -149,7 +149,7 @@ display: none;
             <select class="chosen-select" name="campaignjobs" data-validation="required" field-name="Jobs" multiple data-placeholder="&nbsp;Enter Jobs" id="selectedJobs">
             </select>
             
-            <span class="select-multiple" data-target="#requirement" onclick="selectJobsRadio();" data-toggle="modal"><i class="fa fa-th-large" title="Select Candidates"></i></span> 
+            <span class="select-multiple" data-target="#requirement" onclick="selectJobsRadio();" data-toggle="modal"><i class="fa fa-th-large" title="Select jobs"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="requirement" class="modal fade custom-modal">
               <div class="modal-dialog modal-lg">
@@ -361,7 +361,7 @@ function jobListChange(type){
     	result = result +'</div>';
     	result = result +'<div class="clearfix pull-right mr mb">';
      	result = result +'<button class="btn btn-primary"  type="button" id="assignbtnId" onclick="getCheckedJobs();">Add</button>';
-     	result = result +' <button class="btn btn-default" type="button">Close</button>';
+     	result = result +' <button class="btn btn-default" type="button" onclick="removeMessage();">Close</button>';
      	result = result +' </div>'; 
 	    $("#mailBoxJobsList").empty();
 	    $("#mailBoxJobsList").append(result);

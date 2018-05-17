@@ -2469,7 +2469,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}*/
 
 			// construct HTML template using required data
-			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
+			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,emailScenario);
 			notificationScenario.setBody(notificationbody);
 			
 			String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body, null, sourceleadUrl, loginOrgLocation.getOrg(),loginOrgLocation);
@@ -2995,14 +2995,29 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 globalVarsMap.put("ApplicantName",requirementSubmissionTemplateFields.getFirstName());
 		 }
 		
-		 StringBuilder location = new StringBuilder();
-		 if(requirementSubmission.getRequirement().getCountry() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getCountry()) && requirementSubmission.getRequirement().getState() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getState()) && loginOrgLocation.getCity() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getCity())){
-			 globalVarsMap.put("RequirementLocation", location.append(requirementSubmission.getRequirement().getCountry()).append(",").append(requirementSubmission.getRequirement().getState()).append(",").append(requirementSubmission.getRequirement().getCity()).toString());
-		 }else if(requirementSubmission.getRequirement().getCountry() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getCountry()) && requirementSubmission.getRequirement().getState() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getState())){
-			 globalVarsMap.put("RequirementLocation",location.append(requirementSubmission.getRequirement().getCountry()).append(",").append(requirementSubmission.getRequirement().getState()).toString());
-		 }else if(requirementSubmission.getRequirement().getCountry() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getCountry())){
-			 globalVarsMap.put("RequirementLocation", requirementSubmission.getRequirement().getCountry());
-		 }
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String location = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementSubmission.getRequirement().getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							location = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							location = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			globalVarsMap.put("RequirementLocation", location);
+		 
+		 
 		 
 		 if(Constants.JOB_OTHER.equalsIgnoreCase(requirementSubmission.getRequirement().getJobType())) {
 			 globalVarsMap.put("EmploymentType", requirementSubmission.getRequirement().getOtherJobType());
@@ -3044,10 +3059,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			   }
 		 //	 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.Recruiter_Will_Receive_Mail_About_The_Acceptance_Of_Requirement_By_Manager,Constants.ENTITY_TYPE_NOTIFICATION);
 		 
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
+			//covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+				 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+				 String signature = null;
+				 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+					 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+				 }
+				 String url = sourceleadUrl;
 		 
 //		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
 //		 notificationScenario.setBody(notificationbody);
@@ -3097,15 +3116,27 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			globalVarsMap.put("applicantName", requirementSubmissionTemplateFields.getFirstName());
 		}
 		
-		StringBuilder location = new StringBuilder();
-		 if(requirementSubmission.getRequirement().getCountry() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getCountry()) && requirementSubmission.getRequirement().getState() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getState()) && loginOrgLocation.getCity() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getCity())){
-			 globalVarsMap.put("requirmentLocation", location.append(requirementSubmission.getRequirement().getCountry()).append(",").append(requirementSubmission.getRequirement().getState()).append(",").append(requirementSubmission.getRequirement().getCity()).toString());
-		 }else if(requirementSubmission.getRequirement().getCountry() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getCountry()) && requirementSubmission.getRequirement().getState() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getState())){
-			 globalVarsMap.put("requirmentLocation",location.append(requirementSubmission.getRequirement().getCountry()).append(",").append(requirementSubmission.getRequirement().getState()).toString());
-		 }else if(requirementSubmission.getRequirement().getCountry() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getCountry())){
-			 globalVarsMap.put("requirmentLocation", requirementSubmission.getRequirement().getCountry());
-		 }
-		 
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String location = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementSubmission.getRequirement().getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							location = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							location = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			globalVarsMap.put("requirmentLocation", location);
 		if (reqRateNegotiation != null && reqRateNegotiation.getExpectedRate() != null
 				&& !"".equalsIgnoreCase(reqRateNegotiation.getExpectedRate())) {
 			globalVarsMap.put("applicantRate", reqRateNegotiation.getExpectedRate());
@@ -3192,14 +3223,27 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 globalVarsMap.put("ApplicantName",requirementSubmissionTemplateFields.getFirstName());
 		 }
 		
-		 StringBuilder reqLoc = new StringBuilder();
-		 if(requirementSubmission.getRequirement().getState() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getState())){
-			 globalVarsMap.put("RequirementLocation", reqLoc.append(requirementSubmission.getRequirement().getCountry()).append(",").append(requirementSubmission.getRequirement().getState()).toString());
-		 }else if(loginOrgLocation.getCity() != null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getCity())){
-			 globalVarsMap.put("RequirementLocation",reqLoc.append(requirementSubmission.getRequirement().getCountry()).append(",").append(requirementSubmission.getRequirement().getState()).append(",").append(requirementSubmission.getRequirement().getCity()).toString());
-		 }else{
-			 globalVarsMap.put("RequirementLocation", requirementSubmission.getRequirement().getCountry());
-		 }
+		 List<String> requirementLocationsList = new ArrayList<>();
+			List<RequirementLocations> locationsList;
+			String location = "";
+			StringBuilder requirementBuilder=new StringBuilder();
+			try {
+				locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirementSubmission.getRequirement().getId());
+				if(locationsList != null && !locationsList.isEmpty()) {
+					for(RequirementLocations locationsJob : locationsList) {
+						requirementLocationsList.add(locationsJob.getLocation());
+						if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+							location = requirementBuilder.append(locationsJob.getLocation()).toString();
+						}else{
+							location = "--";
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			 globalVarsMap.put("RequirementLocation", location);
 		 
 		// To get the RateNegatiotion of RequirementSubmission based on Submission Id
 		 RequirementRateSubmissionNegotiation reqRateNegotiation  = requirementRateSubmissionNegotiationService.getLatestRequirementRateSubmissionNegotiationBySubmissionId(requirementSubmission.getId());
@@ -3235,7 +3279,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
 		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
 		 
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrg,loginOrgLocation);

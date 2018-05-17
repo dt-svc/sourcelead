@@ -140,8 +140,8 @@ public class FinanceServiceImpl implements FinanceService{
 								
 								if (sah.getBillId() != null) {
 									missingInvoice.setBillReferId(String.valueOf(sah.getBillId().getId()));
-									missingInvoice.setTotalAmount(sah.getInvoiceId().getTotal());
-									missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getInvoiceId().getInvoiceDate()));
+									missingInvoice.setTotalAmount(sah.getBillId().getTotal());
+									missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getBillId().getInvoiceDate()));
 								}
 								if(sah.getFrequencyStartDate() != null && sah.getFrequencyEndDate() !=null ) {
 									StringBuilder sb = new StringBuilder();
@@ -197,8 +197,8 @@ public class FinanceServiceImpl implements FinanceService{
 							}
 							if (sah.getBillId() != null) {
 								missingInvoice.setBillReferId(String.valueOf(sah.getBillId().getId()));
-								missingInvoice.setTotalAmount(sah.getInvoiceId().getTotal());
-								missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getInvoiceId().getInvoiceDate()));
+								missingInvoice.setTotalAmount(sah.getBillId().getTotal());
+								missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getBillId().getInvoiceDate()));
 							}
 							if(sah.getFrequencyStartDate() != null && sah.getFrequencyEndDate() !=null ) {
 								StringBuilder sb = new StringBuilder();
@@ -270,7 +270,7 @@ public class FinanceServiceImpl implements FinanceService{
 							MissingInvoiceDTO missingInvoice = new MissingInvoiceDTO();
 							if(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId() != null) {
 								Candidate candidate  = candidateService.getCandidateByParentCandidateId(sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getId());
-								if(candidate.getOrgRelationId() != null) {
+								if(candidate != null && candidate.getOrgRelationId() != null) {
 									OrgRelations orgRelations = orgRelationsService.getOrgRelationById(candidate.getOrgRelationId().getId());
 									String date = "";
 									if(!"last_years".equalsIgnoreCase(missingInvoiceDto.getFilterType()) && !"3months".equalsIgnoreCase(missingInvoiceDto.getFilterType())) {
@@ -289,7 +289,7 @@ public class FinanceServiceImpl implements FinanceService{
 									}
 									double amount = 0;
 									if (sah.getBillId() != null) {
-										amount = Double.parseDouble(sah.getInvoiceId().getTotal());
+										amount = Double.parseDouble(sah.getBillId().getTotal());
 									}else {
 										List<Contracts> contractList = financeDao.getRecentSowcontractListByAssociateId(candidate.getId(), orgLocation, orgRelations, contractType);
 										
@@ -599,58 +599,70 @@ public class FinanceServiceImpl implements FinanceService{
 			List<PaidBillDTO> paidBillList = new ArrayList<>();
 			double totalAmount = 0;
 			for (Invoice invoice : invoiceList.getData()) {
-				PaidBillDTO paidBill = new PaidBillDTO();
-				if (invoice.getProjectID() != null) {
-					paidBill.setProjectName(invoice.getProjectID().getProjectName());
-				}
-				paidBill.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getInvoiceDate()));
-				Date paymentDate = null;
-				if(invoice.getParentInvoiceId() != null){
-					paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getParentInvoiceId().getId());
-				}else{
-					paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getId());
-				}
 				
-				if (paymentDate != null) {
-					paidBill.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paymentDate));
-				}
-				
-				double total = 0;
+				List<InvoicePayment> listAmt = new ArrayList<>();
 				if(Constants.PAYABLES.equalsIgnoreCase(paidBillDTO.getBillType())) {
 					
 					if(invoice.getParentInvoiceId() != null)
-						 total = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
+						listAmt = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
 					else
-						 total = getPaidAmountByInvoiceId(invoice.getId());
+						listAmt = getPaidAmountByInvoiceId(invoice.getId());
 				}else {
 					if(invoice.getParentInvoiceId() != null)
-					     total = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
+						listAmt = getPaidAmountByInvoiceId(invoice.getParentInvoiceId().getId());
 					else
-						total = getPaidAmountByInvoiceId(invoice.getId());
+						listAmt = getPaidAmountByInvoiceId(invoice.getId());
 				}
-				paidBill.setAmount(total);
-				totalAmount = totalAmount + total;
-				paidBill.setTotalAmount(totalAmount);
-				if(total != 0)
-				paidBillList.add(paidBill);
+				
+				for (InvoicePayment invoicePayment : listAmt) {
+					
+					PaidBillDTO paidBill = new PaidBillDTO();
+					if (invoice.getProjectID() != null) {
+						paidBill.setProjectName(invoice.getProjectID().getProjectName());
+					}
+					paidBill.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), invoice.getInvoiceDate()));
+					Date paymentDate = null;
+					if(invoice.getParentInvoiceId() != null){
+						paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getParentInvoiceId().getId());
+					}else{
+						paymentDate = financeDao.getPaymentDateByInvoiceId(invoice.getId());
+					}
+					
+					if (paymentDate != null) {
+						paidBill.setPayDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), paymentDate));
+					}
+					
+					
+					paidBill.setAmount(Double.valueOf(invoicePayment.getPaymentAmount()));
+					totalAmount = totalAmount + Double.valueOf(invoicePayment.getPaymentAmount());
+					paidBill.setTotalAmount(totalAmount);
+					if(Double.valueOf(invoicePayment.getPaymentAmount()) != 0)
+					paidBillList.add(paidBill);
+				}
 			}
 			res.setData(paidBillList);
-			res.setRecordsFiltered(invoiceList.getRecordsFiltered());
-			res.setRecordsTotal(invoiceList.getRecordsTotal());
+			res.setRecordsFiltered(paidBillList.size());
+			res.setRecordsTotal(paidBillList.size());
 		}
 		return res;
 	}
 
 	
-	private double getPaidAmountByInvoiceId(Long invoiceId) {
+	private List<InvoicePayment> getPaidAmountByInvoiceId(Long invoiceId) {
 		double amount = 0;
 			List<Long> invoiceIds = new ArrayList();
+//			List<Double> listAmt = new ArrayList<>();
 			invoiceIds.add(invoiceId);
 			List<InvoicePayment> paymentList = financeDao.getInvoicePaidAmountByInvoiceIds(invoiceIds);
-			if (paymentList != null && paymentList.size() > 0) {
-				amount = paymentList.stream().mapToDouble(ip->Double.parseDouble(ip.getPaymentAmount())).sum();
-			}
-		return amount;
+//			for(InvoicePayment invPay : paymentList) {
+//				amount = Double.valueOf(invPay.getPaymentAmount());
+//				listAmt.add(amount);
+//			}
+			
+//			if (paymentList != null && paymentList.size() > 0) {
+//				amount = paymentList.stream().mapToDouble(ip->Double.parseDouble(ip.getPaymentAmount())).sum();
+//			}
+		return paymentList;
 	}
 
 	@Override

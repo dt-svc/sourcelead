@@ -25,7 +25,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddMonthlyLeavesForExistingLeaves {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Pavan Jampana
  * this method is adding monthly leaves for existing leaves
@@ -41,7 +42,7 @@ public void dumpMonthlyLeaves() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM sourcelead.USER_LEAVE";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".USER_LEAVE";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			 
@@ -66,7 +67,7 @@ public void dumpMonthlyLeaves() throws IOException, SQLException {
 				 
 				 Map<String,Integer> monthlyLeaves =  getMonthlyAppliedLeaves(fromdate,todate);
 				 System.out.println(monthlyLeaves);
-					 String query1 = " insert into sourcelead.MONTHLY_LEAVES (LEAVE_ID, JANUARY_LEAVES, FEBRUARY_LEAVES, MARCH_LEAVES, APRIL_LEAVES, MAY_LEAVES, JUNE_LEAVES, JULY_LEAVES, AUGUST_LEAVES, SEPTEMBER_LEAVES, OCTOBER_LEAVES, NOVEMBER_LEAVES, DECEMBER_LEAVES, CREATED_DATE, CREATED_BY, UPDATED_DATE, UPDATED_BY)"
+					 String query1 = " insert into "+dbconfig.getSchema()+".MONTHLY_LEAVES (LEAVE_ID, JANUARY_LEAVES, FEBRUARY_LEAVES, MARCH_LEAVES, APRIL_LEAVES, MAY_LEAVES, JUNE_LEAVES, JULY_LEAVES, AUGUST_LEAVES, SEPTEMBER_LEAVES, OCTOBER_LEAVES, NOVEMBER_LEAVES, DECEMBER_LEAVES, CREATED_DATE, CREATED_BY, UPDATED_DATE, UPDATED_BY)"
 								+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 					 try {
 		    			 PreparedStatement pstmt1 = conn.prepareStatement(query1);
@@ -170,10 +171,6 @@ public void dumpMonthlyLeaves() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

@@ -20,7 +20,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Missing Invoice Lists</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Missing Invoice Lists</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Report(s) Dashboard</a> &raquo;  Missing Invoice Lists</div>
     </section>
     <!-- hiring Process  -->
    
@@ -73,7 +73,7 @@ $(document).ready(function(){
         <div class="col-md-2">
         <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingInvoiceReportData();">Customize</button>
 		</div>
-		<div class="col-md-1">
+		<!-- <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-download"></i></button>
             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
@@ -81,7 +81,7 @@ $(document).ready(function(){
               <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
             </ul>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>    
      
@@ -161,7 +161,7 @@ function prepareMissingInvoiceData(url){
 function missingInvoice(url){
 	var colIndex = 0;
 	var apagingTotal = 0;
-	/* var total = 0; */
+	
     $('#missingInvoicePagination').DataTable( { 
     		"processing": true,
         "serverSide": true,
@@ -231,10 +231,11 @@ function missingInvoice(url){
             	"sortable": false,
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
-                		if(opt.totalAmount !=null && opt.totalAmount !='' && opt.totalAmount != 'undefined'){
-                			 result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.totalAmount+'</div></td>';	
-                			/*  total = parseFloat(total)+parseFloat(opt.totalAmount);
-                			  $("#total").html(total.toFixed(2)); */
+                		var total = 0; 
+                		if(opt.invoiceAmount !=null && opt.invoiceAmount !='' && opt.invoiceAmount != 'undefined'){
+                			 result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.invoiceAmount+'</div></td>';	
+                			 total = parseFloat(total)+parseFloat(opt.invoiceAmount);
+                			 $("#total").html(total.toFixed(2));
                 		}else{
                 			 result = result + ' <td><div class="tbldata-dotdot-sm"">0.00</div></td>';
                 		}
