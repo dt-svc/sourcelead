@@ -2344,6 +2344,16 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL);
 			   }
 			 
+			 /*String emailBody = null;
+			 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
+			 try {
+				    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
+				    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
+				   // System.out.println(emailBody);
+				   
+				} catch (IOException ex) {
+				    System.err.println(ex);
+				}*/
 
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
