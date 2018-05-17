@@ -705,6 +705,7 @@ public class InvoiceRestController {
 					inviceLine.setSowName(inviceLine.getContract().getContractTitle());
 				}
 				inviceLine.setRate(inviceLine.getRate());
+				inviceLine.setInlineDescription(inviceLine.getInlineDescription());
 				// inviceLine.setEmployeeId(inviceLine.getEmployeeId());
 				inviceLine.setTotalHours(inviceLine.getTotalHours());
 				inviceLine.setAmount(inviceLine.getAmount());
