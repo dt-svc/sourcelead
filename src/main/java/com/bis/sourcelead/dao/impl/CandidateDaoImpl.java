@@ -80,6 +80,8 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
+	@Value("${jdbc.schema}")
+	private String schema;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1256,14 +1258,14 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Long getCandidateGeneratedIdByOrgLocationId(Long orgLocationId,Integer generatedIdcount) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM sourcelead.CANDIDATE WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM "+schema+".CANDIDATE WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
 			count = (Long) maxCountList.iterator().next().longValue();
 		}
 		if(count == 0){
-			 query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'7') AS UNSIGNED)) FROM sourcelead.CANDIDATE WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
+			 query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'7') AS UNSIGNED)) FROM "+schema+".CANDIDATE WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
 			 maxCountList = session.createSQLQuery(query).list();
 			 if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
 					count = (Long) maxCountList.iterator().next().longValue();
