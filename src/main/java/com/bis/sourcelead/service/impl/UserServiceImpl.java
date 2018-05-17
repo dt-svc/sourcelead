@@ -57,7 +57,6 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.JobCustomFieldData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -544,6 +543,33 @@ public class UserServiceImpl implements UserService {
 	    if(StringUtils.isNotBlank(addUserDTO.getSsn())) {
 			  user.setSsn(Integer.parseInt(addUserDTO.getSsn()));
 	    }
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {
+			  user.setMiddelName(addUserDTO.getMiddleName());
+	    }else{
+	    	 user.setMiddelName(null);
+	    }
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getGender())) {
+			  user.setGender(addUserDTO.getGender());
+	    }else{
+	    	 user.setGender(null);
+	    }
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getMaritalStatus())) {
+			  user.setMaritalStatus(addUserDTO.getMaritalStatus());
+	    }else{
+	    	 user.setMaritalStatus(null);
+	    }
+	    
+	    if(StringUtils.isNotBlank(addUserDTO.getDateofBirth())){
+			try {
+				user.setDateOfBirth(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofBirth()));
+				  
+				} catch (Exception e) {
+				  e.printStackTrace();
+				}
+		}
 		
 		user.setUserCode(SourceLeadRandomCodeHelper.generateRandomUserCode());
 		user.setCreatedBy(userCode);

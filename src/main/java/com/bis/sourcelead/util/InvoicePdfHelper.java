@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,7 +154,10 @@ public class InvoicePdfHelper {
 				p = new Paragraph(orgLocation.getPhone(), font10);
 				p.add(new Chunk(glue));
 				p.setFont(font10);
+				if(StringUtils.isNotBlank(invoice.getPaymentFrequency()))
 				p.add("Payment Terms : " + invoice.getPaymentFrequency());
+				else
+					p.add("Payment Terms : " + "--");
 				document.add(p);
 
 				OrgRelations orgRel = orgRelationsService.getOrRelationsById(invoice.getOrgRelationID().getId());
@@ -556,7 +560,10 @@ public class InvoicePdfHelper {
 				p = new Paragraph(orgLocation.getPhone(), font10);
 				p.add(new Chunk(glue));
 				p.setFont(font10);
-				p.add("Payment Terms : " + invoice.getPaymentFrequency());
+				if(StringUtils.isNotBlank(invoice.getPaymentFrequency()))
+					p.add("Payment Terms : " + invoice.getPaymentFrequency());
+					else
+						p.add("Payment Terms : " + "--");
 				document.add(p);
 
 				OrgRelations orgRel = orgRelationsService.getOrRelationsById(invoice.getOrgRelationID().getId());

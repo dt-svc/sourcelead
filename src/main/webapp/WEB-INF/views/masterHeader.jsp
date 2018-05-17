@@ -2102,8 +2102,11 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
   if(type == "invite"){
 	  getTimezonesList();
   }
-//   zipcodeMask(address.country,zipCodeId);	
-  
+
+  if(type != "editAssociate"){
+    zipcodeMask(address.country,zipCodeId);	
+  }
+
 });
 }
 function geolocate(latitudeId,longtitudeId) {

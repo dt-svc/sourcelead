@@ -139,7 +139,7 @@ public class BillingPayableRestController {
 		    		invoice.setInvoiceParentId(invoice.getParentInvoiceId().getId());
 		    	}else
 		    		invoice.setInvoiceParentId(null);
-		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId(invoice.getId());
+		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId((invoice.getParentInvoiceId() != null)?invoice.getParentInvoiceId().getId():invoice.getId());
 		    	List<InvoiceLineItems> lineItemsList = new ArrayList<InvoiceLineItems>();
 		    	
 		    	for(InvoiceLineItems lineItems : invoiceLineItemsList){

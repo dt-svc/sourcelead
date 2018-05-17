@@ -33,6 +33,9 @@ public class DatabaseConnectionConfig {
 
 	@Value("${jdbc.driverClass}")
 	private String driverClass;
+	
+	@Value("${jdbc.schema}")
+	private String schema;
 
 	@Value("${jdbc.url}")
 	private String jdbcUrl;
@@ -58,6 +61,8 @@ public class DatabaseConnectionConfig {
 	
 	@Value("${static.path}")
 	private String staticPath;
+	
+	
 	
 
 	public ComboPooledDataSource getComboPooledDataSource() {
@@ -114,6 +119,14 @@ public class DatabaseConnectionConfig {
 	public void setStaticPath(String staticPath)
 	{
 		this.staticPath = staticPath;
+	}
+
+	public String getSchema() {
+		return schema;
+	}
+
+	public void setSchema(String schema) {
+		this.schema = schema;
 	}
 
 	
