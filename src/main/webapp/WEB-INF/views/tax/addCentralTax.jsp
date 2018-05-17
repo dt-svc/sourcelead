@@ -3,24 +3,35 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+<script type="text/javascript">
+	var activeTaxTab = "createCentralTax";
+</script>
+<script type="text/javascript" src='/resources/js/tax/tax.js'></script>
 <section class="content-wraper contentWraper">
 	<jsp:include page="../tax/taxHeader.jsp"></jsp:include>
 	<div class="timesheet_out">
 
 		<div class="tablelist-wrap">
 
-  <form:form id="createCentralTax_form"  name="createCentralTax_form" method="post">
+  <form:form id="createCentralTaxform"  name="createCentralTaxform" method="post">
 			<div class="col-md-10">
 				<div class="clearfix row">
 					<div class="col-md-4 dropdown-select mt10 mb10">
-						<select class="selectpicker width100percnt"  id="sourceleadTaxType " name="sourceleadTaxType" 
-							title="Select Type of Tax" data-live-search="true">
+						<select class="selectpicker width100percnt"  id="sourceleadTaxType " name="sourceleadTaxId" >
+						
+						<c:forEach items="${taxTypes}" var="t">
+									<option value="${t.id}">${t.description}</option>
+								</c:forEach>
+						
+						
+						
+						
+						<!-- 	title="Select Type of Tax" data-live-search="true">
 							<option>Income tax</option>
 							<option>Sales tax</option>
 							<option>Excise duty</option>
 							<option>Service tax</option>
-							<option>Custom duty</option>	
+							<option>Custom duty</option>	 -->
 						</select>
 					</div>
 					<div class="clearfix"></div>
@@ -92,12 +103,19 @@
 						<div class="clearfix minHeightcol5">
 							<div class="row">
 								<h4 class="col-md-6">
-									TDS <a href="javascript:void(0)"
+									TDS <a href="javascript:void(0)" id="addTDSRow" onclick="tax.addDynamicTDSRow(false);"
 										class="paddingLeft cursorPointer ml" id="clonediv"
 										title="Add Row">+</a>
 								</h4>
 							</div>
-							<div class="row clonedInput mb">
+							<div class="row clonedInput mb" id="dynamicTDSList" name="tdsTaxList">
+								
+								
+								
+								
+								
+								
+						<!-- 
 								<div class="col-md-3">
 									<label class="clearfix">Age</label>
 									<div class="clearfix">
@@ -140,6 +158,8 @@
 									</ul>
 								</div>
 								<div class="clearfix"></div>
+								 -->
+								
 							</div>
 
 							<div id="cloneArea"></div>
@@ -153,7 +173,7 @@
 			<div class="clearfix footerstyelsNew">
 				<div class="col-lg-12">
 					<div class="pull-right">
-						<input value="Save" id = "centralTax" onclick="createCentralTax();" class="btn btn-success btnSuccess" type="button"> 
+						<input value="Save"  id = "saveCentralTax"  class="btn btn-success btnSuccess" type="button"> 
 						<input value="Cancel" class="btn btn-default ml10" type="button">
 					</div>
 				</div>
@@ -163,16 +183,3 @@
 	</div>
 </section>
 
-<script>
-	function createCentralTax() {
-		var formData = getFormData("createCentralTax_form");
-		$.ajax({
-			type : "POST",
-			data : formData,
-			url : sourceleadUrl.trim()+"/saveCentralTax",
-			success : function(result) {
-
-			},
-		});
-	}
-</script>

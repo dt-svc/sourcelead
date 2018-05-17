@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dto.CandidateCertificationDTO;
+import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.StateTaxDTO;
@@ -111,34 +112,7 @@ public class TaxController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "/stateTax/add")
-	@ResponseBody
-	public Response<String> addStateTax(HttpServletRequest request, StateTaxDTO stateTaxDTO) {
-		Response<String> response = new Response<>();
-		try {
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null) {
-				long result = 0;
-//						taxService.addStateTax(stateTaxDTO);
-				if (result > 0) {
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
-				} else {
-					response.setResponse(Result.FAILED.name());
-					response.setResponseMessage(Result.FAILED.getValue());
-				}
-			} else {
-				response.setResponse(Result.SESSION_TIMEDOUT.name());
-				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			response.setResponse(Result.AWKWARD.name());
-			response.setResponseMessage(Result.AWKWARD.getValue());
-		}
-		return response;
-	}
-
+	
 	@RequestMapping(value = "/stateTax/taxSummary")
 	public ModelAndView stateTaxSummary(HttpServletRequest request, @RequestParam(defaultValue = "0") long stateTaxId) {
 		ModelAndView modelAndView = new ModelAndView();
@@ -226,7 +200,67 @@ public class TaxController {
 		return modelAndView;
 	}
 
+	@RequestMapping(value = "/stateTax/add")
+	@ResponseBody
+	public Response<String> addStateTax(HttpServletRequest request, StateTaxDTO stateTaxDTO) {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				long result = 0;
+					taxService.addStateTax(stateTaxDTO);
+				if (result > 0) {
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.FAILED.name());
+					response.setResponseMessage(Result.FAILED.getValue());
+				}
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	
+	
+	@RequestMapping(value = "/centralTax/add" , method = RequestMethod.POST)
+	@ResponseBody
+	   public  Response<String> saveCentralTax(CentralTaxDTO centralTaxDTO,HttpServletRequest request) {
+			
+		Response<String> response = new Response<>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			if (user != null && orgLocations != null) {
 
+				if (Validator.validate(centralTaxDTO)) {
+					taxService.saveCentralTax(centralTaxDTO, user, orgLocations);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		return response; 
+	    
+	   }
+	
 	
 	
 	

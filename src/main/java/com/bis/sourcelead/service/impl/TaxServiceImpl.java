@@ -10,6 +10,7 @@ import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.ProfessionalTaxDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
+import com.bis.sourcelead.dto.TdsDTO;
 import com.bis.sourcelead.entity.CentralTax;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProfessionalTax;
@@ -50,33 +51,7 @@ public class TaxServiceImpl implements TaxService {
 		return stateTaxList;
 	}
 
-	@Override
-
-	public void saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) {
-		CentralTax centralTax = null;
-		if (centralTaxDTO.getId() != null) {
-			// service
-		} else {
-			centralTax = new CentralTax();
-		}
-		centralTax.setCeilvalueesi(centralTaxDTO.getCeilvalueEsi());
-		centralTax.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
-		centralTax.setEmployeeesi(centralTaxDTO.getEmployeeEsi());
-		centralTax.setEmployeepf(centralTaxDTO.getEmployeepf());
-		centralTax.setEmployeresi(centralTaxDTO.getEmployerEsi());
-		centralTax.setEmployerpf(centralTaxDTO.getEmployerpf());
-		centralTax.setNoofemployees(centralTaxDTO.getNoofemployees());
-		// centralTax.setSourceleadTaxType(centralTaxDTO.getSourceleadTaxType());
-		centralTax = taxDao.storeCentralTax(centralTax);
-		Tds tds = new Tds();
-		tds.setAge(centralTaxDTO.getAge());
-		tds.setFromamount(centralTaxDTO.getFromamount());
-		tds.setToamount(centralTaxDTO.getToamount());
-		tds.setPercentage(centralTaxDTO.getPercentage());
-		tds.setCentraltaxid(centralTax);
-		tds = taxDao.storeTds(tds);
-	}
-
+	
 	public StateTaxDTO getStateTax(long stateTaxId) {
 		StateTaxDTO stateTaxDTO = new StateTaxDTO();
 		try {
@@ -152,6 +127,78 @@ public class TaxServiceImpl implements TaxService {
 		return 0;
 	}
 
+	
+	
+	@Override
+	public long saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) {
+		try {
+			CentralTax ct = new CentralTax();
+			ct.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
+			ct.setEmployeepf(centralTaxDTO.getEmployeepf());
+			ct.setEmployerpf(centralTaxDTO.getEmployerpf());
+			ct.setNoofemployees(centralTaxDTO.getNoofemployees());
+			ct.setCeilvalueesi(centralTaxDTO.getCeilvalueEsi());
+			ct.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
+			ct.setEmployeeesi(centralTaxDTO.getEmployeeEsi());
+			ct.setEmployeresi(centralTaxDTO.getEmployerEsi());
+			ct.setSourceleadTaxType(getTaxTypeById(centralTaxDTO.getSourceleadTaxId()));
+			
+			List<Tds> tdsList = new LinkedList<>();
+			for (TdsDTO tdsDTO : centralTaxDTO.getTdsTaxList()) {
+				Tds tds = null;
+				if (tdsDTO.getId() > 0) {
+//					tds = new Tds();
+				} else {
+					tds = new Tds();
+				}
+				
+				tds.setAge(tdsDTO.getAge());
+				tds.setFromamount(tdsDTO.getFromamount());
+				tds.setToamount(tdsDTO.getToamount());
+				tds.setPercentage(tdsDTO.getPercentage());
+				tds.setCentraltaxid(ct);;
+				tdsList.add(tds);
+			}
+			ct.settdsTaxList(tdsList);
+			return taxDao.storeCentralTax(ct);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	
+	
+	/*@Override
+	public void saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) {
+		CentralTax centralTax = null;
+		if (centralTaxDTO.getId() != null) {
+			// service
+		} else {
+			centralTax = new CentralTax();
+		}
+		centralTax.setCeilvalueesi(centralTaxDTO.getCeilvalueEsi());
+		centralTax.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
+		centralTax.setEmployeeesi(centralTaxDTO.getEmployeeEsi());
+		centralTax.setEmployeepf(centralTaxDTO.getEmployeepf());
+		centralTax.setEmployeresi(centralTaxDTO.getEmployerEsi());
+		centralTax.setEmployerpf(centralTaxDTO.getEmployerpf());
+		centralTax.setNoofemployees(centralTaxDTO.getNoofemployees());
+		centralTax.setSourceleadTaxType(getTaxTypeById(centralTaxDTO.getSourceleadTaxId()));
+		centralTax = taxDao.storeCentralTax(centralTax);
+		Tds tds = new Tds();
+		tds.setAge(centralTaxDTO.getAge());
+		tds.setFromamount(centralTaxDTO.getFromamount());
+		tds.setToamount(centralTaxDTO.getToamount());
+		tds.setPercentage(centralTaxDTO.getPercentage());
+		tds.setCentraltaxid(centralTax);
+		tds = taxDao.storeTds(tds);
+	}
+*/
+	
+	
+	
+	
 	@Override
 	public SourceleadTaxType getTaxTypeById(long id) {
 		try {

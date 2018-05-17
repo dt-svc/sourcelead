@@ -1,12 +1,16 @@
 var tax = new Tax();
 var pfRowId = 0;
+var tdsRowId = 0;
 $(document).ready(function() {
 	if (activeTaxTab === "state") {
 		tax.getStateTaxList();
 	} else if (activeTaxTab === "central") {
-		alert("Central Tab");
+		
 	} else if(activeTaxTab === "createStateTax") {
 		tax.addDynamicPTRow(true);
+	} else if(activeTaxTab === "createCentralTax") {
+		tax.addDynamicTDSRow(true);
+		console.log("entered");
 	}
 	
 	$("#saveStateTax").click(function() {
@@ -40,6 +44,38 @@ $(document).ready(function() {
 			return false;
 		}
 	});
+	$("#saveCentralTax").click(function() {
+		alert("inside save");
+		if($('#createCentralTaxform').validate(false, validationSettings)) {
+			$("#saveCentralTax").attr("disabled","disabled");
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+			var formData = getFormData("createCentralTaxform");
+			$.ajax({
+				type : "POST",
+        	    data: formData,
+				url : sourceleadUrl+"/centralTax/add",
+				success : function(response) {
+					if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		showError(response.responseMessage);      		
+		        	} else if(response.response === "FAILED") {
+		        		showError(response.responseMessage);
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
+		        	}
+					$("#saveCentralTax").removeAttr("disabled","disabled");
+					$("#loading").removeAttr("style");
+				},
+			});
+			return true;
+		} else {
+			return false;
+		}
+	});
+	
 });
 function Tax() {
 
@@ -145,4 +181,62 @@ function Tax() {
 	this.deletePTRow = function(rowId) {
 		$("div[data-id='ptRow"+rowId+"']").remove();
 	}
+	
+	this.addDynamicTDSRow = function(isFirst) {
+		var result = "<div data-id=tdsRow" + tdsRowId + ">";
+		result += "<div class='col-md-3'>";
+		result += "<label class='clearfix'>" + (isFirst ? "Age" : "" ) + "</label>";
+		result += "<div class='clearfix'>";
+		result += "<select class='width100percnt selectpicker' data-live-search='true' title='Select Age' name='tdsTaxList["+tdsRowId+"].age' field-name='Age' data-validation='required'>";
+		result += "<option>0 - 60 Years</option>";
+		result += "<option>60 - 80 Years</option>";
+		result += "<option>Above 80</option>";
+		result += "</select>";
+		result += "</div>";
+		result += "</div>";
+		result += "<div class='col-md-3'>";
+		result += "<label class='clearfix'>" + (isFirst ? "From" : "" ) + "</label>";
+		result += "<div class='clearfix'>";
+		result += "<input type='text' class='form-control' name='tdsTaxList["+tdsRowId+"].fromamount' value='' placeholder='Enter' field-name='From ' data-validation='required validate_float'>";
+		result += "</div>";
+		result += "</div>";
+		result += "<div class='col-md-3'>";
+		result += "<label class='clearfix'>" + (isFirst ? "To" : "" ) + "</label>";
+		result += "<div class='clearfix'>";
+		result += "<input type='text' class='form-control' name='tdsTaxList["+tdsRowId+"].toamount' value='' placeholder='Enter' field-name='To' data-validation='required validate_float'>";
+		result += "</div>";
+		result += "</div>";
+		result += "<div class='col-md-2'>";
+		result += "<label class='clearfix'>" + (isFirst ? "Percentage" : "" ) + "</label>";
+		result += "<div class='clearfix'>";
+		result += "<input type='text' class='form-control' name='tdsTaxList["+tdsRowId+"].percentage' value='' placeholder='Enter' field-name='Percentage' data-validation='required validate_float'>";
+		result += "</div>";
+		result += "</div>";
+		result += "<div class='col-md-1'>";
+		result += "<label class='clearfix'>Actions</label>";
+		result += "<ul class='list-unstyled list-inline mt5 text-center'>";
+		if(isFirst) {
+			result +="<li><a href='javascript:void(0)' class='cursorPointer'" +
+					" onclick='tax.addDynamicTDSRow();' title='Add Row' style='font-size: 20px;'> + </a></li>";
+		} else {
+			result += "<li><a title='Delete Row' class='fa fa-trash text-danger deleteRow' onClick='tax.deleteTDSRow("+tdsRowId+")'></a></li>";
+		}
+		
+		result += "</ul>";
+		result += "</div>";
+		result += "<div class='clearfix'></div>";
+		result += "</div>";
+		$("#dynamicTDSList").append(result);
+		$(".selectpicker").selectpicker('refresh');
+		tdsRowId++;
+	}
+	
+	this.deleteTDSRow = function(rowId) {
+		$("div[data-id='tdsRow"+rowId+"']").remove();
+	}
+	
+	
+
+	
+	
 }

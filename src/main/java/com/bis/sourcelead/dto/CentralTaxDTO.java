@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class CentralTaxDTO implements Serializable {
 	
@@ -8,6 +9,7 @@ public class CentralTaxDTO implements Serializable {
 
 	private Long id;
 	
+	private Long sourceleadTaxId;
 	private String sourceleadTaxType;
 	
 	private Integer ceilvaluepf;
@@ -26,13 +28,20 @@ public class CentralTaxDTO implements Serializable {
 	
 	private Integer centraltaxid;
 	
-	private String age;
 	
-	private Integer fromamount;
+	private List<TdsDTO> tdsTaxList;
 	
-	private Integer toamount;
 	
-	private float percentage;
+
+
+
+	public List<TdsDTO> getTdsTaxList() {
+		return tdsTaxList;
+	}
+
+	public void setTdsTaxList(List<TdsDTO> tdsTaxList) {
+		this.tdsTaxList = tdsTaxList;
+	}
 
 	public Long getId() {
 		return id;
@@ -114,36 +123,17 @@ public class CentralTaxDTO implements Serializable {
 		this.centraltaxid = centraltaxid;
 	}
 
-	public String getAge() {
-		return age;
+	
+	public Long getSourceleadTaxId() {
+		return sourceleadTaxId;
 	}
 
-	public void setAge(String age) {
-		this.age = age;
+	public void setSourceleadTaxId(Long sourceleadTaxId) {
+		this.sourceleadTaxId = sourceleadTaxId;
 	}
 
-	public Integer getFromamount() {
-		return fromamount;
-	}
-
-	public void setFromamount(Integer fromamount) {
-		this.fromamount = fromamount;
-	}
-
-	public Integer getToamount() {
-		return toamount;
-	}
-
-	public void setToamount(Integer toamount) {
-		this.toamount = toamount;
-	}
-
-	public float getPercentage() {
-		return percentage;
-	}
-
-	public void setPercentage(float percentage) {
-		this.percentage = percentage;
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
     

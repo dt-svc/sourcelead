@@ -67,10 +67,28 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
+	
+	@Override
+	public long storeCentralTax(CentralTax centralTax) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(centralTax);
+			return centralTax.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	
+	
+	
+	
+/*	
 	@Override
 
 	@Transactional
-	public CentralTax storeCentralTax(CentralTax centralTax) {
+	public long storeCentralTax(CentralTax centralTax) {
 
 		logger.debug("CentralTax");
 		Session session = this.sessionFactory.getCurrentSession();
@@ -82,7 +100,7 @@ public class TaxDaoImpl implements TaxDao {
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
-		return centralTax;
+		return 0;
 	}
 
 	@Override
@@ -100,7 +118,7 @@ public class TaxDaoImpl implements TaxDao {
 		}
 		return tds;
 	}
-
+*/
 	public StateTax getStateTax(long stateTaxId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -146,4 +164,5 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
+	
 }

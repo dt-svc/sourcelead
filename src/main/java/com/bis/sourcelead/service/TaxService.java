@@ -16,7 +16,7 @@ public interface TaxService {
 
 	List<StateTaxDTO> getStateTaxList(String yearFrequency, long stateId);
 
-	void saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) ;
+	long saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) ;
 	
 	StateTaxDTO getStateTax(long stateTaxId);
 

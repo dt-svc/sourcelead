@@ -19,13 +19,13 @@
 					</select>
 				</div>
 				<div class="col-md-3 dropdown-select mt10 mb10 hidden">
-					<select class="selectpicker width100percnt"
-						title="Select Type of Tax" data-live-search="true">
+					<select class="selectpicker width100percnt">
+						<!-- title="Select Type of Tax" data-live-search="true">
 						<option>Income tax</option>
 						<option>Sales tax</option>
 						<option>Excise duty</option>
 						<option>Service tax</option>
-						<option>Custom duty</option>
+						<option>Custom duty</option> -->
 					</select>
 				</div>
 				<div class="col-md-10">

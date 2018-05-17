@@ -1,6 +1,7 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -126,6 +127,11 @@ public class CentralTax implements Serializable{
 
 	public void setEmployeresi(float employeresi) {
 		this.employeresi = employeresi;
+	}
+
+	public void settdsTaxList(List<Tds> tdsList) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

@@ -14,11 +14,7 @@ public interface TaxDao {
 	public List<StateTax> getStateTaxList(String yearFrequency, long stateId);
 
 
-	public CentralTax storeCentralTax(CentralTax centralTax);
-
-
-	Tds storeTds(Tds tds);
-	
+	public long storeCentralTax(CentralTax centralTax);
 
 	public StateTax getStateTax(long stateTaxId);
 
