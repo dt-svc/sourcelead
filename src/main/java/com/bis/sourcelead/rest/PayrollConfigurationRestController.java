@@ -16,16 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.CandidateOnBoardingDTO;
 import com.bis.sourcelead.dto.PayrollBonusDTO;
+import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollBonus;
+import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
+import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.PayrollBonusService;
+import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -45,6 +48,9 @@ public class PayrollConfigurationRestController {
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	PayrollLoanAndAdvancesService payrollLoanAndAdvancesService; 
 	
 	
 	@RequestMapping(value = "/saveBonus" , method = RequestMethod.POST)
@@ -171,5 +177,109 @@ public class PayrollConfigurationRestController {
 			ResponseList<PayrollBonusDTO> payrollBonusList = payrollBonusService.getPayrollBonusList(payrollBonusDTO, loginOrgLocation);
 			return payrollBonusList;
 		}
+	 
+	 
+	 
+	 @RequestMapping(value = "/savePayrollLoanAndAdvance" , method = RequestMethod.POST)
+		public Response<String> savePayrollLoanAndAdvance(PayrollLoanAndAdvancesDTO payrollLoanAndAdvancesDTO, HttpServletRequest request)
+				throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Response<String> response = new Response<>();
+			try {
+				if (user != null) {
+					if (Validator.validate(payrollLoanAndAdvancesDTO)) {
+						PayrollLoanAndAdvances payrollLoanAndAdvances = null;
+						if(StringUtils.isNotBlank(payrollLoanAndAdvancesDTO.getUuid())) {
+							payrollLoanAndAdvances = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesByUUID(payrollLoanAndAdvancesDTO.getUuid());
+						}else {
+							payrollLoanAndAdvances = new PayrollLoanAndAdvances();
+							payrollLoanAndAdvances.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+							payrollLoanAndAdvances.setCreatedDate(new Date());
+							payrollLoanAndAdvances.setCreatedBy(user);
+						}
+						
+						payrollLoanAndAdvances.setType(payrollLoanAndAdvancesDTO.getType());
+						payrollLoanAndAdvances.setName(payrollLoanAndAdvancesDTO.getName());
+						
+						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getMinAmount())) {
+							payrollLoanAndAdvances.setMinAmount(Double.valueOf(payrollLoanAndAdvancesDTO.getMinAmount()));
+						}
+						
+						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getMaxAmount())) {
+							payrollLoanAndAdvances.setMaxAmount(Double.valueOf(payrollLoanAndAdvancesDTO.getMaxAmount()));
+						}
+						
+						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getInterestRate())) {
+							payrollLoanAndAdvances.setInterestRate(Double.valueOf(payrollLoanAndAdvancesDTO.getInterestRate()));
+						}
+						
+						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getPayHeadId())) {
+							PayrollPayhead payhead = new PayrollPayhead();
+							payhead.setId(Long.valueOf(payrollLoanAndAdvancesDTO.getPayHeadId()));
+							payrollLoanAndAdvances.setPayHeadId(payhead);
+						}
+						
+						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getApplicableFor())) {
+							payrollLoanAndAdvances.setApplicableFor(payrollLoanAndAdvancesDTO.getApplicableFor());
+						}
+						
+						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getExperienceYears())) {
+							payrollLoanAndAdvances.setExperienceYears(Integer.parseInt(payrollLoanAndAdvancesDTO.getExperienceYears()));
+						}
+						
+						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getExperienceMonths())) {
+							payrollLoanAndAdvances.setExperienceMonths(Integer.parseInt(payrollLoanAndAdvancesDTO.getExperienceMonths()));
+						}
+						
+						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getDescription())) {
+							payrollLoanAndAdvances.setDescription(payrollLoanAndAdvancesDTO.getDescription());
+						}
+						
+						payrollLoanAndAdvances.setOrgLocationId(orgLocations);
+						payrollLoanAndAdvances.setUpdatedDate(new Date());
+						payrollLoanAndAdvances.setUpdatedBy(user);
+						payrollLoanAndAdvances.setStatus(Constants.RECORD_ACTIVE);
+						payrollLoanAndAdvancesService.savePayrollLoanAndAdvances(payrollLoanAndAdvances);
+						
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+					else {
+						response.setObject("DataMissing");
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				}
+				else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			return response;
+		}
+	 
+	 
+	   @RequestMapping(value = { "/getPayrollLoanAndAdvancesList", "rest/getPayrollLoanAndAdvancesList" })
+		public ResponseList<PayrollLoanAndAdvancesDTO> getPayrollLoanAndAdvancesList(PayrollLoanAndAdvancesDTO payrollLoanAndAdvancesDTO,
+				@RequestParam("locationCode") String locationCode) throws Exception {
+			OrgLocations loginOrgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+			String[] tableColumns = { "type", "name", "minAmount", "interestRate", "applicableFor","actions" };
+			int sortColumnIndex = 1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default descending order
+			if (payrollLoanAndAdvancesDTO.getOrder() != null && !payrollLoanAndAdvancesDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(payrollLoanAndAdvancesDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = payrollLoanAndAdvancesDTO.getOrder().get(0).get("dir");
+			}
+			payrollLoanAndAdvancesDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			payrollLoanAndAdvancesDTO.setSortOrder(sortColumnOrder);
+			ResponseList<PayrollLoanAndAdvancesDTO> payrollLoanAndAdvancesList = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesList(payrollLoanAndAdvancesDTO, loginOrgLocation);
+			return payrollLoanAndAdvancesList;
+		}
+	 
 
 }

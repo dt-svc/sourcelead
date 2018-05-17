@@ -76,6 +76,8 @@ public class PayrollConfigurationController {
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		model.setViewName("indPayroll/payrollBonusList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
 	}
 	
 	@RequestMapping(value = "/addPayhead")
@@ -95,6 +97,29 @@ public class PayrollConfigurationController {
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		model.setViewName("indPayroll/payheadList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/payrollLoanAndAdvances")
+	public ModelAndView payrollLoanAndAdvances(@RequestParam(value="uuid", required=false) String uuid,HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		model.setViewName("indPayroll/payrollLoanAndAdvances");
+		model.addObject("uuid", uuid);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/payrollLoanAndAdvancesList")
+	public ModelAndView payrollLoanAndAdvancesList(HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		model.setViewName("indPayroll/payrollLoanAndAdvancesList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}

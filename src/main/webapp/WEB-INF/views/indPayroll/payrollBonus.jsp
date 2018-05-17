@@ -14,7 +14,7 @@
     </section>
   <div class="content-area content-new clearfix">
    <div id="loading"></div> 
-    <form:form class="login-form clearfix"  id="createbonus_form" data-validation="required"  name="createbonus_form" method="post" > 
+    <form:form class="login-form clearfix"  id="createbonus_form"  name="createbonus_form" method="post" > 
       <div class="row minHeightcol5">
       	<div class="clearfix col-md-10">
       		
@@ -30,10 +30,10 @@
               <div class="clearfix">
                <div class="row">
 				   <div class="col-md-6">
-				   	  <input type="text" class="form-control" value="${payrollBonus.minPercentage}"  name="minPercentage" data-validation="required validate_Space validate_float" onblur="validateMinRate()" field-name="Min Percentage" id="minPercentage" placeholder="Min %" value="">
+				   	  <input type="text" class="form-control" value="${payrollBonus.minPercentage}"  name="minPercentage" data-validation="required validate_Space validate_float" onblur="validateMinRate()" field-name="Min Percentage" id="minPercentage" placeholder="Min %" >
 				   </div>   	
 				   <div class="col-md-6">
-				   	<input type="text" class="form-control" value="${payrollBonus.maxPercentage}" name="maxPercentage" data-validation="required validate_Space validate_float" onblur="validateMaxRate()" field-name="Max Percentage" id="maxPercentage" placeholder="Max %" value="">
+				   	<input type="text" class="form-control" value="${payrollBonus.maxPercentage}" name="maxPercentage" data-validation="required validate_Space validate_float" onblur="validateMaxRate()" field-name="Max Percentage" id="maxPercentage" placeholder="Max %" >
 				   </div>   	
                </div>
               </div>
@@ -130,7 +130,7 @@
       <div class="form-footer clearfix mt">
 				<div class="col-lg-12">
 					<div class="pull-right">
-						<input type="submit" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary"> 
+						<input type="submit" value="Save" class="btn btn-primary"> 
 						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/payrollBonusList'/>'" class="btn btn-default ml">
 					</div>
 				</div>
@@ -314,14 +314,17 @@ var validationSettings = {
                 	  url: sourceleadUrl+"/saveBonus?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
                   	success: function(result) {
                   		if (result && result.response === "INVALID_DATA") {
+                  			$("#loading").removeAttr('style');
                             showError(result.responseMessage);
                         }else if (result.response === "AWKWARD") {
+                        	$("#loading").removeAttr('style');
     		        	    location.href = "/errorPage";
     		        	} else if (result.response === "SUCCESS") {
     		        		 location.replace(sourceleadUrl + "/payrollBonusList");
     		        	} else if (result.indexOf('Sign In') !== -1) {
     		        		location.replace(sourceleadUrl);
     		        	} else {
+    		        		$("#loading").removeAttr('style');
     		        	    showError("Operation failed, please try again");
     		        	}
 			        },  
