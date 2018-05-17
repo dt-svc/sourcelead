@@ -1,21 +1,29 @@
 var tax = new Tax();
+
 var pfRowId = 0;
 var tdsRowId = 0;
+
+
+
 $(document).ready(function() {
 	if (activeTaxTab === "state") {
 		tax.getStateTaxList();
 	} else if (activeTaxTab === "central") {
 		
 	} else if(activeTaxTab === "createStateTax") {
+
 		tax.addDynamicPTRow(true);
 	} else if(activeTaxTab === "createCentralTax") {
 		tax.addDynamicTDSRow(true);
 		console.log("entered");
+
+		if(stateTaxId === 0)
+			tax.addDynamicPTRow(true);
+
 	}
 	
 	$("#saveStateTax").click(function() {
 		if($('#addStateTaxForm').validate(false, validationSettings)) {
-			alert("ok");
 			$("#saveStateTax").attr("disabled","disabled");
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 			var formData = getFormData("addStateTaxForm");
@@ -27,9 +35,15 @@ $(document).ready(function() {
 					if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		showError(response.responseMessage);      		
-		        	} else if(response.response === "FAILED") {
-		        		showError(response.responseMessage);
+		        		if (response.object > 0) {
+		        			$(".success_pop").css("display","block");
+			        		$(".success_pop span").html("StateTax " + (stateTaxId === 0 ? "added" : "updated" ) + " successfully....");
+			        		setTimeout(function() {
+			        			location.href=sourceleadUrl+"/stateTax/list";					 			
+					 		},100);
+		        		} else if (response.object === -1) {
+		        			showError("Tax record already exists for the selected fields");
+		        		}
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
 		        	} else {
@@ -123,28 +137,28 @@ function Tax() {
 	}
 	
 	this.addDynamicPTRow = function (isFirst) {
-		var result = "<div data-id=ptRow" + pfRowId + "><div class='col-md-3'>";
+		var result = "<div data-name='ptRow'><div class='col-md-3'>";
 		result += "<label class='clearfix'>" + (isFirst ? "From Amount" : "" ) + "</label>";
 		result += "<div class='clearfix'>";
-		result += "<input type='text' class='form-control' name='professionalTaxList["+pfRowId+"].amountFrom' value='' placeholder='Enter Amount' field-name='From Amount' data-validation='required validate_float'>";
+		result += "<input type='text' class='form-control' data-name='amountFrom' name='professionalTaxList["+pfRowId+"].amountFrom' value='' placeholder='Enter Amount' field-name='From Amount' data-validation='required validate_float'>";
 		result += "</div>";
 		result += "</div>";
 		result += "<div class='col-md-3'>";
 		result += "<label class='clearfix'>" + (isFirst ? "To Amount" : "" ) + "</label>";
 		result += "<div class='clearfix'>";
-		result += "<input type='text' class='form-control' name='professionalTaxList["+pfRowId+"].amountTo' value='' placeholder='Enter Amount' field-name='To Amount' data-validation='required validate_float'>";
+		result += "<input type='text' class='form-control' data-name='amountTo' name='professionalTaxList["+pfRowId+"].amountTo' value='' placeholder='Enter Amount' field-name='To Amount' data-validation='required validate_float'>";
 		result += "</div>";
 		result += "</div>";
 		result += "<div class='col-md-3'>";
 		result += "<label class='clearfix'>" + (isFirst ? "Amount" : "" ) + "</label>";
 		result += "<div class='clearfix'>";
-		result += "<input type='text' class='form-control' name='professionalTaxList["+pfRowId+"].amount' value='' placeholder='Enter Amount' field-name='Amount' data-validation='required validate_float'>";
+		result += "<input type='text' class='form-control' data-name='amount' name='professionalTaxList["+pfRowId+"].amount' value='' placeholder='Enter Amount' field-name='Amount' data-validation='required validate_float'>";
 		result += "</div>";
 		result += "</div>";
 		result += "<div class='col-md-2'>";
 		result += "<label class='clearfix'>" + (isFirst ? "Month" : "" ) + "</label>";
 		result += "<div class='clearfix'>";
-		result += "<select class='width100percnt selectpicker' data-live-search='true' title='Select Month' name='professionalTaxList["+pfRowId+"].monthApplicable' field-name='Month' data-validation='required'>";
+		result += "<select class='width100percnt selectpicker' data-live-search='true' title='Select Month' data-name='monthApplicable' name='professionalTaxList["+pfRowId+"].monthApplicable' field-name='Month' data-validation='required'>";
 		result += "<option>April</option>";
 		result += "<option>May</option>";
 		result += "<option>June</option>";
@@ -167,7 +181,7 @@ function Tax() {
 			result +="<li><a href='javascript:void(0)' class='cursorPointer'" +
 					" onclick='tax.addDynamicPTRow();' title='Add Row' style='font-size: 20px;'> + </a></li>";
 		} else {
-			result += "<li><a title='Delete Row' class='fa fa-trash text-danger deleteRow' onClick='tax.deletePTRow("+pfRowId+")'></a></li>";
+			result += "<li><a title='Delete Row' class='fa fa-trash text-danger deleteRow' onClick='tax.deletePTRow(this)'></a></li>";
 		}
 		result += "</ul>";
 		result += "</div>";
@@ -178,8 +192,20 @@ function Tax() {
 		pfRowId++;
 	}
 	
-	this.deletePTRow = function(rowId) {
-		$("div[data-id='ptRow"+rowId+"']").remove();
+	this.deletePTRow = function(ele) {
+		$(ele).closest("div[data-name='ptRow']").remove();
+		tax.refreshPTRows();
+	}
+	
+	this.refreshPTRows = function() {
+		pfRowId = 0;
+		$("div[data-name='ptRow']").each(function() {
+			$(this).find("input[data-name='amountFrom']").attr("name","professionalTaxList["+pfRowId+"].amountFrom");
+			$(this).find("input[data-name='amountTo']").attr("name","professionalTaxList["+pfRowId+"].amountTo");
+			$(this).find("input[data-name='amount']").attr("name","professionalTaxList["+pfRowId+"].amount");
+			$(this).find("select[data-name='monthApplicable']").attr("name","professionalTaxList["+pfRowId+"].monthApplicable");
+			pfRowId++;
+		});
 	}
 	
 	this.addDynamicTDSRow = function(isFirst) {

@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.Tds;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TaxService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Service
 public class TaxServiceImpl implements TaxService {
@@ -39,7 +40,7 @@ public class TaxServiceImpl implements TaxService {
 	public List<StateTaxDTO> getStateTaxList(String yearFrequency, long stateId) {
 		List<StateTaxDTO> stateTaxList = new LinkedList<>();
 		try {
-			List<StateTax> stList = taxDao.getStateTaxList(yearFrequency, stateId);
+			List<StateTax> stList = taxDao.getStateTaxList(yearFrequency, stateId, 0);
 			if (stList != null && !stList.isEmpty()) {
 				for (StateTax st : stList) {
 					stateTaxList.add(getStateTaxDTO(st, false));
@@ -81,9 +82,9 @@ public class TaxServiceImpl implements TaxService {
 					professionalTaxDTO.setId(pt.getId());
 					professionalTaxDTO.setStateTaxId(pt.getStateTax().getId());
 					professionalTaxDTO.setTaxType(stateTax.getSourceleadTaxType().getDescription());
-					professionalTaxDTO.setAmount(pt.getAmount());
-					professionalTaxDTO.setAmountFrom(pt.getAmountFrom());
-					professionalTaxDTO.setAmountTo(pt.getAmountTo());
+					professionalTaxDTO.setAmount(CommonUtil.toFixed2(pt.getAmount()));
+					professionalTaxDTO.setAmountFrom(CommonUtil.toFixed2(pt.getAmountFrom()));
+					professionalTaxDTO.setAmountTo(CommonUtil.toFixed2(pt.getAmountTo()));
 					professionalTaxDTO.setMonthApplicable(pt.getMonthApplicable());
 					professionalTaxList.add(professionalTaxDTO);
 				}
@@ -99,28 +100,39 @@ public class TaxServiceImpl implements TaxService {
 	@Override
 	public long addStateTax(StateTaxDTO stateTaxDTO) {
 		try {
-			StateTax st = new StateTax();
-			st.setId(stateTaxDTO.getId());
-			st.setFinancialYear(stateTaxDTO.getFinancialYear());
-			st.setSourceleadTaxType(getTaxTypeById(stateTaxDTO.getTaxTypeId()));
-			st.setStates(statesService.getStateById(stateTaxDTO.getStateId()));
-			List<ProfessionalTax> ptList = new LinkedList<>();
-			for (ProfessionalTaxDTO ptDTO : stateTaxDTO.getProfessionalTaxList()) {
-				ProfessionalTax pt = null;
-				if (ptDTO.getId() > 0) {
-					pt = new ProfessionalTax();
+			List<StateTax> stList = taxDao.getStateTaxList(stateTaxDTO.getFinancialYear(), stateTaxDTO.getStateId(),
+					stateTaxDTO.getTaxTypeId());
+			if (stList != null && stList.size() > 0) {
+				return -1;
+			} else {
+				StateTax st = null;
+				if (stateTaxDTO.getId() > 0) {
+					st = taxDao.getStateTax(stateTaxDTO.getId());
 				} else {
-					// pt = getPT
+					st = new StateTax();
 				}
-				pt.setAmountFrom(ptDTO.getAmountFrom());
-				pt.setAmountTo(ptDTO.getAmountTo());
-				pt.setAmount(ptDTO.getAmount());
-				pt.setMonthApplicable(ptDTO.getMonthApplicable());
-				pt.setStateTax(st);
-				ptList.add(pt);
+				st.setId(stateTaxDTO.getId());
+				st.setFinancialYear(stateTaxDTO.getFinancialYear());
+				st.setSourceleadTaxType(getTaxTypeById(stateTaxDTO.getTaxTypeId()));
+				st.setStates(statesService.getStateById(stateTaxDTO.getStateId()));
+				List<ProfessionalTax> ptList = new LinkedList<>();
+				for (ProfessionalTaxDTO ptDTO : stateTaxDTO.getProfessionalTaxList()) {
+					ProfessionalTax pt = null;
+					if (ptDTO.getId() > 0) {
+						pt = getProfessionalTaxById(ptDTO.getId());
+					} else {
+						pt = new ProfessionalTax();
+					}
+					pt.setAmountFrom(Double.parseDouble(ptDTO.getAmountFrom()));
+					pt.setAmountTo(Double.parseDouble(ptDTO.getAmountTo()));
+					pt.setAmount(Double.parseDouble(ptDTO.getAmount()));
+					pt.setMonthApplicable(ptDTO.getMonthApplicable());
+					pt.setStateTax(st);
+					ptList.add(pt);
+				}
+				st.setProfessionalTaxList(ptList);
+				return taxDao.addStateTax(st);
 			}
-			st.setProfessionalTaxList(ptList);
-			return taxDao.addStateTax(st);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -203,6 +215,16 @@ public class TaxServiceImpl implements TaxService {
 	public SourceleadTaxType getTaxTypeById(long id) {
 		try {
 			return taxDao.getTaxTypeById(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public ProfessionalTax getProfessionalTaxById(long id) {
+		try {
+			return taxDao.getProfessionalTaxById(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

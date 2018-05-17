@@ -2366,6 +2366,20 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 	}
 	  
   }
+  
+	public static String toFixed2(double d) {
+		String str;
+		d = d * 100;
+		d = Math.round(d);
+		d = d / 100;
+		str = ("" + d).lastIndexOf(".") == ("" + d).length() - 2 ? d + "0" : d + "";
+		return str;
+	}
+	
+	public static void main(String[] args) {
+		
+		System.out.println(toFixed2(1001)); 
+	}
 
 		
 }

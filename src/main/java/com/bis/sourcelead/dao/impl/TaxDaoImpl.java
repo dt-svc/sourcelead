@@ -12,7 +12,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TaxDao;
+
 import com.bis.sourcelead.entity.CentralTax;
+
+import com.bis.sourcelead.dto.StateTaxDTO;
+import com.bis.sourcelead.entity.ProfessionalTax;
+
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -42,7 +47,7 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
-	public List<StateTax> getStateTaxList(String yearFrequency, long stateId) {
+	public List<StateTax> getStateTaxList(String yearFrequency, long stateId, long taxTypeId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from StateTax st";
@@ -52,12 +57,18 @@ public class TaxDaoImpl implements TaxDao {
 			if (stateId > 0) {
 				query += (query.contains("where") ? " and " : " where ") + "st.states.id=:stateId";
 			}
+			if (taxTypeId > 0) {
+				query += (query.contains("where") ? " and " : " where ") + "st.sourceleadTaxType.id=:taxTypeId";
+			}
 			Query queryObj = session.createQuery(query);
 			if (yearFrequency != null && !yearFrequency.isEmpty()) {
 				queryObj.setString("yearFrequency", yearFrequency);
 			}
 			if (stateId > 0) {
 				queryObj.setLong("stateId", stateId);
+			}
+			if (taxTypeId > 0) {
+				queryObj.setLong("taxTypeId", taxTypeId);
 			}
 			List<StateTax> stateTaxList = queryObj.list();
 			return stateTaxList;
@@ -122,13 +133,7 @@ public class TaxDaoImpl implements TaxDao {
 	public StateTax getStateTax(long stateTaxId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from StateTax st where st.id=:stateTaxId";
-			Query queryObj = session.createQuery(query);
-			queryObj.setLong("stateTaxId", stateTaxId);
-			List<StateTax> stList = queryObj.list();
-			if (stList != null && !stList.isEmpty()) {
-				return stList.get(0);
-			}
+			return session.get(StateTax.class, stateTaxId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -151,13 +156,18 @@ public class TaxDaoImpl implements TaxDao {
 	public SourceleadTaxType getTaxTypeById(long id) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from SourceleadTaxType stt where stt.id=:id";
-			Query queryObj = session.createQuery(query);
-			queryObj.setLong("id", id);
-			List<SourceleadTaxType> sttList = queryObj.list();
-			if (sttList != null && !sttList.isEmpty()) {
-				return sttList.get(0);
-			}
+			return session.get(SourceleadTaxType.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public ProfessionalTax getProfessionalTaxById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(ProfessionalTax.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
