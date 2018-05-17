@@ -560,7 +560,10 @@ public class InvoicePdfHelper {
 				p = new Paragraph(orgLocation.getPhone(), font10);
 				p.add(new Chunk(glue));
 				p.setFont(font10);
-				p.add("Payment Terms : " + invoice.getPaymentFrequency());
+				if(StringUtils.isNotBlank(invoice.getPaymentFrequency()))
+					p.add("Payment Terms : " + invoice.getPaymentFrequency());
+					else
+						p.add("Payment Terms : " + "--");
 				document.add(p);
 
 				OrgRelations orgRel = orgRelationsService.getOrRelationsById(invoice.getOrgRelationID().getId());
