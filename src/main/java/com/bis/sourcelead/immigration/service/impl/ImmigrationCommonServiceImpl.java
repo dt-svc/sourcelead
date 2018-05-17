@@ -75,7 +75,6 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
-import com.ibm.icu.text.DateFormat;
 
 /**
  * @author Srinivas.Sabbu
@@ -1477,6 +1476,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 						}
 		}
 		return activityHistoryList;
+	}
+
+	@Override
+	public Integer getTableRecordCountByImmigrationId(String entityName, Long immigrationId, String condition) {
+	 return immigrationCommonDao.getTableRecordCountByImmigrationId(entityName,immigrationId,condition);
 	}
 
 }

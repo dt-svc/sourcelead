@@ -66,7 +66,6 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadNotes;
-import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
@@ -86,6 +85,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -155,6 +155,8 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/viewImmigrationList" })
 	public ModelAndView loadImmigrationList(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		sessionData.setNav(Constants.Immigrations);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/immigrationList");
@@ -172,6 +174,8 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/myImmigration" })
 	public ModelAndView loadMyImmigration(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		sessionData.setNav(Constants.My_Immigration);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/immigration/myImmigration");
 		return model;
@@ -281,7 +285,7 @@ public class ImmigrationRestController {
 			immigrationListDTO.setOrgLocationId(orgLocations.getId());
 			immigrationListDTOList = immigrationCommonService.getImmigrationsList(immigrationListDTO, searchValue,
 					orgLocations, filterVal, orgTypeVal);
-			commonUtil.highLightMenu(Constants.Immigration, request);
+			//commonUtil.highLightMenu(Constants.Immigration, request);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -353,7 +357,7 @@ public class ImmigrationRestController {
 		
 		 HashMap<String , Integer> tabRecordCountMap = null;
 		if(candidateId!= null) {
-		  tabRecordCountMap= getImmigrationViewTabStatusDetails(Long.parseLong(candidateId));
+		  tabRecordCountMap= getImmigrationViewTabStatusDetails(Long.parseLong(candidateId), Long.parseLong(immigrationId));
 		}
 		System.out.println("tabRecordCountMap");
 		System.out.println(tabRecordCountMap);
@@ -1631,14 +1635,14 @@ public class ImmigrationRestController {
 		return result;
 	}
 
-	private HashMap<String, Integer> getImmigrationViewTabStatusDetails(Long candidateId) {
+	private HashMap<String, Integer> getImmigrationViewTabStatusDetails(Long candidateId,Long immigrationId) {
 		//result = "{errorMsg:'" + tabNameArray[i] + "'}";
 		//System.out.println(" Record not found for the Tab Nme:::--> : " + tabNameArray[i]);
 		HashMap<String , Integer> tabRecordCountMap = new HashMap<String, Integer>();
 		try {
 			String entityArray[] = new String[] { "CandidatePassportVisa", "CandidatePassportVisa",
-					"CandidateEmployers", "Candidate", "CandidateEducation",  "CandidateFamilyDetails"};
-			String tabNameArray[] = new String[] { "Passport", "Visa", "Employers", "Residence", "Education", "Family"};
+					"CandidateEmployers", "Candidate", "CandidateEducation",  "CandidateFamilyDetails","Tasks"};
+			String tabNameArray[] = new String[] { "Passport", "Visa", "Employers", "Residence", "Education", "Family","Tasks"};
 			Integer count=0;
 			for (int i = 0; i < entityArray.length; i++) {
 				if (i == 0) { // CandidatePassportVisa for passport
@@ -1662,6 +1666,11 @@ public class ImmigrationRestController {
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId, "where candidate.id=:candidateId");
 					tabRecordCountMap.put(tabNameArray[i], count);
 				}
+				else if (i == 6) {// CandidateFamilyDetails
+					count = immigrationCommonService.getTableRecordCountByImmigrationId(entityArray[i], immigrationId, "where immigrationId.id=:immigrationId and taskStatus='Open'");
+					tabRecordCountMap.put(tabNameArray[i], count);
+				}
+				
 			}
 
 		} catch (Exception e) {
