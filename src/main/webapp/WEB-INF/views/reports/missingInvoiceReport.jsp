@@ -142,8 +142,10 @@ function prepareMissingInvoiceData(url){
         result = result +"<thead>"; 
         result = result + '<tr>';
         result = result + '<th>Refer Id</th>';
+        result = result + '<th>Candidate Name</th>';
 		result = result + '<th>Client Name</th>';
 		result = result + '<th>Project Name</th>';
+		result = result + '<th>Project Frequency</th>';
 		result = result + '<th>Date</th>';
 		result = result + '<th>Total Amount</th>';
 		result = result + '<th>Action</th>';
@@ -173,8 +175,10 @@ function missingInvoice(url){
         }),       
         "columns": [
         	{ "data": "referId" },
+        	{ "data": "candidateName"},
             { "data": "orgName" },
             { "data": "projectName"},
+            { "data": "frequencyDate"},
             { "data": "date"},
             { "data": "totalAmount" },
             { "data": "action"}
@@ -194,6 +198,17 @@ function missingInvoice(url){
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
+              "data": "candidateName",
+          	  "sortable": false, 
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  alert(opt.candidateName)
+            	  result = result + ' <td><div class="tbldata-dotdot-vsm inlineBlock">'+opt.candidateName+'</div></td>'; 
+	              return result;
+              		
+              }
+	          },{
+	    	  "targets": colIndex++,
               "data": "orgName",
           	  "sortable": false, 
               "render": function ( data, type, opt, meta ) {
@@ -212,6 +227,20 @@ function missingInvoice(url){
                  return result;
             }
           }, {
+              "targets": colIndex++,
+              "data": "frequencyDate",
+          	  "sortable": false,
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  if(opt.frequencyDate !=null && opt.frequencyDate != '' && opt.frequencyDate != 'undefined'){
+            		  result = result + ' <td><div class="tblminwidth-75">'+opt.frequencyDate+'</div></td>'; 
+            	  }else{
+            		  result = result + ' <td><div class="tblminwidth-75">--</div></td>'; 
+            	  }
+					
+                 return result;
+              }
+            },{
               "targets": colIndex++,
               "data": "date",
           	  "sortable": false,
