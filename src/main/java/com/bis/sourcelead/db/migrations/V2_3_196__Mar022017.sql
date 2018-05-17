@@ -46,6 +46,6 @@ INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES (
 #email_scenario
 INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `TEMPLATE_TYPE`, `BODY`, `IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`, `LOCATION_CODE`) VALUES ('RejectMailFromClientToVendor', 'Notification', 'RejectMailFromClient_To_Vendor', 'Used to notify vendor about candidate rejection','org','{{RejectMailFromClientToVendor.applicantName}} got Rejected','N', 'SLADMIN', 'com', 'in.com');
 
-CALL AlterTableAddColumn ('sourcelead','NOTIFICATIONS','REJECT_ACTION_LINK','TEXT NULL AFTER `ACTION_LINK`');
-CALL AlterTableAddColumn ('sourcelead','NOTIFICATIONS','SPOC_UUID','VARCHAR(250) NULL');
+CALL AlterTableAddColumn ('NOTIFICATIONS','REJECT_ACTION_LINK','TEXT NULL AFTER `ACTION_LINK`');
+CALL AlterTableAddColumn ('NOTIFICATIONS','SPOC_UUID','VARCHAR(250) NULL');
 

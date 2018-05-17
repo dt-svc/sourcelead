@@ -168,7 +168,7 @@ function prepareMissingBillData(url){
 		result = result + '<th>Project Frequency</th>';
 		result = result + '<th>Date</th>';
 		result = result + '<th>Total Amount</th>';
-		result = result + '<th>Action</th>';
+// 		result = result + '<th>Action</th>';
 		result = result + '</tr>';
         result = result +"</thead>";
         result = result +"<tbody>"; 
@@ -200,7 +200,7 @@ function missingBill(url){
             { "data": "frequencyDate"},
             { "data": "date"},
             { "data": "totalAmount" },
-            { "data": "action"}
+//             { "data": "action"}
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
@@ -209,9 +209,9 @@ function missingBill(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		var result = "";
 	    	  		if(opt.invoiceReferId != null && opt.invoiceReferId != '' && opt.invoiceReferId != 'undefined'){
-	    	  			 result = result + ' <td><div class="tblminwidth-75">'+opt.invoiceReferId+'</div></td>';
+	    	  			 result = result + ' <td><div class="tblminwidth-50">'+opt.invoiceReferId+'</div></td>';
 	    	  		}else{
-	    	  			 result = result + ' <td><div class="tblminwidth-75">--</div></td>';
+	    	  			 result = result + ' <td><div class="tblminwidth-50">--</div></td>';
 	    	  		}
 		             return result;
 	    	  	}
@@ -221,7 +221,7 @@ function missingBill(url){
           	  "sortable": false, 
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-						 result = result + ' <td><div class="tblminwidth-75">'+opt.candidateName+'</div></td>'; 
+						 result = result + ' <td><div class="tbldata-dotdot-vsm inlineBlock">'+opt.candidateName+'</div></td>'; 
 	              return result;
               		
               }
@@ -231,7 +231,7 @@ function missingBill(url){
           	  "sortable": false, 
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-						 result = result + ' <td><div class="tblminwidth-75">'+opt.orgName+'</div></td>'; 
+						 result = result + ' <td><div class="tbldata-dotdot-vsm inlineBlock">'+opt.orgName+'</div></td>'; 
 	              return result;
               		
               }
@@ -241,7 +241,7 @@ function missingBill(url){
         	"sortable": false,
             "render": function ( data, type, opt, meta ) {
             	  var result = "";
-					 result = result + ' <td><div class="tblminwidth-75">'+opt.projectName+'</div></td>'; 
+					 result = result + ' <td><div class="tbldata-dotdot-vsm inlineBlock">'+opt.projectName+'</div></td>'; 
                  return result;
             }
           }, {
@@ -265,9 +265,9 @@ function missingBill(url){
                 "render": function ( data, type, opt, meta ) {
               	  var result = "";
               	  if(opt.billDate !=null && opt.billDate != '' && opt.billDate != 'undefined'){
-              		  result = result + ' <td><div class="tblminwidth-75">'+opt.billDate+'</div></td>'; 
+              		  result = result + ' <td><div class="tblminwidth-50">'+opt.billDate+'</div></td>'; 
               	  }else{
-              		  result = result + ' <td><div class="tblminwidth-75">--</div></td>'; 
+              		  result = result + ' <td><div class="tblminwidth-50">--</div></td>'; 
               	  }
   					
                    return result;
@@ -279,14 +279,14 @@ function missingBill(url){
                 "render": function ( data, type, opt, meta ) {
                 		var result = "";
                 		if(opt.billAmount !=null && opt.billAmount !='' && opt.billAmount != 'undefined'){
-                			 result = result + ' <td><div class="tbldata-dotdot-sm"">'+opt.billAmount.toFixed(2)+'</div></td>';	
+                			 result = result + ' <td><div class="tblminwidth-75">'+opt.billAmount.toFixed(2)+'</div></td>';	
                 		}else{
-                			 result = result + ' <td><div class="tbldata-dotdot-sm"">0.00</div></td>';
+                			 result = result + ' <td><div class="tblminwidth-75">0.00</div></td>';
                 		}
 						
     	              return result;
                 }
-          },{
+          }],/* {
 	    	  	"targets": colIndex++,
 	    	  	"data": "action",
 	    		"sortable": false,
@@ -295,7 +295,7 @@ function missingBill(url){
 					 result = result + '<td><div class="tblminwidth-50">Action</div></td>';
   	              return result;
 	    	  	}
-	    	  } ],
+	    	  } ], */
 	    	"scrollCollapse": false,
 	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
 	    	"aaSorting": [[0,'desc']],

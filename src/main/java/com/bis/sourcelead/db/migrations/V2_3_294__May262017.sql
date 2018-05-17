@@ -1,6 +1,6 @@
 
 set SQL_SAFE_UPDATES=0;
-CALL AlterTableAddColumn ('sourcelead','INVOICE','REJECT_REASON','TEXT NULL AFTER `INVOICE_STATUS`');
+CALL AlterTableAddColumn ('INVOICE','REJECT_REASON','TEXT NULL AFTER `INVOICE_STATUS`');
 
 
 #Bill Accept
