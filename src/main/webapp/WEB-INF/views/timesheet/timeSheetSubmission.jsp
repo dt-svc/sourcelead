@@ -248,7 +248,7 @@
 									<tr>
 										<th>Tasks</th>
 										<th>Type</th>
-										<th>Time Type</th>
+										<!-- <th>Time Type</th> -->
 										<c:forEach var="weekDays" items="${timesheetSubmissionDTO.weekDays}">
 										   <th>${weekDays.dayOfTheDate}<i>${weekDays.date}</i></th>
 										</c:forEach>
@@ -256,7 +256,7 @@
 									<c:set var="entryIndex" value="0"/>
 									<c:forEach var="entry" items="${entriesMap}" varStatus="entryCount">
 									    <tr id="timesheetRow${entryCount.index+1}">
-									      <td id="${entryCount.index+1}taskTd" rowspan="2">
+									      <td id="${entryCount.index+1}taskTd"> <!-- rowspan="2" -->
 											<div class="taskDropDown">
 											  <c:set var="taskType" value=""/>
 											  <c:set var="taskId" value=""/>
@@ -323,14 +323,14 @@
 											   </c:if>
 											</div>
 									      </td>
-									      <td rowspan="2">
+									      <td> <!-- rowspan="2" -->
 									        <div>
 									           <span id="${entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span>
 									        </div>
 									      </td>
-									      <td>
+									      <!-- <td>
 									        <div>Regular</div>
-									      </td>	
+									      </td> -->	
 									       <c:forEach var="te" items="${entry.value}" varStatus="teStatus">
 										          <td> 
 										           <div>
@@ -359,80 +359,7 @@
 								        </c:forEach>
 									    </tr>
 									    
-									    <tr id="timesheetRow${entryCount.index+1}">
-									    
-									      <%-- <td id="${entryCount.index+1}taskTd">
-											<div class="taskDropDown">
-											  <c:set var="taskType" value=""/>
-											  <c:set var="taskId" value=""/>
-											  <c:set var="taskName" value=""/>
-											  <c:if test="${timesheetSubmissionDTO.submitButtonVisible ||  timesheetSubmissionDTO.saveButtonVisible}">
-												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId}"  onchange='getProjectTasks("${entryCount.index+1}task1Id","${timesheetEntryDetailsDTO.projectId}");prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
-														<option value=''>--select task--</option>
-														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
-														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
-														       <c:if test="${pt.id == entry.key}">
-														        <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-																	       <c:forEach var="ted" items="${entry.value}">
-																                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
-																           </c:forEach>
-															       </c:if>
-															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
-															             <c:set var="taskType" value="${pt.taskType}" />
-															        </c:if>
-														          <c:set var="taskId" value="${pt.id}" />
-														          <c:set var="taskName" value="${pt.taskName}" />
-														         <option value='${pt.id}' selected>${pt.taskName}</option>
-														       </c:if>
-														       <c:if test="${pt.id != entry.key}">
-														       <c:if test="${not empty pt.generatedId}" >
-														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
-														       </c:if>
-														        <c:if test="${empty pt.generatedId}" >
-														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'>${pt.taskName} </option>
-														       </c:if>
-														          
-														       </c:if>
-														   </c:forEach>
-														</c:if>
-													</select>
-													 <c:if test="${entryCount.index == 0}">
-													    <input value="" onclick="addTimeSheetRow('${timesheetEntryDetailsDTO.projectId}')" class="addtaskfield" type="button">
-													 </c:if>
-													 <c:if test="${entryCount.index > 0}">
-													    <input value="" onclick="removeTimeSheetRow('${entryCount.index+1}');" class="addtaskfield removetaskfield" type="button">
-													 </c:if>
-											  </c:if>
-											   <c:if test="${!timesheetSubmissionDTO.saveButtonVisible}">
-											         <c:if test="${entry.key != 0}">
-											             <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
-															       <c:if test="${pt.id == entry.key}">
-															       <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-																	       <c:forEach var="ted" items="${entry.value}">
-																                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
-																           </c:forEach>
-															       </c:if>
-															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
-															             <c:set var="taskType" value="${pt.taskType}" />
-															        </c:if> 
-														           <c:set var="taskId" value="${pt.id}" />
-														           <c:set var="taskName" value="${pt.taskName}" />
-														          <p>${!empty pt.taskName ? pt.taskName : '--'}</p>
-															       </c:if>
-												         </c:forEach>
-												       </c:if>
-											          <c:if test="${entry.key == 0}">
-											              <p>--</p>
-											          </c:if>
-											          
-											   </c:if>
-											</div>
-									      </td> --%>
-									      <%-- <td>
-									        <div>
-									           <span id="${entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span>
-									        </div>
-									      </td> --%>
+									  <%--   <tr id="timesheetRow${entryCount.index+1}">
 									      <td>
 									        <div>Overtime</div>
 									      </td>									      
@@ -462,14 +389,14 @@
 										              <c:set var="entryIndex" value="${entryIndex+1}"/>
 										           </td>
 								        </c:forEach>
-									    </tr>
+									    </tr> --%>
 
 									    
 									</c:forEach>
 								    <tr class="last_child">
 										<td class="total_field">Total</td>
 										<td></td>
-										<td></td>
+										<!-- <td></td> -->
 										<td>
 											<div class="alignDiv">
 											<input type="hidden" id="entryIndexValue" value="${entryIndex}"/>
@@ -608,7 +535,7 @@
 					</div>
 					<%-- <div id="activityDiv">
 						<jsp:include page="timesheetActivity.jsp"></jsp:include>
-					</div> --%>					
+					</div> --%> 				
 	            </div>
 		    </div>
 	    </div>

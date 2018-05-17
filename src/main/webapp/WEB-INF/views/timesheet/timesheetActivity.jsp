@@ -101,7 +101,7 @@
 	                              <li>
 	                                <div class="des-timesheetevents clearfix text-muted mt5 clearfix small">
 	                                <p class="mb5"><strong>Week Hours:</strong></p>
-		                                <div class="clearfix">
+		                                <div class="actTotalHo clearfix">
 		                                	<p>
 		                                		Billable:
 		                                		<span>${activity.weekTotalBillable}</span>
