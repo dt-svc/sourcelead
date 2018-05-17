@@ -26,8 +26,10 @@ import com.bis.sourcelead.payroll.entity.AssociateTax;
 import com.bis.sourcelead.payroll.service.AssociateTaxService;
 import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
 import com.bis.sourcelead.payroll.symmetry.HelloPayrollWorld;
+import com.bis.sourcelead.payroll.symmetry.SymmetryPaypal;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.symmetry.ste.*;
 
 @Service
 public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
@@ -51,6 +53,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	
 	@Autowired
 	AssociateTaxService associateTaxService;
+	
 	
 	@Override
 	public ResponseList<USPayrollDTO> generateUSPayroll(OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO) throws Exception
@@ -82,8 +85,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				int invoiceFrequency = getProjectInvoiceFrequency(pm.getProjects().getInvoiceFrequency());
 				AssociateTaxDTO associateTaxDTO = associateTaxService.findAssociateTaxSummaryByUserId(user.getId(), orgLocation);
 //				Projects projects = pm.getProjects().getInvoiceFrequency();
-				HelloPayrollWorld helloPayrollWorld = new HelloPayrollWorld();
-				helloPayrollWorld.runUSPayroll(user,totalHours,amount,invoiceFrequency,associateTaxDTO);
+//				HelloPayrollWorld helloPayrollWorld = new HelloPayrollWorld();
+				SymmetryPaypal client = new SymmetryPaypal();
+//				String locationCode = "18-097-452890";
+				String locationCode = "04-013-12233";       // Arizona Location Code 
+				client.hello(locationCode);
+//				helloPayrollWorld.runUSPayroll(user,totalHours,amount,invoiceFrequency,associateTaxDTO);
 //				helloPayrollWorld.hello();
 				if (pm.getEmployee() != null) {
 					usPayrollDTO.setEmpId(pm.getEmployee().getEmployeeId());
@@ -127,7 +134,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	private double getTotalAmount(float totalHours, Double payRate)
 	{
 		String pRate = String.valueOf(totalHours);
-		String[] rate = pRate.split(":");
+		String[] rate = pRate.split("\\.");
 		double hr = Double.parseDouble(rate[0]);
 		double min = Double.parseDouble(rate[1]);
 		double hrsToMin = hr * 60;
