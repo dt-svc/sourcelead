@@ -34,7 +34,7 @@ public class TaxServiceImpl implements TaxService {
 	public List<StateTaxDTO> getStateTaxList(String yearFrequency, long stateId) {
 		List<StateTaxDTO> stateTaxList = new LinkedList<>();
 		try {
-			List<StateTax> stList = taxDao.getStateTaxList(yearFrequency, stateId);
+			List<StateTax> stList = taxDao.getStateTaxList(yearFrequency, stateId, 0);
 			if (stList != null && !stList.isEmpty()) {
 				for (StateTax st : stList) {
 					stateTaxList.add(getStateTaxDTO(st, false));
@@ -94,36 +94,40 @@ public class TaxServiceImpl implements TaxService {
 	@Override
 	public long addStateTax(StateTaxDTO stateTaxDTO) {
 		try {
-			StateTax st = null;
-			if (stateTaxDTO.getId() > 0) {
-				st = taxDao.getStateTax(stateTaxDTO.getId());
+			List<StateTax> stList = taxDao.getStateTaxList(stateTaxDTO.getFinancialYear(), stateTaxDTO.getStateId(),
+					stateTaxDTO.getTaxTypeId());
+			if (stList != null && stList.size() > 0) {
+				return -1;
 			} else {
-				st = new StateTax();
-			}
-			st.setId(stateTaxDTO.getId());
-			st.setFinancialYear(stateTaxDTO.getFinancialYear());
-			st.setSourceleadTaxType(getTaxTypeById(stateTaxDTO.getTaxTypeId()));
-			st.setStates(statesService.getStateById(stateTaxDTO.getStateId()));
-			List<ProfessionalTax> ptList = new LinkedList<>();
-			for (ProfessionalTaxDTO ptDTO : stateTaxDTO.getProfessionalTaxList()) {
-				ProfessionalTax pt = null;
-				if (ptDTO.getId() > 0) {
-					pt = getProfessionalTaxById(ptDTO.getId());
+				StateTax st = null;
+				if (stateTaxDTO.getId() > 0) {
+					st = taxDao.getStateTax(stateTaxDTO.getId());
 				} else {
-					pt = new ProfessionalTax();
+					st = new StateTax();
 				}
-				pt.setAmountFrom(Double.parseDouble(ptDTO.getAmountFrom()));
-				pt.setAmountTo(Double.parseDouble(ptDTO.getAmountTo()));
-				pt.setAmount(Double.parseDouble(ptDTO.getAmount()));
-				pt.setMonthApplicable(ptDTO.getMonthApplicable());
-				pt.setStateTax(st);
-				ptList.add(pt);
+				st.setId(stateTaxDTO.getId());
+				st.setFinancialYear(stateTaxDTO.getFinancialYear());
+				st.setSourceleadTaxType(getTaxTypeById(stateTaxDTO.getTaxTypeId()));
+				st.setStates(statesService.getStateById(stateTaxDTO.getStateId()));
+				List<ProfessionalTax> ptList = new LinkedList<>();
+				for (ProfessionalTaxDTO ptDTO : stateTaxDTO.getProfessionalTaxList()) {
+					ProfessionalTax pt = null;
+					if (ptDTO.getId() > 0) {
+						pt = getProfessionalTaxById(ptDTO.getId());
+					} else {
+						pt = new ProfessionalTax();
+					}
+					pt.setAmountFrom(Double.parseDouble(ptDTO.getAmountFrom()));
+					pt.setAmountTo(Double.parseDouble(ptDTO.getAmountTo()));
+					pt.setAmount(Double.parseDouble(ptDTO.getAmount()));
+					pt.setMonthApplicable(ptDTO.getMonthApplicable());
+					pt.setStateTax(st);
+					ptList.add(pt);
+				}
+				st.setProfessionalTaxList(ptList);
+				return taxDao.addStateTax(st);
 			}
-			st.setProfessionalTaxList(ptList);
-			return taxDao.addStateTax(st);
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return 0;

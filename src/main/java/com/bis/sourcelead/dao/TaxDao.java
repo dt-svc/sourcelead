@@ -10,7 +10,7 @@ public interface TaxDao {
 
 	public List<SourceleadTaxType> getAllTaxesByType(long type);
 
-	public List<StateTax> getStateTaxList(String yearFrequency, long stateId);
+	public List<StateTax> getStateTaxList(String yearFrequency, long stateId, long taxTypeId);
 
 	public StateTax getStateTax(long stateTaxId);
 

@@ -40,7 +40,7 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
-	public List<StateTax> getStateTaxList(String yearFrequency, long stateId) {
+	public List<StateTax> getStateTaxList(String yearFrequency, long stateId, long taxTypeId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from StateTax st";
@@ -50,12 +50,18 @@ public class TaxDaoImpl implements TaxDao {
 			if (stateId > 0) {
 				query += (query.contains("where") ? " and " : " where ") + "st.states.id=:stateId";
 			}
+			if (taxTypeId > 0) {
+				query += (query.contains("where") ? " and " : " where ") + "st.sourceleadTaxType.id=:taxTypeId";
+			}
 			Query queryObj = session.createQuery(query);
 			if (yearFrequency != null && !yearFrequency.isEmpty()) {
 				queryObj.setString("yearFrequency", yearFrequency);
 			}
 			if (stateId > 0) {
 				queryObj.setLong("stateId", stateId);
+			}
+			if (taxTypeId > 0) {
+				queryObj.setLong("taxTypeId", taxTypeId);
 			}
 			List<StateTax> stateTaxList = queryObj.list();
 			return stateTaxList;

@@ -61,8 +61,7 @@ public class TaxController {
 		c.roll(Calendar.YEAR, -2);
 		for (int i = 0; i < 4; i++) {
 			Calendar c1 = Calendar.getInstance();
-			boolean isCurrent = selectedYear != null
-					? Integer.parseInt(selectedYear.split("-")[0]) == c.get(Calendar.YEAR)
+			boolean isCurrent = selectedYear != null ? Integer.parseInt(selectedYear.split("-")[0]) == c.get(Calendar.YEAR)
 					: c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
 
 			String fromYear = c.get(Calendar.YEAR) + "";
@@ -117,19 +116,15 @@ public class TaxController {
 
 	@RequestMapping(value = "/stateTax/add")
 	@ResponseBody
-	public Response<String> addStateTax(HttpServletRequest request, StateTaxDTO stateTaxDTO) {
-		Response<String> response = new Response<>();
+	public Response<Long> addStateTax(HttpServletRequest request, StateTaxDTO stateTaxDTO) {
+		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				long result = taxService.addStateTax(stateTaxDTO);
-				if (result > 0) {
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
-				} else {
-					response.setResponse(Result.FAILED.name());
-					response.setResponseMessage(Result.FAILED.getValue());
-				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				response.setObject(result);
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -157,8 +152,8 @@ public class TaxController {
 
 	@RequestMapping(value = "/getStateTaxes", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<StateTaxDTO> getStateTaxes(HttpServletRequest request,
-			@RequestParam(defaultValue = "") String yearFrequency, @RequestParam(defaultValue = "0") long stateId) {
+	public ResponseList<StateTaxDTO> getStateTaxes(HttpServletRequest request, @RequestParam(defaultValue = "") String yearFrequency,
+			@RequestParam(defaultValue = "0") long stateId) {
 		ResponseList<StateTaxDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");

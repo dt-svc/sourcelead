@@ -23,13 +23,15 @@ $(document).ready(function() {
 					if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		$(".success_pop").css("display","block");
-		        		$(".success_pop span").html("StateTax "+(stateTaxId===0?"added":"updated")+" successfully....");
-		        		setTimeout(function(){
-		        			location.href=sourceleadUrl+"/stateTax/list";					 			
-				 		},100);
-		        	} else if(response.response === "FAILED") {
-		        		showError(response.responseMessage);
+		        		if (response.object > 0) {
+		        			$(".success_pop").css("display","block");
+			        		$(".success_pop span").html("StateTax " + (stateTaxId === 0 ? "added" : "updated" ) + " successfully....");
+			        		setTimeout(function() {
+			        			location.href=sourceleadUrl+"/stateTax/list";					 			
+					 		},100);
+		        		} else if (response.object === -1) {
+		        			showError("Tax record already exists for the selected fields");
+		        		}
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
 		        	} else {
