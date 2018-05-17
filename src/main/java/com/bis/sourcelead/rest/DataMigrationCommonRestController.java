@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dto.DataMigrationCommonDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -126,6 +127,13 @@ public class DataMigrationCommonRestController {
 		model.addObject("uploadType", dataMigrationCommonDTO.getUploadType());
 		model.addObject("timesheetMode", dataMigrationCommonDTO.getTimesheetMode());
 		model.addObject("headerPosition", dataMigrationCommonDTO.getHeaderPosition());
+		if(StringUtils.isNotBlank(dataMigrationCommonDTO.getUploadType()) 
+				&& dataMigrationCommonDTO.getUploadType().equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_UPLOAD)) {
+
+			model.addObject("columnHeaders", ImmigrationConstants.IMPORT_IMMIGRATION_EXCEL_HEADERS);
+			model.addObject("headersNamesMap", ImmigrationConstants.HEADERS_NAMES_MAP);
+			model.addObject("headersFieldNamesMap", ImmigrationConstants.HEADERS_FIELD_NAMES_MAP);
+		}
 		return model;
 	}
 	

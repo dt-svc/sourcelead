@@ -24,7 +24,8 @@ public class AddDefaultVendorOnboardTemplateToOrgLocations {
 
 
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat I
  * this method is adding default projects for org locations
@@ -40,7 +41,7 @@ public void dumpDefaultVendorOnboardTemplate() throws IOException, SQLException 
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM sourcelead.ORG_LOCATIONS where ID != '1' ";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS where ID != '1' ";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			 
@@ -57,13 +58,13 @@ public void dumpDefaultVendorOnboardTemplate() throws IOException, SQLException 
 				 
 				 
 				 
-				 String query = "SELECT * from sourcelead.VENDOR_ON_BOARDING_TEMPLATE where ORG_LOCATION_ID = '"+orgLocId+"' and IS_DEFAULT_TEMPLATE = 'Y' ";
+				 String query = "SELECT * from "+dbconfig.getSchema()+".VENDOR_ON_BOARDING_TEMPLATE where ORG_LOCATION_ID = '"+orgLocId+"' and IS_DEFAULT_TEMPLATE = 'Y' ";
 				 java.sql.PreparedStatement stmt = conn.prepareStatement(query); 
 				 ResultSet rs = stmt.executeQuery();
 				 
 				 if(!rs.next()) {
 					 
-		 		   String query1 = " insert into sourcelead.VENDOR_ON_BOARDING_TEMPLATE (TEMPLATE_NAME, TEMPLATE_UUID, TEMPLATE_STATUS, IS_DEFAULT_TEMPLATE, STATUS, ORG_LOCATION_ID, CREATED_DATE,  "
+		 		   String query1 = " insert into "+dbconfig.getSchema()+".VENDOR_ON_BOARDING_TEMPLATE (TEMPLATE_NAME, TEMPLATE_UUID, TEMPLATE_STATUS, IS_DEFAULT_TEMPLATE, STATUS, ORG_LOCATION_ID, CREATED_DATE,  "
 							+ "CREATED_BY,UPDATED_DATE,UPDATED_BY)"
 							+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		    		
@@ -88,7 +89,7 @@ public void dumpDefaultVendorOnboardTemplate() throws IOException, SQLException 
 		    		
 		    		
 		    		
-		    		 String query2 = "SELECT * from sourcelead.VENDOR_ON_BOARDING_TEMPLATE where ORG_LOCATION_ID = '"+orgLocId+"' and IS_DEFAULT_TEMPLATE = 'Y' ";
+		    		 String query2 = "SELECT * from "+dbconfig.getSchema()+".VENDOR_ON_BOARDING_TEMPLATE where ORG_LOCATION_ID = '"+orgLocId+"' and IS_DEFAULT_TEMPLATE = 'Y' ";
 					 java.sql.PreparedStatement pstmt = conn.prepareStatement(query2); 
 					 ResultSet rs2 = pstmt.executeQuery();
 					 Long onboardTemplateId = null;
@@ -96,7 +97,7 @@ public void dumpDefaultVendorOnboardTemplate() throws IOException, SQLException 
 						 onboardTemplateId = rs2.getLong("ID");
 						 
 						 
-						 String sql2 = "SELECT * FROM sourcelead.VENDOR_ON_BOARDING_TEMPLATE_DOCUMENTS where VENDOR_ON_BOARDING_TEMPLATE_ID = '1' ";
+						 String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".VENDOR_ON_BOARDING_TEMPLATE_DOCUMENTS where VENDOR_ON_BOARDING_TEMPLATE_ID = '1' ";
 						 java.sql.PreparedStatement pstmt1 = conn.prepareStatement(sql2); 
 						 ResultSet rs3 = pstmt1.executeQuery();
 						 
@@ -105,7 +106,7 @@ public void dumpDefaultVendorOnboardTemplate() throws IOException, SQLException 
 							 String documentName = rs3.getString("DOCUMENT_NAME");
 							 String isRequired = rs3.getString("IS_REQUIRED");
 							 
-							 String query3 = " insert into sourcelead.VENDOR_ON_BOARDING_TEMPLATE_DOCUMENTS (VENDOR_ON_BOARDING_TEMPLATE_ID, DOCUMENT_NAME, IS_REQUIRED, DOCUMENT_TYPE, DOCUMENT_UUID, STATUS, CREATED_DATE,  "
+							 String query3 = " insert into "+dbconfig.getSchema()+".VENDOR_ON_BOARDING_TEMPLATE_DOCUMENTS (VENDOR_ON_BOARDING_TEMPLATE_ID, DOCUMENT_NAME, IS_REQUIRED, DOCUMENT_TYPE, DOCUMENT_UUID, STATUS, CREATED_DATE,  "
 										+ "CREATED_BY,UPDATED_DATE,UPDATED_BY)"
 										+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 					    		
@@ -151,10 +152,6 @@ public void dumpDefaultVendorOnboardTemplate() throws IOException, SQLException 
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

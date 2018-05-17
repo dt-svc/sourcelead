@@ -25,6 +25,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class MigrateTimeEntriesToTimeDayEntries {
 	private ComboPooledDataSource comboPooledDataSource;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
 	private void migrateTimesheetEntriesData() {
 		System.out.println("Updation Started....");
@@ -35,7 +37,7 @@ public class MigrateTimeEntriesToTimeDayEntries {
 			Statement stmt2 = con.createStatement();
 			Statement stmt3 = con.createStatement();
 			/*Fetching distinct date using submission id from time-sheet submission table*/
-			String fetchDates = "SELECT * FROM sourcelead.TIMESHEET_SUBMISSIONS";
+			String fetchDates = "SELECT * FROM "+dbconfig.getSchema()+".TIMESHEET_SUBMISSIONS";
 			ResultSet resultSet = stmt.executeQuery(fetchDates);
 			while(resultSet.next()){
 				 Long submissionId = resultSet.getLong("ID");
@@ -43,12 +45,12 @@ public class MigrateTimeEntriesToTimeDayEntries {
 				 String  endDate = resultSet.getString("END_DATE");
 				 LinkedHashMap<String,java.sql.Date> weeekDateList  = calculateDate(startDate,endDate);
 					/*Fetching all data of time-sheet Entries*/ 
-				 	String timesheetEntries = "SELECT * FROM sourcelead.TIMESHEET_ENTRIES te where te.TIMESHEET_SUBMISSION_ID = '"+submissionId+"'";
+				 	String timesheetEntries = "SELECT * FROM "+dbconfig.getSchema()+".TIMESHEET_ENTRIES te where te.TIMESHEET_SUBMISSION_ID = '"+submissionId+"'";
 					 ResultSet timesheetEntriesResultSet = stmt1.executeQuery(timesheetEntries);
 					 while(timesheetEntriesResultSet.next()){
 						 Long  projectTaskId = timesheetEntriesResultSet.getLong("PROJECT_TASK");
 						 if(projectTaskId != null && StringUtils.isNotEmpty(projectTaskId.toString())) {
-						 	String Type = "SELECT BILLABLE_TYPE FROM sourcelead.PROJECT_TASKS where ID = "+projectTaskId+"";
+						 	String Type = "SELECT BILLABLE_TYPE FROM "+dbconfig.getSchema()+".PROJECT_TASKS where ID = "+projectTaskId+"";
 						 	ResultSet ptResultSet = stmt2.executeQuery(Type);
 						 	while(ptResultSet.next()){
 						 	String  taskType = ptResultSet.getString("BILLABLE_TYPE");
@@ -179,9 +181,9 @@ public class MigrateTimeEntriesToTimeDayEntries {
 				 			
 						 		}
 						 		
-						    		String query4 = " update sourcelead.TIMESHEET_DAY_ENTRIES set  TASK_TYPE = ? ,BILLABLE_HOURS = ?, NONBILLABLE_HOURS = ? , TOTALHOURS = ? ,COMMENTS = ? where SUBMISSION_ID = ? and PROJECT_TASK_ID =? and TIMESHEET_DATE = ?";
+						    		String query4 = " update "+dbconfig.getSchema()+".TIMESHEET_DAY_ENTRIES set  TASK_TYPE = ? ,BILLABLE_HOURS = ?, NONBILLABLE_HOURS = ? , TOTALHOURS = ? ,COMMENTS = ? where SUBMISSION_ID = ? and PROJECT_TASK_ID =? and TIMESHEET_DATE = ?";
 						 		
-						 		/*String query4 = " insert sourcelead.TIMESHEET_DAY_ENTRIES (SUBMISSION_ID, PROJECT_TASK_ID, TIMESHEET_DATE, TASK_TYPE, BILLABLE_HOURS, NONBILLABLE_HOURS,TOTALHOURS, COMMENTS, CREATED_DATE,CREATED_BY,UPDATED_DATE,UPDATED_BY)"
+						 		/*String query4 = " insert "+dbconfig.getSchema()+".TIMESHEET_DAY_ENTRIES (SUBMISSION_ID, PROJECT_TASK_ID, TIMESHEET_DATE, TASK_TYPE, BILLABLE_HOURS, NONBILLABLE_HOURS,TOTALHOURS, COMMENTS, CREATED_DATE,CREATED_BY,UPDATED_DATE,UPDATED_BY)"
 										+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,?)";*/
 					    		
 					    		try {
@@ -202,7 +204,7 @@ public class MigrateTimeEntriesToTimeDayEntries {
 									e.printStackTrace();
 								}
 					    		
-					    		 String duplicateDayEntries = "SELECT ID FROM sourcelead.TIMESHEET_DAY_ENTRIES where SUBMISSION_ID = '"+submissionId+"' and PROJECT_TASK_ID = '"+projectTaskId+"' and TIMESHEET_DATE = '"+new java.sql.Date(date.getTime())+"' ";
+					    		 String duplicateDayEntries = "SELECT ID FROM "+dbconfig.getSchema()+".TIMESHEET_DAY_ENTRIES where SUBMISSION_ID = '"+submissionId+"' and PROJECT_TASK_ID = '"+projectTaskId+"' and TIMESHEET_DATE = '"+new java.sql.Date(date.getTime())+"' ";
                                  ResultSet dlresultSet = stmt3.executeQuery(duplicateDayEntries);
                                  LinkedList<Long> duplicateList = new LinkedList<>();
                  		 	     while(dlresultSet.next()){
@@ -213,11 +215,11 @@ public class MigrateTimeEntriesToTimeDayEntries {
                      		 		 int flag = 0;
                      		 		 for(Long id :duplicateList) {
                      		 			 if(flag > 0) {
-                     		 				String delHistory = "delete from sourcelead.TIMESHEET_DAY_ENTRIES_HISTORY where ENTRY_ID = '"+id+"' ";
+                     		 				String delHistory = "delete from "+dbconfig.getSchema()+".TIMESHEET_DAY_ENTRIES_HISTORY where ENTRY_ID = '"+id+"' ";
                              		 		Statement delHistoryStmt = con.createStatement();
                              		 		delHistoryStmt.executeUpdate(delHistory);
                              		 		
-                             		 		String delQuery = "delete from sourcelead.TIMESHEET_DAY_ENTRIES where ID = '"+id+"' ";
+                             		 		String delQuery = "delete from "+dbconfig.getSchema()+".TIMESHEET_DAY_ENTRIES where ID = '"+id+"' ";
                              		 		Statement delQueryStmt = con.createStatement();
                              		 		delQueryStmt.executeUpdate(delQuery); 
                      		 			 }
@@ -279,10 +281,6 @@ public class MigrateTimeEntriesToTimeDayEntries {
 
 
 	private DataSource comboPooledDataSource() {
-	        @SuppressWarnings("resource")
-	        ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	        DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 	        this.comboPooledDataSource = new ComboPooledDataSource();
 	        try {
 	            comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());
