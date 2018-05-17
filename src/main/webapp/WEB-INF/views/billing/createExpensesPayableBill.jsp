@@ -112,7 +112,10 @@ function checkBox(){
             <div class="form-group">
               <label class="col-md-3">Bill Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9 select-field" id="errInvoiceDate">
+              <div class="input-group">
                 <input class="form-control calendar" id="invoiceDate" name="invoiceDate" placeholder="Bill Date" value="${currentDate}"  type="text" data-validation="required" field-name="Bill Date" readonly>
+                <span class="input-group-addon" onClick="clearInvoiceDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+              </div>
               </div>
             </div>
               
@@ -132,7 +135,10 @@ function checkBox(){
             <div class="form-group">
               <label class="col-md-3">Due Date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-9" id="errDuedate">
+              <div class="input-group">
                 <input class="form-control calendar" placeholder="Due Date" id="dueDate" name="dueDate" type="text" data-validation="required" field-name="Due Date" readonly>
+                <span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+              </div>
               </div>
             </div>
               
@@ -587,7 +593,7 @@ function calculateDisCount(){
   <div id="divTaxTd1" style="display: none; float: left;">
 	<div class="select-field tblminwidth-75">
 		  <div class="tblminwidth-50">
-		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType' id='REPLACEROWIDtaxType' data-validation="required" field-name="Tax Type">
+		        <input type="text" class="form-control input-sm" value="" placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType' id='REPLACEROWIDtaxType' data-validation="required validate_length length2-100" field-name="Tax Type">
 		        <input type="hidden" name="REPLACEROWIDinvoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 		  
 		  </div>
@@ -1754,6 +1760,7 @@ function populateExpensesEntriesGrid(json){
         document.getElementById("tableBody").style.display="block";
         addTaxDivs();   
         addConversionDiv();
+        calculateDisCount();
 }
 </script>
 
@@ -2116,6 +2123,16 @@ function getPaymentAccountList(dbOrgRelationId,paymentAccoutId){
 		}
 	});
 }
+</script>
+
+<script>
+function clearInvoiceDate(){
+	$("#invoiceDate").val("");
+	};
+	
+function clearDueDate(){
+	$("#dueDate").val("");
+	};
 </script>
 
  <jsp:include page="../masterFooter.jsp" />	

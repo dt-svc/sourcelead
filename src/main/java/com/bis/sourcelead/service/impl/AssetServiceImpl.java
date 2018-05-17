@@ -232,7 +232,9 @@ public class AssetServiceImpl implements AssetService{
 				    }else {
 				    	if(aad.getId() != null && aad.getShiftEmp().isEmpty())
 				    		 aa = assetDao.getAssignAssetById(aad.getId());
+				    	if(aa != null) {
 				    		assetDao.deleteAssignAssetByAssignId(aa);
+				    	}
 				    }
 				 }
 				  asset.setAssetAssign(assetAssignDBList); 

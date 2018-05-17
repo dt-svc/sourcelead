@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PayrollBonus;
+import com.bis.sourcelead.service.PayrollBonusService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
@@ -27,6 +33,9 @@ public class PayrollConfigurationController {
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	PayrollBonusService payrollBonusService;
+	
 	
 	@RequestMapping(value = "/payrollConfiguration")
 	public ModelAndView payrollConfiguration(HttpServletRequest request)
@@ -40,11 +49,33 @@ public class PayrollConfigurationController {
 	
 	
 	@RequestMapping(value = "/payrollBonus")
-	public ModelAndView payrollBonus(HttpServletRequest request)
+	public ModelAndView payrollBonus(@RequestParam(value="uuid", required=false) String uuid,HttpServletRequest request)
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		if(StringUtils.isNotBlank(uuid)) {
+			try {
+				PayrollBonus payrollBonus = payrollBonusService.getPayrollBonusByUUID(uuid);
+				payrollBonus.setPaymentDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),payrollBonus.getPaymentDate()));
+				model.addObject("payrollBonus", payrollBonus);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		model.addObject("uuid", uuid);
+		model.setViewName("indPayroll/payrollBonus");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+
+	@RequestMapping(value = "/payrollBonusList")
+	public ModelAndView payrollBonusList(HttpServletRequest request)
 	{
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
-		model.setViewName("indPayroll/payrollBonus");
+		model.setViewName("indPayroll/payrollBonusList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
@@ -59,7 +90,7 @@ public class PayrollConfigurationController {
 		return model;
 	}
 	
-	
+
 	@RequestMapping(value = "/payheadList")
 	public ModelAndView payheadList(HttpServletRequest request)
 	{
@@ -69,5 +100,29 @@ public class PayrollConfigurationController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
+	
+	
+	@RequestMapping(value = "/payrollLoanAndAdvances")
+	public ModelAndView payrollLoanAndAdvances(@RequestParam(value="uuid", required=false) String uuid,HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		model.setViewName("indPayroll/payrollLoanAndAdvances");
+		model.addObject("uuid", uuid);
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/payrollLoanAndAdvancesList")
+	public ModelAndView payrollLoanAndAdvancesList(HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		model.setViewName("indPayroll/payrollLoanAndAdvancesList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+
 
 }

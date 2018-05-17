@@ -109,9 +109,9 @@ function closeCertificatePopup(){
 			var eMonthNumber = EMdata[0];
 			
 			var currentYear = new Date().getFullYear();
-			if((startMonth > endMonth) && (startYear == endYear)) {
+			if(( parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear == endYear)) {
 				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
-			} else if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')) {
+			} else if((startYear > endYear ) && (endYear != '' && endYear != null && endYear != 'undefined')) {
 				document.getElementById("endYearValidation").style.display="block";
 				$("#endYearValidation").empty().append("End year should be greater than Start year") ; 
 			} else if(startYearFlag && endYearFlag) {
@@ -861,9 +861,9 @@ function removeEmployer(candidateemployerId, candidateId){
 			var EMdata = endMonth.split('&');
 			var eMonthNumber = EMdata[0];
 			
-			if((startMonth > endMonth) && (startYear == endYear)) {
+			if((startMonth < endMonth) && (startYear == endYear)) {
 				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
-			} else if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')) {
+			} else if((startYear > endYear ) && (endYear != '' && endYear != null && endYear != 'undefined')) {
 				document.getElementById("endYearValidation").style.display="block";
 				$("#endYearValidation").empty().append("End year should be greater than Start year") ; 
 			} else if(startYearFlag && endYearFlag) {
@@ -975,7 +975,6 @@ function removeEmployer(candidateemployerId, candidateId){
 <script type="text/javascript">
 function monthIfYearRequired(){
 	
-	
 	var startMonth= document.getElementById("startMonth").value;
 	if(startMonth != null && startMonth != "" && startMonth != "undefined"){
 		 $('#startYear').removeAttr('data-validation-optional');
@@ -994,7 +993,7 @@ function monthIfYearRequired(){
 			 $('#endYear').removeAttr('data-validation');
 			 $('#endYear').attr("data-validation-optional","true"); 
 		}
-
+	
 	var startYear= document.getElementById("startYear").value;
 	var endYear= document.getElementById("endYear").value;
 	var SMdata = startMonth.split('&');
@@ -1003,16 +1002,15 @@ function monthIfYearRequired(){
 	var EMdata = endMonth.split('&');
 	var eMonthNumber = EMdata[0];
 	
-	
-	if((startYear != '' && startYear != null && startYear != 'undefined' )&&(endYear != '' && endYear != null && endYear != 'undefined')){
-	
-	 if((sMonthNumber> eMonthNumber) && (startYear==endYear) ){
-		$("#err").empty();
+	if((startYear != '' && startYear != null && startYear != 'undefined' ) && (endYear != '' && endYear != null && endYear != 'undefined')){
+	 if((parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear==endYear) ){
+		
+		 $("#err").empty();
 		 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
-			 
 		}
-	 if(sMonthNumber< eMonthNumber)
+	 if(parseInt(sMonthNumber) < parseInt(eMonthNumber))
 		 {
+		 
 		 $('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
 		 }
 
@@ -1024,7 +1022,6 @@ function monthIfYearRequired(){
 
 <script>
 function validYear(){
-	
 	var startYear= document.getElementById("startYear").value;
 	var startMonth= document.getElementById("startMonth").value;
 	
@@ -1036,9 +1033,7 @@ function validYear(){
 	
 	var EMdata = endMonth.split('&');
 	var eMonthNumber = EMdata[0];
-	
-	 if( (startMonth > endMonth) && (startYear == endYear) ){
-			 
+	 if( (startMonth < endMonth) && (sMonthNumber == eMonthNumber) ){
 		 $("#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Month Should be less then end Month</span></p>");
 	}else if((startYear > endYear )&&(endYear != '' && endYear != null && endYear != 'undefined')){
 		$("input#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Month Should be less then end Month</span></p>");
@@ -1054,7 +1049,6 @@ function validYear(){
 
 <script>
 function validYearEdit(){
-	
 	var startYear= document.getElementById("startYear").value;
 	var startMonth= document.getElementById("startMonth").value;
 	
@@ -1063,12 +1057,12 @@ function validYearEdit(){
 	
 	var SMdata = startMonth.split('&');
 	var sMonthNumber = SMdata[0];
-	
 	var EMdata = endMonth.split('&');
 	var eMonthNumber = EMdata[0];
 	
-	 if((startYear == endYear) && (sMonthNumber > eMonthNumber)){
-		$("input#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Month Should be less then end Month</span></p>");
+	 if((startYear == endYear) && (sMonthNumber < eMonthNumber)){
+
+		 $("input#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Month Should be less then end Month</span></p>");
 		
 	}else if(startYear > endYear ){
 		$("input#startYear").parent().after("<p class='jquery_form_error_message'><span>Start Date Should be less then end Date</span></p>");
