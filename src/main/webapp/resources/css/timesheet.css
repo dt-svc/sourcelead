@@ -8102,6 +8102,19 @@ text-decoration: underline;
 min-height: 300px !important;
 }
 
-
-
+.actTotalHo {
+	width: 30%; padding: 0px 0px 5px 0px;
+}
+.actTotalHo p {
+	float: left; width: 33.3333%; background-color: #0f9fa1; padding: 5px 15px; margin: 0px 0px; color: #fff;
+}
+.actTotalHo p:first-child + p {
+	background-color: #e58339;
+}
+.actTotalHo p:first-child + p + p{
+	background-color: #18a245;
+}
+.actTotalHo p span {
+	display: block; font-size: 15px; text-align: left; padding: 3px 0px 0px 0px;
+}
 
