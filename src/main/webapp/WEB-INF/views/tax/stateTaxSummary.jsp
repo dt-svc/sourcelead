@@ -1,5 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <section class="content-wraper contentWraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
@@ -16,8 +17,7 @@
 				<div class="modal-body">
 
 					<div class="viewgrid-header pull-right zIndex">
-						<a href="create?id=1"
-							class="btn btn-default btn-sm" title="Edit"><i
+						<a href="create?id=1" class="btn btn-default btn-sm" title="Edit"><i
 							class="fa fa-pencil paddingRight"></i>Edit</a>
 					</div>
 
@@ -29,18 +29,9 @@
 						<div class="clearfix">
 							<div class="col-md-5 mb">
 								<div class="row">
-									<label class="col-md-4 control-label"><b>Select
-											Type of Tax:</b></label>
-									<div class="col-md-8">
-										<span>2018-2019</span>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-5 mb">
-								<div class="row">
 									<label class="col-md-4 control-label"><b>Year:</b></label>
 									<div class="col-md-8">
-										<span>Professional tax</span>
+										<span>${stateTax.financialYear}</span>
 									</div>
 								</div>
 							</div>
@@ -49,7 +40,7 @@
 								<div class="row">
 									<label class="col-md-4 control-label"><b>State:</b></label>
 									<div class="col-md-8">
-										<span>Andhra Pradesh</span>
+										<span>${stateTax.stateName}</span>
 									</div>
 								</div>
 							</div>
@@ -58,7 +49,7 @@
 									<label class="col-md-4 control-label"><b>Type of
 											Tax:</b></label>
 									<div class="col-md-8">
-										<span>Income Tax</span>
+										<span>${stateTax.taxType}</span>
 									</div>
 								</div>
 							</div>
@@ -71,18 +62,21 @@
 				<table>
 					<thead>
 						<tr>
-							<th>From</th>
-							<th>To</th>
-							<th>Percentage</th>
+							<th>Amount From</th>
+							<th>Amount To</th>
+							<th>Amount</th>
+							<th>Month</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td><div class="tblminwidth-175">20/05/2016</div></td>
-							<td><div class="tblminwidth-175">20/12/2016</div></td>
-							<td><div class="tblminwidth-175">15%</div></td>
-
-						</tr>
+						<c:forEach items="${stateTax.professionalTaxList}" var="pt">
+							<tr>
+								<td><div class="tblminwidth-175">${pt.amountFrom}</div></td>
+								<td><div class="tblminwidth-175">${pt.amountTo}</div></td>
+								<td><div class="tblminwidth-175">${pt.amount}</div></td>
+								<td><div class="tblminwidth-175">${pt.monthApplicable}</div></td>
+							</tr>
+						</c:forEach>
 					</tbody>
 				</table>
 			</div>

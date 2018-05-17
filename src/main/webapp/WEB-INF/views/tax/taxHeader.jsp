@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<div id="loading"></div>
 <section class="content-header clearfix">
 	<div class="pull-left">
 		<h2>State Tax</h2>

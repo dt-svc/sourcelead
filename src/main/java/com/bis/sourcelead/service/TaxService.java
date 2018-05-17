@@ -10,10 +10,16 @@ import com.bis.sourcelead.entity.User;
 
 public interface TaxService {
 
+	SourceleadTaxType getTaxTypeById(long id);
+
 	List<SourceleadTaxType> getAllTaxesByType(long type);
 
 	List<StateTaxDTO> getStateTaxList(String yearFrequency, long stateId);
 
 	void saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) ;
+	
+	StateTaxDTO getStateTax(long stateTaxId);
+
+	long addStateTax(StateTaxDTO stateTaxDTO);
 
 }

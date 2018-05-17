@@ -1,7 +1,9 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -38,8 +41,19 @@ public class StateTax implements Serializable {
 	@JoinColumn(name = "STATE_ID", nullable = false)
 	private States states;
 
+	@OneToMany(mappedBy = "stateTax", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<ProfessionalTax> professionalTaxList;
+
 	public long getId() {
 		return id;
+	}
+
+	public List<ProfessionalTax> getProfessionalTaxList() {
+		return professionalTaxList;
+	}
+
+	public void setProfessionalTaxList(List<ProfessionalTax> professionalTaxList) {
+		this.professionalTaxList = professionalTaxList;
 	}
 
 	public void setId(long id) {
