@@ -69,7 +69,7 @@ $(document).ready(function(){
          <div class="col-md-2">
         <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingBillReportData();">Run</button>
 		</div>
-        <div class="col-md-1">
+        <!-- <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-download"></i></button>
             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
@@ -77,7 +77,7 @@ $(document).ready(function(){
               <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
             </ul>
           </div>
-        </div>
+        </div> -->
       </div>
       <!-- Best recruiters  -->
       <div class="content-dashboard clearfix"> 
@@ -88,7 +88,7 @@ $(document).ready(function(){
          	 	<span class="text-muted">Total:</span><span class="ml"><strong>0</strong></span>
          	 </p>
           	<div class="remove_search pull-right">
-                  <input placeholder="Search" type="text">
+                  <input placeholder="Search" type="text" id='dataTableSearch'>
                 </div>
           </div>
           
@@ -310,14 +310,26 @@ function missingBill(url){
     } );
     $("#missingInvoicePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#dataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   missingBillReportData();
-    	   }
-    	});
-    
 	
 }
+
+$(function() {
+    $("#dataTableSearch").keyup(function(e) {
+    	if(e.which === 13) {
+//  		   $('#dataTableSearch').parent().find('p.jquery_form_error_message').remove();
+	    	var searchData = $('#dataTableSearch').val();
+// 	    	var regex =  new RegExp(/[\\-]/g);
+// 	    	if(regex.test(searchData) == false){
+  		        missingBillReportData();
+	    	/* }else{
+	    		$("#dataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+	    	}
+	    	$('#dataTableSearch').val(searchData); */
+ 	   }
+    	});
+});
+
+
 </script>
 
 
