@@ -27,8 +27,8 @@
 		<h2 class="text-primary">Pay Heads</h2>
 		<p>Manage your pay heads</p>
 		<span>
-			<a class="btn btn-info btn-sm mr10" href="#">Add</a>
-			<a class="btn btn-primary btn-sm" href="#">View</a>
+			<a class="btn btn-info btn-sm mr10" href="<c:url value='${appPath}/addPayhead'/>">Add</a>
+			<a class="btn btn-primary btn-sm" href="<c:url value='${appPath}/payheadList'/>">View</a>
 		</span>
 		</div>
 	</div>
