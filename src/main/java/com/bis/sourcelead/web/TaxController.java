@@ -55,13 +55,15 @@ public class TaxController {
 	@Autowired
 	private TaxService taxService;
 
-	private void setYears(ModelAndView modelAndView) {
+	private void setYears(ModelAndView modelAndView, String selectedYear) {
 		Map<String, Boolean> yearList = new LinkedHashMap<>();
 		Calendar c = Calendar.getInstance();
 		c.roll(Calendar.YEAR, -2);
 		for (int i = 0; i < 4; i++) {
 			Calendar c1 = Calendar.getInstance();
-			boolean isCurrent = c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
+			boolean isCurrent = selectedYear != null
+					? Integer.parseInt(selectedYear.split("-")[0]) == c.get(Calendar.YEAR)
+					: c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
 
 			String fromYear = c.get(Calendar.YEAR) + "";
 			c.roll(Calendar.YEAR, 1);
@@ -81,7 +83,7 @@ public class TaxController {
 	public ModelAndView stateTaxList(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-			setYears(modelAndView);
+			setYears(modelAndView, null);
 			setStates(modelAndView);
 			modelAndView.addObject("activeTaxTab", "state");
 			modelAndView.setViewName("tax/stateTax");
@@ -95,15 +97,17 @@ public class TaxController {
 	public ModelAndView addStateTaxPage(HttpServletRequest request, @RequestParam(defaultValue = "0") long stateTaxId) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-			setYears(modelAndView);
-			setStates(modelAndView);
+			StateTaxDTO stateTaxDTO = new StateTaxDTO();
 			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(1);
 			modelAndView.addObject("taxTypes", taxTypeList);
 			if (stateTaxId > 0) {
-				StateTaxDTO stateTaxDTO = taxService.getStateTax(stateTaxId);
-				modelAndView.addObject("stateTax", stateTaxDTO);
+				stateTaxDTO = taxService.getStateTax(stateTaxId);
 			}
-			modelAndView.addObject("activeTaxTab", "state");
+			modelAndView.addObject("stateTax", stateTaxDTO);
+			setYears(modelAndView, stateTaxDTO.getFinancialYear());
+			setStates(modelAndView);
+
+			modelAndView.addObject("activeTaxTab", "createStateTax");
 			modelAndView.setViewName("tax/addStateTax");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -118,8 +122,7 @@ public class TaxController {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				long result = 0;
-//						taxService.addStateTax(stateTaxDTO);
+				long result = taxService.addStateTax(stateTaxDTO);
 				if (result > 0) {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());

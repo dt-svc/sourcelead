@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 
@@ -16,5 +17,7 @@ public interface TaxDao {
 	public long addStateTax(StateTax stateTax);
 
 	public SourceleadTaxType getTaxTypeById(long id);
+
+	public ProfessionalTax getProfessionalTaxById(long id);
 
 }

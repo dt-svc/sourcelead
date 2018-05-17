@@ -12,9 +12,9 @@ public class ProfessionalTaxDTO implements Serializable {
 	private long id;
 	private long stateTaxId;
 	private String taxType;
-	private double amountFrom;
-	private double amountTo;
-	private double amount;
+	private String amountFrom;
+	private String amountTo;
+	private String amount;
 	private String monthApplicable;
 
 	public long getId() {
@@ -41,27 +41,27 @@ public class ProfessionalTaxDTO implements Serializable {
 		this.taxType = stateTax;
 	}
 
-	public double getAmountFrom() {
+	public String getAmountFrom() {
 		return amountFrom;
 	}
 
-	public void setAmountFrom(double amountFrom) {
+	public void setAmountFrom(String amountFrom) {
 		this.amountFrom = amountFrom;
 	}
 
-	public double getAmountTo() {
+	public String getAmountTo() {
 		return amountTo;
 	}
 
-	public void setAmountTo(double amountTo) {
+	public void setAmountTo(String amountTo) {
 		this.amountTo = amountTo;
 	}
 
-	public double getAmount() {
+	public String getAmount() {
 		return amount;
 	}
 
-	public void setAmount(double amount) {
+	public void setAmount(String amount) {
 		this.amount = amount;
 	}
 

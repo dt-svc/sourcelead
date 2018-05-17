@@ -3,6 +3,7 @@ package com.bis.sourcelead.service;
 import java.util.List;
 
 import com.bis.sourcelead.dto.StateTaxDTO;
+import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 
 public interface TaxService {
@@ -16,5 +17,7 @@ public interface TaxService {
 	StateTaxDTO getStateTax(long stateTaxId);
 
 	long addStateTax(StateTaxDTO stateTaxDTO);
+
+	ProfessionalTax getProfessionalTaxById(long id);
 
 }
