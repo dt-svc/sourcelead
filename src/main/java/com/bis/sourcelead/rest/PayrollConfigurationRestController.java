@@ -82,21 +82,31 @@ public class PayrollConfigurationRestController {
 					payrollBonus.setMinPercentage(Double.valueOf(payrollBonusDTO.getMinPercentage()));
 					if(StringUtils.isNotBlank(payrollBonusDTO.getMaxSalary())) {
 						payrollBonus.setMaxSalary(Double.valueOf(payrollBonusDTO.getMaxSalary()));
+					}else {
+						payrollBonus.setMaxSalary(null);
 					}
 					if(StringUtils.isNotBlank(payrollBonusDTO.getPaymentFrequency())) {
 						payrollBonus.setPaymentFrequency(payrollBonusDTO.getPaymentFrequency());
+					}else {
+						payrollBonus.setPaymentFrequency(null);
 					}
 					
 					if(StringUtils.isNotBlank(payrollBonusDTO.getDescription())) {
 						payrollBonus.setDescription(payrollBonusDTO.getDescription());
+					}else {
+						payrollBonus.setDescription(null);
 					}
 					
 					if(StringUtils.isNotBlank(payrollBonusDTO.getFromMonth())) {
 						payrollBonus.setFromMonth(payrollBonusDTO.getFromMonth());
+					}else {
+						payrollBonus.setFromMonth(null);
 					}
 					
 					if(StringUtils.isNotBlank(payrollBonusDTO.getToMonth())) {
 						payrollBonus.setToMonth(payrollBonusDTO.getToMonth());
+					}else {
+						payrollBonus.setFromMonth(null);
 					}
 					
 					payrollBonus.setOrgLocationId(orgLocations);
@@ -202,38 +212,54 @@ public class PayrollConfigurationRestController {
 						payrollLoanAndAdvances.setType(payrollLoanAndAdvancesDTO.getType());
 						payrollLoanAndAdvances.setName(payrollLoanAndAdvancesDTO.getName());
 						
-						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getMinAmount())) {
+						if(StringUtils.isNotBlank(payrollLoanAndAdvancesDTO.getMinAmount())) {
 							payrollLoanAndAdvances.setMinAmount(Double.valueOf(payrollLoanAndAdvancesDTO.getMinAmount()));
+						}else {
+							payrollLoanAndAdvances.setMinAmount(null);
 						}
 						
-						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getMaxAmount())) {
+						if(StringUtils.isNotBlank(payrollLoanAndAdvancesDTO.getMaxAmount())) {
 							payrollLoanAndAdvances.setMaxAmount(Double.valueOf(payrollLoanAndAdvancesDTO.getMaxAmount()));
+						}else {
+							payrollLoanAndAdvances.setMaxAmount(null);
 						}
 						
-						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getInterestRate())) {
+						if(StringUtils.isNotBlank(payrollLoanAndAdvancesDTO.getInterestRate())) {
 							payrollLoanAndAdvances.setInterestRate(Double.valueOf(payrollLoanAndAdvancesDTO.getInterestRate()));
+						}else {
+							payrollLoanAndAdvances.setInterestRate(null);
 						}
 						
-						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getPayHeadId())) {
+						if(StringUtils.isNotBlank(payrollLoanAndAdvancesDTO.getPayHeadId())) {
 							PayrollPayhead payhead = new PayrollPayhead();
 							payhead.setId(Long.valueOf(payrollLoanAndAdvancesDTO.getPayHeadId()));
 							payrollLoanAndAdvances.setPayHeadId(payhead);
+						}else {
+							payrollLoanAndAdvances.setPayHeadId(null);
 						}
 						
-						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getApplicableFor())) {
+						if(StringUtils.isNotBlank(payrollLoanAndAdvancesDTO.getApplicableFor())) {
 							payrollLoanAndAdvances.setApplicableFor(payrollLoanAndAdvancesDTO.getApplicableFor());
+						}else {
+							payrollLoanAndAdvances.setApplicableFor(null);
 						}
 						
-						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getExperienceYears())) {
+						if(StringUtils.isNotBlank(payrollLoanAndAdvancesDTO.getExperienceYears())) {
 							payrollLoanAndAdvances.setExperienceYears(Integer.parseInt(payrollLoanAndAdvancesDTO.getExperienceYears()));
+						}else {
+							payrollLoanAndAdvances.setExperienceYears(null);
 						}
 						
-						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getExperienceMonths())) {
+						if(StringUtils.isNotBlank(payrollLoanAndAdvancesDTO.getExperienceMonths())) {
 							payrollLoanAndAdvances.setExperienceMonths(Integer.parseInt(payrollLoanAndAdvancesDTO.getExperienceMonths()));
+						}else {
+							payrollLoanAndAdvances.setExperienceMonths(null);
 						}
 						
-						if(StringUtils.isNoneBlank(payrollLoanAndAdvancesDTO.getDescription())) {
+						if(StringUtils.isNotBlank(payrollLoanAndAdvancesDTO.getDescription())) {
 							payrollLoanAndAdvances.setDescription(payrollLoanAndAdvancesDTO.getDescription());
+						}else {
+							payrollLoanAndAdvances.setDescription(null);
 						}
 						
 						payrollLoanAndAdvances.setOrgLocationId(orgLocations);
@@ -282,4 +308,33 @@ public class PayrollConfigurationRestController {
 		}
 	 
 
+		@RequestMapping(value = "/deletePayrollLoanAndAdvances" , method = RequestMethod.POST)
+		public Response<String> deletePayrollLoanAndAdvances(@RequestParam("uuid") String uuid, HttpServletRequest request)
+				throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Response<String> response = new Response<>();
+			try {
+				if (user != null) {
+					if(StringUtils.isNotBlank(uuid)) {
+						PayrollLoanAndAdvances payrollLoanAndAdvances = payrollLoanAndAdvancesService.getPayrollLoanAndAdvancesByUUID(uuid);
+						if(payrollLoanAndAdvances != null) {
+							payrollLoanAndAdvances.setStatus(Constants.RECORD_INACTIVE);
+							payrollLoanAndAdvancesService.savePayrollLoanAndAdvances(payrollLoanAndAdvances);
+						}
+						
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				}
+				else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			return response;
+		}
 }

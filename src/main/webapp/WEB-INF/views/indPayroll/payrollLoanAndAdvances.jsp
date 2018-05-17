@@ -10,6 +10,10 @@
 	$(window).load(function() {
 		getYearsDropDownCount();
 		getMonthsDropDownCount();
+		
+		if('${loanAndAdv.applicableFor}'){
+			applicableType();
+		}
 	});
 </script>
 
@@ -33,8 +37,8 @@
                  <div class="clearfix dropdown-select">
 							<select name="type" id="type" data-validation="required"  field-name="Type">
 							  <option selected value=''>Select Type</option>
-							  <option  ${loadAndAdv.type  == 'Loan' ? 'selected' : ''}>Loan</option>
-							  <option  ${loadAndAdv.type  == 'Advance' ? 'selected' : ''}>Advance</option>
+							  <option  ${loanAndAdv.type  == 'Loan' ? 'selected' : ''}>Loan</option>
+							  <option  ${loanAndAdv.type  == 'Advance' ? 'selected' : ''}>Advance</option>
 							</select>
 						</div>
               </div>
@@ -43,7 +47,7 @@
             <div class="col-md-5 mt10">
               <label class="clearfix">Name<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix">
-                 <input type="text" class="form-control"  name="name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250" field-name="Name" id="name">
+                 <input type="text" class="form-control"  name="name" value="${loanAndAdv.name}" data-validation="required validate_Space validate_AlphaNumber validate_length length1-250" field-name="Name" id="name">
               </div>
             </div>
             
@@ -54,10 +58,10 @@
               <div class="clearfix">
                <div class="row">
 				   <div class="col-md-6" id="minAmountDiv">
-				   	  <input type="text" class="form-control"  name="minAmount" data-validation-optional="true" data-validation="validate_Space validate_float validate_length length1-8" onblur="validateMinAmount()" field-name="Min Amount" id="minAmount" placeholder="Min">
+				   	  <input type="text" class="form-control" value="${loanAndAdv.minAmount}" name="minAmount" data-validation-optional="true" data-validation="validate_Space validate_float validate_length length1-8" onblur="validateMinAmount()" field-name="Min Amount" id="minAmount" placeholder="Min">
 				   </div>   	
 				   <div class="col-md-6" id="maxAmountDiv">
-				   	<input type="text" class="form-control"  name="maxAmount" data-validation-optional="true" data-validation="validate_Space validate_float validate_length length1-8" onblur="validateMaxAmount()" field-name="Max Amount" id="maxAmount" placeholder="Max">
+				   	<input type="text" class="form-control" value="${loanAndAdv.maxAmount}" name="maxAmount" data-validation-optional="true" data-validation="validate_Space validate_float validate_length length1-8" onblur="validateMaxAmount()" field-name="Max Amount" id="maxAmount" placeholder="Max">
 				   </div>   	
                </div>
               <div class="row" id="rateValidateId">
@@ -69,7 +73,7 @@
             <div class="col-md-5">
               <label class="clearfix">Interest Rate (%)</label>
               <div class="clearfix">
-                 <input type="text" class="form-control"  name="interestRate" data-validation-optional="true" onblur="validateInterestRate();" data-validation="validate_Space validate_float" field-name="Interest Rate" id="interestRate">
+                 <input type="text" class="form-control"  name="interestRate" value="${loanAndAdv.interestRate}" data-validation-optional="true" onblur="validateInterestRate();" data-validation="validate_Space validate_float" field-name="Interest Rate" id="interestRate">
               </div>
               <div class="row mxrateerror" id="interestRateValidateId">
                   <input type="hidden" name="interestRateValidation" id="interestRateValidation">
@@ -93,11 +97,11 @@
 				<div class="clearfix">
 				<div class="clearfix">
 						<span class="radioStyles mr">
-						<input id="applicableForAll" name="applicableFor" value="All" type="radio" onClick="applicableType();">
+						<input id="applicableForAll" name="applicableFor" ${loanAndAdv.applicableFor  == 'All' ? 'checked' : ''} value="All" type="radio" onClick="applicableType();">
 						<label for="applicableForAll">All</label>
 						</span>
 					<span class="radioStyles">
-						<input id="experienceRadio" name="applicableFor" value="Experienced" type="radio" onClick="applicableType();">
+						<input id="experienceRadio" name="applicableFor" ${loanAndAdv.applicableFor  == 'Experienced' ? 'checked' : ''} value="Experienced" type="radio" onClick="applicableType();">
 						<label for="experienceRadio">Experienced</label>
 					</span>
 				</div>
@@ -135,7 +139,7 @@
         <div class="col-md-10">
               <label class="clearfix">Description</label>
               <div class="clearfix">
-				  <textarea class="form-control" data-validation="validate_space"  field-name="Description" id="description" name="description" rows="5">${loadAndAdv.description}</textarea>
+				  <textarea class="form-control" data-validation="validate_space"  field-name="Description" id="description" name="description" rows="5">${loanAndAdv.description}</textarea>
               </div>
             </div>
             <div class="clearfix"></div>
@@ -167,8 +171,19 @@ function applicableType(){
  		 $('#experienceMonths').removeAttr('data-validation-optional');
  		 $('#experienceMonths').attr("data-validation","required");
  		 document.getElementById("experienceDiv").style.display="";
+ 		 
+ 		if('${loanAndAdv.experienceYears}'){
+ 			$('#experienceYears').val('${loanAndAdv.experienceYears}');
+ 		}
+ 		
+ 		if('${loanAndAdv.experienceMonths}'){
+ 			$('#experienceMonths').val('${loanAndAdv.experienceMonths}');
+ 		}
  		
      }else{
+    	 $('#experienceYears').val('');
+    	 $('#experienceMonths').val('');
+    	 
     	 $('#experienceYears').attr('data-validation-optional');
  		 $('#experienceYears').removeAttr("data-validation","required");
  		 
@@ -183,11 +198,21 @@ function applicableType(){
 
 function getYearsDropDownCount(){
 	var i = "";
+	var experienceYears = '${loanAndAdv.experienceYears}';
 	result = "";
 	result = result
 	+ '("<option selected value="">Select Years</option>")';
 	for (var i = 0; i <= 50; i++) {
-		result = result + '("<option value='+i+'>' + i + '</option>")';
+		if(experienceYears){
+			var selected = '';
+			if(i == experienceYears){
+				selected = 'selected';
+			}
+			result = result + '("<option '+selected+' value='+i+'>' + i + '</option>")';
+		}else{
+			result = result + '("<option value='+i+'>' + i + '</option>")';
+		}
+		
 	}
 	result = result + '</select>';
 	$('#experienceYears').empty();
@@ -197,10 +222,20 @@ function getYearsDropDownCount(){
 function getMonthsDropDownCount(){
 	var i = "";
 	result = "";
+	var experienceMonths = '${loanAndAdv.experienceMonths}';
 	result = result
 	+ '("<option selected value="">Select Months</option>")';
 	for (var i = 0; i <= 12; i++) {
-		result = result + '("<option value='+i+'>' + i + '</option>")';
+		if(experienceMonths){
+			var selected = '';
+			if(i == experienceMonths){
+				selected = 'selected';
+			}
+			result = result + '("<option '+selected+' value='+i+'>' + i + '</option>")';
+		}else{
+			result = result + '("<option value='+i+'>' + i + '</option>")';
+		}
+		
 	}
 	result = result + '</select>';
 	$('#experienceMonths').empty();

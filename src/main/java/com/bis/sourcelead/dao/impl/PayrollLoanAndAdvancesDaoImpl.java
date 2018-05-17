@@ -17,11 +17,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.PayrollLoanAndAdvancesDao;
-import com.bis.sourcelead.dto.PayrollBonusDTO;
 import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.PayrollBonus;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
@@ -85,7 +83,7 @@ public class PayrollLoanAndAdvancesDaoImpl implements PayrollLoanAndAdvancesDao{
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(payrollLoanAndAdvancesDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollLoanAndAdvancesDTO.getSearchValue())) {
-			 query1.append(" pld.minAmount like '" + payrollLoanAndAdvancesDTO.getSearchValue() + "%' OR bonus.maxAmount like '%" + payrollLoanAndAdvancesDTO.getSearchValue() + "' ")
+			 query1.append(" pld.minAmount like '" + payrollLoanAndAdvancesDTO.getSearchValue() + "%' OR pld.maxAmount like '%" + payrollLoanAndAdvancesDTO.getSearchValue() + "' ")
 			    .append("OR pld.type like '%" + payrollLoanAndAdvancesDTO.getSearchValue() + "%' ")
 			    .append("OR pld.name like '%" + payrollLoanAndAdvancesDTO.getSearchValue() + "%' ")
 				.append("OR pld.interestRate like '%" + payrollLoanAndAdvancesDTO.getSearchValue() + "%' ")
@@ -147,6 +145,23 @@ public class PayrollLoanAndAdvancesDaoImpl implements PayrollLoanAndAdvancesDao{
 				pldDTO.setName(pld.getName());
 				pldDTO.setType(pld.getType());
 				pldDTO.setUuid(pld.getUuid());
+				if(pld.getMinAmount() != null) {
+					pldDTO.setMinAmount(String.valueOf(pld.getMinAmount()));
+				}
+				
+				if(pld.getMaxAmount() != null) {
+					pldDTO.setMaxAmount(String.valueOf(pld.getMaxAmount()));
+				}
+				
+				if(pld.getInterestRate() != null) {
+					pldDTO.setInterestRate(String.valueOf(pld.getInterestRate()));
+				}
+			
+				pldDTO.setApplicableFor(pld.getApplicableFor());
+				pldDTO.setExperienceYears(String.valueOf(pld.getExperienceYears()));
+				pldDTO.setExperienceMonths(String.valueOf(pld.getExperienceMonths()));
+				pldDTO.setDescription(pld.getDescription());
+				payrollLoanAndAdvancesDTOList.add(pldDTO);
 			}
 		}
 		return payrollLoanAndAdvancesDTOList;

@@ -87,7 +87,7 @@
 	  	result = result + '  <th>Duration</th>';
 	  	result = result + '  <th>Min Bonus (%)</th>';
 	  	result = result + '  <th>Max Bonus (%)</th>';
-	  	result = result + '  <th>Action</th>';
+	  	result = result + '  <th>Actions</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
 	    result = result +"</table>";
@@ -230,10 +230,6 @@ function bonusListPagination(url,sourceleadUrl){
 
 <script>
 function deleteBonus(uuid){
-	alertMessage(uuid);
-}
-
-function alertMessage(uuid){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -244,7 +240,6 @@ function alertMessage(uuid){
 	$("#choicepopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
-
 }
 
 function deletePayrollBonus(uuid){
