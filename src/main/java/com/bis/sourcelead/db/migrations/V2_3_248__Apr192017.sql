@@ -1,4 +1,4 @@
-CALL AlterTableAddColumn ('sourcelead','REQUIREMENT_OFFERS','OFFER_UUID','VARCHAR(20) NULL');
+CALL AlterTableAddColumn ('REQUIREMENT_OFFERS','OFFER_UUID','VARCHAR(20) NULL');
 
 
 INSERT INTO `TABS` (`ID`, `TAB_NAME`, `TAB_ORDER`) VALUES ('16', 'Contracts', '11');

@@ -83,7 +83,7 @@
 	    	</c:if> 
 	    	<c:if test="${not empty msg}">
 		        <div id="selector">
-			         <span><font color="red">${msg}</font></span>
+			         <span><font color="green">${msg}</font></span>
 				</div>
            </c:if> 
            <form class="login-form clearfix" action="<c:url value='/login' />" method='POST'>
