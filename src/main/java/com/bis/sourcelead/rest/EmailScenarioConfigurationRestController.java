@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.EmailScenarioConfigurationDao;
 import com.bis.sourcelead.dto.EmailConfigurationDTO;
 import com.bis.sourcelead.dto.EmailConfigurationFromMailDTO;
 import com.bis.sourcelead.dto.Response;
@@ -48,12 +50,16 @@ public class EmailScenarioConfigurationRestController {
 	@Autowired
 	TabsService tabsService;
 	
+	@Autowired
+	private EmailScenarioConfigurationDao emailScenarioConfigurationDao;
+	
 		 
 	 @RequestMapping(value = "/saveEmailNotification" , method = RequestMethod.POST)
 		public @ResponseBody String saveEmailNotification(EmailConfigurationDTO emailConfigurationDTO,HttpServletRequest request)
 				throws Exception {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 String returnValue="";
 		 EmailScenarioConfiguration emailConfig=null;
 		 if(emailConfigurationDTO.getEmailId() != null){
 			 emailConfig= emailScenarioconService.getEmailConfigOrgLocId( orgLocation.getId());
@@ -100,8 +106,21 @@ public class EmailScenarioConfigurationRestController {
 		 }
 		 
 		
-		 emailScenarioconService.save(emailConfig);
-		  return "success";
+		 EmailScenarioConfiguration emailconfigur=emailScenarioconService.save(emailConfig);
+		 if(emailconfigur != null){
+			 String fromMail=emailScenarioconService.verifyConfgFromMail(orgLocation.getId(),emailconfigur);
+			 if(Constants.EMAIL_SUCCESS.equalsIgnoreCase(fromMail)){
+				 emailconfigur.setStatus("Y");
+				 emailScenarioConfigurationDao.save(emailconfigur);
+				 returnValue= "success";
+			 }else{
+				 emailconfigur.setStatus("N");
+				 emailScenarioConfigurationDao.save(emailconfigur);
+				 returnValue= "failure";
+			 }
+		 }
+		 return returnValue;
+		 
 			
 		}
 	 
@@ -110,17 +129,33 @@ public class EmailScenarioConfigurationRestController {
 				throws Exception {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 EmailConfigurationFromMail emailConfigFromMail=new EmailConfigurationFromMail();
-		 if(emailConfigurationFromMailDTO.getEmail() != null){
-			 emailConfigFromMail.setEmail(emailConfigurationFromMailDTO.getEmail());
+		 EmailConfigurationFromMail emailConfigFromMail=null;
+		 if(emailConfigurationFromMailDTO.getId()!=null && StringUtils.isNotBlank(emailConfigurationFromMailDTO.getId())){
+			   emailConfigFromMail=emailScenarioconService.getFromMailById(Long.parseLong(emailConfigurationFromMailDTO.getId()));
+			   if(emailConfigurationFromMailDTO.getEmail() != null){
+					 emailConfigFromMail.setEmail(emailConfigurationFromMailDTO.getEmail());
+				 }
+				 if(emailConfigurationFromMailDTO.getEmailModules() != null){
+					 emailConfigFromMail.setEmailModules(emailConfigurationFromMailDTO.getEmailModules());
+				 }
+				 emailConfigFromMail.setUpdatedBy(user.getFirstName());
+				 emailConfigFromMail.setUpdatedDate(new Date());
+		 }else{
+			 emailConfigFromMail=new EmailConfigurationFromMail();
+			 if(emailConfigurationFromMailDTO.getEmail() != null){
+				 emailConfigFromMail.setEmail(emailConfigurationFromMailDTO.getEmail());
+			 }
+			 if(emailConfigurationFromMailDTO.getEmailModules() != null){
+				 emailConfigFromMail.setEmailModules(emailConfigurationFromMailDTO.getEmailModules());
+			 }
+			 emailConfigFromMail.setStatus(false);
+			 emailConfigFromMail.setOrgLocationId(orgLocation);
+			 emailConfigFromMail.setCreatedBy(user.getFirstName());
+			 emailConfigFromMail.setCreatedDate(new Date());
+			 emailConfigFromMail.setEmail_UUID(SourceLeadRandomCodeHelper.generateRandomOrgCode());
 		 }
-		 if(emailConfigurationFromMailDTO.getEmailModules() != null){
-			 emailConfigFromMail.setEmailModules(emailConfigurationFromMailDTO.getEmailModules());
-		 }
-		 emailConfigFromMail.setOrgLocationId(orgLocation);
-		 emailConfigFromMail.setCreatedBy(user.getFirstName());
-		 emailConfigFromMail.setCreatedDate(new Date());
-		 emailConfigFromMail.setEmail_UUID(SourceLeadRandomCodeHelper.generateRandomOrgCode());
+		 
+		 
 		 emailScenarioconService.saveFromMail(emailConfigFromMail);
 		  return "success";
 			
@@ -138,13 +173,16 @@ public class EmailScenarioConfigurationRestController {
 	    			List<EmailConfigurationFromMail> fromMail=emailScenarioconService.getConfFromMailList(orgLocation.getId());
 	    			for(EmailConfigurationFromMail emailconf:fromMail){
 	    				String moduleNames="";
-	    				String[] jobIds = emailconf.getEmailModules().split(",");
-						for(int i=0; i<jobIds.length; i++) {
-						Tabs tab=tabsService.getTabListByTabId(Long.valueOf(jobIds[i]));
-						moduleNames=tab.getTabName()+",";
-						}
-	    				String modules=emailconf.getEmailModules();
-	    				emailconf.setEmailModules(moduleNames.substring(0, moduleNames.length()-1));
+	    				if( emailconf.getEmailModules() != null){
+	    					String[] jobIds = emailconf.getEmailModules().split(",");
+							for(int i=0; i<jobIds.length; i++) {
+							Tabs tab=tabsService.getTabListByTabId(Long.valueOf(jobIds[i]));
+							moduleNames=moduleNames+tab.getTabName()+",";
+							}
+		    				String modules=emailconf.getEmailModules();
+		    				emailconf.setEmailModules(moduleNames.substring(0, moduleNames.length()-1));
+	    				}
+	    				
 	    			}
 	    			if(fromMail != null){
 	    				response.setData(fromMail);
@@ -255,6 +293,58 @@ public class EmailScenarioConfigurationRestController {
 				
 			}
 	 
+	 /*@SuppressWarnings("unused")
+	@RequestMapping(value = "/verifyConfigurationFromMail" , method = RequestMethod.POST)
+		public @ResponseBody Response<String> verifyConfigurationFromMail(HttpServletRequest request)
+				throws Exception {
+		 Response<String> response=new Response<String>();
+		 
+		 try{
+			 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 if(user!= null){
+				 String fromMail=emailScenarioconService.verifyConfgFromMail(orgLocation.getId());
+				 if(Constants.EMAIL_SUCCESS.equalsIgnoreCase(fromMail)){
+					 EmailScenarioConfiguration confMail=emailScenarioConfigurationDao.getEmailConfigOrgLocId(orgLocation.getId());
+					 confMail.setStatus("Y");
+					 emailScenarioConfigurationDao.save(confMail);
+	    				response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						response.setResponse(Result.FAILED.name());
+						response.setResponseMessage(Result.FAILED.getValue());
+					}
+			 }else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+		 }catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+		  return response;
+			
+		}*/
 	 
-	 
+		@RequestMapping(value = "/getConfiguredMail" , method = RequestMethod.POST)
+		public @ResponseBody EmailScenarioConfiguration getConfiguredMail(HttpServletRequest request)
+				throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			EmailScenarioConfiguration configuredMail=emailScenarioconService.getEmailConfigOrgLocId(orgLocation.getId());
+			return configuredMail;
+		}
+				
+				@RequestMapping(value = "/changeDefaultEmailConfig" , method = RequestMethod.POST)
+		public @ResponseBody int changeDefaultEmailConfig(long id, boolean defaultAccount,HttpServletRequest request)
+				throws Exception {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			 int flag=emailScenarioconService.changeDefaultEmailFromMail(id, orgLocation.getId(), defaultAccount);
+			return flag;
+		}
 }

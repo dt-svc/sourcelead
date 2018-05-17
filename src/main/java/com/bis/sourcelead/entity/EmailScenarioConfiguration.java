@@ -59,6 +59,9 @@ public class EmailScenarioConfiguration implements Serializable{
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name="VERIFIED_STATUS")
+	private String status;
+	
 
 	public String getEmail_UUID() {
 		return email_UUID;
@@ -156,6 +159,14 @@ public class EmailScenarioConfiguration implements Serializable{
 
 	public void setEncryptionType(String encryptionType) {
 		this.encryptionType = encryptionType;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 }

@@ -101,32 +101,20 @@ function templatepagination(){
     <div class="pull-left" id="emailtemplate" style="display:block">
       <h2>Email Templates</h2>
     </div>
-<<<<<<< HEAD
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/emailTemplates'/>"> Templates</a> &raquo; Email Templates</div>
-    
-=======
     <div class="pull-left" id="emailSummary" style="display:none">
             <h2>Email Template Summary</h2>
           </div>
     <div class="pull-right brud-crum"  id="emailTemplates" style="display:block"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates</a>&raquo; Email Templates</div>
     <div class="pull-right brud-crum" id="emailSumm" style="display:none"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>" class="paddingLeft">Home</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>">Templates</a>&raquo; <a href="<c:url value='${appPath}/emailTemplates'/>" class="paddingLeft">Email TemplatesList</a> &raquo; emailTemplateSummary </div>
          
->>>>>>> 081887eac1c21d93d3da17b4a01455e9a876a51d
   </section>
   	
   <div class="timesheet_out">
-<<<<<<< HEAD
-    <div class="vendor_wrap">
-	       <div class="project_tabs_inn_table">
-	          <div id="emailTemplateList" class="datatable_filter"></div>
-	       </div> 
-=======
   <div class="clearfix"></div>
     <div class="project_wrap">
 	       <div class="project_wrap_table datatable_filter mt">
 	    				<div id="emailTemplateList" class="datatable_filter datatable_filter-cutom"></div>
 				</div>	
->>>>>>> 081887eac1c21d93d3da17b4a01455e9a876a51d
 	       
        </div>
   </div>
@@ -176,7 +164,6 @@ function viewEmailTemplate(id,uniqueScenarioName){
 			
 			var result = "";
 			result = result	+ '<div class="project_tabs_inn_table clearfix">';
-
 			result = result + '<div class="mt col-md-10">';
 			
 			result = result	+ '<div id="ProjectIdDiv" class="mb">';
@@ -187,17 +174,14 @@ function viewEmailTemplate(id,uniqueScenarioName){
 			
 			result = result + '<div class="clearfix"></div>';
 			
-
 			result = result	+ '<div id="ProjectIdDiv" class="mb">';
 			result = result + '<label class="clearfix">Subject:</label>';
 			result = result + '<div class="clearfix"><textarea class="form-control" rows="2" readonly="true">'+subject+'</textarea></div>';
-
 			result = result + '<div class="clearfix"></div>';
 			result = result + '</div>';
 			
 			result = result + '<div class="clearfix"></div>';
 			
-
 			 result = result	+ '<div class="mb" id="ProjectIdDiv">';
 			result = result + '<label class="clearfix">Email Body:</label>';
 			result = result + '<div class="clearfix"><textarea class="form-control" rows="10" readonly="true">'+body+'</textarea></div>';

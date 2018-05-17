@@ -2,7 +2,10 @@ package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +26,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.dto.OrgLocationIndiaBankingDetailsDTO;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
@@ -128,6 +132,9 @@ public class OrgSettingsController {
 	
 	@Autowired
 	OrgLocationIndiaBankingDetailsService orglocationIndiaBankingDetailsService;
+	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioconService;
 
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
@@ -503,7 +510,7 @@ public class OrgSettingsController {
 	
 
 	@RequestMapping(value = "/addMailPopUp", method = RequestMethod.POST)
-	public ModelAndView addMailPopUp(HttpServletRequest request, @RequestParam(value = "emailId", required = false) String emailId) throws Exception
+	public ModelAndView addMailPopUp(HttpServletRequest request, @RequestParam(value = "emailUUID", required = false) String emailUUID) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -511,8 +518,22 @@ public class OrgSettingsController {
 		ModelAndView model = new ModelAndView();
 		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		 Collection<Tabs> tabsList = new ArrayList<>();
-		 Collection<Tabs> modulesList = new ArrayList<>();
+		 Collection<Tabs> modulesList = new CopyOnWriteArrayList<>();
 		 Collection<String> modulesNamesList = new ArrayList<>();
+		 
+		 List<EmailConfigurationFromMail> fromMailList= emailScenarioconService.getConfFromMailList(orgLocations.getId());
+		 Set<Tabs> moduleList=new HashSet<Tabs>();
+		 for(EmailConfigurationFromMail emailconf:fromMailList){
+				if( emailconf.getEmailModules() != null){
+					String[] jobIds = emailconf.getEmailModules().split(",");
+					for(int i=0; i<jobIds.length; i++) {
+					Tabs tab=tabsService.getTabListByTabId(Long.valueOf(jobIds[i]));
+					moduleList.add(tab);
+					}
+ 				
+				}
+		 }
+		 
 		 Tabs dashobardTab = tabsService.getTabListByTabId(1L);
 		 if(!userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
 			 tabsList = (Collection<Tabs>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
@@ -529,8 +550,31 @@ public class OrgSettingsController {
 			 modulesList.add(tabs);
 			 modulesNamesList.add(tabs.getTabName());
 		 }
+		 if(moduleList.size()>0){
+			 for(Tabs tabold:modulesList){
+				 for(Tabs tab:moduleList){
+					 if(tabold.getTabName().equalsIgnoreCase(tab.getTabName())){
+						 modulesList.remove(tabold);
+					 }
+				 }
+			 }
+			
+		 }
+		 EmailConfigurationFromMail emailFromMail=emailScenarioconService.getFromMailByUUID(emailUUID);
+		 String moduleNames="";
+			if( emailFromMail!=null && emailFromMail.getEmailModules() != null){
+				String[] jobIds = emailFromMail.getEmailModules().split(",");
+				for(int i=0; i<jobIds.length; i++) {
+				Tabs tab=tabsService.getTabListByTabId(Long.valueOf(jobIds[i]));
+				modulesList.add(tab);
+				moduleNames=moduleNames+tab.getTabName()+",";
+				}
+				String modules=emailFromMail.getEmailModules();
+				emailFromMail.setEmailModules(moduleNames.substring(0, moduleNames.length()-1));
+			}
 		 
 		 model.addObject("modulesList", modulesList);
+		 model.addObject("emailFromMail", emailFromMail);
 		 model.addObject("modulesNamesList", modulesNamesList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("addMailPopUp");

@@ -6,9 +6,12 @@
 
  <script type="text/javascript">
 		window.onload = function () {
-			//getUserModules();
 			getEmailList();
-			var ticketUUID = '${ticketUUID}';
+			var status ='${emailSceconf.status}';
+			if(status == "Y"){
+				configuredMail();
+			}
+			
 		 };
 	</script>
 
@@ -17,6 +20,7 @@
                     <div class="accountsettings-tab">
                     
                     <div class="tab-content panel-body">
+                    <div id="emailConfiguredprev" >
                             <div class="clearfix mb">
                                 <div class="pull-left">
                                     <h4 id="emailHeading">Email Settings</h4>
@@ -33,7 +37,7 @@
 		           
 		            <div class="col-md-5 minHeight">
 		                <label>Password<span class="text-danger">&nbsp;*</span></label>
-		                <input class="form-control" value="${emailSceconf.emailPassword}" name="EmailPassword" id="passwordIdddddd"   field-name="Password" data-validation="required validate_Space" placeholder="Enter password" type="password"> 
+		                <input class="form-control" value="${emailSceconf.emailPassword}" name="EmailPassword" id="passwordId"   field-name="Password" data-validation="required validate_Space" placeholder="Enter password" type="password"> 
 		            </div>
             
 		            <div class="col-md-5 minHeight">
@@ -53,82 +57,37 @@
 										${emailSceconf.encryptionType  == 'SSL' ? 'selected' : ''}>SSL</option>
 									<option
 										${contractsTemplate.templateType  == 'TLS' ? 'selected' : ''}>TLS</option>
+						</select>  
 						</div> 
-					</select>               
+					             
 		            </div>
 		            <div class="clearfix"></div>
 			<div class="clearfix">
 					<div class="pull-right mb">
 						
 						<input type="hidden" name="id" id="id" value="${emailSceconf.email_UUID}"/>
-							<button type="button" class="btn btn-success btnSuccess mr" onClick="closeEmailNotifications();saveEmailNotification();">Save</button>
-							<button type="button" class="btn btn-Default" onClick="closeEmailNotifications();">Cancel</button>
+							<button type="button" class="btn btn-success btnSuccess mr" onClick="saveEmailNotification();">Save</button>
+							 <button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="">Cancel</button>
 						</div>
 					</div>
             </form>
                             
             
-			</div>   
-			
+			</div>  
+			</div> 
+			<div id="configuredMailDiv"></div> 
+			<div id="configuredMailDivTwo"></div> 
 			<div class="tab-content panel-body">
                      <a href="javascript:void(0)" class="btn btn-primary pull-right" onClick="addEmailPopUp();"><i class="fa fa-plus paddingRight"></i>Add Email</a>   
-                     <%-- <a class="btn btn-primary pull-right" title="Add Mail" href="${appPath}/addMailPopUp" ><i class="fa fa-plus paddingRight"></i>Add Email</a> 
-                      --%><div id="emailList"></div>  
+                     <div id="emailList"></div>  
             </div>
 			   
             </div> 
                     
 </div>
-<!-- -email popup statrs -->
-<%-- <form:form id="email_from_form" name="email_from_form"  method="post" >
 
-<div class="modal fade in emailfromMail" id="emailfromMail">
-	<div class="modal-dialog">
-		<div class="modal-content clearfix">
-			<div class="modal-header">
-				<a href="javascript:void(0)" class="close" onClick="closeEmailNotifications()">&times;</a>
-				<h4 class="modal-title">Add from Email</h4>
-			</div>
-			<div class="modal-body">
-			
-				<div class="col-md-12 minHeight">
-                <label>Email<span class="text-danger">&nbsp;*</span></label>
-                <input class="form-control" value="" name="email" id="fromMail"  field-name="fromMail" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter EMail" type="text"> 
-                 
-            </div>
-            
-            <div class="col-md-12 minHeight">
-          <select class="chosen-select form-control" multiple data-placeholder="Select Module" name="emailModules" id="emailTabs">
-            <c:forEach var="option" items="${modulesList}">
-				<option value="${option.id}">${option.tabName}</option>
-			</c:forEach>
-          </select>
-        </div>
-             <!-- <div class="col-md-12 minHeight">
-		          <label class="clearfix">Module<span class="text-danger paddingLeft">&nbsp;*</span></label>
-		          <div class="clearfix">
-		            <select class="form-control selectpicker" data-actions-box="true" data-live-search="true" id="emailTabs" name="emailModules" field-name="Module" data-validation="required" multiple>
-		            <option selected value="">Select Module</option>
-		            </select>
-		          </div>
-		        </div> -->
-		        <div class="clearfix"></div>
+<div id="deleteFromMailDiv" class="datatable_filter"> </div>
 
-			</div>
-			<div class="modal-footer clearfix">
-				<div>
-					<button type="button" class="btn btn-success btnSuccess mr" onClick="closeEmailNotifications();saveConfFromMail();">Save</button>
-					<button type="button" class="btn btn-Default">Cancel</button>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
- <div id="deleteFromMailDiv" class="datatable_filter"> </div>
-
-</form:form> --%>
-<!-- -- email popup ends -->
 <script type="text/javascript">
 //Email Notifications Script
 function addEmail() {
@@ -156,8 +115,11 @@ function saveEmailNotification(){
 		      contentType:false, 
 			  url : sourceleadUrl+"/saveEmailNotification?"+tokenParamName+"="+tokenValue,
 			  	success : function(result) {
-			  		
-		    			//location.replace(sourceleadUrl+ "/userManuals");			 			
+			  		if(result=="success"){
+			  			configuredMail();
+			  		}else if(result=="failure"){
+			  			alert("configured mail is wrong.please update the right email")
+			  		}
 		    		
 			},
 		});
@@ -184,9 +146,11 @@ function saveConfFromMail(){
 		      contentType:false, 
 			  url : sourceleadUrl+"/saveConfigurationFromMail?"+tokenParamName+"="+tokenValue,
 			  	success : function(result) {
+			  			if(result=="success"){
+			  				getEmailList();
+			  				closeEmailNotifications();
+			  			}
 			  		
-		    			//location.replace(sourceleadUrl+ "/userManuals");			 			
-		    		
 			},
 		});
 		
@@ -245,7 +209,6 @@ function getEmailList(){
 		    	result  = result + '<tbody>									';
 		    	 for (var i = 0; i < response.data.length; i++) { 
 					 var report = response.data[i];
-					 
 				result  = result + '	 <tr>                                                                                                ';
      			result  = result + '	<td><div class="tbldata-dotdot">'+report.email+'</div></td>                                ';
      			result  = result + '	<td><div class="tbldata-dotdot">'+report.emailModules+'</div></td>                                ';
@@ -254,11 +217,11 @@ function getEmailList(){
      			result  = result + '	<ul class="list-unstyled list-inline">                                                               ';
      			result  = result + '	<li>                                                                                                 ';
 				result  = result + '	<label class="switch mt10">                                                                          ';
-				result  = result + '	 <input type="checkbox" checked>                                                                     ';
+				result  = result + '	<input onclick="changeDefaultemailConfig(this, '+report.id+')" type="checkbox" '+(report.status ? 'checked' : '')+'/>                                                                    ';
 				result  = result + '	 <span class="slider round"></span>                                                                  ';
 				result  = result + '	</label>                                                                                             ';
      			result  = result + '	</li>                                                                                                ';
-     			result  = result + '	<li><a class="fa fa-pencil pull-left ml" title="Edit" onclick="editFromMail(\''+report.email_UUID+'\');"></a> </li>';
+     			result  = result + '	<li><a class="fa fa-pencil pull-left ml" title="Edit" onclick="editEmailPopUp(\''+report.email_UUID+'\');"></a> </li>';
      			result  = result + '	<li><a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteFromMail('+report.id+');"></a></li>';
      			result  = result + '	</ul>                                                                                                ';
      			result  = result + '	</div>                                                                                               ';
@@ -288,7 +251,6 @@ function deleteFromMail(emailId){
 }
 
 function deleteEmailFromMail(emailId){
-	alert("hello")
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 		type : "POST",
@@ -303,7 +265,7 @@ function deleteEmailFromMail(emailId){
     		} else if (response.response === "SUCCESS") {
     			 $("#deleteFromMailDiv").empty();
  			 	$(".project_inn_mask").fadeOut(200);
- 			 	getUserManualList();
+ 			 	getEmailList();
     		}else if (response.indexOf('Sign In') !== -1) {
     			location.replace(sourceleadUrl);
     		} else {
@@ -317,6 +279,13 @@ function deleteEmailFromMail(emailId){
 function cancelTermination(){
 	$("#deleteFromMailDiv").empty();
 	 $(".project_inn_mask").fadeOut(200);
+}
+
+function changeDefaultemailConfig(ele, id) {
+    $.post(sourceleadUrl+"/changeDefaultEmailConfig", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
+       // showError(data.responseMessage);
+        getEmailList();
+    });
 }
 
 
@@ -345,7 +314,6 @@ function cancelTermination(){
     					emailModules = response.object.emailModules;
     				}
     				
-    				alert(emailModules)
     				
     				var result = "";
     				
@@ -430,7 +398,6 @@ function cancelTermination(){
 </div>
  <script>
  function addEmailPopUp(){
-	 alert("hello")
 	 $(".sideMask").fadeIn();
 	 $("#emailfromMail").show();
 	 addEmailPop();
@@ -440,6 +407,27 @@ function cancelTermination(){
 function addEmailPop(){
 	$.ajax({	type : "POST",
 		url : sourceleadUrl+ "/addMailPopUp?"+tokenParamName+"="+tokenValue,
+		success : function(response) {
+			 $("#enrolledLocDiv").removeAttr("style");
+	    	   $("#enrolledLocDiv").attr("style","display : block");
+	    	   $("#emailfromMail").empty();
+	    	   $("#emailfromMail").append(response);
+		}
+	 }); 
+}
+</script>
+<script>
+ function editEmailPopUp(emailUUID){
+	 $(".sideMask").fadeIn();
+	 $("#emailfromMail").show();
+	 editEmailPop(emailUUID);
+ }
+ </script>
+ <script type="text/javascript">
+function editEmailPop(emailUUID){
+	$.ajax({	
+		type : "POST",
+		url : sourceleadUrl+ "/addMailPopUp?"+tokenParamName+"="+tokenValue+"&emailUUID="+emailUUID,
 		success : function(response) {
 			 $("#enrolledLocDiv").removeAttr("style");
 	    	   $("#enrolledLocDiv").attr("style","display : block");
@@ -463,3 +451,174 @@ function verifyEmails() {
 }
 
 </script>
+<script type="text/javascript">
+function configuredMail() {
+	$.ajax({	
+		type : "POST",
+		url : sourceleadUrl+ "/getConfiguredMail?"+tokenParamName+"="+tokenValue,
+		success : function(response) {
+			var email = "";
+			var emailpassword = "";
+			
+			if(response.emailId !=null && response.emailId !='undefined' && response.emailId !=''){
+				email =response.emailId;
+			}
+			if(response.emailPassword !=null && response.emailPassword !='undefined' && response.emailPassword !=''){
+				emailpassword =response.emailPassword;
+			}                                                                                                                                                                                                                                         
+			                                                                                                                                                                                                                                          
+			var result = "";                                                                                                                                                                                                                          
+		result = result  +'<div id="emailConfiguration" class="tab-pane">                                                                                                                                                                        ';
+		result = result  +'<div id="recommLoading"></div>                                                                                                                                                                                             ';
+		result = result  +'<div class="accountsettings-tab">                                                                                                                                                                                          ';
+		result = result  +'<div class="tab-content panel-body">                                                                                                                                                                                       ';
+		result = result  +'<form id="email_configuration_form"  name="email_configuration_form" method="post">                                                                                                                                        ';
+        result = result  +'<div class="clearfix row">                                                                                                                                                                                                 ';
+		result = result  +'<div class="col-md-5 minHeight">                                                                                                                                                                                           ';
+	    result = result  +'<label>Email<span class="text-danger">&nbsp;*</span></label>                                                                                                                                                               ';
+	    result = result  +'<input class="form-control" value="'+email+'" name="emailId" id="emailId"  field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter email" type="text"> ';
+        result = result  +'</div>                                                                                                                                                                                                                     ';
+	    result = result  +'<div class="col-md-5 minHeight">                                                                                                                                                                                           ';
+	    result = result  +'<label>Password<span class="text-danger">&nbsp;*</span></label>                                                                                                                                                            ';
+	    result = result  +'<input class="form-control" value="'+emailpassword+'" name="EmailPassword" id="passwordId"   field-name="Password" data-validation="required validate_Space" placeholder="Enter password" type="password">     ';
+	    result = result  +'</div>';
+	    result = result  +'<div class="col-md-2 minHeight">';
+	    result = result  +'<label>&nbsp;</label>';
+	    result = result  +'<div>';
+	    result = result  +'<button type="button" class="pull-left btn btn-success btnSuccess mr" onClick="editConfiguredMail('+response.id+');">Edit</button>';
+	    result = result  +'<i class="pull-left mt2 fa-2x fa fa-check-circle text-success"></i>';
+	    result = result  +'</div>';
+	    
+	    result = result  +'</div>                                                                                                                                                                                                                     ';
+	    result = result  +'  </form>                                                                                                                                                                                                                  ';
+		result = result  +'  </div>                                                                                                                                                                                                                   ';
+		result = result  +'  </div>                                                                                                                                                                                                                   ';
+		result = result  +'  </div>';
+		
+		//$("#emailConfiguredprev").hide();
+		document.getElementById("emailConfiguredprev").style.display="none";
+		document.getElementById("configuredMailDivTwo").style.display="none";
+		document.getElementById("configuredMailDiv").style.display="block";
+		$("#configuredMailDiv").empty();
+		$("#configuredMailDiv").append(result);
+		
+		
+			
+		}
+	});
+}
+</script>
+ <!-- <script type="text/javascript">
+ function editConfiguredMail(emailId){
+	 document.getElementById("emailConfiguredprev").style.display="block"; 
+	 document.getElementById("configuredMailDiv").style.display="none";  
+ }
+ 
+ </script> -->
+
+ <script type="text/javascript">
+function editConfiguredMail() {
+	$.ajax({	
+		type : "POST",
+		url : sourceleadUrl+ "/getConfiguredMail?"+tokenParamName+"="+tokenValue,
+		success : function(response) {
+			
+			var email = "";
+			var emailpassword = "";
+			
+			if(response.emailId !=null && response.emailId !='undefined' && response.emailId !=''){
+				email =response.emailId;
+			}
+			if(response.emailPassword !=null && response.emailPassword !='undefined' && response.emailPassword !=''){
+				emailpassword =response.emailPassword;
+			}
+			
+			
+			var result = "";                                                                                                                                                                                                                          
+			result = result  +'<div id="emailConfigurationtwo" class="tab-pane ">                                                                                                                                                                        ';
+			result = result  +'<div id="recommLoading"></div>                                                                                                                                                                                             ';
+			result = result  +'<div class="accountsettings-tab">                                                                                                                                                                                          ';
+			result = result  +'<div class="tab-content panel-body">                                                                                                                                                                                       ';
+			result = result  +'<form id="email_configurationTwo_form"  name="email_configuration_form" method="post">                                                                                                                                        ';
+	        result = result  +'<div class="clearfix row">                                                                                                                                                                                                 ';
+			result = result  +'<div class="col-md-5 minHeight">                                                                                                                                                                                           ';
+		    result = result  +'<label>Email<span class="text-danger">&nbsp;*</span></label>                                                                                                                                                               ';
+		    result = result  +'<input class="form-control" value="'+email+'" name="emailId" id="emailId"  field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter email" type="text"> ';
+	        result = result  +'</div>                                                                                                                                                                                                                     ';
+		    result = result  +'<div class="col-md-5 minHeight">                                                                                                                                                                                           ';
+		    result = result  +'<label>Password<span class="text-danger">&nbsp;*</span></label>                                                                                                                                                            ';
+		    result = result  +'<input class="form-control" value="'+emailpassword+'" name="EmailPassword" id="passwordId"   field-name="Password" data-validation="required validate_Space" placeholder="Enter password" type="password">     ';
+		    result = result  +' </div>                     ';
+		 result = result  +'<div class="col-md-5 minHeight">                                                                                                                                                                                          ';
+         result = result  +'<label>SMTP Mail Server name<span class="text-danger">&nbsp;*</span></label>                                                                                                                                              ';
+         result = result  +'<input class="form-control" value="'+response.serverName+'" id="PortId" name="serverName" data-validation="required validate_Space"  field-name="SendServer" placeholder="e.g.domain@gmail.com" type="text">           ';
+         result = result  +'</div>                                                                                                                                                                                                                    ';
+         result = result  +'<div class="col-md-5 minHeight">                                                                                                                                                                                          ';
+         result = result  +'<label>Port<span class="text-danger">&nbsp;*</span></label>                                                                                                                                                               ';
+         result = result  +'<input class="form-control" value="'+response.portNumber+'" id="PortId" name="portNumber" data-validation="required validate_Space" field-name="SendPort" placeholder="123" type="text">                               ';
+       	 result = result  +' </div>                                                                                                                                                                                                                    ';
+         result = result  +' <div class="col-md-5 minHeight">                                                                                                                                                                                         ';
+         result = result  +' <label class="clearfix">Encryption Type<span class="text-danger">&nbsp;*</span></label>                                                                                                                                  ';
+         result = result  +' <select id="encryptId" name="encryptType" field-name="encryptType" data-validation="required" class="sel">                                                                                                               ';
+         if(response.encryptionType == 'SSL'){
+        	 result = result  +'<option value="' +response.encryptionType+ '" selected>'+response.encryptionType+' </option>';
+			}else{
+				 result = result  +'<option value="' +response.encryptionType+ '" selected>'+response.encryptionType+' </option>';
+			}
+		 result = result  +'	</select>                                                                                                                                                                                                                 ';
+		 result = result  +'	</div>                                                                                                                                                                                                                    ';
+		    
+		    
+		    result = result  +'<div class="pull-right mb">';
+		    result = result  +'<button type="button" class="btn btn-success btnSuccess mr" onClick="updateEmailNotification();">Save</button>';
+		    result = result  +' <button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="configuredMail();">Cancel</button>';
+			
+		    result = result  +'</div>';
+		    
+		    result = result  +'</div>                                                                                                                                                                                                                     ';
+		    result = result  +'  </form>                                                                                                                                                                                                                  ';
+			result = result  +'  </div>                                                                                                                                                                                                                   ';
+			result = result  +'  </div>                                                                                                                                                                                                                   ';
+			result = result  +'  </div>';
+			document.getElementById("configuredMailDiv").style.display="none";
+			document.getElementById("configuredMailDivTwo").style.display="block";
+			$("#configuredMailDivTwo").empty();
+			$("#configuredMailDivTwo").append(result);
+			
+		}
+	});
+}
+</script> 
+
+<script>
+function updateEmailNotification(){
+	if ($('#email_configurationTwo_form').validate(false, validationSettings)) {
+		
+			$("#save_title").attr("disabled", "disabled");
+			$("#save_title").addClass('button').val('Processing..');
+		//var formData = $($('#user_manuals_form')[0]).serialize();
+		var formData = getFormData1("email_configurationTwo_form");
+		$.ajax({
+			 type : "POST",
+			 data: formData,
+		      processData: false,
+		      contentType:false, 
+			  url : sourceleadUrl+"/saveEmailNotification?"+tokenParamName+"="+tokenValue,
+			  	success : function(result) {
+			  		if(result=="success"){
+			  			configuredMail();
+			  		}else if(result=="failure"){
+			  			alert("configured mail is wrong.please update the right email")
+			  		}
+		    		
+			},
+		});
+		
+	}else {
+		return false;
+	}
+
+}
+
+</script>
+		

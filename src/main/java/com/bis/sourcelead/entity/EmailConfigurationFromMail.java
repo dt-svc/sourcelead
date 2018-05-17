@@ -48,6 +48,9 @@ public class EmailConfigurationFromMail implements Serializable{
 	
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name="STATUS")
+	private boolean status;
 
 	public Long getId() {
 		return id;
@@ -120,5 +123,13 @@ public class EmailConfigurationFromMail implements Serializable{
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
-	
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
 }

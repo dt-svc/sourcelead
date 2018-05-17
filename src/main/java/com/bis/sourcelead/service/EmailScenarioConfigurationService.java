@@ -14,6 +14,8 @@ public interface EmailScenarioConfigurationService {
 	
 	EmailScenarioConfiguration getEmailConfigOrgLocId(Long orgLocId ) throws Exception;
 	
+	EmailScenarioConfiguration getVerifiedConfMail(Long orgLocId ) throws Exception;
+	
 	EmailConfigurationFromMail saveFromMail(EmailConfigurationFromMail fromMail) throws Exception;
 	
 	EmailConfigurationFromMail deleteFromMail(Long emailId,Long orgLocId) throws Exception;
@@ -21,4 +23,12 @@ public interface EmailScenarioConfigurationService {
 	List<EmailConfigurationFromMail> getConfFromMailList(Long orgLocId)throws Exception;
 	
 	EmailConfigurationFromMail getFromMailByUUID(String UUID) throws Exception;
+	
+	EmailConfigurationFromMail getFromMailById(Long id) throws Exception;
+	
+	public String verifyConfgFromMail(Long id,EmailScenarioConfiguration emailScenarioConfiguration) throws Exception;
+	
+	public int changeDefaultEmailFromMail(long id, long orgId, boolean defaultAccount);
+	
+	EmailConfigurationFromMail getConfFromMailByStatus(Long orgLocId)throws Exception;
 }

@@ -15,30 +15,47 @@
 			</div>
 			<div class="modal-body">
 			
-				<div class="col-md-12 minHeight">
-                <label>Email555<span class="text-danger">&nbsp;*</span></label>
+			<c:if test="${ empty emailFromMail.email}">
+			<div class="col-md-12 minHeight">
+                <label>Email<span class="text-danger">&nbsp;*</span></label>
                 <input class="form-control" value="" name="email" id="fromMail"  field-name="fromMail" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter EMail" type="text"> 
-                 
-            </div>
-            
+                </div>
+			</c:if>
+			<c:if test="${! empty emailFromMail.email}">
+				<div class="col-md-12 minHeight">
+                <label>Email<span class="text-danger">&nbsp;*</span></label>
+                <input class="form-control" value="${emailFromMail.email}" name="email" id="fromMail"  field-name="fromMail" data-validation="required validate_Space validate_length length2-100 validate_email" placeholder="Enter EMail" type="text"> 
+                </div>
+			</c:if>
+			
+			
             <div class="col-md-12 minHeight">
-            
-<!--             
-          <select class="chosen-select form-control" multiple data-placeholder="Select Module" name="emailModules" id="emailTabs">
-           -->
-           <select multiple class="form-control" name="education" data-placeholder="Select Education Options" id="education" data-validation-optional="true">
+             <label>Module Names<span class="text-danger">&nbsp;*</span></label>
+           <select multiple class="form-control" name="emailModules" data-placeholder="Select Education Options" id="emailModules" field-name="Module name" data-validation="required">
                 
-           <c:forEach var="option" items="${modulesList}">
-				<option value="${option.id}">${option.tabName}</option>
-			</c:forEach>
+			<c:forEach var="education" items="${modulesList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="existedEducation" items="${emailFromMail.emailModules}">
+					    <c:if test="${existedEducation eq education.tabName}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${education.id}">${education.tabName}</option>
+					    </c:if>
+					</c:forEach>
+					<c:if test="${NUM == 0}">
+						<option  value="${education.id}">${education.tabName}</option>
+					</c:if>
+                </c:forEach>
+			
+			
           </select>
         </div>
 		        <div class="clearfix"></div>
 			</div>
 			<div class="modal-footer clearfix">
 				<div>
-					<button type="button" class="btn btn-success btnSuccess mr" onClick="closeEmailNotifications();saveConfFromMail();">Save</button>
-					<button type="button" class="btn btn-Default">Cancel</button>
+				<input type="hidden" name="id" id=id value="${emailFromMail.id}"/>
+					<button type="button" id="save_title" class="btn btn-success btnSuccess mr" onClick="saveConfFromMail();">Save</button>
+					<button type="button" class="btn btn-Default" onClick="closeEmailNotifications();">Cancel</button>
 				</div>
 			</div>
 		</div>
@@ -56,9 +73,9 @@ $(function(){
 		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
 		  '.chosen-select-width'     : {width:"95%"}
 		}
-    $("#education").trigger("chosen:updated");
-    $("#education").chosen();
-    $("#education").trigger("chosen:updated");
+    $("#emailModules").trigger("chosen:updated");
+    $("#emailModules").chosen();
+    $("#emailModules").trigger("chosen:updated");
     $('.chosen-select').each(function() {
 			var $this = $(this);
 			$this.next().css({'width': '100%'});

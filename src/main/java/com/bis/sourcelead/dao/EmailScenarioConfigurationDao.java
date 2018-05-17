@@ -23,4 +23,9 @@ public interface EmailScenarioConfigurationDao {
 	
 	EmailConfigurationFromMail getFromMailByUUID(String UUID) throws Exception;
 	
+	public int changeDefaultEmailFromMail(long id, long orgId, boolean defaultAccount);
+	
+	EmailConfigurationFromMail getConfFromMailByStatus(Long orgLocId)throws Exception;
+	
+	EmailScenarioConfiguration getVerifiedConfMail(Long orgLocId ) throws Exception;
 }

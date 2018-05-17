@@ -52,12 +52,14 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailNotification;
+import com.bis.sourcelead.entity.EmailScenarioConfiguration;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SubmissionXls;
 import com.bis.sourcelead.entity.UserMailUnsubscribe;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.EmailMessageService;
 import com.bis.sourcelead.service.EmailNotificationService;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SubmissionXlsService;
@@ -119,6 +121,9 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 
 	@Autowired
 	private RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioConfigurationService;
 
 	@Value("${sendMailForNonProd}")
 	private String sendMailForNonProd;
@@ -202,7 +207,8 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				emailMessage.setUserName(defaultFromEmailAddress);
 				emailMessage.setPassword(defaultFromEmailAddressPwd);
 				emailNotificationId = storeEmailInfoInDBTwo(emailMessage, iAdressArray,orgLocations);
-				sendMessage(emailMessage, iAdressArray, attachmentList);
+				//sendMessage(emailMessage, iAdressArray, attachmentList);
+				sendMessageTwo(emailMessage, iAdressArray, attachmentList,locationsId);
 			}
 		}
 		updateEmailInfoWithDeliveryStatus(emailNotificationId);
@@ -317,7 +323,130 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			e.printStackTrace();
 		}
 	}
+	
+	private void sendMessageTwo(EmailMessage emailMessage, InternetAddress[] iAdressArray,
+			List<EmailAttachment> attachmentList,Long orgLocations) throws Exception {
+		
+		Properties props = new Properties();
+		Session session=null;
+		
+		EmailScenarioConfiguration configuredMail=emailScenarioConfigurationService.getVerifiedConfMail(orgLocations);
+		if(configuredMail != null){
+			
 
+			final String username = configuredMail.getEmailId();
+			final String password = configuredMail.getEmailPassword();
+			
+			String serverName=configuredMail.getServerName();
+			String portNumber=configuredMail.getPortNumber().toString();
+
+			props.put("mail.smtp.host", serverName);
+			props.put("mail.smtp.localhost", "localhost");
+			props.put("mail.stmp.user", username);
+			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.starttls.enable", "true");
+			props.put("mail.smtp.password", "password");
+			props.put("mail.smtp.socketFactory.port", portNumber);
+			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.port", portNumber);
+			
+			 session = Session.getDefaultInstance(props, new Authenticator() {
+				@Override
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(username, password);
+				}
+			});
+		
+
+			try {
+
+				MimeMessage message = new MimeMessage(session);
+
+				String UUID = null;
+				if (null != emailMessage.getEmailType()
+						&& emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)) {
+					message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
+					message.setRecipients(Message.RecipientType.BCC, iAdressArray);
+				}
+				// here mail forward from custom user mail(not with default mail) by
+				// prasad salina
+				else if (null != emailMessage.getEmailType()
+						&& emailMessage.getEmailType().equalsIgnoreCase(Constants.CUSTOM_USER_EMAIL)) {
+					message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
+					message.setRecipients(Message.RecipientType.TO, iAdressArray);
+				} else {
+					if (null != emailMessage.getUserType() && (emailMessage.getUserType().equalsIgnoreCase("Professional")
+							|| emailMessage.getUserType().equalsIgnoreCase("Recruiter"))) {
+						message.setFrom(new InternetAddress(username, emailMessage.getFromEmail()));
+					} else {
+						message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
+					}
+
+					message.setRecipients(Message.RecipientType.TO, iAdressArray);
+				}
+
+				message.setHeader("Content-Type", "text/html; charset=UTF-8");
+				message.setSubject(emailMessage.getSubject());
+				MimeMultipart mimeMultipart = new MimeMultipart();;
+				if(emailMessage.getSubmissionId()!=null&& emailMessage.getSubmissionId().length>0){
+					if (emailMessage != null && Constants.YES.equalsIgnoreCase(emailMessage.getSendResumes())) {
+						if (emailMessage.getSubmissionId().length >= 10) {
+							mimeMultipart = createResumeZipFile(emailMessage.getSubmissionId());
+						} else {
+							List<EmailAttachment> attachmentListNewlyAdded = createResumesWithoutZip(emailMessage.getSubmissionId());
+							attachmentList.addAll(attachmentListNewlyAdded);
+						}
+					}
+				}
+				BodyPart messageBodyPart = new MimeBodyPart();
+				
+				if (null != attachmentList && attachmentList.size() > 0) {
+					messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
+					mimeMultipart.addBodyPart(messageBodyPart);
+					for (EmailAttachment attachment : attachmentList) {
+
+						DataSource dataSource = null;
+						if (null != attachment.getUUID()) {
+							UUID = attachment.getUUID();
+						}
+
+						SubmissionXls xls = submissionXlsService.getSubmissionXlsByUUID(UUID);
+
+						if (null != xls) {
+							dataSource = new ByteArrayDataSource(xls.getDocFile(), "application/pdf");
+							MimeBodyPart xlsBodyPart = new MimeBodyPart();
+							xlsBodyPart.setDataHandler(new DataHandler(dataSource));
+							xlsBodyPart.setFileName(xls.getFileName());
+							mimeMultipart.addBodyPart(xlsBodyPart);
+						} else {
+							dataSource = new ByteArrayDataSource(attachment.getDocFile(), "application/pdf");
+							MimeBodyPart bodyPart = new MimeBodyPart();
+							bodyPart.setDataHandler(new DataHandler(dataSource));
+							bodyPart.setFileName(attachment.getName());
+							mimeMultipart.addBodyPart(bodyPart);
+						}
+						message.setContent(mimeMultipart);
+					}
+				} else {
+					messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
+					mimeMultipart.addBodyPart(messageBodyPart);
+					message.setContent(mimeMultipart);
+				}
+
+				Transport.send(message);
+			} catch (MessagingException e) {
+				throw new RuntimeException(e);
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			sendMessage(emailMessage,iAdressArray,attachmentList);
+		}
+
+	}
+	
 	private Long storeEmailInfoInDB(EmailMessage emailMessage, InternetAddress[] iAdressArray) throws Exception {
 
 		EmailNotification emailNotification = new EmailNotification();

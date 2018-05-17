@@ -68,7 +68,6 @@ public class EmailTemplateController {
 			 
 			
 		}
-
 		model.addObject("emailScenario",emailScenario);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("classFieldList", classFieldList);

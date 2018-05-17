@@ -2,7 +2,9 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Objects;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -16,6 +18,7 @@ import com.bis.sourcelead.dao.EmailScenarioConfigurationDao;
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 
@@ -167,6 +170,70 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 			emailScenario = (EmailConfigurationFromMail) emailScenariosList.iterator().next();
 		}
 		return emailScenario;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public int changeDefaultEmailFromMail(long id, long orgId, boolean defaultAccount) {
+		try {
+            Session session = this.sessionFactory.getCurrentSession();
+            EmailConfigurationFromMail emailFromMail = session.get(EmailConfigurationFromMail.class, id);
+            if (Objects.equals(emailFromMail.getOrgLocationId().getId(), orgId)) {
+            	emailFromMail.setStatus(defaultAccount);
+                if(defaultAccount) {
+                    String query = "from EmailConfigurationFromMail p where p.orgLocationId.id = :orgId";
+                    query += " and p.id != :pid";
+                    Query queryObj = session.createQuery(query);
+                    queryObj.setLong("orgId", orgId);
+                    queryObj.setLong("pid", emailFromMail.getId());
+                    List<EmailConfigurationFromMail> list = queryObj.list();
+                    for (EmailConfigurationFromMail p : list) {
+                        p.setStatus(false);
+                        session.saveOrUpdate(p);
+                    }
+                }
+                session.saveOrUpdate(emailFromMail);
+                return 1;
+            } else {
+                return -1;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public EmailConfigurationFromMail getConfFromMailByStatus(Long orgLocId) throws Exception {
+		logger.debug("In EmailScenarioConfigurationDaoImpl class getFromMailById method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from EmailConfigurationFromMail es where  es.orgLocationId.id = :orgLocId and es.status=true ";
+		List<EmailConfigurationFromMail> emailScenariosList =  session.createQuery(query.toString()) .setLong("orgLocId", orgLocId).list();
+		EmailConfigurationFromMail emailScenario = null;
+		if(emailScenariosList != null && !emailScenariosList.isEmpty())
+		{
+			emailScenario = (EmailConfigurationFromMail) emailScenariosList.iterator().next();
+		}
+		return emailScenario;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public EmailScenarioConfiguration getVerifiedConfMail(Long orgLocId) throws Exception {
+
+		logger.debug("In EmailScenarioConfigurationDaoImpl class getFromMailById method");
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from EmailScenarioConfiguration es where  es.orgLocationId.id = :orgLocId and es.status='Y' ";
+		List<EmailScenarioConfiguration> emailScenariosList =  session.createQuery(query.toString()) .setLong("orgLocId", orgLocId).list();
+		EmailScenarioConfiguration emailScenario = null;
+		if(emailScenariosList != null && !emailScenariosList.isEmpty())
+		{
+			emailScenario = (EmailScenarioConfiguration) emailScenariosList.iterator().next();
+		}
+		return emailScenario;
+	
 	}
 	
 }
