@@ -48,5 +48,26 @@ public class PayrollConfigurationController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
+	
+	@RequestMapping(value = "/addPayhead")
+	public ModelAndView addPayhead(HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		model.setViewName("indPayroll/addPayhead");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/payheadList")
+	public ModelAndView payheadList(HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		model.setViewName("indPayroll/payheadList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
 
 }
