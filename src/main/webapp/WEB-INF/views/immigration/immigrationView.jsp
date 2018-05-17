@@ -27,6 +27,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 <c:set var ="resiOnLoadCount" value = "${tabRecordCountMap['Residence']}" scope="request"/>
 <c:set var ="eduOnLoadCount" value  = "${tabRecordCountMap['Education']}" scope="request"/>
 <c:set var ="familyOnLoadCount" value  = "${tabRecordCountMap['Family']}" scope="request"/>
+<c:set var ="taskOnLoadCount" value  = "${tabRecordCountMap['Tasks']}" scope="request"/>
 <c:set var ="curUscisMyImmi" value = "${immigration.currUscisStatus}" scope="session"/>
  <section class="content-wraper content-wraperNew">
    
@@ -80,7 +81,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
               <li><a href="#familiesTab" class="${familyOnLoadCount==null?'disabledLink':''}"><i id ="familyfilled" class="fa fa-check-circle-o"></i>Family</a></li>
               <li><a href="#formsTab"><i id="allFormsfilled" class="fa fa-check-circle-o"></i>Forms</a></li>
               <li><a href="#docsTab"><i id="allDocsfilled" class="fa fa-check-circle-o"></i>Documents</a></li>
-              <li><a href="#tasksTab"><i id="tasksInfoTab" class="fa fa-check-circle-o"></i>Tasks</a></li>
+              <li><a href="#tasksTab"><i id="tasksInfoTab" class="${taskOnLoadCount==null?'fa fa-check-circle-o':''}"></i>Tasks</a></li>
               <li><a href="#notesTab">Notes</a></li>
               <li><a href="#activitiesTab" id= "#activitiesId">Activities</a></li>
               <div class="clearfix"></div>
@@ -88,9 +89,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 		</div>	
 		
 		</div>
-		
-	
-	
+
   
 	  <div id="detailsTab" class="immigraTabs_inn">
 		 	<jsp:include page="petitionDetailsTab.jsp" />	  		  		  

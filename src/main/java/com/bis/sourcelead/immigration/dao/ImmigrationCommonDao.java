@@ -125,6 +125,8 @@ public interface ImmigrationCommonDao {
 	public ImmigrationActivityHistory storeImmigrationActivities(ImmigrationActivityHistory immigrationActivityHistory) throws Exception;
 
 	public List<ImmigrationActivityHistory> getImmigrationActivitiesList(Long immigrationId, Long orgLocationId) throws Exception;
+	
+	Integer getTableRecordCountByImmigrationId(String entityName,Long immigrationId, String condition);
 
 
 }
