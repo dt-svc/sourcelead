@@ -21,7 +21,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddDefaultProjectsToOrgLocations {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat I
  * this method is adding default projects for org locations
@@ -37,7 +38,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM sourcelead.ORG_LOCATIONS";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -61,14 +62,14 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 					 continue;
 				 
 				 
-				 String query = "SELECT * from sourcelead.PROJECTS where ORG_LOCATIONS_ID = '"+orgLocId+"' and IS_DEFAULT_PROJECT = 'Y' ";
+				 String query = "SELECT * from "+dbconfig.getSchema()+".PROJECTS where ORG_LOCATIONS_ID = '"+orgLocId+"' and IS_DEFAULT_PROJECT = 'Y' ";
 				 java.sql.PreparedStatement pst = conn.prepareStatement(query); 
 				 ResultSet rs = pst.executeQuery();
 				 
 				 if (!rs.next()) {
 					 
 				 String currencyCode = null;	 
-				 String currencyQuery = "SELECT * from sourcelead.countries where Name = '"+country+"' ";
+				 String currencyQuery = "SELECT * from "+dbconfig.getSchema()+".countries where Name = '"+country+"' ";
 				 java.sql.PreparedStatement currencyPst = conn.prepareStatement(currencyQuery); 
 				 ResultSet currencyRs = currencyPst.executeQuery();	 
 				 
@@ -77,7 +78,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 				 }
 					 
 					 
-		 		String query1 = " insert into sourcelead.PROJECTS (PROJECT_NAME, START_DATE, INVOICE_FREQUENCY, TIMESHEET_FREQUENCY, PROJECT_STATUS, IS_PRIMARY,  "
+		 		String query1 = " insert into "+dbconfig.getSchema()+".PROJECTS (PROJECT_NAME, START_DATE, INVOICE_FREQUENCY, TIMESHEET_FREQUENCY, PROJECT_STATUS, IS_PRIMARY,  "
 							+ "IS_DEFAULT_PROJECT,ORG_LOCATIONS_ID,PROJECT_UUID,PROJECT_MODE,CREATED_DATE, CREATED_BY, CURRENCY, PROJECT_SHORT_CODE)"
 							+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		    		
@@ -105,7 +106,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 					}
 		    		
 		    		
-		         String query5 = "SELECT * from sourcelead.PROJECTS where ORG_LOCATIONS_ID = '"+orgLocId+"' and IS_DEFAULT_PROJECT = 'Y' ";
+		         String query5 = "SELECT * from "+dbconfig.getSchema()+".PROJECTS where ORG_LOCATIONS_ID = '"+orgLocId+"' and IS_DEFAULT_PROJECT = 'Y' ";
 				 java.sql.PreparedStatement pstmt4 = conn.prepareStatement(query5); 
 				 ResultSet rs4 = pstmt4.executeQuery();
 				 Long projId = null;
@@ -113,7 +114,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 					 projId = rs4.getLong("ID");
 					 
 					 
-					 String query6 = "SELECT * from sourcelead.PROJECT_TASKS where PROJECT_ID IS NULL ";
+					 String query6 = "SELECT * from "+dbconfig.getSchema()+".PROJECT_TASKS where PROJECT_ID IS NULL ";
 					 java.sql.PreparedStatement pstmt5 = conn.prepareStatement(query6); 
 					 ResultSet rs5 = pstmt5.executeQuery();
 					 Integer taskId = 1;
@@ -124,7 +125,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 						 String description = rs5.getString("DESCRIPTION");
 						 String billableType = rs5.getString("BILLABLE_TYPE");
 						 
-							String query7 = " insert into sourcelead.PROJECT_TASKS (GENERATED_ID,TASK_NAME, DESCRIPTION, BILLABLE_TYPE, PROJECT_TASKS_UUID, PROJECT_ID, "
+							String query7 = " insert into "+dbconfig.getSchema()+".PROJECT_TASKS (GENERATED_ID,TASK_NAME, DESCRIPTION, BILLABLE_TYPE, PROJECT_TASKS_UUID, PROJECT_ID, "
 									+ "CREATED_BY, CREATED_DATE, UPDATED_BY, UPDATED_DATE)"
 									+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				    		
@@ -152,14 +153,14 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 				 }
 		    		
 		    		
-		    		 String query2 = "SELECT * from sourcelead.PROJECTS where ORG_LOCATIONS_ID = '"+orgLocId+"' and IS_DEFAULT_PROJECT = 'Y' ";
+		    		 String query2 = "SELECT * from "+dbconfig.getSchema()+".PROJECTS where ORG_LOCATIONS_ID = '"+orgLocId+"' and IS_DEFAULT_PROJECT = 'Y' ";
 					 java.sql.PreparedStatement pstmt = conn.prepareStatement(query2); 
 					 ResultSet rs2 = pstmt.executeQuery();
 					 Long projectId = null;
 					 if (rs2.next()) {
 						  projectId = rs2.getLong("ID");
 						 
-					 		String query3 = " insert into sourcelead.PROJECT_CLIENTS (PROJECT_ID, ORG_LOCATIONS_ID, UUID, STATUS,LEVEL,  "
+					 		String query3 = " insert into "+dbconfig.getSchema()+".PROJECT_CLIENTS (PROJECT_ID, ORG_LOCATIONS_ID, UUID, STATUS,LEVEL,  "
 									+ "CREATED_DATE, CREATED_BY)"
 									+ " values (?, ?, ?, ?, ?, ?, ?)";
 				    		
@@ -183,13 +184,13 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 					 
 					 
 					 
-					 String query3 = "SELECT * from sourcelead.PROJECT_CLIENTS where ORG_LOCATIONS_ID = '"+orgLocId+"' and PROJECT_ID = '"+projectId+"' ";
+					 String query3 = "SELECT * from "+dbconfig.getSchema()+".PROJECT_CLIENTS where ORG_LOCATIONS_ID = '"+orgLocId+"' and PROJECT_ID = '"+projectId+"' ";
 					 java.sql.PreparedStatement pstmt1 = conn.prepareStatement(query3); 
 					 ResultSet rs3 = pstmt1.executeQuery();
 					 if (rs3.next()) {
 						 Long  projectClientId = rs3.getLong("ID");
 						 
-					 		String query4 = " insert into sourcelead.PROJECT_APPROVER_HIERARCHY (PROJECT_ID, PROJECT_CLIENTS_ID, APPROVER_USER_ID, LEVEL, STATUS, "
+					 		String query4 = " insert into "+dbconfig.getSchema()+".PROJECT_APPROVER_HIERARCHY (PROJECT_ID, PROJECT_CLIENTS_ID, APPROVER_USER_ID, LEVEL, STATUS, "
 									+ "CREATED_DATE, CREATED_BY)"
 									+ " values (?, ?, ?, ?, ?, ?, ?)";
 				    		
@@ -233,10 +234,6 @@ public void dumpDefaultProjects() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

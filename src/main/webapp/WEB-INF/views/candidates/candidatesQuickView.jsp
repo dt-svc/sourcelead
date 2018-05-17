@@ -48,6 +48,11 @@ function candidateQuickViewProfile(candidateId){
 	             			 	}else{
 	             			 		lastName = '';
 	             			 	}
+	         			 	if(json.middleName != null && json.middleName !='' && json.middleName != 'undefined'){
+	         			 		middleName = json.middleName;
+	         			 	}else{
+	         			 		middleName = "";
+	         			 	}
 	         			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
 	         			 		mobilePhone =json.mobilePhone;
 	             			 	}else{
@@ -106,7 +111,7 @@ function candidateQuickViewProfile(candidateId){
 					result = result+'        <div class="col-md-7">                                                                                                                                ';
 					result = result+'            <div class="media">                                                                                                                               ';
 					result = result+'                <div class="media-body">                                                                                                                      ';
-					result = result+'                    <h4 class="media-heading text-warning">'+json.firstName+' '+lastName+'<small> '+designationType+'</small></h4>';
+					result = result+'                    <h4 class="media-heading text-warning">'+json.firstName+' '+middleName+' '+lastName+'<small> '+designationType+'</small></h4>';
 					if(json.summary != null && json.summary != '' && json.summary != 'undifined'){
 						
 						result = result+'      <div class="trimTxt">';
