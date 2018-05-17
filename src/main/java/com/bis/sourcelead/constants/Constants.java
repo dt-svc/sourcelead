@@ -430,6 +430,8 @@ public class Constants {
 	public static final String Dashboard = "Dashboard";
 	public static final String Users = "Users";
 	public static final String Immigration = "Immigration";
+	public static final String Immigrations = "Immigrations";
+	public static final String My_Immigration = "MyImmigration";
 	public static final String Projects = "Projects";
 	public static final String Clients = "Clients";
 	public static final String TimeSheet = "TimeSheet";
