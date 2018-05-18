@@ -1915,9 +1915,28 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 				return isValidated;
 			}
 		}
+		
+		if (client.getWebsite() != null && !"".equalsIgnoreCase(client.getWebsite())) {
+			boolean isValidated = isWebsiteValid(client.getWebsite());
+			if (isValidated == false) {
+				client.setFileReason("Invalid Website");
+				clientImportDao.saveClientVendorExcelData(client);
+				return isValidated;
+			}
+		}
+		
 		return true;
 	}
 	
+	private boolean isWebsiteValid(String website) {
+		try{
+			if(Pattern.matches("[w]{3}[.]{1}[a-zA-Z0-9]*[.]{1}[com]{3}", website))
+				return true;
+			else 
+				return false;
+			}catch (Exception e){return false;}
+	}
+
 	@Override
 	public BulkClientDetails deleteDuplicateRecord(String recordId, OrgLocations orgLocation, String responderType) throws Exception
 	{
