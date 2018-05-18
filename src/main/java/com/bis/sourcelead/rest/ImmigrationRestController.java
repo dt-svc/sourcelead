@@ -1931,6 +1931,13 @@ public class ImmigrationRestController {
 		List<ImmigrationCandidateDocumentsHistory> immigrationCanididateDocHistoryList = immigrationCommonService
 				.getImmigrationCandidateDocumentHistoryListByImmigrationId(immigrationId,  null);
 		
+	    // below code for adding candidate resume to downloading package.
+		CandidateResumes candidateResume= candidateResumesService.getCandidateLatesResumes(immigration.getCandidate().getId(), Constants.CANDIDATE_ACTIVE);
+		if(StringUtils.isNotBlank(candidateResume.getFileURL())) {
+			//System.out.println("cadidateResume path "+candidateResume.getFileURL());
+			docsListMap.put("cadidateResume",candidateResume);
+		}
+		
 		docsListMap.put("immDocs",immigrationCanididateDocHistoryList);
 		
 		Long candidateId = immigration.getCandidate().getId();
