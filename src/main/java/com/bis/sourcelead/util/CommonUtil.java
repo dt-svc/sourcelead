@@ -2408,25 +2408,11 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 
-			 EmailConfigurationFromMail confFromMail=null;
-			 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
-			 if(emailConfigMailList != null){
-				 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
-					 if( fromMail.getEmailModules() != null){
-	 					String[] jobIds = fromMail.getEmailModules().split(",");
-							for(int i=0; i<jobIds.length; i++) {
-								if(Long.valueOf(jobIds[i]) == emailScenario.getTabId().getId() ){
-									confFromMail=fromMail;
-								}
-							//Tabs tab=tabsService.getTabListByTabId(Long.valueOf(jobIds[i]));
-							//moduleNames=moduleNames+tab.getTabName()+",";
-							}
-					 }
-				 } 
-			 }else{
-				 confFromMail=emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
+			 String fromEmail = getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+			 if(StringUtils.isNotBlank(fromEmail)){
+				 emailMessage.setFromEmail(fromEmail);
 			 }
-			 emailMessage.setFromEmail(confFromMail.getEmail());
+			
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,attachmentList);
@@ -2434,5 +2420,36 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 		  e.printStackTrace();
 	}
 	  
+  }
+  
+  
+  public String getConfiguredFromEmail(Long orgLocationId,EmailScenario  emailScenario) throws Exception{
+	  
+	     String fromEmail = null;
+		 EmailConfigurationFromMail confFromMail=null;
+		 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocationId);
+		 if(emailConfigMailList != null){
+			 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+				 if( fromMail.getEmailModules() != null){
+ 					String[] jobIds = fromMail.getEmailModules().split(",");
+						for(int i=0; i<jobIds.length; i++) {
+							if(Long.valueOf(jobIds[i]) == emailScenario.getTabId().getId() ){
+								confFromMail=fromMail;
+							}
+						}
+				 }
+			 } 
+			 
+			 if(confFromMail == null){
+				 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocationId);
+				 if(confFromMail != null){
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }else{
+				 fromEmail = confFromMail.getEmail();
+			 }
+		 }
+		 
+		 return fromEmail;
   }
 }

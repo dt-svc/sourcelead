@@ -557,7 +557,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 emailMessage.setOrgLocationId(vendorOrgLocation.getId());
-		 
+		 /*
 		 EmailConfigurationFromMail confFromMail=null;
 		 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
 		 if(emailConfigMailList != null){
@@ -568,8 +568,6 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 							if(Long.valueOf(jobIds[i]) == emailScenario.getTabId().getId() ){
 								confFromMail=fromMail;
 							}
-						//Tabs tab=tabsService.getTabListByTabId(Long.valueOf(jobIds[i]));
-						//moduleNames=moduleNames+tab.getTabName()+",";
 						}
 				 }
 			 } 
@@ -580,6 +578,11 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			 
 		 if(confFromMail != null){
 			 emailMessage.setFromEmail(confFromMail.getEmail());
+		 }*/
+		 
+		 String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+		 if(StringUtils.isNotEmpty(fromMail)){
+			 emailMessage.setFromEmail(fromMail);
 		 }
 		 
 		 

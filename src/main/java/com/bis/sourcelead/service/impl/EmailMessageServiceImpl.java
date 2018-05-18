@@ -199,7 +199,8 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				logger.info("######## if production email/password not correct then email sent from default email address ###########");
 			}
 			emailNotificationId = storeEmailInfoInDBTwo(emailMessage, iAdressArray,orgLocations);
-			sendMessage(emailMessage, iAdressArray, attachmentList);
+			//sendMessage(emailMessage, iAdressArray, attachmentList);
+			sendMessageConfiguredMail(emailMessage, iAdressArray, attachmentList,locationsId);
 		}
 		else {
 			if (sendMailForNonProd.equalsIgnoreCase("true")) {
@@ -208,7 +209,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				emailMessage.setPassword(defaultFromEmailAddressPwd);
 				emailNotificationId = storeEmailInfoInDBTwo(emailMessage, iAdressArray,orgLocations);
 				//sendMessage(emailMessage, iAdressArray, attachmentList);
-				sendMessageTwo(emailMessage, iAdressArray, attachmentList,locationsId);
+				sendMessageConfiguredMail(emailMessage, iAdressArray, attachmentList,locationsId);
 			}
 		}
 		updateEmailInfoWithDeliveryStatus(emailNotificationId);
@@ -324,7 +325,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		}
 	}
 	
-	private void sendMessageTwo(EmailMessage emailMessage, InternetAddress[] iAdressArray,
+	private void sendMessageConfiguredMail(EmailMessage emailMessage, InternetAddress[] iAdressArray,
 			List<EmailAttachment> attachmentList,Long orgLocations) throws Exception {
 		
 		Properties props = new Properties();
