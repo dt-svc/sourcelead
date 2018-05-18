@@ -20,7 +20,8 @@ public class UpdateModules {
 	
 
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author LAxman
  * this method is using for update the RequirmentUUID	
@@ -34,7 +35,7 @@ public void addModules() throws IOException, SQLException {
 		
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql = "SELECT * FROM sourcelead.ORG org";
+			 String sql = "SELECT * FROM "+dbconfig.getSchema()+".ORG org";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs = stmt1.executeQuery(sql);
 			while(rs.next()){
@@ -42,7 +43,7 @@ public void addModules() throws IOException, SQLException {
 				 String orgName = rs.getString("ORG_NAME");
 				 String moduleIds = rs.getString("MODULES_ID");
 				
-				  	String query = "update sourcelead.ORG_LOCATIONS orgLoc set ORG_NAME = ?, MODULES_ID = ?, IS_PRIMARY = ?  where  orgLoc.ORG_ID = '"+orgId+"' ";
+				  	String query = "update "+dbconfig.getSchema()+".ORG_LOCATIONS orgLoc set ORG_NAME = ?, MODULES_ID = ?, IS_PRIMARY = ?  where  orgLoc.ORG_ID = '"+orgId+"' ";
 				  	 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); // create a statement
 				  	  pstmt.setString(1, orgName); 
 				  	  pstmt.setString(2, moduleIds); // set input parameter 1
@@ -68,10 +69,6 @@ public void addModules() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

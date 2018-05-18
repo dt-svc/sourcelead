@@ -139,6 +139,16 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			}else{
 				orgRelations.setInitiatorType("Client"); 
 				orgRelations.setResponderType("Vendor");
+				if (StringUtils.isNotBlank(clientDTO.getIsLawFirm()) && clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
+						orgRelations.setIsLawFirm(Constants.YES);
+				} else {
+					orgRelations.setIsLawFirm(Constants.NO);
+				}
+				if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
+						orgRelations.setIsAccountingFirm(Constants.YES);
+				} else {
+					orgRelations.setIsAccountingFirm(Constants.NO);
+				}
 				if(StringUtils.isNotBlank(clientDTO.getClientSaveFromType()) && "BulkVendorSaving".equalsIgnoreCase(clientDTO.getClientSaveFromType())){
 					orgRelations.setVendorRelationStatus("Sent");
 					orgRelations.setIsVendorDetailsFilled(Constants.YES);
@@ -544,6 +554,11 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	@Override
 	public List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId, String type) {
 		return orgRelationsDao.getClientOrVendorListByOrgLocationId(orgLocationId, type);
+	}
+	
+	@Override
+	public List<OrgRelations> getClientOrVendorListByOrgLocationIdForImmigration(Long orgLocationId, String type) {
+		return orgRelationsDao.getClientOrVendorListByOrgLocationIdForImmigration(orgLocationId, type);
 	}
 
 	@Override

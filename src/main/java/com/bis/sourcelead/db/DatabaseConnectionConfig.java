@@ -59,6 +59,9 @@ public class DatabaseConnectionConfig {
 	@Value("${elk.host}")
 	private String host;
 	
+	@Value("${elk.tcport}")
+	private String tcport;
+	
 	@Value("${static.path}")
 	private String staticPath;
 	
@@ -127,6 +130,14 @@ public class DatabaseConnectionConfig {
 
 	public void setSchema(String schema) {
 		this.schema = schema;
+	}
+
+	public String getTcport() {
+		return tcport;
+	}
+
+	public void setTcport(String tcport) {
+		this.tcport = tcport;
 	}
 
 	

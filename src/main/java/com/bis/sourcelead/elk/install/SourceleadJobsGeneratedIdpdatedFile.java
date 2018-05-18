@@ -21,7 +21,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class SourceleadJobsGeneratedIdpdatedFile{
 
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
 	public void addCandidateGeneratedId() throws IOException, SQLException {
 		Connection conn = null ;
@@ -37,14 +38,14 @@ public class SourceleadJobsGeneratedIdpdatedFile{
 				 stmt3 = conn.createStatement();
 				 
 				 
-					 String organisationShortCode = "SELECT * FROM sourcelead.ORG_LOCATIONS orglocations";
+					 String organisationShortCode = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orglocations";
 					 
 					 ResultSet rSetorgShortCode = stmt3.executeQuery(organisationShortCode);
 					 while(rSetorgShortCode.next()){
 						 Long  jobsOrgLocIds = rSetorgShortCode.getLong("ID");
 						 String  orgShortCode = rSetorgShortCode.getString("GENERATED_USER_ID");
 						 if(orgShortCode != null && orgShortCode != ""){
-							 String queryOrg = "SELECT * FROM sourcelead.REQUIREMENT requirement where requirement.ORG_LOCATION_ID= "+jobsOrgLocIds+"";
+							 String queryOrg = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT requirement where requirement.ORG_LOCATION_ID= "+jobsOrgLocIds+"";
 							 ResultSet rs2 = stmt2.executeQuery(queryOrg);
 							 Long JobsGeneratedId = 0L;
 							 while(rs2.next()){
@@ -56,7 +57,7 @@ public class SourceleadJobsGeneratedIdpdatedFile{
 							        StringBuffer sb = new StringBuffer();
 							        finalJobsGeneratedId = sb.append(orgShortCode.toUpperCase()).append(Constants.JOB_ENTITY).append(ConvetredJobId).toString();
 						    
-									 String query = "update sourcelead.REQUIREMENT set GENERATED_ID = ? where ID = ? ";
+									 String query = "update "+dbconfig.getSchema()+".REQUIREMENT set GENERATED_ID = ? where ID = ? ";
 									 pstmt = conn.prepareStatement(query); // create a statement
 								     pstmt.setString(1,finalJobsGeneratedId);
 								     pstmt.setLong(2, jobsId);
@@ -76,10 +77,6 @@ public class SourceleadJobsGeneratedIdpdatedFile{
 	 * @return DataSource
 	 */ 
 	private DataSource comboPooledDataSource() {
-			@SuppressWarnings("resource")
-			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 			this.comboPooledDataSource = new ComboPooledDataSource();
 			try {
 				comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

@@ -106,6 +106,10 @@ public class ClientDTO {
 	
 	private CandidateDTO candidateDTO;
 	
+	private String isLawFirm;
+	
+	private String isAccountingFirm;
+	
 	public String getClientSaveFromType()
 	{
 		return clientSaveFromType;
@@ -414,6 +418,18 @@ public class ClientDTO {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
 	}
 	
 }
