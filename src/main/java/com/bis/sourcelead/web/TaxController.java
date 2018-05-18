@@ -155,6 +155,31 @@ public class TaxController {
 		return modelAndView;
 	}
 
+	@RequestMapping(value = "/getCentralTaxes", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseList<CentralTaxDTO> getCentralTaxes(HttpServletRequest request, @RequestParam(defaultValue = "") String yearFrequency,
+			@RequestParam(defaultValue = "0") long sourceleadTaxId) {
+		ResponseList<CentralTaxDTO> response = new ResponseList<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				List<CentralTaxDTO> centralTaxList = taxService.getCentralTaxList(yearFrequency, sourceleadTaxId);
+				response.setData(centralTaxList);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return response;
+	}
+
+	
 	@RequestMapping(value = "/getStateTaxes", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<StateTaxDTO> getStateTaxes(HttpServletRequest request, @RequestParam(defaultValue = "") String yearFrequency,
@@ -179,6 +204,8 @@ public class TaxController {
 		return response;
 	}
 
+	
+	
 	// central tab
 	@RequestMapping(value = "/centralTax/list")
 	public ModelAndView centralTaxList(HttpServletRequest request) {

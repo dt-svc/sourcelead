@@ -12,7 +12,8 @@
 		<div class="tablelist-wrap">
 			<div class="clearfix">
 				<div class="col-md-2 dropdown-select mt10 mb10">
-					<select class="form-control">
+					<select class="form-control" id="centralTaxYearList"
+					onchange="cx.getCentralTaxList()">
 						<c:forEach items="${yearList}" var="year">
 							<option ${year.value==true?"selected=selected":""} value="${year.key}">${year.key}</option>
 						</c:forEach>
@@ -35,8 +36,30 @@
 				</div>
 				<div class="clearfix"></div>
 			</div>
-			<div class="styleTables">
-				<table>
+			
+			
+				<div class="styleTables">
+				<table id="centralListTable">
+					<thead>
+						<tr>
+							<th>Type of Tax</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody id="centralList">
+					</tbody>
+				</table>
+				<table id="noResultsTable">
+					<tr class='odd'>
+						<td colspan='7' class='dataTables_empty' valign='top'></td>
+					</tr>
+				</table>
+			</div>
+			
+			
+			
+		<!-- 	<div class="styleTables">
+				<tableid="centralListTable">
 					<thead>
 						<tr>
 							<th>Type of Tax</th>
@@ -81,7 +104,7 @@
 					</tbody>
 				</table>
 			</div>
-
+ -->
 			<nav>
 				<ul id="paging" class="pagination pull-right mr">
 					<li><a href="#">Previous</a></li>

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,6 +54,28 @@ public class TaxServiceImpl implements TaxService {
 		return stateTaxList;
 	}
 
+	
+	
+
+	@Override
+	public List<CentralTaxDTO> getCentralTaxList(String yearFrequency, long sourceleadTaxId) {
+			List<CentralTaxDTO> centralTaxList = new LinkedList<>();
+			try {
+				List<CentralTax> ctList = taxDao.getCentralTaxList(yearFrequency, sourceleadTaxId, 0);
+				/*if (ctList != null && !ctList.isEmpty()) {
+					for (CentralTax ct : ctList) {
+						centralTaxList.add(getCentralTaxDTO(ct, false));
+					}
+				}*/
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return centralTaxList;
+		}
+	
+	
+	
+	
 	
 	public StateTaxDTO getStateTax(long stateTaxId) {
 		StateTaxDTO stateTaxDTO = new StateTaxDTO();
@@ -138,9 +162,6 @@ public class TaxServiceImpl implements TaxService {
 		}
 		return 0;
 	}
-
-	
-	
 	@Override
 	public long saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) {
 		try {
@@ -155,7 +176,7 @@ public class TaxServiceImpl implements TaxService {
 			ct.setEmployeresi(centralTaxDTO.getEmployerEsi());
 			ct.setSourceleadTaxType(getTaxTypeById(centralTaxDTO.getSourceleadTaxId()));
 			
-			List<Tds> tdsList = new LinkedList<>();
+			HashSet<Tds> tdsList = new LinkedHashSet<>();
 			for (TdsDTO tdsDTO : centralTaxDTO.getTdsTaxList()) {
 				Tds tds = null;
 				if (tdsDTO.getId() > 0) {
@@ -168,10 +189,10 @@ public class TaxServiceImpl implements TaxService {
 				tds.setFromamount(tdsDTO.getFromamount());
 				tds.setToamount(tdsDTO.getToamount());
 				tds.setPercentage(tdsDTO.getPercentage());
-				tds.setCentraltaxid(ct);;
+				tds.setCentraltaxid(ct);
 				tdsList.add(tds);
 			}
-			ct.settdsTaxList(tdsList);
+			ct.setTdsList(tdsList);
 			return taxDao.storeCentralTax(ct);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -230,5 +251,6 @@ public class TaxServiceImpl implements TaxService {
 		}
 		return null;
 	}
+
 
 }

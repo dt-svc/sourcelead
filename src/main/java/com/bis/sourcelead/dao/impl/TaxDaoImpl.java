@@ -79,6 +79,43 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	
+
+	@Override
+	public List<CentralTax> getCentralTaxList(String yearFrequency, long sourceleadTaxId, int i) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CentralTax ct";
+			if (yearFrequency != null && !yearFrequency.isEmpty()) {
+				query += " where ct.financialYear=:yearFrequency";
+			}
+			/*if (sourceleadTaxId > 0) {
+				query += (query.contains("where") ? " and " : " where ") + "ct.sourceleadTax.id=:sourceleadTaxId";
+			}*/
+			if (sourceleadTaxId > 0) {
+				query += (query.contains("where") ? " and " : " where ") + "st.sourceleadTaxType.id=:sourceleadTaxId";
+			}
+			Query queryObj = session.createQuery(query);
+			if (yearFrequency != null && !yearFrequency.isEmpty()) {
+				queryObj.setString("yearFrequency", yearFrequency);
+			}
+			/*if (stateId > 0) {
+				queryObj.setLong("stateId", stateId);
+			}*/
+			if (sourceleadTaxId > 0) {
+				queryObj.setLong("taxTypeId", sourceleadTaxId);
+			}
+			List<CentralTax> centralTaxList = queryObj.list();
+			return centralTaxList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	
+	
+	
+	
 	@Override
 	public long storeCentralTax(CentralTax centralTax) {
 		try {
@@ -91,45 +128,6 @@ public class TaxDaoImpl implements TaxDao {
 		return 0;
 	}
 
-	
-	
-	
-	
-/*	
-	@Override
-
-	@Transactional
-	public long storeCentralTax(CentralTax centralTax) {
-
-		logger.debug("CentralTax");
-		Session session = this.sessionFactory.getCurrentSession();
-		try {
-			if (centralTax != null) {
-				session.saveOrUpdate(centralTax);
-			}
-			logger.debug("Saving CentralTax");
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		return 0;
-	}
-
-	@Override
-	@Transactional
-	public Tds storeTds(Tds tds) {
-		logger.debug("CentralTax");
-		Session session = this.sessionFactory.getCurrentSession();
-		try {
-			if (tds != null) {
-				session.saveOrUpdate(tds);
-			}
-			logger.debug("Saving CentralTax");
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		}
-		return tds;
-	}
-*/
 	public StateTax getStateTax(long stateTaxId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();

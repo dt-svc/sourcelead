@@ -23,4 +23,6 @@ public interface TaxService {
 
 	ProfessionalTax getProfessionalTaxById(long id);
 
+	List<CentralTaxDTO> getCentralTaxList(String yearFrequency, long sourceleadTaxId);
+
 }

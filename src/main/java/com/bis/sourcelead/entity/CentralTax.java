@@ -2,7 +2,9 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -52,6 +55,11 @@ public class CentralTax implements Serializable{
 	
 	@Column(name = "EMPLOYER_ESI")
 	private float employeresi;
+	
+	@OneToMany(mappedBy="centraltaxid",cascade=CascadeType.ALL)
+	@JsonBackReference
+    private Set<Tds> tdsList;
+
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -129,9 +137,12 @@ public class CentralTax implements Serializable{
 		this.employeresi = employeresi;
 	}
 
-	public void settdsTaxList(List<Tds> tdsList) {
-		// TODO Auto-generated method stub
-		
+	public Set<Tds> getTdsList() {
+		return tdsList;
+	}
+
+	public void setTdsList(Set<Tds> tdsList) {
+		this.tdsList = tdsList;
 	}
 
 	

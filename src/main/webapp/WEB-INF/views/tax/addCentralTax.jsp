@@ -10,7 +10,7 @@
 <section class="content-wraper contentWraper">
 	<jsp:include page="../tax/taxHeader.jsp"></jsp:include>
 	<div class="timesheet_out">
-
+<div id="loading"></div>
 		<div class="tablelist-wrap">
 
   <form:form id="createCentralTaxform"  name="createCentralTaxform" method="post">

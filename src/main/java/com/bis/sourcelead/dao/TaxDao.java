@@ -30,5 +30,7 @@ public interface TaxDao {
 
 	public ProfessionalTax getProfessionalTaxById(long id);
 
+	public List<CentralTax> getCentralTaxList(String yearFrequency, long sourceleadTaxId, int i);
+
 
 }
