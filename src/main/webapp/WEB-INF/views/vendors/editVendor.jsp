@@ -89,7 +89,8 @@
 						 var website = '';
 					 	 var zipcode = '';
 					 	 var location = '';
-					 	 
+					 	 var isLawFirm;
+					 	 var isAccountingFirm;
 					 	 
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
@@ -112,8 +113,8 @@
 							location = json.country;
 						}
 						
-						
-						
+						isLawFirm = (json.isLawFirm =='Y' ? true : false);
+						isAccountingFirm = (json.isAccountingFirm =='Y' ? true :false);
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						if(json.orgType == 'Company'){
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
@@ -250,6 +251,22 @@
                         result = result + ' </select>';
                         result = result + ' </div>'; 
 						
+	                    result = result +' <div class="col-md-9">';
+			            result = result +' <div class="checkbox checkBox">';
+			            result = result +' <label>';
+			            result = result +' <input id="isLawFirm" title="Is law firm" name="isLawFirm"  type="checkbox" value="" onclick = "allowIsLawFirm();">';
+			            result = result +' Is law firm</label>';
+			            result = result +' </div>';
+			            result = result +' </div>';
+			            
+			            result = result +' <div class="col-md-9">';
+			            result = result +' <div class="checkbox checkBox">';
+			            result = result +' <label>';
+			            result = result +' <input id="isAccountingFirm" title="Is law firm" name="isAccountingFirm"  type="checkbox"  value="" onclick = "allowIsAccountFirm();">';
+			            result = result +' Is Accounting Firm</label>';
+			            result = result +' </div>';
+			            result = result +' </div>';
+                        
                         result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth customElements-fields"  id="customFieldDataId"></div>';
                         
 						 result = result + '<div class="clearfix"></div>';
@@ -257,10 +274,17 @@
 						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorDetails('+orgRelationId+','+vendorLocationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbyLocationId('+vendorLocationId+','+orgRelationId+');"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';
-						result = result + ' </form>'; 
+						result = result + ' </form>';
 						$(".user_summary_edit").slideToggle(100);
 						$("#editVendorDetailsDiv").empty();
 				        $("#editVendorDetailsDiv").append(result);
+				        $("#isLawFirm").attr('checked', isLawFirm);
+				        if(isLawFirm == true){
+				        	$("#isLawFirm").attr("disabled",true)	
+				        }
+				        $("#isAccountingFirm").attr('checked', isAccountingFirm);
+				        $("#isLawFirm").val(isLawFirm?'Y':'N' );
+				        $("#isAccountingFirm").val(isAccountingFirm?'Y':'N');
 				        if(json.orgType == 'Company'){
 // 				        	initLocationAuto('existingLocation','existingCountry','existingState','existingCity','existingZipCode','','','invite','addressId');
 // 				        	zipcodeMask(country,'existingZipCode');
@@ -289,15 +313,37 @@
 					}
 				}); 
 		      getAllCountries();
+		      //allowIsLawFirm();
+		      allowIsAccountFirm();
 	}
 function changeCountry(){
 	 $("#errCountryMsg").find("p.jquery_form_error_message").remove();
 }
+
 </script>
 
 
 
 <script type="text/javascript">
+function allowIsLawFirm(){
+	var checked = document.getElementById("isLawFirm").checked;
+	if(checked == true){
+		$("#isLawFirm").val("Y");
+	}else{
+		$("#isLawFirm").val("N");
+	}
+}
+
+function allowIsAccountFirm(){
+	var checked = document.getElementById("isAccountingFirm").checked
+	if(checked == true){
+		$("#isAccountingFirm").val("Y");
+	}else{
+		$("#isAccountingFirm").val("N");
+	}
+}
+
+
 function preapareCustomFieldDetails(vendorLocationId,orgRelationId,sectionId){
 	$.ajax({
         type : "POST",
