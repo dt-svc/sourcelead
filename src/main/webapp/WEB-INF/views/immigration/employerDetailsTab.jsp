@@ -26,6 +26,7 @@
 				<th>Employer</th>
 				<th>Designation</th>
 				<th>Address</th>
+				<th>Attachment</th>
 				<th>Start Date</th>
 				<th>End Date</th>
 				<c:choose>
@@ -48,6 +49,16 @@
 				<td><div class="tbldata-dotdot-sm">${empItems.name}</div></td>
 				<td><div class="tbldata-dotdot-sm">${!empty empItems.designation ? empItems.designation : '---' }</div></td>
 				<td><div class="tbldata-dotdot-me">${!empty empItems.address ? empItems.address : '---'}</div></td>
+				<td>
+				<c:if test="${! empty empItems.employerFileName}">
+				<div class="tbldata-dotdot-me"><span class="fileName">${empItems.employerFileName}</span>
+					<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${empItems.employerFileUrl}','${empItems.employerFileName}','${empItems.employerFileContentType}');" title="View"></a>
+					<a class="glyphicon glyphicon-download-alt" download href="${empItems.employerFileUrl}" title="Download"></a></div>
+					</c:if>
+					<c:if test="${empty empItems.employerFileName}">
+					<div class="tbldata-dotdot-me">---</div>
+					</c:if>
+					</td>
 				<td><div class="">${empItems.startMonth} ${empItems.startYear}</div></td>
 				<td><div class="">${empItems.endMonth} ${empItems.endYear}</div></td>
 				<c:choose>
@@ -103,7 +114,7 @@
 		<input type = "hidden" id="candidateEmpId"  name="candidateEmployeeId">
 		
 		<div class="popupHead">
-			<h2>Add Employee</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
+			<h2>Add Employer</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
 		</div>
 		
 		<div class="popupMid clearfix overflow_inherint">
@@ -120,7 +131,7 @@
 				<div class="row">
 				<label class="col-md-4">Designation</label>
               	<div class="col-md-8">
-              		<input type="text" placeholder="Employer Designation" id ="designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation"  class="form-control" />
+              		<input type="text" placeholder="Employer Designation" id ="designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Designation"  class="form-control" />
 				</div>
 				</div>
 			</div>				          

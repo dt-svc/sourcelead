@@ -30,6 +30,7 @@
 				<th>Score</th>
 				<th>Score Type</th>
 				<th>Institute/University</th>
+				<th>Attachment</th>
 				<th>Address</th>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
@@ -55,6 +56,16 @@
 				<td><div class="tbldata-dotdot-80">${!empty eduItems.grade ? eduItems.grade : '---'}</div></td>
 				<td><div class="tbldata-dotdot-80">${!empty eduItems.gradeType ? eduItems.gradeType : '---'}</div></td>
 				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.institute ? eduItems.institute : '---'}</div></td>
+				<td>
+				<c:if test="${! empty eduItems.educationFileName}">
+				<div class="tbldata-dotdot-me"><span class="fileName">${eduItems.educationFileName}</span>
+					<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${eduItems.educationFileUrl}','${eduItems.educationFileName}','${eduItems.educationFileContentType}');" title="View"></a>
+					<a class="glyphicon glyphicon-download-alt" download href="${eduItems.educationFileUrl}" title="Download"></a></div>
+					</c:if>
+					<c:if test="${empty eduItems.educationFileName}">
+					<div class="tbldata-dotdot-me">---</div>
+					</c:if>
+					</td>
 				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.address ? eduItems.address : '---'}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
