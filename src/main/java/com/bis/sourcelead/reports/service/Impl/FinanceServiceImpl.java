@@ -174,7 +174,7 @@ public class FinanceServiceImpl implements FinanceService{
 							}else {
 								name.append(candidate.getFirstName());
 							}
-							
+							missingInvoice.setCandidateName(name.toString());
 							if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 								missingInvoice.setOrgName(orgRelations.getLocationId().getOrgLocationName());
 							}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
