@@ -128,7 +128,8 @@
 				<div class="row">
 				<label class="col-md-4">Address</label>
               	<div class="col-md-8">
-              		<input type="text" placeholder="Address" id = "address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" class="form-control" />
+              	<input class="form-control positionRelative" id="address" name="address" onclick="initLocationAuto('address');" placeholder="Address"  type="text"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('address');"></i>
 				</div>
 				</div>
 			</div>
