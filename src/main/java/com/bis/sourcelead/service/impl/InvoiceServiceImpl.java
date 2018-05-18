@@ -1826,7 +1826,14 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
 //				Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getProjectMemberCandidteId(),orgRelationId);
 //				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
-				if (null != projectMember.getProjectMemberCandidteId()) {
+				
+				ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(projectMember.getMasterCandidateId().getId(), projectId, orgLocation.getId());
+				
+				Candidate candidate = pm.getProjectMemberCandidteId();
+				if (candidate != null && ("C2C".equalsIgnoreCase(candidate.getDesignationType()) || "C2C-1099".equalsIgnoreCase(candidate.getDesignationType()))) {
+				
+//				if (null != projectMember.getProjectMemberCandidteId()) {
+					
 					StringBuilder empName = new StringBuilder();
 					if (null != projectMember.getProjectMemberCandidteId().getFirstName() && null != projectMember.getProjectMemberCandidteId().getLastName()) {
 						empName.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName());
@@ -1862,7 +1869,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 						sb.append("0");
 					}
 					projectMember.setTotalHours(sb.toString());
-					Candidate candidate = projectMember.getProjectMemberCandidteId();
+//					Candidate candidate = projectMember.getProjectMemberCandidteId();
 					if (null != candidate) {
 						projectMember.setCandidateId(candidate.getId());
 						List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
@@ -1872,7 +1879,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					}
 				
 					filteredMembersList.add(projectMember);
-				}
+//				}
+			}
 			}
 		}
 		return filteredMembersList;
