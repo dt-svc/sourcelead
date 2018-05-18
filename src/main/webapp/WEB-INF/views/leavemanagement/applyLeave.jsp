@@ -655,7 +655,8 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	
     		    	if(errorMessage != ""){
     		        	$("#applyId").prop("disabled", true);
-    		        	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</span> ");
+    		        	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
+    		        	$(".warMess").fadeIn();
     		        	$(".comMask").fadeIn();
     		        	errorMessage = "";
     		        }else{

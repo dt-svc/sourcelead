@@ -85,6 +85,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
+import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -154,6 +155,8 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/viewImmigrationList" })
 	public ModelAndView loadImmigrationList(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		sessionData.setNav(Constants.Immigrations);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/immigrationList");
@@ -171,6 +174,8 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/myImmigration" })
 	public ModelAndView loadMyImmigration(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		sessionData.setNav(Constants.My_Immigration);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/immigration/myImmigration");
 		return model;
@@ -280,7 +285,7 @@ public class ImmigrationRestController {
 			immigrationListDTO.setOrgLocationId(orgLocations.getId());
 			immigrationListDTOList = immigrationCommonService.getImmigrationsList(immigrationListDTO, searchValue,
 					orgLocations, filterVal, orgTypeVal);
-			commonUtil.highLightMenu(Constants.Immigration, request);
+			//commonUtil.highLightMenu(Constants.Immigration, request);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

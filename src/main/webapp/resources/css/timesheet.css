@@ -6862,7 +6862,7 @@ position: absolute;
 	padding: 0px 0px 10px 0px; min-height: 200px;
 }
 .inlineBlock {
-	display: inline-block;
+	display: inline-block !important;
 }
 .offOrgCompanyOnboard {
 	position: absolute; right: 50px; top: 2px;
@@ -8099,9 +8099,20 @@ text-decoration: underline;
 	background-color: #f8f8f8; padding: 10px 15px;
 }
 .teHeight {
-min-height: 300px !important;
+	min-height: 300px !important;
 }
 
-
+.actTotalHo {
+width: 30%; padding: 0px 0px 5px 0px;
+}
+.actTotalHo p {
+float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; margin: 0px 0px; color: #454545; border: 1px solid #f5f5f5;
+}
+.actTotalHo p span {
+	display: block; font-size: 15px; text-align: left; padding: 3px 0px 0px 0px;
+}
+.contentareaInner-styles .form-group {
+	margin: 0px !important; min-height: 75px;
+}
 
 

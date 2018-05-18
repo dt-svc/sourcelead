@@ -173,7 +173,14 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		 immigrationObj = immigrationCommonDao.savePetitionDetails(immigration,candidate,candidateIdendities,candidateResume,lcaSummaryLst, residenceList);
 		 //Copy IMMIGRATION_TEMPLATE_DOCUMENTS data to  IMMIGRATION_CANDIDATE_DOCS table based on templateId 
 		 copyImmigrationConfiguredDocsToCandidate(immigrationObj,user,orgLocations);
-		 
+		 StringBuilder actionDesc = new StringBuilder();
+		 if(StringUtils.isNotBlank(immigrationDTO.getImmigrationId())){
+			 actionDesc.append("Immigration Details Edited").toString();
+		 }else{
+			 actionDesc.append("New Immigration Added").toString(); 
+		 }
+		 immigrationActivityCommonUtil.saveImmigrationActivities(user, orgLocations, immigration, null, actionDesc.toString());	 
+
 		 //Copy IMMIGRATION_TEMPLATE_FORMS data to  IMMIGRATION_CANDIDATE_FORMS table based on templateId 
 		 copyImmigrationConfiguredFormsToCandidate(immigrationObj,user,orgLocations);
 		 
@@ -185,6 +192,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			logger.error("Exception caugth in savePetitionDetails service"+ e.getMessage());
 			e.printStackTrace();
 		}
+		
 		return immigrationObj;
 	}
 
@@ -585,6 +593,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setStatus(Constants.RECORD_ACTIVE);
 		immigration.setUpdatedBy(user);
 		immigration.setUpdatedDate(currentDate);
+		
+		
 		return immigration;
 	}
 

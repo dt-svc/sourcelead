@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -35,6 +37,7 @@ import com.bis.sourcelead.reportsDTO.APAgingDTO;
 import com.bis.sourcelead.reportsDTO.AparagingDate;
 import com.bis.sourcelead.reportsDTO.MissingInvoiceDTO;
 import com.bis.sourcelead.reportsDTO.PaidBillDTO;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
@@ -56,6 +59,9 @@ public class FinanceDaoImpl implements FinanceDao{
 	
 	@Autowired
 	ReportsUtil reportsUtil;
+	
+	@Autowired
+    OrgLocationService orgLocationService;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -414,10 +420,29 @@ public class FinanceDaoImpl implements FinanceDao{
 				}
 				*/
 				
+				Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+				   Matcher matcher = pattern.matcher(missingInvoiceDto.getSearchValue());
+				   java.sql.Date sqlDate = null;
+				    if(matcher.matches() == true) {
+								if(missingInvoiceDto.getSearchValue().contains("/")||(missingInvoiceDto.getSearchValue().contains("-"))) {
+									String replacedValue = missingInvoiceDto.getSearchValue().replaceAll("/", "-");
+									    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocations.getId());
+										SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+								        java.util.Date utilDate = format.parse(replacedValue);
+								        sqlDate = new java.sql.Date(utilDate.getTime());
+								}
+				    }
+				    
 				StringBuilder searchQuery = new StringBuilder();
 				if(StringUtils.isNotEmpty(missingInvoiceDto.getSearchValue()) && missingInvoiceDto.getSearchValue() != null) {
-					searchQuery.append(" and (sah.hierarchyId.projectId.projectName like '%" + missingInvoiceDto.getSearchValue() + "%' )");
-					}
+					searchQuery.append(" and ( (sah.submissionId.projectMembers.projectMemberCandidteId.firstName like '%" + missingInvoiceDto.getSearchValue() + "%' OR  sah.submissionId.projectMembers.projectMemberCandidteId.firstName.lastName like '%" + missingInvoiceDto.getSearchValue() + "%')")
+					           .append(" OR (concat(sah.submissionId.projectMembers.projectMemberCandidteId.firstName.firstName,sah.submissionId.projectMembers.projectMemberCandidteId.firstName.lastName) like '%" + missingInvoiceDto.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
+					           .append(" OR sah.hierarchyId.projectId.projectName  like '%" + missingInvoiceDto.getSearchValue() + "%' )");
+					if(sqlDate != null) {
+						searchQuery.append("OR sah.frequencyStartDate like '%" + sqlDate + "%' OR sah.frequencyEndDate like '%" + sqlDate + "%' ");
+						searchQuery.append("OR sah.updatedDate like '%" + sqlDate + "%' ");
+					 }
+				}
 				
 				String qry = "from  SubmissionApproverHierarchy sah left join fetch sah.invoiceId invoice left join fetch sah.billId billinvoice left join fetch sah.submissionId subId left join fetch subId.projectMembers pmember left join fetch pmember.projectMemberCandidteId can left join fetch can.orgRelationId left join fetch subId.projects prjcts left join fetch sah.hierarchyId hierarchy left join fetch sah.invoiceId invoice left join fetch sah.billId bill left join fetch hierarchy.projectId proj left join fetch hierarchy.projectClientsId pclient  left join fetch pclient.orgRelationId orgRelation "
 						+ " where  pclient.orgLocationsId.id = :orgLocationId and  sah.submissionApprovalStatus = 'APPROVED' and sah.submissionId.status = '1' and "+subQuery;//OR (sah.invoiceStatus IS NOT NULL and sah.invoiceSatus = 'DRAFT')) ";

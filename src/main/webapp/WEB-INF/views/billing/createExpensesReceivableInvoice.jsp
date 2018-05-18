@@ -544,7 +544,7 @@ function editExpensesDetailsEdit(data){
          		      result = result +'   <td>';
          		      result = result +'     <div class="tbldata-dotdot-100">';
          		      if(opt.amount !=null && opt.amount != ''){
-         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" value="'+opt.amount+'" id="'+i+'total" name="expenseInvoice['+i+'].total" placeholder="S.No">';	  
+         		    	  result = result +'       <input type="text" class="form-control input-sm inpTextFil" readonly="readonly" value="'+opt.amount+'" id="'+i+'total" name="expenseInvoice['+i+'].total" placeholder="S.No">';	  
          		      }
          		      result = result +'     </div>';
          		      result = result +'   </td>';
@@ -735,7 +735,7 @@ function populateInlineItemsGrid(){
 
 <div id="divInvoiceExpTd4" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm">  
-	     <input type="text" class="form-control input-sm valid" placeholder="Total" name="expenseInvoice[REPLACEROWID].total" id='REPLACEROWIDtotal'>   
+	     <input type="text" class="form-control input-sm valid" placeholder="Total" name="expenseInvoice[REPLACEROWID].total" id='REPLACEROWIDtotal' readonly="readonly">   
      </div>
 </div>
 
