@@ -100,11 +100,13 @@ function Tax() {
 		var selectedYear = $("#centralTaxYearList").val();
 		alert(selectedYear);
 		$.post(sourceleadUrl + "/getCentralTaxes", {yearFrequency:selectedYear}, function(response) {
+			alert(response);
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
+				alert(response);
 				var stList = response.data;
 				if(stList.length > 0) {
 					for(var e in stList){

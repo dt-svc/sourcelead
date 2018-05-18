@@ -84,9 +84,9 @@ public class TaxDaoImpl implements TaxDao {
 	public List<CentralTax> getCentralTaxList(String yearFrequency) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from CentralTax ct";
+			String query = "from StateTax st";
 			if (yearFrequency != null && !yearFrequency.isEmpty()) {
-				query += " where ct.financialYear=:yearFrequency";
+				query += " where st.financialYear =:yearFrequency";
 			}
 		
 			Query queryObj = session.createQuery(query);
