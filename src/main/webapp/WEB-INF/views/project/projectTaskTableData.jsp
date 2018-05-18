@@ -18,7 +18,8 @@
 	    <td><div><span>${timeDayEntry.approvalStatus}</span></div></td>
 	    
 	    <c:if test="${timeDayEntry.projectMemberId eq projectMemID and timeDayEntry.approvalStatus ne 'APPROVED'}">
-	    	<td><div class="fa fa-edit" id="editTimeDayEntry" onclick="editProjectTaskTimesheetDayEntry('${timeDayEntry.timesheetDate}','edit');"></div></td>
+	    	<td><div class="fa fa-edit" id="editTimeDayEntry" onclick="editProjectTaskTimesheetDayEntry('${timeDayEntry.timesheetDate}','edit');"></div>|
+	   <div class="fa fa-trash" style="color:red" id="deleteTimeDayEntry" onclick="deleteProjectTaskEntry('${timeDayEntry.timesheetEntryId}');"></div></td>
 	    </c:if>
 	    <c:if test="${timeDayEntry.projectMemberId eq projectMemID and timeDayEntry.approvalStatus eq 'APPROVED'}">
 	    	<td><div>--</div></td>
