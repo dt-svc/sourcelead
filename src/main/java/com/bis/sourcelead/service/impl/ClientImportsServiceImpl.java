@@ -1860,7 +1860,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 				clientImportDao.saveClientVendorExcelData(client);
 				return false;
 			}
-			else if (client.getOrgName() == null || "".equalsIgnoreCase(client.getOrgName())) {
+			else if (client.getOrgName() != null || !"".equalsIgnoreCase(client.getOrgName())) {
 				boolean isValidated = isFnameLnameValid(client.getOrgName());
 				if (isValidated == false) {
 //					client.setReason("Client name should contain above 2 char");
@@ -1877,7 +1877,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 				clientImportDao.saveClientVendorExcelData(client);
 				return false;
 			}
-			else if (client.getOrgName() == null || "".equalsIgnoreCase(client.getOrgName())) {
+			else if (client.getOrgName() != null || !"".equalsIgnoreCase(client.getOrgName())) {
 				boolean isValidated = isFnameLnameValid(client.getOrgName());
 				if (isValidated == false) {
 //					client.setReason("Vendor name should contain above 2 char");
