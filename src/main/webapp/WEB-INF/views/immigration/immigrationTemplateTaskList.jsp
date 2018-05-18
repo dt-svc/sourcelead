@@ -229,6 +229,7 @@
                 {
                     "targets": colIndex++,
                     /* "data": "assignedTo", */
+                    "sortable": false,
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.assignedTo != null && opt.assignedTo != '' && opt.assignedTo != 'undefined') {
@@ -267,6 +268,7 @@
                 {
                     "targets": colIndex++,
                     /* "data": "id", */
+                    "sortable": false,
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.id != null && opt.id != '' && opt.id != 'undefined') {
