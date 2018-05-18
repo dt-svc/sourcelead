@@ -21,6 +21,8 @@ public class GenerateProjectTaskUUID {
 	
 
 	private ComboPooledDataSource comboPooledDataSource;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
 /**
  * @author Laxman
@@ -34,14 +36,14 @@ public void projectTaskUUID() throws IOException, SQLException {
 try {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql = "SELECT * FROM sourcelead.PROJECT_TASKS";
+			 String sql = "SELECT * FROM "+dbconfig.getSchema()+".PROJECT_TASKS";
 			 stmt1 = conn.prepareStatement(sql);
 			 ResultSet rs = stmt1.executeQuery();
 			 System.out.println("----Adding unique UUID project tasks starts-----");
 			 while(rs.next()){
 				 Long id = rs.getLong("ID");
 					 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
-					 String query = "update sourcelead.PROJECT_TASKS set PROJECT_TASKS_UUID = ? where ID = ?";
+					 String query = "update "+dbconfig.getSchema()+".PROJECT_TASKS set PROJECT_TASKS_UUID = ? where ID = ?";
 					 PreparedStatement pstmt = conn.prepareStatement(query);
 					 pstmt.setString(1, uuid);
 					 pstmt.setLong(2, id);
@@ -68,9 +70,6 @@ try {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {

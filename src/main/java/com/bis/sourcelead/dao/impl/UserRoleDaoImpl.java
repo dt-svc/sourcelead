@@ -2,8 +2,6 @@ package com.bis.sourcelead.dao.impl;
 
 import java.math.BigInteger;
 import java.text.MessageFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -12,8 +10,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
@@ -34,20 +30,15 @@ import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
-
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
-import com.bis.sourcelead.entity.Connections;
-import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
-import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Repository
 public class UserRoleDaoImpl implements UserRoleDao {
@@ -850,19 +841,19 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		String searchByValue = searchByName.trim();
 		StringBuilder subQuery = new StringBuilder("");
 		String sqlQuery = "select distinct u.ID as id, u.USER_CODE as userCode, u.FILE_URL as fileUrl, concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) as userName, u.EMAIL as email, ur.USER_TYPE as userType, ol.ORG_NAME as orgName," + 
-				"((select count(c.FROM_UID) from sourcelead.CONNECTIONS c where c.TO_UID = :loginUserId "+
-				"and (c.FROM_UID in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED') or "+
-				"c.FROM_UID in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
-				"(select count(c.TO_UID) from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId "+
-				"and (c.TO_UID in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED') or "+
-				"c.TO_UID in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
-				"(select c.CONNECTION_UID from sourcelead.CONNECTIONS c where (c.FROM_UID = :loginUserId and c.TO_UID = u.ID) or (c.FROM_UID = u.ID and c.TO_UID = :loginUserId)) as connectionUUID, " +
-				"(select count(*) from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId and c.TO_UID = u.ID and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestSent, " + 
-				"(select count(*) from sourcelead.CONNECTIONS c where c.FROM_UID = u.ID and c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestRecieved " +
-				"from sourcelead.USER u, sourcelead.USER_ROLE ur, sourcelead.ORG_LOCATIONS ol " + 
+				"((select count(c.FROM_UID) from CONNECTIONS c where c.TO_UID = :loginUserId "+
+				"and (c.FROM_UID in (select c.FROM_UID from CONNECTIONS c where c.TO_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.FROM_UID in (select c.TO_UID from CONNECTIONS c where c.FROM_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED')))+ "+ 
+				"(select count(c.TO_UID) from CONNECTIONS c where c.FROM_UID = :loginUserId "+
+				"and (c.TO_UID in (select c.FROM_UID from CONNECTIONS c where c.TO_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED') or "+
+				"c.TO_UID in (select c.TO_UID from CONNECTIONS c where c.FROM_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "+
+				"(select c.CONNECTION_UID from CONNECTIONS c where (c.FROM_UID = :loginUserId and c.TO_UID = u.ID) or (c.FROM_UID = u.ID and c.TO_UID = :loginUserId)) as connectionUUID, " +
+				"(select count(*) from CONNECTIONS c where c.FROM_UID = :loginUserId and c.TO_UID = u.ID and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestSent, " + 
+				"(select count(*) from CONNECTIONS c where c.FROM_UID = u.ID and c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'REQUEST_SENT') as requestRecieved " +
+				"from USER u, USER_ROLE ur, ORG_LOCATIONS ol " + 
 				"where ur.USER_ID = u.ID and ur.ORG_LOCATIONS_ID = ol.ID " + 
-				"and u.ID not in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
-				"and u.ID not in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
+				"and u.ID not in (select c.FROM_UID from CONNECTIONS c where c.TO_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
+				"and u.ID not in (select c.TO_UID from CONNECTIONS c where c.FROM_UID = :loginUserId and c.CONNECTION_STATUS = 'CONNECTED') " + 
 				"and u.ID != :loginUserId and ur.IS_PRIMARY = 1";
 		if(searchByValue != null && !"".equalsIgnoreCase(searchByValue)) {
 			subQuery.append(" and (ur.USER_TYPE = :searchByUserType or u.FIRST_NAME like :searchByValue or u.LAST_NAME like :searchByValue or ol.ORG_NAME like :searchByValue or u.EMAIL like :searchByValue or concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) like :searchByValue)");

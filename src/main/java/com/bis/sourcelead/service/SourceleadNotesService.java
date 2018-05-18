@@ -23,4 +23,6 @@ public List<SourceleadNotes> getNotesListByInvoiceID(Long invoiceId,Long orgLoca
 
 public List<SourceleadNotes> getNotesListByContractId(Long contractId,Long orgLocationId) throws Exception;
 
+public List<SourceleadNotes> getNotesListByImmigrationId(Long immigrationId, Long orgLocationId) throws Exception;
+
 }

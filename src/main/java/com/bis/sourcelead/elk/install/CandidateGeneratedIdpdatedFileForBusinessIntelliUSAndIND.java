@@ -23,7 +23,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class CandidateGeneratedIdpdatedFileForBusinessIntelliUSAndIND{
 
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
 	public void addCandidateGeneratedId() throws IOException, SQLException {
 		Connection conn = null ;
@@ -46,14 +47,14 @@ public class CandidateGeneratedIdpdatedFileForBusinessIntelliUSAndIND{
 				 
 				 
 				 for(Long candidatesOrgLocIds :bisOrgId){
-					 String organisationShortCode = "SELECT * FROM sourcelead.ORG_LOCATIONS orglocations where orglocations.id = "+candidatesOrgLocIds+" ";
+					 String organisationShortCode = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orglocations where orglocations.id = "+candidatesOrgLocIds+" ";
 					 
 					 ResultSet rSetorgShortCode = stmt3.executeQuery(organisationShortCode);
 					 while(rSetorgShortCode.next()){
 						 String  orgShortCode = rSetorgShortCode.getString("GENERATED_USER_ID");
 						 System.out.println("orgShortCode :"+orgShortCode);
 						 if(orgShortCode != null && orgShortCode != ""){
-							 String queryOrg = "SELECT * FROM sourcelead.CANDIDATE candidate where candidate.ORG_LOCATION_ID= "+candidatesOrgLocIds+"";
+							 String queryOrg = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE candidate where candidate.ORG_LOCATION_ID= "+candidatesOrgLocIds+"";
 							 ResultSet rs2 = stmt2.executeQuery(queryOrg);
 							 Long candidateGeneratedId = 0L;
 							 while(rs2.next()){
@@ -65,7 +66,7 @@ public class CandidateGeneratedIdpdatedFileForBusinessIntelliUSAndIND{
 							        StringBuffer sb = new StringBuffer();
 							        finalCandidateGeneratedId = sb.append(orgShortCode.toUpperCase()).append(Constants.CANDIDATE_ENTITY).append(ConvetredCandidateId).toString();
 						    
-									 String query = "update sourcelead.CANDIDATE set GENERATED_ID = ? where ID = ? ";
+									 String query = "update "+dbconfig.getSchema()+".CANDIDATE set GENERATED_ID = ? where ID = ? ";
 									 pstmt = conn.prepareStatement(query); // create a statement
 								     pstmt.setString(1,finalCandidateGeneratedId);
 								     pstmt.setLong(2, candidateId);
@@ -86,10 +87,6 @@ public class CandidateGeneratedIdpdatedFileForBusinessIntelliUSAndIND{
 	 * @return DataSource
 	 */ 
 	private DataSource comboPooledDataSource() {
-			@SuppressWarnings("resource")
-			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 			this.comboPooledDataSource = new ComboPooledDataSource();
 			try {
 				comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());
