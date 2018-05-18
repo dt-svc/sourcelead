@@ -302,8 +302,8 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         }
         String listQuery = "from ImmigrationTemplateTasks itt where status = 1 AND itt.immigrationTempId.id = :templateId";
         immigrationTemplateTasks = session.createQuery(listQuery + query1 + sortingQry).setLong("templateId", templateDTO.getTemplateId()).list();
-        String listQueryCount = "select count(*) from ImmigrationTemplateTasks itt";
-        countlist = session.createQuery(listQueryCount).setFirstResult(templateDTO.getStart()).setMaxResults(templateDTO.getLength()).list();
+        String listQueryCount = "select count(*) from ImmigrationTemplateTasks itt where status = 1 AND itt.immigrationTempId.id = :templateId";
+        countlist = session.createQuery(listQueryCount+query1+sortingQry).setLong("templateId", templateDTO.getTemplateId()).setFirstResult(templateDTO.getStart()).setMaxResults(templateDTO.getLength()).list();
         int totalCount = 0;
         if (templateDTO != null) {
             if (countlist != null && !countlist.isEmpty()) {
