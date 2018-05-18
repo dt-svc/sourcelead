@@ -723,7 +723,7 @@ function populateInlineItemsGrid(){
 
 <div id="divInvoiceExpTd2" style="display: none; float: left;">
 	<div class="tbldata-dotdot-100">     
-	   <input type="text" class="form-control input-sm valid" placeholder="Quantity" name="expenseInvoice[REPLACEROWID].quantity" id='REPLACEROWIDquantity' onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Quantity">  
+	   <input type="text" class="form-control input-sm valid allownumericwithdecimal" placeholder="Quantity" name="expenseInvoice[REPLACEROWID].quantity" id='REPLACEROWIDquantity' onblur="totalHoursCalculateAmount(REPLACEROWID);" data-validation="required" field-name="Quantity">  
 	 </div>
 </div>
 
@@ -1425,7 +1425,7 @@ function toDate(selector) {
 		           		getExpenses(json['memberId'],json['expensesFrequency']);
 		           		editExpensesDetailsEdit(json['invoiceLineItemsList']); 
 		           	}else{
-		           	 	editExpensesInlineItems(json.data['invoiceLineItemsList']);
+		           	 	editExpensesInlineItems(json['invoiceLineItemsList']);
 		           	}
 		           	$("#invoiceId").val(json['invoiceId']);
 		           	if(json['paymentFrequency'] != null && json['paymentFrequency'] != '' && json['paymentFrequency'] != 'undefined'){
