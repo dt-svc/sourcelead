@@ -48,10 +48,10 @@
 			  </tr>
 			  <c:forEach var="passportdetails" items="${PassportList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-custom">${!empty passportdetails.idNumber ? passportdetails.idNumber : '---'}</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty passportdetails.country ? passportdetails.country : '---'}</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty passportdetails.validFromDateStr ? passportdetails.validFromDateStr : '---'}</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty passportdetails.validToDateStr ? passportdetails.validToDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-custom" title = "${passportdetails.idNumber}">${!empty passportdetails.idNumber ? passportdetails.idNumber : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${passportdetails.country}">${!empty passportdetails.country ? passportdetails.country : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${passportdetails.validFromDateStr}">${!empty passportdetails.validFromDateStr ? passportdetails.validFromDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${passportdetails.validToDateStr}">${!empty passportdetails.validToDateStr ? passportdetails.validToDateStr : '---'}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"

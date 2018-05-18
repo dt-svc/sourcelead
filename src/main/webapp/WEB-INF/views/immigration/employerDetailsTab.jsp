@@ -46,12 +46,12 @@
 			  </tr>
 			<c:forEach var="empItems" items="${candidatesEmployersList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-sm">${empItems.name}</div></td>
-				<td><div class="tbldata-dotdot-sm">${!empty empItems.designation ? empItems.designation : '---' }</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty empItems.address ? empItems.address : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${empItems.name}">${empItems.name}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${empItems.designation}">${!empty empItems.designation ? empItems.designation : '---' }</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${empItems.address}">${!empty empItems.address ? empItems.address : '---'}</div></td>
 				<td>
 				<c:if test="${! empty empItems.employerFileName}">
-				<div class="tbldata-dotdot-me"><span class="fileName">${empItems.employerFileName}</span>
+				<div class="tbldata-dotdot-me" title = "${empItems.employerFileName}"><span class="fileName">${empItems.employerFileName}</span>
 					<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${empItems.employerFileUrl}','${empItems.employerFileName}','${empItems.employerFileContentType}');" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" download href="${empItems.employerFileUrl}" title="Download"></a></div>
 					</c:if>

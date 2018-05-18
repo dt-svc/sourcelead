@@ -19,7 +19,7 @@
 		  	<span><input class="immigraTabSerach" id="educationSearchVal" type="text"></span>
 		</div>
 		
-	  	<div class="immigraTable">
+	  	<div class="immigraTable overflow_Auto">
 		  <table id ="educationTbl">
 			<tbody>
 			  <tr>
@@ -49,24 +49,24 @@
 			  </tr>
 			   <c:forEach var="eduItems" items="${candidatesEducationList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-vsm">${eduItems.name}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.specialization ? eduItems.specialization : '---'}</div></td>
-				<td><div class="tbldata-dotdot_80">${!empty eduItems.startDateStr ? eduItems.startDateStr : '---'}</div></td>
-				<td><div class="tbldata-dotdot-80">${!empty eduItems.endDateStr ? eduItems.endDateStr : '---'}</div></td>
-				<td><div class="tbldata-dotdot-80">${!empty eduItems.grade ? eduItems.grade : '---'}</div></td>
-				<td><div class="tbldata-dotdot-80">${!empty eduItems.gradeType ? eduItems.gradeType : '---'}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.institute ? eduItems.institute : '---'}</div></td>
+				<td><div class="tbldata-dotdot-100" title = "${eduItems.name}">${eduItems.name}</div></td>
+				<td><div class="tbldata-dotdot-100" title = "${eduItems.specialization}">${!empty eduItems.specialization ? eduItems.specialization : '---'}</div></td>
+				<td><div class="tblminwidth-75" title = "${eduItems.startDateStr}">${!empty eduItems.startDateStr ? eduItems.startDateStr : '---'}</div></td>
+				<td><div class="tblminwidth-75" title = "${eduItems.endDateStr}">${!empty eduItems.endDateStr ? eduItems.endDateStr : '---'}</div></td>
+				<td><div class="tblminwidth-30" title = "${eduItems.grade}">${!empty eduItems.grade ? eduItems.grade : '---'}</div></td>
+				<td><div class="tbldata-dotdot-80" title = "${eduItems.gradeType}">${!empty eduItems.gradeType ? eduItems.gradeType : '---'}</div></td>
+				<td><div class="tbldata-dotdot-vsm" title = "${eduItems.institute}">${!empty eduItems.institute ? eduItems.institute : '---'}</div></td>
 				<td>
 				<c:if test="${! empty eduItems.educationFileName}">
-				<div class="tbldata-dotdot-me"><span class="fileName">${eduItems.educationFileName}</span>
+				<div class="tblminwidth-75" title = "${eduItems.educationFileName}"><span class="tbldata-dotdot-100 fileName">${eduItems.educationFileName}</span>
 					<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${eduItems.educationFileUrl}','${eduItems.educationFileName}','${eduItems.educationFileContentType}');" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" download href="${eduItems.educationFileUrl}" title="Download"></a></div>
 					</c:if>
 					<c:if test="${empty eduItems.educationFileName}">
-					<div class="tbldata-dotdot-me">---</div>
+					<div class="tbldata-dotdot-100">---</div>
 					</c:if>
 					</td>
-				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.address ? eduItems.address : '---'}</div></td>
+				<td><div class="tbldata-dotdot-100" title = "${eduItems.address}">${!empty eduItems.address ? eduItems.address : '---'}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"

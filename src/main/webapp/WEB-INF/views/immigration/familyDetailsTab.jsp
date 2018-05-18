@@ -36,7 +36,7 @@
 				</c:choose>
 		  	<span><input class="immigraTabSerach" id="familySerach" type="text" placeholder="Name/Relationship"></span>
 		</div>
-	  	<div class="immigraTable">
+	  	<div class="immigraTable overflow_Auto">
 		  <table>
 			<tbody>
 			  <tr>
@@ -62,11 +62,11 @@
 			  </tr>
 			  <c:forEach var="items" items="${familyList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-me">${items.firstName}</div></td>
-				<td><div class="tbldata-dotdot-me">${items.relation}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${items.dateOfBirthStr}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${!empty items.placeOfBirth ? items.placeOfBirth : '---'}</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty items.currentAddress ? items.currentAddress : '---'}</div></td>
+				<td><div class="tbldata-dotdot inlineBlock" title = "${items.firstName}">${items.firstName}</div></td>
+				<td><div class="tbldata-dotdot-100 inlineBlock" title = "${items.relation}">${items.relation}</div></td>
+				<td><div class="tblminwidth-75" title = "${items.dateOfBirthStr}">${items.dateOfBirthStr}</div></td>
+				<td><div class="tbldata-dotdot-vsm" title = "${items.placeOfBirth}">${!empty items.placeOfBirth ? items.placeOfBirth : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${items.currentAddress}">${!empty items.currentAddress ? items.currentAddress : '---'}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" class="glyphicon glyphicon-pencil cursorPointer"onclick="immigration.editFamilyDetailsById(${items.id},'${items.relation}');"
