@@ -111,12 +111,13 @@
                     <input type="text" class="form-control" id="EmployeeId" name="employeeId" data-validation="validate_Space validate_length length2-20" data-validation-optional="true" value="" onKeyUp="validateEmployeeId();" onblur="validateEmployeeId();">
                     </div>
                 </div>
+
                 <div class="col-md-5">
                       <label class="clearfix">Date of Join</label>
                          <div class="clearfix">
-                           <div class="input-group">
+                           <div class="input-group errorInptgroup">
                               <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly">
-                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                              <span class="input-group-addon" onClick="clearDateofJoin();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
                   </div>
@@ -147,6 +148,14 @@
                   </div>
                 </div>
                 
+				
+				 <div class="col-md-5">
+                  <label class="clearfix">Middle Name</label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control" id="middleName" name="middleName" pattern="[A-Za-z\s]*"   field-name="Middle Name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
+                  </div>
+                </div>
+
                 <div class="col-md-5">
                   <label class="clearfix">Last Name</label>
                   <div class="clearfix">
@@ -199,6 +208,37 @@
                      </div>
                   </div>
                 </div> 
+				
+				
+				<div class="form-group">
+					<label class="col-md-3">Gender<span class="text-danger">&nbsp;*</span></label>
+					<div class="col-md-9" id= "errorGenderMsg">
+					<label class="paddingRight"><input type="radio"  value="Male"  name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Male</label>
+					<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Female</label>
+					<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Transgender</label>
+					<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		
+					</div>
+				</div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Marital Status</label>
+						<div class="col-md-9">
+						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
+						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>
+						</div>
+					</div>
+					
+					<div class="form-group">
+                      <label class="col-md-3">Date of Birth</label>
+                         <div class="col-md-9">
+                           <div class="input-group">
+                              <input type="text" value="" name="dateofBirth" class="form-control calendar" id="dateofBirth" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDateOfBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                           </div>
+                        </div>
+                  </div>
                 
                <div class="col-md-5">
                   <label class="clearfix">Department </label>
@@ -730,11 +770,11 @@ function getEmployeementType(designationType){
 		        		}
 		        		
 		        		if(json.mobilePhone != null && json.mobilePhone != ''){
-		        			$("#phone").val(json.mobilePhone);
-				        	$("#phone").attr("readonly", "readonly");
+		        			$("#phoneNumber").val(json.mobilePhone);
+				        	$("#phoneNumber").attr("readonly", "readonly");
 		        		}else{
-		        			 $("#phone").removeAttr("readonly", "readonly");
-		        			 //$("#phone").val('');
+		        			 $("#phoneNumber").removeAttr("readonly", "readonly");
+		        			 //$("#phoneNumber").val('');
 		        		}
 		        		$("#loading").removeAttr('style');
 		        		
@@ -749,8 +789,8 @@ function getEmployeementType(designationType){
 		 $("#lastName").attr("disabled", false);
 		 $("#lastName").val('');
 		 
-		 $("#phone").attr("disabled", false);
-		 $("#phone").val('');
+		 $("#phoneNumber").attr("disabled", false);
+		 $("#phoneNumber").val('');
 		 
 		
 		 $("#role").val('');
@@ -791,11 +831,12 @@ function getAssociateUserDetails(){
 	        success: function(data) {
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
+
 	        		  $("#associateId").val(json['id']);
 	        		  $("#FirstName").val(json['firstName']);
 	        		  $("#lastName").val(json['lastName']);
 	        		  $("#EmailId").val(json['email']);
-	        		  $("#phone").val(json['mobilePhone']);
+	        		  $("#phoneNumber").val(json['mobilePhone']);
 	        		  $("#designationType").val(json['designationType']);
 	        		  if(json['currentRate'] != null && json['currentRate'] !='undefined' && json['currentRate'] !=''){
 	        		  $("#Rate").val(json['currentRate']);
@@ -1010,6 +1051,7 @@ function getAssociateUserDetails(){
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  maxDate:0
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  
@@ -1168,9 +1210,44 @@ function refreshRoleList(){
 	 }
 	 </script>
 	
-
+<script type="text/javascript">
+	function genderCheckValidationAssociate(id){
+		 var gendersList = [];
+ 		 $("input[name='gender']:checked").each( function (i) {
+ 			gendersList[i] = $(this).val();
+ 		});
+ 		 
+		if (gendersList.length > 0) { 
+		document.getElementById("genderValue").value = id.value;
+		}else{
+			$('#genderValue').val(''); 
+		}
+	} 
+</script>
 <script>
-function clearDate(){
+  $( function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
+	  $('#dateofBirth').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  yearRange: "-100:+0",
+	  	  maxDate:0
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+  } );
+  
+  function clearDateOfBirth(){
+		$("#dateofBirth").val("");
+		};
+		
+</script>
+<script>
+function clearDateofJoin(){
 	$("#DateofJoin").val("");
 	};
 </script>

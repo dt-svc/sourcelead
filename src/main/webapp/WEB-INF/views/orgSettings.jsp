@@ -196,7 +196,7 @@ function cancelOrgImg(){
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
         <li><a data-toggle="tab" href="#configCoolingOff" onclick="configCoolingOff();">Configure</a></li>
 
-        <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li>
+        <!-- <li><a data-toggle="tab" href="#emailNotifications">Email Configuration</a></li> -->
          <%-- <li><a href="${appPath}/emailNontificationConfigure" >Email Notifications</a></li> --%>
 <%--         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}"> --%>
 
@@ -226,7 +226,7 @@ function cancelOrgImg(){
 					  <button type="button" class="btn btn-sm btn-primary">
 					  <i class="fa fa-upload"></i></button>
 					   <label class="btn btn-sm btn-primary">
-	                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+	                    Upload / Change<input type="file" name="file" id="uploadedImage" data-id='orgLogo'  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
 	 				  <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
@@ -902,7 +902,7 @@ function cancelOrgImg(){
      		 <jsp:include page="orglocationDocuments.jsp" />
      		 <jsp:include page="orglocationSignatory.jsp" />
      		 <jsp:include page="googleApiLocation.jsp" />
-     		  <jsp:include page="emailNontificationConfigure.jsp" />
+     		 <%--  <jsp:include page="emailNontificationConfigure.jsp" /> --%>
      		 
      		 
     			</div>

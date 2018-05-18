@@ -56,6 +56,7 @@ public class AssociateTaxDTO {
 	
 	private String supplementType;
 	
+	
 	public long getId()
 	{
 		return id;

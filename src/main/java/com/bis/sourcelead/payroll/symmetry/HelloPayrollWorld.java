@@ -1,14 +1,23 @@
 package com.bis.sourcelead.payroll.symmetry;
 
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
-import com.bis.sourcelead.payroll.rest.USPayrollRestController;
-import com.symmetry.ste.*;
-
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
+import com.symmetry.ste.CalcMethod;
+import com.symmetry.ste.EarnedIncomeCredit;
+import com.symmetry.ste.FederalFilingStatus;
+import com.symmetry.ste.Hours;
+import com.symmetry.ste.Money;
+import com.symmetry.ste.STEPayrollCalculator;
+import com.symmetry.ste.StateRounding;
+import com.symmetry.ste.WageType;
+import com.symmetry.ste.WebServiceLocationCodeV2;
+import com.symmetry.ste.WebServiceType;
 
 public class HelloPayrollWorld {
 	
@@ -16,8 +25,8 @@ public class HelloPayrollWorld {
 	
 	STEPayrollCalculator STE;
 	
-	public HelloPayrollWorld() {
-	}
+//	public HelloPayrollWorld() {
+//	}
 	
 	public void runUSPayroll(User user, float totalHours, double amount, int payPeriod, AssociateTaxDTO associateTaxDTO)
 //	public void hello(String locationCode)
@@ -41,14 +50,22 @@ public class HelloPayrollWorld {
 			Money zero = Money.zero();
 			STE.setWages(FEDERAL_LOCATION_CODE, WageType.REGULAR, new Hours(40.00), new Money(5000.00), zero, zero, zero);
 			FederalFilingStatus federalFilingStatus = FederalFilingStatus.SINGLE;
-			if("MARRIED".equalsIgnoreCase(associateTaxDTO.getFederaltaxFillingStatus())){
+			if(associateTaxDTO != null && "MARRIED".equalsIgnoreCase(associateTaxDTO.getFederaltaxFillingStatus())){
 				federalFilingStatus = FederalFilingStatus.MARRIED;
-			}else if("MARRIED_USE_SINGLE_RATE".equalsIgnoreCase(associateTaxDTO.getFederaltaxFillingStatus())){
+			}else if(associateTaxDTO != null && "MARRIED_USE_SINGLE_RATE".equalsIgnoreCase(associateTaxDTO.getFederaltaxFillingStatus())){
 				federalFilingStatus = FederalFilingStatus.MARRIED_USE_SINGLE_RATE;
-			}else if("NONRESIDENT_ALIEN".equalsIgnoreCase(associateTaxDTO.getFederaltaxFillingStatus())){
+			}else if(associateTaxDTO != null && "NONRESIDENT_ALIEN".equalsIgnoreCase(associateTaxDTO.getFederaltaxFillingStatus())){
 				federalFilingStatus = FederalFilingStatus.NONRESIDENT_ALIEN;
 			}
-			STE.setFederalParameters(false, federalFilingStatus, 2, false, zero, zero, zero);
+			int numberOfAllowances = 0;
+			if(associateTaxDTO != null &&  StringUtils.isNotBlank(associateTaxDTO.getFederaltaxAllowances())){
+				numberOfAllowances = Integer.parseInt(associateTaxDTO.getFederaltaxAllowances());
+			}
+			boolean federalExemt = false;
+			if(associateTaxDTO != null &&  "YES".equalsIgnoreCase(associateTaxDTO.getFederalExempt())){
+				federalExemt = true;
+			}
+			STE.setFederalParameters(federalExemt, federalFilingStatus, numberOfAllowances, false, zero, zero, zero);
 			STE.setFICAParameters(false, false, zero, zero, true);
 			STE.setMedicareParameters(false, zero, zero);
 			STE.setEICParameters(EarnedIncomeCredit.SINGLE, zero, false);
@@ -59,7 +76,7 @@ public class HelloPayrollWorld {
 			// The City GNIS code is 452890
 			STE.setStateParameters(locationCode, true, false, StateRounding.DEFAULTROUNDING, zero, zero, zero, false);
 			STE.setCalculationMethod(locationCode, CalcMethod.ANNUALIZED, CalcMethod.NONE);
-			STE.setWages(locationCode, WageType.REGULAR, new Hours(40.00), new Money(5000.00), zero, zero, zero);
+			STE.setWages(locationCode, WageType.REGULAR, new Hours(totalHours), new Money(amount), zero, zero, zero);
 			STE.setCountyParameters(locationCode, false, true);
 			// The miscellaneous parameters vary by state
 			// Indiana requires the following two parameters to withhold state

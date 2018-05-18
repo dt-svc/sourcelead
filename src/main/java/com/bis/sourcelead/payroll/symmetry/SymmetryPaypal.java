@@ -5,7 +5,7 @@ import com.symmetry.ste.*;
 import java.util.Date;
 
 public class SymmetryPaypal {
-	STEPayrollCalculator STE;
+//	STEPayrollCalculator STE;
 	
 	public SymmetryPaypal() {
 	}
@@ -22,6 +22,7 @@ public class SymmetryPaypal {
 		String FEDERAL_LOCATION_CODE = "00-000-0000";
 		try {
 			STEPayrollCalculator STE = new STEPayrollCalculator(jniHome, STEhome);
+			System.out.println(STE.toString());
 			Date today = new Date();
 			STE.setPayrollRunParameters(today, 52, 13);
 			STE.clearPayrollCalculations();

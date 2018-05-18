@@ -26,6 +26,8 @@ import org.hibernate.annotations.Type;
 import com.bis.sourcelead.enums.Approval_Mechanism_Type;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "SUBMISSION_APPROVER_HIERARCHY")
@@ -198,6 +200,11 @@ public class SubmissionApproverHierarchy implements  Serializable{
 
 	@Transient
 	private float currentMonthTotalHours;
+	
+	@Transient
+	@JsonProperty
+	@JsonBackReference
+	private Long timesheetActivityLoginUser;
 
 	
 	public Long getId() {
@@ -604,6 +611,12 @@ public class SubmissionApproverHierarchy implements  Serializable{
 		this.currentMonthTotalHours = currentMonthTotalHours;
 	}
 
+	public Long getTimesheetActivityLoginUser() {
+		return timesheetActivityLoginUser;
+	}
 
+	public void setTimesheetActivityLoginUser(Long timesheetActivityLoginUser) {
+		this.timesheetActivityLoginUser = timesheetActivityLoginUser;
+	}
 
 }

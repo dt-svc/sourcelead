@@ -90,14 +90,14 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		StringBuilder subQuery = new StringBuilder("");
 		String resultSqlQuery = null;
 		String sqlQuery = "select distinct u.ID as id, u.USER_CODE as userCode, u.FILE_URL as fileUrl, concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) as userName, u.EMAIL as email, ur.USER_TYPE as userType, ol.ORG_NAME as orgName,"
-				+ "((select count(c.FROM_UID) from sourcelead.CONNECTIONS c where c.TO_UID = :loginUserId "
-				+ "and (c.FROM_UID in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED') or "
-				+ "c.FROM_UID in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED')))+ "
-				+ "(select count(c.TO_UID) from sourcelead.CONNECTIONS c where c.FROM_UID = :loginUserId "
-				+ "and (c.TO_UID in (select c.FROM_UID from sourcelead.CONNECTIONS c where c.TO_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED') or "
-				+ "c.TO_UID in (select c.TO_UID from sourcelead.CONNECTIONS c where c.FROM_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "
-				+ "(select c.CONNECTION_UID from sourcelead.CONNECTIONS c where (c.FROM_UID = :loginUserId and c.TO_UID = u.ID) or (c.FROM_UID = u.ID and c.TO_UID = :loginUserId)) as connectionUUID "
-				+ "from sourcelead.USER u, sourcelead.USER_ROLE ur, sourcelead.ORG_LOCATIONS ol, sourcelead.CONNECTIONS c "
+				+ "((select count(c.FROM_UID) from CONNECTIONS c where c.TO_UID = :loginUserId "
+				+ "and (c.FROM_UID in (select c.FROM_UID from CONNECTIONS c where c.TO_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED') or "
+				+ "c.FROM_UID in (select c.TO_UID from CONNECTIONS c where c.FROM_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED')))+ "
+				+ "(select count(c.TO_UID) from CONNECTIONS c where c.FROM_UID = :loginUserId "
+				+ "and (c.TO_UID in (select c.FROM_UID from CONNECTIONS c where c.TO_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED') or "
+				+ "c.TO_UID in (select c.TO_UID from CONNECTIONS c where c.FROM_UID = u.ID and c.CONNECTION_STATUS = 'CONNECTED')))) as count, "
+				+ "(select c.CONNECTION_UID from CONNECTIONS c where (c.FROM_UID = :loginUserId and c.TO_UID = u.ID) or (c.FROM_UID = u.ID and c.TO_UID = :loginUserId)) as connectionUUID "
+				+ "from USER u, USER_ROLE ur, ORG_LOCATIONS ol, CONNECTIONS c "
 				+ "where ur.USER_ID = u.ID and ur.ORG_LOCATIONS_ID = ol.ID and ur.IS_PRIMARY = 1 ";
 		if (status.equalsIgnoreCase("sent")) {
 			resultSqlQuery = sqlQuery.concat(
@@ -221,9 +221,9 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 	@Transactional
 	public Map<String, BigInteger> getCountValuesForSentReceivedConnected(Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select (select count(*) from sourcelead.CONNECTIONS c where c.FROM_UID = :userId and c.CONNECTION_STATUS = 'REQUEST_SENT') as sentCount, "
-				+ "(select count(*) from sourcelead.CONNECTIONS c where c.TO_UID = :userId and c.CONNECTION_STATUS = 'REQUEST_SENT') as receivedCount, "
-				+ "(select count(*) from sourcelead.CONNECTIONS c where (c.TO_UID = :userId or c.FROM_UID = :userId) and c.CONNECTION_STATUS = 'CONNECTED') as connectedCount";
+		String query = "select (select count(*) from CONNECTIONS c where c.FROM_UID = :userId and c.CONNECTION_STATUS = 'REQUEST_SENT') as sentCount, "
+				+ "(select count(*) from CONNECTIONS c where c.TO_UID = :userId and c.CONNECTION_STATUS = 'REQUEST_SENT') as receivedCount, "
+				+ "(select count(*) from CONNECTIONS c where (c.TO_UID = :userId or c.FROM_UID = :userId) and c.CONNECTION_STATUS = 'CONNECTED') as connectedCount";
 		Query queryString = session.createSQLQuery(query);
 		queryString.setParameter("userId", userId);
 		List data = queryString.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP).list();
@@ -245,27 +245,27 @@ public class ConnectionsDaoImpl implements ConnectionsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String sqlQuery = "(SELECT u.FILE_URL as fileUrl, concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) as userName, u.EMAIL as email, ur.USER_TYPE as userType, ol.ORG_NAME as orgName\r\n"
 				+ "        FROM "
-				+ "            sourcelead.CONNECTIONS c, sourcelead.USER u, sourcelead.USER_ROLE ur, sourcelead.ORG_LOCATIONS ol "
+				+ "            CONNECTIONS c, USER u, USER_ROLE ur, ORG_LOCATIONS ol "
 				+ "        WHERE " + "            c.TO_UID =  :sessionUid "
 				+ "                AND (c.FROM_UID IN (SELECT " + "                    c.FROM_UID "
-				+ "                FROM " + "                    sourcelead.CONNECTIONS c " + "                WHERE "
+				+ "                FROM " + "                    CONNECTIONS c " + "                WHERE "
 				+ "                    c.TO_UID = :userId "
 				+ "                        AND c.CONNECTION_STATUS = 'CONNECTED') "
 				+ "                OR c.FROM_UID IN (SELECT " + "                    c.TO_UID "
-				+ "                FROM " + "                    sourcelead.CONNECTIONS c " + "                WHERE "
+				+ "                FROM " + "                    CONNECTIONS c " + "                WHERE "
 				+ "                    c.FROM_UID = :userId"
 				+ "                        AND c.CONNECTION_STATUS = 'CONNECTED'))  AND c.FROM_UID = u.ID AND  ur.USER_ID = u.ID and ur.ORG_LOCATIONS_ID = ol.ID and ur.IS_PRIMARY = 1) "
 				+ "						UNION " + "						(SELECT "
 				+ "            u.FILE_URL as fileUrl, concat(u.FIRST_NAME,' ',IFNULL(u.LAST_NAME, '')) as userName, u.EMAIL as email, ur.USER_TYPE as userType, ol.ORG_NAME as orgName "
 				+ "        FROM "
-				+ "            sourcelead.CONNECTIONS c, sourcelead.USER u, sourcelead.USER_ROLE ur, sourcelead.ORG_LOCATIONS ol "
+				+ "            CONNECTIONS c, USER u, USER_ROLE ur, ORG_LOCATIONS ol "
 				+ "        WHERE " + "            c.FROM_UID =  :sessionUid "
 				+ "                AND (c.TO_UID IN (SELECT " + "                    c.FROM_UID "
-				+ "                FROM " + "                    sourcelead.CONNECTIONS c " + "                WHERE "
+				+ "                FROM " + "                    CONNECTIONS c " + "                WHERE "
 				+ "                    c.TO_UID = :userId "
 				+ "                        AND c.CONNECTION_STATUS = 'CONNECTED') "
 				+ "                OR c.TO_UID IN (SELECT " + "                    c.TO_UID " + "                FROM "
-				+ "                    sourcelead.CONNECTIONS c " + "                WHERE "
+				+ "                    CONNECTIONS c " + "                WHERE "
 				+ "                    c.FROM_UID = :userId "
 				+ "                        AND c.CONNECTION_STATUS = 'CONNECTED')) AND c.TO_UID = u.ID AND  ur.USER_ID = u.ID and ur.ORG_LOCATIONS_ID = ol.ID and ur.IS_PRIMARY = 1)";
 		Query queryString = session.createSQLQuery(sqlQuery);

@@ -241,6 +241,7 @@ public class Constants {
 	public static final String SOW_CONTRACT_FINALIZED = "SOWFinalizeEmail";
 	public static final String SOW_FINALIZED_NOTIFICATION = "SowFinalizedNotification";
 	public static final String NDA_NSA_CONTRACT_FINALIZED = "NDAOrNSAFinalizeEmail";
+	public static final String REVISE_CONTRACT_EMAIL = "ReviseContractEmail";
 	public static final String NDA_NSA_CONTRACT_FINALIZED_NOTIFICATION = "NDAOrNSAFinalizeNotification";
 	public static final String APPLICANT_ACCEPTMAILTO_INTERVIEW_CREATOR = "ApplicantAcceptMailToInterviewCreator";
 	public static final String APPLICANT_REJECT_MAILTO_INTERVIEW_CREATOR = "ApplicantRejectMailToInterviewCreator";
@@ -261,6 +262,7 @@ public class Constants {
 	public static final String TIMESHEET_MANAGER_NOTIFICATION = "Timesheet Scheduler Level1 Manager";
 	public static final String UPDATEDREQUIREMENTNOTIFICATIONTOVENDOR = "updatedRequirementNotificationToVendor";
 	public static final String OFFBOARDINGPROCESSAPPLICANTTERMINATION = "OffBoardingProcessApplicantTermination"; 
+	public static final String EMAIL_TO_IMMIGRATION_BENEFICIARY = "emailToImmigrationBeneficiary";
 	
 	public static final String OFFBOARDINGAPPLICANTDELAYPROCESS = "OffBoardingApplicantDealayProcess";
 	public static final String OFFBOARDINGPROCESSAPPLICANTTERMINATIONMAILTOREPORTINGMANAGER = "OffBoardingProcessMailToReportingManager";
@@ -386,6 +388,8 @@ public class Constants {
 	public static final String EMPLOYEE_REASSIGN = "Employee Reassign";
 	public static final String SocialInviter = "SocialInviter";
 	public static final String CONTRACT_SIGNED = "ContractSigned";
+	public static final String REMINDER_CONTRACT_SIGNING_EMAIL_PENDING = "RemindercontractSigningEmailPending";
+	public static final String REMINDER_CONTRACT_SIGNING_EMAIL_WAITING_TO_BE_VERIFY = "RemindercontractSigningEmailWTV";
 	public static final String SEND_CONTRACT = "SendContract";
 	public static final String SEND_SOW_CONTRACT = "SendSowContract";
 	public static final DateFormat TMS = new SimpleDateFormat("hh:mm a");
@@ -425,8 +429,12 @@ public class Constants {
 	public static final int TAB_USER = 2;
 	public static final int TAB_PROJECTS = 3;
 	public static final int TAB_CONTRACTS = 16;
+	public static final int TAB_IMMIGRATION = 33;
 	public static final String Dashboard = "Dashboard";
 	public static final String Users = "Users";
+	public static final String Immigration = "Immigration";
+	public static final String Immigrations = "Immigrations";
+	public static final String My_Immigration = "MyImmigration";
 	public static final String Projects = "Projects";
 	public static final String Clients = "Clients";
 	public static final String TimeSheet = "TimeSheet";
@@ -853,6 +861,7 @@ public class Constants {
     public static final String ACCOUNT_DEDUCTIONS = "ACCOUNT_DEDUCTIONS";
     public static final String DOCUMENT_UPLOAD_MANUALLY = "Manually";
     public static final String DOCUMENT_UPLOAD_REQUESTED = "Requested";
+    public static final String DOCUMENT_UPLOAD = "Uploaded";
     public static final String REQUESTED_DOCUMENT_ACCEPTED = "Accepted";
     public static final String REQUESTED_DOCUMENT_REJECTED = "Rejected";
     public static final String REQUESTED_DOCUMENT_SUBMITTED = "Submitted";
@@ -879,6 +888,10 @@ public class Constants {
     public static final String WAITING_TO_BE_SIGNED = "WAITING_TO_BE_SIGNED";
     public static final String DELETED = "DELETED";   
     public static final String APPROVED = "APPROVED";  
+    public static final String SEQUENTIAL = "Sequential";  
+    public static final String PARALLEL = "Parallel";  
+    public static final String WAITING_TO_SEND = "WAITING_TO_SEND";  
+    public static final String WAITING = "WAITING";  
     
     public static final String PENDING = "PENDING";
 
@@ -908,6 +921,7 @@ public class Constants {
 	
 	public static final String CANDIDATE_ENTITY = "CD";
 	public static final String JOB_ENTITY = "JB";
+	public static final String IMMIGRATION_ENTITY = "IM";
 	public static final String PROJECT_ENTITY = "PJ";
 	public static final String EXPENSES_ENTITY = "EP";
 	public static final String TICKET_ENTITY = "ST-";
@@ -1076,7 +1090,18 @@ public class Constants {
 
 	public static final String[] UNSUBSCRIPTION_TABID_LISTED = {"3","4","8","16","20","23","30" };
 
+
 	public static final String PAYROLL_CATEGORY = "Payroll_Deduction";
+	public static final String ID_TYPE_SSN = "SSN";
+	public static final String ID_TYPE_LCA = "LCA";
+	public static final String RELATION_TYPE_SPOUSE = "Spouse";
+	public static final String RELATION_TYPE_CHILD ="Child";
+	public static final String RELATION_TYPE_FATHER="Father";
+	public static final String RELATION_TYPE_MOTHER="Mother";
+	
+	public static final String ID_TYPE_PASSPORT="Passport";
+	public static final String ID_TYPE_VISA="Visa";
+
 	
 	public static final String SUBSCRIPTION_TYPE = "Subscription Type";
 	public static final String USER_SUBSCRIPTION = "User Subscription";
@@ -1099,8 +1124,8 @@ public class Constants {
 	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
 	
-
     public static final String BOOLEAN_TRUE = "true";
     public static final String LOCAL_TAX_YES = "YES";
     public static final String LOCAL_TAX_NO = "NO";
+
 }
