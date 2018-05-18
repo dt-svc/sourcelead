@@ -216,13 +216,13 @@ function getEmailList(){
      			result  = result + '	<div class="tblminwidth-100">                                                                        ';
      			result  = result + '	<ul class="list-unstyled list-inline">                                                               ';
      			result  = result + '	<li>                                                                                                 ';
-				result  = result + '	<label class="switch mt10">                                                                          ';
+				result  = result + '	<label class="switch" style="position:relative; top:10px;">                                                                          ';
 				result  = result + '	<input onclick="changeDefaultemailConfig(this, '+report.id+')" type="checkbox" '+(report.status ? 'checked' : '')+'/>                                                                    ';
 				result  = result + '	 <span class="slider round"></span>                                                                  ';
 				result  = result + '	</label>                                                                                             ';
      			result  = result + '	</li>                                                                                                ';
      			result  = result + '	<li><a class="fa fa-pencil pull-left ml" title="Edit" onclick="editEmailPopUp(\''+report.email_UUID+'\');"></a> </li>';
-     			result  = result + '	<li><a class="glyphicon glyphicon-trash text-danger ml" title="Delete" onclick="deleteFromMail('+report.id+');"></a></li>';
+     			result  = result + '	<li><a class="glyphicon glyphicon-trash text-danger" title="Delete" onclick="deleteFromMail('+report.id+');"></a></li>';
      			result  = result + '	</ul>                                                                                                ';
      			result  = result + '	</div>                                                                                               ';
      			result  = result + '	</td>                                                                                                ';
