@@ -143,7 +143,7 @@
             </c:if>
             <c:if test="${empty immigrationDTO}">
             <c:choose>
-				<c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y' && SourceLeadWeb_orgLocations.isAccountingFirm == 'Y'}">
+				<c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y'}">
 					 <h4 class="col-md-12 mb">2. Company Details</h4>
 				</c:when>
 				<c:otherwise>
@@ -166,7 +166,7 @@
 									</c:if>
 									 <c:if test="${empty immigrationDTO}">
 									 <c:choose>
-									 <c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y' && SourceLeadWeb_orgLocations.isAccountingFirm == 'Y'}">
+									 <c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y'}">
 									 <label class="col-md-4"><span class="pull-left">Company Name</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
 									</c:when>
@@ -229,7 +229,7 @@
 							</c:if>
 							<c:if test="${empty immigrationDTO}">
 							<c:choose>
-								<c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y' && SourceLeadWeb_orgLocations.isAccountingFirm == 'Y'}">
+								<c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y'}">
 									 <label class="col-md-4"><span class="pull-left">Company Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
 								</c:when>
 								<c:otherwise>

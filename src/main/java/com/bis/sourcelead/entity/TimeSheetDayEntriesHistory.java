@@ -67,8 +67,8 @@ public class TimeSheetDayEntriesHistory implements Serializable{
 	@Column(name="STATUS")
 	private Integer status;
 	
-	/*@Column(name = "ACTIVITY_ID")
-	private String timesheetActivityId;*/
+	@Column(name = "ACTIVITY_ID")
+	private Long timesheetActivityId;
 	
 	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
@@ -210,12 +210,11 @@ public class TimeSheetDayEntriesHistory implements Serializable{
 		this.status = status;
 	}
 
-	/*public String getTimesheetActivityId() {
+	public Long getTimesheetActivityId() {
 		return timesheetActivityId;
 	}
 
-	public void setTimesheetActivityId(String timesheetActivityId) {
+	public void setTimesheetActivityId(Long timesheetActivityId) {
 		this.timesheetActivityId = timesheetActivityId;
-	}*/
-	
+	}
 }
