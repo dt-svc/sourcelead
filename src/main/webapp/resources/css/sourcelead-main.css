@@ -439,7 +439,7 @@ position: relative; display: block; padding: 0 15px !important; transition: all 
 .side-bar {
 background-color: #375d81; left: 0; min-height: 100%; max-height: 100%; position: fixed; top: 50px; width: 190px; z-index: 810;
 padding-top: 0px; overflow-x:hidden; overflow-y:auto; /*transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
--webkit-transition: 0.3s ease-in-out;*/ 
+-webkit-transition: 0.3s ease-in-out;*/ padding-bottom : 125px;
 }
 /* hide time sheet */
 .timesheet-menu, .backoffice-menu, .associates-menu, .billing-menu {
