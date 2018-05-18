@@ -157,13 +157,13 @@ public class TaxController {
 
 	@RequestMapping(value = "/getCentralTaxes", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<CentralTaxDTO> getCentralTaxes(HttpServletRequest request, @RequestParam(defaultValue = "") String yearFrequency,
-			@RequestParam(defaultValue = "0") long sourceleadTaxId) {
+	public ResponseList<CentralTaxDTO> getCentralTaxes(HttpServletRequest request, 
+			@RequestParam(defaultValue = "") String yearFrequency){
 		ResponseList<CentralTaxDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				List<CentralTaxDTO> centralTaxList = taxService.getCentralTaxList(yearFrequency, sourceleadTaxId);
+				List<CentralTaxDTO> centralTaxList = taxService.getCentralTaxList(yearFrequency);
 				response.setData(centralTaxList);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());

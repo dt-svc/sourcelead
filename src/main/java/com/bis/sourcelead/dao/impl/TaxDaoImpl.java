@@ -81,29 +81,19 @@ public class TaxDaoImpl implements TaxDao {
 	
 
 	@Override
-	public List<CentralTax> getCentralTaxList(String yearFrequency, long sourceleadTaxId, int i) {
+	public List<CentralTax> getCentralTaxList(String yearFrequency) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from CentralTax ct";
 			if (yearFrequency != null && !yearFrequency.isEmpty()) {
 				query += " where ct.financialYear=:yearFrequency";
 			}
-			/*if (sourceleadTaxId > 0) {
-				query += (query.contains("where") ? " and " : " where ") + "ct.sourceleadTax.id=:sourceleadTaxId";
-			}*/
-			if (sourceleadTaxId > 0) {
-				query += (query.contains("where") ? " and " : " where ") + "st.sourceleadTaxType.id=:sourceleadTaxId";
-			}
+		
 			Query queryObj = session.createQuery(query);
 			if (yearFrequency != null && !yearFrequency.isEmpty()) {
 				queryObj.setString("yearFrequency", yearFrequency);
 			}
-			/*if (stateId > 0) {
-				queryObj.setLong("stateId", stateId);
-			}*/
-			if (sourceleadTaxId > 0) {
-				queryObj.setLong("taxTypeId", sourceleadTaxId);
-			}
+			
 			List<CentralTax> centralTaxList = queryObj.list();
 			return centralTaxList;
 		} catch (Exception e) {

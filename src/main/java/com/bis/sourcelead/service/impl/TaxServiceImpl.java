@@ -58,10 +58,10 @@ public class TaxServiceImpl implements TaxService {
 	
 
 	@Override
-	public List<CentralTaxDTO> getCentralTaxList(String yearFrequency, long sourceleadTaxId) {
+	public List<CentralTaxDTO> getCentralTaxList(String yearFrequency) {
 			List<CentralTaxDTO> centralTaxList = new LinkedList<>();
 			try {
-				List<CentralTax> ctList = taxDao.getCentralTaxList(yearFrequency, sourceleadTaxId, 0);
+				List<CentralTax> ctList = taxDao.getCentralTaxList(yearFrequency);
 				/*if (ctList != null && !ctList.isEmpty()) {
 					for (CentralTax ct : ctList) {
 						centralTaxList.add(getCentralTaxDTO(ct, false));

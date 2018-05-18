@@ -110,11 +110,9 @@ function Tax() {
 					for(var e in stList){
 						var result = "<tr><td>";
 						result += "<div>";
-						result += "<a href='taxSummary?stateTaxId=" + stList[e].id + "'>" + stList[e].stateName + "</a>";
+						result += "<a href='taxSummary?sourceleadTaxId=" + stList[e].id + "'>"+ stList[e].taxType + "</div></td>";
 						result += "</div>";
 						result += "</td>";
-						result += "<td><div>" + stList[e].taxType + "</div></td>";
-						result += "<td>";
 						result += "<div>";
 						result += "<ul class='list-unstyled list-inline mb0'>";
 						result += "<li><a href='javascript:void()' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
@@ -122,10 +120,9 @@ function Tax() {
 						result += "</ul>";
 						result += "</div>";
 						result += "</td></tr>";
-						$("#stateList").append(result);
 					}
 				} else {
-					$("#stateListTable").hide();
+					$("#centralListTable").hide();
 					$("#noResultsTable").show();
 				}
 			} else if (result.indexOf('Sign In') !== -1) {
