@@ -174,11 +174,10 @@ function associateTaxSummary(userId){
         	  result = result + '   <div>';
         	  result = result + '  <select class="sel" id="federaltaxFillingStatus" name="federaltaxFillingStatus" data-validation="required" field-name="Filling Status">';
         	  result = result + '     <option value="">--Select--</option>';
-        	  result = result + '    <option '+ (json.federaltaxFillingStatus == "Single" ? "selected" : '') +' value="Single">Single</option>';
-        	  result = result + '    <option '+ (json.federaltaxFillingStatus == "Married" ? "selected" : '') +' value="Married">Married</option>';
-        	  result = result + '     <option '+ (json.federaltaxFillingStatus == "Married_Single_Income" ? "selected" : '') +' value="Married_Single_Income">Married Single Income</option>';
-        	  result = result + '     <option '+ (json.federaltaxFillingStatus == "Married_Dual_Income" ? "selected" : '') +' value="Married_Dual_Income">Married Dual Income</option>';
-        	  result = result + '     <option '+ (json.federaltaxFillingStatus == "Head_of_Household" ? "selected" : '') +' value="Head_of_Household">Head of Household</option>';
+        	  result = result + '    <option '+ (json.federaltaxFillingStatus == "SINGLE" ? "selected" : '') +' value="SINGLE">Single</option>';
+        	  result = result + '    <option '+ (json.federaltaxFillingStatus == "MARRIED" ? "selected" : '') +' value="MARRIED">Married</option>';
+        	  result = result + '     <option '+ (json.federaltaxFillingStatus == "MARRIED_USE_SINGLE_RATE" ? "selected" : '') +' value="MARRIED_USE_SINGLE_RATE">Married Use Single Rate</option>';
+        	  result = result + '     <option '+ (json.federaltaxFillingStatus == "NONRESIDENT_ALIEN" ? "selected" : '') +' value="NONRESIDENT_ALIEN">Non Resident Alien</option>';
         	  result = result + '    </select>';
         	  result = result + '  </div>';
         	  result = result + '  </div>';

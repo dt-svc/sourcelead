@@ -130,12 +130,14 @@ function validateDeductionMethodType() {
 	$('#deductionAmountDiv').parent().find('p.jquery_form_error_message').remove(); 
 	 var selectedMethod = document.getElementById("payrollDeductionMethod").value;
 	 var enteredValue = document.getElementById("deductionAmount").value;
-	 
+	 var nameErrorDiv = $('#deductionNameDive p').length > 0;
 	 if(selectedMethod =='Percent'){
 		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
 		  if(enteredValue.match(floatNum)){
-			  $("#save_deductionType").removeAttr("disabled", "disabled");
-			   return true;
+			  if(!nameErrorDiv){
+				  $("#save_deductionType").removeAttr("disabled", "disabled");
+			  }
+			  return true;
 		  }		  
 		 else{
 				$("#deductionAmountDiv").after("<p class='jquery_form_error_message'><span>Enter Valid Percentage</span>");
@@ -143,6 +145,7 @@ function validateDeductionMethodType() {
 				return false; 
 		 	 }
 	  }if(selectedMethod =='Fixed'){
+		  if(!nameErrorDiv)
 			  $("#save_deductionType").removeAttr("disabled", "disabled");
 		  }		  
 }
@@ -185,22 +188,24 @@ $('body').on('blur', '#add_deduction_form', function() {
 function validateDeductionType(){
 	var payrollDeductionType = $("#deductionType").val();
 	$('#deductionNameDive').find('p.jquery_form_error_message').remove();
+	var isDisabled = $('#save_contributionType').is('[disabled=disabled]');
 	if (payrollDeductionType != null && payrollDeductionType != '') {
 		$.ajax({
 			type : "POST",
 			url : sourceleadUrl + "/isValidDeductionType?"+tokenParamName+"="+tokenValue+"&payrollDeductionType="+payrollDeductionType,
 			success : function(data) {
 				if (data == true) {
-					$("#save_deductionType").removeAttr("disabled");
+// 					$("#save_deductionType").removeAttr("disabled");
 			        $("#save_deductionType").attr("disabled", "disabled");
 					$("#deductionNameDive").append( "<p class='jquery_form_error_message'>" + payrollDeductionType + " is Existed</span>");
 					$('#deductionNameDive').removeAttr( "record-exist record-exist-errorMsg");
 					
 				}else {
-					$("#save_deductionType").removeAttr("disabled");
+					if(!isDisabled)
+						$("#save_deductionType").removeAttr("disabled");
 					$('#deductionNameDive').find('p.jquery_form_error_message').remove();
-					$("#save_deductionType").click(function() {
-					});
+// 					$("#save_deductionType").click(function() {
+// 					});
 					
 				}
 				
