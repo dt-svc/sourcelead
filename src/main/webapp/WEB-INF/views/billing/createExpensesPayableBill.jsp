@@ -1595,7 +1595,7 @@ function getExpensesDetails(expId){
 
 <script>
 function populateExpensesEntriesGrid(data){
-  var currencyCode = '${SourceLeadWeb_currencyCode}';
+  var currencyCode =  '${SourceLeadWeb_currencyCode}';
            var result = '';
            var subTotal = 0;
             result = result +'<input type="hidden" name="invoiceExpMaxRowNumber"  id="invoiceExpMaxRowNumber" value='+data.length+' />';
