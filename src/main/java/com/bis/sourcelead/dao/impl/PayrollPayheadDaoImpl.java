@@ -68,8 +68,7 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 
 	@Override
 	@Transactional
-	public ResponseList<PayrollPayheadDTO> getPayrollPayheadList(PayrollPayheadDTO payrollPayheadDTO,
-			OrgLocations orgLocations) throws Exception {
+	public ResponseList<PayrollPayheadDTO> getPayrollPayheadList(OrgLocations orgLocations) throws Exception {
 		ResponseList<PayrollPayheadDTO> payrollPayheadDTOList = new ResponseList<>();
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from PayrollPayhead ph  where (ph.orgLocationId = '1' or ph.orgLocationId =:orgLocationId) and ph.status = '1' ";  

@@ -22,9 +22,8 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 	}
 
 	@Override
-	public ResponseList<PayrollPayheadDTO> getPayrollPayheadList(PayrollPayheadDTO payrollPayheadDTO,
-			OrgLocations orgLocations) throws Exception {
-		return payrollPayheadDao.getPayrollPayheadList(payrollPayheadDTO,orgLocations);
+	public ResponseList<PayrollPayheadDTO> getPayrollPayheadList(OrgLocations orgLocations) throws Exception {
+		return payrollPayheadDao.getPayrollPayheadList(orgLocations);
 	}
 	
 	@Override
