@@ -622,7 +622,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("getUserByUserId By UserId start");
 		userRole = session
-				.createQuery("from UserRole userRole left join fetch userRole.orgLocations orgLoc left join fetch orgLoc.org left join fetch userRole.roles where userRole.id = :id  ")
+				.createQuery("from UserRole userRole left join fetch userRole.user left join fetch userRole.user.linkUserId left join fetch userRole.orgLocations orgLoc left join fetch orgLoc.org left join fetch userRole.roles where userRole.id = :id  ")
 				.setLong("id", id).list();
 		logger.debug("getUserByUserId By UserId start");
 		if (userRole.size() > 0) {
@@ -650,7 +650,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		logger.debug("getUserDetailsByEmailAndLocationId method  start");
 		userRole = session
 				.createQuery("from UserRole userRole left join fetch userRole.orgLocations orgLoc left join fetch orgLoc.org left join fetch userRole.roles  "
-						+ "left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
+						+ "left join fetch userRole.user left join fetch userRole.user.linkUserId where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
 				.setLong("userId", userId).setLong("locationId", locationId).list();
 		logger.debug("getUserDetailsByEmailAndLocationId method ends");
 		if (userRole.size() > 0) {
@@ -1373,6 +1373,19 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		return userRoleList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<UserRole> getUserAccountsListByUserId(List<Long> userId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole left join fetch userRole.roles role left join fetch userRole.user left join fetch userRole.orgLocations where userRole.user.id IN (:userId) and userRole.userState != 'INACTIVE' ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setParameterList("userId", userId).list();
+		return userRoleList;
+
+	}
+
+	
 
 
 }

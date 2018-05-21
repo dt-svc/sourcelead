@@ -46,6 +46,13 @@ public class PaymentAccount extends Record implements Serializable {
     private String accountNumber;
     @Column(name = "ROUTING_NUMBER")
     private String routingNumber;
+    
+    @Column(name = "BSR_NUMBER")
+    private String bsrNumber;
+    
+    @Column(name = "MICR_CODE")
+    private String micrCode;
+    
     @Column(name = "BANK_NAME")
     private String bankName;
 
@@ -278,5 +285,19 @@ public class PaymentAccount extends Record implements Serializable {
 		this.disabled = disabled;
 	}
 
-	
+	public String getBsrNumber() {
+		return bsrNumber;
+	}
+
+	public String getMicrCode() {
+		return micrCode;
+	}
+
+	public void setBsrNumber(String bsrNumber) {
+		this.bsrNumber = bsrNumber;
+	}
+
+	public void setMicrCode(String micrCode) {
+		this.micrCode = micrCode;
+	}
 }
