@@ -202,7 +202,6 @@ function missingInvoice(url){
           	  "sortable": false, 
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  alert(opt.candidateName)
             	  result = result + ' <td><div class="tbldata-dotdot-vsm inlineBlock">'+opt.candidateName+'</div></td>'; 
 	              return result;
               		
