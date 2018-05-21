@@ -1,6 +1,8 @@
 package com.bis.sourcelead.rest;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,7 +48,6 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadNotesDTO;
 import com.bis.sourcelead.dto.TaskDTO;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -1507,6 +1508,7 @@ public class ImmigrationRestController {
 		List<CandidatePassportVisa> PassportList = new ArrayList<CandidatePassportVisa>();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		Date toDayDate = new Date();
 		try {
 			PassportList = immigrationCommonService.getCandidatePassportVisaDetails(candidateId, idType, searchValue);
 			for (CandidatePassportVisa canPassportVisa : PassportList) {
@@ -1514,6 +1516,18 @@ public class ImmigrationRestController {
 						canPassportVisa.getValidFromDate()));
 				canPassportVisa.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 						canPassportVisa.getValidToDate()));
+				
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String currentDateStr = dateFormat.format(toDayDate);
+				Date newDate = dateFormat.parse(currentDateStr);
+				Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+				
+				if(currentDate.before(canPassportVisa.getValidToDate())) {
+					canPassportVisa.setCurrentStatus("Active");
+				}else {
+					canPassportVisa.setCurrentStatus("Expired");
+				}
+				
 			}
 
 			List<Countries> countryList = countriesService.getAllCountries();
