@@ -420,21 +420,23 @@ public class FinanceDaoImpl implements FinanceDao{
 				}
 				*/
 				
-				Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
-				   Matcher matcher = pattern.matcher(missingInvoiceDto.getSearchValue());
-				   java.sql.Date sqlDate = null;
-				    if(matcher.matches() == true) {
-								if(missingInvoiceDto.getSearchValue().contains("/")||(missingInvoiceDto.getSearchValue().contains("-"))) {
-									String replacedValue = missingInvoiceDto.getSearchValue().replaceAll("/", "-");
-									    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocations.getId());
-										SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
-								        java.util.Date utilDate = format.parse(replacedValue);
-								        sqlDate = new java.sql.Date(utilDate.getTime());
-								}
-				    }
-				    
 				StringBuilder searchQuery = new StringBuilder();
 				if(StringUtils.isNotEmpty(missingInvoiceDto.getSearchValue()) && missingInvoiceDto.getSearchValue() != null) {
+					
+					Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+					   Matcher matcher = pattern.matcher(missingInvoiceDto.getSearchValue());
+					   java.sql.Date sqlDate = null;
+					    if(matcher.matches() == true) {
+									if(missingInvoiceDto.getSearchValue().contains("/")||(missingInvoiceDto.getSearchValue().contains("-"))) {
+										String replacedValue = missingInvoiceDto.getSearchValue().replaceAll("/", "-");
+										    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocations.getId());
+											SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+									        java.util.Date utilDate = format.parse(replacedValue);
+									        sqlDate = new java.sql.Date(utilDate.getTime());
+									}
+					    }
+					
+					
 					searchQuery.append(" and ( (sah.submissionId.projectMembers.projectMemberCandidteId.firstName like '%" + missingInvoiceDto.getSearchValue() + "%' OR  sah.submissionId.projectMembers.projectMemberCandidteId.firstName.lastName like '%" + missingInvoiceDto.getSearchValue() + "%')")
 					           .append(" OR (concat(sah.submissionId.projectMembers.projectMemberCandidteId.firstName.firstName,sah.submissionId.projectMembers.projectMemberCandidteId.firstName.lastName) like '%" + missingInvoiceDto.getSearchValue().replaceAll("[\\s]+", "").trim() + "%')" )
 					           .append(" OR sah.hierarchyId.projectId.projectName  like '%" + missingInvoiceDto.getSearchValue() + "%' )");
