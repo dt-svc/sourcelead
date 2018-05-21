@@ -1213,4 +1213,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		logger.debug("Successfully Fetched Candidate Activities");
 		return immigrationActivityHistory;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getTableRecordCountByImmigrationId(String entityName, Long immigrationId, String condition) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String queryString = "";
+		try {
+			if (StringUtils.isNotEmpty(entityName) && immigrationId != null && StringUtils.isNotEmpty(condition)) {
+				queryString = "select 1 from " + entityName + " " + condition;
+				Integer count = (Integer) session.createQuery(queryString).setLong("immigrationId", immigrationId)
+						.setMaxResults(1).uniqueResult();
+				return count;
+			}
+		} catch (Exception e) {
+			System.out.println("Exception caught  while getting result of entity " + entityName);
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
