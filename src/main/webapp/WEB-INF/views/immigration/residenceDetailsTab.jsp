@@ -47,10 +47,10 @@
 			  <c:forEach var="residitems" items="${candidatesResidenceList}" varStatus="rows"> 
 			  
 			  <tr>
-				<td><div class="tbldata-dotdot-big">${!empty residitems.location ? residitems.location : '---'}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${!empty residitems.country ? residitems.country : '---'}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${!empty residitems.startDateStr ? residitems.startDateStr : '---'}</div></td>				
-				<td><div class="tbldata-dotdot-vsm">${!empty residitems.endDateStr ? residitems.endDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-big" title = "${residitems.location}">${!empty residitems.location ? residitems.location : '---'}</div></td>
+				<td><div class="tbldata-dotdot-vsm" title = "${residitems.country}">${!empty residitems.country ? residitems.country : '---'}</div></td>
+				<td><div class="tbldata-dotdot-vsm" title = "${residitems.startDateStr}">${!empty residitems.startDateStr ? residitems.startDateStr : '---'}</div></td>				
+				<td><div class="tbldata-dotdot-vsm" title = "${residitems.endDateStr}">${!empty residitems.endDateStr ? residitems.endDateStr : '---'}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <c:choose>
