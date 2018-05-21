@@ -1204,9 +1204,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	@Override
-	public ImmigrationDTO editImmigrationDetails(String immigrationUUID, OrgLocations orgLocations) {
+	public ImmigrationDTO editImmigrationDetails(Long immigrationId, OrgLocations orgLocations) {
 		
-		Immigration immigration = immigrationCommonDao.getImmigrationByUUID(immigrationUUID);
+		Immigration immigration = immigrationCommonDao.getImmigrationById(immigrationId);
 		ImmigrationDTO immigrationDTO = new ImmigrationDTO();
 		try {
 			/*============================from immigration Table=================*/

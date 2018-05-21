@@ -205,8 +205,8 @@ public class ImmigrationRestController {
 			if (immigrationUUID != null) {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 						"orgLocations");
-				ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationUUID,
-						orgLocations);
+				Long immigrationId = immigrationCommonService.getImmigrationIdByUUID(immigrationUUID);
+				ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,orgLocations);
 				model.addObject("immigrationDTO", immigrationDTO);
 			}
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -1893,7 +1893,7 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = { "/editImmigrationDetails" })
 	public ModelAndView editImmigrationDetails(
-			@RequestParam(value = "immigrationUUID", required = false) Long immigrationUUID, HttpServletRequest request)
+			@RequestParam(value = "immigrationUUID", required = false) String immigrationUUID, HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
