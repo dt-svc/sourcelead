@@ -221,20 +221,15 @@ public class CompanyOnboardController {
 			 model.addObject("sourceleadUrl", sourceleadUrl);
 			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded()) && orgLocations.getIsCompanyOnboarded().equalsIgnoreCase("N")) {
 				model.addObject("orgLocationId", orgLocations.getId());
-				
 				if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
 					 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountList(org.getId(), orgLocations.getId(), false);
 					 model.addObject("paymentList", paymentList);
 					 model.addObject("paymentListSize", paymentList.size());
-					 
-					List<OrgLocationIndiaBankingDetailsDTO> bankingDetailsDTOList =  orglocationIndiaBankingDetailsService.getOrglocationIndiaBankingDetailsList(orgLocations.getId());
-					model.addObject("bankingDetailsDTOList", bankingDetailsDTOList);
-					model.addObject("bankingDetailsDTOListSize", bankingDetailsDTOList.size());
 					model.setViewName("onboard/companyOnboardIndiaBankingDetails");
 				}else {
-					List<OrgLocationBankingDetailsDTO> bankingDetailsDTOList =  orglocationBankingDetailsService.getOrglocationBankingDetailsListByOrgLocationId(orgLocations.getId());
-					model.addObject("bankingDetailsDTOList", bankingDetailsDTOList);
-					model.addObject("bankingDetailsDTOListSize", bankingDetailsDTOList.size());
+					 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountList(org.getId(), orgLocations.getId(), false);
+					 model.addObject("paymentList", paymentList);
+					 model.addObject("paymentListSize", paymentList.size());
 					model.setViewName("onboard/companyOnboardBankingDetails");
 				}
 			}else {
