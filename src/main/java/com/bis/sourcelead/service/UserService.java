@@ -206,7 +206,10 @@ public interface UserService  {
 	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception;
 
 	ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO, OrgLocations orgLocation) throws Exception;
+	
+	List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception;
 
+	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
 }	
 		
 	
