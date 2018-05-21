@@ -68,7 +68,7 @@
 						
 						<input type="hidden" name="id" id="id" value="${emailSceconf.email_UUID}"/>
 							<button type="button" id="save" class="btn btn-success btnSuccess mr" onClick="saveEmailNotification();">Save</button>
-							 <button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="">Cancel</button>
+							<!--  <button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="">Cancel</button> -->
 						</div>
 					</div>
             </form>
