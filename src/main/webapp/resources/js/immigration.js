@@ -784,6 +784,13 @@ function editEmpDetailsByRowId(id){
         			udpateEduFormdata(formObj,fomValues,data);
         			$('#startMonth').val(data.startMonth); // to select the dropdwon value based on id value.
         			$('#endMonth').val(data.endMonth);
+        			if(data.isCurrentPosition == 'Y'){
+        				$('#isCurrentPosition').attr("checked",true);
+        				document.getElementById("endDateDivId").style.display = 'none';
+        			}else{
+        				$('#isCurrentPosition').attr("checked",false);
+        				document.getElementById("endDateDivId").style.display = 'block';
+        			}
         			if(data.employerFileName != null){
         			$('#immigrationEmpDocDivEdit').show();
 	        		$('#immigrationEmpDocDiv').hide();
