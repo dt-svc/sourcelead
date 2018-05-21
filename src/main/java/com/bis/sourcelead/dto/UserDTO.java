@@ -52,6 +52,10 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String employmentType;
 	
 	private String userCode;
+	
+	private String linkedUserName;
+	
+	private String linkedUserPwd;
 
 
 	
@@ -446,6 +450,22 @@ public class UserDTO extends SearchDTO implements Serializable {
 
 	public void setUserCode(String userCode) {
 		this.userCode = userCode;
+	}
+
+	public String getLinkedUserName() {
+		return linkedUserName;
+	}
+
+	public void setLinkedUserName(String linkedUserName) {
+		this.linkedUserName = linkedUserName;
+	}
+
+	public String getLinkedUserPwd() {
+		return linkedUserPwd;
+	}
+
+	public void setLinkedUserPwd(String linkedUserPwd) {
+		this.linkedUserPwd = linkedUserPwd;
 	}
 	
 	

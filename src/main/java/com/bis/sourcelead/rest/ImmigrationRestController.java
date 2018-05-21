@@ -46,6 +46,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadNotesDTO;
 import com.bis.sourcelead.dto.TaskDTO;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -157,6 +158,9 @@ public class ImmigrationRestController {
 		ModelAndView model = new ModelAndView();
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		sessionData.setNav(Constants.Immigrations);
+		
+//		CandidatePassportVisa candidatePassportVisa = immigrationCommonService.getCandidatePassportVisaByIdAndIdNumber(id, idNumber)
+		
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/immigrationList");
@@ -1060,10 +1064,12 @@ public class ImmigrationRestController {
 			if(user != null && Validator.validate(immigrationDTO)){
 			String sendRequestStatusValue = null;
 			if(status.equalsIgnoreCase(ImmigrationConstants.SEND_REQUEST)) {
-				immigrationCommonService.sendEmailToImmigrationBeneficiary(immigration,user, orgLocations);
 				sendRequestStatusValue = ImmigrationConstants.SEND_REQUEST;
 			}
 			immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations, ids, status, sendRequestStatusValue);
+			if(status.equalsIgnoreCase(ImmigrationConstants.SEND_REQUEST)) {
+				immigrationCommonService.sendEmailToImmigrationBeneficiary(immigration,user, orgLocations);
+			}
 			requiredIds.add(immigration.getId());
 			requiredIds.add(immigration.getCandidate().getId());
 			requiredIds.add(immigration.getImmigrationTemplateId().getId());
@@ -2006,6 +2012,26 @@ public class ImmigrationRestController {
 		List<TaskDTO> tasksList = taskService.getTasksListByImmigrationIdAndCandidateId(immigrationId,user,taskStatus,searchVal);
 		model.addObject("tasksList", tasksList);
 		return model;
+	}
+	
+	@RequestMapping(value = {"/validateCandidatePassportVisa"})
+	public Boolean validateCandidatePassportVisa(
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "idNumberVal", required = false) String idNumberVal,
+			@RequestParam(value = "idType", required = false) String idType,
+			@RequestParam(value = "id", required = false) Long id,
+			HttpServletRequest request)
+			throws Exception {
+		
+		   CandidatePassportVisa candidatePassportVisa=null;
+	       if(null != id){
+	    	   candidatePassportVisa = immigrationCommonService.getCandidatePassportVisaDetailsByIdNumberAndId(idNumberVal, idType, candidateId,id);
+	       }
+	       Boolean flag = false;
+		   if(candidatePassportVisa == null){
+		    	flag =  immigrationCommonService.validateCandidatePassportVisa(candidateId,idType,idNumberVal);
+		    }
+			return flag;
 	}
 
 }

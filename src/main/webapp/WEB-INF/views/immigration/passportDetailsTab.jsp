@@ -48,10 +48,10 @@
 			  </tr>
 			  <c:forEach var="passportdetails" items="${PassportList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-custom">${!empty passportdetails.idNumber ? passportdetails.idNumber : '---'}</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty passportdetails.country ? passportdetails.country : '---'}</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty passportdetails.validFromDateStr ? passportdetails.validFromDateStr : '---'}</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty passportdetails.validToDateStr ? passportdetails.validToDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-custom" title = "${passportdetails.idNumber}">${!empty passportdetails.idNumber ? passportdetails.idNumber : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${passportdetails.country}">${!empty passportdetails.country ? passportdetails.country : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${passportdetails.validFromDateStr}">${!empty passportdetails.validFromDateStr ? passportdetails.validFromDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${passportdetails.validToDateStr}">${!empty passportdetails.validToDateStr ? passportdetails.validToDateStr : '---'}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"
@@ -90,10 +90,10 @@
 		
 		<div class="popupMid clearfix">
         
-          <div class="col-sm-12 noPad mt clearfix">
+          <div class="col-sm-12 noPad mt clearfix" id="idNumberDiv">
 				<label class="col-md-4 padding_left">Passport Id<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-8 padding_right">
-              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Passport Id" field-name = "Passport Id" class="form-control" data-validation = "required validate_length length8-12 validate_AlphaNumber"/>
+              	<div class="col-md-8 padding_right" >
+              		<input type="text" name ="idNumber" id ="idNumber" placeholder="Passport Id" field-name = "Passport Id" class="form-control" data-validation ="required validate_length length8-12 validate_AlphaNumber"  onkeyup = "validateCandidatePassportVisa('Passport');"/>
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -125,13 +125,14 @@
 				<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('validTo');"></i></span>
 				</div>
 				</div>
+			</div>
 			</div>		
 			<div class="clearfix"></div>							
-		<div class="immiPopFoot mt clearfix">
+		<div class="immiPopFoot">
             <input value="Save" class="" type="button" id="passport_save_id" onclick="immigration.savePassportVisaDetails('Passport')">
             <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
-	</div>
+	
 	</div>
 	
 	
