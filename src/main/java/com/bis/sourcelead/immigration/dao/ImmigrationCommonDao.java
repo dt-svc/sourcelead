@@ -1,6 +1,5 @@
 package com.bis.sourcelead.immigration.dao;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -128,5 +127,8 @@ public interface ImmigrationCommonDao {
 	
 	Integer getTableRecordCountByImmigrationId(String entityName,Long immigrationId, String condition);
 
-
+	public Boolean validateCandidatePassportVisa(Long candidateId,String idType,String idNumber) throws Exception;
+	
+	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType, Long candidateId,Long id) throws Exception;
+	
 }
