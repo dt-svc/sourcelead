@@ -353,7 +353,21 @@ public class LoginSessionController {
 					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportOrgLocationId", userRole.getRoles().getOrgLocations().getId());
 				}
 			}else{
-				List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(userRole.getUser().getId());
+				List<Long> accountUserList = new ArrayList<>();
+				List<Long> userIdsList = userService.getUserIdsListByLinkedUserId(userRole.getUser().getId());
+				if(userIdsList != null && !userIdsList.isEmpty()) {
+					for(Long userId : userIdsList) {
+						List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
+						accountUserList.addAll(linkedUserIdsList);
+					}
+				}
+				userIdsList.addAll(accountUserList);
+				userIdsList.add(userRole.getUser().getId());
+				if(userRole.getUser().getLinkUserId() != null) {
+					userIdsList.add(userRole.getUser().getLinkUserId().getId());
+				}
+				
+				List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
 				if(userSpocRolesList.size() > 1){
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());

@@ -1518,5 +1518,15 @@ public class UserServiceImpl implements UserService {
 	public ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation) throws Exception {
 		return userDao.getUsersResponseListByOrglocationId(userDTO,orgLocation);
 	}
+
+	@Override
+	public List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception {
+		return userDao.getLinkedUserListByUserId(id);
+	}
+
+	@Override
+	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception {
+		return userDao.getUserIdsListByLinkedUserId(userId);
+	}
 	
 }
