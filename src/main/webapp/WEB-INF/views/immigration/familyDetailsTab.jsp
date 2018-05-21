@@ -180,7 +180,7 @@
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" onclick="immigration.saveCandidateFamilyDetails('Spouse');" class="" type="button">
+            <input value="Save" id= "family_SaveButton" onclick="immigration.saveCandidateFamilyDetails('Spouse');" class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
 	</div>	<!--  spouse popup end -->
@@ -237,7 +237,7 @@
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" onclick="immigration.saveCandidateFamilyDetails('Child');" class="" type="button">
+            <input value="Save" id= "family_SaveButton" onclick="immigration.saveCandidateFamilyDetails('Child');" class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
 	</div><!--  child popup end -->	
@@ -294,7 +294,7 @@
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" onclick="immigration.saveCandidateFamilyDetails('Father');"class="" type="button">
+            <input value="Save" id= "family_SaveButton" onclick="immigration.saveCandidateFamilyDetails('Father');"class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
 	</div>	<!--  Father popup start -->
@@ -351,7 +351,7 @@
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" onclick="immigration.saveCandidateFamilyDetails('Mother');"class="" type="button">
+            <input value="Save" id= "family_SaveButton" onclick="immigration.saveCandidateFamilyDetails('Mother');"class="" type="button">
             <input value="Cancel" class="popCan" type="button">
           </div>		
 	</div>	<!--mother popcode end  -->

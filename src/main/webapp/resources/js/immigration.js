@@ -537,6 +537,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
     	else if(relationType =="Mother"){
     		formId ="motherDetailsForm";
     	}
+    	$("#family_SaveButton").attr("disabled",true);
 		if ($('#'+formId).validate(false, validationSettings)) {
 			var formData = getFormData(formId);
 			 var candidateId = $('#candidateID').val();
@@ -1035,6 +1036,7 @@ function getCandidateEmployerList(candidateId){
 }
 
 function saveResidenceDetails(status) {
+	$("#residence_SaveButon").attr("disabled",true);
 	if ($('#residenceDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("residenceDetails_form");
         var candidateId = $('#candidateID').val();
