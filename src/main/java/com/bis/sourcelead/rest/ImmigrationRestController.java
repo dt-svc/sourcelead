@@ -1064,10 +1064,12 @@ public class ImmigrationRestController {
 			if(user != null && Validator.validate(immigrationDTO)){
 			String sendRequestStatusValue = null;
 			if(status.equalsIgnoreCase(ImmigrationConstants.SEND_REQUEST)) {
-				immigrationCommonService.sendEmailToImmigrationBeneficiary(immigration,user, orgLocations);
 				sendRequestStatusValue = ImmigrationConstants.SEND_REQUEST;
 			}
 			immigration = immigrationCommonService.savePetitionDetails(immigrationDTO, user, orgLocations, ids, status, sendRequestStatusValue);
+			if(status.equalsIgnoreCase(ImmigrationConstants.SEND_REQUEST)) {
+				immigrationCommonService.sendEmailToImmigrationBeneficiary(immigration,user, orgLocations);
+			}
 			requiredIds.add(immigration.getId());
 			requiredIds.add(immigration.getCandidate().getId());
 			requiredIds.add(immigration.getImmigrationTemplateId().getId());

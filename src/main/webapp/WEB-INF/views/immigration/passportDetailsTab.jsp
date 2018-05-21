@@ -125,13 +125,14 @@
 				<span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('validTo');"></i></span>
 				</div>
 				</div>
+			</div>
 			</div>		
 			<div class="clearfix"></div>							
-		<div class="immiPopFoot mt clearfix">
+		<div class="immiPopFoot">
             <input value="Save" class="" type="button" id="passport_save_id" onclick="immigration.savePassportVisaDetails('Passport')">
             <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
-	</div>
+	
 	</div>
 	
 	

@@ -144,6 +144,12 @@
 				</div>
 				</div>
 			</div>
+			
+			 <div class="col-sm-12 noPad mt clearfix">
+		             <div class="clearfix checkbox">
+		       <label> <input type="checkbox" id="isCurrentPosition" value="Y" onClick ="employercurrentPosition();"name="isCurrentPosition"> Is Current Position</label>
+	        </div>
+		           </div>
           <div class="col-sm-12 noPad mt clearfix">
 				<div class="row">
 				<label class="col-md-4">Start Date</label>
@@ -172,7 +178,7 @@
 				</div>
 				</div>
 			</div>				
-          <div class="col-sm-12 noPad mt clearfix">
+          <div class="col-sm-12 noPad mt clearfix" id = "endDateDivId">
 				<div class="row">
 				<label class="col-md-4">End Date</label>
               	<div class="col-md-4"> 
@@ -224,7 +230,7 @@
 		
 		<div class="clearfix"></div>
 		<div class="immiPopFoot mt clearfix">
-            <input value="Save"class="" type="button" id = "save_Buton" onclick="saveEmployerDetails('save');"> 
+            <input value="Save"class="" type="button" id = "employerSave_Buton" onclick="saveEmployerDetails('save');"> 
             <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div><!-- popup code end -->
@@ -237,7 +243,22 @@
 		</div>
 	</form>
 	
-		
+<script>
+	function employercurrentPosition() {
+		var currentposition = document.getElementById("isCurrentPosition").checked;
+		if (currentposition) {
+			document.getElementById("endDateDivId").style.display = 'none';
+			$('#endYear').removeAttr('data-validation');
+			$('#endMonth').removeAttr('data-validation');
+			$("#endMonth").val("");
+			$('#endYear').val("");
+			document.getElementById("endYearValidation").style.display="none";
+			endYearFlag = true;
+		} else if (document.getElementById("endDateDivId").style.display == 'none') {
+			document.getElementById("endDateDivId").style.display = 'block';
+		}
+	}
+</script>		
 <script>
 	// Add Employee PopUp
 	$("#addEmpl").click(function(){
