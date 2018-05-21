@@ -1663,6 +1663,7 @@ public class LeaveManagementRestController {
 			leaveDto.setLeaveType(leave.getLeaveType().getLeaveType());
 			leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
 			leaveDto.setStatus(leave.getStatus());
+			leaveDto.setLeaveName(leave.getLeaveType().getName());
 			try {
 				int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
 				leaveDto.setNoOfDays(numberOfdays);
