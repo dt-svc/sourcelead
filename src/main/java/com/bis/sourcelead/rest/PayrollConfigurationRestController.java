@@ -510,7 +510,7 @@ public class PayrollConfigurationRestController {
 				ResponseList<PayrollPayheadDTO> responseList = new ResponseList<>();
 				if (user != null) {
 					try {
-						ResponseList<PayrollPayheadDTO> responsePayheadList = payrollPayheadService.getPayrollPayheadList(payrollPayheadDTO, orgLocations);
+						ResponseList<PayrollPayheadDTO> responsePayheadList = payrollPayheadService.getPayrollPayheadList(orgLocations);
 						responseList.setData(responsePayheadList.getData());
 						responseList.setResponse(Result.SUCCESS.name());
 						responseList.setResponseMessage(Result.SUCCESS.getValue());

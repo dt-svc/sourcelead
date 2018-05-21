@@ -85,8 +85,11 @@
               <label class="clearfix">Pay Head</label>
               <div class="clearfix">
                  <div class="clearfix dropdown-select">
-							<select name="payHeadId" id="payrollPayHead" data-validation-optional="true"  field-name="Pay Head">
-							  <option selected value=''>Select Pay Head</option>
+							<select  class="form-control chosen-select" name="payHeadId" id="payrollPayHead" data-validation-optional="true"  field-name="Pay Head">
+							  <option value="">--Select Pay Type--</option>
+	                			<c:forEach var="list" items="${payheadList}">
+			                    	<option value="${list.id}" ${list.shortCode == 'L&D' ? 'selected' : ''} >${list.name}</option>
+								</c:forEach>
 							</select>
 						</div>
               </div>
@@ -311,6 +314,39 @@ function validateInterestRate(){
 		 $('#interestRateValidateId').find('p.jquery_form_error_message').remove();
 	 }
 }
+
+
+/* function getPayHeadList(){
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getPayheadList?${_csrf.parameterName}=${_csrf.token}",
+	        success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Pay Head</option>"; 
+	        	for (var i=0; i<json.response.length; i++)
+				{
+		        		var opt = json.response[i];
+		        		var payHeadId = '${loanAndAdv.payHeadId}';
+		        		
+		        		if(payHeadId != null && payHeadId != 'undefined' && payHeadId != ''){
+		        			
+		        			var selected = '';
+		        			if(payHeadId == opt.id){
+		        				selected = 'selected';
+		        			}
+		        			
+		        			output = output + "<option "+selected+" value='" +opt.id+ "'>"+opt.name+"</option>";
+		        		}else{
+		        			output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
+		        		} 
+		        		
+				}
+	        	$("#payrollPayHead").empty();
+		        $("#payrollPayHead").append(output);
+		        $('#payrollPayHead').trigger("chosen:updated");
+	        },
+	    });
+} */
 
 </script>
 

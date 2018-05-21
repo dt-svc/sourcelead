@@ -9,7 +9,7 @@ public interface PayrollPayheadService {
 
 	PayrollPayhead savePayrollPayhead(PayrollPayhead payrollPayhead) throws Exception;
 	
-	ResponseList<PayrollPayheadDTO> getPayrollPayheadList(PayrollPayheadDTO payrollPayheadDTO, OrgLocations orgLocations) throws Exception;
+	ResponseList<PayrollPayheadDTO> getPayrollPayheadList(OrgLocations orgLocations) throws Exception;
 	
 	ResponseList<PayrollPayheadDTO> getPayrollPayheadListWithPagination(PayrollPayheadDTO payrollPayheadDTO, OrgLocations orgLocations) throws Exception;
 	
