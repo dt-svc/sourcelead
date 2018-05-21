@@ -241,6 +241,10 @@ function Immigration() {
     }
     // immigration view navigation if don't required comment below code start here.
     this.savePageAndContinue = function (status) {
+        //$("#newPetitionTemplateDiv").empty();
+    	if(status != 'saveContinue'){
+    		$("#currUscisStatus").removeAttr("data-validation");
+    	}
     	$("#saveDraftButton").prop("disabled",true);
     	$("#savePageOneContinue").prop("disabled",true);
     	$("#sendRequestButton").prop("disabled",true);
