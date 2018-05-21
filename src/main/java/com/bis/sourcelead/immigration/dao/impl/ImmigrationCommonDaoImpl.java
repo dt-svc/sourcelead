@@ -31,6 +31,7 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -1172,7 +1173,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			if (!tasksList.isEmpty()) {
 				for (Tasks tasks : tasksList) {
 					session.save(tasks);
-					System.out.println(tasks.getId());
 				}
 			}
 		} catch (Exception exception) {
@@ -1231,4 +1231,38 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		return null;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateCandidatePassportVisa(Long candidateId, String idType,String idNumVal) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from CandidatePassportVisa cPassportVisa where cPassportVisa.candidate.id = :candidateId and cPassportVisa.idType = :idType and cPassportVisa.idNumber = :idNumVal";
+		List<CandidatePassportVisa> passportVisaList = session.createQuery(query).setLong("candidateId", candidateId).setString("idType", idType).setString("idNumVal", idNumVal).list();
+		if (passportVisaList != null && passportVisaList.size() > 0) {
+			flag = true;
+			return flag;
+		}
+		else {
+			return flag;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType,
+			Long candidateId,Long id) throws Exception {
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from CandidatePassportVisa cPassportVisa where cPassportVisa.idNumber = :idNumber and cPassportVisa.candidate.id = :candidateId and cPassportVisa.idType = :idType and cPassportVisa.id = :id and cPassportVisa.status = 1";
+		List<CandidatePassportVisa> passportVisaList =  session.createQuery(query) .setString("idNumber", idNumber).setString("idType", idType).setLong("candidateId", candidateId).setLong("id", id).list();
+		CandidatePassportVisa candidatePassportVisa = null;
+		if(passportVisaList != null && !passportVisaList.isEmpty())
+		{
+			candidatePassportVisa = (CandidatePassportVisa) passportVisaList.iterator().next();
+		}
+		return candidatePassportVisa;
+	}
+
 }

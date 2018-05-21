@@ -164,7 +164,7 @@
         </div>
         </div>
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button" onclick="immigration.saveCandidateForms();">
+            <input value="Save" class="" type="button" id = "canFormSave_Button" onclick="immigration.saveCandidateForms();">
             <input value="Cancel" class="popCan" type="button" onclick="closeFormPopup();">
           </div>		
 	</div>
@@ -200,7 +200,7 @@
 		
 		</div>
 		<div class="immiPopFoot">
-            <input value="Save" id="uploadFormSave"  class="" type="button" onclick="uploadRequestForm();">
+            <input value="Save" id="uploadFormSave_Button"  class="" type="button" onclick="uploadRequestForm();">
             <input value="Cancel" class="popCan" type="button" onclick="removeFormPopUp();">
           </div>		
 	</div>	<!-- popup code end -->
