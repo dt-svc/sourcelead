@@ -245,10 +245,14 @@ function Immigration() {
     	if(status != 'saveContinue'){
     		$("#currUscisStatus").removeAttr("data-validation");
     	}
+    	$("#saveDraftButton").prop("disabled",true);
+    	$("#savePageOneContinue").prop("disabled",true);
+    	$("#sendRequestButton").prop("disabled",true);
         if (status == 'petitionDetails') {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=petitionDetails");
         } else if (status == 'saveContinue' || status == 'sendRequest') {
-            if ($("#petitionDetailsForm").validate(false, validationSettings)) {
+        	
+        	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
                     url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
@@ -282,6 +286,7 @@ function Immigration() {
             }
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=two");
         }else if(status == 'save'){
+        	
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
@@ -351,11 +356,14 @@ function Immigration() {
     	var formId= "";
 	if(idType =="Passport"){
 			formId ="CandidatePassportform";
+			$("#passport_save_id").attr("disabled",true);
 		}
 	 	else if(idType =="Visa"){
   		formId ="CandidateVisaform";
+  		$("#visa_save_id").attr("disabled",true);
   		 	  	}
 	if ($('#'+formId).validate(false, validationSettings)) {
+			
 			var formData = getFormData(formId);
 		 	var candidateId = $('#candidateID').val();
             var immigrationId = $('#immigrationId').val();
