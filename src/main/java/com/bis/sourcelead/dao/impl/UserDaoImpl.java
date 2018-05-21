@@ -79,7 +79,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<User> users = new ArrayList<User>();
 		logger.debug("findByUserName start");
-		users = session.createQuery("from User where userName=:username" ).setString( "username", username ).list();
+		users = session.createQuery("from User user left join fetch user.linkUserId where user.userName = :username" ).setString( "username", username ).list();
 		logger.debug("findByUserName end");
 		if (users.size() > 0) {
 			return users.get(0);
@@ -212,7 +212,7 @@ public class UserDaoImpl implements UserDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<User> users = new ArrayList<User>();
 		logger.debug("getUserById start");
-		users = session.createQuery("from User where id=:id" ).setLong( "id", Id ).list();
+		users = session.createQuery("from User user left join fetch user.linkUserId where user.id=:id" ).setLong( "id", Id ).list();
 		logger.debug("getUserById end");
 		if (users.size() > 0) {
 			return users.get(0);
@@ -1491,5 +1491,36 @@ public class UserDaoImpl implements UserDao {
 				response.setData(usersList);
 				return response;
 	     
+	}
+
+	@Override
+	@Transactional
+	public List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception {
+		// TODO Auto-generated method stub
+		
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from User user where user.linkUserId.id = :id  ";
+	    List<User> usersList = session.createQuery(query.toString()).setLong("id", id).list();
+	    List<UserDTO> userDTOList = new ArrayList<>();
+	    if(usersList != null && !usersList.isEmpty()) {
+	    	for(User user : usersList) {
+	    		UserDTO userDTO = new UserDTO();
+	    		userDTO.setEmail(user.getEmail());
+	    		userDTO.setUserCode(user.getUserCode());
+	    		userDTOList.add(userDTO);
+	    	}
+	    }
+        return userDTOList;
+        
+	}
+
+	@Override
+	@Transactional
+	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select user.id from User user where user.linkUserId.id = :userId " ;
+	    List<Long> userIds = session.createQuery(query).setLong( "userId", userId).list();
+        return userIds;
+        
 	}
 }

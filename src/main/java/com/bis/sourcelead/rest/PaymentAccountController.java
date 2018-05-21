@@ -108,7 +108,8 @@ public class PaymentAccountController {
         return response;
     }
 
-    @RequestMapping(value = "/app/save-payment-account", method = RequestMethod.POST)
+    @SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/app/save-payment-account", method = RequestMethod.POST)
     @ResponseBody
     public com.bis.sourcelead.dto.Response saveAccount(HttpServletRequest request, PaymentAccountDTO account) {
         com.bis.sourcelead.dto.Response response = new com.bis.sourcelead.dto.Response();
