@@ -98,6 +98,15 @@ public class ImmigrationListView implements Serializable {
 	@Column(name = "SPOC_NAME_VENDOR")
 	private String spocNameVendor;
 	
+	@Column(name = "IMMIGRATION_UUID")
+	private String immigrationUUID;
+	
+	@Column(name = "IMMI_TEMPLATE_UUID")
+	private String immiTemplateUUID;
+	
+	@Column(name = "CANDIDATE_UUID")
+	private String candidateUUID;
+	
 	public Long getId() {
 		return id;
 	}
@@ -298,6 +307,28 @@ public class ImmigrationListView implements Serializable {
 		this.spocNameVendor = spocNameVendor;
 	}
 
-	
+	public String getImmigrationUUID() {
+		return immigrationUUID;
+	}
+
+	public void setImmigrationUUID(String immigrationUUID) {
+		this.immigrationUUID = immigrationUUID;
+	}
+
+	public String getImmiTemplateUUID() {
+		return immiTemplateUUID;
+	}
+
+	public void setImmiTemplateUUID(String immiTemplateUUID) {
+		this.immiTemplateUUID = immiTemplateUUID;
+	}
+
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
+	}
 
 }

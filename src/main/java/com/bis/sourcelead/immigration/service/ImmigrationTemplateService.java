@@ -58,4 +58,6 @@ public interface ImmigrationTemplateService {
 
 	List<LookUpData> getLookupDataByTypeAndLocation(String petitionType, String locationVal);
 
+	Long getTemplateIdByUUID(String immiTemplateUUID);
+
 }

@@ -653,6 +653,15 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 			ImmigrationTemplateTasksList = session.createQuery(queryString).setLong("templateId", templateId).list();
 		return ImmigrationTemplateTasksList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public Long getTemplateIdByUUID(String immiTemplateUUID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select temp.id from ImmigrationTemplate temp where temp.uuid = :templateUUID";
+		Long tempId = (Long) session.createQuery(query).setParameter("templateUUID", immiTemplateUUID).uniqueResult();
+		return tempId;
+	}
 	
 	
 }
