@@ -53,8 +53,11 @@
 		</div>
    
 		<div class="immigraInnWrap">
+		
 			<div class="timesheet_head clearfix">
-			
+			<button type="button" class="btn btn-primary dropdown-toggle btn-sm" onClick="clearFilters();" title="Refresh">
+			    <span class="fa fa-refresh"></span>
+			</button>
 			<div class="pull-left colCho">
 				<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="btn btn-sm btn-default"><i class="fa fa-table"></i></a>
 			</div>
@@ -883,6 +886,9 @@
 	            li[i].style.display = "none";
 	        }
 	    }
+	}
+	function clearFilters(){
+		location.reload();
 	}
 </script>
 

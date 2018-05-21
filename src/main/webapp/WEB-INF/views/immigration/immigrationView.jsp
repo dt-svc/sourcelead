@@ -82,7 +82,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
               <li><a href="#docsTab"><i id="allDocsfilled" class="fa fa-check-circle-o"></i>Documents</a></li>
               <li><a href="#tasksTab"><i id="tasksInfoTab" class="${taskOnLoadCount==null?'fa fa-check-circle-o':''}"></i>Tasks</a></li>
               <li><a href="#notesTab">Notes</a></li>
-              <li><a href="#activitiesTab" id= "#activitiesId">Activities</a></li>
+              <li><a href="#activitiesTab" id= "#activitiesId">Timeline</a></li>
               <div class="clearfix"></div>
             </ul>
 		</div>	

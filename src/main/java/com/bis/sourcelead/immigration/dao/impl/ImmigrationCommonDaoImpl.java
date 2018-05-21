@@ -935,8 +935,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		ImmigrationDashboardView dashboardObj = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String queryString = "from ImmigrationDashboardView";
-			dashboardObj = (ImmigrationDashboardView) session.createQuery(queryString).uniqueResult();
+			String queryString = "from ImmigrationDashboardView immDview where immDview.orgLocationId = :orgLocationsId or "
+					+ "immDview.attorneyLocationId = :attorneyLocationId";
+			dashboardObj = (ImmigrationDashboardView) session.createQuery(queryString).setLong("orgLocationsId", orgLocations.getId()).setLong("attorneyLocationId", orgLocations.getId()).uniqueResult();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

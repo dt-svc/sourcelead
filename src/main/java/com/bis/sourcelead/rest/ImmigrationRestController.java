@@ -1796,8 +1796,7 @@ public class ImmigrationRestController {
 	public Boolean validateEduname(@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
 			throws Exception {
-		String candidateEducationName = name;
-		Boolean immiCanEdu = candidateEducationService.validateEducationName(candidateId, candidateEducationName);
+		Boolean immiCanEdu = candidateEducationService.validateEducationName(candidateId, name);
 		return immiCanEdu;
 	}
 

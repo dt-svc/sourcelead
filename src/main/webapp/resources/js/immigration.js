@@ -1252,10 +1252,11 @@ function validateEduname()
 						 // return false;
 		        	}
 		        	else{
-		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#eduName').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
                        $("#eduSave_Button").removeAttr("disabled");
 		        	}
+		        	
 		        },
 		    });
 }
