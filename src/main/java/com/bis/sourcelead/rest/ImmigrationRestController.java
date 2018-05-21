@@ -492,7 +492,10 @@ public class ImmigrationRestController {
 		request.getSession().removeAttribute("templateDocList");
 		request.getSession().removeAttribute("templateFormsList");
 		model.setViewName("/immigration/addPetitionTemplate");
-		Long templateId = ServletRequestUtils.getLongParameter(request, "templateId");// sending parameter edit mode.
+		
+		String temlateUuid = ServletRequestUtils.getStringParameter(request, "templateUuid");
+		Long templateId = immigrationTemplateService.getTemplateIdByUUID(temlateUuid);
+		
 		if (templateId != null) { // below code is used for edit template name, docs, forms when opened in edit
 			// mode.
 			try {

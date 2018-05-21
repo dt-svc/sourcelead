@@ -201,9 +201,9 @@ function Immigration() {
         $("#petitionTemplateTaskDetails").validateOnBlur(false, validationSettings);
     });
 
-    this.editTemplateDetailsByRowId = function (templateId) {
-        immTemplId = templateId; //updating global variable "immTemplId" with templateId.
-        window.location.href = sourceleadUrl + immiModulePath + "/addNewPetitionTemplate?templateId=" + immTemplId; // for editing mode  
+    this.editTemplateDetailsByRowId = function (templateUuid) {
+        immTemplId = templateUuid; //updating global variable "immTemplId" with templateId.
+        window.location.href = sourceleadUrl + immiModulePath + "/addNewPetitionTemplate?templateUuid=" + templateUuid; // for editing mode  
     }
 
     this.reactiveImmigrationTemplateById = function (templateId){
