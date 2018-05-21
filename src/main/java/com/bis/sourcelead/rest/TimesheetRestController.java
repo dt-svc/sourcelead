@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
@@ -93,6 +94,7 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.service.TimesheetActivityService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -104,6 +106,9 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/app")
@@ -185,6 +190,9 @@ public class TimesheetRestController {
 	
 	@Autowired
 	private TimesheetActivityService timesheetActivityService;
+	
+	@Autowired
+	private TimeSheetDayEntriesService timeSheetDayEntriesService;
 
 	/***
 	 * @purpose : Getting ProjectList For Login User (Step - 1)
@@ -206,6 +214,8 @@ public class TimesheetRestController {
 		return tedDTO;
 	}
 
+	
+	
 	@RequestMapping(value = "/getTimesheetEntryDetails")
 	public ModelAndView getTimesheetEntryDetailsWeb(TimesheetExpenseEntryDetailsUtilDTO eedDTO,
 			HttpServletRequest request) throws Exception {
@@ -2596,7 +2606,7 @@ public class TimesheetRestController {
 				"orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
-
+		List<Long> timesheetEntryId = new ArrayList<Long>();
 		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		eedDTO.setUserId(loginUser.getId());
 		eedDTO.setLocationCode(loginOrgLocation.getLocationCode());
@@ -2898,6 +2908,7 @@ public class TimesheetRestController {
 				if (entriesDayList != null && !entriesDayList.isEmpty()) {
 					for (TimeSheetDayEntries timesheetdayEntries : entriesDayList) {
 						timesheetdayEntries = timesheetDayEntriesDao.saveTimesheetDayEntries(timesheetdayEntries);
+						timesheetEntryId.add(timesheetdayEntries.getId());
 						freshIdList.add(timesheetdayEntries.getId());
 					}
 				}
@@ -3017,6 +3028,16 @@ public class TimesheetRestController {
 	            	saveTimesheetDocumentHistory(tdhistory, document);
 	            }
             }
+            if(timesheetEntryId !=  null && !timesheetEntryId.isEmpty()) {
+            	for(Long entry:timesheetEntryId) {
+            		 TimeSheetDayEntries timesheetDayEntry = timeSheetDayEntriesService.getTimesheetDayEntriesById(entry);
+            		 timesheetDayEntry.setTimesheetActivityId(ta.getId());
+            		 timeSheetDayEntriesService.saveTimesheetDayEntries(timesheetDayEntry);
+            	}
+            }
+            
+            
+            
 			
 			tedDTO = getTimesheetSubFrequencyListByCurrentFrequency(eedDTO, tedDTO, loginOrgLocation, request);
 			tsDTO = getTimesheetSubmissionDetails(eedDTO, request);
@@ -3065,6 +3086,44 @@ public class TimesheetRestController {
 		}
 
 	}
+	
+	
+	/*@RequestMapping(value = "/rest/withDrawTimesheet", method = RequestMethod.POST)
+	public @ResponseBody TimesheetEntryDetailsDTO withDrawTimesheetMobile(UpdateTimesheetEntryDetailsDTO tsDTO, HttpServletRequest request)throws Exception {
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (loginUser == null && tsDTO.getUserId() != null) {
+			loginUser = userService.getUserById(tsDTO.getUserId());
+		}
+		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		if (orgLoc == null && StringUtils.isNotEmpty(tsDTO.getLocationCode())) {
+			orgLoc = orgLocationService.getOrgLocationsByLocationCode(tsDTO.getLocationCode());
+		}
+		
+		try {
+			if (StringUtils.isNotEmpty(tsDTO.getTimeFrequency())) {
+				String[] frequency = tsDTO.getTimeFrequency().split("To");
+				String weekStartDate = frequency[0].trim();
+				String weekEndDate = frequency[1].trim();
+				Date startDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), weekStartDate.replaceAll("/", "-"));
+				Date endDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), weekEndDate.replaceAll("/", "-"));
+				ProjectMembers pm = projectMembersService.getProjectMemberById(tsDTO.getProjectMemberId());
+				submissionApproverHierarchyService.updateSubmissionStatusByProjectIdMasterCandidateIdStartDateAndEndDate(pm.getProjects().getId(),pm.getMasterCandidateId().getId(), startDate, endDate,
+								Submission_Status.DRAFT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
+		eedDTO.setCurrentTimeFrequency(tsDTO.getTimeFrequency());
+		eedDTO.setCurrentTimeSubFrequency(tsDTO.getTimeSubFrequency());
+		eedDTO.setTimeSheetsFor(tsDTO.getTimesheetFor());
+		eedDTO.setProjectMembersId(tsDTO.getProjectMemberId());
+		eedDTO.setUserId(loginUser.getId());
+		eedDTO.setLocationCode(orgLoc.getLocationCode());
+		return getTimesheetEntryDetailsMobile(eedDTO, request);
+
+	}*/
 	
 
 	@Async
@@ -3412,7 +3471,7 @@ public class TimesheetRestController {
 						for (FileInfo file : tsDTO.getFileInfo()) {
 							FileInfo freshFile = file;
 							if (StringUtils.isEmpty(file.getFileDbId())) {
-								FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
+								//FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
 								TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
 								tsd.setTimesheetSubmissions(timesheetSubmissions);
 								tsd.setFileUrl(file.getFileURL());
