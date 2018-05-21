@@ -1276,6 +1276,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public Long getImmigrationIdByUUID(String immigrationUUID) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "select immi.id from Immigration immi where immi.immigrationUuid = :immigrationUUID";
@@ -1284,6 +1285,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	}
 
 	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public Long getCandidateIdByUUID(String candidateUUID) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "select candidate.id from Candidate candidate where candidate.candidateUUID = :candidateUUID";
