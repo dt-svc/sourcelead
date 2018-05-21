@@ -60,6 +60,7 @@ function Immigration() {
                 scrollToTopOnError: true,
                 dateFormat: 'yyyy/mm/dd'
             };
+    	$("#eduSave_Button").attr("disabled",true);
     	if ($('#eduSave_Form').validate(false, validationSettings)) {
             var formData = getFormData("eduSave_Form");
             var candidateId = $('#candidateID').val();
@@ -573,6 +574,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	            scrollToTopOnError: true,
 	            dateFormat: 'yyyy/mm/dd'
 	        };
+		$("#canFormSave_Button").attr("disabled",true);
 		if ($('#formSave_Form').validate(false, validationSettings)) {
 			var formData = getFormData("formSave_Form");
 			var candidateId = $('#candidateID').val();
@@ -916,6 +918,7 @@ function saveEmployerDetails(status) {
             scrollToTopOnError: true,
             dateFormat: 'yyyy/mm/dd'
         };
+	$("#employerSave_Buton").attr("disabled",true);
 	if ($('#employerDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("employerDetails_form");
         var candidateId = $('#candidateID').val();
@@ -958,6 +961,7 @@ function saveCandidateDocs() {
             scrollToTopOnError: true,
             dateFormat: 'yyyy/mm/dd'
         };
+	$("#canDocSave_Button").attr("disabled",true);
 	if ($('#candidate_Immigration_Doc').validate(false, validationSettings)) {
 		var formData = getFormData("candidate_Immigration_Doc");
 		var candidateId = $('#candidateID').val();
@@ -1129,6 +1133,7 @@ function editResidenceDEtailsByRowId(id, isCurr){
 }
 
 function uploadRequestDoc(){
+	$("#uploadDocSave_Button").attr("disabled",true);
 	if ($('#uploadRequestDoc_Form').validate(false, validationSettings)) {
 	var formData = getFormData("uploadRequestDoc_Form");
 	var candidateId = $("#candidateID").val();
@@ -1203,6 +1208,7 @@ function deleteDocumentDetailsByRowId(id){
 }
 
 function uploadRequestForm(){
+	$("#uploadFormSave_Button").attr("disabled",true);
 	if ($('#uploadRequestForm_Form').validate(false, validationSettings)) {
 	var formData = getFormData("uploadRequestForm_Form");
 	var candidateId = $("#candidateID").val();
@@ -1253,6 +1259,7 @@ function validateEduname()
 
 
 function saveNotesDatails(status) {
+	$("#notesSave_Button").attr("disabled",true);
 	if ($('#notesDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("notesDetails_form");
         var candidateId = $('#candidateID').val();
