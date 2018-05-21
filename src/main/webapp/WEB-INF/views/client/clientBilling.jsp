@@ -443,7 +443,7 @@ result = result  +'    <div class="billingArea"> ';
 							}else if(report.invoiceStatus == "SENT"){
 								result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';
 							}
-							else{
+							else if(report.invoiceStatus == "DRAFT"){
 
 								result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Invoice" onClick="deleteInvoice(\''+report.invoiceUUID+'\');";></i></td>          ';	
 							}else{
