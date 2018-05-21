@@ -1493,4 +1493,15 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	 return immigrationCommonDao.getTableRecordCountByImmigrationId(entityName,immigrationId,condition);
 	}
 
+	@Override
+	public Boolean validateCandidatePassportVisa(Long candidateId, String idType,String idNumber) throws Exception {
+		return immigrationCommonDao.validateCandidatePassportVisa(candidateId, idType,idNumber);
+	}
+	
+	@Override
+	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType,
+			Long candidateId,Long id) throws Exception {
+		return immigrationCommonDao.getCandidatePassportVisaDetailsByIdNumberAndId(idNumber, idType, candidateId,id);
+	}
+
 }
