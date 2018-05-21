@@ -221,11 +221,17 @@ public class CompanyOnboardController {
 			 model.addObject("sourceleadUrl", sourceleadUrl);
 			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded()) && orgLocations.getIsCompanyOnboarded().equalsIgnoreCase("N")) {
 				model.addObject("orgLocationId", orgLocations.getId());
-				
-				 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountList(org.getId(), orgLocations.getId(), false);
-				 model.addObject("paymentList", paymentList);
-				 model.addObject("paymentListSize", paymentList.size());
-				 
+				if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
+					 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountList(org.getId(), orgLocations.getId(), false);
+					 model.addObject("paymentList", paymentList);
+					 model.addObject("paymentListSize", paymentList.size());
+					model.setViewName("onboard/companyOnboardIndiaBankingDetails");
+				}else {
+					 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountList(org.getId(), orgLocations.getId(), false);
+					 model.addObject("paymentList", paymentList);
+					 model.addObject("paymentListSize", paymentList.size());
+					model.setViewName("onboard/companyOnboardBankingDetails");
+				}
 			}else {
 				model.setViewName("registration/persmissionDenied");
 			}
