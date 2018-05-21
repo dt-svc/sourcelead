@@ -527,7 +527,7 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.generatedId !== null && opt.generatedId !== '' && opt.generatedId !== 'undefined') {
-                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=/app/immigration/viewImmigration?immigrationId="+opt.id+"&candidateId="+opt.candidateId+"&templateId="+opt.immTemplateId+">"+opt.generatedId+"</a></div></td>";
+                         result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.generatedId+"'><a href=/app/immigration/viewImmigration?immigrationUUID="+opt.immigrationUUID+"&candidateUUID="+opt.candidateUUID+"&immiTemplateUUID="+opt.immiTemplateUUID+">"+opt.generatedId+"</a></div></td>";
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                      }
@@ -662,10 +662,10 @@
                 	 }
                      var result = "";
                      '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_PETITION\')">';
-                     result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationId='+opt.id+'><i id="edit' + opt.id + '" class="glyphicon glyphicon-pencil"></i></a>';
+                     result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationUUID='+opt.immigrationUUID+'><i id="edit' + opt.id + '" class="glyphicon glyphicon-pencil"></i></a>';
                      '</sec:authorize>';
                       '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION\')">';
-                     result = result + '<i id="delete' + opt.id + '" onclick="deleteImmigrationListId(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                     result = result + '<i id="delete' + opt.id + '" onclick="deleteImmigrationListId(' + opt.immigrationUUID + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                      '</sec:authorize>';
                      return result;
                  }
@@ -700,7 +700,7 @@
     // $("table").colResizable(); // for resizing columns in tables.
  }
  
- function deleteImmigrationListId(immigrationId){ // only stauts updated with reason. active 1 , deactive 0.
+ function deleteImmigrationListId(immigrationUUID){ // only stauts updated with reason. active 1 , deactive 0.
 		$(".project_inn_mask").remove();
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
@@ -708,7 +708,7 @@
 		/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
 		result = result +" <b>Do you want to remove record permanently?</b>";
 		result = result + ' <div id="reasonForTemplateDiv"/>';
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteImmigrationDetailsByRowId("+immigrationId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteImmigrationDetailsByRowId("+immigrationUUID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#remove_immigration_pop").slideDown(200);

@@ -30,6 +30,7 @@
 				<th>Country</th>
 				<th>Valid From</th>
 				<th>Valid To</th>
+				<th>Status</th>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <th>Action</th>
@@ -52,6 +53,7 @@
 				<td><div class="tbldata-dotdot-me" title = "${passportdetails.country}">${!empty passportdetails.country ? passportdetails.country : '---'}</div></td>
 				<td><div class="tbldata-dotdot-me" title = "${passportdetails.validFromDateStr}">${!empty passportdetails.validFromDateStr ? passportdetails.validFromDateStr : '---'}</div></td>
 				<td><div class="tbldata-dotdot-me" title = "${passportdetails.validToDateStr}">${!empty passportdetails.validToDateStr ? passportdetails.validToDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${passportdetails.currentStatus}">${passportdetails.currentStatus}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"
