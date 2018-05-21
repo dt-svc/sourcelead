@@ -365,6 +365,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             templateDto.setTemplateDescription(entityObj.getDescription());
             templateDto.setCountry(entityObj.getCountry());
             templateDto.setPetitionType(entityObj.getPetitionType().getId().toString());
+            templateDto.setUuid(entityObj.getUuid());
             // 
 
         } catch (Exception e) {

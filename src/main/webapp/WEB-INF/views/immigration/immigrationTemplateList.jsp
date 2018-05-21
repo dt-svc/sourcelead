@@ -380,7 +380,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     	if (opt.status !== null && opt.status !== '' && opt.status !== 0) {
                         result = result + '<td><div>';
                         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_PETITION_TEMPLATE\')">';
-                        result = result +' <i id="edit' + opt.id + '" onclick="immigration.editTemplateDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i>';
+                        result = result +' <i id="edit' + opt.id + '" onclick="immigration.editTemplateDetailsByRowId(\''+ opt.templateUUID + '\');" class="glyphicon glyphicon-pencil"></i>';
                         '</sec:authorize>';
                         '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION_TEMPLATE\')">';
                         result = result +' <i id="delete' + opt.id + '" onclick="disableTemplateStatus(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
