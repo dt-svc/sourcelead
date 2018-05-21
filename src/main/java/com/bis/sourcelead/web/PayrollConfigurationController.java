@@ -1,5 +1,7 @@
 package com.bis.sourcelead.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.PayrollPaytypeDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollBonus;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.service.PayrollBonusService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
+import com.bis.sourcelead.service.PayrollPaytypeService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -40,6 +45,9 @@ public class PayrollConfigurationController {
 	
 	@Autowired
 	PayrollLoanAndAdvancesService payrollLoanAndAdvancesService;
+	
+	@Autowired
+	PayrollPaytypeService payrollPaytypeService;
 	
 	
 	@RequestMapping(value = "/payrollConfiguration")
@@ -90,6 +98,14 @@ public class PayrollConfigurationController {
 	{
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<PayrollPaytypeDTO> responsePaytypeList;
+		try {
+			responsePaytypeList = payrollPaytypeService.getPayrollPaytypeList(orgLocations);
+			model.addObject("payTypeList",responsePaytypeList.getData());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		model.setViewName("indPayroll/addPayhead");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;

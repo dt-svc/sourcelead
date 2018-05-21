@@ -14,6 +14,10 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PAYROLL_PAYHEAD")
@@ -22,6 +26,11 @@ public class PayrollPayhead {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+    @JoinColumn(name="PARENT_PAYHEAD_ID")        
+    private PayrollPayhead parentPayhead;
 	
 	@Column(name = "NAME")
 	private String name;
@@ -59,7 +68,7 @@ public class PayrollPayhead {
 	private String paidComponent;
 	
 	@Column(name = "PART_OF_A_CTC")
-	private String partOfCTC;
+	private String partofaCTC;
 	
 	@Column(name = "FBP_COMPONENT")
 	private String fbpComponent;
@@ -92,6 +101,14 @@ public class PayrollPayhead {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public PayrollPayhead getParentPayhead() {
+		return parentPayhead;
+	}
+
+	public void setParentPayhead(PayrollPayhead parentPayhead) {
+		this.parentPayhead = parentPayhead;
 	}
 
 	public String getName() {
@@ -182,12 +199,12 @@ public class PayrollPayhead {
 		this.paidComponent = paidComponent;
 	}
 
-	public String getPartOfCTC() {
-		return partOfCTC;
+	public String getPartofaCTC() {
+		return partofaCTC;
 	}
 
-	public void setPartOfCTC(String partOfCTC) {
-		this.partOfCTC = partOfCTC;
+	public void setPartofaCTC(String partofaCTC) {
+		this.partofaCTC = partofaCTC;
 	}
 
 	public String getFbpComponent() {
