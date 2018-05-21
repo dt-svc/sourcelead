@@ -253,7 +253,6 @@ function Immigration() {
         if (status == 'petitionDetails') {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=petitionDetails");
         } else if (status == 'saveContinue' || status == 'sendRequest') {
-        	
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
@@ -288,7 +287,6 @@ function Immigration() {
             }
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=two");
         }else if(status == 'save'){
-        	
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
@@ -304,6 +302,9 @@ function Immigration() {
                         	  immigrationId = result.data[0];
                           	candidateId = result.data[1];
                           	templateId= result.data[2];
+                          	$("#saveDraftButton").prop("disabled",false);
+                        	$("#savePageOneContinue").prop("disabled",false);
+                        	$("#sendRequestButton").prop("disabled",false);
                           }else{
                           	 showError("Operation failed, please try again");
                           }
@@ -715,9 +716,9 @@ this.deletePassportVisaDetailsById=function(id,idType){
 		});
 	}
 	
-	this.deleteImmigrationDetailsByRowId = function(immigrationId){
+	this.deleteImmigrationDetailsByRowId = function(immigrationUUID){
 		$.ajax({
-	        url: sourceleadUrl + immiModulePath + "/deleteImmigrationDetailsById?immigrationId="+immigrationId,
+	        url: sourceleadUrl + immiModulePath + "/deleteImmigrationDetailsById?immigrationUUID="+immigrationUUID,
 	        type: "GET",
 	        success: function (result) {
 	        	$("#remove_immigration_pop").fadeOut(200);
