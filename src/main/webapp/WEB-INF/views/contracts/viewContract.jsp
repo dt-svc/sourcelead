@@ -259,7 +259,12 @@ function displyContract(stage){
     	    var result = '';
     	    var json = JSON.parse(data);
 			result = result +	'<div class="contPopupHead clearfix">';
-			result = result +	'<h4>'+json.contractTitle+'</h4>';
+			if(json.autoGenId != null && '' != json.autoGenId && 'undefined' != json.autoGenId){
+				result = result +	'<h4>'+json.autoGenId+' - '+json.contractTitle+'</h4>';
+			}else{
+				result = result +	'<h4>'+json.contractTitle+'</h4>';
+			}
+			
 			result = result +	'<span>';
 			
 			if(json.templateSubmissionStatus == 'DRAFT' || json.templateSubmissionStatus == 'REJECTED' || json.templateSubmissionStatus == 'WAITING_FOR_APPROVER'){
