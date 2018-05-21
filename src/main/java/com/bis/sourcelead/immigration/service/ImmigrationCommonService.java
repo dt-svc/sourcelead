@@ -114,5 +114,7 @@ public interface ImmigrationCommonService {
 	ResponseList<MyImmigrationViewDTO> getMyImmigrationsList(MyImmigrationViewDTO immigrationListDTO, OrgLocations orgLocations, Long userId) throws Exception;
 
 	List<ImmigrationActivityHistory> getImmigrationActivitiesList(Long immigrationId,Long orglocationId) throws Exception;
+	
+	Integer getTableRecordCountByImmigrationId(String entityName,Long immigrationId, String condition);
 
 }
