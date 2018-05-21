@@ -230,7 +230,7 @@
 		
 		<div class="clearfix"></div>
 		<div class="immiPopFoot mt clearfix">
-            <input value="Save"class="" type="button" id = "save_Buton" onclick="saveEmployerDetails('save');"> 
+            <input value="Save"class="" type="button" id = "employerSave_Buton" onclick="saveEmployerDetails('save');"> 
             <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div><!-- popup code end -->

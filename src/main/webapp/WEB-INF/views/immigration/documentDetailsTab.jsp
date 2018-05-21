@@ -207,7 +207,7 @@
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button" onclick="saveCandidateDocs();">
+            <input value="Save" class="" type="button" id = "canDocSave_Button" onclick="saveCandidateDocs();">
             <input value="Cancel" class="popCan" onclick="removeDocPopUp();" type="button">
           </div>		
 	</div>
@@ -288,7 +288,7 @@
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" id="uploadDocSave" class="" type="button" onclick="uploadRequestDoc();">
+            <input value="Save" id="uploadDocSave_Button" class="" type="button" onclick="uploadRequestDoc();">
             <input value="Cancel" class="popCan"  onclick="removeDocPopUp12();" type="button">
           </div>		
 	</div>	<!--  popup code end  -->
