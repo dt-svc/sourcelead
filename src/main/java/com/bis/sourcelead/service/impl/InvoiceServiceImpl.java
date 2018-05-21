@@ -2788,7 +2788,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 			if (null != invoice.getId()) {
 				updatedInvoiceLineItems.retainAll(invoiceLineItemsIdsList);
-				invoiceLineItemsIdsList.removeAll(updatedInvoiceLineItems);
+//				invoiceLineItemsIdsList.removeAll(updatedInvoiceLineItems);
 			}
 		}
 

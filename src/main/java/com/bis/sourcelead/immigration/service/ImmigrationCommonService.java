@@ -116,5 +116,9 @@ public interface ImmigrationCommonService {
 	List<ImmigrationActivityHistory> getImmigrationActivitiesList(Long immigrationId,Long orglocationId) throws Exception;
 	
 	Integer getTableRecordCountByImmigrationId(String entityName,Long immigrationId, String condition);
-
+	
+	public Boolean validateCandidatePassportVisa(Long candidateId,String idType,String idNumVal) throws Exception;
+	
+	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType, Long candidateId,Long id) throws Exception;
+	
 }

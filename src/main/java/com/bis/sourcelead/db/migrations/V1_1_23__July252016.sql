@@ -1,3 +1,4 @@
+UPDATE `ROLES` SET `DISPLAY_NAME`='Admin' WHERE `ID`='1';
 
 #Email to project manager who is assigned to project
 INSERT INTO `ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('MailToProjectManager', 'Email');
