@@ -557,34 +557,6 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 emailMessage.setOrgLocationId(vendorOrgLocation.getId());
-		 /*
-		 EmailConfigurationFromMail confFromMail=null;
-		 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
-		 if(emailConfigMailList != null){
-			 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
-				 if( fromMail.getEmailModules() != null){
- 					String[] jobIds = fromMail.getEmailModules().split(",");
-						for(int i=0; i<jobIds.length; i++) {
-							if(Long.valueOf(jobIds[i]) == emailScenario.getTabId().getId() ){
-								confFromMail=fromMail;
-							}
-						}
-				 }
-			 } 
-		 }
-		 if(confFromMail == null){
-			 confFromMail=emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
-		 }
-			 
-		 if(confFromMail != null){
-			 emailMessage.setFromEmail(confFromMail.getEmail());
-		 }*/
-		 
-		 String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
-		 if(StringUtils.isNotEmpty(fromMail)){
-			 emailMessage.setFromEmail(fromMail);
-		 }
-		 
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);

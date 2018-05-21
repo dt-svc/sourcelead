@@ -2408,12 +2408,6 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
 			 
-			 String fromEmail = getConfiguredFromEmail(orgLocations.getId(), emailScenario);
-			 if(StringUtils.isNotBlank(fromEmail)){
-				 emailMessage.setFromEmail(fromEmail);
-			 }
-			
-			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,attachmentList);
 	  }catch (Exception e) {

@@ -21,6 +21,7 @@
                     
                     <div class="tab-content panel-body">
                     <div id="emailConfiguredprev" >
+                     <div id="ConfigLoading"></div>
                             <div class="clearfix mb">
                                 <div class="pull-left">
                                     <h4 id="emailHeading">Email Settings</h4>
@@ -66,7 +67,7 @@
 					<div class="pull-right mb">
 						
 						<input type="hidden" name="id" id="id" value="${emailSceconf.email_UUID}"/>
-							<button type="button" class="btn btn-success btnSuccess mr" onClick="saveEmailNotification();">Save</button>
+							<button type="button" id="save" class="btn btn-success btnSuccess mr" onClick="saveEmailNotification();">Save</button>
 							 <button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="">Cancel</button>
 						</div>
 					</div>
@@ -88,6 +89,10 @@
 
 <div id="deleteFromMailDiv" class="datatable_filter"> </div>
 
+<div class="success_pop" id="selector2" style="display: none;">
+ 			<i class="fa fa-check-circle"></i><span id="msgConfigDiv"></span>
+</div>
+
 <script type="text/javascript">
 //Email Notifications Script
 function addEmail() {
@@ -104,10 +109,13 @@ function closeEmailNotifications(){
 function saveEmailNotification(){
 	if ($('#email_configuration_form').validate(false, validationSettings)) {
 		
-			$("#save_title").attr("disabled", "disabled");
-			$("#save_title").addClass('button').val('Processing..');
+			//$("#save").attr("disabled", "disabled");
+			//$("#save_title").addClass('button').val('Processing..');
 		//var formData = $($('#user_manuals_form')[0]).serialize();
 		var formData = getFormData1("email_configuration_form");
+		$( "#save" ).addClass('button').val('Processing..');
+		$("#ConfigLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	    
 		$.ajax({
 			 type : "POST",
 			 data: formData,
@@ -118,7 +126,9 @@ function saveEmailNotification(){
 			  		if(result=="success"){
 			  			configuredMail();
 			  		}else if(result=="failure"){
+			  			$("#ConfigLoading").removeAttr("style");
 			  			alert("configured mail is wrong.please update the right email")
+			  			//$("#msgConfigDiv").html("Configured Mail is wrong.Please update the correct Mail");
 			  		}
 		    		
 			},

@@ -92,7 +92,7 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 			props.put("mail.smtp.auth", "true");
 			props.put("mail.smtp.port", portNumber);
 
-			Session session = Session.getDefaultInstance(props, new Authenticator() {
+			Session session = Session.getInstance(props, new Authenticator() {
 				@Override
 				protected PasswordAuthentication getPasswordAuthentication() {
 					return new PasswordAuthentication(username, password);
