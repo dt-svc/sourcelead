@@ -61,12 +61,13 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
   			
   			<div class="col-md-2 immHeadactions clearfix">
   			
-  			
+  			 <sec:authorize access="hasAnyRole('ROLE_EDIT_VIEW_PETITION')">
   			<select id="uscisStatusId" onchange="changeUscisStatusForImmigration($(this).val(),${immigration.currUscisStatusId});" <c:if test = "${myImmigrationPage =='Y'}">disabled</c:if> class="form-control selectdisabled selstyles-new">
   				<c:forEach var="item" items="${uscisStatusList}">
   					<option ${immigration.currUscisStatusId == item.id ? 'selected' : '' } value="${item.id}">${item.name}</option>
   				</c:forEach>
   			</select>
+  			</sec:authorize>
   			</div>
   		</div>
 		<div class="immigraHead">

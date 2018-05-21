@@ -513,19 +513,8 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.currUscisStatusId !== null && opt.currUscisStatusId !== '' && opt.currUscisStatusId !== 'undefined') {
-                    	 result = result + "<td><div class='mt5 mb5 dropdown-select' style='width:150px;'><select id='currUscisStatus' title='"+opt.currUscisStatus+"' onchange='changeSaveUscisStatus($(this),"+opt.id+","+opt.currUscisStatusId+");' name='currUscisStatus' class='form-control'>";
+                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.currUscisStatus +"'>" + opt.currUscisStatus + "</div></td>";
                     	 //alert(opt.currUscisStatusId);
-                    	 for(var i=0;i<opt.currUsicisStatusList.length;i++){
-                        	data = opt.currUsicisStatusList[i];
-                        	if(data.id == opt.currUscisStatusId){
-                        		//alert("inside selected");
-                        		result = result + "<option selected value="+data.id+">"+data.name+"</option>";
-                        	}else{
-                        		result = result + "<option value="+data.id+">"+data.name+"</option>";
-                        	}
-                    	 }
-                         result = result + "</select></div></td>";
-                         $('#currUscisStatus').trigger("chosen:updated");
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
                      }
