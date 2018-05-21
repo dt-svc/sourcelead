@@ -143,6 +143,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 			timeSheetDayEntriesHistory.setCreatedDate(timeSheetDayEntries.getCreatedDate());
 			timeSheetDayEntriesHistory.setUpdatedBy(timeSheetDayEntries.getUpdatedBy());
 			timeSheetDayEntriesHistory.setUpdatedDate(timeSheetDayEntries.getUpdatedDate());
+			timeSheetDayEntriesHistory.setTimesheetActivityId(timeSheetDayEntries.getTimesheetActivityId());
 		}
 		return timeSheetDayEntriesHistory;
 	}
