@@ -279,6 +279,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			}else{
 				immCanObj.setIsRequired(Constants.NO);	
 			}
+			if(docs.getIsMultipleRequired() != null && "Y".equalsIgnoreCase(docs.getIsMultipleRequired())){
+				immCanObj.setAllowMultiple(docs.getIsMultipleRequired());
+			}else{
+				immCanObj.setAllowMultiple(Constants.NO);	
+			}
 			immCanObj.setStatus(Constants.RECORD_ACTIVE);
 			immCanObj.setDocumentStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
 			immCanObj.setIsTemplateConfigured(Constants.YES);
