@@ -722,12 +722,17 @@
          </div> <!--  dynamic div end -->
 		<div class="clearfix"></div>
 		<div class="addImmiFoot">
+		<div class="pull-right">
 			<!--<a href="javascript:void(0)" class="pull-left">Prev</a>-->
+			<input type="button" value="Save & Continue" id="savePageOneContinue" onclick="immigration.savePageAndContinue('saveContinue');" class="btn btn-primary">
+			<input type="button" value="Send Request" id="sendRequestButton" onclick="immigration.savePageAndContinue('sendRequest');" class="btn btn-primary">
+			<input type="button" value="Save As Draft" id="saveDraftButton" onclick="immigration.savePageAndContinue('save');" class="btn btn-primary">
 			
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('save')" class="nextBtn">Save As Draft</a>
-			<a href="javascript:void(0)" id="sendRequestButton" onclick="immigration.savePageAndContinue('sendRequest')" class="nextBtn">Send Request</a><!--  should be Send Request -->.
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('saveContinue')" id="savePageOneContinue" class="nextBtn">Save &amp; Continue</a>
+	<!-- 		<a href="javascript:void(0)" id ="saveDraftButton" onclick="immigration.savePageAndContinue('save')" class="nextBtn">Save As Draft</a>
+			<a href="javascript:void(0)" id="sendRequestButton" onclick="immigration.savePageAndContinue('sendRequest')" class="nextBtn">Send Request</a> should be Send Request.
+			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('saveContinue')" id="savePageOneContinue" class="nextBtn">Save &amp; Continue</a> -->
 			<div class="clearfix"></div>
+		</div>
 		</div>
 	</div>
 	</form>
