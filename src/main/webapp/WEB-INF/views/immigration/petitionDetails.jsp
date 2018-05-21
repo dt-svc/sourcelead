@@ -724,9 +724,9 @@
 		<div class="addImmiFoot">
 			<!--<a href="javascript:void(0)" class="pull-left">Prev</a>-->
 			
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('save')" class="nextBtn">Save As Draft</a>
+			<a href="javascript:void(0)" id="saveAsDraftButton" onclick="immigration.savePageAndContinue('save')" class="nextBtn">Save As Draft</a>
 			<a href="javascript:void(0)" id="sendRequestButton" onclick="immigration.savePageAndContinue('sendRequest')" class="nextBtn">Send Request</a><!--  should be Send Request -->.
-			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('saveContinue')" id="savePageOneContinue" class="nextBtn">Save &amp; Continue</a>
+			<a href="javascript:void(0)" onclick="immigration.savePageAndContinue('saveContinue')" id="savePageOneContinueAmeer" class="nextBtn">Save &amp; Continue</a>
 			<div class="clearfix"></div>
 		</div>
 	</div>
@@ -952,14 +952,14 @@ $("#experienceValue").change(function () {
 		        url: sourceleadUrl+immiModulePath+"/getUscisTypeDropDown", 
 		        success: function(data) {
 		        	$('#currUscisStatus').empty();
-		        	$('#currUscisStatus').append('<option value="">--Select Type --</option>');
+		        	$('#currUscisStatus').append('<option selected value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
+		            	  if(opt.name == "Draft" || opt.name == "Request to fill"){
+		            		  continue;
+		            	  }
 		            	  if(opt.id == status){
 		            		$('#currUscisStatus').append('<option selected value='+opt.id+' >'+opt.name+'</option>');
-		            		if(opt.name != 'Draft'){
-		            			$("#sendRequestButton").hide();
-		            		}
 		            	  }else{
 		            		$('#currUscisStatus').append('<option value='+opt.id+' >'+opt.name+'</option>');
 		            	  }
@@ -1110,12 +1110,18 @@ $("#experienceValue").change(function () {
  </script>
    <script type="text/javascript">
    
-   function onLoadStatusChange(){
-	   if($( "#currUscisStatus option:selected" ).text() != "Draft"){
-		   $("#sendRequestButton").hide();
-	   }else{
-		   $("#sendRequestButton").show();
+   function onLoadStatusChange(status){
+	   var uscisStatusVal = $("#currUscisStatus").val();
+	   if(status != null){
+		   uscisStatusVal = status;
 	   }
+	   if(uscisStatusVal == "" || uscisStatusVal == null){
+		   $("#sendRequestButton").show();
+		   $("#saveAsDraftButton").show();
+	   }else{
+		   $("#sendRequestButton").hide();
+		   $("#saveAsDraftButton").hide();
+	   } 
    }
    
 	  $( document ).ready(function() {
@@ -1126,10 +1132,8 @@ $("#experienceValue").change(function () {
 		  getAttorneyContactList("${immigrationDTO.attorneyId}","${immigrationDTO.attorneyContact}");
 		 getCandidatesByOrgLocation("${immigrationDTO.candidateId}");
 		  getPetitionTypeDropDown("${immigrationDTO.petitionType}");
-		  if("${immigrationDTO.currUscisStatus}" == null){
-		  	onLoadStatusChange();
-		  }
 		  getUscisTypeDropDown("${immigrationDTO.currUscisStatus}");
+		  onLoadStatusChange("${immigrationDTO.currUscisStatus}");
 		  employmentLevelDropDown("${immigrationDTO.employmentLevel}");
 		  jobTitleDropDown("${immigrationDTO.jobId}");
 		  if("${immigrationDTO.immigrationId}" == ""){
