@@ -1204,9 +1204,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	@Override
-	public ImmigrationDTO editImmigrationDetails(Long immigrationId, OrgLocations orgLocations) {
+	public ImmigrationDTO editImmigrationDetails(String immigrationUUID, OrgLocations orgLocations) {
 		
-		Immigration immigration = immigrationCommonDao.getImmigrationById(immigrationId);
+		Immigration immigration = immigrationCommonDao.getImmigrationByUUID(immigrationUUID);
 		ImmigrationDTO immigrationDTO = new ImmigrationDTO();
 		try {
 			/*============================from immigration Table=================*/
@@ -1500,6 +1500,16 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType,
 			Long candidateId,Long id) throws Exception {
 		return immigrationCommonDao.getCandidatePassportVisaDetailsByIdNumberAndId(idNumber, idType, candidateId,id);
+	}
+
+	@Override
+	public Long getImmigrationIdByUUID(String immigrationUUID) {
+		return immigrationCommonDao.getImmigrationIdByUUID(immigrationUUID);
+	}
+
+	@Override
+	public Long getCandidateIdByUUID(String candidateUUID) {
+		return immigrationCommonDao.getCandidateIdByUUID(candidateUUID);
 	}
 
 }

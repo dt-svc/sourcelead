@@ -716,9 +716,9 @@ this.deletePassportVisaDetailsById=function(id,idType){
 		});
 	}
 	
-	this.deleteImmigrationDetailsByRowId = function(immigrationId){
+	this.deleteImmigrationDetailsByRowId = function(immigrationUUID){
 		$.ajax({
-	        url: sourceleadUrl + immiModulePath + "/deleteImmigrationDetailsById?immigrationId="+immigrationId,
+	        url: sourceleadUrl + immiModulePath + "/deleteImmigrationDetailsById?immigrationUUID="+immigrationUUID,
 	        type: "GET",
 	        success: function (result) {
 	        	$("#remove_immigration_pop").fadeOut(200);
