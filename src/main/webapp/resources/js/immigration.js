@@ -3,6 +3,7 @@ var immiModulePath = "/immigration";
 var immTemplId = '';
 var immigrationId = '';
 var candidateId = '';
+var idNumber = '';
 var familyMemberId = '';
 var templateId='';
 var formNames = [];
@@ -400,6 +401,7 @@ function Immigration() {
 }
 
     this.editPassportVisaDetailsByRowId=function(id,idType){
+    	$("idNum").val(id);
 		$.ajax({
 	        url: sourceleadUrl + immiModulePath + "/getCandidatePassportVisaDetailsById?id="+id,
 	        type: "GET",
@@ -411,6 +413,7 @@ function Immigration() {
         			$("#addPass").trigger('click');
         			immigration.udpatePopupFormdata(formObj,childPopNames,data);
         			$('#validFrom').val(data.validFromDateStr);
+        			$('#idNum').val(data.id);
         			$('#validTo').val(data.validToDateStr);
         			$('#countryName').val(data.country);
         			$('#candidatePassportId').val(data.id);	
@@ -1349,5 +1352,40 @@ function searchVisaValue(){
 	
 }
 
+function validateCandidatePassportVisa(idType) {
+	 var validationSettings = {
+            errorMessagePosition: 'element',
+            borderColorOnError: '',
+            scrollToTopOnError: true,
+            dateFormat: 'yyyy/mm/dd'
+        };
+	  var candidateId = $("#candidateID").val();
+	 
+	  var idNumberVal = null;
+	  var id = null;
 
-
+	  if(idType == "Passport"){
+		   id = $("#candidatePassportId").val();
+		   idNumberVal =$('#CandidatePassportform input[name="idNumber"]').val();
+	  }else{
+		   id = $("#candidateVisaId").val();
+		   idNumberVal =$('#CandidateVisaform input[name="idNumber"]').val();  
+	  }
+	  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:sourceleadUrl + immiModulePath + "/validateCandidatePassportVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&idNumberVal="+idNumberVal+"&idType="+idType+"&id="+id, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
+		        		  $("#idNumberDiv").after("<p class='jquery_form_error_message'>"+idNumberVal+" is Already Existed</span>");
+						  $("#passport_save_id").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('#idNumberDiv').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#idNumberDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#passport_save_id").removeAttr("disabled");
+		        	}
+		        },
+		    });
+}
