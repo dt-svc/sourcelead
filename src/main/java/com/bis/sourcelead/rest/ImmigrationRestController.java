@@ -202,7 +202,7 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (forward.equalsIgnoreCase("petitionDetails")) {
 			model.setViewName("/immigration/petitionDetails");
-			if (immigrationUUID != null) {
+			if (StringUtils.isNotBlank(immigrationUUID)) {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 						"orgLocations");
 				Long immigrationId = immigrationCommonService.getImmigrationIdByUUID(immigrationUUID);
