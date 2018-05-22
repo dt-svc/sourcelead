@@ -21,7 +21,7 @@
 						<div class="col-md-4 dropdown-select mt10 mb10">
 							<select class="selectpicker width100percnt"
 								title="Select Type of Tax" data-live-search="true" id="taxType"
-								field-name="TaxType" data-validation="required" name="taxTypeId">
+								field-name="TaxType" data-validation="required" name="taxTypeId" ${stateTax.id > 0 ? "disabled='disabled'" : ""}>
 								<c:forEach items="${taxTypes}" var="t">
 									<option value="${t.id}"
 										${stateTax.taxTypeId==t.id?"selected='selected'":""}>${t.description}</option>

@@ -65,7 +65,7 @@ function Tax() {
 			} else if (response.response === "SUCCESS") {
 				var stList = response.data;
 				if(stList.length > 0) {
-					for(var e in stList){
+					for(var e in stList) {
 						var result = "<tr><td>";
 						result += "<div>";
 						result += "<a href='taxSummary?stateTaxId=" + stList[e].id + "'>" + stList[e].stateName + "</a>";
@@ -76,12 +76,14 @@ function Tax() {
 						result += "<div>";
 						result += "<ul class='list-unstyled list-inline mb0'>";
 						result += "<li><a href='create?stateTaxId=" + stList[e].id + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
-						result += "<li><a href='javascript:void()' title='Delete' class='text-danger'><i class='fa fa-trash'></i></a></li>";
+						result += "<li><a href='javascript:void()' onclick='alert()' title='Delete' class='text-danger'><i class='fa fa-trash'></i></a></li>";
 						result += "</ul>";
 						result += "</div>";
 						result += "</td></tr>";
 						$("#stateList").append(result);
 					}
+					var paginator = response.paginator;
+					$("#pageMsg").html("Showing " + ((paginator.pageNo + 1) + (paginator.pageNo * paginator.pageSize)) + " to " + (((paginator.pageNo + 1) * paginator.pageSize) > paginator.totalRows ? paginator.totalRows : ((paginator.pageNo + 1) * paginator.pageSize)) + " of " + paginator.totalRows + " results");
 				} else {
 					$("#stateListTable").hide();
 					$("#noResultsTable").show();

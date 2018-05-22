@@ -29,6 +29,7 @@ import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.StateTaxDTO;
+import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTaxType;
@@ -97,7 +98,7 @@ public class TaxController {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			StateTaxDTO stateTaxDTO = new StateTaxDTO();
-			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(1);
+			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(1, false);
 			modelAndView.addObject("taxTypes", taxTypeList);
 			if (stateTaxId > 0) {
 				stateTaxDTO = taxService.getStateTax(stateTaxId);
@@ -156,15 +157,16 @@ public class TaxController {
 	@RequestMapping(value = "/getStateTaxes", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<StateTaxDTO> getStateTaxes(HttpServletRequest request, @RequestParam(defaultValue = "") String yearFrequency,
-			@RequestParam(defaultValue = "0") long stateId) {
+			@RequestParam(defaultValue = "0") long stateId, Paginator paginator) {
 		ResponseList<StateTaxDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				List<StateTaxDTO> stateTaxList = taxService.getStateTaxList(yearFrequency, stateId);
+				List<StateTaxDTO> stateTaxList = taxService.getStateTaxList(yearFrequency, stateId, paginator);
 				response.setData(stateTaxList);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
+				response.setPaginator(paginator);
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -206,7 +208,7 @@ public class TaxController {
 	public ModelAndView addCentralTax(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(2);
+			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(2, false);
 			modelAndView.addObject("taxTypes", taxTypeList);
 			modelAndView.addObject("activeTaxTab", "central");
 			modelAndView.setViewName("tax/addCentralTax");
