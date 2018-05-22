@@ -1060,11 +1060,11 @@ public class ImmigrationRestController {
 	}
 
 	@RequestMapping(value = { "/savePetitionDetailsPage" }, method = RequestMethod.POST)
-	public ResponseList<Long> savePetitionDetailsPage(ImmigrationDTO immigrationDTO,
+	public ResponseList<String> savePetitionDetailsPage(ImmigrationDTO immigrationDTO,
 			@RequestParam(value = "removedResidenceIds", required = false) String[] ids,
 			@RequestParam(value = "status", required = false) String status, HttpServletRequest request) {
-		ResponseList<Long> response = new ResponseList<>();
-		List<Long> requiredIds = new LinkedList<>();
+		ResponseList<String> response = new ResponseList<>();
+		List<String> requiredIds = new LinkedList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
@@ -1080,9 +1080,12 @@ public class ImmigrationRestController {
 			if(status.equalsIgnoreCase(ImmigrationConstants.SEND_REQUEST)) {
 				immigrationCommonService.sendEmailToImmigrationBeneficiary(immigration,user, orgLocations);
 			}
-			requiredIds.add(immigration.getId());
-			requiredIds.add(immigration.getCandidate().getId());
-			requiredIds.add(immigration.getImmigrationTemplateId().getId());
+			requiredIds.add(immigration.getId().toString());
+			requiredIds.add(immigration.getCandidate().getId().toString());
+			requiredIds.add(immigration.getImmigrationTemplateId().getId().toString());
+			requiredIds.add(immigration.getImmigrationUuid());
+			requiredIds.add(immigration.getCandidate().getCandidateUUID());
+			requiredIds.add(immigration.getImmigrationTemplateId().getUuid());
 			response.setData(requiredIds);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
