@@ -1371,10 +1371,10 @@ function validateCandidatePassportVisa(idType) {
 
 	  if(idType == "Passport"){
 		   id = $("#candidatePassportId").val();
-		   idNumberVal =$('#CandidatePassportform input[name="idNumber"]').val();
+		   idNumberVal =$('#CandidatePassportform input[name="idNumber"]').val().trim();
 	  }else{
 		   id = $("#candidateVisaId").val();
-		   idNumberVal =$('#CandidateVisaform input[name="idNumber"]').val();  
+		   idNumberVal =$('#CandidateVisaform input[name="idNumber"]').val().trim();  
 	  }
 	  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({

@@ -193,6 +193,8 @@ public class ImmigrationDTO extends SearchDTO {
     
     private String immigrationId;
     
+    private String immigrationUUID;
+    
     private String[] removedResidenceIds;
     
     private Long currUscisStatusId;
@@ -909,6 +911,14 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setIsOwnTemplateId(String isOwnTemplateId) {
 		this.isOwnTemplateId = isOwnTemplateId;
+	}
+
+	public String getImmigrationUUID() {
+		return immigrationUUID;
+	}
+
+	public void setImmigrationUUID(String immigrationUUID) {
+		this.immigrationUUID = immigrationUUID;
 	}
 	
 }

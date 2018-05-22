@@ -606,6 +606,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		ImmigrationDTO dto = new ImmigrationDTO();
 		try {
 		Immigration immigration = immigrationCommonDao.getImmigrationDetails(immigrationId);
+		dto.setImmigrationUUID(immigration.getImmigrationUuid());
 		dto.setPetitionType(immigration.getPetitionType().getName());
 		dto.setGeneratedId(immigration.getGeneratedId());
 		dto.setOpenDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),immigration.getOpenDate()));
@@ -705,7 +706,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		familyDetails.setStatus(Constants.RECORD_ACTIVE);
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 	    if(familyDetailsDto.getId()!= null) {
-	    System.out.println(" in edit mode --member id >"+familyDetailsDto.getId());
+	    logger.debug(" in edit mode --member id >"+familyDetailsDto.getId());
 	    familyDetails.setId(familyDetailsDto.getId());
 	    }else {
 	    familyDetails.setCreatedDate(currentDate); // created date , created by fields skipped for edit mode 
