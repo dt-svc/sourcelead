@@ -1648,13 +1648,13 @@ public class ImmigrationRestController {
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId and idType='Visa'");
 					tabRecordCountMap.put(tabNameArray[i], count);
 				} else if (i == 2) { // CandidateEmployers
-					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId");
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId and status=1");
 					tabRecordCountMap.put(tabNameArray[i], count);
 				} else if (i == 3) { // CandidateResidence
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where id=:candidateId");
 					tabRecordCountMap.put(tabNameArray[i], count);
 				} else if (i == 4) {// CandidateEducation
-					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId");
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId and status=1");
 					tabRecordCountMap.put(tabNameArray[i], count);
 				}
 				else if (i == 5) {// CandidateFamilyDetails
