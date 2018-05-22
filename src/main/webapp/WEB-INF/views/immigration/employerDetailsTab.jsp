@@ -26,6 +26,7 @@
 				<th>Employer</th>
 				<th>Designation</th>
 				<th>Address</th>
+				<th>Attachment</th>
 				<th>Start Date</th>
 				<th>End Date</th>
 				<c:choose>
@@ -45,9 +46,19 @@
 			  </tr>
 			<c:forEach var="empItems" items="${candidatesEmployersList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-sm">${empItems.name}</div></td>
-				<td><div class="tbldata-dotdot-sm">${!empty empItems.designation ? empItems.designation : '---' }</div></td>
-				<td><div class="tbldata-dotdot-me">${!empty empItems.address ? empItems.address : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${empItems.name}">${empItems.name}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${empItems.designation}">${!empty empItems.designation ? empItems.designation : '---' }</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${empItems.address}">${!empty empItems.address ? empItems.address : '---'}</div></td>
+				<td>
+				<c:if test="${! empty empItems.employerFileName}">
+				<div class="tbldata-dotdot-me" title = "${empItems.employerFileName}"><span class="fileName">${empItems.employerFileName}</span>
+					<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${empItems.employerFileUrl}','${empItems.employerFileName}','${empItems.employerFileContentType}');" title="View"></a>
+					<a class="glyphicon glyphicon-download-alt" download href="${empItems.employerFileUrl}" title="Download"></a></div>
+					</c:if>
+					<c:if test="${empty empItems.employerFileName}">
+					<div class="tbldata-dotdot-me">---</div>
+					</c:if>
+					</td>
 				<td><div class="">${empItems.startMonth} ${empItems.startYear}</div></td>
 				<td><div class="">${empItems.endMonth} ${empItems.endYear}</div></td>
 				<c:choose>
@@ -103,7 +114,7 @@
 		<input type = "hidden" id="candidateEmpId"  name="candidateEmployeeId">
 		
 		<div class="popupHead">
-			<h2>Add Employee</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
+			<h2>Add Employer</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
 		</div>
 		
 		<div class="popupMid clearfix overflow_inherint">
@@ -120,7 +131,7 @@
 				<div class="row">
 				<label class="col-md-4">Designation</label>
               	<div class="col-md-8">
-              		<input type="text" placeholder="Employer Designation" id ="designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation"  class="form-control" />
+              		<input type="text" placeholder="Employer Designation" id ="designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Designation"  class="form-control" />
 				</div>
 				</div>
 			</div>				          
@@ -128,10 +139,17 @@
 				<div class="row">
 				<label class="col-md-4">Address</label>
               	<div class="col-md-8">
-              		<input type="text" placeholder="Address" id = "address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" class="form-control" />
+              	<input class="form-control positionRelative" id="address" name="address" onclick="initLocationAuto('address');" placeholder="Address"  type="text"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('address');"></i>
 				</div>
 				</div>
 			</div>
+			
+			 <div class="col-sm-12 noPad mt clearfix">
+		             <div class="clearfix checkbox">
+		       <label> <input type="checkbox" id="isCurrentPosition" value="Y" onClick ="employercurrentPosition();"name="isCurrentPosition"> Is Current Position</label>
+	        </div>
+		           </div>
           <div class="col-sm-12 noPad mt clearfix">
 				<div class="row">
 				<label class="col-md-4">Start Date</label>
@@ -160,7 +178,7 @@
 				</div>
 				</div>
 			</div>				
-          <div class="col-sm-12 noPad mt clearfix">
+          <div class="col-sm-12 noPad mt clearfix" id = "endDateDivId">
 				<div class="row">
 				<label class="col-md-4">End Date</label>
               	<div class="col-md-4"> 
@@ -212,7 +230,7 @@
 		
 		<div class="clearfix"></div>
 		<div class="immiPopFoot mt clearfix">
-            <input value="Save"class="" type="button" id = "save_Buton" onclick="saveEmployerDetails('save');"> 
+            <input value="Save"class="" type="button" id = "employerSave_Buton" onclick="saveEmployerDetails('save');"> 
             <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div><!-- popup code end -->
@@ -225,7 +243,22 @@
 		</div>
 	</form>
 	
-		
+<script>
+	function employercurrentPosition() {
+		var currentposition = document.getElementById("isCurrentPosition").checked;
+		if (currentposition) {
+			document.getElementById("endDateDivId").style.display = 'none';
+			$('#endYear').removeAttr('data-validation');
+			$('#endMonth').removeAttr('data-validation');
+			$("#endMonth").val("");
+			$('#endYear').val("");
+			document.getElementById("endYearValidation").style.display="none";
+			endYearFlag = true;
+		} else if (document.getElementById("endDateDivId").style.display == 'none') {
+			document.getElementById("endDateDivId").style.display = 'block';
+		}
+	}
+</script>		
 <script>
 	// Add Employee PopUp
 	$("#addEmpl").click(function(){

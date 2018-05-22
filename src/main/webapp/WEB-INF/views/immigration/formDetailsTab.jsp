@@ -45,13 +45,13 @@
 			  </tr>
 			  <c:forEach var="items" items="${formsList}" varStatus="rows">
 			  <tr formid ="${items.id}" savedFormDocName = "${items.uploadFileName}">
-				<td><div class="tbldata-dotdot-me">${items.formName}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${items.formName}</div></td>
 				<td><div class="tblminwidth-50">${items.isRequired == 'Y' ? "YES":"NO"}</div></td>
-				<td><div class="tbldata-dotdot-me"><span class="fileName">${items.fileName}</span>
+				<td><div class="tbldata-dotdot-vsm"><span class="fileName">${items.fileName}</span>
 				<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${items.fileUrl}','${items.fileName}','${items.fileContentType}');" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" title="Download" download href="${items.fileUrl}"></a></div>
 				</td>
-				<td><div class="tbldata-dotdot-me"><span class="fileName">${!empty items.uploadFileName ? items.uploadFileName : '---'}</span>
+				<td><div class="tbldata-dotdot-vsm"><span class="fileName">${!empty items.uploadFileName ? items.uploadFileName : '---'}</span>
 				<c:if test="${not empty items.uploadFileName}">
 				<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${items.uploadedFileUrl}','${items.uploadFileName}','${items.uploadedFileContentType}');" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" title="Download" download href="${items.uploadedFileUrl}"></a></c:if></div>
@@ -164,7 +164,7 @@
         </div>
         </div>
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button" onclick="immigration.saveCandidateForms();">
+            <input value="Save" class="" type="button" id = "canFormSave_Button" onclick="immigration.saveCandidateForms();">
             <input value="Cancel" class="popCan" type="button" onclick="closeFormPopup();">
           </div>		
 	</div>
@@ -200,7 +200,7 @@
 		
 		</div>
 		<div class="immiPopFoot">
-            <input value="Save" id="uploadFormSave"  class="" type="button" onclick="uploadRequestForm();">
+            <input value="Save" id="uploadFormSave_Button"  class="" type="button" onclick="uploadRequestForm();">
             <input value="Cancel" class="popCan" type="button" onclick="removeFormPopUp();">
           </div>		
 	</div>	<!-- popup code end -->
