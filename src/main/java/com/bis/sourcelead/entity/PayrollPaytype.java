@@ -35,6 +35,9 @@ public class PayrollPaytype {
 	@JoinColumn(name = "ORGLOCATION_ID")
     private OrgLocations orgLocationId;
 	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@Column(name = "STATUS")
 	private Integer status;
     

@@ -21,23 +21,22 @@
 				<div class="col-md-5">
 					<label class="clearfix">Name<span class="text-danger">&nbsp;*</span></label>
 					<div class="clearfix">
-						<input type="text" class="form-control" id="name" name="name"
-							value="" field-name="Name"  data-validation="required validate_Space validate_length length1-100">
+						<input type="text" class="form-control" id="name" name="name" value="${payrollPayhead.name}"
+							field-name="Name"  data-validation="required validate_Space validate_length length1-100">
 					</div>
 				</div>
 				<div class="col-md-5">
 					<label class="clearfix">Short Code<span class="text-danger">&nbsp;*</span></label>
 					<div class="clearfix">
-						<input type="text" class="form-control" id="shortCode" name="shortCode" 
-							value="" field-name="Short Code"  data-validation="required validate_Space validate_length length1-3">
+						<input type="text" class="form-control" id="shortCode" name="shortCode" value="${payrollPayhead.shortCode}"
+							field-name="Short Code"  data-validation="required validate_Space validate_length length1-10">
 					</div>
 				</div>
 				<div class="col-md-5">
 					<label class="clearfix">Effective Date</label>
 					<div class="clearfix">
 						<div class="input-group">
-							<input type="text" class="form-control calendar" id="effectiveDate" name="effectiveDate"
-								value="" field-name="Effective Date">
+							<input type="text" class="form-control calendar" id="effectiveDate" name="effectiveDate"value="${payrollPayhead.effectiveDateStr}" field-name="Effective Date">
 								<span class="input-group-addon" onClick="clearEffectiveDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
 						</div>
 					</div>
@@ -50,7 +49,7 @@
 								<select class="form-control chosen-select" id="payType" name="payType" field-name="Pay Type">
 									<option value="">--Select Pay Type--</option>
 		                			<c:forEach var="list" items="${payTypeList}">
-				                    	<option value="${list.id}" ${list.id == 1 ? 'selected' : ''} >${list.name}</option>
+				                    	<option value="${list.id}" ${list.id  == payrollPayhead.payType.id  ? 'selected' : list.id == 1 ? 'selected' : ''} >${list.name}</option>
 									</c:forEach>
 								</select>
 							</div>
@@ -80,8 +79,8 @@
 					<div class="clearfix dropdown-select">
 						<select id="form16" name="form16">
 							<option value="">Select</option>
-							<option value="Form-16A">Form-16A</option>
-							<option value="Form-16B">Form-16B</option>
+							<option value="Form-16A" ${payrollPayhead.form16  == 'Form-16A'  ? 'selected' :''}>Form-16A</option>
+							<option value="Form-16B" ${payrollPayhead.form16  == 'Form-16B'  ? 'selected' :''}>Form-16B</option>
 						</select>
 					</div>
 				</div>
@@ -90,10 +89,10 @@
 					<label class="clearfix">Tax</label>
 					<div class="clearfix">
 						<span class="radioStyles mr"> 
-							<input type="radio" id="taxable" name="tax" value="Taxable"> <label for="taxable">Taxable</label>
+							<input type="radio" ${payrollPayhead.tax  == 'Taxable'  ? 'checked' :''} id="taxable" name="tax" value="Taxable"> <label for="taxable">Taxable</label>
 						</span> 
 						<span class="radioStyles"> 
-							<input type="radio" id="nonTaxable" name="tax" value="NonTaxable"> <label for="nonTaxable">Non Taxable</label>
+							<input type="radio" ${payrollPayhead.tax  == 'NonTaxable'  ? 'checked' :''} id="nonTaxable" name="tax" value="NonTaxable"> <label for="nonTaxable">Non Taxable</label>
 						</span>
 					</div>
 				</div>
@@ -102,10 +101,10 @@
 					<label class="clearfix">Applicable For</label>
 					<div class="clearfix">
 						<span class="radioStyles mr"> 
-							<input type="radio" id="all" name="applicableFor" value="All"> <label for="all">All</label>
+							<input type="radio" ${payrollPayhead.applicableFor  == 'All'  ? 'checked' :''} id="all" name="applicableFor" value="All"> <label for="all">All</label>
 						</span> 
 						<span class="radioStyles"> 
-							<input type="radio" id="experienced" name="applicableFor" value="Experienced"> <label for="experienced">Experienced</label>
+							<input type="radio" ${payrollPayhead.applicableFor  == 'Experienced'  ? 'checked' :''} id="experienced" name="applicableFor" value="Experienced"> <label for="experienced">Experienced</label>
 						</span>
 					</div>
 				</div>
@@ -114,10 +113,10 @@
 					<label class="clearfix">Component</label>
 					<div class="clearfix">
 						<span class="radioStyles mr"> 
-							<input type="radio" id="variable" name="component" value="Variable"> <label for="variable">Variable</label>
+							<input type="radio" ${payrollPayhead.component  == 'Variable'  ? 'checked' :''} id="variable" name="component" value="Variable"> <label for="variable">Variable</label>
 						</span> 
 						<span class="radioStyles"> 
-							<input type="radio" id="fixed" name="component" value="Fixed"> <label for="fixed">Fixed</label>
+							<input type="radio" ${payrollPayhead.component  == 'Fixed'  ? 'checked' :''} id="fixed" name="component" value="Fixed"> <label for="fixed">Fixed</label>
 						</span>
 					</div>
 				</div>
@@ -127,19 +126,19 @@
 					<div class="clearfix">
 						<div class="checkbox-new pull-left">
 							<input id="pc" class="checkbox-custom" name="paidComponent"
-								type="checkbox" value="Y"> <label for="pc"
+								type="checkbox" ${payrollPayhead.paidComponent  == 'Y' ? "checked" : ''} value="Y"> <label for="pc"
 								class="checkbox-custom-label"><span class="ml10">Paid
 									Component</span></label>
 						</div>
 						<div class="checkbox-new ml mr pull-left">
 							<input id="partofaCTC" class="checkbox-custom" name="partofaCTC"
-								type="checkbox" value="Y"> <label for="partofaCTC"
+								type="checkbox" ${payrollPayhead.partofaCTC  == 'Y' ? "checked" : ''} value="Y"> <label for="partofaCTC"
 								class="checkbox-custom-label"><span class="ml10">Part
 									of a CTC</span></label>
 						</div>
 						<div class="checkbox-new pull-left">
 							<input id="fbpComponent" class="checkbox-custom" name="fbpComponent"
-								type="checkbox" value="Y"> <label for="fbpComponent"
+								type="checkbox" ${payrollPayhead.fbpComponent  == 'Y' ? "checked" : ''} value="Y"> <label for="fbpComponent"
 								class="checkbox-custom-label"><span class="ml10">FBP
 									Component</span></label>
 						</div>
@@ -250,14 +249,29 @@
 			 
 		     if ($('#payhead_form').validate(false, validationSettings)){
       			var formData = getFormData1("payhead_form");
+      			var uuid = '${uuid}';
 				$.ajax({
 					 type : "POST",
 					 data: formData,
 	 		         processData: false,
 	 		         contentType:false, 
-					  url : sourceleadUrl+"/storePayhead?"+tokenParamName+"="+tokenValue,
+					  url : sourceleadUrl+"/storePayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid,
 					  	success : function(result) {
-					  		
+					  		if(result.object === 'MissingData'){
+					  			showError("Invalid data");
+					  		}else{
+					  			if (result.response === "SESSION_TIMEDOUT") {
+					  				location.replace(sourceleadUrl);
+				                } else if (result.response === "AWKWARD") {
+				                    location.href = "/errorPage";
+				                } else if (result.response === "SUCCESS") {
+								  	location.replace(sourceleadUrl+"/payheadList");
+				                } else if (result.indexOf('Sign In') !== -1) {
+									location.replace(sourceleadUrl);
+								} else {
+				                    showError("Operation failed, please try again");
+				                }
+					  		}
 					  	},
 				});
 			

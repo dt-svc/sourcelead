@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Column;
+
 import com.bis.sourcelead.annotations.Required;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PayrollPayheadDTO implements Serializable{
 	
@@ -21,6 +24,7 @@ public class PayrollPayheadDTO implements Serializable{
 		
 		private String effectiveDate;
 		
+		@JsonProperty
 	    private String payType;
 		
 		private Double amount;
@@ -42,6 +46,8 @@ public class PayrollPayheadDTO implements Serializable{
 		private String fbpComponent;
 		
 	    private String orgLocationId;
+	    
+		private String uuid;
 	    
 	    private int start;
 		
@@ -183,6 +189,14 @@ public class PayrollPayheadDTO implements Serializable{
 
 		public void setOrgLocationId(String orgLocationId) {
 			this.orgLocationId = orgLocationId;
+		}
+
+		public String getUuid() {
+			return uuid;
+		}
+
+		public void setUuid(String uuid) {
+			this.uuid = uuid;
 		}
 
 		public int getStart() {

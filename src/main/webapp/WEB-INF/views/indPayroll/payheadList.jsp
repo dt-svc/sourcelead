@@ -24,7 +24,7 @@
     <div class="timesheet_head">
       <ul>
          <li>
-               <a href="<c:url value='${appPath}/addPayhead'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a>
+               <a href="<c:url value='${appPath}/payrollPayhead'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a>
          </li>
       <li>
       <a href="#" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Salary Setup</a><small class="text-muted ml">|</small>
@@ -150,7 +150,7 @@ function payheadListPagination(url,sourceleadUrl){
         "columns": [
             { "data": "name" },
             { "data": "shortCode"},
-            { "data": "type"},
+            { "data": "paytype"},
             { "data": "tax" },
             { "data": "actions"}
         ],
@@ -174,16 +174,16 @@ function payheadListPagination(url,sourceleadUrl){
 	      
 	          },{
 		    	  "targets": colIndex++,
-	              "data": "type",
+	              "data": "paytype",
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
-	            	  var paytype = "";
+	            	  var pType = "";
 	            	  if(opt.paytype != null && opt.paytype != '' && opt.paytype != 'undefined'){
-	            		  paytype = opt.paytype;
+	            		  pType = opt.paytype;
 	            	  }else{
-	            		  paytype = "--";
+	            		  pType = "--";
 	            	  }
-	            	  result = result +"<td><div><span>"+paytype+"</span></div></td>";
+	            	  result = result +"<td><div><span>"+pType+"</span></div></td>";
 	            	  return result;
 	              }
 		     },{
@@ -191,7 +191,13 @@ function payheadListPagination(url,sourceleadUrl){
 	              "data": "tax",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result +"<td><div><span>"+opt.tax+"</span></div></td>";
+	            	    var taxType = "";
+		            	  if(opt.tax != null && opt.tax != '' && opt.tax != 'undefined'){
+		            		  taxType = opt.tax;
+		            	  }else{
+		            		  taxType = "--";
+		            	  }
+		            	  result = result +"<td><div><span>"+taxType+"</span></div></td>";
 	            		return result;
 	              }
 		     }, {

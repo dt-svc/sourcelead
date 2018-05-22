@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -78,6 +79,9 @@ public class PayrollPayhead {
 	@JoinColumn(name = "ORGLOCATION_ID")
     private OrgLocations orgLocationId;
 	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@Column(name = "STATUS")
 	private Integer status;
     
@@ -94,6 +98,10 @@ public class PayrollPayhead {
     
     @Column(name = "UPDATED_DATE")
    	private Date updatedDate;
+    
+    @Transient
+    @JsonProperty
+    private String effectiveDateStr;
 
 	public Long getId() {
 		return id;
@@ -223,6 +231,14 @@ public class PayrollPayhead {
 		this.orgLocationId = orgLocationId;
 	}
 
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
 	public Integer getStatus() {
 		return status;
 	}
@@ -262,6 +278,13 @@ public class PayrollPayhead {
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
-    
+
+	public String getEffectiveDateStr() {
+		return effectiveDateStr;
+	}
+
+	public void setEffectiveDateStr(String effectiveDateStr) {
+		this.effectiveDateStr = effectiveDateStr;
+	}
     
 }

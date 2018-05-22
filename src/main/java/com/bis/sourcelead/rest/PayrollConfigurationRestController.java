@@ -360,7 +360,29 @@ public class PayrollConfigurationRestController {
 				if (user != null) {
 					if (Validator.validate(payrollPayheadDTO)) {
 						try {
-							PayrollPayhead payrollPayhead = new PayrollPayhead();
+							PayrollPayhead payrollPayhead = null;
+							
+							if(StringUtils.isNotBlank(payrollPayheadDTO.getUuid())) {
+								payrollPayhead = payrollPayheadService.getPayrollPayheadByUUID(payrollPayheadDTO.getUuid());
+								
+								if(payrollPayhead.getOrgLocationId().getId() == 1l) {
+									PayrollPayhead parentPayrollPayhead = new PayrollPayhead();
+									parentPayrollPayhead.setId(payrollPayhead.getId());
+									payrollPayhead = new PayrollPayhead();
+									payrollPayhead.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+									payrollPayhead.setParentPayhead(parentPayrollPayhead);
+									payrollPayhead.setCreatedDate(new Date());
+									payrollPayhead.setCreatedBy(user);
+								}else {
+									payrollPayhead.setUpdatedDate(new Date());
+									payrollPayhead.setUpdatedBy(user);
+								}
+							}else {
+								payrollPayhead = new PayrollPayhead();
+								payrollPayhead.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+								payrollPayhead.setCreatedDate(new Date());
+								payrollPayhead.setCreatedBy(user);
+							}
 							
 							if(StringUtils.isNotBlank(payrollPayheadDTO.getName())) {
 								payrollPayhead.setName(payrollPayheadDTO.getName());
@@ -431,8 +453,8 @@ public class PayrollConfigurationRestController {
 								payrollPayhead.setFbpComponent("N");
 							}
 							payrollPayhead.setOrgLocationId(orgLocations);
-							payrollPayhead.setCreatedDate(new Date());
-							payrollPayhead.setCreatedBy(user);
+							//payrollPayhead.setCreatedDate(new Date());
+							//payrollPayhead.setCreatedBy(user);
 							payrollPayhead.setStatus(Constants.RECORD_ACTIVE);
 							payrollPayhead = payrollPayheadService.savePayrollPayhead(payrollPayhead);
 							response.setResponse(Result.SUCCESS.name());
@@ -555,7 +577,7 @@ public class PayrollConfigurationRestController {
 				public ResponseList<PayrollPayheadDTO> getPayRollPayheadListWithPagination(PayrollPayheadDTO payrollPayheadDTO,
 						@RequestParam("locationCode") String locationCode) throws Exception {
 					OrgLocations loginOrgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-					String[] tableColumns = { "name", "shortCode", "type", "tax","actions" };
+					String[] tableColumns = { "name", "shortCode", "paytype", "tax","actions" };
 					int sortColumnIndex = 1; // by default sorting using payhead
 					String sortColumnOrder = "desc"; // by default descending order
 					if (payrollPayheadDTO.getOrder() != null && !payrollPayheadDTO.getOrder().isEmpty()) {
