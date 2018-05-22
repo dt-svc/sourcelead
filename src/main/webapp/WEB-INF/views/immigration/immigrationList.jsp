@@ -27,27 +27,83 @@
 			<ul class="clearfix">
 				<li class="clearfix" title="${!empty dashboardResult.draftsCount ? dashboardResult.draftsCount : 0}" >
 					<span><i class="fa fa-plane"></i></span>
-					<p>Draft <b>${!empty dashboardResult.draftsCount ? dashboardResult.draftsCount : 0}</b></p>
+					<p>Draft <b>
+					
+					<c:choose>
+							<c:when test="${!empty dashboardResult.draftsCount and dashboardResult.draftsCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "Draft")'>${dashboardResult.draftsCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
 				</li>			
 				<li class="clearfix" title="${!empty dashboardResult.reqSentCount ? dashboardResult.reqSentCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p> Sent Request <b>${!empty dashboardResult.reqSentCount ? dashboardResult.reqSentCount : 0}</b></p>
+					<p> Sent Request <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.reqSentCount and dashboardResult.reqSentCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "Request to fill")'>${dashboardResult.reqSentCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
 				</li>
 				<li class="clearfix" title="${!empty dashboardResult.inProgressCount ? dashboardResult.inProgressCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p> Inprogress <b>${!empty dashboardResult.inProgressCount ? dashboardResult.inProgressCount : 0}</b></p>
+					<p> Inprogress <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.inProgressCount  and dashboardResult.inProgressCount ne 0}">
+								<a href='javascript:getDynamicImmigrationList(null, "inProgress")'>${dashboardResult.inProgressCount}</a>
+							</c:when>
+							<c:otherwise>
+					         0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
 				</li>
 				<li class="clearfix" title="${!empty dashboardResult.apporovedCount ? dashboardResult.apporovedCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p>Approved <b>${!empty dashboardResult.apporovedCount ? dashboardResult.apporovedCount : 0}</b></p>
+					<p>Approved <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.apporovedCount and dashboardResult.apporovedCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "Approved")'>${dashboardResult.apporovedCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
 				</li>
 				<li class="clearfix" title="${!empty dashboardResult.rejectedCount ? dashboardResult.rejectedCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p>Rejected <b>${!empty dashboardResult.rejectedCount ? dashboardResult.rejectedCount : 0}</b></p>
+					<p>Rejected <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.rejectedCount and dashboardResult.rejectedCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "Rejected")'>${dashboardResult.rejectedCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+						
+					</b></p>
 				</li>
 				<li class="clearfix"title="${!empty dashboardResult.othersCount ? dashboardResult.othersCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
-					<p>Others <b>${!empty dashboardResult.othersCount ? dashboardResult.othersCount : 0}</b></p>
+					<p>Others <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.othersCount and dashboardResult.othersCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "others")'>${dashboardResult.othersCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
 				</li>				
 			</ul>
 		</div>
@@ -430,7 +486,7 @@
      });
 });
 
- function getDynamicImmigrationList(filterVal) {
+ function getDynamicImmigrationList(filterVal, DashBoardFilterStatus) {
 	 var filterAttorneyVal = [];
 	 var filterTypeVal = [];
 	 var filterStatusVal = [];
@@ -473,7 +529,13 @@
 //     var statusFilter = $("#statusFilter").val();
      var searchValue = $("#immiListSerach").val();
      searchValue = searchValue ? searchValue : "";
-     var url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal+"&orgTypeVal="+orgTypeVal;
+     var url ="";
+     if(DashBoardFilterStatus !== null && typeof DashBoardFilterStatus !='undefined'){
+    	 url = sourceleadUrl + "/immigration/getImmigrationDashBoardFilterList?filterStatus="+DashBoardFilterStatus; 
+     }
+     else{
+      url = sourceleadUrl + "/immigration/getImmigrationViewList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal+"&orgTypeVal="+orgTypeVal;
+     }
      dynamicImmigrationListPagination(url);
  }
  //var count = 0;
