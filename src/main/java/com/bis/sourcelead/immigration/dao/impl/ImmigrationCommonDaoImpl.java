@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
-import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -1366,6 +1365,39 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		responseList.setData(ImmigarionDTOList);
 		return responseList;
+			}
+	@Override
+	@Transactional(rollbackFor = { Exception.class })		
+	public ImmigrationCandidateForms getImmigrationCandidateFormsDetailsByFormNameAndId(String formName,
+			 Long candidateId,Long immigrationId, Long id) throws Exception {
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from ImmigrationCandidateForms immCandidateForms where immCandidateForms.formName = :formName and immCandidateForms.candidate.id = :candidateId and immCandidateForms.immigration.id = :immigrationId and immCandidateForms.id = :id and immCandidateForms.status = 1";
+		List<ImmigrationCandidateForms> immigrationCandidateFormsList =  session.createQuery(query) .setString("formName", formName).setLong("candidateId", candidateId).setLong("immigrationId", immigrationId).setLong("id", id).list();
+		ImmigrationCandidateForms immigrationCandidateForms = null;
+		if(immigrationCandidateFormsList != null && !immigrationCandidateFormsList.isEmpty())
+		{
+			immigrationCandidateForms = (ImmigrationCandidateForms) immigrationCandidateFormsList.iterator().next();
+		}
+		return immigrationCandidateForms;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validateImmigrationCandidateForms(String formName, Long candidateId, Long immigrationId)
+			throws Exception {
+	
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from ImmigrationCandidateForms immCandidateForms where immCandidateForms.formName = :formName and immCandidateForms.candidate.id = :candidateId and immCandidateForms.immigration.id = :immigrationId";
+		List<ImmigrationCandidateForms> immigrationCandidateFormsList = session.createQuery(query).setString("formName", formName).setLong("candidateId", candidateId).setLong("immigrationId", immigrationId).list();
+		if (immigrationCandidateFormsList != null && immigrationCandidateFormsList.size() > 0) {
+			flag = true;
+			return flag;
+		}
+		else {
+			return flag;
+		}
+			}
 
 }
