@@ -268,8 +268,11 @@ function Immigration() {
                     	   immigrationId = result.data[0];
                        	candidateId = result.data[1];
                        	templateId= result.data[2];
+                       	immigrationUUID = result.data[3];
+                       	candidateUUID = result.data[4];
+                       	immiTemplateUUID = result.data[5];
                             if(status == 'saveContinue'){// redirect to petition details tab page.
-                            window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId+"&candidateId="+candidateId+"&templateId="+templateId;
+                            window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationUUID="+immigrationUUID+"&candidateUUID="+candidateUUID+"&immiTemplateUUID="+immiTemplateUUID;
                             }
                             if(status == 'sendRequest'){
                             	window.location.href = sourceleadUrl + immiModulePath + "/viewImmigrationList";

@@ -56,7 +56,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
   			</div>
   			
   			<div class="col-md-4">
-  				<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationId=${immigrationId}>Edit</a></p>
+  				<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
   			</div>
   			
   			<div class="col-md-2 clearfix mt10">
@@ -80,8 +80,8 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
               <li><a href="#passportsTab"><i id ="passportfilled" class="fa fa-check-circle-o"></i>Passport</a></li>
               <li><a href="#visasTab"  id="visaInfoTab" class="${visaOnLoadCount==null?'disabledLink':''}"><i id ="visafilled" class="fa fa-check-circle-o"></i>Visa</a></li>
               <li><a href="#employersTab" id="employersInfoTab" class="${empOnLoadCount==null?'disabledLink':''}"><i id ="employersfilled" class="fa fa-check-circle-o"></i>Employers</a></li>
-              <li><a href="#residencesTab" id="residenceInfoTab" class="${resiOnLoadCount==null?'disabledLink':''}"><i id ="residencefilled" class="fa fa-check-circle-o"></i>Residence</a></li>
               <li><a href="#educationsTab" id="educationInfoTab" class="${eduOnLoadCount==null?'disabledLink':''}"><i id ="educationfilled" class="fa fa-check-circle-o"></i>Educations</a></li>
+              <li><a href="#residencesTab" id="residenceInfoTab" class="${resiOnLoadCount==null?'disabledLink':''}"><i id ="residencefilled" class="fa fa-check-circle-o"></i>Residence</a></li>
               <li><a href="#familiesTab" class="${familyOnLoadCount==null?'disabledLink':''}"><i id ="familyfilled" class="fa fa-check-circle-o"></i>Family</a></li>
               <li><a href="#formsTab"><i id="allFormsfilled" class="fa fa-check-circle-o"></i>Forms</a></li>
               <li><a href="#docsTab"><i id="allDocsfilled" class="fa fa-check-circle-o"></i>Documents</a></li>

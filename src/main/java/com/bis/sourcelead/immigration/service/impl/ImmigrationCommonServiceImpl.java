@@ -606,6 +606,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		ImmigrationDTO dto = new ImmigrationDTO();
 		try {
 		Immigration immigration = immigrationCommonDao.getImmigrationDetails(immigrationId);
+		dto.setImmigrationUUID(immigration.getImmigrationUuid());
 		dto.setPetitionType(immigration.getPetitionType().getName());
 		dto.setGeneratedId(immigration.getGeneratedId());
 		dto.setOpenDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),immigration.getOpenDate()));
