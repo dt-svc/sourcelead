@@ -45,6 +45,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
@@ -233,6 +234,44 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			candidateOnBoarding.setCompanyEmail(null);
 		}
 		
+		
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getGender())){
+			candidateOnBoarding.setGender(candidateOnBoardingDTO.getGender());
+		}else{
+			candidateOnBoarding.setGender(null);
+		}
+		
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getDateOfBirth())){
+			candidateOnBoarding.setDateOfBirth(candidateOnBoardingDTO.getDateOfBirth());
+		}else{
+			candidateOnBoarding.setDateOfBirth(null);
+		}
+		
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getAuthorizedWorkUntil())){
+			candidateOnBoarding.setAuthorizedWorkUntil(candidateOnBoardingDTO.getAuthorizedWorkUntil());
+		}else{
+			candidateOnBoarding.setAuthorizedWorkUntil(null);
+		}
+		
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getEmploymentEligibility())){
+			candidateOnBoarding.setEmploymentEligibility(candidateOnBoardingDTO.getEmploymentEligibility());
+		}else{
+			candidateOnBoarding.setEmploymentEligibility(null);
+		}
+		
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getUscisAlien())){
+			candidateOnBoarding.setUscisAlien(candidateOnBoardingDTO.getUscisAlien());
+		}else{
+			candidateOnBoarding.setUscisAlien(null);
+		}
+		
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getShift())){
+			Shift shift = new Shift();
+			shift.setId(Long.valueOf(candidateOnBoardingDTO.getShift()));
+			candidateOnBoarding.setShift(shift);
+		}else{
+			candidateOnBoarding.setShift(null);
+		}
 		
 		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getOnboardCandidateRole())){
 			Roles roles = new Roles();
@@ -432,6 +471,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		
 		Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
 		if(null != candidate){
+			if(candidateOnBoarding.getShift() != null) {
+				candidate.setShift(candidateOnBoarding.getShift());
+			}
 			candidate.setConsultantUser(onboardingUser);
 			candidateService.addCandidate(candidate);
 		}

@@ -862,6 +862,26 @@ public class CandidateOnBoardRestController {
 				if (null != candidateOnBoarding.getSalaryRate()) {
 					candidateOnBoardingDTO.setSalaryRate((candidateOnBoarding.getSalaryRate()));
 				}
+				
+				if (null != candidateOnBoarding.getDateOfBirth()) {
+					candidateOnBoardingDTO.setDateOfBirth((candidateOnBoarding.getDateOfBirth()));
+				}
+				if (null != candidateOnBoarding.getAuthorizedWorkUntil()) {
+					candidateOnBoardingDTO.setAuthorizedWorkUntil(candidateOnBoarding.getAuthorizedWorkUntil());
+				}
+				if (null != candidateOnBoarding.getEmploymentEligibility()) {
+					candidateOnBoardingDTO.setEmploymentEligibility(candidateOnBoarding.getEmploymentEligibility());
+				}
+				if (null != candidateOnBoarding.getUscisAlien()) {
+					candidateOnBoardingDTO.setUscisAlien(candidateOnBoarding.getUscisAlien());
+				}
+				if (null != candidateOnBoarding.getGender()) {
+					candidateOnBoardingDTO.setGender(candidateOnBoarding.getGender());
+				}
+				if (null != candidateOnBoarding.getShift()) {
+					candidateOnBoardingDTO.setShift(candidateOnBoarding.getShift().getId().toString());
+					candidateOnBoardingDTO.setShiftName(candidateOnBoarding.getShift().getShiftName());
+				}
 				if (null != candidateOnBoarding.getEmploymentOtherType()) {
 					candidateOnBoardingDTO.setEmploymentOtherType((candidateOnBoarding.getEmploymentOtherType()));
 				}

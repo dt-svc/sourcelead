@@ -2441,4 +2441,10 @@ public class LeaveManagementRestController {
 		}
 	}
 
+	 @RequestMapping(value = "/shiftList", method = RequestMethod.POST)
+		public @ResponseBody List<Shift> refreshRoleList(HttpServletRequest request, Long roleHierarchyId) throws Exception {
+	    	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    	List<Shift> shiftList = shiftService.getShiftList(orgLocations.getId());
+           return shiftList;	   
+		} 
 }

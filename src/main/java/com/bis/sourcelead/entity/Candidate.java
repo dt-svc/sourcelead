@@ -56,7 +56,11 @@ public class Candidate implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSULTANT_USER_ID")
 	private User consultantUser;
-
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SHIFT_ID")
+	private Shift shift;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID", nullable = false)
 	private Org orgId;
@@ -1649,4 +1653,11 @@ public class Candidate implements Serializable {
 		this.residenceEndDate = residenceEndDate;
 	}
 
+	public Shift getShift() {
+		return shift;
+	}
+
+	public void setShift(Shift shift) {
+		this.shift = shift;
+	}
 }
