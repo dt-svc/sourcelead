@@ -665,7 +665,7 @@
                      result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationUUID='+opt.immigrationUUID+'><i id="edit' + opt.immigrationUUID + '" class="glyphicon glyphicon-pencil"></i></a>';
                      '</sec:authorize>';
                       '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION\')">';
-                     result = result + '<i id="delete' + opt.id + '" onclick="deleteImmigrationListId(' + opt.immigrationUUID + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                     result = result + '<i id="delete' + opt.immigrationUUID + '" onclick="deleteImmigrationListId(\''+opt.immigrationUUID+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                      '</sec:authorize>';
                      return result;
                  }
@@ -701,14 +701,14 @@
  }
  
  function deleteImmigrationListId(immigrationUUID){ // only stauts updated with reason. active 1 , deactive 0.
-		$(".project_inn_mask").remove();
+	 $(".project_inn_mask").remove();
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a'>";
 		/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
 		result = result +" <b>Do you want to remove record permanently?</b>";
 		result = result + ' <div id="reasonForTemplateDiv"/>';
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteImmigrationDetailsByRowId("+immigrationUUID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteImmigrationDetailsByRowId(\""+immigrationUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#remove_immigration_pop").slideDown(200);
