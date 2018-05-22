@@ -999,7 +999,8 @@ function sendReminder(invoiceUUID){
            		} else if (result.response === "AWKWARD") {
            		    location.href = "/errorPage";
            		} else if (result.response === "SUCCESS") {
-           			
+           			$("#msgDiv").html("Successfully you have sent a reminder Mail..");
+          			msgFadein();
            		} else if (result.indexOf('Sign In') !== -1) {
            			location.replace(sourceleadUrl);
            		} else {
