@@ -56,7 +56,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
   			</div>
   			
   			<div class="col-md-4">
-  				<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationId=${immigrationId}>Edit</a></p>
+  				<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
   			</div>
   			
   			<div class="col-md-2 clearfix mt10">
