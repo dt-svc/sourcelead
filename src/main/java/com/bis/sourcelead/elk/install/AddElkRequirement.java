@@ -56,7 +56,7 @@ public class AddElkRequirement {
 		Connection conn = null ;
 		Statement stmt = null;
 		try {
-			String sql = "SELECT * FROM sourcelead.REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID;";
+			String sql = "SELECT * FROM sourcelead.REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID where req.STATUS = 1;";
 			DataSource dataSource = comboPooledDataSource();
 			 conn = dataSource.getConnection();
 			 stmt = conn.createStatement();
