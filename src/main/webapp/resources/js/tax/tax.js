@@ -32,6 +32,8 @@ $(document).ready(function() {
 		        		} else if (response.object === -1) {
 		        			showError("Tax record already exists for the selected fields");
 		        		}
+		        	} else if (response.response === "INVALID_DATA") {
+		        		showError(response.responseMessage);
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
 		        	} else {
@@ -166,4 +168,5 @@ function Tax() {
 			pfRowId++;
 		});
 	}
+	
 }

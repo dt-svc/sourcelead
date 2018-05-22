@@ -120,14 +120,17 @@ public class TaxController {
 		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null) {
+			if (user != null && Validator.validate(stateTaxDTO)) {
 				long result = taxService.addStateTax(stateTaxDTO);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 				response.setObject(result);
-			} else {
+			} else if (user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());

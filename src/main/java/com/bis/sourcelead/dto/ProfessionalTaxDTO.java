@@ -2,6 +2,8 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class ProfessionalTaxDTO implements Serializable {
 
 	/**
@@ -12,9 +14,13 @@ public class ProfessionalTaxDTO implements Serializable {
 	private long id;
 	private long stateTaxId;
 	private String taxType;
+	@Required(desc = "From Amount", isPositiveNumber = true)
 	private String amountFrom;
+	@Required(desc = "To Amount", isPositiveNumber = true)
 	private String amountTo;
+	@Required(desc = "Amount", isPositiveNumber = true)
 	private String amount;
+	@Required(desc = "month")
 	private String monthApplicable;
 
 	public long getId() {

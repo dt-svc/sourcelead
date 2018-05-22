@@ -16,7 +16,8 @@
 					<select class="form-control" id="stateTaxYearList"
 						onchange="tax.getStateTaxList()">
 						<c:forEach items="${yearList}" var="year">
-							<option ${year.value==true?"selected=selected":""} value="${year.key}">${year.key}</option>
+							<option ${year.value==true?"selected=selected":""}
+								value="${year.key}">${year.key}</option>
 						</c:forEach>
 					</select>
 				</div>
@@ -56,27 +57,6 @@
 					</tr>
 				</table>
 			</div>
-
-
-			<nav>
-				<ul id="paging" class="pagination pull-right mr">
-					<li><a href="#">Previous</a></li>
-					<li><a href="#">2</a></li>
-					<li><a href="#">3</a></li>
-					<li><a href="#">4</a></li>
-					<li><a href="#">5</a></li>
-					<li class="disabled"><a href="#">6</a></li>
-					<li data-page="last"><a href="#">Next</a></li>
-				</ul>
-				<div class="clearfix"></div>
-			</nav>
-
-
-
 		</div>
-
-
 	</div>
-
-
 </section>
