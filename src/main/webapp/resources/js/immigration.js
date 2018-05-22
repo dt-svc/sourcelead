@@ -1285,11 +1285,12 @@ function validateEduname()
 
 
 function saveNotesDatails(status) {
-	$("#notesSave_Button").attr("disabled",true);
+	
 	if ($('#notesDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("notesDetails_form");
         var candidateId = $('#candidateID').val();
         var immigrationId = $('#immigrationID').val();
+        $("#notesSave_Button").attr("disabled",true);
         $.ajax({
             url: sourceleadUrl + immiModulePath + "/saveImmigrationNotesDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
             type: "POST",
@@ -1300,6 +1301,7 @@ function saveNotesDatails(status) {
     				$("#popNoteView").hide(100);
                 	getNotesListByImmigration(candidateId);
                 }
+            	$("#notesSave_Button").removeAttr("disabled");
             }
         });
 
