@@ -39,7 +39,29 @@ public class Tds implements Serializable{
 	private Integer toamount;
 	
 	@Column(name = "PERCENTAGE")
-	private float percentage;
+	private Double percentage;
+	
+	@Column(name = "EDUCATION_CEISS")
+	private Double educationceiss;
+	
+	@Column(name = "SURCHARGE")
+	private Double surcharge;
+	
+	public Double getEducationceiss() {
+		return educationceiss;
+	}
+
+	public void setEducationceiss(Double educationceiss) {
+		this.educationceiss = educationceiss;
+	}
+
+	public Double getSurcharge() {
+		return surcharge;
+	}
+
+	public void setSurcharge(Double surcharge) {
+		this.surcharge = surcharge;
+	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -83,11 +105,11 @@ public class Tds implements Serializable{
 		this.toamount = toamount;
 	}
 
-	public float getPercentage() {
+	public Double getPercentage() {
 		return percentage;
 	}
 
-	public void setPercentage(float percentage) {
+	public void setPercentage(Double percentage) {
 		this.percentage = percentage;
 	}
 

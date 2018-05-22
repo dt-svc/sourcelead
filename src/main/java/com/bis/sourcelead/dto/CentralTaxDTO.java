@@ -7,48 +7,46 @@ public class CentralTaxDTO implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-	private Long id;
+	private long id;
 	
 	private Long sourceleadTaxId;
+	
 	private String sourceleadTaxType;
 	
 	private Integer ceilvaluepf;
  
-	private  float noofemployees;
+	private  Double noofemployees;
 	
-	private float employeepf;
+	private Double employeepf;
 	
-	private float employerpf;	
+	private Double employerpf;	
 	
 	private Integer ceilvalueEsi;
 	
-	private float employeeEsi;
+	private Double employeeEsi;
 	
-	private float employerEsi;
+	private Double employerEsi;
 	
 	private Integer centraltaxid;
 	
+	private String ctfinancialYear;
 	
 	private List<TdsDTO> tdsTaxList;
-	
-	
 
-
-
-	public List<TdsDTO> getTdsTaxList() {
-		return tdsTaxList;
-	}
-
-	public void setTdsTaxList(List<TdsDTO> tdsTaxList) {
-		this.tdsTaxList = tdsTaxList;
-	}
-
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
+	}
+
+	public Long getSourceleadTaxId() {
+		return sourceleadTaxId;
+	}
+
+	public void setSourceleadTaxId(Long sourceleadTaxId) {
+		this.sourceleadTaxId = sourceleadTaxId;
 	}
 
 	public String getSourceleadTaxType() {
@@ -67,27 +65,27 @@ public class CentralTaxDTO implements Serializable {
 		this.ceilvaluepf = ceilvaluepf;
 	}
 
-	public float getNoofemployees() {
+	public Double getNoofemployees() {
 		return noofemployees;
 	}
 
-	public void setNoofemployees(float noofemployees) {
+	public void setNoofemployees(Double noofemployees) {
 		this.noofemployees = noofemployees;
 	}
 
-	public float getEmployeepf() {
+	public Double getEmployeepf() {
 		return employeepf;
 	}
 
-	public void setEmployeepf(float employeepf) {
+	public void setEmployeepf(Double employeepf) {
 		this.employeepf = employeepf;
 	}
 
-	public float getEmployerpf() {
+	public Double getEmployerpf() {
 		return employerpf;
 	}
 
-	public void setEmployerpf(float employerpf) {
+	public void setEmployerpf(Double employerpf) {
 		this.employerpf = employerpf;
 	}
 
@@ -99,19 +97,19 @@ public class CentralTaxDTO implements Serializable {
 		this.ceilvalueEsi = ceilvalueEsi;
 	}
 
-	public float getEmployeeEsi() {
+	public Double getEmployeeEsi() {
 		return employeeEsi;
 	}
 
-	public void setEmployeeEsi(float employeeEsi) {
+	public void setEmployeeEsi(Double employeeEsi) {
 		this.employeeEsi = employeeEsi;
 	}
 
-	public float getEmployerEsi() {
+	public Double getEmployerEsi() {
 		return employerEsi;
 	}
 
-	public void setEmployerEsi(float employerEsi) {
+	public void setEmployerEsi(Double employerEsi) {
 		this.employerEsi = employerEsi;
 	}
 
@@ -123,18 +121,25 @@ public class CentralTaxDTO implements Serializable {
 		this.centraltaxid = centraltaxid;
 	}
 
-	
-	public Long getSourceleadTaxId() {
-		return sourceleadTaxId;
+	public String getCtfinancialYear() {
+		return ctfinancialYear;
 	}
 
-	public void setSourceleadTaxId(Long sourceleadTaxId) {
-		this.sourceleadTaxId = sourceleadTaxId;
+	public void setCtfinancialYear(String ctfinancialYear) {
+		this.ctfinancialYear = ctfinancialYear;
+	}
+
+	public List<TdsDTO> getTdsTaxList() {
+		return tdsTaxList;
+	}
+
+	public void setTdsTaxList(List<TdsDTO> tdsTaxList) {
+		this.tdsTaxList = tdsTaxList;
 	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
 
-    
+
 }

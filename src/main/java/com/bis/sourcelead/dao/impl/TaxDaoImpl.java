@@ -79,33 +79,6 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	
-
-	@Override
-	public List<CentralTax> getCentralTaxList(String yearFrequency) {
-		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from StateTax st";
-			if (yearFrequency != null && !yearFrequency.isEmpty()) {
-				query += " where st.financialYear =:yearFrequency";
-			}
-		
-			Query queryObj = session.createQuery(query);
-			if (yearFrequency != null && !yearFrequency.isEmpty()) {
-				queryObj.setString("yearFrequency", yearFrequency);
-			}
-			
-			List<CentralTax> centralTaxList = queryObj.list();
-			return centralTaxList;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	
-	
-	
-	
 	@Override
 	public long storeCentralTax(CentralTax centralTax) {
 		try {
@@ -128,6 +101,23 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
+	
+	@Override
+	public CentralTax getCentralTax(long sourceleadTaxId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(CentralTax.class, sourceleadTaxId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	
+	
+	
+	
+	
 	@Override
 	public long addStateTax(StateTax stateTax) {
 		try {
@@ -161,6 +151,29 @@ public class TaxDaoImpl implements TaxDao {
 		}
 		return null;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CentralTax> getCentralTaxList(String yearFrequency) {
+		List<CentralTax>  centralTaxList = null;
+			try {
+				Session session = this.sessionFactory.getCurrentSession();
+				String query = "from CentralTax ct";
+				if (yearFrequency != null && !yearFrequency.isEmpty()) {
+					query += " where ct.ctfinancialYear = :yearFrequency";
+				}
+				
+				 
+				Query queryObj = session.createQuery(query);
+				if (yearFrequency != null && !yearFrequency.isEmpty()) {
+					queryObj.setString("yearFrequency", yearFrequency);
+				}
+				 centralTaxList = queryObj.list();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return centralTaxList;
+		}
 
 	
 }

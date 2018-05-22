@@ -1,12 +1,7 @@
 package com.bis.sourcelead.web;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,15 +20,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
-import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.StateTaxDTO;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTaxType;
-import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
@@ -116,6 +108,27 @@ public class TaxController {
 	}
 
 
+	@RequestMapping(value = "/centralTax/create")
+	public ModelAndView addCentralTax(HttpServletRequest request, @RequestParam(value="centralTaxId",required = false) Long sourceleadTaxId) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			CentralTaxDTO centralTaxDTO = new CentralTaxDTO();
+			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(2);
+			modelAndView.addObject("taxTypes", taxTypeList);
+			if (sourceleadTaxId != null) {
+				centralTaxDTO = taxService.getCentralTax(sourceleadTaxId);
+			}
+			modelAndView.addObject("centralTax", centralTaxDTO);
+			modelAndView.addObject("activeTaxTab", "central");
+			Map<String, Boolean> yearList = caliculateYearList();	
+			modelAndView.addObject("yearList", yearList);
+			modelAndView.setViewName("tax/addCentralTax");
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+
 	
 
 	@RequestMapping(value = "/stateTax/add")
@@ -155,6 +168,25 @@ public class TaxController {
 		return modelAndView;
 	}
 
+	
+	@RequestMapping(value = "/centralTax/taxSummary")
+	public ModelAndView centralTaxSummary(HttpServletRequest request, @RequestParam(defaultValue = "0") long sourceleadTaxId)  {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			CentralTaxDTO centralTaxDTO = taxService.getCentralTax(sourceleadTaxId);
+			modelAndView.addObject("centralTax", centralTaxDTO);
+			modelAndView.setViewName("tax/centralTaxSummary");
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+
+	
+	
+	
+	
+	
 	@RequestMapping(value = "/getCentralTaxes", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<CentralTaxDTO> getCentralTaxes(HttpServletRequest request, 
@@ -210,18 +242,9 @@ public class TaxController {
 	@RequestMapping(value = "/centralTax/list")
 	public ModelAndView centralTaxList(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
+		Map<String, Boolean> yearList = null;
 		try {
-			Map<String, Boolean> yearList = new LinkedHashMap<>();
-			Calendar c = Calendar.getInstance();
-			c.roll(Calendar.YEAR, -2);
-			for (int i = 0; i < 4; i++) {
-				Calendar c1 = Calendar.getInstance();
-				boolean isCurrent = c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
-				String fromYear = c.get(Calendar.YEAR) + "";
-				c.roll(Calendar.YEAR, 1);
-				String toYear = c.get(Calendar.YEAR) + "";
-				yearList.put(fromYear + "-" + toYear, isCurrent);
-			}
+			yearList = caliculateYearList();
 			modelAndView.addObject("yearList", yearList);
 			modelAndView.addObject("activeTaxTab", "central");
 			modelAndView.setViewName("tax/centralTax");
@@ -231,31 +254,23 @@ public class TaxController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "/centralTax/create")
-	public ModelAndView addCentralTax(HttpServletRequest request) {
-		ModelAndView modelAndView = new ModelAndView();
-		try {
-			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(2);
-			modelAndView.addObject("taxTypes", taxTypeList);
-			modelAndView.addObject("activeTaxTab", "central");
-			modelAndView.setViewName("tax/addCentralTax");
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+	public Map<String, Boolean> caliculateYearList(){
+		Map<String, Boolean> yearList = new LinkedHashMap<>();
+		Calendar c = Calendar.getInstance();
+		c.roll(Calendar.YEAR, -2);
+		for (int i = 0; i < 4; i++) {
+			Calendar c1 = Calendar.getInstance();
+			boolean isCurrent = c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
+			String fromYear = c.get(Calendar.YEAR) + "";
+			c.roll(Calendar.YEAR, 1);
+			String toYear = c.get(Calendar.YEAR) + "";
+			yearList.put(fromYear + "-" + toYear, isCurrent);
 		}
-		return modelAndView;
+		return yearList;
 	}
-
-	@RequestMapping(value = "/centralTax/taxSummary")
-	public ModelAndView centralTaxSummary(HttpServletRequest request) {
-		ModelAndView modelAndView = new ModelAndView();
-		try {
-			modelAndView.setViewName("tax/centralTaxSummary");
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
-		return modelAndView;
-	}
-
+	
+	
+	
 	
 	
 	@RequestMapping(value = "/centralTax/add" , method = RequestMethod.POST)

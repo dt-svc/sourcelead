@@ -25,4 +25,6 @@ public interface TaxService {
 
 	List<CentralTaxDTO> getCentralTaxList(String yearFrequency);
 
+	CentralTaxDTO getCentralTax(long sourceleadTaxId);
+
 }

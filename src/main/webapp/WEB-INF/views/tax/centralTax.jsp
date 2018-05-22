@@ -12,8 +12,7 @@
 		<div class="tablelist-wrap">
 			<div class="clearfix">
 				<div class="col-md-2 dropdown-select mt10 mb10">
-					<select class="form-control" id="centralTaxYearList"
-					onchange="cx.getCentralTaxList()">
+					<select class="form-control" id="centralTaxYearList" onchange="tax.getCentralTaxList()">
 						<c:forEach items="${yearList}" var="year">
 							<option ${year.value==true?"selected=selected":""} value="${year.key}">${year.key}</option>
 						</c:forEach>
@@ -30,9 +29,7 @@
 					</select>
 				</div>
 				<div class="col-md-10">
-					<a href="create"
-						class=" mt5 pull-right btn btn-success btnSuccess anchorWhite">
-						+ Create</a>
+					<a href="create" class=" mt5 pull-right btn btn-success btnSuccess anchorWhite">+ Create</a>
 				</div>
 				<div class="clearfix"></div>
 			</div>
@@ -49,7 +46,7 @@
 					<tbody id="centralList">
 					</tbody>
 				</table>
-				<table id="noResultsTable">
+				<table id="noResultsTable" style="display: none;">
 					<tr class='odd'>
 						<td colspan='7' class='dataTables_empty' valign='top'></td>
 					</tr>

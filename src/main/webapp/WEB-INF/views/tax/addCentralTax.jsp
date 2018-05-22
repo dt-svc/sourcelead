@@ -17,23 +17,22 @@
 			<div class="col-md-10">
 				<div class="clearfix row">
 					<div class="col-md-4 dropdown-select mt10 mb10">
-						<select class="selectpicker width100percnt"  id="sourceleadTaxType " name="sourceleadTaxId" >
-						
+						<select class="selectpicker width100percnt" title ="Select Type of Tax" data-live-search="true" id="sourceleadTaxType " field-name="TaxType" data-validation="required"  name="sourceleadTaxId" >
 						<c:forEach items="${taxTypes}" var="t">
-									<option value="${t.id}">${t.description}</option>
+									<option value="${t.id}"
+										${centralTax.sourceleadTaxId==t.id?"selected='selected'":""}>${t.description}</option>
 								</c:forEach>
-						
-						
-						
-						
-						<!-- 	title="Select Type of Tax" data-live-search="true">
-							<option>Income tax</option>
-							<option>Sales tax</option>
-							<option>Excise duty</option>
-							<option>Service tax</option>
-							<option>Custom duty</option>	 -->
 						</select>
 					</div>
+					
+						<div class="col-md-3 dropdown-select mt10 mb10">
+					<select class="selectpicker width100percnt" title ="Select Year" data-live-search="true" id="stateTaxYearList" field-name="Year" data-validation="required" name = "ctfinancialYear" >
+						<c:forEach items="${yearList}" var="year">
+									<%-- <option ${year.key == centralTax.ctfinancialYear ? 'selected=selected':""}	value="${year.key}">${year.key}</option> --%>
+									<option ${year.value==true?"selected=selected":""} value="${year.key}">${year.key}</option>
+						</c:forEach>
+					</select>
+				</div>
 					<div class="clearfix"></div>
 				</div>
 			</div>
@@ -45,28 +44,26 @@
 						<div class="col-md-5">
 							<label class="clearfix">Ceil Value</label>
 							<div class="clearfix">
-								<input type="text" id = "ceilvaluepf"  name = "ceilvaluepf" class="form-control" name="Website" value=""
-									placeholder="Enter">
+								<input type="text" title ="Ceil Value" data-live-search="true" id = "ceilvaluepf" field-name="CeilValue" data-validation="required" name = "ceilvaluepf" class="form-control" name="Website" value="${centralTax.ceilvaluepf}" placeholder="Enter">
 							</div>
 						</div>
 						<div class="col-md-5">
 							<label class="clearfix">No. of Employees</label>
 							<div class="clearfix">
-								<input type="text" id = "noofemployees" name = "noofemployees" class="form-control" name="Website" value=""
-									placeholder="Enter">
+								<input type="text" title="no.of employees" id = "noofemployees" name = "noofemployees" class="form-control" name="Website" value="${centralTax.noofemployees}" placeholder="Enter">
 							</div>
 						</div>
 						<div class="col-md-5">
 							<label class="clearfix">Employee</label>
 							<div class="clearfix">
-								<input type="text" id = "employeepf" name = "employeepf" class="form-control" name="Website" value=""
+								<input type="text" id = "employeepf" name = "employeepf" class="form-control" name="Website" value="${centralTax.employeepf}"
 									placeholder="Enter">
 							</div>
 						</div>
 						<div class="col-md-5">
 							<label class="clearfix">Employer</label>
 							<div class="clearfix">
-								<input type="text"  id = "employerpf" name = "employerpf" class="form-control" name="Website" value=""
+								<input type="text"  id = "employerpf" name = "employerpf" class="form-control" name="Website" value="${centralTax.employerpf}"
 									placeholder="Enter">
 							</div>
 						</div>
@@ -78,21 +75,21 @@
 						<div class="col-md-5">
 							<label class="clearfix">ESI Ceil Value</label>
 							<div class="clearfix">
-								<input type="text" id = "ceilvalueesi"  name =  "ceilvalueEsi"  class="form-control" name="Website" value=""
+								<input type="text" title ="ESI Ceil Value" data-live-search ="true" id = "ceilvalueesi" field-name="ESI CeilValue" data-validation="required"  name =  "ceilvalueEsi"  class="form-control" name="Website" value="${centralTax.ceilvalueEsi}"
 									placeholder="Enter">
 							</div>
 						</div>
 						<div class="col-md-5">
 							<label class="clearfix">Employee</label>
 							<div class="clearfix">
-								<input type="text" id = "employeeesi" name = "employeeEsi" class="form-control" name="Website" value=""
+								<input type="text" id = "employeeesi" name = "employeeEsi" class="form-control" name="Website" value="${centralTax.employeeEsi}"
 									placeholder="Enter">
 							</div>
 						</div>
 						<div class="col-md-5">
 							<label class="clearfix">Employer</label>
 							<div class="clearfix">
-								<input type="text" id = "employeresi" name = "employerEsi" class="form-control" name="Website" value=""
+								<input type="text" id = "employeresi" name = "employerEsi" class="form-control" name="Website" value="${centralTax.employerEsi}"
 									placeholder="Enter">
 							</div>
 						</div>
@@ -103,27 +100,26 @@
 						<div class="clearfix minHeightcol5">
 							<div class="row">
 								<h4 class="col-md-6">
-									TDS <a href="javascript:void(0)" id="addTDSRow" onclick="tax.addDynamicTDSRow(false);"
-										class="paddingLeft cursorPointer ml" id="clonediv"
-										title="Add Row">+</a>
+									TDS <a href="javascript:void(0)" id="addTDSRow" onclick="tax.addDynamicTDSRow(false);" class="paddingLeft cursorPointer ml" id="clonediv" title="Add Row">+</a>
 								</h4>
 							</div>
 							<div class="row clonedInput mb" id="dynamicTDSList" name="tdsTaxList">
 								
+							<c:forEach var="tds" items="${centralTax.tdsTaxList}">
+							
+							
 								
 								
-								
-								
-								
-						<!-- 
+						 
 								<div class="col-md-3">
 									<label class="clearfix">Age</label>
 									<div class="clearfix">
-										<select class="width100percnt selectpicker" id = "age" name = "age"
+										<select class="width100percnt selectpicker" id = "age" name = "age" 
 											data-live-search="true" title="Select Age">
-											<option>0 - 60 Years</option>
-											<option>60 - 80 Years</option>
-											<option>Above 80</option>
+											 <option ${tds.age == '0 - 60 Years' ? 'selected' : ''} value="0 - 60 Years">0 - 60 Years</option>
+											 <option ${tds.age == '60 - 80 Years' ? 'selected' : ''} value="60 - 80 Years">60 - 80 Years</option>
+											 <option ${tds.age == 'Above 80' ? 'selected' : ''} value="Above 80">Above 80</option>
+											
 										</select>
 									</div>
 								</div>
@@ -131,21 +127,21 @@
 									<label class="clearfix">From</label>
 									<div class="clearfix">
 										<input type="text" id = "fromamount" name = "fromamount" class="form-control" name="Website"
-											value="" placeholder="Enter">
+											value="${tds.fromamount}" placeholder="Enter">
 									</div>
 								</div>
 								<div class="col-md-3">
 									<label class="clearfix">To</label>
 									<div class="clearfix">
 										<input type="text" id = "toamount" name = "toamount" class="form-control" name="Website"
-											value="" placeholder="Enter">
+											value="${tds.toamount}" placeholder="Enter">
 									</div>
 								</div>
 								<div class="col-md-2">
 									<label class="clearfix">Percentage</label>
 									<div class="clearfix">
 										<input type="text" id = "percentage" name = "percentage" class="form-control" name="Website"
-											value="" placeholder="Enter">
+											value="${tds.percentage}" placeholder="Enter">
 									</div>
 								</div>
 								<div class="col-md-1">
@@ -158,7 +154,27 @@
 									</ul>
 								</div>
 								<div class="clearfix"></div>
-								 -->
+								 
+							
+							
+							</c:forEach>	
+								
+								
+								
+								
+								
+								
+							
+								 
+								 
+								 
+								 
+								 
+								 
+								 
+								 
+								 
+								 
 								
 							</div>
 

@@ -90,6 +90,23 @@ public class TaxServiceImpl implements TaxService {
 		return stateTaxDTO;
 	}
 
+	@Override
+	public CentralTaxDTO getCentralTax(long sourceleadTaxId) {
+		CentralTaxDTO centralTaxDTO = new CentralTaxDTO();
+		try {
+			CentralTax centralTax = taxDao.getCentralTax(sourceleadTaxId);
+			if (centralTax != null) {
+				centralTaxDTO = getCentralTaxDTO(centralTax, true);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return centralTaxDTO;
+	}
+	
+	
+	
+	
 	public StateTaxDTO getStateTaxDTO(StateTax stateTax, boolean includeAll) {
 		try {
 			StateTaxDTO stateTaxDTO = new StateTaxDTO();
@@ -132,6 +149,9 @@ public class TaxServiceImpl implements TaxService {
 			centralTaxDTO.setEmployeepf(centralTax.getEmployeepf());
 			centralTaxDTO.setEmployerpf(centralTax.getEmployerpf());
 			centralTaxDTO.setNoofemployees(centralTax.getNoofemployees());
+			centralTaxDTO.setSourceleadTaxId(centralTax.getSourceleadTaxType().getId());
+			centralTaxDTO.setSourceleadTaxType(centralTax.getSourceleadTaxType().getDescription());
+			centralTaxDTO.setCtfinancialYear(centralTax.getCtfinancialYear());
 			if (includeAll) {
 				List<TdsDTO> tdsTaxList = new LinkedList<>();
 				for (Tds tds : centralTax.getTdsList()) {
@@ -140,6 +160,8 @@ public class TaxServiceImpl implements TaxService {
 					tdsDTO.setFromamount(tds.getFromamount());
 					tdsDTO.setToamount(tds.getToamount());
 					tdsDTO.setPercentage(tds.getPercentage());
+					tdsDTO.setEducationceiss(tds.getEducationceiss());
+					tdsDTO.setSurcharge(tds.getSurcharge());
 					tdsDTO.setId(tds.getId());
 					tdsTaxList.add(tdsDTO);
 				}
@@ -209,6 +231,7 @@ public class TaxServiceImpl implements TaxService {
 			ct.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
 			ct.setEmployeeesi(centralTaxDTO.getEmployeeEsi());
 			ct.setEmployeresi(centralTaxDTO.getEmployerEsi());
+			ct.setCtfinancialYear(centralTaxDTO.getCtfinancialYear());
 			ct.setSourceleadTaxType(getTaxTypeById(centralTaxDTO.getSourceleadTaxId()));
 			
 			HashSet<Tds> tdsList = new LinkedHashSet<>();
@@ -219,11 +242,12 @@ public class TaxServiceImpl implements TaxService {
 				} else {
 					tds = new Tds();
 				}
-				
 				tds.setAge(tdsDTO.getAge());
 				tds.setFromamount(tdsDTO.getFromamount());
 				tds.setToamount(tdsDTO.getToamount());
 				tds.setPercentage(tdsDTO.getPercentage());
+				tds.setEducationceiss(tdsDTO.getEducationceiss());
+				tds.setSurcharge(tdsDTO.getSurcharge());
 				tds.setCentraltaxid(ct);
 				tdsList.add(tds);
 			}
@@ -235,36 +259,7 @@ public class TaxServiceImpl implements TaxService {
 		return 0;
 	}
 	
-	
-	
-	/*@Override
-	public void saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) {
-		CentralTax centralTax = null;
-		if (centralTaxDTO.getId() != null) {
-			// service
-		} else {
-			centralTax = new CentralTax();
-		}
-		centralTax.setCeilvalueesi(centralTaxDTO.getCeilvalueEsi());
-		centralTax.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
-		centralTax.setEmployeeesi(centralTaxDTO.getEmployeeEsi());
-		centralTax.setEmployeepf(centralTaxDTO.getEmployeepf());
-		centralTax.setEmployeresi(centralTaxDTO.getEmployerEsi());
-		centralTax.setEmployerpf(centralTaxDTO.getEmployerpf());
-		centralTax.setNoofemployees(centralTaxDTO.getNoofemployees());
-		centralTax.setSourceleadTaxType(getTaxTypeById(centralTaxDTO.getSourceleadTaxId()));
-		centralTax = taxDao.storeCentralTax(centralTax);
-		Tds tds = new Tds();
-		tds.setAge(centralTaxDTO.getAge());
-		tds.setFromamount(centralTaxDTO.getFromamount());
-		tds.setToamount(centralTaxDTO.getToamount());
-		tds.setPercentage(centralTaxDTO.getPercentage());
-		tds.setCentraltaxid(centralTax);
-		tds = taxDao.storeTds(tds);
-	}
-*/
-	
-	
+
 	
 	
 	@Override
@@ -287,5 +282,6 @@ public class TaxServiceImpl implements TaxService {
 		return null;
 	}
 
+	
 
 }

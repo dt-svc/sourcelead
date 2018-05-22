@@ -11,15 +11,14 @@ $(document).ready(function() {
 	} else if (activeTaxTab === "central") {
 		tax.getCentralTaxList();
 	} else if(activeTaxTab === "createStateTax") {
-
 		tax.addDynamicPTRow(true);
 	} else if(activeTaxTab === "createCentralTax") {
 		tax.addDynamicTDSRow(true);
-		console.log("entered");
 
-		if(stateTaxId === 0)
+		/*if(stateTaxId === 0)
 			tax.addDynamicPTRow(true);
-
+		if(centralTaxId === 0)
+			tax.addDynamicTDSRow(true);*/
 	}
 	
 	$("#saveStateTax").click(function() {
@@ -59,7 +58,6 @@ $(document).ready(function() {
 		}
 	});
 	$("#saveCentralTax").click(function() {
-		alert("inside save");
 		if($('#createCentralTaxform').validate(false, validationSettings)) {
 			$("#saveCentralTax").attr("disabled","disabled");
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
@@ -92,37 +90,38 @@ $(document).ready(function() {
 	
 });
 function Tax() {
-
-
-	
 	this.getCentralTaxList = function() {
-		alert("inside");
 		var selectedYear = $("#centralTaxYearList").val();
-		alert(selectedYear);
 		$.post(sourceleadUrl + "/getCentralTaxes", {yearFrequency:selectedYear}, function(response) {
-			alert(response);
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
-				alert(response);
 				var stList = response.data;
+				console.log(stList.length);
 				if(stList.length > 0) {
 					for(var e in stList){
-						var result = "<tr><td>";
+						var result = "<tr>";
+						result += "<td>";
 						result += "<div>";
-						result += "<a href='taxSummary?sourceleadTaxId=" + stList[e].id + "'>"+ stList[e].taxType + "</div></td>";
+						result += "<a href='taxSummary?sourceleadTaxId=" + stList[e].id + "'>"+ stList[e].sourceleadTaxType + "</div></td>";
 						result += "</div>";
 						result += "</td>";
+						result += "<td>";
 						result += "<div>";
 						result += "<ul class='list-unstyled list-inline mb0'>";
 						result += "<li><a href='javascript:void()' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
 						result += "<li><a href='javascript:void()' title='Delete' class='text-danger'><i class='fa fa-trash'></i></a></li>";
 						result += "</ul>";
 						result += "</div>";
-						result += "</td></tr>";
+						result += "</td>";
+						result += "</tr>";
 					}
+					$("#noResultsTable").hide();
+					$("#centralListTable").show();
+					$("#centralList").empty();
+					$("#centralList").append(result);
 				} else {
 					$("#centralListTable").hide();
 					$("#noResultsTable").show();
@@ -255,7 +254,7 @@ function Tax() {
 	
 	this.addDynamicTDSRow = function(isFirst) {
 		var result = "<div data-id=tdsRow" + tdsRowId + ">";
-		result += "<div class='col-md-3'>";
+		result += "<div class='col-md-2'>";
 		result += "<label class='clearfix'>" + (isFirst ? "Age" : "" ) + "</label>";
 		result += "<div class='clearfix'>";
 		result += "<select class='width100percnt selectpicker' data-live-search='true' title='Select Age' name='tdsTaxList["+tdsRowId+"].age' field-name='Age' data-validation='required'>";
@@ -265,22 +264,34 @@ function Tax() {
 		result += "</select>";
 		result += "</div>";
 		result += "</div>";
-		result += "<div class='col-md-3'>";
+		result += "<div class='col-md-2'>";
 		result += "<label class='clearfix'>" + (isFirst ? "From" : "" ) + "</label>";
 		result += "<div class='clearfix'>";
 		result += "<input type='text' class='form-control' name='tdsTaxList["+tdsRowId+"].fromamount' value='' placeholder='Enter' field-name='From ' data-validation='required validate_float'>";
 		result += "</div>";
 		result += "</div>";
-		result += "<div class='col-md-3'>";
+		result += "<div class='col-md-2'>";
 		result += "<label class='clearfix'>" + (isFirst ? "To" : "" ) + "</label>";
 		result += "<div class='clearfix'>";
 		result += "<input type='text' class='form-control' name='tdsTaxList["+tdsRowId+"].toamount' value='' placeholder='Enter' field-name='To' data-validation='required validate_float'>";
 		result += "</div>";
 		result += "</div>";
-		result += "<div class='col-md-2'>";
+		result += "<div class='col-md-1'>";
 		result += "<label class='clearfix'>" + (isFirst ? "Percentage" : "" ) + "</label>";
 		result += "<div class='clearfix'>";
 		result += "<input type='text' class='form-control' name='tdsTaxList["+tdsRowId+"].percentage' value='' placeholder='Enter' field-name='Percentage' data-validation='required validate_float'>";
+		result += "</div>";
+		result += "</div>";
+		result += "<div class='col-md-2'>";
+		result += "<label class='clearfix'>" + (isFirst ? "Education Ceiss" : "" ) + "</label>";
+		result += "<div class='clearfix'>";
+		result += "<input type='text' class='form-control' name='tdsTaxList["+tdsRowId+"].educationceiss' value='' placeholder='Enter' field-name='Education Ceiss' data-validation='required validate_float'>";
+		result += "</div>";
+		result += "</div>";
+		result += "<div class='col-md-2'>";
+		result += "<label class='clearfix'>" + (isFirst ? "Surcharge" : "" ) + "</label>";
+		result += "<div class='clearfix'>";
+		result += "<input type='text' class='form-control' name='tdsTaxList["+tdsRowId+"].surcharge' value='' placeholder='Enter' field-name='Surcharge' data-validation='required validate_float'>";
 		result += "</div>";
 		result += "</div>";
 		result += "<div class='col-md-1'>";

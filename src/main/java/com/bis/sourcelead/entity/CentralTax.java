@@ -34,106 +34,111 @@ public class CentralTax implements Serializable{
 	@JoinColumn(name = "TAX_TYPE_ID", nullable = false)
 	private SourceleadTaxType sourceleadTaxType;
 
+	@Column(name = "CT_FINANCIAL_YEAR")
+	private String ctfinancialYear;
 	
 	@Column(name = "CEIL_VALUE_PF")
 	private Integer ceilvaluepf;
 	
 	@Column(name = "NO_OF_EMPLOYEES")
-	private  float noofemployees;
+	private  Double noofemployees;
 	
 	@Column(name = "EMPLOYEE_PF")
-	private float employeepf;
+	private Double employeepf;
 	
 	@Column(name = "EMPLOYER_PF")
-	private float employerpf;
+	private Double employerpf;
 	
 	@Column(name = "CEIL_VALUE_ESI")
 	private Integer ceilvalueesi;
 	
 	@Column(name = "EMPLOYEE_ESI")
-	private float employeeesi;
+	private Double employeeesi;
 	
 	@Column(name = "EMPLOYER_ESI")
-	private float employeresi;
+	private Double employeresi;
 	
 	@OneToMany(mappedBy="centraltaxid",cascade=CascadeType.ALL)
 	@JsonBackReference
     private Set<Tds> tdsList;
 
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	public long getId() {
 		return id;
-	}
-
-	public SourceleadTaxType getSourceleadTaxType() {
-		return sourceleadTaxType;
-	}
-
-	public Integer getCeilvaluepf() {
-		return ceilvaluepf;
-	}
-
-	public float getNoofemployees() {
-		return noofemployees;
-	}
-
-	public float getEmployeepf() {
-		return employeepf;
-	}
-
-	public float getEmployerpf() {
-		return employerpf;
-	}
-
-	public Integer getCeilvalueesi() {
-		return ceilvalueesi;
-	}
-
-	public float getEmployeeesi() {
-		return employeeesi;
-	}
-
-	public float getEmployeresi() {
-		return employeresi;
 	}
 
 	public void setId(long id) {
 		this.id = id;
 	}
 
+	public SourceleadTaxType getSourceleadTaxType() {
+		return sourceleadTaxType;
+	}
+
 	public void setSourceleadTaxType(SourceleadTaxType sourceleadTaxType) {
 		this.sourceleadTaxType = sourceleadTaxType;
+	}
+
+	public String getCtfinancialYear() {
+		return ctfinancialYear;
+	}
+
+	public void setCtfinancialYear(String ctfinancialYear) {
+		this.ctfinancialYear = ctfinancialYear;
+	}
+
+	public Integer getCeilvaluepf() {
+		return ceilvaluepf;
 	}
 
 	public void setCeilvaluepf(Integer ceilvaluepf) {
 		this.ceilvaluepf = ceilvaluepf;
 	}
 
-	public void setNoofemployees(float noofemployees) {
+	public Double getNoofemployees() {
+		return noofemployees;
+	}
+
+	public void setNoofemployees(Double noofemployees) {
 		this.noofemployees = noofemployees;
 	}
 
-	public void setEmployeepf(float employeepf) {
+	public Double getEmployeepf() {
+		return employeepf;
+	}
+
+	public void setEmployeepf(Double employeepf) {
 		this.employeepf = employeepf;
 	}
 
-	public void setEmployerpf(float employerpf) {
+	public Double getEmployerpf() {
+		return employerpf;
+	}
+
+	public void setEmployerpf(Double employerpf) {
 		this.employerpf = employerpf;
+	}
+
+	public Integer getCeilvalueesi() {
+		return ceilvalueesi;
 	}
 
 	public void setCeilvalueesi(Integer ceilvalueesi) {
 		this.ceilvalueesi = ceilvalueesi;
 	}
 
-	public void setEmployeeesi(float employeeesi) {
+	public Double getEmployeeesi() {
+		return employeeesi;
+	}
+
+	public void setEmployeeesi(Double employeeesi) {
 		this.employeeesi = employeeesi;
 	}
 
-	public void setEmployeresi(float employeresi) {
+	public Double getEmployeresi() {
+		return employeresi;
+	}
+
+	public void setEmployeresi(Double employeresi) {
 		this.employeresi = employeresi;
 	}
 
@@ -145,7 +150,11 @@ public class CentralTax implements Serializable{
 		this.tdsList = tdsList;
 	}
 
-	
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+
 	
 	
 }

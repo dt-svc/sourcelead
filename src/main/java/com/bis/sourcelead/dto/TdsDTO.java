@@ -9,7 +9,19 @@ public class TdsDTO {
 	
 	private Integer toamount;
 	
-	private float percentage;
+	private Double percentage;
+	
+	private Double educationceiss;
+	
+	private Double surcharge;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	public String getAge() {
 		return age;
@@ -35,22 +47,30 @@ public class TdsDTO {
 		this.toamount = toamount;
 	}
 
-	public float getPercentage() {
+	public Double getPercentage() {
 		return percentage;
 	}
 
-	public void setPercentage(float percentage) {
+	public void setPercentage(Double percentage) {
 		this.percentage = percentage;
 	}
 
-	public Long getId() {
-		return id;
+	public Double getEducationceiss() {
+		return educationceiss;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setEducationceiss(Double educationceiss) {
+		this.educationceiss = educationceiss;
 	}
-	
+
+	public Double getSurcharge() {
+		return surcharge;
+	}
+
+	public void setSurcharge(Double surcharge) {
+		this.surcharge = surcharge;
+	} 
+
 	
 	
 	
