@@ -867,6 +867,7 @@ function validateTemplateName() {
         });
     }
 }
+
 function checkFormNames() {
     formNames = [];
     var focusedElement;
@@ -907,14 +908,26 @@ function checkTaskNames(newName) {
     var rows = table.rows;
     for (var i = 1; i < rows.length; i++) {
         var name = rows[i].firstChild.textContent.trim();
-        if (newName === name) {
-            $("#taskName").after("<p class='jquery_form_error_message'>is Already Existed</span>");
-            $("#addTaskBtn").addClass("disableBtn");
-            return;
-        } else {
-            $("#taskName").parent().find('p.jquery_form_error_message').remove();
-            $("#addTaskBtn").removeClass("disableBtn");
-        }
+        /*if (newName === name) {
+    	$("#taskNameDiv").parent().find('p.jquery_form_error_message').remove();
+        $("input#taskName").after("<p class='jquery_form_error_message'>is Already Existed</span>");
+        $("#addTaskBtn").addClass("disableBtn");
+        return;
+    } else {
+        $("input#taskName").parent().find('p.jquery_form_error_message').remove();
+        $("#addTaskBtn").removeClass("disableBtn");
+    }*/
+		if (newName === name) {
+		    $('#taskNameDiv').find('p.jquery_form_error_message').remove();
+			  $("input#taskName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+			  $("#addTaskBtn").addClass("disableBtn");
+			  return;
+		}
+		else{
+			 $('input#taskName').removeAttr( "record-exist record-exist-errormsg");
+			 $('#taskNameDiv').find('p.jquery_form_error_message').remove(); 
+			 $("#addTaskBtn").removeClass("disableBtn");
+		}
     }
 }
 

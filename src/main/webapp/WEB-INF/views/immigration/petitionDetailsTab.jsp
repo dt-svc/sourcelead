@@ -48,7 +48,7 @@
 					  <li class="clearfix"><span>DOB</span><p>: ${immigration.birthDate}</p></li>
 					  <li class="clearfix"><span>Place of Birth</span><p>: ${immigration.birthPlace}</p></li>
 					  <li class="clearfix"><span>Nationality</span><p>: ${immigration.nationality}</p></li>
-					  <li class="clearfix"><span>Material status</span><p>: ${immigration.maritalStatus}</p></li>
+					  <li class="clearfix"><span>Marital status</span><p>: ${immigration.maritalStatus}</p></li>
 					  <li class="clearfix"><span>SSN</span><p>: ${immigration.ssnNumber}</p></li>
 					  <li class="clearfix"><span>I-94 Number</span><p>: ${immigration.i_94_number}</p></li>
 					  <li class="clearfix"><span>I-20 SEVIS Number If Student</span><p>: ${immigration.i_20_number}</p></li>
