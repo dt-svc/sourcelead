@@ -191,6 +191,8 @@ var addfamilyPopupEventListener = function() {
 // project side bar tabs
 $(document).ready(function() {
 	$("#detailsTab").show()
+	$("#remove_immigration_pop").remove();
+	$(".project_inn_mask").remove();
 	addfamilyPopupEventListener();
     $(".immigraTabs a").click(function(event) {
         event.preventDefault();
@@ -297,26 +299,26 @@ $("#packageZipfile").click(function() {
 });
 </script>
 <script>
-	function goToSummaryTab(tabName) {
+	function goToSummaryNextTab(tabName) {
 		if(tabName=="#visasTab"){
 			if($('#passportTbl tr').length<=1){
 				showWarningPopup("Passport");
 			return;
 			}
 		}else if(tabName=="#residencesTab"){
-			if($('#employerTbl tr').length<=1){
-				showWarningPopup("Employer");
+			if($('#educationTbl tr').length<=1){
+				showWarningPopup("Education");
 			return;
 			}
 		}else if(tabName=="#educationsTab"){
-			if($('#residenceTbl tr').length<=1){
-				showWarningPopup("Residence");
+			if($('#employerTbl tr ').length<=1){
+				showWarningPopup("Employer");
 			return;
 			}
 		}
 		else if(tabName=="#familiesTab"){
-			if($('#educationTbl tr').length<=1){
-				showWarningPopup("Education");
+			if($('#residenceTbl tr').length<=1){
+				showWarningPopup("Residence");
 			return;
 			}
 		}	
@@ -349,8 +351,11 @@ $("#packageZipfile").click(function() {
 		$("a[href='" + tabName + "']").removeClass("disabledLink");
 		$("a[href='" + tabName + "']").click();
 	}
-
 	
+	function goToSummaryTab(tabName) {
+		$("a[href='" + tabName + "']").removeClass("disabledLink");
+		$("a[href='" + tabName + "']").click();
+	}
 	function changeUscisStatusForImmigration(uscisStatusId,uscisOldId){
 		 $.ajax({
 		    	type: "GET",
