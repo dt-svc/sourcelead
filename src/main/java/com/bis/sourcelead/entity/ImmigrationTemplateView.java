@@ -59,6 +59,9 @@ public class ImmigrationTemplateView implements Serializable {
 	@Column(name = "REJECT_REASON")
 	@Type(type = "text")
 	private String rejectReason;
+	
+	@Column(name = "TEMPLATEUUID ")
+	private String templateUUID;
 
 	public Long getId() {
 		return id;
@@ -156,4 +159,13 @@ public class ImmigrationTemplateView implements Serializable {
 		this.rejectReason = rejectReason;
 	}
 
+	public String getTemplateUUID() {
+		return templateUUID;
+	}
+
+	public void setTemplateUUID(String templateUUID) {
+		this.templateUUID = templateUUID;
+	}
+
+	
 }
