@@ -365,6 +365,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             templateDto.setTemplateDescription(entityObj.getDescription());
             templateDto.setCountry(entityObj.getCountry());
             templateDto.setPetitionType(entityObj.getPetitionType().getId().toString());
+            templateDto.setUuid(entityObj.getUuid());
             // 
 
         } catch (Exception e) {
@@ -652,6 +653,15 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 			String queryString = "from ImmigrationTemplateTasks td where td.immigrationTempId.id=:templateId";
 			ImmigrationTemplateTasksList = session.createQuery(queryString).setLong("templateId", templateId).list();
 		return ImmigrationTemplateTasksList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public Long getTemplateIdByUUID(String immiTemplateUUID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select temp.id from ImmigrationTemplate temp where temp.uuid = :templateUUID";
+		Long tempId = (Long) session.createQuery(query).setParameter("templateUUID", immiTemplateUUID).uniqueResult();
+		return tempId;
 	}
 	
 	
