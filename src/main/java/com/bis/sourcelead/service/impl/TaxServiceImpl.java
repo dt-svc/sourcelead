@@ -96,7 +96,7 @@ public class TaxServiceImpl implements TaxService {
 		try {
 			List<StateTax> stList = taxDao.getStateTaxList(stateTaxDTO.getFinancialYear(), stateTaxDTO.getStateId(),
 					stateTaxDTO.getTaxTypeId());
-			if (stList != null && stList.size() > 0) {
+			if (stateTaxDTO.getId() == 0 && stList != null && stList.size() > 0) {
 				return -1;
 			} else {
 				StateTax st = null;
@@ -109,6 +109,15 @@ public class TaxServiceImpl implements TaxService {
 				st.setFinancialYear(stateTaxDTO.getFinancialYear());
 				st.setSourceleadTaxType(getTaxTypeById(stateTaxDTO.getTaxTypeId()));
 				st.setStates(statesService.getStateById(stateTaxDTO.getStateId()));
+
+				// While editing, if an existing ProfessionalTax row is deleted, then it should
+				// be manually delete as below by iterating all removeIds
+				if (stateTaxDTO.getRemoveIds() != null && !stateTaxDTO.getRemoveIds().isEmpty()) {
+					for (String id : stateTaxDTO.getRemoveIds().split(",")) {
+						taxDao.removeProfesionalTax(taxDao.getProfessionalTaxById(Long.valueOf(id)));
+					}
+				}
+
 				List<ProfessionalTax> ptList = new LinkedList<>();
 				for (ProfessionalTaxDTO ptDTO : stateTaxDTO.getProfessionalTaxList()) {
 					ProfessionalTax pt = null;

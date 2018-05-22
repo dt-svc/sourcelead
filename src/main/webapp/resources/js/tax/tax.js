@@ -73,7 +73,7 @@ function Tax() {
 						result += "<td>";
 						result += "<div>";
 						result += "<ul class='list-unstyled list-inline mb0'>";
-						result += "<li><a href='javascript:void()' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
+						result += "<li><a href='create?stateTaxId=" + stList[e].id + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
 						result += "<li><a href='javascript:void()' title='Delete' class='text-danger'><i class='fa fa-trash'></i></a></li>";
 						result += "</ul>";
 						result += "</div>";
@@ -115,6 +115,7 @@ function Tax() {
 		result += "<label class='clearfix'>" + (isFirst ? "Month" : "" ) + "</label>";
 		result += "<div class='clearfix'>";
 		result += "<select class='width100percnt selectpicker' data-live-search='true' title='Select Month' data-name='monthApplicable' name='professionalTaxList["+pfRowId+"].monthApplicable' field-name='Month' data-validation='required'>";
+		result += "<option>All</option>";
 		result += "<option>April</option>";
 		result += "<option>May</option>";
 		result += "<option>June</option>";
@@ -149,7 +150,9 @@ function Tax() {
 	}
 	
 	this.deletePTRow = function(ele) {
-		$(ele).closest("div[data-name='ptRow']").remove();
+		var removalRow = $(ele).closest("div[data-name='ptRow']");
+		$("#removeIds").val(($("#removeIds").val()!==""? $("#removeIds").val() + "," : "") + $(removalRow).data("id"));
+		$(removalRow).remove();
 		tax.refreshPTRows();
 	}
 	

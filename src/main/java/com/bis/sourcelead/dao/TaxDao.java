@@ -15,6 +15,8 @@ public interface TaxDao {
 	public StateTax getStateTax(long stateTaxId);
 
 	public long addStateTax(StateTax stateTax);
+	
+	public boolean removeProfesionalTax(ProfessionalTax professionalTax);
 
 	public SourceleadTaxType getTaxTypeById(long id);
 

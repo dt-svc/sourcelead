@@ -83,6 +83,7 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
+	@Transactional
 	public long addStateTax(StateTax stateTax) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -92,6 +93,18 @@ public class TaxDaoImpl implements TaxDao {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+
+	@Override
+	public boolean removeProfesionalTax(ProfessionalTax professionalTax) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(professionalTax);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	@Override

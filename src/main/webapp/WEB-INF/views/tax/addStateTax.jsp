@@ -15,6 +15,7 @@
 		<div class="tablelist-wrap">
 			<form action="" id="addStateTaxForm" method="post">
 				<input type="hidden" value="${stateTax.id}" name="id" />
+				<input type="hidden" value="" name="removeIds" id="removeIds"/>
 				<div class="col-md-10">
 					<div class="clearfix row">
 						<div class="col-md-4 dropdown-select mt10 mb10">
@@ -65,11 +66,11 @@
 						<div class="row clonedInput mb" id="dynamicPTList"
 							name="professionalTaxList">
 							<c:forEach items="${stateTax.professionalTaxList}" var="pt">
-								<input type="hidden" value="${pt.id}"
-									name="professionalTaxList[${pfRowId}].id">
-								<div data-name='ptRow'>
+								<div data-name='ptRow' data-id='${pt.id}'>
+									<input type="hidden" value="${pt.id}"
+										name="professionalTaxList[${pfRowId}].id">
 									<div class="col-md-3">
-										<label class="clearfix">From</label>
+										<label class="clearfix">${pfRowId==0?"From":""}</label>
 										<div class="clearfix">
 											<input type='text' class='form-control'
 												data-name='amountFrom'
@@ -80,7 +81,7 @@
 										</div>
 									</div>
 									<div class="col-md-3">
-										<label class="clearfix">To</label>
+										<label class="clearfix">${pfRowId==0?"To":""}</label>
 										<div class="clearfix">
 											<input type='text' class='form-control' data-name='amountTo'
 												name='professionalTaxList[${pfRowId}].amountTo'
@@ -90,7 +91,7 @@
 										</div>
 									</div>
 									<div class="col-md-3">
-										<label class="clearfix">Amount</label>
+										<label class="clearfix">${pfRowId==0?"Amount":""}</label>
 										<div class="clearfix">
 											<input type='text' class='form-control' data-name='amount'
 												name='professionalTaxList[${pfRowId}].amount'
@@ -100,7 +101,7 @@
 										</div>
 									</div>
 									<div class="col-md-2">
-										<label class="clearfix">Month</label>
+										<label class="clearfix">${pfRowId==0?"Month":""}</label>
 										<div class="clearfix">
 											<select class='width100percnt selectpicker'
 												data-live-search='true' title='Select Month'
@@ -122,22 +123,22 @@
 												<option
 													${pt.monthApplicable=="September"?"selected='selected'":""}>September</option>
 												<option
-													${pt.monthApplicable=="April"?"selected='selected'":""}>October</option>
+													${pt.monthApplicable=="October"?"selected='selected'":""}>October</option>
 												<option
-													${pt.monthApplicable=="April"?"selected='selected'":""}>November</option>
+													${pt.monthApplicable=="November"?"selected='selected'":""}>November</option>
 												<option
 													${pt.monthApplicable=="December"?"selected='selected'":""}>December</option>
 												<option
-													${pt.monthApplicable=="April"?"selected='selected'":""}>January</option>
+													${pt.monthApplicable=="January"?"selected='selected'":""}>January</option>
 												<option
-													${pt.monthApplicable=="April"?"selected='selected'":""}>February</option>
+													${pt.monthApplicable=="February"?"selected='selected'":""}>February</option>
 												<option
-													${pt.monthApplicable=="April"?"selected='selected'":""}>March</option>
+													${pt.monthApplicable=="March"?"selected='selected'":""}>March</option>
 											</select>
 										</div>
 									</div>
 									<div class="col-md-1">
-										<label class="clearfix">Actions</label>
+										<label class="clearfix">${pfRowId==0?"Actions":""}</label>
 										<ul class="list-unstyled list-inline mt5 text-center">
 											<c:choose>
 												<c:when test="${pfRowId==0}">
@@ -148,7 +149,7 @@
 												<c:otherwise>
 													<li><a title="Delete Row"
 														class="fa fa-trash text-danger deleteRow"
-														onClick="tax.deletePTRow(0)"></a></li>
+														onClick="tax.deletePTRow(this)"></a></li>
 												</c:otherwise>
 											</c:choose>
 										</ul>
@@ -158,6 +159,7 @@
 									<script type="text/javascript">
 										var pfRowId = ${pfRowId};
 									</script>
+									</div>
 							</c:forEach>
 						</div>
 					</div>

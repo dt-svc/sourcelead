@@ -16,11 +16,21 @@ public class StateTaxDTO implements Serializable {
 
 	private long taxTypeId;
 	private String taxType;
-	
+
 	private long stateId;
 	private String stateName;
-	
+
 	private List<ProfessionalTaxDTO> professionalTaxList;
+
+	private String removeIds;
+
+	public String getRemoveIds() {
+		return removeIds;
+	}
+
+	public void setRemoveIds(String removeIds) {
+		this.removeIds = removeIds;
+	}
 
 	public List<ProfessionalTaxDTO> getProfessionalTaxList() {
 		return professionalTaxList;
