@@ -706,7 +706,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		familyDetails.setStatus(Constants.RECORD_ACTIVE);
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 	    if(familyDetailsDto.getId()!= null) {
-	    System.out.println(" in edit mode --member id >"+familyDetailsDto.getId());
+	    logger.debug(" in edit mode --member id >"+familyDetailsDto.getId());
 	    familyDetails.setId(familyDetailsDto.getId());
 	    }else {
 	    familyDetails.setCreatedDate(currentDate); // created date , created by fields skipped for edit mode 
