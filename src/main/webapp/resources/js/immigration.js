@@ -925,11 +925,11 @@ function saveEmployerDetails(status) {
             scrollToTopOnError: true,
             dateFormat: 'yyyy/mm/dd'
         };
-	$("#employerSave_Buton").attr("disabled",true);
 	if ($('#employerDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("employerDetails_form");
         var candidateId = $('#candidateID').val();
         var immigrationId = $('#immigrationID').val();
+        $("#employerSave_Buton").attr("disabled",true);
         $.ajax({
             url: sourceleadUrl + immiModulePath + "/saveImmigrationEmployerDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
             type: "POST",
@@ -946,7 +946,9 @@ function saveEmployerDetails(status) {
                 }else{
                 	 showError("Operation failed, please try again");
                 }
+				$("#employerSave_Buton").removeAttr("disabled");
             }
+        
         });
 
         return true;
@@ -1047,11 +1049,14 @@ function getCandidateEmployerList(candidateId){
 }
 
 function saveResidenceDetails(status) {
-	$("#residence_SaveButon").attr("disabled",true);
+	
+	
+	
 	if ($('#residenceDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("residenceDetails_form");
         var candidateId = $('#candidateID').val();
         var immigrationId = $('#immigrationID').val();
+        $("#residence_SaveButon").attr("disabled",true);
         $.ajax({
             url: sourceleadUrl + immiModulePath + "/saveImmigrationResidenceDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
             type: "POST",
@@ -1068,7 +1073,7 @@ function saveResidenceDetails(status) {
                }else{
                	 showError("Operation failed, please try again");
                }
-            	
+              	$("#residence_SaveButon").removeAttr("disabled");
             }
         });
 
