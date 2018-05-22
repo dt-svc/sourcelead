@@ -130,5 +130,11 @@ public interface ImmigrationCommonDao {
 	public Boolean validateCandidatePassportVisa(Long candidateId,String idType,String idNumber) throws Exception;
 	
 	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType, Long candidateId,Long id) throws Exception;
+
+	Immigration getImmigrationByUUID(String immigrationUUID);
+
+	Long getImmigrationIdByUUID(String immigrationUUID);
+
+	Long getCandidateIdByUUID(String candidateUUID);
 	
 }

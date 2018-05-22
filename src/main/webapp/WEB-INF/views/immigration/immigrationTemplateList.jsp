@@ -380,17 +380,17 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     	if (opt.status !== null && opt.status !== '' && opt.status !== 0) {
                         result = result + '<td><div>';
                         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_PETITION_TEMPLATE\')">';
-                        result = result +' <i id="edit' + opt.id + '" onclick="immigration.editTemplateDetailsByRowId(' + opt.id + ');" class="glyphicon glyphicon-pencil"></i>';
+                        result = result +' <i id="edit' + opt.templateUUID + '" onclick="immigration.editTemplateDetailsByRowId(\''+ opt.templateUUID + '\');" class="glyphicon glyphicon-pencil"></i>';
                         '</sec:authorize>';
                         '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION_TEMPLATE\')">';
-                        result = result +' <i id="delete' + opt.id + '" onclick="disableTemplateStatus(' + opt.id + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                        result = result +' <i id="delete' + opt.templateUUID + '" onclick="disableTemplateStatus(\''+ opt.templateUUID + '\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                         '</sec:authorize>';
                         
                     	}else{
                     		
                     		result = result +' <div class="tblminwidth-75">';
                     		result = result + "<span class='glyphicon glyphicon-comment ml10 edit-reason text-info cursorPointer'><div class='edit-status'><p>"+opt.rejectReason+"</p></div></span>";
-                            result = result +' <span onclick="immigration.reactiveImmigrationTemplateById(' + opt.id + ');" class="cursorPointer glyphicon fa fa-repeat ml10 text-success"></span></div></td>';
+                            result = result +' <span onclick="immigration.reactiveImmigrationTemplateById(\''+ opt.templateUUID + '\');" class="cursorPointer glyphicon fa fa-repeat ml10 text-success"></span></div></td>';
                             result = result +' </div>';
 
                     	}
@@ -435,14 +435,14 @@ function cancelTerminationReson(){
 	$("#reasonForTemplateDiv").find("p.jquery_form_error_message").remove();
 	$("#reasonForTemplateDiv").empty(); 
 }
-function disableTemplateStatus(templateId){ // only stauts updated with reason. active 1 , deactive 0.
+function disableTemplateStatus(temlateUuid){ // only stauts updated with reason. active 1 , deactive 0.
 	$(".project_inn_mask").remove();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_template_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>";
 	result = result + ' <div id="reasonForTemplateDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteTempalteDetailsByRowId("+templateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteTempalteDetailsByRowId(\""+temlateUuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_template_pop").slideDown(200);

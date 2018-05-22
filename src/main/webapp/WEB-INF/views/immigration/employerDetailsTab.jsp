@@ -131,7 +131,7 @@
 				<div class="row">
 				<label class="col-md-4">Designation</label>
               	<div class="col-md-8">
-              		<input type="text" placeholder="Employer Designation" id ="designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Designation"  class="form-control" />
+              		<input type="text" placeholder="Designation" id ="designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Designation"  class="form-control" />
 				</div>
 				</div>
 			</div>				          
@@ -238,7 +238,7 @@
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#visasTab');" class="btn btn-default btn-sm">
              <!-- 	<input type="button" value="Skip" onclick="goToSummaryTab('#residencesTab');" class="btn btn-default btn-sm">  -->
-              	<input type="button" value="Continue" onclick="goToSummaryTab('#residencesTab');" class="btn btn-primary btn-sm ml10">
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#educationsTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
 	</form>

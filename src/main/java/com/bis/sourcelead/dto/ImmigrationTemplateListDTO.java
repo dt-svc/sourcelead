@@ -21,6 +21,8 @@ public class ImmigrationTemplateListDTO extends SearchDTO implements Serializabl
 	private String petitionType;
 	private String country;
 	private String rejectReason;
+	private String templateUUID;
+	
 
     public Long getId() {
         return id;
@@ -116,6 +118,12 @@ public class ImmigrationTemplateListDTO extends SearchDTO implements Serializabl
 		this.rejectReason = rejectReason;
 	}
 
-	
+	public String getTemplateUUID() {
+		return templateUUID;
+	}
+
+	public void setTemplateUUID(String templateUUID) {
+		this.templateUUID = templateUUID;
+	}
 
 }
