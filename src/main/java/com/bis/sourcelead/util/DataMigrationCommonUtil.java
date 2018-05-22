@@ -1859,4 +1859,77 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				return false;
 			return pat.matcher(email).matches();
 		}
+		public void dataValidationForImmigration(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy,
+				User user, OrgLocations orgLocation)  throws Exception{
+			if(dataMigrationDTOJsonCopy.getString("beneficiaryEmail").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
+				errorSet.put("beneficiaryEmail", "Beneficiary Email is missing");
+			}
+			if(dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
+				errorSet.put("dateOfBirth", "DOB is missing");
+			}
+			if(dataMigrationDTOJsonCopy.getString("maritalStatus").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
+				errorSet.put("maritalStatus", "Marital status is missing");
+				
+			}
+			if(dataMigrationDTOJsonCopy.getString("petitionType").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("petitionType"))) {
+				errorSet.put("petitionType", "Petition Type is missing"); ///  dropdown value.
+			}
+			if(dataMigrationDTOJsonCopy.getString("template").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("template"))) {
+				errorSet.put("template", "Template is missing"); ///  dropdown value.
+			}
+			
+			if(dataMigrationDTOJsonCopy.getString("openOn").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("openOn"))) {
+				errorSet.put("openOn", "Open On is missing"); 
+			}
+			if(dataMigrationDTOJsonCopy.getString("status").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("status"))) {
+				errorSet.put("status", "Status is missing"); 
+			}
+			if(dataMigrationDTOJsonCopy.getString("lawFirmClient").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("lawFirmClient"))) {
+				errorSet.put("lawFirmClient", "Law Firm/Client is missing"); ///  dropdown value.
+			}
+		
+			if(dataMigrationDTOJsonCopy.getString("lawFirmContactEmail").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("lawFirmContactEmail"))) {
+				errorSet.put("lawFirmContactEmail", "Attorney/Contact email is missing"); ///  dropdown value.
+				
+			}
+			
+			/*if(!dataMigrationDTOJsonCopy.getString("category").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("category"))) {
+				AssetCategory  category= assetCategoryService.getAssetCategoryListByLocationIdAndName(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("category").trim());
+				if(category == null){
+					errorSet.put("category", dataMigrationDTOJsonCopy.getString("category")+" is Not Exist");
+				}else{
+					dataMigrationDTOJsonCopy.put("category", category.getId().toString());	
+				}
+			}*/
+			
+			/*if(!dataMigrationDTOJsonCopy.getString("assignAssetStr").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("assignAssetStr"))) {
+				StringBuffer assignAssetStrSB = new StringBuffer();
+				String[] assignUsere = dataMigrationDTOJsonCopy.getString("assignAssetStr").split("&");
+				int assignUsereCoiunt = assignUsere.length;
+				int incr = 0;
+				for(String as:assignUsere) {
+					String[] email = as.split("#");
+					boolean emailVaild = isValidEmailAddress(email[0]);
+					if(emailVaild == true) {		 
+						User user2 = userService.findByEmailAndOrgLocationsId(email[0], orgLocation.getId());
+						if(user2 != null) {
+							incr++;
+							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user2.getId(), orgLocation.getId());
+							email[0] = userRole.getId().toString();
+							assignAssetStrSB.append(email[0]).append("#").append(email[1]);
+							if(assignUsereCoiunt > 1 && incr < assignUsereCoiunt) {
+								assignAssetStrSB.append("&");
+							}
+						}else {
+							errorSet.put("employeeEmail",email[0]);
+						}
+						
+					}else {
+						errorSet.put("assignAssetStr", "invalid date");
+					}
+				}
+				dataMigrationDTOJsonCopy.put("assignAssetStr",assignAssetStrSB.toString());
+			}*/
+			
+		}
 	}

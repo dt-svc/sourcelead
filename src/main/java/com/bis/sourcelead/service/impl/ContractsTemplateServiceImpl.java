@@ -443,7 +443,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		if("WTVStage".equalsIgnoreCase(contractsDTO.getSaveType())){
 			contracts.setTemplateSubmissionStatus(Constants.WAITING_TO_BE_VERIFY);
-		}else if(StringUtils.isNotBlank(contractsDTO.getSaveType()) && !Constants.DRAFT.equalsIgnoreCase(contractsDTO.getSaveType()) && !Constants.PENDING.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
+		}else if(StringUtils.isNotBlank(contractsDTO.getSaveType()) && !Constants.DRAFT.equalsIgnoreCase(contractsDTO.getSaveType()) && Constants.PENDING.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
 			if(StringUtils.isNotBlank(contractsDTO.getOwnersType())){
 				Long userId = user.getId().longValue();
 				if(Constants.PARALLEL.equalsIgnoreCase(contractsDTO.getOwnersType())){
@@ -494,6 +494,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setTemplateSubmissionStatus(Constants.PENDING);
 		}
 		
+		//owners
 		if(contractsDTO.getParallelOwner() != null || (contractsDTO.getSequentialOwner1() > 0 && contractsDTO.getSequentialOwner2() > 0)){
 			contracts.setOwnerHierarchyList(getOwnersList(contractsDTO, contracts, user));
 		}

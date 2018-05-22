@@ -160,6 +160,11 @@ public class User implements Serializable{
 	@Column(name = "MARITAL_STATUS")
 	private String maritalStatus;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LINK_USER_ID")
+	@JsonProperty
+    private User linkUserId;
+	
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
@@ -884,6 +889,14 @@ public class User implements Serializable{
 
 	public void setMaritalStatus(String maritalStatus) {
 		this.maritalStatus = maritalStatus;
+	}
+
+	public User getLinkUserId() {
+		return linkUserId;
+	}
+
+	public void setLinkUserId(User linkUserId) {
+		this.linkUserId = linkUserId;
 	}
 
 	
