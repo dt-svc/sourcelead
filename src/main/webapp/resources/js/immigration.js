@@ -581,12 +581,13 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	            scrollToTopOnError: true,
 	            dateFormat: 'yyyy/mm/dd'
 	        };
-		$("#canFormSave_Button").attr("disabled",true);
+		
 		if ($('#formSave_Form').validate(false, validationSettings)) {
 			var formData = getFormData("formSave_Form");
 			var candidateId = $('#candidateID').val();
 			var templateId = $('#templateID').val();
 			var immigrationId = $('#immigrationID').val();
+			$("#canFormSave_Button").attr("disabled",true);
 	        $.ajax({
 	            url: sourceleadUrl + immiModulePath + "/saveCandidateImmigrationForms?"+ tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&templateId="+templateId,
 	            type: "POST",
@@ -597,6 +598,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	                	$('.popMask').fadeOut();
 	                	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'');
 	                }
+	                $("#canFormSave_Button").removeAttr("disabled");
 	            }
 	        });
 
