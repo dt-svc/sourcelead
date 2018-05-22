@@ -1519,6 +1519,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	}
 
 	@Override
+	public ResponseList<ImmigrationListViewDTO> getImmigrationsListByCountsLink(
+			ImmigrationListViewDTO immigrationListDTO, String searchValue, OrgLocations orgLocations) throws Exception {
+		
+		return immigrationCommonDao.getImmigrationsListByCountsLink(immigrationListDTO,searchValue,orgLocations);
+			}
+	@Override
 	public ImmigrationCandidateForms getImmigrationCandidateFormsDetailsByFormNameAndId(String formName,
 			Long candidateId, Long immigrationId, Long id) throws Exception {
 		return immigrationCommonDao.getImmigrationCandidateFormsDetailsByFormNameAndId(formName, candidateId, immigrationId, id);
@@ -1528,6 +1534,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	public Boolean validateImmigrationCandidateForms(String formName, Long candidateId, Long immigrationId)
 			throws Exception {
 		return immigrationCommonDao.validateImmigrationCandidateForms(formName, candidateId, immigrationId);
+
 	}
 
 }
