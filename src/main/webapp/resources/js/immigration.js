@@ -206,9 +206,9 @@ function Immigration() {
         window.location.href = sourceleadUrl + immiModulePath + "/addNewPetitionTemplate?templateUuid=" + templateUuid; // for editing mode  
     }
 
-    this.reactiveImmigrationTemplateById = function (templateId){
+    this.reactiveImmigrationTemplateById = function (templateUuid){
     	$.ajax({
-            url: sourceleadUrl + immiModulePath + "/reactiveImmigrationTemplateDetailsById?templateId=" + templateId,
+            url: sourceleadUrl + immiModulePath + "/reactiveImmigrationTemplateDetailsById?templateUuid="+templateUuid,
             type: "GET",
             data: templateId,
             success: function (data) {
@@ -219,12 +219,12 @@ function Immigration() {
         });
     }
     
-    this.deleteTempalteDetailsByRowId = function (templateId) {
+    this.deleteTempalteDetailsByRowId = function (temlateUuid) {
         var reason = $("#reasonForTemplate").val();
         if(reason.match(/^[^\s-](.*)*$/) != null && reason !="" && reason.length <= 250){
         $("#reasonForTemplateDiv").empty();
     	$.ajax({
-            url: sourceleadUrl + immiModulePath + "/deleteImmigrationTemplateDetatils?deleteId=" + templateId+"&reason="+reason,
+            url: sourceleadUrl + immiModulePath + "/deleteImmigrationTemplateDetatils?temlateUuid="+temlateUuid+"&reason="+reason,
             type: "GET",
             data: templateId,
             success: function (data) {
