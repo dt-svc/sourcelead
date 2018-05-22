@@ -852,6 +852,7 @@
 <script type="text/javascript">
     function validateCandidateEmail() {
         var email = document.getElementById("email").value;
+        email = email.trim();
         $('#emailDiv').find('p.jquery_form_error_message').remove();
         if (email != null && email != "") {
             $.ajax({

@@ -89,6 +89,9 @@ public interface ImmigrationCommonService {
 
 	ResponseList<ImmigrationListViewDTO> getImmigrationsList(ImmigrationListViewDTO immigrationListDTO, String searchValue,  OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal) throws Exception;
 
+	ResponseList<ImmigrationListViewDTO> getImmigrationsListByCountsLink(ImmigrationListViewDTO immigrationListDTO, String searchValue,  OrgLocations orgLocations) throws Exception;
+
+	
 	String updateUscisTypeDropDown(Long templateId, Long uscisId,Long uscisOldId,User user,OrgLocations orgLocations) throws Exception;
 
 	ImmigrationDTO editImmigrationDetails(Long immigrationUUID, OrgLocations orgLocations);
@@ -124,5 +127,9 @@ public interface ImmigrationCommonService {
 	Long getImmigrationIdByUUID(String immigrationUUID);
 
 	Long getCandidateIdByUUID(String candidateUUID);
+	
+	public ImmigrationCandidateForms getImmigrationCandidateFormsDetailsByFormNameAndId(String formName, Long candidateId,Long immigrationId,Long id) throws Exception;
+	
+	public Boolean validateImmigrationCandidateForms(String formName, Long candidateId,Long immigrationId) throws Exception;
 	
 }
