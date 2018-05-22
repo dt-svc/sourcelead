@@ -45,7 +45,8 @@ public class SourceleadTicketsDaoImpl implements SourceleadTicketsDao{
 	private String statusDelete;
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
-	
+	@Value("${jdbc.schema}")
+	private String schema;
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadTicketsDaoImpl.class);
 
 
@@ -264,7 +265,7 @@ public class SourceleadTicketsDaoImpl implements SourceleadTicketsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public Long getTicketGeneratedIdByGeneratedIdcount(Integer generatedIdCount) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "SELECT MAX(ID) FROM sourcelead.SOURCELEAD_TICKETS";
+		String query = "SELECT MAX(ID) FROM "+schema+".SOURCELEAD_TICKETS";
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {

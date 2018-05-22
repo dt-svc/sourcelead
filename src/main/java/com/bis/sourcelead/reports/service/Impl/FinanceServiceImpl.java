@@ -174,7 +174,7 @@ public class FinanceServiceImpl implements FinanceService{
 							}else {
 								name.append(candidate.getFirstName());
 							}
-							
+							missingInvoice.setCandidateName(name.toString());
 							if(orgRelations.getResponderLocationId().getId().longValue() == orgLocation.getId().longValue()){
 								missingInvoice.setOrgName(orgRelations.getLocationId().getOrgLocationName());
 							}if(orgRelations.getLocationId().getId().longValue() == orgLocation.getId().longValue()){
@@ -197,8 +197,8 @@ public class FinanceServiceImpl implements FinanceService{
 							}
 							if (sah.getBillId() != null) {
 								missingInvoice.setBillReferId(String.valueOf(sah.getBillId().getId()));
-								missingInvoice.setTotalAmount(sah.getInvoiceId().getTotal());
-								missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getInvoiceId().getInvoiceDate()));
+								missingInvoice.setTotalAmount(sah.getBillId().getTotal());
+								missingInvoice.setBillDate(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), sah.getBillId().getInvoiceDate()));
 							}
 							if(sah.getFrequencyStartDate() != null && sah.getFrequencyEndDate() !=null ) {
 								StringBuilder sb = new StringBuilder();

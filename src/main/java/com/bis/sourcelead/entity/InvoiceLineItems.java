@@ -114,9 +114,11 @@ public class InvoiceLineItems {
 	}
 
 	@Transient
+	@JsonProperty
 	private String candidateName;
 	
 	@Transient
+	@JsonProperty
 	private String sowName;
 
 	@Transient
@@ -129,6 +131,7 @@ public class InvoiceLineItems {
 	
 	
 	@Transient
+	@JsonProperty
 	private String employeeId;
 
 	@Transient

@@ -1,1 +1,1 @@
-CALL AlterTableAddColumn ('sourcelead','ORG_SPOC','UUID','VARCHAR(250) NULL');
+CALL AlterTableAddColumn ('ORG_SPOC','UUID','VARCHAR(250) NULL');

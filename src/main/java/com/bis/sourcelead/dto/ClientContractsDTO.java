@@ -100,6 +100,8 @@ public class ClientContractsDTO {
 	private String spocUUID;
 	private String templateFileURL;
 	private String billingCycle;
+	private String isOwner;
+	private String revisedReason;
 	
 	public Long getId()
 	{
@@ -965,6 +967,25 @@ public class ClientContractsDTO {
 	public void setBillingCycle(String billingCycle) {
 		this.billingCycle = billingCycle;
 	}
-	
+
+	public String getIsOwner()
+	{
+		return isOwner;
+	}
+
+	public void setIsOwner(String isOwner)
+	{
+		this.isOwner = isOwner;
+	}
+
+	public String getRevisedReason()
+	{
+		return revisedReason;
+	}
+
+	public void setRevisedReason(String revisedReason)
+	{
+		this.revisedReason = revisedReason;
+	}
 	
 }

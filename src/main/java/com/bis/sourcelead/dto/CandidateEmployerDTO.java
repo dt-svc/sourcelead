@@ -1,6 +1,12 @@
 package com.bis.sourcelead.dto;
 
+
+import java.util.List;
+
+import com.bis.sourcelead.entity.LookUpData;
+
 import com.bis.sourcelead.annotations.Required;
+
 
 public class CandidateEmployerDTO {
 
@@ -29,9 +35,25 @@ public class CandidateEmployerDTO {
 
 	private String candidateEmployeeId;
 
+	private String staticPath;
+	
+	private List<FileInfo> fileInfo;
+	
+	private String taxId;
+	
+	private String jobTitle;
+	
+	private String employmentType;
+
+
 	private long candidateId;
 
 	private String candidateExperianceId;
+
+
+	private List<LookUpData> candidateEmpLookup; 
+
+
 
 	private String loginUserId;
 
@@ -47,7 +69,9 @@ public class CandidateEmployerDTO {
 		this.candidateemployerId = candidateemployerId;
 	}
 
+
 	public Long getId() {
+
 		return id;
 	}
 
@@ -143,9 +167,33 @@ public class CandidateEmployerDTO {
 		this.candidateEmployeeId = candidateEmployeeId;
 	}
 
-	public long getCandidateId() {
-		return candidateId;
+
+	public String getTaxId() {
+		return taxId;
 	}
+
+	public void setTaxId(String taxId) {
+		this.taxId = taxId;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
+
+
+	
 
 	public void setCandidateId(long candidateId) {
 		this.candidateId = candidateId;
@@ -159,8 +207,13 @@ public class CandidateEmployerDTO {
 		this.candidateExperianceId = candidateExperianceId;
 	}
 
-	public String getLoginUserId() {
-		return loginUserId;
+
+	public List<LookUpData> getCandidateEmpLookup() {
+		return candidateEmpLookup;
+	}
+
+	public void setCandidateEmpLookup(List<LookUpData> candidateEmpLookup) {
+		this.candidateEmpLookup = candidateEmpLookup;
 	}
 
 	public void setLoginUserId(String loginUserId) {
@@ -174,5 +227,30 @@ public class CandidateEmployerDTO {
 	public void setOrgLocationId(String orgLocationId) {
 		this.orgLocationId = orgLocationId;
 	}
+
+	public long getCandidateId() {
+		return candidateId;
+	}
+
+	public String getLoginUserId() {
+		return loginUserId;
+	}
+
+	public String getStaticPath() {
+		return staticPath;
+	}
+
+	public void setStaticPath(String staticPath) {
+		this.staticPath = staticPath;
+	}
+
+	public List<FileInfo> getFileInfo() {
+		return fileInfo;
+	}
+
+	public void setFileInfo(List<FileInfo> fileInfo) {
+		this.fileInfo = fileInfo;
+	}
+
 
 }

@@ -94,6 +94,11 @@
  </script>
 <script>
 window.onload = function () {
+	    var type = '${type}';
+		if(type =='freelance'){
+		  $("#jobSeekerId").removeClass("active");
+	      document.getElementById('freelanceId').className = 'active';
+		}
 	    socialInviterScripts();
 		var contactUUID = '${contactUUID}';
 		if(contactUUID != null && contactUUID != '' && contactUUID != 'undefined'){
@@ -313,14 +318,14 @@ window.onload = function () {
 <body>
 <div class="regis_bg">
   <div class="container">
-      
+    
     <div class="outsoucing-registaion registerwith">
         <div class="company_logo companyLogo pull-left mb10"><a href="<c:url value='/'/>"><img src="/resources/images/SourceLead-logo.png" alt="Sourcelead Logo" title="Sourcelead Logo" class="img-responsive" width="300"></a></div>
       <div class="clearfix"></div>
       <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user paddingRight"></i>Job Seeker</a></li>
+          <li class="active" id="jobSeekerId"><a data-toggle="tab" href="#professional" onclick="resetCredentials('Professional')"><i class="fa fa-user paddingRight"></i>Job Seeker</a></li>
           <c:if test="${empty contactUUID}">
-          <li><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie paddingRight"></i><span>Freelance</span></a></li>
+          <li id="freelanceId"><a data-toggle="tab" href="#recruiter" onclick="resetCredentials('Recruiter')"><i class="fa fa-black-tie paddingRight"></i><span>Freelance</span></a></li>
           <li><a data-toggle="tab" href="#employee" onclick="resetCredentials('Employer')"><i class="fa fa-address-book-o paddingRight"></i>Company</a></li>
           </c:if>
           <input type="hidden" id="tabType" />

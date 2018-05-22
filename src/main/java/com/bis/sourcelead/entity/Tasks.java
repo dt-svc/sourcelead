@@ -48,6 +48,10 @@ public class Tasks implements Serializable{
 	@JoinColumn(name = "ASSIGNED_USER_ID")
    	private User assignedUserId;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "IMMIGRATION_ID")
+   	private Immigration immigrationId;
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ON_BOARDING_ID")
@@ -328,5 +332,14 @@ public class Tasks implements Serializable{
 	public void setVendorTaskDateStr(String vendorTaskDateStr) {
 		this.vendorTaskDateStr = vendorTaskDateStr;
 	}
+
+	public Immigration getImmigrationId() {
+		return immigrationId;
+	}
+
+	public void setImmigrationId(Immigration immigrationId) {
+		this.immigrationId = immigrationId;
+	}
+	
 }
 

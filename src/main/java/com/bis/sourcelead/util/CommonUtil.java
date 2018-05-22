@@ -3,7 +3,6 @@ package com.bis.sourcelead.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -23,7 +22,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -43,6 +41,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
@@ -67,15 +66,17 @@ import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.dto.TimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractsTemplate;
-import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
@@ -94,6 +95,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetActivities;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
@@ -105,8 +107,10 @@ import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -125,7 +129,9 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardTemplateDocumentsService;
 import com.bis.sourcelead.service.VendorOnboardTemplateService;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.icu.text.DecimalFormat;
 import com.thoughtworks.xstream.XStream;
@@ -233,6 +239,9 @@ public class CommonUtil {
 	
 	@Value("${static.path}")
     private String staticPath;
+	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioconService;
 	
 	
 	/**
@@ -2218,7 +2227,7 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		if(sah != null) {
 			timesheetActivity = new TimesheetActivities();
 			timesheetActivity.setProjectId(sah.getSubmissionId().getProjects());
-			timesheetActivity.setActivityStatus(activityStatus);
+			timesheetActivity.setActivityStatus(activityStatus.toUpperCase());
 			timesheetActivity.setMasterCandidate(sah.getSubmissionId().getMasterCandidateId());
 			timesheetActivity.setFrequencyStartDate(sah.getFrequencyStartDate());
 			timesheetActivity.setFrequencyEndDate(sah.getFrequencyEndDate());
@@ -2229,14 +2238,44 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 			timesheetActivity.setReopenedUser(sah.getReopenedUser());
 			timesheetActivity.setReopenReason(sah.getReopenReason());
 			timesheetActivity.setReopenRejectedReason(sah.getReopenRejectedReason());
-			timesheetActivity.setCreatedDate(sah.getCreatedDate());
+			Date createdDate = addCurrentTimeToDate(sah.getCreatedDate());
+			timesheetActivity.setCreatedDate(createdDate);
 			timesheetActivity.setCreatedBy(sah.getCreatedBy());
+			timesheetActivity.setActionPerformedbyUserId(sah.getTimesheetActivityLoginUser());
+			if(sah.getSubmissionId() != null) {
+				timesheetActivity.setWeekComments(sah.getSubmissionId().getWeekcomments());
+			}
+			timesheetActivity.setWeekTotal(sah.getSubmissionId().getTotalHours());
+			timesheetActivity.setWeekTotalBillable(sah.getSubmissionId().getBillableHours());
+			timesheetActivity.setWeekTotalNonBillable(sah.getSubmissionId().getNonBillableHours());
 		}
 		return timesheetActivity;
 	}
 	
 	
-  public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicenseSubscription orgLicenseSubscription,User loginUser) {
+  private static Date addCurrentTimeToDate(Date createdDate) {
+	  SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+	  Calendar cal = Calendar.getInstance();
+	  cal.setTime(createdDate);
+	  
+	  Calendar calender = Calendar.getInstance();
+	  calender.setTime(new Date());
+	     
+      String currentdate =  sdf.format(calender.getTime());
+      String hh = currentdate.split(":")[0];
+      String mm = currentdate.split(":")[1];
+      String ss = currentdate.split(":")[2];
+      
+      cal.add(Calendar.HOUR_OF_DAY, Integer.parseInt(hh));
+      cal.add(Calendar.MINUTE, Integer.parseInt(mm));
+      cal.add(Calendar.SECOND, Integer.parseInt(ss));
+      
+      Date newDate = cal.getTime();
+      System.out.println(newDate);
+      return newDate;
+	}
+
+public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicenseSubscription orgLicenseSubscription,User loginUser) {
 		
 		OrgLicenseSubscriptionHistory history = new OrgLicenseSubscriptionHistory();
 		history.setOrgLicenseSubscription(orgLicenseSubscription);
@@ -2344,6 +2383,16 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(uniqueScenerioName,Constants.ENTITY_TYPE_EMAIL);
 			   }
 			 
+			 /*String emailBody = null;
+			 String path=staticPath.substring(0, staticPath.lastIndexOf("/"));
+			 try {
+				    BufferedReader lineReader = new BufferedReader(new FileReader(path+emailScenario.getBodyUrl().replace("\\","\\\\")));
+				    emailBody = new Scanner(lineReader).useDelimiter("\\Z").next();
+				   // System.out.println(emailBody);
+				   
+				} catch (IOException ex) {
+				    System.err.println(ex);
+				}*/
 
 			 //covert subject,body and signature
 			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
@@ -2366,6 +2415,35 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 	}
 	  
   }
-
-		
+  
+  
+  public String getConfiguredFromEmail(Long orgLocationId,EmailScenario  emailScenario) throws Exception{
+	  
+	     String fromEmail = null;
+		 EmailConfigurationFromMail confFromMail=null;
+		 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocationId);
+		 if(emailConfigMailList != null){
+			 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+				 if( fromMail.getEmailModules() != null){
+ 					String[] jobIds = fromMail.getEmailModules().split(",");
+						for(int i=0; i<jobIds.length; i++) {
+							if(Long.valueOf(jobIds[i]) == emailScenario.getTabId().getId() ){
+								confFromMail=fromMail;
+							}
+						}
+				 }
+			 } 
+			 
+			 if(confFromMail == null){
+				 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocationId);
+				 if(confFromMail != null){
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }else{
+				 fromEmail = confFromMail.getEmail();
+			 }
+		 }
+		 
+		 return fromEmail;
+  }
 }

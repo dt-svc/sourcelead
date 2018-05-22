@@ -122,10 +122,13 @@ function errRemoveClientContact(){
 							<label class="col-md-3">Invoice Date<span
 								class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9 select-field" id="errInvoiceDate">
+							<div class="input-group">
 								<input type="text" class="form-control calendar"
 									id="invoiceDate" name="invoiceDate" value="${currentDate}"
 									placeholder="Invoice Date" id="invoiceDate" readonly
 									data-validation="required" field-name="Invoice Date">
+									<span class="input-group-addon" onClick="clearInvoiceDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+							</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -139,14 +142,18 @@ function errRemoveClientContact(){
 									<option value="45 days">45 days</option>
 									<option value="60 days">60 days</option>
 								</select>
-							</div>
+								
+						</div>
 						</div>
 						<div class="form-group">
 							<label class="col-md-3" >Due Date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='The deadline for the invoice payment'></i></label>
 							<div class="col-md-9 " id="errDuedate">
+							<div class="input-group">
 								<input type="text" class="form-control calendar" id="dueDate"
 									name="dueDate" value="" placeholder="Due Date"
 									readonly data-validation="required" field-name="Due Date">
+									<span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+							</div>		
 							</div>
 						</div>
 						<div class="form-group">
@@ -175,6 +182,7 @@ function errRemoveClientContact(){
 <!-- 									name="accountDetails" placeholder="Account Details"></textarea> -->
 <!-- 							</div> -->
 <!-- 						</div> -->
+
 					</div>
 				</div>
 
@@ -1624,7 +1632,7 @@ function calculateDiscount(){
 		<div class="tblminwidth-50">
 			<input type="text" class="form-control input-sm" value=""
 				placeholder="Tax type" name='invoiceTax[REPLACEROWID].taxType'
-				id='REPLACEROWIDtaxType' data-validation="required" field-name="Tax Type"> <input type="hidden"
+				id='REPLACEROWIDtaxType' data-validation="required validate_length length2-100" field-name="Tax Type"> <input type="hidden"
 				name="invoiceTax[REPLACEROWID].invoiceTaxId" id="REPLACEROWIDinvoiceTaxId">
 			<!-- 	<input type= "hidden" id="REPLACEROWIDsubmissionInvoiceId" name = "invoiceTax[REPLACEROWID].submissionInvoiceId"> -->
 		</div>
@@ -1832,9 +1840,9 @@ function getSowRate(id){
     	type: "GET",
     	url: sourceleadUrl+"/getSowRateByContractId?"+tokenParamName+"="+tokenValue+"&contractId="+contractId,
         success: function(json) {
-        	 if(json.data != null && json.data != ''){
+        	 if(json.object != null && json.object != ''){
 //         		var json = JSON.parse(data);
-	        	 $ ('#'+id+'rate').val(json.billingAmount);
+	        	 $ ('#'+id+'rate').val(json.object.billingAmount);
 	        	 totalHoursCalculateAmount(id);
         	} 
         },
@@ -2272,5 +2280,13 @@ function clearDate(){
 	$("#dueDate").val("");
 	};
 </script> -->
-
+<script>
+function clearInvoiceDate(){
+	$("#invoiceDate").val("");
+	};
+	
+function clearDueDate(){
+	$("#dueDate").val("");
+	};
+</script>
 <jsp:include page="../masterFooter.jsp" />
