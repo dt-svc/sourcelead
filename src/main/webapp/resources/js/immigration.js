@@ -201,14 +201,14 @@ function Immigration() {
         $("#petitionTemplateTaskDetails").validateOnBlur(false, validationSettings);
     });
 
-    this.editTemplateDetailsByRowId = function (templateId) {
-        immTemplId = templateId; //updating global variable "immTemplId" with templateId.
-        window.location.href = sourceleadUrl + immiModulePath + "/addNewPetitionTemplate?templateId=" + immTemplId; // for editing mode  
+    this.editTemplateDetailsByRowId = function (templateUuid) {
+        immTemplId = templateUuid; //updating global variable "immTemplId" with templateId.
+        window.location.href = sourceleadUrl + immiModulePath + "/addNewPetitionTemplate?templateUuid=" + templateUuid; // for editing mode  
     }
 
-    this.reactiveImmigrationTemplateById = function (templateId){
+    this.reactiveImmigrationTemplateById = function (templateUuid){
     	$.ajax({
-            url: sourceleadUrl + immiModulePath + "/reactiveImmigrationTemplateDetailsById?templateId=" + templateId,
+            url: sourceleadUrl + immiModulePath + "/reactiveImmigrationTemplateDetailsById?templateUuid="+templateUuid,
             type: "GET",
             data: templateId,
             success: function (data) {
@@ -219,12 +219,12 @@ function Immigration() {
         });
     }
     
-    this.deleteTempalteDetailsByRowId = function (templateId) {
+    this.deleteTempalteDetailsByRowId = function (temlateUuid) {
         var reason = $("#reasonForTemplate").val();
         if(reason.match(/^[^\s-](.*)*$/) != null && reason !="" && reason.length <= 250){
         $("#reasonForTemplateDiv").empty();
     	$.ajax({
-            url: sourceleadUrl + immiModulePath + "/deleteImmigrationTemplateDetatils?deleteId=" + templateId+"&reason="+reason,
+            url: sourceleadUrl + immiModulePath + "/deleteImmigrationTemplateDetatils?temlateUuid="+temlateUuid+"&reason="+reason,
             type: "GET",
             data: templateId,
             success: function (data) {
@@ -253,7 +253,6 @@ function Immigration() {
         if (status == 'petitionDetails') {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=petitionDetails");
         } else if (status == 'saveContinue' || status == 'sendRequest') {
-        	
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
@@ -269,8 +268,11 @@ function Immigration() {
                     	   immigrationId = result.data[0];
                        	candidateId = result.data[1];
                        	templateId= result.data[2];
+                       	immigrationUUID = result.data[3];
+                       	candidateUUID = result.data[4];
+                       	immiTemplateUUID = result.data[5];
                             if(status == 'saveContinue'){// redirect to petition details tab page.
-                            window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationId="+immigrationId+"&candidateId="+candidateId+"&templateId="+templateId;
+                            window.location.href = sourceleadUrl + immiModulePath + "/viewImmigration?immigrationUUID="+immigrationUUID+"&candidateUUID="+candidateUUID+"&immiTemplateUUID="+immiTemplateUUID;
                             }
                             if(status == 'sendRequest'){
                             	window.location.href = sourceleadUrl + immiModulePath + "/viewImmigrationList";
@@ -288,7 +290,6 @@ function Immigration() {
             }
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=two");
         }else if(status == 'save'){
-        	
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
@@ -304,6 +305,9 @@ function Immigration() {
                         	  immigrationId = result.data[0];
                           	candidateId = result.data[1];
                           	templateId= result.data[2];
+                          	$("#saveDraftButton").prop("disabled",false);
+                        	$("#savePageOneContinue").prop("disabled",false);
+                        	$("#sendRequestButton").prop("disabled",false);
                           }else{
                           	 showError("Operation failed, please try again");
                           }
@@ -715,9 +719,9 @@ this.deletePassportVisaDetailsById=function(id,idType){
 		});
 	}
 	
-	this.deleteImmigrationDetailsByRowId = function(immigrationId){
+	this.deleteImmigrationDetailsByRowId = function(immigrationUUID){
 		$.ajax({
-	        url: sourceleadUrl + immiModulePath + "/deleteImmigrationDetailsById?immigrationId="+immigrationId,
+	        url: sourceleadUrl + immiModulePath + "/deleteImmigrationDetailsById?immigrationUUID="+immigrationUUID,
 	        type: "GET",
 	        success: function (result) {
 	        	$("#remove_immigration_pop").fadeOut(200);
@@ -1252,10 +1256,11 @@ function validateEduname()
 						 // return false;
 		        	}
 		        	else{
-		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#eduName').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
                        $("#eduSave_Button").removeAttr("disabled");
 		        	}
+		        	
 		        },
 		    });
 }
@@ -1366,26 +1371,39 @@ function validateCandidatePassportVisa(idType) {
 
 	  if(idType == "Passport"){
 		   id = $("#candidatePassportId").val();
-		   idNumberVal =$('#CandidatePassportform input[name="idNumber"]').val();
+		   idNumberVal =$('#CandidatePassportform input[name="idNumber"]').val().trim();
 	  }else{
 		   id = $("#candidateVisaId").val();
-		   idNumberVal =$('#CandidateVisaform input[name="idNumber"]').val();  
+		   idNumberVal =$('#CandidateVisaform input[name="idNumber"]').val().trim();  
 	  }
 	  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
 		    	type: "GET",
 		    	 url:sourceleadUrl + immiModulePath + "/validateCandidatePassportVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&idNumberVal="+idNumberVal+"&idType="+idType+"&id="+id, 
 		        success: function(data) {
+		        	if(idType == "Passport"){
 		        	if(data == true){
-		        		  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
-		        		  $("#idNumberDiv").after("<p class='jquery_form_error_message'>"+idNumberVal+" is Already Existed</span>");
+		        		  $('#idNumberPassportDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#idNumber").after("<p class='jquery_form_error_message'>"+idNumberVal+" is Already Existed</span>");
 						  $("#passport_save_id").attr('disabled','disabled');
 		        	}
 		        	else{
-		        		 $('#idNumberDiv').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#idNumberDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $('input#idNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#idNumberPassportDiv').find('p.jquery_form_error_message').remove(); 
                         $("#passport_save_id").removeAttr("disabled");
 		        	}
+		        }else{
+		        	if(data == true){
+		        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#idNumber").after("<p class='jquery_form_error_message'>"+idNumberVal+" is Already Existed</span>");
+						  $("#passport_save_id").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		   $('input#idNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
+                      $("#passport_save_id").removeAttr("disabled");
+		        	}
+		        }
 		        },
 		    });
 }

@@ -81,6 +81,10 @@ public class CandidatePassportVisa implements Serializable {
 	@Transient
 	@JsonProperty
 	private String validToDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String currentStatus;
 
 	public Long getId() {
 		return id;
@@ -214,6 +218,12 @@ public class CandidatePassportVisa implements Serializable {
 		this.validToDateStr = validToDateStr;
 	}
 	
-	
+	public String getCurrentStatus() {
+		return currentStatus;
+	}
+
+	public void setCurrentStatus(String currentStatus) {
+		this.currentStatus = currentStatus;
+	}
 
 }

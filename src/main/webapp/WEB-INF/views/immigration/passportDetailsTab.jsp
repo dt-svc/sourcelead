@@ -30,6 +30,7 @@
 				<th>Country</th>
 				<th>Valid From</th>
 				<th>Valid To</th>
+				<th>Status</th>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <th>Action</th>
@@ -52,6 +53,7 @@
 				<td><div class="tbldata-dotdot-me" title = "${passportdetails.country}">${!empty passportdetails.country ? passportdetails.country : '---'}</div></td>
 				<td><div class="tbldata-dotdot-me" title = "${passportdetails.validFromDateStr}">${!empty passportdetails.validFromDateStr ? passportdetails.validFromDateStr : '---'}</div></td>
 				<td><div class="tbldata-dotdot-me" title = "${passportdetails.validToDateStr}">${!empty passportdetails.validToDateStr ? passportdetails.validToDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-me" title = "${passportdetails.currentStatus}">${passportdetails.currentStatus}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${passportdetails.id},'${passportdetails.idType}');"
@@ -90,7 +92,7 @@
 		
 		<div class="popupMid clearfix">
         
-          <div class="col-sm-12 noPad mt clearfix" id="idNumberDiv">
+          <div class="col-sm-12 noPad mt clearfix" id="idNumberPassportDiv">
 				<label class="col-md-4 padding_left">Passport Id<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right" >
               		<input type="text" name ="idNumber" id ="idNumber" placeholder="Passport Id" field-name = "Passport Id" class="form-control" data-validation ="required validate_length length8-12 validate_AlphaNumber"  onkeyup = "validateCandidatePassportVisa('Passport');"/>
@@ -140,7 +142,7 @@
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#detailsTab');" class="btn btn-default btn-sm">
              	<!-- <input type="button" value="Skip" onclick="goToSummaryTab('#visasTab');" class="btn btn-default btn-sm">  -->
-              	<input type="button" value="Continue" onclick="goToSummaryTab('#visasTab');" class="btn btn-primary btn-sm ml10">
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#visasTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>	
 	

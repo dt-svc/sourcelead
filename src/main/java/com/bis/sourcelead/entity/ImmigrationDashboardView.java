@@ -25,6 +25,9 @@ public class ImmigrationDashboardView implements Serializable {
 	@Column(name = "ORG_LOCATION_ID ")
 	private Long orgLocationId;
 
+	@Column(name = "ATTORNEY_LOCATION_ID ")
+	private Long attorneyLocationId;
+	
 	@Column(name = "DRAFT_COUNT ")
 	private BigDecimal draftsCount;
 
@@ -97,6 +100,14 @@ public class ImmigrationDashboardView implements Serializable {
 
 	public void setOthersCount(BigDecimal othersCount) {
 		this.othersCount = othersCount;
+	}
+
+	public Long getAttorneyLocationId() {
+		return attorneyLocationId;
+	}
+
+	public void setAttorneyLocationId(Long attorneyLocationId) {
+		this.attorneyLocationId = attorneyLocationId;
 	}
 
 	

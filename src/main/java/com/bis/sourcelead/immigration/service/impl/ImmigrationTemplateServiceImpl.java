@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
-import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
@@ -53,9 +52,6 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
     
     @Autowired
     private CommonUtil commonUtil;
-
-    @Autowired
-    private UserDao userDao;
 
     @Override
     public Long savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, User user, OrgLocations orgLocations,
@@ -386,6 +382,11 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	public List<LookUpData> getLookupDataByTypeAndLocation(String petitionType, String locationVal) {
 		 List<LookUpData> lookUpDatas = immigrationTemplateDao.getLookupDataByTypeAndLocation(petitionType, locationVal);
 	     return lookUpDatas;
+	}
+
+	@Override
+	public Long getTemplateIdByUUID(String immiTemplateUUID) {
+		return immigrationTemplateDao.getTemplateIdByUUID(immiTemplateUUID);
 	}
 
 }

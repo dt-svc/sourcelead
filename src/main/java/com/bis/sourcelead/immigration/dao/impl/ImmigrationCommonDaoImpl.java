@@ -31,7 +31,6 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.MyImmigrationViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidateIdendities;
@@ -70,9 +69,6 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	private SessionFactory sessionFactory;
 
 	@Autowired
-	private UserRoleDao userRoleDao;
-
-	@Autowired
 	CandidateDao candidateDao;
 
 	@Autowired
@@ -104,10 +100,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		List<ImmigrationTemplate> templateLst = new ArrayList<ImmigrationTemplate>();
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			System.out.println(" before query execute templateLst size -->" + templateLst.size());
+			logger.debug(" before query execute templateLst size -->" + templateLst.size());
 			String queryString = "from ImmigrationTemplate it where it.status = 1 and it.orgLocations.id =:orgLocationId";
 			templateLst = session.createQuery(queryString).setLong("orgLocationId", orgLocations.getId()).list();
-			System.out.println("tempalte Details loaded Successfully templateLst size -->" + templateLst.size());
+			logger.debug("tempalte Details loaded Successfully templateLst size -->" + templateLst.size());
 
 			logger.debug("tempalte Details loaded Successfully-->");
 		} catch (Exception exception) {
@@ -152,7 +148,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 																		// immigration
 				for (CandidateResidence residence : residenceList) {
 					session.saveOrUpdate(residence);
-					System.out.println("The residence id is: +++++++++++++++ :" + residence.getId());
+					logger.debug("The residence id is: +++++++++++++++ :" + residence.getId());
 				}
 			}
 		} catch (Exception exception) {
@@ -327,7 +323,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public String deletetCandidateFamilyDetails(Long id) {
-		System.out.println("Delete deletetCandidateFamilyDetails candidateId ---> " + id);
+		logger.debug("Delete deletetCandidateFamilyDetails candidateId ---> " + id);
 
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -339,7 +335,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("Deleted record id -->" + id);
+		logger.debug("Deleted record id -->" + id);
 		return "success";
 	}
 
@@ -365,7 +361,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			canCurrResiCand = (Candidate) session.createQuery(queryStringCand).setLong("candidateId", candidateId)
 					.uniqueResult();
 		}
-		// System.out.println(" inside canCurrResiCand -->"+canCurrResiCand);
+		// logger.debug(" inside canCurrResiCand -->"+canCurrResiCand);
 		CandidateResidence currResidence = new CandidateResidence();
 		if (canCurrResiCand != null) {
 			currResidence.setLocation(canCurrResiCand.getLocation());
@@ -387,10 +383,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			String queryString = "from CandidateResidence cr where cr.candidate.id=:candidateId order by cr.updatedDate desc";
 			candidatesResidenceList = session.createQuery(queryString).setLong("candidateId", candidateId).list();
 		}
-		// System.out.println(" inside candidatesResidenceList size
+		// logger.debug(" inside candidatesResidenceList size
 		// -->"+candidatesResidenceList.size());
 		candidatesMasterResidenceList.addAll(candidatesResidenceList);
-		// System.out.println(" inside candidatesMasterResidenceList size
+		// logger.debug(" inside candidatesMasterResidenceList size
 		// -->"+candidatesMasterResidenceList.size());
 		return candidatesMasterResidenceList;
 	}
@@ -418,7 +414,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateFamilyDetails getCandidateFamilyDetailsById(Long id) {
-		System.out.println("get CandidateFamilyDetails id ---> " + id);
+		logger.debug("get CandidateFamilyDetails id ---> " + id);
 		CandidateFamilyDetails familyObj = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -427,7 +423,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing getting record -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("got the record id -->" + id);
+		logger.debug("got the record id -->" + id);
 		return familyObj;
 	}
 
@@ -445,7 +441,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("Deleted record id -->" + id);
+		logger.debug("Deleted record id -->" + id);
 
 	}
 
@@ -453,7 +449,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public String deleteCandidateResidenceDetails(Long id, Long candidateId) {
 
-		System.out.println("Delete deletetCandidateFamilyDetails candidateId ---> " + id);
+		logger.debug("Delete deletetCandidateFamilyDetails candidateId ---> " + id);
 
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -464,7 +460,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing delete -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("Deleted record id -->" + id);
+		logger.debug("Deleted record id -->" + id);
 
 		return "success";
 
@@ -473,7 +469,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidateResidence getCandidateResidenceDetailsById(Long id) {
-		System.out.println("get CandidateResidenceDetails id ---> " + id);
+		logger.debug("get CandidateResidenceDetails id ---> " + id);
 		CandidateResidence residenceObj = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -482,14 +478,14 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing getting record -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("got the record id -->" + id);
+		logger.debug("got the record id -->" + id);
 		return residenceObj;
 	}
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public CandidatePassportVisa getCandidatePassportVisaDetailsById(Long id) {
-		System.out.println("get CandidateFamilyDetails id ---> " + id);
+		logger.debug("get CandidateFamilyDetails id ---> " + id);
 		CandidatePassportVisa passportVisaObj = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -498,7 +494,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing getting record -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("got the record id -->" + id);
+		logger.debug("got the record id -->" + id);
 		return passportVisaObj;
 	}
 
@@ -597,7 +593,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			logger.error("SQL Exception occured while doing getting record -->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("got the record id -->" + id);
+		logger.debug("got the record id -->" + id);
 		return immigration;
 	}
 
@@ -683,7 +679,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				query.setParameter("searchVal", "%" + searchVal + "%");
 			}
 			candidateFormLst = query.list();
-			System.out.println("candidateFormLst size is ---> " + candidateFormLst.size());
+			logger.debug("candidateFormLst size is ---> " + candidateFormLst.size());
 		} catch (HibernateException e) {
 			logger.error(
 					"SQL Exception occured while doing getting ImmigrationCandidateForms records -->" + e.getMessage());
@@ -711,7 +707,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			String newDate = parsedDate.format(f2);
 			Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
 			java.sql.Date sqlDate1 = new java.sql.Date(searchDate.getTime());
-			System.out.println("---test-----" + sqlDate1);
+			logger.debug("---test-----" + sqlDate1);
 			// listQuery = "from ImmigrationListView immView where
 			// immView.openDate =:sqlDate1";
 			query1.append(" and ((immView.openDate like '%" + sqlDate1 + "%' )");
@@ -771,7 +767,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		String listQuery = "";
 
-		System.out.println(" latest code deployed 6666 --->" + orgLocations.getId());
+		logger.debug(" latest code deployed 6666 --->" + orgLocations.getId());
 		listQuery = "from ImmigrationListView immView  where immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
 		String listQueryCount = "select count(*) from ImmigrationListView immView where  immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId)  ";
 		String resultQuery = null;
@@ -841,11 +837,11 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			List<LookUpData> caEmployerDTOs = immigrationTemplateDao
 					.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
 			for (ImmigrationListView source : ImmigrationViewLst) {
-				// System.out.println(" DocsCount"+source.getDocsCount());
+				// logger.debug(" DocsCount"+source.getDocsCount());
 				ImmigrationListViewDTO target = new ImmigrationListViewDTO();
 				BeanUtils.copyProperties(source, target);
 				target.setCurrUsicisStatusList(caEmployerDTOs);
-				// System.out.println(" DocsCount
+				// logger.debug(" DocsCount
 				// target"+target.getDocsCount());
 				target.setOpenDateStr(
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getOpenDate()));
@@ -867,7 +863,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		responseList.setData(ImmigarionDTOList);
 
-		System.out.println(" after dao impl  ---responseList getRecordsTotal is -->" + responseList.getRecordsTotal());
+		logger.debug(" after dao impl  ---responseList getRecordsTotal is -->" + responseList.getRecordsTotal());
 		return responseList;
 	}
 
@@ -935,8 +931,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		ImmigrationDashboardView dashboardObj = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String queryString = "from ImmigrationDashboardView";
-			dashboardObj = (ImmigrationDashboardView) session.createQuery(queryString).uniqueResult();
+			String queryString = "from ImmigrationDashboardView immDview where immDview.orgLocationId = :orgLocationsId or "
+					+ "immDview.attorneyLocationId = :attorneyLocationId";
+			dashboardObj = (ImmigrationDashboardView) session.createQuery(queryString).setLong("orgLocationsId", orgLocations.getId()).setLong("attorneyLocationId", orgLocations.getId()).uniqueResult();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1030,7 +1027,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				return count;
 			}
 		} catch (Exception e) {
-			System.out.println("Exception caught  while getting result of entity " + entityName);
+			logger.debug("Exception caught  while getting result of entity " + entityName);
 			e.printStackTrace();
 		}
 		return null;
@@ -1049,7 +1046,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				return count;
 			}
 		} catch (Exception e) {
-			System.out.println("Exception caught  while getting result of template entity " + entityName);
+			logger.debug("Exception caught  while getting result of template entity " + entityName);
 			e.printStackTrace();
 		}
 		return null;
@@ -1063,7 +1060,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			session.saveOrUpdate(immigration);
 			return immigration;
 		} catch (Exception e) {
-			System.out.println("Exception caught  while updating immigration entity " + immigration.getId());
+			logger.debug("Exception caught  while updating immigration entity " + immigration.getId());
 			e.printStackTrace();
 		}
 		return null;
@@ -1073,7 +1070,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<MyImmigrationViewDTO> getMyImmigrationsList(MyImmigrationViewDTO immigrationListDTO,
 			OrgLocations orgLocations, Long userId) {
-		System.out.println("inside getMyImmigrationsList -->");
+		logger.debug("inside getMyImmigrationsList -->");
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Long> countlist = null;
 		Integer filterCount = 0;
@@ -1123,10 +1120,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		List<MyImmigrationViewDTO> ImmigarionDTOList = new ArrayList<MyImmigrationViewDTO>();
 		if (!ImmigrationViewLst.isEmpty()) {
 			for (MyImmigrationView source : ImmigrationViewLst) {
-				// System.out.println(" DocsCount"+source.getDocsCount());
+				// logger.debug(" DocsCount"+source.getDocsCount());
 				MyImmigrationViewDTO target = new MyImmigrationViewDTO();
 				BeanUtils.copyProperties(source, target);
-				// System.out.println(" DocsCount
+				// logger.debug(" DocsCount
 				// target"+target.getDocsCount());
 				target.setOpenDateStr(
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getOpenDate()));
@@ -1139,7 +1136,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		}
 		responseList.setData(ImmigarionDTOList);
 
-		System.out.println(
+		logger.debug(
 				" after dao impl  ---getMyImmigrationsList getRecordsTotal is -->" + responseList.getRecordsTotal());
 		return responseList;
 	}
@@ -1226,7 +1223,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 				return count;
 			}
 		} catch (Exception e) {
-			System.out.println("Exception caught  while getting result of entity " + entityName);
+			logger.debug("Exception caught  while getting result of entity " + entityName);
 			e.printStackTrace();
 		}
 		return null;
@@ -1263,6 +1260,33 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			candidatePassportVisa = (CandidatePassportVisa) passportVisaList.iterator().next();
 		}
 		return candidatePassportVisa;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Immigration getImmigrationByUUID(String immigrationUUID) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Immigration immi where immi.immigrationUuid = :immigrationUUID";
+		Immigration immigration = (Immigration) session.createQuery(query).setString("immigrationUUID", immigrationUUID).uniqueResult();
+		return immigration;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getImmigrationIdByUUID(String immigrationUUID) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "select immi.id from Immigration immi where immi.immigrationUuid = :immigrationUUID";
+		Long immigrationId = (Long) session.createQuery(query).setString("immigrationUUID", immigrationUUID).uniqueResult();
+		return immigrationId;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getCandidateIdByUUID(String candidateUUID) {
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "select candidate.id from Candidate candidate where candidate.candidateUUID = :candidateUUID";
+		Long candidateId = (Long) session.createQuery(query).setString("candidateUUID", candidateUUID).uniqueResult();
+		return candidateId;
 	}
 
 }

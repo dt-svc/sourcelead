@@ -83,4 +83,6 @@ public interface ImmigrationTemplateDao {
 	ImmigrationTemplateTasks getImmigratonTemplateTasksById(Long id);
 
 	List<ImmigrationTemplateTasks> getImmigratonTemplateTasksByTemplateId(Long templateId);
+
+	Long getTemplateIdByUUID(String immiTemplateUUID);
 }
