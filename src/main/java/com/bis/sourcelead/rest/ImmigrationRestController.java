@@ -202,11 +202,11 @@ public class ImmigrationRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (forward.equalsIgnoreCase("petitionDetails")) {
 			model.setViewName("/immigration/petitionDetails");
-			if (immigrationUUID != null) {
+			if (!StringUtils.isEmpty(immigrationUUID)) {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 						"orgLocations");
-				ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationUUID,
-						orgLocations);
+				Long immigrationId = immigrationCommonService.getImmigrationIdByUUID(immigrationUUID);
+				ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,orgLocations);
 				model.addObject("immigrationDTO", immigrationDTO);
 			}
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -1819,8 +1819,7 @@ public class ImmigrationRestController {
 	public Boolean validateEduname(@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
 			throws Exception {
-		String candidateEducationName = name;
-		Boolean immiCanEdu = candidateEducationService.validateEducationName(candidateId, candidateEducationName);
+		Boolean immiCanEdu = candidateEducationService.validateEducationName(candidateId, name);
 		return immiCanEdu;
 	}
 
@@ -1896,7 +1895,7 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = { "/editImmigrationDetails" })
 	public ModelAndView editImmigrationDetails(
-			@RequestParam(value = "immigrationUUID", required = false) Long immigrationUUID, HttpServletRequest request)
+			@RequestParam(value = "immigrationUUID", required = false) String immigrationUUID, HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);

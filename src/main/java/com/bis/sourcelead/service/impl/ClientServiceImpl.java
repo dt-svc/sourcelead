@@ -1898,6 +1898,11 @@ public class ClientServiceImpl implements ClientService {
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 		emailMessage.setOrgLocationId(orgLocations.getId());
+		
+		String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+		 if(StringUtils.isNotBlank(fromMail)){
+			 emailMessage.setFromEmail(fromMail);
+		 } 
 
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
@@ -1993,6 +1998,11 @@ public class ClientServiceImpl implements ClientService {
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 		emailMessage.setOrgLocationId(orgLocations.getId());
+		
+		String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+		 if(StringUtils.isNotBlank(fromMail)){
+			 emailMessage.setFromEmail(fromMail);
+		 } 
 
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());

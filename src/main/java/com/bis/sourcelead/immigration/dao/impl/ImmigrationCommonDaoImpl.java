@@ -935,8 +935,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		ImmigrationDashboardView dashboardObj = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String queryString = "from ImmigrationDashboardView";
-			dashboardObj = (ImmigrationDashboardView) session.createQuery(queryString).uniqueResult();
+			String queryString = "from ImmigrationDashboardView immDview where immDview.orgLocationId = :orgLocationsId or "
+					+ "immDview.attorneyLocationId = :attorneyLocationId";
+			dashboardObj = (ImmigrationDashboardView) session.createQuery(queryString).setLong("orgLocationsId", orgLocations.getId()).setLong("attorneyLocationId", orgLocations.getId()).uniqueResult();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1270,7 +1271,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	public Immigration getImmigrationByUUID(String immigrationUUID) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from Immigration immi where immi.immigrationUuid = :immigrationUUID";
-		Immigration immigration = (Immigration) session.createQuery(query).setParameter("immigrationUUID", immigrationUUID).uniqueResult();
+		Immigration immigration = (Immigration) session.createQuery(query).setString("immigrationUUID", immigrationUUID).uniqueResult();
 		return immigration;
 	}
 
@@ -1279,7 +1280,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	public Long getImmigrationIdByUUID(String immigrationUUID) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "select immi.id from Immigration immi where immi.immigrationUuid = :immigrationUUID";
-		Long immigrationId = (Long) session.createQuery(query).setParameter("immigrationUUID", immigrationUUID).uniqueResult();
+		Long immigrationId = (Long) session.createQuery(query).setString("immigrationUUID", immigrationUUID).uniqueResult();
 		return immigrationId;
 	}
 
@@ -1288,7 +1289,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	public Long getCandidateIdByUUID(String candidateUUID) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "select candidate.id from Candidate candidate where candidate.candidateUUID = :candidateUUID";
-		Long candidateId = (Long) session.createQuery(query).setParameter("candidateUUID", candidateUUID).uniqueResult();
+		Long candidateId = (Long) session.createQuery(query).setString("candidateUUID", candidateUUID).uniqueResult();
 		return candidateId;
 	}
 
