@@ -768,6 +768,9 @@ function preventTabkey(e){
 								</div>
 							 </li> 	
 						   </sec:authorize>
+					
+					  	<li><a href="<c:url value="/app/payrollConfigure" />"><i class="fa fa-dollar-sign" aria-hidden="true"></i>Payroll Configuration</a></li>
+
 
 					   <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 	                     <li><a href="<c:url value='${sourceleadUrl}/guestOrgActionRoles'/>" ><i class="fa fa-key" aria-hidden="true"></i>Guest Action Roles</a></li>
@@ -2097,9 +2100,11 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
   if(type == "invite"){
 	  getTimezonesList();
   }
+
   if(type != "editAssociate"){
     zipcodeMask(address.country,zipCodeId);	
   }
+
 });
 }
 function geolocate(latitudeId,longtitudeId) {

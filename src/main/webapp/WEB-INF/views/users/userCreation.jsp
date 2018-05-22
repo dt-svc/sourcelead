@@ -16,6 +16,7 @@
 </script>  -->
 <script type="text/javascript">
 		window.onload = function () {
+			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','','');
 			getDesignationType();
 			getDepartmentsList();
 			maskme();
@@ -24,6 +25,7 @@
 	</script>
 <script>
 	$(document).ready(function() {
+		var location = "${location}";
 		document.getElementById("createUser_form").reset();
 		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		  var sectionId = '${section.id}';
@@ -39,27 +41,45 @@
 }
 </style>
   <!-- Content Area -->
-  <section class="content-wraper">
+  <section class="content-wraper contentWraper">
         <section class="content-header clearfix">
           <div class="pull-left">
             <h2>Add Associate</h2>
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Associates List</a> &raquo; Add Associate </div>
         </section>
-        <div class="content-area clearfix">
+        <input type="hidden" id="associateId" name="associateId">
+        <!--New theme-->
+        <div class="user_summ_wrap contentareaInner-styles">
+	      <div class="tabsMenu">
+	        <ul class="list-unstyled">
+	          <li class="current"><a href="#tab-1">Associates</a></li>
+	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
+	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
+	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
+	          <li class=""><a href="#tab-5" data-toggle="tab" id="associateContribution">Contribution</a></li>
+	          <li class=""><a href="#tab-6" data-toggle="tab" id="associateAdvances">Advances</a></li>
+	          <div class="clearfix"></div>
+	        </ul>
+			</div>
+			
+			<div class="tabsMenu_tabs">
+			<div id="tab-1" class="tabsMenu_tabs_inn" style="display: block;">
+        
+        <div class="clearfix">
         <div id="loading"></div> 
         <div id="candidatesLoading"></div> 
           
-        <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
+        <div class="clearfix">
           <form:form id="createUser_form"  name="createUser_form" method="post">
           <input type="hidden" id="actionId" value="${actionId}">
-            <div class="row">
-              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
+            <div class="row clearfix minHeightcol5">
+              <div class="clearfix ">
               
-		        <div class="col-md-12 clearfix">
+		        <div class="col-md-10 clearfix">
 		        <div class="well clearfix">
 		          
-		          <div class="col-md-8 er selectUser col-md-offset-3">
+		          <div class="col-md-10 er selectUser col-md-offset-1">
 		          <div class="row">
 		          <div class="col-md-4 paddingRight">
 		             <select class="selectpicker pull-left form-control" id="employmentDesignationType" name="employmentDesignationType" onChange="getDesignationType();">
@@ -75,10 +95,9 @@
 		                 <option value="Other">Other</option>
 		             </select>
 		             </div>
-		           <div class="col-md-5 paddingLeft">
+		           <div class="col-md-8 paddingLeft">
 		           <select class="chosen-select pull-left" id="employeementType" name="employeementType" field-name="EmployeementType" onchange="getAssociateUserDetails();" data-validation-optional="true" >
 			            <option value=" " selected>-Select Candidate-</option>
-			            
 		           </select>
 		          </div> </div>
 		          </div>
@@ -86,15 +105,16 @@
 		          </div>
 		        </div>  
               
-                <div class="form-group" id="EmployeeIdDiv">
-                  <label class="col-md-3">Employee Id</label>
-                  <div class="col-md-9">
+                <div class="col-md-5" id="EmployeeIdDiv">
+                  <label class="clearfix">Employee Id</label>
+                  <div class="clearfix">
                     <input type="text" class="form-control" id="EmployeeId" name="employeeId" data-validation="validate_Space validate_length length2-20" data-validation-optional="true" value="" onKeyUp="validateEmployeeId();" onblur="validateEmployeeId();">
                     </div>
                 </div>
-                <div class="form-group">
-                      <label class="col-md-3">Date of Join</label>
-                         <div class="col-md-9">
+
+                <div class="col-md-5">
+                      <label class="clearfix">Date of Join</label>
+                         <div class="clearfix">
                            <div class="input-group errorInptgroup">
                               <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly">
                               <span class="input-group-addon" onClick="clearDateofJoin();"><i class="colorRed fa fa-times cursorPointer"></i></span>
@@ -102,9 +122,10 @@
                         </div>
                   </div>
                   
-                 <div class="form-group" id="EmailIdDiv">
-                  <label class="col-md-3">Email Id<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9">
+
+                 <div class="col-md-5" id="EmailIdDiv">
+                  <label class="clearfix">Email Id<span class="text-danger">&nbsp;*</span></label>
+                  <div class="clearfix">
 	                  <div class="input-group errorInptgroup">
 	                    <input type="text" class="form-control" id="EmailId" name="email" value="" field-name="Email Id" data-validation="required validate_Space validate_length length2-100 validate_email"  onblur="getUserByUserEmail(); validateUserEmail();" onKeyUp="validateUserEmail();" >
 	                    <span id="emailStatusIconDiv" class="input-group-addon">
@@ -113,40 +134,71 @@
 	                  </div>
                   </div>
                   </div>
+                  <div class="col-md-5" id="EmailIdDiv">
+                  <label class="clearfix">SSN<span class="text-danger">&nbsp;*</span></label>
+                  <div class="clearfix">
+                    <input type="text" class="form-control" id="ssn" name="SSN" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                  </div>
+                  </div>
                   
-                <div class="form-group" id="FirstNameDiv">
-                  <label class="col-md-3">First Name<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9">
+                <div class="col-md-5" id="FirstNameDiv">
+                  <label class="clearfix">First Name<span class="text-danger">&nbsp;*</span></label>
+                  <div class="clearfix">
                     <input type="text" class="form-control" id="FirstName" name="firstName" pattern="[A-Za-z\s]*"  field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
-
                   </div>
                 </div>
                 
-                <div class="form-group">
-                  <label class="col-md-3">Middle Name</label>
-                  <div class="col-md-9">
+				
+				 <div class="col-md-5">
+                  <label class="clearfix">Middle Name</label>
+                  <div class="clearfix">
                     <input type="text" class="form-control" id="middleName" name="middleName" pattern="[A-Za-z\s]*"   field-name="Middle Name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
                   </div>
                 </div>
-                
-                <div class="form-group">
-                  <label class="col-md-3">Last Name</label>
-                  <div class="col-md-9">
+
+                <div class="col-md-5">
+                  <label class="clearfix">Last Name</label>
+                  <div class="clearfix">
                     <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*"   field-name="Last Name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
                   </div>
                 </div>
                 
-               
-                 <div class="form-group">
-                  <label class="col-md-3">Phone Number</label>
-                   <div class="col-md-9">
+               <div class="col-md-5">
+                  <label class="clearfix">Work Location<span class="text-danger">&nbsp;*</span></label>
+                  <div class="clearfix">
+                   	<select class="form-control chosen-select" id="workLocation" name="workLocation" field-name="Work Location" data-validation="required" >
+                        <option value="">--Select Location--</option>
+                        <c:forEach var="option" items="${locationList}">
+							<option value="${option.id}">${option.orgLocationAddress}</option>
+						</c:forEach>
+              		</select>
+                  </div>
+                </div>
+                 
+                 <div class="col-md-5">
+                  <label class="clearfix">Residence Location<span class="text-danger">&nbsp;*</span></label>
+                  <div class="clearfix positionRelative">
+                    <input type="text" class="form-control" id="residenceLocation" name="residenceAddress" field-name="Residence Location" data-validation="required">
+                     <input type="hidden" id="residenceCountry" name="residenceCountry" />
+                     <input type="hidden" id="residenceState" name="residenceState" />
+                     <input type="hidden" id="residenceCity" name="residenceCity" />
+                     <input type="hidden" id="residenceZipCode" name="residenceZipCode" />
+                     <input type="hidden" id="residenceLatitude" name="residenceLatitude" />
+                     <input type="hidden" id="residenceLongitude" name="residenceLongitude" />
+                  <i class="fa fa-refresh btn btn-primary refresh-icon bg-blue" title="Refresh" onClick="refreshGoogleApiLocation('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','');"></i>
+                  </div>
+                </div>
+                  
+                 <div class="col-md-5">
+                  <label class="clearfix">Phone Number</label>
+                   <div class="clearfix">
                    <div class="row">
-                    <div class="col-md-6 paddingRight">
-                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
+                    <div class="col-xs-12 col-md-6 paddingRight">
+                    <input type="text" class="form-control" id="phone" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                      <input type="hidden" name="country" id="CountryAutocomplete" value ="${SourceLeadWeb_country}" />
                     </div>
-                    <div class="col-md-6 paddingLeft">
+                    <div class="col-xs-12 col-md-6 paddingLeft">
                     <div class="row">
                     <div class="col-md-12">
                     <input type="text" class="form-control" id="extensionNumber" placeholder="Extension Number" name="extensionNumber" data-validation="validate_Space validate_extno validate_length length1-5" data-validation-optional="true">
@@ -156,15 +208,17 @@
                      </div>
                   </div>
                 </div> 
-                <div class="form-group">
-						<label class="col-md-3">Gender<span class="text-danger">&nbsp;*</span></label>
-						<div class="col-md-9" id= "errorGenderMsg">
-						<label class="paddingRight"><input type="radio"  value="Male"  name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Male</label>
-						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Female</label>
-						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Transgender</label>
-						<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		
-						</div>
+				
+				
+				<div class="form-group">
+					<label class="col-md-3">Gender<span class="text-danger">&nbsp;*</span></label>
+					<div class="col-md-9" id= "errorGenderMsg">
+					<label class="paddingRight"><input type="radio"  value="Male"  name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Male</label>
+					<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Female</label>
+					<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Transgender</label>
+					<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		
 					</div>
+				</div>
 					
 					<div class="form-group">
 						<label class="col-md-3">Marital Status</label>
@@ -185,10 +239,10 @@
                            </div>
                         </div>
                   </div>
-                  
-               <div class="form-group">
-                  <label class="col-md-3">Department </label>
-                  <div class="col-md-9 chooRadius" id="chosen-role">
+                
+               <div class="col-md-5">
+                  <label class="clearfix">Department </label>
+                  <div class="clearfix chooRadius" id="chosen-role">
                    <div class="input-group col-md-10 pull-left">
                          <select class="form-control chosen-select" id="department" name="department" field-name="Department" onchange="getReportingManager()" data-validation-optional="true" >
 			              </select>
@@ -199,9 +253,9 @@
 			</sec:authorize>
                 </div> 
                  </div> 
-                <div class="form-group">
-         <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
-         <div class="col-md-9">
+                <div class="col-md-5">
+         <label class="clearfix">Employment type<span class="text-danger">&nbsp;*</span></label>
+         <div class="clearfix">
              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getEmployeementType(this);" field-name="Employment type" data-validation="required">
                 <option value="">--Select Employment type--</option>
                  <option>C2C</option>
@@ -216,9 +270,9 @@
          </div>
        </div>
                 
-                <div class="form-group errorInptgroup">
-                  <label class="col-md-3">Role<span class="text-danger">&nbsp;*</span></label>
-                  <div class="col-md-9 chooRadius chooErrorMessage" id="chosen-role">
+                <div class="col-md-5 errorInptgroup">
+                  <label class="clearfix">Role<span class="text-danger">&nbsp;*</span></label>
+                  <div class="clearfix chooRadius chooErrorMessage" id="chosen-role">
                    <div class="input-group col-md-10 pull-left">
                          <select class="form-control select-bg selectField" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
@@ -234,17 +288,17 @@
                 </div>
                 </div> 
                
-               <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
-            <label class="col-md-3">Employment Other Type</label>
-            <div class="col-md-9">
+               <div class="col-md-5 designationTypeDiv" id="designationTypeDiv" style="display:none">
+            <label class="clearfix">Employment Other Type</label>
+            <div class="clearfix">
               <input type="text" class="form-control" id="designationOtherType" name="designationOtherType"   field-name="Job Type" value="">
             </div>
           </div>
        
        <span id="hideVendor" style="display:none">
-       <div class="form-group">
-			<label class="col-md-3" ><span class="pull-left">Vendor <i class='fa fa-info-circle' title='Select/Add the vendor details of the respective associate. (This applies to C2C and C2C 1099 employment types)'></i></span><span class="text-danger pull-left" id="man1">*</span></label>
-			<div class="col-md-9 chooRadius" id="errorvendor">
+       <div class="col-md-5">
+			<label class="clearfix" ><span class="pull-left">Vendor <i class='fa fa-info-circle' title='Select/Add the vendor details of the respective associate. (This applies to C2C and C2C 1099 employment types)'></i></span><span class="text-danger pull-left" id="man1">*</span></label>
+			<div class="clearfix chooRadius" id="errorvendor">
 			 <div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendors" id="vendors" placeholder="select Vendor" field-name="Vendor" onchange="getVendorContactList();vendorContactEmpty();removeValiationVendor();">
                  </select>
@@ -258,9 +312,9 @@
 			</span>
 		</div>
 		</div>
-		 <div class="form-group">
-			<label class="col-md-3 paddingRight" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-			<div class="col-md-9 chooRadius" id="errorvendorContact">
+		 <div class="col-md-5">
+			<label class="clearfix" ><span class="pull-left">Vendor Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
+			<div class="clearfix chooRadius" id="errorvendorContact">
 			<div class="input-group col-md-10 pull-left">
 			     <select  class="chosen-select form-control" name="vendorcontact" id="vendorcontact" field-name="Vendor Contact"  placeholder="select Vendor Contact" onchange="removeValiationVendorContact();">
                  </select>
@@ -275,9 +329,9 @@
 		</div>
 		</span>
                
-              <div class="form-group">
-                  <label class="col-md-3">Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the reporting manager for a associate in organisation'></i></label>
-                  <div class="col-md-9">
+              <div class="col-md-5">
+                  <label class="clearfix">Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the reporting manager for a associate in organisation'></i></label>
+                  <div class="clearfix">
                       <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager" data-validation="required">
                         <option value="">-Select Manager-</option>
                         <%-- <c:forEach var="option" items="${reportingManagersList}">
@@ -289,9 +343,9 @@
             		
             
                 
-                 <div class="form-group">
-                     <label class="col-md-3">Rate</label>
-                     <div class="col-md-9">
+                 <div class="col-md-5">
+                     <label class="clearfix">Rate</label>
+                     <div class="clearfix">
                          <div class="input-group er ratetype">
 							<div class="input-group-btn tblminwidth-75 displyBlock">
 							 <select class="selectpicker" id="currentCurrency" name="currentCurrency">
@@ -322,16 +376,16 @@
                      </div>
                 </div>
                 
-            <div class="form-group " id = "DayHoursDiv">
-                  <label class="col-md-3">Day hours</label>
-                  <div class="col-md-9">
+            <div class="col-md-5" id = "DayHoursDiv">
+                  <label class="clearfix">Day hours</label>
+                  <div class="clearfix">
                     <input type="text" class="form-control" id="DayHours" placeholder="HH:MM" value="${averageWorkingHours}" name="DayHours" data-validation="validate_Space validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">
                   </div>
                 </div>
             
-            <div class="form-group">
-		             <label class="col-md-3"></label>
-		              <div class="col-md-9">
+            <div class="col-md-5">
+		             <label class="clearfix"></label>
+		              <div class="clearfix">
 		                <div class="checkbox checkBox">
 		                  <label>
 		                    <input type="checkbox" value="Y" name="isMailSent" checked="checked">
@@ -349,10 +403,10 @@
             </div>
             </div>
                 
-            <div class="form-footer clearfix row">
+            <div class="clearfix footerstyelsNew row">
               <div class="col-lg-12">
                 <div class="pull-right">
-                  <input type="button" value="Save" id="create_user" onclick="createUser();" class="btn btn-primary">
+                  <input type="button" value="Save & Continue" id="create_user" onclick="createUser();" class="btn btn-success btnSuccess">
                   <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/usersList'/>'"  class="btn btn-default ml">
                 </div>
               </div>
@@ -360,6 +414,14 @@
             </form:form>
           </div>
         </div>
+        </div>
+       <jsp:include page="associateBankData.jsp" />
+       <jsp:include page="associateTax.jsp" />
+       <jsp:include page="associateDeduction.jsp" />
+        <jsp:include page="associateContribution.jsp" />
+        <!--New theme ends -->
+			</div>
+      </div>
       </section>
       <!-- Content Area Ends--> 
 
@@ -576,14 +638,19 @@ function getEmployeementType(designationType){
         	    data: formData,
 				url : sourceleadUrl+"/createUser?"+tokenParamName+"="+tokenValue+"",
 				success : function(result) {
-					if(result && result === "DataMissing") {
+					if(result.response === "DataMissing") {
 						$("#create_user").removeAttr("disabled");
 						$("#create_user").removeAttr('button').val('Save');	
 						showError("Invalid data");
 						$("#loading").removeAttr('style');
 					} 
 					else {
-						location.replace(sourceleadUrl+"/usersList");
+						$("#associateId").val(result.object.userId);
+						var associateBanking = document.getElementById("associateBanking");
+						document.getElementById("associateBanking").removeAttribute("class"); 
+						associateBanking.href="#tab-2"; 
+						$("#associateBanking").click();
+						/* location.replace(sourceleadUrl+"/usersList"); */
 					}
 				},
 			});
@@ -1184,4 +1251,53 @@ function clearDateofJoin(){
 	$("#DateofJoin").val("");
 	};
 </script>
+
+<script>
+// script for tabs
+
+			var associateBanking = document.getElementById("associateBanking");
+				if(associateBanking){
+					associateBanking.href = "#";
+					associateBanking.className = "disabledLink";
+				}
+				var associateTax = document.getElementById("associateTax");
+				if(associateTax){
+					associateTax.href = "#";
+					associateTax.className = "disabledLink";
+				}
+				
+				var associateDeduction = document.getElementById("associateDeduction");
+				if(associateDeduction){
+					associateDeduction.href = "#";
+					associateDeduction.className = "disabledLink";
+				} 
+				
+				var associateContribution = document.getElementById("associateContribution");
+				if(associateContribution){
+					associateContribution.href = "#";
+					associateContribution.className = "disabledLink";
+				} 
+				
+				var associateAdvances = document.getElementById("associateAdvances");
+				if(associateAdvances){
+					associateAdvances.href = "#";
+					associateAdvances.className = "disabledLink";
+				} 
+				
+				// associateContribution associateAdvances
+
+$(document).ready(function() {
+	$("#tab-1").show()
+    $(".tabsMenu a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+        var tab = $(this).attr("href");
+        $(".tabsMenu_tabs_inn").not(tab).css("display", "none");
+        $(tab).fadeIn();
+    });
+});
+</script> 
+
+
 

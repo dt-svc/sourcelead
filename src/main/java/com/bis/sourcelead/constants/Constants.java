@@ -1091,8 +1091,7 @@ public class Constants {
 	public static final String[] UNSUBSCRIPTION_TABID_LISTED = {"3","4","8","16","20","23","30" };
 
 
-	
-	
+	public static final String PAYROLL_CATEGORY = "Payroll_Deduction";
 	public static final String ID_TYPE_SSN = "SSN";
 	public static final String ID_TYPE_LCA = "LCA";
 	public static final String RELATION_TYPE_SPOUSE = "Spouse";
@@ -1125,6 +1124,8 @@ public class Constants {
 	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
 	
-
+    public static final String BOOLEAN_TRUE = "true";
+    public static final String LOCAL_TAX_YES = "YES";
+    public static final String LOCAL_TAX_NO = "NO";
 
 }

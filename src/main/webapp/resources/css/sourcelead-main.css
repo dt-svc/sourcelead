@@ -8671,6 +8671,12 @@ position: absolute; top: 10px; right: 25px; cursor: pointer; color: #b9b9b9;
 .clearField-small .fa {
 position: absolute; top: 7px; right: 10px; cursor: pointer; color: #b9b9b9;
 }
+.taxes-details .userDetails-cta {
+	min-height:200px !important;
+}
+.project-tabs-menu.project-tabs-menu-custom li a {
+	padding: 8px 20px !important;
+}
 /* media 320px */
 .addBtn {
     height: 30px; background-color: #42CDAD; color: #fff; border-radius: 4px; font-size: 14px; line-height: 30px;
@@ -9231,4 +9237,6 @@ z-index: -800;
 .menuWidget ul.menupop.menupop_3 {
     width:310px;
 	}
-
+.contentareaInner-styles .form-group {
+	margin: 0px !important; min-height: 75px;
+}

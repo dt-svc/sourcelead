@@ -8,7 +8,6 @@
 
 <jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="userAssetManagement.jsp" />
-
 <style>
 .user_summary_edit_cta p{
     margin: -5px 15px;
@@ -99,12 +98,19 @@ $(document).ready(function(){
 		 result  = result + '<div class="success_pop" id="selectoruser" style="display: none;">';
 		 result  = result + '<i class="fa fa-check-circle"></i><span id="userMsgDiv"></span>';
 		 result  = result + '</div>';
-		 result = result + '<ul class="project-tabs-menu">';
+		 result = result + '<ul class="project-tabs-menu project-tabs-menu-custom">';
 		 
 		 result = result + '<li class="current"><a href="#tab-18" onClick="userDetails('+userId+');" >Details</a></li>';
 		 result = result + '<li><a href="#tab-19" onClick="userAssignedProjects('+userId+')" >Projects</a></li>';
 		 result = result + '<li><a href="#tab-20" onClick="userAssetManagement('+userId+')" >Assets</a></li>';
 		 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
+		 
+		 result = result + '<li><a href="#tab-21" onClick="associateBankData('+userId+')" >Banking</a></li>';
+		 result = result + '<li><a href="#tab-22" onClick="associateTaxSummary('+userId+')" >TAX</a></li>';
+		 result = result + '<li><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
+		 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
+		 result = result + '<li><a href="#tab-25" onClick="" >Advances</a></li>';
+		 result = result + '<li><a href="#tab-26" onClick="" >Payroll</a></li>';
 		
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';
@@ -121,6 +127,20 @@ $(document).ready(function(){
 		 result = result + '</div>';
 		 
 		 result = result + '<div id="tab-17" class="project_tabs_inn project_tabs_inn_table">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-21" class="table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative clearfix">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-22" class="clearfix table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-23" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-24" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
+		 result = result + '</div>';
+		 
 		 result = result + '<div id="candidateSideDiv">';
 		 result = result + '</div>';
 		 result = result + '</div>';
@@ -3787,4 +3807,8 @@ function savedCommentAndCount(candidateId){
 <jsp:include page="requirementHistory.jsp"></jsp:include> 
 <%--  <sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> --%>
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
+<jsp:include page="associateBankDataSummary.jsp" />
+<jsp:include page="associateTaxSummary.jsp" />
+<jsp:include page="associateDeductionSummary.jsp" />
+<jsp:include page="associationContributionSummary.jsp" />
  <%-- </sec:authorize>  --%>

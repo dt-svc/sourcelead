@@ -210,6 +210,9 @@ public interface UserService  {
 	List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception;
 
 	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
+
+	User getUserbyConsultantUserId(Long consultantUserId);
+
 }	
 		
 	

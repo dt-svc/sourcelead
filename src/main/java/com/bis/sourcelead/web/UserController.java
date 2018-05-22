@@ -112,6 +112,9 @@ public class UserController {
 		    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		    model.addObject("rolesList", rolesList);
 		    
+		    List<OrgLocations> locationList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+		    model.addObject("locationList", locationList);
+		    
 		     SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_ASSOCIATE);
 		     model.addObject("actionId",action.getId());
 		     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
@@ -119,6 +122,9 @@ public class UserController {
 		     
 		     model.addObject("averageWorkingHours",orgLocations.getAverageWorkingHours());
 		   		    
+		     StringBuilder sb = new StringBuilder();
+		     sb.append(orgLocations.getState()).append(",").append(orgLocations.getCity());
+		     model.addObject("location",sb.toString());
 		    commonUtil.highLightMenu(Constants.Users, request);
 		    
 			model.setViewName("users/userCreation");

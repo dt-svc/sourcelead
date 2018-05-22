@@ -4,6 +4,8 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
+
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.entity.Candidate;
@@ -163,6 +165,26 @@ import com.bis.sourcelead.entity.UserRole;
 		private String registredOrgId;
 		
 		private String userId;
+		
+		private String residenceAddress;
+
+		private String residenceStreetAddress;
+		
+		private String residenceState;
+		
+		private String residenceCountry;
+		
+		private String residenceCity;
+		
+		private String residenceZipCode;
+		
+		private String residenceStateCode;
+		
+		private String residenceLatitude;
+		
+		private String residenceLongitude;
+		
+		private String workLocation;
 
 		private List<CustomFormFieldDTO> customFormData;
 		
@@ -722,6 +744,105 @@ import com.bis.sourcelead.entity.UserRole;
 			this.customFormData = customFormData;
 		}
 
+		public String getResidenceAddress()
+		{
+			return residenceAddress;
+		}
+
+		public void setResidenceAddress(String residenceAddress)
+		{
+			this.residenceAddress = residenceAddress;
+		}
+
+		public String getResidenceStreetAddress()
+		{
+			return residenceStreetAddress;
+		}
+
+		public void setResidenceStreetAddress(String residenceStreetAddress)
+		{
+			this.residenceStreetAddress = residenceStreetAddress;
+		}
+
+		public String getResidenceState()
+		{
+			return residenceState;
+		}
+
+		public void setResidenceState(String residenceState)
+		{
+			this.residenceState = residenceState;
+		}
+
+		public String getResidenceCity()
+		{
+			return residenceCity;
+		}
+
+		public void setResidenceCity(String residenceCity)
+		{
+			this.residenceCity = residenceCity;
+		}
+
+		public String getResidenceZipCode()
+		{
+			return residenceZipCode;
+		}
+
+		public void setResidenceZipCode(String residenceZipCode)
+		{
+			this.residenceZipCode = residenceZipCode;
+		}
+
+		public String getResidenceStateCode()
+		{
+			return residenceStateCode;
+		}
+
+		public void setResidenceStateCode(String residenceStateCode)
+		{
+			this.residenceStateCode = residenceStateCode;
+		}
+
+		public String getResidenceLatitude()
+		{
+			return residenceLatitude;
+		}
+
+		public void setResidenceLatitude(String residenceLatitude)
+		{
+			this.residenceLatitude = residenceLatitude;
+		}
+
+		public String getResidenceLongitude()
+		{
+			return residenceLongitude;
+		}
+
+		public void setResidenceLongitude(String residenceLongitude)
+		{
+			this.residenceLongitude = residenceLongitude;
+		}
+
+		public String getResidenceCountry()
+		{
+			return residenceCountry;
+		}
+
+		public void setResidenceCountry(String residenceCountry)
+		{
+			this.residenceCountry = residenceCountry;
+		}
+
+		public String getWorkLocation()
+		{
+			return workLocation;
+		}
+
+		public void setWorkLocation(String workLocation)
+		{
+			this.workLocation = workLocation;
+		}
 
 		public String getMiddleName() {
 			return middleName;
@@ -753,7 +874,6 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setMaritalStatus(String maritalStatus) {
 			this.maritalStatus = maritalStatus;
-		}
+		}	
 
-		
 }

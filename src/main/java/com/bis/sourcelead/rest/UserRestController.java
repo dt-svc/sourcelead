@@ -297,21 +297,25 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 */
 	 @PreAuthorize("hasRole('ROLE_CREATE_ASSOCIATE')")
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
-	public String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO, HttpServletRequest request)
+	public Response<AddUserDTO> createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO, HttpServletRequest request)
 			throws Exception {
-		if(Validator.validate(addUserDTO) || Validator.validate(candidateDTO)){
+		 Response<AddUserDTO> resObj = new Response<>();
+		 if(Validator.validate(addUserDTO) || Validator.validate(candidateDTO)){
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		candidateDTO.setDateFormat(orgLocations.getDateFormat());
 		commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate,orgLocations);
-		userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
+		User savedUser = userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
-		return "usersList";
+		addUserDTO.setUserId(String.valueOf(savedUser.getId()));
+		resObj.setObject(addUserDTO);
+		return resObj;
 	}
 	 else{
-		 return "DataMissing";
+		 resObj.setResponse("DataMissing");
+		 return resObj; //"DataMissing";
 	 }
 }
 	 
