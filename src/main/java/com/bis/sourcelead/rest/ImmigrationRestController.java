@@ -1548,7 +1548,7 @@ public class ImmigrationRestController {
 					}
 				} else if (i == 1) { // CandidateEmployers
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
-							"where candidateId.id=:candidateId");
+							"where candidateId.id=:candidateId and status=1");
 					if (count == null) {
 						missedTabList.add(tabNameArray[i]);
 					}
@@ -1560,7 +1560,7 @@ public class ImmigrationRestController {
 					}
 				} else if (i == 3) {// CandidateEducation
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
-							"where candidateId.id=:candidateId");
+							"where candidateId.id=:candidateId and status=1");
 					if (count == null) {
 						missedTabList.add(tabNameArray[i]);
 					}
