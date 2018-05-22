@@ -45,8 +45,8 @@ position: relative !important; top:0 !important;
 	        	result = result +'<thead>';
 	        	result = result +'<tr>';
 	        	result = result + '<th>Template Name</th>';
-	            result = result + '<th>Entity Type</th>';
-	            result = result + '<th style="width:100px;">Action</th>';
+	            /* result = result + '<th>Entity Type</th>'; */
+	            result = result + '<th>Action</th>';
 	        	result = result +'</tr>';
 	        	result = result +'</thead>';
 	        	result = result +'<tbody>';
@@ -55,8 +55,8 @@ position: relative !important; top:0 !important;
 				  {	 
 	        		var opt = json[i];
 	        		result = result + '<tr>';
-	                result = result + '<td><div><span class="mid-span" title="'+opt.scenarioName+'">'+opt.scenarioName+'</span></a></div></td>';
-	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.entityType+'"><span class="mid-span">'+opt.entityType+'</span></div></td>';
+	                result = result + '<td><div title="'+opt.scenarioName+'">'+opt.scenarioName+'</div></td>';
+	               /*  result = result + '<td><div class="tbldata-dotdot" title="'+opt.entityType+'"><span class="mid-span">'+opt.entityType+'</span></div></td>'; */
 	                result = result + '<td><div>';
 	                    result = result + '<a class="fa fa-eye text-blue ml" title="summary" onclick="viewEmailTemplate('+opt.id+',\''+opt.uniqueScenarioName+'\')"></a>';
 	                    result = result + '&nbsp;<a href="'+sourceleadUrl+'/editEmailTemplate?templateUUID='+opt.emailUUID+'" title="Edit"><i class="fa fa-edit"></i></a>';
