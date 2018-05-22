@@ -35,6 +35,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String status;
 		
+		private String isGlobalAccess;
+		
 		private String reportingManager;
 		
 		private String isMailSent;
@@ -712,6 +714,14 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
 			this.customFormData = customFormData;
+		}
+
+		public String getIsGlobalAccess() {
+			return isGlobalAccess;
+		}
+
+		public void setIsGlobalAccess(String isGlobalAccess) {
+			this.isGlobalAccess = isGlobalAccess;
 		}
 		
 }

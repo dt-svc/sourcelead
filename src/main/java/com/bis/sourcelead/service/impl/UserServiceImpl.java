@@ -298,6 +298,11 @@ public class UserServiceImpl implements UserService {
 	   }
 		
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
+		if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess())) {
+			userRole.setIsGlobal(Constants.YES);
+		}else {
+			userRole.setIsGlobal(Constants.NO);	
+		}
 		userRoleList.add(userRole);
 		user.setUserRole(userRoleList);
 		
@@ -1491,6 +1496,35 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation) throws Exception {
 		return userDao.getUsersResponseListByOrglocationId(userDTO,orgLocation);
+	}
+
+	@Override
+	public List<User> getGlobalUsersByOrgId(Long roleId, Long orgId, Long tabId) throws Exception {
+		return userDao.getGlobalUsersByOrgId(roleId, orgId, tabId);
+	}
+
+	@Override
+	public List<User> getTabAccessGlobalOwnersByOrgIdAndTabId(Long orgLocationId,Long orgId, Long tabId) throws Exception {
+		
+		List<User> userList = null;
+		userList = userDao.getTabAccessGlobalOwnersByOrgIdAndTabId(orgId, tabId);
+		if(null != userList && !userList.isEmpty()){
+			for (User user : userList) {
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationId);
+				if(null != userRole){
+					user.setUserType(userRole.getUserType());
+				}else {
+					user.setUserType(Constants.GLOBAL_USER);
+				}
+			}
+		}
+		return userList;
+	}
+
+	@Override
+	public List<User> getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId,
+			Long orgId, Long tabId) throws Exception {
+		return userDao.getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId, orgId, tabId);
 	}
 	
 }

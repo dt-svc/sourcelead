@@ -197,6 +197,18 @@
 			           </sec:authorize>
                 </div>
                 </div> 
+                
+                
+                <div class="form-group">
+		             <label class="col-md-3"></label>
+		              <div class="col-md-9">
+		                <div class="checkbox checkBox">
+		                  <label>
+		                    <input type="checkbox" value="Y" name="isGlobalAccess">
+		                    Is Global Access</label>
+		                </div>
+		                 </div>
+               </div> 
                
                <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
             <label class="col-md-3">Employment Other Type</label>
@@ -962,9 +974,8 @@ function getAssociateUserDetails(){
 	 if(role != null && role != "" && role != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getReportingManager?"+tokenParamName+"="+tokenValue+"&role="+role, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        url: sourceleadUrl+"/getAssociateReportingManager?"+tokenParamName+"="+tokenValue+"&role="+role, 
+		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Manager --</option>"; 
 		        	for (var i=0; i<json.length; i++)

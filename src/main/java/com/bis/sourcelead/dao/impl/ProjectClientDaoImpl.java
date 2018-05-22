@@ -210,5 +210,23 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 		return projectClientsIdLis;
 		
 	}
+
+	@Override
+	@Transactional
+	public ProjectClients getProjectClientsByProjectIdAndOrgId(Long projectId, Long orgId) throws Exception {
+		
+		logger.debug("In Project Clients getProjectClientsByProjectIdAndOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from ProjectClients pc left join fetch pc.projectId left join fetch pc.orgLocationsId "
+				+ "left join fetch pc.orgRelationId ol left join fetch ol.locationId left join fetch ol.responderLocationId  "
+				+ "where pc.projectId.id = :projectId and pc.orgLocationsId.org.id = :orgId" ;
+		List<ProjectClients> pcList =session.createQuery(query).setLong("projectId", projectId).setLong("orgId", orgId).list(); 
+		ProjectClients pc = null;
+		if(pcList != null && !pcList.isEmpty()){
+			pc = pcList.iterator().next();
+		}
+		return pc;  
+		
+	}
 	
 }

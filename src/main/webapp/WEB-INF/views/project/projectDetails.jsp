@@ -171,7 +171,7 @@
 						result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
 					    result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv2"></span>';
 					    result  = result + '</div>';
-						if(json.orgLocationId == '${SourceLeadWeb_orgLocations.id}'){
+						if((json.orgLocationId == '${SourceLeadWeb_orgLocations.id}') || ('${SourceLeadWeb_isGlobalAccess}' == 'Y')){
 							if(json.projectApprover == 'Y' || '${SourceLeadWeb_loginUserRole}' == 'ROLE_ADMIN'){
 								result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT\')">'; 
 								result = result	+ '<a id="edit-user" href="javascript:editProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
@@ -249,7 +249,7 @@
 						result = result + '<input type="hidden" name="dbProjectStatus" id="dbProjectStatus" value="'+json.projectStatus+'" >';
 						result = result + '<div class="clearfix"></div>';
 
-						if(json.orgLocationId == '${SourceLeadWeb_orgLocations.id}'){
+						if((json.orgLocationId == '${SourceLeadWeb_orgLocations.id}') || ('${SourceLeadWeb_isGlobalAccess}' == 'Y')){
 						
 						result = result	+ '<div class="project_details_cta">';
 						result = result	+ '<strong>Team members:</strong><span>'+ json.projectMembersCount+ '</span><div class="clearfix"></div>';

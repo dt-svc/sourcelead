@@ -317,6 +317,16 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return projectMemberList;
 	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getProjectMembersListByOrgIdAndMasterCandidateId(Long orgId, Long masterCandidateId) {
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from ProjectMembers pm left join fetch pm.projectClientsId pc   left join fetch pc.orgRelationId rl left join fetch rl.locationId left join fetch rl.responderLocationId left join fetch pm.employee left join fetch pm.masterCandidateId left join fetch pm.projectMemberCandidteId  where pm.id IN(select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where pmh.projectTerminationDate IS NULL OR (pmh.projectTerminationDate IS NOT NULL and pmh.projectTerminationDate > pmh.projectAssignedDate)) and  pm.masterCandidateId.id = :masterCandidateId and  pc.orgLocationsId.org.id = :orgId GROUP BY pm.projects.id";
+		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("orgId", orgId).setLong("masterCandidateId", masterCandidateId).list();
+		return projectMemberList;
+	}
+	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })

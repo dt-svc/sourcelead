@@ -604,6 +604,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndCandidateId(locationsId, candidateId);
 	}
 	
+	@Override
+	public List<ProjectMembers> getProjectMembersListByOrgIdAndMasterCandidateId(Long orgId, Long masterCandidateId) {
+		return projectMembersDao.getProjectMembersListByOrgIdAndMasterCandidateId(orgId, masterCandidateId);
+	}
+	
 	
 	@Override
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(
@@ -689,10 +694,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation,String roleIds,String teamIds)
+	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation,String roleIds,String teamIds,String isGlobalAccess)
 			throws Exception {
-		
-		ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
+		ProjectClients projectClients = null;
+		if(StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
+			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgId(projectId, loginOrgLocation.getOrg().getId());
+		}else {
+			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
+		}
 		List<ProjectMembers> projectMembersList = null;
 		List<ProjectMembers> projectMembList = new ArrayList<>();
 		if(projectClients != null){

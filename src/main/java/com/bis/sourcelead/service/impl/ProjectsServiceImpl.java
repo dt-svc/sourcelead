@@ -125,6 +125,8 @@ import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import bsh.util.Util;
+
 @SuppressWarnings("unchecked")
 @Service
 public class ProjectsServiceImpl implements ProjectsService{
@@ -1149,7 +1151,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 */
 	
 	@Override
-	public ProjectsDTO getProjectDetailsByProjectIdAndLoginOrgId(Long projectId, User user, String loginOrgLocation)throws Exception {
+	public ProjectsDTO getProjectDetailsByProjectIdAndLoginOrgId(Long projectId, User user, String loginOrgLocation,String isGlobalAccess)throws Exception {
 		OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		
 		Projects projects = getProjectById(projectId);
@@ -1184,8 +1186,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	
 	    }
 	    StringBuilder projectApprover = new StringBuilder();
-	  
-	    ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocations.getId());
+	    ProjectClients projectClients = null;
+	    if(StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
+	    	  projectClients = projectClientService.getProjectClientsByProjectIdAndOrgId(projects.getId(), loginOrgLocations.getOrg().getId());
+	    }else {
+	    	 projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocations.getId());
+	    }
+	   
 	    List<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocations.getId());
 	    /**
 	     * If the Project has Only Manager the His Level is taken as Higher Level  
@@ -1254,12 +1261,21 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    
 		 if(projectClients.getOrgRelationId() != null){
     		 
- 			if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
- 				   projectsDTO.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
-				}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-					projectsDTO.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
-				}
-				projectsDTO.setOrgRelationUUID(projectClients.getOrgRelationId().getUUID());
+			 if(StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
+				 if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getOrg().getId().longValue() == loginOrgLocations.getOrg().getId().longValue()){
+	 				   projectsDTO.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+					}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getOrg().getId().longValue() == loginOrgLocations.getOrg().getId().longValue()){
+						projectsDTO.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+					}
+			 }else {
+				 if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+	 				   projectsDTO.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+					}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+						projectsDTO.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+					}
+			 }
+			
+			projectsDTO.setOrgRelationUUID(projectClients.getOrgRelationId().getUUID());
  	  }
 	    
 		
@@ -2153,9 +2169,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	
 	@Override
-	public List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation,String roleIds,String teamIds) throws Exception {
+	public List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation,String roleIds,String teamIds,String isGlobalAccess) throws Exception {
 		
-		List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status,loginOrgLocation,roleIds,teamIds);
+		List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status,loginOrgLocation,roleIds,teamIds,isGlobalAccess);
 		Projects pr = projectsDao.getProjectById(projectId);
 		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();

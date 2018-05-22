@@ -191,7 +191,11 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String clients;
 	
+	private String isGlobalAccess;
+	
 	private long orgLocationsId;
+	
+	private Long orgId;
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -902,5 +906,21 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setOrgLocationsId(long orgLocationsId) {
 		this.orgLocationsId = orgLocationsId;
+	}
+
+	public String getIsGlobalAccess() {
+		return isGlobalAccess;
+	}
+
+	public void setIsGlobalAccess(String isGlobalAccess) {
+		this.isGlobalAccess = isGlobalAccess;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
 	}
 }

@@ -96,6 +96,9 @@ public class UserRole implements Serializable {
 
 	@Column(name = "STATUS")
 	private String status;
+	
+	@Column(name = "IS_GLOBAL")
+	private String isGlobal;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -933,6 +936,14 @@ public class UserRole implements Serializable {
 	public void setOrgName(String orgName)
 	{
 		this.orgName = orgName;
+	}
+
+	public String getIsGlobal() {
+		return isGlobal;
+	}
+
+	public void setIsGlobal(String isGlobal) {
+		this.isGlobal = isGlobal;
 	}
 
 	

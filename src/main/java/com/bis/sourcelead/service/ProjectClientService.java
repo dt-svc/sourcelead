@@ -23,5 +23,7 @@ public interface ProjectClientService {
 	ProjectClients getProjectClientsByProjectID(Long projectId) throws Exception;
 	
 	public List<ProjectClients> getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(Long orgLocationsId) throws Exception;
+	
+	ProjectClients getProjectClientsByProjectIdAndOrgId(Long projectId,Long orgId) throws Exception;
 
 }

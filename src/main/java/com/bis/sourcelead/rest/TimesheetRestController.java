@@ -504,7 +504,7 @@ public class TimesheetRestController {
 		Long projectId = eedDTO.getProjectsId();
 		Long masterCandidateId = eedDTO.getMasterCandidatesId();
 		List<ProjectMembers> projectMembersList = projectMembersService
-				.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
+				.getProjectMembersListByOrgIdAndMasterCandidateId(orgLocations.getOrg().getId(), candidate.getMasterCandidateId().getId());
 		ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 		if (projectMembersList != null && !projectMembersList.isEmpty()) {
 			long count = 1;
@@ -532,7 +532,7 @@ public class TimesheetRestController {
 
 				}
 				ProjectMembersHistory projectmemberHistory = projectMembersHistoryService
-						.getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId(pm.getId(), orgLocations.getId());
+						.getProjectMembersHistoryByProjectMemberIdAndOrgId(pm.getId(), orgLocations.getOrg().getId());
 				if (projectmemberHistory.getProjectAssignedDate() != null) {
 					pm.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 							projectmemberHistory.getProjectAssignedDate()));

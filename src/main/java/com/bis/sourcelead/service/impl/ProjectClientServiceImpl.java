@@ -66,5 +66,10 @@ public class ProjectClientServiceImpl implements ProjectClientService {
 	{
 		return projectClientDao.getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted((orgLocationsId));
 	}
+
+	@Override
+	public ProjectClients getProjectClientsByProjectIdAndOrgId(Long projectId, Long orgId) throws Exception {
+		return projectClientDao.getProjectClientsByProjectIdAndOrgId(projectId, orgId);
+	}
 	
 }

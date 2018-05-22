@@ -366,6 +366,7 @@ public class LoginSessionController {
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
 			
 			
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");

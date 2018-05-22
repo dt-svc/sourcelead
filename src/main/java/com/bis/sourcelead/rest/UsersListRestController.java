@@ -16,7 +16,6 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -68,6 +67,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -249,6 +249,7 @@ public class UsersListRestController {
 	public @ResponseBody   ResponseList<UserRoleDTO> getDynamicUserList(UserDTO userDTO,UserRoleDTO userRoleDto,HttpServletRequest request) throws Exception {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<Long> orgRelationsList = new ArrayList<>();
 		List<Long> projectAssignedUserIds = new ArrayList<>();
@@ -708,6 +709,8 @@ public class UsersListRestController {
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 
@@ -759,14 +762,25 @@ public class UsersListRestController {
 			
 		}
 		
+		List<User> reportingManagersList = new ArrayList<>();
 		List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userRole.getUser().getId(), userRole.getRoles().getId(), orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
-		 for (User user : userList) {
+		List<User> globalUserList = userService.getGlobalUsersByOrgId(userRole.getRoles().getId(), org.getId(), Long.valueOf(Constants.TAB_USER)); 
+		if(userList != null && !userList.isEmpty()) {
+			reportingManagersList.addAll(userList);
+		}
+		if(globalUserList != null && !globalUserList.isEmpty()) {
+			reportingManagersList.addAll(globalUserList);
+		}
+		for (User user : reportingManagersList) {
 			    UserRole userRole1 = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 				if(null != userRole1){
 					user.setUserType(userRole1.getUserType());
+				}else {
+					user.setUserType(Constants.GLOBAL_USER);
 				}
 		  }
-		 userRole.setAllReportingManagers(userList);
+		 userRole.setAllReportingManagers(reportingManagersList);
+		 
 		 
 		 //	old records currency changed code 
 		 Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
