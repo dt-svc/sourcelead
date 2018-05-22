@@ -347,6 +347,11 @@ public class ProjectsController {
 								isClientOrgActive = Constants.YES;
 							}
 						}
+						
+						if(!projects.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+							isClientOrgActive = Constants.YES;
+						}
+						
 						model.addObject("isClientOrgActive", isClientOrgActive);
 					}
 					model.addObject("projectClientUUID", projectClientUUID);
