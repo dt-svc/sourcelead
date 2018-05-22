@@ -1407,3 +1407,40 @@ function validateCandidatePassportVisa(idType) {
 		        },
 		    });
 }
+
+function validateImmigrationCandidateForms() {
+	 var validationSettings = {
+           errorMessagePosition: 'element',
+           borderColorOnError: '',
+           scrollToTopOnError: true,
+           dateFormat: 'yyyy/mm/dd'
+       };
+	 
+	  var candidateId = $("#candidateID").val();
+	  var immigrationId = $('#immigrationID').val();
+	  var id = $("#immigrationCandidateFormId").val();
+	  var formName = document.getElementById("formName").value; 
+	      formName = formName.trim();
+	  
+	  $('#errformNameDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:sourceleadUrl + immiModulePath + "/validateImmigrationCandidateForms?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&immigrationId="+immigrationId+"&id="+id+"&formName="+formName, 
+		        success: function(data) {
+		        	
+		        	if(data == true){
+		        		
+		        		  $('#errformNameDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#formName").after("<p class='jquery_form_error_message'>"+formName+" is Already Existed</span>");
+						  $("#canFormSave_Button").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#formName').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errformNameDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#canFormSave_Button").removeAttr("disabled");
+		        	}
+		        	
+		        }
+		       
+		    });
+}
