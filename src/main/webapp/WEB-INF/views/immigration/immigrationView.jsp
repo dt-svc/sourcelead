@@ -54,11 +54,11 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 				<p><strong>Visa Type</strong>: ${immigration.petitionType}</p>
 				<p><strong>Attorney</strong>: ${immigration.attorneyName}</p>
   			</div>
-  			
-  			<div class="col-md-4">
-  				<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
-  			</div>
-  			
+			<c:if test="${myImmigrationPage =='N'}">
+				<div class="col-md-4">
+	  				<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
+	  			</div>
+			</c:if>
   			<div class="col-md-2 clearfix mt10">
   				<p id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt mr10"></i>Download Package</p>
   			</div>
