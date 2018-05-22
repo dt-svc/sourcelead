@@ -36,10 +36,10 @@ CREATE TABLE `EMAIL_CONFIGURATION_FROM_MAIL` (
 
 SET SQL_SAFE_UPDATES = 0;
 
-UPDATE `email_scenario` SET `TAB_ID`='31' WHERE `UNIQUE_SCENARIO_NAME`='onBehalfEmail' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `TAB_ID`='31' WHERE `UNIQUE_SCENARIO_NAME`='onBehalfEmail' and `ENTITY_TYPE`='Email';
 
-UPDATE `email_scenario` SET `TAB_ID`='5' WHERE `UNIQUE_SCENARIO_NAME`='Timesheet Scheduler' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `TAB_ID`='5' WHERE `UNIQUE_SCENARIO_NAME`='Timesheet Scheduler' and `ENTITY_TYPE`='Email';
 
-UPDATE `email_scenario` SET `TAB_ID`='5' WHERE `UNIQUE_SCENARIO_NAME`='Timesheet Scheduler Level1 Manager' and `ENTITY_TYPE`='Email';
+UPDATE `EMAIL_SCENARIO` SET `TAB_ID`='5' WHERE `UNIQUE_SCENARIO_NAME`='Timesheet Scheduler Level1 Manager' and `ENTITY_TYPE`='Email';
 
-
+SET SQL_SAFE_UPDATES = 1;
