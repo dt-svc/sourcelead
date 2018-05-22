@@ -91,7 +91,7 @@ public interface ImmigrationCommonService {
 
 	String updateUscisTypeDropDown(Long templateId, Long uscisId,Long uscisOldId,User user,OrgLocations orgLocations) throws Exception;
 
-	ImmigrationDTO editImmigrationDetails(String immigrationUUID, OrgLocations orgLocations);
+	ImmigrationDTO editImmigrationDetails(Long immigrationUUID, OrgLocations orgLocations);
 
 	ImmigrationDashboardView getImmigrationDashBoardDetails(OrgLocations orgLocations);
 	

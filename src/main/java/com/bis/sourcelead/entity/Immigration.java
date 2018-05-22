@@ -130,6 +130,15 @@ public class Immigration implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigration",orphanRemoval=true)
 	private List<SourceleadNotes> notes;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigrationId",orphanRemoval=true)
+	private List<Tasks> tasks;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigrationId",orphanRemoval=true)
+	private List<ImmigrationActivityHistory> immigrationActivityHistory;   
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigration",orphanRemoval=true)
+	private List<ImmigrationTasks> immigrationTasks;
+	
 	public List<ImmigrationCandidateDocuments> getCandidateDocuments() {
 		return candidateDocuments;
 	}
@@ -362,5 +371,28 @@ public class Immigration implements Serializable {
 		this.candidateUserId = candidateUserId;
 	}
 
-	
+	public List<Tasks> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<Tasks> tasks) {
+		this.tasks = tasks;
+	}
+
+	public List<ImmigrationActivityHistory> getImmigrationActivityHistory() {
+		return immigrationActivityHistory;
+	}
+
+	public void setImmigrationActivityHistory(List<ImmigrationActivityHistory> immigrationActivityHistory) {
+		this.immigrationActivityHistory = immigrationActivityHistory;
+	}
+
+	public List<ImmigrationTasks> getImmigrationTasks() {
+		return immigrationTasks;
+	}
+
+	public void setImmigrationTasks(List<ImmigrationTasks> immigrationTasks) {
+		this.immigrationTasks = immigrationTasks;
+	}
+
 }

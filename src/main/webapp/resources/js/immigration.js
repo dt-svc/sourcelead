@@ -1253,10 +1253,11 @@ function validateEduname()
 						 // return false;
 		        	}
 		        	else{
-		        		 $('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#eduName').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
                        $("#eduSave_Button").removeAttr("disabled");
 		        	}
+		        	
 		        },
 		    });
 }
@@ -1377,16 +1378,29 @@ function validateCandidatePassportVisa(idType) {
 		    	type: "GET",
 		    	 url:sourceleadUrl + immiModulePath + "/validateCandidatePassportVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&idNumberVal="+idNumberVal+"&idType="+idType+"&id="+id, 
 		        success: function(data) {
+		        	if(idType == "Passport"){
 		        	if(data == true){
-		        		  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
-		        		  $("#idNumberDiv").after("<p class='jquery_form_error_message'>"+idNumberVal+" is Already Existed</span>");
+		        		  $('#idNumberPassportDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#idNumber").after("<p class='jquery_form_error_message'>"+idNumberVal+" is Already Existed</span>");
 						  $("#passport_save_id").attr('disabled','disabled');
 		        	}
 		        	else{
-		        		 $('#idNumberDiv').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#idNumberDiv').find('p.jquery_form_error_message').remove(); 
+		        		 $('input#idNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#idNumberPassportDiv').find('p.jquery_form_error_message').remove(); 
                         $("#passport_save_id").removeAttr("disabled");
 		        	}
+		        }else{
+		        	if(data == true){
+		        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#idNumber").after("<p class='jquery_form_error_message'>"+idNumberVal+" is Already Existed</span>");
+						  $("#passport_save_id").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		   $('input#idNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
+                      $("#passport_save_id").removeAttr("disabled");
+		        	}
+		        }
 		        },
 		    });
 }
