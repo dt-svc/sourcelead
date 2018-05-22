@@ -24,6 +24,11 @@ import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.StateTaxDTO;
+
+
+import com.bis.sourcelead.dto.helper.Paginator;
+import com.bis.sourcelead.entity.Candidate;
+
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.States;
@@ -90,7 +95,7 @@ public class TaxController {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			StateTaxDTO stateTaxDTO = new StateTaxDTO();
-			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(1);
+			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(1, false);
 			modelAndView.addObject("taxTypes", taxTypeList);
 			if (stateTaxId > 0) {
 				stateTaxDTO = taxService.getStateTax(stateTaxId);
@@ -137,14 +142,17 @@ public class TaxController {
 		Response<Long> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			if (user != null) {
+			if (user != null && Validator.validate(stateTaxDTO)) {
 				long result = taxService.addStateTax(stateTaxDTO);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 				response.setObject(result);
-			} else {
+			} else if (user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -215,15 +223,16 @@ public class TaxController {
 	@RequestMapping(value = "/getStateTaxes", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<StateTaxDTO> getStateTaxes(HttpServletRequest request, @RequestParam(defaultValue = "") String yearFrequency,
-			@RequestParam(defaultValue = "0") long stateId) {
+			@RequestParam(defaultValue = "0") long stateId, Paginator paginator) {
 		ResponseList<StateTaxDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				List<StateTaxDTO> stateTaxList = taxService.getStateTaxList(yearFrequency, stateId);
+				List<StateTaxDTO> stateTaxList = taxService.getStateTaxList(yearFrequency, stateId, paginator);
 				response.setData(stateTaxList);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
+				response.setPaginator(paginator);
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -254,6 +263,7 @@ public class TaxController {
 		return modelAndView;
 	}
 
+
 	public Map<String, Boolean> caliculateYearList(){
 		Map<String, Boolean> yearList = new LinkedHashMap<>();
 		Calendar c = Calendar.getInstance();
@@ -265,10 +275,8 @@ public class TaxController {
 			c.roll(Calendar.YEAR, 1);
 			String toYear = c.get(Calendar.YEAR) + "";
 			yearList.put(fromYear + "-" + toYear, isCurrent);
-		}
-		return yearList;
-	}
-	
+
+
 	
 	
 	

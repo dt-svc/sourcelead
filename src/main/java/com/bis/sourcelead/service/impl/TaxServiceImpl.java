@@ -12,9 +12,14 @@ import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.ProfessionalTaxDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
+
 import com.bis.sourcelead.dto.TdsDTO;
 import com.bis.sourcelead.entity.CentralTax;
 import com.bis.sourcelead.entity.OrgLocations;
+
+import com.bis.sourcelead.dto.helper.Paginator;
+
+
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
@@ -34,15 +39,15 @@ public class TaxServiceImpl implements TaxService {
 	private StatesService statesService;
 
 	@Override
-	public List<SourceleadTaxType> getAllTaxesByType(long type) {
-		return taxDao.getAllTaxesByType(type);
+	public List<SourceleadTaxType> getAllTaxesByType(long type, boolean includeInactive) {
+		return taxDao.getAllTaxesByType(type, includeInactive);
 	}
 
 	@Override
-	public List<StateTaxDTO> getStateTaxList(String yearFrequency, long stateId) {
+	public List<StateTaxDTO> getStateTaxList(String yearFrequency, long stateId, Paginator paginator) {
 		List<StateTaxDTO> stateTaxList = new LinkedList<>();
 		try {
-			List<StateTax> stList = taxDao.getStateTaxList(yearFrequency, stateId, 0);
+			List<StateTax> stList = taxDao.getStateTaxList(yearFrequency, stateId, 0, paginator);
 			if (stList != null && !stList.isEmpty()) {
 				for (StateTax st : stList) {
 					stateTaxList.add(getStateTaxDTO(st, false));
@@ -182,8 +187,8 @@ public class TaxServiceImpl implements TaxService {
 	public long addStateTax(StateTaxDTO stateTaxDTO) {
 		try {
 			List<StateTax> stList = taxDao.getStateTaxList(stateTaxDTO.getFinancialYear(), stateTaxDTO.getStateId(),
-					stateTaxDTO.getTaxTypeId());
-			if (stList != null && stList.size() > 0) {
+					stateTaxDTO.getTaxTypeId(), null);
+			if (stateTaxDTO.getId() == 0 && stList != null && stList.size() > 0) {
 				return -1;
 			} else {
 				StateTax st = null;
@@ -196,6 +201,15 @@ public class TaxServiceImpl implements TaxService {
 				st.setFinancialYear(stateTaxDTO.getFinancialYear());
 				st.setSourceleadTaxType(getTaxTypeById(stateTaxDTO.getTaxTypeId()));
 				st.setStates(statesService.getStateById(stateTaxDTO.getStateId()));
+
+				// While editing, if an existing ProfessionalTax row is deleted, then it should
+				// be manually delete as below by iterating all removeIds
+				if (stateTaxDTO.getRemoveIds() != null && !stateTaxDTO.getRemoveIds().isEmpty()) {
+					for (String id : stateTaxDTO.getRemoveIds().split(",")) {
+						taxDao.removeProfesionalTax(taxDao.getProfessionalTaxById(Long.valueOf(id)));
+					}
+				}
+
 				List<ProfessionalTax> ptList = new LinkedList<>();
 				for (ProfessionalTaxDTO ptDTO : stateTaxDTO.getProfessionalTaxList()) {
 					ProfessionalTax pt = null;

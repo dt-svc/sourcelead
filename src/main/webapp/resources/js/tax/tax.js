@@ -43,6 +43,8 @@ $(document).ready(function() {
 		        		} else if (response.object === -1) {
 		        			showError("Tax record already exists for the selected fields");
 		        		}
+		        	} else if (response.response === "INVALID_DATA") {
+		        		showError(response.responseMessage);
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(sourceleadUrl);
 		        	} else {
@@ -151,7 +153,7 @@ function Tax() {
 			} else if (response.response === "SUCCESS") {
 				var stList = response.data;
 				if(stList.length > 0) {
-					for(var e in stList){
+					for(var e in stList) {
 						var result = "<tr><td>";
 						result += "<div>";
 						result += "<a href='taxSummary?stateTaxId=" + stList[e].id + "'>" + stList[e].stateName + "</a>";
@@ -161,13 +163,15 @@ function Tax() {
 						result += "<td>";
 						result += "<div>";
 						result += "<ul class='list-unstyled list-inline mb0'>";
-						result += "<li><a href='javascript:void()' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
-						result += "<li><a href='javascript:void()' title='Delete' class='text-danger'><i class='fa fa-trash'></i></a></li>";
+						result += "<li><a href='create?stateTaxId=" + stList[e].id + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
+						result += "<li><a href='javascript:void()' onclick='alert()' title='Delete' class='text-danger'><i class='fa fa-trash'></i></a></li>";
 						result += "</ul>";
 						result += "</div>";
 						result += "</td></tr>";
 						$("#stateList").append(result);
 					}
+					var paginator = response.paginator;
+					$("#pageMsg").html("Showing " + ((paginator.pageNo + 1) + (paginator.pageNo * paginator.pageSize)) + " to " + (((paginator.pageNo + 1) * paginator.pageSize) > paginator.totalRows ? paginator.totalRows : ((paginator.pageNo + 1) * paginator.pageSize)) + " of " + paginator.totalRows + " results");
 				} else {
 					$("#stateListTable").hide();
 					$("#noResultsTable").show();
@@ -203,6 +207,7 @@ function Tax() {
 		result += "<label class='clearfix'>" + (isFirst ? "Month" : "" ) + "</label>";
 		result += "<div class='clearfix'>";
 		result += "<select class='width100percnt selectpicker' data-live-search='true' title='Select Month' data-name='monthApplicable' name='professionalTaxList["+pfRowId+"].monthApplicable' field-name='Month' data-validation='required'>";
+		result += "<option>All</option>";
 		result += "<option>April</option>";
 		result += "<option>May</option>";
 		result += "<option>June</option>";
@@ -237,7 +242,9 @@ function Tax() {
 	}
 	
 	this.deletePTRow = function(ele) {
-		$(ele).closest("div[data-name='ptRow']").remove();
+		var removalRow = $(ele).closest("div[data-name='ptRow']");
+		$("#removeIds").val(($("#removeIds").val()!==""? $("#removeIds").val() + "," : "") + $(removalRow).data("id"));
+		$(removalRow).remove();
 		tax.refreshPTRows();
 	}
 	
@@ -252,6 +259,7 @@ function Tax() {
 		});
 	}
 	
+
 	this.addDynamicTDSRow = function(isFirst) {
 		var result = "<div data-id=tdsRow" + tdsRowId + ">";
 		result += "<div class='col-md-2'>";
@@ -321,4 +329,5 @@ function Tax() {
 
 	
 	
+
 }

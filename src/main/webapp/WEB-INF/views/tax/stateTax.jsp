@@ -16,14 +16,15 @@
 					<select class="form-control" id="stateTaxYearList"
 						onchange="tax.getStateTaxList()">
 						<c:forEach items="${yearList}" var="year">
-							<option ${year.value==true?"selected=selected":""} value="${year.key}">${year.key}</option>
+							<option ${year.value==true?"selected=selected":""}
+								value="${year.key}">${year.key}</option>
 						</c:forEach>
 					</select>
 				</div>
 				<div class="col-md-3 dropdown-select mt10 mb10">
 					<select class="form-control" id="stateTaxStateList"
 						onchange="tax.getStateTaxList()">
-						<option selected value="0">Select State</option>
+						<option selected value="0">All</option>
 						<c:forEach items="${stateList}" var="s">
 							<option value="${s.id}">${s.stateName}</option>
 						</c:forEach>
@@ -42,7 +43,7 @@
 				<table id="stateListTable">
 					<thead>
 						<tr>
-							<th>States</th>
+							<th>State</th>
 							<th>Type of Tax</th>
 							<th>Action</th>
 						</tr>
@@ -56,27 +57,12 @@
 					</tr>
 				</table>
 			</div>
-
-
-			<nav>
-				<ul id="paging" class="pagination pull-right mr">
-					<li><a href="#">Previous</a></li>
-					<li><a href="#">2</a></li>
-					<li><a href="#">3</a></li>
-					<li><a href="#">4</a></li>
-					<li><a href="#">5</a></li>
-					<li class="disabled"><a href="#">6</a></li>
-					<li data-page="last"><a href="#">Next</a></li>
-				</ul>
-				<div class="clearfix"></div>
-			</nav>
-
-
-
 		</div>
-
-
 	</div>
-
-
+	<div id="loadMore">
+		<div class="loadWrap">
+			<i class="fa fa-spinner fa-spin"></i> Load More ....
+		</div>
+		<div id="pageMsg"></div>
+	</div>
 </section>

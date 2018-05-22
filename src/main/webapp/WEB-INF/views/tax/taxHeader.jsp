@@ -12,10 +12,10 @@
 
 <div class="tabsMenu">
 	<ul class="list-unstyled">
-		<li class="${activeTaxTab=='state'?'current':''}"><a
-			href="${appPath}/stateTax/list" class="${activeTaxTab=='state'?'active':''}">State</a></li>
-		<li class="${activeTaxTab=='central'?'current':''}"><a
-			href="${appPath}/centralTax/list" class="${activeTaxTab=='central'?'active':''}">Central</a></li>
+		<li class="${activeTaxTab == 'state' || activeTaxTab =='createStateTax' ? 'current' : ''}"><a
+			href="${appPath}/stateTax/list" class="${activeTaxTab == 'state' ? 'active' : ''}">State</a></li>
+		<li class="${activeTaxTab == 'central' || activeTaxTab == 'createCentralTax' ? 'current' : ''}"><a
+			href="${appPath}/centralTax/list" class="${activeTaxTab == 'central' ? 'active' : ''}">Central</a></li>
 	</ul>
 </div>
 

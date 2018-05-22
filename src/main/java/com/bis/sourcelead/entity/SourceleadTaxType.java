@@ -14,7 +14,7 @@ import javax.persistence.Table;
 public class SourceleadTaxType implements Serializable {
 
 	/**
-	 * 
+	 * @author Mahaveer Manoj
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -28,6 +28,9 @@ public class SourceleadTaxType implements Serializable {
 
 	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
 	private String description;
+
+	@Column(name = "IS_ACTIVE")
+	private boolean isActive;
 
 	public long getId() {
 		return id;

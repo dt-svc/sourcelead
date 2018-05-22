@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -16,6 +17,7 @@ import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.entity.CentralTax;
 
 import com.bis.sourcelead.dto.StateTaxDTO;
+import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.ProfessionalTax;
 
 import com.bis.sourcelead.entity.SourceleadTaxType;
@@ -30,12 +32,18 @@ public class TaxDaoImpl implements TaxDao {
 	private SessionFactory sessionFactory;
 
 	@Override
-	public List<SourceleadTaxType> getAllTaxesByType(long type) {
+	public List<SourceleadTaxType> getAllTaxesByType(long type, boolean includeInactive) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from SourceleadTaxType st where st.taxType=:taxType";
+			if (!includeInactive) {
+				query += " and st.isActive=:isActive";
+			}
 			Query queryObj = session.createQuery(query);
 			queryObj.setLong("taxType", type);
+			if (!includeInactive) {
+				queryObj.setBoolean("isActive", true);
+			}
 			List<SourceleadTaxType> taxTypeList = queryObj.list();
 			if (taxTypeList != null && !taxTypeList.isEmpty()) {
 				return taxTypeList;
@@ -47,10 +55,11 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
-	public List<StateTax> getStateTaxList(String yearFrequency, long stateId, long taxTypeId) {
+	public List<StateTax> getStateTaxList(String yearFrequency, long stateId, long taxTypeId, Paginator paginator) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from StateTax st";
+			List<String> params = new LinkedList<>();
 			if (yearFrequency != null && !yearFrequency.isEmpty()) {
 				query += " where st.financialYear=:yearFrequency";
 			}
@@ -63,14 +72,25 @@ public class TaxDaoImpl implements TaxDao {
 			Query queryObj = session.createQuery(query);
 			if (yearFrequency != null && !yearFrequency.isEmpty()) {
 				queryObj.setString("yearFrequency", yearFrequency);
+				params.add("String;yearFrequency;" + yearFrequency);
 			}
 			if (stateId > 0) {
 				queryObj.setLong("stateId", stateId);
+				params.add("long;stateId;" + stateId);
 			}
 			if (taxTypeId > 0) {
 				queryObj.setLong("taxTypeId", taxTypeId);
+				params.add("long;taxTypeId;" + taxTypeId);
+			}
+			if (paginator != null) {
+				query += " order by st.id desc";
+				queryObj.setFirstResult(paginator.getPageNo() * paginator.getPageSize());
+				queryObj.setMaxResults(paginator.getPageSize());
 			}
 			List<StateTax> stateTaxList = queryObj.list();
+			if (paginator != null) {
+				paginator.applyPaginationData(query, session, params);
+			}
 			return stateTaxList;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -119,6 +139,7 @@ public class TaxDaoImpl implements TaxDao {
 	
 	
 	@Override
+	@Transactional
 	public long addStateTax(StateTax stateTax) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -128,6 +149,18 @@ public class TaxDaoImpl implements TaxDao {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+
+	@Override
+	public boolean removeProfesionalTax(ProfessionalTax professionalTax) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(professionalTax);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	@Override
