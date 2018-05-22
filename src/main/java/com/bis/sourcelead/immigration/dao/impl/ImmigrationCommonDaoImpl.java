@@ -834,13 +834,10 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 		List<ImmigrationListViewDTO> ImmigarionDTOList = new ArrayList<ImmigrationListViewDTO>();
 		if (!ImmigrationViewLst.isEmpty()) {
-			List<LookUpData> caEmployerDTOs = immigrationTemplateDao
-					.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
 			for (ImmigrationListView source : ImmigrationViewLst) {
 				// logger.debug(" DocsCount"+source.getDocsCount());
 				ImmigrationListViewDTO target = new ImmigrationListViewDTO();
 				BeanUtils.copyProperties(source, target);
-				target.setCurrUsicisStatusList(caEmployerDTOs);
 				// logger.debug(" DocsCount
 				// target"+target.getDocsCount());
 				target.setOpenDateStr(
@@ -1120,11 +1117,8 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		List<MyImmigrationViewDTO> ImmigarionDTOList = new ArrayList<MyImmigrationViewDTO>();
 		if (!ImmigrationViewLst.isEmpty()) {
 			for (MyImmigrationView source : ImmigrationViewLst) {
-				// logger.debug(" DocsCount"+source.getDocsCount());
 				MyImmigrationViewDTO target = new MyImmigrationViewDTO();
 				BeanUtils.copyProperties(source, target);
-				// logger.debug(" DocsCount
-				// target"+target.getDocsCount());
 				target.setOpenDateStr(
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getOpenDate()));
 				target.setLcaStartDateStr(
@@ -1287,6 +1281,91 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		String query = "select candidate.id from Candidate candidate where candidate.candidateUUID = :candidateUUID";
 		Long candidateId = (Long) session.createQuery(query).setString("candidateUUID", candidateUUID).uniqueResult();
 		return candidateId;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<ImmigrationListViewDTO> getImmigrationsListByCountsLink(
+			ImmigrationListViewDTO immigrationListDTO, String searchValue, OrgLocations orgLocations) throws Exception {
+		List<String> paramList = new ArrayList<String>();
+		Integer filterCount = 0;
+		List<Long> countlist = null;
+		
+		List<ImmigrationListView> ImmigrationViewLst = null;
+		ResponseList<ImmigrationListViewDTO> responseList = new ResponseList<>();
+		
+		if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_INPROGRESS_STATUS)){
+			paramList.addAll(ImmigrationConstants.IMMIGRATION_INPROGRESS_STATUS_LIST)	;
+		}else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_DRAFT_STATUS)){
+			paramList.add(ImmigrationConstants.IMMIGRATION_DRAFT_STATUS);
+		}
+		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_APPROVED_STATUS)){
+			paramList.add(ImmigrationConstants.IMMIGRATION_APPROVED_STATUS);
+		}
+		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_OTHERS_STATUS)){
+			paramList.addAll(ImmigrationConstants.IMMIGRATION_OTHER_STATUS_LIST);
+		}
+		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_REQUEST_TO_FILL_STATUS)){
+			paramList.add(ImmigrationConstants.IMMIGRATION_REQUEST_TO_FILL_STATUS);
+		}
+		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_REJECTED_STATUS)){
+			paramList.add(ImmigrationConstants.IMMIGRATION_REJECTED_STATUS);
+		}
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String resultQuery = "from ImmigrationListView immView  where immView.status = 1  and immView.currUscisStatus IN (:paramList) and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
+		String listQueryCount = "select count(*) from ImmigrationListView immView where  immView.status = 1  and immView.currUscisStatus IN (:paramList) and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId)  ";
+		Query hqlQuery = session.createQuery(resultQuery);
+		Query hqlQuery1 = session.createQuery(listQueryCount);
+		hqlQuery = hqlQuery.setLong("orgLocationId", orgLocations.getId());
+		hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId());
+		hqlQuery = hqlQuery.setParameterList("paramList", paramList);
+		hqlQuery1 = hqlQuery1.setParameterList("paramList", paramList);
+		
+		ImmigrationViewLst = hqlQuery.list();
+
+		countlist = hqlQuery1.setFirstResult(immigrationListDTO.getStart())
+				.setMaxResults(immigrationListDTO.getLength()).list();
+		int totalCount = 0;
+		if (immigrationListDTO != null) {
+			if (countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+				filterCount = totalCount;
+			}
+		}
+		responseList.setRecordsTotal(totalCount);
+		if (resultQuery.toString() != null && !resultQuery.toString().isEmpty()) {
+			responseList.setRecordsFiltered(filterCount);
+		} else {
+			responseList.setRecordsFiltered(totalCount);
+		}
+		
+		List<ImmigrationListViewDTO> ImmigarionDTOList = new ArrayList<ImmigrationListViewDTO>();
+		if (!ImmigrationViewLst.isEmpty()) {
+			for (ImmigrationListView source : ImmigrationViewLst) {
+			
+				ImmigrationListViewDTO target = new ImmigrationListViewDTO();
+				BeanUtils.copyProperties(source, target);
+				target.setOpenDateStr(
+						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getOpenDate()));
+				target.setLcaStartDateStr(
+						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaStartDate()));
+				target.setLcaEndDateStr(
+						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaEndDate()));
+				if (orgLocations.getId() == source.getOrgLocationId()) {
+					target.setOrgName(source.getVendor());
+					target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG2);
+					target.setSpocName(source.getSpocNameVendor());
+				} else {
+					target.setOrgName(source.getClient());
+					target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG1);
+					target.setSpocName(source.getSpocNameClient());
+				}
+				ImmigarionDTOList.add(target);
+			}
+		}
+		responseList.setData(ImmigarionDTOList);
+		return responseList;
 	}
 
 }

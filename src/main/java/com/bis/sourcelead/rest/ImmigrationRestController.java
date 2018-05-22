@@ -282,6 +282,39 @@ public class ImmigrationRestController {
 		logger.debug("after controller  getAllImmigartionList  --> ");
 		return immigrationListDTOList;
 	}
+	
+	@RequestMapping(value = "/getImmigrationDashBoardFilterList")
+	public @ResponseBody ResponseList<ImmigrationListViewDTO> getImmigrationDashBoardFilterList(
+			ImmigrationListViewDTO immigrationListDTO,	@RequestParam(value = "filterStatus", required = false) String filterStatus,
+			 HttpServletRequest request) {
+		ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
+		logger.debug("inisde controller  getMyImmigrationList  --> ");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			String[] tableColumns = { "currUscisStatus", "generatedId", "petitionType", "country", "firstName", "email",
+					"phone", "openDate",  "lcaStartDate", "lcaEndDate" };// should be
+			// entity names
+			int sortColumnIndex = 0; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (immigrationListDTO.getOrder() != null && !immigrationListDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(immigrationListDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = immigrationListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+																					// direction
+				// of the sorting.
+			}
+			immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			immigrationListDTO.setSortOrder(sortColumnOrder);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			immigrationListDTO.setOrgLocationId(orgLocations.getId());
+			immigrationListDTOList = immigrationCommonService.getImmigrationsListByCountsLink(immigrationListDTO ,filterStatus, orgLocations);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.debug("after controller  getAllImmigartionList  --> ");
+		return immigrationListDTOList;
+	}
+	
 	@RequestMapping(value = "/getMyImmigrationList")
 	public @ResponseBody ResponseList<MyImmigrationViewDTO> getMyImmigrationList(
 			MyImmigrationViewDTO immigrationListDTO,

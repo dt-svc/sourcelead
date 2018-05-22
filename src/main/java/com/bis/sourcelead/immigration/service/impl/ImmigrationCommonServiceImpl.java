@@ -1518,4 +1518,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationCommonDao.getCandidateIdByUUID(candidateUUID);
 	}
 
+	@Override
+	public ResponseList<ImmigrationListViewDTO> getImmigrationsListByCountsLink(
+			ImmigrationListViewDTO immigrationListDTO, String searchValue, OrgLocations orgLocations) throws Exception {
+		// TODO Auto-generated method stub
+		return immigrationCommonDao.getImmigrationsListByCountsLink(immigrationListDTO,searchValue,orgLocations);
+	}
+
 }
