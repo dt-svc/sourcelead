@@ -66,5 +66,8 @@
 				 $(".popMask").fadeOut(200);
 				$("#popNoteView").fadeOut(100);
 				$("#notesDetails_form")[0].reset();
+				$("#popNoteView").find('p.jquery_form_error_message').remove();
+				$("#popNoteView").find('p.jquery_form_error_message').remove();
+				$("#notesSave_Button").removeAttr("disabled")
 			 }
 		</script>
