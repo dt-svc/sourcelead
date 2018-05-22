@@ -2023,5 +2023,25 @@ public class ImmigrationRestController {
 		    }
 			return flag;
 	}
+	
+	@RequestMapping(value = {"/validateImmigrationCandidateForms"})
+	public Boolean validateImmigrationCandidateForms(
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+			@RequestParam(value = "id", required = false) Long id,
+			@RequestParam(value = "formName", required = false) String formName,
+			HttpServletRequest request)
+			throws Exception {
+		
+		 ImmigrationCandidateForms ImmigrationCandidateForms=null;
+	       if(null != id){
+	    	   ImmigrationCandidateForms = immigrationCommonService.getImmigrationCandidateFormsDetailsByFormNameAndId(formName, candidateId, immigrationId, id);
+	       }
+	       Boolean flag = false;
+		   if(ImmigrationCandidateForms == null){
+		    	flag =  immigrationCommonService.validateImmigrationCandidateForms(formName,candidateId,immigrationId);
+		    }
+			return flag;
+	}
 
 }

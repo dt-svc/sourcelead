@@ -137,4 +137,8 @@ public interface ImmigrationCommonDao {
 
 	Long getCandidateIdByUUID(String candidateUUID);
 	
+	public ImmigrationCandidateForms getImmigrationCandidateFormsDetailsByFormNameAndId(String formName, Long candidateId,Long immigrationId,Long id) throws Exception;
+	
+	public Boolean validateImmigrationCandidateForms(String formName, Long candidateId,Long immigrationId) throws Exception;
+	
 }

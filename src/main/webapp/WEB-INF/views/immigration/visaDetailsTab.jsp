@@ -170,6 +170,7 @@
 				$("#popUpVisa").fadeOut(200);
 				$("#CandidateVisaform")[0].reset();
 				$("#candidateVisaId").val('');
+				$('#idNumberVisaDiv').find('p.jquery_form_error_message').remove();
 			}
 		   	
 		</script>

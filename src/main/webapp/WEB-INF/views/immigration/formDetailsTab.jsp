@@ -118,10 +118,10 @@
 		
 		<div class="popupMid clearfix">
 
-          <div class="col-sm-12 noPad mt clearfix">
+          <div class="col-sm-12 noPad mt clearfix" id="errformNameDiv">
 				<label class="col-md-4 padding_left">Form name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<input type="text" class="form-control" name="formName" id="formName"  field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" data-name="formName"/>
+					<input type="text" class="form-control" name="formName" id="formName"  field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" data-name="formName" onkeyup = "validateImmigrationCandidateForms();"/>
 				</div>
 			</div>	      
 			   
@@ -164,7 +164,7 @@
         </div>
         </div>
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button" id = "canFormSave_Button" onclick="immigration.saveCandidateForms();">
+            <input value="Save" class="" type="button" id ="canFormSave_Button" onclick="immigration.saveCandidateForms();">
             <input value="Cancel" class="popCan" type="button" onclick="closeFormPopup();">
           </div>		
 	</div>
@@ -253,6 +253,7 @@
 				//$("#isRequired").prop("checked",false);
 				$('#formSave_Form input[name="isRequired"]').prop('checked', false);
 				//$('#candidate_Immigration_Doc input[name="isRequired"]').prop('checked', false);
+				$('#errformNameDiv').find('p.jquery_form_error_message').remove(); 
 				removeImmigDoc();
 				
 			}
