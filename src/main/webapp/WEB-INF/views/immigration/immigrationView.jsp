@@ -54,24 +54,17 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 				<p><strong>Visa Type</strong>: ${immigration.petitionType}</p>
 				<p><strong>Attorney</strong>: ${immigration.attorneyName}</p>
   			</div>
-  			
-  			<div class="col-md-4">
-  				<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationId=${immigrationId}>Edit</a></p>
-  			</div>
-  			
+			<c:if test="${myImmigrationPage =='N'}">
+				<div class="col-md-4">
+	  				<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
+	  			</div>
+			</c:if>
   			<div class="col-md-2 clearfix mt10">
   				<p id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt mr10"></i>Download Package</p>
   			</div>
   			
   			<div class="col-md-2 immHeadactions clearfix">
-  			
-  			 <sec:authorize access="hasAnyRole('ROLE_EDIT_VIEW_PETITION')">
-  			<select id="uscisStatusId" onchange="changeUscisStatusForImmigration($(this).val(),${immigration.currUscisStatusId});" <c:if test = "${myImmigrationPage =='Y'}">disabled</c:if> class="form-control selectdisabled selstyles-new">
-  				<c:forEach var="item" items="${uscisStatusList}">
-  					<option ${immigration.currUscisStatusId == item.id ? 'selected' : '' } value="${item.id}">${item.name}</option>
-  				</c:forEach>
-  			</select>
-  			</sec:authorize>
+  				<span>${immigration.currUscisStatus}</span>
   			</div>
   		</div>
 		<div class="immigraHead">
@@ -80,8 +73,8 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
               <li><a href="#passportsTab"><i id ="passportfilled" class="fa fa-check-circle-o"></i>Passport</a></li>
               <li><a href="#visasTab"  id="visaInfoTab" class="${visaOnLoadCount==null?'disabledLink':''}"><i id ="visafilled" class="fa fa-check-circle-o"></i>Visa</a></li>
               <li><a href="#employersTab" id="employersInfoTab" class="${empOnLoadCount==null?'disabledLink':''}"><i id ="employersfilled" class="fa fa-check-circle-o"></i>Employers</a></li>
-              <li><a href="#residencesTab" id="residenceInfoTab" class="${resiOnLoadCount==null?'disabledLink':''}"><i id ="residencefilled" class="fa fa-check-circle-o"></i>Residence</a></li>
               <li><a href="#educationsTab" id="educationInfoTab" class="${eduOnLoadCount==null?'disabledLink':''}"><i id ="educationfilled" class="fa fa-check-circle-o"></i>Educations</a></li>
+              <li><a href="#residencesTab" id="residenceInfoTab" class="${resiOnLoadCount==null?'disabledLink':''}"><i id ="residencefilled" class="fa fa-check-circle-o"></i>Residence</a></li>
               <li><a href="#familiesTab" class="${familyOnLoadCount==null?'disabledLink':''}"><i id ="familyfilled" class="fa fa-check-circle-o"></i>Family</a></li>
               <li><a href="#formsTab"><i id="allFormsfilled" class="fa fa-check-circle-o"></i>Forms</a></li>
               <li><a href="#docsTab"><i id="allDocsfilled" class="fa fa-check-circle-o"></i>Documents</a></li>
@@ -191,6 +184,8 @@ var addfamilyPopupEventListener = function() {
 // project side bar tabs
 $(document).ready(function() {
 	$("#detailsTab").show()
+	$("#remove_immigration_pop").remove();
+	$(".project_inn_mask").remove();
 	addfamilyPopupEventListener();
     $(".immigraTabs a").click(function(event) {
         event.preventDefault();
@@ -297,26 +292,26 @@ $("#packageZipfile").click(function() {
 });
 </script>
 <script>
-	function goToSummaryTab(tabName) {
+	function goToSummaryNextTab(tabName) {
 		if(tabName=="#visasTab"){
 			if($('#passportTbl tr').length<=1){
 				showWarningPopup("Passport");
 			return;
 			}
 		}else if(tabName=="#residencesTab"){
-			if($('#employerTbl tr').length<=1){
-				showWarningPopup("Employer");
+			if($('#educationTbl tr').length<=1){
+				showWarningPopup("Education");
 			return;
 			}
 		}else if(tabName=="#educationsTab"){
-			if($('#residenceTbl tr').length<=1){
-				showWarningPopup("Residence");
+			if($('#employerTbl tr ').length<=1){
+				showWarningPopup("Employer");
 			return;
 			}
 		}
 		else if(tabName=="#familiesTab"){
-			if($('#educationTbl tr').length<=1){
-				showWarningPopup("Education");
+			if($('#residenceTbl tr').length<=1){
+				showWarningPopup("Residence");
 			return;
 			}
 		}	
@@ -349,8 +344,11 @@ $("#packageZipfile").click(function() {
 		$("a[href='" + tabName + "']").removeClass("disabledLink");
 		$("a[href='" + tabName + "']").click();
 	}
-
 	
+	function goToSummaryTab(tabName) {
+		$("a[href='" + tabName + "']").removeClass("disabledLink");
+		$("a[href='" + tabName + "']").click();
+	}
 	function changeUscisStatusForImmigration(uscisStatusId,uscisOldId){
 		 $.ajax({
 		    	type: "GET",
