@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
@@ -50,9 +49,6 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
     @Autowired
     private SessionFactory sessionFactory;
-
-    @Autowired
-    private UserRoleDao userRoleDao;
 
     @Value("${SourceLead.100}")
     private String notFound;
