@@ -1374,7 +1374,7 @@ function validateCandidatePassportVisa(idType) {
 		   idNumberVal =$('#CandidatePassportform input[name="idNumber"]').val().trim();
 	  }else{
 		   id = $("#candidateVisaId").val();
-		   idNumberVal =$('#CandidateVisaform input[name="idNumber"]').val().trim();;  
+		   idNumberVal =$('#CandidateVisaform input[name="idNumber"]').val().trim();  
 	  }
 	  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
 		 $.ajax({
