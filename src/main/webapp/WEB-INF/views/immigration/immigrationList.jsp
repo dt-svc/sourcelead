@@ -53,8 +53,11 @@
 		</div>
    
 		<div class="immigraInnWrap">
+		
 			<div class="timesheet_head clearfix">
-			
+			<button type="button" class="btn btn-primary dropdown-toggle btn-sm" onClick="clearFilters();" title="Refresh">
+			    <span class="fa fa-refresh"></span>
+			</button>
 			<div class="pull-left colCho">
 				<a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="btn btn-sm btn-default"><i class="fa fa-table"></i></a>
 			</div>
@@ -510,19 +513,8 @@
                  "render": function (data, type, opt, meta) {
                      var result = "";
                      if (opt.currUscisStatusId !== null && opt.currUscisStatusId !== '' && opt.currUscisStatusId !== 'undefined') {
-                    	 result = result + "<td><div class='mt5 mb5 dropdown-select' style='width:150px;'><select id='currUscisStatus' title='"+opt.currUscisStatus+"' onchange='changeSaveUscisStatus($(this),"+opt.id+","+opt.currUscisStatusId+");' name='currUscisStatus' class='form-control'>";
+                    	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.currUscisStatus +"'>" + opt.currUscisStatus + "</div></td>";
                     	 //alert(opt.currUscisStatusId);
-                    	 for(var i=0;i<opt.currUsicisStatusList.length;i++){
-                        	data = opt.currUsicisStatusList[i];
-                        	if(data.id == opt.currUscisStatusId){
-                        		//alert("inside selected");
-                        		result = result + "<option selected value="+data.id+">"+data.name+"</option>";
-                        	}else{
-                        		result = result + "<option value="+data.id+">"+data.name+"</option>";
-                        	}
-                    	 }
-                         result = result + "</select></div></td>";
-                         $('#currUscisStatus').trigger("chosen:updated");
                      } else {
                          result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
                      }
@@ -673,7 +665,7 @@
                      result = result + '<td><div><a href=/app/immigration/editImmigrationDetails?immigrationUUID='+opt.immigrationUUID+'><i id="edit' + opt.immigrationUUID + '" class="glyphicon glyphicon-pencil"></i></a>';
                      '</sec:authorize>';
                       '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION\')">';
-                     result = result + '<i id="delete' + opt.id + '" onclick="deleteImmigrationListId(' + opt.immigrationUUID + ');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                     result = result + '<i id="delete' + opt.immigrationUUID + '" onclick="deleteImmigrationListId(\''+opt.immigrationUUID+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                      '</sec:authorize>';
                      return result;
                  }
@@ -709,14 +701,14 @@
  }
  
  function deleteImmigrationListId(immigrationUUID){ // only stauts updated with reason. active 1 , deactive 0.
-		$(".project_inn_mask").remove();
+	 $(".project_inn_mask").remove();
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='remove_immigration_pop' class='remove_user_pop remove_user_pop_a'>";
 		/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
 		result = result +" <b>Do you want to remove record permanently?</b>";
 		result = result + ' <div id="reasonForTemplateDiv"/>';
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteImmigrationDetailsByRowId("+immigrationUUID+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteImmigrationDetailsByRowId(\""+immigrationUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#remove_immigration_pop").slideDown(200);
@@ -883,6 +875,9 @@
 	            li[i].style.display = "none";
 	        }
 	    }
+	}
+	function clearFilters(){
+		location.reload();
 	}
 </script>
 
