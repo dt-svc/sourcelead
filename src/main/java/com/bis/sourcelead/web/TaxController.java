@@ -24,11 +24,8 @@ import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.StateTaxDTO;
-
-
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.Candidate;
-
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.States;
@@ -118,7 +115,7 @@ public class TaxController {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			CentralTaxDTO centralTaxDTO = new CentralTaxDTO();
-			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(2);
+			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(2,false);
 			modelAndView.addObject("taxTypes", taxTypeList);
 			if (sourceleadTaxId != null) {
 				centralTaxDTO = taxService.getCentralTax(sourceleadTaxId);
@@ -263,7 +260,6 @@ public class TaxController {
 		return modelAndView;
 	}
 
-
 	public Map<String, Boolean> caliculateYearList(){
 		Map<String, Boolean> yearList = new LinkedHashMap<>();
 		Calendar c = Calendar.getInstance();
@@ -275,11 +271,10 @@ public class TaxController {
 			c.roll(Calendar.YEAR, 1);
 			String toYear = c.get(Calendar.YEAR) + "";
 			yearList.put(fromYear + "-" + toYear, isCurrent);
+			}
+		return yearList;
+	}
 
-
-	
-	
-	
 	
 	@RequestMapping(value = "/centralTax/add" , method = RequestMethod.POST)
 	@ResponseBody
