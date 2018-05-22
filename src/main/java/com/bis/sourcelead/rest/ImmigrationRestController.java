@@ -571,9 +571,11 @@ public class ImmigrationRestController {
 
 	@PreAuthorize("hasRole('ROLE_DELETE_PETITION_TEMPLATE')")
 	@RequestMapping(value = "/deleteImmigrationTemplateDetatils")
-	public String deleteTemplateDetailsById(@RequestParam(value = "deleteId", required = true) Long deleteId,
+	public String deleteTemplateDetailsById(@RequestParam(value = "temlateUuid", required = true) String temlateUuid,
 			@RequestParam(value = "reason", required = true) String reason, HttpServletRequest request) {
+		Long deleteId = immigrationTemplateService.getTemplateIdByUUID(temlateUuid);
 		try {
+			
 			immigrationTemplateService.deleteAllPetitionTemplateDetailsById(deleteId, reason);// only soft delete
 																								// operation in
 			// Database.
@@ -588,7 +590,10 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = "/reactiveImmigrationTemplateDetailsById")
 	public String reactiveImmigrationTemplateDetailsById(
-			@RequestParam(value = "templateId", required = true) Long templateId, HttpServletRequest request) {
+			@RequestParam(value = "templateUuid", required = true) String templateUuid, HttpServletRequest request) {
+		
+		Long templateId = immigrationTemplateService.getTemplateIdByUUID(templateUuid);
+		
 		try {
 			immigrationTemplateService.reactiveImmigrationTemplateById(templateId);
 		} catch (Exception e) {
@@ -825,8 +830,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 
-	@RequestMapping(value = {
-			"/savePetitionTemplateDetails" }, method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = {"/savePetitionTemplateDetails" }, method = RequestMethod.POST, produces = "application/json")
 	public Response<String> savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,
 			@RequestParam(value = "templateId", required = false) String templateId) {
 
