@@ -170,6 +170,8 @@
 				$("#popUpVisa").fadeOut(200);
 				$("#CandidateVisaform")[0].reset();
 				$("#candidateVisaId").val('');
+				$('#popUpVisa').find('p.jquery_form_error_message').remove();
+				$("#visa_save_id").removeAttr("disabled");
 			}
 		   	
 		</script>

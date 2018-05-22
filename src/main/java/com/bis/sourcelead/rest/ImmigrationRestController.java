@@ -1548,7 +1548,7 @@ public class ImmigrationRestController {
 					}
 				} else if (i == 1) { // CandidateEmployers
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
-							"where candidateId.id=:candidateId");
+							"where candidateId.id=:candidateId and status=1");
 					if (count == null) {
 						missedTabList.add(tabNameArray[i]);
 					}
@@ -1560,7 +1560,7 @@ public class ImmigrationRestController {
 					}
 				} else if (i == 3) {// CandidateEducation
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
-							"where candidateId.id=:candidateId");
+							"where candidateId.id=:candidateId and status=1");
 					if (count == null) {
 						missedTabList.add(tabNameArray[i]);
 					}
@@ -2020,6 +2020,26 @@ public class ImmigrationRestController {
 	       Boolean flag = false;
 		   if(candidatePassportVisa == null){
 		    	flag =  immigrationCommonService.validateCandidatePassportVisa(candidateId,idType,idNumberVal);
+		    }
+			return flag;
+	}
+	
+	@RequestMapping(value = {"/validateImmigrationCandidateForms"})
+	public Boolean validateImmigrationCandidateForms(
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+			@RequestParam(value = "id", required = false) Long id,
+			@RequestParam(value = "formName", required = false) String formName,
+			HttpServletRequest request)
+			throws Exception {
+		
+		 ImmigrationCandidateForms ImmigrationCandidateForms=null;
+	       if(null != id){
+	    	   ImmigrationCandidateForms = immigrationCommonService.getImmigrationCandidateFormsDetailsByFormNameAndId(formName, candidateId, immigrationId, id);
+	       }
+	       Boolean flag = false;
+		   if(ImmigrationCandidateForms == null){
+		    	flag =  immigrationCommonService.validateImmigrationCandidateForms(formName,candidateId,immigrationId);
 		    }
 			return flag;
 	}
