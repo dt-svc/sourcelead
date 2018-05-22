@@ -388,4 +388,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	     return lookUpDatas;
 	}
 
+	@Override
+	public Long getTemplateIdByUUID(String immiTemplateUUID) {
+		return immigrationTemplateDao.getTemplateIdByUUID(immiTemplateUUID);
+	}
+
 }
