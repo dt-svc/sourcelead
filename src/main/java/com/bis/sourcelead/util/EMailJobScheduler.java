@@ -61,6 +61,7 @@ import com.bis.sourcelead.entity.ContractOwnerHierarchy;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.ContractsHistory;
 import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Holiday;
@@ -87,6 +88,7 @@ import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.InvoiceService;
@@ -277,6 +279,9 @@ public class EMailJobScheduler {
 	
 	@Value("${static.path}")
     private String staticPath;
+	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioconService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1087,6 +1092,37 @@ public class EMailJobScheduler {
 		 globalVarsMap.put("managerName", emailMessage.getFirstName()+" "+emailMessage.getLastName());
 		 globalVarsMap.put("consultantsCount", Integer.toString(candidatesListToBeAddedInHotList.size()));
 		 globalVarsMap.put("tableOfContent", sb.toString());
+		 
+		//configured Email
+			
+			String fromEmail = null;
+			 EmailConfigurationFromMail confFromMail=null;
+			 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
+			 if(emailConfigMailList != null){
+				 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+					 if( fromMail.getEmailModules() != null){
+						String[] jobIds = fromMail.getEmailModules().split(",");
+							for(int i=0; i<jobIds.length; i++) {
+								if(Long.valueOf(jobIds[i]) == 10l ){
+									confFromMail=fromMail;
+								}
+							}
+					 }
+				 } 
+				 
+				 if(confFromMail == null){
+					 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
+					 if(confFromMail != null){
+						 fromEmail = confFromMail.getEmail();
+					 }
+				 }else{
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }
+			 
+			 if(StringUtils.isNotBlank(fromEmail)){
+				 emailMessage.setFromEmail(fromEmail);
+			 }
 			 
 		 //calling the sendEmail method of emailScenerioUtil
 		 
@@ -1631,7 +1667,12 @@ public class EMailJobScheduler {
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, contracts.getOrgLocationId().getOrg(),contracts.getOrgLocationId());
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
-			
+			 
+			 String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+			 if(StringUtils.isNotBlank(fromMail)){
+				 emailMessage.setFromEmail(fromMail);
+			 } 
+			 
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			 String actionLink="";
 			 emailScenerioUtil.sendEmail(emailMessage,contracts.getOrgLocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
@@ -2403,6 +2444,20 @@ public class EMailJobScheduler {
 		 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
+		     
+		   //getting the current EmailScenario by EmailScenario unique name and entity type
+			 EmailScenario  emailScenario = null;
+			 if(contracts.getOrgLocationId() != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.REMINDER_CONTRACT_SIGNING_EMAIL_PENDING,Constants.ENTITY_TYPE_EMAIL, orglocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REMINDER_CONTRACT_SIGNING_EMAIL_PENDING,Constants.ENTITY_TYPE_EMAIL);
+			   }
+			 
+		     
+		     String fromMail=commonUtil.getConfiguredFromEmail(orglocations.getId(), emailScenario);
+			 if(StringUtils.isNotBlank(fromMail)){
+				 emailMessage.setFromEmail(fromMail);
+			 }      
 		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, contracts.getOrgLocationId().getOrg(), contracts.getOrgLocationId(), Constants.REMINDER_CONTRACT_SIGNING_EMAIL_PENDING, null);
 		// EmailScenario emailScenario =
 		// emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_EMAIL);
@@ -2550,9 +2605,23 @@ public class EMailJobScheduler {
 			globalVarsMap.put("contractId", contracts.getAutoGenId());
 		}
 		globalVarsMap.put("noOfDays", "4");
+		
+		//getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = null;
+		 if(contracts.getOrgLocationId() != null)
+		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.REMINDER_CONTRACT_SIGNING_EMAIL_WAITING_TO_BE_VERIFY,Constants.ENTITY_TYPE_EMAIL, orglocations.getId());
+		  if(emailScenario == null){
+				emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.REMINDER_CONTRACT_SIGNING_EMAIL_WAITING_TO_BE_VERIFY,Constants.ENTITY_TYPE_EMAIL);
+		   }
+		 
+		
+		String fromMail=commonUtil.getConfiguredFromEmail(orglocations.getId(), emailScenario);
+		 if(StringUtils.isNotBlank(fromMail)){
+			 emailMessage.setFromEmail(fromMail);
+		 } 
 		// getting the current EmailScenario by EmailScenario unique name and
 		// entity type
-		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, contracts.getOrgLocationId().getOrg(), contracts.getOrgLocationId(), Constants.REMINDER_CONTRACT_SIGNING_EMAIL_WAITING_TO_BE_VERIFY, null);
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, contracts.getOrgLocationId().getOrg(), contracts.getOrgLocationId(), Constants.REMINDER_CONTRACT_SIGNING_EMAIL_WAITING_TO_BE_VERIFY, new ArrayList<EmailAttachment>());
 		// EmailScenario emailScenario =
 		// emailScenarioService.getEmailScenarioByUniqueName(Constants.CONTRACT_SIGNED,Constants.ENTITY_TYPE_EMAIL);
 		/*

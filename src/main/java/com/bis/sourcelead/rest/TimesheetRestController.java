@@ -3322,9 +3322,7 @@ public class TimesheetRestController {
 			timesheetFor = tsDTO.getTimesheetFor();
 			List<Long> oldDbIdList = new ArrayList<>();
 			List<Long> freshIdList = new ArrayList<>();
-			if(tsDTO.getId() != null) {
-				oldDbIdList = timesheetDayEntriesDao.getAllTimeSheetDayEntryIdsBySubmissionId(tsDTO.getId());
-			}
+			
 			Date frequencyStartDate = null;
 			Date frequencyEndDate   = null;
 			Date actualStartDate = null;
@@ -3349,22 +3347,27 @@ public class TimesheetRestController {
 			}	
 			ProjectMembers projectMember = projectMembersService.getProjectMemberById(tsDTO.getProjectMemberId());
 			if(projectMember != null) {
+				int count = 0;
 				for(TimesheetEntriesDTO te :tsDTO.getTimesheetEntries()) {
 					if(te.getTimesheetTaskDTO() != null && te.getTimesheetTaskDTO().getId() != null) {
 						Date timesheetDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),te.getDate().replaceAll("/", "-"));
+						if(count == 0) {
+							oldDbIdList = timesheetDayEntriesDao.getAllTimeSheetDayEntryIdsBySubmissionIdAndEntryDate(tsDTO.getId(),timesheetDate);
+						}
+						
 						TimeSheetDayEntries tde = addTimesheetDayEntry(projectMember,actualStartDate,actualEndDate,frequencyStartDate,frequencyEndDate,loginUser,timesheetDate,te.getHours(),te.getComments(),null,te.getTimesheetTaskDTO().getId(),orgLoc.getDateFormat(),null);
 						freshIdList.add(tde.getId());
-					}
-				}
-				oldDbIdList.removeAll(freshIdList);
-				if (oldDbIdList != null && !oldDbIdList.isEmpty()) {
-					for (Long removedEntryId : oldDbIdList) {
-						timesheetDayEntriesDao.deleteTimeSheetDayEntries(removedEntryId);
+						count++;
 					}
 				}
 			}
-			
+			oldDbIdList.removeAll(freshIdList);
+			if (oldDbIdList != null && !oldDbIdList.isEmpty()) {
+				for (Long removedEntryId : oldDbIdList) {
+					timesheetDayEntriesDao.deleteTimeSheetDayEntries(removedEntryId);
+				}
 		}
+	}
 		TimesheetExpenseEntryDetailsUtilDTO eedDTO = new TimesheetExpenseEntryDetailsUtilDTO();
 		eedDTO.setCurrentTimeFrequency(currentTimeFrequency);
 		eedDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
@@ -3374,6 +3377,7 @@ public class TimesheetRestController {
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
 		return getTimesheetEntryDetailsMobile(eedDTO, request);
 	}
+	
 	
 	
 	
