@@ -25,9 +25,9 @@
             <div class="letterhead-body clearfix col-md-3">
             <h5>Letterhead Details</h5>
             <div class="form-group row">
-            <label class="col-md-12">Letterhead Name</label>
+            <label class="col-md-12">Letterhead Name<span class="text-danger paddingLeft">*</span></label>
              <div class="col-md-12">
-                     <input type="text" class="form-control" id="letterHeadName" name="letterHeadName"  field-name="Letterhead Name" value="${letterHead.letterHeadName}" data-validation="required">
+                     <input type="text" class="form-control" id="letterHeadName" name="letterHeadName"  field-name="Letterhead Name" value="${letterHead.letterHeadName}"  data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-250" data-validation="required">
               </div>
               </div>
                     
@@ -60,7 +60,7 @@
                       	<option value="">-- Select --</option>
                       	<option value="Letter" ${letterHead.templateType eq 'Letter' ? 'selected' : ''}>Letter (8.5" x 11")</option>	
                       	<option value="A4" ${letterHead.templateType eq 'A4' ? 'selected' : ''}>A4 (8.268" x 11.693")</option>
-<%--                       	 <option value="A6" ${letterHead.templateType eq 'A6' ? 'selected' : ''}>A6 (4.134" x 5.827")</option>	 --%>
+                       	 <option value="A6" ${letterHead.templateType eq 'A6' ? 'selected' : ''}>A6 (4.134" x 5.827")</option>	 
                       	<option value="Legal" ${letterHead.templateType eq 'Legal' ? 'selected' : ''}>Legal (8.5" x 14")</option>	
                       </select>
                       </div>
@@ -87,7 +87,7 @@
 				<div class="letterhead-Header clearfix  col-md-3">
 				<h5>Header</h5>
 					<div class="row form-group clearfix">
-					<label class="col-md-12">Upload Logo</label>
+					<label class="col-md-12">Upload Logo<span class="text-danger paddingLeft">*</span></label>
 					<div class="clearfix col-md-12">
 					<div class="input-group positionRelative">
 					<label class="input-group-btn">
