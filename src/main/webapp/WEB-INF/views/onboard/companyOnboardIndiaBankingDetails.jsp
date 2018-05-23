@@ -167,7 +167,7 @@ right: 15px;
 			       <div class="row clearfix"> 
 			       <div class="col-md-5">
 			        <h2 class="pull-left">Organization Banking Details</h2>
-			        	<a href="javascripit:void(0)" onclick="showPaymentAccountPopup();"  class="pull-left ml mt2"><i class="fa fa-plus paddingRight"></i>Add</a>
+			        	<a href="javascripit:void(0)" onclick="showIndiaPaymentAccountPopup();"  class="pull-left ml mt2"><i class="fa fa-plus paddingRight"></i>Add</a>
 			        </div>
 					</div>
 					<jsp:include page="locationIndiaBankingDetails.jsp" />
@@ -284,7 +284,6 @@ right: 15px;
                 <input type="text" id="paymentAccountNumber" data-min='9' data-max='15' placeholder="Account Number" name="paymentAccountNumber" class="form-control" data-required="required"/>
            </div>
            </div>
-<%--           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">  --%>
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
               <label class="clearfix">BSR Number <span class="text-danger">&nbsp;*</span></label>
 	           <div class="clearfix">
@@ -298,12 +297,11 @@ right: 15px;
 	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control"/>
 	           </div>
            </div>
-<%--            </c:if> --%>
         
         <div data-fieldtype="account" data-fieldfor="1,2" class="col-md-5">
               <label class="clearfix">IFSC Code <span class="text-danger">&nbsp;*</span></label>
            <div class="clearfix">
-                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="IFC Code / Routing Number" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
+                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="IFC Code" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
            </div>
            </div>
            <div data-fieldtype="account" data-fieldfor="3" class="col-md-5">
@@ -340,7 +338,7 @@ right: 15px;
 <!-- Add IP Modal -->
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
-function showPaymentAccountPopup() {
+function showIndiaPaymentAccountPopup() {
     $("#paymentAccountId").val('0');
     $("[data-fieldtype=account]").hide();
     showOrHidePaymentFormFields('SAVINGS');
@@ -463,5 +461,10 @@ function changeActivePaymentAccount(id){
 	        showError(data.responseMessage);
 	        location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
 	    });
+}
+function grantWePayAccess(id) {
+    $.post(sourceleadUrl+"/resend-wepay-mail", {id: id}, function(data) {
+        showError(data.responseMessage);
+    });
 }
 </script>

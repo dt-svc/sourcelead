@@ -39,16 +39,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.DataMigrationDao;
 import com.bis.sourcelead.dto.AssetAssignDTO;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.AssetsDataImportDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ImmigrationDTO;
+import com.bis.sourcelead.dto.ImmigrationPassportVisaDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.CandidateLcaI94Summary;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
@@ -284,6 +288,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			    case "assetUpload": dataMigrationCommonUtil.dataValidationForAssets(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;
 			    
 			    case "projectTasks": dataMigrationCommonUtil.dataValidationForProjectTasks(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;
+			    
+			    case "immigrationUpload": dataMigrationCommonUtil.dataValidationForImmigration(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;
 
 				}
 				
@@ -450,6 +456,66 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				 
 				tasksService.saveProjectTasksDTOByProjectId(project.getId(), projectTasksDTO, user.getId());
 		    break;
-	    }
+		   
+		    case "immigrationUpload": 
+		    	System.out.println("inside Immigration uplod---->>>>>");	
+		    	ObjectMapper immigratoinMapper = new ObjectMapper();
+		    	immigratoinMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+		    	immigratoinMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		    	// below details need to pushed into immigration table.
+		    	ImmigrationDTO immDto = new ImmigrationDTO();
+		    	//immDto.setEmpId(dataMigrationDTOJsonCopy.getString("empId"));
+		    	immDto.setFirstName(dataMigrationDTOJsonCopy.getString("beneficiaryFirstName"));
+		    	immDto.setLastName(dataMigrationDTOJsonCopy.getString("beneficiaryLastName"));
+		    	immDto.setEmail(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"));
+		    	immDto.setExperience(dataMigrationDTOJsonCopy.getString("experience"));
+		    	immDto.setSsnNumber(dataMigrationDTOJsonCopy.getString("ssn"));
+		    	immDto.setI_94_number(dataMigrationDTOJsonCopy.getString("i94Number"));
+		    	immDto.setI_20_number(dataMigrationDTOJsonCopy.getString("i20Number"));
+		    	immDto.setEadNumber(dataMigrationDTOJsonCopy.getString("eadNumber"));
+		    	immDto.setBirthDate(dataMigrationDTOJsonCopy.getString("dateOfBirth"));
+		    	//
+		    	immDto.setMaritalStatus(dataMigrationDTOJsonCopy.getString("maritalStatus"));
+		    	immDto.setPetitionType(dataMigrationDTOJsonCopy.getString("petitionType"));
+		    	immDto.setTemplateId(dataMigrationDTOJsonCopy.getString("template"));
+		    	immDto.setArrivalDate(dataMigrationDTOJsonCopy.getString("dateOfArrival"));
+		    	immDto.setOpenDate(dataMigrationDTOJsonCopy.getString("openOn"));
+		    	immDto.setAttorneyContactName(dataMigrationDTOJsonCopy.getString("companyName"));
+		    	immDto.setAttorneyEmail(dataMigrationDTOJsonCopy.getString("companyContactEmail"));
+		    	//
+		    	immDto.setCurrUscisStatus(dataMigrationDTOJsonCopy.getString("status")); // currUscisStatus status in immigration.
+		    	immDto.setReceiptNo(dataMigrationDTOJsonCopy.getString("receiptNo"));
+		    	immDto.setLocation(dataMigrationDTOJsonCopy.getString("benficiarylocation"));
+		    	// depends on associate id populate visa Object.
+		    	ImmigrationPassportVisaDTO passVisaDto = new ImmigrationPassportVisaDTO();
+		    	passVisaDto.setIdNumber(dataMigrationDTOJsonCopy.getString("visaNo"));
+		    	passVisaDto.setValidFrom(dataMigrationDTOJsonCopy.getString("visaStartDate"));
+		    	passVisaDto.setValidTo(dataMigrationDTOJsonCopy.getString("visaEndDate"));
+		    	passVisaDto.setValidTo(dataMigrationDTOJsonCopy.getString("visaEndDate"));
+		    	//immDto.setOpenDate(dataMigrationDTOJsonCopy.getString("lawFirmClient"));
+		    	// for lca details need to push lca table.
+		    	CandidateLcaI94Summary lcaCurrSummary = new CandidateLcaI94Summary();
+		    //	lcaSummary.setStartDate(dataMigrationDTOJsonCopy.getString("lcaStartDate")); format the date with org location.
+		    //	lcaSummary.setEndDate(dataMigrationDTOJsonCopy.getString("lcaEndDate"));format the date with org location.
+		   // 	lcaSummary.setLcaTitle(dataMigrationDTOJsonCopy.getString("lcaTitle"));// pending lcaTitle in excel mapping.
+		    	lcaCurrSummary.setIdNumber(dataMigrationDTOJsonCopy.getString("lcaNumber"));
+		    	lcaCurrSummary.setIdNumber(dataMigrationDTOJsonCopy.getString("lcaNumber"));
+		    	lcaCurrSummary.setRate(dataMigrationDTOJsonCopy.getString("lcaRate"));
+		    	lcaCurrSummary.setEmployerLocation(dataMigrationDTOJsonCopy.getString("lcaLocation")); 
+		    	lcaCurrSummary.setIsCurrent(Constants.YES);
+		    	// candidate previous lca summary detials below
+		    	CandidateLcaI94Summary lcaPrevSummary = new CandidateLcaI94Summary();
+		    	//lcaPrevSummary.setStartDate(dataMigrationDTOJsonCopy.getString("prevLcaStartDate")); format the date with org location.
+			    //lcaPrevSummary.setEndDate(dataMigrationDTOJsonCopy.getString("prevLcaEndDate")); format the date with org location.
+		     	//lcaSummary.setPrevLcaTitle(dataMigrationDTOJsonCopy.getString("prevLcaTitle"));prevLcaTitle
+		    	lcaPrevSummary.setIdNumber(dataMigrationDTOJsonCopy.getString("prevLcaNumber"));
+		    	lcaPrevSummary.setRate(dataMigrationDTOJsonCopy.getString("pevLcaRate"));
+		    	lcaPrevSummary.setEmployerLocation(dataMigrationDTOJsonCopy.getString("prevLcaLocation")); // pending prevLcaTitle in excel mapping.
+		    	lcaPrevSummary.setIsCurrent(Constants.NO);
+		    	
+		    	
+		    	
+		    break;
+		}
 	}
 }

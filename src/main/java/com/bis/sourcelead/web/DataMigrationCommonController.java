@@ -192,7 +192,7 @@ public class DataMigrationCommonController {
 			logger.debug("download Immigration template is for Import downloadImmigrationTemplate method");
 	        @SuppressWarnings("resource")
 			XSSFWorkbook workbook = new XSSFWorkbook();
-	        XSSFSheet sheet = workbook.createSheet("JobTemplate");
+	        XSSFSheet sheet = workbook.createSheet("Immigration Template");
 	        String[] tableColumns = ImmigrationConstants.IMPORT_IMMIGRATION_EXCEL_HEADERS;
 	 
 	        Row row = sheet.createRow(0);

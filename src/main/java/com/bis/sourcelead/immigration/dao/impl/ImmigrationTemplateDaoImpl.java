@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ImmigrationTemplateDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateDocDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
@@ -50,9 +49,6 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 
     @Autowired
     private SessionFactory sessionFactory;
-
-    @Autowired
-    private UserRoleDao userRoleDao;
 
     @Value("${SourceLead.100}")
     private String notFound;
@@ -302,8 +298,8 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         }
         String listQuery = "from ImmigrationTemplateTasks itt where status = 1 AND itt.immigrationTempId.id = :templateId";
         immigrationTemplateTasks = session.createQuery(listQuery + query1 + sortingQry).setLong("templateId", templateDTO.getTemplateId()).list();
-        String listQueryCount = "select count(*) from ImmigrationTemplateTasks itt";
-        countlist = session.createQuery(listQueryCount).setFirstResult(templateDTO.getStart()).setMaxResults(templateDTO.getLength()).list();
+        String listQueryCount = "select count(*) from ImmigrationTemplateTasks itt where status = 1 AND itt.immigrationTempId.id = :templateId";
+        countlist = session.createQuery(listQueryCount+query1+sortingQry).setLong("templateId", templateDTO.getTemplateId()).setFirstResult(templateDTO.getStart()).setMaxResults(templateDTO.getLength()).list();
         int totalCount = 0;
         if (templateDTO != null) {
             if (countlist != null && !countlist.isEmpty()) {
@@ -365,6 +361,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             templateDto.setTemplateDescription(entityObj.getDescription());
             templateDto.setCountry(entityObj.getCountry());
             templateDto.setPetitionType(entityObj.getPetitionType().getId().toString());
+            templateDto.setUuid(entityObj.getUuid());
             // 
 
         } catch (Exception e) {
@@ -652,6 +649,15 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 			String queryString = "from ImmigrationTemplateTasks td where td.immigrationTempId.id=:templateId";
 			ImmigrationTemplateTasksList = session.createQuery(queryString).setLong("templateId", templateId).list();
 		return ImmigrationTemplateTasksList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = {Exception.class})
+	public Long getTemplateIdByUUID(String immiTemplateUUID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select temp.id from ImmigrationTemplate temp where temp.uuid = :templateUUID";
+		Long tempId = (Long) session.createQuery(query).setParameter("templateUUID", immiTemplateUUID).uniqueResult();
+		return tempId;
 	}
 	
 	

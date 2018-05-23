@@ -279,6 +279,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			}else{
 				immCanObj.setIsRequired(Constants.NO);	
 			}
+			if(docs.getIsMultipleRequired() != null && "Y".equalsIgnoreCase(docs.getIsMultipleRequired())){
+				immCanObj.setAllowMultiple(docs.getIsMultipleRequired());
+			}else{
+				immCanObj.setAllowMultiple(Constants.NO);	
+			}
 			immCanObj.setStatus(Constants.RECORD_ACTIVE);
 			immCanObj.setDocumentStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
 			immCanObj.setIsTemplateConfigured(Constants.YES);
@@ -541,18 +546,16 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		immigration.setPetitionType(petitionTypeId);
 		//DateFormat dateFormat = new SimpleDateFormat ("dd-MM-yyyy");
 		immigration.setOpenDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), immigrationDTO.getOpenDate()));
+		LookUpData uscisStatus = new LookUpData();
 		if(!status.equalsIgnoreCase("save")) {
-		if(immigrationDTO.getCurrUscisStatus()!=null && !StringUtils.isEmpty(immigrationDTO.getCurrUscisStatus())) {
-			LookUpData uscisStatus = new LookUpData();
-			uscisStatus.setId(Long.parseLong(immigrationDTO.getCurrUscisStatus()));
-			uscisStatus = lookUpDataService.getLookUpDataByIdAndCategory(ImmigrationConstants.PETITION_STATUS,Long.parseLong(immigrationDTO.getCurrUscisStatus()));
-			if(sendRequestStatusValue != null) {
-				if(uscisStatus.getName().equalsIgnoreCase(ImmigrationConstants.PETITION_STATUS_DRAFT)) {
+		if(StringUtils.isBlank(immigrationDTO.getCurrUscisStatus())) {
+			if(sendRequestStatusValue.equalsIgnoreCase(ImmigrationConstants.SEND_REQUEST)) {
 					uscisStatus = lookUpDataService.getLookUpdataByCategoryAndName(ImmigrationConstants.PETITION_STATUS, ImmigrationConstants.PETITION_STATUS_REQUEST_TO_FILL);
 				}
+			}else {
+				uscisStatus = lookUpDataService.getLookUpDataByIdAndCategory(ImmigrationConstants.PETITION_STATUS,Long.parseLong(immigrationDTO.getCurrUscisStatus()));
 			}
 			immigration.setCurrUscisStauts(uscisStatus);
-		}
 		}else {
 			LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(ImmigrationConstants.PETITION_STATUS,ImmigrationConstants.PETITION_STATUS_DRAFT);
 			immigration.setCurrUscisStauts(data);
@@ -603,6 +606,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		ImmigrationDTO dto = new ImmigrationDTO();
 		try {
 		Immigration immigration = immigrationCommonDao.getImmigrationDetails(immigrationId);
+		dto.setImmigrationUUID(immigration.getImmigrationUuid());
 		dto.setPetitionType(immigration.getPetitionType().getName());
 		dto.setGeneratedId(immigration.getGeneratedId());
 		dto.setOpenDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),immigration.getOpenDate()));
@@ -702,7 +706,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		familyDetails.setStatus(Constants.RECORD_ACTIVE);
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 	    if(familyDetailsDto.getId()!= null) {
-	    System.out.println(" in edit mode --member id >"+familyDetailsDto.getId());
+	    logger.debug(" in edit mode --member id >"+familyDetailsDto.getId());
 	    familyDetails.setId(familyDetailsDto.getId());
 	    }else {
 	    familyDetails.setCreatedDate(currentDate); // created date , created by fields skipped for edit mode 
@@ -1491,6 +1495,46 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Override
 	public Integer getTableRecordCountByImmigrationId(String entityName, Long immigrationId, String condition) {
 	 return immigrationCommonDao.getTableRecordCountByImmigrationId(entityName,immigrationId,condition);
+	}
+
+	@Override
+	public Boolean validateCandidatePassportVisa(Long candidateId, String idType,String idNumber) throws Exception {
+		return immigrationCommonDao.validateCandidatePassportVisa(candidateId, idType,idNumber);
+	}
+	
+	@Override
+	public CandidatePassportVisa getCandidatePassportVisaDetailsByIdNumberAndId(String idNumber, String idType,
+			Long candidateId,Long id) throws Exception {
+		return immigrationCommonDao.getCandidatePassportVisaDetailsByIdNumberAndId(idNumber, idType, candidateId,id);
+	}
+
+	@Override
+	public Long getImmigrationIdByUUID(String immigrationUUID) {
+		return immigrationCommonDao.getImmigrationIdByUUID(immigrationUUID);
+	}
+
+	@Override
+	public Long getCandidateIdByUUID(String candidateUUID) {
+		return immigrationCommonDao.getCandidateIdByUUID(candidateUUID);
+	}
+
+	@Override
+	public ResponseList<ImmigrationListViewDTO> getImmigrationsListByCountsLink(
+			ImmigrationListViewDTO immigrationListDTO, String searchValue, OrgLocations orgLocations) throws Exception {
+		
+		return immigrationCommonDao.getImmigrationsListByCountsLink(immigrationListDTO,searchValue,orgLocations);
+			}
+	@Override
+	public ImmigrationCandidateForms getImmigrationCandidateFormsDetailsByFormNameAndId(String formName,
+			Long candidateId, Long immigrationId, Long id) throws Exception {
+		return immigrationCommonDao.getImmigrationCandidateFormsDetailsByFormNameAndId(formName, candidateId, immigrationId, id);
+	}
+
+	@Override
+	public Boolean validateImmigrationCandidateForms(String formName, Long candidateId, Long immigrationId)
+			throws Exception {
+		return immigrationCommonDao.validateImmigrationCandidateForms(formName, candidateId, immigrationId);
+
 	}
 
 }

@@ -45,13 +45,13 @@
 			  </tr>
 			  <c:forEach var="items" items="${formsList}" varStatus="rows">
 			  <tr formid ="${items.id}" savedFormDocName = "${items.uploadFileName}">
-				<td><div class="tbldata-dotdot-me">${items.formName}</div></td>
+				<td><div class="tbldata-dotdot-vsm">${items.formName}</div></td>
 				<td><div class="tblminwidth-50">${items.isRequired == 'Y' ? "YES":"NO"}</div></td>
-				<td><div class="tbldata-dotdot-me"><span class="fileName">${items.fileName}</span>
+				<td><div class="tbldata-dotdot-vsm"><span class="fileName">${items.fileName}</span>
 				<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${items.fileUrl}','${items.fileName}','${items.fileContentType}');" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" title="Download" download href="${items.fileUrl}"></a></div>
 				</td>
-				<td><div class="tbldata-dotdot-me"><span class="fileName">${!empty items.uploadFileName ? items.uploadFileName : '---'}</span>
+				<td><div class="tbldata-dotdot-vsm"><span class="fileName">${!empty items.uploadFileName ? items.uploadFileName : '---'}</span>
 				<c:if test="${not empty items.uploadFileName}">
 				<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${items.uploadedFileUrl}','${items.uploadFileName}','${items.uploadedFileContentType}');" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" title="Download" download href="${items.uploadedFileUrl}"></a></c:if></div>
@@ -118,10 +118,10 @@
 		
 		<div class="popupMid clearfix">
 
-          <div class="col-sm-12 noPad mt clearfix">
+          <div class="col-sm-12 noPad mt clearfix" id="errformNameDiv">
 				<label class="col-md-4 padding_left">Form name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<input type="text" class="form-control" name="formName" id="formName"  field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" data-name="formName"/>
+					<input type="text" class="form-control" name="formName" id="formName"  field-name="Form Name"  data-validation = "required validate_length length2-100" placeholder="Form name" data-name="formName" onkeyup = "validateImmigrationCandidateForms();"/>
 				</div>
 			</div>	      
 			   
@@ -164,7 +164,7 @@
         </div>
         </div>
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button" onclick="immigration.saveCandidateForms();">
+            <input value="Save" class="" type="button" id ="canFormSave_Button" onclick="immigration.saveCandidateForms();">
             <input value="Cancel" class="popCan" type="button" onclick="closeFormPopup();">
           </div>		
 	</div>
@@ -200,7 +200,7 @@
 		
 		</div>
 		<div class="immiPopFoot">
-            <input value="Save" id="uploadFormSave"  class="" type="button" onclick="uploadRequestForm();">
+            <input value="Save" id="uploadFormSave_Button"  class="" type="button" onclick="uploadRequestForm();">
             <input value="Cancel" class="popCan" type="button" onclick="removeFormPopUp();">
           </div>		
 	</div>	<!-- popup code end -->
@@ -208,7 +208,7 @@
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#familiesTab');" class="btn btn-default btn-sm">
              	<!-- <input type="button" value="Skip" onclick="goToSummaryTab('#docsTab');" class="btn btn-default btn-sm">  -->
-              	<input type="button" value="Continue" onclick="goToSummaryTab('#docsTab');" class="btn btn-primary btn-sm ml10">
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#docsTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
 	</form>
@@ -253,6 +253,8 @@
 				//$("#isRequired").prop("checked",false);
 				$('#formSave_Form input[name="isRequired"]').prop('checked', false);
 				//$('#candidate_Immigration_Doc input[name="isRequired"]').prop('checked', false);
+				$('#errformNameDiv').find('p.jquery_form_error_message').remove(); 
+				$('#immigrationDocDiv').find('p.jquery_form_error_message').remove(); 
 				removeImmigDoc();
 				
 			}

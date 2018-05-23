@@ -34,7 +34,7 @@ background-color: #dcdcdc; padding: 10px; margin: 0; margin-bottom: 15px; font-s
 			  <th>Location</th>           
 			  <th>Default</th>           
 			  <th>Active</th>           
-			  <th></th>                  
+			  <th>Action</th>                  
 			</tr>
 		</thead>
 		<tbody>

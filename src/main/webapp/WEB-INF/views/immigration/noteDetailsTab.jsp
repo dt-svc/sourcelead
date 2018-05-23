@@ -45,7 +45,7 @@
 		 </div>
 		 
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button" id="save_Button" onclick="saveNotesDatails('save');">
+            <input value="Save" class="" type="button" id="notesSave_Button" onclick="saveNotesDatails('save');">
             <input value="Cancel" class="popCan" type="button" onclick="refreshNotes();">
           </div>		
 	</div>	<!-- popcode end -->
@@ -66,5 +66,7 @@
 				 $(".popMask").fadeOut(200);
 				$("#popNoteView").fadeOut(100);
 				$("#notesDetails_form")[0].reset();
+				$("#popNoteView").find('p.jquery_form_error_message').remove();
+				$("#notesSave_Button").removeAttr("disabled")
 			 }
 		</script>

@@ -19,7 +19,7 @@
 		  	<span><input class="immigraTabSerach" id="educationSearchVal" type="text"></span>
 		</div>
 		
-	  	<div class="immigraTable">
+	  	<div class="immigraTable overflow_Auto">
 		  <table id ="educationTbl">
 			<tbody>
 			  <tr>
@@ -30,6 +30,7 @@
 				<th>Score</th>
 				<th>Score Type</th>
 				<th>Institute/University</th>
+				<th>Attachment</th>
 				<th>Address</th>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
@@ -48,14 +49,24 @@
 			  </tr>
 			   <c:forEach var="eduItems" items="${candidatesEducationList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-vsm">${eduItems.name}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.specialization ? eduItems.specialization : '---'}</div></td>
-				<td><div class="tbldata-dotdot_80">${!empty eduItems.startDateStr ? eduItems.startDateStr : '---'}</div></td>
-				<td><div class="tbldata-dotdot-80">${!empty eduItems.endDateStr ? eduItems.endDateStr : '---'}</div></td>
-				<td><div class="tbldata-dotdot-80">${!empty eduItems.grade ? eduItems.grade : '---'}</div></td>
-				<td><div class="tbldata-dotdot-80">${!empty eduItems.gradeType ? eduItems.gradeType : '---'}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.institute ? eduItems.institute : '---'}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${!empty eduItems.address ? eduItems.address : '---'}</div></td>
+				<td><div class="tbldata-dotdot-100" title = "${eduItems.name}">${eduItems.name}</div></td>
+				<td><div class="tbldata-dotdot-100" title = "${eduItems.specialization}">${!empty eduItems.specialization ? eduItems.specialization : '---'}</div></td>
+				<td><div class="tblminwidth-75" title = "${eduItems.startDateStr}">${!empty eduItems.startDateStr ? eduItems.startDateStr : '---'}</div></td>
+				<td><div class="tblminwidth-75" title = "${eduItems.endDateStr}">${!empty eduItems.endDateStr ? eduItems.endDateStr : '---'}</div></td>
+				<td><div class="tblminwidth-30" title = "${eduItems.grade}">${!empty eduItems.grade ? eduItems.grade : '---'}</div></td>
+				<td><div class="tbldata-dotdot-80" title = "${eduItems.gradeType}">${!empty eduItems.gradeType ? eduItems.gradeType : '---'}</div></td>
+				<td><div class="tbldata-dotdot-vsm" title = "${eduItems.institute}">${!empty eduItems.institute ? eduItems.institute : '---'}</div></td>
+				<td>
+				<c:if test="${! empty eduItems.educationFileName}">
+				<div class="tblminwidth-75" title = "${eduItems.educationFileName}"><span class="tbldata-dotdot-100 fileName">${eduItems.educationFileName}</span>
+					<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${eduItems.educationFileUrl}','${eduItems.educationFileName}','${eduItems.educationFileContentType}');" title="View"></a>
+					<a class="glyphicon glyphicon-download-alt" download href="${eduItems.educationFileUrl}" title="Download"></a></div>
+					</c:if>
+					<c:if test="${empty eduItems.educationFileName}">
+					<div class="tbldata-dotdot-100">---</div>
+					</c:if>
+					</td>
+				<td><div class="tbldata-dotdot-100" title = "${eduItems.address}">${!empty eduItems.address ? eduItems.address : '---'}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"
@@ -166,9 +177,10 @@
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
-              	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id = "address" name = "address" placeholder="Address"/>
-				</div>
+              <div class="col-md-8 padding_right">
+				<input class="form-control positionRelative" id="addressEdu" name="address" onclick="initLocationAuto('addressEdu');" placeholder="Address"  type="text"></input>
+          				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('addressEdu');"></i>
+         						</div> 
 			</div>	
 			
 			<div class="col-sm-12 noPad mt clearfix" id="immigrationEduDocDiv">
@@ -201,9 +213,9 @@
 	</div><!-- popup code end -->
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
-				<input type="button" value="Back" onclick="goToSummaryTab('#residencesTab');" class="btn btn-default btn-sm">
+				<input type="button" value="Back" onclick="goToSummaryTab('#employersTab');" class="btn btn-default btn-sm">
              	<!-- <input type="button" value="Skip" onclick="goToSummaryTab('#familiesTab');" class="btn btn-default btn-sm">  -->
-              	<input type="button" value="Continue" onclick="goToSummaryTab('#familiesTab');" class="btn btn-primary btn-sm ml10">
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#residencesTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
 	</form>
@@ -245,6 +257,8 @@
 		$("#popEduView").fadeOut(100);
 		$("#eduSave_Form")[0].reset();
 		$("#candidateEducationId").val('');
+		$('#popEduView').find('p.jquery_form_error_message').remove();
+		$("#eduSave_Button").removeAttr("disabled");
 	}
 	
 	var config = {

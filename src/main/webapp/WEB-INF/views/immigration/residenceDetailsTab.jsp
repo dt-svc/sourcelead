@@ -47,10 +47,10 @@
 			  <c:forEach var="residitems" items="${candidatesResidenceList}" varStatus="rows"> 
 			  
 			  <tr>
-				<td><div class="tbldata-dotdot-big">${!empty residitems.location ? residitems.location : '---'}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${!empty residitems.country ? residitems.country : '---'}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${!empty residitems.startDateStr ? residitems.startDateStr : '---'}</div></td>				
-				<td><div class="tbldata-dotdot-vsm">${!empty residitems.endDateStr ? residitems.endDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-big" title = "${residitems.location}">${!empty residitems.location ? residitems.location : '---'}</div></td>
+				<td><div class="tbldata-dotdot-vsm" title = "${residitems.country}">${!empty residitems.country ? residitems.country : '---'}</div></td>
+				<td><div class="tbldata-dotdot-vsm" title = "${residitems.startDateStr}">${!empty residitems.startDateStr ? residitems.startDateStr : '---'}</div></td>				
+				<td><div class="tbldata-dotdot-vsm" title = "${residitems.endDateStr}">${!empty residitems.endDateStr ? residitems.endDateStr : '---'}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <c:choose>
@@ -196,7 +196,7 @@
 		<div class="clearfix"></div>
 		</div>	
 		<div class="immiPopFoot mt clearfix">
-            <input value="Save" class="" type="button" id="save_Buton" onclick="saveResidenceDetails('save');">
+            <input value="Save" class="" type="button" id="residence_SaveButon" onclick="saveResidenceDetails('save');">
             <input value="Cancel" class="popCan" type="button" onclick="refreshResidency();">
           </div>		
         
@@ -205,9 +205,9 @@
 	</div>
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
-				<input type="button" value="Back" onclick="goToSummaryTab('#employersTab');" class="btn btn-default btn-sm">
+				<input type="button" value="Back" onclick="goToSummaryTab('#educationsTab');" class="btn btn-default btn-sm">
              	<!-- <input type="button" value="Skip" onclick="goToSummaryTab('#educationsTab');" class="btn btn-default btn-sm">  -->
-              	<input type="button" value="Continue" onclick="goToSummaryTab('#educationsTab');" class="btn btn-primary btn-sm ml10">
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#familiesTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
 		</form>
@@ -254,7 +254,9 @@
 				$("#popResiView").fadeOut(100); 
 				$("#residenceDetails_form")[0].reset();
 				$("#residenceId").val('');
-			 }
+				$('#popResiView').find('p.jquery_form_error_message').remove();
+				$("#residence_SaveButon").removeAttr("disabled");
+			   }
 			 
 				$("#residenceSearch").keyup(function (e) {
 			        if (e.which === 13) {

@@ -70,9 +70,9 @@
         <div class="popupMid popupMidOver clearfix mt">
             <div class="row clearfix">
                 <div class="col-md-6 noPad">
-                    <div class="col-md-12 mb10">
+                    <div class="col-md-12 mb10" id = "taskNameDiv">
                         <label>Subject<span class="text-danger">*</span></label>
-                        <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" field-name= "Subject" data-validation = "required validate_Space validate_length length2-500">
+                        <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" onke field-name= "Subject" data-validation = "required validate_Space validate_length length2-500">
                     </div>
                     <div class="col-md-12 mb10">
                         <label>Priority</label>
@@ -229,6 +229,7 @@
                 {
                     "targets": colIndex++,
                     /* "data": "assignedTo", */
+                    "sortable": false,
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.assignedTo != null && opt.assignedTo != '' && opt.assignedTo != 'undefined') {
@@ -267,6 +268,7 @@
                 {
                     "targets": colIndex++,
                     /* "data": "id", */
+                    "sortable": false,
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.id != null && opt.id != '' && opt.id != 'undefined') {

@@ -28,6 +28,7 @@
 				<th>Country</th>
 				<th>Valid From</th>
 				<th>Valid To</th>
+				<th>Status</th>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <th>Action</th>
@@ -45,11 +46,12 @@
 			  </tr>
 			  <c:forEach var="visadetails" items="${PassportList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-sm">${!empty visadetails.visaType ? visadetails.visaType : '---'}</div></td>
-				<td><div class="tbldata-dotdot-sm">${!empty visadetails.idNumber ? visadetails.idNumber : '---'}</div></td>
-				<td><div class="tbldata-dotdot-sm">${!empty visadetails.country ? visadetails.country : '---'}</div></td>
-				<td><div class="tbldata-dotdot-sm">${!empty visadetails.validFromDateStr ? visadetails.validFromDateStr : '---'}</div></td>
-				<td><div class="tbldata-dotdot-sm">${!empty visadetails.validToDateStr ? visadetails.validToDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.visaType}">${!empty visadetails.visaType ? visadetails.visaType : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.idNumber}">${!empty visadetails.idNumber ? visadetails.idNumber : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.country}">${!empty visadetails.country ? visadetails.country : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.validFromDateStr}">${!empty visadetails.validFromDateStr ? visadetails.validFromDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.validToDateStr}">${!empty visadetails.validToDateStr ? visadetails.validToDateStr : '---'}</div></td>
+				<td><div class="tbldata-dotdot-sm" title = "${visadetails.currentStatus}">${visadetails.currentStatus}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="immigration.editPassportVisaDetailsByRowId(${visadetails.id},'${visadetails.idType}');"
@@ -109,10 +111,10 @@
 				</div>
 			</div>
          
-          <div class="col-sm-12 noPad mt clearfix">
+          <div class="col-sm-12 noPad mt clearfix" id="idNumberVisaDiv">
 				<label class="col-md-4 padding_left">Visa Id<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control" data-validation = "required"/>
+              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control" data-validation = "required" onkeyup = "validateCandidatePassportVisa('Visa');"/>
 				</div>
 			</div>				          
           	<div class="col-sm-12 noPad mt clearfix">
@@ -152,8 +154,8 @@
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#passportsTab');" class="btn btn-default btn-sm">
-             	<input type="button" value="Skip" onclick="goToSummaryTab('#employersTab');" class="btn btn-default btn-sm"> 
-              	<input type="button" value="Continue" onclick="goToSummaryTab('#employersTab');" class="btn btn-primary btn-sm ml10">
+             	<input type="button" value="Skip" onclick="goToSummaryNextTab('#employersTab');" class="btn btn-default btn-sm"> 
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#employersTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>	
 	</form>
@@ -168,6 +170,8 @@
 				$("#popUpVisa").fadeOut(200);
 				$("#CandidateVisaform")[0].reset();
 				$("#candidateVisaId").val('');
+				$('#popUpVisa').find('p.jquery_form_error_message').remove();
+				$("#visa_save_id").removeAttr("disabled");
 			}
 		   	
 		</script>
