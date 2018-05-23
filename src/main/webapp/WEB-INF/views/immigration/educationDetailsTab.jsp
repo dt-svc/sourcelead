@@ -213,9 +213,9 @@
 	</div><!-- popup code end -->
 	<div class="immFoot clearfix">
 			<div class="pull-right text-right">
-				<input type="button" value="Back" onclick="goToSummaryTab('#residencesTab');" class="btn btn-default btn-sm">
+				<input type="button" value="Back" onclick="goToSummaryTab('#employersTab');" class="btn btn-default btn-sm">
              	<!-- <input type="button" value="Skip" onclick="goToSummaryTab('#familiesTab');" class="btn btn-default btn-sm">  -->
-              	<input type="button" value="Continue" onclick="goToSummaryTab('#familiesTab');" class="btn btn-primary btn-sm ml10">
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#residencesTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
 	</form>
@@ -257,6 +257,8 @@
 		$("#popEduView").fadeOut(100);
 		$("#eduSave_Form")[0].reset();
 		$("#candidateEducationId").val('');
+		$('#popEduView').find('p.jquery_form_error_message').remove();
+		$("#eduSave_Button").removeAttr("disabled");
 	}
 	
 	var config = {

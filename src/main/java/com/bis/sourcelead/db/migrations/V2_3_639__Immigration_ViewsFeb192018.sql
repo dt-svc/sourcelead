@@ -57,6 +57,19 @@ CREATE OR REPLACE VIEW IMMIGRATION_LIST_VIEW AS
         IMM.UPDATED_DATE,
         IMM.CURRENT_USCIS_STATUS AS CURRENT_USCIS_STATUS_ID,
         IMM.PETITION_TYPE,
+        IMM.IMMIGRATION_UUID,
+         (SELECT 
+                UUID
+            FROM
+                IMMIGRATION_TEMPLATE
+            WHERE
+                ID = IMM.IMMIGRATION_TEMPLATE_ID) AS IMMI_TEMPLATE_UUID,
+        (SELECT 
+                CANDIDATE_UUID
+            FROM
+                CANDIDATE
+            WHERE
+                ID = IMM.CANDIDATE_ID) AS CANDIDATE_UUID,
         (SELECT 
                 NAME
             FROM

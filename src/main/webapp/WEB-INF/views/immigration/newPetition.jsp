@@ -22,7 +22,7 @@
   <c:set var = "immigrationIdCode" scope = "page" value = '<%= session.getAttribute("immigrationIdCode")%>'/>
   <script type="text/javascript">
   $( document ).ready(function() {
-	  $("#newPetitionTemplateDiv").load("/app/immigration/loadNewPetitionPage?forward=petitionDetails&immigrationId=${immigrationIdCode}");
+	  $("#newPetitionTemplateDiv").load("/app/immigration/loadNewPetitionPage?forward=petitionDetails&immigrationUUID=${immigrationUUID}");
 	  console.info("inside new petition template jsp------>");
 	  /* $("#newPetitonPageTwoDiv").hide(); */
 	

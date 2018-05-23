@@ -1,6 +1,8 @@
 package com.bis.sourcelead.rest;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,7 +48,6 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadNotesDTO;
 import com.bis.sourcelead.dto.TaskDTO;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -77,12 +78,9 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
-import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadNotesService;
 import com.bis.sourcelead.service.TaskService;
-import com.bis.sourcelead.service.UserRoleService;
-import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
@@ -100,8 +98,6 @@ public class ImmigrationRestController {
 
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
-	@Autowired
-	private UserService userService;
 
 	@Value("${static.path}")
 	private String staticPath;
@@ -110,13 +106,7 @@ public class ImmigrationRestController {
 	private CountriesService countriesService;
 
 	@Autowired
-	private OrgLocationService orgLocationService;
-
-	@Autowired
 	private CandidateEducationService candidateEducationService;
-
-	@Autowired
-	private UserRoleService userRoleService;
 
 	@Autowired
 	private CandidateEmployersService candidateEmployersService;
@@ -162,7 +152,6 @@ public class ImmigrationRestController {
 //		CandidatePassportVisa candidatePassportVisa = immigrationCommonService.getCandidatePassportVisaByIdAndIdNumber(id, idNumber)
 		
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/immigrationList");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
@@ -188,7 +177,6 @@ public class ImmigrationRestController {
 	public ModelAndView loadNewPetition(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/newPetition");
 		return model;
 	}
@@ -196,16 +184,16 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/loadNewPetitionPage" })
 	public ModelAndView loagNewPetitionPageView(HttpServletRequest request,
 			@RequestParam(value = "forward", required = false) String forward,
-			@RequestParam(value = "immigrationId", required = false) Long immigrationId) {
+			@RequestParam(value = "immigrationUUID", required = false) String immigrationUUID) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (forward.equalsIgnoreCase("petitionDetails")) {
 			model.setViewName("/immigration/petitionDetails");
-			if (immigrationId != null) {
+			if (!StringUtils.isEmpty(immigrationUUID)) {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 						"orgLocations");
-				ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,
-						orgLocations);
+				Long immigrationId = immigrationCommonService.getImmigrationIdByUUID(immigrationUUID);
+				ImmigrationDTO immigrationDTO = immigrationCommonService.editImmigrationDetails(immigrationId,orgLocations);
 				model.addObject("immigrationDTO", immigrationDTO);
 			}
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -233,8 +221,6 @@ public class ImmigrationRestController {
 			HttpServletRequest request) {
 		List<Candidate> candidateList = null;
 		try {
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-					"orgLocations");
 			candidateList = candidateService.getAllActiveCandidatesByLocation(locationId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -255,7 +241,7 @@ public class ImmigrationRestController {
 			@RequestParam(value = "filterDurationVal", required = false) Long[] filterDurationVal,
 			@RequestParam(value = "orgTypeVal", required = false) String orgTypeVal, HttpServletRequest request) {
 		ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
-		System.out.println("inisde controller  getAllImmigartionList  --> ");
+		logger.debug("inisde controller  getAllImmigartionList  --> ");
 		try {
 			String[] tableColumns = { "currUscisStatus", "generatedId", "petitionType", "country", "firstName", "email",
 					"phone", "openDate", "orgName", "lcaStartDate", "lcaEndDate" };// should be
@@ -293,15 +279,48 @@ public class ImmigrationRestController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("after controller  getAllImmigartionList  --> ");
+		logger.debug("after controller  getAllImmigartionList  --> ");
 		return immigrationListDTOList;
 	}
+	
+	@RequestMapping(value = "/getImmigrationDashBoardFilterList")
+	public @ResponseBody ResponseList<ImmigrationListViewDTO> getImmigrationDashBoardFilterList(
+			ImmigrationListViewDTO immigrationListDTO,	@RequestParam(value = "filterStatus", required = false) String filterStatus,
+			 HttpServletRequest request) {
+		ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
+		logger.debug("inisde controller  getMyImmigrationList  --> ");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			String[] tableColumns = { "currUscisStatus", "generatedId", "petitionType", "country", "firstName", "email",
+					"phone", "openDate",  "lcaStartDate", "lcaEndDate" };// should be
+			// entity names
+			int sortColumnIndex = 0; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (immigrationListDTO.getOrder() != null && !immigrationListDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(immigrationListDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = immigrationListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+																					// direction
+				// of the sorting.
+			}
+			immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			immigrationListDTO.setSortOrder(sortColumnOrder);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			immigrationListDTO.setOrgLocationId(orgLocations.getId());
+			immigrationListDTOList = immigrationCommonService.getImmigrationsListByCountsLink(immigrationListDTO ,filterStatus, orgLocations);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.debug("after controller  getAllImmigartionList  --> ");
+		return immigrationListDTOList;
+	}
+	
 	@RequestMapping(value = "/getMyImmigrationList")
 	public @ResponseBody ResponseList<MyImmigrationViewDTO> getMyImmigrationList(
 			MyImmigrationViewDTO immigrationListDTO,
 			 HttpServletRequest request) {
 		ResponseList<MyImmigrationViewDTO> immigrationListDTOList = null;
-		System.out.println("inisde controller  getMyImmigrationList  --> ");
+		logger.debug("inisde controller  getMyImmigrationList  --> ");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			String[] tableColumns = { "currUscisStatus", "generatedId", "petitionType", "country", "firstName", "email",
@@ -324,7 +343,7 @@ public class ImmigrationRestController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("after controller  getAllImmigartionList  --> ");
+		logger.debug("after controller  getAllImmigartionList  --> ");
 		return immigrationListDTOList;
 	}
 	@RequestMapping(value = { "/getPetitionTemplateEmployers" })
@@ -344,32 +363,36 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = { "/viewImmigration" })
 	public ModelAndView viewImmigration(HttpServletRequest request,
-			@RequestParam(value = "templateId", required = false) String templateId,
-			@RequestParam(value = "candidateId", required = false) String candidateId,
-			@RequestParam(value = "immigrationId", required = false) String immigrationId) throws Exception {
+			@RequestParam(value = "immiTemplateUUID", required = false) String immiTemplateUUID,
+			@RequestParam(value = "candidateUUID", required = false) String candidateUUID,
+			@RequestParam(value = "immigrationUUID", required = false) String immigrationUUID) throws Exception {
 		ModelAndView model = new ModelAndView();
-		model.addObject("immigrationId", immigrationId);
-		model.addObject("candidateId", candidateId);
-		model.addObject("templateId", templateId);
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		ImmigrationDTO immigrationDTO = null;
-		if (immigrationId != null && !StringUtils.isEmpty(immigrationId)) {
-			immigrationDTO = immigrationCommonService.getImmigrationDetails(immigrationId, orgLocations);
+		if(StringUtils.isNoneBlank(immigrationUUID)) {
+		Long immigrationId = immigrationCommonService.getImmigrationIdByUUID(immigrationUUID);
+		Long candidateId = immigrationCommonService.getCandidateIdByUUID(candidateUUID);
+		Long templateId = immigrationTemplateService.getTemplateIdByUUID(immiTemplateUUID);
+		model.addObject("immigrationId", immigrationId);
+		model.addObject("candidateId", candidateId);
+		model.addObject("templateId", templateId);
+		if (immigrationUUID != null && !StringUtils.isEmpty(immigrationUUID)) {
+			immigrationDTO = immigrationCommonService.getImmigrationDetails(immigrationId.toString(), orgLocations);
 		}
 		List<LookUpData> uscisStatusList = immigrationTemplateService.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
 		
 		 HashMap<String , Integer> tabRecordCountMap = null;
-		if(candidateId!= null) {
-		  tabRecordCountMap= getImmigrationViewTabStatusDetails(Long.parseLong(candidateId), Long.parseLong(immigrationId));
+		if(candidateUUID!= null) {
+			 candidateId = immigrationCommonService.getCandidateIdByUUID(candidateUUID);
+		  tabRecordCountMap= getImmigrationViewTabStatusDetails(candidateId, immigrationId);
 		}
-		System.out.println("tabRecordCountMap");
-		System.out.println(tabRecordCountMap);
 		model.addObject("tabRecordCountMap", tabRecordCountMap);
 		model.addObject("uscisStatusList", uscisStatusList);
 		model.addObject("immigration", immigrationDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("/immigration/immigrationView");
+		}
 		return model;
 	}
 
@@ -480,12 +503,14 @@ public class ImmigrationRestController {
 	public ModelAndView loadAddPetitionTemplate(HttpServletRequest request) throws ServletRequestBindingException {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		request.getSession().removeAttribute("templateDTO");
 		request.getSession().removeAttribute("templateDocList");
 		request.getSession().removeAttribute("templateFormsList");
 		model.setViewName("/immigration/addPetitionTemplate");
-		Long templateId = ServletRequestUtils.getLongParameter(request, "templateId");// sending parameter edit mode.
+		
+		String temlateUuid = ServletRequestUtils.getStringParameter(request, "templateUuid");
+		Long templateId = immigrationTemplateService.getTemplateIdByUUID(temlateUuid);
+		
 		if (templateId != null) { // below code is used for edit template name, docs, forms when opened in edit
 			// mode.
 			try {
@@ -514,7 +539,6 @@ public class ImmigrationRestController {
 	public ModelAndView loadViewPetitionTemplate(HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		model.setViewName("/immigration/immigrationTemplateList");
 		/*
 		 * try { // List<ImmigrationTemplateView> templateList=
@@ -561,9 +585,11 @@ public class ImmigrationRestController {
 
 	@PreAuthorize("hasRole('ROLE_DELETE_PETITION_TEMPLATE')")
 	@RequestMapping(value = "/deleteImmigrationTemplateDetatils")
-	public String deleteTemplateDetailsById(@RequestParam(value = "deleteId", required = true) Long deleteId,
+	public String deleteTemplateDetailsById(@RequestParam(value = "temlateUuid", required = true) String temlateUuid,
 			@RequestParam(value = "reason", required = true) String reason, HttpServletRequest request) {
+		Long deleteId = immigrationTemplateService.getTemplateIdByUUID(temlateUuid);
 		try {
+			
 			immigrationTemplateService.deleteAllPetitionTemplateDetailsById(deleteId, reason);// only soft delete
 																								// operation in
 			// Database.
@@ -578,7 +604,10 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = "/reactiveImmigrationTemplateDetailsById")
 	public String reactiveImmigrationTemplateDetailsById(
-			@RequestParam(value = "templateId", required = true) Long templateId, HttpServletRequest request) {
+			@RequestParam(value = "templateUuid", required = true) String templateUuid, HttpServletRequest request) {
+		
+		Long templateId = immigrationTemplateService.getTemplateIdByUUID(templateUuid);
+		
 		try {
 			immigrationTemplateService.reactiveImmigrationTemplateById(templateId);
 		} catch (Exception e) {
@@ -678,7 +707,7 @@ public class ImmigrationRestController {
 				"orgLocations");
 		immigrationTemplateDocDTO.setStaticPath(staticPath);
 		immigrationCommonService.saveImmigrationCandidateDocs(immigrationTemplateDocDTO, user, loginOrglocation);
-		System.out.println("Template Task Details saved succesfully --> ");
+		logger.debug("Template Task Details saved succesfully --> ");
 
 		return "success";
 	}
@@ -686,8 +715,6 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/deleteDocumentDetailsByRowId" })
 	public String deleteDocumentDetailsByRowId(@RequestParam(value = "id", required = true) Long id,
 			HttpServletRequest request) {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
 		String status = "";
 		try {
 			status = immigrationCommonService.deletetImmigrationCandidateDocsById(id);
@@ -701,9 +728,7 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/editDocumentDetailsByRowId" })
 	public @ResponseBody ImmigrationCandidateDocuments editDocumentDetailsByRowId(
 			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		System.out.println(" in controller method getCandidateResidenceDetailsById id ---> " + id);
+		logger.debug(" in controller method getCandidateResidenceDetailsById id ---> " + id);
 		ImmigrationCandidateDocuments immigDocObj = null;
 		try {
 			immigDocObj = immigrationCommonService.getImmigrationCandidateDocumentById(id);
@@ -729,7 +754,7 @@ public class ImmigrationRestController {
 				"orgLocations");
 		immigrationTemplateFormDTO.setStaticPath(staticPath);
 		immigrationCommonService.saveImmigrationCandidateForms(immigrationTemplateFormDTO, user, loginOrglocation);
-		System.out.println("Candidate Form  saved succesfully --> ");
+		logger.debug("Candidate Form  saved succesfully --> ");
 
 		return "success";
 	}
@@ -737,8 +762,6 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/deleteImmigrationCandidateFormDetails" })
 	public String deleteImmigrationCandidateFormDetails(@RequestParam(value = "id", required = true) Long id,
 			HttpServletRequest request) {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
 		String status = "";
 		try {
 			status = immigrationCommonService.deletetImmigrationCandidateFormsById(id);
@@ -752,9 +775,7 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/editImmigrationCandidateFormDetailsById" })
 	public @ResponseBody ImmigrationCandidateForms editImmigrationCandidateFormDetailsById(
 			@RequestParam(value = "id", required = true) Long id, HttpServletRequest request) {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		System.out.println(" in controller method getCandidateResidenceDetailsById id ---> " + id);
+		logger.debug(" in controller method getCandidateResidenceDetailsById id ---> " + id);
 		ImmigrationCandidateForms immigFormObj = null;
 		try {
 			immigFormObj = immigrationCommonService.getImmigrationCandidateFormById(id);
@@ -804,9 +825,9 @@ public class ImmigrationRestController {
 
 				fileIdNameMap.put(historyObj.getId(), historyObj.getUpldedFileName());
 			}
-			System.out.println("Doc id ===========" + docs.getId());
+			logger.debug("Doc id ===========" + docs.getId());
 			docs.setDocsHistoryList(jsonArray.put(fileIdNameMap));
-			System.out.println("jsonArray to String  ===========" + jsonArray.toString());
+			logger.debug("jsonArray to String  ===========" + jsonArray.toString());
 		}
 		model.setViewName("/immigration/documentDetailsTab");
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
@@ -815,8 +836,7 @@ public class ImmigrationRestController {
 		return model;
 	}
 
-	@RequestMapping(value = {
-			"/savePetitionTemplateDetails" }, method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = {"/savePetitionTemplateDetails" }, method = RequestMethod.POST, produces = "application/json")
 	public Response<String> savePetitionTemplateDetails(ImmigrationTemplateDTO templateDTO, HttpServletRequest request,
 			@RequestParam(value = "templateId", required = false) String templateId) {
 
@@ -1043,18 +1063,16 @@ public class ImmigrationRestController {
 	@RequestMapping(value = { "/getJobTitleDropDown" })
 	public List<Requirement> getJobTitleDropDown(@RequestParam(value = "locationId",required = false) Long locationId,
 			HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
 		List<Requirement> jobList = requirementService.getAllRequirementsByOrglocationId(locationId);
 		return jobList;
 	}
 
 	@RequestMapping(value = { "/savePetitionDetailsPage" }, method = RequestMethod.POST)
-	public ResponseList<Long> savePetitionDetailsPage(ImmigrationDTO immigrationDTO,
+	public ResponseList<String> savePetitionDetailsPage(ImmigrationDTO immigrationDTO,
 			@RequestParam(value = "removedResidenceIds", required = false) String[] ids,
 			@RequestParam(value = "status", required = false) String status, HttpServletRequest request) {
-		ResponseList<Long> response = new ResponseList<>();
-		List<Long> requiredIds = new LinkedList<>();
+		ResponseList<String> response = new ResponseList<>();
+		List<String> requiredIds = new LinkedList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
@@ -1070,9 +1088,12 @@ public class ImmigrationRestController {
 			if(status.equalsIgnoreCase(ImmigrationConstants.SEND_REQUEST)) {
 				immigrationCommonService.sendEmailToImmigrationBeneficiary(immigration,user, orgLocations);
 			}
-			requiredIds.add(immigration.getId());
-			requiredIds.add(immigration.getCandidate().getId());
-			requiredIds.add(immigration.getImmigrationTemplateId().getId());
+			requiredIds.add(immigration.getId().toString());
+			requiredIds.add(immigration.getCandidate().getId().toString());
+			requiredIds.add(immigration.getImmigrationTemplateId().getId().toString());
+			requiredIds.add(immigration.getImmigrationUuid());
+			requiredIds.add(immigration.getCandidate().getCandidateUUID());
+			requiredIds.add(immigration.getImmigrationTemplateId().getUuid());
 			response.setData(requiredIds);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1098,7 +1119,6 @@ public class ImmigrationRestController {
 	public boolean validateTemplateName(HttpServletRequest request,
 			@RequestParam(value = "templateName") String templateName,
 			@RequestParam(value = "templateId", defaultValue = "0") Long templateId) {
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		return immigrationTemplateService.validateTemplateNameExistance(templateName, templateId);
 	}
 
@@ -1106,8 +1126,6 @@ public class ImmigrationRestController {
 	public @ResponseBody CandidateResumeDTO getCandidatesResumeDetailsById(
 			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
 			throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
 		Integer status = Constants.CANDIDATE_ACTIVE;
 		CandidateResumeDTO candidateResumeDTO = new CandidateResumeDTO();
 		if (candidateId != null) {
@@ -1144,10 +1162,10 @@ public class ImmigrationRestController {
 			if (id != null) { // edit mode we will get the value.
 
 				familyDetailsDTO.setId(id);
-				System.out.println("familyDetailsDTO.getId()--->" + familyDetailsDTO.getId());
+				logger.debug("familyDetailsDTO.getId()--->" + familyDetailsDTO.getId());
 			}
 
-			System.out.println(" inside conroller -->relationType :: " + familyDetailsDTO.getRelationType());
+			logger.debug(" inside conroller -->relationType :: " + familyDetailsDTO.getRelationType());
 			if (familyDetailsDTO.getRelationType().trim().equalsIgnoreCase(Constants.RELATION_TYPE_SPOUSE)) {
 				familyDetailsDTO.setRelation(Constants.RELATION_TYPE_SPOUSE);
 			} else if (familyDetailsDTO.getRelationType().trim().equalsIgnoreCase(Constants.RELATION_TYPE_CHILD)) {
@@ -1184,7 +1202,7 @@ public class ImmigrationRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		Response<String> response = new Response<>();
-		System.out.println("Candidate ID ----> :  " + immigrationPassportVisaDTO.getCandidateId());
+		logger.debug("Candidate ID ----> :  " + immigrationPassportVisaDTO.getCandidateId());
 		if (user != null) {
 			try {
 				if (Validator.validate(immigrationPassportVisaDTO)) {
@@ -1262,7 +1280,7 @@ public class ImmigrationRestController {
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<String> response = new Response<>();
-	//	System.out.println("isCurrResi value is ---> "+residenceDTO.getIsCurrResi());
+	//	logger.debug("isCurrResi value is ---> "+residenceDTO.getIsCurrResi());
 		if (user != null) {
 			try {
 				if (Validator.validate(residenceDTO)) {
@@ -1304,7 +1322,7 @@ public class ImmigrationRestController {
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request) {
 		ModelAndView model = new ModelAndView();
-		System.out.println(" inisde getCandidateFamilyDetails controller test -->");
+		logger.debug(" inisde getCandidateFamilyDetails controller test -->");
 		model.setViewName("/immigration/familyDetailsTab");
 		List<CandidateFamilyDetails> familyList = new ArrayList<CandidateFamilyDetails>();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -1326,20 +1344,18 @@ public class ImmigrationRestController {
 			logger.error("Exception caught in controller --->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println(" after getCandidateFamilyDetails controller -->");
+		logger.debug(" after getCandidateFamilyDetails controller -->");
 		return model;
 	}
 
 	@RequestMapping(value = { "/deleteCandidateFamilyDetails" })
 	public String deleteCandidateFamilyDetails(@RequestParam(value = "id", required = true) Long deleteId,
 			HttpServletRequest request) {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
 		String status = "";
-		System.out.println(" in controller deleteId ---> " + deleteId);
+		logger.debug(" in controller deleteId ---> " + deleteId);
 		try {
 			status = immigrationCommonService.deletetCandidateFamilyDetails(deleteId);
-			System.out.println(" in controller status " + status);
+			logger.debug(" in controller status " + status);
 		} catch (Exception e) {
 			logger.error("Exception caught in controller --->" + e.getMessage());
 			e.printStackTrace();
@@ -1354,7 +1370,7 @@ public class ImmigrationRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		String status = "";
-		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> " + id);
+		logger.debug(" in controller method getCandidateFamilyDetailsById id ---> " + id);
 		CandidateFamilyDetails familyObj = null;
 		try {
 			familyObj = immigrationCommonService.getCandidateFamilyDetailsById(id);
@@ -1364,7 +1380,7 @@ public class ImmigrationRestController {
 					familyObj.getMarriageEndDate()));
 			familyObj.setDateOfBirthStr(
 					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), familyObj.getDateOfBirth()));
-			System.out.println(" in controller status " + status);
+			logger.debug(" in controller status " + status);
 		} catch (Exception e) {
 			logger.error("Exception caught in controller test --->" + e.getMessage());
 			e.printStackTrace();
@@ -1379,7 +1395,7 @@ public class ImmigrationRestController {
 			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> " + id);
+		logger.debug(" in controller method getCandidateFamilyDetailsById id ---> " + id);
 		CandidateEducation canEdu = null;
 		try {
 			canEdu = candidateEducationService.getCandidateEducationBycandidateIdandEducationId(candidateId, id);
@@ -1399,9 +1415,7 @@ public class ImmigrationRestController {
 	public @ResponseBody CandidateEmployers getCandidateEmpDetailsById(
 			@RequestParam(value = "id", required = true) Long id,
 			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> " + id);
+		logger.debug(" in controller method getCandidateFamilyDetailsById id ---> " + id);
 		CandidateEmployers canEmp = null;
 		try {
 			canEmp = candidateEmployersService.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, id);
@@ -1421,8 +1435,7 @@ public class ImmigrationRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		CandidateEducation candidateEducation = candidateEducationService
-				.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, id, user, orgLocations);
+		candidateEducationService.removeCandidateEducationBycandidateIdandcandidateEducationId(candidateId, id, user, orgLocations);
 
 		return "success";
 	}
@@ -1431,11 +1444,7 @@ public class ImmigrationRestController {
 	public String deleteCandidateEmployerDetails(@RequestParam(value = "id", required = true) Long id,
 			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request)
 			throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		CandidateEmployers candidatesEmployer = candidateEmployersService
-				.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, id);
+		candidateEmployersService.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, id);
 
 		return "success";
 	}
@@ -1503,10 +1512,11 @@ public class ImmigrationRestController {
 			@RequestParam(value = "idType", required = true) String idType,
 			@RequestParam(value = "searchValue", required = true) String searchValue) throws Exception {
 		ModelAndView model = new ModelAndView();
-		System.out.println(" inisde getCandidatePassportDetails controller test -->");
+		logger.debug(" inisde getCandidatePassportDetails controller test -->");
 		List<CandidatePassportVisa> PassportList = new ArrayList<CandidatePassportVisa>();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		Date toDayDate = new Date();
 		try {
 			PassportList = immigrationCommonService.getCandidatePassportVisaDetails(candidateId, idType, searchValue);
 			for (CandidatePassportVisa canPassportVisa : PassportList) {
@@ -1514,6 +1524,18 @@ public class ImmigrationRestController {
 						canPassportVisa.getValidFromDate()));
 				canPassportVisa.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 						canPassportVisa.getValidToDate()));
+				
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String currentDateStr = dateFormat.format(toDayDate);
+				Date newDate = dateFormat.parse(currentDateStr);
+				Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+				
+				if(currentDate.before(canPassportVisa.getValidToDate())) {
+					canPassportVisa.setCurrentStatus("Active");
+				}else {
+					canPassportVisa.setCurrentStatus("Expired");
+				}
+				
 			}
 
 			List<Countries> countryList = countriesService.getAllCountries();
@@ -1523,7 +1545,7 @@ public class ImmigrationRestController {
 			logger.error("Exception caught in controller --->" + e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println(" after getCandidatePassportVisaDetails controller -->");
+		logger.debug(" after getCandidatePassportVisaDetails controller -->");
 		if (idType.equalsIgnoreCase("Passport")) {
 			model.setViewName("/immigration/passportDetailsTab");
 		} else {
@@ -1541,7 +1563,7 @@ public class ImmigrationRestController {
 			throws Exception {
 		String result = "{status:'success'}";
 
-		System.out.println(" inisde updateImmigrationStatus controller -->");
+		logger.debug(" inisde updateImmigrationStatus controller -->");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1559,7 +1581,7 @@ public class ImmigrationRestController {
 					}
 				} else if (i == 1) { // CandidateEmployers
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
-							"where candidateId.id=:candidateId");
+							"where candidateId.id=:candidateId and status=1");
 					if (count == null) {
 						missedTabList.add(tabNameArray[i]);
 					}
@@ -1571,7 +1593,7 @@ public class ImmigrationRestController {
 					}
 				} else if (i == 3) {// CandidateEducation
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
-							"where candidateId.id=:candidateId");
+							"where candidateId.id=:candidateId and status=1");
 					if (count == null) {
 						missedTabList.add(tabNameArray[i]);
 					}
@@ -1581,12 +1603,12 @@ public class ImmigrationRestController {
 				// check required column value in Forms tab.
 				List<ImmigrationCandidateForms> formsList = immigrationCommonService
 						.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, "");
-				System.out.println(" formsList:::size --> : " + formsList.size());
+				logger.debug(" formsList:::size --> : " + formsList.size());
 				for (ImmigrationCandidateForms form : formsList) {
 					if (form.getIsRequired().equalsIgnoreCase(Constants.YES)) {
 						if (!form.getFormStatus().equalsIgnoreCase(ImmigrationConstants.FILE_UPLOADED)
 								|| StringUtils.isEmpty(form.getUploadedFileUrl())) {
-							//System.out.println("Required found for the Form Tab for the Form ID :::--> : " + form.getId());
+							//logger.debug("Required found for the Form Tab for the Form ID :::--> : " + form.getId());
 							missedTabList.add("Forms");
 							break;
 						}
@@ -1595,13 +1617,13 @@ public class ImmigrationRestController {
 				// check is required in in DocumentsTab
 				List<ImmigrationCandidateDocuments> docsList = immigrationCommonService
 						.getImmigrationCandidateDocs(immigrationId, templateId, candidateId, user, orgLocations, "");
-				System.out.println(" docsList:::size --> : " + formsList.size());
+				logger.debug(" docsList:::size --> : " + formsList.size());
 				for (ImmigrationCandidateDocuments doc : docsList) {
 					if (doc.getIsRequired().equalsIgnoreCase(Constants.YES)) {
 						if (!doc.getDocumentStatus().equalsIgnoreCase(ImmigrationConstants.FILE_UPLOADED)
 								|| StringUtils.isEmpty(doc.getUplodedFileUrl())) {
 							//result = "{errorMsg:'Documents'}";
-							//System.out.println("Required found for the Documents Tab for the Doc ID :::--> : " + doc.getId());
+							//logger.debug("Required found for the Documents Tab for the Doc ID :::--> : " + doc.getId());
 							missedTabList.add("Documents");
 							break;
 						}
@@ -1610,7 +1632,7 @@ public class ImmigrationRestController {
 				
 				if(missedTabList.size()>0) {
 					String commaSeparatedString = String.join(",", missedTabList);
-					//System.out.println(" comma separated String is "+commaSeparatedString);
+					//logger.debug(" comma separated String is "+commaSeparatedString);
 					result = "{errorMsg:'" + commaSeparatedString+ "'}";
 					
 					return result;
@@ -1632,7 +1654,7 @@ public class ImmigrationRestController {
 				immigrationActivityCommonUtil.saveImmigrationActivities(user, orgLocations, immigration, null,actionDesc.toString());
 
 				
-				System.out.println("Immigartion details udated successfully for the immigration id ID :::--> : "
+				logger.debug("Immigartion details udated successfully for the immigration id ID :::--> : "
 						+ immigration.getId());
 		} catch (Exception e) {
 			logger.error("Exception caught in controller --->" + e.getMessage());
@@ -1643,7 +1665,7 @@ public class ImmigrationRestController {
 
 	private HashMap<String, Integer> getImmigrationViewTabStatusDetails(Long candidateId,Long immigrationId) {
 		//result = "{errorMsg:'" + tabNameArray[i] + "'}";
-		//System.out.println(" Record not found for the Tab Nme:::--> : " + tabNameArray[i]);
+		//logger.debug(" Record not found for the Tab Nme:::--> : " + tabNameArray[i]);
 		HashMap<String , Integer> tabRecordCountMap = new HashMap<String, Integer>();
 		try {
 			String entityArray[] = new String[] { "CandidatePassportVisa", "CandidatePassportVisa",
@@ -1659,13 +1681,13 @@ public class ImmigrationRestController {
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidate.id=:candidateId and idType='Visa'");
 					tabRecordCountMap.put(tabNameArray[i], count);
 				} else if (i == 2) { // CandidateEmployers
-					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId");
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId and status=1");
 					tabRecordCountMap.put(tabNameArray[i], count);
 				} else if (i == 3) { // CandidateResidence
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where id=:candidateId");
 					tabRecordCountMap.put(tabNameArray[i], count);
 				} else if (i == 4) {// CandidateEducation
-					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId");
+					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,"where candidateId.id=:candidateId and status=1");
 					tabRecordCountMap.put(tabNameArray[i], count);
 				}
 				else if (i == 5) {// CandidateFamilyDetails
@@ -1703,10 +1725,7 @@ public class ImmigrationRestController {
 	public String deleteCandidateResidenceDetails(@RequestParam(value = "id", required = true) Long id,
 			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request)
 			throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		String candidateResidence = immigrationCommonService.deleteCandidateResidenceDetails(id, candidateId);
+		immigrationCommonService.deleteCandidateResidenceDetails(id, candidateId);
 
 		return "success";
 	}
@@ -1719,7 +1738,7 @@ public class ImmigrationRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		String status = "";
-		System.out.println(" in controller method getCandidateResidenceDetailsById id ---> " + id);
+		logger.debug(" in controller method getCandidateResidenceDetailsById id ---> " + id);
 		CandidateResidence residenceObj = null;
 		try {
 			
@@ -1745,7 +1764,7 @@ public class ImmigrationRestController {
 					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), residenceObj.getStartDate()));
 			residenceObj.setEndDateStr(
 					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), residenceObj.getEndDate()));
-			System.out.println(" in controller status " + status);
+			logger.debug(" in controller status " + status);
 		} catch (Exception e) {
 			logger.error("Exception caught in controller test --->" + e.getMessage());
 			e.printStackTrace();
@@ -1760,7 +1779,7 @@ public class ImmigrationRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		String status = "";
-		System.out.println(" in controller method getCandidateFamilyDetailsById id ---> " + id);
+		logger.debug(" in controller method getCandidateFamilyDetailsById id ---> " + id);
 		CandidatePassportVisa passportVisaObj = null;
 		try {
 			passportVisaObj = immigrationCommonService.getCandidatePassportVisaDetailsById(id);
@@ -1770,7 +1789,7 @@ public class ImmigrationRestController {
 			passportVisaObj.setValidToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					passportVisaObj.getValidToDate()));
 
-			System.out.println(" in controller status " + status);
+			logger.debug(" in controller status " + status);
 		} catch (Exception e) {
 			logger.error("Exception caught in controller test --->" + e.getMessage());
 			e.printStackTrace();
@@ -1787,7 +1806,7 @@ public class ImmigrationRestController {
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		sourceleadNotesService.storeComments(sourceleadNotesDTO, user, orgLocations);
-		System.out.println("Template Task Details saved succesfully --> ");
+		logger.debug("Template Task Details saved succesfully --> ");
 
 		return "success";
 	}
@@ -1796,8 +1815,7 @@ public class ImmigrationRestController {
 	public Boolean validateEduname(@RequestParam(value = "name", required = false) String name,
 			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
 			throws Exception {
-		String candidateEducationName = name;
-		Boolean immiCanEdu = candidateEducationService.validateEducationName(candidateId, candidateEducationName);
+		Boolean immiCanEdu = candidateEducationService.validateEducationName(candidateId, name);
 		return immiCanEdu;
 	}
 
@@ -1844,16 +1862,13 @@ public class ImmigrationRestController {
 			@RequestParam(value = "templateId", defaultValue = "0") Long templateId,
 			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
 			@RequestParam(value = "searchVal", required = false) String searchVal) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		System.out.println("inside controller method getCandidateImmigrationForms--> ");
-
+		
+		logger.debug("inside controller method getCandidateImmigrationForms--> ");
 		ModelAndView model = new ModelAndView();
 		model.setViewName("/immigration/formDetailsTab");
 		List<ImmigrationCandidateForms> candidateFormsLst = immigrationCommonService
 				.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, searchVal);
-		System.out.println("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "
+		logger.debug("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "
 				+ candidateFormsLst.size());
 		model.addObject("formsList", candidateFormsLst);
 		return model;
@@ -1873,11 +1888,11 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = { "/editImmigrationDetails" })
 	public ModelAndView editImmigrationDetails(
-			@RequestParam(value = "immigrationId", required = false) Long immigrationId, HttpServletRequest request)
+			@RequestParam(value = "immigrationUUID", required = false) String immigrationUUID, HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.addObject("immigrationIdCode", immigrationId);
+		model.addObject("immigrationUUID", immigrationUUID);
 		model.setViewName("/immigration/newPetition");
 		return model;
 	}
@@ -1940,7 +1955,7 @@ public class ImmigrationRestController {
 	    // below code for adding candidate resume to downloading package.
 		CandidateResumes candidateResume= candidateResumesService.getCandidateLatesResumes(immigration.getCandidate().getId(), Constants.CANDIDATE_ACTIVE);
 		if(StringUtils.isNotBlank(candidateResume.getFileURL())) {
-			//System.out.println("cadidateResume path "+candidateResume.getFileURL());
+			//logger.debug("cadidateResume path "+candidateResume.getFileURL());
 			docsListMap.put("cadidateResume",candidateResume);
 		}
 		
@@ -1959,8 +1974,9 @@ public class ImmigrationRestController {
 
 	@RequestMapping(value = { "/deleteImmigrationDetailsById" })
 	public String deleteImmigrationDetailsById(
-			@RequestParam(value = "immigrationId", required = false) Long immigrationId, HttpServletRequest request)
+			@RequestParam(value = "immigrationUUID", required = false) String immigrationUUID, HttpServletRequest request)
 			throws Exception {
+		Long immigrationId = immigrationCommonService.getImmigrationIdByUUID(immigrationUUID);
 		String result = immigrationCommonService.deleteImmigrationDetailsById(immigrationId);
 		return result;
 
@@ -2037,6 +2053,26 @@ public class ImmigrationRestController {
 	       Boolean flag = false;
 		   if(candidatePassportVisa == null){
 		    	flag =  immigrationCommonService.validateCandidatePassportVisa(candidateId,idType,idNumberVal);
+		    }
+			return flag;
+	}
+	
+	@RequestMapping(value = {"/validateImmigrationCandidateForms"})
+	public Boolean validateImmigrationCandidateForms(
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+			@RequestParam(value = "id", required = false) Long id,
+			@RequestParam(value = "formName", required = false) String formName,
+			HttpServletRequest request)
+			throws Exception {
+		
+		 ImmigrationCandidateForms ImmigrationCandidateForms=null;
+	       if(null != id){
+	    	   ImmigrationCandidateForms = immigrationCommonService.getImmigrationCandidateFormsDetailsByFormNameAndId(formName, candidateId, immigrationId, id);
+	       }
+	       Boolean flag = false;
+		   if(ImmigrationCandidateForms == null){
+		    	flag =  immigrationCommonService.validateImmigrationCandidateForms(formName,candidateId,immigrationId);
 		    }
 			return flag;
 	}
