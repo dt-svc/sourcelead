@@ -15,10 +15,10 @@ $(document).ready(function() {
 	} else if(activeTaxTab === "createCentralTax") {
 		tax.addDynamicTDSRow(true);
 
-		/*if(stateTaxId === 0)
+		if(stateTaxId === 0)
 			tax.addDynamicPTRow(true);
 		if(centralTaxId === 0)
-			tax.addDynamicTDSRow(true);*/
+			tax.addDynamicTDSRow(true);
 	}
 	
 	$("#saveStateTax").click(function() {
@@ -321,12 +321,30 @@ function Tax() {
 		tdsRowId++;
 	}
 	
-	this.deleteTDSRow = function(rowId) {
+	/*this.deleteTDSRow = function(rowId) {
 		$("div[data-id='tdsRow"+rowId+"']").remove();
 	}
+	*/
 	
+	this.deletePTRow = function(ele) {
+		var removalRow = $(ele).closest("div[data-name='tdsRow']");
+		$("#removeIds").val(($("#removeIds").val()!==""? $("#removeIds").val() + "," : "") + $(removalRow).data("id"));
+		$(removalRow).remove();
+		tax.refreshTDSRows();
+	}
 	
-
+	this.refreshTDSRows = function() {
+		tdsRowId = 0;
+		$("div[data-name='tdsRow']").each(function() {
+			$(this).find("input[data-name='fromamount']").attr("name","tdsTaxList["+tdsRowId+"].fromamount");
+			$(this).find("input[data-name='toamount']").attr("name","tdsTaxList["+tdsRowId+"].toamount");
+			$(this).find("input[data-name='percentage']").attr("name","tdsTaxList["+tdsRowId+"].percentage");
+			$(this).find("select[data-name='educationceiss']").attr("name","tdsTaxList["+tdsRowId+"].educationceiss");
+			$(this).find("select[data-name='surcharge']").attr("name","tdsTaxList["+tdsRowId+"].surcharge");
+			pfRowId++;
+		});
+	}
+	
 	
 	
 

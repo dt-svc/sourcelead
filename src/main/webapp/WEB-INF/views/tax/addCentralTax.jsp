@@ -106,12 +106,9 @@
 							<div class="row clonedInput mb" id="dynamicTDSList" name="tdsTaxList">
 								
 							<c:forEach var="tds" items="${centralTax.tdsTaxList}">
-							
-							
-								
 								
 						 
-								<div class="col-md-3">
+								<div class="col-md-2">
 									<label class="clearfix">Age</label>
 									<div class="clearfix">
 										<select class="width100percnt selectpicker" id = "age" name = "age" 
@@ -123,58 +120,68 @@
 										</select>
 									</div>
 								</div>
-								<div class="col-md-3">
+								<div class="col-md-2">
 									<label class="clearfix">From</label>
 									<div class="clearfix">
 										<input type="text" id = "fromamount" name = "fromamount" class="form-control" name="Website"
 											value="${tds.fromamount}" placeholder="Enter">
 									</div>
 								</div>
-								<div class="col-md-3">
+								<div class="col-md-2">
 									<label class="clearfix">To</label>
 									<div class="clearfix">
 										<input type="text" id = "toamount" name = "toamount" class="form-control" name="Website"
 											value="${tds.toamount}" placeholder="Enter">
 									</div>
 								</div>
-								<div class="col-md-2">
+								<div class="col-md-1">
 									<label class="clearfix">Percentage</label>
 									<div class="clearfix">
 										<input type="text" id = "percentage" name = "percentage" class="form-control" name="Website"
 											value="${tds.percentage}" placeholder="Enter">
 									</div>
 								</div>
-								<div class="col-md-1">
-									<label class="clearfix">Actions</label>
-									<ul class="list-unstyled list-inline mt5 text-center">
-										<li><a title="Delete Row"
-											class="fa fa-trash text-danger deleteRow"></a></li>
-										<li><a title="Add Row"
-											class="fa fa fa-floppy-o text-primary"></a></li>
-									</ul>
+									<div class="col-md-2">
+									<label class="clearfix">Education Ceiss</label>
+									<div class="clearfix">
+										<input type="text" id = "educationceiss" name = "educationceiss" class="form-control" name="Website"
+											value="${tds.educationceiss}" placeholder="Enter">
+									</div>
 								</div>
-								<div class="clearfix"></div>
-								 
+									<div class="col-md-1">
+									<label class="clearfix">Surcharge</label>
+									<div class="clearfix">
+										<input type="text" id = "surcharge" name = "surcharge" class="form-control" name="Website"
+											value="${tds.surcharge}" placeholder="Enter">
+									</div>
+								</div>
+							
+								 <div class="col-md-1">
+										<label class="clearfix">${tdsRowId==0?"Actions":""}</label>
+										<ul class="list-unstyled list-inline mt5 text-center">
+											<c:choose>
+												<c:when test="${tdsRowId==0}">
+													<li><a href="javascript:void(0)" class="cursorPointer"
+														onclick="tax.addDynamicTDSRow(false);" title="Add Row"
+														style="font-size: 20px;"> + </a></li>
+												</c:when>
+												<c:otherwise>
+													<li><a title="Delete Row"
+														class="fa fa-trash text-danger deleteRow"
+														onClick="tax.deleteTDSRow(this)"></a></li>
+												</c:otherwise>
+											</c:choose>
+										</ul>
+									</div>
+									<div class="clearfix"></div>
+									<c:set var="tdsRowId" value="${tdsRowId+1}"></c:set>
+									<script type="text/javascript">
+										var tdsRowId = ${tdsRowId};
+									</script>
+									</div>
 							
 							
 							</c:forEach>	
-								
-								
-								
-								
-								
-								
-							
-								 
-								 
-								 
-								 
-								 
-								 
-								 
-								 
-								 
-								 
 								
 							</div>
 

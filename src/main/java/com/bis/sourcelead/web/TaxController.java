@@ -24,8 +24,11 @@ import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.StateTaxDTO;
+
+
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.Candidate;
+
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.States;
@@ -121,9 +124,10 @@ public class TaxController {
 				centralTaxDTO = taxService.getCentralTax(sourceleadTaxId);
 			}
 			modelAndView.addObject("centralTax", centralTaxDTO);
+			setYears(modelAndView, centralTaxDTO.getCtfinancialYear());
 			modelAndView.addObject("activeTaxTab", "central");
-			Map<String, Boolean> yearList = caliculateYearList();	
-			modelAndView.addObject("yearList", yearList);
+		//	Map<String, Boolean> yearList = caliculateYearList();	
+			//modelAndView.addObject("yearList", yearList);
 			modelAndView.setViewName("tax/addCentralTax");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -248,10 +252,13 @@ public class TaxController {
 	@RequestMapping(value = "/centralTax/list")
 	public ModelAndView centralTaxList(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
-		Map<String, Boolean> yearList = null;
 		try {
-			yearList = caliculateYearList();
-			modelAndView.addObject("yearList", yearList);
+			
+			setYears(modelAndView, null);
+			
+			
+			//yearList = caliculateYearList();
+			//modelAndView.addObject("yearList", yearList);
 			modelAndView.addObject("activeTaxTab", "central");
 			modelAndView.setViewName("tax/centralTax");
 		} catch (Exception e) {
@@ -259,22 +266,6 @@ public class TaxController {
 		}
 		return modelAndView;
 	}
-
-	public Map<String, Boolean> caliculateYearList(){
-		Map<String, Boolean> yearList = new LinkedHashMap<>();
-		Calendar c = Calendar.getInstance();
-		c.roll(Calendar.YEAR, -2);
-		for (int i = 0; i < 4; i++) {
-			Calendar c1 = Calendar.getInstance();
-			boolean isCurrent = c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
-			String fromYear = c.get(Calendar.YEAR) + "";
-			c.roll(Calendar.YEAR, 1);
-			String toYear = c.get(Calendar.YEAR) + "";
-			yearList.put(fromYear + "-" + toYear, isCurrent);
-			}
-		return yearList;
-	}
-
 	
 	@RequestMapping(value = "/centralTax/add" , method = RequestMethod.POST)
 	@ResponseBody
