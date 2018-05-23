@@ -2455,7 +2455,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group" id="dojDiv">';
-	 result = result +'<label class="col-md-3 control-label">Date Of Join<span class="text-danger">*</span></label>';
+	 result = result +'<label class="col-md-3 control-label">Date of Joining<span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Date Of Join" id="startDate" name="startDate" readonly="readonly">';
 	 result = result +'</div>';
@@ -2549,7 +2549,7 @@ function addCandidateDetailsForOnboarding(){
 	result = result + '</div>'; 
      
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Probation Notice</label>';
+	 result = result +'<label class="col-md-3 control-label">Probation Period</label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Probation Notice" id="probationNotice" name="probationNotice">';
 	 result = result +'<option selected="selected" value="">Select Probation Notice</option>';
@@ -2561,7 +2561,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Termination Notice</label>';
+	 result = result +'<label class="col-md-3 control-label">Notice Period</label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Termination Notice" id="terminationNotice" name="terminationNotice">';
 	 result = result +'<option selected="selected" value="">Select Termination Notice</option>';

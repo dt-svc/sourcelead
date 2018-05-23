@@ -93,7 +93,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                      <label class="col-md-3">Date of Join</label>
+                      <label class="col-md-3">Date of Joining</label>
                          <div class="col-md-9">
                            <div class="input-group errorInptgroup">
                               <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly">
