@@ -956,9 +956,6 @@ $("#experienceValue").change(function () {
 		        	$('#currUscisStatus').append('<option selected value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
-		            	  if(opt.name == "Draft" || opt.name == "Request to fill"){
-		            		  continue;
-		            	  }
 		            	  if(opt.id == status){
 		            		$('#currUscisStatus').append('<option selected value='+opt.id+' >'+opt.name+'</option>');
 		            	  }else{
@@ -1112,17 +1109,23 @@ $("#experienceValue").change(function () {
    <script type="text/javascript">
    
    function onLoadStatusChange(status){
-	   var uscisStatusVal = $("#currUscisStatus").val();
+	   var uscisStatusVal = $("#currUscisStatus option:selected").text();
 	   if(status != null){
 		   uscisStatusVal = status;
 	   }
-	   if(uscisStatusVal == "" || uscisStatusVal == null){
-		   $("#sendRequestButton").show();
+	   if(uscisStatusVal == "Draft"){
+		   $("#sendRequestButton").hide();
+		   $("#savePageOneContinue").hide();
 		   $("#saveAsDraftButton").show();
+	   }else if(uscisStatusVal == "Request to fill"){
+		   $("#sendRequestButton").show();
+		   $("#savePageOneContinue").hide();
+		   $("#saveAsDraftButton").hide();
 	   }else{
 		   $("#sendRequestButton").hide();
+		   $("#savePageOneContinue").show();
 		   $("#saveAsDraftButton").hide();
-	   } 
+	   }
    }
    
 	  $( document ).ready(function() {
@@ -1133,7 +1136,7 @@ $("#experienceValue").change(function () {
 		  getAttorneyContactList("${immigrationDTO.attorneyId}","${immigrationDTO.attorneyContact}");
 		 getCandidatesByOrgLocation("${immigrationDTO.candidateId}");
 		  getPetitionTypeDropDown("${immigrationDTO.petitionType}");
-		  getUscisTypeDropDown("${immigrationDTO.currUscisStatus}");
+		  getUscisTypeDropDown("${immigrationDTO.currUscisStatusId}");
 		  onLoadStatusChange("${immigrationDTO.currUscisStatus}");
 		  employmentLevelDropDown("${immigrationDTO.employmentLevel}");
 		  jobTitleDropDown("${immigrationDTO.jobId}");
