@@ -70,7 +70,7 @@ $(document).ready(function(){
 			<div class="form-group">
 				<label>Choose Template <span class="text-danger paddingRight">*</span></label>
 				<div class="clearfix">
-					<select class="chosen-select form-control chose-all-template" data-live-search="true">
+					<select class="chosen-select form-control chose-all-template" data-live-search="true" id="empTemplateId">
 					</select>
 				</div>
 			</div>
@@ -83,19 +83,19 @@ $(document).ready(function(){
 		</div>
 		<div class="modal-footer">
 			<div class="clearfix">
-				<button type="button" class="btn btn-primary mr" onClick="printPage();">Print</button>
+				<button type="button" class="btn btn-primary mr" onClick="viewCompleteTemplate('print');">Print</button>
 				<button type="button" class="btn btn-default" onClick="closePOP()">Cancel</button>
 			</div>
 		</div>
 		</div>
 	</div>
 </div>
-<script>
+<!-- <script>
 function printPage()
   {
   viewCompleteTemplate('print');
   }
-</script>
+</script> -->
 <div class="modal viewEVR" style="display: none">
 	<div class="modal-dialog">
 		<div class="modal-content">
