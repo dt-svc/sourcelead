@@ -545,11 +545,12 @@ this.deletePassportVisaDetailsById=function(id,idType){
     	else if(relationType =="Mother"){
     		formId ="motherDetailsForm";
     	}
-    	$("#family_SaveButton").attr("disabled",true);
+    	
 		if ($('#'+formId).validate(false, validationSettings)) {
 			var formData = getFormData(formId);
 			 var candidateId = $('#candidateID').val();
 			 var immigrationId = $('#immigrationID').val();
+			 $("#family_SaveButton").attr("disabled",true);
 			$.ajax({
 				url : sourceleadUrl + immiModulePath+ "/saveCandidateFamilyDetails?candidateId="+candidateId+"&relationType="+relationType+"&memberId="+familyMemberId+"&immigrationId="+immigrationId,
 				type : "POST",
@@ -566,6 +567,8 @@ this.deletePassportVisaDetailsById=function(id,idType){
        				}else{
                    	 showError("Operation failed, please try again");
                    }
+					
+					$("#family_SaveButton").removeAttr("disabled");
 				}
 			});
 
@@ -732,6 +735,49 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	        }
 		});
 	}
+	
+	 this.saveCandidateDocs= function () {
+			
+		 var validationSettings = {
+		            errorMessagePosition: 'element',
+		            borderColorOnError: '',
+		            scrollToTopOnError: true,
+		            dateFormat: 'yyyy/mm/dd'
+		        };
+		 
+		
+			if ($('#candidate_Immigration_document_form').validate(false, validationSettings)) {
+		 
+				var formData = getFormData("candidate_Immigration_document_form");
+				var candidateId = $('#candidateID').val();
+				var templateId = $('#templateID').val();
+				var immigrationId = $('#immigrationID').val();
+
+	        $.ajax({
+	            url: sourceleadUrl + immiModulePath + "/saveCandidateImmigrationDocuments?"+ tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&templateId="+templateId,
+	            type: "POST",
+	            data: formData,
+	            success: function (data) {
+	                if (data == 'success') {
+	                	$('#docuView').hide();
+	                	$('.popMask').fadeOut();
+	                	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
+	                }
+	                $("#canDocSave_Button1").removeAttr("disabled");
+	            }
+	        });
+
+	        return true;
+	  } else {
+	        return false;
+	    }
+		
+	}
+	$('body').on('blur', '#candidate_Immigration_document_form', function () {
+	    $("#candidate_Immigration_document_form").showHelpOnFocus();
+	    $("#candidate_Immigration_document_form").validateOnBlur(false, validationSettings);
+	});
+	
 	
 }
 
@@ -978,42 +1024,7 @@ $('body').on('blur', '#employerDetails_form', function () {
 });
 
 
-function saveCandidateDocs() {
-	var validationSettings = {
-            errorMessagePosition: 'element',
-            borderColorOnError: '',
-            scrollToTopOnError: true,
-            dateFormat: 'yyyy/mm/dd'
-        };
-	$("#canDocSave_Button").attr("disabled",true);
-	if ($('#candidate_Immigration_Doc').validate(false, validationSettings)) {
-		var formData = getFormData("candidate_Immigration_Doc");
-		var candidateId = $('#candidateID').val();
-		var templateId = $('#templateID').val();
-		var immigrationId = $('#immigrationID').val();
-        $.ajax({
-            url: sourceleadUrl + immiModulePath + "/saveCandidateImmigrationDocuments?"+ tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&templateId="+templateId,
-            type: "POST",
-            data: formData,
-            success: function (data) {
-                if (data == 'success') {
-                	$('#docuView').hide();
-                	$('.popMask').fadeOut();
-                	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
-                }
-            }
-        });
 
-        return true;
-    } else {
-        return false;
-    }
-	
-}
-$('body').on('blur', '#candidate_Immigration_Doc', function () {
-    $("#candidate_Immigration_Doc").showHelpOnFocus();
-    $("#candidate_Immigration_Doc").validateOnBlur(false, validationSettings);
-});
 
 
 function displayImmigrationCandidateDocs(candidateId,templateid,immigrationId,searchVal){
@@ -1191,12 +1202,9 @@ function editDocumentDetailsByRowId(id){
      type: "GET",
      success: function (data) {
      	var formObj='';
-     	if(data!= null){
-     		
-     			formObj = $('#candidate_Immigration_Doc')[0]; // load the child form
+     	if(data != null){
+     			formObj = $('#candidate_Immigration_document_form')[0]; // load the child form
      			$("#addDocu").trigger('click');
-     		/*	$('#eduName').val(data.name); // to select the dropdwon value based on id value.
-     			$('#scoreEducationType').val(data.gradeType);*/
      			$('#documentType').val(data.documentType.id);
      			if(data.documentOtherType){
      			document.getElementById("documentOtherTypeDiv").style.display="block";
@@ -1206,9 +1214,9 @@ function editDocumentDetailsByRowId(id){
      			}
      			$('#description1').text(data.description);
      			if(data.allowMultiple == 'Y'){
-     				$('#candidate_Immigration_Doc input[name="multiple"]').prop('checked', true);
+     				$('#candidate_Immigration_document_form input[name="multiple"]').prop('checked', true);
      			}if(data.isRequired == 'Y'){
-     				$('#candidate_Immigration_Doc input[name="isRequired"]').prop('checked', true);
+     				$('#candidate_Immigration_document_form input[name="isRequired"]').prop('checked', true);
      			}
      			$('#immigrationCandidateDocId').val(data.id);
      	
