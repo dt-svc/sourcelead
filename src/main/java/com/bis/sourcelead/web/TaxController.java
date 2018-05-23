@@ -147,12 +147,12 @@ public class TaxController {
 
 	@RequestMapping(value = "/stateTax/changeStatus")
 	@ResponseBody
-	public Response<String> changeStateTaxStatus(HttpServletRequest request, @RequestParam(defaultValue = "0") long stateTaxId) {
+	public Response<String> changeStateTaxStatus(HttpServletRequest request, @RequestParam(defaultValue = "0") long taxId) {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				response = taxService.changeStateTaxStatus(stateTaxId);
+				response = taxService.changeStateTaxStatus(taxId);
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -239,5 +239,19 @@ public class TaxController {
 		}
 		return modelAndView;
 	}
-
+	
+	// forms tab
+	@RequestMapping(value = "/forms/list")
+	public ModelAndView formsList(HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			setYears(modelAndView, null);
+			setStates(modelAndView);
+			modelAndView.addObject("activeTaxTab", "forms");
+			modelAndView.setViewName("tax/forms");
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
 }
