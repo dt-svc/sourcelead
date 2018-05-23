@@ -184,7 +184,12 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
 	    	  	"data": "projectName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
-	    	  		  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
+	    	  		  if(opt.projectUUID != null && opt.projectUUID != '' && opt.projectUUID != 'undefined'){
+	    	  			result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
+	    	  		  }else{
+	    	  			result = result + '<td><div  class="tbldata-dotdot-sm"><a href="#">'+opt.projectName+'</a></div></td>';
+	    	  		  }
+	    	  		  
 		             return result;
 	    	  	}
 	      },{

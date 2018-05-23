@@ -216,8 +216,7 @@
 	<select id="REPLACEROWIDconsultingType"
 		name="associateResources[REPLACEROWID].consultingType" data-validation="required"
 		field-name="Consulting">
-		<option value="">--Select--</option>
-		<option value="Offsite">Off Site</option>
+		<option value="Offsite" selected>Off Site</option>
 		<option value="Onsite">On Site</option>
 		<option value="Onsite">Near Shore</option>
 		<option value="Onsite">Off Shore</option>
@@ -1168,9 +1167,19 @@ function candidatesPagination(sourceleadUrl,url){
     $("#associatesListPagination").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>"); 
     $("input[type=search]").hide();
     $("#candidateDataTableSearch").keyup(function(e) {
+    	   
     	   if(e.which === 13) {
-    		   candidatesDataTableList();
-    	   }
+      		    $('#candidateDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+      	    	var searchData = $('#candidateDataTableSearch').val();
+      	    	var regex =  new RegExp(/[\\-]/g);
+      	    	if(regex.test(searchData) == false){
+      	    		candidatesDataTableList();
+      	    	}else{
+      	    		$("#candidateDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+      	    	}
+      	    	$('#candidateDataTableSearch').val(searchData);
+       	   }
+    	   
     	});
 }
 

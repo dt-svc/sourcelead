@@ -533,6 +533,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		Roles role = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(userImport.getRole(), orgLocations.getId());
 		User reportUser = userService.findByEmailAndOrgLocationsId(userImport.getManager(), orgLocations.getId());
 		userRole.setReportingManager(reportUser);
+		userRole.setResourceManager(reportUser);
 		userRole.setRoles(role);
 		userRole.setUserType(role.getDisplayName());
 		userRole.setCreatedDate(new Date());
