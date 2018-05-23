@@ -111,7 +111,7 @@
                 </div>
                 
                 <div class="form-group">
-                  <label class="col-md-3 control-label">Joined date</label>
+                  <label class="col-md-3 control-label">Date of Joining</label>
                   <div class="col-md-6">
                   
                     <input type="text" class="form-control input-sm calendar" id="dateOfJoin" name="dateOfJoin" readonly="readonly">

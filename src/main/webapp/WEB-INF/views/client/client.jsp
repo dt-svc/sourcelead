@@ -65,7 +65,7 @@ margin-top: -50px;
 			</div>
             
 			<div class="form-group " id="companyWebsiteDiv">
-				<label class="col-md-3">Website</label>
+				<label class="col-md-3">Web Url</label>
 				<div class="col-md-9">
 				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Client Website"  onblur="validateWebsite();" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
 				</div>
@@ -195,7 +195,7 @@ margin-top: -50px;
               </div>
               
               <div class="clearfix width100Percnt">
-              <label class="col-md-3">Payment Term</label>
+              <label class="col-md-3">Payment Frequency /Tenure</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="PaymentTermId" name="paymentTerms">
                   <option value="">Select Payment Term</option>
