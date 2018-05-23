@@ -22,5 +22,14 @@ public class TimesheetReportsController {
 		return model;
 
 	}
+	
+	@RequestMapping(value = "/dailyTimeSheetReports")
+	public ModelAndView dailyTimeSheetReports(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		 model.setViewName("timesheet/dailyTimesheetReports");
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+
+	}
 
 }

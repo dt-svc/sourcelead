@@ -1307,6 +1307,12 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_REQUEST_TO_FILL_STATUS)){
 			paramList.add(ImmigrationConstants.IMMIGRATION_REQUEST_TO_FILL_STATUS);
 		}
+		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_RFE_STATUS)){
+			paramList.addAll(ImmigrationConstants.IMMIGRATION_RFE_STATUS_LIST);
+		}
+		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_DENIED_STATUS)){
+			paramList.add(ImmigrationConstants.IMMIGRATION_DENIED_STATUS);
+		}
 		else if(StringUtils.isNotBlank(searchValue) && searchValue.equalsIgnoreCase(ImmigrationConstants.IMMIGRATION_REJECTED_STATUS)){
 			paramList.add(ImmigrationConstants.IMMIGRATION_REJECTED_STATUS);
 		}

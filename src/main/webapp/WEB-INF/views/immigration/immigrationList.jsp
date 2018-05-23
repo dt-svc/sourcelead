@@ -92,6 +92,33 @@
 						
 					</b></p>
 				</li>
+				<li class="clearfix"title="${!empty dashboardResult.rfeCount ? dashboardResult.rfeCount : 0}">
+					<span><i class="fa fa-plane"></i></span>
+					<p>RFE <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.rfeCount and dashboardResult.rfeCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "rfe")'>${dashboardResult.rfeCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
+				</li>	
+				<li class="clearfix"title="${!empty dashboardResult.deniedCount ? dashboardResult.deniedCount : 0}">
+					<span><i class="fa fa-plane"></i></span>
+					<p>Denied <b>
+					<c:choose>
+							<c:when test="${!empty dashboardResult.deniedCount and dashboardResult.deniedCount ne 0 }">
+								<a href='javascript:getDynamicImmigrationList(null, "denied")'>${dashboardResult.deniedCount}</a>
+							</c:when>
+							<c:otherwise>
+					           0
+					        </c:otherwise>
+						</c:choose>
+					</b></p>
+				</li>	
+				
 				<li class="clearfix"title="${!empty dashboardResult.othersCount ? dashboardResult.othersCount : 0}">
 					<span><i class="fa fa-plane"></i></span>
 					<p>Others <b>
