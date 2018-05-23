@@ -97,11 +97,11 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 	public List<CandidateEducation> getCandidateEducationListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, Long orgLocationId, String searchVal) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEducation ce where  ce.candidateId.id =:candidateId and ce.status ='1' ";
+		String query = "from CandidateEducation ce where  ce.candidateId.id =:candidateId and ce.status ='1'  ";
 		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
 			query = query + " and (ce.specialization like :searchVal or ce.name like :searchVal or ce.institute like :searchVal) ";
 		}
-		query = query + " ORDER BY ce.id DESC";
+		query = query + " ORDER BY  DATE(ce.endDate) DESC, ce.id DESC";
 		Query candidateQuery = session.createQuery(query).setLong("candidateId", candidateId);
 		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
 			candidateQuery.setParameter("searchVal", "%"+searchVal+"%");
