@@ -184,7 +184,7 @@ $(document).ready(function(){
                         <div class="col-md-6">
                             <label>Group Id<span class="text-danger">*</span> </label>
                             <div class="clearfix">
-                                <input type="text" class="form-control" placeholder="Enter" id="groupId" name="groupId" data-validation="required" field-name="Group Id">
+                                <input type="text" class="form-control" placeholder="Enter" id="groupId" name="groupId" data-validation="required" onblur="validateGroupId();" field-name="Group Id">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -272,6 +272,34 @@ $(document).ready(function() {
         e.preventDefault();
     });
 });    
+</script>
+
+<script>
+function validateGroupId(){
+	var groupId = $("#groupId").val();
+	$.get(sourceleadUrl+"/validateUserGroupId?"+tokenParamName+"="+tokenValue+"&groupId="+groupId,  function(result) {
+			 if (result && result.response === "INVALID_DATA") {
+                    $("#save_user_group_button").removeAttr("disabled");
+                    $("#save_user_group_button").removeAttr('button').val('Save');
+                    showError(result.responseMessage);
+                } else if (result.response === "AWKWARD") {
+                    location.href = "/errorPage";
+                } else if (result.response === "SUCCESS") {
+                	$("#loading").removeAttr('style');
+                	 closeBatch();
+                	 document.getElementById("add_user_group_form").reset(); 
+                	 $("#userId").empty();
+                } else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+                    $("#save_user_group_button").removeAttr("disabled");
+                    $("#save_user_group_button").addClass('button').val('Save');
+                    showError("Operation failed, please try again");
+                }
+			
+		},
+	});
+}
 </script>
 
  <script type="text/javascript">

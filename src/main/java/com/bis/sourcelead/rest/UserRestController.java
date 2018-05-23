@@ -1494,4 +1494,18 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		  return userGroupService.createUserGroup(orgLocations,userGroupDTO,loginUser);
 	 }
 	 
+	 /**
+	  * 
+	  * @param userGroupDTO
+	  * @param request
+	  * @return
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/validateUserGroupId" , method = RequestMethod.POST)
+	 public Response<UserGroup> validateUserGroupId(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
+		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  return userGroupService.validateUserGroupId(orgLocations,userGroupDTO);
+	 }
+	 
 }

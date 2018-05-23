@@ -97,4 +97,11 @@ public class UserGroupServiceImpl implements UserGroupService{
 		}
 		return res;
 	}
+
+	@Override
+	public Response<UserGroup> validateUserGroupId(OrgLocations orgLocations, UserGroupDTO userGroupDTO)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -36,6 +36,8 @@ public class AssociateDepartmentView {
 	@Column(name = "ORG_LOCATIONS_ID")
 	private Long orgLocationsId;
 	
+	@Column(name = "EMP_ORGLOCATION_ID")
+	private Long empOrgLocationsId;
 	
 	@Column(name = "USER_STATE")
 	private String userState;
@@ -147,7 +149,14 @@ public class AssociateDepartmentView {
 	{
 		this.userState = userState;
 	}
-	
-	
-	
+
+	public Long getEmpOrgLocationsId()
+	{
+		return empOrgLocationsId;
+	}
+
+	public void setEmpOrgLocationsId(Long empOrgLocationsId)
+	{
+		this.empOrgLocationsId = empOrgLocationsId;
+	}
 }

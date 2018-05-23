@@ -1402,7 +1402,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.departmentId IN (:departmentId)";
 				assocDeptViewList = session.createQuery(query.toString()).setParameterList("departmentId", deptList).list();
 			}else {
-				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.orgLocationsId = :orgLocationsId ";
+				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.orgLocationsId = :orgLocationsId and assView.empOrgLocationsId = :orgLocationsId";
 				assocDeptViewList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).list();
 			}
 		}

@@ -12,4 +12,6 @@ public interface UserGroupService {
 	Response<UserGroup> createUserGroup(OrgLocations orgLocations, UserGroupDTO userGroupDTO, User loginUser);
 
 	ResponseList<UserGroupDTO> findAllUserGroup(UserGroupDTO userGroupDTO, OrgLocations orgLocation);
+
+	Response<UserGroup> validateUserGroupId(OrgLocations orgLocations, UserGroupDTO userGroupDTO);
 }
