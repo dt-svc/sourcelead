@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
+
 import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -189,10 +190,7 @@ public class TaxController {
 			logger.error(e.getMessage());
 		}
 		return modelAndView;
-	}
-
-	
-	
+	}	
 	
 	
 	
@@ -219,8 +217,28 @@ public class TaxController {
 		}
 		return response;
 	}
-
 	
+	@RequestMapping(value = "/stateTax/changeStatus")
+	@ResponseBody
+	public Response<String> changeStateTaxStatus(HttpServletRequest request, @RequestParam(defaultValue = "0") long stateTaxId) {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				response = taxService.changeStateTaxStatus(stateTaxId);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
+
 	@RequestMapping(value = "/getStateTaxes", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseList<StateTaxDTO> getStateTaxes(HttpServletRequest request, @RequestParam(defaultValue = "") String yearFrequency,

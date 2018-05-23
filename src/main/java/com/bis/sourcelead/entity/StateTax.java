@@ -31,6 +31,9 @@ public class StateTax implements Serializable {
 	@Column(name = "FINANCIAL_YEAR")
 	private String financialYear;
 
+	@Column(name = "ACTIVE")
+	private boolean active;
+
 	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TAX_TYPE_ID", nullable = false)
@@ -86,5 +89,13 @@ public class StateTax implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean isActive) {
+		this.active = isActive;
 	}
 }

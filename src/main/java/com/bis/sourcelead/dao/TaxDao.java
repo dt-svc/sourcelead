@@ -35,9 +35,13 @@ public interface TaxDao {
 
 	public ProfessionalTax getProfessionalTaxById(long id);
 
+
 	public List<CentralTax> getCentralTaxList(String yearFrequency);
 
 	public CentralTax getCentralTax(long sourceleadTaxId);
+
+
+	public long changeStateTaxStatus(long stateTaxId);
 
 
 }

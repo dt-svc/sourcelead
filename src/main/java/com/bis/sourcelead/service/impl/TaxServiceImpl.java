@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.ProfessionalTaxDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.StateTaxDTO;
 
 import com.bis.sourcelead.dto.TdsDTO;
@@ -23,8 +24,12 @@ import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
+
 import com.bis.sourcelead.entity.Tds;
 import com.bis.sourcelead.entity.User;
+
+import com.bis.sourcelead.enums.Result;
+
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -121,6 +126,7 @@ public class TaxServiceImpl implements TaxService {
 			stateTaxDTO.setStateName(stateTax.getStates().getStateName());
 			stateTaxDTO.setTaxTypeId(stateTax.getSourceleadTaxType().getId());
 			stateTaxDTO.setTaxType(stateTax.getSourceleadTaxType().getDescription());
+			stateTaxDTO.setActive(stateTax.isActive());
 			if (includeAll) {
 				List<ProfessionalTaxDTO> professionalTaxList = new LinkedList<>();
 				for (ProfessionalTax pt : stateTax.getProfessionalTaxList()) {
@@ -296,6 +302,26 @@ public class TaxServiceImpl implements TaxService {
 		return null;
 	}
 
-	
+
+	@Override
+	public Response<String> changeStateTaxStatus(long stateTaxId) {
+		Response<String> response = new Response<>();
+		try {
+			long result = taxDao.changeStateTaxStatus(stateTaxId);
+			if (result > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (result == -2) {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
 
 }

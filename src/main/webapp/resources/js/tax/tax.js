@@ -1,13 +1,10 @@
 var tax = new Tax();
-
 var pfRowId = 0;
 var tdsRowId = 0;
 
-
-
 $(document).ready(function() {
 	if (activeTaxTab === "state") {
-		tax.getStateTaxList();
+		tax.getStateTaxList(0);
 	} else if (activeTaxTab === "central") {
 		tax.getCentralTaxList();
 	} else if(activeTaxTab === "createStateTax") {
@@ -23,42 +20,69 @@ $(document).ready(function() {
 	
 	$("#saveStateTax").click(function() {
 		if($('#addStateTaxForm').validate(false, validationSettings)) {
-			$("#saveStateTax").attr("disabled","disabled");
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-			var formData = getFormData("addStateTaxForm");
-			$.ajax({
-				type : "POST",
-        	    data: formData,
-				url : sourceleadUrl+"/stateTax/add",
-				success : function(response) {
-					if (response.response === "AWKWARD") {
-		        	    location.href = "/errorPage";
-		        	} else if (response.response === "SUCCESS") {
-		        		if (response.object > 0) {
-		        			$(".success_pop").css("display","block");
-			        		$(".success_pop span").html("StateTax " + (stateTaxId === 0 ? "added" : "updated" ) + " successfully....");
-			        		setTimeout(function() {
-			        			location.href=sourceleadUrl+"/stateTax/list";					 			
-					 		},100);
-		        		} else if (response.object === -1) {
-		        			showError("Tax record already exists for the selected fields");
-		        		}
-		        	} else if (response.response === "INVALID_DATA") {
-		        		showError(response.responseMessage);
-		        	} else if (response.indexOf('Sign In') !== -1) {
-		        		location.replace(sourceleadUrl);
-		        	} else {
-		        	    showError("Operation failed, please try again");
-		        	}
-					$("#saveStateTax").removeAttr("disabled","disabled");
-					$("#loading").removeAttr("style");
-				},
+			var flag = true;
+			var rowData = [];
+			var monthData = [];
+			$("div[data-name='ptRow']").each(function() {
+				var amountFrom = parseFloat($(this).find("input[data-name='amountFrom']").val());
+				var amountTo = parseFloat($(this).find("input[data-name='amountTo']").val());
+				var amount = parseFloat($(this).find("input[data-name='amount']").val());
+				var monthApplicable = $(this).find("select[data-name='monthApplicable']").val();
+				var result = amountFrom + "<>" + amountTo + "<>" + amount + "<>" + monthApplicable;
+				if(!rowData.includes(result)) {
+					rowData.push(result);
+				} else {
+					$(this).append("<p class='jquery_form_error_message'>Same tax row already exists....</p>");
+					flag = false;
+					return;
+				}
+				if(!monthData.includes(monthApplicable)) {
+					monthData.push(monthApplicable);
+				} else {
+					$(this).find("select[data-name='monthApplicable']").parent().append("<p class='jquery_form_error_message'>Month already exists....</p>");
+					flag = false;
+					return;
+				}
 			});
+			if(flag){
+				$("#saveStateTax").attr("disabled","disabled");
+				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+				var formData = getFormData("addStateTaxForm");
+				$.ajax({
+					type : "POST",
+	        	    data: formData,
+					url : sourceleadUrl+"/stateTax/add",
+					success : function(response) {
+						if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		if (response.object > 0) {
+			        			$(".success_pop").css("display","block");
+				        		$(".success_pop span").html("StateTax " + (stateTaxId === 0 ? "added" : "updated" ) + " successfully....");
+				        		setTimeout(function() {
+				        			location.href=sourceleadUrl+"/stateTax/list";					 			
+						 		},100);
+			        		} else if (response.object === -1) {
+			        			showError("Tax record already exists for the selected fields");
+			        		}
+			        	} else if (response.response === "INVALID_DATA") {
+			        		showError(response.responseMessage);
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+						$("#saveStateTax").removeAttr("disabled","disabled");
+						$("#loading").removeAttr("style");
+					},
+				});	
+			}
 			return true;
 		} else {
 			return false;
 		}
 	});
+	
 	$("#saveCentralTax").click(function() {
 		if($('#createCentralTaxform').validate(false, validationSettings)) {
 			$("#saveCentralTax").attr("disabled","disabled");
@@ -134,18 +158,14 @@ function Tax() {
 				showError("Operation failed, please try again");
 			}
 		});
-	}
+	}	
 	
-	
-	
-	
-	this.getStateTaxList = function() {
+	this.getStateTaxList = function(pageNo) {
+		var pageSize = $("#pageSize").val();
 		var selectedYear = $("#stateTaxYearList").val();
 		var selectedState = $("#stateTaxStateList").val();
 		$("#stateList").empty();
-		$("#stateListTable").show();
-		$("#noResultsTable").hide();
-		$.post(sourceleadUrl + "/getStateTaxes", {yearFrequency:selectedYear, stateId:selectedState}, function(response) {
+		$.post(sourceleadUrl + "/getStateTaxes", {yearFrequency:selectedYear, stateId:selectedState, pageNo:pageNo, pageSize:pageSize}, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
@@ -163,20 +183,42 @@ function Tax() {
 						result += "<td>";
 						result += "<div>";
 						result += "<ul class='list-unstyled list-inline mb0'>";
-						result += "<li><a href='create?stateTaxId=" + stList[e].id + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
-						result += "<li><a href='javascript:void()' onclick='alert()' title='Delete' class='text-danger'><i class='fa fa-trash'></i></a></li>";
+						result += "<li " + (stList[e].active ? "" : "class='disableBtn'") + "><a href='create?stateTaxId=" + stList[e].id + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
+						if(stList[e].active) {
+							result += "<li><a href='javascript:void()' onclick='tax.showChangeStatusPopup(" + stList[e].id + ", 1," + pageNo + ")' title='Make InActive' class='text-danger'><i class='fa fa-trash'></i></a></li>";
+						} else {
+							result += "<li><a href='javascript:void()' onclick='tax.showChangeStatusPopup(" + stList[e].id + ", 2," + pageNo + ")' title='Make Active' class='text-success'><i class='fa fa-edit'></i></a></li>";
+						}
 						result += "</ul>";
 						result += "</div>";
 						result += "</td></tr>";
 						$("#stateList").append(result);
 					}
 					var paginator = response.paginator;
-					$("#pageMsg").html("Showing " + ((paginator.pageNo + 1) + (paginator.pageNo * paginator.pageSize)) + " to " + (((paginator.pageNo + 1) * paginator.pageSize) > paginator.totalRows ? paginator.totalRows : ((paginator.pageNo + 1) * paginator.pageSize)) + " of " + paginator.totalRows + " results");
+					var options = {
+							currentPage : paginator.pageNo + 1,
+							items : paginator.totalRows,
+							itemsOnPage : paginator.pageSize,
+							ellipsePageSet : false,
+							cssStyle : 'light-theme',
+							onPageClick : function(pageNumber, event) {
+								tax.getStateTaxList(pageNumber-1);
+							}
+					};
+					$("#pagination-demo").pagination(options);
+//					pageMsg = " Showing "+startingRecord+" to "+endingRecord+" of "+totalRows+" entries ";
+					
+					$("#pageMsg").html("Showing " + ((paginator.pageNo * paginator.pageSize) + 1) + " to " + (((paginator.pageNo + 1) * paginator.pageSize) > paginator.totalRows ? paginator.totalRows : ((paginator.pageNo + 1) * paginator.pageSize)) + " of " + paginator.totalRows + " results");
+				
+					$("#stateListTable").show();
+					$("#paginationDiv").show();
+					$("#noResultsTable").hide();
 				} else {
 					$("#stateListTable").hide();
+					$("#paginationDiv").hide();
 					$("#noResultsTable").show();
 				}
-			} else if (result.indexOf('Sign In') !== -1) {
+			} else if (response.indexOf('Sign In') !== -1) {
 				location.replace(sourceleadUrl);
 			} else {
 				showError("Operation failed, please try again");
@@ -258,7 +300,6 @@ function Tax() {
 			pfRowId++;
 		});
 	}
-	
 
 	this.addDynamicTDSRow = function(isFirst) {
 		var result = "<div data-id=tdsRow" + tdsRowId + ">";
@@ -345,7 +386,62 @@ function Tax() {
 		});
 	}
 	
+
+	this.changeStateTaxStatus = function() {
+		var type = $("#confirmId").data("type");
+		var pageNo = $("#confirmId").data("pageNo");
+		$.post(sourceleadUrl + "/stateTax/changeStatus", {stateTaxId: $("#confirmId").data("id")}, function(response) {
+			if (response && response.response === "INVALID_DATA") {
+				showError(response.responseMessage);
+			} else if (response.response === "AWKWARD") {
+				location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
+				tax.closeChangeStatusPopup();
+				$(".success_pop").css("display","block");
+        		$(".success_pop span").html("StateTax made as " + (type === 1 ? "inactive" : "active" ) + " successfully....");
+        		setTimeout(function() {
+        			tax.getStateTaxList(pageNo);
+        			$(".success_pop").css("display","none");
+		 		},1000);
+			} else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
+		});
+	}
 	
+	this.showChangeStatusPopup = function(taxId, type, pageNo) {
+		$("#remove_user_pop p").html("You are choosing to make the Tax as "+ (type === 1 ? "Inactive": "Active"));
+		$("#confirmId").data("id", taxId);
+		$("#confirmId").data("type", type);
+		$("#confirmId").data("pageNo", pageNo);
+		$("#remove_user_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
 	
+	this.closeChangeStatusPopup = function() {
+		$("#remove_user_pop").slideUp(200);
+		$(".project_inn_mask").fadeOut(200);
+	}
+	
+	this.deletePTRow = function(ele) {
+		var removalRow = $(ele).closest("div[data-name='tdsRow']");
+		$("#removeIds").val(($("#removeIds").val()!==""? $("#removeIds").val() + "," : "") + $(removalRow).data("id"));
+		$(removalRow).remove();
+		tax.refreshTDSRows();
+	}
+	
+	this.refreshTDSRows = function() {
+		tdsRowId = 0;
+		$("div[data-name='tdsRow']").each(function() {
+			$(this).find("input[data-name='fromamount']").attr("name","tdsTaxList["+tdsRowId+"].fromamount");
+			$(this).find("input[data-name='toamount']").attr("name","tdsTaxList["+tdsRowId+"].toamount");
+			$(this).find("input[data-name='percentage']").attr("name","tdsTaxList["+tdsRowId+"].percentage");
+			$(this).find("select[data-name='educationceiss']").attr("name","tdsTaxList["+tdsRowId+"].educationceiss");
+			$(this).find("select[data-name='surcharge']").attr("name","tdsTaxList["+tdsRowId+"].surcharge");
+			pfRowId++;
+		});
+	}
 
 }

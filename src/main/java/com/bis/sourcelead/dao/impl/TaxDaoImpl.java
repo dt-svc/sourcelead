@@ -14,9 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TaxDao;
 
+
 import com.bis.sourcelead.entity.CentralTax;
 
 import com.bis.sourcelead.dto.StateTaxDTO;
+
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.ProfessionalTax;
 
@@ -32,6 +34,7 @@ public class TaxDaoImpl implements TaxDao {
 	private SessionFactory sessionFactory;
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<SourceleadTaxType> getAllTaxesByType(long type, boolean includeInactive) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -55,6 +58,7 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<StateTax> getStateTaxList(String yearFrequency, long stateId, long taxTypeId, Paginator paginator) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -69,6 +73,7 @@ public class TaxDaoImpl implements TaxDao {
 			if (taxTypeId > 0) {
 				query += (query.contains("where") ? " and " : " where ") + "st.sourceleadTaxType.id=:taxTypeId";
 			}
+			query += " order by st.id desc";
 			Query queryObj = session.createQuery(query);
 			if (yearFrequency != null && !yearFrequency.isEmpty()) {
 				queryObj.setString("yearFrequency", yearFrequency);
@@ -83,7 +88,6 @@ public class TaxDaoImpl implements TaxDao {
 				params.add("long;taxTypeId;" + taxTypeId);
 			}
 			if (paginator != null) {
-				query += " order by st.id desc";
 				queryObj.setFirstResult(paginator.getPageNo() * paginator.getPageSize());
 				queryObj.setMaxResults(paginator.getPageSize());
 			}
@@ -185,6 +189,7 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CentralTax> getCentralTaxList(String yearFrequency) {
@@ -209,4 +214,22 @@ public class TaxDaoImpl implements TaxDao {
 		}
 
 	
+
+	@Override
+	public long changeStateTaxStatus(long stateTaxId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			StateTax stateTax = session.get(StateTax.class, stateTaxId);
+			if (stateTax != null) {
+				stateTax.setActive(!stateTax.isActive());
+				return stateTax.getId();
+			} else
+				return -2;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+
 }

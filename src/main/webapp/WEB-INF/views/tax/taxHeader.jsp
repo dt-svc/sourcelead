@@ -20,3 +20,12 @@
 </div>
 
 <div class="clearfix"></div>
+<div class='project_inn_mask'></div>
+<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>
+	<p>You are choosing to delete the Tax</p>
+	<div>&nbsp;&nbsp;&nbsp;</div>
+	<b>
+		<input id='confirmId' type='button' value='Ok' onclick='tax.changeStateTaxStatus()'>
+		<input class='u_can_color' type='button' value='Cancel' onClick='tax.closeChangeStatusPopup()'>
+	</b>
+</div>

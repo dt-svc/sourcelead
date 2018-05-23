@@ -1,6 +1,9 @@
 package com.bis.sourcelead.service;
 import java.util.List;
+
 import com.bis.sourcelead.dto.CentralTaxDTO;
+
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.StateTaxDTO;
 
 import com.bis.sourcelead.entity.OrgLocations;
@@ -30,5 +33,7 @@ public interface TaxService {
 	List<CentralTaxDTO> getCentralTaxList(String yearFrequency);
 
 	CentralTaxDTO getCentralTax(long sourceleadTaxId);
+
+	Response<String> changeStateTaxStatus(long stateTaxId);
 
 }
