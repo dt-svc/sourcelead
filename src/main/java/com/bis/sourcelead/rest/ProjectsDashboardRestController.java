@@ -295,6 +295,8 @@ public class ProjectsDashboardRestController {
 	 public @ResponseBody ProjectsDTO getClientProjectApprovers(@RequestParam(value="projectClientUUID", required=false) String projectClientUUID,HttpServletRequest request) throws Exception{
 		 
 		 OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		 
 		 ProjectsDTO projectsDTO = new ProjectsDTO();
 		 ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
 		 if(projectClients != null) {
@@ -322,15 +324,30 @@ public class ProjectsDashboardRestController {
 			    }
 			    
 			    List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			    List<User> globalUserList = userService.getTabAccessGlobalOwnersByOrgIdAndTabId(loginOrgLocations.getId(),org.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+				List<User> level1ApproversList = new ArrayList<>();
+				if(userList != null && !userList.isEmpty()) {
+					level1ApproversList.addAll(userList);
+				}
+				if(globalUserList != null && !globalUserList.isEmpty()) {
+					level1ApproversList.addAll(globalUserList);
+				}
+				
 			    List<UserDTO> userDTOList = new ArrayList<>();
-			    if(userList != null && userList.size() > 0) {
-			    	for(User mrguser : userList) {
-			    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser.getId(),loginOrgLocations.getId());
+			    if(level1ApproversList != null && !level1ApproversList.isEmpty()) {
+			    	for(User mrguser : level1ApproversList) {
 			    		UserDTO userDTO = new UserDTO();
 			    		userDTO.setId(mrguser.getId());
-			    		userDTO.setUserType(roleType.getUserType());
 			    		userDTO.setName(mrguser.getFullName());
 			    		userDTOList.add(userDTO);
+			    		
+			    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser.getId(),loginOrgLocations.getId());
+			    		if(roleType != null) {
+			    			userDTO.setUserType(roleType.getUserType());
+			    		}else {
+			    			userDTO.setUserType(Constants.GLOBAL_USER);
+			    		}
+			    		
 			    	}
 			    }
 			    projectsDTO.setManagersList(userDTOList);

@@ -164,6 +164,13 @@ $(document).ready(function(){
 			    var clientDocumentsOwnerUsers = "";
 			    var vendorDocumentsOwnerUsers = "";
 			    var roles = "";
+			    var isGlobalUser = "";
+			    
+			    if(json.isGlobal == 'Y'){
+			    	isGlobalUser = 'Yes';
+			    }else{
+			    	isGlobalUser = 'No';
+			    }
 			    
 			    var socialLinks = "";
 			    if(json.user.linkedIn != null && json.user.linkedIn != "" && json.user.linkedIn != 'undefined' ){
@@ -378,6 +385,11 @@ $(document).ready(function(){
 					result = result + '				<strong>Day hours:</strong><span class="fix">'+json.dailyHours+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
+				
+				result = result + '			<div class="project_details_cta">';
+				result = result + '				<strong>Global User:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
+				result = result + '			</div>';
+				
 				
 				if(json.roleChangeReason != null && json.roleChangeReason != "" && json.roleChangeReason != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
@@ -1341,6 +1353,12 @@ $("#editRoleDetailsList").empty();
 			    var emailId= "";
 			    var manager = "";
 			    var designationOtherType = "";
+			    var globalChecked = '';
+			    
+			    if(json.isGlobal == 'Y'){
+			    	globalChecked = 'checked';
+			    }
+			    
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
 					employeeId = json.employeeId;
 				}
@@ -1579,6 +1597,19 @@ $("#editRoleDetailsList").empty();
 					 */
 					 
 					result = result + ' </div>';
+					
+					
+					result = result + '<div class="form-group">';
+					result = result + '<div class="col-md-9">';
+					result = result + '<div class="checkbox checkBox">';
+					result = result + '<label>';
+					result = result + '<input type="checkbox" value="Y" '+globalChecked+' name="isGlobalAccess">';
+					result = result + 'Is Global Access</label>';
+					result = result + '</div>';
+					result = result + '</div>';
+					result = result + '</div>';
+					
+              
 					result = result + ' <div class="clearfix"></div>';
 					
 					result = result + ' <div class="clearfix">';

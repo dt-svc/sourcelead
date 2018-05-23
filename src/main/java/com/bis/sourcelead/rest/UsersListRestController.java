@@ -1943,6 +1943,13 @@ public class UsersListRestController {
 			userRole.setUpdatedDate(commonUtil.currentDate());
 			User updatedUser = userService.addUser(user);
 			
+			
+			if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess()) && addUserDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
+				userRole.setIsGlobal(Constants.YES);
+			}else {
+				userRole.setIsGlobal(Constants.NO);
+			}
+			
 			if(addUserDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
 					if(customFields!= null && customFields.getCustomFormFieldId() > 0 ) {
