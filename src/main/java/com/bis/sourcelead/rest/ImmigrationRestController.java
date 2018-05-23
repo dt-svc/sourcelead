@@ -282,6 +282,39 @@ public class ImmigrationRestController {
 		logger.debug("after controller  getAllImmigartionList  --> ");
 		return immigrationListDTOList;
 	}
+	
+	@RequestMapping(value = "/getImmigrationDashBoardFilterList")
+	public @ResponseBody ResponseList<ImmigrationListViewDTO> getImmigrationDashBoardFilterList(
+			ImmigrationListViewDTO immigrationListDTO,	@RequestParam(value = "filterStatus", required = false) String filterStatus,
+			 HttpServletRequest request) {
+		ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
+		logger.debug("inisde controller  getMyImmigrationList  --> ");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			String[] tableColumns = { "currUscisStatus", "generatedId", "petitionType", "country", "firstName", "email",
+					"phone", "openDate",  "lcaStartDate", "lcaEndDate" };// should be
+			// entity names
+			int sortColumnIndex = 0; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (immigrationListDTO.getOrder() != null && !immigrationListDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(immigrationListDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = immigrationListDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+																					// direction
+				// of the sorting.
+			}
+			immigrationListDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			immigrationListDTO.setSortOrder(sortColumnOrder);
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			immigrationListDTO.setOrgLocationId(orgLocations.getId());
+			immigrationListDTOList = immigrationCommonService.getImmigrationsListByCountsLink(immigrationListDTO ,filterStatus, orgLocations);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.debug("after controller  getAllImmigartionList  --> ");
+		return immigrationListDTOList;
+	}
+	
 	@RequestMapping(value = "/getMyImmigrationList")
 	public @ResponseBody ResponseList<MyImmigrationViewDTO> getMyImmigrationList(
 			MyImmigrationViewDTO immigrationListDTO,
@@ -1548,7 +1581,7 @@ public class ImmigrationRestController {
 					}
 				} else if (i == 1) { // CandidateEmployers
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
-							"where candidateId.id=:candidateId");
+							"where candidateId.id=:candidateId and status=1");
 					if (count == null) {
 						missedTabList.add(tabNameArray[i]);
 					}
@@ -1560,7 +1593,7 @@ public class ImmigrationRestController {
 					}
 				} else if (i == 3) {// CandidateEducation
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
-							"where candidateId.id=:candidateId");
+							"where candidateId.id=:candidateId and status=1");
 					if (count == null) {
 						missedTabList.add(tabNameArray[i]);
 					}
@@ -2020,6 +2053,26 @@ public class ImmigrationRestController {
 	       Boolean flag = false;
 		   if(candidatePassportVisa == null){
 		    	flag =  immigrationCommonService.validateCandidatePassportVisa(candidateId,idType,idNumberVal);
+		    }
+			return flag;
+	}
+	
+	@RequestMapping(value = {"/validateImmigrationCandidateForms"})
+	public Boolean validateImmigrationCandidateForms(
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+			@RequestParam(value = "id", required = false) Long id,
+			@RequestParam(value = "formName", required = false) String formName,
+			HttpServletRequest request)
+			throws Exception {
+		
+		 ImmigrationCandidateForms ImmigrationCandidateForms=null;
+	       if(null != id){
+	    	   ImmigrationCandidateForms = immigrationCommonService.getImmigrationCandidateFormsDetailsByFormNameAndId(formName, candidateId, immigrationId, id);
+	       }
+	       Boolean flag = false;
+		   if(ImmigrationCandidateForms == null){
+		    	flag =  immigrationCommonService.validateImmigrationCandidateForms(formName,candidateId,immigrationId);
 		    }
 			return flag;
 	}

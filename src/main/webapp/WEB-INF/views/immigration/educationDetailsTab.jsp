@@ -257,6 +257,8 @@
 		$("#popEduView").fadeOut(100);
 		$("#eduSave_Form")[0].reset();
 		$("#candidateEducationId").val('');
+		$('#popEduView').find('p.jquery_form_error_message').remove();
+		$("#eduSave_Button").removeAttr("disabled");
 	}
 	
 	var config = {

@@ -230,7 +230,7 @@
 		
 		<div class="clearfix"></div>
 		<div class="immiPopFoot mt clearfix">
-            <input value="Save"class="" type="button" id = "employerSave_Buton" onclick="saveEmployerDetails('save');"> 
+            <input value="Save"class="" type="button" id="employerSave_Buton" onclick="saveEmployerDetails('save');"> 
             <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div><!-- popup code end -->
@@ -271,7 +271,10 @@
 		$("#emploView").fadeOut(200);
 		$("#employerDetails_form")[0].reset();
 		$("#candidateEmpId").val('');
+		$('#emploView').find('p.jquery_form_error_message').remove();
+		$("#employerSave_Buton").removeAttr("disabled");
 	}
+	
 	$("#employersDataSearch").keyup(function (e) {
 	    if (e.which === 13) {
 	    	getCandidateEmployerList(candidateId);

@@ -1,6 +1,8 @@
 package com.bis.sourcelead.constants;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -53,5 +55,26 @@ public class ImmigrationConstants {
 		put(20,"Company");
 		put(22,"Attorney/Contact email Email");
 	}};
+	
+	public static List<String> IMMIGRATION_INPROGRESS_STATUS_LIST= Arrays.asList("Filled", "Reviewed & Send to attorney", "Request for modifications","Reviewed & Filed","Motion to Re-Open");
 
+	public static String IMMIGRATION_APPROVED_STATUS = "Approved";
+	
+	public static String IMMIGRATION_INPROGRESS_STATUS = "inProgress";
+	
+	public static String IMMIGRATION_OTHERS_STATUS = "others";
+	
+	public static String IMMIGRATION_DRAFT_STATUS = "Draft";
+	
+	public static String IMMIGRATION_REQUEST_TO_FILL_STATUS = "Request to fill";
+	
+	public static String IMMIGRATION_REJECTED_STATUS = "Rejected";
+	
+	public static List<String> IMMIGRATION_OTHER_STATUS_LIST = Arrays.asList("Withdrawn","Cancelled","Revoked");
+	
+	public static String IMMIGRATION_DENIED_STATUS = "Denied";
+	
+	public static String IMMIGRATION_RFE_STATUS = "rfe";
+	
+	public static List<String> IMMIGRATION_RFE_STATUS_LIST = Arrays.asList("RFE","RFE Received","RFE Approved","RFE Denied","RFE Responded");
 }

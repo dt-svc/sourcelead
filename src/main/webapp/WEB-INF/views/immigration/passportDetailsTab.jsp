@@ -160,6 +160,8 @@
 				$("#popPassView").fadeOut(200);
 				$("#CandidatePassportform")[0].reset();
 				$("#candidatePassportId").val('');
+				$('#popPassView').find('p.jquery_form_error_message').remove();
+				$("#passport_save_id").removeAttr("disabled");
 			}
 		</script>
 		<script>

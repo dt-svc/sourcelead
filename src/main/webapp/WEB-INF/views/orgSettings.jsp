@@ -288,7 +288,7 @@ function cancelOrgImg(){
 							</div>
 							
 						<div class="form-group">
-							<label class="col-md-3">Email regarding Po</label>
+							<label class="col-md-3">Email id for PO</label>
 							<div class="col-md-9">
 							<input type="text"  class="form-control" name="poEmail" field-name="po Email" data-validation="validate_email validate_Space" data-validation-optional="true" value="${SourceLeadWeb_orgLocations.poEmail}" />
 							</div>
