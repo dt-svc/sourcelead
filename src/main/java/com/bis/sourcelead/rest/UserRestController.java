@@ -1348,6 +1348,30 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			return reportingManagersList;
 		}
 		
+		
+		@RequestMapping(value = "/getAssociateResourceManager", method = RequestMethod.POST)
+		public @ResponseBody List<UserDTO> getAssociateResourceManager(
+				 HttpServletRequest request) throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+			List<UserDTO> resourceManagersDTOList = new ArrayList<>();
+			
+			List<User> userList = userService.getResourceManagersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
+			
+			for (User user : userList) {
+				UserDTO userDTO = new UserDTO();
+				userDTO.setFullName(user.getFullName());
+				userDTO.setId(user.getId());
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+				userDTO.setUserType(userRole.getUserType());
+				resourceManagersDTOList.add(userDTO);
+				
+			}
+			return resourceManagersDTOList;
+		}
+		
+		
+		
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {

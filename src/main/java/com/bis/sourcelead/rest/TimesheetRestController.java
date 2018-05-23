@@ -220,6 +220,7 @@ public class TimesheetRestController {
 			}
 			model.setViewName("timesheet/timesheetProjects");
 		} catch (Exception e) {
+			
 			model.addObject("AWKWARD", true);
 			model.setViewName("timesheet/timesheetProjects");
 		}
@@ -590,6 +591,7 @@ public class TimesheetRestController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("timesheet/timesheetfrequencyList");
 		} catch (Exception e) {
+			e.printStackTrace();
 			model.addObject("AWKWARD", true);
 			model.setViewName("timesheet/timesheetfrequencyList");
 		}

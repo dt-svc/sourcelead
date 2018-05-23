@@ -782,6 +782,13 @@ public class UsersListRestController {
 		 userRole.setAllReportingManagers(reportingManagersList);
 		 
 		 
+		 List<User> resourceManagersList = userService.getResourceManagersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
+		 for (User user : resourceManagersList) {
+			    UserRole ur = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+			    user.setUserType(ur.getUserType());
+		  }
+		 userRole.setAllResourceManagers(resourceManagersList);
+		 
 		 //	old records currency changed code 
 		 Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		 
@@ -1926,6 +1933,12 @@ public class UsersListRestController {
 				userRole.setReportingManager(reportingManager);
 			} else {
 				userRole.setReportingManager(null);
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getResourceManager())){
+				User resourceManager = new User();
+				resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
+				userRole.setResourceManager(resourceManager);
 			}
 
 			isUserActive = userRoleService.isUserActive(user.getId());

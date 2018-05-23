@@ -18,6 +18,7 @@
 		window.onload = function () {
 			getDesignationType();
 			getDepartmentsList();
+			getResourceManagers();
 			maskme();
 			editMe(this);
 		 };
@@ -252,13 +253,19 @@
 		</span>
                
               <div class="form-group">
-                  <label class="col-md-3">Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the reporting manager for a associate in organisation'></i></label>
+                  <label class="col-md-3">Reporting Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the reporting manager for a associate in organisation'></i></label>
                   <div class="col-md-9">
-                      <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager" data-validation="required">
+                      <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Reporting Manager" data-validation="required">
                         <option value="">-Select Manager-</option>
-                        <%-- <c:forEach var="option" items="${reportingManagersList}">
-								<option value="${option.id}">${option.firstName} ${option.lastName} (${option.userType})</option>
-						</c:forEach> --%>
+                      </select>
+                  </div>
+            </div>
+            
+            <div class="form-group">
+                  <label class="col-md-3">Resource Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the resource manager for a associate in organisation'></i></label>
+                  <div class="col-md-9">
+                      <select class="form-control chosen-select" name="resourceManager" id="resourceManager" field-name="Resource Manager" data-validation="required">
+                        <option value="">-Select Manager-</option>
                       </select>
                   </div>
             </div>
@@ -709,6 +716,9 @@ function getEmployeementType(designationType){
 		 $("#reportingManager").val('');
 		 $("#reportingManager").trigger("chosen:updated");
 		 
+		 $("#resourceManager").val('');
+		 $("#resourceManager").trigger("chosen:updated");
+		 
 		 $("#employeementType").val('');
 	     $('#employeementType').trigger("chosen:updated");
 	     
@@ -1003,6 +1013,32 @@ function getAssociateUserDetails(){
 	
  }
 </script>
+
+
+
+<script type="text/javascript">
+ function getResourceManagers() {
+	 $('#chosen-role').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAssociateResourceManager?"+tokenParamName+"="+tokenValue, 
+		        success: function(json) {
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Manager --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"&nbsp;("+opt.userType+")</option>";
+			        		
+					}
+		        	$("#resourceManager").empty();
+			        $("#resourceManager").append(output);
+			        $('#resourceManager').trigger("chosen:updated");
+		        },
+		    });
+ }
+</script>
+
 
 <script>
 function maskme(){

@@ -59,7 +59,7 @@
 							<input type="hidden" name="savedPlanningRequestUUID"
 								id="savedPlanningRequestUUID">
 
-							<div class="form-group">
+							<!-- <div class="form-group">
 								<label class="col-md-3">Approver <span
 									class="text-danger paddingLeft">*</span><i class='fa fa-info-circle' title='The person who will approve there source request'></i></label>
 								<div class="col-md-9">
@@ -68,7 +68,7 @@
 										field-name="Approver">
 									</select>
 								</div>
-							</div>
+							</div> -->
 
 							<div class="form-group">
 								<label class="col-md-3">Description <span

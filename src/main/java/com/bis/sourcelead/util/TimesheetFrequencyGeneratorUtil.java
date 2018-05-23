@@ -650,7 +650,13 @@ public  class TimesheetFrequencyGeneratorUtil {
 							     if(empStartDate.before(previousMondayDate) && (empEndDate == null || (empEndDate != null && empEndDate.after(previousMondayDate)))){
 							    	 empStartDate = previousMondayDate;
 							     }
-								   
+								  
+							     if(nextSundayDate.before(empStartDate)) {
+							    	 Calendar startcal = Calendar.getInstance(TimeZone.getDefault());
+										startcal.setLenient(false);
+										startcal.setTime(empStartDate);
+										nextSundayDate = CalendarUtil.getDateIncrementByincrement(startcal,42).getTime();
+							     }
 								 /**
 								   * checking whether post 6th week sunday date is lesserthan employee enddate or not
 							      */
