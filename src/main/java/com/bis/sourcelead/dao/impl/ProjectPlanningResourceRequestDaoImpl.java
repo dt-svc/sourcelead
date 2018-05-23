@@ -165,7 +165,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 		
 		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
 			query = "from  ProjectPlanningResourceRequest resourceRequest  where  resourceRequest.projectPlanningRequestId.approverUser.id = :approverUserId "
-					+ "and resourceRequest.projectPlanningRequestId.orgLocationId.id = :orgLocationId  and resourceRequest.status = '1' "
+					+ "and resourceRequest.candidateId.orgLocationId.id = :orgLocationId  and resourceRequest.status = '1' "
 					+ "and resourceRequest.resourceStatus = :resourceStatus and resourceRequest.projectPlanningRequestId.requestType = 'Associate Request' ";
 			
 			if(query1.toString() != null && !query1.toString().isEmpty()){
@@ -186,7 +186,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 			
 		}else {
 			
-			query = "from  ProjectPlanningResourceRequest resourceRequest  where  resourceRequest.projectPlanningRequestId.orgLocationId.id = :orgLocationId "
+			query = "from  ProjectPlanningResourceRequest resourceRequest  where  resourceRequest.candidateId.orgLocationId.id = :orgLocationId "
 					+ " and resourceRequest.status = '1' and resourceRequest.resourceStatus = :resourceStatus and resourceRequest.projectPlanningRequestId.requestType = 'Associate Request' ";
 			
 			if(query1.toString() != null && !query1.toString().isEmpty()){
@@ -228,7 +228,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
   				requestDTO.setProjectPlanningRequestId(resourceRequest.getProjectPlanningRequestId().getRequestId());
   				requestDTO.setProjectName(resourceRequest.getProjectPlanningRequestId().getProjectName());
   				requestDTO.setRequestedUser(resourceRequest.getProjectPlanningRequestId().getRequestedUser());
-  				requestDTO.setApproverName(resourceRequest.getProjectPlanningRequestId().getApproverName());
+  				requestDTO.setApproverName(resourceRequest.getApproverName());
   				requestDTO.setCandidateName(resourceRequest.getCandidateName());
   				requestDTO.setConsultingType(resourceRequest.getConsultingType());
   				requestDTO.setResourceStatus(resourceRequest.getResourceStatus());

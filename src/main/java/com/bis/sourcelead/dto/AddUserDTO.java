@@ -37,7 +37,11 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String isGlobalAccess;
 		
+		@Required(desc = "reportingManager")
 		private String reportingManager;
+		
+		@Required(desc = "resourceManager")
+		private String resourceManager;
 		
 		private String isMailSent;
 		
@@ -722,6 +726,14 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setIsGlobalAccess(String isGlobalAccess) {
 			this.isGlobalAccess = isGlobalAccess;
+		}
+
+		public String getResourceManager() {
+			return resourceManager;
+		}
+
+		public void setResourceManager(String resourceManager) {
+			this.resourceManager = resourceManager;
 		}
 		
 }

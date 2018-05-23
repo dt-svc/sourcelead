@@ -164,6 +164,13 @@ $(document).ready(function(){
 			    var clientDocumentsOwnerUsers = "";
 			    var vendorDocumentsOwnerUsers = "";
 			    var roles = "";
+			    var isGlobalUser = "";
+			    
+			    if(json.isGlobal == 'Y'){
+			    	isGlobalUser = 'Yes';
+			    }else{
+			    	isGlobalUser = 'No';
+			    }
 			    
 			    var socialLinks = "";
 			    if(json.user.linkedIn != null && json.user.linkedIn != "" && json.user.linkedIn != 'undefined' ){
@@ -356,7 +363,13 @@ $(document).ready(function(){
 				
 				if(json.reportingManager != null && json.reportingManager != "" && json.reportingManager != 'undefined' && json.reportingManager.firstName != null && json.reportingManager.firstName != "" && json.reportingManager.firstName != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
-					result = result + '				 <strong>Manager:</strong><span class="fix">'+json.reportingManager.firstName+' '+json.reportingManager.lastName+'</span><div class="clearfix"></div>';
+					result = result + '				 <strong>Reporting Manager:</strong><span class="fix">'+json.reportingManager.firstName+' '+json.reportingManager.lastName+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
+				
+				if(json.resourceManager != null && json.resourceManager != "" && json.resourceManager != 'undefined' ){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Resource Manager:</strong><span class="fix">'+json.resourceManager.fullName+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
 				}
 				
@@ -378,6 +391,11 @@ $(document).ready(function(){
 					result = result + '				<strong>Day hours:</strong><span class="fix">'+json.dailyHours+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
+				
+				result = result + '			<div class="project_details_cta">';
+				result = result + '				<strong>Global User:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
+				result = result + '			</div>';
+				
 				
 				if(json.roleChangeReason != null && json.roleChangeReason != "" && json.roleChangeReason != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
@@ -1341,6 +1359,12 @@ $("#editRoleDetailsList").empty();
 			    var emailId= "";
 			    var manager = "";
 			    var designationOtherType = "";
+			    var globalChecked = '';
+			    
+			    if(json.isGlobal == 'Y'){
+			    	globalChecked = 'checked';
+			    }
+			    
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
 					employeeId = json.employeeId;
 				}
@@ -1391,11 +1415,9 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Role:</label>';
-					//result = result + '<div class="clearfix mt10"><span>'+json.roles.displayName+'</span></div>';
 					result = result + '<div class="clearfix"><span></span>';
 					result = result + '<input type="text" value="'+json.roles.displayName+'" name="roleType" id="role" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" >';
 					result = result + '<input type = "hidden" id = "role" name = "roleType" value = "'+json.roles.id+'">';
-					/* result = result + '<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span></div>'; */
 					result = result + ' </div>'; 
 					result = result + ' </div>';
 					result = result + ' <div class="clearfix"></div>';
@@ -1420,21 +1442,6 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' </div>';
 					
-/* 					if(json.userState == "NOT_LOGGEDIN"){
-						
-						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
-						result = result + ' <label>Email Id<span class="text-danger">&nbsp; *</span></label>';
-						result = result + ' <input type="text" value="'+json.user.email+'"  id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100 validate_email"/>';
-						result = result + ' </div>';
-					
-					}
-					else{
-						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
-						result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
-						result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
-						result = result + ' </div>';
-					} */
-					
 					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 					result = result + ' <label>Emaild Id<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
@@ -1443,7 +1450,7 @@ $("#editRoleDetailsList").empty();
 					
 					if(json.allReportingManagers != null && json.allReportingManagers != "" && json.allReportingManagers != 'undefined' && json.allReportingManagers.length > 0){
 						result = result + ' <div class="user_summary_edit_cta">';
-						result = result + ' <label>Manager<span class="text-danger">&nbsp;*</span></label>';
+						result = result + ' <label>Reporting Manager<span class="text-danger">&nbsp;*</span></label>';
 						result = result + '  <select id="reportingManager" name="reportingManager" field-name="Manager" data-validation="required">'+
 			 	     	"<option value=''>-Select Manager-</option>";    
 			 	     	 for (var i=0; i<json.allReportingManagers.length; i++)
@@ -1458,6 +1465,27 @@ $("#editRoleDetailsList").empty();
 			 	     	result = result+"</select>"; 
 			 	     	result = result + ' </div>';
 					}
+					
+					
+					
+					if(json.allResourceManagers != null && json.allResourceManagers != "" && json.allResourceManagers != 'undefined' && json.allResourceManagers.length > 0){
+						result = result + ' <div class="user_summary_edit_cta">';
+						result = result + ' <label>Resource Manager<span class="text-danger">&nbsp;*</span></label>';
+						result = result + '  <select id="resourceManager" name="resourceManager" field-name="Manager" data-validation="required">'+
+			 	     	"<option value=''>-Select Manager-</option>";    
+			 	     	 for (var i=0; i<json.allResourceManagers.length; i++)
+	    					{
+	    		 	    	   manager = json.allResourceManagers[i];
+	    		 	    	   var selected = '';
+	    		 	    	  if(json.resourceManager != null && json.resourceManager != "" && json.resourceManager != 'undefined' && json.resourceManager.id == manager.id){
+	    		 	    		 selected = 'selected';
+	    		 	    	 }
+	    		 	    	result = result+"<option value='"+manager.id+"' "+selected+">"+manager.fullName+"&nbsp;("+manager.userType+")</option>"; 
+	    					}
+			 	     	result = result+"</select>"; 
+			 	     	result = result + ' </div>';
+					}
+					
 					// moving date bottom to top
 					 result = result + ' <div class="user_summary_edit_cta">';
 					    result = result + ' <label>Department</label>';
@@ -1487,7 +1515,6 @@ $("#editRoleDetailsList").empty();
 						
 						result = result + ' </select>';
 						result = result + '</div>';
-						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta select-field" id="designationTypeDiv" style="display:none">';
 						result = result + ' <label>Employment Other Type </label>';
 						result = result + '<input type="text" class="form-control" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
@@ -1566,19 +1593,21 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+dailyHours+'" id="dayHoursEdit" placeholder="HH:MM" name="DayHours"  data-validation="validate_Space validate_dayHours validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">';
 					result = result + ' </div>';
 					
-					result = result + ' <div class="showEditfields" id="customFieldDataId"></div>';
+					result = result + '<div class="col-md-4">';
+					result = result + ' <label>&nbsp;</label>';
+					result = result + '<div class="clearfix">';
+					result = result + '<div class="checkbox checkBox">';
+					result = result + '<label>';
+					result = result + '<input type="checkbox" value="Y" '+globalChecked+' name="isGlobalAccess">';
+					result = result + 'Is Global Access</label>';
+					result = result + '</div>';
+					result = result + '</div>';
+					result = result + '</div>';
 					
-					 /* <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-		           		if("${sectionOrder.index == 0}"){
-		           		 	 var sectionID = '${section.id}';
-		           		 	 result = result + ' <div class="clearfix"></div>';
-		           			 result = result + ' <div id="customDiv'+sectionID+'" class="col-md-4"></div>';
-		           			 result = result + ' <div class="clearfix"></div>';
-		           			}
-		        	</c:forEach>
-					 */
+					result = result + ' <div class="showEditfields" id="customFieldDataId"></div>';
 					 
 					result = result + ' </div>';
+					
 					result = result + ' <div class="clearfix"></div>';
 					
 					result = result + ' <div class="clearfix">';
