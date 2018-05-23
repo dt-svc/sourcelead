@@ -31,6 +31,7 @@ import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.TabsDao;
 import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -38,14 +39,18 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
 import com.bis.sourcelead.entity.ActionHistory;
+import com.bis.sourcelead.entity.AssociateDepartmentView;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.entity.UserIdView;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
@@ -94,6 +99,12 @@ public class UserRoleServiceImpl implements UserRoleService{
 	
 	@Autowired
 	ReportsUtil reportsUtil;
+	
+	@Autowired
+	UserGroupService userGroupService;
+	
+	@Autowired
+	UserGroupDao userGroupDao;
 	
 
 	@Override
@@ -803,7 +814,15 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public List<UserRole> getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(orgLocationId);
-	} 
+	}
+
+	@Override
+	public List<AssociateDepartmentView> getUserRolesByDepartmentId(String departmentId,Long orgLocationId)
+	{
+		List<UserIdView> userIdView = userGroupDao.getCommaSeperatedUserId(orgLocationId);
+		List<AssociateDepartmentView> associateDepartmentViewList = userRoleDao.getUserRolesByDepartmentId(departmentId,orgLocationId,userIdView);
+		return associateDepartmentViewList;
+	}
     
 
 }

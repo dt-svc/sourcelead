@@ -14,6 +14,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
+import com.bis.sourcelead.entity.AssociateDepartmentView;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
@@ -158,5 +159,7 @@ public interface UserRoleService {
 	List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception;
 
 	public List<UsersUsageReportDTO> getUsageReportUserCountListByOrgLocationId(Long orgLocationId, UsersUsageReportDTO usersUsageReportDTO, OrgLocations orgLocations) throws Exception;
+
+   List<AssociateDepartmentView> getUserRolesByDepartmentId(String departmentId, Long orgLocationId);
 
 }

@@ -50,12 +50,15 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SingnatoryDTO;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
+import com.bis.sourcelead.entity.AssociateDepartmentView;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.Department;
@@ -73,6 +76,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Result;
@@ -96,6 +100,7 @@ import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -198,6 +203,10 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	AssetService assetService;
 	private Org org;
 	
+	
+	
+	@Autowired
+	UserGroupService userGroupService;
 	/**
 	 * To get All Approvers
 	 * @param request
@@ -1452,6 +1461,37 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 
 	 }
 	 
+	 /**
+	  * Get all department users by Dept Id
+	  * @param departmentId
+	  * @param request
+	  * @return List<AssociateDepartmentView> 
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/getUsersByDepartment" , method = RequestMethod.GET)
+	 public List<AssociateDepartmentView> getUsersByDepartment(@RequestParam(value = "departmentId", required = false) String departmentId,HttpServletRequest request)
+			throws Exception {
+		 long lStartTime = System.currentTimeMillis();  
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 List<AssociateDepartmentView>  viewList = userRoleService.getUserRolesByDepartmentId(departmentId,orgLocations.getId());
+		 long lEndTime = System.currentTimeMillis();
+		 long totalTime = lEndTime - lStartTime;
+		 logger.debug("Response time is "+totalTime);
+		 return viewList;
+	 }
 	 
+	 /**"
+	  * create user group
+	  * @param userGroupDTO
+	  * @param request
+	  * @return UserGroup
+	  * @throws Exception
+	  */
+	 @RequestMapping(value = "/createUserGroup" , method = RequestMethod.POST)
+	 public Response<UserGroup> createUserGroup(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
+		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  return userGroupService.createUserGroup(orgLocations,userGroupDTO,loginUser);
+	 }
 	 
 }

@@ -198,6 +198,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	CountriesService countriesService;
 	
+	
 	@Override
 	public User findByUserName(String username) {
 		logger.debug("In UserService class...");
@@ -322,7 +323,6 @@ public class UserServiceImpl implements UserService {
 				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
 			}
 	   }
-		
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
 		userRoleList.add(userRole);
 		user.setUserRole(userRoleList);

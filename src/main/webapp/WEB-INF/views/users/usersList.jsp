@@ -342,6 +342,9 @@ function getUsersSearchResult(searchValue){
 							</li>
 				</c:if>
 				
+				<li><a href="<c:url value='${appPath}/userGroupList'/>"><i class="fa fa-plus"></i>&nbsp;Create Batch</a></li>
+				
+				
 				<c:if test="${orgLocationsCount == 1}">
 				<li><a href="<c:url value='${appPath}/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add Associate</a></li>
 				</c:if>		

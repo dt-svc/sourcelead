@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
@@ -31,9 +33,11 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
+import com.bis.sourcelead.entity.AssociateDepartmentView;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserIdView;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -1372,6 +1376,38 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		String query = "from UserRole userRole left join fetch userRole.orgLocations orgLocation   where orgLocation.id =:orgLocationId and userRole.userState <> 'INACTIVE' ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 		return userRoleList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<AssociateDepartmentView> getUserRolesByDepartmentId(String departmentId,Long orgLocationId,List<UserIdView> userIdViewList)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<AssociateDepartmentView> assocDeptViewList = null;
+		if(userIdViewList != null && userIdViewList.size() > 0) {
+			String uIds = userIdViewList.get(0).getAssociateId();
+			String userIds = uIds.replaceAll("\\s+","");
+			List<Long> userList = Stream.of(userIds.split(",")).map(Long::parseLong).collect(Collectors.toList());
+			if(StringUtils.isNoneBlank(departmentId)) {
+				List<Long> deptList = Stream.of(departmentId.split(",")).map(Long::parseLong).collect(Collectors.toList());
+				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.departmentId IN (:departmentId) and assView.userId NOT IN (:userList)";
+				assocDeptViewList = session.createQuery(query.toString()).setParameterList("departmentId", deptList).setParameterList("userList", userList).list();
+			}else {
+				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.orgLocationsId = :orgLocationsId and assView.userId NOT IN (:userList)";
+				assocDeptViewList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).setParameterList("userList", userList).list();
+			}
+		}else {
+			if(StringUtils.isNoneBlank(departmentId)) {
+				List<Long> deptList = Stream.of(departmentId.split(",")).map(Long::parseLong).collect(Collectors.toList());
+				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.departmentId IN (:departmentId)";
+				assocDeptViewList = session.createQuery(query.toString()).setParameterList("departmentId", deptList).list();
+			}else {
+				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.orgLocationsId = :orgLocationsId ";
+				assocDeptViewList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).list();
+			}
+		}
+		
+		return assocDeptViewList;
 	}
 
 
