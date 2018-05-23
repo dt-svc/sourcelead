@@ -161,7 +161,7 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-md-3">Address<span class="text-danger">&nbsp;*</span></label>
+						<label class="col-md-3">Employer Address<span class="text-danger">&nbsp;*</span></label>
 						<div class="col-md-9" id="locationField">
 							<div class="positionRelative">
 								<input class="form-control positionRelative"
@@ -478,7 +478,7 @@
 
 
 					<div class="form-group">
-						<label class="col-md-3">Employer's</label>
+						<label class="col-md-3">Previous Employers</label>
 						<div class="col-md-9">
 							<input type="text" class="form-control" id="candidateEmployers"
 								name="candidateEmployers" value="${candidateEmployers}"
