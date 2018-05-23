@@ -847,4 +847,15 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 		contractList = session.createQuery(query).setLong("orgLocationId", locationId).setString("status", status).setParameter("date", date).list();
 		return contractList;
 	}
+
+	@Override
+	@Transactional
+	public Integer deleteContractOwnerHierarchyListByContractId(Long id)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer status = null;
+		Query q = session.createQuery("delete ContractOwnerHierarchy coh where coh.contract.id =:id").setLong("id", id);
+		status = q.executeUpdate();
+		return status;
+	}
 }
