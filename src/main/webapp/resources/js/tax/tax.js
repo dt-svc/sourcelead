@@ -8,12 +8,9 @@ $(document).ready(function() {
 	} else if (activeTaxTab === "central") {
 		tax.getCentralTaxList();
 	} else if(activeTaxTab === "createStateTax") {
-		tax.addDynamicPTRow(true);
-	} else if(activeTaxTab === "createCentralTax") {
-		tax.addDynamicTDSRow(true);
-
 		if(stateTaxId === 0)
 			tax.addDynamicPTRow(true);
+	} else if(activeTaxTab === "createCentralTax") {
 		if(centralTaxId === 0)
 			tax.addDynamicTDSRow(true);
 	}
@@ -96,7 +93,15 @@ $(document).ready(function() {
 					if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (response.response === "SUCCESS") {
-		        		showError(response.responseMessage);      		
+		        		if (response.object > 0) {
+			        		$(".success_pop").css("display","block");
+			        		$(".success_pop span").html("CentralTax " + (centralTaxId === 0 ? "added" : "updated" ) + " successfully....");
+			        		setTimeout(function() {
+			        			location.href=sourceleadUrl+"/centralTax/list";					 			
+					 		},100);    
+		        		} else if (response.object === -1) {
+		        			showError("Tax record already exists for the selected fields");
+		        		}
 		        	} else if(response.response === "FAILED") {
 		        		showError(response.responseMessage);
 		        	} else if (response.indexOf('Sign In') !== -1) {
@@ -137,8 +142,12 @@ function Tax() {
 						result += "<td>";
 						result += "<div>";
 						result += "<ul class='list-unstyled list-inline mb0'>";
-						result += "<li><a href='javascript:void()' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
-						result += "<li><a href='javascript:void()' title='Delete' class='text-danger'><i class='fa fa-trash'></i></a></li>";
+						result += "<li " + (stList[e].active ? "" : "class='disableBtn'") + "><a href='javascript:void()' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
+						if(stList[e].active) {
+							result += "<li><a href='javascript:void()' onclick='tax.showChangeStatusPopup(" + stList[e].id + ", 1," + pageNo + ")' title='Make InActive' class='text-danger'><i class='fa fa-trash'></i></a></li>";
+						} else {
+							result += "<li><a href='javascript:void()' onclick='tax.showChangeStatusPopup(" + stList[e].id + ", 2," + pageNo + ")' title='Make Active' class='text-success'><i class='fa fa-edit'></i></a></li>";
+						}
 						result += "</ul>";
 						result += "</div>";
 						result += "</td>";
@@ -367,7 +376,7 @@ function Tax() {
 	}
 	*/
 	
-	this.deletePTRow = function(ele) {
+	this.deleteTDSRow = function(ele) {
 		var removalRow = $(ele).closest("div[data-name='tdsRow']");
 		$("#removeIds").val(($("#removeIds").val()!==""? $("#removeIds").val() + "," : "") + $(removalRow).data("id"));
 		$(removalRow).remove();
@@ -382,7 +391,7 @@ function Tax() {
 			$(this).find("input[data-name='percentage']").attr("name","tdsTaxList["+tdsRowId+"].percentage");
 			$(this).find("select[data-name='educationceiss']").attr("name","tdsTaxList["+tdsRowId+"].educationceiss");
 			$(this).find("select[data-name='surcharge']").attr("name","tdsTaxList["+tdsRowId+"].surcharge");
-			pfRowId++;
+			tdsRowId++;
 		});
 	}
 	

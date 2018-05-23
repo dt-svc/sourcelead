@@ -26,7 +26,6 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.StateTaxDTO;
 
-
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.Candidate;
 
@@ -60,7 +59,8 @@ public class TaxController {
 		c.roll(Calendar.YEAR, -2);
 		for (int i = 0; i < 4; i++) {
 			Calendar c1 = Calendar.getInstance();
-			boolean isCurrent = selectedYear != null ? Integer.parseInt(selectedYear.split("-")[0]) == c.get(Calendar.YEAR)
+			boolean isCurrent = selectedYear != null
+					? Integer.parseInt(selectedYear.split("-")[0]) == c.get(Calendar.YEAR)
 					: c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
 
 			String fromYear = c.get(Calendar.YEAR) + "";
@@ -113,13 +113,13 @@ public class TaxController {
 		return modelAndView;
 	}
 
-
 	@RequestMapping(value = "/centralTax/create")
-	public ModelAndView addCentralTax(HttpServletRequest request, @RequestParam(value="centralTaxId",required = false) Long sourceleadTaxId) {
+	public ModelAndView addCentralTax(HttpServletRequest request,
+			@RequestParam(value = "centralTaxId", required = false) Long sourceleadTaxId) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			CentralTaxDTO centralTaxDTO = new CentralTaxDTO();
-			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(2,false);
+			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(2, false);
 			modelAndView.addObject("taxTypes", taxTypeList);
 			if (sourceleadTaxId != null) {
 				centralTaxDTO = taxService.getCentralTax(sourceleadTaxId);
@@ -127,16 +127,14 @@ public class TaxController {
 			modelAndView.addObject("centralTax", centralTaxDTO);
 			setYears(modelAndView, centralTaxDTO.getCtfinancialYear());
 			modelAndView.addObject("activeTaxTab", "central");
-		//	Map<String, Boolean> yearList = caliculateYearList();	
-			//modelAndView.addObject("yearList", yearList);
+			// Map<String, Boolean> yearList = caliculateYearList();
+			// modelAndView.addObject("yearList", yearList);
 			modelAndView.setViewName("tax/addCentralTax");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
 		return modelAndView;
 	}
-
-	
 
 	@RequestMapping(value = "/stateTax/add")
 	@ResponseBody
@@ -164,7 +162,6 @@ public class TaxController {
 		return response;
 	}
 
-
 	@RequestMapping(value = "/stateTax/taxSummary")
 	public ModelAndView stateTaxSummary(HttpServletRequest request, @RequestParam(defaultValue = "0") long stateTaxId) {
 		ModelAndView modelAndView = new ModelAndView();
@@ -178,9 +175,9 @@ public class TaxController {
 		return modelAndView;
 	}
 
-	
 	@RequestMapping(value = "/centralTax/taxSummary")
-	public ModelAndView centralTaxSummary(HttpServletRequest request, @RequestParam(defaultValue = "0") long sourceleadTaxId)  {
+	public ModelAndView centralTaxSummary(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") long sourceleadTaxId) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			CentralTaxDTO centralTaxDTO = taxService.getCentralTax(sourceleadTaxId);
@@ -190,14 +187,12 @@ public class TaxController {
 			logger.error(e.getMessage());
 		}
 		return modelAndView;
-	}	
-	
-	
-	
+	}
+
 	@RequestMapping(value = "/getCentralTaxes", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<CentralTaxDTO> getCentralTaxes(HttpServletRequest request, 
-			@RequestParam(defaultValue = "") String yearFrequency){
+	public ResponseList<CentralTaxDTO> getCentralTaxes(HttpServletRequest request,
+			@RequestParam(defaultValue = "") String yearFrequency) {
 		ResponseList<CentralTaxDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -217,10 +212,11 @@ public class TaxController {
 		}
 		return response;
 	}
-	
+
 	@RequestMapping(value = "/stateTax/changeStatus")
 	@ResponseBody
-	public Response<String> changeStateTaxStatus(HttpServletRequest request, @RequestParam(defaultValue = "0") long stateTaxId) {
+	public Response<String> changeStateTaxStatus(HttpServletRequest request,
+			@RequestParam(defaultValue = "0") long stateTaxId) {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -238,11 +234,11 @@ public class TaxController {
 		return response;
 	}
 
-
 	@RequestMapping(value = "/getStateTaxes", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseList<StateTaxDTO> getStateTaxes(HttpServletRequest request, @RequestParam(defaultValue = "") String yearFrequency,
-			@RequestParam(defaultValue = "0") long stateId, Paginator paginator) {
+	public ResponseList<StateTaxDTO> getStateTaxes(HttpServletRequest request,
+			@RequestParam(defaultValue = "") String yearFrequency, @RequestParam(defaultValue = "0") long stateId,
+			Paginator paginator) {
 		ResponseList<StateTaxDTO> response = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -264,19 +260,16 @@ public class TaxController {
 		return response;
 	}
 
-	
-	
 	// central tab
 	@RequestMapping(value = "/centralTax/list")
 	public ModelAndView centralTaxList(HttpServletRequest request) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-			
+
 			setYears(modelAndView, null);
-			
-			
-			//yearList = caliculateYearList();
-			//modelAndView.addObject("yearList", yearList);
+
+			// yearList = caliculateYearList();
+			// modelAndView.addObject("yearList", yearList);
 			modelAndView.addObject("activeTaxTab", "central");
 			modelAndView.setViewName("tax/centralTax");
 		} catch (Exception e) {
@@ -284,26 +277,26 @@ public class TaxController {
 		}
 		return modelAndView;
 	}
-	
-	@RequestMapping(value = "/centralTax/add" , method = RequestMethod.POST)
+
+	@RequestMapping(value = "/centralTax/add", method = RequestMethod.POST)
 	@ResponseBody
-	   public  Response<String> saveCentralTax(CentralTaxDTO centralTaxDTO,HttpServletRequest request) {
-			
-		Response<String> response = new Response<>();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	public Response<Long> saveCentralTax(CentralTaxDTO centralTaxDTO, HttpServletRequest request) {
+
+		Response<Long> response = new Response<>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			if (user != null && orgLocations != null) {
-
 				if (Validator.validate(centralTaxDTO)) {
-					taxService.saveCentralTax(centralTaxDTO, user, orgLocations);
+					long result = taxService.saveCentralTax(centralTaxDTO, user, orgLocations);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
+					response.setObject(result);
 				} else {
 					response.setResponse(Result.INVALID_DATA.name());
 					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
-
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -311,12 +304,9 @@ public class TaxController {
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
-			}
-		return response; 
-	    
-	   }
-	
-	
-	
-	
+		}
+		return response;
+
+	}
+
 }

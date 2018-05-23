@@ -20,10 +20,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "CENTRAL_TAX")
-public class CentralTax implements Serializable{
+public class CentralTax implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
@@ -36,31 +36,42 @@ public class CentralTax implements Serializable{
 
 	@Column(name = "CT_FINANCIAL_YEAR")
 	private String ctfinancialYear;
-	
+
 	@Column(name = "CEIL_VALUE_PF")
 	private Integer ceilvaluepf;
-	
+
 	@Column(name = "NO_OF_EMPLOYEES")
-	private  Double noofemployees;
-	
+	private Double noofemployees;
+
 	@Column(name = "EMPLOYEE_PF")
 	private Double employeepf;
-	
+
 	@Column(name = "EMPLOYER_PF")
 	private Double employerpf;
-	
+
 	@Column(name = "CEIL_VALUE_ESI")
 	private Integer ceilvalueesi;
-	
+
 	@Column(name = "EMPLOYEE_ESI")
 	private Double employeeesi;
-	
+
 	@Column(name = "EMPLOYER_ESI")
 	private Double employeresi;
-	
-	@OneToMany(mappedBy="centraltaxid",cascade=CascadeType.ALL)
+
+	@Column(name = "ACTIVE")
+	private boolean active;
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	@OneToMany(mappedBy = "centraltaxid", cascade = CascadeType.ALL)
 	@JsonBackReference
-    private Set<Tds> tdsList;
+	private Set<Tds> tdsList;
 
 	public long getId() {
 		return id;
@@ -154,7 +165,4 @@ public class CentralTax implements Serializable{
 		return serialVersionUID;
 	}
 
-
-	
-	
 }

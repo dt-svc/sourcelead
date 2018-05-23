@@ -36,12 +36,16 @@ public interface TaxDao {
 	public ProfessionalTax getProfessionalTaxById(long id);
 
 
-	public List<CentralTax> getCentralTaxList(String yearFrequency);
+	public List<CentralTax> getCentralTaxList(String yearFrequency, long taxTypeId);
 
 	public CentralTax getCentralTax(long sourceleadTaxId);
 
 
 	public long changeStateTaxStatus(long stateTaxId);
+	
+	public boolean removeTDSTax(Tds tds);
+	
+	public Tds getTDSById(long id);
 
 
 }

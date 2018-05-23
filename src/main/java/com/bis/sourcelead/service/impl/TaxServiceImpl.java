@@ -20,7 +20,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 
 import com.bis.sourcelead.dto.helper.Paginator;
 
-
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
@@ -64,29 +63,22 @@ public class TaxServiceImpl implements TaxService {
 		return stateTaxList;
 	}
 
-	
-	
-
 	@Override
 	public List<CentralTaxDTO> getCentralTaxList(String yearFrequency) {
-			List<CentralTaxDTO> centralTaxList = new LinkedList<>();
-			try {
-				List<CentralTax> ctList = taxDao.getCentralTaxList(yearFrequency);
-				if (ctList != null && !ctList.isEmpty()) {
-					for (CentralTax ct : ctList) {
-						centralTaxList.add(getCentralTaxDTO(ct, false));
-					}
+		List<CentralTaxDTO> centralTaxList = new LinkedList<>();
+		try {
+			List<CentralTax> ctList = taxDao.getCentralTaxList(yearFrequency, 0);
+			if (ctList != null && !ctList.isEmpty()) {
+				for (CentralTax ct : ctList) {
+					centralTaxList.add(getCentralTaxDTO(ct, false));
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
-			return centralTaxList;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-	
-	
-	
-	
-	
+		return centralTaxList;
+	}
+
 	public StateTaxDTO getStateTax(long stateTaxId) {
 		StateTaxDTO stateTaxDTO = new StateTaxDTO();
 		try {
@@ -113,10 +105,7 @@ public class TaxServiceImpl implements TaxService {
 		}
 		return centralTaxDTO;
 	}
-	
-	
-	
-	
+
 	public StateTaxDTO getStateTaxDTO(StateTax stateTax, boolean includeAll) {
 		try {
 			StateTaxDTO stateTaxDTO = new StateTaxDTO();
@@ -185,10 +174,6 @@ public class TaxServiceImpl implements TaxService {
 		return null;
 	}
 
-	
-	
-	
-	
 	@Override
 	public long addStateTax(StateTaxDTO stateTaxDTO) {
 		try {
@@ -208,7 +193,8 @@ public class TaxServiceImpl implements TaxService {
 				st.setSourceleadTaxType(getTaxTypeById(stateTaxDTO.getTaxTypeId()));
 				st.setStates(statesService.getStateById(stateTaxDTO.getStateId()));
 
-				// While editing, if an existing ProfessionalTax row is deleted, then it should
+				// While editing, if an existing ProfessionalTax row is deleted,
+				// then it should
 				// be manually delete as below by iterating all removeIds
 				if (stateTaxDTO.getRemoveIds() != null && !stateTaxDTO.getRemoveIds().isEmpty()) {
 					for (String id : stateTaxDTO.getRemoveIds().split(",")) {
@@ -239,49 +225,60 @@ public class TaxServiceImpl implements TaxService {
 		}
 		return 0;
 	}
+
 	@Override
 	public long saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) {
 		try {
-			CentralTax ct = new CentralTax();
-			ct.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
-			ct.setEmployeepf(centralTaxDTO.getEmployeepf());
-			ct.setEmployerpf(centralTaxDTO.getEmployerpf());
-			ct.setNoofemployees(centralTaxDTO.getNoofemployees());
-			ct.setCeilvalueesi(centralTaxDTO.getCeilvalueEsi());
-			ct.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
-			ct.setEmployeeesi(centralTaxDTO.getEmployeeEsi());
-			ct.setEmployeresi(centralTaxDTO.getEmployerEsi());
-			ct.setCtfinancialYear(centralTaxDTO.getCtfinancialYear());
-			ct.setSourceleadTaxType(getTaxTypeById(centralTaxDTO.getSourceleadTaxId()));
-			
-			HashSet<Tds> tdsList = new LinkedHashSet<>();
-			for (TdsDTO tdsDTO : centralTaxDTO.getTdsTaxList()) {
-				Tds tds = null;
-				if (tdsDTO.getId() > 0) {
-//					tds = new Tds();
-				} else {
-					tds = new Tds();
+			List<CentralTax> ctList = taxDao.getCentralTaxList(centralTaxDTO.getCtfinancialYear(),
+					centralTaxDTO.getSourceleadTaxId());
+			if (centralTaxDTO.getId() == 0 && ctList != null && ctList.size() > 0) {
+				return -1;
+			} else {
+				CentralTax ct = new CentralTax();
+				ct.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
+				ct.setEmployeepf(centralTaxDTO.getEmployeepf());
+				ct.setEmployerpf(centralTaxDTO.getEmployerpf());
+				ct.setNoofemployees(centralTaxDTO.getNoofemployees());
+				ct.setCeilvalueesi(centralTaxDTO.getCeilvalueEsi());
+				ct.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
+				ct.setEmployeeesi(centralTaxDTO.getEmployeeEsi());
+				ct.setEmployeresi(centralTaxDTO.getEmployerEsi());
+				ct.setCtfinancialYear(centralTaxDTO.getCtfinancialYear());
+				ct.setActive(true);
+				ct.setSourceleadTaxType(getTaxTypeById(centralTaxDTO.getSourceleadTaxId()));
+
+				if (centralTaxDTO.getRemoveIds() != null && !centralTaxDTO.getRemoveIds().isEmpty()) {
+					for (String id : centralTaxDTO.getRemoveIds().split(",")) {
+						taxDao.removeTDSTax(taxDao.getTDSById(Long.valueOf(id)));
+					}
 				}
-				tds.setAge(tdsDTO.getAge());
-				tds.setFromamount(tdsDTO.getFromamount());
-				tds.setToamount(tdsDTO.getToamount());
-				tds.setPercentage(tdsDTO.getPercentage());
-				tds.setEducationceiss(tdsDTO.getEducationceiss());
-				tds.setSurcharge(tdsDTO.getSurcharge());
-				tds.setCentraltaxid(ct);
-				tdsList.add(tds);
+
+				HashSet<Tds> tdsList = new LinkedHashSet<>();
+				for (TdsDTO tdsDTO : centralTaxDTO.getTdsTaxList()) {
+					Tds tds = null;
+					if (tdsDTO.getId() > 0) {
+						tds = getTDSById(tdsDTO.getId());
+					} else {
+						tds = new Tds();
+					}
+					tds.setAge(tdsDTO.getAge());
+					tds.setFromamount(tdsDTO.getFromamount());
+					tds.setToamount(tdsDTO.getToamount());
+					tds.setPercentage(tdsDTO.getPercentage());
+					tds.setEducationceiss(tdsDTO.getEducationceiss());
+					tds.setSurcharge(tdsDTO.getSurcharge());
+					tds.setCentraltaxid(ct);
+					tdsList.add(tds);
+				}
+				ct.setTdsList(tdsList);
+				return taxDao.storeCentralTax(ct);
 			}
-			ct.setTdsList(tdsList);
-			return taxDao.storeCentralTax(ct);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return 0;
 	}
-	
 
-	
-	
 	@Override
 	public SourceleadTaxType getTaxTypeById(long id) {
 		try {
@@ -302,7 +299,6 @@ public class TaxServiceImpl implements TaxService {
 		return null;
 	}
 
-
 	@Override
 	public Response<String> changeStateTaxStatus(long stateTaxId) {
 		Response<String> response = new Response<>();
@@ -322,6 +318,16 @@ public class TaxServiceImpl implements TaxService {
 			e.printStackTrace();
 		}
 		return response;
+	}
+
+	@Override
+	public Tds getTDSById(long id) {
+		try {
+			return taxDao.getTDSById(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

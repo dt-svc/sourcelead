@@ -1,4 +1,5 @@
 package com.bis.sourcelead.service;
+
 import java.util.List;
 
 import com.bis.sourcelead.dto.CentralTaxDTO;
@@ -12,6 +13,7 @@ import com.bis.sourcelead.dto.helper.Paginator;
 
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxType;
+import com.bis.sourcelead.entity.Tds;
 import com.bis.sourcelead.entity.User;
 
 public interface TaxService {
@@ -22,8 +24,8 @@ public interface TaxService {
 
 	List<StateTaxDTO> getStateTaxList(String yearFrequency, long stateId, Paginator paginator);
 
-	long saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) ;
-	
+	long saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations);
+
 	StateTaxDTO getStateTax(long stateTaxId);
 
 	long addStateTax(StateTaxDTO stateTaxDTO);
@@ -35,5 +37,7 @@ public interface TaxService {
 	CentralTaxDTO getCentralTax(long sourceleadTaxId);
 
 	Response<String> changeStateTaxStatus(long stateTaxId);
+
+	Tds getTDSById(long id);
 
 }

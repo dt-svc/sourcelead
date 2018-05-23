@@ -115,6 +115,8 @@
 							<th>From</th>
 							<th>To</th>
 							<th>Percentage</th>
+							<th>Education Ceiss</th>
+							<th>Surcharge</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -125,24 +127,14 @@
 								<td><div class="tblminwidth-175">${tds.fromamount}</div></td>
 								<td><div class="tblminwidth-175">${tds.toamount}</div></td>
 								<td><div class="tblminwidth-175">${tds.percentage}</div></td>
+								<td><div class="tblminwidth-175">${tds.educationceiss}</div></td>
+								<td><div class="tblminwidth-175">${tds.surcharge}</div></td>
 							</tr>
 						</c:forEach>
 						</tr>
 					</tbody>
 				</table>
 			</div>
-			<nav>
-				<ul id="paging" class="pagination pull-right mr">
-					<li><a href="#">Previous</a></li>
-					<li><a href="#">2</a></li>
-					<li><a href="#">3</a></li>
-					<li><a href="#">4</a></li>
-					<li><a href="#">5</a></li>
-					<li class="disabled"><a href="#">6</a></li>
-					<li data-page="last"><a href="#">Next</a></li>
-				</ul>
-				<div class="clearfix"></div>
-			</nav>
 		</div>
 	</div>
 </section>

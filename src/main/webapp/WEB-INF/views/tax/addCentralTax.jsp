@@ -3,8 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<c:set var="tdsRowId" value="0"></c:set>
 <script type="text/javascript">
 	var activeTaxTab = "createCentralTax";
+	var centralTaxId = ${centralTax.id};
+	var tdsRowId = ${tdsRowId};
+	
 </script>
 <script type="text/javascript" src='/resources/js/tax/tax.js'></script>
 <section class="content-wraper contentWraper">
@@ -14,6 +18,11 @@
 		<div class="tablelist-wrap">
 
   <form:form id="createCentralTaxform"  name="createCentralTaxform" method="post">
+  <input type="hidden" value="${centralTax.id}" name="id" />
+				<input type="hidden" value="" name="removeIds" id="removeIds"/>
+				<c:if test="${centralTax.id > 0}">
+				<input type="hidden" value="${centralTax.sourceleadTaxId}" name="taxTypeId"/>
+				</c:if>
 			<div class="col-md-10">
 				<div class="clearfix row">
 					<div class="col-md-4 dropdown-select mt10 mb10">
@@ -178,11 +187,11 @@
 									<script type="text/javascript">
 										var tdsRowId = ${tdsRowId};
 									</script>
-									</div>
+									
 							
 							
 							</c:forEach>	
-								
+								</div>
 							</div>
 
 							<div id="cloneArea"></div>
@@ -191,7 +200,7 @@
 					</div>
 
 				</div>
-			</div>
+			
 			<div class="clearfix"></div>
 			<div class="clearfix footerstyelsNew">
 				<div class="col-lg-12">
@@ -202,6 +211,7 @@
 				</div>
 			</div>
 </form:form>
+		</div>
 		</div>
 	</div>
 </section>

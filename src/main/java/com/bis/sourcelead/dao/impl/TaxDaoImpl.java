@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TaxDao;
 
-
 import com.bis.sourcelead.entity.CentralTax;
 
 import com.bis.sourcelead.dto.StateTaxDTO;
@@ -102,7 +101,6 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
-	
 	@Override
 	public long storeCentralTax(CentralTax centralTax) {
 		try {
@@ -125,7 +123,6 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
-	
 	@Override
 	public CentralTax getCentralTax(long sourceleadTaxId) {
 		try {
@@ -137,11 +134,6 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
-	
-	
-	
-	
-	
 	@Override
 	@Transactional
 	public long addStateTax(StateTax stateTax) {
@@ -189,31 +181,32 @@ public class TaxDaoImpl implements TaxDao {
 		return null;
 	}
 
-
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<CentralTax> getCentralTaxList(String yearFrequency) {
-		List<CentralTax>  centralTaxList = null;
-			try {
-				Session session = this.sessionFactory.getCurrentSession();
-				String query = "from CentralTax ct";
-				if (yearFrequency != null && !yearFrequency.isEmpty()) {
-					query += " where ct.ctfinancialYear = :yearFrequency";
-				}
-				
-				 
-				Query queryObj = session.createQuery(query);
-				if (yearFrequency != null && !yearFrequency.isEmpty()) {
-					queryObj.setString("yearFrequency", yearFrequency);
-				}
-				 centralTaxList = queryObj.list();
-			} catch (Exception e) {
-				e.printStackTrace();
+	public List<CentralTax> getCentralTaxList(String yearFrequency, long taxTypeId) {
+		List<CentralTax> centralTaxList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CentralTax ct";
+			if (yearFrequency != null && !yearFrequency.isEmpty()) {
+				query += " where ct.ctfinancialYear = :yearFrequency";
 			}
-			return centralTaxList;
+			if (taxTypeId > 0) {
+				query += (query.contains("where") ? " and " : " where ") + "ct.sourceleadTaxType.id=:taxTypeId";
+			}
+			Query queryObj = session.createQuery(query);
+			if (yearFrequency != null && !yearFrequency.isEmpty()) {
+				queryObj.setString("yearFrequency", yearFrequency);
+			}
+			if (taxTypeId > 0) {
+				queryObj.setLong("taxTypeId", taxTypeId);
+			}
+			centralTaxList = queryObj.list();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-	
+		return centralTaxList;
+	}
 
 	@Override
 	public long changeStateTaxStatus(long stateTaxId) {
@@ -231,5 +224,27 @@ public class TaxDaoImpl implements TaxDao {
 		return -1;
 	}
 
+	@Override
+	public boolean removeTDSTax(Tds tds) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(tds);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public Tds getTDSById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(Tds.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 }

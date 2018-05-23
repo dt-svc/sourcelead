@@ -4,34 +4,54 @@ import java.io.Serializable;
 import java.util.List;
 
 public class CentralTaxDTO implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private long id;
-	
+
 	private Long sourceleadTaxId;
-	
+
 	private String sourceleadTaxType;
-	
+
 	private Integer ceilvaluepf;
- 
-	private  Double noofemployees;
-	
+
+	private Double noofemployees;
+
 	private Double employeepf;
-	
-	private Double employerpf;	
-	
+
+	private Double employerpf;
+
 	private Integer ceilvalueEsi;
-	
+
 	private Double employeeEsi;
-	
+
 	private Double employerEsi;
-	
+
 	private Integer centraltaxid;
-	
+
 	private String ctfinancialYear;
-	
+
 	private List<TdsDTO> tdsTaxList;
+
+	private String removeIds;
+
+	private boolean active;
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public String getRemoveIds() {
+		return removeIds;
+	}
+
+	public void setRemoveIds(String removeIds) {
+		this.removeIds = removeIds;
+	}
 
 	public long getId() {
 		return id;
@@ -140,6 +160,5 @@ public class CentralTaxDTO implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
 
 }
