@@ -204,7 +204,7 @@
 					</div>
 					
 					<div class="form-group">
-						<label class="col-md-3">Gender</label>
+						<label class="col-md-3">Gender<span class="text-danger">&nbsp;*</span></label>
 						<div class="col-md-9" id= "errorGenderMsg">
 						<label class="paddingRight"><input type="radio"  value="Male" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Male</label>
 						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Female</label>
@@ -663,7 +663,8 @@ function validate_fileupload(fileName)
  
 <script type="text/javascript">
  function validateCandidateEmail() {
-	 var email = document.getElementById("email").value; 
+	 var email = document.getElementById("email").value;
+	 email = email.trim();
 	 $('#emailDiv').find('p.jquery_form_error_message').remove();
 	 if(email != null && email != ""){
 		

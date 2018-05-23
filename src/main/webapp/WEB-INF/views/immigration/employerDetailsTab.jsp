@@ -131,7 +131,7 @@
 				<div class="row">
 				<label class="col-md-4">Designation</label>
               	<div class="col-md-8">
-              		<input type="text" placeholder="Employer Designation" id ="designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Designation"  class="form-control" />
+              		<input type="text" placeholder="Designation" id ="designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Designation"  class="form-control" />
 				</div>
 				</div>
 			</div>				          
@@ -230,7 +230,7 @@
 		
 		<div class="clearfix"></div>
 		<div class="immiPopFoot mt clearfix">
-            <input value="Save"class="" type="button" id = "employerSave_Buton" onclick="saveEmployerDetails('save');"> 
+            <input value="Save"class="" type="button" id="employerSave_Buton" onclick="saveEmployerDetails('save');"> 
             <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div><!-- popup code end -->
@@ -238,7 +238,7 @@
 			<div class="pull-right text-right">
 				<input type="button" value="Back" onclick="goToSummaryTab('#visasTab');" class="btn btn-default btn-sm">
              <!-- 	<input type="button" value="Skip" onclick="goToSummaryTab('#residencesTab');" class="btn btn-default btn-sm">  -->
-              	<input type="button" value="Continue" onclick="goToSummaryTab('#residencesTab');" class="btn btn-primary btn-sm ml10">
+              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#educationsTab');" class="btn btn-primary btn-sm ml10">
             </div>
 		</div>
 	</form>
@@ -271,7 +271,10 @@
 		$("#emploView").fadeOut(200);
 		$("#employerDetails_form")[0].reset();
 		$("#candidateEmpId").val('');
+		$('#emploView').find('p.jquery_form_error_message').remove();
+		$("#employerSave_Buton").removeAttr("disabled");
 	}
+	
 	$("#employersDataSearch").keyup(function (e) {
 	    if (e.which === 13) {
 	    	getCandidateEmployerList(candidateId);

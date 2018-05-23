@@ -1772,6 +1772,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(candidateUser.getDateOfBirth() != null){
 			candidate.setDateOfBirth(commonUtil.orgLocationCommonDate(candidateUser.getDateOfBirth(),orgLocations));
 			}
+		if(StringUtils.isNotBlank(candidateUser.getMaritalStatus())) {
+			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
+		}
 		candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(candidate);
 		return candidate;
