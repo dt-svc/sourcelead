@@ -42,6 +42,16 @@
 					</div>
 				</div>
 				<div class="col-md-5">
+					<label class="clearfix">Type<span class="text-danger">&nbsp;*</span></label>
+					<div class="clearfix dropdown-select">
+						<select class="form-control chosen-select" id="type" name="type" field-name="Type" data-validation="required">
+							<option value="">--Select Type--</option>
+							<option value="Earnings" ${payrollPayhead.type  == 'Earnings'  ? 'selected' :''}>Earnings</option>
+							<option value="Deductions" ${payrollPayhead.type  == 'Deductions'  ? 'selected' :''}>Deductions</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-5">
 					<label class="clearfix">Pay Type</label>
 					<div class="clearfix">
 						<div class="row">
@@ -77,10 +87,32 @@
 				<div class="col-md-5">
 					<label class="clearfix">Form-16</label>
 					<div class="clearfix dropdown-select">
-						<select id="form16" name="form16">
-							<option value="">Select</option>
-							<option value="Form-16A" ${payrollPayhead.form16  == 'Form-16A'  ? 'selected' :''}>Form-16A</option>
-							<option value="Form-16B" ${payrollPayhead.form16  == 'Form-16B'  ? 'selected' :''}>Form-16B</option>
+						<select class="form-control chosen-select" id="form16" name="form16">
+							<option value="">--Select Form-16--</option>
+							<option value="None" ${payrollPayhead.form16  == 'None'  ? 'selected' :''}>None</option>
+							<option value="Salary u/s 17(1)" ${payrollPayhead.form16  == 'Salary u/s 17(1)'  ? 'selected' :''}>Salary u/s 17(1)</option> 
+							<option value="Prerequisites u/s 17(2)" ${payrollPayhead.form16  == 'Prerequisites u/s 17(2)'  ? 'selected' :''}>Prerequisites u/s 17(2)</option>
+							<option value="Salary u/s(3)" ${payrollPayhead.form16  == 'Salary u/s(3)'  ? 'selected' :''}>Salary u/s(3)</option>
+							<option value="Allowances" ${payrollPayhead.form16  == 'Allowances'  ? 'selected' :''}>Allowances</option>
+							<option value="Deduction u/s 16" ${payrollPayhead.form16  == 'Deduction u/s 16'  ? 'selected' :''}>Deduction u/s 16</option>
+							<option value="Deduction under chapter VI-A" ${payrollPayhead.form16  == 'Deduction under chapter VI-A'  ? 'selected' :''}>Deduction under chapter VI-A</option>
+							<option value="TDS u/s 192(1)" ${payrollPayhead.form16  == 'TDS u/s 192(1)'  ? 'selected' :''}>TDS u/s 192(1)</option>
+							<option value="Tax paid by Employer Preqs" ${payrollPayhead.form16  == 'Tax paid by Employer Preqs'  ? 'selected' :''}>Tax paid by Employer Preqs</option>
+							<option value="Section 80C" ${payrollPayhead.form16  == 'Section 80C'  ? 'selected' :''}>Section 80C</option>
+							<option value="Advanced" ${payrollPayhead.form16  == 'Advanced'  ? 'selected' :''}>Advanced</option>
+							<option value="HRA Exempt" ${payrollPayhead.form16  == 'HRA Exempt'  ? 'selected' :''}>HRA Exempt</option>
+							<option value="PF Voluntary" ${payrollPayhead.form16  == 'PF Voluntary'  ? 'selected' :''}>PF Voluntary</option>
+							<option value="Incentive(Quarter)" ${payrollPayhead.form16  == 'Incentive(Quarter)'  ? 'selected' :''}>Incentive(Quarter)</option>
+							<option value="Incentive (Semi Annually)" ${payrollPayhead.form16  == 'Incentive (Semi Annually)'  ? 'selected' :''}>Incentive (Semi Annually)</option>
+							<option value="Incentive(Yearly)" ${payrollPayhead.form16  == 'Incentive(Yearly)'  ? 'selected' :''}>Incentive(Yearly)</option>
+							<option value="PF Loan" ${payrollPayhead.form16  == 'PF Loan'  ? 'selected' :''}>PF Loan</option>
+							<option value="Salary for Bonus" ${payrollPayhead.form16  == 'Salary for Bonus'  ? 'selected' :''}>Salary for Bonus</option>
+							<option value="Bonus" ${payrollPayhead.form16  == 'Bonus'  ? 'selected' :''}>Bonus</option>
+							<option value="HRA Arrear" ${payrollPayhead.form16  == 'HRA Arrear'  ? 'selected' :''}>HRA Arrear</option>
+							<option value="Labour Welfare Fund" ${payrollPayhead.form16  == 'Labour Welfare Fund'  ? 'selected' :''}>Labour Welfare Fund</option>
+							<option value="Professional Tax Arrear" ${payrollPayhead.form16  == 'Professional Tax Arrear'  ? 'selected' :''}>Professional Tax Arrear</option>
+							<option value="Section 80CCD1(Employee)" ${payrollPayhead.form16  == 'Section 80CCD1(Employee)'  ? 'selected' :''}>Section 80CCD1(Employee)</option>
+							<option value="Section 80CCD(Employer)" ${payrollPayhead.form16  == 'Section 80CCD(Employer)'  ? 'selected' :''}>Section 80CCD(Employer)</option>
 						</select>
 					</div>
 				</div>
@@ -89,7 +121,7 @@
 					<label class="clearfix">Tax</label>
 					<div class="clearfix">
 						<span class="radioStyles mr"> 
-							<input type="radio" ${payrollPayhead.tax  == 'Taxable'  ? 'checked' :''} id="taxable" name="tax" value="Taxable"> <label for="taxable">Taxable</label>
+							<input type="radio" ${payrollPayhead.tax  == 'Taxable'  ? 'checked' : payrollPayhead  == null  ? 'checked' :''} id="taxable" name="tax" value="Taxable"> <label for="taxable">Taxable</label>
 						</span> 
 						<span class="radioStyles"> 
 							<input type="radio" ${payrollPayhead.tax  == 'NonTaxable'  ? 'checked' :''} id="nonTaxable" name="tax" value="NonTaxable"> <label for="nonTaxable">Non Taxable</label>
@@ -98,30 +130,54 @@
 				</div>
 
 				<div class="col-md-5">
-					<label class="clearfix">Applicable For</label>
-					<div class="clearfix">
-						<span class="radioStyles mr"> 
-							<input type="radio" ${payrollPayhead.applicableFor  == 'All'  ? 'checked' :''} id="all" name="applicableFor" value="All"> <label for="all">All</label>
-						</span> 
-						<span class="radioStyles"> 
-							<input type="radio" ${payrollPayhead.applicableFor  == 'Experienced'  ? 'checked' :''} id="experienced" name="applicableFor" value="Experienced"> <label for="experienced">Experienced</label>
-						</span>
-					</div>
-				</div>
-
-				<div class="col-md-5">
 					<label class="clearfix">Component</label>
 					<div class="clearfix">
 						<span class="radioStyles mr"> 
-							<input type="radio" ${payrollPayhead.component  == 'Variable'  ? 'checked' :''} id="variable" name="component" value="Variable"> <label for="variable">Variable</label>
+							<input type="radio" ${payrollPayhead.component  == 'Variable'  ? 'checked' : payrollPayhead  == null  ? 'checked' :''} id="variable" name="component" value="Variable"> <label for="variable">Variable</label>
 						</span> 
 						<span class="radioStyles"> 
 							<input type="radio" ${payrollPayhead.component  == 'Fixed'  ? 'checked' :''} id="fixed" name="component" value="Fixed"> <label for="fixed">Fixed</label>
 						</span>
 					</div>
 				</div>
-
+				
 				<div class="col-md-5">
+					<label class="clearfix">Applicable For</label>
+					<div class="clearfix">
+						<span class="radioStyles mr"> 
+							<input type="radio" ${payrollPayhead.applicableFor  == 'All'  ? 'checked' : payrollPayhead  == null  ? 'checked' :''} id="all" name="applicableFor" value="All" onchange="experienceDiv();"> <label for="all">All</label>
+						</span> 
+						<span class="radioStyles"> 
+							<input type="radio" ${payrollPayhead.applicableFor  == 'Experienced'  ? 'checked' :''} id="experienced" name="applicableFor" value="Experienced" onchange="experienceDiv();"> <label for="experienced">Experienced</label>
+						</span>
+					</div>
+				</div>
+				
+				<div class="col-md-5" id="divExperience" style="display: none;">
+		            <label class="clearfix">Experience<span class="text-danger">&nbsp;*</span></label>
+		            <div class="clearfix">
+	              		<div class="row exp-drop">
+							<div class="col-xs-6 col-md-6">
+								<select class="form-control selectpicker" id="experienceYears" name="experienceYears" field-name="Years" onchange="yearAndMonthValidation()">
+									<option value="">Years</option>
+									<c:forEach begin="0" end="50" varStatus="loop">
+										<option ${payrollPayhead.experienceYears  == loop.index  ? 'selected' :''}>${loop.index}</option>
+									</c:forEach>
+								</select>
+							</div>
+							<div class="col-xs-6 col-md-6">
+								<select class="form-control selectpicker experienceMonths" id="experienceMonths" name="experienceMonths" field-name="Months" onchange="yearAndMonthValidation()">
+									<option value="">Months</option>
+									<c:forEach begin="0" end="11" varStatus="loop">
+										<option ${payrollPayhead.experienceMonths  == loop.index  ? 'selected' :''}>${loop.index}</option>
+									</c:forEach>
+								</select>
+							</div>
+						</div>
+		            </div>
+		         </div>
+
+				<div class="col-md-10">
 					<label class="clearfix">Other</label>
 					<div class="clearfix">
 						<div class="checkbox-new pull-left">
@@ -131,16 +187,36 @@
 									Component</span></label>
 						</div>
 						<div class="checkbox-new ml mr pull-left">
-							<input id="partofaCTC" class="checkbox-custom" name="partofaCTC"
-								type="checkbox" ${payrollPayhead.partofaCTC  == 'Y' ? "checked" : ''} value="Y"> <label for="partofaCTC"
+							<input id="partOfGratitutiy" class="checkbox-custom" name="partOfGratitutiy"
+								type="checkbox" ${payrollPayhead.partOfGratitutiy  == 'Y' ? "checked" : ''} value="Y"> <label for="partOfGratitutiy"
 								class="checkbox-custom-label"><span class="ml10">Part
-									of a CTC</span></label>
+									of Gratitutiy</span></label>
 						</div>
-						<div class="checkbox-new pull-left">
+						<div class="checkbox-new pull-left ml mr">
 							<input id="fbpComponent" class="checkbox-custom" name="fbpComponent"
 								type="checkbox" ${payrollPayhead.fbpComponent  == 'Y' ? "checked" : ''} value="Y"> <label for="fbpComponent"
 								class="checkbox-custom-label"><span class="ml10">FBP
 									Component</span></label>
+						</div>
+						<div class="checkbox-new pull-left">
+							<input id="leaveDependent" class="checkbox-custom" name="leaveDependent"
+								type="checkbox" ${payrollPayhead.leaveDependent  == 'Y' ? "checked" : ''} value="Y"> <label for="leaveDependent"
+								class="checkbox-custom-label"><span class="ml10">Leave Dependent</span></label>
+						</div>
+						<div class="checkbox-new ml mr pull-left">
+							<input id="showInPayslip" class="checkbox-custom" name="showInPayslip"
+								type="checkbox" ${payrollPayhead.showInPayslip  == 'Y' ? "checked" : ''} value="Y"> <label for="showInPayslip"
+								class="checkbox-custom-label"><span class="ml10">Show in Payslip</span></label>
+						</div>
+						<div class="checkbox-new pull-left">
+							<input id="pfApplicable" class="checkbox-custom" name="pfApplicable"
+								type="checkbox" ${payrollPayhead.pfApplicable  == 'Y' ? "checked" : ''} value="Y"> <label for="pfApplicable"
+								class="checkbox-custom-label"><span class="ml10">PF Applicable</span></label>
+						</div>
+						<div class="checkbox-new pull-left">
+							<input id="esiApplicable" class="checkbox-custom" name="esiApplicable"
+								type="checkbox" ${payrollPayhead.esiApplicable  == 'Y' ? "checked" : ''} value="Y"> <label for="esiApplicable"
+								class="checkbox-custom-label"><span class="ml10">ESI Applicable</span></label>
 						</div>
 					</div>
 				</div>
@@ -152,7 +228,7 @@
 		<div class="col-lg-12">
 			<div class="pull-right">
 				<input value="Save" class="btn btn-success btnSuccess" type="button" onclick="storePayhead();">
-				<input value="Cancel" class="btn btn-default ml10" type="button">
+				<input value="Cancel" onclick="javascript:window.location.href = '/app/payheadList'" class="btn btn-default ml10" type="button">
 			</div>
 		</div>
 	</div>
@@ -196,27 +272,26 @@
 
 
 <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-				$(document).ready(function(){
-					$("#cd").click(function(){
-						$(".clientDetails").toggleClass('hidden', 500);
-					});
-	
+	var config = {
+	  '.chosen-select'           : {},
+	  '.chosen-select-deselect'  : {allow_single_deselect:true},
+	  '.chosen-select-no-single' : {disable_search_threshold:10},
+	  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+	  '.chosen-select-width'     : {width:"95%"}
+	}
+	for (var selector in config) {
+	  $(selector).chosen(config[selector]);
+	}
+	$('.chosen-select').each(function() {
+		var $this = $(this);
+		$this.next().css({'width': '100%'});
+		})
+		$(document).ready(function(){
+			$("#cd").click(function(){
+				$(".clientDetails").toggleClass('hidden', 500);
+			});
 	});
- 		</script>
+</script>
         
 <script type="text/javascript">
 	$(document).ready(function(e) {
@@ -307,7 +382,21 @@
 		 		         contentType:false, 
 						 url : sourceleadUrl+"/storePaytype?"+tokenParamName+"="+tokenValue,
 						 success : function(result) {
-						  		
+							 if(result.object === 'MissingData'){
+						  			showError("Invalid data");
+						  		}else{
+						  			if (result.response === "SESSION_TIMEDOUT") {
+						  				location.replace(sourceleadUrl);
+					                } else if (result.response === "AWKWARD") {
+					                    location.href = "/errorPage";
+					                } else if (result.response === "SUCCESS") {
+					                	refreshPaytypeList();
+					                } else if (result.indexOf('Sign In') !== -1) {
+										location.replace(sourceleadUrl);
+									} else {
+					                    showError("Operation failed, please try again");
+					                }
+						  		}
 						  	},
 					});
 					$('#paytypeName').val('');
@@ -335,9 +424,94 @@
 	    	$('#paytypeDescription').siblings('p').remove();
 	    });
 	});
+	
+	function refreshPaytypeList(){
+		$.ajax({
+			 type : "POST",
+			 url : sourceleadUrl+"/getPaytypeList",
+			 success : function(result) {
+				 	if (result.response === "SESSION_TIMEDOUT") {
+		  				location.replace(sourceleadUrl);
+	                } else if (result.response === "AWKWARD") {
+	                    location.href = "/errorPage";
+	                } else if (result.response === "SUCCESS") {
+	                	var json = result.data;
+	    	    		var output = "";
+	    	    		for (var i = 0; i < json.length; i++) {
+	                   	    var opt = json[i];
+	    	        		output = output + "<option value='"+opt.id+"'>"+opt.name+"</option>";
+	    	    		}
+	    	    		$("#payType").empty();
+				        $("#payType").append(output);
+				        $('#payType').trigger("chosen:updated");
+	                } else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+	                    showError("Operation failed, please try again");
+	                }
+			  	},
+		});
+	}
 </script>
 
+<script>
+function experienceDiv(){
+	var all = $('#all:checked').val()?true:false;
+	var experienced = $('#experienced:checked').val()?true:false;
+	if(experienced){
+		$('#divExperience').show();
+		$('#experienceYears').removeAttr('data-validation-optional');
+        $('#experienceYears').attr("data-validation", "required");
+        $('#experienceMonths').removeAttr('data-validation-optional');
+        $('#experienceMonths').attr("data-validation", "required");
+	}else if(all){
+		$('#divExperience').hide();
+		$('#experienceYears').removeAttr('data-validation');
+        $('#experienceYears').attr("data-validation-optional", "true");
+        $('#experienceMonths').removeAttr('data-validation');
+        $('#experienceMonths').attr("data-validation-optional", "true");
+        
+		$("#experienceYears").val('default');
+		$("#experienceYears").selectpicker("refresh");
+		$("#experienceMonths").val('default');
+		$("#experienceMonths").selectpicker("refresh");
+	}else{
+		$('#divExperience').hide();
+		$('#experienceYears').removeAttr('data-validation');
+        $('#experienceYears').attr("data-validation-optional", "true");
+        $('#experienceMonths').removeAttr('data-validation');
+        $('#experienceMonths').attr("data-validation-optional", "true");
+		
+		$("#experienceYears").val('default');
+		$("#experienceYears").selectpicker("refresh");
+		$("#experienceMonths").val('default');
+		$("#experienceMonths").selectpicker("refresh");
+	}
+}
 
+function yearAndMonthValidation(){
+	var experienced = $('#experienced:checked').val()?true:false;
+	if(experienced){
+		var years = $('#experienceYears').val();
+		var months = $('#experienceMonths').val();
+		if(years != null){
+			$('#experienceMonths').removeAttr('data-validation');
+	        $('#experienceMonths').attr("data-validation-optional", "true");
+		}
+		if(months != null){
+			$('#experienceYears').removeAttr('data-validation');
+	        $('#experienceYears').attr("data-validation-optional", "true");
+		}
+		if(years == "" && months == ""){
+			$('#experienceYears').removeAttr('data-validation-optional');
+	        $('#experienceYears').attr("data-validation", "required");
+	        $('#experienceMonths').removeAttr('data-validation-optional');
+	        $('#experienceMonths').attr("data-validation", "required");
+		}
+	}
+}
+</script>
+		
 <script>
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var jsDateFormat= '';

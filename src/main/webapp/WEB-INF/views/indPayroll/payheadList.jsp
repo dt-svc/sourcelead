@@ -105,10 +105,11 @@
 	 	result = result + '<table id="payheadListTable"  cellspacing="0" width="100%" >';
 	 	result = result +"<thead>";
 		result = result +"	<tr>";
-		result = result +"		<th>Pay head</th>";
-		result = result +"		<th>Short code</th>";
+		result = result +"		<th>Name</th>";
+		result = result +"		<th>Short Code</th>";
 		result = result +"		<th>Type</th>";
-		result = result +"		<th>Taxable</th>";
+		result = result +"		<th>Tax</th>";
+		result = result +"		<th>Component</th>";
 		result = result +"		<th>Action</th>";
 		result = result +"	</tr>";
 		result = result +"</thead>";
@@ -150,8 +151,9 @@ function payheadListPagination(url,sourceleadUrl){
         "columns": [
             { "data": "name" },
             { "data": "shortCode"},
-            { "data": "paytype"},
-            { "data": "tax" },
+            { "data": "type"},
+            { "data": "tax"},
+            { "data": "component"},
             { "data": "actions"}
         ],
         "columnDefs": [ {
@@ -159,7 +161,7 @@ function payheadListPagination(url,sourceleadUrl){
 	    	  	"data": "name",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		 result = result +"<td><div><span>"+opt.name+"</span></div></td>";
+	    	  		 result = result +"<td><a href='<c:url value='/app/payrollPayheadSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		             return result;
 	    	  	}
 	      },{
@@ -174,12 +176,12 @@ function payheadListPagination(url,sourceleadUrl){
 	      
 	          },{
 		    	  "targets": colIndex++,
-	              "data": "paytype",
+	              "data": "type",
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  var pType = "";
-	            	  if(opt.paytype != null && opt.paytype != '' && opt.paytype != 'undefined'){
-	            		  pType = opt.paytype;
+	            	  if(opt.type != null && opt.type != '' && opt.type != 'undefined'){
+	            		  pType = opt.type;
 	            	  }else{
 	            		  pType = "--";
 	            	  }
@@ -200,7 +202,21 @@ function payheadListPagination(url,sourceleadUrl){
 		            	  result = result +"<td><div><span>"+taxType+"</span></div></td>";
 	            		return result;
 	              }
-		     }, {
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "component",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  var pComponent = "";
+	            	  if(opt.component != null && opt.component != '' && opt.component != 'undefined'){
+	            		  pComponent = opt.component;
+	            	  }else{
+	            		  pComponent = "--";
+	            	  }
+	            	  result = result +"<td><div><span>"+pComponent+"</span></div></td>";
+	            	  return result;
+	              }
+		      },{
 		    	  "targets": colIndex++,
 	              "data": "actions",
 	              "sortable": false,

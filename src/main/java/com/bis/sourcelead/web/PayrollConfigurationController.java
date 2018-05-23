@@ -98,7 +98,7 @@ public class PayrollConfigurationController {
 	}
 	
 	@RequestMapping(value = "/payrollPayhead")
-	public ModelAndView addPayhead(@RequestParam(value="uuid", required=false) String uuid, HttpServletRequest request)
+	public ModelAndView payrollPayhead(@RequestParam(value="uuid", required=false) String uuid, HttpServletRequest request)
 	{
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
@@ -122,6 +122,28 @@ public class PayrollConfigurationController {
 		}
 		model.addObject("uuid", uuid);
 		model.setViewName("indPayroll/addPayhead");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/payrollPayheadSummary")
+	public ModelAndView payrollPayheadSummary(@RequestParam(value="uuid", required=false) String uuid, HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(StringUtils.isNotBlank(uuid)) {
+			try {
+				PayrollPayhead payrollPayhead = payrollPayheadService.getPayrollPayheadByUUID(uuid);
+				payrollPayhead.setEffectiveDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),payrollPayhead.getEffectiveDate()));
+				model.addObject("payrollPayhead", payrollPayhead);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		model.addObject("uuid", uuid);
+		model.setViewName("indPayroll/viewPayhead");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}

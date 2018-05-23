@@ -90,7 +90,8 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 				PayheadDTO.setId(payRollPayhead.getId());
 				PayheadDTO.setName(payRollPayhead.getName());
 				PayheadDTO.setShortCode(payRollPayhead.getShortCode());
-				PayheadDTO.setPayType(payRollPayhead.getPayType().getName());
+				PayheadDTO.setType(payRollPayhead.getType());
+				PayheadDTO.setComponent(payRollPayhead.getComponent());
 				PayheadDTO.setTax(payRollPayhead.getTax());
 				PayheadDTO.setUuid(payRollPayhead.getUuid());
 				payrollPayheadDTOList.add(PayheadDTO);
@@ -127,7 +128,8 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 		if(payrollPayheadDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollPayheadDTO.getSearchValue())) {
 			 query1.append(" payhead.name like '" + payrollPayheadDTO.getSearchValue() + "%' ")
 			    .append("OR payhead.shortCode like '%" + payrollPayheadDTO.getSearchValue() + "%' ")
-			    .append("OR payhead.payType.name like '%" + payrollPayheadDTO.getSearchValue() + "%' ")
+			    .append("OR payhead.type like '%" + payrollPayheadDTO.getSearchValue() + "%' ")
+			    .append("OR payhead.component like '%" + payrollPayheadDTO.getSearchValue() + "%' ")
 				.append("OR payhead.tax like '%" + payrollPayheadDTO.getSearchValue() + "%' ");
 		}
 		

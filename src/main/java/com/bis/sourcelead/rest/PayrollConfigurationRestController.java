@@ -403,6 +403,12 @@ public class PayrollConfigurationRestController {
 								payrollPayhead.setShortCode(null);
 							}
 							
+							if(StringUtils.isNotBlank(payrollPayheadDTO.getType())) {
+								payrollPayhead.setType(payrollPayheadDTO.getType());
+							}else {
+								payrollPayhead.setType(null);
+							}
+							
 							if(StringUtils.isNotBlank(payrollPayheadDTO.getPayType())) {
 								PayrollPaytype payrollPaytype = new PayrollPaytype();
 								payrollPaytype.setId(Long.parseLong(payrollPayheadDTO.getPayType()));
@@ -425,6 +431,18 @@ public class PayrollConfigurationRestController {
 							
 							if(StringUtils.isNotBlank(payrollPayheadDTO.getApplicableFor())) {
 								payrollPayhead.setApplicableFor(payrollPayheadDTO.getApplicableFor());
+								if(payrollPayheadDTO.getApplicableFor().equalsIgnoreCase("Experienced")) {
+									if(StringUtils.isNotBlank(payrollPayheadDTO.getExperienceYears())) {
+										payrollPayhead.setExperienceYears(payrollPayheadDTO.getExperienceYears());
+									}else {
+										payrollPayhead.setExperienceYears(null);
+									}
+									if(StringUtils.isNotBlank(payrollPayheadDTO.getExperienceMonths())) {
+										payrollPayhead.setExperienceMonths(payrollPayheadDTO.getExperienceMonths());
+									}else {
+										payrollPayhead.setExperienceMonths(null);
+									}
+								}
 							}else {
 								payrollPayhead.setApplicableFor(null);
 							}
@@ -441,10 +459,10 @@ public class PayrollConfigurationRestController {
 								payrollPayhead.setPaidComponent("N");
 							}
 							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getPartofaCTC())) {
-								payrollPayhead.setPartofaCTC(payrollPayheadDTO.getPartofaCTC());
+							if(StringUtils.isNotBlank(payrollPayheadDTO.getPartOfGratitutiy())) {
+								payrollPayhead.setPartOfGratitutiy(payrollPayheadDTO.getPartOfGratitutiy());
 							}else {
-								payrollPayhead.setPartofaCTC("N");
+								payrollPayhead.setPartOfGratitutiy("N");
 							}
 							
 							if(StringUtils.isNotBlank(payrollPayheadDTO.getFbpComponent())) {
@@ -452,6 +470,31 @@ public class PayrollConfigurationRestController {
 							}else {
 								payrollPayhead.setFbpComponent("N");
 							}
+							
+							if(StringUtils.isNotBlank(payrollPayheadDTO.getLeaveDependent())) {
+								payrollPayhead.setLeaveDependent(payrollPayheadDTO.getLeaveDependent());
+							}else {
+								payrollPayhead.setLeaveDependent("N");
+							}
+							
+							if(StringUtils.isNotBlank(payrollPayheadDTO.getShowInPayslip())) {
+								payrollPayhead.setShowInPayslip(payrollPayheadDTO.getShowInPayslip());
+							}else {
+								payrollPayhead.setShowInPayslip("N");
+							}
+							
+							if(StringUtils.isNotBlank(payrollPayheadDTO.getPfApplicable())) {
+								payrollPayhead.setPfApplicable(payrollPayheadDTO.getPfApplicable());
+							}else {
+								payrollPayhead.setPfApplicable("N");
+							}
+							
+							if(StringUtils.isNotBlank(payrollPayheadDTO.getEsiApplicable())) {
+								payrollPayhead.setEsiApplicable(payrollPayheadDTO.getEsiApplicable());
+							}else {
+								payrollPayhead.setEsiApplicable("N");
+							}
+							
 							payrollPayhead.setOrgLocationId(orgLocations);
 							//payrollPayhead.setCreatedDate(new Date());
 							//payrollPayhead.setCreatedBy(user);
@@ -577,7 +620,7 @@ public class PayrollConfigurationRestController {
 				public ResponseList<PayrollPayheadDTO> getPayRollPayheadListWithPagination(PayrollPayheadDTO payrollPayheadDTO,
 						@RequestParam("locationCode") String locationCode) throws Exception {
 					OrgLocations loginOrgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-					String[] tableColumns = { "name", "shortCode", "paytype", "tax","actions" };
+					String[] tableColumns = { "name", "shortCode", "type", "tax","component", "actions" };
 					int sortColumnIndex = 1; // by default sorting using payhead
 					String sortColumnOrder = "desc"; // by default descending order
 					if (payrollPayheadDTO.getOrder() != null && !payrollPayheadDTO.getOrder().isEmpty()) {
