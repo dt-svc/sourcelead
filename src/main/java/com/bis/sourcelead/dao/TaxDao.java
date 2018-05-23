@@ -23,4 +23,6 @@ public interface TaxDao {
 
 	public ProfessionalTax getProfessionalTaxById(long id);
 
+	public long changeStateTaxStatus(long stateTaxId);
+
 }

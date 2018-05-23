@@ -1,12 +1,7 @@
 package com.bis.sourcelead.web;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,15 +20,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
-import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
-import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadTaxType;
-import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
@@ -152,6 +143,26 @@ public class TaxController {
 			logger.error(e.getMessage());
 		}
 		return modelAndView;
+	}
+
+	@RequestMapping(value = "/stateTax/changeStatus")
+	@ResponseBody
+	public Response<String> changeStateTaxStatus(HttpServletRequest request, @RequestParam(defaultValue = "0") long stateTaxId) {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				response = taxService.changeStateTaxStatus(stateTaxId);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 	}
 
 	@RequestMapping(value = "/getStateTaxes", method = RequestMethod.POST)

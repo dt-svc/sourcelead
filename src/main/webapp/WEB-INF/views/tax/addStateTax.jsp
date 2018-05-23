@@ -16,6 +16,9 @@
 			<form action="" id="addStateTaxForm" method="post">
 				<input type="hidden" value="${stateTax.id}" name="id" />
 				<input type="hidden" value="" name="removeIds" id="removeIds"/>
+				<c:if test="${stateTax.id > 0}">
+				<input type="hidden" value="${stateTax.taxTypeId}" name="taxTypeId"/>
+				</c:if>
 				<div class="col-md-10">
 					<div class="clearfix row">
 						<div class="col-md-4 dropdown-select mt10 mb10">

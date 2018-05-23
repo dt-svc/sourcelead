@@ -2,6 +2,7 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.ProfessionalTax;
@@ -20,5 +21,7 @@ public interface TaxService {
 	long addStateTax(StateTaxDTO stateTaxDTO);
 
 	ProfessionalTax getProfessionalTaxById(long id);
+
+	Response<String> changeStateTaxStatus(long stateTaxId);
 
 }
