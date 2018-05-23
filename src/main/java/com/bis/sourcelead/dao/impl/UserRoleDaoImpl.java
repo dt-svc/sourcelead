@@ -1438,5 +1438,16 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return userRoleList;
 	}
 
+	@Override
+	@Transactional
+	public List<Long> getAllAssignedUsersIdsByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select userRole.user.id from UserRole userRole where userRole.resourceManager.id = :resourceManagerId and userRole.orgLocations.id = :locationId  " ;
+	    List<Long> userIds = session.createQuery(query).setLong( "resourceManagerId", resourceManagerId).setLong("locationId", orgLocationId).list();
+        return userIds;
+        
+	
+	}
+
 
 }

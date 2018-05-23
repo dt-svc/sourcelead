@@ -226,6 +226,10 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	List<User> reportingManagers;
+	
+	@Transient
+	@JsonProperty
+	List<User> resourceManagers;
 
 	@Transient
 	@JsonProperty
@@ -264,6 +268,9 @@ public class UserRole implements Serializable {
 
 	@Transient
 	private Integer assignedUsersCountToReportingManager;
+	
+	@Transient
+	private Integer assignedUsersCountToResourceManager;
 
 	@Transient
 	private Integer assignedAsVendorOwnerOrSpocCount;
@@ -969,6 +976,22 @@ public class UserRole implements Serializable {
 
 	public void setAllResourceManagers(List<User> allResourceManagers) {
 		this.allResourceManagers = allResourceManagers;
+	}
+
+	public List<User> getResourceManagers() {
+		return resourceManagers;
+	}
+
+	public void setResourceManagers(List<User> resourceManagers) {
+		this.resourceManagers = resourceManagers;
+	}
+
+	public Integer getAssignedUsersCountToResourceManager() {
+		return assignedUsersCountToResourceManager;
+	}
+
+	public void setAssignedUsersCountToResourceManager(Integer assignedUsersCountToResourceManager) {
+		this.assignedUsersCountToResourceManager = assignedUsersCountToResourceManager;
 	}
 
 	

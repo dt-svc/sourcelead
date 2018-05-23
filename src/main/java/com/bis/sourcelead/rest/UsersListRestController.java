@@ -868,6 +868,27 @@ public class UsersListRestController {
 		}
 
 		userRole.setReportingManagers(reportManagerUsersList);
+		
+		
+		
+	// To change resource manager
+			List<Long> resourceMgrUserIds = userRoleService.getAllAssignedUsersIdsByReportingManagerId(userId, orgLocations.getId());
+			userRole.setAssignedUsersCountToResourceManager(resourceMgrUserIds.size());
+			List<User> resourceManagerUsersList = new ArrayList<User>();
+			if (resourceMgrUserIds.size() > 0) {
+				resourceMgrUserIds.add(userId);
+				List<User> managerUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(
+						orgLocations.getId(), resourceMgrUserIds, Long.valueOf(Constants.TAB_USER));
+				for (User user : managerUsersList) {
+					UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+					if (role != null) {
+						user.setUserType(role.getRoles().getDisplayName());
+						resourceManagerUsersList.add(user);
+					}
+				}
+			}
+
+			userRole.setResourceManagers(resourceManagerUsersList);
 
 		// To change client owner and spoc
 		List<Long> cleintSpocIds = orgSpocService.getAssignedAsClientOrVendorSpocCountByUserId(userId,

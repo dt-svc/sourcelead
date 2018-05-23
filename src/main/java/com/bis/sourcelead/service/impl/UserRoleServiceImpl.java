@@ -803,6 +803,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public List<UserRole> getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(orgLocationId);
+	}
+
+	@Override
+	public List<Long> getAllAssignedUsersIdsByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersIdsByResourceManagerId(resourceManagerId, orgLocationId);
 	} 
     
 

@@ -352,7 +352,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor){
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor,String isGlobalUser){
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		
 		ResponseList<ProjectMembers> response = new ResponseList<>();
@@ -491,8 +491,15 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+ "     ) ";
 	     
 	     
+	    String globalUserQuery = "";
+	    if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+	    	globalUserQuery = " pm.projectMemberCandidteId.orgLocationId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)";
+	    }else {
+	    	globalUserQuery = " pm.projectMemberCandidteId.orgLocationId.id = :locationsId";
+	    }
 		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient left join fetch pclient.orgRelationId pcOrgRelation"
-				+ " where  candidate.orgLocationId.id = :locationsId"
+				+ " where  "
+				    +globalUserQuery
 				    +frequencyQuery
 				    +fillingOptionQuery
 				    + statusQuery
@@ -505,7 +512,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Query query = session.createQuery(queryStr.toString());
 		
 		
-		String countQuery = " Select count(*) from ProjectMembers pm where pm.projectMemberCandidteId.orgLocationId.id = :locationsId "
+		String countQuery = " Select count(*) from ProjectMembers pm where  "
+				+globalUserQuery
 				+frequencyQuery
 				+fillingOptionCountQuery
 				+ statusCountQuery

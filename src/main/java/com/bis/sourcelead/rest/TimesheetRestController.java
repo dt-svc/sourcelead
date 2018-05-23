@@ -348,6 +348,7 @@ public class TimesheetRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		Map<String, List<WeekDaysDTO>> entriesMap = new LinkedHashMap<>();
 		Float totalHours = 0f;
 		Float billableHours = 0f;
@@ -397,7 +398,7 @@ public class TimesheetRestController {
 					} else {
 						TimeSheetSubmissionDTO tssDTO = getWeekDaysDTOListBySubFrrequencyList(
 								tedDTO.getProjectMemberId(), tedDTO.getCurrentTimeFrequency(), key, "user",
-								orgLocations, loginUser);
+								orgLocations, loginUser,isGlobalAccess);
 						if (tssDTO != null && tssDTO.getWeekDays() != null && !tssDTO.getWeekDays().isEmpty()) {
 							List<WeekDaysDTO> weekDayDTOList = new LinkedList<>();
 							while (actualStartDate.before(actualEndDate) || actualStartDate.equals(actualEndDate)) {
@@ -804,7 +805,7 @@ public class TimesheetRestController {
 
 	private HashMap<String, String> getTimesheetStatusByTimeSubFrequency(ProjectMembers pm, String timesheetFor,
 			String currentTimeFrequency, OrgLocations orgLocations, User loginUser, Boolean isModifyMyTimeSheet,
-			Boolean isFillMyTimeSheet) throws Exception {
+			Boolean isFillMyTimeSheet,String isGlobalAccess) throws Exception {
 		String[] frequency = currentTimeFrequency.split("To");
 		String currentFrequencyStartDate = frequency[0].trim();
 		String currentFrequencyEndDate = frequency[1].trim();
@@ -834,7 +835,7 @@ public class TimesheetRestController {
 				sah = submissionApproverHierarchyService
 						.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(
 								loginUser.getId(), projectId, masterCandidateId, orgLocations.getId(),
-								frequencyStartDate, frequencyEndDate);
+								frequencyStartDate, frequencyEndDate,isGlobalAccess);
 			}
 			Submission_Status submissionStatus = sah.getSubmissionStatus();
 			Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(pm.getId(), loginUser,
@@ -1039,7 +1040,7 @@ public class TimesheetRestController {
 	 */
 	private TimeSheetSubmissionDTO getWeekDaysDTOListBySubFrrequencyList(Long projectMemberId,
 			String currentTimeFrequency, String currentTimeSubFrequency, String timesheetFor, OrgLocations orgLocations,
-			User loginUser) throws Exception {
+			User loginUser,String isGlobalAccess) throws Exception {
 		Boolean isFillMyTimeSheet = commonUtil.hasRole("ROLE_FILL_MY_TIMESHEETS");
 		Boolean isModifyMyTimeSheet = commonUtil.hasRole("ROLE_MODIFY_MY_TIMESHEETS");
 		Boolean isFillMemberTimesheet = commonUtil.hasRole("ROLE_FILL_MEMBER_TIMESHEETS");
@@ -1050,7 +1051,7 @@ public class TimesheetRestController {
 		}
 		ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemberId);
 		HashMap<String, String> statusMap = getTimesheetStatusByTimeSubFrequency(projectMember, timesheetFor,
-				currentTimeFrequency, orgLocations, loginUser, isModifyMyTimeSheet, isFillMyTimeSheet);
+				currentTimeFrequency, orgLocations, loginUser, isModifyMyTimeSheet, isFillMyTimeSheet,isGlobalAccess);
 		StringBuilder disbleCondition1 = new StringBuilder("");
 		StringBuilder disbleCondition2 = new StringBuilder("");
 		StringBuilder disbleCondition3 = new StringBuilder("");
@@ -1438,7 +1439,7 @@ public class TimesheetRestController {
 		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
 			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		}
-
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		if (candidate == null && loginUser != null && orgLocations != null) {
 			candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLocations.getId());
@@ -1456,7 +1457,7 @@ public class TimesheetRestController {
 				&& StringUtils.isNotEmpty(currentTimeSubFrequency)) {
 			ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemberId);
 			HashMap<String, String> statusMap = getTimesheetStatusByTimeSubFrequency(projectMember, timesheetFor,
-					currentTimeFrequency, orgLocations, loginUser, isModifyMyTimeSheet, isFillMyTimeSheet);
+					currentTimeFrequency, orgLocations, loginUser, isModifyMyTimeSheet, isFillMyTimeSheet,isGlobalAccess);
 			tsDTO.setTimeSubFrequency(currentTimeSubFrequency);
 			tsDTO.setTimeFrequency(currentTimeFrequency);
 			tsDTO.setTimesheetFor(timesheetFor);
@@ -3762,6 +3763,7 @@ public class TimesheetRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		ProjectMembers projectMember = null;
 		if (null != projectMemberId) {
 			projectMember = projectMembersService.getProjectMemberById(projectMemberId);
@@ -3770,10 +3772,10 @@ public class TimesheetRestController {
 		File file = null;
 		if (!"pdf".equalsIgnoreCase(exportType)) {
 			file = exportTimesheetEntries.exportTimesheets(projectMember, startDate, endDate, orgLocations, requestFrom,
-					loginUser);
+					loginUser,isGlobalAccess);
 		} else {
 			file = timeSheetPdfUtil.exportTimesheetPdf(projectMember, startDate, endDate, orgLocations, requestFrom,
-					loginUser);
+					loginUser,isGlobalAccess);
 		}
 
 		if (file != null) {
@@ -3893,6 +3895,7 @@ public class TimesheetRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		// DateFormat df = Constants.DMY;
 		// DateFormat df = LoginSessionController.DATEFORMAT;
 		Date stDate = null;
@@ -3913,10 +3916,10 @@ public class TimesheetRestController {
 		}
 		if ("pdf".equalsIgnoreCase(exportType)) {
 			file = exportTimesheetEntries.timeSheetApprovelExport(user, orgLocations, stDate, edDate,
-					timesheetFrequency, client, stage, frequencyMonth, weekFrequency);
+					timesheetFrequency, client, stage, frequencyMonth, weekFrequency,isGlobalAccess);
 		} else {
 			file = exportTimesheetEntries.timeSheetApprovelExportExcel(user, orgLocations, stDate, edDate,
-					timesheetFrequency, client, stage, frequencyMonth, weekFrequency);
+					timesheetFrequency, client, stage, frequencyMonth, weekFrequency,isGlobalAccess);
 		}
 
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
