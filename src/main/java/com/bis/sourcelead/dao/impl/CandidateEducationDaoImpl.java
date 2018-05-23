@@ -101,7 +101,7 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
 			query = query + " and (ce.specialization like :searchVal or ce.name like :searchVal or ce.institute like :searchVal) ";
 		}
-		query = query + " ORDER BY  DATE(ce.endDate) DESC, ce.id DESC";
+		query = query + " ORDER BY  DATE(ce.startDate) DESC, ce.id DESC";
 		Query candidateQuery = session.createQuery(query).setLong("candidateId", candidateId);
 		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
 			candidateQuery.setParameter("searchVal", "%"+searchVal+"%");

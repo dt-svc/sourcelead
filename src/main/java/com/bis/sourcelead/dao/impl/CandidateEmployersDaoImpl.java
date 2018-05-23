@@ -118,7 +118,7 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
 			query = query + " and (candidateEmployers.name like :searchVal or candidateEmployers.designation like :searchVal) ";
 		}
-		query = query + " ORDER BY (candidateEmployers.endYear) DESC, candidateEmployers.id DESC";  
+		query = query + " ORDER BY (candidateEmployers.startYear) DESC, candidateEmployers.id DESC";  
 		Query candidateQuery = session.createQuery(query).setLong("orgLocationId", loc).setLong("candidateId", candidateId);
 		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
 			candidateQuery.setParameter("searchVal", "%"+searchVal+"%");
