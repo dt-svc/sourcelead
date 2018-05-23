@@ -1,12 +1,10 @@
 package com.bis.sourcelead.util;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,14 +49,12 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -89,13 +85,13 @@ public class ReportsUtil {
 	private String staticPath;
 	
 	@Autowired
-	EmployeesService employeesService;
+	private EmployeesService employeesService;
 	
 	@Autowired
-	UserRoleService userRoleService;
+	private UserRoleService userRoleService;
 	
 	@Autowired
-	ConversionUtil conversionUtil;
+	private ConversionUtil conversionUtil;
 	
 	
      public List<RequirementDTO> getAllRequirementsByOrgLocationId(Long orgLocationId,User user,String userRole,HttpServletRequest request){
