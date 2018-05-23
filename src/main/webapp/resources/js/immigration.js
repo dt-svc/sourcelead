@@ -578,12 +578,13 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	            scrollToTopOnError: true,
 	            dateFormat: 'yyyy/mm/dd'
 	        };
-		$("#canFormSave_Button").attr("disabled",true);
+		
 		if ($('#formSave_Form').validate(false, validationSettings)) {
 			var formData = getFormData("formSave_Form");
 			var candidateId = $('#candidateID').val();
 			var templateId = $('#templateID').val();
 			var immigrationId = $('#immigrationID').val();
+			$("#canFormSave_Button").attr("disabled",true);
 	        $.ajax({
 	            url: sourceleadUrl + immiModulePath + "/saveCandidateImmigrationForms?"+ tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&templateId="+templateId,
 	            type: "POST",
@@ -594,6 +595,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	                	$('.popMask').fadeOut();
 	                	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'');
 	                }
+	                $("#canFormSave_Button").removeAttr("disabled");
 	            }
 	        });
 
@@ -1282,11 +1284,12 @@ function validateEduname()
 
 
 function saveNotesDatails(status) {
-	$("#notesSave_Button").attr("disabled",true);
+	
 	if ($('#notesDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("notesDetails_form");
         var candidateId = $('#candidateID').val();
         var immigrationId = $('#immigrationID').val();
+        $("#notesSave_Button").attr("disabled",true);
         $.ajax({
             url: sourceleadUrl + immiModulePath + "/saveImmigrationNotesDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
             type: "POST",
@@ -1297,6 +1300,7 @@ function saveNotesDatails(status) {
     				$("#popNoteView").hide(100);
                 	getNotesListByImmigration(candidateId);
                 }
+            	$("#notesSave_Button").removeAttr("disabled");
             }
         });
 

@@ -254,7 +254,9 @@
 				$("#popResiView").fadeOut(100); 
 				$("#residenceDetails_form")[0].reset();
 				$("#residenceId").val('');
-			 }
+				$('#popResiView').find('p.jquery_form_error_message').remove();
+				$("#residence_SaveButon").removeAttr("disabled");
+			   }
 			 
 				$("#residenceSearch").keyup(function (e) {
 			        if (e.which === 13) {

@@ -254,6 +254,7 @@
 				$('#formSave_Form input[name="isRequired"]').prop('checked', false);
 				//$('#candidate_Immigration_Doc input[name="isRequired"]').prop('checked', false);
 				$('#errformNameDiv').find('p.jquery_form_error_message').remove(); 
+				$('#immigrationDocDiv').find('p.jquery_form_error_message').remove(); 
 				removeImmigDoc();
 				
 			}
