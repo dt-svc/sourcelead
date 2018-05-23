@@ -111,6 +111,7 @@ public class TaxServiceImpl implements TaxService {
 				}
 				st.setId(stateTaxDTO.getId());
 				st.setFinancialYear(stateTaxDTO.getFinancialYear());
+				st.setActive(true);
 				st.setSourceleadTaxType(getTaxTypeById(stateTaxDTO.getTaxTypeId()));
 				st.setStates(statesService.getStateById(stateTaxDTO.getStateId()));
 
