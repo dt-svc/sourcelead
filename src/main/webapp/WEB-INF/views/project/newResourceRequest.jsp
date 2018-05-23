@@ -227,7 +227,7 @@
 			                    <th>Primary Skills</th>
 			                    <th>Bill/Pay Rate</th>
 			                    <th>Duration</th>
-			                    <th>Consulting Type</th>
+			                    <th>Emp Type</th>
 			                    <th>Est Hours</th>
 			                    <th>Est Budget</th>
 			                    <th>Action</th>
