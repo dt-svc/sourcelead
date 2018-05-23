@@ -25,7 +25,7 @@
 	<p>You are choosing to delete the Tax</p>
 	<div>&nbsp;&nbsp;&nbsp;</div>
 	<b>
-		<input id='confirmId' type='button' value='Ok' onclick='tax.changeStateTaxStatus()'>
+		<input id='confirmId' type='button' value='Ok' onclick='tax.changeTaxStatus()'>
 		<input class='u_can_color' type='button' value='Cancel' onClick='tax.closeChangeStatusPopup()'>
 	</b>
 </div>

@@ -194,9 +194,9 @@ function Tax() {
 						result += "<ul class='list-unstyled list-inline mb0'>";
 						result += "<li " + (stList[e].active ? "" : "class='disableBtn'") + "><a href='create?stateTaxId=" + stList[e].id + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
 						if(stList[e].active) {
-							result += "<li><a href='javascript:void()' onclick='tax.showChangeStatusPopup(" + stList[e].id + ", 1," + pageNo + ")' title='Make InActive' class='text-danger'><i class='fa fa-trash'></i></a></li>";
+							result += "<li><a href='javascript:void()' onclick='tax.showChangeStatusPopup(" + stList[e].id + ", 1, 1, " + pageNo + ")' title='Make InActive' class='text-danger'><i class='fa fa-trash'></i></a></li>";
 						} else {
-							result += "<li><a href='javascript:void()' onclick='tax.showChangeStatusPopup(" + stList[e].id + ", 2," + pageNo + ")' title='Make Active' class='text-success'><i class='fa fa-edit'></i></a></li>";
+							result += "<li><a href='javascript:void()' onclick='tax.showChangeStatusPopup(" + stList[e].id + ", 1, 0, " + pageNo + ")' title='Make Active' class='text-success'><i class='fa fa-edit'></i></a></li>";
 						}
 						result += "</ul>";
 						result += "</div>";
@@ -396,10 +396,13 @@ function Tax() {
 	}
 	
 
-	this.changeStateTaxStatus = function() {
+	this.changeTaxStatus = function() {
 		var type = $("#confirmId").data("type");
-		var pageNo = $("#confirmId").data("pageNo");
-		$.post(sourceleadUrl + "/stateTax/changeStatus", {stateTaxId: $("#confirmId").data("id")}, function(response) {
+		var status = $("#confirmId").data("status");
+		if(type===1) {
+			var pageNo = $("#confirmId").data("pageNo");
+		}
+		$.post(sourceleadUrl + "/" + (type === 1 ? "stateTax" : "centralTax") + "/changeStatus", {taxId: $("#confirmId").data("id")}, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
@@ -407,9 +410,13 @@ function Tax() {
 			} else if (response.response === "SUCCESS") {
 				tax.closeChangeStatusPopup();
 				$(".success_pop").css("display","block");
-        		$(".success_pop span").html("StateTax made as " + (type === 1 ? "inactive" : "active" ) + " successfully....");
+        		$(".success_pop span").html("StateTax made as " + (status === 1 ? "inactive" : "active" ) + " successfully....");
         		setTimeout(function() {
-        			tax.getStateTaxList(pageNo);
+        			if(type === 1) {
+        				tax.getStateTaxList(pageNo);	
+        			} else if(type === 2) {
+        				
+        			}
         			$(".success_pop").css("display","none");
 		 		},1000);
 			} else if (response.indexOf('Sign In') !== -1) {
@@ -420,10 +427,11 @@ function Tax() {
 		});
 	}
 	
-	this.showChangeStatusPopup = function(taxId, type, pageNo) {
+	this.showChangeStatusPopup = function(taxId, type, status, pageNo) {
 		$("#remove_user_pop p").html("You are choosing to make the Tax as "+ (type === 1 ? "Inactive": "Active"));
 		$("#confirmId").data("id", taxId);
 		$("#confirmId").data("type", type);
+		$("#confirmId").data("status", status);
 		$("#confirmId").data("pageNo", pageNo);
 		$("#remove_user_pop").slideDown(200);
 		$(".project_inn_mask").fadeIn(200);
