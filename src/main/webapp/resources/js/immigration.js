@@ -581,12 +581,13 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	            scrollToTopOnError: true,
 	            dateFormat: 'yyyy/mm/dd'
 	        };
-		$("#canFormSave_Button").attr("disabled",true);
+		
 		if ($('#formSave_Form').validate(false, validationSettings)) {
 			var formData = getFormData("formSave_Form");
 			var candidateId = $('#candidateID').val();
 			var templateId = $('#templateID').val();
 			var immigrationId = $('#immigrationID').val();
+			$("#canFormSave_Button").attr("disabled",true);
 	        $.ajax({
 	            url: sourceleadUrl + immiModulePath + "/saveCandidateImmigrationForms?"+ tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&templateId="+templateId,
 	            type: "POST",
@@ -597,6 +598,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	                	$('.popMask').fadeOut();
 	                	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'');
 	                }
+	                $("#canFormSave_Button").removeAttr("disabled");
 	            }
 	        });
 
@@ -867,6 +869,7 @@ function validateTemplateName() {
         });
     }
 }
+
 function checkFormNames() {
     formNames = [];
     var focusedElement;
@@ -907,14 +910,26 @@ function checkTaskNames(newName) {
     var rows = table.rows;
     for (var i = 1; i < rows.length; i++) {
         var name = rows[i].firstChild.textContent.trim();
-        if (newName === name) {
-            $("#taskName").after("<p class='jquery_form_error_message'>is Already Existed</span>");
-            $("#addTaskBtn").addClass("disableBtn");
-            return;
-        } else {
-            $("#taskName").parent().find('p.jquery_form_error_message').remove();
-            $("#addTaskBtn").removeClass("disableBtn");
-        }
+        /*if (newName === name) {
+    	$("#taskNameDiv").parent().find('p.jquery_form_error_message').remove();
+        $("input#taskName").after("<p class='jquery_form_error_message'>is Already Existed</span>");
+        $("#addTaskBtn").addClass("disableBtn");
+        return;
+    } else {
+        $("input#taskName").parent().find('p.jquery_form_error_message').remove();
+        $("#addTaskBtn").removeClass("disableBtn");
+    }*/
+		if (newName === name) {
+		    $('#taskNameDiv').find('p.jquery_form_error_message').remove();
+			  $("input#taskName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
+			  $("#addTaskBtn").addClass("disableBtn");
+			  return;
+		}
+		else{
+			 $('input#taskName').removeAttr( "record-exist record-exist-errormsg");
+			 $('#taskNameDiv').find('p.jquery_form_error_message').remove(); 
+			 $("#addTaskBtn").removeClass("disableBtn");
+		}
     }
 }
 
@@ -925,11 +940,11 @@ function saveEmployerDetails(status) {
             scrollToTopOnError: true,
             dateFormat: 'yyyy/mm/dd'
         };
-	$("#employerSave_Buton").attr("disabled",true);
 	if ($('#employerDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("employerDetails_form");
         var candidateId = $('#candidateID').val();
         var immigrationId = $('#immigrationID').val();
+        $("#employerSave_Buton").attr("disabled",true);
         $.ajax({
             url: sourceleadUrl + immiModulePath + "/saveImmigrationEmployerDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
             type: "POST",
@@ -946,7 +961,9 @@ function saveEmployerDetails(status) {
                 }else{
                 	 showError("Operation failed, please try again");
                 }
+				$("#employerSave_Buton").removeAttr("disabled");
             }
+        
         });
 
         return true;
@@ -1047,11 +1064,14 @@ function getCandidateEmployerList(candidateId){
 }
 
 function saveResidenceDetails(status) {
-	$("#residence_SaveButon").attr("disabled",true);
+	
+	
+	
 	if ($('#residenceDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("residenceDetails_form");
         var candidateId = $('#candidateID').val();
         var immigrationId = $('#immigrationID').val();
+        $("#residence_SaveButon").attr("disabled",true);
         $.ajax({
             url: sourceleadUrl + immiModulePath + "/saveImmigrationResidenceDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
             type: "POST",
@@ -1068,7 +1088,7 @@ function saveResidenceDetails(status) {
                }else{
                	 showError("Operation failed, please try again");
                }
-            	
+              	$("#residence_SaveButon").removeAttr("disabled");
             }
         });
 
@@ -1267,11 +1287,12 @@ function validateEduname()
 
 
 function saveNotesDatails(status) {
-	$("#notesSave_Button").attr("disabled",true);
+	
 	if ($('#notesDetails_form').validate(false, validationSettings)) {
         var formData = getFormData("notesDetails_form");
         var candidateId = $('#candidateID').val();
         var immigrationId = $('#immigrationID').val();
+        $("#notesSave_Button").attr("disabled",true);
         $.ajax({
             url: sourceleadUrl + immiModulePath + "/saveImmigrationNotesDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
             type: "POST",
@@ -1282,6 +1303,7 @@ function saveNotesDatails(status) {
     				$("#popNoteView").hide(100);
                 	getNotesListByImmigration(candidateId);
                 }
+            	$("#notesSave_Button").removeAttr("disabled");
             }
         });
 
@@ -1405,5 +1427,42 @@ function validateCandidatePassportVisa(idType) {
 		        	}
 		        }
 		        },
+		    });
+}
+
+function validateImmigrationCandidateForms() {
+	 var validationSettings = {
+           errorMessagePosition: 'element',
+           borderColorOnError: '',
+           scrollToTopOnError: true,
+           dateFormat: 'yyyy/mm/dd'
+       };
+	 
+	  var candidateId = $("#candidateID").val();
+	  var immigrationId = $('#immigrationID').val();
+	  var id = $("#immigrationCandidateFormId").val();
+	  var formName = document.getElementById("formName").value; 
+	      formName = formName.trim();
+	  
+	  $('#errformNameDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:sourceleadUrl + immiModulePath + "/validateImmigrationCandidateForms?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&immigrationId="+immigrationId+"&id="+id+"&formName="+formName, 
+		        success: function(data) {
+		        	
+		        	if(data == true){
+		        		
+		        		  $('#errformNameDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#formName").after("<p class='jquery_form_error_message'>"+formName+" is Already Existed</span>");
+						  $("#canFormSave_Button").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#formName').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errformNameDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#canFormSave_Button").removeAttr("disabled");
+		        	}
+		        	
+		        }
+		       
 		    });
 }
