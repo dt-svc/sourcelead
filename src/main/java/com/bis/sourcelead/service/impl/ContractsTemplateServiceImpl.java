@@ -443,7 +443,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		if("WTVStage".equalsIgnoreCase(contractsDTO.getSaveType())){
 			contracts.setTemplateSubmissionStatus(Constants.WAITING_TO_BE_VERIFY);
-		}else if(StringUtils.isNotBlank(contractsDTO.getSaveType()) && !Constants.DRAFT.equalsIgnoreCase(contractsDTO.getSaveType()) && Constants.PENDING.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
+		}else if(StringUtils.isNotBlank(contractsDTO.getSaveType()) && !Constants.DRAFT.equalsIgnoreCase(contractsDTO.getSaveType()) && !Constants.PENDING.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
 			if(StringUtils.isNotBlank(contractsDTO.getOwnersType())){
 				Long userId = user.getId().longValue();
 				if(Constants.PARALLEL.equalsIgnoreCase(contractsDTO.getOwnersType())){
@@ -887,6 +887,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	private Set<ContractOwnerHierarchy> getOwnersList(ContractsDTO contractDTO, Contracts contract, User user) throws Exception {
+		Integer status = deleteContractOwnerHierarchyListByContractId(contract.getId());
+		
 		Set<ContractOwnerHierarchy> ownersList = new HashSet<>();
 		if("Parallel".equalsIgnoreCase(contractDTO.getOwnersType())){
 			for(Long userId : contractDTO.getParallelOwner()){
@@ -3584,6 +3586,12 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 		parentContract.setContactUser(contactUser);
 		saveNewContract(parentContract);
 		return contract;
+	}
+
+	@Override
+	public Integer deleteContractOwnerHierarchyListByContractId(Long id)
+	{
+		return contractsTemplateDao.deleteContractOwnerHierarchyListByContractId(id);
 	}
 	
 }
