@@ -103,7 +103,7 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 	public List<CandidateEmployers> getCandidatesEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long loc)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1' ORDER BY candidateEmployers.id DESC";  
+		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1' ORDER BY (candidateEmployers.endYear) DESC,candidateEmployers.id DESC";  
 		List<CandidateEmployers> candidateList = session.createQuery(query).setLong("orgLocationId", loc).setLong("candidateId", candidateId).list();
 		return candidateList;
 	}
@@ -118,7 +118,7 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
 			query = query + " and (candidateEmployers.name like :searchVal or candidateEmployers.designation like :searchVal) ";
 		}
-			query = query + " ORDER BY candidateEmployers.id DESC";  
+		query = query + " ORDER BY (candidateEmployers.endYear) DESC, candidateEmployers.id DESC";  
 		Query candidateQuery = session.createQuery(query).setLong("orgLocationId", loc).setLong("candidateId", candidateId);
 		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
 			candidateQuery.setParameter("searchVal", "%"+searchVal+"%");
