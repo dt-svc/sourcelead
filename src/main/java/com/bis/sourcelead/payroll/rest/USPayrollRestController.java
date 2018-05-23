@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.AssociateContributionDao;
@@ -46,6 +47,7 @@ import com.bis.sourcelead.payroll.service.PayrollContributionService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -87,7 +89,8 @@ public class USPayrollRestController {
 	@Autowired
 	GenerateUSPayrollService generateUSPayrollService;
 	
-	
+	@Autowired
+	UserGroupService userGroupService;
 	/**
 	 * find all deduction types from lookup_data table 
 	 * @param request
@@ -608,5 +611,31 @@ public class USPayrollRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			ResponseList<USPayrollDTO> res = generateUSPayrollService.generateUSPayroll(orgLocation,generateUSPayrollDTO);
 			return res;
+		}
+		
+		
+		/**
+		 * Get  user groups Deductions 
+		 * @param payrollDeductionDTO
+		 * @param request
+		 * @param response
+		 * @return json
+		 * @throws Exception
+		 */
+		@RequestMapping(value = { "/getUserGroupList","/rest/getUserGroupList" }, method = RequestMethod.POST)
+		@ResponseBody
+		public ResponseList<UserGroupDTO> getUserGroupList(UserGroupDTO userGroupDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String[] tableColumns = {"groupId", "groupName","numOfAssociates", "payFrequency"};
+		    int sortColumnIndex = 1;		 //by default sorting using updated date
+			String sortColumnOrder = "asc";  //by default descending order
+			if(userGroupDTO.getOrder() != null && !userGroupDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(userGroupDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = userGroupDTO.getOrder().get(0).get("dir");
+			}
+			userGroupDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			userGroupDTO.setSortOrder(sortColumnOrder);
+			return  userGroupService.findAllUserGroup(userGroupDTO,orgLocation);	
 		}
 }

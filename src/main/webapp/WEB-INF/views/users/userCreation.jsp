@@ -16,7 +16,7 @@
 </script>  -->
 <script type="text/javascript">
 		window.onload = function () {
-			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','','');
+			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','');
 			getDesignationType();
 			getDepartmentsList();
 			maskme();
@@ -210,9 +210,9 @@
                 </div> 
 				
 				
-				<div class="form-group">
-					<label class="col-md-3">Gender<span class="text-danger">&nbsp;*</span></label>
-					<div class="col-md-9" id= "errorGenderMsg">
+				<div class="col-md-5">
+					<label class="clearfix">Gender<span class="text-danger">&nbsp;*</span></label>
+					<div class="clearfix" id= "errorGenderMsg">
 					<label class="paddingRight"><input type="radio"  value="Male"  name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Male</label>
 					<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Female</label>
 					<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Transgender</label>
@@ -220,9 +220,9 @@
 					</div>
 				</div>
 					
-					<div class="form-group">
-						<label class="col-md-3">Marital Status</label>
-						<div class="col-md-9">
+					<div class="col-md-5">
+						<label class="clearfix">Marital Status</label>
+						<div class="clearfix">
 						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
 						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
 						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
@@ -230,9 +230,9 @@
 						</div>
 					</div>
 					
-					<div class="form-group">
-                      <label class="col-md-3">Date of Birth</label>
-                         <div class="col-md-9">
+					<div class="col-md-5">
+                      <label class="clearfix">Date of Birth</label>
+                         <div class="clearfix">
                            <div class="input-group">
                               <input type="text" value="" name="dateofBirth" class="form-control calendar" id="dateofBirth" readonly="readonly">
                               <span class="input-group-addon" onClick="clearDateOfBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span>
@@ -241,10 +241,10 @@
                   </div>
                 
                <div class="col-md-5">
-                  <label class="clearfix">Department </label>
+                  <label class="clearfix">Department<span class="text-danger">*</span> </label>
                   <div class="clearfix chooRadius" id="chosen-role">
                    <div class="input-group col-md-10 pull-left">
-                         <select class="form-control chosen-select" id="department" name="department" field-name="Department" onchange="getReportingManager()" data-validation-optional="true" >
+                         <select class="form-control chosen-select" id="department" name="department" field-name="Department" onchange="getReportingManager()" data-validation="required" >
 			              </select>
 			               <span class="input-group-addon cursorPointer bg-blue" onclick="getDepartmentsList();"><i class="fa fa-refresh "></i></span>
                   </div>

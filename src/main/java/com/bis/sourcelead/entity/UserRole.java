@@ -947,9 +947,6 @@ public class UserRole implements Serializable {
 		this.orgName = orgName;
 
 	}
-
-	
-
 	
 	
 }

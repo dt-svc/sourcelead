@@ -10,6 +10,7 @@ import org.eclipse.core.internal.resources.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ProjectMembersDao;
@@ -25,7 +26,7 @@ import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.AssociateTax;
 import com.bis.sourcelead.payroll.service.AssociateTaxService;
 import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
-import com.bis.sourcelead.payroll.symmetry.HelloPayrollWorld;
+import com.bis.sourcelead.payroll.symmetry.HelloPayrollWorldBis;
 import com.bis.sourcelead.payroll.symmetry.SymmetryPaypal;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -54,7 +55,13 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	@Autowired
 	AssociateTaxService associateTaxService;
 	
+	@Value("${symmetry.STEhome}")
+	private String STEhome;
 	
+	@Value("${symmetry.jniHome}")
+	private String jniHome;
+	
+	 
 	@Override
 	public ResponseList<USPayrollDTO> generateUSPayroll(OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO) throws Exception
 	{
@@ -85,12 +92,12 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				int invoiceFrequency = getProjectInvoiceFrequency(pm.getProjects().getInvoiceFrequency());
 				AssociateTaxDTO associateTaxDTO = associateTaxService.findAssociateTaxSummaryByUserId(user.getId(), orgLocation);
 //				Projects projects = pm.getProjects().getInvoiceFrequency();
-//				HelloPayrollWorld helloPayrollWorld = new HelloPayrollWorld();
-				SymmetryPaypal client = new SymmetryPaypal();
+				HelloPayrollWorldBis helloPayrollWorld = new HelloPayrollWorldBis();
+//				SymmetryPaypal client = new SymmetryPaypal();
 //				String locationCode = "18-097-452890";
-				String locationCode = "04-013-12233";       // Arizona Location Code 
-				client.hello(locationCode);
-//				helloPayrollWorld.runUSPayroll(user,totalHours,amount,invoiceFrequency,associateTaxDTO);
+//				String locationCode = "04-013-12233";       // Arizona Location Code  
+//				client.hello(locationCode);
+				helloPayrollWorld.runUSPayroll(user,totalHours,amount,invoiceFrequency,associateTaxDTO,STEhome,jniHome);
 //				helloPayrollWorld.hello();
 				if (pm.getEmployee() != null) {
 					usPayrollDTO.setEmpId(pm.getEmployee().getEmployeeId());
@@ -142,4 +149,6 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 		double perMinRate = payRate / 60;
 		return totalMin * perMinRate;
 	}
+	
+	
 }

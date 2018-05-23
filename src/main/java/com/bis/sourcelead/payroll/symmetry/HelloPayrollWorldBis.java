@@ -19,20 +19,25 @@ import com.symmetry.ste.WageType;
 import com.symmetry.ste.WebServiceLocationCodeV2;
 import com.symmetry.ste.WebServiceType;
 
-public class HelloPayrollWorld {
+public class HelloPayrollWorldBis {
 	
-	private static final Logger logger = LoggerFactory.getLogger(HelloPayrollWorld.class);
+	private static final Logger logger = LoggerFactory.getLogger(HelloPayrollWorldBis.class);
 	
 	STEPayrollCalculator STE;
 	
 //	public HelloPayrollWorld() {
 //	}
 	
-	public void runUSPayroll(User user, float totalHours, double amount, int payPeriod, AssociateTaxDTO associateTaxDTO)
+	public static void main(String[] args)
+	{
+		System.out.println("Hi");
+	}
+	
+	public void runUSPayroll(User user, float totalHours, double amount, int payPeriod, AssociateTaxDTO associateTaxDTO, String STEhome, String jniHome)
 //	public void hello(String locationCode)
 	{
-		String STEhome = "/home/rajashekar/Desktop/Tools/ste/ste-root";
-		String jniHome = "/home/rajashekar/Desktop/Tools/ste/ste-interface-files/java/";
+//		String STEhome = "/home/rajashekar/Desktop/Tools/ste/ste-root";
+//		String jniHome = "/home/rajashekar/Desktop/Tools/ste/ste-interface-files/java/";
 		String arch = System.getProperty("os.name", "");
 		if (arch.toLowerCase().contains("win")) {
 			STEhome = "c:/STE/ste-root/";
@@ -101,7 +106,7 @@ public class HelloPayrollWorld {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.exit(0);
+//		System.exit(0);
 	}
 
 	private WebServiceLocationCodeV2 getLocationCode(STEPayrollCalculator STE, User user)

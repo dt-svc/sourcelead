@@ -3,6 +3,7 @@ package com.bis.sourcelead.web;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -27,8 +29,10 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -83,6 +87,9 @@ public class UserController {
 	@Autowired
 	OrgLocationService orgLocationService;
 	
+	
+	@Autowired
+	DepartmentService departmentService;
 
 	
 	/**
@@ -245,5 +252,26 @@ public class UserController {
 			return str == null || "".equals(str.trim());
 		}
 	 
+	 
+	 /**
+		 * User Group List JSp
+		 * @param deductionUUID
+		 * @param request
+		 * @param response
+		 * @return ModelAndView
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/userGroupList")
+		public ModelAndView userBatchList(HttpServletRequest request,HttpServletResponse response) throws Exception {
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   ModelAndView model = new ModelAndView();
+			   List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(loginOrgLocation.getId());
+			   model.addObject("departmentList", departmentList);
+			   model.addObject("sourceleadUrl", sourceleadUrl);
+			   model.setViewName("users/usergroupList");
+		       return model;
+		}
+		
 	
+		
 }
