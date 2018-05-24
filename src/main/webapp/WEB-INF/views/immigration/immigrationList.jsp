@@ -225,10 +225,11 @@
 			</div>
 			  <ul class="pull-right">
 			    <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
-			    <li title="Import"><a href="/app/uploadImmigrationForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+			    
 				  <li class="noPad">
 					  <a href="${appPath}/immigration/loadNewPetition" class="btn btn-success btnSuccess anchorWhite btn-sm"><i class="fa fa-plus paddingRight"></i> New </a>
 				  </li>
+				 <li title="Import"><a href="/app/uploadImmigrationForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
 				 <li title="Export" class="mrPOP" id="mypop"><i
 							class="glyphicon glyphicon-export"></i>
 							<div id="exportPop">
