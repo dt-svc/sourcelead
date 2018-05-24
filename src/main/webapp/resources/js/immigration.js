@@ -359,12 +359,12 @@ function Immigration() {
     
     this.savePassportVisaDetails= function(idType) {
     	var formId= "";
-	if(idType =="Passport"){
+    	if(idType =="Passport"){
 			formId ="CandidatePassportform";
-	}
-	 else if(idType =="Visa"){
-  		formId ="CandidateVisaform";
-  	 }
+		}
+	 	else if(idType =="Visa"){
+	  		formId ="CandidateVisaform";
+  		}
 	if ($('#'+formId).validate(false, validationSettings)) {
 		$("#passport_save_id").attr("disabled",true);
 		$("#visa_save_id").attr("disabled",true);
@@ -393,7 +393,8 @@ function Immigration() {
 		                    }else{
 		                    	 showError("Operation failed, please try again");
 		                    }
-							
+							$("#passport_save_id").removeAttr("disabled");
+							$("#visa_save_id").removeAttr("disabled");
 			}
 		});
 		return true;
