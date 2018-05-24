@@ -1329,9 +1329,7 @@ public class ClientServiceImpl implements ClientService {
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
 				orgLocations.setWebsite(clientDTO.getCompanyWebsite());
-			} else {
-				orgLocations.setWebsite("");
-			}
+			} 
 			if (StringUtils.isNotBlank(clientDTO.getCity())) {
 				orgLocations.setCity(clientDTO.getCity());
 			} else {
