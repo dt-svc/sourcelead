@@ -199,6 +199,10 @@ function Immigration() {
         $("#petitionTemplateTaskDetails").showHelpOnFocus();
         $("#petitionTemplateTaskDetails").validateOnBlur(false, validationSettings);
     });
+    
+    this.removeFormValidationErrors = function(formId){
+    	$("#"+formId).find('p.jquery_form_error_message').remove();
+    }
 
     this.editTemplateDetailsByRowId = function (templateUuid) {
         immTemplId = templateUuid; //updating global variable "immTemplId" with templateId.
