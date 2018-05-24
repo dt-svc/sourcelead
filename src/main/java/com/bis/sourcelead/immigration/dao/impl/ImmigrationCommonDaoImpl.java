@@ -1416,4 +1416,13 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return listExportViews;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getTemplateDetailsByNameAndOrgLoacationId(String templateName, OrgLocations orgLocations) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select temp.id from ImmigrationTemplate temp where temp.name = :templateName and temp.orgLocations.id= :orgLocationId";
+		Long tempId = (Long) session.createQuery(query).setString("templateName", templateName).setLong("orgLocationId", orgLocations.getId()).uniqueResult();
+		return tempId;
+	}
+
 }
