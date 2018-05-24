@@ -1762,21 +1762,15 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			 writeRow.createCell(18).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getVisaValidToDate())); 
 		}
-		if(exportView.getClient() !=null){
-			 writeRow.createCell(19).setCellValue(exportView.getClient()); 
-		}else if(exportView.getVendor() !=null) {
-			 writeRow.createCell(19).setCellValue(exportView.getVendor());
-		}
-		if(exportView.getSpocNameClient() !=null){
-			 writeRow.createCell(20).setCellValue(exportView.getSpocNameClient()); 
-		}else if(exportView.getSpocNameVendor() !=null){
-			 writeRow.createCell(20).setCellValue(exportView.getSpocNameVendor()); 
-		}
-		if(exportView.getSpocEmailClient() !=null){
-			 writeRow.createCell(21).setCellValue(exportView.getSpocEmailClient()); 
-		}else if(exportView.getSpocEmailVendor() !=null){
-			 writeRow.createCell(21).setCellValue(exportView.getSpocEmailVendor()); 
-		}
+		 if(exportView.getOrgLocationId().equals(orgLocations.getId())){
+             writeRow.createCell(19).setCellValue(exportView.getVendor()); 
+             writeRow.createCell(20).setCellValue(exportView.getSpocNameVendor()); 
+             writeRow.createCell(21).setCellValue(exportView.getSpocEmailVendor()); 
+        }else {
+             writeRow.createCell(19).setCellValue(exportView.getClient());
+             writeRow.createCell(20).setCellValue(exportView.getSpocNameClient()); 
+             writeRow.createCell(21).setCellValue(exportView.getSpocEmailClient());
+        }
 		if(exportView.getReceiptNo() !=null){
 			 writeRow.createCell(22).setCellValue(exportView.getReceiptNo()); 
 		}

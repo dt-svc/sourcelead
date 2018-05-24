@@ -3,7 +3,7 @@
 
 <div class="immigraTabsHead">
 		  	<!-- <a href="javascript:void(0)" id="addTask"><i class="glyphicon glyphicon-plus"></i> Add Tasks</a>  -->
-		  	<span><input class="immigraTabSerach" id="tasksSearchVal" type="text"></span>
+		  	<span><input class="immigraTabSerach" placeholder="Subject" title="Subject" id="tasksSearchVal" type="text"></span>
 		</div>
 	  	<div class="immigraTable overflow_Auto">	
 		  <table>
