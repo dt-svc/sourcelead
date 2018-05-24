@@ -119,3 +119,4 @@ function getSequentialApprovers(){
 		$('#parallelOwner').removeAttr('data-validation');
 		$('#parallelOwner').attr('data-validation-optional',"true");
 }
+

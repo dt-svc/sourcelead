@@ -394,6 +394,10 @@ public class Contracts {
 	
 	@Transient
 	@JsonProperty
+	private List<Long> parallelOwnerId;
+	
+	@Transient
+	@JsonProperty
 	private String spocUUID;
 	
 	@Transient
@@ -1259,5 +1263,15 @@ public class Contracts {
 	public void setIsParentContract(String isParentContract)
 	{
 		this.isParentContract = isParentContract;
+	}
+
+	public List<Long> getParallelOwnerId()
+	{
+		return parallelOwnerId;
+	}
+
+	public void setParallelOwnerId(List<Long> parallelOwnerId)
+	{
+		this.parallelOwnerId = parallelOwnerId;
 	}
 }
