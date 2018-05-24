@@ -357,18 +357,16 @@ function Immigration() {
     
     this.savePassportVisaDetails= function(idType) {
     	var formId= "";
-    	
-	if ($('#'+formId).validate(false, validationSettings)) {
-		
-		if(idType =="Passport"){
+    	if(idType =="Passport"){
 			formId ="CandidatePassportform";
-			$("#passport_save_id").attr("disabled",true);
 		}
 	 	else if(idType =="Visa"){
 	  		formId ="CandidateVisaform";
-	  		$("#visa_save_id").attr("disabled",true);
   		}
-	
+	if ($('#'+formId).validate(false, validationSettings)) {
+		
+		$("#passport_save_id").attr("disabled",true);
+		$("#visa_save_id").attr("disabled",true);
 			var formData = getFormData(formId);
 		 	var candidateId = $('#candidateID').val();
             var immigrationId = $('#immigrationId').val();
