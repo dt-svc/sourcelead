@@ -249,7 +249,7 @@
 				$("#viewFormpop").fadeOut(100);
 				$("#formSave_Form")[0].reset();
 				$("#immigrationCandidateFormId").val('');
-				$("#formDescription").val('');
+				$("#formDescription").text('');
 				//$("#isRequired").prop("checked",false);
 				$('#formSave_Form input[name="isRequired"]').prop('checked', false);
 				//$('#candidate_Immigration_Doc input[name="isRequired"]').prop('checked', false);
