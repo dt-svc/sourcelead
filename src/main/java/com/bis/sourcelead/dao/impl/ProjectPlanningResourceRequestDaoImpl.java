@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -228,7 +229,11 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
   				requestDTO.setProjectPlanningRequestId(resourceRequest.getProjectPlanningRequestId().getRequestId());
   				requestDTO.setProjectName(resourceRequest.getProjectPlanningRequestId().getProjectName());
   				requestDTO.setRequestedUser(resourceRequest.getProjectPlanningRequestId().getRequestedUser());
-  				requestDTO.setApproverName(resourceRequest.getApproverName());
+  				if(resourceRequest.getApproverUser() != null) {
+  					requestDTO.setApproverName(resourceRequest.getApproverName());
+  				}else {
+  					requestDTO.setApproverName(resourceRequest.getProjectPlanningRequestId().getApproverName());
+  				}
   				requestDTO.setCandidateName(resourceRequest.getCandidateName());
   				requestDTO.setConsultingType(resourceRequest.getConsultingType());
   				requestDTO.setResourceStatus(resourceRequest.getResourceStatus());

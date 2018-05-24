@@ -1831,7 +1831,7 @@ function removeUser(userId){
 						result = result + '<div class="clearfix mb10">';
 						result = result + '<div class="col-md-6">';
 						    result = result + '<div class="user_badg">';
-							    result = result + '<p>Assigned Associates as a Manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
+							    result = result + '<p>Assigned associates as a reporting manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
 									result = result + '</div>';
 					            result = result + '</div>';
 							result = result + '<div class="col-md-6" id="reportingManagerDiv">';
@@ -1861,7 +1861,7 @@ function removeUser(userId){
 						result = result + '<div class="clearfix mb10">';
 						result = result + '<div class="col-md-6">';
 						    result = result + '<div class="user_badg">';
-							    result = result + '<p>Assigned Resource as a Manager<strong class="label label-default">'+json.assignedUsersCountToResourceManager+'</strong></p>';
+							    result = result + '<p>Assigned associates as a resource manager<strong class="label label-default">'+json.assignedUsersCountToResourceManager+'</strong></p>';
 									result = result + '</div>';
 					            result = result + '</div>';
 							result = result + '<div class="col-md-6" id="resourceManagerDiv">';

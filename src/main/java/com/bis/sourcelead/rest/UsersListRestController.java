@@ -872,7 +872,7 @@ public class UsersListRestController {
 		
 		
 	// To change resource manager
-			List<Long> resourceMgrUserIds = userRoleService.getAllAssignedUsersIdsByReportingManagerId(userId, orgLocations.getId());
+			List<Long> resourceMgrUserIds = userRoleService.getAllAssignedUsersIdsByResourceManagerId(userId, orgLocations.getId());
 			userRole.setAssignedUsersCountToResourceManager(resourceMgrUserIds.size());
 			List<User> resourceManagerUsersList = new ArrayList<User>();
 			if (resourceMgrUserIds.size() > 0) {
@@ -1120,6 +1120,29 @@ public class UsersListRestController {
 				}
 
 			}
+			
+			
+			
+			
+			
+			if (StringUtils.isNotBlank(addUserDTO.getAssignResourceManagers())) {
+				List<UserRole> userRolesList = userRoleService.getAllAssignedUsersByResourceManagerId(userId,
+						orgLocations.getId());
+				User resourceManager = new User();
+				resourceManager.setId(Long.valueOf(addUserDTO.getAssignResourceManagers()));
+				//List<Long> userIds = userRoleService.getAllAssignedUsersIdsByResourceManagerId(userId, orgLocations.getId());
+				if (null != userRolesList) {
+					for (UserRole roles : userRolesList) {
+						roles.setResourceManager(resourceManager);
+						roles.setUpdatedBy(user.getUserCode());
+						roles.setUpdatedDate(new Date());
+						userRoleService.addUserRole(roles);
+					}
+				}
+
+			}
+			
+			
 			if (StringUtils.isNotBlank(addUserDTO.getVendorUsers())) {
 				User clientOwnerOrUser = new User();
 				clientOwnerOrUser.setId(Long.valueOf(addUserDTO.getVendorUsers()));
