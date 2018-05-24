@@ -20,6 +20,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollBonus;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
+import com.bis.sourcelead.entity.PayrollPayhead;
 import com.bis.sourcelead.service.PayrollBonusService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
@@ -96,12 +97,22 @@ public class PayrollConfigurationController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/addPayhead")
-	public ModelAndView addPayhead(HttpServletRequest request)
+	@RequestMapping(value = "/payrollPayhead")
+	public ModelAndView payrollPayhead(@RequestParam(value="uuid", required=false) String uuid, HttpServletRequest request)
 	{
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(StringUtils.isNotBlank(uuid)) {
+			try {
+				PayrollPayhead payrollPayhead = payrollPayheadService.getPayrollPayheadByUUID(uuid);
+				payrollPayhead.setEffectiveDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),payrollPayhead.getEffectiveDate()));
+				model.addObject("payrollPayhead", payrollPayhead);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 		ResponseList<PayrollPaytypeDTO> responsePaytypeList;
 		try {
 			responsePaytypeList = payrollPaytypeService.getPayrollPaytypeList(orgLocations);
@@ -109,7 +120,30 @@ public class PayrollConfigurationController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		model.addObject("uuid", uuid);
 		model.setViewName("indPayroll/addPayhead");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/payrollPayheadSummary")
+	public ModelAndView payrollPayheadSummary(@RequestParam(value="uuid", required=false) String uuid, HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(StringUtils.isNotBlank(uuid)) {
+			try {
+				PayrollPayhead payrollPayhead = payrollPayheadService.getPayrollPayheadByUUID(uuid);
+				payrollPayhead.setEffectiveDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),payrollPayhead.getEffectiveDate()));
+				model.addObject("payrollPayhead", payrollPayhead);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		model.addObject("uuid", uuid);
+		model.setViewName("indPayroll/viewPayhead");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
@@ -121,6 +155,16 @@ public class PayrollConfigurationController {
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		model.setViewName("indPayroll/payheadList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	@RequestMapping(value = "/payrollSalarySetup")
+	public ModelAndView salarySetupList(HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		model.setViewName("indPayroll/salarySetupList");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}

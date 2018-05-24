@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,7 +22,9 @@ import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PayrollBonus;
 import com.bis.sourcelead.entity.PayrollPayhead;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -71,7 +72,11 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 	public ResponseList<PayrollPayheadDTO> getPayrollPayheadList(OrgLocations orgLocations) throws Exception {
 		ResponseList<PayrollPayheadDTO> payrollPayheadDTOList = new ResponseList<>();
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from PayrollPayhead ph  where (ph.orgLocationId = '1' or ph.orgLocationId =:orgLocationId) and ph.status = '1' ";  
+		
+		String query = " FROM PayrollPayhead payhead WHERE  payhead.id NOT IN(SELECT ph1.parentPayhead FROM PayrollPayhead ph1 where ph1.parentPayhead IN (SELECT ph2.id FROM PayrollPayhead ph2) and (ph1.orgLocationId.id=:orgLocationId OR ph1.orgLocationId.id='1') and ph1.status = '1') and (payhead.orgLocationId.id=:orgLocationId OR payhead.orgLocationId.id='1') and payhead.status = '1'"; 
+		
+		
+		//String query = "from PayrollPayhead ph  where (ph.orgLocationId = '1' or ph.orgLocationId =:orgLocationId) and ph.status = '1' ";  
 		List<PayrollPayhead> payrollPayheadList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).list();
 		
 		payrollPayheadDTOList.setData(setPayrollPayheadList(payrollPayheadList,orgLocations));
@@ -86,8 +91,10 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 				PayheadDTO.setId(payRollPayhead.getId());
 				PayheadDTO.setName(payRollPayhead.getName());
 				PayheadDTO.setShortCode(payRollPayhead.getShortCode());
-				PayheadDTO.setPayType(payRollPayhead.getPayType().getName());
+				PayheadDTO.setType(payRollPayhead.getType());
+				PayheadDTO.setComponent(payRollPayhead.getComponent());
 				PayheadDTO.setTax(payRollPayhead.getTax());
+				PayheadDTO.setUuid(payRollPayhead.getUuid());
 				payrollPayheadDTOList.add(PayheadDTO);
 			}
 		}
@@ -120,10 +127,18 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 		
 		StringBuilder query1 = new StringBuilder("");
 		if(payrollPayheadDTO.getSearchValue() !=null && !"".equalsIgnoreCase(payrollPayheadDTO.getSearchValue())) {
-			 query1.append(" payhead.name like '" + payrollPayheadDTO.getSearchValue() + "%' ")
-			    .append("OR payhead.shortCode like '%" + payrollPayheadDTO.getSearchValue() + "%' ")
-			    .append("OR payhead.payType.name like '%" + payrollPayheadDTO.getSearchValue() + "%' ")
-				.append("OR payhead.tax like '%" + payrollPayheadDTO.getSearchValue() + "%' ");
+			 if(payrollPayheadDTO.getListType().equalsIgnoreCase("PHList")) {
+				 	 query1.append(" payhead.name like '" + payrollPayheadDTO.getSearchValue() + "%' ")
+				 	.append("OR payhead.shortCode like '%" + payrollPayheadDTO.getSearchValue() + "%' ")
+				    .append("OR payhead.type like '%" + payrollPayheadDTO.getSearchValue() + "%' ")
+				    .append("OR payhead.component like '%" + payrollPayheadDTO.getSearchValue() + "%' ")
+					.append("OR payhead.tax like '%" + payrollPayheadDTO.getSearchValue() + "%' ");
+			 }
+			 if(payrollPayheadDTO.getListType().equalsIgnoreCase("SSList")) {
+				 	 query1.append(" payhead.name like '" + payrollPayheadDTO.getSearchValue() + "%' ")
+				 	.append("OR payhead.method like '%" + payrollPayheadDTO.getSearchValue() + "%' ")
+				    .append("OR payhead.formula like '%" + payrollPayheadDTO.getSearchValue() + "%' ");
+			 }
 		}
 		
 		String sortingQry = "";
@@ -131,7 +146,7 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 				sortingQry = " order by payhead."+ payrollPayheadDTO.getSortColumn() +" "+payrollPayheadDTO.getSortOrder();
 		}*/
 		
-		query = "from PayrollPayhead payhead where (payhead.orgLocationId = '1' or payhead.orgLocationId =:orgLocationId) and payhead.status = '1' ";
+		query = " FROM PayrollPayhead payhead WHERE  payhead.id NOT IN(SELECT ph1.parentPayhead FROM PayrollPayhead ph1 where ph1.parentPayhead IN (SELECT ph2.id FROM PayrollPayhead ph2) and (ph1.orgLocationId.id=:orgLocationId OR ph1.orgLocationId.id='1') and ph1.status = '1') and (payhead.orgLocationId.id=:orgLocationId OR payhead.orgLocationId.id='1') and payhead.status = '1'";
 		if(query1.toString() != null && !query1.toString().isEmpty()){
 			 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
 		}else{
@@ -169,5 +184,49 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 		return response;
 	}
 	
+	
+	@Override
+	@Transactional
+	public PayrollPayhead getPayrollPayheadByUUID(String uuid) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from PayrollPayhead payhead where payhead.uuid = :uuid and payhead.status = '1' ";  
+		List<PayrollPayhead> payrollPayheadList =  session.createQuery(query).setString("uuid", uuid).list();
+		PayrollPayhead payrollPayhead = null;
+		if (payrollPayheadList != null && payrollPayheadList.size() > 0) {
+			payrollPayhead = (PayrollPayhead) payrollPayheadList.iterator().next();
+		}
+		return payrollPayhead;
+	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Boolean findPayrollPayheadByNameAndLocationId(PayrollPayheadDTO payrollPayheadDTO) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 
+			if(payrollPayheadDTO.getListType().equalsIgnoreCase("ByName")){
+				if(payrollPayheadDTO.getName() != null && payrollPayheadDTO.getOrgLocationId() != null){
+					String query = " FROM PayrollPayhead payhead WHERE  payhead.id NOT IN(SELECT ph1.parentPayhead FROM PayrollPayhead ph1 where ph1.parentPayhead IN (SELECT ph2.id FROM PayrollPayhead ph2) and (ph1.orgLocationId.id=:orgLocationId OR ph1.orgLocationId.id='1') and ph1.status = '1') and (payhead.orgLocationId.id=:orgLocationId OR payhead.orgLocationId.id='1') and lower(payhead.name) =:name and payhead.status = '1' ";
+					List<PayrollPayhead> payrollPayheadList = session.createQuery(query).setString("name", payrollPayheadDTO.getName().trim().toLowerCase()).setLong("orgLocationId", Long.parseLong(payrollPayheadDTO.getOrgLocationId())).list();
+					if (payrollPayheadList != null && payrollPayheadList.size() > 0) {
+						flag = true;
+					}
+			 }
+	 		}
+	 		if(payrollPayheadDTO.getListType().equalsIgnoreCase("ByShortCode")){
+	 			if(payrollPayheadDTO.getShortCode() != null && payrollPayheadDTO.getOrgLocationId() != null){
+					String query = " FROM PayrollPayhead payhead WHERE  payhead.id NOT IN(SELECT ph1.parentPayhead FROM PayrollPayhead ph1 where ph1.parentPayhead IN (SELECT ph2.id FROM PayrollPayhead ph2) and (ph1.orgLocationId.id=:orgLocationId OR ph1.orgLocationId.id='1') and ph1.status = '1') and (payhead.orgLocationId.id=:orgLocationId OR payhead.orgLocationId.id='1') and lower(payhead.shortCode) =:shortCode and payhead.status = '1' ";
+					List<PayrollPayhead> payrollPayheadList = session.createQuery(query).setString("shortCode", payrollPayheadDTO.getShortCode().trim().toLowerCase()).setLong("orgLocationId", Long.parseLong(payrollPayheadDTO.getOrgLocationId())).list();
+					if (payrollPayheadList != null && payrollPayheadList.size() > 0) {
+						flag = true;
+					}
+			 }
+	 		}
+		 
+		 
+		return flag;
+	}
 	
 }

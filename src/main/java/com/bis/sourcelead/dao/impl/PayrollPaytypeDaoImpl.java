@@ -83,4 +83,20 @@ public class PayrollPaytypeDaoImpl implements PayrollPaytypeDao{
 		return payrollPaytypeDTOList;
 	}
 	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Boolean findPayrollPaytypeByNameAndLocationId(PayrollPaytypeDTO payrollPaytypeDTO) throws Exception {
+		 Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+		 if(payrollPaytypeDTO.getName() != null && payrollPaytypeDTO.getOrgLocationId() != null){
+				String query = " from PayrollPaytype pt  where (pt.orgLocationId = '1' or pt.orgLocationId =:orgLocationId) and lower(pt.name) =:name and pt.status = '1' ";
+				List<PayrollPaytype> payrollPaytypeList = session.createQuery(query).setString("name", payrollPaytypeDTO.getName().trim().toLowerCase()).setLong("orgLocationId", Long.parseLong(payrollPaytypeDTO.getOrgLocationId())).list();
+				if (payrollPaytypeList != null && payrollPaytypeList.size() > 0) {
+					flag = true;
+				}
+		 }
+		return flag;
+	}
+	
 }

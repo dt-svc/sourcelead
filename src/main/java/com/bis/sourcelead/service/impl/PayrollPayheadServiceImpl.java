@@ -31,6 +31,17 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 			OrgLocations orgLocations) throws Exception {
 		return payrollPayheadDao.getPayrollPayheadListWithPagination(payrollPayheadDTO,orgLocations);
 	}
+	
+	
+	@Override
+	public PayrollPayhead getPayrollPayheadByUUID(String uuid) throws Exception {
+		return payrollPayheadDao.getPayrollPayheadByUUID(uuid);
+	}
 
+	@Override
+	public Boolean findPayrollPayheadByNameAndLocationId(PayrollPayheadDTO payrollPayheadDTO) throws Exception {
+		Boolean flag = payrollPayheadDao.findPayrollPayheadByNameAndLocationId(payrollPayheadDTO);
+		return flag;
+	}
 
 }

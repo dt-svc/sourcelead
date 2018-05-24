@@ -14,5 +14,7 @@ public interface PayrollPayheadDao {
 	
 	ResponseList<PayrollPayheadDTO> getPayrollPayheadListWithPagination(PayrollPayheadDTO payrollPayheadDTO,OrgLocations orgLocations) throws Exception;
 	
-
+	PayrollPayhead getPayrollPayheadByUUID(String uuid) throws Exception;
+	
+	Boolean findPayrollPayheadByNameAndLocationId(PayrollPayheadDTO payrollPayheadDTO) throws Exception;
 }

@@ -4,11 +4,15 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Column;
+
 import com.bis.sourcelead.annotations.Required;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PayrollPayheadDTO implements Serializable{
 	
-	 private static final long serialVersionUID = 1L;
+	 	private static final long serialVersionUID = 1L;
+	 	
 	 	private Long id;
 	 	
 	 	private Long parentPayhead;
@@ -21,11 +25,10 @@ public class PayrollPayheadDTO implements Serializable{
 		
 		private String effectiveDate;
 		
+		@Required(desc="type")
+		private String type;
+		
 	    private String payType;
-		
-		private Double amount;
-		
-		private String formula;
 		
 		private String form16;
 		
@@ -33,15 +36,33 @@ public class PayrollPayheadDTO implements Serializable{
 		
 		private String applicableFor;
 		
+		private String experienceYears;
+		
+		private String experienceMonths;
+		
 		private String component;
 		
 		private String paidComponent;
 		
-		private String partofaCTC;
+		private String partOfGratitutiy;
 		
 		private String fbpComponent;
 		
+		private String leaveDependent;
+		
+		private String showInPayslip;
+		
+		private String pfApplicable;
+		
+		private String esiApplicable;
+		
+		private String method;
+			
+		private String formula;
+		
 	    private String orgLocationId;
+	    
+		private String uuid;
 	    
 	    private int start;
 		
@@ -57,6 +78,9 @@ public class PayrollPayheadDTO implements Serializable{
 			
 		private String sortOrder;
 		
+		private String listType;
+		
+
 		public Long getId() {
 			return id;
 		}
@@ -97,28 +121,20 @@ public class PayrollPayheadDTO implements Serializable{
 			this.effectiveDate = effectiveDate;
 		}
 
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+
 		public String getPayType() {
 			return payType;
 		}
 
 		public void setPayType(String payType) {
 			this.payType = payType;
-		}
-
-		public Double getAmount() {
-			return amount;
-		}
-
-		public void setAmount(Double amount) {
-			this.amount = amount;
-		}
-
-		public String getFormula() {
-			return formula;
-		}
-
-		public void setFormula(String formula) {
-			this.formula = formula;
 		}
 
 		public String getForm16() {
@@ -145,6 +161,22 @@ public class PayrollPayheadDTO implements Serializable{
 			this.applicableFor = applicableFor;
 		}
 
+		public String getExperienceYears() {
+			return experienceYears;
+		}
+
+		public void setExperienceYears(String experienceYears) {
+			this.experienceYears = experienceYears;
+		}
+
+		public String getExperienceMonths() {
+			return experienceMonths;
+		}
+
+		public void setExperienceMonths(String experienceMonths) {
+			this.experienceMonths = experienceMonths;
+		}
+
 		public String getComponent() {
 			return component;
 		}
@@ -161,12 +193,12 @@ public class PayrollPayheadDTO implements Serializable{
 			this.paidComponent = paidComponent;
 		}
 
-		public String getPartofaCTC() {
-			return partofaCTC;
+		public String getPartOfGratitutiy() {
+			return partOfGratitutiy;
 		}
 
-		public void setPartofaCTC(String partofaCTC) {
-			this.partofaCTC = partofaCTC;
+		public void setPartOfGratitutiy(String partOfGratitutiy) {
+			this.partOfGratitutiy = partOfGratitutiy;
 		}
 
 		public String getFbpComponent() {
@@ -177,12 +209,68 @@ public class PayrollPayheadDTO implements Serializable{
 			this.fbpComponent = fbpComponent;
 		}
 
+		public String getLeaveDependent() {
+			return leaveDependent;
+		}
+
+		public void setLeaveDependent(String leaveDependent) {
+			this.leaveDependent = leaveDependent;
+		}
+
+		public String getShowInPayslip() {
+			return showInPayslip;
+		}
+
+		public void setShowInPayslip(String showInPayslip) {
+			this.showInPayslip = showInPayslip;
+		}
+
+		public String getPfApplicable() {
+			return pfApplicable;
+		}
+
+		public void setPfApplicable(String pfApplicable) {
+			this.pfApplicable = pfApplicable;
+		}
+
+		public String getEsiApplicable() {
+			return esiApplicable;
+		}
+
+		public void setEsiApplicable(String esiApplicable) {
+			this.esiApplicable = esiApplicable;
+		}
+
+		public String getMethod() {
+			return method;
+		}
+
+		public void setMethod(String method) {
+			this.method = method;
+		}
+
+		public String getFormula() {
+			return formula;
+		}
+
+		public void setFormula(String formula) {
+			this.formula = formula;
+		}
+
 		public String getOrgLocationId() {
 			return orgLocationId;
 		}
 
 		public void setOrgLocationId(String orgLocationId) {
 			this.orgLocationId = orgLocationId;
+		}
+
+		public String getUuid() {
+			return uuid;
+		}
+
+		public void setUuid(String uuid) {
+			this.uuid = uuid;
 		}
 
 		public int getStart() {
@@ -240,6 +328,13 @@ public class PayrollPayheadDTO implements Serializable{
 		public void setSortOrder(String sortOrder) {
 			this.sortOrder = sortOrder;
 		}
-		
 
+		public String getListType() {
+			return listType;
+		}
+
+		public void setListType(String listType) {
+			this.listType = listType;
+		}
+		
 }

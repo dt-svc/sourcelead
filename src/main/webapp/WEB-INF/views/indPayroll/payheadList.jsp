@@ -24,10 +24,10 @@
     <div class="timesheet_head">
       <ul>
          <li>
-               <a href="<c:url value='${appPath}/addPayhead'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a>
+               <a href="<c:url value='${appPath}/payrollPayhead'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a>
          </li>
       <li>
-      <a href="#" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Salary Setup</a><small class="text-muted ml">|</small>
+      <a href="<c:url value='${appPath}/payrollSalarySetup'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Salary Setup</a><small class="text-muted ml">|</small>
       </li>
         <li></li>
         <div class="clearfix"></div>
@@ -45,41 +45,6 @@
 	</div>
 </div>
 </section>
-
-
-<script type="text/javascript">
-	var config = {
-	  '.chosen-select'           : {},
-	  '.chosen-select-deselect'  : {allow_single_deselect:true},
-	  '.chosen-select-no-single' : {disable_search_threshold:10},
-	  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-	  '.chosen-select-width'     : {width:"95%"}
-	}
-	for (var selector in config) {
-	  $(selector).chosen(config[selector]);
-	}
-	$('.chosen-select').each(function() {
-		var $this = $(this);
-		$this.next().css({'width': '100%'});
-
-});
-</script> 
-
-<script type="text/javascript">
-	$(function () {
-		$('#datetimepicker5').datetimepicker({
-			locale: 'ru'
-		});
-	});
-</script>
-
-<script>	
-	$("#aa").click(function() {
-	  $(".subMenuView").slideToggle(100);
-	});
-</script>
-
-
 
 
 <script>
@@ -105,10 +70,11 @@
 	 	result = result + '<table id="payheadListTable"  cellspacing="0" width="100%" >';
 	 	result = result +"<thead>";
 		result = result +"	<tr>";
-		result = result +"		<th>Pay head</th>";
-		result = result +"		<th>Short code</th>";
+		result = result +"		<th>Name</th>";
+		result = result +"		<th>Short Code</th>";
 		result = result +"		<th>Type</th>";
-		result = result +"		<th>Taxable</th>";
+		result = result +"		<th>Tax</th>";
+		result = result +"		<th>Component</th>";
 		result = result +"		<th>Action</th>";
 		result = result +"	</tr>";
 		result = result +"</thead>";
@@ -125,8 +91,9 @@
  function payrollPayheadList(){
 	 var searchValue = $("#payheadDataTableSearch").val();
 	 var locationCode = '${SourceLeadWeb_locationCode}';
+	 var listType = "PHList";
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getPayRollPayheadListWithPagination?searchValue="+searchValue+"&locationCode="+locationCode;
+	 var url = sourceleadUrl+"/getPayRollPayheadListWithPagination?searchValue="+searchValue+"&locationCode="+locationCode+"&listType="+listType;
 	 payheadListPagination(url,sourceleadUrl);
 	 $("#payheadListLoading").removeAttr("style");
 	 
@@ -151,7 +118,8 @@ function payheadListPagination(url,sourceleadUrl){
             { "data": "name" },
             { "data": "shortCode"},
             { "data": "type"},
-            { "data": "tax" },
+            { "data": "tax"},
+            { "data": "component"},
             { "data": "actions"}
         ],
         "columnDefs": [ {
@@ -159,7 +127,7 @@ function payheadListPagination(url,sourceleadUrl){
 	    	  	"data": "name",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		 result = result +"<td><div><span>"+opt.name+"</span></div></td>";
+	    	  		 result = result +"<td><a href='<c:url value='/app/payrollPayheadSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		             return result;
 	    	  	}
 	      },{
@@ -177,13 +145,13 @@ function payheadListPagination(url,sourceleadUrl){
 	              "data": "type",
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
-	            	  var paytype = "";
-	            	  if(opt.paytype != null && opt.paytype != '' && opt.paytype != 'undefined'){
-	            		  paytype = opt.paytype;
+	            	  var pType = "";
+	            	  if(opt.type != null && opt.type != '' && opt.type != 'undefined'){
+	            		  pType = opt.type;
 	            	  }else{
-	            		  paytype = "--";
+	            		  pType = "--";
 	            	  }
-	            	  result = result +"<td><div><span>"+paytype+"</span></div></td>";
+	            	  result = result +"<td><div><span>"+pType+"</span></div></td>";
 	            	  return result;
 	              }
 		     },{
@@ -191,10 +159,30 @@ function payheadListPagination(url,sourceleadUrl){
 	              "data": "tax",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result +"<td><div><span>"+opt.tax+"</span></div></td>";
+	            	    var taxType = "";
+		            	  if(opt.tax != null && opt.tax != '' && opt.tax != 'undefined'){
+		            		  taxType = opt.tax;
+		            	  }else{
+		            		  taxType = "--";
+		            	  }
+		            	  result = result +"<td><div><span>"+taxType+"</span></div></td>";
 	            		return result;
 	              }
-		     }, {
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "component",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  var pComponent = "";
+	            	  if(opt.component != null && opt.component != '' && opt.component != 'undefined'){
+	            		  pComponent = opt.component;
+	            	  }else{
+	            		  pComponent = "--";
+	            	  }
+	            	  result = result +"<td><div><span>"+pComponent+"</span></div></td>";
+	            	  return result;
+	              }
+		      },{
 		    	  "targets": colIndex++,
 	              "data": "actions",
 	              "sortable": false,

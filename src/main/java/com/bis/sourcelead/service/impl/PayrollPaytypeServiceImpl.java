@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.PayrollPaytypeDao;
 import com.bis.sourcelead.dto.PayrollPaytypeDTO;
+import com.bis.sourcelead.dto.PayrollPaytypeDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPaytype;
@@ -25,6 +26,11 @@ public class PayrollPaytypeServiceImpl implements PayrollPaytypeService{
 	public ResponseList<PayrollPaytypeDTO> getPayrollPaytypeList(OrgLocations orgLocations) throws Exception {
 		return payrollPaytypeDao.getPayrollPaytypeList(orgLocations);
 	}
-
+	
+	@Override
+	public Boolean findPayrollPaytypeByNameAndLocationId(PayrollPaytypeDTO payrollPaytypeDTO) throws Exception {
+		Boolean flag = payrollPaytypeDao.findPayrollPaytypeByNameAndLocationId(payrollPaytypeDTO);
+		return flag;
+	}
 
 }
