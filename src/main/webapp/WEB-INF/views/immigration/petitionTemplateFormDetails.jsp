@@ -46,7 +46,7 @@
                                         </div>		  	
                                     </div>
                                     <div class="col-md-5 noPad">
-                                        <input type="text" class="form-control" name="immigrationFormList[0].formDescription" id="formDescription0" placeholder="Description" data-validation = "validate_length length2-100" data-validation-optional="true"/>
+                                        <input type="text" class="form-control" name="immigrationFormList[0].formDescription" id="formDescription0" placeholder="Description" data-validation = "validate_length length2-500" data-validation-optional="true"/>
                                     </div>
                                     <div class="col-md-2 clearfix">
                                         <div class="col-md-6 noPad">
