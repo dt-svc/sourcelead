@@ -166,7 +166,6 @@ function Immigration() {
             scrollToTopOnError: true,
             dateFormat: 'yyyy/mm/dd'
         };
-
         if ($('#petitionTemplateTaskDetails').validate(false, validationSettings)) {
             $("#immiTempId").val(immTemplId);
             var formData = getFormData1("petitionTemplateTaskDetails");
@@ -244,13 +243,13 @@ function Immigration() {
     // immigration view navigation if don't required comment below code start here.
     this.savePageAndContinue = function (status) {
         //$("#newPetitionTemplateDiv").empty();
-    	$("#saveDraftButton").prop("disabled",true);
-    	$("#savePageOneContinue").prop("disabled",true);
-    	$("#sendRequestButton").prop("disabled",true);
         if (status == 'petitionDetails') {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=petitionDetails");
         } else if (status == 'saveContinue' || status == 'sendRequest') {
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
+        		$("#saveDraftButton").prop("disabled",true);
+            	$("#savePageOneContinue").prop("disabled",true);
+            	$("#sendRequestButton").prop("disabled",true);
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
                     url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
@@ -288,6 +287,9 @@ function Immigration() {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=two");
         }else if(status == 'save'){
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
+        		$("#saveDraftButton").prop("disabled",true);
+            	$("#savePageOneContinue").prop("disabled",true);
+            	$("#sendRequestButton").prop("disabled",true);
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
                     url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
@@ -364,7 +366,6 @@ function Immigration() {
 	  		formId ="CandidateVisaform";
   		}
 	if ($('#'+formId).validate(false, validationSettings)) {
-		
 		$("#passport_save_id").attr("disabled",true);
 		$("#visa_save_id").attr("disabled",true);
 			var formData = getFormData(formId);
