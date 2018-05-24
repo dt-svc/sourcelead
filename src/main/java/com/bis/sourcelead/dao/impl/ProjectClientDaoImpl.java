@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -167,19 +168,31 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 
 	@Override
 	@Transactional
-	public List<ProjectClients> getAllProjectClientsByApproverUserAndOrgLocationId(Long userId, Long locationsId) throws Exception
+	public List<ProjectClients> getAllProjectClientsByApproverUserAndOrgLocationId(Long userId, Long locationsId,String isGlobalUser) throws Exception
 	{
 		logger.debug("In getProjectClientsListByProjectId method");
 		Session session = this.sessionFactory.getCurrentSession();
+		
+		String globalUserQuery = "";
+		String globalUserQuery2 = "";
+		
+		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+		    	globalUserQuery = " pc.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :locationsId)";
+		    	globalUserQuery2 = " hierarchy.projectClientsId.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :locationsId)";
+		    }else {
+		    	globalUserQuery = " pc.orgLocationsId.id = :locationsId";
+		    	globalUserQuery2 = " hierarchy.projectClientsId.orgLocationsId.id = :locationsId";
+		    }
+		 
 		List<ProjectClients> projectClientsList = null; 
 		Query candidateListQuery= session.createQuery("from ProjectClients pc left join fetch pc.projectId left join fetch pc.orgRelationId rel left join fetch rel.locationId inloc left join fetch inloc.org  left join fetch rel.responderLocationId  resloc left join fetch resloc.org left join fetch pc.orgLocationsId "
-			  	 + " left join fetch pc.orgRelationId  where  pc.orgLocationsId.id = :locationsId and pc.status = '1' "
+			  	 + " left join fetch pc.orgRelationId  where  "+globalUserQuery+" and pc.status = '1' "
 			  	 + " and "
 			  	 + " pc.projectId.id IN( select pm.projects.id from ProjectMembers pm where pm.status = '1')"
 			  	 + " and "
 				 +"  pc.id IN("
 				 + " select hierarchy.projectClientsId.id from ProjectApproverHierarchy hierarchy  where  "
-				 + " (hierarchy.projectClientsId.orgLocationsId.id = :locationsId and hierarchy.approverUserId.id = :userId "
+				 + " ("+globalUserQuery2+" and hierarchy.approverUserId.id = :userId "
 				 + " OR "
 				 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
 			     + " ))");

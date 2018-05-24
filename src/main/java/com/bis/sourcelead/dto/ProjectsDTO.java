@@ -197,6 +197,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private Long orgId;
 	
+	private String dateFormat;
+	
 	public String getExpenseId() {
 		return expenseId;
 	}
@@ -922,5 +924,13 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setOrgId(Long orgId) {
 		this.orgId = orgId;
+	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
 	}
 }

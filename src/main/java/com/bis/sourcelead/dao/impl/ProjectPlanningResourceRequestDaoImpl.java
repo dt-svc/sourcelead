@@ -244,8 +244,9 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
   				ProjectClients pc = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(resourceRequest.getProjectPlanningRequestId().getProjectId().getId(), orgLocationId);
   				if(pc != null) {
   					requestDTO.setProjectClientUUID(pc.getUuid());
-  					requestDTO.setProjectUUID(resourceRequest.getProjectPlanningRequestId().getProjectId().getProjectUUID());
   				}
+  				requestDTO.setProjectUUID(resourceRequest.getProjectPlanningRequestId().getProjectId().getProjectUUID());
+  				requestDTO.setRequestedOrgLocationId(resourceRequest.getOrgLocationId().getId());
   				
   				Candidate candidate = candidateDao.getCandidateByCandidateId(resourceRequest.getCandidateId().getId());
   				if(candidate != null) {
