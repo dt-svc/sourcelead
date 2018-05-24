@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service;
 
+import java.util.List;
+
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserGroupDTO;
@@ -12,4 +14,8 @@ public interface UserGroupService {
 	Response<UserGroup> createUserGroup(OrgLocations orgLocations, UserGroupDTO userGroupDTO, User loginUser);
 
 	ResponseList<UserGroupDTO> findAllUserGroup(UserGroupDTO userGroupDTO, OrgLocations orgLocation);
+
+	List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation);
+
+	UserGroup findUserGroupById(Long groupId);
 }

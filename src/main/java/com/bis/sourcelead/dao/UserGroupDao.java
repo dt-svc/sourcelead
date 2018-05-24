@@ -15,4 +15,8 @@ public interface UserGroupDao {
 	List<UserIdView> getCommaSeperatedUserId(Long orgLocationId);
 
 	ResponseList<UserGroup> findAllUserGroup(UserGroupDTO userGroupDTO, OrgLocations orgLocation);
+
+	List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation);
+
+	UserGroup findUserGroupById(Long groupId);
 }
