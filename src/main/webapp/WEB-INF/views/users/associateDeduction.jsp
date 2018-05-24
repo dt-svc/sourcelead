@@ -168,7 +168,7 @@ $('body').on('blur', '#associate_deduction_form', function() {
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Please add atleast one deduction type to save</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input class='u_can_color' type='button'  value='Ok' onClick='deductionPopup();'></b>";
+		result = result +"		<b><input class='u_can_color' type='button'  value='Ok' onClick='deductionPopup();'></b>";
 		result = result +"	</div>";
 		$("#deductionPopup").append(result);
 		$("#remove_user_pop").slideDown(200);

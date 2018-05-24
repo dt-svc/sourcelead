@@ -100,4 +100,25 @@ public class UserGroupDaoImpl implements UserGroupDao{
 		}
 		return response;
 	}
+
+	@Override
+	@Transactional
+	public boolean validateUserGroupIdOrGroupName(Long locationId, UserGroupDTO userGroupDTO)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserGroup> userIdViewList = null;
+		if(StringUtils.isNotBlank(userGroupDTO.getGroupId())){
+			String query = "from UserGroup ug where ug.orgLocationId = :orgLocationId and ug.groupId = :groupId and ug.id <> :id";
+			userIdViewList = session.createQuery(query.toString()).setLong("orgLocationId", locationId).setString("groupId", userGroupDTO.getGroupId()).setLong("id", userGroupDTO.getId()).list();
+		}else if(StringUtils.isNotBlank(userGroupDTO.getGroupName())){
+			String query = "from UserGroup ug where ug.orgLocationId = :orgLocationId and ug.groupName = :groupName and ug.id <> :id";
+			userIdViewList = session.createQuery(query.toString()).setLong("orgLocationId", locationId).setString("groupName", userGroupDTO.getGroupName()).setLong("id", userGroupDTO.getId()).list();
+		}
+		if(userIdViewList != null && userIdViewList.size() > 0){
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
 }

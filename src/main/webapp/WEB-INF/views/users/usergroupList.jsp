@@ -183,14 +183,14 @@ $(document).ready(function(){
                     <div class="row minHeightcol5">
                         <div class="col-md-6">
                             <label>Group Id<span class="text-danger">*</span> </label>
-                            <div class="clearfix">
+                            <div class="clearfix" id="groupIdDiv">
                                 <input type="text" class="form-control" placeholder="Enter" id="groupId" name="groupId" data-validation="required" onblur="validateGroupId();" field-name="Group Id">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <label>Group Name<span class="text-danger">*</span> </label>
-                            <div class="clearfix">
-                                <input type="text" class="form-control" placeholder="Enter" id="groupName" name="groupName" data-validation="required" field-name="Group Name">
+                            <div class="clearfix" id="groupNameDiv">
+                                <input type="text" class="form-control" placeholder="Enter" id="groupName" name="groupName" data-validation="required" onblur="validateGroupName();" field-name="Group Name">
                             </div>
                         </div>
                 
@@ -277,28 +277,32 @@ $(document).ready(function() {
 <script>
 function validateGroupId(){
 	var groupId = $("#groupId").val();
-	$.get(sourceleadUrl+"/validateUserGroupId?"+tokenParamName+"="+tokenValue+"&groupId="+groupId,  function(result) {
-			 if (result && result.response === "INVALID_DATA") {
-                    $("#save_user_group_button").removeAttr("disabled");
-                    $("#save_user_group_button").removeAttr('button').val('Save');
-                    showError(result.responseMessage);
-                } else if (result.response === "AWKWARD") {
+	$.get(sourceleadUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupId="+groupId,  function(result) {
+			 if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
-                	$("#loading").removeAttr('style');
-                	 closeBatch();
-                	 document.getElementById("add_user_group_form").reset(); 
-                	 $("#userId").empty();
-                } else if (result.indexOf('Sign In') !== -1) {
-					location.replace(sourceleadUrl);
-				} else {
-                    $("#save_user_group_button").removeAttr("disabled");
-                    $("#save_user_group_button").addClass('button').val('Save');
-                    showError("Operation failed, please try again");
+                	$('#groupIdDiv').find('p.jquery_form_error_message').remove();
+                }  else {
+					$('#groupIdDiv').find('p.jquery_form_error_message').remove();
+      			  	$("#groupId").after("<p class='jquery_form_error_message'>"+groupId+" already exists..!!</span>");
                 }
 			
-		},
-	});
+		});
+}
+
+function validateGroupName(){
+	var groupName = $("#groupName").val();
+	$.get(sourceleadUrl+"/validateUserGroupIdOrGroupName?"+tokenParamName+"="+tokenValue+"&groupName="+groupName,  function(result) {
+			 if (result.response === "AWKWARD") {
+                    location.href = "/errorPage";
+                } else if (result.response === "SUCCESS") {
+                	$('#groupNameDiv').find('p.jquery_form_error_message').remove();
+                }  else {
+					$('#groupNameDiv').find('p.jquery_form_error_message').remove();
+      			  	$("#groupName").after("<p class='jquery_form_error_message'>"+groupName+" already exists..!!</span>");
+                }
+			
+		});
 }
 </script>
 
@@ -400,6 +404,7 @@ $(document).ready(function() {
 function closeBatch() {
 	$(".popupWrap, .mask").fadeOut();
 	 document.getElementById("add_user_group_form").reset(); 
+	 $('#add_user_group_form').find('p.jquery_form_error_message').remove();
 	 $("#userId").empty();
 }
 document.getElementById("createbatches").addEventListener("click", function(){

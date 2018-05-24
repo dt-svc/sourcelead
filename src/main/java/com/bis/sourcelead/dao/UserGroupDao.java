@@ -15,4 +15,6 @@ public interface UserGroupDao {
 	List<UserIdView> getCommaSeperatedUserId(Long orgLocationId);
 
 	ResponseList<UserGroup> findAllUserGroup(UserGroupDTO userGroupDTO, OrgLocations orgLocation);
+
+	boolean validateUserGroupIdOrGroupName(Long locationId, UserGroupDTO userGroupDTO);
 }

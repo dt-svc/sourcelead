@@ -1501,11 +1501,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	  * @return
 	  * @throws Exception
 	  */
-	 @RequestMapping(value = "/validateUserGroupId" , method = RequestMethod.POST)
-	 public Response<UserGroup> validateUserGroupId(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
+	 @RequestMapping(value = "/validateUserGroupIdOrGroupName" , method = RequestMethod.GET)
+	 public Response<UserGroup> validateUserGroupIdOrGroupName(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
 		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		  return userGroupService.validateUserGroupId(orgLocations,userGroupDTO);
+		  return userGroupService.validateUserGroupIdOrGroupName(orgLocations,userGroupDTO);
 	 }
 	 
 }
