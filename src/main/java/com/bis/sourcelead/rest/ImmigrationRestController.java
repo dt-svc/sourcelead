@@ -1,5 +1,12 @@
 package com.bis.sourcelead.rest;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,8 +16,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 //import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
@@ -18,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -2106,6 +2118,49 @@ public class ImmigrationRestController {
 			flag = immigrationCommonService.validateImmigrationCandidateForms(formName, candidateId, immigrationId);
 		}
 		return flag;
+	}
+	
+	
+	@RequestMapping(value = { "/getImmigrationListExport" })
+	public void getImmigrationListExport(
+			@RequestParam(value = "exportType", required = false) String exportType, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		File file = null;
+		Workbook createExcelworkbook =  new XSSFWorkbook();
+		StringBuilder excelSB = new StringBuilder();
+		Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("users ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
+ 		if(!"pdf".equalsIgnoreCase(exportType)){
+ 			createExcelsheet = immigrationCommonService.getExcelFile(createExcelsheet,createExcelworkbook,orgLocations);
+ 			  StringBuilder templateSB = new StringBuilder();
+ 	 		  file = File.createTempFile(templateSB.append("associates_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+ 	 		  file.setReadable(true);
+ 	 		  
+ 			 FileOutputStream fos = new FileOutputStream(file);
+ 			 try {
+ 				createExcelworkbook.write(fos);
+ 				fos.close();
+ 			} catch (IOException e) {
+ 				e.printStackTrace();
+ 			}	 	
+ 		}
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
 	}
 
 }
