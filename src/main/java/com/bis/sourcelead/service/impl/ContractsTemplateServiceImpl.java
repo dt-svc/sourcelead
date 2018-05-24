@@ -235,6 +235,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts = contractsTemplateDao.getContractById(Long.parseLong(contractsDTO.getContrId()));
 			if(null != contracts && null != contracts.getParentContractId()){
 				vendorContracts = contractsTemplateDao.getChildContractById(contracts.getParentContractId().getId());
+			}else{
+				vendorContracts = new Contracts();
 			}
 			if(null != user){
 				contracts.setUpdatedBy(user.getUserCode());
@@ -883,7 +885,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	private Set<ContractOwnerHierarchy> getOwnersList(ContractsDTO contractDTO, Contracts contract, User user) throws Exception {
-		Integer status = deleteContractOwnerHierarchyListByContractId(contract.getId());
+		Integer status = 0;
+		if(contract.getId() != null)
+			status = deleteContractOwnerHierarchyListByContractId(contract.getId());
 		
 		Set<ContractOwnerHierarchy> ownersList = new HashSet<>();
 		if("Parallel".equalsIgnoreCase(contractDTO.getOwnersType())){
