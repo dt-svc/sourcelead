@@ -137,4 +137,6 @@ public interface ImmigrationCommonService {
 
 	Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, OrgLocations orgLocations);
 	
+	Long getTemplateDetailsByNameAndOrgLoacationId(String name, OrgLocations orgLocations);
+	
 }

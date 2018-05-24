@@ -145,5 +145,7 @@ public interface ImmigrationCommonDao {
 	public Boolean validateImmigrationCandidateForms(String formName, Long candidateId,Long immigrationId) throws Exception;
 
 	List<ImmigrationListExportView> getImmigrationListExportDetails(OrgLocations orgLocations);
+
+	Long getTemplateDetailsByNameAndOrgLoacationId(String name, OrgLocations orgLocations);
 	
 }

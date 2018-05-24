@@ -1940,4 +1940,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,12);
 	}
 
+	@Override
+	public Long getTemplateDetailsByNameAndOrgLoacationId(String name, OrgLocations orgLocations) {
+		return immigrationCommonDao.getTemplateDetailsByNameAndOrgLoacationId(name, orgLocations);
+	}
+
 }
