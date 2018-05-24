@@ -167,6 +167,9 @@ public class ImmigrationListExportView implements Serializable {
 	@Column(name = "MARITAL_STATUS")
 	private String maritalStatus;
 	
+	@Column(name = "LCA_TITLE")
+	private String lcaTitle;
+	
 	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String location;
 	
@@ -560,6 +563,14 @@ public class ImmigrationListExportView implements Serializable {
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public String getLcaTitle() {
+		return lcaTitle;
+	}
+
+	public void setLcaTitle(String lcaTitle) {
+		this.lcaTitle = lcaTitle;
 	}
 	
 }
