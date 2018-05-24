@@ -70,4 +70,6 @@ public interface ContractsTemplateDao {
 	Contracts getMaxNoOfContract(Long locationId);
 
 	List<Contracts> getContractsBylocationIdForReminder(Long locationId, String status, Date date);
+
+	Integer deleteContractOwnerHierarchyListByContractId(Long id);
 }
