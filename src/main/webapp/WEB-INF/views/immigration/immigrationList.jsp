@@ -233,7 +233,7 @@
 							class="glyphicon glyphicon-export"></i>
 							<div id="exportPop">
 								<ul>
-									<li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+									<!-- <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li> -->
 									<li onclick="exportToExcel();"><i
 										class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
 								</ul>
