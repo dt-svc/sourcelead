@@ -224,10 +224,11 @@ public class ContractController {
     		} 
     		
     		if(contract != null){
+    			List<Long> parallelOwnerIds = new ArrayList<>();
     			for (ContractOwnerHierarchy coh : contract.getOwnerHierarchyList()) {
     				if(Constants.PARALLEL.equalsIgnoreCase(coh.getHierarchyType().getValue())){
     					contract.setOwnersType(coh.getHierarchyType().getValue());
-    					contract.setParallelOwner(coh.getOwnerUserId().getId());
+    					parallelOwnerIds.add(coh.getOwnerUserId().getId());
     				}else{
     					contract.setOwnersType(coh.getHierarchyType().getValue());
     					if(coh.getLevel() == 1)
@@ -236,6 +237,7 @@ public class ContractController {
     						contract.setSequentialOwner2(coh.getOwnerUserId().getId());
     				}
     			}
+    			contract.setParallelOwnerId(parallelOwnerIds);
     		}
 			
 			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");

@@ -181,7 +181,7 @@
 		
 		<div class="immiPopFoot">
             <input value="Save" id= "family_SaveButton" onclick="immigration.saveCandidateFamilyDetails('Spouse');" class="" type="button">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div>	<!--  spouse popup end -->
 	</form>.
@@ -238,7 +238,7 @@
 		
 		<div class="immiPopFoot">
             <input value="Save" id= "family_SaveButton" onclick="immigration.saveCandidateFamilyDetails('Child');" class="" type="button">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div><!--  child popup end -->	
 	</form>
@@ -295,7 +295,7 @@
 		
 		<div class="immiPopFoot">
             <input value="Save" id= "family_SaveButton" onclick="immigration.saveCandidateFamilyDetails('Father');"class="" type="button">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div>	<!--  Father popup start -->
 	</form>
@@ -352,7 +352,7 @@
 		
 		<div class="immiPopFoot">
             <input value="Save" id= "family_SaveButton" onclick="immigration.saveCandidateFamilyDetails('Mother');"class="" type="button">
-            <input value="Cancel" class="popCan" type="button">
+            <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div>	<!--mother popcode end  -->
 	<div class="immFoot clearfix">
@@ -363,6 +363,8 @@
             </div>
 		</div>
 	</form>
+	
+	
 	<script>
 	   function resetFormData(id){
 		   $('#'+id)[0].reset() // reset the form data.
@@ -396,6 +398,17 @@
 				$("#spousePopView, #childPopView, #fathPopView, #mothPopView").fadeOut(100);
 				familyMemberId =""; 
 			});	
+            
+            
+			function popFun() {
+				$('#spousePopView').find('p.jquery_form_error_message').remove();
+				$('#childPopView').find('p.jquery_form_error_message').remove();
+				$('#fathPopView').find('p.jquery_form_error_message').remove();
+				$('#mothPopView').find('p.jquery_form_error_message').remove();
+				$("#family_SaveButton").removeAttr("disabled");
+			}
+		
+		
 		</script>
 	
 	<script>	
