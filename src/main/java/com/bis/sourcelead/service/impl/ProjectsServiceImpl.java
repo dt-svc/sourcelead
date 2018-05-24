@@ -435,6 +435,12 @@ public class ProjectsServiceImpl implements ProjectsService{
     		projects.setProjectSequeneNumber(projectsDTO.getProjectSequeneNumber().trim());
     	}
     	
+    	if(!isNullOrEmpty(projectsDTO.getIsReportingManagerAsApprover()) && projectsDTO.getIsReportingManagerAsApprover().equalsIgnoreCase(Constants.YES)) {
+    		projects.setIsReportingManagerAsApprover(Constants.YES);
+    	}else {
+    		projects.setIsReportingManagerAsApprover(Constants.NO);
+    	}
+    	
     	if(!isNullOrEmpty(projectsDTO.getProjectDescription())){
     	projects.setDescription(projectsDTO.getProjectDescription());
     	}
@@ -1172,6 +1178,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	projectsDTO.setProjectShortCode(projects.getProjectShortCode());
 	    }
 	    
+	    projectsDTO.setIsReportingManagerAsApprover(projects.getIsReportingManagerAsApprover());
+	    
 	    User createdByUseraName= userService.getUserDetailsByUserCode(projects.getCreatedBy());
 	    if(null !=createdByUseraName){
 	    	StringBuilder userName = new StringBuilder();
@@ -1475,6 +1483,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 			     }
 		        
 		    	projects.setProjectName(projectDTO.getProjectName());
+		    	
+		    	if(StringUtils.isNotBlank(projectDTO.getIsReportingManagerAsApprover())){
+		    		projects.setIsReportingManagerAsApprover(Constants.YES);
+		    	}else {
+		    		projects.setIsReportingManagerAsApprover(Constants.NO);
+		    	}
 		    	
 		    	if(StringUtils.isNotBlank(projectDTO.getDescription())){
 		    		projects.setDescription(projectDTO.getDescription());

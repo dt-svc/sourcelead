@@ -199,6 +199,8 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String dateFormat;
 	
+	private String isReportingManagerAsApprover;
+	
 	public String getExpenseId() {
 		return expenseId;
 	}
@@ -932,5 +934,13 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setDateFormat(String dateFormat) {
 		this.dateFormat = dateFormat;
+	}
+
+	public String getIsReportingManagerAsApprover() {
+		return isReportingManagerAsApprover;
+	}
+
+	public void setIsReportingManagerAsApprover(String isReportingManagerAsApprover) {
+		this.isReportingManagerAsApprover = isReportingManagerAsApprover;
 	}
 }

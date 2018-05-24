@@ -165,7 +165,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 			}
 		
 		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
-			query = "from  ProjectPlanningResourceRequest resourceRequest  where  resourceRequest.projectPlanningRequestId.approverUser.id = :approverUserId "
+			query = "from  ProjectPlanningResourceRequest resourceRequest  where  resourceRequest.approverUser.id = :approverUserId "
 					+ "and resourceRequest.candidateId.orgLocationId.id = :orgLocationId  and resourceRequest.status = '1' "
 					+ "and resourceRequest.resourceStatus = :resourceStatus and resourceRequest.projectPlanningRequestId.requestType = 'Associate Request' ";
 			
@@ -273,7 +273,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 		List<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = null;
 		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
 			String query = "from ProjectPlanningResourceRequest resourceRequest  "
-					+ " where resourceRequest.projectPlanningRequestId.approverUser.id = :approverUserId and resourceRequest.projectPlanningRequestId.orgLocationId.id = :orgLocationId "
+					+ " where resourceRequest.approverUser.id = :approverUserId and  resourceRequest.candidateId.orgLocationId.id = :orgLocationId "
 					+ " and resourceRequest.status = '1' and resourceRequest.projectPlanningRequestId.requestType = 'Associate Request' ";
 			projectPlanningResourceRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).list();
 			

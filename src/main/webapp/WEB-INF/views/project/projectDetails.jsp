@@ -484,10 +484,15 @@ function editClientProjectDetails(projectId){
                         var allowOffShore  = "";
                         var allowTimeEntryAfterDeadLine = "";
                         var allowBidding = "";
+                        var reoprtingManagerChecked = "";
                         <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	              		  var sectionId = '${section.id}';
 	              		  preapareCustomFieldDetails(projectId,sectionId);
 	              		</c:forEach>
+	              		
+	              		if(json.isReportingManagerAsApprover != null && json.isReportingManagerAsApprover != '' && json.isReportingManagerAsApprover != 'undefined' && json.isReportingManagerAsApprover == 'Y'){
+	              			reoprtingManagerChecked = "checked";
+	              		}
                         
                         if(json.allowRemote != null && json.allowRemote != '' && json.allowRemote != 'undefined' && json.allowRemote == 'true'){
                         	allowRemote = "checked";
@@ -688,6 +693,18 @@ function editClientProjectDetails(projectId){
 							}
 							result = result + '</select>';
 							result = result + '</div>';
+							
+							
+							
+							result = result + '<div class="col-md-4 mt">';
+							result = result + ' <label>&nbsp;</label>';
+							result = result + '<div class="checkbox checkBox margin-top0">';
+							result = result + '<label>';
+							result = result + '<input type="checkbox" value="Y" '+reoprtingManagerChecked+' id="isReportingManagerAsApprover" name="isReportingManagerAsApprover">';
+							result = result + 'Reporting Manager will be project manager</label>';
+							result = result + '</div>';
+							result = result + '</div>';
+							
 							
 
 						/* result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
