@@ -16,7 +16,7 @@
 						</c:choose>
 				    </c:otherwise>
 				</c:choose>	
-		  	<span><input class="immigraTabSerach" id="employersDataSearch" type="text"></span>
+		  	<span><input class="immigraTabSerach" title="Name/Designation" placeholder="Name/Designation" id="employersDataSearch" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable">
