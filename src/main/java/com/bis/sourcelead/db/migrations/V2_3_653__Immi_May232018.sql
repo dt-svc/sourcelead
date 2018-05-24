@@ -188,6 +188,12 @@ CREATE OR REPLACE VIEW IMMIGRATION_LIST_EXPORT_VIEW AS
                 CANDIDATE
             WHERE
                 ID = IMM.CANDIDATE_ID) AS EXPERIENCE_YEARS,
+		(SELECT 
+                JOB_TITLE
+            FROM
+                REQUIREMENT
+            WHERE
+                ID = IMM.JOB_ID) AS LCA_TITLE,
       (SELECT 
             O.ORG_NAME
         FROM
@@ -222,7 +228,7 @@ CREATE OR REPLACE VIEW IMMIGRATION_LIST_EXPORT_VIEW AS
    (SELECT U.EMAIL
           FROM USER U, ORG_SPOC OS
            WHERE  OS.VENDOR_USER_ID= U.ID
-             AND OS.ID=IMM.ORG_SPOC_ID ) AS SPOC_EMAIL_VENDOR              
+             AND OS.ID=IMM.ORG_SPOC_ID ) AS SPOC_EMAIL_VENDOR                
     FROM
         IMMIGRATION IMM
         
