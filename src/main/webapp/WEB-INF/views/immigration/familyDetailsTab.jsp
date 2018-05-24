@@ -316,7 +316,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text"  class="form-control" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  />
+              		<input type="text"  class="form-control" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true"/>
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
