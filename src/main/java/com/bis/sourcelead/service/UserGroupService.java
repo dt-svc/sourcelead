@@ -15,7 +15,10 @@ public interface UserGroupService {
 
 	ResponseList<UserGroupDTO> findAllUserGroup(UserGroupDTO userGroupDTO, OrgLocations orgLocation);
 
+	Response<UserGroup> validateUserGroupIdOrGroupName(OrgLocations orgLocations, UserGroupDTO userGroupDTO);
+
 	List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation);
 
 	UserGroup findUserGroupById(Long groupId);
+
 }

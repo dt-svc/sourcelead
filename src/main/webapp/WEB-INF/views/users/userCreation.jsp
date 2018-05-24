@@ -137,7 +137,7 @@
                   <div class="col-md-5" id="EmailIdDiv">
                   <label class="clearfix">SSN<span class="text-danger">&nbsp;*</span></label>
                   <div class="clearfix">
-                    <input type="text" class="form-control" id="ssn" name="SSN" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
+                    <input type="text" class="form-control" id="ssn" name="SSN" field-name="First Name" data-validation="required validate_Space validate_int validate_length length9-9">
                   </div>
                   </div>
                   

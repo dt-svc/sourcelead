@@ -1390,19 +1390,19 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			List<Long> userList = Stream.of(userIds.split(",")).map(Long::parseLong).collect(Collectors.toList());
 			if(StringUtils.isNoneBlank(departmentId)) {
 				List<Long> deptList = Stream.of(departmentId.split(",")).map(Long::parseLong).collect(Collectors.toList());
-				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.departmentId IN (:departmentId) and assView.userId NOT IN (:userList)";
-				assocDeptViewList = session.createQuery(query.toString()).setParameterList("departmentId", deptList).setParameterList("userList", userList).list();
+				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.departmentId IN (:departmentId) and assView.userId NOT IN (:userList) and assView.orgLocationsId = :orgLocationsId and assView.empOrgLocationsId = :orgLocationsId";
+				assocDeptViewList = session.createQuery(query.toString()).setParameterList("departmentId", deptList).setParameterList("userList", userList).setLong("orgLocationsId", orgLocationId).list();
 			}else {
-				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.orgLocationsId = :orgLocationsId and assView.userId NOT IN (:userList)";
+				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.orgLocationsId = :orgLocationsId and assView.userId NOT IN (:userList) and assView.empOrgLocationsId = :orgLocationsId";
 				assocDeptViewList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).setParameterList("userList", userList).list();
 			}
 		}else {
 			if(StringUtils.isNoneBlank(departmentId)) {
 				List<Long> deptList = Stream.of(departmentId.split(",")).map(Long::parseLong).collect(Collectors.toList());
-				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.departmentId IN (:departmentId)";
-				assocDeptViewList = session.createQuery(query.toString()).setParameterList("departmentId", deptList).list();
+				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.departmentId IN (:departmentId) and assView.orgLocationsId = :orgLocationsId and assView.empOrgLocationsId = :orgLocationsId";
+				assocDeptViewList = session.createQuery(query.toString()).setParameterList("departmentId", deptList).setLong("orgLocationsId", orgLocationId).list();
 			}else {
-				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.orgLocationsId = :orgLocationsId ";
+				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.orgLocationsId = :orgLocationsId and assView.empOrgLocationsId = :orgLocationsId";
 				assocDeptViewList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).list();
 			}
 		}

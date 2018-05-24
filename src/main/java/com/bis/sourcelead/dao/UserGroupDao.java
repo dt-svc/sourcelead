@@ -16,7 +16,10 @@ public interface UserGroupDao {
 
 	ResponseList<UserGroup> findAllUserGroup(UserGroupDTO userGroupDTO, OrgLocations orgLocation);
 
+	boolean validateUserGroupIdOrGroupName(Long locationId, UserGroupDTO userGroupDTO);
+
 	List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation);
 
 	UserGroup findUserGroupById(Long groupId);
+
 }

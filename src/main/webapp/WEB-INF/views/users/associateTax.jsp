@@ -21,9 +21,8 @@
                         <option value="">--Select--</option>
                         <option value="SINGLE">Single</option>
                         <option value="MARRIED">Married</option>
-                        <option value="MARRIED_USE_SINGLE_RATE">Married Single Income</option>
-                        <option value="Married_Dual_Income">Married Dual Income</option>
-                        <option value="Head_of_Household">Head of Household</option>
+                        <option value="MARRIED_USE_SINGLE_RATE">Married Use Single Rate</option>
+                        <option value="NONRESIDENT_ALIEN">Non Resident Alien</option>
                       </select>
                     </div>
                   </div>
