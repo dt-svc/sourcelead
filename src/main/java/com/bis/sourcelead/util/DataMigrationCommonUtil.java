@@ -1876,9 +1876,12 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				User userByEmail = userService.findByEmailAndOrgLocationsId(email, orgLocation.getId());
 				if (userByEmail == null) {
 					errorSet.put("beneficiaryEmail", "Beneficiary Email is not found");
+				}else {
+					 dataMigrationDTOJsonCopy.put("candidateId",userByEmail.getId());
+					// System.out.println("candidateId INSIDE---->>>>>"+dataMigrationDTOJsonCopy.getString("candidateId"));
 				}
 			} else {
-				errorSet.put("companyContactEmail", "Attorney/Contact email is not a valid email address");
+				errorSet.put("beneficiaryEmail", "Beneficiary Email is is not a valid email address");
 			}
 		}
 		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
@@ -1897,7 +1900,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 
 		} else {
 			
-			LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(ImmigrationConstants.PETITION_TYPE,
+			LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(Constants.VISA,
 					dataMigrationDTOJsonCopy.getString("petitionType"));
 			if (data == null) {
 				errorSet.put("petitionType", "Petition Type is not found"); /// dropdown value.
@@ -1916,6 +1919,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				errorSet.put("template", "Template name is not found");
 			else
 				dataMigrationDTOJsonCopy.put("template", tempId); 
+			
 		}
 
 		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("openOn"))) {
@@ -1927,7 +1931,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		else {
 			
 			LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(ImmigrationConstants.PETITION_STATUS,
-					dataMigrationDTOJsonCopy.getString("petitionType"));
+					dataMigrationDTOJsonCopy.getString("status"));
 			if (data == null) {
 				errorSet.put("status", "status is not found"); /// dropdown value.
 			}else {
@@ -1948,6 +1952,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 
 		} else {
 			String email = dataMigrationDTOJsonCopy.getString("companyContactEmail");
+			dataMigrationDTOJsonCopy.put("companyContactEmail","4"); // need to update
 			boolean emailVaild = isValidEmailAddress(email);
 			if (emailVaild) {
 				User userByEmail = userService.findByEmailAndOrgLocationsId(email, orgLocation.getId());
@@ -1955,6 +1960,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					errorSet.put("companyContactEmail", "Attorney/Contact email is not found");
 				}else {
 					dataMigrationDTOJsonCopy.put("companyContactEmail", userByEmail.getId());
+					 System.out.println("SPOC contact user id INSIDE---->>>>>"+userByEmail.getId());
 				}
 				
 			} else {

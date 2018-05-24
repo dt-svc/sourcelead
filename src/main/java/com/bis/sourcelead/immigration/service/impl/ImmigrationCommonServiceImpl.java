@@ -168,7 +168,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 			List<CandidateLcaI94Summary> lcaSummaryLst = new ArrayList<CandidateLcaI94Summary>();
 			lcaSummaryLst = savePetitionLcaSummaryList(immigrationDTO, candidate, user, requirement, orgLocations);
-			if (ids.length != 0) {
+			if (ids != null && ids.length != 0) {
 				for (String id : ids) {
 					immigrationCommonDao.deleteCandidateResidenceDetails(Long.parseLong(id), Long.parseLong("0"));
 				}
@@ -232,8 +232,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				tasks.setPriority(templateTasks.getPriority());
 				tasks.setTaskDate(templateTasks.getDueAfterDate());
 				SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
-				String time = localDateFormat.format(templateTasks.getDueAfterDate());
+				if( templateTasks.getDueAfterDate()!= null) {
+				  String time = localDateFormat.format(templateTasks.getDueAfterDate());
 				tasks.setTaskTime(time);
+				}
 				tasks.setSubject(templateTasks.getTaskName());
 				tasks.setAlertType(Constants.ENTITY_TYPE_EMAIL + "," + Constants.ENTITY_TYPE_NOTIFICATION);
 				tasks.setTaskRepeat(templateTasks.getTaskRepeat());
@@ -555,8 +557,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			candidate.setState(immigrationDTO.getState());
 			candidate.setCountry(immigrationDTO.getCountry());
 			candidate.setZipCode(immigrationDTO.getZipcode());
+			if(StringUtils.isNotBlank(immigrationDTO.getResidenceStartDate())) {
 			candidate.setResidenceStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
 					immigrationDTO.getResidenceStartDate()));
+			}
 			candidate.setExperienceMonths(immigrationDTO.getExperienceMonths());
 			candidate.setExperienceYears(immigrationDTO.getExperienceYears());
 			return candidate;
