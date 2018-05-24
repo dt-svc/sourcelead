@@ -1800,6 +1800,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		if(exportView.getEmployerLocation() !=null){
 			 writeRow.createCell(28).setCellValue(exportView.getEmployerLocation()); 
 		}
+		if(exportView.getLcaTitle() !=null){
+			 writeRow.createCell(29).setCellValue(exportView.getLcaTitle()); 
+		}
 		if(exportView.getPreviousLcaStartDate() !=null){
 			 writeRow.createCell(30).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getPreviousLcaStartDate())); 

@@ -2130,11 +2130,11 @@ public class ImmigrationRestController {
 		File file = null;
 		Workbook createExcelworkbook =  new XSSFWorkbook();
 		StringBuilder excelSB = new StringBuilder();
-		Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("users ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
+		Sheet createExcelsheet = createExcelworkbook.createSheet(excelSB.append("immigration List ").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString());
  		if(!"pdf".equalsIgnoreCase(exportType)){
  			createExcelsheet = immigrationCommonService.getExcelFile(createExcelsheet,createExcelworkbook,orgLocations);
  			  StringBuilder templateSB = new StringBuilder();
- 	 		  file = File.createTempFile(templateSB.append("associates_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
+ 	 		  file = File.createTempFile(templateSB.append("ImmigrationList_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".xls");
  	 		  file.setReadable(true);
  	 		  
  			 FileOutputStream fos = new FileOutputStream(file);
