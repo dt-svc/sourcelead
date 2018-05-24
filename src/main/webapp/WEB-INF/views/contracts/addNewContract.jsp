@@ -286,7 +286,12 @@
             </div>
           
        		<c:if test="${!empty contract.templateSubmissionStatus && contract.templateSubmissionStatus == 'PENDING'}">
-               		<input type="hidden" value="${contract.orgRelations.id}" id="clientOrgRelationId" name="clientOrgRelationId"/>
+       			<c:if test="${contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'}">
+       				<input type="hidden" value="${contract.orgRelations.id}" id="orgRelationId" name="orgRelationId"/>
+       			</c:if>
+       			<c:if test="${contract.contractType == 'Client MSA' || contract.contractType == 'Client SOW'}">
+       				<input type="hidden" value="${contract.orgRelations.id}" id="clientOrgRelationId" name="clientOrgRelationId"/>
+       			</c:if>
            	</c:if>
           
          <div class="form-group" id="vendorDiv" style="display: ${!empty contractType || contract.contractType == 'Vendor MSA' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Vendor NDA' || contract.contractType == 'Vendor NSA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'block' : 'none'};">
@@ -485,7 +490,7 @@
             </div> 
             
             <div class="form-group">
-              <label class="col-md-4">State of Jurisdiction</label>
+              <label class="col-md-4">State of Jurisdiction</label>${contract.ownersType}
               <div class="col-md-8">
                 <input type="text" class="form-control" value="${contract.stateJurisdiction}" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction" data-validation="validate_length length0-250">
               </div>
@@ -504,11 +509,11 @@
                 <div  class="ml pull-left apprverReq" >
                 	<c:if test="${!empty contract.ownersType}">
 		                <label class="rad" id="parallel">
-		                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" ${'PARALLEL'  == contract.ownersType ? 'checked' : ''} onclick="getParallelApprovers();">
+		                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" ${'Parallel'  == contract.ownersType ? 'checked' : ''} onclick="getParallelApprovers();">
 		                <i class="fa fa-align-center apprverReq-active" title="Parallel"></i>
 		                </label>
 		                <label class="rad" id="sequential">
-		                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" ${'SEQUENTIAL'  == contract.ownersType ? 'checked' : ''} onclick="getSequentialApprovers();">
+		                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" ${'Sequential'  == contract.ownersType ? 'checked' : ''} onclick="getSequentialApprovers();">
 		                <i class="fa fa-retweet" title="Sequential"></i>
 		                </label>
                 	</c:if>
@@ -533,14 +538,31 @@
               <label class="col-md-4">Signing Authority<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select multiple class="chosen-select form-control" id="parallelOwner" name="parallelOwner" data-placeholder="Select signing authority" data-validation="required" field-name="Owner">
-                  <c:forEach var="user" items="${userList}">
-	                  <c:if test = "${!empty contract.ownerUserId.id}">
+                  <%-- <c:forEach var="user" items="${userList}">
+	                  <c:if test = "${!empty contract.parallelOwnerId}">
 	                 	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == contract.ownerUserId.id ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
 	                  </c:if>
 	                  <c:if test = "${empty contract.ownerUserId.id}">
 	                  	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
 	                  </c:if>
-                  </c:forEach>
+                  </c:forEach> --%>
+                  
+                  
+                  <c:forEach var="user" items="${userList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		<c:forEach var="ownerId" items="${contract.parallelOwnerId}">
+					    <c:if test="${ownerId eq user.id}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${user.id}">${user.firstName} ${user.lastName}</option>
+					    </c:if>
+					</c:forEach>
+					<c:if test="${NUM == 0}">
+						<option  value="${user.id}">${user.firstName} ${user.lastName}</option>
+					</c:if>
+                </c:forEach>
+                  
+                  
+                  
                   </select>
               </div>
           </div> 
