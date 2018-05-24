@@ -61,7 +61,7 @@
 <div class="popMask"></div>
 <div class="popUpOut popUpOutBig" id="taskViewPopup">
     <div class="popupHead">
-        <h2>Add Task</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+        <h2>Add Task</h2><a href="javascript:void(0)" onclick="immigration.removeFormValidationErrors('petitionTemplateTaskDetails')" class="fa fa-close popCan"></a>
     </div>
     <form id="petitionTemplateTaskDetails" name="petitionTemplateTaskDetails">
         <input type="hidden" name="templateId" id="immiTempId"/>
@@ -172,7 +172,7 @@
     </form>
     <div class="immiPopFoot">
         <input value="Add" onclick ="immigration.savePetitionTemplateTaskDetails()" class="" id="addTaskBtn" type="button">
-        <input value="Cancel" class="popCan" type="button">
+        <input value="Cancel" onclick="immigration.removeFormValidationErrors('petitionTemplateTaskDetails')" class="popCan" type="button">
     </div>		
 </div>	
 
@@ -317,7 +317,6 @@
         $(".popCan").click(function () {
             $(".popMask").fadeOut(200);
             $("#taskViewPopup").fadeOut(100);
-            //$('#petitionTemplateTaskDetails').validate().resetForm();
         });
 //        $("#taskName").unbind("blur");
         $("#taskName").on("keyup", function () {
