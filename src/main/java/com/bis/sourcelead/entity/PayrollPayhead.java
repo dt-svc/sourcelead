@@ -50,12 +50,6 @@ public class PayrollPayhead {
 	@JoinColumn(name = "PAY_TYPE")
     private PayrollPaytype payType;
 	
-	/*@Column(name = "AMOUNT")
-	private Double amount;
-	
-	@Column(name = "FORMULA")
-	private String formula;*/
-	
 	@Column(name = "FORM_16")
 	private String form16;
 	
@@ -94,6 +88,12 @@ public class PayrollPayhead {
 	
 	@Column(name = "ESI_APPLICABLE")
 	private String esiApplicable;
+	
+	@Column(name = "METHOD")
+	private String method;
+	
+	@Column(name = "FORMULA", columnDefinition = "TEXT default NULL")
+	private String formula;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
@@ -283,6 +283,22 @@ public class PayrollPayhead {
 
 	public void setEsiApplicable(String esiApplicable) {
 		this.esiApplicable = esiApplicable;
+	}
+
+	public String getMethod() {
+		return method;
+	}
+
+	public void setMethod(String method) {
+		this.method = method;
+	}
+
+	public String getFormula() {
+		return formula;
+	}
+
+	public void setFormula(String formula) {
+		this.formula = formula;
 	}
 
 	public OrgLocations getOrgLocationId() {

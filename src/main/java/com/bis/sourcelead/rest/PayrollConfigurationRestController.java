@@ -364,13 +364,14 @@ public class PayrollConfigurationRestController {
 							
 							if(StringUtils.isNotBlank(payrollPayheadDTO.getUuid())) {
 								payrollPayhead = payrollPayheadService.getPayrollPayheadByUUID(payrollPayheadDTO.getUuid());
-								
+								String shortCode = payrollPayhead.getShortCode();
 								if(payrollPayhead.getOrgLocationId().getId() == 1l) {
 									PayrollPayhead parentPayrollPayhead = new PayrollPayhead();
 									parentPayrollPayhead.setId(payrollPayhead.getId());
 									payrollPayhead = new PayrollPayhead();
 									payrollPayhead.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 									payrollPayhead.setParentPayhead(parentPayrollPayhead);
+									payrollPayhead.setShortCode(shortCode.toUpperCase());
 									payrollPayhead.setCreatedDate(new Date());
 									payrollPayhead.setCreatedBy(user);
 								}else {
@@ -382,6 +383,12 @@ public class PayrollConfigurationRestController {
 								payrollPayhead.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 								payrollPayhead.setCreatedDate(new Date());
 								payrollPayhead.setCreatedBy(user);
+								
+								if(StringUtils.isNotBlank(payrollPayheadDTO.getShortCode())) {
+									payrollPayhead.setShortCode(payrollPayheadDTO.getShortCode().toUpperCase());
+								}else {
+									payrollPayhead.setShortCode(null);
+								}
 							}
 							
 							if(StringUtils.isNotBlank(payrollPayheadDTO.getName())) {
@@ -395,12 +402,6 @@ public class PayrollConfigurationRestController {
 								payrollPayhead.setEffectiveDate(paymentDate);
 							}else {
 								payrollPayhead.setEffectiveDate(null);
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getShortCode())) {
-								payrollPayhead.setShortCode(payrollPayheadDTO.getShortCode());
-							}else {
-								payrollPayhead.setShortCode(null);
 							}
 							
 							if(StringUtils.isNotBlank(payrollPayheadDTO.getType())) {
@@ -631,5 +632,81 @@ public class PayrollConfigurationRestController {
 					payrollPayheadDTO.setSortOrder(sortColumnOrder);
 					ResponseList<PayrollPayheadDTO> payrollPayheadList = payrollPayheadService.getPayrollPayheadListWithPagination(payrollPayheadDTO, loginOrgLocation);
 					return payrollPayheadList;
+				}
+			 
+			 
+			 @RequestMapping(value = { "/getPayRollSalarySetupListWithPagination", "rest/getPayRollSalarySetupListWithPagination" })
+				public ResponseList<PayrollPayheadDTO> getPayRollSalarySetupListWithPagination(PayrollPayheadDTO payrollPayheadDTO,
+						@RequestParam("locationCode") String locationCode) throws Exception {
+					OrgLocations loginOrgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+					String[] tableColumns = { "payhead", "method", "formula", "actions" };
+					int sortColumnIndex = 1; // by default sorting using payhead
+					String sortColumnOrder = "desc"; // by default descending order
+					if (payrollPayheadDTO.getOrder() != null && !payrollPayheadDTO.getOrder().isEmpty()) {
+						sortColumnIndex = Integer.parseInt(payrollPayheadDTO.getOrder().get(0).get("column"));
+						sortColumnOrder = payrollPayheadDTO.getOrder().get(0).get("dir");
+					}
+					payrollPayheadDTO.setSortColumn(tableColumns[sortColumnIndex]);
+					payrollPayheadDTO.setSortOrder(sortColumnOrder);
+					ResponseList<PayrollPayheadDTO> payrollPayheadList = payrollPayheadService.getPayrollPayheadListWithPagination(payrollPayheadDTO, loginOrgLocation);
+					return payrollPayheadList;
+				}
+			 
+			 
+			 @RequestMapping(value = "/findPayrollPaytypeByNameAndLocationId" , method = RequestMethod.POST)
+				public Response<String> findPayrollPaytypeByNameAndLocationId(PayrollPaytypeDTO payrollPaytypeDTO, HttpServletRequest request)
+						throws Exception {
+					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Response<String> response = new Response<>();
+					try {
+						if (user != null) {
+							if(StringUtils.isNotBlank(payrollPaytypeDTO.getName())) {
+								payrollPaytypeDTO.setOrgLocationId(orgLocations.getId().toString());
+								Boolean isExisted = payrollPaytypeService.findPayrollPaytypeByNameAndLocationId(payrollPaytypeDTO);
+								response.setError(isExisted.toString());
+								response.setResponse(Result.SUCCESS.name());
+								response.setResponseMessage(Result.SUCCESS.getValue());
+							}
+						}
+						else {
+							response.setResponse(Result.SESSION_TIMEDOUT.name());
+							response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+						}
+					} catch (Exception e) {
+						response.setResponse(Result.AWKWARD.name());
+						response.setResponseMessage(Result.AWKWARD.getValue());
+						logger.error(ExceptionUtils.getFullStackTrace(e));
+					}
+					return response;
+				}
+			 
+			 
+			 @RequestMapping(value = "/findPayrollPayheadByNameOrShortCodeAndLocationId" , method = RequestMethod.POST)
+				public Response<String> findPayrollPayheadByNameOrShortCodeAndLocationId(PayrollPayheadDTO payrollPayheadDTO, HttpServletRequest request)
+						throws Exception {
+					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Response<String> response = new Response<>();
+					try {
+						if (user != null) {
+							if(StringUtils.isNotBlank(payrollPayheadDTO.getName()) || StringUtils.isNotBlank(payrollPayheadDTO.getShortCode())) {
+								payrollPayheadDTO.setOrgLocationId(orgLocations.getId().toString());
+								Boolean isExisted = payrollPayheadService.findPayrollPayheadByNameAndLocationId(payrollPayheadDTO);
+								response.setError(isExisted.toString());
+								response.setResponse(Result.SUCCESS.name());
+								response.setResponseMessage(Result.SUCCESS.getValue());
+							}
+						}
+						else {
+							response.setResponse(Result.SESSION_TIMEDOUT.name());
+							response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+						}
+					} catch (Exception e) {
+						response.setResponse(Result.AWKWARD.name());
+						response.setResponseMessage(Result.AWKWARD.getValue());
+						logger.error(ExceptionUtils.getFullStackTrace(e));
+					}
+					return response;
 				}
 }

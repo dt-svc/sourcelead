@@ -27,7 +27,7 @@
                <a href="<c:url value='${appPath}/payrollPayhead'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a>
          </li>
       <li>
-      <a href="#" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Salary Setup</a><small class="text-muted ml">|</small>
+      <a href="<c:url value='${appPath}/payrollSalarySetup'/>" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Salary Setup</a><small class="text-muted ml">|</small>
       </li>
         <li></li>
         <div class="clearfix"></div>
@@ -45,41 +45,6 @@
 	</div>
 </div>
 </section>
-
-
-<script type="text/javascript">
-	var config = {
-	  '.chosen-select'           : {},
-	  '.chosen-select-deselect'  : {allow_single_deselect:true},
-	  '.chosen-select-no-single' : {disable_search_threshold:10},
-	  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-	  '.chosen-select-width'     : {width:"95%"}
-	}
-	for (var selector in config) {
-	  $(selector).chosen(config[selector]);
-	}
-	$('.chosen-select').each(function() {
-		var $this = $(this);
-		$this.next().css({'width': '100%'});
-
-});
-</script> 
-
-<script type="text/javascript">
-	$(function () {
-		$('#datetimepicker5').datetimepicker({
-			locale: 'ru'
-		});
-	});
-</script>
-
-<script>	
-	$("#aa").click(function() {
-	  $(".subMenuView").slideToggle(100);
-	});
-</script>
-
-
 
 
 <script>
@@ -126,8 +91,9 @@
  function payrollPayheadList(){
 	 var searchValue = $("#payheadDataTableSearch").val();
 	 var locationCode = '${SourceLeadWeb_locationCode}';
+	 var listType = "PHList";
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getPayRollPayheadListWithPagination?searchValue="+searchValue+"&locationCode="+locationCode;
+	 var url = sourceleadUrl+"/getPayRollPayheadListWithPagination?searchValue="+searchValue+"&locationCode="+locationCode+"&listType="+listType;
 	 payheadListPagination(url,sourceleadUrl);
 	 $("#payheadListLoading").removeAttr("style");
 	 

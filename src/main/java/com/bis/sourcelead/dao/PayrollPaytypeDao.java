@@ -11,5 +11,6 @@ public interface PayrollPaytypeDao {
 	
 	ResponseList<PayrollPaytypeDTO> getPayrollPaytypeList(OrgLocations orgLocations) throws Exception;
 	
-
+	Boolean findPayrollPaytypeByNameAndLocationId(PayrollPaytypeDTO payrollPaytypeDTO) throws Exception;
+	
 }

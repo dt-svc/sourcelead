@@ -15,4 +15,6 @@ public interface PayrollPayheadService {
 	
 	PayrollPayhead getPayrollPayheadByUUID(String uuid) throws Exception;
 	
+	Boolean findPayrollPayheadByNameAndLocationId(PayrollPayheadDTO payrollPayheadDTO) throws Exception;
+	
 }

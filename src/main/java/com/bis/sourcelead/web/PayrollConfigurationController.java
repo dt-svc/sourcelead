@@ -159,6 +159,16 @@ public class PayrollConfigurationController {
 		return model;
 	}
 	
+	@RequestMapping(value = "/payrollSalarySetup")
+	public ModelAndView salarySetupList(HttpServletRequest request)
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		model.setViewName("indPayroll/salarySetupList");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
 	
 	@RequestMapping(value = "/payrollLoanAndAdvances")
 	public ModelAndView payrollLoanAndAdvances(@RequestParam(value="uuid", required=false) String uuid,HttpServletRequest request)

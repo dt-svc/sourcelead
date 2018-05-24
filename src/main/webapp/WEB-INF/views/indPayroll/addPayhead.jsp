@@ -18,18 +18,27 @@
 		<div class="clearfix form-horizontal minHeight_225 minHeightcol5">
 			<div class="row min">
 
-				<div class="col-md-5">
+				<div class="col-md-5" id="payheadNameDiv">
 					<label class="clearfix">Name<span class="text-danger">&nbsp;*</span></label>
 					<div class="clearfix">
-						<input type="text" class="form-control" id="name" name="name" value="${payrollPayhead.name}"
+						<input type="text" class="form-control" id="payheadName" name="name" value="${payrollPayhead.name}"
 							field-name="Name"  data-validation="required validate_Space validate_length length1-100">
+						<input id="payheadNameDummy" hidden value="${payrollPayhead.name}">
 					</div>
 				</div>
-				<div class="col-md-5">
+				<div class="col-md-5" id="payheadShortCodeDiv">
 					<label class="clearfix">Short Code<span class="text-danger">&nbsp;*</span></label>
 					<div class="clearfix">
-						<input type="text" class="form-control" id="shortCode" name="shortCode" value="${payrollPayhead.shortCode}"
+					<c:if test="${!empty payrollPayhead && payrollPayhead.shortCode != ''}">
+						<input type="text" class="form-control" readonly id="shortCodeEdit" name="shortCode" value="${payrollPayhead.shortCode}"
 							field-name="Short Code"  data-validation="required validate_Space validate_length length1-10">
+					</c:if>
+					<c:if test="${empty payrollPayhead || payrollPayhead.shortCode == ''}">
+						<input type="text" class="form-control"  id="shortCode" name="shortCode" value="${payrollPayhead.shortCode}"
+							field-name="Short Code"  data-validation="required validate_Space validate_length length1-10">
+					</c:if>
+						<%-- <input type="text" class="form-control" ${!empty payrollPayhead && payrollPayhead.shortCode != '' ? 'readonly' : ''} id="shortCode" name="shortCode" value="${payrollPayhead.shortCode}"
+							field-name="Short Code"  data-validation="required validate_Space validate_length length1-10"> --%>
 					</div>
 				</div>
 				<div class="col-md-5">
@@ -70,19 +79,6 @@
 						</div>
 					</div>
 				</div>
-
-				<!-- <div class="col-md-5" id="flatDiv">
-					<label class="clearfix">Amount</label>
-					<div class="clearfix">
-						<input type="text" class="form-control" id="amount" name="amount" value="" field-name="Amount" data-validation-optional="true"  data-validation="validate_Space validate_float validate_length length1-3">
-					</div>
-				</div>
-				<div class="col-md-5" id="formulaDiv hidden">
-					<label class="clearfix">Formula</label>
-					<div class="clearfix">
-						<input type="text" class="form-control" value="">
-					</div>
-				</div> -->
 
 				<div class="col-md-5">
 					<label class="clearfix">Form-16</label>
@@ -227,7 +223,7 @@
 	<div class="clearfix footerstyelsNew">
 		<div class="col-lg-12">
 			<div class="pull-right">
-				<input value="Save" class="btn btn-success btnSuccess" type="button" onclick="storePayhead();">
+				<input value="Save" class="btn btn-success btnSuccess" id="savePayheadBtn" type="button" onclick="storePayhead();">
 				<input value="Cancel" onclick="javascript:window.location.href = '/app/payheadList'" class="btn btn-default ml10" type="button">
 			</div>
 		</div>
@@ -240,12 +236,12 @@
 	<div class="modal-dialog">
 	<div class="modal-content">
 		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" onClick="closePaytypeFun();">&times;</button>
+			<button type="button" class="close" data-dismiss="modal" id="closePaytypePopup" onClick="closePaytypeFun();">&times;</button>
 			<h4>Add Paytype</h4>
 		</div>
-		<form:form id="paytype_form" name="paytype_form">
+		<form:form id="paytype_form" name="paytype_form" method="post">
 			<div class="modal-body">
-				<div class="minHeight50 mb">
+				<div class="minHeight50 mb" id="paytypeNameDiv">
 					<label class="clearfix">Name<span class="text-danger">&nbsp;*</span></label>
 					<div class="clearfix">
 						<input type="text" class="form-control" id="paytypeName" name="name" field-name="Name"  data-validation="required validate_Space validate_length length1-100">
@@ -260,15 +256,14 @@
 			</div>
 			<div class="modal-footer">
 				<div class="pull-right">
-					<a class="btn btn-success btnSuccess mr" id="savePaytypeBtn">Save</a>
-					<a class="btn btn-default" data-dismiss="modal" id="cancelPaytypeBtn" onClick="closePaytypeFun();">Cancel</a>
+					<button class="btn btn-success btnSuccess mr" type="button" id="savePaytypeBtn">Save</button>
+					<button class="btn btn-default" type="button" data-dismiss="modal" id="cancelPaytypeBtn" onClick="closePaytypeFun();">Cancel</button>
 				</div>
 			</div>
 		</form:form>
 		</div>
 	</div>
 </div>
-
 
 
 <script type="text/javascript">
@@ -291,6 +286,101 @@
 				$(".clientDetails").toggleClass('hidden', 500);
 			});
 	});
+	
+	
+	$(function () {
+		  		$("#paytypeName").on('focus', function() {
+			  			$('#savePaytypeBtn').attr("disabled", true);
+			  	})
+			  	.on("blur", function () {
+			  	var name = $("#paytypeName").val();
+		    	$.ajax({
+				 type : "POST",
+				 url : sourceleadUrl+"/findPayrollPaytypeByNameAndLocationId?name="+name,
+				 success : function(result) {
+					 	if (result.response === "SESSION_TIMEDOUT") {
+			  				location.replace(sourceleadUrl);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+		                	if(result.error == "true"){
+		                		$('#paytypeNameDiv').find('p.jquery_form_error_message').remove();
+		                		$("input#paytypeName").after("<p class='jquery_form_error_message'>Paytype already existed</p>");
+		                	}else{
+		                		$('#savePaytypeBtn').removeAttr("disabled");
+		                	}
+		                } else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+		                    showError("Operation failed, please try again");
+		                }
+				  	},
+			});
+		    
+		  });
+
+		});
+	
+	
+	$(function () {
+  		$("#payheadName").on('focus', function() {
+	  			$('#savePayheadBtn').attr("disabled", true);
+	  	})
+	  	.on("blur", function () {
+	  		var name = $("#payheadName").val();
+	  	  	var shortCode = "";
+	  	  	var listType = "ByName";
+	  	  	var dummyName = $("#payheadNameDummy").val();
+	  	  	if(name != dummyName){
+	  	  		findPayheadByNameOrShortCode(name, shortCode, listType);
+	  	  	}else{
+	  	  		$('#savePayheadBtn').removeAttr("disabled");
+	  	  	}
+  		});
+	});
+	
+	$(function () {
+  		$("#shortCode").on('focus', function() {
+	  			$('#savePayheadBtn').attr("disabled", true);
+	  	})
+	  	.on("blur", function () {
+	  		var name = "";
+	  	  	var shortCode = $("#shortCode").val();
+	  	  	var listType = "ByShortCode";
+	  		findPayheadByNameOrShortCode(name, shortCode, listType);
+  		});
+	});
+	
+function findPayheadByNameOrShortCode(name, shortCode, listType){
+	$.ajax({
+	 type : "POST",
+	 url : sourceleadUrl+"/findPayrollPayheadByNameOrShortCodeAndLocationId?name="+name+"&shortCode="+shortCode+"&listType="+listType,
+	 success : function(result) {
+		 	if (result.response === "SESSION_TIMEDOUT") {
+  				location.replace(sourceleadUrl);
+            } else if (result.response === "AWKWARD") {
+                location.href = "/errorPage";
+            } else if (result.response === "SUCCESS") {
+            	if(result.error == "true"){
+            		if(listType == "ByName"){
+            			$('#payheadNameDiv').find('p.jquery_form_error_message').remove();
+                		$("input#payheadName").after("<p class='jquery_form_error_message'>Payhead already existed</p>");
+            		}
+            		if(listType == "ByShortCode"){
+            			$('#payheadShortCodeDiv').find('p.jquery_form_error_message').remove();
+                		$("input#shortCode").after("<p class='jquery_form_error_message'>Short code already existed</p>");
+            		}
+            	}else{
+            		$('#savePayheadBtn').removeAttr("disabled");
+            	}
+            } else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+                showError("Operation failed, please try again");
+            }
+	  	},
+});
+}
 </script>
         
 <script type="text/javascript">
@@ -417,11 +507,12 @@
 	
 	
 	$(function(){
-	    $('#cancelPaytypeBtn').click(function() {
+	    $('#cancelPaytypeBtn, #closePaytypePopup').click(function() {
 	    	$('#paytypeName').val('');
 	    	$('#paytypeName').siblings('p').remove();
 	    	$('#paytypeDescription').val('');
 	    	$('#paytypeDescription').siblings('p').remove();
+	    	$('#savePaytypeBtn').removeAttr("disabled");
 	    });
 	});
 	
@@ -437,6 +528,7 @@
 	                } else if (result.response === "SUCCESS") {
 	                	var json = result.data;
 	    	    		var output = "";
+	    	    		output = output + "<option value=''>--Select Pay Type--</option>";
 	    	    		for (var i = 0; i < json.length; i++) {
 	                   	    var opt = json[i];
 	    	        		output = output + "<option value='"+opt.id+"'>"+opt.name+"</option>";

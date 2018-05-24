@@ -30,10 +30,6 @@ public class PayrollPayheadDTO implements Serializable{
 		
 	    private String payType;
 		
-		/*private Double amount;
-		
-		private String formula;*/
-		
 		private String form16;
 		
 		private String tax;
@@ -60,6 +56,10 @@ public class PayrollPayheadDTO implements Serializable{
 		
 		private String esiApplicable;
 		
+		private String method;
+			
+		private String formula;
+		
 	    private String orgLocationId;
 	    
 		private String uuid;
@@ -77,6 +77,8 @@ public class PayrollPayheadDTO implements Serializable{
 		private String sortColumn;
 			
 		private String sortOrder;
+		
+		private String listType;
 		
 
 		public Long getId() {
@@ -239,6 +241,22 @@ public class PayrollPayheadDTO implements Serializable{
 			this.esiApplicable = esiApplicable;
 		}
 
+		public String getMethod() {
+			return method;
+		}
+
+		public void setMethod(String method) {
+			this.method = method;
+		}
+
+		public String getFormula() {
+			return formula;
+		}
+
+		public void setFormula(String formula) {
+			this.formula = formula;
+		}
+
 		public String getOrgLocationId() {
 			return orgLocationId;
 		}
@@ -309,6 +327,14 @@ public class PayrollPayheadDTO implements Serializable{
 
 		public void setSortOrder(String sortOrder) {
 			this.sortOrder = sortOrder;
+		}
+
+		public String getListType() {
+			return listType;
+		}
+
+		public void setListType(String listType) {
+			this.listType = listType;
 		}
 		
 }

@@ -38,4 +38,10 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 		return payrollPayheadDao.getPayrollPayheadByUUID(uuid);
 	}
 
+	@Override
+	public Boolean findPayrollPayheadByNameAndLocationId(PayrollPayheadDTO payrollPayheadDTO) throws Exception {
+		Boolean flag = payrollPayheadDao.findPayrollPayheadByNameAndLocationId(payrollPayheadDTO);
+		return flag;
+	}
+
 }
