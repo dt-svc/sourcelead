@@ -475,7 +475,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+ "                               OR (pah.level = '1'  and pah.status = '1' and (candidate.consultantUser IS NULL OR candidate.consultantUser IS NOT NULL and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))) "
 					+ "               )"
 					+ "       )"
-					 + "       OR "+Constants.loginUserAsAdminForProjects+""
+					+ "       OR "+Constants.loginUserAsAdminForProjects+""
+					 
+					+ "       OR  (pm.projects.isReportingManagerAsApprover = 'Y'  and pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id))"
 					+ "     ) ";
 	     
 	     
@@ -488,7 +490,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+ "               )"
 					+ "       )"
 					 + "       OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projectClientsId.orgLocationsId.id)"
-					+ "     ) ";
+					 + "       OR  (pm.projects.isReportingManagerAsApprover = 'Y'  and pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id))"
+					 + "     ) ";
 	     
 	     
 	    String globalUserQuery = "";

@@ -663,6 +663,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * (Either Admins/project_managers/team leads ...etc)
 				 */
 				+ "    hierarchy.approverUserId.id = :approverUserId  "
+				
+				+ "  OR  (sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id) and  sah.hierarchyId.level IN(select MIN(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0'))"
 				/*
 				 * logged in user as admin but not in
 				 * project_approver_hierarchy(hint:logged in user is admin but
@@ -1665,6 +1667,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * (Either Admins/project_managers/team leads ...etc)
 				 */
 				+ "  hierarchy.approverUserId.id = :userId "
+				
+				+ "       OR  (sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id) and  sah.hierarchyId.level IN(select MIN(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0'))"
 				/*
 				 * logged in user as admin but not in
 				 * project_approver_hierarchy(hint:logged in user is admin but

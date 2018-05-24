@@ -701,7 +701,7 @@ function editClientProjectDetails(projectId){
 							result = result + '<div class="checkbox checkBox margin-top0">';
 							result = result + '<label>';
 							result = result + '<input type="checkbox" value="Y" '+reoprtingManagerChecked+' id="isReportingManagerAsApprover" name="isReportingManagerAsApprover">';
-							result = result + 'Reporting Manager will be project manager</label>';
+							result = result + 'Reporting Manager will be T/E approver</label>';
 							result = result + '</div>';
 							result = result + '</div>';
 							

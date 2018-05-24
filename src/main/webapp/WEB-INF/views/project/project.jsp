@@ -323,7 +323,7 @@ function validateShortCode(){
 					                <div class="checkbox checkBox">
 					                  <label>
 					                    <input type="checkbox" value="Y" name="isReportingManagerAsApprover" id="isReportingManagerAsApprover">
-					                   Reporting Manager will be project manager</label>
+					                   Reporting Manager will be T/E approver</label>
 					                </div>
 					                 </div>
 			               </div> 
