@@ -120,4 +120,16 @@ public class UserGroupServiceImpl implements UserGroupService{
 		
 		return resObj;
 	}
+
+	@Override
+	public List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation)
+	{
+		return userGroupDao.getAllUserGroupsByLocationId(orgLocation);
+	}
+
+	@Override
+	public UserGroup findUserGroupById(Long groupId)
+	{
+		return userGroupDao.findUserGroupById(groupId);
+	}
 }

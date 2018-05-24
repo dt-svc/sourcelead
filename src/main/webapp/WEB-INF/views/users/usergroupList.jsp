@@ -516,7 +516,7 @@ function userGroupPaginationFun(url){
         ],
         "columnDefs": [ {
 	    	  	"targets": colIndex++,
-	    	  	"data": "payrollDeductionType",
+	    	  	"data": "groupId",
 	    	  	"sortable": true,
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		        var result = "";
@@ -525,8 +525,8 @@ function userGroupPaginationFun(url){
 	    	  	}
 	      },{
 	    	  "targets": colIndex++,
-              "data": "description",
-              "sortable": false,
+              "data": "groupName",
+              "sortable": true,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
 					result = result + '  <td><div class="tbldata-dotdot-verybig">'+opt.groupName+'</div></td>';
@@ -535,7 +535,8 @@ function userGroupPaginationFun(url){
               }
 	          },{
             "targets": colIndex++,
-            "data": "payrollDeductionMethod",
+            "data": "numOfAssociates",
+            "sortable": false,
             "render": function ( data, type, opt, meta ) { 
           			  var result = "";
 					 result = result + ' <td><div  class="tblminwidth-100">'+opt.numOfAssociates+'</div></td>';
@@ -543,7 +544,8 @@ function userGroupPaginationFun(url){
             }
           }, {
               "targets": colIndex++,
-              "data": "deductionAmount",
+              "data": "payFrequency",
+              "sortable": true,
               "render": function ( data, type, opt, meta ) {
             	  return ' <td><div  class="tblminwidth-100">'+opt.payFrequency+'</div></td>';
               }

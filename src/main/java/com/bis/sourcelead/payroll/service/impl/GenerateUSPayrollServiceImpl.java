@@ -65,8 +65,9 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	@Override
 	public ResponseList<USPayrollDTO> generateUSPayroll(OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO) throws Exception
 	{
-		Date actualStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), generateUSPayrollDTO.getPayrollStartDate().replaceAll("/", "-"));
-		Date actualEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), generateUSPayrollDTO.getPayrollEndDate().replaceAll("/", "-"));
+		String dates[] = generateUSPayrollDTO.getPayPeriod().split(",");
+		Date actualStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
+		Date actualEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
 		ResponseList<USPayrollDTO> usPayrollDTOResponse = new ResponseList<>();
 		List<USPayrollDTO> list = new ArrayList<>();
 		ResponseList<ProjectMembers> response = projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(orgLocation.getId(), actualStartDate, actualEndDate, 1, 10);

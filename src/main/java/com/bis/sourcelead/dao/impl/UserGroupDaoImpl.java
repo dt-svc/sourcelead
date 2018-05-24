@@ -119,6 +119,29 @@ public class UserGroupDaoImpl implements UserGroupDao{
 		}else{
 			return false;
 		}
-		
+	}
+
+	@Override
+	@Transactional
+	public List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId ";
+		List<UserGroup> userGroupList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).list();
+		return userGroupList;
+	}
+
+	@Override
+	@Transactional
+	public UserGroup findUserGroupById(Long groupId)
+	{
+		UserGroup userGroup = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserGroup userGroup where userGroup.id = :groupId and userGroup.status = 1";
+		List<UserGroup> userGroupList = session.createQuery(query.toString()).setLong("groupId", groupId).list();
+		if(userGroupList != null && userGroupList.size() >0) {
+			userGroup = userGroupList.get(0);
+		}
+		return userGroup;
 	}
 }
