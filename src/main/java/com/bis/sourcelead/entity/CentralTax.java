@@ -60,7 +60,12 @@ public class CentralTax implements Serializable {
 
 	@Column(name = "ACTIVE")
 	private boolean active;
-
+	
+	@Column(name = "CENTRALTAX_UUID")
+	private String centraltaxuuid;
+	
+	
+	
 	public boolean isActive() {
 		return active;
 	}
@@ -163,6 +168,14 @@ public class CentralTax implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getCentraltaxuuid() {
+		return centraltaxuuid;
+	}
+
+	public void setCentraltaxuuid(String centraltaxuuid) {
+		this.centraltaxuuid = centraltaxuuid;
 	}
 
 }

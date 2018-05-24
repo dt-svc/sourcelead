@@ -113,10 +113,16 @@ public class TaxDaoImpl implements TaxDao {
 		return 0;
 	}
 
-	public StateTax getStateTax(long stateTaxId) {
+	public StateTax getStateTax(String statetaxuuid) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			return session.get(StateTax.class, stateTaxId);
+			String query = "from StateTax st";
+			query += " where st.statetaxuuid = :statetaxuuid";
+			Query queryObj = session.createQuery(query).setString("statetaxuuid", statetaxuuid);
+			List<StateTax> stateTaxUUIDList = queryObj.list();
+			if (stateTaxUUIDList != null && !stateTaxUUIDList.isEmpty()) {
+				return stateTaxUUIDList.get(0);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -124,10 +130,16 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
-	public CentralTax getCentralTax(long sourceleadTaxId) {
+	public CentralTax getCentralTax(String centraltaxuuid) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			return session.get(CentralTax.class, sourceleadTaxId);
+			String query = "from CentralTax ct";
+			query += " where ct.centraltaxuuid = :centraltaxuuid";
+			Query queryObj = session.createQuery(query).setString("centraltaxuuid", centraltaxuuid);
+			List<CentralTax> centralTaxUUIDList = queryObj.list();
+			if (centralTaxUUIDList != null && !centralTaxUUIDList.isEmpty()) {
+				return centralTaxUUIDList.get(0);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -216,6 +228,22 @@ public class TaxDaoImpl implements TaxDao {
 			if (stateTax != null) {
 				stateTax.setActive(!stateTax.isActive());
 				return stateTax.getId();
+			} else
+				return -2;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	@Override
+	public long changeCentralTaxStatus(long centralTaxId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			CentralTax centralTax = session.get(CentralTax.class, centralTaxId);
+			if (centralTax != null) {
+				centralTax.setActive(!centralTax.isActive());
+				return centralTax.getId();
 			} else
 				return -2;
 		} catch (Exception e) {

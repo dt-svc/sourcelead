@@ -32,6 +32,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class TaxServiceImpl implements TaxService {
@@ -79,10 +80,10 @@ public class TaxServiceImpl implements TaxService {
 		return centralTaxList;
 	}
 
-	public StateTaxDTO getStateTax(long stateTaxId) {
+	public StateTaxDTO getStateTax(String statetaxuuid) {
 		StateTaxDTO stateTaxDTO = new StateTaxDTO();
 		try {
-			StateTax stateTax = taxDao.getStateTax(stateTaxId);
+			StateTax stateTax = taxDao.getStateTax(statetaxuuid);
 			if (stateTax != null) {
 				stateTaxDTO = getStateTaxDTO(stateTax, true);
 			}
@@ -93,10 +94,10 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public CentralTaxDTO getCentralTax(long sourceleadTaxId) {
+	public CentralTaxDTO getCentralTax(String centraltaxuuid) {
 		CentralTaxDTO centralTaxDTO = new CentralTaxDTO();
 		try {
-			CentralTax centralTax = taxDao.getCentralTax(sourceleadTaxId);
+			CentralTax centralTax = taxDao.getCentralTax(centraltaxuuid);
 			if (centralTax != null) {
 				centralTaxDTO = getCentralTaxDTO(centralTax, true);
 			}
@@ -116,6 +117,7 @@ public class TaxServiceImpl implements TaxService {
 			stateTaxDTO.setTaxTypeId(stateTax.getSourceleadTaxType().getId());
 			stateTaxDTO.setTaxType(stateTax.getSourceleadTaxType().getDescription());
 			stateTaxDTO.setActive(stateTax.isActive());
+			stateTaxDTO.setStatetaxuuid(stateTax.getStatetaxuuid());
 			if (includeAll) {
 				List<ProfessionalTaxDTO> professionalTaxList = new LinkedList<>();
 				for (ProfessionalTax pt : stateTax.getProfessionalTaxList()) {
@@ -152,6 +154,8 @@ public class TaxServiceImpl implements TaxService {
 			centralTaxDTO.setSourceleadTaxId(centralTax.getSourceleadTaxType().getId());
 			centralTaxDTO.setSourceleadTaxType(centralTax.getSourceleadTaxType().getDescription());
 			centralTaxDTO.setCtfinancialYear(centralTax.getCtfinancialYear());
+			centralTaxDTO.setCentraltaxuuid(centralTax.getCentraltaxuuid());
+			centralTaxDTO.setActive(centralTax.isActive());
 			if (includeAll) {
 				List<TdsDTO> tdsTaxList = new LinkedList<>();
 				for (Tds tds : centralTax.getTdsList()) {
@@ -184,12 +188,14 @@ public class TaxServiceImpl implements TaxService {
 			} else {
 				StateTax st = null;
 				if (stateTaxDTO.getId() > 0) {
-					st = taxDao.getStateTax(stateTaxDTO.getId());
+					st = taxDao.getStateTax(stateTaxDTO.getStatetaxuuid());
 				} else {
 					st = new StateTax();
 				}
+				String sttaxuuid = SourceLeadRandomCodeHelper.generateRandomTaxId();
 				st.setId(stateTaxDTO.getId());
 				st.setFinancialYear(stateTaxDTO.getFinancialYear());
+				st.setStatetaxuuid(sttaxuuid);
 				st.setActive(true);
 				st.setSourceleadTaxType(getTaxTypeById(stateTaxDTO.getTaxTypeId()));
 				st.setStates(statesService.getStateById(stateTaxDTO.getStateId()));
@@ -230,12 +236,14 @@ public class TaxServiceImpl implements TaxService {
 	@Override
 	public long saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) {
 		try {
-			List<CentralTax> ctList = taxDao.getCentralTaxList(centralTaxDTO.getCtfinancialYear(),
-					centralTaxDTO.getSourceleadTaxId());
+			List<CentralTax> ctList = taxDao.getCentralTaxList(centralTaxDTO.getCtfinancialYear(),centralTaxDTO.getSourceleadTaxId());
 			if (centralTaxDTO.getId() == 0 && ctList != null && ctList.size() > 0) {
 				return -1;
 			} else {
+				
+				String cttaxuuid = SourceLeadRandomCodeHelper.generateRandomTaxId();
 				CentralTax ct = new CentralTax();
+				ct.setCentraltaxuuid(cttaxuuid);
 				ct.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
 				ct.setEmployeepf(centralTaxDTO.getEmployeepf());
 				ct.setEmployerpf(centralTaxDTO.getEmployerpf());
@@ -305,6 +313,27 @@ public class TaxServiceImpl implements TaxService {
 		Response<String> response = new Response<>();
 		try {
 			long result = taxDao.changeStateTaxStatus(stateTaxId);
+			if (result > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (result == -2) {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
+	
+	@Override
+	public Response<String> changeCentralTaxStatus(long centralTaxId) {
+		Response<String> response = new Response<>();
+		try {
+			long result = taxDao.changeCentralTaxStatus(centralTaxId);
 			if (result > 0) {
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());

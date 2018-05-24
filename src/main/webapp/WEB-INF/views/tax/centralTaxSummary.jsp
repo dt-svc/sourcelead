@@ -16,7 +16,7 @@
 			<div class="clerfix viewlabel-b">
 				<div class="minHeight_225 modal-body">
 					<div class="viewgrid-header pull-right zIndex">
-						<a href="create?centralTaxId=${centralTax.id}"
+						<a href="create?centraltaxuuid=${centralTax.centraltaxuuid}"
 							class="btn btn-default btn-sm" title="Edit"><i
 							class="fa fa-pencil paddingRight"></i>Edit</a>
 					</div>

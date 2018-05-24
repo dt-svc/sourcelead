@@ -92,15 +92,13 @@ public class TaxController {
 	}
 
 	@RequestMapping(value = "/stateTax/create")
-	public ModelAndView addStateTaxPage(HttpServletRequest request, @RequestParam(defaultValue = "0") long stateTaxId) {
+	public ModelAndView addStateTaxPage(HttpServletRequest request, @RequestParam(defaultValue = "0") String statetaxuuid) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			StateTaxDTO stateTaxDTO = new StateTaxDTO();
 			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(1, false);
 			modelAndView.addObject("taxTypes", taxTypeList);
-			if (stateTaxId > 0) {
-				stateTaxDTO = taxService.getStateTax(stateTaxId);
-			}
+				stateTaxDTO = taxService.getStateTax(statetaxuuid);
 			modelAndView.addObject("stateTax", stateTaxDTO);
 			setYears(modelAndView, stateTaxDTO.getFinancialYear());
 			setStates(modelAndView);
@@ -115,14 +113,14 @@ public class TaxController {
 
 	@RequestMapping(value = "/centralTax/create")
 	public ModelAndView addCentralTax(HttpServletRequest request,
-			@RequestParam(value = "centralTaxId", required = false) Long sourceleadTaxId) {
+			@RequestParam(value = "centraltaxuuid", required = false) String centraltaxuuid) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			CentralTaxDTO centralTaxDTO = new CentralTaxDTO();
 			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(2, false);
 			modelAndView.addObject("taxTypes", taxTypeList);
-			if (sourceleadTaxId != null) {
-				centralTaxDTO = taxService.getCentralTax(sourceleadTaxId);
+			if (centraltaxuuid != null) {
+				centralTaxDTO = taxService.getCentralTax(centraltaxuuid);
 			}
 			modelAndView.addObject("centralTax", centralTaxDTO);
 			setYears(modelAndView, centralTaxDTO.getCtfinancialYear());
@@ -163,10 +161,10 @@ public class TaxController {
 	}
 
 	@RequestMapping(value = "/stateTax/taxSummary")
-	public ModelAndView stateTaxSummary(HttpServletRequest request, @RequestParam(defaultValue = "0") long stateTaxId) {
+	public ModelAndView stateTaxSummary(HttpServletRequest request, @RequestParam(defaultValue = "0") String statetaxuuid) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-			StateTaxDTO stateTaxDTO = taxService.getStateTax(stateTaxId);
+			StateTaxDTO stateTaxDTO = taxService.getStateTax(statetaxuuid);
 			modelAndView.addObject("stateTax", stateTaxDTO);
 			modelAndView.setViewName("tax/stateTaxSummary");
 		} catch (Exception e) {
@@ -177,10 +175,10 @@ public class TaxController {
 
 	@RequestMapping(value = "/centralTax/taxSummary")
 	public ModelAndView centralTaxSummary(HttpServletRequest request,
-			@RequestParam(defaultValue = "0") long sourceleadTaxId) {
+			@RequestParam(defaultValue = "0") String centraltaxuuid) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-			CentralTaxDTO centralTaxDTO = taxService.getCentralTax(sourceleadTaxId);
+			CentralTaxDTO centralTaxDTO = taxService.getCentralTax(centraltaxuuid);
 			modelAndView.addObject("centralTax", centralTaxDTO);
 			modelAndView.setViewName("tax/centralTaxSummary");
 		} catch (Exception e) {
@@ -306,6 +304,26 @@ public class TaxController {
 		}
 		return response;
 
+	}
+	
+	@RequestMapping(value = "/centralTax/changeStatus")
+	@ResponseBody
+	public Response<String> changeCentralTaxStatus(HttpServletRequest request, @RequestParam(defaultValue = "0") long taxId) {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				response = taxService.changeCentralTaxStatus(taxId);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
 	}
 	
 	// forms tab

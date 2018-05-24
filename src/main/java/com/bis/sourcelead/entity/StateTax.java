@@ -31,8 +31,8 @@ public class StateTax implements Serializable {
 	@Column(name = "FINANCIAL_YEAR")
 	private String financialYear;
 
-	@Column(name = "ACTIVE")
-	private boolean active;
+	@Column(name = "STATETAX_UUID")
+	private String statetaxuuid;
 
 	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -46,6 +46,9 @@ public class StateTax implements Serializable {
 
 	@OneToMany(mappedBy = "stateTax", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<ProfessionalTax> professionalTaxList;
+	
+	@Column(name = "ACTIVE")
+	private boolean active;
 
 	public long getId() {
 		return id;
@@ -98,4 +101,13 @@ public class StateTax implements Serializable {
 	public void setActive(boolean isActive) {
 		this.active = isActive;
 	}
+
+	public String getStatetaxuuid() {
+		return statetaxuuid;
+	}
+
+	public void setStatetaxuuid(String statetaxuuid) {
+		this.statetaxuuid = statetaxuuid;
+	}
+	
 }

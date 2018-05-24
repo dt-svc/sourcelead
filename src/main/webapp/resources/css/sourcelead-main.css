@@ -8747,6 +8747,9 @@ display: inline-block; width: 100%; clear:both;
 .phoneValid p.jquery_form_error_message {
  position: absolute; left: 18px; bottom: -14px;
 }
+.colmd2Custom .col-md-2 {
+	width:15%;
+	}
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

@@ -26,7 +26,7 @@ public interface TaxService {
 
 	long saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations);
 
-	StateTaxDTO getStateTax(long stateTaxId);
+	StateTaxDTO getStateTax(String statetaxuuid);
 
 	long addStateTax(StateTaxDTO stateTaxDTO);
 
@@ -34,10 +34,12 @@ public interface TaxService {
 
 	List<CentralTaxDTO> getCentralTaxList(String yearFrequency);
 
-	CentralTaxDTO getCentralTax(long sourceleadTaxId);
+	CentralTaxDTO getCentralTax(String centraltaxuuid);
 
 	Response<String> changeStateTaxStatus(long stateTaxId);
 
+	Response<String> changeCentralTaxStatus(long centralTaxId);
+	
 	Tds getTDSById(long id);
 
 }

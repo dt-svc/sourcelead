@@ -3,16 +3,23 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class CentralTaxDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	
+	@Required(desc = "Tax Type", isPositiveNumber = true)
+	private long sourceleadTaxId;
+	private String sourceleadTaxType;
+	
+	@Required(desc = "CtfinancialYear")
+	private String ctfinancialYear;
+	
 	private long id;
 
-	private Long sourceleadTaxId;
-
-	private String sourceleadTaxType;
-
+	@Required(desc = "Ceilvaluepf")
 	private Integer ceilvaluepf;
 
 	private Double noofemployees;
@@ -21,6 +28,7 @@ public class CentralTaxDTO implements Serializable {
 
 	private Double employerpf;
 
+	@Required(desc = "CeilvalueEsi")
 	private Integer ceilvalueEsi;
 
 	private Double employeeEsi;
@@ -28,8 +36,8 @@ public class CentralTaxDTO implements Serializable {
 	private Double employerEsi;
 
 	private Integer centraltaxid;
-
-	private String ctfinancialYear;
+	
+	private String centraltaxuuid;
 
 	private List<TdsDTO> tdsTaxList;
 
@@ -39,6 +47,14 @@ public class CentralTaxDTO implements Serializable {
 
 	public boolean isActive() {
 		return active;
+	}
+	
+	public String getCentraltaxuuid() {
+		return centraltaxuuid;
+	}
+
+	public void setCentraltaxuuid(String centraltaxuuid) {
+		this.centraltaxuuid = centraltaxuuid;
 	}
 
 	public void setActive(boolean active) {
