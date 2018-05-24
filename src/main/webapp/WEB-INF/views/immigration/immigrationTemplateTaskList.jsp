@@ -53,7 +53,6 @@
         <div class="addImmiFoot">
             <a href="javascript:void(0)" onclick="immigration.gotoTemplatePreviousPage('formDetails')" class="pull-left">Back</a>
             <a href="javascript:void(0)" onclick="immigration.savePetitionTemplateDetailsValues()" class="nextBtn">Save Template</a>
-            <a href="javascript:void(0)">Reset</a>
             <div class="clearfix"></div>
         </div>   
     </div>
@@ -72,26 +71,26 @@
                 <div class="col-md-6 noPad">
                     <div class="col-md-12 mb10" id = "taskNameDiv">
                         <label>Subject<span class="text-danger">*</span></label>
-                        <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" onke field-name= "Subject" data-validation = "required validate_Space validate_length length2-500">
+                        <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" field-name= "Subject" data-validation = "required validate_Space validate_length length2-500">
                     </div>
                     <div class="col-md-12 mb10">
                         <label>Priority</label>
                         <select class="form-control input-sm valid" id="priority1" name="priority">
-                            <option selected="" disabled="">-- Select Priority --</option>
-                            <option>High</option>
-                            <option>Low</option>
-                            <option>Medium</option>
+                            <option value="" selected>-- Select Priority --</option>
+                            <option value="High">High</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
                         </select>
                     </div>
                     <div class="col-md-12 mb10">
                         <label>Repeat</label>
                         <select class="form-control input-sm valid" id="taskRepeat" name="taskRepeat">
-                            <option selected="" disabled="">-- Select Repeat --</option>
-                            <option>Never</option>
-                            <option>Daily</option>
-                            <option>Weekly</option>
-                            <option>Monthly</option>
-                            <option>Yearly</option>
+                            <option value="" selected>-- Select Repeat --</option>
+                            <option value="Never">Never</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
                         </select>
                     </div>
 
@@ -318,6 +317,7 @@
         $(".popCan").click(function () {
             $(".popMask").fadeOut(200);
             $("#taskViewPopup").fadeOut(100);
+            //$('#petitionTemplateTaskDetails').validate().resetForm();
         });
 //        $("#taskName").unbind("blur");
         $("#taskName").on("keyup", function () {
