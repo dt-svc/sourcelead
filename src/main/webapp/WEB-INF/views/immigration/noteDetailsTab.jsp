@@ -36,7 +36,7 @@
 		
 		
 		<div class="popupMid clearfix">
-			<div class="col-sm-12 noPad mt clearfix"><textarea class="form-control" rows="3" id= "noteDescription" placeholder="Note" name = "noteDescription" field-name="Note" data-validation="required"></textarea></div>						
+			<div class="col-sm-12 noPad mt clearfix"><textarea class="form-control" rows="3" id= "noteDescription" placeholder="Note" name = "noteDescription" field-name="Note" data-validation="required validate_Space validate_length length2-250"></textarea></div>						
 		</div>
 		
 		 <div>
