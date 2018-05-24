@@ -443,7 +443,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		if("WTVStage".equalsIgnoreCase(contractsDTO.getSaveType())){
 			contracts.setTemplateSubmissionStatus(Constants.WAITING_TO_BE_VERIFY);
-		}else if(StringUtils.isNotBlank(contractsDTO.getSaveType()) && !Constants.DRAFT.equalsIgnoreCase(contractsDTO.getSaveType()) && Constants.PENDING.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
+		}else if(StringUtils.isNotBlank(contractsDTO.getSaveType()) && !Constants.DRAFT.equalsIgnoreCase(contractsDTO.getSaveType()) && !Constants.PENDING.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())){
 			if(StringUtils.isNotBlank(contractsDTO.getOwnersType())){
 				Long userId = user.getId().longValue();
 				if(Constants.PARALLEL.equalsIgnoreCase(contractsDTO.getOwnersType())){
@@ -883,6 +883,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	private Set<ContractOwnerHierarchy> getOwnersList(ContractsDTO contractDTO, Contracts contract, User user) throws Exception {
+		Integer status = deleteContractOwnerHierarchyListByContractId(contract.getId());
+		
 		Set<ContractOwnerHierarchy> ownersList = new HashSet<>();
 		if("Parallel".equalsIgnoreCase(contractDTO.getOwnersType())){
 			for(Long userId : contractDTO.getParallelOwner()){
@@ -940,7 +942,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			StringBuilder ownerName = new StringBuilder();
 			StringBuilder vendorName = new StringBuilder();
 			List<Long> ownerUserIds = new ArrayList<>();
-			if(null != contracts.getOwnerHierarchyList()){
+			if(null != contracts.getOwnerHierarchyList() && !contracts.getOwnerHierarchyList().isEmpty()){
 				for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
 					ownerUserIds.add(coh.getOwnerUserId().getId());
 					if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
@@ -951,7 +953,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				}
 				
 			}else{
-				ownerName.append("---");
+				ownerUserIds.add(contracts.getOwnerUserId().getId());
+				if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
+					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+				}else{
+					ownerName.append(contracts.getOwnerUserId().getFirstName());
+				}
 			}
 			venContractsDto.setOwnerName(ownerName.toString().replaceAll("\\s*,\\s*$", ""));
 			
@@ -1098,7 +1105,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			StringBuilder ownerName = new StringBuilder();
 			StringBuilder vendorName = new StringBuilder();
 			List<Long> ownerUserIds = new ArrayList<>();
-			if(null != contracts.getOwnerHierarchyList()){
+			if(null != contracts.getOwnerHierarchyList() && !contracts.getOwnerHierarchyList().isEmpty()){
 				for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
 					ownerUserIds.add(coh.getOwnerUserId().getId());
 					if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
@@ -1108,8 +1115,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					}
 				}
 				
-			}else{
-				ownerName.append("---");
+			}else if(contracts.getOwnerUserId() != null){
+				ownerUserIds.add(contracts.getOwnerUserId().getId());
+				if(null != contracts.getOwnerUserId().getFirstName() && null != contracts.getOwnerUserId().getLastName()){
+					ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+				}else{
+					ownerName.append(contracts.getOwnerUserId().getFirstName());
+				}
 			}
 			clientConDto.setOwnerName(ownerName.toString().replaceAll("\\s*,\\s*$", ""));
 			
@@ -3555,6 +3567,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		parentContract.setContactUser(contactUser);
 		saveNewContract(parentContract);
 		return contract;
+	}
+
+	@Override
+	public Integer deleteContractOwnerHierarchyListByContractId(Long id)
+	{
+		return contractsTemplateDao.deleteContractOwnerHierarchyListByContractId(id);
 	}
 	
 }
