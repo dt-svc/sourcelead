@@ -1051,7 +1051,11 @@ $("#experienceValue").change(function () {
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	$('#attorneyId').empty();
-		        	$('#attorneyId').append('<option value="">--Select Attorney --</option>');
+		        	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+		        		$('#attorneyId').append('<option value="">--Select Company --</option>');
+		        	}else{
+		        		$('#attorneyId').append('<option value="">--Select Attorney --</option>');
+		        	}
 		            for(var i=0;i<json.length;i++){
 		            	  var opt = json[i];
 		            	  if(opt.id == attorneyId){
@@ -1090,7 +1094,11 @@ $("#experienceValue").change(function () {
 			        success: function(json) {
 			        	//var json = JSON.parse(data);
 			        	$('#attorneyContact').empty();
-			        	$('#attorneyContact').append('<option value="">--Select Attorney contact--</option>');
+			        	if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+			        		$('#attorneyContact').append('<option value="">--Select Company contact--</option>');
+			    		}else{
+			    			$('#attorneyContact').append('<option value="">--Select Attorney contact--</option>');
+			    		}
 			             for(var i=0;i<json.data.length;i++){
 			            	 var opt = json.data[i];
 			            	 if(opt.id == attorneyContactId){

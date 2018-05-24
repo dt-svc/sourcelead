@@ -151,7 +151,7 @@
              <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Description</label>
               	<div class="col-md-8 padding_right">
-					<textarea rows="2" class="form-control" id= "formDescription" name = "formDescription"></textarea>
+					<textarea rows="2" class="form-control" id= "formDescription" field-name = "Description" name = "formDescription" data-validation="required validate_Space validate_length length2-250" data-validation-optional="true"></textarea>
 				</div>
 			</div>	
 		<div class="col-sm-12 noPad mt clearfixclearfix">

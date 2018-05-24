@@ -123,7 +123,7 @@
 				<div class="row">
 				<label class="col-md-4">Employer<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8">
-              		<input type="text" class="form-control" placeholder="Employer" id = "name" name="name" data-validation="required validate_Space validate_length length2-100" field-name="Employer Name"/>
+              		<input type="text" class="form-control" placeholder="Employer" id = "name" name="name" data-validation="required validate_AlphaNumber validate_Space validate_length length2-100" field-name="Employer Name"/>
 				</div>
 				</div>
 			</div>
