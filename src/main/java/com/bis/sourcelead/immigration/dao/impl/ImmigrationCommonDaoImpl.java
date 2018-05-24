@@ -43,6 +43,7 @@ import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
+import com.bis.sourcelead.entity.ImmigrationListExportView;
 import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -722,7 +723,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			query1.append(" or (immView.currUscisStatus like '%" + searchValue + "%' )");
 			query1.append(" or (immView.country like '%" + searchValue + "%' )");
 			query1.append(" or (immView.petitionType like '%" + searchValue + "%' )");
-			if (orgLocations.getId() == immigrationListDTO.getOrgLocationId()) {
+			if (orgLocations.getId().equals(immigrationListDTO.getOrgLocationId())) {
 				query1.append(" or (immView.vendor like '%" + searchValue + "%' )");
 			} else {
 				query1.append(" or (immView.client like '%" + searchValue + "%' )");
@@ -754,7 +755,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		if (StringUtils.isNotBlank(immigrationListDTO.getSortColumn())) {
 			String sortColumnName = immigrationListDTO.getSortColumn();
 			if (sortColumnName.equalsIgnoreCase("orgName")) {
-				if (orgLocations.getId() == immigrationListDTO.getOrgLocationId()) {
+				if (orgLocations.getId().equals(immigrationListDTO.getOrgLocationId())) {
 					sortColumnName = "vendor";
 				} else {
 					sortColumnName = "client";
@@ -845,7 +846,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaStartDate()));
 				target.setLcaEndDateStr(
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaEndDate()));
-				if (orgLocations.getId() == source.getOrgLocationId()) {
+				if (orgLocations.getId().equals(source.getOrgLocationId())) {
 					target.setOrgName(source.getVendor());
 					target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG2);
 					target.setSpocName(source.getSpocNameVendor());
@@ -1357,7 +1358,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaStartDate()));
 				target.setLcaEndDateStr(
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaEndDate()));
-				if (orgLocations.getId() == source.getOrgLocationId()) {
+				if (orgLocations.getId().equals(source.getOrgLocationId())) {
 					target.setOrgName(source.getVendor());
 					target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG2);
 					target.setSpocName(source.getSpocNameVendor());
@@ -1405,5 +1406,14 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			return flag;
 		}
 			}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationListExportView> getImmigrationListExportDetails(OrgLocations orgLocations) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String listQuery = "from ImmigrationListExportView immView  where immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
+		List<ImmigrationListExportView> listExportViews = session.createQuery(listQuery).setParameter("orgLocationId", orgLocations.getId()).list();
+		return listExportViews;
+	}
 
 }

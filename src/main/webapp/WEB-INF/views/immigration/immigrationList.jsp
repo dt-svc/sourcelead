@@ -229,7 +229,7 @@
 				  <li class="noPad">
 					  <a href="${appPath}/immigration/loadNewPetition" class="btn btn-success btnSuccess anchorWhite btn-sm"><i class="fa fa-plus paddingRight"></i> New </a>
 				  </li>
-				 <!--  <li title="Export" class="mrPOP" id="mypop"><i
+				 <li title="Export" class="mrPOP" id="mypop"><i
 							class="glyphicon glyphicon-export"></i>
 							<div id="exportPop">
 								<ul>
@@ -238,7 +238,7 @@
 										class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
 								</ul>
 							</div>
-				</li> -->
+				</li>
                  </sec:authorize>
 			  </ul>
 			  <div class="remove_search">
@@ -343,14 +343,18 @@
 </div>
 
 <script>
-		/* function exportToPdf(){
-			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
+		function exportToPdf(){
+			window.location.href = sourceleadUrl+"/immigration/getImmigrationListExport?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
+		}
+		
+		function exportToExcel(){
+			window.location.href = sourceleadUrl+"/immigration/getImmigrationListExport?"+tokenParamName+"="+tokenValue+"&exportType=excel";
 		}
 
 		$('#mypop').click(function(){
 			$("#exportPop").toggle();
 			$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
-		}); */
+		}); 
 	// Close Advanced Search
 		function closePop(){
 			$("#immigrationFilterPopup").hide();
