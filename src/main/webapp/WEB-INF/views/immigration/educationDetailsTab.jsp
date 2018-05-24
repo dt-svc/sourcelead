@@ -16,7 +16,7 @@
 						</c:choose>
 				    </c:otherwise>
 				</c:choose>
-		  	<span><input class="immigraTabSerach" id="educationSearchVal" type="text"></span>
+		  	<span><input class="immigraTabSerach" title="Education/Specialization/Institute/University" placeholder="Education/Specialization/Institute/University" id="educationSearchVal" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable overflow_Auto">

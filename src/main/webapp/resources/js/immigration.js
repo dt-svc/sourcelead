@@ -1429,12 +1429,12 @@ function validateCandidatePassportVisa(idType) {
 		        	if(data == true){
 		        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove();
 		        		  $("input#idNumber").after("<p class='jquery_form_error_message'>"+idNumberVal+" is Already Existed</span>");
-						  $("#passport_save_id").attr('disabled','disabled');
+						  $("#visa_save_id").attr('disabled','disabled');
 		        	}
 		        	else{
 		        		   $('input#idNumber').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
-                      $("#passport_save_id").removeAttr("disabled");
+                      $("#visa_save_id").removeAttr("disabled");
 		        	}
 		        }
 		        },

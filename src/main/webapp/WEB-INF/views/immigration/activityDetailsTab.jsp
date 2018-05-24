@@ -1,6 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <div class="immigraTabsHead">
-		  	<span><input class="immigraTabSerach" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable">
