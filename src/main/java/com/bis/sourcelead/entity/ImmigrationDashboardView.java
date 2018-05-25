@@ -22,6 +22,9 @@ public class ImmigrationDashboardView implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@Column(name = "IMMIGRATION_ID")
+	private Long immigrationId;
+	
 	@Column(name = "ORG_LOCATION_ID ")
 	private Long orgLocationId;
 
@@ -130,6 +133,14 @@ public class ImmigrationDashboardView implements Serializable {
 
 	public void setDeniedCount(BigDecimal deniedCount) {
 		this.deniedCount = deniedCount;
+	}
+
+	public Long getImmigrationId() {
+		return immigrationId;
+	}
+
+	public void setImmigrationId(Long immigrationId) {
+		this.immigrationId = immigrationId;
 	}
 
 	
