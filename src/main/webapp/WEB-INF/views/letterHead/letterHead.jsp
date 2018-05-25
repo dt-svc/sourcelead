@@ -227,7 +227,6 @@
 	  }	  
   }
   
-  
   function saveLetterheadData(){
 		  var letterHeadUUID = '${letterHeadUUID}';
 	  		if ($('#letterHead_form').validate(false, validationSettings)) {
