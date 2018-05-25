@@ -52,9 +52,9 @@
 			  </tr>
 			  <c:forEach var="canDocList" items="${immigrationCanDocList}" varStatus="rows">			  			  
 			<tr docid="${canDocList.id}" allowMultpleDocs= "${canDocList.allowMultiple}" docsHistoryList = "${fn:escapeXml(canDocList.docsHistoryList)}">
-				<td><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
-				<td><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
-				<td><div class="tblminwidth-50">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
+				<td title="${canDocList.documentTypeName}"><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
+				<td title = "${canDocList.description}"><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
+				<td title = "${canDocList.isRequired == 'Y' ? 'YES':'NO'}"><div class="tblminwidth-50">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
 				<c:if test="${!empty canDocList.upldedFileName}">
 				<td>
 					<c:choose>
@@ -75,7 +75,7 @@
 					</div>
 				</td>
 				</c:if>
-				<td><div class="tblminwidth-50">${canDocList.documentStatus}</div></td>
+				<td title ="${canDocList.documentStatus}"><div class="tblminwidth-50">${canDocList.documentStatus}</div></td>
 				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
@@ -428,6 +428,7 @@ function removeDocPopUp12(){
 	$("#uploadCanDocPop").fadeOut(100);
 	$(".comMask").fadeOut(100);
 	 $("div[id*='dynamicRow']").remove();
+	 $('#uploadRequestDoc_Form').find('p.jquery_form_error_message').remove();
 }
 
 function removeDocPopUp(){

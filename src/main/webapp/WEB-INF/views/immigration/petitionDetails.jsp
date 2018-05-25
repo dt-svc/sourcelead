@@ -54,7 +54,7 @@
              <div class="form-group">
               <label class="col-md-4">Receipt No</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" value="${immigrationDTO.receiptNo}" name="receiptNo" id="receiptNo">
+					<input type="text" class="form-control" value="${immigrationDTO.receiptNo}" name="receiptNo" id="receiptNo" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
           </div>
             
@@ -334,7 +334,7 @@
           <div class="form-group">
               <label class="col-md-4">Middle Name</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" value="${immigrationDTO.middleName}" name="middleName" id="middleName">
+					<input type="text" class="form-control" value="${immigrationDTO.middleName}" name="middleName" id="middleName" data-validation="required validate_Space validate_length length1-100" data-validation-optional="true">
               </div>
           </div> 
           <div class="form-group">
@@ -362,14 +362,14 @@
           <div class="form-group">
               <label class="col-md-4">Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="mobile" id="mobile" value="${immigrationDTO.mobile}">
+					<input type="text" class="form-control" name="mobile" id="mobile" value="${immigrationDTO.mobile}" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
           </div>
           
            <div class="form-group">
               <label class="col-md-4">Alternative Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile" value="${immigrationDTO.alternateMobile}">
+					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile" value="${immigrationDTO.alternateMobile}" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
           </div> 
             
@@ -413,33 +413,33 @@
              <div class="form-group">
               <label class="col-md-4">SSN</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="ssnNumber" id="ssnNumber" value="${immigrationDTO.ssnNumber}" placeholder="000-00-0000">
+                <input type="text" class="form-control" name="ssnNumber" id="ssnNumber" value="${immigrationDTO.ssnNumber}" placeholder="000-00-0000" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
              <div class="form-group">
               <label class="col-md-4">I-94 Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="i_94_number" id ="i_94_number" value="${immigrationDTO.i_94_number}" placeholder="XXXXXXXXX-XX">
+                <input type="text" class="form-control" name="i_94_number" id ="i_94_number" value="${immigrationDTO.i_94_number}" placeholder="XXXXXXXXX-XX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
            
              <div class="form-group">
               <label class="col-md-4">I-20 SEVIS Number If Student</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="i_20_number"  id="i_20_number" value="${immigrationDTO.i_20_number}" placeholder="N-XXXXXXXXXX">
+					<input type="text" class="form-control" name="i_20_number"  id="i_20_number" value="${immigrationDTO.i_20_number}" placeholder="N-XXXXXXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
                          
             <div class="form-group">
               <label class="col-md-4">EAD Number If Student</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="eadNumber" id="eadNumber" value="${immigrationDTO.eadNumber}" placeholder="">
+                <input type="text" class="form-control" name="eadNumber" id="eadNumber" value="${immigrationDTO.eadNumber}" placeholder="" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-4">Previous LCA Number</label>
               <div class="col-md-8">
-                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="I-XXX-XXXXX-XXXXXX">
+                <input type="text" class="form-control" name="prevLcaNumber" id="prevLcaNumber" value="${immigrationDTO.prevLcaNumber}" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
             
@@ -545,7 +545,7 @@
             <div class="form-group">
               <label class="col-md-4">Employer</label>
               <div class="col-md-8">
-                <input type="text"  class="form-control" value="${immigrationDTO.employer}" name="employer" id="employer">
+                <input type="text"  class="form-control" value="${immigrationDTO.employer}" name="employer" id="employer" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
             </div>
             
@@ -622,7 +622,7 @@
              <div class="form-group">
               <label class="col-md-4">LCA Number</label>
               <div class="col-md-8">
-                 <input type="text" class="form-control" value="${immigrationDTO.lcaNumber}" name="lcaNumber" id="lcaNumber" placeholder="I-XXX-XXXXX-XXXXXX">
+                 <input type="text" class="form-control" value="${immigrationDTO.lcaNumber}" name="lcaNumber" id="lcaNumber" placeholder="I-XXX-XXXXX-XXXXXX" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
               </div>
           </div>
             
