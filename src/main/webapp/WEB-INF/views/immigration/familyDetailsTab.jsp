@@ -116,25 +116,25 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required"/>
+              		<input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="middleName" name="middleName" placeholder="Middle Name"class="form-control" />
+              		<input type="text" id="middleName" name="middleName" placeholder="Middle Name"class="form-control" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true"/>
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="lastName" name="lastName" class="form-control" placeholder="last Name" field-name="Last Name" data-validation="required" />
+              		<input type="text" id="lastName" name="lastName" class="form-control" placeholder="last Name" field-name="Last Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" />
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Marriage<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="marriagePlace" name="marriagePlace" class="form-control" placeholder="Place Of Marriage" field-name="Place Of Marriage" data-validation="required"/>
+              		<input type="text" id="marriagePlace" name="marriagePlace" class="form-control" placeholder="Place Of Marriage" field-name="Place Of Marriage" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"/>
 				</div>
 			</div>                           				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -167,7 +167,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="placeOfBirthSpouse" name="placeOfBirth"  class="form-control" placeholder="Place Of Birth" />
+              		<input type="text" id="placeOfBirthSpouse" name="placeOfBirth"  class="form-control" placeholder="Place Of Birth" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
@@ -196,19 +196,19 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required"/>
+              		<input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  />
+              		<input type="text" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true"/>
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required" />
+              		<input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" />
 				</div>
 			</div>                         				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -223,7 +223,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth"/>
+              		<input type="text" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
@@ -253,19 +253,19 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required"/>
+              		<input type="text" class="form-control" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  />
+              		<input type="text" class="form-control" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true"/>
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required" />
+              		<input type="text" class="form-control" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" />
 				</div>
 			</div>                         				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -280,7 +280,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth"/>
+              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
@@ -310,19 +310,19 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">First Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text"  class="form-control" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required"/>
+              		<input type="text"  class="form-control" id="firstName" name="firstName" class="form-control" placeholder="First Name" field-name="First Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Middle Name</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text"  class="form-control" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  />
+              		<input type="text"  class="form-control" id="middleName" name="middleName" class="form-control" placeholder="Middle Name"  data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" data-validation-optional="true"/>
 				</div>
 			</div> 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Last Name<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required" />
+              		<input type="text" class="form-control" id="lastName" name="lastName" class="form-control" placeholder="Last Name" field-name="Last Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" />
 				</div>
 			</div>                         				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -337,7 +337,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Place of Birth</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth"/>
+              		<input type="text" class="form-control" id="placeOfBirth" name="placeOfBirth" class="form-control" placeholder="Place Of Birth" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
