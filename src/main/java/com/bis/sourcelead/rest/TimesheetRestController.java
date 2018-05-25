@@ -237,8 +237,15 @@ public class TimesheetRestController {
 		ModelAndView model = new ModelAndView();
 		try {
 			EmployeeTimesheetEntryDetailsDTO tedDTO = getEmployeeTimesheetEntryDetails(eedDTO, request);
-			model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
-			model.setViewName("timesheet/employeeTImesheetInvoiceList");
+			if(tedDTO.getProjectMembersList() == null || tedDTO.getProjectMembersList().isEmpty()) {
+				model.addObject("NORECORDSFOUND", true);
+				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
+				model.setViewName("timesheet/employeeTImesheetInvoiceList");
+			}else {
+				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
+				model.setViewName("timesheet/employeeTImesheetInvoiceList");
+			}
+			
 		} catch (Exception e) {
 			model.addObject("AWKWARD", true);
 			model.setViewName("timesheet/employeeTImesheetInvoiceList");

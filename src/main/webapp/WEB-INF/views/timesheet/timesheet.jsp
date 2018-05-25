@@ -66,6 +66,12 @@
            };
          
 </script> 
-
+ <script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 <script type="text/javascript"	src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 <jsp:include page="../masterFooter.jsp" />

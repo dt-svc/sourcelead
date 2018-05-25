@@ -27,14 +27,21 @@
 		      	          type : "POST",
 	        	      	  url: sourceleadUrl+"/getEmployeeTimesheetEntryDetails?invoiceFrequency="+invoiceFrequency+"&currentTimeFrequency="+currentTimeFrequency+"&timeSheetsFor=user",		
 	        		      success :function(data) {
-	        		    	  $("#timesheetEntriesDiv").empty();
-	        		    	  $("#timesheetEntriesDiv").append(data);
-	        		    	  $("#loadTime").removeAttr('style');
-	        		    	  prepareChosenScripts();
+	        		    		  $("#timesheetEntriesDiv").empty();
+		        		    	  $("#timesheetEntriesDiv").append(data);
+		        		    	  $("#loadTime").removeAttr('style');
+		        		    	  prepareChosenScripts();
+		        		    	  setTotals();
 	        		      }
 	        	    }); 
 	}
 </script> 
-
+ <script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 
 <script type="text/javascript"	src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>

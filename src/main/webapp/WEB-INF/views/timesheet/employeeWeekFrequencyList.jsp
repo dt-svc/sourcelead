@@ -33,5 +33,13 @@
 	        	    }); 
 	}
 </script> 
+<script>
+$(document).ready(function(){
+	if('${NORECORDSFOUND}' == "true"){
+		$("#timesheetDivByWeekFrequency").empty();
+  	  $("#timesheetDivByWeekFrequency").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
+	 }
+});
+</script>
 <script type="text/javascript"	src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 
