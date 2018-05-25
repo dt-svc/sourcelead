@@ -4,6 +4,7 @@
 package com.bis.sourcelead.immigration.service.impl;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1683,7 +1684,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		List<ImmigrationListExportView> immigrationListExportView = immigrationCommonDao.getImmigrationListExportDetails(orgLocations);
 		int column=0;
         for(ImmigrationListExportView exportView : immigrationListExportView){
-       	 writeRow = createExcelsheet.createRow(column+13);
+       	 writeRow = createExcelsheet.createRow(column+15);
        	 createExcelsheet = createImmigrationListXlsSheet(createExcelsheet,writeRow,exportView,orgLocations);
        	 column++;
         }
@@ -1830,6 +1831,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		Font font = createExcelworkbook.createFont();
 		font.setColor(IndexedColors.BLACK.getIndex());
 		style.setFont(font);
+		
+		BigDecimal totlaCount = immDashboardView.getDraftsCount().add(immDashboardView.getReqSentCount()).add(immDashboardView.getInProgressCount()).add(immDashboardView.getApporovedCount()).add(immDashboardView.getRejectedCount()).add(immDashboardView.getRfeCount()).add(immDashboardView.getDeniedCount()).add(immDashboardView.getOthersCount());
+				
 
 		/*========= Draft Count in Excel ================*/
 		writeRow = createExcelsheet.createRow(0);
@@ -1934,8 +1938,22 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		Cell cell14 = writeRow.createCell(1);
 		cell14.setCellValue(immDashboardView.getOthersCount().toString());
 		cell14.setCellStyle(style);
+		
+		/*========= Total Count in Excel ================*/
+		writeRow = createExcelsheet.createRow(9);
+		createExcelsheet.setColumnWidth(0, 10000);
+		createExcelsheet.setColumnWidth(1, 10000);
+
+		Cell cell15 = writeRow.createCell(0);
+		cell15.setCellValue("Total : ");
+		cell15.setCellStyle(style);
+
+		Cell cell16 = writeRow.createCell(1);
+		cell16.setCellValue(totlaCount.toString());
+		cell16.setCellStyle(style);
+		
 		String headers [] = Constants.IMMIGRATION_LIST_EXCEL_HEADERS;
-		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,12);
+		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,14);
 	}
 
 	@Override
