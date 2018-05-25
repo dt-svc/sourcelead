@@ -10,6 +10,10 @@ public class TimesheetEntriesDTO implements Serializable{
 
 	private Long id;
 	
+	private Long submissionId;
+	
+	private Long projectMemberId;
+	
 	//@Required(desc="timesheetTaskDTO")
     private TimesheetTaskDTO timesheetTaskDTO;
     
@@ -79,6 +83,22 @@ public class TimesheetEntriesDTO implements Serializable{
 
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+
+	public Long getSubmissionId() {
+		return submissionId;
+	}
+
+	public void setSubmissionId(Long submissionId) {
+		this.submissionId = submissionId;
+	}
+
+	public Long getProjectMemberId() {
+		return projectMemberId;
+	}
+
+	public void setProjectMemberId(Long projectMemberId) {
+		this.projectMemberId = projectMemberId;
 	}
 	
 	
