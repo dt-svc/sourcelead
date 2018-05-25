@@ -646,7 +646,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			dto.setCurrUscisStatus(immigrationCommonDao.getPetitionTypeById(immigration.getCurrUscisStauts().getId(),
 					ImmigrationConstants.PETITION_STATUS));
 			dto.setCurrUscisStatusId(immigration.getCurrUscisStauts().getId());
-			if (immigration.getDateOfArrival() != null) {
+			if (immigration.getDateOfArrival() != null  && StringUtils.isNotBlank(immigration.getDateOfArrival().toString())) {
 				dto.setArrivalDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 						immigration.getDateOfArrival()));
 			}
