@@ -94,7 +94,7 @@
 											        <td id="${entryCount.index+1}projectTd">
 														<div class="timeAdd">
 														    <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
-														        <select id="${entryCount.index+1}projectMember1Id" name="${entryCount.index+1}projectMember1Id" onchange="flushtasks('${entryCount.index+1}task1Id');" data-validation="required" field-name="Project">
+														        <select id="${entryCount.index+1}projectMember1Id" name="${entryCount.index+1}projectMember1Id" onchange="flushtasks('${entryCount.index+1}task1Id');setTaskStatus('${entryCount.index+1}projectMember1Id');" data-validation="required" field-name="Project">
 																	<option value=''>--select project--</option> 
 															        <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
 															               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == pm.id}">
@@ -204,6 +204,7 @@
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
+													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetStatus" value="${timeSheetSubmissionStatus}"/> 
 													               
 													                 <c:set var="isEditable" value="Y"/>
 													                  <c:if test="${te.dayOfTheDate == 'Mon' && !empty isMonEditable && isMonEditable == 'N'}">
@@ -671,7 +672,7 @@
 <!-- AddRow and Add Attachments Divs  ####-->
         <div id="divadttTd0" style="display:none;">   
              <div class="timeAdd"> 
-              <select id="REPLACEROWIDprojectMember1Id" name="REPLACEROWIDprojectMember1Id" onchange="flushtasks('REPLACEROWtask1Id')"  field-name="Project">  
+              <select id="REPLACEROWIDprojectMember1Id" name="REPLACEROWIDprojectMember1Id" onchange="flushtasks('REPLACEROWIDtask1Id');setTaskStatus('REPLACEROWIDprojectMember1Id');"  field-name="Project">  
               <option value=''>--select Project--</option>
                <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
 	                   <option value='${pMember.id}'>${pMember.projectName} </option> 
@@ -704,6 +705,7 @@
 			   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
 			   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
                <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
                <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
                <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 	    	   <input type="text" onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay1Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
@@ -718,6 +720,7 @@
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 				  <input type="text" onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay2Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
@@ -731,6 +734,7 @@
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 				  <input type="text" onblur='editMe(this);'    id="REPLACEROWIDtimeSheetDay3Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
@@ -744,6 +748,7 @@
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 				  <input type="text" onblur='editMe(this);'    id="REPLACEROWIDtimeSheetDay4Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
@@ -757,6 +762,7 @@
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 				  <input type="text" onblur='editMe(this);'    id="REPLACEROWIDtimeSheetDay5Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
@@ -770,6 +776,7 @@
 				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
                    <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 			     <input type="text" onblur='editMe(this);' id="REPLACEROWIDtimeSheetDay6Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
@@ -783,6 +790,7 @@
 				 <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
                  <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
                  <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+                 <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
                  <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 	             <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 			     <input type="text" onblur='editMe(this);' id="REPLACEROWIDtimeSheetDay7Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
@@ -1596,10 +1604,10 @@ function addTimeSheetRow() {
 	          	   var taskName = taskDetails[2]; 
 	          	   var end = parseInt(entryIndex)+7;
 	          	  for (i = entryIndex; i < end; i++) {
-	          		   $("[name='timesheetSubmission.timesheetEntries["+i+"].projectMemberId']").val(pmId)
-		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.id']").val(taskId)
-		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskName']").val(taskName)
-		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskType']").val(taskType)
+	          		   $("[name='timesheetSubmission.timesheetEntries["+i+"].projectMemberId']").val(pmId);
+		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.id']").val(taskId);
+		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskName']").val(taskName);
+		          	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskType']").val(taskType);
 	              } 
         	 }
         }
@@ -1608,7 +1616,7 @@ function addTimeSheetRow() {
         	if($("#" + taskNumberId).val() != null && $("#" + taskNumberId).val() != "" && $("#" + taskNumberId).val() !="undefined"){
         		   var end = parseInt(entryIndex)+7;
 	          	  for (i = entryIndex; i < end; i++) {
-	          		   $("[name='timesheetSubmission.timesheetEntries["+i+"].ticketNumber']").val($("#"+taskNumberId).val())
+	          		   $("[name='timesheetSubmission.timesheetEntries["+i+"].ticketNumber']").val($("#"+taskNumberId).val());
 	              } 
         	}
         }
@@ -1620,7 +1628,18 @@ function addTimeSheetRow() {
         	 $("#"+projectTaskId).append("<option value=''>--select task--</option>");
         }
         
-        
+        function setTaskStatus(pmId){
+       	 var projectMemberId = $("#"+pmId).val();
+ 		     if(projectMemberId != null && projectMemberId != '' && projectMemberId != 'undefined'){
+ 		    	  <c:forEach var="entry" items="${employeeTimesheetEntryDetailsDTO.submissionList}" varStatus="entryCount">
+                      <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
+                           if('${statusEntry.key}' == projectMemberId){
+                        	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetStatus']").val('${statusEntry.value.timesheetStatus}');
+                           }
+		                </c:forEach>
+		          </c:forEach>
+ 		     }
+       }
 	   //get project tasks 
 	   function getProjectTasks(projectTaskId,pmId){
 		   $("#"+projectTaskId).next('i').remove();

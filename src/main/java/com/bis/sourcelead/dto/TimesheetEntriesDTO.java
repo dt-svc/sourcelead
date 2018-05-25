@@ -12,7 +12,7 @@ public class TimesheetEntriesDTO implements Serializable{
 	
 	private Long submissionId;
 	
-	private Long ticketNumber;
+	private String ticketNumber;
 	
 	private Long projectMemberId;
 	
@@ -25,6 +25,8 @@ public class TimesheetEntriesDTO implements Serializable{
     private String date;
     
     private boolean editable;
+    
+    private String timesheetStatus;
     
     @Required(desc="hours",timesheetHours=true)
     private String hours;
@@ -103,13 +105,20 @@ public class TimesheetEntriesDTO implements Serializable{
 		this.projectMemberId = projectMemberId;
 	}
 
-	public Long getTicketNumber() {
+	public String getTicketNumber() {
 		return ticketNumber;
 	}
 
-	public void setTicketNumber(Long ticketNumber) {
+	public void setTicketNumber(String ticketNumber) {
 		this.ticketNumber = ticketNumber;
 	}
-	
-	
+
+	public String getTimesheetStatus() {
+		return timesheetStatus;
+	}
+
+	public void setTimesheetStatus(String timesheetStatus) {
+		this.timesheetStatus = timesheetStatus;
+	}
+
 }
