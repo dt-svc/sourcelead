@@ -195,7 +195,8 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 				 + " ("+globalUserQuery2+" and hierarchy.approverUserId.id = :userId "
 				 + " OR "
 				 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
-			     + " ))");
+				 +" OR  (pc.projectId.isReportingManagerAsApprover = 'Y')"
+				 + " ))");
 		projectClientsList = candidateListQuery.setLong("userId", userId).setLong("locationsId", locationsId).list();
 		return projectClientsList;
 	}
