@@ -62,11 +62,24 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 				<p><strong>Visa Type</strong>: ${immigration.petitionType}</p>
 				<p><strong>Attorney</strong>: ${immigration.attorneyName}</p>
   			</div>
-			<c:if test="${myImmigrationPage =='N'}">
-				<div class="col-md-4">
-	  				<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
-	  			</div>
-			</c:if>
+  			<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				       <div class="col-md-4">
+	  						<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
+	  					</div>
+				    </c:when>
+				    <c:otherwise>
+				        <c:choose>
+						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
+						        <div class="col-md-4">
+					  				<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
+					  			</div>
+						    </c:when>
+						    <c:otherwise>
+						    </c:otherwise>
+						</c:choose>
+				    </c:otherwise>
+			</c:choose>
   			<div class="col-md-2 clearfix mt10">
   				<p id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt mr10"></i>Download Package</p>
   			</div>
