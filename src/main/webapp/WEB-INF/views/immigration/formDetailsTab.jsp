@@ -45,18 +45,18 @@
 			  </tr>
 			  <c:forEach var="items" items="${formsList}" varStatus="rows">
 			  <tr formid ="${items.id}" savedFormDocName = "${items.uploadFileName}">
-				<td><div class="tbldata-dotdot-vsm">${items.formName}</div></td>
-				<td><div class="tblminwidth-50">${items.isRequired == 'Y' ? "YES":"NO"}</div></td>
-				<td><div class="tbldata-dotdot-vsm"><span class="fileName">${items.fileName}</span>
+				<td  title="${items.formName}"><div class="tbldata-dotdot-vsm">${items.formName}</div></td>
+				<td title="${items.isRequired == 'Y' ? 'YES':'NO'}"><div class="tblminwidth-50">${items.isRequired == 'Y' ? "YES":"NO"}</div></td>
+				<td title="${items.fileName}"><div class="tbldata-dotdot-vsm"><span class="fileName">${items.fileName}</span>
 				<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${items.fileUrl}','${items.fileName}','${items.fileContentType}');" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" title="Download" download href="${items.fileUrl}"></a></div>
 				</td>
-				<td><div class="tbldata-dotdot-vsm"><span class="fileName">${!empty items.uploadFileName ? items.uploadFileName : '---'}</span>
+				<td title="${items.uploadFileName}"><div class="tbldata-dotdot-vsm"><span class="fileName">${!empty items.uploadFileName ? items.uploadFileName : '---'}</span>
 				<c:if test="${not empty items.uploadFileName}">
 				<a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile('${items.uploadedFileUrl}','${items.uploadFileName}','${items.uploadedFileContentType}');" title="View"></a>
 					<a class="glyphicon glyphicon-download-alt" title="Download" download href="${items.uploadedFileUrl}"></a></c:if></div>
 				</td>
-				<td><div class="tblminwidth-50">${items.formStatus}</div></td>
+				<td title="${items.formStatus}"><div class="tblminwidth-50">${items.formStatus}</div></td>
 				<c:choose>
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div>
@@ -151,7 +151,7 @@
              <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Description</label>
               	<div class="col-md-8 padding_right">
-					<textarea rows="2" class="form-control" id= "formDescription" name = "formDescription"></textarea>
+					<textarea rows="2" class="form-control" id= "formDescription" field-name = "Description" name = "formDescription" data-validation="required validate_Space validate_length length2-250" data-validation-optional="true"></textarea>
 				</div>
 			</div>	
 		<div class="col-sm-12 noPad mt clearfixclearfix">
@@ -249,7 +249,7 @@
 				$("#viewFormpop").fadeOut(100);
 				$("#formSave_Form")[0].reset();
 				$("#immigrationCandidateFormId").val('');
-				$("#formDescription").val('');
+				$("#formDescription").text('');
 				//$("#isRequired").prop("checked",false);
 				$('#formSave_Form input[name="isRequired"]').prop('checked', false);
 				//$('#candidate_Immigration_Doc input[name="isRequired"]').prop('checked', false);
@@ -287,6 +287,7 @@
 			function removeFormPopUp(){
 				$(".popMask").fadeOut(200);
 				$("#uploadFormPop").fadeOut(100);
+				$('#uploadRequestForm_Form').find('p.jquery_form_error_message').remove(); 
 			}
 			
 			$("#immigraFormTabSerach").keyup(function (e) {
