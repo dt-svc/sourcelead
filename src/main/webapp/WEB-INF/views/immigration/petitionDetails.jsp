@@ -44,7 +44,7 @@
               <label class="col-md-4">Open date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
                <div class="input-group errorInptgroup">
-                <input type="text" id ="openDate" class="form-control calendar" value="${immigrationDTO.openDate}" name="openDate" placeholder="Open Date" field-name="Open date" data-validation="required"/>
+                <input type="text" id ="openDate" class="form-control calendar" value="${immigrationDTO.openDate}" name="openDate" readonly='true' placeholder="Open Date" field-name="Open date" data-validation="required"/>
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('openDate');"></i></span>
               </div>
             </div>
@@ -72,7 +72,7 @@
               <label class="col-md-4">Date of arrival</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" id="arrivalDate" class="form-control calendar" value="${immigrationDTO.arrivalDate}" name="arrivalDate" placeholder="Date of arrival"/>
+                <input type="text" id="arrivalDate" readonly='true' class="form-control calendar" value="${immigrationDTO.arrivalDate}" name="arrivalDate" placeholder="Date of arrival"/>
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('arrivalDate');"></i></span>
               </div>
               </div>
@@ -377,7 +377,7 @@
               <label class="col-md-4">DOB<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
 					<div class="input-group errorInptgroup">
-                <input type="text" class="form-control calendar" name="birthDate" id="birthDate" value="${immigrationDTO.birthDate}" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required">
+                <input type="text" class="form-control calendar" readonly='true' name="birthDate" id="birthDate" value="${immigrationDTO.birthDate}" placeholder="Date Of Birth" field-name="Date Of Birth" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onClick="clearDateValue('birthDate');"></i></span>
               </div>
               </div>
@@ -447,7 +447,7 @@
               <label class="col-md-4">Previous LCA Start Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input class="form-control calendar" id="prevLcaStartDate" name="prevLcaStartDate" value="${immigrationDTO.prevLcaStartDate}" placeholder="Previous LCA Start Dates" type="text">
+                <input class="form-control calendar" readonly='true' id="prevLcaStartDate" name="prevLcaStartDate" value="${immigrationDTO.prevLcaStartDate}" placeholder="Previous LCA Start Dates" type="text">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaStartDate');"></i></span>
             </div>
               </div>
@@ -457,7 +457,7 @@
               <label class="col-md-4">Previous LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input class="form-control calendar" id="prevLcaEndDate" name="prevLcaEndDate" value="${immigrationDTO.prevLcaEndDate}" placeholder="Previous LCA End date" type="text">
+                <input class="form-control calendar" readonly='true' id="prevLcaEndDate" name="prevLcaEndDate" value="${immigrationDTO.prevLcaEndDate}" placeholder="Previous LCA End date" type="text">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('prevLcaEndDate');"></i></span>
             </div>
               </div>
@@ -603,7 +603,7 @@
               <label class="col-md-4">Start Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" id="jobStartDate" value="${immigrationDTO.jobStartDate}" name="jobStartDate" placeholder="Start Date">
+                <input type="text" class="form-control calendar" readonly='true' id="jobStartDate" value="${immigrationDTO.jobStartDate}" name="jobStartDate" placeholder="Start Date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('jobStartDate');"></i></span>
             </div>
               </div>
@@ -613,7 +613,7 @@
               <label class="col-md-4">End Date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" value="${immigrationDTO.jobEndDate}" name="jobEndDate" id="jobEndDate" placeholder="End Date">
+                <input type="text" class="form-control calendar" readonly='true' value="${immigrationDTO.jobEndDate}" name="jobEndDate" id="jobEndDate" placeholder="End Date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('jobEndDate');"></i></span>
             </div>
               </div>
@@ -630,7 +630,7 @@
               <label class="col-md-4">LCA Start date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" id="lcaStartDate" value="${immigrationDTO.lcaStartDate}" name="lcaStartDate" placeholder="LCA Start dates">
+                <input type="text" class="form-control calendar" readonly='true' id="lcaStartDate" value="${immigrationDTO.lcaStartDate}" name="lcaStartDate" placeholder="LCA Start dates">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaStartDate');"></i></span>
             </div>
               </div>
@@ -639,7 +639,7 @@
               <label class="col-md-4">LCA End date</label>
               <div class="col-md-8">
                <div class="input-group">
-                <input type="text" class="form-control calendar" value="${immigrationDTO.lcaEndDate}" id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date">
+                <input type="text" class="form-control calendar" readonly='true' value="${immigrationDTO.lcaEndDate}" id="lcaEndDate" name="lcaEndDate" placeholder="LCA End date">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('lcaEndDate');"></i></span>
             </div>
               </div>
@@ -711,7 +711,7 @@
               <label class="col-md-4">Start Date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
 					<div class="input-group errorInptgroup">
-                <input type="text" class="form-control calendar" id="residenceStartDate" value="${immigrationDTO.residenceStartDate}" name="residenceStartDate" placeholder="Start Date" field-name="Start Date" data-validation="required">
+                <input type="text" class="form-control calendar" readonly='true' id="residenceStartDate" value="${immigrationDTO.residenceStartDate}" name="residenceStartDate" placeholder="Start Date" field-name="Start Date" data-validation="required">
                 <span class="input-group-addon"><i class="fa fa-times text-danger cursorPointer" onclick="clearDateValue('residenceStartDate')"></i></span>
               </div>
               </div>
@@ -816,7 +816,7 @@
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Start Date<span class='text-danger paddingLeft'>*</span></label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
 	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group errorInptgroup'>";
-	   prepareResidencediv =prepareResidencediv+ "         <input type='text' class='form-control calendar' id='residenceStartDate"+rowId+"' value='"+(typeof residenceVal[7]==="undefined"?"":residenceVal[7])+"' onClick='showStartDatePicker("+rowId+")' name='residenceList["+rowId+"].residenceStartDate' field-name='Start Date' data-validation='required' placeholder='Start Date'>";
+	   prepareResidencediv =prepareResidencediv+ "         <input type='text' class='form-control calendar' readonly='true' id='residenceStartDate"+rowId+"' value='"+(typeof residenceVal[7]==="undefined"?"":residenceVal[7])+"' onClick='showStartDatePicker("+rowId+")' name='residenceList["+rowId+"].residenceStartDate' field-name='Start Date' data-validation='required' placeholder='Start Date'>";
 	   prepareResidencediv =prepareResidencediv+ "         <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceStartDate"+rowId+"\")'></i></span>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
@@ -825,7 +825,7 @@
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>End Date<span class='text-danger paddingLeft'>*</span></label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
 	   prepareResidencediv =prepareResidencediv+ " 			<div class='input-group errorInptgroup'>";
-	   prepareResidencediv =prepareResidencediv+ "        <input type='text' class='form-control calendar'  id='residenceEndDate"+rowId+"' value='"+(typeof residenceVal[8]==="undefined"?"":residenceVal[8])+"' onClick='showEndDatePicker("+rowId+")'  name='residenceList["+rowId+"].residenceEndDate' field-name='End Date' data-validation='required' placeholder='End Date'>";
+	   prepareResidencediv =prepareResidencediv+ "        <input type='text' class='form-control calendar' readonly='true' id='residenceEndDate"+rowId+"' value='"+(typeof residenceVal[8]==="undefined"?"":residenceVal[8])+"' onClick='showEndDatePicker("+rowId+")'  name='residenceList["+rowId+"].residenceEndDate' field-name='End Date' data-validation='required' placeholder='End Date'>";
 	   prepareResidencediv =prepareResidencediv+ "        <span class='input-group-addon'><i class='fa fa-times text-danger cursorPointer' onclick='clearDateValue(\"residenceEndDate"+rowId+"\")'></i></span>";
 	   prepareResidencediv =prepareResidencediv+ "      </div>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
@@ -956,9 +956,6 @@ $("#experienceValue").change(function () {
 		        	$('#currUscisStatus').append('<option selected value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
-		            	  if(opt.name == "Draft" || opt.name == "Request to fill"){
-		            		  continue;
-		            	  }
 		            	  if(opt.id == status){
 		            		$('#currUscisStatus').append('<option selected value='+opt.id+' >'+opt.name+'</option>');
 		            	  }else{
@@ -1112,17 +1109,23 @@ $("#experienceValue").change(function () {
    <script type="text/javascript">
    
    function onLoadStatusChange(status){
-	   var uscisStatusVal = $("#currUscisStatus").val();
+	   var uscisStatusVal = $("#currUscisStatus option:selected").text();
 	   if(status != null){
 		   uscisStatusVal = status;
 	   }
-	   if(uscisStatusVal == "" || uscisStatusVal == null){
-		   $("#sendRequestButton").show();
+	   if(uscisStatusVal == "Draft"){
+		   $("#sendRequestButton").hide();
+		   $("#savePageOneContinue").hide();
 		   $("#saveAsDraftButton").show();
+	   }else if(uscisStatusVal == "Request to fill"){
+		   $("#sendRequestButton").show();
+		   $("#savePageOneContinue").hide();
+		   $("#saveAsDraftButton").hide();
 	   }else{
 		   $("#sendRequestButton").hide();
+		   $("#savePageOneContinue").show();
 		   $("#saveAsDraftButton").hide();
-	   } 
+	   }
    }
    
 	  $( document ).ready(function() {
@@ -1133,7 +1136,7 @@ $("#experienceValue").change(function () {
 		  getAttorneyContactList("${immigrationDTO.attorneyId}","${immigrationDTO.attorneyContact}");
 		 getCandidatesByOrgLocation("${immigrationDTO.candidateId}");
 		  getPetitionTypeDropDown("${immigrationDTO.petitionType}");
-		  getUscisTypeDropDown("${immigrationDTO.currUscisStatus}");
+		  getUscisTypeDropDown("${immigrationDTO.currUscisStatusId}");
 		  onLoadStatusChange("${immigrationDTO.currUscisStatus}");
 		  employmentLevelDropDown("${immigrationDTO.employmentLevel}");
 		  jobTitleDropDown("${immigrationDTO.jobId}");
