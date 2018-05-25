@@ -20,6 +20,7 @@
 			<form:form id="createCentralTaxform" name="createCentralTaxform"
 				method="post">
 				<input type="hidden" value="${centralTax.id}" name="id" />
+				<input type="hidden" value="${centralTax.centraltaxuuid }" name="centraltaxuuid" id="centraltaxuuid" />
 				<input type="hidden" value="" name="removeIds" id="removeIds" />
 				<c:if test="${centralTax.id > 0}">
 					<input type="hidden" value="${centralTax.sourceleadTaxId}"
