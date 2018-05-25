@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -54,7 +53,6 @@ import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
@@ -1447,6 +1445,165 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
            return "success";
 	 
 	 }
+	 
+	 
+	 @RequestMapping(value = "/getLinkedUserDetailsByUserName" , method = RequestMethod.POST)
+	 public String getLinkedUserDetailsByUserName(UserDTO userDTO, HttpServletRequest request)
+			throws Exception {
+           User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	       String result = "";
+           if(userDTO.getLinkedUserName().equalsIgnoreCase(loginUser.getUserName())) {
+        	   result = "invalid";
+           }else {
+        	   User user = userService.findByUserName(userDTO.getLinkedUserName());
+        	   if(user != null) {
+        		   if(user.getLinkUserId() == null) {
+        			   result = "success";  
+        		   }else {
+        			   result = "linked";  
+        		   }
+        		  
+        	   }else {
+        		   result = "Not Registered";  
+        	   }
+           }
+           return result;
+	 
+	 }
+	 
+	 @RequestMapping(value = "/validateLinkedUserPasswordByUserName" , method = RequestMethod.POST)
+	 public String validateLinkedUserPasswordByUserName(UserDTO userDTO, HttpServletRequest request)
+			throws Exception {
+	       String result = "";
+         
+	       if(StringUtils.isNotBlank(userDTO.getLinkedUserName()) && StringUtils.isNotBlank(userDTO.getLinkedUserPwd())) {
+	    	   User user = userService.findByUserName(userDTO.getLinkedUserName());
+	    	   
+	    	   if (sourceleadPasswordEncoder.matches(userDTO.getLinkedUserPwd(), user.getPassword())) {
+	    		   result =  "valid";
+				} else {
+					result =  "invalid";
+				}
+	       }
+	       
+           return result;
+	 
+	 }
+	 
+	
+	 
+	 @RequestMapping(value = "/linkUser" , method = RequestMethod.POST)
+	 public Response<String> linkUser(UserDTO userDTO, HttpServletRequest request) throws Exception{
+	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 Response<String> response = new Response<>();
+		try {
+			if(user != null) {
+				
+				 if(StringUtils.isNotBlank(userDTO.getLinkedUserName()) && StringUtils.isNotBlank(userDTO.getLinkedUserPwd())) {
+					User linkedUser =  userService.findByUserName(userDTO.getLinkedUserName());
+					linkedUser.setLinkUserId(user);
+					userService.addUser(linkedUser);
+					
+				    List<Long> accountUserList = new ArrayList<>();
+					List<Long> userIdsList = userService.getUserIdsListByLinkedUserId(user.getId());
+					if(userIdsList != null && !userIdsList.isEmpty()) {
+						for(Long userId : userIdsList) {
+							List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
+							accountUserList.addAll(linkedUserIdsList);
+						}
+					}
+					userIdsList.addAll(accountUserList);
+					userIdsList.add(user.getId());
+					if(user.getLinkUserId() != null) {
+						userIdsList.add(user.getLinkUserId().getId());
+					}
+					
+					List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
+					
+					response.setResponse(Result.SUCCESS.name());
+				    response.setResponseMessage(Result.SUCCESS.getValue());
+					
+				 }else {
+					    response.setObject("DataMissing");
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+				 }
+				
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		
+		return response;
+	 
+	 }
+	 
+	 
+	 
+	 
+	 
+	 @RequestMapping(value = "/removeLinkedUser" , method = RequestMethod.POST)
+	 public Response<String> removeLinkedUser(@RequestParam(value="userCode", required=true) String userCode, HttpServletRequest request) throws Exception{
+	 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 Response<String> response = new Response<>();
+		try {
+			if(user != null) {
+				
+				 if(StringUtils.isNotBlank(userCode)) {
+					User linkedUser =  userService.getUserByUserCode(userCode);
+					linkedUser.setLinkUserId(null);
+					userService.addUser(linkedUser);
+				
+				    List<Long> accountUserList = new ArrayList<>();
+					List<Long> userIdsList = userService.getUserIdsListByLinkedUserId(user.getId());
+					if(userIdsList != null && !userIdsList.isEmpty()) {
+						for(Long userId : userIdsList) {
+							List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
+							accountUserList.addAll(linkedUserIdsList);
+						}
+					}
+					userIdsList.addAll(accountUserList);
+					userIdsList.add(user.getId());
+					if(user.getLinkUserId() != null) {
+						userIdsList.add(user.getLinkUserId().getId());
+					}
+					
+					List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
+					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
+					
+					response.setResponse(Result.SUCCESS.name());
+				    response.setResponseMessage(Result.SUCCESS.getValue());
+				    
+				 }else {
+					    response.setObject("DataMissing");
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+				 }
+				
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		}catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		
+		return response;
+	 
+	 }
+	 
+	 
+	 
+	 
+	 
 	 
 	 
 	 

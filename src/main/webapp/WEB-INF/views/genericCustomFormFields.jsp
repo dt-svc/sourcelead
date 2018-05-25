@@ -175,7 +175,7 @@
 		    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		     	 	<c:forEach var="optionValue" items="${customForm.optionData}">
 			     	 			<span class="mr">
-			     	 			<input type="radio" value="${optionValue.option}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" field-name="${customForm.labelName}">${optionValue.option}
+			     	 			<input type="radio" value="${optionValue.option}" checked="checked" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" field-name="${customForm.labelName}">${optionValue.option}
 			     	 			</span> 
 			     	</c:forEach>
 		    	</div>
@@ -188,7 +188,11 @@
 	 			 <c:forEach var="dataMap" items="${dataMapList}">
 	 			 	<c:if test="${customForm.id eq dataMap.key}">
 		 			 <div class="form-group">
-		                     <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
+		                     <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
+		                     <c:if test="${not empty customForm.labelinfo}">
+				         		<i class="fa fa-info-circle" title="${customForm.labelinfo}"></i>
+				             </c:if>
+		                     </label>
 		                        <div class="col-md-9">
 		                          <div class="input-group">
 		                             <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
@@ -352,7 +356,7 @@ $(function(){
 
  <script>
 function clearDate(customId){
-	$('#date'+customDateId).val('');
+	$('#date'+customId).val('');
 }
 
 function validateCheck(custId){

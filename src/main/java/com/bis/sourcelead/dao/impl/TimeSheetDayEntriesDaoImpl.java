@@ -2,7 +2,6 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -26,7 +25,6 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimeSheetDayEntriesHistory;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -143,6 +141,7 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 			timeSheetDayEntriesHistory.setCreatedDate(timeSheetDayEntries.getCreatedDate());
 			timeSheetDayEntriesHistory.setUpdatedBy(timeSheetDayEntries.getUpdatedBy());
 			timeSheetDayEntriesHistory.setUpdatedDate(timeSheetDayEntries.getUpdatedDate());
+			timeSheetDayEntriesHistory.setTimesheetActivityId(timeSheetDayEntries.getTimesheetActivityId());
 		}
 		return timeSheetDayEntriesHistory;
 	}
@@ -325,6 +324,19 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 			return null;
 		}
 		
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllTimeSheetDayEntryIdsBySubmissionIdAndEntryDate(Long submissionId,Date entryDate) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlEntryDate = null;
+		if(entryDate != null){
+			sqlEntryDate = new java.sql.Date(entryDate.getTime());
+		}
+		String query = "Select tde.Id from TimeSheetDayEntries tde  where tde.timesheetDate = :entryDate and tde.timesheetSubmissions.Id =:submissionId and tde.status = '1'";
+		List<Long> timesheetEntriesList = session.createQuery(query).setLong("submissionId", submissionId).setParameter("entryDate", sqlEntryDate).list();	
+		return timesheetEntriesList;
 	}
 
 	

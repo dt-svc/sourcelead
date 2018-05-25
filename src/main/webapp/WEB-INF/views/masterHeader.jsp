@@ -592,12 +592,10 @@ function preventTabkey(e){
 					              <c:if test="${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null}">
 					              		<a class="sopcSwith">
 					              </c:if>
-					              <c:if test="${links.orgLocations.id != SourceLeadWeb_orgLocationId}">
-					              		<a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}');" class="sopcSwith">
-					              </c:if>
+					              		<a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}','${links.user.id}');" class="sopcSwith">
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null ? 'active-comp' : ''}">
+						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_user.id == links.user.id ? 'active-comp' : ''}">
 						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 						                     </div>
 						                   </div>
@@ -611,7 +609,7 @@ function preventTabkey(e){
 				              </c:if>
 				              
 				              <c:if test="${links.roles.displayName == 'Professional'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith">
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
 						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'active-comp' : ''}">
@@ -627,7 +625,7 @@ function preventTabkey(e){
 				              </c:if>
 				              
 				              <c:if test="${links.roles.displayName == 'Independent Recruiter'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith">
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
 						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'active-comp' : ''}">
@@ -753,7 +751,7 @@ function preventTabkey(e){
 						  <li><a href="<c:url value="/app/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
 						  
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
-						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
+						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configuration</a></li>
 						  </sec:authorize>
 						  
 					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
@@ -837,8 +835,8 @@ function preventTabkey(e){
   
  <script type="text/javascript">
  var hasLocationAccess = "";
- function checkAuth(locationId,roleId,orgSecurity){
-	 checkLocationAccess(locationId,roleId,orgSecurity);
+ function checkAuth(locationId,roleId,orgSecurity,userId){
+	checkLocationAccess(locationId,roleId,orgSecurity,userId);
 	 
  }
  function otpClose(){
@@ -866,19 +864,19 @@ function preventTabkey(e){
 	}); 
  }
  
- function checkLocationAccess(locationId,roleId,orgSecurity){
+ function checkLocationAccess(locationId,roleId,orgSecurity,userId){
 	 $.ajax({
 	      type : "GET",
 	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
 	       success :function(result) {
 	    	   if(result == true){
 	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
-	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);   
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);   
 	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
 	    				 $(".authenticationMask").fadeIn();
 	    				 getUserDetailsbyroleId(roleId);
 	    			 }else{
-	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId);    
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);    
 	    			 }
 	    		 }else{
 	    			 $(".location-alert").fadeIn();

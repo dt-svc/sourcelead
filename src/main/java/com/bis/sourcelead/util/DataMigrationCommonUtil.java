@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ImportTimesheetDTO;
 import com.bis.sourcelead.entity.Asset;
@@ -61,6 +62,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.CountriesService;
@@ -164,8 +166,11 @@ public class DataMigrationCommonUtil {
 	@Autowired 
 	private CountriesService countriesService;
 	
+	@Autowired 
+	private ImmigrationCommonService immigrationCommonService;
 	
-	@SuppressWarnings("unchecked")
+	
+	@SuppressWarnings("uncheckedCommon")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
 	{
 		logger.debug("In dataValidationForJobs method...");
@@ -1859,4 +1864,110 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				return false;
 			return pat.matcher(email).matches();
 		}
+
+	public void dataValidationForImmigration(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy,
+			User user, OrgLocations orgLocation) throws Exception {
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
+			errorSet.put("beneficiaryEmail", "Beneficiary Email is missing"); // need to validate email address.
+		} else {
+			String email = dataMigrationDTOJsonCopy.getString("beneficiaryEmail");
+			boolean emailVaild = isValidEmailAddress(email);
+			if (emailVaild) {
+				User userByEmail = userService.findByEmailAndOrgLocationsId(email, orgLocation.getId());
+				if (userByEmail == null) {
+					errorSet.put("beneficiaryEmail", "Beneficiary Email is not found");
+				}else {
+					 dataMigrationDTOJsonCopy.put("candidateId",userByEmail.getId());
+					// System.out.println("candidateId INSIDE---->>>>>"+dataMigrationDTOJsonCopy.getString("candidateId"));
+				}
+			} else {
+				errorSet.put("beneficiaryEmail", "Beneficiary Email is is not a valid email address");
+			}
+		}
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
+			errorSet.put("dateOfBirth", "DOB is missing");
+		}
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
+			errorSet.put("maritalStatus", "Marital status is missing");/// dropdown value.
+		} else {
+			String maritalStatus = dataMigrationDTOJsonCopy.getString("maritalStatus");
+			if (!ImmigrationConstants.MARRAIAGE_STATUS_LIST.contains(maritalStatus)) {
+				errorSet.put("maritalStatus", "Marital status is invalid input");/// dropdown value.
+			}
+		}
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType"))) {
+			errorSet.put("petitionType", "Petition Type is missing"); /// dropdown value.
+
+		} else {
+			
+			LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(Constants.VISA,
+					dataMigrationDTOJsonCopy.getString("petitionType"));
+			if (data == null) {
+				errorSet.put("petitionType", "Petition Type is not found"); /// dropdown value.
+			}else {
+				//dataMigrationDTOJsonCopy.setString("petitionType", data.getId().toString());
+				dataMigrationDTOJsonCopy.put("petitionType", data.getId());
+			}
+
+		}
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("template"))) {
+			errorSet.put("template", "Template is missing"); /// dropdown value.
+		} else {
+			Long tempId = immigrationCommonService.getTemplateDetailsByNameAndOrgLoacationId(
+					dataMigrationDTOJsonCopy.getString("template"), orgLocation);
+			if (tempId == null)
+				errorSet.put("template", "Template name is not found");
+			else
+				dataMigrationDTOJsonCopy.put("template", tempId); 
+			
+		}
+
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("openOn"))) {
+			errorSet.put("openOn", "Open On is missing");
+		}
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("status"))) {
+			errorSet.put("status", "Status is missing");
+		}
+		else {
+			
+			LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(ImmigrationConstants.PETITION_STATUS,
+					dataMigrationDTOJsonCopy.getString("status"));
+			if (data == null) {
+				errorSet.put("status", "status is not found"); /// dropdown value.
+			}else {
+				dataMigrationDTOJsonCopy.put("status", data.getId()); 
+			}
+
+		}
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("company"))) {
+			errorSet.put("company", "Company is missing"); /// dropdown value.
+		} else {
+			String lawFirm = dataMigrationDTOJsonCopy.getString("company");
+			if (!ImmigrationConstants.COMPANY_STATUS_LIST.contains(lawFirm)) {
+				errorSet.put("company", "Company is invalid input");
+			}
+		}
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("companyContactEmail"))) {
+			errorSet.put("companyContactEmail", "Attorney/Contact email is missing"); /// dropdown value.
+
+		} else {
+			String email = dataMigrationDTOJsonCopy.getString("companyContactEmail");
+			dataMigrationDTOJsonCopy.put("companyContactEmail","4"); // need to update
+			boolean emailVaild = isValidEmailAddress(email);
+			if (emailVaild) {
+				User userByEmail = userService.findByEmailAndOrgLocationsId(email, orgLocation.getId());
+				if (userByEmail == null) {
+					errorSet.put("companyContactEmail", "Attorney/Contact email is not found");
+				}else {
+					dataMigrationDTOJsonCopy.put("companyContactEmail", userByEmail.getId());
+					 System.out.println("SPOC contact user id INSIDE---->>>>>"+userByEmail.getId());
+				}
+				
+			} else {
+				errorSet.put("companyContactEmail", "Attorney/Contact email is not a valid email address");
+			}
+			
+		}
+
+	  }
 	}

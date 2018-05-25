@@ -19,6 +19,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class MoveFileForExpensesDocument {
 	
 	private ComboPooledDataSource comboPooledDataSource;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
  
 
 private void moveFileForExpensesDocumentFormFILE_URLtoFILEURL() {
@@ -31,13 +33,13 @@ private void moveFileForExpensesDocumentFormFILE_URLtoFILEURL() {
 	try {
 		connection = dataSource.getConnection();
 		stmt = connection.createStatement();
-		String entriesDocument = "SELECT * FROM sourcelead.EXPENSES_ENTRIES_DOCUMENTS entriesDocument";
+		String entriesDocument = "SELECT * FROM "+dbconfig.getSchema()+".EXPENSES_ENTRIES_DOCUMENTS entriesDocument";
 		ResultSet rs = stmt.executeQuery(entriesDocument);
 		 while(rs.next()){
 			 Long  documentId = rs.getLong("ID");
 			 if(rs.getString("FILE_URL")!= null) {
 			 String  FILE_URL = rs.getString("FILE_URL");
-			 String query = "update sourcelead.EXPENSES_ENTRIES_DOCUMENTS set FILEURL = ? where ID = ? ";
+			 String query = "update "+dbconfig.getSchema()+".EXPENSES_ENTRIES_DOCUMENTS set FILEURL = ? where ID = ? ";
 			 pstmt = connection.prepareStatement(query); // create a statement
 		     pstmt.setString(1,FILE_URL);
 		     pstmt.setLong(2, documentId);
@@ -49,7 +51,7 @@ private void moveFileForExpensesDocumentFormFILE_URLtoFILEURL() {
 	}finally{
 		try {
 			stmt1 = connection.createStatement();
-			String dropFILE_URL = "ALTER TABLE sourcelead.EXPENSES_ENTRIES_DOCUMENTS DROP COLUMN FILE_URL";
+			String dropFILE_URL = "ALTER TABLE "+dbconfig.getSchema()+".EXPENSES_ENTRIES_DOCUMENTS DROP COLUMN FILE_URL";
 			boolean rs = stmt1.execute(dropFILE_URL);
 			if(!rs) {
 				System.out.println("Deleted successfully");
@@ -68,10 +70,6 @@ private void moveFileForExpensesDocumentFormFILE_URLtoFILEURL() {
 }
 
 private DataSource comboPooledDataSource() {
-	@SuppressWarnings("resource")
-	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 	this.comboPooledDataSource = new ComboPooledDataSource();
 	try {
 		comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

@@ -21,7 +21,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddClientVendorToContact {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * 
  * this method is using for update email for contacts
@@ -44,13 +45,13 @@ public void updateClientVendorToContact() throws IOException, SQLException {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
 		
-		String sql = "SELECT * FROM sourcelead.ORG_SPOC";
+		String sql = "SELECT * FROM "+dbconfig.getSchema()+".ORG_SPOC";
 		 stmt1 = conn.createStatement();
 		 ResultSet rs = stmt1.executeQuery(sql);
 		 
 		 while(rs.next()){
 			
-			 String sql2 = "SELECT * FROM sourcelead.ORG_RELATIONS where ID='"+rs.getLong("ORG_RELATION_ID")+"' ";
+			 String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_RELATIONS where ID='"+rs.getLong("ORG_RELATION_ID")+"' ";
 			 stmt2 = conn.createStatement();
 			 ResultSet rs2= stmt2.executeQuery(sql2);
 			 if(rs2.next()){
@@ -59,11 +60,11 @@ public void updateClientVendorToContact() throws IOException, SQLException {
 				 
 				 if(rs2.getString("INITIATOR_TYPE").equalsIgnoreCase("client")){
 					 Long refferalId=rs.getLong("CLIENT_USER_ID");
-					 String sql3 = "SELECT * FROM sourcelead.USER where ID='"+rs.getLong("VENDOR_USER_ID")+"' ";
+					 String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".USER where ID='"+rs.getLong("VENDOR_USER_ID")+"' ";
 					 stmt3 = conn.createStatement();
 					 ResultSet rs3= stmt3.executeQuery(sql3);
 					 
-					 String sql11 = "SELECT * FROM sourcelead.ORG_LOCATIONS where ID='"+rs2.getLong("LOCATION_ID")+"' ";
+					 String sql11 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS where ID='"+rs2.getLong("LOCATION_ID")+"' ";
 					 stmt8 = conn.createStatement();
 					 ResultSet rs11= stmt8.executeQuery(sql11);
 					 String companyName=null;
@@ -73,7 +74,7 @@ public void updateClientVendorToContact() throws IOException, SQLException {
 					 
 					 if(rs3.next()){
 						 
-						 String sqla = "SELECT * FROM sourcelead.REFER_CONTACTS where REFER_FROM_USER_ID='"+refferalId+"' and CONTACT_USER_EMAIL='"+rs3.getString("EMAIL")+"' ";
+						 String sqla = "SELECT * FROM "+dbconfig.getSchema()+".REFER_CONTACTS where REFER_FROM_USER_ID='"+refferalId+"' and CONTACT_USER_EMAIL='"+rs3.getString("EMAIL")+"' ";
 						 stmt6 = conn.createStatement();
 						 ResultSet rs6= stmt6.executeQuery(sqla);
 						 
@@ -86,7 +87,7 @@ public void updateClientVendorToContact() throws IOException, SQLException {
 							 Date createdtDate = rs3.getDate("CREATED_DATE");
 							 Long contactID=rs3.getLong("ID");
 							 
-							 String query2 = " insert into sourcelead.REFER_CONTACTS (REFER_FROM_USER_ID, CONTACT_USER_FIRSTNAME, CONTACT_USER_LASTNAME, CONTACT_USER_EMAIL, CONTACT_USER_PHONE,  "
+							 String query2 = " insert into "+dbconfig.getSchema()+".REFER_CONTACTS (REFER_FROM_USER_ID, CONTACT_USER_FIRSTNAME, CONTACT_USER_LASTNAME, CONTACT_USER_EMAIL, CONTACT_USER_PHONE,  "
 										+ "CREATED_DATE, CREATED_BY,CONTACT_USER_ID,VENDOR_TYPE,COMPANY_NAME)"
 										+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 					    		
@@ -114,11 +115,11 @@ public void updateClientVendorToContact() throws IOException, SQLException {
 						 if(status.equalsIgnoreCase("accepted")){
 			    			 
 			    			 Long refferalId1=rs.getLong("VENDOR_USER_ID");
-							 String sql4 = "SELECT * FROM sourcelead.USER where ID='"+rs.getLong("CLIENT_USER_ID")+"' ";
+							 String sql4 = "SELECT * FROM "+dbconfig.getSchema()+".USER where ID='"+rs.getLong("CLIENT_USER_ID")+"' ";
 							 stmt4 = conn.createStatement();
 							 ResultSet rs4= stmt4.executeQuery(sql4);
 							 
-							 String sql12 = "SELECT * FROM sourcelead.ORG_LOCATIONS where ID='"+rs2.getLong("RESPONDER_LOCATION_ID")+"' "; 
+							 String sql12 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS where ID='"+rs2.getLong("RESPONDER_LOCATION_ID")+"' "; 
 							 stmt9 = conn.createStatement();
 							 ResultSet rs12= stmt8.executeQuery(sql12);
 							 String companyName1=null;
@@ -128,7 +129,7 @@ public void updateClientVendorToContact() throws IOException, SQLException {
 							 
 								 if(rs4.next()){
 									 
-									 String sqlb = "SELECT * FROM sourcelead.REFER_CONTACTS where REFER_FROM_USER_ID='"+refferalId1+"' and CONTACT_USER_EMAIL='"+rs4.getString("EMAIL")+"' ";
+									 String sqlb = "SELECT * FROM "+dbconfig.getSchema()+".REFER_CONTACTS where REFER_FROM_USER_ID='"+refferalId1+"' and CONTACT_USER_EMAIL='"+rs4.getString("EMAIL")+"' ";
 									 stmt6 = conn.createStatement();
 									 ResultSet rs7= stmt6.executeQuery(sqlb);
 									 
@@ -142,7 +143,7 @@ public void updateClientVendorToContact() throws IOException, SQLException {
 										 Date createdtDate1 = rs4.getDate("CREATED_DATE");
 										 Long contactID1=rs4.getLong("ID");
 										 
-										 String query4 = " insert into sourcelead.REFER_CONTACTS (REFER_FROM_USER_ID, CONTACT_USER_FIRSTNAME, CONTACT_USER_LASTNAME, CONTACT_USER_EMAIL, CONTACT_USER_PHONE,  "
+										 String query4 = " insert into "+dbconfig.getSchema()+".REFER_CONTACTS (REFER_FROM_USER_ID, CONTACT_USER_FIRSTNAME, CONTACT_USER_LASTNAME, CONTACT_USER_EMAIL, CONTACT_USER_PHONE,  "
 													+ "CREATED_DATE, CREATED_BY,CONTACT_USER_ID,CLIENT_TYPE,COMPANY_NAME)"
 													+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 								    		
@@ -180,17 +181,17 @@ public void updateClientVendorToContact() throws IOException, SQLException {
 					 
 
 					 Long refferalId=rs.getLong("VENDOR_USER_ID");
-					 String sql3 = "SELECT * FROM sourcelead.USER where ID='"+rs.getLong("CLIENT_USER_ID")+"' ";
+					 String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".USER where ID='"+rs.getLong("CLIENT_USER_ID")+"' ";
 					 stmt1 = conn.createStatement();
 					 ResultSet rs3= stmt1.executeQuery(sql3);
 					 
 					 if(rs3.next()){
 						 
-						 String sqla = "SELECT * FROM sourcelead.REFER_CONTACTS where REFER_FROM_USER_ID='"+refferalId+"' and CONTACT_USER_EMAIL='"+rs3.getString("EMAIL")+"' ";
+						 String sqla = "SELECT * FROM "+dbconfig.getSchema()+".REFER_CONTACTS where REFER_FROM_USER_ID='"+refferalId+"' and CONTACT_USER_EMAIL='"+rs3.getString("EMAIL")+"' ";
 						 stmt6 = conn.createStatement();
 						 ResultSet rs6= stmt6.executeQuery(sqla);
 						 
-						 String sql11 = "SELECT * FROM sourcelead.ORG_LOCATIONS where ID='"+rs2.getLong("RESPONDER_LOCATION_ID")+"' ";
+						 String sql11 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS where ID='"+rs2.getLong("RESPONDER_LOCATION_ID")+"' ";
 						 stmt8 = conn.createStatement();
 						 ResultSet rs11= stmt8.executeQuery(sql11);
 						 String companyName=null;
@@ -207,7 +208,7 @@ public void updateClientVendorToContact() throws IOException, SQLException {
 							 Date createdtDate = rs3.getDate("CREATED_DATE");
 							 Long contactID=rs3.getLong("ID");
 							 
-							 String query2 = " insert into sourcelead.REFER_CONTACTS (REFER_FROM_USER_ID, CONTACT_USER_FIRSTNAME, CONTACT_USER_LASTNAME, CONTACT_USER_EMAIL, CONTACT_USER_PHONE,  "
+							 String query2 = " insert into "+dbconfig.getSchema()+".REFER_CONTACTS (REFER_FROM_USER_ID, CONTACT_USER_FIRSTNAME, CONTACT_USER_LASTNAME, CONTACT_USER_EMAIL, CONTACT_USER_PHONE,  "
 										+ "CREATED_DATE, CREATED_BY,CONTACT_USER_ID,CLIENT_TYPE,COMPANY_NAME)"
 										+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 					    		
@@ -235,17 +236,17 @@ public void updateClientVendorToContact() throws IOException, SQLException {
 					 if(status.equalsIgnoreCase("accepted")){
 		    			 
 		    			 Long refferalId1=rs.getLong("CLIENT_USER_ID");
-						 String sql4 = "SELECT * FROM sourcelead.USER where ID='"+rs.getLong("VENDOR_USER_ID")+"' ";
+						 String sql4 = "SELECT * FROM "+dbconfig.getSchema()+".USER where ID='"+rs.getLong("VENDOR_USER_ID")+"' ";
 						 stmt2 = conn.createStatement();
 						 ResultSet rs4= stmt2.executeQuery(sql4);
 		    			 
 						 if(rs4.next()){
 							 
-							 String sqlb = "SELECT * FROM sourcelead.REFER_CONTACTS where REFER_FROM_USER_ID='"+refferalId1+"' and CONTACT_USER_EMAIL='"+rs4.getString("EMAIL")+"' ";
+							 String sqlb = "SELECT * FROM "+dbconfig.getSchema()+".REFER_CONTACTS where REFER_FROM_USER_ID='"+refferalId1+"' and CONTACT_USER_EMAIL='"+rs4.getString("EMAIL")+"' ";
 							 stmt6 = conn.createStatement();
 							 ResultSet rs7= stmt6.executeQuery(sqlb);
 							 
-							 String sql11 = "SELECT * FROM sourcelead.ORG_LOCATIONS where ID='"+rs2.getLong("LOCATION_ID")+"' ";
+							 String sql11 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS where ID='"+rs2.getLong("LOCATION_ID")+"' ";
 							 stmt8 = conn.createStatement();
 							 ResultSet rs11= stmt8.executeQuery(sql11);
 							 String companyName11=null;
@@ -262,7 +263,7 @@ public void updateClientVendorToContact() throws IOException, SQLException {
 								 Date createdtDate1 = rs4.getDate("CREATED_DATE");
 								 Long contactID1=rs4.getLong("ID");
 								 
-								 String query4 = " insert into sourcelead.REFER_CONTACTS (REFER_FROM_USER_ID, CONTACT_USER_FIRSTNAME, CONTACT_USER_LASTNAME, CONTACT_USER_EMAIL, CONTACT_USER_PHONE,  "
+								 String query4 = " insert into "+dbconfig.getSchema()+".REFER_CONTACTS (REFER_FROM_USER_ID, CONTACT_USER_FIRSTNAME, CONTACT_USER_LASTNAME, CONTACT_USER_EMAIL, CONTACT_USER_PHONE,  "
 											+ "CREATED_DATE, CREATED_BY,CONTACT_USER_ID,VENDOR_TYPE,COMPANY_NAME)"
 											+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 						    		
@@ -314,10 +315,6 @@ public void updateClientVendorToContact() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

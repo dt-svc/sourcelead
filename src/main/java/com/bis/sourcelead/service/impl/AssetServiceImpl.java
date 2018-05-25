@@ -230,9 +230,12 @@ public class AssetServiceImpl implements AssetService{
 					  }
 						assetAssignDBList.add(aa);
 				    }else {
-				    	if(aad.getId() != null && aad.getShiftEmp().isEmpty())
+				    	if(aad.getId() != null && aad.getShiftEmp().isEmpty()) {
 				    		 aa = assetDao.getAssignAssetById(aad.getId());
-				    		assetDao.deleteAssignAssetByAssignId(aa);
+						    	if(aa != null) {
+						    		assetDao.deleteAssignAssetByAssignId(aa);
+						    	}
+				    	}
 				    }
 				 }
 				  asset.setAssetAssign(assetAssignDBList); 

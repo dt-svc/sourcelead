@@ -79,7 +79,7 @@
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tab="+tab+"&submissionStatus=INTERVIEW&frequency="+customDates+"&fromDate="+fromDate+"&toDate="+toDate;
+		var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=INTERVIEW&frequency="+customDates+"&fromDate="+fromDate+"&toDate="+toDate;
 	    prepareInterviewList(url);
 }
 </script> 
