@@ -1939,34 +1939,71 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			}
 
 		}
-		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("company"))) {
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("company"))) {// company  start
 			errorSet.put("company", "Company is missing"); /// dropdown value.
 		} else {
-			String lawFirm = dataMigrationDTOJsonCopy.getString("company");
-			if (!ImmigrationConstants.COMPANY_STATUS_LIST.contains(lawFirm)) {
-				errorSet.put("company", "Company is invalid input");
+			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+			  boolean orgFound = false;
+			for (OrgRelations rel : vendorsList) {
+				if(StringUtils.isNotBlank(orgLocation.getIsLawFirm()) && orgLocation.getIsLawFirm().equalsIgnoreCase("Y")) {
+				if (rel.getLocationId().getOrgLocationName().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("company"))) {
+					dataMigrationDTOJsonCopy.put("company", rel.getId());
+					orgFound = true;
+					break;
+					 /// dropdown value.
+				   }
+				}else {
+					if (rel.getResponderLocationId().getOrgLocationName().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("company"))) {
+						dataMigrationDTOJsonCopy.put("company", rel.getId());
+						orgFound = true;
+						break;
+						 /// dropdown value.
+					   }
+				}
 			}
-		}
+			if(!orgFound)
+			errorSet.put("company", "Company is not found"); //
+			
+		} // company end
 		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("companyContactEmail"))) {
 			errorSet.put("companyContactEmail", "Attorney/Contact email is missing"); /// dropdown value.
 
 		} else {
 			String email = dataMigrationDTOJsonCopy.getString("companyContactEmail");
-			dataMigrationDTOJsonCopy.put("companyContactEmail","4"); // need to update
+			String venodorId = dataMigrationDTOJsonCopy.getString("company");
+			boolean isSpocFound = false;
 			boolean emailVaild = isValidEmailAddress(email);
-			if (emailVaild) {
-				User userByEmail = userService.findByEmailAndOrgLocationsId(email, orgLocation.getId());
-				if (userByEmail == null) {
+			if (emailVaild && StringUtils.isNotBlank(venodorId)) {
+				// User userByEmail = userService.findByEmailAndOrgLocationsId(email,
+				// orgLocation.getId());
+				List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(venodorId));
+				if (vendorContactsList != null) {
+					for (OrgSpoc vendorContacts : vendorContactsList) {
+						if (StringUtils.isNotBlank(orgLocation.getIsLawFirm())
+								&& orgLocation.getIsLawFirm().equalsIgnoreCase("Y")) {
+							if (vendorContacts.getClientUser().getEmail().equalsIgnoreCase(email)) {
+								dataMigrationDTOJsonCopy.put("companyContactEmail",
+										vendorContacts.getId());
+								isSpocFound = true;
+								break;
+							}
+						} else {
+							if (vendorContacts.getVendorUser().getEmail().equalsIgnoreCase(email)) {
+								dataMigrationDTOJsonCopy.put("companyContactEmail",
+										vendorContacts.getId());
+								isSpocFound = true;
+								break;
+							}
+						}
+					}
+                    if(!isSpocFound)
 					errorSet.put("companyContactEmail", "Attorney/Contact email is not found");
-				}else {
-					dataMigrationDTOJsonCopy.put("companyContactEmail", userByEmail.getId());
-					 System.out.println("SPOC contact user id INSIDE---->>>>>"+userByEmail.getId());
 				}
-				
+
 			} else {
 				errorSet.put("companyContactEmail", "Attorney/Contact email is not a valid email address");
 			}
-			
+
 		}
 
 	  }

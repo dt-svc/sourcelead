@@ -410,7 +410,7 @@
         $(".clientDetails").toggleClass('hidden', 500);
         });
 
-    	$('#filterFromYear').append($('<option />').val("").html("--Select--"));
+    	$('#filterFromYear').append($('<option />').val("").html("--Start Year--"));
         for (i = new Date().getFullYear(); i > 1900; i--)
         {
             $('#filterFromYear').append($('<option />').val(i).html(i));
@@ -419,7 +419,7 @@
         
         function getFilterTwoYear(selectedFrmYear){
         	$('#filterToYear').empty();
-        	$('#filterToYear').append($('<option />').val("").html("--Select--"));
+        	$('#filterToYear').append($('<option />').val("").html("--End Year--"));
         	for (i = new Date().getFullYear(); i >= selectedFrmYear ; i--)
             {
                 $('#filterToYear').append($('<option />').val(i).html(i));
