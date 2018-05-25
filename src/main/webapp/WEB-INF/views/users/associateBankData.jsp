@@ -35,7 +35,7 @@
 	                <div class="col-md-5">
 	                  <label>Routing Number<span class="text-danger">&nbsp;*</span></label>
 	                  <div>
-	                    <input type="text" class="form-control" id="routingNumber" name="routingNumber" value="" data-validation="required validate_space validate_int validate_length length9-9" field-name="Routing Number">
+	                    <input type="text" class="form-control" id="routingNumber" name="routingNumber" data-validation="required validate_Space validate_int validate_length length9-9" field-name="Routing Number">
 	                  </div>
 	                </div>
                </div>
@@ -43,10 +43,11 @@
                  <div class="clearfix"></div>
                  <div class="clearfix footerstyelsNew">
                   <div class="col-md-6">
-                 <a href="javascript:void(0)" class="anchorBlack" onclick="skipAssociateBankDataJsp();">Skip</a>
+                 <input type="button" value="Previous" onclick="shiftToAssociateTab();" class="btn btn-default">
 			     </div> 
                   <div class="col-md-6">
                    <div class="pull-right">
+                   <input type="button" onclick="skipAssociateBankDataJsp();" class="btn btn-default mr10" value="Skip">
                     <input value="Save & Continue" class="btn btn-success btnSuccess" id="save_associate_bank_data_button" onclick="saveAssociateBankData();" type="button">
                     <input value="Cancel" onclick="javascript:window.location.href = '/app/usersList'" class="btn btn-default ml10" type="button">
                     </div>
@@ -109,6 +110,19 @@
 </script> 
 
 <script>
+function shiftToAssociateTab(){
+	var associates = document.getElementById("associates");
+	document.getElementById("associates").removeAttribute("class"); 
+	associates.href="#tab-1"; 
+	$("#loading").removeAttr('style');
+	$("#create_user" ).addClass('button').val('Save & Continue');
+    $("#create_user").removeAttr("disabled");
+    $("#associates").click();
+}
+</script>
+
+
+<script>
 function showHideAccountTypes(){
 	var accountType = $("#accountType").val();
 	if(accountType == "Direct Deposit"){
@@ -129,7 +143,7 @@ function showHideAccountTypes(){
 		$("#accountNumber").removeAttr('data-validation-optional');
 		$('#accountNumber').attr('data-validation',"required");
 		$("#routingNumber").removeAttr('data-validation-optional');
-		$('#routingNumber').attr('data-validation',"required");
+		$('#routingNumber').attr('data-validation',"required validate_int validate_length length9-9");
 	}
 }
 </script> 

@@ -10,7 +10,7 @@
         	var contributionAmount = $("#contriAmt").val();
         	if(contributionType != null && contributionType != '' && contributionType != 'undefined' && contributionAmount != null && contributionAmount != '' && contributionAmount != 'undefined'){
                   var contributionMethod = $("#contricontributionMethod").val();
-                  var markuptr = "<tr><td><input type='checkbox' name='contributio-record'></td><td><input type='hidden' id='contributionType' name='contributionDTOList["+i+"].contributionType' value='"+contributionType+"'/>" + contributionTypeValue + "</td><td><input type='hidden' id='contributionMethod' name='contributionDTOList["+i+"].contributionMethod' value='"+contributionMethod+"' />" + contributionMethod + "</td><td><input type='hidden' id='contributionAmount' name='contributionDTOList["+i+"].contributionAmount' value='"+contributionAmount+"'/>" + contributionAmount + "</td></tr>";
+                  var markuptr = "<tr><td><input type='checkbox' name='contributio-record'></td><td><input type='hidden' id='contributionType' name='contributionDTOList["+i+"].contributionType' value='"+contributionType+"'/>" + contributionTypeValue + "</td><td><input type='hidden' id='contributionMethod' name='contributionDTOList["+i+"].contributionMethod' value='"+contributionMethod+"' />" + contributionMethod + "</td><td><input type='hidden' id='contributionAmount' name='contributionDTOList["+i+"].contributionAmount' value='"+contributionAmount+"'/>" + contributionAmount + "</td><td><a onclick='deleteRowCont();'><i class='fa fa-remove text-danger'></i></a></td></tr>";
                   $("#contribuionTrAdd").append(markuptr);
                   i++;
                   $("#index").val(i);	
@@ -19,14 +19,29 @@
         });
         
         // Find and remove selected table rows
-        $(".delete-contribution-row").click(function(){
+        /* $(".delete-contribution-row").click(function(){
             $("#contribuionTrAdd").find('input[name="contributio-record"]').each(function(){
             	if($(this).is(":checked")){
                     $(this).parents("tr").remove();
                 }
             });
-        });
+        }); */
     });    
+</script>
+
+<script>
+
+function deleteRowCont(){
+	var i = $("#index").val(); 
+	$("#contribuionTrAdd").find('input[name="contributio-record"]').each(function(){
+    	if($(this).is(":checked")){
+            $(this).parents("tr").remove();
+            i--;
+            $("#index").val(i);	
+        }
+    });
+}
+
 </script>
 
 <script>
@@ -96,16 +111,17 @@ $(document).ready(function(){
                   
                   <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
-                 <a href="javascript:void(0)" class="anchorBlack" onclick="skipContributionJsp();">Skip & Finish</a>
+                 <input type="button" value="Previous" onclick="shiftToDeductionTab();" class="btn btn-default">
 			     </div> 
                   <div class="col-md-12">
                    <div class="pull-right">
-                    <input value="Save & Finish" class="btn btn-success btnSuccess" type="button" id="contribution_save_button" onclick="saveAssociateContribution();">
+                   <input value="Skip &amp; Finish" class="btn btn-default mr10"  onclick="skipContributionJsp();" type="button">
+                    <input value="Save &amp; Finish" class="btn btn-success btnSuccess" type="button" id="contribution_save_button" onclick="saveAssociateContribution();">
                     <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
                     </div>
                   </div>
                 </div>
-                 <button type="button" class="delete-contribution-row">Delete Row</button>
+<!--                  <button type="button" class="delete-contribution-row">Delete Row</button> -->
                  </form:form>
             </div>
           	
@@ -173,7 +189,7 @@ $('body').on('blur', '#associate_contribution_form', function() {
 			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Please add atleast one deduction type to save</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input class='u_can_color' type='button'  value='Ok' onClick='contributionPopup();'></b>";
+			result = result +"		<div class='clearfix'><input class='u_can_color' type='button'  value='Ok' onClick='contributionPopup();' style='width:100%;'></div>";
 			result = result +"	</div>";
 			$("#contributionPopup").append(result);
 			$("#remove_user_pop").slideDown(200);
@@ -183,6 +199,18 @@ $('body').on('blur', '#associate_contribution_form', function() {
    
  }
  </script>
+ 
+ <script>
+function shiftToDeductionTab(){
+	var associates = document.getElementById("associateDeduction");
+	document.getElementById("associateDeduction").removeAttribute("class"); 
+	associates.href="#tab-4"; 
+	$("#loading").removeAttr('style');
+	$("#associate_deduction_save_button" ).addClass('button').val('Save & Continue');
+    $("#associate_deduction_save_button").removeAttr("disabled");
+    $("#associateDeduction").click();
+}
+</script>
  
 <script type="text/javascript">
 function contributionPopup(){

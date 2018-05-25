@@ -53,8 +53,8 @@
         <div class="user_summ_wrap contentareaInner-styles">
 	      <div class="tabsMenu">
 	        <ul class="list-unstyled">
-	          <li class="current"><a href="#tab-1">Associates</a></li>
-	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
+	          <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
+	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking">Banking</a></li>
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
 	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
 	          <li class=""><a href="#tab-5" data-toggle="tab" id="associateContribution">Contribution</a></li>
@@ -225,7 +225,7 @@
 						<div class="clearfix">
 						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
 						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
-						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
+						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorced</label>
 						<label class="paddingLeft paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>
 						</div>
 					</div>
@@ -1255,6 +1255,12 @@ function clearDateofJoin(){
 <script>
 // script for tabs
 
+
+			 var associates = document.getElementById("associates");
+				if(associates){
+					associates.href = "#";
+					associates.className = "disabledLink";
+				} 
 			var associateBanking = document.getElementById("associateBanking");
 				if(associateBanking){
 					associateBanking.href = "#";
@@ -1290,8 +1296,8 @@ $(document).ready(function() {
 	$("#tab-1").show()
     $(".tabsMenu a").click(function(event) {
         event.preventDefault();
-        $(this).parent().addClass("current");
-        $(this).parent().siblings().removeClass("current");
+        //$(this).parent().addClass("current");
+        //$(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
         $(".tabsMenu_tabs_inn").not(tab).css("display", "none");
         $(tab).fadeIn();
