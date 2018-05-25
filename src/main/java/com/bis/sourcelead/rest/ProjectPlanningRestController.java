@@ -141,6 +141,9 @@ public class ProjectPlanningRestController {
 	@Autowired
 	ProjectMembersHistoryService projectMembersHistoryService;
 	
+	@Autowired
+	EmployeesService employeeService;
+	
 	 @RequestMapping(value = "/getRequestedAssociatesList", method = RequestMethod.GET)
 	 public @ResponseBody ResponseList<CandidateDTO>  getRequestedAssociatesList(CandidateDTO candidateDTO) throws Exception{ 
 		 
@@ -712,34 +715,118 @@ public class ProjectPlanningRestController {
 							Candidate savedCandidate = candidateService.addCandidate(vendorCandidate);
 	    					candidateService.saveOrUpdateCandidateElkDocument(savedCandidate);
 						}
+						
+						
+						
+						if(candidate.getParentCandidateId() != null && (candidate.getDesignationType().equalsIgnoreCase("C2C") || candidate.getDesignationType().equalsIgnoreCase("C2C-1099"))){
+							Long parentCandidatId = candidate.getParentCandidateId().getId();
+							Long orgLocationId = candidate.getOrgLocationId().getId();
+							int level = 1;
+							while(parentCandidatId != null){
+								Candidate cand = candidateService.getCandidateByCandidateId(parentCandidatId);
+								ProjectMembers projectMembers = projectMembersService.getProjectMembersByCandidateIdAndProjectId(cand.getId(), projectPlanningRequest.getProjectId().getId());
+								if(projectMembers == null){
+									projectMembers = new ProjectMembers();
+								}
+								if(cand != null){
+									ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectPlanningRequest.getProjectId().getId(), cand.getOrgLocationId().getId());
+									if(projectClients == null){
+										Candidate clildCandidate = candidateService.getCandidateByParentCandidateIdAndOrgLocationId(parentCandidatId,orgLocationId);
+										projectClients = new ProjectClients();
+										projectClients.setProjectId(projectPlanningRequest.getProjectId());
+										projectClients.setOrgRelationId(clildCandidate.getOrgRelationId());
+										projectClients.setOrgLocationsId(cand.getOrgLocationId());
+										projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+										projectClients.setStatus(1);
+										
+									
+										Candidate pCandidate = candidateService.getCandidateByParentCandidateId(clildCandidate.getId());
+										if(pCandidate != null && pCandidate.getOrgRelationId() != null){
+											ProjectClients pClient = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projectPlanningRequest.getProjectId().getId(), clildCandidate.getOrgLocationId().getId(),pCandidate.getOrgRelationId().getId());
+											if(pClient != null && pClient.getLevel() != null){
+												level = pClient.getLevel()+1;
+											}else {
+												level = level+1;
+											}
+										}
+										else{
+											level = level+1;
+										}
+										
+										
+										projectClients.setLevel(level);
+										projectClients.setCreatedDate(new Date());
+										projectClients.setCreatedBy(user);
+										projectClients.setUpdatedDate(new Date());
+										projectClients.setUpdatedBy(user);
+										
+										//prepare ProjectApproverHierarchy
+										Set<ProjectApproverHierarchy> projectApproverHierarchyList = new HashSet<ProjectApproverHierarchy>();
+										ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+										pah.setProjectId(projectPlanningRequest.getProjectId());
+										pah.setProjectClientsId(projectClients);
+										
+										if(cand.getOrgLocationId().getUser() != null) {
+											pah.setApproverUserId(cand.getOrgLocationId().getUser());
+										}else {
+											OrgSpoc orgSpoc1 = orgSpocService.getSpocByOrgRelationIdForNewVendor(clildCandidate.getOrgRelationId().getId());
+											pah.setApproverUserId(orgSpoc1.getVendorUser());
+										}
+										
+										
+										pah.setLevel(1);
+										pah.setStatus("1");
+										projectApproverHierarchyList.add(pah);
+										projectClients.setProjectApproverHierarchyList(projectApproverHierarchyList);
+										
+										projectClientService.storeProjectClients(projectClients);
+									}
+									if(cand.getConsultantUser() != null){
+										Employees clientEmployee = employeeService.getEmployeeByUserIdAndOrgLocationsId(cand.getConsultantUser().getId(), cand.getOrgLocationId().getId());
+										projectMembers.setEmployee(clientEmployee);
+									}
+									projectMembers.setProjectMemberCandidteId(cand);
+									projectMembers.setMasterCandidateId(cand.getMasterCandidateId());
+									projectMembers = saveProjectMembers(projectPlanningRequest.getProjectId(), candidate, projectPlanningResourceRequest, user, projectClients, orgLocations);
+									saveProjectMembersHistory(projectMembers,user,projectClients);
+									if(cand.getParentCandidateId() != null){
+										parentCandidatId = cand.getParentCandidateId().getId();
+										orgLocationId = cand.getOrgLocationId().getId();
+									}else{
+										parentCandidatId = null;
+									}
+								}
+							}
+						}
 	    		 }
 	    		 
 	    		 Projects projects = projectsService.getProjectById(projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getId());
-	    		 List<ProjectMembersDTO> projectMembersDTOList = new ArrayList<>();
-	    		 ProjectMembersDTO projectMembersDTO = new ProjectMembersDTO();
-	    		 projectMembersDTO.setCandidateId(projectPlanningResourceRequest.getCandidateId().getId());
-	    		 projectMembersDTO.setPayRate(projectPlanningResourceRequest.getPayRate());
-	    		 projectMembersDTO.setPayRateCurrency(projectPlanningResourceRequest.getPayRateCurrency());
-	    		 projectMembersDTO.setPayRateRateType(projectPlanningResourceRequest.getPayRateType());
-	    		 projectMembersDTO.setBillRate(projectPlanningResourceRequest.getBillRate());
-	    		 projectMembersDTO.setBillRateCurrency(projectPlanningResourceRequest.getBillRateCurrency());
-	    		 projectMembersDTO.setBillRateRateType(projectPlanningResourceRequest.getBillRateType());
-	    		
-	    		 if(projectPlanningResourceRequest.getStartDate() != null) {
-	    			 projectMembersDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projectPlanningResourceRequest.getStartDate()));
-	    		 }
-	    		
-	    		 if(projectPlanningResourceRequest.getEndDate() != null) {
-	    			 projectMembersDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projectPlanningResourceRequest.getEndDate()));
-	    		 }
-	    		 projectMembersDTO.setEstHours(projectPlanningResourceRequest.getEstimatedHours());
-	    		 projectMembersDTO.setEstBudget(projectPlanningResourceRequest.getEstimatedBudget());
-	    		 projectMembersDTOList.add(projectMembersDTO);
-	    		
-	    		 ProjectAssignedMembersDTO projectAssignedMembersDTO = new ProjectAssignedMembersDTO();
-	    		 projectAssignedMembersDTO.setProjectMembers(projectMembersDTOList);
+	    		 
 	 		   
 	    		 if(candidate != null && candidate.getOrgLocationId().getId().equals(projectPlanningResourceRequest.getOrgLocationId().getId())) {
+	    			 List<ProjectMembersDTO> projectMembersDTOList = new ArrayList<>();
+		    		 ProjectMembersDTO projectMembersDTO = new ProjectMembersDTO();
+		    		 projectMembersDTO.setCandidateId(projectPlanningResourceRequest.getCandidateId().getId());
+		    		 projectMembersDTO.setPayRate(projectPlanningResourceRequest.getPayRate());
+		    		 projectMembersDTO.setPayRateCurrency(projectPlanningResourceRequest.getPayRateCurrency());
+		    		 projectMembersDTO.setPayRateRateType(projectPlanningResourceRequest.getPayRateType());
+		    		 projectMembersDTO.setBillRate(projectPlanningResourceRequest.getBillRate());
+		    		 projectMembersDTO.setBillRateCurrency(projectPlanningResourceRequest.getBillRateCurrency());
+		    		 projectMembersDTO.setBillRateRateType(projectPlanningResourceRequest.getBillRateType());
+		    		
+		    		 if(projectPlanningResourceRequest.getStartDate() != null) {
+		    			 projectMembersDTO.setMemberStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projectPlanningResourceRequest.getStartDate()));
+		    		 }
+		    		
+		    		 if(projectPlanningResourceRequest.getEndDate() != null) {
+		    			 projectMembersDTO.setMemberEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),projectPlanningResourceRequest.getEndDate()));
+		    		 }
+		    		 projectMembersDTO.setEstHours(projectPlanningResourceRequest.getEstimatedHours());
+		    		 projectMembersDTO.setEstBudget(projectPlanningResourceRequest.getEstimatedBudget());
+		    		 projectMembersDTOList.add(projectMembersDTO);
+		    		
+		    		 ProjectAssignedMembersDTO projectAssignedMembersDTO = new ProjectAssignedMembersDTO();
+		    		 projectAssignedMembersDTO.setProjectMembers(projectMembersDTOList);
 	    			 projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projects.getProjectUUID(), user, orgLocations);
 	    		 }else {
 	    			 ProjectClients orgProjectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projectPlanningRequest.getOrgLocationId().getId());

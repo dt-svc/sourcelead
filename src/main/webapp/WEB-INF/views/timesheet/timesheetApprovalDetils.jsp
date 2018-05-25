@@ -85,7 +85,7 @@
 <!-- AddRow and Add Attachments Divs  ####-->
          <div id="divadttTd1" style="display:none;"  class="taskDropDown">   
              <div> 
-              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId"  field-name="Task" onchange="prepareProjectTaskDetails('ENTRYINDEX','REPLACEROWIDtask1Id')"  onclick="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
+              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="existedProjectTaskIdprojectId timSelWid"  field-name="Task" onchange="prepareProjectTaskDetails('ENTRYINDEX','REPLACEROWIDtask1Id')"  onclick="getProjectTasks('REPLACEROWIDtask1Id','projectId')">  
               <option value=''>--select task--</option>
               </select>
              <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="addtaskfield removetaskfield"/>

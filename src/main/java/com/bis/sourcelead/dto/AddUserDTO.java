@@ -136,6 +136,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String assignReportingManagers;
 		
+		private String assignResourceManagers;
+		
 		private String managerUsers;
 		
 		private String clientUsers;
@@ -734,6 +736,14 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setResourceManager(String resourceManager) {
 			this.resourceManager = resourceManager;
+		}
+
+		public String getAssignResourceManagers() {
+			return assignResourceManagers;
+		}
+
+		public void setAssignResourceManagers(String assignResourceManagers) {
+			this.assignResourceManagers = assignResourceManagers;
 		}
 		
 }

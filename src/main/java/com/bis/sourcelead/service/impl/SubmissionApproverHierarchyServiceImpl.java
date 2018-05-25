@@ -255,9 +255,9 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 	}*/
 	
 	@Override
-	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectId,Long pmMasterCandidateId,Long locationsId,Date startDate, Date endDate) throws Exception
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(Long approverUserId,Long projectId,Long pmMasterCandidateId,Long locationsId,Date startDate, Date endDate,String isGlobalUser) throws Exception
 	{
-		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(approverUserId, projectId, pmMasterCandidateId, locationsId, startDate, endDate);
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(approverUserId, projectId, pmMasterCandidateId, locationsId, startDate, endDate,isGlobalUser);
 	}
 	@Override
 	public void updateApprovalStatusByApproverForProjectMemberId(Long projectMemberId, Long approverUserId,

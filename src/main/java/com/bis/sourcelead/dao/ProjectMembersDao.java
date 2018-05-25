@@ -21,7 +21,7 @@ public interface ProjectMembersDao {
 	
 	void deleteProjectMember(ProjectMembers projectMembers) throws Exception;
 	
-	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long projectId,Long locationId) throws Exception;
+	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long projectId,Long locationId,String isGlobalUser) throws Exception;
 	
 	public List<ProjectMembers> getAllTerminatedProjectMembersByProjectIdAndterminatedStatus(Long projectId,Primary isManuallyTerminated) throws Exception;
 	
@@ -81,7 +81,7 @@ public interface ProjectMembersDao {
 	
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Long locationsId, Long approverUserId);
 	
-	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor);
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor,String isGlobalUser);
 
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(String status,String startDate,String endDate,Long projectId);
 	
@@ -109,9 +109,9 @@ public interface ProjectMembersDao {
 	
 	public ProjectMembers getClientProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 	
-	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId) throws Exception;
+	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId,String isGlobalUser) throws Exception;
 	
-	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForExpences(Long masterCandidateId, Long projectId,Long locationId) throws Exception;
+	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForExpences(Long masterCandidateId, Long projectId,Long locationId,String isGlobalUser) throws Exception;
 	
 	public ProjectMembers getConsultantUserProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 

@@ -40,7 +40,7 @@ public interface ProjectMembersService {
 	
 	public List<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
 	
-	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long id,Long locationsId) throws Exception;
+	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long id,Long locationsId,String isGlobalUser) throws Exception;
 	
 	public List<Long> getAllProjectMembersIdsByProjectId(Long projectId) throws Exception;
 	
@@ -87,7 +87,7 @@ public interface ProjectMembersService {
     
     public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Long locationsId, Long approverUserId);
 	
-	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor);
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor,String isGlobalUser);
     
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Date startDate,Date endDate,Long locationsId, Long approverUserId);
 	
@@ -108,7 +108,7 @@ public interface ProjectMembersService {
 
 	public List<ProjectMembers> getProjectsAssignedMembersForExpenses(Long projectId)throws Exception;
 
-	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId, Long orgRelationId)throws Exception;
+	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId, Long orgRelationId,String isGlobalUser)throws Exception;
 	
 	public void saveAssignedProjectMembers(ProjectAssignedMembersDTO projectAssignedMembersDTO,String projectUUID,User user,OrgLocations orgLocations) throws Exception;
 	
@@ -120,7 +120,7 @@ public interface ProjectMembersService {
 	
 	ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId,Long projectId) throws Exception;
 	
-	ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId,Long projectId,Long locationId) throws Exception;
+	ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId,Long projectId,Long locationId,String isGlobalUser) throws Exception;
 	
 	public ProjectMembers getClientProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 	

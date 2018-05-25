@@ -1814,10 +1814,12 @@ function removeUser(userId){
 	        url: sourceleadUrl+"/getUserDetailsByIdForTermination?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
-	        	 var reportingManagers = "";
+	        	    var reportingManagers = "";
+	        	    var resourceManagers = "";
 				    var clientOwnerAndSpoc = "";
 				    var vendorOwnerAndSpoc = "";
 				    var managerUsers = "";
+				    var resourceManagerUsers = "";
 				    var approversUsers = "";
 				    var teamOwnerUsers = "";
 				    var projectApproverUsers = "";
@@ -1829,7 +1831,7 @@ function removeUser(userId){
 						result = result + '<div class="clearfix mb10">';
 						result = result + '<div class="col-md-6">';
 						    result = result + '<div class="user_badg">';
-							    result = result + '<p>Assigned Associates as a Manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
+							    result = result + '<p>Assigned associates as a reporting manager<strong class="label label-default">'+json.assignedUsersCountToReportingManager+'</strong></p>';
 									result = result + '</div>';
 					            result = result + '</div>';
 							result = result + '<div class="col-md-6" id="reportingManagerDiv">';
@@ -1843,6 +1845,36 @@ function removeUser(userId){
 								    		result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+" "+reportingManagers.lastName+"&nbsp;("+reportingManagers.userType+")</option>"; 
 								    	}else{
 								    		result = result+"<option value='"+reportingManagers.id+"'>"+reportingManagers.firstName+"&nbsp;("+reportingManagers.userType+")</option>"; 
+								    	}
+								    	
+										
+			    					}
+								    result = result + '</select>';
+							}
+							result = result + '</div>';
+							result = result + '</div>';	
+						  }
+				    
+				    
+				    
+				    if(json.assignedUsersCountToResourceManager > 0){
+						result = result + '<div class="clearfix mb10">';
+						result = result + '<div class="col-md-6">';
+						    result = result + '<div class="user_badg">';
+							    result = result + '<p>Assigned associates as a resource manager<strong class="label label-default">'+json.assignedUsersCountToResourceManager+'</strong></p>';
+									result = result + '</div>';
+					            result = result + '</div>';
+							result = result + '<div class="col-md-6" id="resourceManagerDiv">';
+							if(json.resourceManagers != null && json.resourceManagers != "" && json.resourceManagers != 'undefined' && json.resourceManagers.length > 0){
+							       result = result + '<select class="chosen-select" id="assignResourceManagers" data-validation="required" field-name="Assign To" name="assignResourceManagers"  >';
+								    result = result + '<option value="">Assign to</option>';
+								    for (var i=0; i<json.resourceManagers.length; i++)
+			    					{
+								    	resourceManagers = json.resourceManagers[i];
+								    	if(resourceManagers.lastName != null && resourceManagers.lastName != 'undefined' && resourceManagers.lastName != ''){
+								    		result = result+"<option value='"+resourceManagers.id+"'>"+resourceManagers.firstName+" "+resourceManagers.lastName+"&nbsp;("+resourceManagers.userType+")</option>"; 
+								    	}else{
+								    		result = result+"<option value='"+resourceManagers.id+"'>"+resourceManagers.firstName+"&nbsp;("+resourceManagers.userType+")</option>"; 
 								    	}
 								    	
 										

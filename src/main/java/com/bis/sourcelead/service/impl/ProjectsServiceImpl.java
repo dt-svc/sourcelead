@@ -435,6 +435,12 @@ public class ProjectsServiceImpl implements ProjectsService{
     		projects.setProjectSequeneNumber(projectsDTO.getProjectSequeneNumber().trim());
     	}
     	
+    	if(!isNullOrEmpty(projectsDTO.getIsReportingManagerAsApprover()) && projectsDTO.getIsReportingManagerAsApprover().equalsIgnoreCase(Constants.YES)) {
+    		projects.setIsReportingManagerAsApprover(Constants.YES);
+    	}else {
+    		projects.setIsReportingManagerAsApprover(Constants.NO);
+    	}
+    	
     	if(!isNullOrEmpty(projectsDTO.getProjectDescription())){
     	projects.setDescription(projectsDTO.getProjectDescription());
     	}
@@ -1172,6 +1178,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	projectsDTO.setProjectShortCode(projects.getProjectShortCode());
 	    }
 	    
+	    projectsDTO.setIsReportingManagerAsApprover(projects.getIsReportingManagerAsApprover());
+	    
 	    User createdByUseraName= userService.getUserDetailsByUserCode(projects.getCreatedBy());
 	    if(null !=createdByUseraName){
 	    	StringBuilder userName = new StringBuilder();
@@ -1462,6 +1470,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	public Projects getProjectDetailsUpdateByProjectId(Long projectId, User user, ProjectsDTO projectDTO) throws Exception {
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
+	 	String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 	 	//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
 		 Date currentDate = CalendarUtil.removeTime(new Date());
 		 Date previousEndDate = null;
@@ -1474,6 +1483,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 			     }
 		        
 		    	projects.setProjectName(projectDTO.getProjectName());
+		    	
+		    	if(StringUtils.isNotBlank(projectDTO.getIsReportingManagerAsApprover())){
+		    		projects.setIsReportingManagerAsApprover(Constants.YES);
+		    	}else {
+		    		projects.setIsReportingManagerAsApprover(Constants.NO);
+		    	}
 		    	
 		    	if(StringUtils.isNotBlank(projectDTO.getDescription())){
 		    		projects.setDescription(projectDTO.getDescription());
@@ -1536,12 +1551,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 								
 					    		 if(projects.getEndDate() != null ){		
 					                  if(endDate.compareTo(projects.getEndDate()) != 0 ){
-								    		sendProjectEditMailtoTeamMembersAndOwnersWhenProjectEndDateIsEdited(projectDTO,projects,user,loginOrgLocation,loginOrgCode);
+								    		sendProjectEditMailtoTeamMembersAndOwnersWhenProjectEndDateIsEdited(projectDTO,projects,user,loginOrgLocation,loginOrgCode,isGlobalAccess);
 
 					                  }
 					                  
 					    		 } else if(StringUtils.isNotBlank(projectDTO.getEndDateStr1())){
-							    		sendProjectEditMailtoTeamMembersAndOwnersWhenProjectEndDateIsEdited(projectDTO,projects,user,loginOrgLocation,loginOrgCode);
+							    		sendProjectEditMailtoTeamMembersAndOwnersWhenProjectEndDateIsEdited(projectDTO,projects,user,loginOrgLocation,loginOrgCode,isGlobalAccess);
 					    		 }
 								 projects.setEndDate(endDate);
 
@@ -1840,7 +1855,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 
 	}
 	
-	 void  sendProjectEditMailtoTeamMembersAndOwnersWhenProjectEndDateIsEdited(ProjectsDTO projectDTO ,Projects projects,User user, OrgLocations loginOrgLocation,String loginOrgCode){
+	 void  sendProjectEditMailtoTeamMembersAndOwnersWhenProjectEndDateIsEdited(ProjectsDTO projectDTO ,Projects projects,User user, OrgLocations loginOrgLocation,String loginOrgCode,String isGlobalAccess){
 		 
 
 		 try{
@@ -1866,7 +1881,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	         			      approverUserId2 =   userService.getUserById(Long.valueOf(projectDTO.getLevel2Manager()));
 	         				}
 	         				
-	         			    Collection<ProjectMembers>  projectMemberList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projects.getId(),loginOrgLocation.getId()) ;
+	         			    Collection<ProjectMembers>  projectMemberList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projects.getId(),loginOrgLocation.getId(),isGlobalAccess) ;
 
 	         			    if(projectMemberList != null && projectMemberList.size() >0){
 	         			    	for(ProjectMembers projectMembers : projectMemberList){
