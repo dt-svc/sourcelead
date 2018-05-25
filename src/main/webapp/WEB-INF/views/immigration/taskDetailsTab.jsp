@@ -19,13 +19,13 @@
 			  </tr>
 			 <c:forEach var="items" items="${tasksList}" varStatus="rows">
 			  <tr>
-				<td><div class="tbldata-dotdot-me">${items.subject}</div></td>
-				<td><div class="tbldata-dotdot-me">${items.taskDateStr}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${items.taskOwnerName}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${items.assignedName}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${items.description}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${items.alertType}</div></td>
-				<td><div class="tbldata-dotdot-vsm">${items.taskStatus}</div></td>
+				<td title = "${items.subject}"><div class="tbldata-dotdot-me">${items.subject}</div></td>
+				<td title = "${items.taskDateStr}"><div class="tbldata-dotdot-me">${items.taskDateStr}</div></td>
+				<td title = "${items.taskOwnerName}"><div class="tbldata-dotdot-vsm">${items.taskOwnerName}</div></td>
+				<td title = "${items.assignedName}"><div class="tbldata-dotdot-vsm">${items.assignedName}</div></td>
+				<td title = "${items.description}"><div class="tbldata-dotdot-vsm">${items.description}</div></td>
+				<td title = "${items.alertType}"><div class="tbldata-dotdot-vsm">${items.alertType}</div></td>
+				<td title = "${items.taskStatus}"><div class="tbldata-dotdot-vsm">${items.taskStatus}</div></td>
 			  </tr> 
 			  </c:forEach>
 			 </tbody>

@@ -1174,8 +1174,8 @@ function editResidenceDEtailsByRowId(id, isCurr){
 }
 
 function uploadRequestDoc(){
-	$("#uploadDocSave_Button").attr("disabled",true);
 	if ($('#uploadRequestDoc_Form').validate(false, validationSettings)) {
+		$("#uploadDocSave_Button").attr("disabled",true);
 	var formData = getFormData("uploadRequestDoc_Form");
 	var candidateId = $("#candidateID").val();
 	var immigrationId = $('#immigrationID').val();
@@ -1246,8 +1246,8 @@ function deleteDocumentDetailsByRowId(id){
 }
 
 function uploadRequestForm(){
-	$("#uploadFormSave_Button").attr("disabled",true);
 	if ($('#uploadRequestForm_Form').validate(false, validationSettings)) {
+		$("#uploadFormSave_Button").attr("disabled",true);
 	var formData = getFormData("uploadRequestForm_Form");
 	var candidateId = $("#candidateID").val();
 	var immigrationId = $('#immigrationID').val();

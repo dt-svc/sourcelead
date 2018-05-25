@@ -349,7 +349,11 @@
 		}
 		
 		function exportToExcel(){
-			window.location.href = sourceleadUrl+"/immigration/getImmigrationListExport?"+tokenParamName+"="+tokenValue+"&exportType=excel";
+			if (!table.data().count() ) {
+			    alert( 'Empty table' );
+			}else{
+				window.location.href = sourceleadUrl+"/immigration/getImmigrationListExport?"+tokenParamName+"="+tokenValue+"&exportType=excel";
+			}
 		}
 
 		$('#mypop').click(function(){
