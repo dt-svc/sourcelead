@@ -523,10 +523,12 @@ public class TimesheetRestController {
 									pm.getId(), actualStartDate, actualEndDate);
 					if (pmhDateList.isEmpty() || pmhDateList == null)
 						continue;	
-					
-					
+					pmDTOList.add(ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm));
 					Map<Long,LinkedList<TimesheetEntriesDTO>> entryMap = getEmployeeTimesheetSubmissionByProjectMemberId(new LinkedList(etd.getWeekDays()),pm,request, orgLocations, actualStartDate, actualEndDate, etd);
-					
+					Long entrySizeCheck = 1l;
+					for(Long key : entryMap.keySet()) {
+						entrySizeCheck = key;
+					}
 					EmployeeTimeSheetSubmissionStatusDTO etssDTO = getEmployeeTimesheetSubmissionStatus(pm.getId(), currentTimeFrequency, currentTimeSubFrequency, orgLocations, loginUser,editableCount);
 					if(editableCount == 1) {
 						etd.setMonEditable(etssDTO.getEditableMap().get("Mon"));
@@ -537,6 +539,10 @@ public class TimesheetRestController {
 						etd.setSatEditable(etssDTO.getEditableMap().get("Sat"));
 						etd.setSunEditable(etssDTO.getEditableMap().get("Sun"));
 					}
+					editableCount++;
+					if(entrySizeCheck == 0)
+						continue;
+					
 					editableCount++;
 					ettsDTOMap.put(pm.getId(), etssDTO);
 					List<ProjectTasks> projectsTasks = projectTasksService.getAllTasksByProjectId(pm.getProjects().getId());
@@ -561,7 +567,10 @@ public class TimesheetRestController {
 							etsDTOList.add(etsDTO);
 						}
 					}
-					pmDTOList.add(ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm));
+					
+					
+					
+					
 				}
 				etd.setStatusMap(ettsDTOMap);
 			}
@@ -582,6 +591,9 @@ public class TimesheetRestController {
 		
 		return etd;
 	}
+	
+	
+	
 	private EmployeeTimeSheetSubmissionStatusDTO getEmployeeTimesheetSubmissionStatus(Long projectMemberId,
 			String currentTimeFrequency, String currentTimeSubFrequency, OrgLocations orgLocations,
 			User loginUser,int editableCheck) throws Exception {
@@ -752,15 +764,7 @@ public class TimesheetRestController {
 			break;
 		}
 
-		Date actualWeekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
-				weekStartDate.replaceAll("/", "-"));
-		String tuesDayDate = CalendarUtil.getNextDate(weekStartDate, orgLocations.getDateFormat());
-		String WednesDayDate = CalendarUtil.getNextDate(tuesDayDate, orgLocations.getDateFormat());
-		String ThursDayDate = CalendarUtil.getNextDate(WednesDayDate, orgLocations.getDateFormat());
-		String FriDayDate = CalendarUtil.getNextDate(ThursDayDate, orgLocations.getDateFormat());
-		String SaturdayDate = CalendarUtil.getNextDate(FriDayDate, orgLocations.getDateFormat());
-		String SundayDate = CalendarUtil.getNextDate(SaturdayDate, orgLocations.getDateFormat());
-
+		
 		if(editableCheck == 1) {
 			Map<String,Boolean> editableMap = new LinkedHashMap<>();
 			if (disbleCondition1.toString().equalsIgnoreCase("disabled")) {
@@ -807,6 +811,180 @@ public class TimesheetRestController {
 			}
 			statusDTO.setEditableMap(editableMap);
 	    }
+		
+		Date actualWeekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+				weekStartDate.replaceAll("/", "-"));
+		String tuesDayDate = CalendarUtil.getNextDate(weekStartDate, orgLocations.getDateFormat());
+		String WednesDayDate = CalendarUtil.getNextDate(tuesDayDate, orgLocations.getDateFormat());
+		String ThursDayDate = CalendarUtil.getNextDate(WednesDayDate, orgLocations.getDateFormat());
+		String FriDayDate = CalendarUtil.getNextDate(ThursDayDate, orgLocations.getDateFormat());
+		String SaturdayDate = CalendarUtil.getNextDate(FriDayDate, orgLocations.getDateFormat());
+		String SundayDate = CalendarUtil.getNextDate(SaturdayDate, orgLocations.getDateFormat());
+		
+		/**
+		 * Here getting dates which are enabled in the current submission (Hint:In
+		 * particular project,the member may assigned in the mid of the week)
+		 */
+		HashSet<Date> pmhDateList = projectMembersHistoryService
+				.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(projectMemberId,
+						actualWeekStartDate, actualEndDate);
+
+		Calendar currentCal = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+		currentCal.setLenient(false);
+		currentCal.setTime(actualWeekStartDate);
+
+		String approvalStatus = statusMap.get("STATUS");
+		if ((!isFillMyTimeSheet) || (!pmhDateList.contains(actualWeekStartDate)) || !isNullOrEmpty(approvalStatus)
+				&& (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))
+						&& (timesheetFor.equalsIgnoreCase("user") || !reopenButtonIsVisible))
+						|| approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())
+						|| (approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())
+								&& (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))) {
+			disbleCondition1.setLength(0);
+			disbleCondition1.append("disabled");
+		}
+		if ((!isFillMyTimeSheet)
+				|| (!pmhDateList.contains(CalendarUtil
+						.getCurrentWeekDayByCalendar(currentCal, "TUE", orgLocations.getDateFormat()).getTime()))
+				|| !isNullOrEmpty(approvalStatus)
+						&& (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))
+								&& (timesheetFor.equalsIgnoreCase("user") || !reopenButtonIsVisible))
+								|| approvalStatus
+										.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())
+								|| (approvalStatus
+										.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())
+										&& (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))) {
+			disbleCondition2.setLength(0);
+			disbleCondition2.append("disabled");
+		}
+		if ((!isFillMyTimeSheet)
+				|| (!pmhDateList.contains(CalendarUtil
+						.getCurrentWeekDayByCalendar(currentCal, "WED", orgLocations.getDateFormat()).getTime()))
+				|| !isNullOrEmpty(approvalStatus)
+						&& (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))
+								&& (timesheetFor.equalsIgnoreCase("user") || !reopenButtonIsVisible))
+								|| approvalStatus
+										.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())
+								|| (approvalStatus
+										.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())
+										&& (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))) {
+			disbleCondition3.setLength(0);
+			disbleCondition3.append("disabled");
+		}
+		if ((!isFillMyTimeSheet)
+				|| (!pmhDateList.contains(CalendarUtil
+						.getCurrentWeekDayByCalendar(currentCal, "THU", orgLocations.getDateFormat()).getTime()))
+				|| !isNullOrEmpty(approvalStatus)
+						&& (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))
+								&& (timesheetFor.equalsIgnoreCase("user") || !reopenButtonIsVisible))
+								|| approvalStatus
+										.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())
+								|| (approvalStatus
+										.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())
+										&& (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))) {
+			disbleCondition4.setLength(0);
+			disbleCondition4.append("disabled");
+		}
+		if ((!isFillMyTimeSheet)
+				|| (!pmhDateList.contains(CalendarUtil
+						.getCurrentWeekDayByCalendar(currentCal, "FRI", orgLocations.getDateFormat()).getTime()))
+				|| !isNullOrEmpty(approvalStatus)
+						&& (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))
+								&& (timesheetFor.equalsIgnoreCase("user") || !reopenButtonIsVisible))
+								|| approvalStatus
+										.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())
+								|| (approvalStatus
+										.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())
+										&& (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))) {
+			disbleCondition5.setLength(0);
+			disbleCondition5.append("disabled");
+		}
+		if ((!isFillMyTimeSheet)
+				|| (!pmhDateList.contains(CalendarUtil
+						.getCurrentWeekDayByCalendar(currentCal, "SAT", orgLocations.getDateFormat()).getTime()))
+				|| !isNullOrEmpty(approvalStatus)
+						&& (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))
+								&& (timesheetFor.equalsIgnoreCase("user") || !reopenButtonIsVisible))
+								|| approvalStatus
+										.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())
+								|| (approvalStatus
+										.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())
+										&& (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))) {
+			disbleCondition6.setLength(0);
+			disbleCondition6.append("disabled");
+		}
+		if ((!isFillMyTimeSheet)
+				|| (!pmhDateList.contains(CalendarUtil
+						.getCurrentWeekDayByCalendar(currentCal, "SUN", orgLocations.getDateFormat()).getTime()))
+				|| !isNullOrEmpty(approvalStatus)
+						&& (((approvalStatus.equalsIgnoreCase(Submission_Status.getNameByValue("submitted").getValue()))
+								&& (timesheetFor.equalsIgnoreCase("user") || !reopenButtonIsVisible))
+								|| approvalStatus
+										.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())
+								|| (approvalStatus
+										.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue())
+										&& (!reopenButtonIsVisible && !timesheetFor.equalsIgnoreCase("user"))))) {
+			disbleCondition7.setLength(0);
+			disbleCondition7.append("disabled");
+		}
+		
+		boolean isMonEditable = false;
+		boolean isTueEditable = false;
+		boolean isWedEditable = false;
+		boolean isThuEditable = false;
+		boolean isFriEditable = false;
+		boolean isSatEditable = false;
+		boolean isSunEditable = false;
+		
+		if (disbleCondition1.toString().equalsIgnoreCase("disabled")) {
+			isMonEditable = false;
+		} else {
+			isMonEditable = true;
+		}
+		
+		if (disbleCondition2.toString().equalsIgnoreCase("disabled")) {
+			isTueEditable = false;
+		} else {
+			isTueEditable = true;
+		}
+		
+		if (disbleCondition3.toString().equalsIgnoreCase("disabled")) {
+			isWedEditable = false;
+		} else {
+			isWedEditable = true;
+		}
+		
+		if (disbleCondition4.toString().equalsIgnoreCase("disabled")) {
+			isThuEditable = false;
+		} else {
+			isThuEditable = true;
+		}
+		
+		if (disbleCondition5.toString().equalsIgnoreCase("disabled")) {
+			isFriEditable = false;
+		} else {
+			isFriEditable = true;
+		}
+		
+		if (disbleCondition6.toString().equalsIgnoreCase("disabled")) {
+			isSatEditable = false;
+		} else {
+			isSatEditable = true;
+		}
+		
+		if (disbleCondition7.toString().equalsIgnoreCase("disabled")) {
+			isSunEditable = false;
+		} else {
+			isSunEditable = true;
+		}
+		
+		statusDTO.setMonEditable(isMonEditable);
+		statusDTO.setTueEditable(isTueEditable);
+		statusDTO.setWedEditable(isWedEditable);
+		statusDTO.setThuEditable(isThuEditable);
+		statusDTO.setFriEditable(isFriEditable);
+		statusDTO.setSatEditable(isSatEditable);
+		statusDTO.setSunEditable(isSunEditable);
 		
 		statusDTO.setTimesheetStatus(statusMap.get("STATUS"));
 		statusDTO.setModifyButtonVisible(new Boolean(statusMap.get("IS_MODIFY_BUTTON_VISIBLE")));

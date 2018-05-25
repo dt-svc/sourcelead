@@ -58,14 +58,14 @@
 						                    </tr>  
 							                <c:set var="entryIndex" value="0"/>
 							                <c:set var="timeSheetSubmissionStatus"/>  
-							                <c:set var="isMonEditable"/>
-							                <c:set var="isTueEditable"/>     
-							                <c:set var="isWedEditable"/>
-							                <c:set var="isThuEditable"/>
-							                <c:set var="isFriEditable"/>
-							                <c:set var="isSatEditable"/>
-							                <c:set var="isSunEditable"/>       
 										    <c:forEach var="entry" items="${employeeTimesheetEntryDetailsDTO.submissionList}" varStatus="entryCount">
+									            <c:set var="isMonEditable"/>
+								                <c:set var="isTueEditable"/>     
+								                <c:set var="isWedEditable"/>
+								                <c:set var="isThuEditable"/>
+								                <c:set var="isFriEditable"/>
+								                <c:set var="isSatEditable"/>
+								                <c:set var="isSunEditable"/> 
 							                    <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
 									               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == statusEntry.key}">
 									                     <c:set var="timeSheetSubmissionStatus" value="${statusEntry.value.timesheetStatus}"/>
@@ -139,18 +139,18 @@
 																	          <c:set var="taskName" value="${pt.taskName}" />
 																	           <c:set var="taskType" value="${entry.projectTaskType}" />
 																	           <c:if test="${not empty pt.generatedId}" >
-																		       		<option value='${pt.id},${pt.taskType.name},${pt.taskName}' selected> ${pt.generatedId} - ${pt.taskName} </option>
+																		       		<option value='${pt.id},${pt.billableType},${pt.taskName}' selected> ${pt.generatedId} - ${pt.taskName} </option>
 																		       </c:if>
 																		        <c:if test="${empty pt.generatedId}" >
-																		       		<option value='${pt.id},${pt.taskType.name},${pt.taskName}' selected>${pt.taskName} </option>
+																		       		<option value='${pt.id},${pt.billableType},${pt.taskName}' selected>${pt.taskName} </option>
 																		       </c:if>
 																	        </c:if>
 																	       <c:if test="${pt.id != entry.projectTaskId}">
 																		       <c:if test="${not empty pt.generatedId}" >
-																		       		<option value='${pt.id},${pt.taskType.name},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
+																		       		<option value='${pt.id},${pt.billableType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
 																		       </c:if>
 																		        <c:if test="${empty pt.generatedId}" >
-																		       		<option value='${pt.id},${pt.taskType.name},${pt.taskName}'>${pt.taskName} </option>
+																		       		<option value='${pt.id},${pt.billableType},${pt.taskName}'>${pt.taskName} </option>
 																		       </c:if>
 																	       </c:if>
 																	   </c:forEach>
