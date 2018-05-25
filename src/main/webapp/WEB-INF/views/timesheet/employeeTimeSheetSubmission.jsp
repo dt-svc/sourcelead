@@ -1650,12 +1650,11 @@ function addTimeSheetRow() {
 			   if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
 				   var taskId = $("#" + projectTaskId).val().split(",");
 				   $("#" + projectTaskId + "BillableTypeId").html(taskId[1]);
-				   //setTotals(); 
+				   setTotals(); 
 			   }else{
 				   $("#" + projectTaskId + "BillableTypeId").html(""); 
 				  setTotals(); 
 			   }
-			   
 			   $("#"+projectTaskId).removeAttr('class');
 			   $("#"+projectTaskId).attr('class','smfield existedProjectTaskId'+projectMemberId);
 			   

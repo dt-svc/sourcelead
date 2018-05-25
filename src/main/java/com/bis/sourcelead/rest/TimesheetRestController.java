@@ -5734,6 +5734,29 @@ public class TimesheetRestController {
 		resultJson = commonUtil.toJSON(taskList);
 		return resultJson;
 	}
-	
+	@PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS')")
+	@RequestMapping(value = "/projectTasksByMemberId", method = RequestMethod.POST)
+	public @ResponseBody String getProjectTasksByMemberId(@RequestParam(value = "projectMemeberId", required = true) Long projectMemeberId,
+			@RequestParam(value = "avilableProjectTaskIds", required = false) String avilableProjectTaskIds)
+			throws Exception {
+
+		List<Long> ids = new ArrayList<Long>();
+		String[] avilableProjectTaskId = avilableProjectTaskIds.split(",");
+		for (String id : avilableProjectTaskId) {
+			if (id != null && !id.isEmpty()) {
+				ids.add(Long.parseLong(id));
+			}
+		}
+		String resultJson="";
+		if (projectMemeberId != null) {
+			ProjectMembers projectMember = projectMembersService.getProjectMemberById(projectMemeberId);
+			Collection<ProjectTasks> taskList = projectTasksService
+					.getAllTasksByProjectIdAndExistedProjectTaskIds(projectMember.getProjects().getId(), ids);
+			resultJson = commonUtil.toJSON(taskList);
+			
+		}
+		return resultJson;
+
+	}
 	
 }
