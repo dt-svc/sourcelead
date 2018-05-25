@@ -187,10 +187,16 @@
 												      </td>
 										              <td>
 										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
-													         <div><input type="text" id="${entryCount.index+1}ticketNumber1Id" name="${entryCount.index+1}ticketNumber1Id" onblur='setTaskNumber("${entryIndex}","${entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
+													         <div><input type="text" id="${entryCount.index+1}ticketNumber1Id" name="${entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" onblur='setTaskNumber("${entryIndex}","${entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
 													      </c:if>
 													      <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
-													          <div>--</div>
+													         <c:if test="${!empty entry.ticketNumber}">
+													             <div>${entry.ticketNumber}</div>
+													         </c:if>
+													         <c:if test="${empty entry.ticketNumber}">
+													             <div>--</div>
+													         </c:if>
+													          
 													      </c:if>
 												     </td>
 												     <c:forEach var="te" items="${entry.timesheetEntries}" varStatus="teStatus">

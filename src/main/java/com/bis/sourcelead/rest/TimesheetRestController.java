@@ -551,6 +551,7 @@ public class TimesheetRestController {
 							EmployeeTimeSheetSubmissionDTO etsDTO = new EmployeeTimeSheetSubmissionDTO();
 							Long pmId = null;
 							String taskType = "";
+							String ticketNumber = "";
 							for(TimesheetEntriesDTO teDTO :entry.getValue()) {
 								if(teDTO.getProjectMemberId() != null) {
 									pmId = teDTO.getProjectMemberId();
@@ -558,10 +559,15 @@ public class TimesheetRestController {
 								if(teDTO != null && teDTO.getTimesheetTaskDTO() != null && StringUtils.isNotEmpty(teDTO.getTimesheetTaskDTO().getTaskType())) {
 									taskType = teDTO.getTimesheetTaskDTO().getTaskType();
 								}	
+								
+								if(teDTO != null && StringUtils.isNotEmpty(teDTO.getTicketNumber())) {
+									ticketNumber = teDTO.getTimesheetTaskDTO().getTaskType();
+								}	
 							}
 							etsDTO.setTimesheetEntries(entry.getValue());
 							etsDTO.setProjectMemberId(pmId);
 							etsDTO.setProjectTaskId(entry.getKey());
+							etsDTO.setTicketNumber(ticketNumber);
 							etsDTO.setProjectTaskType(taskType);
 							etsDTO.setProjectTaskList(projectsTasks);
 							etsDTOList.add(etsDTO);
@@ -1123,6 +1129,7 @@ public class TimesheetRestController {
 						teMonDTO.setDate(monDayDate);
 						teMonDTO.setHours(mondayHours);
 						teMonDTO.setComments(te.getComments());
+						teMonDTO.setTicketNumber(te.getTicketNumber());
 						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
 						if (tsDTOList == null) {
 							tsDTOList = new LinkedList<>();
@@ -1166,6 +1173,7 @@ public class TimesheetRestController {
 						teTueDTO.setDate(tuesDayDate);
 						teTueDTO.setSubmissionId(ts.getId());
 						teTueDTO.setHours(tuesdayHours);
+						teTueDTO.setTicketNumber(te.getTicketNumber());
 						if(te != null && te.getTimesheetSubmissions() != null && te.getTimesheetSubmissions().getProjectMembers() != null && te.getTimesheetSubmissions().getProjectMembers().getId() != null)
 						teTueDTO.setProjectMemberId(te.getTimesheetSubmissions().getProjectMembers().getId());
 						teTueDTO.setComments(te.getComments());
@@ -1214,6 +1222,7 @@ public class TimesheetRestController {
 						teWedDTO.setProjectMemberId(te.getTimesheetSubmissions().getProjectMembers().getId());
 						teWedDTO.setDayOfTheDate("Wed");
 						teWedDTO.setSubmissionId(ts.getId());
+						teWedDTO.setTicketNumber(te.getTicketNumber());
 						teWedDTO.setDate(WednesDayDate);
 						teWedDTO.setHours(weddayHours);
 						teWedDTO.setComments(te.getComments());
@@ -1255,6 +1264,7 @@ public class TimesheetRestController {
 						}
 						TimesheetEntriesDTO teThuDTO = new TimesheetEntriesDTO();
 						teThuDTO.setId(te.getId());
+						teThuDTO.setTicketNumber(te.getTicketNumber());
 						teThuDTO.setTimesheetTaskDTO(timesheetTaskDTO);
 						if(te != null && te.getTimesheetSubmissions() != null && te.getTimesheetSubmissions().getProjectMembers() != null && te.getTimesheetSubmissions().getProjectMembers().getId() != null)
 						teThuDTO.setProjectMemberId(te.getTimesheetSubmissions().getProjectMembers().getId());
@@ -1306,6 +1316,7 @@ public class TimesheetRestController {
 						if(te != null && te.getTimesheetSubmissions() != null && te.getTimesheetSubmissions().getProjectMembers() != null && te.getTimesheetSubmissions().getProjectMembers().getId() != null)
 						teFriDTO.setProjectMemberId(te.getTimesheetSubmissions().getProjectMembers().getId());
 						teFriDTO.setId(te.getId());
+						teFriDTO.setTicketNumber(te.getTicketNumber());
 						teFriDTO.setTimesheetTaskDTO(timesheetTaskDTO);
 						teFriDTO.setDayOfTheDate("Fri");
 						teFriDTO.setSubmissionId(ts.getId());
@@ -1350,6 +1361,7 @@ public class TimesheetRestController {
 						}
 						TimesheetEntriesDTO teSatDTO = new TimesheetEntriesDTO();
 						teSatDTO.setId(te.getId());
+						teSatDTO.setTicketNumber(te.getTicketNumber());
 						teSatDTO.setTimesheetTaskDTO(timesheetTaskDTO);
 						if(te != null && te.getTimesheetSubmissions() != null && te.getTimesheetSubmissions().getProjectMembers() != null && te.getTimesheetSubmissions().getProjectMembers().getId() != null)
 						teSatDTO.setProjectMemberId(te.getTimesheetSubmissions().getProjectMembers().getId());
@@ -1396,6 +1408,7 @@ public class TimesheetRestController {
 						}
 						TimesheetEntriesDTO teSunDTO = new TimesheetEntriesDTO();
 						teSunDTO.setId(te.getId());
+						teSunDTO.setTicketNumber(te.getTicketNumber());
 						teSunDTO.setTimesheetTaskDTO(timesheetTaskDTO);
 						teSunDTO.setDayOfTheDate("Sun");
 						teSunDTO.setSubmissionId(ts.getId());
@@ -1821,7 +1834,7 @@ public class TimesheetRestController {
 						timesheetDayEntries.setTotalHours(nonBillableHours);
 						timesheetDayEntries.setTaskType("Non-Billable");
 					}
-
+					timesheetDayEntries.setTicketNumber(teDTO.getTicketNumber());
 					timesheetDayEntries.setComments(teDTO.getComments());
 					timesheetDayEntries.setTimesheetDate(
 							commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), teDTO.getDate()));

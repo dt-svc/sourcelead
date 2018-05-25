@@ -19,6 +19,8 @@ public class EmployeeTimeSheetSubmissionDTO implements Serializable{
 	
 	private Long projectTaskId;
 	
+	private String ticketNumber;
+	
 	private String projectTaskType;
 	
 	private List<ProjectTasks> projectTaskList;
@@ -58,8 +60,17 @@ public class EmployeeTimeSheetSubmissionDTO implements Serializable{
 	public void setProjectTaskId(Long projectTaskId) {
 		this.projectTaskId = projectTaskId;
 	}
+	
 	public List<TimesheetEntriesDTO> getTimesheetEntries() {
 		return timesheetEntries;
+	}
+
+	public String getTicketNumber() {
+		return ticketNumber;
+	}
+
+	public void setTicketNumber(String ticketNumber) {
+		this.ticketNumber = ticketNumber;
 	}
 
 	public void setTimesheetEntries(List<TimesheetEntriesDTO> timesheetEntries) {
