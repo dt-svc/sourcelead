@@ -93,19 +93,34 @@
 											    <tr id="timesheetRow${entryCount.index+1}">
 											        <td id="${entryCount.index+1}projectTd">
 														<div class="timeAdd">
-														      <select id="${entryCount.index+1}projectMember1Id" name="${entryCount.index+1}projectMember1Id" data-validation="required" field-name="Project">
+														    <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
+														        <select id="${entryCount.index+1}projectMember1Id" name="${entryCount.index+1}projectMember1Id" data-validation="required" field-name="Project">
 																	<option value=''>--select project--</option> 
 															        <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
 															               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == pm.id}">
 															                   <option value='${pm.id}' selected>${pm.projectName}</option> 
 															               </c:if>
-																	        <c:if test="${empty entry.projectMemberId}">
+																	        <c:if test="${empty entry.projectMemberId || !empty entry.projectMemberId && entry.projectMemberId != pm.id}">
 																	            <option value='${pm.id}'>${pm.projectName} </option> 
 																	        </c:if>
 																	 </c:forEach>
-															 </select>
-															 <c:if test="${entryCount.index > 0}">
-															    <input value="" onclick="removeTimeSheetRow('${entryCount.index+1}');" class="timeRemoveBtn" type="button">
+															    </select>
+															     <c:if test="${entryCount.index > 0}">
+															       <input value="" onclick="removeTimeSheetRow('${entryCount.index+1}');" class="timeRemoveBtn" type="button">
+															      </c:if>
+															 </c:if>
+															 <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
+															         <c:set var="projectCheck"/>
+															         <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
+															               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == pm.id}">
+															                  <input type="hidden" id="${entryCount.index+1}projectMember1Id" name="${entryCount.index+1}projectMember1Id" value="${pm.id}"/>
+															                   <p>${pm.projectName}</p> 
+															                   <c:set var="projectCheck" value="1"/>
+															               </c:if>
+																	 </c:forEach>
+																	 <c:if test="${empty projectCheck}">
+											                           <p>--</p>
+											                          </c:if>
 															 </c:if>
 														</div>
 												      </td>	
@@ -114,6 +129,7 @@
 														  <c:set var="taskType" value=""/>
 														  <c:set var="taskId" value=""/>
 														  <c:set var="taskName" value=""/>
+														  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
 															   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id"  class="smfield existedProjectTaskId${entry.projectMemberId}"  onclick='getProjectTasks("${entryCount.index+1}task1Id","${entryCount.index+1}projectMember1Id");' onchange='prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id","${entryCount.index+1}projectMember1Id");' data-validation="required" field-name="Task">
 																	<option value=''>--select task--</option>
 																	 <c:if test="${!empty entry.projectTaskList}">
@@ -140,6 +156,28 @@
 																	   </c:forEach>
 																	</c:if>
 																</select>
+														  </c:if>
+														   <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
+														            <c:if test="${!empty entry.projectTaskList}">
+																	   <c:forEach var="pt" items="${entry.projectTaskList}">
+																	        <c:if test="${pt.id == entry.projectTaskId}">
+																	          <c:set var="taskId" value="${pt.id}" />
+																	          <c:set var="taskName" value="${pt.taskName}" />
+																	           <c:set var="taskType" value="${entry.projectTaskType}" />
+																	           <c:if test="${not empty pt.generatedId}" >
+																		       		<p> ${pt.generatedId} - ${pt.taskName} </p>
+																		       </c:if>
+																		        <c:if test="${empty pt.generatedId}" >
+																		       		<p>${pt.taskName} </p>
+																		       </c:if>
+																	          </c:if>
+																	   </c:forEach>
+																	</c:if>
+																	<c:if test="${empty taskId}">
+											                           <p>--</p>
+											                        </c:if>
+											               </c:if>
+											               
 														</div>
 												      </td>
 												      <td>
@@ -148,7 +186,12 @@
 												        </div>
 												      </td>
 										              <td>
-													      <div><input type="text" class="timeTick"></div>
+										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
+													         <div><input type="text" class="timeTick"></div>
+													      </c:if>
+													      <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
+													          <div>--</div>
+													      </c:if>
 												     </td>
 												     <c:forEach var="te" items="${entry.timesheetEntries}" varStatus="teStatus">
 													      <td> 
@@ -163,8 +206,6 @@
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
 													               
 													                 <c:set var="isEditable" value="Y"/>
-													                 
-													                
 													                  <c:if test="${te.dayOfTheDate == 'Mon' && !empty isMonEditable && isMonEditable == 'N'}">
 													                      <c:set var="isEditable" value="N"/>
 													                  </c:if>
@@ -206,7 +247,23 @@
 											         </c:forEach>
 												     <td class="timeTabFix"> 
 												        <c:if test="${!empty entry.projectMemberId}">
-												             <div><b>${timeSheetSubmissionStatus}</b></div>
+												             <div>
+													             <c:if test="${timeSheetSubmissionStatus == 'NEW'}">
+													                <b>${timeSheetSubmissionStatus}</b>
+													             </c:if>
+													             <c:if test="${timeSheetSubmissionStatus == 'DRAFT'}">
+													                <b class='projDraft'>${timeSheetSubmissionStatus}</b>
+													             </c:if>
+													             <c:if test="${timeSheetSubmissionStatus == 'SUBMITTED'}">
+													               <b class='projSubmited'>${timeSheetSubmissionStatus}</b>
+													             </c:if>
+													             <c:if test="${timeSheetSubmissionStatus == 'REJECTED'}">
+													                <b class='projReject'>${timeSheetSubmissionStatus}</b>
+													             </c:if>
+													             <c:if test="${timeSheetSubmissionStatus == 'APPROVED'}">
+													                <b class='projActive'>${timeSheetSubmissionStatus}</b>
+													             </c:if>
+												             </div>
 												        </c:if>
 												        <c:if test="${empty entry.projectMemberId}">
 												            <div><b>New</b></div> 
