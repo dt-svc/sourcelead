@@ -57,6 +57,8 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 	private String locDateFomat;
 	
 	private Integer maxRowCount;
+	
+	private boolean submitButtonVisible;
 
 	public LinkedHashSet<String> getInvoiceFrequencyList() {
 		return invoiceFrequencyList;
@@ -242,6 +244,12 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 		this.timesheetStatus = timesheetStatus;
 	}
 
-	 
+	public boolean isSubmitButtonVisible() {
+		return submitButtonVisible;
+	}
+
+	public void setSubmitButtonVisible(boolean submitButtonVisible) {
+		this.submitButtonVisible = submitButtonVisible;
+	}
      
 }

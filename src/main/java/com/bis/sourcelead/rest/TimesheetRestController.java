@@ -237,11 +237,48 @@ public class TimesheetRestController {
 		ModelAndView model = new ModelAndView();
 		try {
 			EmployeeTimesheetEntryDetailsDTO tedDTO = getEmployeeTimesheetEntryDetails(eedDTO, request);
+			List<ProjectMembersDTO> freshProjectMembersList = new LinkedList<>();
 			if(tedDTO.getProjectMembersList() == null || tedDTO.getProjectMembersList().isEmpty()) {
 				model.addObject("NORECORDSFOUND", true);
 				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
 				model.setViewName("timesheet/employeeTImesheetInvoiceList");
 			}else {
+				Boolean isRejected = false;
+				Boolean isSUBMITTED = false;
+				Boolean isNEW = false;
+				String combinedStatus = "";
+				for(ProjectMembersDTO pmDTO :tedDTO.getProjectMembersList()) {
+					if (tedDTO.getStatusMap().get(pmDTO.getId()) == null || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("REJECTED") 
+							|| tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("DRAFT")) {
+						freshProjectMembersList.add(pmDTO);
+						isRejected = true;
+						combinedStatus = "REJECTED";
+					}
+					else if (!isRejected
+							&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
+						freshProjectMembersList.add(pmDTO);
+						isNEW = true;
+						combinedStatus = "NEW";
+					}
+					else if (!isRejected && !isNEW
+							&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("SUBMITTED")) {
+						isSUBMITTED = true;
+						combinedStatus = "SUBMITTED";
+					}
+					else if (!isRejected && !isNEW && !isSUBMITTED
+							&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("APPROVED")) {
+						combinedStatus = "APPROVED";
+					}
+					
+				}
+				/*tedDTO.getProjectMembersList().clear();
+				tedDTO.setProjectMembersList(freshProjectMembersList);*/
+				if(StringUtils.isNotEmpty(combinedStatus) && (combinedStatus.equalsIgnoreCase("SUBMITTED") || combinedStatus.equalsIgnoreCase("APPROVED"))){
+					tedDTO.setSubmitButtonVisible(false);
+				}else {
+					tedDTO.setSubmitButtonVisible(true);
+				}
+				
 				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
 				model.setViewName("timesheet/employeeTImesheetInvoiceList");
 			}

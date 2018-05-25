@@ -6,9 +6,12 @@
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 <div class="time_pop" id="timeSheetErrorMsg"></div>
 
- <div id="timesheetSubmissionStatusDiv" class="timeNewSe timBtnWidth">
-				<b class="proj_new Cursor" onClick='addTimeSheetRow();'>Add Row</b>
-</div>
+<c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+	<div id="timesheetSubmissionStatusDiv" class="timeNewSe timBtnWidth">
+					<b class="proj_new Cursor" onClick='addTimeSheetRow();'>Add Row</b>
+	</div>
+</c:if>
+ 
 <div class="clearfix"></div>
 <div id="timesheetNewTabs" class="timesheetNewTabs">
 	<div class="project_side_wrap_inn_tabs">
@@ -343,7 +346,6 @@
 						            </div>
 						            <div class="timesheet_bot">
 									    	<div class="timesheet_week_comm">
-									            <!-- <div class="totalWrap"><ul><li><span>Billable Hours</span><input name="grandBillableTotal" id="grandBillableTotal" value="00:00" placeholder="HH/HH" readonly type="text"></li><li><span>Non-Billable Hours</span><input name="grandNonBillableTotal" id="grandNonBillableTotal" value="00:00" placeholder="HH/HH" readonly type="text"></li> <li><span>Total Hours</span><input id="grandTotal" value="00:00" placeholder="HH/HH" readonly type="text"></li><div class="clearfix"></div>  </ul></div> -->
 									            <div class="totalWrap">
 									                 <ul>
 														<li><span>Billable Hours</span><input
@@ -359,8 +361,10 @@
 									            </div>
 									            <div class="clearfix"></div>
 									    	    <div class="timesheet_button clearfix">
-											     <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
-											     <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
+									    	    <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+									    	        <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
+											         <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
+									    	    </c:if>
 									        </div>              
 									        </div>
 									    	<div class="clearfix"></div>
