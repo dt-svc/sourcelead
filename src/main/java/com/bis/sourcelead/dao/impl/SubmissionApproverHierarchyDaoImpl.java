@@ -1078,11 +1078,20 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@SuppressWarnings("unchecked")   
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<SubmissionApproverHierarchy> getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(Long userId, Long orgLocationId, String submissionStatus, String searchValue, int start, int length)
+	public ResponseList<SubmissionApproverHierarchy> getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginWithSearchValue(Long userId, Long orgLocationId, String submissionStatus, String searchValue, int start, int length,String isGlobalUser)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		ResponseList<SubmissionApproverHierarchy> response = new ResponseList<>();
 		StringBuilder searchCountQuery = new StringBuilder();
+		
+		
+		String globalUserQuery = "";
+		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+		    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+		    }else {
+		    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId";
+		    }
+
 		if (StringUtils.isNotEmpty(searchValue) && searchValue != null) {
 			searchCountQuery.append(" and (sah.submissionId.projectMembers.projectMemberCandidteId.firstName like '%"
 					+ searchValue
@@ -1127,7 +1136,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		// fetch pm.employee emp left join fetch ts.projects project left join
 		// fetch ts.masterCandidateId mc
 		String query = "from  SubmissionApproverHierarchy sah "
-				+ " where  sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId  "
+				+ " where  "+globalUserQuery+"  "
 				+ fillingOptionQuery + " and ( "
 				/*
 				 * logged in user as approver in project_approver_hierarchy
@@ -1143,9 +1152,10 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * not assigned to project as approver)
 				 */
 				+ "  OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :orgLocationId)"
+				+" OR  ( sah.submissionId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and  sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
 				+ "   ) "
 				+ " and  sah.submissionStatus = :submissionStatus and sah.submissionId.status = '1'";
-		String queryCount = " Select Count (*) from  SubmissionApproverHierarchy sah  where  sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId  "
+		String queryCount = " Select Count (*) from  SubmissionApproverHierarchy sah  where  "+globalUserQuery+"  "
 				+ fillingOptionQuery + " and ( "
 				/*
 				 * logged in user as approver in project_approver_hierarchy
@@ -1161,6 +1171,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * not assigned to project as approver)
 				 */
 				+ "  OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :orgLocationId)"
+				+" OR  ( sah.submissionId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and  sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
 				+ "   ) "
 				+ " and  sah.submissionStatus = :submissionStatus and sah.submissionId.status = '1'";
 		String soringQuery = "GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate)order by sah.submissionId.projectMembers.id ASC)";
@@ -1228,16 +1239,28 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@SuppressWarnings("unchecked")   
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(Long userId, Long orgLocationId, String submissionStatus)
+	public Integer getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(Long userId, Long orgLocationId, String submissionStatus,String isGlobalUser)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
+		
+		String globalUserQuery = "";
+		String globalUserQuery2 = "";
+		
+		if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+		    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+		    	globalUserQuery2 = " userRole.orgLocations.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+		    }else {
+		    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId";
+		    	globalUserQuery2 = "userRole.orgLocations.id = :orgLocationId";
+		    }
+
 		String fillingOptionQuery = " and (sah.submissionApprovalStatus <> '"
 				+ Submission_ApprovalStatus.NEW + "' OR (sah.submissionApprovalStatus = '"
 				+ Submission_ApprovalStatus.NEW
 				+ "' and sah.hierarchyId.projectClientsId.id IN(select pc.id from ProjectClients pc where pc.level IN(select Max(subPm.projectClientsId.level) from ProjectMembers subPm where subPm.projects.id = sah.submissionId.projectMembers.projects.id and subPm.masterCandidateId.id = sah.submissionId.projectMembers.masterCandidateId.id and subPm.projectClientsId.orgLocationsId.org.orgType <> '"
 				+ Constants.GUEST
 				+ "') and pc.projectId.id = sah.submissionId.projectMembers.projects.id)))";
-		String query = " Select Count (*) from  SubmissionApproverHierarchy sah  where  sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId "
+		String query = " Select Count (*) from  SubmissionApproverHierarchy sah  where  "+globalUserQuery+" "
 				+ fillingOptionQuery + " and " + " ( "
 				/*
 				 * logged in user as approver in project_approver_hierarchy
@@ -1252,7 +1275,8 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * project_approver_hierarchy(hint:logged in user is admin but
 				 * not assigned to project as approver)
 				 */
-				+ "   OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = :orgLocationId) "
+				+ "   OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and "+globalUserQuery2+") "
+				+" OR  (sah.submissionId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id))"
 				+ "   ) "
 				+ " and  sah.submissionStatus = :submissionStatus and sah.submissionId.status = '1'  GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate)order by sah.submissionId.projectMembers.projects.id ASC)";
 		List<SubmissionApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("userId", userId).setLong("orgLocationId", orgLocationId).setString("submissionStatus", submissionStatus).list();
