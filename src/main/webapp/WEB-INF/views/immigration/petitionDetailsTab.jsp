@@ -38,7 +38,7 @@
 			  <div class="immigraDetailsCta">
 				  <h2>Beneficiary details</h2>
 				  <ul>
-					  <li class="clearfix"><span>Assocaite (Beneficiary)</span><p>: ${immigration.associateName}</p></li>
+					  <li class="clearfix"><span>Associate (Beneficiary)</span><p>: ${immigration.associateName}</p></li>
 					  <li class="clearfix"><span>First Name</span><p>: ${immigration.firstName}</p></li>
 					  <li class="clearfix"><span>Middle Name</span><p>: ${immigration.middleName}</p></li>
 					  <li class="clearfix"><span>Last Name</span><p>: ${immigration.lastName}</p></li>
