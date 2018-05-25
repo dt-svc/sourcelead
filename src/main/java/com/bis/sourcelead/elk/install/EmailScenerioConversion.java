@@ -33,8 +33,7 @@ import antlr.StringUtils;
 
 public class EmailScenerioConversion {
 	private ComboPooledDataSource comboPooledDataSource;
-	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+	
 /**
  * @author Venkat I
  * this method is using for org subscription
@@ -51,7 +50,7 @@ public void updateEmailScenerio() throws IOException, SQLException {
 			
 		      System.out.println("----Modifing Email Scenerio starts -----");
 		      
-			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".EMAIL_SCENARIO";
+			 String sql1 = "SELECT * FROM sourcelead.EMAIL_SCENARIO";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -122,7 +121,7 @@ public void updateEmailScenerio() throws IOException, SQLException {
 						}
 							 
 							
-							 String query = "update "+dbconfig.getSchema()+".EMAIL_SCENARIO set SUBJECT = ?,  BODY = ?,  SIGNATURE = ?  where ID = ?";
+							 String query = "update sourcelead.EMAIL_SCENARIO set SUBJECT = ?,  BODY = ?,  SIGNATURE = ?  where ID = ?";
 							 PreparedStatement pstmt = conn.prepareStatement(query);
 							 pstmt.setString(1, subject);
 							 pstmt.setString(2, body);
@@ -140,7 +139,7 @@ public void updateEmailScenerio() throws IOException, SQLException {
 					        		StringBuilder delimiterBuilder = new StringBuilder();
 					        		delimiterBuilder.append("[").append(fieldName).append("]");
 					        		
-					        		String query1 = " insert into "+dbconfig.getSchema()+".CLASS_FIELD (FIELD_NAME, DELIMITER_STR, EMAIL_SCENARIO_ID)"
+					        		String query1 = " insert into sourcelead.CLASS_FIELD (FIELD_NAME, DELIMITER_STR, EMAIL_SCENARIO_ID)"
 											+ " values (?, ?, ?)";
 						    		
 						    		try {
@@ -179,6 +178,10 @@ public void updateEmailScenerio() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
+		@SuppressWarnings("resource")
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

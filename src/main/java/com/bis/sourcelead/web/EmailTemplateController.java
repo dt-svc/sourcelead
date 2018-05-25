@@ -68,14 +68,10 @@ public class EmailTemplateController {
 			 
 			
 		}
-		
 		model.addObject("emailScenario",emailScenario);
-		model.setViewName("/editEmailTemplates");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("classFieldList", classFieldList);
-		if(emailScenario == null){
-			model.setViewName("/errorPage");
-		}
+		model.setViewName("/editEmailTemplates");
 		return model;
 
 	}

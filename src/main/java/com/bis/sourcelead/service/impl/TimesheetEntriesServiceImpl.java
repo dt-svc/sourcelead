@@ -27,7 +27,6 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
-import com.bis.sourcelead.entity.TimesheetSubmissionsDocumentsHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
@@ -1469,7 +1468,6 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		                               tsd.setUpdatedBy(loginUser.getUserCode());
 		                               
 									   timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
-									   saveTimesheetDocumentHistory(tsd);
 						    	}
 								
 							   /*Iterator<String> itrator = request.getFileNames();
@@ -1684,21 +1682,6 @@ public class TimesheetEntriesServiceImpl implements TimesheetEntriesService {
 		return startDateStr;
 		
 	}
-	
-	
-	private void saveTimesheetDocumentHistory(TimesheetSubmissionsDocuments tsd) throws Exception {
-		TimesheetSubmissionsDocumentsHistory tsdHistory = new TimesheetSubmissionsDocumentsHistory();
-		tsdHistory.setTimesheetSubmissions(tsd.getTimesheetSubmissions());
-		tsdHistory.setFileUrl(tsd.getFileUrl());
-		tsdHistory.setFileName(tsd.getFileName());
-		tsdHistory.setFileContentType(tsd.getFileContentType());
-		tsdHistory.setCreatedDate(CommonUtil.currentDate());
-		tsdHistory.setCreatedBy(tsd.getCreatedBy());
-		tsdHistory.setUpdatedDate(CommonUtil.currentDate());
-		tsdHistory.setUpdatedBy(tsd.getUpdatedBy());
-		timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocumentsHistory(tsdHistory);
-	}
-
 	
 	 /**
 	 * @author naresh bolisetty and sarath kumar

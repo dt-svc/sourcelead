@@ -118,13 +118,7 @@ function getVendorDetails(){
 		        	   $("input[name=orgName]").val(json.orgName);
 		        	   $("input[name=orgName]").attr("readonly","readonly");
 	        		   $('#orgName').removeAttr('onblur');
-		        	   var isLawFirm = json.isLawFirm;
-		        	   var isAccountingFirm = json.isAccountingFirm;
-	        		   $("#isLawFirm").attr('checked', isLawFirm);
-				        $("#isAccountingFirm").attr('checked', isAccountingFirm);
-				        $("#isLawFirm").val(isLawFirm?'Y':'N');
-				        $("#isAccountingFirm").val(isAccountingFirm?'Y':'N');
-	        		   
+		        	   
 	        		   if(json.webSite != null && json.webSite != 'undefined' && json.webSite != ''){
 	        			   $("input[name=webSite]").val(json.webSite);
 	        		   }
@@ -229,7 +223,6 @@ function getVendorDetails(){
 	        
 	        document.getElementById("update_vendor").style.display="";
 	    	document.getElementById("save_vendor").style.display="none";
-	    	allowIsLawFirm();
      } 
 }
 </script>
@@ -579,27 +572,7 @@ function getVendorDetails(){
 								</select>
 							</div>
 						</div>
-						<div class="form-group">
-		             <label class="col-md-3"></label>
-		              <div class="col-md-9">
-		                <div class="checkbox checkBox">
-		                  <label>
-		                   <input id="isLawFirm" title="Is law firm" name="isLawFirm"  type="checkbox" value = "N" onclick = "allowIsLawFirm();">
-		                   <!--  <input type="checkbox" value="N" name="isLawFirm"> -->
-		                   Is law firm</label>
-		                </div>
-		                 </div>
-		                 
-		                 <label class="col-md-3"></label>
-		              <div class="col-md-9">
-		                <div class="checkbox checkBox">
-		                  <label>
-		                 <input id="isAccountingFirm" title="Is law firm" name="isAccountingFirm"  type="checkbox" value = "N" onclick = "allowIsAccountFirm();">
-		                  
-		                   Is Accounting Firm</label>
-		                </div>
-		                 </div>
-               </div>
+						
 						<div class="clearfix"></div>	
 					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		               <c:if test="${sectionOrder.index == 1}">
@@ -670,25 +643,6 @@ function getVendorDetails(){
 
 
 <script>
-
-function allowIsLawFirm(){
-	var checked = document.getElementById("isLawFirm").checked
-	if(checked == true){
-		$("#isLawFirm").val("Y");
-	}else{
-		$("#isLawFirm").val("N");
-	}
-}
-
-function allowIsAccountFirm(){
-	var checked = document.getElementById("isAccountingFirm").checked
-	if(checked == true){
-		$("#isAccountingFirm").val("Y");
-	}else{
-		$("#isAccountingFirm").val("N");
-	}
-}
-
 function getCustomDependentField(sectionId){
 	 $.ajax({
 			type : "POST" , 

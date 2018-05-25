@@ -1304,7 +1304,8 @@ public class ProjectTasksRestController {
 			length = timeSheetDayEntriesDto.getPageSize();
 		}
 
-		ResponseList<TimeSheetDayEntries> timeEntryDayList = timeSheetDayEntriesService.getTimesheetDayEntriesByTaskUUIDAndUserId(taskUUID, user.getId(), loginOrgLocation.getId(), start,
+		ResponseList<TimeSheetDayEntries> timeEntryDayList = timeSheetDayEntriesService
+				.getTimesheetDayEntriesByTaskUUIDAndUserId(taskUUID, user.getId(), loginOrgLocation.getId(), start,
 						length, timeSheetDayEntriesDto.getSearchValue());
 		for (TimeSheetDayEntries timeDayEntries : timeEntryDayList.getData()) {
 			TimeSheetDayEntriesDTOList timeSheetDayEntriesDtoList = new TimeSheetDayEntriesDTOList();
@@ -1326,7 +1327,6 @@ public class ProjectTasksRestController {
 			timeSheetDayEntriesDtoList.setHours(timeDayEntries.getTotalHours());
 			timeSheetDayEntriesDtoList.setComments(timeDayEntries.getComments());
 			timeSheetDayEntriesDtoList.setProjectMemberId(timeDayEntries.getTimesheetSubmissions().getProjectMembers().getId());
-			timeSheetDayEntriesDtoList.setTimesheetEntryId(timeDayEntries.getId());
 			timeSheetDayEntriesDtoListData.add(timeSheetDayEntriesDtoList);
 		}
 
@@ -1540,16 +1540,5 @@ public class ProjectTasksRestController {
 		}
 		return totalHours;
 	}
-
-	@RequestMapping(value = "/deleteProjectTaskTimesheetDayEntry", method = RequestMethod.POST)
-	public Integer deleteProjectTaskTimesheetDayEntry
-	          (@RequestParam(value = "timesheetEntryId", required = false) String timesheetEntryId, HttpServletRequest request) throws NumberFormatException, Exception{
-			  TimeSheetDayEntries timesheetDayEntries = timeSheetDayEntriesService.getTimesheetDayEntriesById(Long.parseLong(timesheetEntryId));
-			  timesheetDayEntries.setStatus(0);
-			  timesheetDayEntries = timeSheetDayEntriesService.saveTimesheetDayEntries(timesheetDayEntries);
-			  return timesheetDayEntries.getStatus();
-		
-	}
-	
 
 }

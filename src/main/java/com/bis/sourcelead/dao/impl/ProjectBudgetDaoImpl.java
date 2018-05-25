@@ -50,10 +50,6 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
-	@Value("${jdbc.schema}")
-	private String schema;
-	
-	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectBudgetDaoImpl.class);
 
 	@Override
@@ -100,7 +96,7 @@ public class ProjectBudgetDaoImpl implements ProjectBudgetDao{
 	@Transactional(rollbackFor = { Exception.class })	
 	public Long getProjectBudgetReqestedIdByProjectId(Long projectId, Integer generatedIdcount) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "SELECT MAX(CAST(SUBSTR(TRIM(BUDGET_REQUESTED_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM "+schema+".PROJECT_BUDGET WHERE PROJECT_ID = '"+ projectId + "'";
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(BUDGET_REQUESTED_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM sourcelead.PROJECT_BUDGET WHERE PROJECT_ID = '"+ projectId + "'";
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {

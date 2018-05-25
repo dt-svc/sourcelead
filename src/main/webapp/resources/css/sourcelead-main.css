@@ -439,7 +439,7 @@ position: relative; display: block; padding: 0 15px !important; transition: all 
 .side-bar {
 background-color: #375d81; left: 0; min-height: 100%; max-height: 100%; position: fixed; top: 50px; width: 190px; z-index: 810;
 padding-top: 0px; overflow-x:hidden; overflow-y:auto; /*transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
--webkit-transition: 0.3s ease-in-out;*/ padding-bottom: 125px; 
+-webkit-transition: 0.3s ease-in-out;*/ 
 }
 /* hide time sheet */
 .timesheet-menu, .backoffice-menu, .associates-menu, .billing-menu {
@@ -8747,65 +8747,6 @@ display: inline-block; width: 100%; clear:both;
 .phoneValid p.jquery_form_error_message {
  position: absolute; left: 18px; bottom: -14px;
 }
-/* forms edit element styles */
-.editElementDiv {
-	min-height: 25px; position: relative; transition: 0.3s ease-in-out;
-}
-.editElementDiv .edit-element {
-	float: left; width: 90%;
-}
-.editElementDiv .faPencil {
-	display:none; position:absolute; right: 0; top: 5px; transition: 0.3s ease-in-out;
-}
-.editElementDiv:hover .faPencil {
-	display: block;
-}
-.saveElementDiv {
-	display: none;
-}
-.globalMarketplace-parent {
-	position: relative;
-}
-.globalMarketplace-parent .globalMarketplace .progress {
-	margin-bottom: 10px; border-radius: 2px;
-}
-.globalMarketplace-parent .globalMarketplace {
-	display: none; position: absolute; z-index: 9; left: -125px; top:-8px; width: 150px; height: 100px; background-color: #fff;
-	border: 1px solid #ededed; padding: 10px; border-radius: 3px;
-	/*box-shadow: 0 3px 3px -2px rgba(0,0,0,.2),0 3px 4px 0 rgba(0,0,0,.14),0 1px 8px 0 rgba(0,0,0,.12);*/
-}
-.globalMarketplace-parent:hover .globalMarketplace {
-	display: block; 
-}
-.headerItems ul {
-	float: left;
-}
-.dropdown-inputbox {
-	width: 125px;
-}
-.dropdown-inputbox input[type="text"]{
-	width: 70px; float: left; margin-right:0;
-}
-.dropdown-inputbox select.sel {
-	width: 55px; float: left; height: 30px; background-position: 92%; border:none !important; box-shadow: none !important;
-}
-.dropdown-select.bgPosition select {
-	background-position: 90%;
-}
-.customSetprice {
-	display: none;
-}
-.tableDC {
-	background-color: #fff; padding: 5px; border: 1px solid #ededed; position: relative;
-}
-.tableDC::after {
-border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 8px solid #333;
-content: ""; height: 0; margin-left: 32px; position: absolute; top:-10px; width: 0; left: 18%;
-}
-.tableDC .table {
-	margin-bottom: 0;
-}
-/* forms edit element styles */
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

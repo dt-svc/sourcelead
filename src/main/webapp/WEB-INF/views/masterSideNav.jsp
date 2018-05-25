@@ -352,27 +352,7 @@
 		          	<c:if test="${userTabs.tabName == 'Payroll' && SourceLeadWeb_loginUserRole != 'ROLE_ADMIN'}">
 		              <li class="${sessionData.nav == 'Pay' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/userPay'/>" title="Pay"><span><i class="fa fa-usd"></i></span><i class="subMenu">Pay</i></a></li>
 		          	</c:if>	
-					<c:if test="${userTabs.tabName == 'Immigrations'}">
-					 <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION','ROLE_VIEW_MY_PETITION')"> 
-					
 
-							<li class="${sessionData.nav == 'Immigrations' || sessionData.nav == 'MyImmigration' ? 'side-nav-active' : ''}">
-							<a href="#" class="expencesLi" title="Immigration">
-									<span><i class="fa fa-plane"></i></span> <i class="subMenu">Immigration</i>
-									<i class="fa fa-fw fa-caret-down"></i>
-							</a>
-
-								<ul class="collapses" style="display: none">
-								
-								<li class="${sessionData.nav == 'Immigrations' ? 'treview-active' : ''}"><a	href="<c:url value='${appPath}/immigration/viewImmigrationList'/>" title="Immigrations">Immigrations</a></li>
-								
-								<li class="${sessionData.nav == 'MyImmigration' ? 'treview-active' : ''}"><a	href="<c:url value='${appPath}/immigration/myImmigration'/>" title="My Immigration">My Immigration</a></li>
-									
-								</ul>
-								
-								</li>
-								</sec:authorize>
-						</c:if>
           </c:forEach>
             
           	
@@ -406,6 +386,8 @@
 		 
 			</sec:authorize> --%>
 			
+          				
+	
           	
         </ul>
       </div>

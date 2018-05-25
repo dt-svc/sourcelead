@@ -36,7 +36,6 @@ import com.bis.sourcelead.dto.VendorDocumentsFileInfo;
 import com.bis.sourcelead.dto.VendorOnboardDTO;
 import com.bis.sourcelead.dto.VendorOnboardTaskDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.EntityType;
@@ -62,7 +61,6 @@ import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.ClassFieldService;
 import com.bis.sourcelead.service.ClientService;
-import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgBankDetailsService;
@@ -179,15 +177,8 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	
 	@Autowired
 	ClassFieldService classFieldService;
-	
 
-	@Autowired
-	EmailScenarioConfigurationService emailScenarioconService;
-
-	protected boolean isNullOrEmpty(String str) {
-		return (str == null || "".equals(str.trim()));
-	}
- 
+	 
 	
 	@Override
 	public VendorOnboarding saveVendorOnboarding(OrgLocations vendorOrgLocations, OrgLocations orgLocations, User user)
@@ -305,49 +296,6 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		OrgRelations orgRelations = vendorOnboarding.getOrgRelationId();
 		orgRelations.setVendorRelationStatus("Sent");
 		orgRelationsDao.addOrgRelations(orgRelations);
-		
-		if(StringUtils.isNotBlank(orgRelations.getIsLawFirm()) && orgRelations.getIsLawFirm().equalsIgnoreCase(Constants.YES)){
-			OrgLicenseSubscription subscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(vendorOrgLocations.getOrg().getId(), vendorOrgLocations.getCountry());
-			String[] subscriptionTabs = subscription.getSubscriptionTabs().split(",");
-			List<Long> subscriptionTabIdsList = new ArrayList<>();
-			for(int i=0; i<subscriptionTabs.length;i ++){
-				subscriptionTabIdsList.add(Long.valueOf(subscriptionTabs[i]));
-			}
-			
-			if(!subscriptionTabIdsList.contains(Long.valueOf(Constants.TAB_IMMIGRATION))){
-				List<Long> tabsIds = new ArrayList<>();
-				List<Tabs> childTabsList = tabService.getClildTabsListByTabId(Long.valueOf(Constants.TAB_IMMIGRATION));
-				if(childTabsList.size() > 0) {
-					for(Tabs childTabs : childTabsList) {
-						tabsIds.add(childTabs.getId());
-					}
-				}
-				
-				List<Long> sourceLeadActionsIdsList =  sourceleadActionsService.getAllSourceleadActionsIdsByTabsList(tabsIds);
-				StringBuilder immigrationTabIds  = new StringBuilder();
-				for(Long tabId : sourceLeadActionsIdsList){
-					immigrationTabIds.append(tabId).append(",");
-				}
-				
-				String tabIds = immigrationTabIds.toString();
-				tabIds = tabIds.substring(0, tabIds.length()-1);
-				
-				Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, vendorOrgLocations.getId());
-				String adminIds = adminrole.getActionId()+","+tabIds;
-				adminrole.setActionId(adminIds);
-				rolesService.storeRoles(adminrole);
-				
-				Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, vendorOrgLocations.getId());
-				String managerIds = managerrole.getActionId()+","+tabIds;
-				managerrole.setActionId(managerIds);
-				rolesService.storeRoles(managerrole);
-				
-				String subscriptionRegisteredTabs = subscription.getSubscriptionTabs();
-				subscriptionRegisteredTabs = subscriptionRegisteredTabs+","+Constants.TAB_IMMIGRATION;
-				subscription.setSubscriptionTabs(subscriptionRegisteredTabs);
-				orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
-			}
-		}
 		
 		SubmissionTemplate submissionTemplate = submissionTemplateService.getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(
 				vendorOrgLocations.getId(), orgLocations.getId());
@@ -560,7 +508,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 emailScenerioUtil.sendEmail(emailMessage,vendorOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(),globalVarsMap,noificationEmailScenario);
 		 
 		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(onboarding.getSpocUserId().getId(), onboarding.getVendorLocationId().getId());
@@ -738,7 +686,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 					    documents.setUploadedFileUrl(fileInfo.getFileURL());
 					    documents.setDocumentStatus("Submitted");
 					    vendorOnboardTemplateDocumentsDao.saveVendorOnBoardingTemplateDocuments(documents);
-					    FileUploadUtil.moveFile(vendorOnboardDTO.getStaticPath(), fileInfo, "Vendor-Onboard-Submitted-Documents");
+					    FileUploadUtil.moveFile(vendorOnboardDTO .getStaticPath(), fileInfo, "Vendor-Onboard-Submitted-Documents");
 					}
 				   }
 			}

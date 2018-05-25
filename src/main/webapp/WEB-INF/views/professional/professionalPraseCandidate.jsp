@@ -59,7 +59,7 @@
     <div class="pull-left">
       <h2>Profile Update</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Profile Update</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home</a> &raquo; Profile Update</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -88,17 +88,6 @@
             <input type="text" class="form-control" id="firstName" name="firstName" readonly="readonly" value="${SourceLeadWeb_loginUserFirstName}"  field-name="First Name" data-validation="required validate_AlphaNumber validate_Space validate_length length1-100" >
           </div>
         </div>
-        
-        <div class="form-group">
-						<label class="col-md-3">Middle Name</label>
-						<div class="col-md-9">
-							<input type="text" class="form-control" id="middleName"
-								name="middleName" value="" field-name="Middle Name"
-								data-validation="validate_AlphaNumber validate_length length1-100"
-								data-validation-optional="true" value="">
-						</div>
-					</div>
-        
         <div class="form-group">
           <label class="col-md-3">Last Name</label>
           <div class="col-md-9">
@@ -180,36 +169,6 @@
           <input class="form-control" id="profileZipCode" name="zipcode" placeholder="Enter your Zip code" type="text"></input>
           </div>
         </div>
-        
-        	<div class="form-group">
-                      <label class="col-md-3">Date of Birth</label>
-                         <div class="col-md-9">
-                           <div class="input-group">
-                              <input type="text" value="" name="dateofBirth" class="form-control calendar" id="dateofBirth" readonly="readonly">
-                              <span class="input-group-addon" onClick="clearDateOfBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span>
-                           </div>
-                        </div>
-                  </div>
-					
-					<div class="form-group">
-						<label class="col-md-3">Marital Status</label>
-						<div class="col-md-9">
-						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
-						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
-						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
-						<label class="paddingLeft paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>
-						</div>
-					</div>
-					
-					<div class="form-group">
-						<label class="col-md-3">Gender</label>
-						<div class="col-md-9" id= "errorGenderMsg">
-						<label class="paddingRight"><input type="radio"  value="Male"  name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Male</label>
-						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Female</label>
-						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Transgender</label>
-						<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		
-						</div>
-					</div>
         
         <!-- <div class="form-group">
 				<label class="col-md-3">Country</label>
@@ -541,42 +500,6 @@
 		$("#candidate_form").showHelpOnFocus();
 		$("#candidate_form").validateOnBlur(false, validationSettings);
 	});
-</script>
- <script type="text/javascript">
-	function genderCheckValidation(id){
-		 var gendersList = [];
- 		 $("input[name='gender']:checked").each( function (i) {
- 			gendersList[i] = $(this).val();
- 		});
- 		 
-		if (gendersList.length > 0) { 
-		document.getElementById("genderValue").value = id.value;
-		}else{
-			$('#genderValue').val(''); 
-		}
-	} 
-</script>
-<script>
-  $( function() {
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  // written common method in slead-common.js for date formats start
-	  var finalDateFormat = getJSDateFormat(locationDate);
-	  //end
-	  $('#dateofBirth').datepicker({
-	      dateFormat: finalDateFormat,
-	      changeMonth: true,
-	  	  changeYear: true,
-	  	  yearRange: "-100:+0",
-	  	  maxDate:0
-	      //minDate: 0  this line for to restrict selection of previous dates
-	  });
-	  
-  } );
-  
-  function clearDateOfBirth(){
-		$("#dateofBirth").val("");
-		};
-		
 </script>
 
 <script type="text/javascript">

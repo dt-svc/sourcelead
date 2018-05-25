@@ -1,11 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,7 +14,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,8 +21,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.dto.OrgLocationIndiaBankingDetailsDTO;
 import com.bis.sourcelead.entity.Countries;
-import com.bis.sourcelead.entity.EmailConfigurationFromMail;
-import com.bis.sourcelead.entity.EmailScenarioConfiguration;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
 import com.bis.sourcelead.entity.Org;
@@ -41,12 +34,9 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.States;
-import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CountriesService;
-import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
@@ -61,9 +51,7 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.StatesService;
-import com.bis.sourcelead.service.TabsService;
 import com.bis.sourcelead.service.TimeZoneService;
-import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -117,24 +105,10 @@ public class OrgSettingsController {
 	SourceleadRolesService sourceleadRolesService;
 	
 	@Autowired
-	EmailScenarioConfigurationService emailconService;
-	
-	
-	@Autowired
-	UserRoleService userRoleService;
-
-	
-	@Autowired
-	TabsService tabsService;
-	
-	@Autowired
 	OrgLocationInformationDetailsService orgLocationInformationDetailsService;
 	
 	@Autowired
 	OrgLocationIndiaBankingDetailsService orglocationIndiaBankingDetailsService;
-	
-	@Autowired
-	EmailScenarioConfigurationService emailScenarioconService;
 
 	
 	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')")
@@ -251,31 +225,6 @@ public class OrgSettingsController {
 		 if(subscribedCountries.length() >0){
 		 subscribedCountries = subscribedCountries.substring(0,subscribedCountries.length()-1);
 		 }
-		 EmailScenarioConfiguration emailSceconf= emailconService.getEmailConfigOrgLocId(orgLocations.getId());
-		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		 Collection<Tabs> tabsList = new ArrayList<>();
-		 Collection<Tabs> modulesList = new ArrayList<>();
-		 Collection<String> modulesNamesList = new ArrayList<>();
-		 Tabs dashobardTab = tabsService.getTabListByTabId(1L);
-		 if(!userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
-			 tabsList = (Collection<Tabs>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
-		 }else{
-			 if(orgLocations.getId() != null && user.getId() != null) {
-				 UserRole orgUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				 tabsList = tabsService.getTabsListByOrgLocationId(orgUserRole.getRoles().getId(), orgLocations.getId());
-				
-			 }
-		 }
-		 
-		 modulesList.add(dashobardTab);
-		 for(Tabs tabs : tabsList) {
-			 modulesList.add(tabs);
-			 modulesNamesList.add(tabs.getTabName());
-		 }
-		 
-		 model.addObject("modulesList", modulesList);
-		 model.addObject("modulesNamesList", modulesNamesList);
-		model.addObject("emailSceconf", emailSceconf);
 		model.addObject("orgSubscribedCountriesList", orgSubscribedCountriesList);
 		model.addObject("subscribedCountries", subscribedCountries);
 		model.addObject("timezoneList", timezoneList);
@@ -506,78 +455,5 @@ public class OrgSettingsController {
 	protected boolean isNullOrEmpty(String str)
 	{
 		return str == null || "".equals(str.trim());
-	}
-	
-
-	@RequestMapping(value = "/addMailPopUp", method = RequestMethod.POST)
-	public ModelAndView addMailPopUp(HttpServletRequest request, @RequestParam(value = "emailUUID", required = false) String emailUUID) throws Exception
-	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		ModelAndView model = new ModelAndView();
-		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		 Collection<Tabs> tabsList = new ArrayList<>();
-		 Collection<Tabs> modulesList = new CopyOnWriteArrayList<>();
-		 Collection<String> modulesNamesList = new ArrayList<>();
-		 
-		 List<EmailConfigurationFromMail> fromMailList= emailScenarioconService.getConfFromMailList(orgLocations.getId());
-		 Set<Tabs> moduleList=new HashSet<Tabs>();
-		 for(EmailConfigurationFromMail emailconf:fromMailList){
-				if( emailconf.getEmailModules() != null){
-					String[] jobIds = emailconf.getEmailModules().split(",");
-					for(int i=0; i<jobIds.length; i++) {
-					Tabs tab=tabsService.getTabListByTabId(Long.valueOf(jobIds[i]));
-					moduleList.add(tab);
-					}
- 				
-				}
-		 }
-		 
-		 Tabs dashobardTab = tabsService.getTabListByTabId(1L);
-		 if(!userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
-			 tabsList = (Collection<Tabs>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
-		 }else{
-			 if(orgLocations.getId() != null && user.getId() != null) {
-				 UserRole orgUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocations.getId());
-				 tabsList = tabsService.getTabsListByOrgLocationId(orgUserRole.getRoles().getId(), orgLocations.getId());
-				
-			 }
-		 }
-		 
-		 modulesList.add(dashobardTab);
-		 for(Tabs tabs : tabsList) {
-			 modulesList.add(tabs);
-			 modulesNamesList.add(tabs.getTabName());
-		 }
-		 if(moduleList.size()>0){
-			 for(Tabs tabold:modulesList){
-				 for(Tabs tab:moduleList){
-					 if(tabold.getTabName().equalsIgnoreCase(tab.getTabName())){
-						 modulesList.remove(tabold);
-					 }
-				 }
-			 }
-			
-		 }
-		 EmailConfigurationFromMail emailFromMail=emailScenarioconService.getFromMailByUUID(emailUUID);
-		 String moduleNames="";
-			if( emailFromMail!=null && emailFromMail.getEmailModules() != null){
-				String[] jobIds = emailFromMail.getEmailModules().split(",");
-				for(int i=0; i<jobIds.length; i++) {
-				Tabs tab=tabsService.getTabListByTabId(Long.valueOf(jobIds[i]));
-				modulesList.add(tab);
-				moduleNames=moduleNames+tab.getTabName()+",";
-				}
-				String modules=emailFromMail.getEmailModules();
-				emailFromMail.setEmailModules(moduleNames.substring(0, moduleNames.length()-1));
-			}
-		 
-		 model.addObject("modulesList", modulesList);
-		 model.addObject("emailFromMail", emailFromMail);
-		 model.addObject("modulesNamesList", modulesNamesList);
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("addMailPopUp");
-		return model;
 	}
 }

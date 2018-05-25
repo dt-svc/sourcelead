@@ -1,7 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProfileDTO;
-import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -30,7 +27,6 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.UserMailUnsubscribeService;
 import com.bis.sourcelead.service.UserRoleService;
-import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -53,9 +49,6 @@ public class UserProfileController {
 	@Autowired
 	UserMailUnsubscribeService userMailUnsubscribeService;
 	
-	@Autowired
-	UserService userService;
-	
 
     @RequestMapping(value = "/userProfile")
  	 public ModelAndView userProfile(HttpServletRequest request) throws Exception {
@@ -69,11 +62,6 @@ public class UserProfileController {
  			}else {
  				model.addObject("unsubscriptionTabIds", "");
  			}
- 			
- 			 List<UserDTO> userDTOList  = userService.getLinkedUserListByUserId(user.getId()); 
- 			 model.addObject("userDTOList", userDTOList);
- 			model.addObject("userDTOListSize", userDTOList.size());
- 			
  			commonUtil.highLightMenu(Constants.OrgSettings, request);
  			model.setViewName("userProfile");
  			model.addObject("sourceleadUrl", sourceleadUrl);

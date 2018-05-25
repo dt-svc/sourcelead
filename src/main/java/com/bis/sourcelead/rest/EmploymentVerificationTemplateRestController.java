@@ -1,12 +1,21 @@
 package com.bis.sourcelead.rest;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,14 +30,40 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.EmploymentVerificationTemplateDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.RoleDTO;
+import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.entity.Contracts;
+import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LetterHead;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementOffers;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
+import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.LetterHeadService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.html.WebColors;
+import com.itextpdf.text.html.simpleparser.HTMLWorker;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 
@@ -48,9 +83,27 @@ public class EmploymentVerificationTemplateRestController {
 	private String staticPath;
 	
 	@Autowired
-	private EmployeeVerificationTemplateService employeeVerificationTemplateService;
+	UserService userService;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	LetterHeadService letterHeadService;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
+	ReportsUtil reportsUtil;
 	
 	private static final Logger logger = LoggerFactory.getLogger(EmploymentVerificationTemplateRestController.class);
+	
+	@Autowired
+	EmployeeVerificationTemplateService employeeVerificationTemplateService;
 	
 	
 	@RequestMapping(value = "/saveEmploymentverificationTemplate", method = RequestMethod.POST)
@@ -126,5 +179,73 @@ public class EmploymentVerificationTemplateRestController {
 		employeeVerificationTemplateService.updateEmployMentTemplate(empTemplate);
     	
 	}
+
+	@RequestMapping(value = "/getAllEmployeesList", method = RequestMethod.GET)
+	public @ResponseBody  ResponseList<UserDTO> getAllEmployeesList(UserDTO userDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		
+		List<UserDTO> userDtoList =  new ArrayList<>();
+		ResponseList<UserDTO> employeeResponseList =  new ResponseList<>();
+		ResponseList<User> employeesList = userService.getUsersResponseListByOrglocationId(userDTO,orgLocation);
+		employeesList.getData().forEach(emp->{
+			
+			Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(emp.getId(), orgLocation.getId());
+			UserRole userRole = null;
+			try {
+				 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(emp.getId(), orgLocation.getId());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			UserDTO user = new UserDTO();
+			user.setEmployeeId(emp.getId().toString());
+			if(emp.getLastName() != null) {
+				StringBuilder sb = new StringBuilder();
+				user.setUserName(sb.append(emp.getFirstName()).append(" ").append(emp.getLastName()).toString());
+			}else {
+				user.setUserName(emp.getFirstName());
+			}
+			user.setEmail(emp.getEmail());
+			user.setMobilePhone(emp.getMobilePhone());
+			
+			if(employee.getHireDate() != null)
+			user.setDateofJoin(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),employee.getHireDate()));
+			
+			if(Constants.INACTIVE.equalsIgnoreCase(userRole.getUserState().toString())) {
+				user.setDateOfTermination(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getUpdatedDate()));
+			}else {
+				user.setDateOfTermination("Till Date");
+			}
+			
+			if(employee.getUserEmploymentType() != null)
+			user.setEmploymentType(employee.getUserEmploymentType());
+			
+			if(userRole.getDesignation() != null)
+			user.setDesignation(userRole.getDesignation());
+			userDtoList.add(user);
+		});
+		employeeResponseList.setData(userDtoList);
+		employeeResponseList.setRecordsFiltered(userDtoList.size());
+		employeeResponseList.setRecordsTotal(userDtoList.size());
+		return employeeResponseList;
+	}
 	
+	@RequestMapping(value = "/previewCompleteTemplateByTemplateUUID", method = RequestMethod.GET)
+	public @ResponseBody  void previewCompleteTemplateByTemplateId(@RequestParam("templateUUID") String templateUUID,@RequestParam("toAddress") String toAddress,@RequestParam("employeeId") Long employeeId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			EmployeeVerificationTemplate empTemplate = employeeVerificationTemplateService.getEmploymentVerificationtemplateByTemplateUUID(templateUUID);
+			LetterHead letterHead = letterHeadService.getLetterheadById(empTemplate.getLetterHead().getId());
+			User user = userService.getUserById(employeeId);
+			String templateContent = reportsUtil.replaceAllTemplatePlaceHolders(empTemplate.getTemplateContent(),empTemplate,toAddress,user,orgLocation);
+			reportsUtil.viewCompleteletterheadData(templateContent,letterHead,response);
+		    
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+	}
+
 }

@@ -91,9 +91,4 @@ public class SourceleadActionsServiceImpl implements SourceleadActionsService {
 		return sourceleadActionsDao.getAllSourceleadActionsByIdsList(actionIdList);
 	}
 
-	@Override
-	public List<Long> getAllSourceleadActionsIdsByTabsList(List<Long> tabsList) throws Exception {
-		return sourceleadActionsDao.getAllSourceleadActionsIdsByTabsList(tabsList);
-	}
-
 }

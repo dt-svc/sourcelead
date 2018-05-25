@@ -19,9 +19,11 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class GenerateUniqueIdForConnections {
 
+
+	
+
 	private ComboPooledDataSource comboPooledDataSource;
-	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+	
 /**
  * @author Venkat
  * this method is using for update the UUID for Connections
@@ -34,7 +36,7 @@ public void connectionsUUID() throws IOException, SQLException {
 try {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql = "SELECT * FROM "+dbconfig.getSchema()+".CONNECTIONS";
+			 String sql = "SELECT * FROM sourcelead.CONNECTIONS";
 			 stmt1 = conn.prepareStatement(sql);
 			 ResultSet rs = stmt1.executeQuery();
 			 System.out.println("----Adding unique UUID connections  starts-----");
@@ -43,7 +45,7 @@ try {
 				 Long id = rs.getLong("ID");
 				 if(UUID == null) {
 					 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
-					 String query = "update "+dbconfig.getSchema()+".CONNECTIONS set CONNECTION_UID = ? where ID = ?";
+					 String query = "update sourcelead.CONNECTIONS set CONNECTION_UID = ? where ID = ?";
 					 PreparedStatement pstmt = conn.prepareStatement(query);
 					 pstmt.setString(1, uuid);
 					 pstmt.setLong(2, id);
@@ -71,6 +73,10 @@ try {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
+		@SuppressWarnings("resource")
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

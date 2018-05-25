@@ -74,7 +74,7 @@ margin-bottom: 15px;
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Web Url:</strong>';
+						result = result + '<strong>Website :</strong>';
 						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
 						result = result + '<span title='+json.webSite+'>'+json.webSite+'</span><div class="clearfix"></div>';
 						}else{
@@ -348,8 +348,6 @@ margin-bottom: 15px;
 						
 						if(json.location != null && json.location !='' && json.location !='undefined'){
 							location = json.location;
-						}else if(json.country != null && json.country !='' && json.country !='undefined'){
-							location = json.country;
 						}
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						if(json.orgType == 'Company'){

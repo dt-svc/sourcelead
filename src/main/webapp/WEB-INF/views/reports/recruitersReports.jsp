@@ -48,7 +48,7 @@ function getDayWiseReports(){
 <div class="vendor_wrap">
 <div class="timesheet_head clearfix">
 <div class="pull-left reportBtns reportBtns_custom mt5">
-<h4 class="pull-left">apostrophe</h4>
+<h4 class="pull-left">Recruiters Report</h4>
 		  <div class="reportBtn reportBtn_custom_btn select-field  pull-left ml">
 			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custDates();">
 <!-- 			 <option value="">select</option> -->

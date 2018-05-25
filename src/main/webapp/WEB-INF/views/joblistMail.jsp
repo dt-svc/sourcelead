@@ -149,7 +149,7 @@ display: none;
             <select class="chosen-select" name="campaignjobs" data-validation="required" field-name="Jobs" multiple data-placeholder="&nbsp;Enter Jobs" id="selectedJobs">
             </select>
             
-            <span class="select-multiple" data-target="#requirement" onclick="selectJobsRadio();" data-toggle="modal"><i class="fa fa-th-large" title="Select jobs"></i></span> 
+            <span class="select-multiple" data-target="#requirement" onclick="selectJobsRadio();" data-toggle="modal"><i class="fa fa-th-large" title="Select Candidates"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="requirement" class="modal fade custom-modal">
               <div class="modal-dialog modal-lg">

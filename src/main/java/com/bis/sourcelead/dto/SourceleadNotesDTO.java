@@ -28,18 +28,6 @@ public class SourceleadNotesDTO {
 	private String allowAll;
 	
 	private String vendorcontact;
-	
-	private String immigrationId;
-	
-	private String candidateId;
-
-	public String getImmigrationId() {
-		return immigrationId;
-	}
-
-	public void setImmigrationId(String immigrationId) {
-		this.immigrationId = immigrationId;
-	}
 
 	public String getNoteType() {
 		return noteType;
@@ -127,14 +115,6 @@ public class SourceleadNotesDTO {
 
 	public void setAssetId(String assetId) {
 		this.assetId = assetId;
-	}
-
-	public String getCandidateId() {
-		return candidateId;
-	}
-
-	public void setCandidateId(String candidateId) {
-		this.candidateId = candidateId;
 	}
 	
 	

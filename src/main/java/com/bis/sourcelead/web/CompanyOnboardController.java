@@ -17,8 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.OrgLocationBankingDetailsDTO;
 import com.bis.sourcelead.dto.OrgLocationIndiaBankingDetailsDTO;
-import com.bis.sourcelead.dto.PaymentAccountDTO;
-import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Modules;
@@ -37,7 +35,6 @@ import com.bis.sourcelead.service.ModulesService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLocationIndiaBankingDetailsService;
 import com.bis.sourcelead.service.OrgLocationInformationDetailsService;
-import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.OrglocationOnboardDocumentsService;
 import com.bis.sourcelead.service.RolesService;
@@ -91,9 +88,7 @@ public class CompanyOnboardController {
 	@Autowired
 	OrgLocationIndiaBankingDetailsService orglocationIndiaBankingDetailsService;
 	
-	 @Autowired
-	 private OrgService orgService;
-
+	
 	
 		@RequestMapping(value = "/companyOnboard")
 		public ModelAndView companyOnboard(HttpServletRequest request) throws Exception  {
@@ -217,19 +212,19 @@ public class CompanyOnboardController {
 			
 			ModelAndView model = new ModelAndView();  
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-			 model.addObject("sourceleadUrl", sourceleadUrl);
+			
 			if(StringUtils.isNotBlank(orgLocations.getIsCompanyOnboarded()) && orgLocations.getIsCompanyOnboarded().equalsIgnoreCase("N")) {
-				model.addObject("orgLocationId", orgLocations.getId());
+				model.addObject("sourceleadUrl", sourceleadUrl);
+				
 				if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
-					 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountList(org.getId(), orgLocations.getId(), false);
-					 model.addObject("paymentList", paymentList);
-					 model.addObject("paymentListSize", paymentList.size());
+					List<OrgLocationIndiaBankingDetailsDTO> bankingDetailsDTOList =  orglocationIndiaBankingDetailsService.getOrglocationIndiaBankingDetailsList(orgLocations.getId());
+					model.addObject("bankingDetailsDTOList", bankingDetailsDTOList);
+					model.addObject("bankingDetailsDTOListSize", bankingDetailsDTOList.size());
 					model.setViewName("onboard/companyOnboardIndiaBankingDetails");
 				}else {
-					 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountList(org.getId(), orgLocations.getId(), false);
-					 model.addObject("paymentList", paymentList);
-					 model.addObject("paymentListSize", paymentList.size());
+					List<OrgLocationBankingDetailsDTO> bankingDetailsDTOList =  orglocationBankingDetailsService.getOrglocationBankingDetailsListByOrgLocationId(orgLocations.getId());
+					model.addObject("bankingDetailsDTOList", bankingDetailsDTOList);
+					model.addObject("bankingDetailsDTOListSize", bankingDetailsDTOList.size());
 					model.setViewName("onboard/companyOnboardBankingDetails");
 				}
 			}else {

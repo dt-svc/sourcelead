@@ -243,7 +243,7 @@ function templatepagination(){
 		           result = result + '<div class="form-footer clearfix row mt">';
 		           
 		           result = result + '<div class="pull-right mr">';
-		           result = result + ' <input type="button" value="Save" id="save_button" onclick="submitClientSubmissionTemplate();" class="btn btn-primary mr">';
+		           result = result + ' <input type="submit" value="Save" id="save_button" onclick="submitClientSubmissionTemplate();" class="btn btn-primary mr">';
 		           result = result + ' <input type="button" value="Cancel" onclick="clientSubmissionTemplate('+clientLocationId+')" class="btn btn-default" >';
 		           result = result + '</div>';
 
@@ -487,7 +487,7 @@ function alertMessage(message){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelClientSubmissionTemplate();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelClientSubmissionTemplate();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#choicepopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -497,7 +497,7 @@ function alertMessage(message){
 </script>
 
 <script type="text/javascript">
-function cancelClientSubmissionTemplate(){
+function cancel(){
 	$("#choicepopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 }

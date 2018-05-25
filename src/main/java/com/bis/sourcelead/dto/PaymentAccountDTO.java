@@ -33,9 +33,6 @@ public class PaymentAccountDTO {
     private String accountNumber;
     @Required(desc = "routingNumber", dependsOn = "accountType", parentValue = {"SAVINGS", "ROUTING"})
     private String routingNumber;
-    
-    private String bsrNumber;
-    private String micrCode;
     private boolean disabled;
 
     /**
@@ -269,21 +266,5 @@ public class PaymentAccountDTO {
 	public void setDisabled(boolean disabled) {
 		this.disabled = disabled;
 	}
-
-	public String getBsrNumber() {
-		return bsrNumber;
-	}
-
-	public String getMicrCode() {
-		return micrCode;
-	}
-
-	public void setBsrNumber(String bsrNumber) {
-		this.bsrNumber = bsrNumber;
-	}
-
-	public void setMicrCode(String micrCode) {
-		this.micrCode = micrCode;
-	}
-     
+    
 }

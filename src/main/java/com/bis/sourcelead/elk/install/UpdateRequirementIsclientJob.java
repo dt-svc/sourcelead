@@ -18,8 +18,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class UpdateRequirementIsclientJob {
 	private ComboPooledDataSource comboPooledDataSource;
-	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+	
 /**
  * 
  * this method is using for update IsClientJob null values
@@ -33,13 +32,13 @@ public void updateRequirementIsclientJob() throws IOException, SQLException {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
 		
-		String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT";
+		String sql2 = "SELECT * FROM sourcelead.REQUIREMENT";
 		 stmt1 = conn.createStatement();
 		 ResultSet rs = stmt1.executeQuery(sql2);
 		 System.out.println("Updating IsClientJob field Starts.....");
 		 
 		 while(rs.next()){
-			 String query1 = " update "+dbconfig.getSchema()+".REQUIREMENT set IS_CLIENT_JOB = 'N' where IS_CLIENT_JOB Is Null ";
+			 String query1 = " update sourcelead.REQUIREMENT set IS_CLIENT_JOB = 'N' where IS_CLIENT_JOB Is Null ";
 		    	java.sql.PreparedStatement pstmt2 = conn.prepareStatement(query1);
 		    	pstmt2.executeUpdate(); 
 		    	
@@ -65,6 +64,10 @@ public void updateRequirementIsclientJob() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
+		@SuppressWarnings("resource")
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

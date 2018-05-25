@@ -20,8 +20,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddMasterCandidateToCandidate {
 	private ComboPooledDataSource comboPooledDataSource;
-	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+	
 /**
  * @author Venkat I
  * this method is using for adding mastercandidate to candidate	
@@ -35,7 +34,7 @@ public void addMasterCandidate() throws IOException, SQLException {
 		System.out.println("Adding Master Candidate To Candidate Starts");
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE";
+			 String sql1 = "SELECT * FROM sourcelead.CANDIDATE";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			while(rs1.next()){
@@ -74,12 +73,12 @@ public void addMasterCandidate() throws IOException, SQLException {
 				 PreparedStatement pstmt = null;
 				 ResultSet rs2 = null;
 				 if(null == mobilePhone || "".equals(mobilePhone.trim())){
-					 query = "SELECT * FROM "+dbconfig.getSchema()+".MASTER_CANDIDATE where EMAIL = ? ";
+					 query = "SELECT * FROM sourcelead.MASTER_CANDIDATE where EMAIL = ? ";
 					 pstmt = conn.prepareStatement(query); // create a statement
 				     pstmt.setString(1, email); // set input parameter 1
 				     rs2 = pstmt.executeQuery(); 
 		    	 }else{
-		    		 query = "SELECT * FROM "+dbconfig.getSchema()+".MASTER_CANDIDATE where (EMAIL = ?  OR  PHNO = ?)";
+		    		 query = "SELECT * FROM sourcelead.MASTER_CANDIDATE where (EMAIL = ?  OR  PHNO = ?)";
 		    		 pstmt = conn.prepareStatement(query); // create a statement
 				     pstmt.setString(1, email); // set input parameter 1
 				     pstmt.setString(2, mobilePhone);
@@ -89,7 +88,7 @@ public void addMasterCandidate() throws IOException, SQLException {
 				 if (rs2.next()) {
 					    do {
 			    	    	Long masterCandidateId = rs2.getLong("ID");
-			    	        String query3 = "UPDATE "+dbconfig.getSchema()+".CANDIDATE set MASTER_CANDIDATE_ID = ?  where ID = ? ";
+			    	        String query3 = "UPDATE sourcelead.CANDIDATE set MASTER_CANDIDATE_ID = ?  where ID = ? ";
 						    PreparedStatement pstmt3 = conn.prepareStatement(query3); // create a statement
 						    pstmt3.setLong(1, masterCandidateId);
 						    pstmt3.setLong(2, candidateId);
@@ -98,7 +97,7 @@ public void addMasterCandidate() throws IOException, SQLException {
 			    	    } while(rs2.next());
 			    	} else {
 			    		
-			    		String query4 = " insert into "+dbconfig.getSchema()+".MASTER_CANDIDATE (FIRST_NAME, LAST_NAME, EMAIL, ALTERNATE_EMAIL, PHNO, ALTERNATE_PHNO, STATUS, "
+			    		String query4 = " insert into sourcelead.MASTER_CANDIDATE (FIRST_NAME, LAST_NAME, EMAIL, ALTERNATE_EMAIL, PHNO, ALTERNATE_PHNO, STATUS, "
 								+ "CREATED_DATE, CREATED_BY)"
 								+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			    		
@@ -142,6 +141,10 @@ public void addMasterCandidate() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
+		@SuppressWarnings("resource")
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

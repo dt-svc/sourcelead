@@ -2,9 +2,6 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -17,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.CandidateEmployers;
 
 @Repository
 public class CandidateEducationDaoImpl implements CandidateEducationDao {
@@ -92,24 +88,6 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 		return candidateEducation;
 	}
 	
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<CandidateEducation> getCandidateEducationListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, Long orgLocationId, String searchVal) throws Exception
-	{
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEducation ce where  ce.candidateId.id =:candidateId and ce.status ='1'  ";
-		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
-			query = query + " and (ce.specialization like :searchVal or ce.name like :searchVal or ce.institute like :searchVal) ";
-		}
-		query = query + " ORDER BY  DATE(ce.startDate) DESC, ce.id DESC";
-		Query candidateQuery = session.createQuery(query).setLong("candidateId", candidateId);
-		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
-			candidateQuery.setParameter("searchVal", "%"+searchVal+"%");
-		}
-		List<CandidateEducation> candidateEducation = candidateQuery.list();
-		return candidateEducation;
-	}
-	
 	/**
 	 * @author Sammeta David Raju
 	 * 
@@ -178,19 +156,5 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 		String query = "select edu.name from CandidateEducation edu where edu.candidateId.id =:candidateId and edu.status = '1'";
 		List<String> educationNames = session.createQuery(query).setLong("candidateId", candidateId).list();
 		return educationNames;
-	}
-	
-	@Override
-	@Transactional(rollbackFor = { Exception.class })	
-	public CandidateEducation getCandidateEducationById(Long candidateEduId) throws Exception {
-		CandidateEducation candidateEducation= null;
-        try {
-			Session session = this.sessionFactory.getCurrentSession();
-			candidateEducation = (CandidateEducation)session.get(CandidateEducation.class,candidateEduId);
-		} catch (HibernateException e) {
-			logger.error("SQL Exception occured while doing getting record -->"+e.getMessage());
-			e.printStackTrace();
-		}
-		return candidateEducation;
 	}
 }

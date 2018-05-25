@@ -109,8 +109,7 @@ public class CandidateRestController {
 	private CandidateResumesService candidateResumesService;
 	/*
 	 * @Autowired private CandidateSkillsService candidateSkillsService;
-     */
-   
+	 */
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -141,7 +140,6 @@ public class CandidateRestController {
 	RequirementService requirementService;
 	@Autowired
 	OrgLocationService orgLocationService;
-
 
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
@@ -259,7 +257,6 @@ public class CandidateRestController {
 	/*
 	 * @RequestMapping(value = "/validateSkillName" , method = RequestMethod.POST)
 	 * public @ResponseBody Boolean
-
 	 * validateSkillName(@RequestParam(value="skillName", required=false) String
 	 * skillName, @RequestParam(value="candidateId", required=false) String
 	 * candidateId, HttpServletRequest request) throws Exception { Boolean flag =

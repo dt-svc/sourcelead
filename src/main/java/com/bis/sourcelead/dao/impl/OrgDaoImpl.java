@@ -610,18 +610,15 @@ public class OrgDaoImpl implements OrgDao {
             pay.setAccountId(account.getAccountId());
             pay.setUserId(account.getUserId());
             pay.setAccountType(account.getAccountType());
+            pay.setDefaultAccount(account.isDefaultAccount());
             pay.setOrg(session.get(Org.class, account.getOrgId()));
             pay.setOrgLocation(session.get(OrgLocations.class, account.getOrgLocationId()));
             pay.setFirstName(account.getFirstName());
             pay.setLastName(account.getLastName());
             pay.setEmail(account.getEmail());
             pay.setBankName(account.getBankName());
-            pay.setBsrNumber(account.getBsrNumber());
-            pay.setMicrCode(account.getMicrCode());
             pay.setAccountNumber(account.getAccountNumber());
             pay.setRoutingNumber(account.getRoutingNumber());
-            
-            pay.setDefaultAccount(account.isDefaultAccount());
             pay.setDisabled(account.isDisabled());
             session.saveOrUpdate(pay);
             return pay.getId();
@@ -745,8 +742,6 @@ public class OrgDaoImpl implements OrgDao {
         pay.setFirstName(p.getFirstName());
         pay.setBankName(p.getBankName());
         pay.setLastName(p.getLastName());
-        pay.setBsrNumber(p.getBsrNumber());
-        pay.setMicrCode(p.getMicrCode());
         pay.setAccountNumber(p.getAccountNumber());
         pay.setRoutingNumber(p.getRoutingNumber());
         pay.setEmail(p.getEmail());

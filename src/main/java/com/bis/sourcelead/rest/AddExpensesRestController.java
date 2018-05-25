@@ -484,7 +484,7 @@ public class AddExpensesRestController {
 //					 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE,Constants.ENTITY_TYPE_NOTIFICATION);
 //				 }
 				 // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once 
-				String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
+				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
 				notificationScenario.setBody(notificationBody);
 				notificationScenario.setOrgCode(orgLoc.getOrg().getOrgCode());
 				String actionLink = "";

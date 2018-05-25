@@ -90,10 +90,6 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 
 	private String  stringDate;
 	
-	private String isLawFirm;
-	
-	private String isAccountingFirm;
-	
 	private String noOfNonReleasedContacts;
 
 	public Long getId() {
@@ -429,22 +425,6 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 
 	public void setNoOfNonReleasedContacts(String noOfNonReleasedContacts) {
 		this.noOfNonReleasedContacts = noOfNonReleasedContacts;
-	}
-
-	public String getIsLawFirm() {
-		return isLawFirm;
-	}
-
-	public void setIsLawFirm(String isLawFirm) {
-		this.isLawFirm = isLawFirm;
-	}
-
-	public String getIsAccountingFirm() {
-		return isAccountingFirm;
-	}
-
-	public void setIsAccountingFirm(String isAccountingFirm) {
-		this.isAccountingFirm = isAccountingFirm;
 	}
 
 }

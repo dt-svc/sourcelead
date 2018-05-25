@@ -70,14 +70,6 @@ public class SourceleadNotes {
     @JoinColumn(name="ASSET_ID", nullable=false )     
 	private Asset assetId;
 	
-	@ManyToOne
-	@JoinColumn(name = "IMMIGRATION_ID")
-	private Immigration immigration;
-	
-	@ManyToOne
-	@JoinColumn(name = "CANDIDATE_ID")
-	private Candidate candidate;
-	
 	@Transient
 	private Long commentAuthorUserId;
 	
@@ -144,9 +136,7 @@ public class SourceleadNotes {
 	@JsonProperty
 	private String updatedDateString;
 	
-	@Transient
-	private String immigrationId;
-	
+
 	public Long getId()
 	{
 		return id;
@@ -420,31 +410,6 @@ public class SourceleadNotes {
 	public void setAssetName(String assetName) {
 		this.assetName = assetName;
 	}
-
-	public Immigration getImmigration() {
-		return immigration;
-	}
-
-	public void setImmigration(Immigration immigration) {
-		this.immigration = immigration;
-	}
-
-	public Candidate getCandidate() {
-		return candidate;
-	}
-
-	public void setCandidate(Candidate candidate) {
-		this.candidate = candidate;
-	}
-
-	public String getImmigrationId() {
-		return immigrationId;
-	}
-
-	public void setImmigrationId(String immigrationId) {
-		this.immigrationId = immigrationId;
-	}
-	
 	
 	
 }

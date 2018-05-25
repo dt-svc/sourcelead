@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LookUpDataDao;
-import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.LookUpData;
 
 /**
@@ -147,20 +146,6 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 			return null;
 		}		
 	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public LookUpData getLookUpdataByCategoryAndName(String category,String name) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from LookUpData lookupdata where lookupdata.category = :category and lookupdata.name = :name";
-		List<LookUpData> lookupList = session.createQuery(query.toString()).setString("category", category).setString("name", name).list();
-		LookUpData lookUpData = null;
-		if (lookupList != null && lookupList.size() > 0) {
-			lookUpData = (LookUpData) lookupList.iterator().next();
-		}
-		return lookUpData;
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -186,14 +171,6 @@ public class LookUpDataDaoImpl implements LookUpDataDao {
 		} else {
 			return null;
 		}		
-	}
-
-	@Override
-	public LookUpData getLookUpDataByIdAndCategory(String visaType, long id) {
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from LookUpData lookupdata where lookupdata.category = :category and lookupdata.id = :id";
-		LookUpData lookupData = (LookUpData) session.createQuery(query.toString()).setString("category", visaType).setLong("id", id).uniqueResult();
-		return lookupData;
 	}
  
 }

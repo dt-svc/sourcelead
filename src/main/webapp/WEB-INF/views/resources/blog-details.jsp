@@ -31,10 +31,10 @@
        </div>
        
        <div class="clearfix"></div>
-       <%-- <div class="published">
+       <div class="published">
        		<h5 class="text-muted">Published</h5>
        		<p>${publishon}</p>
-       </div> --%>
+       </div>
        <div class="clearfix"></div>
        <div class="category">
        		<h5 class="text-muted">Category</h5>
@@ -98,7 +98,7 @@
 	<div class="blogWrapLeft">
     	<div class="blogInn">
         	<h1> ${blogDetails.blogTitle} </h1>
-            <h3><i class="fa fa-calendar-check-o"></i>Published On : <span>${publishon}</span></h3>
+            <h3><i class="fa fa-calendar-check-o"></i>Posted On : <span>${createdDate}</span></h3>
             <div class="blogImg"><img src="${blogDetails.imgFileUrl}" alt=""></div>
             ${blogDetails.description}
           </div>

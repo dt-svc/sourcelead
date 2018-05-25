@@ -458,7 +458,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.MAIL_ASSIGNEMPLOYEE_PROJECTTASK,new ArrayList<EmailAttachment>());
 		// calling the sendNotification method of emailScenerioUtil
 		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_ASSIGNEMPLOYEE_PROJECTTASK, Constants.ENTITY_TYPE_NOTIFICATION);
-		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
+		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
 		notificationScenario.setBody(notificationBody);
 		notificationScenario.setOrgCode(loginOrgCode);
 		StringBuilder notificationLink = new StringBuilder();

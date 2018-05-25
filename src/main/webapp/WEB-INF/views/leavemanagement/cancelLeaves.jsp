@@ -270,8 +270,8 @@
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Leave Type:</b></label>';
 								result = result + '<div class="col-md-8">';
-								if(data.leaveName != null && data.leaveName !='' && data.leaveName !='undefined'){
-									 result = result +'<span>'+data.leaveName+'</span>';
+								if(data.leaveType != null && data.leaveType !='' && data.leaveType !='undefined'){
+									 result = result +'<span>'+data.leaveType+'</span>';
 								 }else{
 						            	result = result +' <span>--</span>';
 						            }

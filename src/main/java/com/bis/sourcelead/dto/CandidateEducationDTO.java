@@ -32,10 +32,6 @@ public class CandidateEducationDTO extends CommonDTO {
 	
 	private String updatedBy;
 	
-	private String staticPath;
-	
-	private List<FileInfo> fileInfo;
-	
 	private String scoreType;
 	
 	private String score;
@@ -288,22 +284,6 @@ public class CandidateEducationDTO extends CommonDTO {
 	public void setCandidateEducationId(long candidateEducationId)
 	{
 		this.candidateEducationId = candidateEducationId;
-	}
-
-	public String getStaticPath() {
-		return staticPath;
-	}
-
-	public void setStaticPath(String staticPath) {
-		this.staticPath = staticPath;
-	}
-
-	public List<FileInfo> getFileInfo() {
-		return fileInfo;
-	}
-
-	public void setFileInfo(List<FileInfo> fileInfo) {
-		this.fileInfo = fileInfo;
 	}
 
 	

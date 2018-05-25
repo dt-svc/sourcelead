@@ -832,7 +832,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 				    float totalKeyWordPer = 0;
 					if(null != candidateIndex.getSummary() && !"".equalsIgnoreCase(candidateIndex.getSummary()) && "undefined" != candidateIndex.getSummary() && null != numOfKeyWords){
 						for(int i=0;i<numOfKeyWords.length;i++){
-							if(candidateIndex.getSummary().equalsIgnoreCase(numOfKeyWords[i])){
+							if(candidateIndex.getSummary().contains(numOfKeyWords[i])){
 								totalKeyWordPer = totalKeyWordPer + percentPerkeyword;	
 							}
 						}
@@ -947,7 +947,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	private float getSkillPercentage(Set<String> set, float percentPerSkill, int matchedSkillCount, String reqSkills) {
 		if(set != null && set.size() >0){
 			for(String skill : set){
-					if(reqSkills.equalsIgnoreCase(skill)){
+					if(reqSkills.contains(skill)){
 						matchedSkillCount++;
 					}
 			}
@@ -972,7 +972,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
        if(visaType !=null){
     	   if(set != null && set.size() >0){
    			for(String visa : set){
-   					if(visaType.equalsIgnoreCase(visa)){
+   					if(visaType.contains(visa)){
    						return visaPer = visaScore;
    					}
    			}
@@ -999,7 +999,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		if(education !=null){
 				if(set != null && set.size() >0){
 					for(String edu : set){
-							if(education.equalsIgnoreCase(edu)){
+							if(education.contains(edu)){
 								return eduPer = eduScore;
 							}
 						}

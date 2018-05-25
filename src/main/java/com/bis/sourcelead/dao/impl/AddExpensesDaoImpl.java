@@ -39,9 +39,6 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
-	@Value("${jdbc.schema}")
-	private String schema;
-	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Expenses storeAddExpensesData(Expenses expenses) throws Exception {
@@ -95,7 +92,7 @@ public class AddExpensesDaoImpl implements AddExpensesDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Long checkExpensIdNumberInDatebase(Long orgLocationId,Integer generatedIdcount) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "SELECT MAX(CAST(SUBSTR(TRIM(EXPENSE_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM "+schema+".EXPENSES WHERE LOCATION_ID = '"+ orgLocationId + "'";
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(EXPENSE_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM sourcelead.EXPENSES WHERE LOCATION_ID = '"+ orgLocationId + "'";
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {

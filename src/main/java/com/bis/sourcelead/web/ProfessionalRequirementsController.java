@@ -120,8 +120,7 @@ public class ProfessionalRequirementsController {
 	 @RequestMapping(value = "/register")
 	 	public ModelAndView register(@RequestParam(value = "contactUUID", required = false) String contactUUID,
 	 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
-	 			@RequestParam(value = "referUUID", required = false) String referUUID,
-	 			@RequestParam(value = "type", required = false) String type) throws Exception {
+	 			@RequestParam(value = "referUUID", required = false) String referUUID) throws Exception {
 	 			ModelAndView model = new ModelAndView();
 	 			model.addObject("sourceleadUrl", sourceleadUrl);
 	 			
@@ -165,7 +164,6 @@ public class ProfessionalRequirementsController {
 	 				}
 	 				
 	 			}else{
-	 				model.addObject("type", type);
 	 				model.setViewName("registration");
 	 			}
 	 			

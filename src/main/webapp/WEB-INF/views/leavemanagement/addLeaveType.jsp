@@ -479,15 +479,15 @@
 											<div class="checkBox" onClick="showPriorDaysDiv();">
 										<c:if test="${leaveType.priorLeaveApplying == 'Y'}">
 											<input type="checkbox" checked="true" name="priorLeaveApplying"
-												id="priorLeaveApplying" value="Y">Prior Leave Intimation
+												id="priorLeaveApplying" value="Y">Prior Leave Applying
 			                        </c:if>
 										<c:if test="${leaveType.priorLeaveApplying == 'N'}">
 											<input type="checkbox" name="priorLeaveApplying" id="priorLeaveApplying"
-												value="Y">Prior Leave Intimation
+												value="Y">Prior Leave Applying 
 			                        </c:if>
 			                        <c:if test="${empty leaveType.priorLeaveApplying}">
 											<input type="checkbox" name="priorLeaveApplying" id="priorLeaveApplying"
-												value="Y">Prior Leave Intimation
+												value="Y">Prior Leave Applying 
 			                        </c:if>
 									</div>
 											</span>

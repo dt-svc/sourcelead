@@ -63,7 +63,7 @@
                 <div class="row">
                   <div class="clearfix"></div>
                   <div class="col-md-12">
-                    <h4 class="leaves-heading">Leave Balance</h4>
+                    <h4 class="leaves-heading">My Time off balance</h4>
                     <div class="time-balance">
                     <div id="pichartLeaveTypeIdDiv" class="timeBalance-scroll clearfix"></div>
                     </div>

@@ -1,3 +1,3 @@
 
-CALL AlterTableAddColumn ('REQUIREMENT_SUBMISSION','SCORE','INT NULL');
+CALL AlterTableAddColumn ('sourcelead','REQUIREMENT_SUBMISSION','SCORE','INT NULL');
 

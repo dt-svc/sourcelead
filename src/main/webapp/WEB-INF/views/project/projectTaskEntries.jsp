@@ -238,19 +238,6 @@ function editProjectTaskTimesheetDayEntry(timesheetDate,type){
 
 
 <script>
-function deleteProjectTaskEntry(timesheetEntryId){
-$.ajax({
-	 type : "POST",
-	 	 url : sourceleadUrl+"/ProjectTasks/deleteProjectTaskTimesheetDayEntry?&timesheetEntryId="+timesheetEntryId,
-	  		success : function(data) {
-	  			getSavedTaskDetails();
-	  		},
-		});
-}
-</script>
-
-
-<script>
 function getSavedTaskDetails(){
 	var taskUUID = '${taskUUID}';
 	var searchData = $('#projectTaskSearch').val();

@@ -29,7 +29,5 @@ public interface TimeSheetDayEntriesDao {
 
 	 public TimeSheetDayEntries getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(Long projectId,Long masterCandidateId, Date timesheetDate, Long projectTaskId);
 
-	public List<Long> getAllTimeSheetDayEntryIdsBySubmissionIdAndEntryDate(Long submissionId, Date timesheetDate) throws Exception;
-
 
 }

@@ -1,1 +1,1 @@
-CALL AlterTableAddColumn ('REQUIREMENT','NOTICEPERIOD','TEXT NULL');
+CALL AlterTableAddColumn ('sourcelead','REQUIREMENT','NOTICEPERIOD','TEXT NULL');

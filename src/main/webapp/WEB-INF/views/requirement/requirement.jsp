@@ -520,7 +520,7 @@ $(document).ready(function () {
 		
 		 
 		 <div class="form-group">
-                      <label class="col-md-3">Date of Closure</label>
+                      <label class="col-md-3">Closed Date</label>
                          <div class="col-md-9">
                            <div class="input-group">
                               <input type="text"  name="closedDate" class="form-control calendar" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
@@ -1218,7 +1218,7 @@ $(document).ready(function () {
 		          <h3>Locations</h3>
 		        </div>
 		       <div class="col-md-6">
-				 <label class="col-md-12"> City, State, Country</label>
+				 <label class="col-md-12">Job Locations (Format  city,state,country)</label>
 				 <div class="clearfix"></div>
 					<div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom jobdocsCustom">
 		                      <div class="col-md-8 commentFile timesheet_week_comm onboardDocs">

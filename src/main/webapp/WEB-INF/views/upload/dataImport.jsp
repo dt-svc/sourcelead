@@ -68,9 +68,7 @@
 			<c:if test="${uploadType eq 'assetUpload'}">
 			<jsp:include page="dataImportAssetFormFields.jsp"/>
 			</c:if>
-			<c:if test="${uploadType eq 'immigrationUpload'}">
-			<jsp:include page="dataImportImmigrationFormFields.jsp"/>
-			</c:if>
+			
 			
 				<input type="hidden"  readonly id="exportFilePath" name="exportFilePath" value="${exportFilePath}">
 				<input type="hidden"  readonly id="uploadType" name="uploadType" value="${uploadType}">

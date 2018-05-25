@@ -1,6 +1,5 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -22,19 +20,16 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
-import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
-import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.FileUploadUtil;
 
 @Service
 public class CandidateEducationServiceImpl implements CandidateEducationService {
@@ -47,9 +42,6 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	
 	@Autowired
 	private CommonUtil commonUtil;
-	
-	@Value("${static.path}")
-	private String staticPath;
  
 	 @Autowired
 	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
@@ -165,17 +157,6 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			candidateEducation.setGradeType("");
 		}
 		
-		// this for only immigration purpose
-		
-		if(candidateEducationDTO.getFileInfo() != null){
-			FileInfo fileinfo = candidateEducationDTO.getFileInfo().get(0);
-			candidateEducation.setEducationFileUrl(fileinfo.getFileURL());
-			candidateEducation.setEducationFileName(fileinfo.getFileName());
-			candidateEducation.setEducationFileContentType(fileinfo.getContentType());
-			FileUploadUtil.moveFile(candidateEducationDTO.getStaticPath(), fileinfo, "candidateDocuments");
-			
-		}
-		
 		if(StringUtils.isNotBlank(candidateEducationDTO.getInstitute())){
 			if(candidateEducation != null && candidateEducation.getInstitute() != null){
 				activitySummary.append("Institute").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEducation.getInstitute()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEducationDTO.getInstitute()).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -228,23 +209,6 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception{
       
 		List<CandidateEducation> edulist = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
-		OrgLocations locations = orgLocationService.getOrgLocations(orgLocationId);
-		//SimpleDateFormat simpleDateFormat = locations.getLocFullFormDateFormatter();
-		for(CandidateEducation education :edulist){
-			if(education.getStartDate() != null){
-			education.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),education.getStartDate()));
-			}
-			if(education.getEndDate() != null){
-			education.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),education.getEndDate()));
-			}
-		}
-		return edulist;
-	}
-	
-	@Override
-	public List<CandidateEducation>   getCandidateEducationListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, Long orgLocationId, String searchVal) throws Exception{
-      
-		List<CandidateEducation> edulist = candidateEducationDao.getCandidateEducationListByCandidateIdAndOrgLocationIDImmigration(candidateId, orgLocationId, searchVal);
 		OrgLocations locations = orgLocationService.getOrgLocations(orgLocationId);
 		//SimpleDateFormat simpleDateFormat = locations.getLocFullFormDateFormatter();
 		for(CandidateEducation education :edulist){
@@ -401,32 +365,4 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		return candidateEducationDao.getCandidateEducationNamesByCandidateId(candidateId);
 	}
 
-	
-	@Override
-	public String removeCandidateEucationrDocById(Long candidateEmployerId) throws Exception {
-		CandidateEducation candidateEducation = candidateEducationDao.getCandidateEducationById(candidateEmployerId);
-		if(candidateEducation != null){
-		try {
-			String rootPath = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
-			File file = new File(rootPath + candidateEducation.getEducationFileUrl());
-			
-			if (file.delete()) {
-				logger.debug(file.getName() + " is deleted!");
-			} else {
-				logger.error(file.getName() + " is deleted!");
-			}
-			
-			
-				candidateEducation.setEducationFileName(null);
-				candidateEducation.setEducationFileUrl(null);
-				candidateEducation.setEducationFileContentType(null);
-		
-			candidateEducationDao.storeCandidateEducation(candidateEducation);
-
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-		return "success";
-	}
 }

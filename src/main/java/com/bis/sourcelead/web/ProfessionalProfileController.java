@@ -170,7 +170,6 @@ public class ProfessionalProfileController {
 		        }
 		        List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(candidate.getId(), orgLocations);
 		        candidate.setCommentsCount(String.valueOf(candidateCommentsList.size()));
-		        candidate.setDateofBirthString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidate.getDateOfBirth()));
 				return candidate;
 	}
 	 

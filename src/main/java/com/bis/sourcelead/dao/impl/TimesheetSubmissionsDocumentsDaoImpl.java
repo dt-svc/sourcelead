@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TimesheetSubmissionsDocumentsDao;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
-import com.bis.sourcelead.entity.TimesheetSubmissionsDocumentsHistory;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
 @Repository
@@ -57,6 +56,7 @@ public class TimesheetSubmissionsDocumentsDaoImpl implements TimesheetSubmission
 	@Transactional(rollbackFor = { Exception.class })
 	public List<TimesheetSubmissionsDocuments> getAllTimesheetSubmissionsDocumentsBySubmissionId(Long submissionId)
 			throws Exception {
+		
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from TimesheetSubmissionsDocuments tsd where tsd.timesheetSubmissions.Id =:submissionId and tsd.status = '1') ";
 	    List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = session.createQuery(query.toString()).setLong("submissionId", submissionId).list();
@@ -76,43 +76,7 @@ public class TimesheetSubmissionsDocumentsDaoImpl implements TimesheetSubmission
 		
 	}
 	
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public TimesheetSubmissionsDocumentsHistory addTimesheetSubmissionsDocumentsHistory(TimesheetSubmissionsDocumentsHistory timesheetSubmissionsDocuments) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
-		try {
-			session.saveOrUpdate(timesheetSubmissionsDocuments);
-		}
-		catch(Exception exception)	{
-			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"TIMESHEET_SUBMISSIONS"));
-			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
-		}
-		return timesheetSubmissionsDocuments;
-		
-	}
-
-
-
-	@SuppressWarnings("unchecked")
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<TimesheetSubmissionsDocumentsHistory> getAllTimesheetSubmissionsDocumentsHistoryBySubmissionId(Long submissionId) throws Exception {
-		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from TimesheetSubmissionsDocuments tsd where tsd.timesheetSubmissions.Id =:submissionId) ";
-	    List<TimesheetSubmissionsDocumentsHistory> timesheetSubmissionsDocumentsHistoryList = session.createQuery(query.toString()).setLong("submissionId", submissionId).list();
-        return timesheetSubmissionsDocumentsHistoryList;
-	}
-
-
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public List<TimesheetSubmissionsDocumentsHistory> getAllTimesheetSubmissionsDocumentsHistoryByTimesheetActivityId(Long activityId) {
-		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from TimesheetSubmissionsDocumentsHistory tsdHistory where tsdHistory.timesheetActivity =:activityId) ";
-	    List<TimesheetSubmissionsDocumentsHistory> timesheetSubmissionsDocumentsHistory = session.createQuery(query.toString()).setLong("activityId", activityId).list();
-        return timesheetSubmissionsDocumentsHistory;
-	}
+	
 
 
 }

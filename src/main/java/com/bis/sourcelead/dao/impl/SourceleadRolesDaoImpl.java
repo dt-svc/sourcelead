@@ -36,8 +36,7 @@ public class SourceleadRolesDaoImpl implements SourceleadRolesDao {
 	private String statusDelete;
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
-	@Value("${jdbc.schema}")
-	private String schema;
+
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadRolesDaoImpl.class);
 
 	@Override
@@ -57,7 +56,7 @@ public class SourceleadRolesDaoImpl implements SourceleadRolesDao {
 		//actionlist =  session.createQuery("from SourceleadRoles sourceleadRoles where    FIND_IN_SET("+actionI+",sourceleadRoles.actionId) and sourceleadRoles.SDisplayName = roleName ").list();
 		/* DISPLAY_NAME  ='"+roleName+"' and */
 		
-		String sql = "SELECT * FROM "+schema+".SOURCELEAD_ROLES where DISPLAY_NAME  ='"+roleName+"' and  FIND_IN_SET("+actionId+",ACTION_ID)";
+		String sql = "SELECT * FROM sourcelead.SOURCELEAD_ROLES where DISPLAY_NAME  ='"+roleName+"' and  FIND_IN_SET("+actionId+",ACTION_ID)";
 		SQLQuery query = session.createSQLQuery(sql);
 		query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
 		List<SourceleadRoles> actionlist  = query.list();

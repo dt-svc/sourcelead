@@ -456,9 +456,7 @@ result = result  +'    <div class="billingArea"> ';
 							result = result +'           <span class="successBtn primary pull-left" title="Paid" >Paid</span> </td>          ';	
 						}else if(report.invoiceStatus == "DRAFT"){
 							result = result +'           <span class="successBtn primary pull-left" title="Send">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Bill" onClick="deleteBill(\''+report.invoiceUUID+'\');";></i></td>          ';
-						}else if(report.invoiceStatus == "SENT"){
-							result = result +'           <span class="text-primary primary pull-left">Sent</span>   ';
-						}else if(report.invoiceStatus == "Accepted"){
+						}else{
 							result = result +'           <span class="receiveBtn receive_Btn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');" title="Pay">Pay</span> </td>          ';	
 						}
 						
@@ -1336,7 +1334,6 @@ function linkPayableInvoice(invoiceUUID,totalAmount){
     
 <script>
 function mergeInvoice(parentTotalAmount){
-	$('#vendorBilllinkId').parent().find('p.jquery_form_error_message').remove();
 	var invoiceUUID = $('#masterInvoiceId').val();
 	var currencyCode = '${SourceLeadWeb_currencyCode}';
 	var linkRadio = $('input[name=linkedInvoice]');
@@ -1356,7 +1353,7 @@ function mergeInvoice(parentTotalAmount){
        },
    });
 }else{
-	$("#vendorBilllinkId").after( "<p class='jquery_form_error_message'>Select atleast 1 Bill</span>");
+	$("#vendorBilllinkId").after( "<p class='jquery_form_error_message'>Select atleast 1 Invoice</span>");
 	}
 }
 </script>
@@ -1369,7 +1366,7 @@ function showDiffAmountPopup(calculatedAmount,currencyCode){
 	result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a zInPop'>";
 	result = result +"		<p>Variation Amount  = "+calculatedAmount+" "+currencyCode+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='amountPopupOk();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#invoice_pop").slideDown(200);
@@ -1379,18 +1376,11 @@ function showDiffAmountPopup(calculatedAmount,currencyCode){
 </script>
 
 <script type="text/javascript">
-function amountPopupOk(){
+function cancel(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 	var sourceleadUrl ='${sourceleadUrl}';
 	location.replace(sourceleadUrl+"/payablesList");	
-}
-</script>
-
-<script>
-function cancel(){
-	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 
@@ -1414,6 +1404,7 @@ function cancel(){
 		};
 	})(jQuery);
 </script>
+
 
 
 

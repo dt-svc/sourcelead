@@ -840,7 +840,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 	     globalVarsMap.put("rejectLink",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/").append("rejectInvoice?invoiceId=").append(invoice.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
    */
 		 
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 
 		//send mail logic
+			List<EmailAttachment> attachmentList2 = new ArrayList<>();
 		     
 			 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
 			 ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
@@ -875,10 +878,10 @@ public class InvoiceServiceImpl implements InvoiceService{
 			//send notification logic
 			EmailScenario notificationScenario = null;
 			if(invoiceType.equalsIgnoreCase("payable")){
-				   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList);
+				   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList2);
 				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 			 }else{
-				   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations, Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,attachmentList);
+				   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations, Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,attachmentList2);
 				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_RECEIVABLE_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 			 }
 			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
@@ -1826,14 +1829,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
 //				Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getProjectMemberCandidteId(),orgRelationId);
 //				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
-				
-				ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(projectMember.getMasterCandidateId().getId(), projectId, orgLocation.getId());
-				
-				Candidate candidate = pm.getProjectMemberCandidteId();
-				if (candidate != null && ("C2C".equalsIgnoreCase(candidate.getDesignationType()) || "C2C-1099".equalsIgnoreCase(candidate.getDesignationType()))) {
-				
-//				if (null != projectMember.getProjectMemberCandidteId()) {
-					
+				if (null != projectMember.getProjectMemberCandidteId()) {
 					StringBuilder empName = new StringBuilder();
 					if (null != projectMember.getProjectMemberCandidteId().getFirstName() && null != projectMember.getProjectMemberCandidteId().getLastName()) {
 						empName.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName());
@@ -1869,7 +1865,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 						sb.append("0");
 					}
 					projectMember.setTotalHours(sb.toString());
-//					Candidate candidate = projectMember.getProjectMemberCandidteId();
+					Candidate candidate = projectMember.getProjectMemberCandidteId();
 					if (null != candidate) {
 						projectMember.setCandidateId(candidate.getId());
 						List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
@@ -1879,8 +1875,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					}
 				
 					filteredMembersList.add(projectMember);
-//				}
-			}
+				}
 			}
 		}
 		return filteredMembersList;
@@ -2788,7 +2783,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 			if (null != invoice.getId()) {
 				updatedInvoiceLineItems.retainAll(invoiceLineItemsIdsList);
-//				invoiceLineItemsIdsList.removeAll(updatedInvoiceLineItems);
+				invoiceLineItemsIdsList.removeAll(updatedInvoiceLineItems);
 			}
 		}
 

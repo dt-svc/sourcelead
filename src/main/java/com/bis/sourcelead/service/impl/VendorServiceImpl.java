@@ -103,17 +103,6 @@ public class VendorServiceImpl implements VendorService{
 			 orgRelations.setPaymentTerm(clientDTO.getPaymentTerms());
 		 }
 		 
-		 if (StringUtils.isNotBlank(clientDTO.getIsLawFirm()) && clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
-					orgRelations.setIsLawFirm(Constants.YES);
-			} else {
-				orgRelations.setIsLawFirm(Constants.NO);
-			}
-			if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
-					orgRelations.setIsAccountingFirm(Constants.YES);
-			} else {
-				orgRelations.setIsAccountingFirm(Constants.NO);
-			}
-		 
 		 orgRelationsDao.addOrgRelations(orgRelations);
 		 
 		 OrgLocations vendorOrgLocations = null;
@@ -129,16 +118,6 @@ public class VendorServiceImpl implements VendorService{
 		 vendorOrgLocations.setCountry(clientDTO.getCountry());
 		 vendorOrgLocations.setState(clientDTO.getState());
 		 vendorOrgLocations.setCity(clientDTO.getCity());
-		 
-		 if((StringUtils.isNotBlank(clientDTO.getIsLawFirm())) && (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()))){
-		 if(clientDTO.getIsLawFirm().equalsIgnoreCase("Y") && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")){
-			vendorOrgLocations.setIsLawFirm(Constants.YES);
-			vendorOrgLocations.setIsAccountingFirm(Constants.YES);
-		}
-		}else{
-			vendorOrgLocations.setIsLawFirm(Constants.NO);
-			vendorOrgLocations.setIsAccountingFirm(Constants.NO);	
-		}
 		
 		 if(StringUtils.isNotBlank(clientDTO.getWebSite())){
 			 if(StringUtils.isNotBlank(clientDTO.getWebSite())){

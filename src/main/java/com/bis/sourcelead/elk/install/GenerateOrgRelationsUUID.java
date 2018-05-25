@@ -19,9 +19,10 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class GenerateOrgRelationsUUID {
 	
+
+	
+
 	private ComboPooledDataSource comboPooledDataSource;
-	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
 /**
  * @author Venkat
@@ -35,7 +36,7 @@ public void orgRelationsUUID() throws IOException, SQLException {
 try {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql = "SELECT * FROM "+dbconfig.getSchema()+".ORG_RELATIONS";
+			 String sql = "SELECT * FROM sourcelead.ORG_RELATIONS";
 			 stmt1 = conn.prepareStatement(sql);
 			 ResultSet rs = stmt1.executeQuery();
 			 System.out.println("----Adding unique UUID org relations  starts-----");
@@ -44,7 +45,7 @@ try {
 				 Long id = rs.getLong("ID");
 				 if(UUID == null) {
 					 String uuid = SourceLeadRandomCodeHelper.generateRandomUUID(); 
-					 String query = "update "+dbconfig.getSchema()+".ORG_RELATIONS set UUID = ? where ID = ?";
+					 String query = "update sourcelead.ORG_RELATIONS set UUID = ? where ID = ?";
 					 PreparedStatement pstmt = conn.prepareStatement(query);
 					 pstmt.setString(1, uuid);
 					 pstmt.setLong(2, id);
@@ -72,6 +73,9 @@ try {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
+		@SuppressWarnings("resource")
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {

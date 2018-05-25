@@ -200,23 +200,23 @@ function closeCertificatePopup(){
 		result = result	+ '	             <div class="form-horizontal clearfix">';
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <div class="col-md-12">';
-		result = result	+ '	                  <input type="text" class="form-control input-sm"  placeholder="Previous Employers" name="name" data-validation="required validate_Space validate_length length2-100" field-name="Employer Name" value=""> <span class="hidden">Employer Name</span>';
+		result = result	+ '	                  <input type="text" class="form-control input-sm"  placeholder="Employer *" name="name" data-validation="required validate_Space validate_length length2-100" field-name="Employer Name" value=""> <span class="hidden">Employer Name</span>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <div class="clearfix checkbox">';
 		result = result + '	                   <label>';
-		result = result	+ '	                  <label> <input type="checkbox" id="isCurrentPosition" value="Y" onClick ="iscurrentPosition();"name="isCurrentPosition"> Current Position</label>';
+		result = result	+ '	                  <label> <input type="checkbox" id="isCurrentPosition" value="Y" onClick ="iscurrentPosition();"name="isCurrentPosition"> Is Current Position</label>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <div class="col-md-12">';
-		result = result	+ '	                    <input type="text" class="form-control input-sm"  placeholder="Designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" value=""> <span class="hidden">Employer Designation</span>';
+		result = result	+ '	                    <input type="text" class="form-control input-sm"  placeholder="Employer Designation" name="designation" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" value=""> <span class="hidden">Employer Designation</span>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
 		result = result + '	                 <div class="col-md-12">';
-		result = result + '	                  <input type="text" class="form-control input-sm" placeholder="Employer Address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" value=""> <span 	class="hidden">Address</span>';
+		result = result + '	                  <input type="text" class="form-control input-sm" placeholder="Address" name="address" data-validation="required validate_Space validate_length length2-250"  data-validation-optional="true" field-name="Address" value=""> <span 	class="hidden">Address</span>';
 		result = result + '	                 </div>';
 		result = result + '	               </div>';
 		result = result + '	               <div class="clearfix mb10">';
@@ -329,7 +329,7 @@ function closeCertificatePopup(){
 					result = result	+ '	                 <div class="col-md-12 checkbox">';
 					result = result + '	                   <label>';
 					if (json.isCurrentPosition == 'Y' && json.isCurrentPosition != '' && json.isCurrentPosition !== 'undefined') {
-						result = result	+ '	 <label> <input type="checkbox" id="isCurrentPositionEdit"  value="'+ json.isCurrentPosition+ '"   checked="checked"    onClick ="iscurrentPositionEdit();" name = "isCurrentPosition"> Current Position</label>';
+						result = result	+ '	 <label> <input type="checkbox" id="isCurrentPositionEdit"  value="'+ json.isCurrentPosition+ '"   checked="checked"    onClick ="iscurrentPositionEdit();" name = "isCurrentPosition"> Is Current Position</label>';
 					} else {
 						result = result	+ '	     <label> <input type="checkbox" id="isCurrentPositionEdit"  value="Y" onClick ="iscurrentPositionEdit();" name= "isCurrentPosition"> Is Current Position</label>';
 					}
@@ -341,7 +341,7 @@ function closeCertificatePopup(){
 					if (json.designation != null && json.designation != '' && json.designation != 'undefined') {
 						result = result + '	                    <input type="text" class="form-control input-sm"  placeholder="Employer Designation" name="designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" > <span class="hidden">Employer Designation</span>';
 					}else{
-						result = result + '	                    <input type="text" class="form-control input-sm"  placeholder="" name="designation"  value="" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" > <span class="hidden">Employer Designation</span>';
+						result = result + '	                    <input type="text" class="form-control input-sm"  placeholder="Employer Designation" name="designation"  value="" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true" field-name="Employer Designation" > <span class="hidden">Employer Designation</span>';
 					}
 					result = result + '	                 </div>';
 					result = result + '	               </div>';
@@ -861,15 +861,12 @@ function removeEmployer(candidateemployerId, candidateId){
 			var EMdata = endMonth.split('&');
 			var eMonthNumber = EMdata[0];
 			
-			
-			
-			 if((parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear==endYear) ){
+			if((startMonth < endMonth) && (startYear == endYear)) {
 				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
 			} else if((startYear > endYear ) && (endYear != '' && endYear != null && endYear != 'undefined')) {
 				document.getElementById("endYearValidation").style.display="block";
 				$("#endYearValidation").empty().append("End year should be greater than Start year") ; 
 			} else if(startYearFlag && endYearFlag) {
-				
 				document.getElementById("endYearValidation").style.display="none";
 				$.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(result) {
 					if (result && result.response === "INVALID_DATA") {

@@ -16,12 +16,12 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddCandidateToContact {
 	private ComboPooledDataSource comboPooledDataSource;
-	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+	
 /**
  * 
  * this method is using for update candidate as a contact 
@@ -37,13 +37,13 @@ public void updateCandidateToContact() throws IOException, SQLException {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
 		
-		String sql = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE " ;
+		String sql = "SELECT * FROM sourcelead.CANDIDATE " ;
 		 stmt1 = conn.createStatement();
 		 ResultSet rs = stmt1.executeQuery(sql);
 		 
 		 while(rs.next()){
 			String userCode=rs.getString("CREATED_BY");
-			String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".USER where USER_CODE='"+userCode+"' ";
+			String sql1 = "SELECT * FROM sourcelead.USER where USER_CODE='"+userCode+"' ";
 			stmt2 = conn.createStatement();
 			 ResultSet rs1 = stmt2.executeQuery(sql1);
 			if(rs1.next()){
@@ -55,7 +55,7 @@ public void updateCandidateToContact() throws IOException, SQLException {
 				 String  createdBy = rs.getString("CREATED_BY");
 				 Date createdtDate = rs.getDate("CREATED_DATE");
 				 
-				 String query2 = " insert into "+dbconfig.getSchema()+".REFER_CONTACTS (REFER_FROM_USER_ID, CONTACT_USER_FIRSTNAME, CONTACT_USER_LASTNAME, CONTACT_USER_EMAIL, CONTACT_USER_PHONE,  "
+				 String query2 = " insert into sourcelead.REFER_CONTACTS (REFER_FROM_USER_ID, CONTACT_USER_FIRSTNAME, CONTACT_USER_LASTNAME, CONTACT_USER_EMAIL, CONTACT_USER_PHONE,  "
 							+ "CREATED_DATE, CREATED_BY,CANDIDATE_TYPE)"
 							+ " values (?, ?, ?, ?, ?, ?, ?, ?)";
 		    		
@@ -96,6 +96,10 @@ public void updateCandidateToContact() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
+		@SuppressWarnings("resource")
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

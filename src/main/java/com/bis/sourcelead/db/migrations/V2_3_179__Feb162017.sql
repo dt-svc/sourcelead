@@ -18,12 +18,12 @@ INSERT INTO `ROLES` (`ROLE_NAME`, `DISPLAY_NAME`, `ORG_LOCATION_ID`, `ORG_ID`, `
 
 
 
-CALL AlterTableAddColumn ('USER_ROLE','ORG_ID','BIGINT NULL');
+CALL AlterTableAddColumn ('sourcelead','USER_ROLE','ORG_ID','BIGINT NULL');
 ALTER TABLE USER_ROLE ADD CONSTRAINT USER_ROLE_ORG_ID_ibfk_2 FOREIGN KEY (ORG_ID) REFERENCES ORG(id);
 
 ALTER TABLE `USER` CHANGE COLUMN `USER_TYPE` `USER_TYPE` VARCHAR(50) NULL DEFAULT NULL ;
 
-CALL AlterTableAddColumn ('CANDIDATE','ORG_ID','BIGINT NULL');
+CALL AlterTableAddColumn ('sourcelead','CANDIDATE','ORG_ID','BIGINT NULL');
 ALTER TABLE CANDIDATE ADD CONSTRAINT CANDIDATE_ORG_ID_ibfk_2 FOREIGN KEY (ORG_ID) REFERENCES ORG(id);
 
 
@@ -51,13 +51,13 @@ INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_N
 											('Individual Recruiter Invitation','Email', 'Individual Recruiter Invitation', 'Welcome to SourceLead ', 'Welcome to SourceLead','org', 'Best Regards,\n', 'Welcome !!!\n\n Dear Recruiter {{RecruiterInvitation.recruiterName}}\n\n It is great to see that you have started accessing \n User Name : {{RecruiterInvitation.loginUserName}}\n Your Sourcelead URL : {{RecruiterInvitation.resetLink}}\n  I hope you will  have a wonderful time with  If you have any questions or comments, feel free to reach out to us at info@com','N', 'SLADMIN', 'sourcelead', 'sourceleadIN');
 									
 
-CALL AlterTableAddColumn ('REQUIREMENT','POSTED_ORG_NAME','VARCHAR(250) DEFAULT NULL');
+CALL AlterTableAddColumn ('sourcelead','REQUIREMENT','POSTED_ORG_NAME','VARCHAR(250) DEFAULT NULL');
 
-CALL AlterTableAddColumn ('USER','COUNTRY','VARCHAR(100) DEFAULT NULL');
+CALL AlterTableAddColumn ('sourcelead','USER','COUNTRY','VARCHAR(100) DEFAULT NULL');
 
-CALL AlterTableAddColumn ('REQUIREMENT','APPLIED_PROFESSIONALS','TEXT DEFAULT NULL');
+CALL AlterTableAddColumn ('sourcelead','REQUIREMENT','APPLIED_PROFESSIONALS','TEXT DEFAULT NULL');
 
-CALL AlterTableAddColumn ('REQUIREMENT','REQUIREMENT_UUID','VARCHAR(20) NULL AFTER `IS_CROWD_SOURCING`');
+CALL AlterTableAddColumn ('sourcelead','REQUIREMENT','REQUIREMENT_UUID','VARCHAR(20) NULL AFTER `IS_CROWD_SOURCING`');
 
 
 

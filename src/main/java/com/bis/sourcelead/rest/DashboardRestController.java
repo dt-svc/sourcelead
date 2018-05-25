@@ -286,11 +286,12 @@ public class DashboardRestController {
 	}
 	
 	
-	@RequestMapping(value = "/dashboard/{orgLocationId}/{userId}" , method = RequestMethod.GET)
-	 public @ResponseBody void userSummary(@PathVariable Long orgLocationId,@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	@RequestMapping(value = "/dashboard/{orgLocationId}" , method = RequestMethod.GET)
+	 public @ResponseBody void userSummary(@PathVariable Long orgLocationId,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 		     //to update user state in user role based on location----> Prasad Salina
-		     User user = userService.getUserById(userId);
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
 		     UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocationId);
 		     if(userRole != null && userRole.getUserState() != null && userRole.getUserState().equals(Status.NOT_LOGGEDIN)){
@@ -378,11 +379,12 @@ public class DashboardRestController {
 	}
 	
 	
-	@RequestMapping(value = "/dashboard/{orgLocationId}/{switchUserType}/{userId}" , method = RequestMethod.GET)
-	 public @ResponseBody void userSummaryWithUserType(@PathVariable Long orgLocationId,@PathVariable String switchUserType,@PathVariable Long userId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+	@RequestMapping(value = "/dashboard/{orgLocationId}/{switchUserType}" , method = RequestMethod.GET)
+	 public @ResponseBody void userSummaryWithUserType(@PathVariable Long orgLocationId,@PathVariable String switchUserType,HttpServletRequest request,HttpServletResponse response) throws Exception {
 			
 		     //to update user state in user role based on location----> Prasad Salina
-		     User user = userService.getUserById(userId);
+		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     UserRole userRole = null;
 		     if(!isNullOrEmpty(switchUserType) && (switchUserType.equalsIgnoreCase("Professional") || switchUserType.equalsIgnoreCase("Recruiter")) && orgLocationId == 1L){
 		    	 userRole =  userRoleService.getUserDetailsByUserIdAndLocationIdAndUserType(user.getId(), orgLocationId, switchUserType);

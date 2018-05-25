@@ -57,9 +57,6 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	private String statusDelete;
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
-	
-	@Value("${jdbc.schema}")
-	private String schema;
 
 	private static final Logger logger = LoggerFactory.getLogger(ProjectTasksDaoImpl.class);
 
@@ -289,7 +286,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Long getRequirementGeneratedIdByOrgLocationId(Long orgLocationId,Integer generatedIdCount) {
 	Session session = this.sessionFactory.getCurrentSession();
-	String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdCount+"') AS UNSIGNED)) FROM "+schema+".requirement WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
+	String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdCount+"') AS UNSIGNED)) FROM sourcelead.requirement WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
 	List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 	Long count = 0L;
 	if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
@@ -303,7 +300,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Long getProjectTasksGeneratedIdByProjectId(Long projectId, Integer generatedIdCount) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "SELECT count(*) FROM "+schema+".PROJECT_TASKS WHERE PROJECT_ID = '"+ projectId + "'";
+		String query = "SELECT count(*) FROM SOURCELEAD.PROJECT_TASKS WHERE PROJECT_ID = '"+ projectId + "'";
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {

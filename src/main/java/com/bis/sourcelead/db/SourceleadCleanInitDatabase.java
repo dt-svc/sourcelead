@@ -21,9 +21,6 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class SourceleadCleanInitDatabase {
 	
 	private ComboPooledDataSource comboPooledDataSource;
-	
-	 ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	 DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 
 	public static void main(String args[]) throws Exception {
 		SourceleadCleanInitDatabase installer = new SourceleadCleanInitDatabase();
@@ -37,7 +34,7 @@ public class SourceleadCleanInitDatabase {
 		flyway.setDataSource(comboPooledDataSource());
 		flyway.setTable("schema_history");
 		flyway.setSqlMigrationSuffix(".sql");
-		flyway.setSchemas(dbconfig.getSchema());
+		flyway.setSchemas("sourcelead");
 		flyway.setInitVersion("1");
 		//flyway.setBaselineVersionAsString("1");
 		flyway.clean();
@@ -52,7 +49,9 @@ public class SourceleadCleanInitDatabase {
 	@Bean
 	public DataSource comboPooledDataSource() {
 		
-		
+		 @SuppressWarnings("resource")
+		 ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		 DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 		 
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {

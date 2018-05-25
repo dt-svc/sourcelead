@@ -21,8 +21,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddLocationsToRequirement {
 	private ComboPooledDataSource comboPooledDataSource;
-	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+	
 /**
  * @author Venkat I
  * this method is using for adding locations to requirement
@@ -38,7 +37,7 @@ public void addLocations() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT";
+			 String sql1 = "SELECT * FROM sourcelead.REQUIREMENT";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -79,7 +78,7 @@ public void addLocations() throws IOException, SQLException {
 				 String city =  rs1.getString("CITY");
 				 String zipcode =  rs1.getString("ZIPCODE");
 				 
-				String query = " insert into "+dbconfig.getSchema()+".REQUIREMENT_LOCATIONS (REQUIREMENT_ID, LOCATION, COUNTRY, STATE, CITY, ZIPCODE, "
+				String query = " insert into sourcelead.REQUIREMENT_LOCATIONS (REQUIREMENT_ID, LOCATION, COUNTRY, STATE, CITY, ZIPCODE, "
 							+ "LOCATION_UID, STATUS)"
 							+ " values (?, ?, ?, ?, ?, ?, ?, ?)";
 		    		
@@ -121,6 +120,10 @@ public void addLocations() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
+		@SuppressWarnings("resource")
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

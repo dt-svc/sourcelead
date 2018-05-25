@@ -2654,7 +2654,7 @@ function createAlert(requirementUUID){
         	
         	 result = result +'         <div class="form-group clearfix">';
         	 result = result +'         	<label class="col-md-3">Alert Frequency<span class="text-danger paddingLeft">*</span></label>';
-        	 result = result +'         	<div class="col-md-9 dropdown-select">';
+        	 result = result +'         	<div class="col-md-9">';
         	 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Alert Frequency" data-validation="required">';
         	 result = result +'         			<option selected value="">---Select Alert Frequency---</option>';
         	 result = result +'         			<option>Daily</option>';

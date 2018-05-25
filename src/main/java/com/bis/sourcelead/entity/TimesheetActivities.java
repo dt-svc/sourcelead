@@ -1,7 +1,6 @@
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,13 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
-
-import com.bis.sourcelead.dto.FileInfo;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.joda.time.DateTime;
 @Entity
 @Table(name = "TIMESHEET_ACTIVITIES")
 public class TimesheetActivities {
@@ -109,14 +104,12 @@ public class TimesheetActivities {
 	@Type(type="text")
 	private String actionPerformedBy;
 	
-	@Column(name = "ACTION_PERFORMEDBY_USERID")
-	private Long actionPerformedbyUserId;
-	
 	@Column(name = "ACTION_BY_ORGLOC_ID")
 	private Long actionPerformedByOrgLocationId;
 	
 	@Column(name = "STATUS")
 	private String status;
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "REOPENED_USER_ID", nullable = false)
@@ -135,38 +128,6 @@ public class TimesheetActivities {
 	
 	@Column(name = "CREATED_BY")
 	private String createdBy;
-	
-	@Column(name="WEEK_COMMENTS",columnDefinition = "TEXT default NULL")
-	private String weekComments;
-	
-	@Transient
-	@JsonProperty
-	@JsonBackReference
-	private String displayDate;
-	
-	@Transient
-	@JsonProperty
-	@JsonBackReference
-	private String displayTime;
-	
-	@Transient
-	@JsonProperty
-	@JsonBackReference
-	private String userFullName;
-	
-	@Transient
-	@JsonProperty
-	@JsonBackReference
-	private List<FileInfo> timesheetFileUrl;
-	
-	@Column(name = "WEEK_TOTAL")
-	private String weekTotal;
-	
-	@Column(name = "WEEK_TOTAL_BILLABLE")
-	private String weekTotalBillable;
-	
-	@Column(name = "WEEK_TOTAL_NON_BILLABLE")
-	private String weekTotalNonBillable;
 	
 	/*@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
@@ -292,78 +253,6 @@ public class TimesheetActivities {
 
 	public void setMasterCandidate(MasterCandidate masterCandidate) {
 		this.masterCandidate = masterCandidate;
-	}
-
-	public String getDisplayDate() {
-		return displayDate;
-	}
-
-	public void setDisplayDate(String displayDate) {
-		this.displayDate = displayDate;
-	}
-
-	public String getDisplayTime() {
-		return displayTime;
-	}
-
-	public void setDisplayTime(String displayTime) {
-		this.displayTime = displayTime;
-	}
-
-	public Long getActionPerformedbyUserId() {
-		return actionPerformedbyUserId;
-	}
-
-	public void setActionPerformedbyUserId(Long actionPerformedbyUserId) {
-		this.actionPerformedbyUserId = actionPerformedbyUserId;
-	}
-
-	public String getUserFullName() {
-		return userFullName;
-	}
-
-	public void setUserFullName(String userFullName) {
-		this.userFullName = userFullName;
-	}
-
-	public List<FileInfo> getTimesheetFileUrl() {
-		return timesheetFileUrl;
-	}
-
-	public void setTimesheetFileUrl(List<FileInfo> timesheetFileUrl) {
-		this.timesheetFileUrl = timesheetFileUrl;
-	}
-
-	public String getWeekComments() {
-		return weekComments;
-	}
-
-	public void setWeekComments(String weekComments) {
-		this.weekComments = weekComments;
-	}
-
-	public String getWeekTotal() {
-		return weekTotal;
-	}
-
-	public void setWeekTotal(String weekTotal) {
-		this.weekTotal = weekTotal;
-	}
-
-	public String getWeekTotalBillable() {
-		return weekTotalBillable;
-	}
-
-	public void setWeekTotalBillable(String weekTotalBillable) {
-		this.weekTotalBillable = weekTotalBillable;
-	}
-
-	public String getWeekTotalNonBillable() {
-		return weekTotalNonBillable;
-	}
-
-	public void setWeekTotalNonBillable(String weekTotalNonBillable) {
-		this.weekTotalNonBillable = weekTotalNonBillable;
 	}
 	
 }

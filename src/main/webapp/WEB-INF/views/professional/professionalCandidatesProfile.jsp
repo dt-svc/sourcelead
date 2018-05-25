@@ -94,10 +94,6 @@ function editCandidate(candidateId){
             			 		lastName = json.lastName;            			 		
             			 	}
             			 	
-            			 	var middleName = '';
-            			 	if(json.middleName != null && json.middleName != '' && json.middleName != 'undefined'){
-            			 		middleName = json.middleName;            			 		
-            			 	}
             			 	
         			 	    var mobilePhone = '';
             			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
@@ -185,101 +181,19 @@ function editCandidate(candidateId){
 							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
 							
 							result = result + '		        <div class="clearfix mb10">';
-							result = result + '		          <div class="col-md-4">';
+							result = result + '		          <div class="col-md-6">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="firstName" value="'+json.firstName+'" placeholder="First Name *" field-name="First Name"  data-validation="validate_AlphaNumber required validate_Space validate_length length1-100">';
 							result = result + '		          </div>';
-							result = result + '		          <div class="col-md-4">';
+							result = result + '		          <div class="col-md-6">';
 							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
-							result = result + '		          </div>';
-							result = result + '		          <div class="col-md-4">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="middleName" value="'+middleName+'" placeholder="Middle Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							
 							// If Candidate Type equals Consultant email field should be Disable mode
 							
-							result = result+'		<div class="col-md-6">';
-							result = result+'		<div class="row">';
-							result = result+'		<label class="col-md-3">Gender</label>  ';
-							result = result+'		<div class="col-md-9">    ';
-							if(json.gender == "Male"){
-							result = result+'		<label class="paddingLeft"><input type="radio"  checked value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
-							result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
-							result = result+'		<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
-							}
-							else if(json.gender == "Female"){
-								result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
-								result = result+'		<label class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
-								result = result+'		<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
-								}
-							else if(json.gender == "Transgender"){
-								result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
-								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
-								result = result+'		<label class="paddingRight"><input type="radio"  checked value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
-								}
-							else{
-								result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
-								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
-								result = result+'		<label class="paddingRight"><input type="radio" value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
-							}
-							result = result+'		</div>    ';
-							result = result+'		</div>    ';
-							result = result+'		</div>    ';
-							
-							result = result+'		<div class="col-md-6">';
-							result = result+'		<div class="row">';
-							result = result+'		<label class="col-md-3 paddingRight">Marital Status</label>  ';
-							result = result+'		<div class="col-md-9">';
-							if(json.maritalStatus == "Single"){
-							result = result+'		<label class="paddingRight"><input type="radio"  value="Single" checked name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
-							result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
-							result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
-							result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
-							}
-							else if(json.maritalStatus == "Married"){
-								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
-								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  checked value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
-								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
-								result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
-								}
-							else if(json.maritalStatus == "Divorsed"){
-								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
-								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
-								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" checked name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
-								result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
-								}
-							else if(json.maritalStatus == "Separated"){
-								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
-								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
-								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
-								result = result+' 		<label class="paddingRight"><input type="radio"  checked value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
-								}
-							else{
-								result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
-								result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
-								result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
-								result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
-								}
-							result = result+'		</div> ';
-							result = result+'		</div> ';
-							result = result+'		</div> ';
-							
-							result = result + ' <div class="col-md-6 mb10">';
-							result = result + '<div class="input-group">';
-							if(json.dateofBirth != null && json.dateofBirth != "" && json.dateofBirth != "undefined"){
-								result = result + ' <input type="text" value="'+json.dateofBirth+'" name="dateofBirth" id="dateofbirth-candidate" placeholder="DateOfBirth" readonly="readonly" class="form-control calendar">';
-								result = result + '   <span class="input-group-addon" onClick="cleardateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
-
-							}else{
-								result = result + ' <input type="text" value="" name="dateofBirth" id="dateofbirth-candidate" readonly="readonly" placeholder="DateOfBirth" class="form-control calendar">';
-								result = result + '   <span class="input-group-addon" onClick="cleardateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
-
-							}
-							result = result + ' </div></div>';
-							result = result + '<div class="clearfix"></div>';
 							result = result + '<div class="clearfix mb10">';
 							result = result + '<div class="col-md-6">';
-						    result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  readonly data-validation="validate_Space required validate_email validate_length length2-100" >';
+						    result = result + '<input type="text" class="form-control input-sm" name="email" value="'+json.email+'" placeholder="Email*" field-name="Email"  data-validation="validate_Space required validate_email validate_length length2-100" >';
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6">';
@@ -533,16 +447,6 @@ function editCandidate(candidateId){
 										var $this = $(this);
 										$this.next().css({'width': '100%'});
 								  })
-								  
-								  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-								  // written common method in slead-common.js for date formats start
-										var finalDateFormat = getJSDateFormat(locationDate); 
-									  $("#dateofbirth-candidate").datepicker({
-								      dateFormat: finalDateFormat,
-									      changeMonth: true,
-										  	  changeYear: true, 
-									      //minDate: 0  this line for to restrict selection of previous dates
-								  });
 							});
             		 
                 		}else{
@@ -908,11 +812,6 @@ function professionalProfile(candidateId){
 </script>
 
 <script>
-
-function cleardateofBirth(){
-	$("#dateofbirth-candidate").val("");
-	};
-	
 	function editSkill(candidateId){
 		$("#skillName").prop('disabled', false).trigger("chosen:updated");
 		$("#editSkillBtn").remove();

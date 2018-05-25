@@ -180,7 +180,7 @@ public class Html2PdfUtil {
 						}
 		            }
 	                else if(matchPattern.group().equalsIgnoreCase("[Associate Name]") || matchPattern.group().equalsIgnoreCase("[Employee Name]")){
-		            	if(null !=contracts.getRequirementSubmission() && null != contracts.getRequirementSubmission().getId()){
+		            	if(contracts.getRequirementSubmission() != null && null != contracts.getRequirementSubmission().getId()){
 			            	RequirementSubmission reqSub = requirementSubmissionService.getRequirementSubmissionById(contracts.getRequirementSubmission().getId());
 			            	if(null != reqSub.getCandidate().getLastName()){
 								matchPattern.appendReplacement(sb, reqSub.getCandidate().getFirstName()+" "+reqSub.getCandidate().getLastName());	
@@ -193,7 +193,7 @@ public class Html2PdfUtil {
 		            	}
 	                }
 		            else if(matchPattern.group().equalsIgnoreCase("[Job Title]") || matchPattern.group().equalsIgnoreCase("[Requirement Title]")){
-		            	if(null !=contracts.getRequirementSubmission() && null !=contracts.getRequirementSubmission().getRequirement().getId()){
+		            	if(contracts.getRequirementSubmission() != null && null !=contracts.getRequirementSubmission().getRequirement().getId()){
 				            	Requirement req = requirementService.getRequirementByRequirementId(contracts.getRequirementSubmission().getRequirement().getId());
 			                    matchPattern.appendReplacement(sb, req.getJobTitle());
 		            	}
@@ -205,7 +205,7 @@ public class Html2PdfUtil {
 	                }
 	                // need to know about offer rate
 		           else if(matchPattern.group().equalsIgnoreCase("[Offer Rate]")){
-		        	   if(null !=contracts.getRequirementSubmission() && null !=contracts.getRequirementSubmission().getId()){
+		        	   if(contracts.getRequirementSubmission() != null && null !=contracts.getRequirementSubmission().getId()){
 		        		   RequirementOffers requirementOffers =  requirementOffersService.getRequirementOfferSubmissionById(contracts.getRequirementSubmission().getId());
 		        		   matchPattern.appendReplacement(sb,requirementOffers.getAmount());
 		        	   }

@@ -741,7 +741,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 		//String regex = "^\\+?[0-9 ()-]{10,25}$";
 		String regex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
 		boolean flag;
-		if (phoneNumber.length() > 8 && phoneNumber.length() <= 20) {
+		if (phoneNumber.length() > 9 && phoneNumber.length() <= 20) {
 			flag = phoneNumber.matches(regex);
 		}
 		else {
@@ -1860,11 +1860,11 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 				clientImportDao.saveClientVendorExcelData(client);
 				return false;
 			}
-			else if (client.getOrgName() != null || !"".equalsIgnoreCase(client.getOrgName())) {
+			else if (client.getOrgName() == null || "".equalsIgnoreCase(client.getOrgName())) {
 				boolean isValidated = isFnameLnameValid(client.getOrgName());
 				if (isValidated == false) {
 //					client.setReason("Client name should contain above 2 char");
-					client.setFileReason("Client name should contain above 2 characters");
+					client.setFileReason("Client name should contain above 2 char");
 					clientImportDao.saveClientVendorExcelData(client);
 					return isValidated;
 				}
@@ -1877,11 +1877,11 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 				clientImportDao.saveClientVendorExcelData(client);
 				return false;
 			}
-			else if (client.getOrgName() != null || !"".equalsIgnoreCase(client.getOrgName())) {
+			else if (client.getOrgName() == null || "".equalsIgnoreCase(client.getOrgName())) {
 				boolean isValidated = isFnameLnameValid(client.getOrgName());
 				if (isValidated == false) {
 //					client.setReason("Vendor name should contain above 2 char");
-					client.setFileReason("Vendor name should contain above 2 characters");
+					client.setFileReason("Vendor name should contain above 2 char");
 					clientImportDao.saveClientVendorExcelData(client);
 					return isValidated;
 				}
@@ -1915,28 +1915,9 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 				return isValidated;
 			}
 		}
-		
-		if (client.getWebsite() != null && !"".equalsIgnoreCase(client.getWebsite())) {
-			boolean isValidated = isWebsiteValid(client.getWebsite());
-			if (isValidated == false) {
-				client.setFileReason("Invalid Website");
-				clientImportDao.saveClientVendorExcelData(client);
-				return isValidated;
-			}
-		}
-		
 		return true;
 	}
 	
-	private boolean isWebsiteValid(String website) {
-		try{
-			if(Pattern.matches("[w]{3}[.]{1}[a-zA-Z0-9]*[.]{1}[com]{3}", website))
-				return true;
-			else 
-				return false;
-			}catch (Exception e){return false;}
-	}
-
 	@Override
 	public BulkClientDetails deleteDuplicateRecord(String recordId, OrgLocations orgLocation, String responderType) throws Exception
 	{

@@ -1,13 +1,10 @@
 package com.bis.sourcelead.service;
 
-import java.util.List;
-
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TimesheetActivities;
 
 public interface TimesheetActivityService {
 
-	List<TimesheetActivities> getTimesheetActivityByProjectIdMasterCandidateIdFrequencyStartAndEndDate(Long projectId, Long masterCandidateId, String timesheetFrequency, OrgLocations orgLocations) throws Exception;
+	/*List<TimeSheetSubmissionDTO> getTimesheetSubmissionApproverHirerchayHistoryBySubmissionId(Long id);*/
 
 	TimesheetActivities saveTimesheetActivity(TimesheetActivities ta);
 

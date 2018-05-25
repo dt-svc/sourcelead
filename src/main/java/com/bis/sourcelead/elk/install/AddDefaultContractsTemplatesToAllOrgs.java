@@ -25,8 +25,6 @@ import com.mysql.fabric.xmlrpc.base.Array;
 
 public class AddDefaultContractsTemplatesToAllOrgs {
 	private ComboPooledDataSource comboPooledDataSource;
-	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
 /**
  * @author Venkat I
@@ -43,7 +41,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS";
+			 String sql1 = "SELECT * FROM sourcelead.ORG_LOCATIONS";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			 
@@ -62,7 +60,7 @@ public void dumpDefaultProjects() throws IOException, SQLException {
 		}
 			 for(Long locId : locIds){
 				 for(String templateName : templateNames){
-					 String query1 = " insert into "+dbconfig.getSchema()+".CONTRACTS_TEMPLATE (TEMPLATE_NAME, ORGLOCATION_ID, TEMPLATE_TYPE, DESCRIPTION, TEMPLATE_CONTENT, TEMPLATE_STATUS )"
+					 String query1 = " insert into sourcelead.CONTRACTS_TEMPLATE (TEMPLATE_NAME, ORGLOCATION_ID, TEMPLATE_TYPE, DESCRIPTION, TEMPLATE_CONTENT, TEMPLATE_STATUS )"
 								+ " values (?, ?, ?, ?, ?, ?)";
 					 try {
 		    			 PreparedStatement pstmt1 = conn.prepareStatement(query1);
@@ -100,6 +98,10 @@ public void dumpDefaultProjects() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
+		@SuppressWarnings("resource")
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

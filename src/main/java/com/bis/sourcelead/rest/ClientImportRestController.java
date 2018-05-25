@@ -88,7 +88,11 @@ public class ClientImportRestController {
 				if(response.getData().isEmpty() && response.getData().size() == 0) {
 					response.setStatusCode("success");
 				}else if(!response.getData().isEmpty() && response.getData().size() >0) {
-					List<BulkClientDetails> filteredBulkClientDetailsList = response.getData();
+					List<BulkClientDetails> filteredBulkClientDetailsList = response.getData().stream()
+							
+							.filter(bulkClientDetails -> bulkClientDetails.getEmail() != null
+									&& !"".equalsIgnoreCase(bulkClientDetails.getEmail()))
+							.collect(Collectors.toList());
 					response.setData(filteredBulkClientDetailsList);
 					if(response.getData() !=null ) {
 						response.setStatusCode("success");

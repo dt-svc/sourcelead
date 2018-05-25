@@ -37,7 +37,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,9 +47,6 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
-import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
-import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -64,9 +60,7 @@ import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.EmployeesService;
-import com.bis.sourcelead.service.LetterHeadService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -84,7 +78,6 @@ import com.bis.sourcelead.service.UserLoginLogoutSessionService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -175,15 +168,6 @@ public class ReportRestController {
 	
 	@Autowired
 	UserLoginLogoutSessionService userLoginLogoutSessionService;
-	
-	@Autowired
-	private ReportsUtil reportsUtil;
-	
-	@Autowired
-	private LetterHeadService letterHeadService;
-	
-	@Autowired
-	private EmployeeVerificationTemplateService employeeVerificationTemplateService;
 	
 	
 	/**
@@ -974,77 +958,5 @@ public class ReportRestController {
 		}
 		
 		
-		
-		@RequestMapping(value = "/getAllEmployeesList", method = RequestMethod.GET)
-		public @ResponseBody  ResponseList<UserDTO> getAllEmployeesList(UserDTO userDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
-		{
-			
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
-			List<UserDTO> userDtoList =  new ArrayList<>();
-			ResponseList<UserDTO> employeeResponseList =  new ResponseList<>();
-			ResponseList<User> employeesList = userService.getUsersResponseListByOrglocationId(userDTO,orgLocation);
-			employeesList.getData().forEach(emp->{
-				
-				Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(emp.getId(), orgLocation.getId());
-				UserRole userRole = null;
-				try {
-					 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(emp.getId(), orgLocation.getId());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-				UserDTO user = new UserDTO();
-				user.setEmployeeId(emp.getId().toString());
-				if(emp.getLastName() != null) {
-					StringBuilder sb = new StringBuilder();
-					user.setUserName(sb.append(emp.getFirstName()).append(" ").append(emp.getLastName()).toString());
-				}else {
-					user.setUserName(emp.getFirstName());
-				}
-				user.setEmail(emp.getEmail());
-				user.setMobilePhone(emp.getMobilePhone());
-				
-				if(employee.getHireDate() != null)
-				user.setDateofJoin(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),employee.getHireDate()));
-				
-				if(Constants.INACTIVE.equalsIgnoreCase(userRole.getUserState().toString())) {
-					user.setDateOfTermination(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getUpdatedDate()));
-				}else {
-					user.setDateOfTermination("Till Date");
-				}
-				
-				if(employee.getUserEmploymentType() != null)
-				user.setEmploymentType(employee.getUserEmploymentType());
-				
-				if(emp.getUserCode() != null)
-				user.setUserCode(emp.getUserCode());
-				
-				if(userRole.getDesignation() != null)
-				user.setDesignation(userRole.getDesignation());
-				userDtoList.add(user);
-			});
-			employeeResponseList.setData(userDtoList);
-			employeeResponseList.setRecordsFiltered(userDtoList.size());
-			employeeResponseList.setRecordsTotal(userDtoList.size());
-			return employeeResponseList;
-		}
-		
-		@RequestMapping(value = "/previewCompleteTemplateByTemplateUUID", method = RequestMethod.GET)
-		public @ResponseBody  void previewCompleteTemplateByTemplateId(@RequestParam("templateUUID") String templateUUID,@RequestParam("toAddress") String toAddress,@RequestParam("employeeId") Long employeeId,HttpServletRequest request, HttpServletResponse response) throws Exception
-		{
-			try {
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				EmployeeVerificationTemplate empTemplate = employeeVerificationTemplateService.getEmploymentVerificationtemplateByTemplateUUID(templateUUID);
-				LetterHead letterHead = letterHeadService.getLetterheadById(empTemplate.getLetterHead().getId());
-				User user = userService.getUserById(employeeId);
-				String templateContent = reportsUtil.replaceAllTemplatePlaceHolders(empTemplate.getTemplateContent(),empTemplate,toAddress,user,orgLocation);
-				reportsUtil.viewCompleteletterheadData(templateContent,letterHead,response);
-			    
-			} catch (Exception e) {
-			    e.printStackTrace();
-			}
-		}
-
 		
 }

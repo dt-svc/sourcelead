@@ -18,8 +18,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddProjectIDAndMasterCandidateIDToExpenses {
 	private ComboPooledDataSource comboPooledDataSource;
-	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+	
 /**
  * @author Naresh Bolisetty
  * this method is using for update candidate id and master candidate id to project members
@@ -35,7 +34,7 @@ public void dumpMasterCandidateIdToExpenses() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".EXPENSES";
+			 String sql1 = "SELECT * FROM sourcelead.EXPENSES";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -44,7 +43,7 @@ public void dumpMasterCandidateIdToExpenses() throws IOException, SQLException {
 				 Long  expenseId = rs1.getLong("ID");
 				 Long  projectMemberId = rs1.getLong("PROJECT_MEMBERS_ID");
 				 
-				 String query = "SELECT * from "+dbconfig.getSchema()+".PROJECT_MEMBERS where ID = '"+projectMemberId+"' ";
+				 String query = "SELECT * from sourcelead.PROJECT_MEMBERS where ID = '"+projectMemberId+"' ";
 				 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); 
 				 ResultSet rs2 = pstmt.executeQuery();
 			 	if (rs2.next()) {
@@ -52,7 +51,7 @@ public void dumpMasterCandidateIdToExpenses() throws IOException, SQLException {
 			 		Long  projectId = rs2.getLong("PROJECT_ID");
 			    		if(projectId == 0 || masterCandidateId ==0)
 			    			continue;
-			    		String query2 = " update "+dbconfig.getSchema()+".EXPENSES set MASTER_CANDIDATE_ID = ?, PROJECT_ID = ? where ID = ? ";
+			    		String query2 = " update sourcelead.EXPENSES set MASTER_CANDIDATE_ID = ?, PROJECT_ID = ? where ID = ? ";
 			    		java.sql.PreparedStatement pstmt3 = conn.prepareStatement(query2); 
 			    		pstmt3.setLong(1, masterCandidateId);
 			    		pstmt3.setLong(2, projectId);
@@ -81,6 +80,10 @@ public void dumpMasterCandidateIdToExpenses() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
+		@SuppressWarnings("resource")
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

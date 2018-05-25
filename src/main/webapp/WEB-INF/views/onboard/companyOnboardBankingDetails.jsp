@@ -183,7 +183,7 @@ right: 15px;
 			       <div class="row clearfix"> 
 			       <div class="col-md-5">
 			        <h2 class="pull-left">Organization Banking Details</h2>
-			        	<a href="javascripit:void(0)" onclick="showUSAPaymentAccountPopup();"  class="pull-left ml mt2"><i class="fa fa-plus paddingRight"></i>Add</a>
+			        	<a href="javascripit:void(0)" onclick="addNewBankingDetails();"  class="pull-left ml mt2"><i class="fa fa-plus paddingRight"></i>Add</a>
 			        </div>
 					</div>
 					<jsp:include page="locationBankingDetails.jsp" />
@@ -228,6 +228,89 @@ right: 15px;
  <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
  <script src="/resources/js/formvalidator.js"></script>
  
+ <script>
+ function deleteBankingDetails(uuid){
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 $("#bankdetailsListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $.ajax({
+	    	type: "POST",
+	    	  url: sourceleadUrl+"/deleteOnboardBankingDetails?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,		
+	        success: function(result) {
+	        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+  	    		    showError(result.responseMessage);
+  	    		    $("#bankdetailsListLoading").removeAttr('style');
+  	    		}
+	        	else if (result.response === "AWKWARD") {
+  	    		    location.href = "/errorPage";
+  	    		}
+            	else if(result.response === "SUCCESS"){
+            		location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
+	        	}else if (result.indexOf('Sign In') !== -1) {
+  					location.replace(sourceleadUrl);
+  				}else {
+  				    showError("Operation failed, please try again");
+  				    $("#bankdetailsListLoading").removeAttr('style');
+  				}
+	        },
+	    });  
+ }
+ </script>
+ 
+ 
+ <script type="text/javascript">
+$('body').on('submit', '#bankingDetails_form', function(e){
+	
+	var validationSettings = {
+	        errorMessagePosition : 'element',
+	        borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+         }; 
+	
+	if ($('#bankingDetails_form').validate(false, validationSettings)){
+      e.preventDefault();
+      var sourceleadUrl ='${sourceleadUrl}';
+      var formData = getFormData("bankingDetails_form");
+     
+	 	$("#detailsLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $.ajax({
+		    	type: "POST",
+		    	data : formData,
+		    	  url: sourceleadUrl+"/saveOrgLocationsBankingDetails?${_csrf.parameterName}=${_csrf.token}",		
+		        success: function(result) {
+		        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+      	    		    showError(result.responseMessage);
+      	    		    $("#detailsLoading").removeAttr('style');
+      	    		}
+		        	else if (result.response === "AWKWARD") {
+      	    		    location.href = "/errorPage";
+      	    		}
+                	else if(result.response === "SUCCESS"){
+                		location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
+		        	}else if (result.indexOf('Sign In') !== -1) {
+      					location.replace(sourceleadUrl);
+      				}else {
+      				    showError("Operation failed, please try again");
+      				    $("#detailsLoading").removeAttr('style');
+      				}
+		        },
+		    });     
+      return true; 
+    }
+    else{
+    	return false;	
+       }
+  });
+
+	$('body').on('blur', '#bankingDetails_form', function() {
+		$("#bankingDetails_form").showHelpOnFocus();
+		$("#bankingDetails_form").validateOnBlur(false, validationSettings);
+	});
+	
+	$(".loc-alertclose").click(function(){
+		 $(".location-alert").fadeOut();
+	})
+  </script>
   
 <script>
   $(document).ready(function(){
@@ -252,217 +335,3 @@ right: 15px;
 <form action="${logoutUrl}" method="post" id="logoutForm">
  <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
-
-
-
-
-
-<!--   ================ Laxman changet the payment account ======================== -->
-
-<!-- Add Payment Account Modal -->
-  <div class="modal paymentaccount-modal" id="paymentAccountPopup" role="dialog">
-    <div class="modal-dialog modal-lg">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" onclick="closePaymentAccountPopup();" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Add/Edit Payment Account</h4>
-        </div>
-        <div class="modal-body minHeightcol5">
-        <form:form class="clearfix"  id="paymentaccount_form"  name="paymentaccount_form" method="POST" >
-         <inpu type="hidden" id='paymentAccountId' value='0'/>
-         <input type="hidden" name="id" id="paymentAccountId"/>
-         
-          <div class="col-md-5">
-           <label class="clearfix">Account Type<span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <select onchange="showOrHidePaymentFormFields($(this).val());" id="paymentAccountType" name="paymentAccountLocation" class="form-control" data-required="required">
-                    <option value="0">--Select Location--</option>
-                    <option value="SAVINGS" data-type="1">Savings</option>
-                    <option value="CHECKING" data-type="2">Checking</option>
-                    <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}"> 
-                      <option value="WEPAY" data-type="3">WePay</option>
-                    </c:if>
-                    
-                </select>
-           </div>
-          </div>
-           
-        <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
-           <label class="clearfix">Bank Name<span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountBankName" name="paymentAccountBankName" placeholder="Bank Name" class="form-control" data-required="required"/>
-           </div>
-           </div>
-          <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
-           <label class="clearfix">Account Number<span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountNumber" data-min='9' data-max='15' placeholder="Account Number" name="paymentAccountNumber" class="form-control" data-required="required"/>
-           </div>
-           </div>
-        
-        <div data-fieldtype="account" data-fieldfor="1,2" class="col-md-5">
-              <label class="clearfix">Routing Number<span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="Routing Number" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
-           </div>
-           </div>
-           <div data-fieldtype="account" data-fieldfor="3" class="col-md-5">
-           <label class="clearfix">Email<span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountEmail" name="paymentAccountEmail" placeholder="Email"  class="form-control" data-required="required"/>
-           </div>
-           </div>
-        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-5">
-           <label class="clearfix">First Name<span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountFirstName" name="paymentAccountFirstName" placeholder="First Name" class="form-control" data-required="required"/>
-           </div>
-           </div>
-        
-        <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-5">
-           <label class="clearfix">Last Name<span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountLastName" name="paymentAccountLastName" placeholder="Last Name" class="form-control" data-required="required"/>
-           </div>
-           </div>
-        
-        
-        </form:form>
-          
-        </div>
-        <div class="clearfix"></div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" id="savePaymentButton" onclick="savePaymentAccount();" >Save</button>
-        </div>
-      </div>
-    </div>
-  </div>
-<!-- Add IP Modal -->
-<script>
-var sourceleadUrl = '${sourceleadUrl}';
-function showUSAPaymentAccountPopup() {
-    $("#paymentAccountId").val('0');
-    $("[data-fieldtype=account]").hide();
-    showOrHidePaymentFormFields('SAVINGS');
-    $(".modal.paymentaccount-modal").fadeIn();
-    $(".comMask").fadeIn();
-    $("input[id*=paymentAccount]").val("");
-}
-function showOrHidePaymentFormFields(type) {
-    $("#paymentAccountLocation").val('0');
-    $("#paymentAccountLocation option").removeProp('disabled');
-    if(type === "WEPAY") {
-        $("#paymentAccountLocation option").prop('disabled', 'disabled');
-        $("#paymentAccountLocation option").each(function() {
-            if($(this).data('country') === "USA" || $(this).data('country') === "United States"
-                    ||  $(this).attr('value') === '0' ||  $(this).attr('value') === 0)
-                $(this).removeProp('disabled');        
-        });
-    }
-    $("[data-fieldtype=account]").hide();
-    $("#paymentAccountType").val(type);
-    var id = $("#paymentAccountType option[value="+type+"]").data('type');
-    $("[data-fieldtype=account]").each(function() {
-        var val = $(this).data('fieldfor');
-        if(typeof val === "number") {
-            if(parseInt(val) === parseInt(id)) 
-                $(this).show();
-        } else {
-            console.log(val);
-            val = val.split(",");
-            for(var e in val) {
-                if(parseInt(val[e]) === parseInt(id)) {
-                    $(this).show();
-                }
-            }
-        }
-    });
-}
-function closePaymentAccountPopup(type) {
-    $(".modal.paymentaccount-modal").fadeOut();
-    $(".comMask").fadeOut();
-    if(type) {
-        showOrHidePaymentFormFields('0');
-        showOrHidePaymentFormFields(type);
-        $("input[id*=paymentAccount]").val("");
-    }
-}
-
-function savePaymentAccount() {
-    var data =  {};
-    var val = $("#paymentAccountType").val();
-    var orgloationId = '${orgLocationId}';
-    var flag = false;
-    if(validateSelect('paymentAccountType', 'Account Type')) {
-        if(val === "WEPAY") {
-            if(validateEmail('paymentAccountEmail')
-                    && validate('paymentAccountFirstName', "First Name")
-                    && validate('paymentAccountLastName', "Last Name")) {
-                data["email"] = $("#paymentAccountEmail").val();
-                flag = true;
-            }
-        } else {
-            if(validate('paymentAccountBankName', "Bank Name")
-                    && validate('paymentAccountNumber', "Account Number")
-                    && validate('paymentAccountRoutingNumber', "Routing Number")
-                    && validate('paymentAccountFirstName', "First Name")
-                    && validate('paymentAccountLastName', "Last Name")) {
-                data["accountNumber"] = $("#paymentAccountNumber").val().trim();
-                data["bankName"] = $("#paymentAccountBankName").val().trim();
-                data["routingNumber"] = $("#paymentAccountRoutingNumber").val().trim();
-                flag = true;
-            }
-        }
-        data["firstName"] = $("#paymentAccountFirstName").val().trim();
-        data["lastName"] = $("#paymentAccountLastName").val().trim();
-        data["orgLocationId"] = orgloationId;
-        data["accountType"] = val;
-        data["id"] = $("#paymentAccountId").val();
-    }
-    if(flag) {
-    	$("#savePaymentButton").attr("disabled", "disabled");
-        $.post(sourceleadUrl+"/save-payment-account", data, function(data) {
-            showError(data.responseMessage);
-             if(data.response === "SUCCESS" || data.response === "UNABLE_SET_PAYMENT_ACCOUNT") {
-                closePaymentAccountPopup(val);
-                $("#savePaymentButton").removeAttr("disabled", "disabled");
-                location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
-            }
-            getPaymentAccounts(true);
-        });
-    }
-}
-function editPaymentAccount(type, id, locationId, firstName, lastName, accountNumber, routingNumber, bankName) {
-	$("[data-fieldtype=account]").hide();
-	showOrHidePaymentFormFields(type);
-	$(".modal.paymentaccount-modal").fadeIn();
-	$(".comMask").fadeIn();
-	$("#paymentAccountFirstName").val(firstName);
-	$("#paymentAccountBankName").val(bankName);
-	$("#paymentAccountLastName").val(lastName);
-	$("#paymentAccountLocation").val(locationId);
-	$("#paymentAccountNumber").val(accountNumber);
-	$("#paymentAccountRoutingNumber").val(routingNumber);
-	$("#paymentAccountId").val(id);
-}
-
-function changeDefaultPaymentAccount(ele, id) {
-    $.post(sourceleadUrl+"/change-default-payment-account", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
-    	location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
-        showError(data.responseMessage);
-    });
-}
-function changeActivePaymentAccount(id){
-	 $.post(sourceleadUrl+"/change-active-payment-account", {id: id}, function(data) {
-	        showError(data.responseMessage);
-	        location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
-	    });
-}
-function grantWePayAccess(id) {
-    $.post(sourceleadUrl+"/resend-wepay-mail", {id: id}, function(data) {
-        showError(data.responseMessage);
-    });
-}
-</script>

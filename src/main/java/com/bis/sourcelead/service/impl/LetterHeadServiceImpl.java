@@ -131,7 +131,7 @@ public class LetterHeadServiceImpl implements LetterHeadService{
 						Float.parseFloat(letterHead.getPaddingRight()), Float.parseFloat(letterHead.getPaddingTop()),
 						Float.parseFloat(letterHead.getPaddingBottom()));
 			} else if ("A6".equalsIgnoreCase(letterHead.getTemplateType())) {
-				pageSize = new Rectangle(PageSize.A6);
+				pageSize = new Rectangle(PageSize.LETTER);
 				pageSize.setBackgroundColor(WebColors.getRGBColor(letterHead.getTemplateBgColor()));
 				document = new Document(pageSize, Float.parseFloat(letterHead.getPaddingLeft()),
 						Float.parseFloat(letterHead.getPaddingRight()), Float.parseFloat(letterHead.getPaddingTop()),

@@ -23,8 +23,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddWeekStartDateToProjects {
 	private ComboPooledDataSource comboPooledDataSource;
-	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+	
 /**
  * @author Naresh Bolisetty
  *
@@ -35,7 +34,7 @@ public void addWeekStartDateToProjects() throws IOException, SQLException {
 	try {
 		DataSource dataSource = comboPooledDataSource();
 		conn = dataSource.getConnection();
-			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".PROJECTS";
+			 String sql1 = "SELECT * FROM sourcelead.PROJECTS";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			 while(rs1.next()){
@@ -44,7 +43,7 @@ public void addWeekStartDateToProjects() throws IOException, SQLException {
 				 if(startDate == null)
 					 continue;
 				 Date  weekStartDate =  getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(startDate);
-				 String query2 = " update "+dbconfig.getSchema()+".PROJECTS set WEEK_START_DATE = ? where ID = ? ";
+				 String query2 = " update sourcelead.PROJECTS set WEEK_START_DATE = ? where ID = ? ";
 		    		java.sql.PreparedStatement pstmt3 = conn.prepareStatement(query2); 
 		    		pstmt3.setDate(1, new java.sql.Date(weekStartDate.getTime()));
 		    		pstmt3.setLong(2,id);
@@ -140,6 +139,10 @@ public Date getBiweeklyStartMonDayDateByUsingProjectStartDateAndCurrentDate(Date
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
+		@SuppressWarnings("resource")
+		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

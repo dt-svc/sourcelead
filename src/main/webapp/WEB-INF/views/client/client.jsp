@@ -47,10 +47,6 @@ margin-top: -50px;
 	<div class="content-area content-new clearfix">
 	<div id="loading"></div> 
 	<form:form id="client_form" name="client_form" method="post">
-	<input type = "hidden" id="isLawFirm" title="Is law firm" name="isLawFirm"  type="checkbox" value = "N">
-	
-	<input type = "hidden" id="isAccountingFirm" title="Is law firm" name="isAccountingFirm"  type="checkbox" value = "N">
-	
 	<input type="hidden" id="actionId" value="${actionId}">
       <div class="clearfix form-horizontal inner-content">
         <div class="row">
@@ -65,7 +61,7 @@ margin-top: -50px;
 			</div>
             
 			<div class="form-group " id="companyWebsiteDiv">
-				<label class="col-md-3">Web Url</label>
+				<label class="col-md-3">Website</label>
 				<div class="col-md-9">
 				<input type="text" class="form-control" id="webSite" name="webSite" value="" field-name="Client Website"  onblur="validateWebsite();" data-validation="validate_Space validate_domain validate_length length2-100" data-validation-optional="true">
 				</div>
@@ -195,7 +191,7 @@ margin-top: -50px;
               </div>
               
               <div class="clearfix width100Percnt">
-              <label class="col-md-3">Payment Frequency /Tenure</label>
+              <label class="col-md-3">Payment Term</label>
               <div class="col-md-9">
                   <select class="form-control selectpicker" id="PaymentTermId" name="paymentTerms">
                   <option value="">Select Payment Term</option>

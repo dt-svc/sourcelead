@@ -16,8 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * @author Shivayogi
  *
@@ -67,19 +65,6 @@ public class CandidateEducation implements Serializable{
 	@Column(name = "ADDRESS")
 	private String address;
 	
-	// immigration related files purpose start
-	
-	@Column(name = "EDUCATION_FILE_CONTENT_TYPE")
-	private String educationFileContentType;
-	
-	@Column(name = "EDUCATION_FILE_URL",columnDefinition = "TEXT default NULL")
-	private String educationFileUrl;
-	
-	@Column(name = "EDUCATION_FILE_NAME")
-	private String educationFileName;
-	
-	// immigration related files purpose end
-	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -99,14 +84,12 @@ public class CandidateEducation implements Serializable{
     private long candidateEduId;
 	
 	@Transient
-	@JsonProperty
     private String startDateStr;
 	
 	@Transient
 	private String msg;
 	
 	@Transient
-	@JsonProperty
 	private String endDateStr;
 	
 	@Transient
@@ -290,31 +273,6 @@ public class CandidateEducation implements Serializable{
 	public void setAllAndCandidateEducations(LinkedHashSet<String> allAndCandidateEducations) {
 		this.allAndCandidateEducations = allAndCandidateEducations;
 	}
-
-	public String getEducationFileContentType() {
-		return educationFileContentType;
-	}
-
-	public void setEducationFileContentType(String educationFileContentType) {
-		this.educationFileContentType = educationFileContentType;
-	}
-
-	public String getEducationFileUrl() {
-		return educationFileUrl;
-	}
-
-	public void setEducationFileUrl(String educationFileUrl) {
-		this.educationFileUrl = educationFileUrl;
-	}
-
-	public String getEducationFileName() {
-		return educationFileName;
-	}
-
-	public void setEducationFileName(String educationFileName) {
-		this.educationFileName = educationFileName;
-	}
-	
 	
 	
 }

@@ -56,7 +56,6 @@ import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
@@ -90,7 +89,6 @@ import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
@@ -258,9 +256,6 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	@Autowired
 	private LeaveTypeService leaveTypeService;
-	
-	@Autowired
-	EmailScenarioConfigurationService emailScenarioconService;
 	
 	 
 /*	 @Override
@@ -1044,7 +1039,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			
 			
 	     tempHTML.append("</table> ");
-		 globalVarsMap.put("WeekFrequency",tempHTML.toString());
+		 globalVarsMap.put("weekFrequency",tempHTML.toString());
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
@@ -1055,26 +1050,16 @@ public class ProjectsServiceImpl implements ProjectsService{
 			  if(emailScenario == null){
 					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
 			   }
-			  //covert subject,body and signature
-				 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
-				 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
-				 String signature = null;
-				 if(StringUtils.isNotBlank(emailScenario.getSignature())){
-					 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
-				 }
-				 String url = sourceleadUrl;
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+		 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
-		 
-		//configured Email
-			
-		 String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
-		 if(StringUtils.isNotBlank(fromMail)){
-			 emailMessage.setFromEmail(fromMail);
-		 } 
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,locationsId,iAdressArray,new ArrayList<EmailAttachment>());
@@ -1101,7 +1086,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    Map<String, String> globalVarsMap = new HashMap<String, String>();
 			    globalVarsMap.put("firstName", user.getFirstName());
 			    globalVarsMap.put("lastName",user.getLastName());
-			    String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+				String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
 				emailScenario.setBody(body);
 				emailScenario.setOrgCode(emp.getOrgLocations().getOrg().getOrgCode());
 				String actionLink = "";
@@ -1135,7 +1120,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					    Map<String, String> globalVarsMap = new HashMap<String, String>();
 					    globalVarsMap.put("firstName", user.getFirstName());
 					    globalVarsMap.put("lastName",user.getLastName());
-					    String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+						String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
 						emailScenario.setBody(body);
 						emailScenario.setOrgCode(emp.getOrgLocations().getOrg().getOrgCode());
 						String actionLink = "";
@@ -2322,24 +2307,16 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				  if(emailScenario == null){
 						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_MANAGER_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
 				   }
-				  //covert subject,body and signature
-					 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
-					 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
-					 String signature = null;
-					 if(StringUtils.isNotBlank(emailScenario.getSignature())){
-						 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
-					 }
-					 String url = sourceleadUrl;
+			 //covert subject,body and signature
+			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
+			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
+			 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
-			 
-			 String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
-			 if(StringUtils.isNotBlank(fromMail)){
-				 emailMessage.setFromEmail(fromMail);
-			 } 
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
