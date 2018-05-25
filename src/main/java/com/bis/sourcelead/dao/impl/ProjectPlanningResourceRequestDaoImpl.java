@@ -279,7 +279,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 			
 		}else {
 			String query = "from ProjectPlanningResourceRequest resourceRequest  "
-					+ " where  resourceRequest.projectPlanningRequestId.orgLocationId.id = :orgLocationId "
+					+ " where  resourceRequest.candidateId.orgLocationId.id = :orgLocationId "
 					+ " and resourceRequest.status = '1' and resourceRequest.projectPlanningRequestId.requestType = 'Associate Request' ";
 			projectPlanningResourceRequestList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 			

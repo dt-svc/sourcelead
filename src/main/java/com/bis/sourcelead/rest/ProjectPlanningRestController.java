@@ -619,11 +619,12 @@ public class ProjectPlanningRestController {
 	    		 if(candidate != null && !candidate.getOrgLocationId().getId().equals(projectPlanningResourceRequest.getOrgLocationId().getId())) {
 	    			
 					 OrgLocations vendorOrgLocation = candidate.getOrgLocationId();
+					 OrgLocations clientOrgLocation = projectPlanningRequest.getOrgLocationId();
 		    		 orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocation.getId(),orgLocations.getId());
 		    		 OrgSpoc orgSpoc = null;
 		    		 if(orgRelations == null) {
 
- 						    orgRelations = saveOrgRelations(orgLocations,vendorOrgLocation,user);
+ 						    orgRelations = saveOrgRelations(clientOrgLocation,vendorOrgLocation,user);
 			 				orgRelations = orgRelationsService.addOrgRelations(orgRelations);
 			 			
 							String modules = vendorOrgLocation.getModulesId();
@@ -990,15 +991,15 @@ public class ProjectPlanningRestController {
 				Set<OrgSpoc> orgSpocSet = new HashSet<>();
 				OrgSpoc orgSpoc = new OrgSpoc();
 				orgSpoc.setOrgRelations(orgRelations);
-				orgSpoc.setClientUser(user);
-				orgSpoc.setVendorUser(vendorOrgLocation.getUser());
+				orgSpoc.setClientUser(orglocations.getUser());
+				orgSpoc.setVendorUser(user);
 				orgSpoc.setInvitationStatus(Constants.MAIL_NEW);
 				orgSpoc.setClientLocationId(orglocations);
 				orgSpoc.setVendorLocationId(vendorOrgLocation);
 				orgSpoc.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				orgSpoc.setSpocStatus("Active");
 				orgSpoc.setStatus(Constants.MEMBER_ACTIVE);
-				orgSpoc.setOwnerUser(user);
+				orgSpoc.setOwnerUser(orglocations.getUser());
 				orgSpoc.setCreatedDate(new Date());
 				orgSpoc.setCreatedBy(user.getUserCode());
 				orgSpoc.setUpdatedDate(new Date());
