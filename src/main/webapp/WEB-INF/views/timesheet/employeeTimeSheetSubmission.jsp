@@ -205,7 +205,7 @@
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
 																   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
 																   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
-			                                                       <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].ticketNumber"/> 
+			                                                       <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].ticketNumber" value="${entry.ticketNumber}" /> 
 			                                                       <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].projectMemberId" value="${entry.projectMemberId}"/>
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
@@ -342,34 +342,6 @@
 						            </div>
 						            </div>
 						            <div class="timesheet_bot">
-									           <!--  <div class="commentFile">
-													<h2>Attachmets & Comments</h2>
-													<div class="">
-														<table>
-															<tr>
-																<td class="addRowBtn">
-																	<select class="form-control input-sm">
-																		<option>Project 1</option>
-																		<option>Project 2</option>
-																		<option>Project 3</option>
-																	</select>
-																	<input type="button" value="" class="addRowIcon"/>
-																</td>
-																<td>
-																	<div class="input-group col-md-12" style="margin:0 auto">
-																		<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
-																		  <input style="display: none;" multiple id="uploadBtn" class="upload" type="file">
-																		  </span></label>
-																		<input class="form-control input-sm" id="uploadFile" placeholder="Attachment" type="text">
-																	  </div>								
-																</td>
-																<td>
-																	<input type="text" class="form-control input-sm" placeholder="Comment" />
-																</td>
-															</tr>
-														</table>
-													</div>
-									            </div>      -->
 									    	<div class="timesheet_week_comm">
 									            <!-- <div class="totalWrap"><ul><li><span>Billable Hours</span><input name="grandBillableTotal" id="grandBillableTotal" value="00:00" placeholder="HH/HH" readonly type="text"></li><li><span>Non-Billable Hours</span><input name="grandNonBillableTotal" id="grandNonBillableTotal" value="00:00" placeholder="HH/HH" readonly type="text"></li> <li><span>Total Hours</span><input id="grandTotal" value="00:00" placeholder="HH/HH" readonly type="text"></li><div class="clearfix"></div>  </ul></div> -->
 									            <div class="totalWrap">
@@ -387,19 +359,8 @@
 									            </div>
 									            <div class="clearfix"></div>
 									    	    <div class="timesheet_button clearfix">
-									        	<!-- <input type="button" value="Draft" class="time_btn time_dra" />
-									            <input type="button" value="Submit" class="time_btn" />
-									            <input type="button" value="Clear" class="time_btn time_cancel" /> -->
-									            
-									           <%--  <c:if test="${timesheetSubmissionDTO.saveButtonVisible}"> --%>
-												    <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
-												 <%-- </c:if> --%>
-												<%--  <c:if test="${timesheetSubmissionDTO.submitButtonVisible}"> --%>
-												     <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
-											    <%-- </c:if> --%>
-											     <%-- <c:if test="${timesheetSubmissionDTO.cancelButtonVisible}"> --%>
-											      <!--  <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' /> -->
-											     <%-- </c:if> --%>
+											     <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
+											     <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
 									        </div>              
 									        </div>
 									    	<div class="clearfix"></div>
@@ -408,267 +369,6 @@
 						          </div>
 						        </div>        	
 						  </div>
-				
-			<%-- <div id="timesheetDivByTab">
-				<div class="project_tabs">
-					<div id="tab-1" class="project_tabs_inn" style="display: block;">
-						<div class="timesheet_tableNew">
-							<table id="timesheet" cellspacing="0" cellpadding="0">
-								<tbody>
-									<tr>
-										<th>Tasks</th>
-										<th>Type</th>
-										<c:forEach var="weekDays" items="${timesheetSubmissionDTO.weekDays}">
-										   <th>${weekDays.dayOfTheDate}<i>${weekDays.date}</i></th>
-										</c:forEach>
-									</tr>
-									<c:set var="entryIndex" value="0"/>
-									<c:forEach var="entry" items="${entriesMap}" varStatus="entryCount">
-									    <tr id="timesheetRow${entryCount.index+1}">
-									      <td id="${entryCount.index+1}taskTd">
-											<div class="taskDropDown">
-											  <c:set var="taskType" value=""/>
-											  <c:set var="taskId" value=""/>
-											  <c:set var="taskName" value=""/>
-											  <c:if test="${timesheetSubmissionDTO.submitButtonVisible ||  timesheetSubmissionDTO.saveButtonVisible}">
-												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId}"  onchange='getProjectTasks("${entryCount.index+1}task1Id","${timesheetEntryDetailsDTO.projectId}");prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
-														<option value=''>--select task--</option>
-														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
-														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
-														       <c:if test="${pt.id == entry.key}">
-														        <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-																	       <c:forEach var="ted" items="${entry.value}">
-																                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
-																           </c:forEach>
-															       </c:if>
-															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
-															             <c:set var="taskType" value="${pt.taskType}" />
-															        </c:if>
-														          <c:set var="taskId" value="${pt.id}" />
-														          <c:set var="taskName" value="${pt.taskName}" />
-														         <option value='${pt.id}' selected>${pt.taskName}</option>
-														       </c:if>
-														       <c:if test="${pt.id != entry.key}">
-														       <c:if test="${not empty pt.generatedId}" >
-														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
-														       </c:if>
-														        <c:if test="${empty pt.generatedId}" >
-														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'>${pt.taskName} </option>
-														       </c:if>
-														          
-														       </c:if>
-														   </c:forEach>
-														</c:if>
-													</select>
-													 <c:if test="${entryCount.index == 0}">
-													    <input value="" onclick="addTimeSheetRow('${timesheetEntryDetailsDTO.projectId}')" class="addtaskfield" type="button">
-													 </c:if>
-													 <c:if test="${entryCount.index > 0}">
-													    <input value="" onclick="removeTimeSheetRow('${entryCount.index+1}');" class="addtaskfield removetaskfield" type="button">
-													 </c:if>
-											  </c:if>
-											   <c:if test="${!timesheetSubmissionDTO.saveButtonVisible}">
-											         <c:if test="${entry.key != 0}">
-											             <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
-															       <c:if test="${pt.id == entry.key}">
-															       <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-																	       <c:forEach var="ted" items="${entry.value}">
-																                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
-																           </c:forEach>
-															       </c:if>
-															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
-															             <c:set var="taskType" value="${pt.taskType}" />
-															        </c:if> 
-														           <c:set var="taskId" value="${pt.id}" />
-														           <c:set var="taskName" value="${pt.taskName}" />
-														          <p>${!empty pt.taskName ? pt.taskName : '--'}</p>
-															       </c:if>
-												         </c:forEach>
-												       </c:if>
-											          <c:if test="${entry.key == 0}">
-											              <p>--</p>
-											          </c:if>
-											          
-											   </c:if>
-											</div>
-									      </td>
-									      <td>
-									        <div>
-									           <span id="${entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span>
-									        </div>
-									      </td>
-									       <c:forEach var="te" items="${entry.value}" varStatus="teStatus">
-										          <td> 
-										           <div>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
-													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
- 
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
-										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
-										               <input onblur="editMe(this);"  ${te.editable ? '' : 'disabled="disabled"'} id="${entryCount.index+1}timeSheetDay${teStatus.index+1}Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
-										               <div class='timesheet_comm'>
-										                   <c:if test="${!empty te.comments || (empty te.comments && te.editable)}">
-										                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment${teStatus.index+1}Id");'></i>
-										                       <span class='teskcomment' id='${entryCount.index+1}comment${teStatus.index+1}Id'>
-										                             <textarea ${te.editable ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
-                                                               </span>
-										                   </c:if>
-										                   <c:if test="${empty te.comments && !te.editable}">
-										                      <i class='blankDiv'></i>
-										                   </c:if>
-										               </div>
-										            </div>
-										              <c:set var="entryIndex" value="${entryIndex+1}"/>
-										           </td>
-								        </c:forEach>
-									    </tr>
-									</c:forEach>
-								    <tr class="last_child">
-										<td class="total_field">Total</td>
-										<td></td>
-										<td>
-											<div class="alignDiv">
-											<input type="hidden" id="entryIndexValue" value="${entryIndex}"/>
-												<input disabled="" id="rowTotal1Id" name="rowTotal1Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-										<td>
-											<div class="alignDiv">
-												<input disabled="" id="rowTotal2Id" name="rowTotal2Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-										<td>
-											<div class="alignDiv">
-												<input disabled="" id="rowTotal3Id" name="rowTotal3Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-										<td>
-											<div class="alignDiv">
-												<input disabled="" id="rowTotal4Id" name="rowTotal4Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-										<td>
-											<div class="alignDiv">
-												<input disabled="" id="rowTotal5Id" name="rowTotal5Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-										<td>
-											<div class="alignDiv">
-												<input disabled="" id="rowTotal6Id" name="rowTotal6Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-										<td>
-											<div class="alignDiv">
-												<input disabled="" id="rowTotal7Id" name="rowTotal7Id"
-													class="inline_field" value="HH:MM" placeholder="00:00"
-													type="text">
-											</div>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<div class="clearfix"></div>
-							 <div class="timesheet_bot clearfix">
-								<div class="timesheet_week_comm">
-									<input name="attcahmentMaxRowNumber" id="attcahmentMaxRowNumber" value="1" type="hidden">
-									<input name="fileCounter" id="fileCounter" value="0" type="hidden">
-									<div id="timesheetDocumentsId" class="timesheetDocs">
-									  <c:if test="${timesheetSubmissionDTO.submitButtonVisible}">
-											<div class="commentFile">
-												<span>
-												   <table class="timesheetAttachment" id="attachmentTable" cellspacing="0" cellpadding="0">
-												       <tbody>
-														   <tr id="divAttachmentTsRow0">
-															   <td>
-															     <input name="dbIsTimesheetAttachmentRequired" id="dbIsTimesheetAttachmentRequired" value="${timesheetSubmissionDTO.attachmentRequired ? 1 : 0}" type="hidden">
-															   <div id="0docFileuploadFileGroup">
-																<input name="0docFile" id="0docFile" field-name="Attachment" onchange="validateUploadFile(0)" data-validation-optional="true" class="timesheetAttachmentValidation" type="file">
-																   <i class="fa fa-plus" onclick="addAttachment()"></i>				
-																</div>				
-															   </td>					
-																 	 		
-															</tr>
-														</tbody>
-													</table>
-												 </span>
-												 <i class="fa fa-info-circle" title="Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB "></i>
-											 </div>
-										 </c:if>
-										  <c:if test="${!empty timesheetSubmissionDTO.fileInfo || !timesheetSubmissionDTO.attachmentRequired}">
-										        <input name="isTimesheetAttachmentRequired" id="isTimesheetAttachmentRequired" value="N" type="hidden">
-										  </c:if>
-										  <c:if test="${empty timesheetSubmissionDTO.fileInfo && timesheetSubmissionDTO.attachmentRequired}"> 
-										     <input name="isTimesheetAttachmentRequired" id="isTimesheetAttachmentRequired" value="Y" type="hidden">
-										   </c:if>
-										   <c:forEach var="finfo" items="${timesheetSubmissionDTO.fileInfo}">
-										         <strong id='${finfo.fileDbId}document'>
-												     <a class='downicon' href='${finfo.fileURL}' download>
-												        <i class='glyphicon glyphicon-save'></i>
-												        <input type='button' class='padIcon' value='${finfo.fileName}'>
-												      </a>
-												       <c:if test="${timesheetSubmissionDTO.submitButtonVisible}">
-												          <input class='dele' type='button' onClick='deleteSubmissionDocument("${finfo.fileDbId}");' >
-												       </c:if>
-												       <input class='deleApp' type='button' onClick="viewFile('${finfo.fileURL}','${finfo.fileName}','${finfo.contentType}');">
-												 </strong>
-										   </c:forEach>
-									</div>
-									  <c:if test="${timesheetSubmissionDTO.weekCommentVisible}">
-										<div class="commentTime pull-right">
-											<textarea name="timesheetSubmission.weekComment" ${timesheetSubmissionDTO.submitButtonVisible ? '' : 'disabled="disabled"'} id="weekComment" placeholder="comment here">${timesheetSubmissionDTO.weekComment}</textarea>
-										</div>
-									   </c:if>
-								</div>
-							</div> 
-						</div>
-						<div class="timesheet_bot">
-							<div class="timesheet_button">
-							   <div class="totalWrap pull-left timesheethours-li">
-									<ul>
-										<li><span>Billable Hours</span><input
-											id="grandBillableTotal"
-											value="${timesheetSubmissionDTO.billableHours}" placeholder="HH/HH" readonly="" type="text"></li>
-										<li><span>Non-Billable Hours</span><input
-											id="grandNonBillableTotal"
-											value="${timesheetSubmissionDTO.nonBillableHours}" placeholder="HH/HH" readonly="" type="text"></li>
-										<li><span>Total Hours</span><input id="grandTotal" 
-											value="${timesheetSubmissionDTO.totalHours}" placeholder="HH/HH" readonly="" type="text"></li>
-										<div class="clearfix"></div>
-									</ul>
-								</div>
-								 <c:if test="${timesheetSubmissionDTO.saveButtonVisible}">
-								    <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
-								 </c:if>
-								 <c:if test="${timesheetSubmissionDTO.submitButtonVisible}">
-								     <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
-							    </c:if>
-							     <c:if test="${timesheetSubmissionDTO.cancelButtonVisible}">
-							       <input type='button' value='Clear' onClick='clearTimesheet();' class='time_btn time_cancel' />
-							     </c:if>
-							   
-							</div>
-							<div class="clearfix"></div>
-						</div>
-					</div>
-					<div id="activityDiv">
-						<jsp:include page="timesheetActivity.jsp"></jsp:include>
-					</div>					
-	            </div>
-		    </div> --%>
 	    </div>
 	<input type="hidden" name="_ignore"
 		style="border-color: rgb(51, 51, 51);">
@@ -819,6 +519,7 @@
 	        		    	  $("#timesheetEntriesDiv").append(data);
 	        		    	  $("#loadTime").removeAttr('style');
 	        		    	  prepareChosenScripts();
+	        		    	  setTotals();
 	        		      }
 	        	    }); 
 	}
@@ -2222,20 +1923,11 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 	        contentType:false,
 	      	  url: sourceleadUrl+"/saveEmployeeTimesheetEntries?timesheetSubmission.timesheetStatus="+status+"&timesheetFor="+savingType,		
 		      success :function(data) {
-		    	 /*  if($("#timesheet_form input[data-id*=docFile]").length > 0) {
-		  			 $("#timesheet_form input[data-id*=docFile]").remove();
-		  		   } */
 		  		     $("#timesheetEntriesDiv").empty();
  		    	     $("#timesheetEntriesDiv").append(data);
-			    	 setTotals();
-    		    	 /*  maskme();
-			    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
-			    		  $("#currentTimeSubFrequency").val('');
-			    		  $("#timeSubFrequency").val('');
-			    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
-		            	  $("#timeSubFrequency").val(currentTimeSubFrequency)
-			    	  }
-			    	  $("#loadTime").removeAttr('style'); */
+ 		    	     $("#loadTime").removeAttr('style');
+  		    	     prepareChosenScripts();
+  		    	     setTotals();
 		      }
 	      	  
 	    });

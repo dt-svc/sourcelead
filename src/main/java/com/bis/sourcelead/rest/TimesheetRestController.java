@@ -561,7 +561,7 @@ public class TimesheetRestController {
 								}	
 								
 								if(teDTO != null && StringUtils.isNotEmpty(teDTO.getTicketNumber())) {
-									ticketNumber = teDTO.getTimesheetTaskDTO().getTaskType();
+									ticketNumber = teDTO.getTicketNumber();
 								}	
 							}
 							etsDTO.setTimesheetEntries(entry.getValue());
@@ -1552,45 +1552,16 @@ public class TimesheetRestController {
 	@RequestMapping(value = "/saveEmployeeTimesheetEntries", method = RequestMethod.POST)
 	public ModelAndView saveEmployeeTimesheetEntriesWeb(EmployeeTimesheetEntryDetailsDTO tedDTO, HttpServletRequest request)
 			throws Exception {
-		/**
-		 * saving Code
-		 */
-		//OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		//Boolean isValid = false;
 		ModelAndView model = new ModelAndView();
 		try {
-			//outerLoop:{
-				/*if (Validator.validate(tedDTO)) {*/
-					/*if (Validator.validate(tedDTO.getTimesheetSubmission())) {*/
-						/*for (TimesheetEntriesDTO entries : tedDTO.getTimesheetSubmission().getTimesheetEntries()) {
-							if(StringUtils.isNotEmpty(entries.getDayOfTheDate()) && StringUtils.isNotEmpty(entries.getDate())) {
-								if (!Validator.validate(entries)) {
-									model.addObject("INVALID_DATA", entries.getDayOfTheDate());
-									break outerLoop;
-								}
-							}
-							
-						}
-						isValid = true;*/
-						/*if valid Data*/
-						tedDTO = saveEmployeeTimesheetEntries(tedDTO, request);
+				tedDTO = saveEmployeeTimesheetEntries(tedDTO, request);
+				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
+				model.setViewName("timesheet/employeeTImesheetInvoiceList");
 						
-					/*}else {
-						model.addObject("INVALID_DATA_EMPTY", "Atleat One Date Should Be Filled");
-						break outerLoop;
-					}*/
-				/*}*/
-		     //}
-		
-		/*model.addObject("timesheetSubmissionDTO", tedDTO.getTimesheetSubmission());
-		LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = getEntriesMapForDisplayWeb(
-				tedDTO.getTimesheetSubmission(), request);
-		model.addObject("entriesMap", entriesMap);
-		model.addObject("timesheetEntryDetailsDTO", tedDTO);*/
 		} catch (Exception e) {
 			model.addObject("AWKWARD", true);
+			model.setViewName("timesheet/employeeTImesheetInvoiceList");
 		}
-		model.setViewName("timesheet/timeSheetSubmission");
 		return model;
 	}
 	
@@ -1975,7 +1946,6 @@ public class TimesheetRestController {
 			eedDTO.setCurrentTimeSubFrequency(tedDTO.getCurrentTimeSubFrequency());
 			tedDTO  =  getEmployeeTimesheetSubFrequencyListByCurrentFrequency(eedDTO, tedDTO, loginOrgLocation,candidate, request);
 			String status = "";
-			String savingType = "user";
 			EmployeeTimeSheetSubmissionDTO tsDTO = null;
 			if (tedDTO.getTimesheetSubmission() != null) {
 				tsDTO = tedDTO.getTimesheetSubmission();
@@ -1986,12 +1956,6 @@ public class TimesheetRestController {
 				status = "Draft";
 			}
 	
-			if (StringUtils.isEmpty(tedDTO.getTimesheetFor())) {
-				savingType = "user";
-			} else {
-				savingType = tedDTO.getTimesheetFor();
-			}
-
 			Map<Long,LinkedList<TimesheetEntriesDTO>> timesheetEntriesMap = new LinkedHashMap<>();
 			if(tsDTO.getTimesheetEntries() != null && !tsDTO.getTimesheetEntries().isEmpty()) {
 				for(TimesheetEntriesDTO teDTO :tsDTO.getTimesheetEntries()) {
