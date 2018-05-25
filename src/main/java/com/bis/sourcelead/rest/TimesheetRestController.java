@@ -1982,6 +1982,8 @@ public class TimesheetRestController {
 			Map<Long,LinkedList<TimesheetEntriesDTO>> timesheetEntriesMap = new LinkedHashMap<>();
 			if(tsDTO.getTimesheetEntries() != null && !tsDTO.getTimesheetEntries().isEmpty()) {
 				for(TimesheetEntriesDTO teDTO :tsDTO.getTimesheetEntries()) {
+					if(StringUtils.isNotEmpty(teDTO.getTimesheetStatus()) && (teDTO.getTimesheetStatus().equalsIgnoreCase("APPROVED") || teDTO.getTimesheetStatus().equalsIgnoreCase("SUBMITTED")))
+						continue;
 					Long projectMemberId = teDTO.getProjectMemberId();
 					LinkedList<TimesheetEntriesDTO> tsDTOList = timesheetEntriesMap.get(projectMemberId);
 					if (tsDTOList == null) {

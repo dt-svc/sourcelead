@@ -672,7 +672,7 @@
 <!-- AddRow and Add Attachments Divs  ####-->
         <div id="divadttTd0" style="display:none;">   
              <div class="timeAdd"> 
-              <select id="REPLACEROWIDprojectMember1Id" name="REPLACEROWIDprojectMember1Id" onchange="flushtasks('REPLACEROWIDtask1Id');setTaskStatus('REPLACEROWIDprojectMember1Id');"  field-name="Project">  
+              <select id="REPLACEROWIDprojectMember1Id"  name="REPLACEROWIDprojectMember1Id" onchange="flushtasks('REPLACEROWIDtask1Id');setTaskStatus('REPLACEROWIDprojectMember1Id');"  field-name="Project">  
               <option value=''>--select Project--</option>
                <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
 	                   <option value='${pMember.id}'>${pMember.projectName} </option> 
@@ -683,7 +683,7 @@
         </div>
          <div id="divadttTd1" style="display:none;">   
              <div class="taskDropDown"> 
-              <select id="REPLACEROWIDtask1Id" name="REPLACEROWIDtask1Id" class="smfield"  field-name="Task" onchange="prepareProjectTaskDetails('ENTRYINDEX','REPLACEROWIDtask1Id','REPLACEROWIDprojectMember1Id')"  onclick="getProjectTasks('REPLACEROWIDtask1Id','REPLACEROWIDprojectMember1Id')">  
+              <select id="REPLACEROWIDtask1Id"  name="REPLACEROWIDtask1Id" class="smfield"  field-name="Task" onchange="prepareProjectTaskDetails('ENTRYINDEX','REPLACEROWIDtask1Id','REPLACEROWIDprojectMember1Id')"  onclick="getProjectTasks('REPLACEROWIDtask1Id','REPLACEROWIDprojectMember1Id')">  
               <option value=''>--select task--</option>
               </select>
              </div>
@@ -700,103 +700,103 @@
    		
    		
         <div id="divadttTd3" style="display:none;">
-               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
-			   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
-			   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-			   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
-               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
-               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
-	    	   <input type="text" onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay1Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+			   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+			   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+			   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+	    	   <input type="text" disabled onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay1Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
                <div class="timesheet_comm">
                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment1Id');"></i>
-                <span class="teskcomment" id="REPLACEROWIDcomment1Id" ><textarea name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea1Id" ></textarea></span>
+                <span class="teskcomment" id="REPLACEROWIDcomment1Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea1Id" ></textarea></span>
                </div>
    		</div>
         <div id="divadttTd4" style="display:none;">
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
-				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
-				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
-                   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-				  <input type="text" onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay2Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+				  <input type="text" disabled onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay2Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                       <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment2Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDcomment2Id" ><textarea name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea2Id" ></textarea></span></div>
+                  <span class="teskcomment" id="REPLACEROWIDcomment2Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea2Id" ></textarea></span></div>
         </div>
         <div id="divadttTd5" style="display:none;">
-                   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
-				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
-				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
-                   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-				  <input type="text" onblur='editMe(this);'    id="REPLACEROWIDtimeSheetDay3Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+				   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+				   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+	               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+	               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+	               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+				  <input type="text" onblur='editMe(this);' disabled  id="REPLACEROWIDtimeSheetDay3Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment3Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDcomment3Id" ><textarea name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea3Id"></textarea></span></div>
+                  <span class="teskcomment" id="REPLACEROWIDcomment3Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea3Id"></textarea></span></div>
         </div>
         <div id="divadttTd6" style="display:none;">
-                   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
-				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
-				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-				  <input type="text" onblur='editMe(this);'    id="REPLACEROWIDtimeSheetDay4Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+				  <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay4Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment4Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDcomment4Id" ><textarea name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea4Id"></textarea></span></div>           
+                  <span class="teskcomment" id="REPLACEROWIDcomment4Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea4Id"></textarea></span></div>           
         </div>
         <div id="divadttTd7" style="display:none;">
-                   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
-				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
-				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-				  <input type="text" onblur='editMe(this);'    id="REPLACEROWIDtimeSheetDay5Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+				  <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay5Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
                   <div class="timesheet_comm">
                   <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment5Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDcomment5Id" ><textarea name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea5Id"></textarea></span></div>  
+                  <span class="teskcomment" id="REPLACEROWIDcomment5Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea5Id"></textarea></span></div>  
     	 </div>
          <div id="divadttTd8" style="display:none;">
-                   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
-				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
-				   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
-	               <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-			     <input type="text" onblur='editMe(this);' id="REPLACEROWIDtimeSheetDay6Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+			     <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay6Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
                  <div class="timesheet_comm">
                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment6Id');"></i>
-                 <span class="teskcomment" id="REPLACEROWIDcomment6Id" ><textarea name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea6Id"></textarea></span></div>
+                 <span class="teskcomment" id="REPLACEROWIDcomment6Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea6Id"></textarea></span></div>
          </div>
          <div id="divadttTd9" style="display:none;">
-                 <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
-				 <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
-				 <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                 <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-                 <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
-                 <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
-                 <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
-	             <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-			     <input type="text" onblur='editMe(this);' id="REPLACEROWIDtimeSheetDay7Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+				 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+				 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+	             <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+			     <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay7Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
                  <div class="timesheet_comm">
                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment7Id');"></i>
-                 <span class="teskcomment" id="REPLACEROWIDcomment7Id" ><textarea name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea7Id"></textarea></span></div>            
+                 <span class="teskcomment" id="REPLACEROWIDcomment7Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea7Id"></textarea></span></div>            
     	 </div>
 
  <script>
@@ -1398,6 +1398,8 @@ function addTimeSheetRow() {
 			var divadttTd00Str = document.getElementById("divadttTd0").innerHTML;
 			divadttTd00Str = divadttTd00Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd00Str = divadttTd00Str.replace(/ENTRYINDEX/g, (entryIndex)); 
+			divadttTd00Str = divadttTd00Str.replace(/disabled/g, ''); 
+			
 			cell0.innerHTML = divadttTd00Str;
 			$("#"+maxRowNum+"projectMember1Id").attr('data-validation','required');
 			
@@ -1405,6 +1407,7 @@ function addTimeSheetRow() {
 			var divadttTd0Str = document.getElementById("divadttTd1").innerHTML;
 			divadttTd0Str = divadttTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd0Str = divadttTd0Str.replace(/ENTRYINDEX/g, (entryIndex)); 
+			divadttTd0Str = divadttTd0Str.replace(/disabled/g, ''); 
 			cell1.innerHTML = divadttTd0Str;
 			$("#"+maxRowNum+"task1Id").attr('data-validation','required');
 			
@@ -1412,12 +1415,14 @@ function addTimeSheetRow() {
 			var divadttTd1Str = document.getElementById("divadttTd2").innerHTML;
 			divadttTd1Str = divadttTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd1Str = divadttTd1Str.replace(/ENTRYINDEX/g, (entryIndex)); 
+			divadttTd1Str = divadttTd1Str.replace(/disabled/g, ''); 
 			cell2.innerHTML = divadttTd1Str;
 			
 			var cell3 = row.insertCell(3);
 			var divadttTd10Str = document.getElementById("divadttTd10").innerHTML;
 			divadttTd10Str = divadttTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd10Str = divadttTd10Str.replace(/ENTRYINDEX/g, (entryIndex)); 
+			divadttTd10Str = divadttTd10Str.replace(/disabled/g, ''); 
 			cell3.innerHTML = divadttTd10Str;
 			
 			
@@ -1439,6 +1444,7 @@ function addTimeSheetRow() {
 			var dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[0].dayOfTheDate']").val();
 			divadttTd2Str = divadttTd2Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd2Str = divadttTd2Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
+			divadttTd2Str = divadttTd2Str.replace(/disabled/g, ''); 
 			cell4.innerHTML = divadttTd2Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
@@ -1455,6 +1461,7 @@ function addTimeSheetRow() {
 			var divadttTd3Str = document.getElementById("divadttTd4").innerHTML;
 			divadttTd3Str = divadttTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd3Str = divadttTd3Str.replace(/ENTRYINDEX/g, (entryIndex)); 
+			divadttTd3Str = divadttTd3Str.replace(/disabled/g, ''); 
 			
 		    dateValue = $("[name='timesheetSubmission.timesheetEntries[1].date']").val();
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[1].dayOfTheDate']").val();
@@ -1476,7 +1483,7 @@ function addTimeSheetRow() {
 			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
 			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd4Str = divadttTd4Str.replace(/ENTRYINDEX/g, (entryIndex)); 
-			
+			divadttTd4Str = divadttTd4Str.replace(/disabled/g, '');
 			dateValue = $("[name='timesheetSubmission.timesheetEntries[2].date']").val();
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[2].dayOfTheDate']").val();
 			divadttTd4Str = divadttTd4Str.replace(/DATEVALUE/g, (dateValue)); 
@@ -1496,7 +1503,7 @@ function addTimeSheetRow() {
 			var divadttTd5Str = document.getElementById("divadttTd6").innerHTML;
 			divadttTd5Str = divadttTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd5Str = divadttTd5Str.replace(/ENTRYINDEX/g, (entryIndex));
-			
+			divadttTd5Str = divadttTd5Str.replace(/disabled/g, '');
 			dateValue = $("[name='timesheetSubmission.timesheetEntries[3].date']").val();
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[3].dayOfTheDate']").val();
 			divadttTd5Str = divadttTd5Str.replace(/DATEVALUE/g, (dateValue)); 
@@ -1517,7 +1524,7 @@ function addTimeSheetRow() {
 			var divadttTd6Str = document.getElementById("divadttTd7").innerHTML; 
 			divadttTd6Str = divadttTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd6Str = divadttTd6Str.replace(/ENTRYINDEX/g, (entryIndex));
-			
+			divadttTd6Str = divadttTd6Str.replace(/disabled/g, '');
 			dateValue = $("[name='timesheetSubmission.timesheetEntries[4].date']").val();
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[4].dayOfTheDate']").val();
 			divadttTd6Str = divadttTd6Str.replace(/DATEVALUE/g, (dateValue)); 
@@ -1538,7 +1545,7 @@ function addTimeSheetRow() {
 			var divadttTd7Str = document.getElementById("divadttTd8").innerHTML;
 			divadttTd7Str = divadttTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd7Str = divadttTd7Str.replace(/ENTRYINDEX/g, (entryIndex)); 
-			
+			divadttTd7Str = divadttTd7Str.replace(/disabled/g, '');
 			dateValue = $("[name='timesheetSubmission.timesheetEntries[5].date']").val();
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[5].dayOfTheDate']").val();
 			divadttTd7Str = divadttTd7Str.replace(/DATEVALUE/g, (dateValue)); 
@@ -1558,7 +1565,7 @@ function addTimeSheetRow() {
 			var divadttTd8Str = document.getElementById("divadttTd9").innerHTML;
 			divadttTd8Str = divadttTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd8Str = divadttTd8Str.replace(/ENTRYINDEX/g, (entryIndex)); 
-			
+			divadttTd8Str = divadttTd8Str.replace(/disabled/g, '');
 			dateValue = $("[name='timesheetSubmission.timesheetEntries[6].date']").val();
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[6].dayOfTheDate']").val();
 			divadttTd8Str = divadttTd8Str.replace(/DATEVALUE/g, (dateValue)); 
@@ -1571,6 +1578,7 @@ function addTimeSheetRow() {
 			var cell11 = row.insertCell(11);
 			cell11.className='timeTabFix';
 			var divadttTd11Str = document.getElementById("divadttTd11").innerHTML;
+			divadttTd11Str = divadttTd11Str.replace(/disabled/g, '');
 			cell11.innerHTML = divadttTd11Str;
 		    maskme();
 		    
@@ -2128,7 +2136,7 @@ function newSaveTimesheet(status){
 	 }; 
 	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){  */
 		 
-		     if(status != null && status != 'undefined' && status != '' && ((status == 'Submitted' && unfilledDates.length === 0) || (status == 'Draft'))){
+		     if(status != null && status != 'undefined' && status != '' && ((status == 'Submitted') || (status == 'Draft'))){
 		    	   timesheetDbSave(status,savingType)
 	        	   return true;
 		     }

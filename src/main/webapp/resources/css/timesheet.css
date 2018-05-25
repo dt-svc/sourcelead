@@ -2241,8 +2241,10 @@ margin-bottom:15px !important;
     font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:11px; border-radius:3px; background-color:#3186d6;
     text-align:center; width:75px; margin:1.5px 0px; line-height: normal;
     } 
-.timesheet_tableNew table tr td b.proj_active { background-color:#34c244; border: 1px solid #3c9a13;}
-.timesheet_tableNew table tr td b.proj_deactivate { background-color:#ef4c4c; border: 1px solid #d72b2b;}
+.timesheet_tableNew table tr td b.projActive { background-color:#34c244; border: 1px solid #3c9a13;}
+.timesheet_tableNew table tr td b.projReject { background-color:#ef4c4c; border: 1px solid #d72b2b;}
+.timesheet_tableNew table tr td b.projDraft { background-color:#686868; border: 1px solid #626262;}
+.timesheet_tableNew table tr td b.projSubmited { background-color:#d98f47; border: 1px solid #c3762b;}
 .timeTabFix {
 	border-right: 1px solid #D2D5DA; border-left: 1px solid #D2D5DA; width: 90px !important; text-align: center;
     right: 0; position: absolute; top: auto; height: 38px; line-height: 31px;
@@ -2254,9 +2256,11 @@ margin-bottom:15px !important;
     border:0px; background-color:transparent; background-image:url(../images/addtask.png); background-repeat:no-repeat; background-position:center; position:absolute; top:6px; right: 6px;
     background-size:14px; width:12px; height:12px; 
     }
-.timeAddBtn.timeRemoveBtn {
+.timeRemoveBtn {
     -moz-transform: rotate(-45deg); -webkit-transform: rotate(-45deg); -o-transform: rotate(-45deg); transform: rotate(-45deg);
-    top: 0px; color: #FF3F42 !important; background-image:url(../images/addtask1.png);
+    border:0px; background-color:transparent; background-image:url(../images/addtask1.png); background-repeat:no-repeat;
+	background-position:center; position:absolute; top:7px; right: 6px;
+    background-size:16px; width:12px; height:12px; 
     }
 .timeEntry {
 	position: relative; width: 70px; display: inline-block;
@@ -2829,7 +2833,7 @@ margin: 6px 0px 0px 0px;
 }
 .totalWrap ul li input {
     background-color: transparent; border: none; width: 100%; display: block; text-align: right;
-    font-size: 20px; color: #fff; padding: 16px 15px 0px 0px;
+    font-size: 20px; color: #fff; padding: 16px 15px 0px 0px; margin: 0px 0px;
 }
 .Rname {
     font-size: 12px; display: block; font-weight: 500; width: 100px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
@@ -7322,6 +7326,7 @@ background-image:url(../images/arrow-d-g.png) !important; background-repeat:no-r
 .companyDetInn {
 	padding: 10px 20px 0px 20px;
 }
+
 .companyDetInn div {
 	width: 40%; float: left; padding: 0px 0px 10px 0px; font-size: 14px;
 }
@@ -7907,6 +7912,7 @@ text-align: center; color: #EF5350;
 .compNewHeadTopLeft img {
 	width: 100%; max-height: 80px;
 }
+
 .compNewHeadTopMid {
 	float: left; width: 70%; padding: 0px 0px 0px 20px;
 	}
@@ -8194,6 +8200,7 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 }
 .closePop {
 	width: 30px; height: 30px; display: block; background: url("../images/svg/arrows.svg"); background-repeat: no-repeat;
+
 	background-position: -19px -55px; background-size: 249px; cursor: pointer; margin: 10px 0px 0px 0px;
 	}
 .popupMid {
