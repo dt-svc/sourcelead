@@ -12,6 +12,8 @@ public class TimesheetEntriesDTO implements Serializable{
 	
 	private Long submissionId;
 	
+	private Long ticketNumber;
+	
 	private Long projectMemberId;
 	
 	//@Required(desc="timesheetTaskDTO")
@@ -99,6 +101,14 @@ public class TimesheetEntriesDTO implements Serializable{
 
 	public void setProjectMemberId(Long projectMemberId) {
 		this.projectMemberId = projectMemberId;
+	}
+
+	public Long getTicketNumber() {
+		return ticketNumber;
+	}
+
+	public void setTicketNumber(Long ticketNumber) {
+		this.ticketNumber = ticketNumber;
 	}
 	
 	

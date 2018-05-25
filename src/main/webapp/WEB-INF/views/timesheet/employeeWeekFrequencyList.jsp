@@ -28,6 +28,7 @@
 	        		    	  $("#timesheetEntriesDiv").append(data);
 	        		    	  $("#loadTime").removeAttr('style');
 	        		    	  prepareChosenScripts();
+	        		    	  setTotals();
 	        		      }
 	        	    }); 
 	}
