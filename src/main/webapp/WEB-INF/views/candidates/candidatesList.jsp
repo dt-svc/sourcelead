@@ -2711,6 +2711,16 @@ function resetCandidateFilter(){
                         </ul>
 					 </div>
 				 </div>
+				 
+				 <div class="col-md-12 mb">
+				<label><strong>Created By</strong></label>
+				 <div class="clearfix">
+					<ul class="list-unstyled" id="candidateTypeFilter">
+					    <li class="checkBox positionRelative" ><input  type="checkbox" id="createdByCheck" name="createdByFilter"  value ="myCandidates"  ><label>My Candidates</label></li>
+						<li class="checkBox positionRelative" ><input  type="checkbox" id="createdByCheck"  name="createdByFilter"  value ="allCandidates" ><label>All Candidates</label></li>
+                    </ul>
+				 </div>
+				 </div>  
 			 </div>
 			</div> 
 			
