@@ -243,7 +243,7 @@
 					<div id="tab-1" class="project_tabs_inn" style="display: block;">
 						<div class="timesheet_tableNew">
 						   <input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='${timesheetSubmissionDTO.maxRowCount > 0 ? timesheetSubmissionDTO.maxRowCount : 1}' />
-							<table id="timesheet" cellspacing="0" cellpadding="0">
+							<table id="timesheet" cellspacing="0" cellpadding="0" style="display: inline-table;">
 								<tbody>
 									<tr>
 										<th>Tasks</th>
@@ -261,7 +261,7 @@
 											  <c:set var="taskId" value=""/>
 											  <c:set var="taskName" value=""/>
 											  <c:if test="${timesheetSubmissionDTO.submitButtonVisible ||  timesheetSubmissionDTO.saveButtonVisible}">
-												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId}"  onchange='getProjectTasks("${entryCount.index+1}task1Id","${timesheetEntryDetailsDTO.projectId}");prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
+												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId} timSelWid"  onchange='getProjectTasks("${entryCount.index+1}task1Id","${timesheetEntryDetailsDTO.projectId}");prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
 														<option value=''>--select task--</option>
 														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
 														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
@@ -411,9 +411,11 @@
 									</tr>
 								</tbody>
 							</table>
+							</div>
 							<div class="clearfix"></div>
+							
 							 <div class="timesheet_bot clearfix">
-								<div class="timesheet_week_comm">
+								<div class="commentFile">
 									<input name="attcahmentMaxRowNumber" id="attcahmentMaxRowNumber" value="1" type="hidden">
 									<input name="fileCounter" id="fileCounter" value="0" type="hidden">
 									<div id="timesheetDocumentsId" class="timesheetDocs">
@@ -459,13 +461,12 @@
 									</div>
 									  <c:if test="${timesheetSubmissionDTO.weekCommentVisible}">
 										<div class="commentTime pull-right">
-											<textarea name="timesheetSubmission.weekComment" ${timesheetSubmissionDTO.submitButtonVisible ? '' : 'disabled="disabled"'} id="weekComment" placeholder="comment here">${timesheetSubmissionDTO.weekComment}</textarea>
+											<textarea class="form-controls" name="timesheetSubmission.weekComment" ${timesheetSubmissionDTO.submitButtonVisible ? '' : 'disabled="disabled"'} id="weekComment" placeholder="comment here">${timesheetSubmissionDTO.weekComment}</textarea>
 										</div>
 									   </c:if>
 								</div>
-							</div> 
-						</div>
-						<div class="timesheet_bot">
+								
+								<div class="timesheet_week_comm">
 							<div class="timesheet_button">
 							   <div class="totalWrap pull-left timesheethours-li">
 									<ul>
@@ -491,8 +492,11 @@
 							     </c:if>
 							   
 							</div>
-							<div class="clearfix"></div>
-						</div>
+							</div>
+							<div class="clearfix"></div>								
+								
+							</div> 
+						
 					</div>
 					<div id="activityDiv">
 						<%-- <jsp:include page="timesheetActivity.jsp"></jsp:include> --%>
