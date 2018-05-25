@@ -80,7 +80,7 @@ public class DataMigrationCommonController {
 			{
 				sessionData = new SessionMaintainanceData();
 			}
-			sessionData.setNav(Constants.Requirement);
+			sessionData.setNav(Constants.Immigrations);
 			request.getSession().setAttribute("sessionData",sessionData);
 			ModelAndView model = new ModelAndView();
 			model.setViewName("upload/uploadImmigrationForm");
@@ -193,7 +193,7 @@ public class DataMigrationCommonController {
 	        @SuppressWarnings("resource")
 			XSSFWorkbook workbook = new XSSFWorkbook();
 	        XSSFSheet sheet = workbook.createSheet("Immigration Template");
-	        String[] tableColumns = ImmigrationConstants.IMPORT_IMMIGRATION_EXCEL_HEADERS;
+	        String[] tableColumns = ImmigrationConstants.IMPORT_DOWNLOAD_IMMIGRATION_EXCEL_HEADERS;
 	 
 	        Row row = sheet.createRow(0);
 	        int cellnum = 0;
