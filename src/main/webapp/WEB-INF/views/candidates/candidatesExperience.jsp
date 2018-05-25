@@ -861,12 +861,15 @@ function removeEmployer(candidateemployerId, candidateId){
 			var EMdata = endMonth.split('&');
 			var eMonthNumber = EMdata[0];
 			
-			if((startMonth < endMonth) && (startYear == endYear)) {
+			
+			
+			 if((parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear==endYear) ){
 				 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
 			} else if((startYear > endYear ) && (endYear != '' && endYear != null && endYear != 'undefined')) {
 				document.getElementById("endYearValidation").style.display="block";
 				$("#endYearValidation").empty().append("End year should be greater than Start year") ; 
 			} else if(startYearFlag && endYearFlag) {
+				
 				document.getElementById("endYearValidation").style.display="none";
 				$.post(sourceleadUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(result) {
 					if (result && result.response === "INVALID_DATA") {

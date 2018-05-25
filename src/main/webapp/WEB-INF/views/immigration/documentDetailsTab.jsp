@@ -52,9 +52,9 @@
 			  </tr>
 			  <c:forEach var="canDocList" items="${immigrationCanDocList}" varStatus="rows">			  			  
 			<tr docid="${canDocList.id}" allowMultpleDocs= "${canDocList.allowMultiple}" docsHistoryList = "${fn:escapeXml(canDocList.docsHistoryList)}">
-				<td><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
-				<td><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
-				<td><div class="tblminwidth-50">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
+				<td title="${canDocList.documentTypeName}"><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
+				<td title = "${canDocList.description}"><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
+				<td title = "${canDocList.isRequired == 'Y' ? 'YES':'NO'}"><div class="tblminwidth-50">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
 				<c:if test="${!empty canDocList.upldedFileName}">
 				<td>
 					<c:choose>
@@ -75,7 +75,7 @@
 					</div>
 				</td>
 				</c:if>
-				<td><div class="tblminwidth-50">${canDocList.documentStatus}</div></td>
+				<td title ="${canDocList.documentStatus}"><div class="tblminwidth-50">${canDocList.documentStatus}</div></td>
 				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
@@ -166,7 +166,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Description</label>
               	<div class="col-md-8 padding_right">
-					<textarea rows="2" class="form-control" id= "description1" name = "description"></textarea>
+					<textarea rows="2" class="form-control" id= "description1" name = "description" field-name = "Description" data-validation="required validate_Space validate_length length2-250" data-validation-optional="true"></textarea>
 				</div>
 			</div>	
 			
@@ -428,13 +428,14 @@ function removeDocPopUp12(){
 	$("#uploadCanDocPop").fadeOut(100);
 	$(".comMask").fadeOut(100);
 	 $("div[id*='dynamicRow']").remove();
+	 $('#uploadRequestDoc_Form').find('p.jquery_form_error_message').remove();
 }
 
 function removeDocPopUp(){
 	$(".popMask").fadeOut(200);
 	$("#docuView").fadeOut(100);
 	$("#candidate_Immigration_document_form")[0].reset();
-	$("#description1").val('');
+	$("#description1").text('');
 	$("#immigrationCandidateDocId").val('');
 	$('#candidate_Immigration_document_form input[name="multiple"]').prop('checked', false);
 	$('#candidate_Immigration_document_form input[name="isRequired"]').prop('checked', false);
