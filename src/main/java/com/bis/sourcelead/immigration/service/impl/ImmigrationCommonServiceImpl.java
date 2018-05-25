@@ -590,7 +590,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		LookUpData uscisStatus = lookUpDataService.getLookUpDataByIdAndCategory(ImmigrationConstants.PETITION_STATUS,
 				Long.parseLong(immigrationDTO.getCurrUscisStatus()));
 		immigration.setCurrUscisStauts(uscisStatus);
-		if (immigrationDTO.getArrivalDate() != null && !StringUtils.isEmpty(immigrationDTO.getArrivalDate())) {
+		if (immigrationDTO.getArrivalDate() != null && !immigrationDTO.getArrivalDate().equals("null")) {
 			immigration.setDateOfArrival(
 					commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), immigrationDTO.getArrivalDate()));
 		}
