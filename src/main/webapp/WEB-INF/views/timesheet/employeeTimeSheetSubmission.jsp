@@ -114,7 +114,7 @@
 															 </c:if>
 															 <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
 															         <c:set var="projectCheck"/>
-															         <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
+															         <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.submittedProjectMembersList}">
 															               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == pm.id}">
 															                  <input type="hidden" id="${entryCount.index+1}projectMember1Id" name="${entryCount.index+1}projectMember1Id" value="${pm.id}"/>
 															                   <p>${pm.projectName}</p> 

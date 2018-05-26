@@ -26,6 +26,8 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 	
 	private List<ProjectMembersDTO> projectMembersList;
 	
+	private List<ProjectMembersDTO> submittedProjectMembersList;
+	
 	private List<EmployeeTimeSheetSubmissionDTO> submissionList;
 	
 	private EmployeeTimeSheetSubmissionDTO timesheetSubmission;
@@ -251,5 +253,14 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 	public void setSubmitButtonVisible(boolean submitButtonVisible) {
 		this.submitButtonVisible = submitButtonVisible;
 	}
+
+	public List<ProjectMembersDTO> getSubmittedProjectMembersList() {
+		return submittedProjectMembersList;
+	}
+
+	public void setSubmittedProjectMembersList(List<ProjectMembersDTO> submittedProjectMembersList) {
+		this.submittedProjectMembersList = submittedProjectMembersList;
+	}
+	
      
 }
