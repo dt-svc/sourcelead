@@ -47,6 +47,7 @@ import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientProjectDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -3180,6 +3181,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 		         style.setFont(font);
 		         String headers [] = Constants.PROJECT_EXCEL_HEADERS;
 		 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+			}
+
+			@Override
+			public List<Projects> getAllProjectsBasedOnStartDateEndDateAndProjectType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) {
+				return projectsDao.getAllProjectsBasedOnProjectType(dayWiseTimesheetReoprtsDto);
 			}
 
 			
