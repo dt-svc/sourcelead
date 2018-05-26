@@ -30,3 +30,14 @@ CALL AlterTableAddColumn ('PROJECTS','IS_REPORTING_MANAGER_AS_APPROVER','VARCHAR
  SET SQL_SAFE_UPDATES = 0;			 
  UPDATE `ORG_LOCATIONS` SET `WORKING_DAYS_PER_WEEK`='5';
  SET SQL_SAFE_UPDATES = 1;
+ 
+ 
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('10+','10+','Educations');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('10+2','10+2','Educations');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Intermediate/Diploma','Intermediate/Diploma','Educations');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Graduate','Graduate','Educations');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Graduate (Non Technical)','Graduate (Non Technical)','Educations');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Graduate (Technical)','Graduate (Technical)','Educations');
+INSERT INTO `LOOKUP_DATA` (`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('Any Graduates & Any PG','Any Graduates & Any PG','Educations');
+
+
