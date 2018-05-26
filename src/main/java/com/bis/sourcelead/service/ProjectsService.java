@@ -10,6 +10,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ClientProjectDTO;
+import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -138,6 +139,10 @@ public interface ProjectsService {
 		Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<ProjectsDTO> projectsList, OrgLocations orgLocations)throws Exception;
 
 		File getPdfFile(ResponseList<ProjectsDTO> projectsList, OrgLocations orgLocations)throws Exception;
+
+		List<Projects> getAllProjectsBasedOnStartDateEndDateAndProjectType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto);
+		
+		List<Projects> getAllClientProjectsByOrgLocationId(Long locationId) throws Exception;
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		
