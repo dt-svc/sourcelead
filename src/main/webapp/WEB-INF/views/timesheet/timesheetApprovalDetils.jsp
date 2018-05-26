@@ -92,7 +92,14 @@
              </div>
         </div>
         <div id="divadttTd2" style="display:none;">
-	    	   <span id="REPLACEROWIDtask1IdBillableTypeId" name="REPLACEROWIDtask1IdBillableTypeId" ></span>	
+             <div>
+               <select id="REPLACEROWIDtask1IdBillableTypeId" name="REPLACEROWIDtask1IdBillableTypeId"  field-name="Billble Type" onchange="prepareBillableDetails('ENTRYINDEX','REPLACEROWIDtask1IdBillableTypeId')">  
+                  <option value=''>--select BillableType--</option>
+                  <option value='Billable'>Billable</option>
+                  <option value='Non-Billable'>Non-Billable</option>
+               </select>
+             </div>
+	    	 <!--   <span id="" name="" ></span>	 -->
    		</div>
         <div id="divadttTd3" style="display:none;">
                <input type="hidden" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
