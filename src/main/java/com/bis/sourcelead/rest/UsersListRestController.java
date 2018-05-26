@@ -782,6 +782,13 @@ public class UsersListRestController {
 		 userRole.setAllReportingManagers(reportingManagersList);
 		 
 		 
+		 List<User> resourceManagersList = userService.getResourceManagersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
+		 for (User user : resourceManagersList) {
+			    UserRole ur = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+			    user.setUserType(ur.getUserType());
+		  }
+		 userRole.setAllResourceManagers(resourceManagersList);
+		 
 		 //	old records currency changed code 
 		 Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
 		 
@@ -861,6 +868,27 @@ public class UsersListRestController {
 		}
 
 		userRole.setReportingManagers(reportManagerUsersList);
+		
+		
+		
+	// To change resource manager
+			List<Long> resourceMgrUserIds = userRoleService.getAllAssignedUsersIdsByResourceManagerId(userId, orgLocations.getId());
+			userRole.setAssignedUsersCountToResourceManager(resourceMgrUserIds.size());
+			List<User> resourceManagerUsersList = new ArrayList<User>();
+			if (resourceMgrUserIds.size() > 0) {
+				resourceMgrUserIds.add(userId);
+				List<User> managerUsersList = userService.getTabAccessUsersByOrgLocationIdAndTabIdAndUsersIds(
+						orgLocations.getId(), resourceMgrUserIds, Long.valueOf(Constants.TAB_USER));
+				for (User user : managerUsersList) {
+					UserRole role = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
+					if (role != null) {
+						user.setUserType(role.getRoles().getDisplayName());
+						resourceManagerUsersList.add(user);
+					}
+				}
+			}
+
+			userRole.setResourceManagers(resourceManagerUsersList);
 
 		// To change client owner and spoc
 		List<Long> cleintSpocIds = orgSpocService.getAssignedAsClientOrVendorSpocCountByUserId(userId,
@@ -1092,6 +1120,29 @@ public class UsersListRestController {
 				}
 
 			}
+			
+			
+			
+			
+			
+			if (StringUtils.isNotBlank(addUserDTO.getAssignResourceManagers())) {
+				List<UserRole> userRolesList = userRoleService.getAllAssignedUsersByResourceManagerId(userId,
+						orgLocations.getId());
+				User resourceManager = new User();
+				resourceManager.setId(Long.valueOf(addUserDTO.getAssignResourceManagers()));
+				//List<Long> userIds = userRoleService.getAllAssignedUsersIdsByResourceManagerId(userId, orgLocations.getId());
+				if (null != userRolesList) {
+					for (UserRole roles : userRolesList) {
+						roles.setResourceManager(resourceManager);
+						roles.setUpdatedBy(user.getUserCode());
+						roles.setUpdatedDate(new Date());
+						userRoleService.addUserRole(roles);
+					}
+				}
+
+			}
+			
+			
 			if (StringUtils.isNotBlank(addUserDTO.getVendorUsers())) {
 				User clientOwnerOrUser = new User();
 				clientOwnerOrUser.setId(Long.valueOf(addUserDTO.getVendorUsers()));
@@ -1926,6 +1977,12 @@ public class UsersListRestController {
 				userRole.setReportingManager(reportingManager);
 			} else {
 				userRole.setReportingManager(null);
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getResourceManager())){
+				User resourceManager = new User();
+				resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
+				userRole.setResourceManager(resourceManager);
 			}
 
 			isUserActive = userRoleService.isUserActive(user.getId());

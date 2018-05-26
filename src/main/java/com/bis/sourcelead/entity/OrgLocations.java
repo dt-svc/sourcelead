@@ -228,6 +228,9 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name = "REGISTRATION_STATUS")
 	private String registrationStatus;
+	
+	@Column(name = "WORKING_DAYS_PER_WEEK")
+	private Integer workingDaysPerWeek;
     
     @Transient
     private String orgName;
@@ -962,5 +965,13 @@ public class OrgLocations implements Serializable{
 
 	public void setRegistrationStatus(String registrationStatus) {
 		this.registrationStatus = registrationStatus;
+	}
+
+	public Integer getWorkingDaysPerWeek() {
+		return workingDaysPerWeek;
+	}
+
+	public void setWorkingDaysPerWeek(Integer workingDaysPerWeek) {
+		this.workingDaysPerWeek = workingDaysPerWeek;
 	}
 }

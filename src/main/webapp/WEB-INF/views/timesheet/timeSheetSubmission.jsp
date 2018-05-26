@@ -243,7 +243,7 @@
 					<div id="tab-1" class="project_tabs_inn" style="display: block;">
 						<div class="timesheet_tableNew">
 						   <input type='hidden' name='maxRowNumber'  class='initiateTimesheetMax' id='maxRowNumber'  value='${timesheetSubmissionDTO.maxRowCount > 0 ? timesheetSubmissionDTO.maxRowCount : 1}' />
-							<table id="timesheet" cellspacing="0" cellpadding="0">
+							<table id="timesheet" cellspacing="0" cellpadding="0" style="display: inline-table;">
 								<tbody>
 									<tr>
 										<th>Tasks</th>
@@ -261,7 +261,7 @@
 											  <c:set var="taskId" value=""/>
 											  <c:set var="taskName" value=""/>
 											  <c:if test="${timesheetSubmissionDTO.submitButtonVisible ||  timesheetSubmissionDTO.saveButtonVisible}">
-												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId}"  onchange='getProjectTasks("${entryCount.index+1}task1Id","${timesheetEntryDetailsDTO.projectId}");prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
+												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId} timSelWid"  onchange='getProjectTasks("${entryCount.index+1}task1Id","${timesheetEntryDetailsDTO.projectId}");prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
 														<option value=''>--select task--</option>
 														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
 														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
@@ -308,6 +308,12 @@
 															       </c:if>
 															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
 															             <c:set var="taskType" value="${pt.taskType}" />
+															             <select id="${entryCount.index+1}task1IdBillableTypeId" name="${entryCount.index+1}task1IdBillableTypeId"  field-name="Billble Type" onchange="prepareBillableDetails('${entryIndex}','${entryCount.index+1}task1IdBillableTypeId')">  
+															                  <option value=''>--select BillableType--</option>
+															                  <option value='Billable' ${!empty pt.taskType && pt.taskType == 'Billable' ?'selected':''}>Billable</option>
+															                  <option value='Non-Billable' ${!empty pt.taskType && pt.taskType == 'Non-Billable' ?'selected':''}>Non-Billable</option>
+														                  </select>
+									                  
 															        </c:if> 
 														           <c:set var="taskId" value="${pt.id}" />
 														           <c:set var="taskName" value="${pt.taskName}" />
@@ -324,7 +330,17 @@
 									      </td>
 									      <td>
 									        <div>
-									           <span id="${entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span>
+									          <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
+									               <span id="${entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span>
+									          </c:if>
+									         <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
+			                                      <select id="${entryCount.index+1}task1IdBillableTypeId" name="${entryCount.index+1}task1IdBillableTypeId"  field-name="Billble Type" onchange="prepareBillableDetails('${entryIndex}','${entryCount.index+1}task1IdBillableTypeId')">  
+									                  <option value=''>--select BillableType--</option>
+									                  <option value='Billable' ${!empty taskType && taskType == 'Billable' ?'selected':''}>Billable</option>
+									                  <option value='Non-Billable' ${!empty taskType && taskType == 'Non-Billable' ?'selected':''}>Non-Billable</option>
+								                  </select>
+							                  </c:if>
+									           <%-- <span id="${entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span> --%>
 									        </div>
 									      </td>
 									       <c:forEach var="te" items="${entry.value}" varStatus="teStatus">
@@ -411,9 +427,11 @@
 									</tr>
 								</tbody>
 							</table>
+							</div>
 							<div class="clearfix"></div>
+							
 							 <div class="timesheet_bot clearfix">
-								<div class="timesheet_week_comm">
+								<div class="commentFile">
 									<input name="attcahmentMaxRowNumber" id="attcahmentMaxRowNumber" value="1" type="hidden">
 									<input name="fileCounter" id="fileCounter" value="0" type="hidden">
 									<div id="timesheetDocumentsId" class="timesheetDocs">
@@ -459,13 +477,12 @@
 									</div>
 									  <c:if test="${timesheetSubmissionDTO.weekCommentVisible}">
 										<div class="commentTime pull-right">
-											<textarea name="timesheetSubmission.weekComment" ${timesheetSubmissionDTO.submitButtonVisible ? '' : 'disabled="disabled"'} id="weekComment" placeholder="comment here">${timesheetSubmissionDTO.weekComment}</textarea>
+											<textarea class="form-controls" name="timesheetSubmission.weekComment" ${timesheetSubmissionDTO.submitButtonVisible ? '' : 'disabled="disabled"'} id="weekComment" placeholder="comment here">${timesheetSubmissionDTO.weekComment}</textarea>
 										</div>
 									   </c:if>
 								</div>
-							</div> 
-						</div>
-						<div class="timesheet_bot">
+								
+								<div class="timesheet_week_comm">
 							<div class="timesheet_button">
 							   <div class="totalWrap pull-left timesheethours-li">
 									<ul>
@@ -491,8 +508,11 @@
 							     </c:if>
 							   
 							</div>
-							<div class="clearfix"></div>
-						</div>
+							</div>
+							<div class="clearfix"></div>								
+								
+							</div> 
+						
 					</div>
 					<div id="activityDiv">
 						<%-- <jsp:include page="timesheetActivity.jsp"></jsp:include> --%>
@@ -575,7 +595,7 @@ function setTotals(){
 			    	 
 				     bsum = parseFloat(bsum) + parseInt(finalmin);
 				     
-				     var billableType = $("#"+j+"task1IdBillableTypeId").text();
+				     var billableType = $("#"+j+"task1IdBillableTypeId").val();
 				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Billable') {
 				    	 var billableHours = btemp;
 				    	 var billableSplit = billableHours.split(':');
@@ -1098,7 +1118,7 @@ function addTimeSheetRow(projectId) {
 			divadttTd1Str = divadttTd1Str.replace(/projectId/g, (projectId)); 
 			divadttTd1Str = divadttTd1Str.replace(/ENTRYINDEX/g, (entryIndex)); 
 			cell1.innerHTML = divadttTd1Str;
-			
+			$("#"+maxRowNum+"task1Id").attr('data-validation','required');
 			
 		    var cell2 = row.insertCell(2);
 			var isCell1Disabled = $("#1timeSheetDay1Id").prop('disabled');
@@ -1276,7 +1296,7 @@ function addTimeSheetRow(projectId) {
         function prepareProjectTaskDetails(entryIndex,projectTaskId){
         	 if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
         		   var taskId = $("#" + projectTaskId).val().split(",");
-    			   $("#" + projectTaskId + "BillableTypeId").html(taskId[1]);
+    			   $("#" + projectTaskId + "BillableTypeId").val(taskId[1]);
     			   setTotals(); 
 	  			   var taskDetails = $("#" + projectTaskId).val().split(",");
 	  			   var taskId = taskDetails[0];
@@ -1290,6 +1310,13 @@ function addTimeSheetRow(projectId) {
 	              } 
         	 }
         }
+        function prepareBillableDetails(entryIndex,billableTypeId){
+        	  var end = parseInt(entryIndex)+7;
+         	  for (i = entryIndex; i < end; i++) {
+         		 $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskType']").val($("#"+ billableTypeId).val());
+         	  }
+         	 setTotals(); 
+        }
 	   //get project tasks 
 	   function getProjectTasks(projectTaskId,projectId){
 		 /*   alert($("#"+projectTaskId).val($("#"+projectTaskId+" option:first").val())); 
@@ -1299,10 +1326,10 @@ function addTimeSheetRow(projectId) {
 		   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		   if($("#" + projectTaskId).val() != null && $("#" + projectTaskId).val() != "" && $("#" + projectTaskId).val() !="undefined"){
 			   var taskId = $("#" + projectTaskId).val().split(",");
-			   $("#" + projectTaskId + "BillableTypeId").html(taskId[1]);
+			   $("#" + projectTaskId + "BillableTypeId").val(taskId[1]);
 			   setTotals(); 
 		   }else{
-			   $("#" + projectTaskId + "BillableTypeId").html(""); 
+			   $("#" + projectTaskId + "BillableTypeId").val(""); 
 			   setTotals(); 
 		   }
 		   

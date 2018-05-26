@@ -163,5 +163,7 @@ public interface UserDao {
 	public List<User> getTabAccessGlobalOwnersByOrgIdAndTabId(Long orgId,Long tabId) throws Exception;
 	
 	public List<User> getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId, Long orgId,Long tabId)throws Exception;
+	
+	List<User> getResourceManagersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 
 }

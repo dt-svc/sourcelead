@@ -627,8 +627,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
 			String timesheetFrequency, Date startDate, Date endDate, Long clientId, String status, Long locationsId,
-			Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor) {
-		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,projectName,start,length,timesheetFor);
+			Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor,String isGlobalUser) {
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,projectName,start,length,timesheetFor,isGlobalUser);
 	}
 	
 	@Override
@@ -844,9 +844,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId,
-			Long orgRelationId) throws Exception {
+			Long orgRelationId,String isGlobalUser) throws Exception {
 
-		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLocationId);
+		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLocationId,isGlobalUser);
 
 		List<ProjectMembers> projectMemberfilteredList = projectMemberList.stream()
 						.filter(predicate -> predicate.getProjectMemberCandidteId().getOrgRelationId() !=null && predicate.getProjectMemberCandidteId().getOrgRelationId().getId().longValue() == orgRelationId)
@@ -1273,8 +1273,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 	
 	@Override
-	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long projectId,Long locationId) throws Exception {
-		return projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId, locationId);
+	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long projectId,Long locationId,String isGlobalUser) throws Exception {
+		return projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId, locationId,isGlobalUser);
 	}
 	
 
@@ -1588,8 +1588,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,
-			Long locationId) throws Exception {
-		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId);
+			Long locationId,String isGlobalUser) throws Exception {
+		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId,isGlobalUser);
 	}
 
 	@Override

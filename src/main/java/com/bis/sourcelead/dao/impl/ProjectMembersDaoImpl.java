@@ -374,7 +374,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor){
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor,String isGlobalUser){
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		
 		ResponseList<ProjectMembers> response = new ResponseList<>();
@@ -497,7 +497,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+ "                               OR (pah.level = '1'  and pah.status = '1' and (candidate.consultantUser IS NULL OR candidate.consultantUser IS NOT NULL and candidate.consultantUser.id NOT IN(select subpah.approverUserId.id from ProjectApproverHierarchy subpah where subpah.projectId.id = pah.projectId.id )))) "
 					+ "               )"
 					+ "       )"
-					 + "       OR "+Constants.loginUserAsAdminForProjects+""
+					+ "       OR "+Constants.loginUserAsAdminForProjects+""
+					 
+					+ "       OR  (pm.projects.isReportingManagerAsApprover = 'Y'  and pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id))"
 					+ "     ) ";
 	     
 	     
@@ -510,11 +512,19 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+ "               )"
 					+ "       )"
 					 + "       OR :userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pm.projectClientsId.orgLocationsId.id)"
-					+ "     ) ";
+					 + "       OR  (pm.projects.isReportingManagerAsApprover = 'Y'  and pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id))"
+					 + "     ) ";
 	     
 	     
+	    String globalUserQuery = "";
+	    if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+	    	globalUserQuery = " pm.projectMemberCandidteId.orgLocationId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)";
+	    }else {
+	    	globalUserQuery = " pm.projectMemberCandidteId.orgLocationId.id = :locationsId";
+	    }
 		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch pm.projectClientsId pclient left join fetch pclient.orgRelationId pcOrgRelation"
-				+ " where  candidate.orgLocationId.id = :locationsId"
+				+ " where  "
+				    +globalUserQuery
 				    +frequencyQuery
 				    +fillingOptionQuery
 				    + statusQuery
@@ -527,7 +537,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Query query = session.createQuery(queryStr.toString());
 		
 		
-		String countQuery = " Select count(*) from ProjectMembers pm where pm.projectMemberCandidteId.orgLocationId.id = :locationsId "
+		String countQuery = " Select count(*) from ProjectMembers pm where  "
+				+globalUserQuery
 				+frequencyQuery
 				+fillingOptionCountQuery
 				+ statusCountQuery
@@ -721,11 +732,20 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long id,Long locationsId) throws Exception {
+	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long id,Long locationsId,String isGlobalUser) throws Exception {
 		logger.debug("In ProjectMember getAllProjectMembersByProjectId method");
         Session session = this.sessionFactory.getCurrentSession();
+        
+        
+        String globalUserQuery = "";
+		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+		    	globalUserQuery = " pc.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :locationsId)";
+		    }else {
+		    	globalUserQuery = " pc.orgLocationsId.id = :locationsId";
+		    }
+		 
         List<ProjectMembers> projectsMembersList = null;
-		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc where pc.orgLocationsId.id = :locationsId and pm.projects.id = :id and pm.status = '1' ");
+		Query projectsMembersListQuery= session.createQuery("from ProjectMembers pm left join fetch pm.projects left join fetch pm.projectMemberCandidteId left join fetch pm.masterCandidateId mc left join fetch pm.projectClientsId pc where "+globalUserQuery+" and pm.projects.id = :id and pm.status = '1' ");
 		projectsMembersList=projectsMembersListQuery.setLong("id", id).setLong("locationsId", locationsId).list();
 		return projectsMembersList;
         
@@ -1371,11 +1391,19 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional
-	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId)
+	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId,String isGlobalUser)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
+		
+		String globalUserQuery = "";
+		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+		    	globalUserQuery = " pc.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :locationId)";
+		    }else {
+		    	globalUserQuery = " pc.orgLocationsId.id = :locationId";
+		    }
+		 
 		String query = " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects where  "
-				+ "pm.projects.id = :projectId and pm.masterCandidateId.id = :masterCandidateId and loc.id = :locationId and pm.status = '1' " ;
+				+ "pm.projects.id = :projectId and pm.masterCandidateId.id = :masterCandidateId and "+globalUserQuery+" and pm.status = '1' " ;
 		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setLong("masterCandidateId", masterCandidateId).list(); 
 		ProjectMembers pm = null;
 		if(pmList != null && !pmList.isEmpty())  {
@@ -1483,12 +1511,18 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForExpences(Long masterCandidateId,
-			Long projectId, Long locationId) throws Exception {
+			Long projectId, Long locationId,String isGlobalUser) throws Exception {
 		
+		String globalUserQuery = "";
+		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+		    	globalUserQuery = " pc.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :locationId)";
+		    }else {
+		    	globalUserQuery = " pc.orgLocationsId.id = :locationId";
+		    }
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects where  "
-				+ "pm.projects.id = :projectId and pm.masterCandidateId.id = :masterCandidateId and loc.id = :locationId " ;
+				+ "pm.projects.id = :projectId and pm.masterCandidateId.id = :masterCandidateId and "+globalUserQuery+" " ;
 		List<ProjectMembers> pmList =session.createQuery(query).setLong("projectId", projectId).setLong("locationId", locationId).setLong("masterCandidateId", masterCandidateId).list(); 
 		ProjectMembers pm = null;
 		if(pmList != null && !pmList.isEmpty())  {

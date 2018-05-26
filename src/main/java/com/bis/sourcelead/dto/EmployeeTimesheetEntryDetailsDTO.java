@@ -1,0 +1,266 @@
+package com.bis.sourcelead.dto;
+
+import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown=true)
+public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+	
+	private LinkedHashSet<String> invoiceFrequencyList;
+	
+	private Map<String,String> weekFrequencyList;
+	
+	private Long masterCandidateId;
+	
+	private String currentTimeFrequency;
+	
+	private String currentTimeSubFrequency;
+	
+	private Map<String,String> timeSubFrequencies;
+	
+	private List<ProjectMembersDTO> projectMembersList;
+	
+	private List<ProjectMembersDTO> submittedProjectMembersList;
+	
+	private List<EmployeeTimeSheetSubmissionDTO> submissionList;
+	
+	private EmployeeTimeSheetSubmissionDTO timesheetSubmission;
+	
+	private Map<Long,EmployeeTimeSheetSubmissionStatusDTO> statusMap;
+	
+    private boolean monEditable;
+	
+	private boolean tueEditable;
+	
+	private boolean wedEditable;
+	
+	private boolean thuEditable;
+	
+	private boolean friEditable;
+	
+	private boolean satEditable;
+	
+	private boolean sunEditable;
+	
+	private boolean timesheetStatus;
+	
+	private String timesheetFor;
+	
+	private String invoiceFrequency;
+	
+	private List<WeekDaysDTO> weekDays;
+	
+	private String locDateFomat;
+	
+	private Integer maxRowCount;
+	
+	private boolean submitButtonVisible;
+
+	public LinkedHashSet<String> getInvoiceFrequencyList() {
+		return invoiceFrequencyList;
+	}
+
+	public void setInvoiceFrequencyList(LinkedHashSet<String> invoiceFrequencyList) {
+		this.invoiceFrequencyList = invoiceFrequencyList;
+	}
+
+	public Map<String, String> getWeekFrequencyList() {
+		return weekFrequencyList;
+	}
+
+	public void setWeekFrequencyList(Map<String, String> weekFrequencyList) {
+		this.weekFrequencyList = weekFrequencyList;
+	}
+
+	public Long getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(Long masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+
+	public String getCurrentTimeFrequency() {
+		return currentTimeFrequency;
+	}
+
+	public void setCurrentTimeFrequency(String currentTimeFrequency) {
+		this.currentTimeFrequency = currentTimeFrequency;
+	}
+
+	public String getCurrentTimeSubFrequency() {
+		return currentTimeSubFrequency;
+	}
+
+	public void setCurrentTimeSubFrequency(String currentTimeSubFrequency) {
+		this.currentTimeSubFrequency = currentTimeSubFrequency;
+	}
+
+	public Map<String, String> getTimeSubFrequencies() {
+		return timeSubFrequencies;
+	}
+
+	public void setTimeSubFrequencies(Map<String, String> timeSubFrequencies) {
+		this.timeSubFrequencies = timeSubFrequencies;
+	}
+
+	public String getTimesheetFor() {
+		return timesheetFor;
+	}
+
+	public void setTimesheetFor(String timesheetFor) {
+		this.timesheetFor = timesheetFor;
+	}
+
+	public String getInvoiceFrequency() {
+		return invoiceFrequency;
+	}
+
+	public void setInvoiceFrequency(String invoiceFrequency) {
+		this.invoiceFrequency = invoiceFrequency;
+	}
+
+	public List<WeekDaysDTO> getWeekDays() {
+		return weekDays;
+	}
+
+	public void setWeekDays(List<WeekDaysDTO> weekDays) {
+		this.weekDays = weekDays;
+	}
+
+	public String getLocDateFomat() {
+		return locDateFomat;
+	}
+
+	public void setLocDateFomat(String locDateFomat) {
+		this.locDateFomat = locDateFomat;
+	}
+
+	public List<ProjectMembersDTO> getProjectMembersList() {
+		return projectMembersList;
+	}
+
+	public void setProjectMembersList(List<ProjectMembersDTO> projectMembersList) {
+		this.projectMembersList = projectMembersList;
+	}
+
+	public List<EmployeeTimeSheetSubmissionDTO> getSubmissionList() {
+		return submissionList;
+	}
+
+	public void setSubmissionList(List<EmployeeTimeSheetSubmissionDTO> submissionList) {
+		this.submissionList = submissionList;
+	}
+
+	public Integer getMaxRowCount() {
+		return maxRowCount;
+	}
+
+	public void setMaxRowCount(Integer maxRowCount) {
+		this.maxRowCount = maxRowCount;
+	}
+
+	public EmployeeTimeSheetSubmissionDTO getTimesheetSubmission() {
+		return timesheetSubmission;
+	}
+
+	public void setTimesheetSubmission(EmployeeTimeSheetSubmissionDTO timesheetSubmission) {
+		this.timesheetSubmission = timesheetSubmission;
+	}
+
+	public Map<Long, EmployeeTimeSheetSubmissionStatusDTO> getStatusMap() {
+		return statusMap;
+	}
+
+	public void setStatusMap(Map<Long, EmployeeTimeSheetSubmissionStatusDTO> statusMap) {
+		this.statusMap = statusMap;
+	}
+
+	public boolean isMonEditable() {
+		return monEditable;
+	}
+
+	public void setMonEditable(boolean monEditable) {
+		this.monEditable = monEditable;
+	}
+
+	public boolean isTueEditable() {
+		return tueEditable;
+	}
+
+	public void setTueEditable(boolean tueEditable) {
+		this.tueEditable = tueEditable;
+	}
+
+	public boolean isWedEditable() {
+		return wedEditable;
+	}
+
+	public void setWedEditable(boolean wedEditable) {
+		this.wedEditable = wedEditable;
+	}
+
+	public boolean isThuEditable() {
+		return thuEditable;
+	}
+
+	public void setThuEditable(boolean thuEditable) {
+		this.thuEditable = thuEditable;
+	}
+
+	public boolean isFriEditable() {
+		return friEditable;
+	}
+
+	public void setFriEditable(boolean friEditable) {
+		this.friEditable = friEditable;
+	}
+
+	public boolean isSatEditable() {
+		return satEditable;
+	}
+
+	public void setSatEditable(boolean satEditable) {
+		this.satEditable = satEditable;
+	}
+
+	public boolean isSunEditable() {
+		return sunEditable;
+	}
+
+	public void setSunEditable(boolean sunEditable) {
+		this.sunEditable = sunEditable;
+	}
+
+	public boolean isTimesheetStatus() {
+		return timesheetStatus;
+	}
+
+	public void setTimesheetStatus(boolean timesheetStatus) {
+		this.timesheetStatus = timesheetStatus;
+	}
+
+	public boolean isSubmitButtonVisible() {
+		return submitButtonVisible;
+	}
+
+	public void setSubmitButtonVisible(boolean submitButtonVisible) {
+		this.submitButtonVisible = submitButtonVisible;
+	}
+
+	public List<ProjectMembersDTO> getSubmittedProjectMembersList() {
+		return submittedProjectMembersList;
+	}
+
+	public void setSubmittedProjectMembersList(List<ProjectMembersDTO> submittedProjectMembersList) {
+		this.submittedProjectMembersList = submittedProjectMembersList;
+	}
+	
+     
+}

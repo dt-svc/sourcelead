@@ -317,6 +317,17 @@ function validateShortCode(){
 							</div>
 						</c:if>
 						
+						<div class="form-group">
+					             <label class="col-md-3"></label>
+					              <div class="col-md-9">
+					                <div class="checkbox checkBox">
+					                  <label>
+					                    <input type="checkbox" value="Y" name="isReportingManagerAsApprover" id="isReportingManagerAsApprover">
+					                   Reporting Manager will be T/E approver</label>
+					                </div>
+					                 </div>
+			               </div> 
+						
 						<div class="form-group" id="shortCodeDivId">
 							<label class="col-md-3"> Project Short Code <span
 								class="text-danger">* </span><i class='fa fa-info-circle' title='The internal unique code for the project'></i>
@@ -327,6 +338,8 @@ function validateShortCode(){
 
 							</div>
 						</div>
+						
+						
 						
 						<div class="form-group">
 							<label class="col-md-3"></label>
@@ -810,6 +823,13 @@ function getProjectDetails(){
         	   
         	   if(json.allowBidding == 1){
         		   document.getElementById("isAllowBidding").checked = true;
+        	   }
+        	   
+        	   
+        	   if(json.isReportingManagerAsApprover == 'Y'){
+        		   document.getElementById("isReportingManagerAsApprover").checked = true;
+        	   }else{
+        		   document.getElementById("isReportingManagerAsApprover").checked = false;
         	   }
         	   
         	   

@@ -111,6 +111,7 @@ public class ExpensesController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		sessionData.setNav(Constants.MY_EXPENSES);
 		request.getSession().setAttribute("sessionData", sessionData);
 		if(StringUtils.isNotEmpty(expenseId)&& StringUtils.isNotEmpty(expenseLocationCode)){
@@ -150,7 +151,7 @@ public class ExpensesController {
 		eedDTO.setUserId(loginUser.getId());
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
 		eedDTO.setExpenseId(expenseId);
-		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
+		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO,isGlobalAccess);
 		expEntryDTO.setLoginCurrencyCode(currencyCode);
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -199,6 +200,7 @@ public class ExpensesController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		sessionData.setNav(Constants.MY_EXPENSES);
 		
 		if(StringUtils.isNotEmpty(expenseId)&& StringUtils.isNotEmpty(expenseLocationCode)){
@@ -207,10 +209,11 @@ public class ExpensesController {
 			elDTO.setLocationCode(orgLoc.getLocationCode());
 			elDTO.setExpenseLocationCode(expenseLocationCode);
 			elDTO.setExpenseId(expenseId);
+			elDTO.setIsGlobalAccess(isGlobalAccess);
 			ExpensesDTO expensesDTO = expensesRestController.getExpenseDetailsByExpenseId(elDTO);
 			model.addObject("expenses", expensesDTO);
 			
-			ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expensesDTO.getId(),orgLoc.getId());
+			ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expensesDTO.getId(),orgLoc.getId(),isGlobalAccess);
 		    Submission_Status submissionStatus = eah.getExpenseStatus();
 		 	model.addObject("submissionStatus", submissionStatus);
 		 	model.addObject("eah", eah);
@@ -220,7 +223,7 @@ public class ExpensesController {
 			 model.addObject("isExpenseTotallyApproved", isExpenseTotallyApproved);	
 			 
 			 
-			 Boolean isReopenButtonVisible = expensesApprovalService.isReopenButtonVisibleForLoginOrg(expensesDTO.getId(),orgLoc.getId());
+			 Boolean isReopenButtonVisible = expensesApprovalService.isReopenButtonVisibleForLoginOrg(expensesDTO.getId(),orgLoc.getId(),isGlobalAccess);
 			 model.addObject("isReopenButtonVisible", isReopenButtonVisible);
 			 
 			 String type = request.getParameter("type");
@@ -255,7 +258,7 @@ public class ExpensesController {
 		eedDTO.setExpenseId(expenseId);
 		eedDTO.setExpenseFrom("approver");
 		
-		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
+		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO,isGlobalAccess);
 		expEntryDTO.setLoginCurrencyCode(currencyCode);
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);

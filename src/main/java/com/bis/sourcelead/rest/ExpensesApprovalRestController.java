@@ -113,7 +113,8 @@ public class ExpensesApprovalRestController {
 		try {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ExpensesApproverDTO expApperoverdto = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expensesApproverDTO);
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		ExpensesApproverDTO expApperoverdto = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expensesApproverDTO,isGlobalAccess);
 		model.addObject("totalRows",expApperoverdto.getTotalRows());
 		model.addObject("pageCount",expApperoverdto.getPageCount());
 		model.addObject("pageSize",expApperoverdto.getPageSize());
@@ -136,14 +137,15 @@ public class ExpensesApprovalRestController {
 
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		File file=null;
-		ExpensesApproverDTO expApperoverHierarchyList = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expensesApproverDTO);
+		ExpensesApproverDTO expApperoverHierarchyList = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expensesApproverDTO,isGlobalAccess);
 		List<ExpensesApproverHierarchyDTO> expApperoverHierarchy = expApperoverHierarchyList.getExpensesApproverHierarchyDTO();
 		if(expApperoverHierarchy != null && !expApperoverHierarchy.isEmpty()) {
 			if(expensesApproverDTO.getType().equalsIgnoreCase("pdf"))
-				file = expensesApprovalService.getExpensesApproverHierarchyListForPdf(expApperoverHierarchy,orgLoc,loginUser);
+				file = expensesApprovalService.getExpensesApproverHierarchyListForPdf(expApperoverHierarchy,orgLoc,loginUser,isGlobalAccess);
 			else
-				file = expensesApprovalService.getExpensesApproverHierarchyListForExcel(expApperoverHierarchy,orgLoc,loginUser);
+				file = expensesApprovalService.getExpensesApproverHierarchyListForExcel(expApperoverHierarchy,orgLoc,loginUser,isGlobalAccess);
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
 				mimeType = "application/octet-stream";
@@ -198,11 +200,12 @@ public class ExpensesApprovalRestController {
     	Response<String> reponse = new Response<String>();
     	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		if(user != null && orgLoc != null) {
     	try {
 		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 	 	expensesApprovalService.updateApprovalStatusByApproverForExpense(expenseId, user.getId(),approvalStatus, rejectedReason,orgLoc);
-	 	ExpensesApproverHierarchy eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(user.getId(), expenseId, orgLoc.getId());
+	 	ExpensesApproverHierarchy eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(user.getId(), expenseId, orgLoc.getId(),isGlobalAccess);
 	 	if(eah != null && eah.getExpenseId() != null){
 	 		 String submissionStatusStr = eah.getExpenseId().getExpenseStatus().getValue();
 	 		 if(StringUtils.isNotEmpty(submissionStatusStr) && 

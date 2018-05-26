@@ -51,6 +51,11 @@ public class UserRole implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User reportingManager;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "RESOURCE_MANAGER_ID")
+	private User resourceManager;
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -193,6 +198,10 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	List<User> allReportingManagers;
+	
+	@Transient
+	@JsonProperty
+	List<User> allResourceManagers;
 
 	@Transient
 	@JsonProperty
@@ -217,6 +226,10 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	List<User> reportingManagers;
+	
+	@Transient
+	@JsonProperty
+	List<User> resourceManagers;
 
 	@Transient
 	@JsonProperty
@@ -255,6 +268,9 @@ public class UserRole implements Serializable {
 
 	@Transient
 	private Integer assignedUsersCountToReportingManager;
+	
+	@Transient
+	private Integer assignedUsersCountToResourceManager;
 
 	@Transient
 	private Integer assignedAsVendorOwnerOrSpocCount;
@@ -946,8 +962,37 @@ public class UserRole implements Serializable {
 		this.isGlobal = isGlobal;
 	}
 
-	
+	public User getResourceManager() {
+		return resourceManager;
+	}
 
-	
+	public void setResourceManager(User resourceManager) {
+		this.resourceManager = resourceManager;
+	}
+
+	public List<User> getAllResourceManagers() {
+		return allResourceManagers;
+	}
+
+	public void setAllResourceManagers(List<User> allResourceManagers) {
+		this.allResourceManagers = allResourceManagers;
+	}
+
+	public List<User> getResourceManagers() {
+		return resourceManagers;
+	}
+
+	public void setResourceManagers(List<User> resourceManagers) {
+		this.resourceManagers = resourceManagers;
+	}
+
+	public Integer getAssignedUsersCountToResourceManager() {
+		return assignedUsersCountToResourceManager;
+	}
+
+	public void setAssignedUsersCountToResourceManager(Integer assignedUsersCountToResourceManager) {
+		this.assignedUsersCountToResourceManager = assignedUsersCountToResourceManager;
+	}
+
 	
 }

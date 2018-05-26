@@ -29,6 +29,8 @@ public class ExpensesListUtilDTO  extends SearchDTO implements Serializable{
 	private int pageSize;
 	
 	private String expenseDashboardStatus;
+	
+	private String isGlobalAccess;
 
 	public Long getUserId() {
 		return userId;
@@ -112,6 +114,14 @@ public class ExpensesListUtilDTO  extends SearchDTO implements Serializable{
 
 	public void setExpenseDashboardStatus(String expenseDashboardStatus) {
 		this.expenseDashboardStatus = expenseDashboardStatus;
+	}
+
+	public String getIsGlobalAccess() {
+		return isGlobalAccess;
+	}
+
+	public void setIsGlobalAccess(String isGlobalAccess) {
+		this.isGlobalAccess = isGlobalAccess;
 	}
 	
 }

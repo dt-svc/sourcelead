@@ -545,6 +545,12 @@ public class UserServiceImpl implements UserService {
 			userRole.setReportingManager(user);
 		}
 		
+		if(StringUtils.isNotBlank(addUserDTO.getResourceManager())){
+			User resourceManager = new User();
+			resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
+			userRole.setResourceManager(resourceManager);
+		}
+		
 	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
 	    	userRole.setIsMailSent(Status.Y);
 			}else{
@@ -1525,6 +1531,11 @@ public class UserServiceImpl implements UserService {
 	public List<User> getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId,
 			Long orgId, Long tabId) throws Exception {
 		return userDao.getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId, orgId, tabId);
+	}
+
+	@Override
+	public List<User> getResourceManagersByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getResourceManagersByOrgLocationIdAndTabId(orgLocationsId, tabId);
 	}
 	
 }

@@ -538,7 +538,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("getUserRoleByUserIdAndLocationId method  start");
 		userRole = session.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles left join fetch userRole.reportingManager "
-						+ "left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
+						+ " left join fetch userRole.resourceManager left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
 				.setLong("userId", userId).setLong("locationId", locationId).list();
 		logger.debug("getUserRoleByUserIdAndLocationId method ends");
 		if (userRole.size() > 0) {
@@ -654,7 +654,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		logger.debug("getUserDetailsByEmailAndLocationId method  start");
 		userRole = session
 				.createQuery("from UserRole userRole left join fetch userRole.orgLocations orgLoc left join fetch orgLoc.org left join fetch userRole.roles  "
-						+ "left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
+						+ "left join fetch userRole.resourceManager left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
 				.setLong("userId", userId).setLong("locationId", locationId).list();
 		logger.debug("getUserDetailsByEmailAndLocationId method ends");
 		if (userRole.size() > 0) {
@@ -1435,6 +1435,26 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from UserRole userRole left join fetch userRole.orgLocations orgLocation   where orgLocation.id =:orgLocationId and userRole.userState <> 'INACTIVE' ";
 		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+		return userRoleList;
+	}
+
+	@Override
+	@Transactional
+	public List<Long> getAllAssignedUsersIdsByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select userRole.user.id from UserRole userRole where userRole.resourceManager.id = :resourceManagerId and userRole.orgLocations.id = :locationId  " ;
+	    List<Long> userIds = session.createQuery(query).setLong( "resourceManagerId", resourceManagerId).setLong("locationId", orgLocationId).list();
+        return userIds;
+        
+	
+	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getAllAssignedUsersByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserRole userRole where userRole.resourceManager.id = :resourceManagerId and userRole.orgLocations.id = :locationId ";
+		List<UserRole> userRoleList = session.createQuery(query.toString()).setLong( "resourceManagerId", resourceManagerId).setLong("locationId", orgLocationId).list();
 		return userRoleList;
 	}
 
