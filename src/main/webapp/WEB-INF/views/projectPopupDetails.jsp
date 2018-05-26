@@ -12,7 +12,7 @@
 					<div class="row">
 							
 						
-						<div class="col-md-2">
+						<div class="col-md-4">
 						<div class="row">
 						   <div id="projectDetailsDiv"></div>
 						</div>
@@ -52,13 +52,11 @@ function openProjectDetailsPopup(projectUUID,orgLocationId){
 	        	
 	        	var result = '';
 	        	
-	        	result = result +'<div class="col-md-12 mb">';
-	        	result = result +'<label><strong>Project Name :</strong></label>';
-	        	result = result + '<span title="'+result.projectName+'">'+result.projectName+'</span><div class="clearfix"></div>';
+	        	result = result +'<div class="clearfix mb">';
+	        	result = result +'<label class="col-md-4"><strong>Project Name :</strong></label>';
+	        	result = result + '<div class="col-md-8 title="'+result.projectName+'">'+result.projectName+'</div><div class="clearfix"></div>';
                 result = result +'</div> ';
                 
-                alert(result);
-	        	
                 $("#projectDetailsDiv").append(result);
 	        }
 	        

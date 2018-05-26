@@ -1253,13 +1253,26 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    
 	    if(projectsDTO.getManager1() != 0){
 	    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long.valueOf(projectsDTO.getManager1()),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
-			  List<UserDTO> mrguserDTOList = new ArrayList<>();
-			    if(userList != null && userList.size() > 0) {
-			    	for(User mrguser2 : userListwithoutmaneger1) {
+	    	  List<User> globalUserListwithoutmaneger1 = userService.getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long.valueOf(projectsDTO.getManager1()),loginOrgLocations.getOrg().getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+	    	  List<User> managersList = new ArrayList<>();
+	    	  if(userListwithoutmaneger1 != null & !userListwithoutmaneger1.isEmpty()) {
+	    		  managersList.addAll(userListwithoutmaneger1);
+	    	  }
+	    	  if(globalUserListwithoutmaneger1 != null & !globalUserListwithoutmaneger1.isEmpty()) {
+	    		  managersList.addAll(globalUserListwithoutmaneger1);
+	    	  }
+	    	  List<UserDTO> mrguserDTOList = new ArrayList<>();
+			    if(userList != null && managersList.size() > 0) {
+			    	for(User mrguser2 : managersList) {
 			    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser2.getId(),loginOrgLocations.getId());
 			    		UserDTO userDTO = new UserDTO();
 			    		userDTO.setId(mrguser2.getId());
-			    		userDTO.setUserType(roleType.getUserType());
+			    		if(roleType != null) {
+			    			userDTO.setUserType(roleType.getUserType());
+			    		}else {
+			    			userDTO.setUserType(Constants.GLOBAL_USER);
+			    		}
+			    		
 			    		userDTO.setName(mrguser2.getFullName());
 			    		mrguserDTOList.add(userDTO);
 			    	}

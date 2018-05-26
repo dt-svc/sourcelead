@@ -354,14 +354,28 @@ public class ProjectsDashboardRestController {
 			    
 			    if(projectsDTO.getManager1() != 0){
 			    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long.valueOf(projectsDTO.getManager1()),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
-					  List<UserDTO> mrguserDTOList = new ArrayList<>();
-					    if(userList != null && userList.size() > 0) {
-					    	for(User mrguser2 : userListwithoutmaneger1) {
-					    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser2.getId(),loginOrgLocations.getId());
+			    	  List<User> globalUserListwithoutmaneger1 = userService.getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long.valueOf(projectsDTO.getManager1()),org.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			    	  List<UserDTO> mrguserDTOList = new ArrayList<>();
+			    	  List<User> managersListwithoutmaneger1 = new ArrayList<>();
+			    	  if(userListwithoutmaneger1 != null && !userListwithoutmaneger1.isEmpty()) {
+			    		  managersListwithoutmaneger1.addAll(userListwithoutmaneger1);
+			    	  }
+			    	  
+			    	  if(globalUserListwithoutmaneger1 != null && !globalUserListwithoutmaneger1.isEmpty()) {
+			    		  managersListwithoutmaneger1.addAll(globalUserListwithoutmaneger1);
+			    	  }
+					    if(managersListwithoutmaneger1 != null && managersListwithoutmaneger1.size() > 0) {
+					    	for(User mrguser2 : managersListwithoutmaneger1) {
 					    		UserDTO userDTO = new UserDTO();
 					    		userDTO.setId(mrguser2.getId());
-					    		userDTO.setUserType(roleType.getUserType());
 					    		userDTO.setName(mrguser2.getFullName());
+					    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser2.getId(),loginOrgLocations.getId());
+					    		if(roleType != null) {
+					    			userDTO.setUserType(roleType.getUserType());
+					    		}else {
+					    			userDTO.setUserType(Constants.GLOBAL_USER);
+					    		}
+					    		
 					    		mrguserDTOList.add(userDTO);
 					    	}
 					    }
