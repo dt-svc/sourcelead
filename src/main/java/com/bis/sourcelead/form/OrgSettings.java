@@ -49,6 +49,8 @@ public class OrgSettings {
     private String poEmail;
     
     private String remittanceEmail;
+    
+    private String workingDaysPerWeek;
 	
 
 	public Integer getId() {
@@ -231,6 +233,14 @@ public class OrgSettings {
 
 	public void setRemittanceEmail(String remittanceEmail) {
 		this.remittanceEmail = remittanceEmail;
+	}
+
+	public String getWorkingDaysPerWeek() {
+		return workingDaysPerWeek;
+	}
+
+	public void setWorkingDaysPerWeek(String workingDaysPerWeek) {
+		this.workingDaysPerWeek = workingDaysPerWeek;
 	}
 
 }

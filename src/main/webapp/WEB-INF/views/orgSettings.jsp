@@ -346,6 +346,23 @@ function cancelOrgImg(){
 							</div>
 						</div>
 						
+						<div class="form-group">
+							<label class="col-md-3">Working Days In Week</label>
+							<div class="col-md-9">
+							 <select class="chosen-select form-control" id="workingDaysPerWeek" name="workingDaysPerWeek" data-validation="required" field-name="Working Days In Week">
+								 <option  value=''>--Select--</option>
+								 <option ${SourceLeadWeb_orgLocations.workingDaysPerWeek  == '1' ? 'selected' : ''} value="1">1</option>
+								 <option ${SourceLeadWeb_orgLocations.workingDaysPerWeek  == '2' ? 'selected' : ''} value="2">2</option>
+								 <option ${SourceLeadWeb_orgLocations.workingDaysPerWeek  == '3' ? 'selected' : ''} value="3">3</option>
+								 <option ${SourceLeadWeb_orgLocations.workingDaysPerWeek  == '4' ? 'selected' : ''} value="4">4</option>
+								 <option ${SourceLeadWeb_orgLocations.workingDaysPerWeek  == '5' ? 'selected' : ''} value="5">5</option>
+								 <option ${SourceLeadWeb_orgLocations.workingDaysPerWeek  == '6' ? 'selected' : ''} value="6">6</option>
+								 <option ${SourceLeadWeb_orgLocations.workingDaysPerWeek  == '7' ? 'selected' : ''} value="7">7</option>
+							 </select>
+							</div>
+							</div>
+							
+						
 						<div class="form-group mt">
 							<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-9">
