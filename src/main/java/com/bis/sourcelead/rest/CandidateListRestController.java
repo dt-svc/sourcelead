@@ -548,6 +548,22 @@ public class CandidateListRestController {
 			}
 			boolQueryBuilder.must(createdByBoolQueryBuilder);
 		}
+		
+		
+		if (StringUtils.isNotEmpty(search.getCreatedByCandidates())) {
+			ArrayList<String> createdByArrayCandidate = getSearchKeywordsFromChosenSelectField(search.getCreatedByCandidates());
+			if(search.getCreatedByCandidates().equalsIgnoreCase("myCandidates")) {
+				
+				if (createdByArrayCandidate != null && !createdByArrayCandidate.isEmpty()) {
+					BoolQueryBuilder createdByBoolQueryBuilder = new BoolQueryBuilder();
+					for (String keywd : createdByArrayCandidate) {
+						createdByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("updatedBy", user.getUserCode()));
+					}
+					boolQueryBuilder.must(createdByBoolQueryBuilder);
+				}
+			} 
+			
+		}
 
 		// updatedOn
 		if (StringUtils.isNotEmpty(search.getUpdatedOn())) {
