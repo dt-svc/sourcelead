@@ -179,13 +179,16 @@ function getProjectListBasedOnStartAndEndDate(){
 		$.ajax({
             url: sourceleadUrl + "/getProjectListBasedOnStartAndEndDate?startDate=" + startDate +"&endDate="+ endDate+"&typeOfProject="+typeOfProject,
             type: "POST",
-            success: function (result) {
-            	var obj = jQuery.parseJSON(result);
+            success: function (json) {
             	
             	var output = "";
-            	$.each(obj, function(i, item) {
-                		output = output + "<option value='" +item[0]+ "'>"+item[1]+"</option>";
-            	});
+            
+            	for (var i=0; i<json.length; i++)
+				{
+            		    var opt = json[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
+		        		
+				}
             	$("#projectList").empty();
                 $("#projectList").append(output);
                 $('#projectList').trigger("chosen:updated");
@@ -211,8 +214,10 @@ function getProjectMemberFromProjectId(){
 	if(designationType == null || designationType =='' || designationType=='undefined'){
 		designationType = '';
 	}
+	var projectType = $('#projectType').val();
+	
 	$.ajax({
-        url: sourceleadUrl + "/getProjectMembersBasedOnProjectId?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&employmentType="+designationType,
+        url: sourceleadUrl + "/getProjectMembersBasedOnProjectId?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&employmentType="+designationType+"&typeOfProject="+projectType,
         type: "POST",
         success: function (result) {
         	var obj = jQuery.parseJSON(result);

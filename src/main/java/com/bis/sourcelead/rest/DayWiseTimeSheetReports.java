@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,16 +51,38 @@ private UserService userService;
 private CommonUtil commonUtil;
 	
 @RequestMapping(value="/getProjectListBasedOnStartAndEndDate")
-public String getProjectListBasedOnStartAndEndDate(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws JsonProcessingException {
+public List<Projects> getProjectListBasedOnStartAndEndDate(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws JsonProcessingException {
 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	
 	dayWiseTimesheetReoprtsDto.setLocationsId(orgLocations.getId());
 	dayWiseTimesheetReoprtsDto.setLoginUserId(loginUser.getId());
-	List<Projects> projectList = projectService.getAllProjectsBasedOnStartDateEndDateAndProjectType(dayWiseTimesheetReoprtsDto);
-	ObjectMapper mapper = new ObjectMapper();
-	String projectListJson = mapper.writeValueAsString(projectList);
-	return projectListJson;
+	List<Projects> projectList  = null;
+	if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("internal")) {
+		try {
+			projectList = projectService.getProjectByOrgLocationsId(orgLocations.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}else if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("client")){
+		try {
+			projectList = projectService.getAllClientProjectsByOrgLocationId(orgLocations.getId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}else {
+		try {
+			List<Projects> internalprojectList = projectService.getProjectByOrgLocationsId(orgLocations.getId());
+			List<Projects> clientprojectList  = projectService.getAllClientProjectsByOrgLocationId(orgLocations.getId());
+			projectList = new ArrayList<>();
+			projectList.addAll(clientprojectList);
+			projectList.addAll(internalprojectList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	 
+	return projectList;
 }
 
 

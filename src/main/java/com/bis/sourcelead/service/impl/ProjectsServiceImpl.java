@@ -3219,6 +3219,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				return projectsDao.getAllProjectsBasedOnProjectType(dayWiseTimesheetReoprtsDto);
 			}
 
+			@Override
+			public List<Projects> getAllClientProjectsByOrgLocationId(Long locationId) throws Exception {
+				return projectsDao.getAllClientProjectsByOrgLocationId(locationId);
+			}
+
 			
 
 

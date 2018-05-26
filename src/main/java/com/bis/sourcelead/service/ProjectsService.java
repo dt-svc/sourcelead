@@ -142,6 +142,8 @@ public interface ProjectsService {
 
 		List<Projects> getAllProjectsBasedOnStartDateEndDateAndProjectType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto);
 		
+		List<Projects> getAllClientProjectsByOrgLocationId(Long locationId) throws Exception;
+		
 //		public String getProjectId(OrgLocations orgLocations);
 		
 }
