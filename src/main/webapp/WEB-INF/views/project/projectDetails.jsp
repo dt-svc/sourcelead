@@ -765,8 +765,7 @@ function editClientProjectDetails(projectId){
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta" id="endDateDiv">';
 						result = result + '<label>End date <span class="text-danger" id="endDateSpan" style="display: none; ">*</span></label>';
 						result = result +'<div class="input-group">';
-						result = result
-								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" field-name="End Date" readonly="readonly">';
+						result = result+ '	<input class="calendar" type="text" placeholder="End Date" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" field-name="End Date" readonly="readonly">';
 						result = result + '<input type="hidden" name="dbEndDateStr" id="dbEndDateStr" value="'+endDateStr+'" >';
 					    result = result +'<span class="input-group-addon" onClick="clearEndtDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
 
@@ -900,23 +899,31 @@ function editClientProjectDetails(projectId){
 						  }if(locationDate.match("yyyy-dd-MM")){
 							  finalDateFormatEduSave = 'yy-dd-mm'; 
 						  }
-						$('#endDateStr1').datepicker({
-							dateFormat : finalDateFormatEduSave,
-							showOn: 'focus',
-				            showButtonPanel: true,
-				            closeText: 'Clear', 
-							changeMonth: true,
-							changeYear: true, 
-							minDate : dt,
-							onClose : function(selected) {
-								addValidClass();
-								var event = arguments.callee.caller.caller.arguments[0];
-				                // If "Clear" gets clicked, then really clear it
-				                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
-				                    $(this).val('');
-				                }
-							}
-						});
+						
+						  $('#endDateStr1').datepicker({
+								dateFormat : finalDateFormatEduSave,
+								changeMonth: true,
+								changeYear: true, 
+								onSelect : function(selected) {
+									var dt = $(this).datepicker('getDate', '-1d');
+									dt.setDate(dt.getDate() - 1);
+									$("#startDateStr1").datepicker("option", "maxDate", dt);
+									addValidClass();
+									//this is section is for compare project end date with current date
+									//if project end date is less than current date, the project state should be COMPLETED
+									var dummyDate = $(this).val();
+					                var today = new Date();
+					                var dd = today.getDate();
+					                var mm = today.getMonth()+1; //January is 0!
+					                var yyyy = today.getFullYear();
+					                if(dd<10){
+					                    dd='0'+dd
+					                } 
+					                if(mm<10){
+					                    mm='0'+mm
+					                } 
+								}
+							});
 						
 						
 					    var config = {
