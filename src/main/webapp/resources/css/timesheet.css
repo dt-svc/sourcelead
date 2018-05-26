@@ -2289,6 +2289,9 @@ margin-bottom:15px !important;
 .commentFile h2 {
 	padding: 0px 0px 5px 0px; margin: 0px 0px; font-size: 12px; font-weight: 500; color: #666;
 }
+.commentFile h2 i {
+	font-size: 14px; display: inline-block; font-weight: 400; color: #e63535; padding: 0px 0px 0px 5px; position: relative; top: 1px;
+}
 .commentFile table {
 	width: 100%; border: 1px solid #ededed; background-color: #fff;
 }
@@ -2296,18 +2299,28 @@ margin-bottom:15px !important;
 	padding: 6px 18px;
 }
 .commentFile table tr td {
-    width:30%; border-left: 1px solid #f2f2f2; padding:6px 10px; border-bottom: 3px solid #f2f2f2;
+    width:38%; border-left: 1px solid #f2f2f2; padding:6px 10px; border-bottom: 3px solid #f2f2f2;
     }
-.commentFile table tr td:first-child + td + td {
-	width: 40%;
+.commentFile table tr td:first-child {
+	width: 24%;
 }
 .addRowBtn {
-	 padding:6px 35px 6px 10px !important; position: relative;
+	 padding:2px 35px 2px 0px !important; position: relative;
+}
+.addRowBtn label {
+	position: relative!important; width: auto !important; left: 0px; top: 0px; padding: 0px 0px !important;
+}
+.addRowBtn label span i {
+	color: #fff !important; font-size:14px !important; padding: 0px 0px !important;
 }
 .addRowIcon {
     border:0px; background-color:transparent; background-image:url(../images/addtask.png); background-repeat:no-repeat;
 	background-position:center; margin: 0px 0px 0px 5px; position: absolute;
-    background-size:16px; width:12px; height:12px; top:14px; right: 12px;
+    background-size:16px; width:12px; height:12px; top:11px; right: 12px;
+}
+.addRowIcon.removeIcon {
+	background-image:url(../images/addtask1.png); background-repeat:no-repeat; background-position:center; 
+	 -moz-transform: rotate(-45deg); -webkit-transform: rotate(-45deg); -o-transform: rotate(-45deg); transform: rotate(-45deg);
 }
 .timesheetNewHead {
     padding:8px 10px 5px;
@@ -8247,24 +8260,16 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 .movSel option{
 	font-size: 13px; padding: 4px 10px;
 }
-
+.removPad {
+	padding: 10px 240px 0px 0px;
+} 
 
 /*  New Css File  */
 
- .commentTime textarea{
-     width: 100%; font-size: 13px;
-    font-weight: 500;
-    color: #333;
-    padding: 5px 10px;
-    resize: none;
-    border-radius: 3px;
-    background-color: #fff;
-    border: 1px solid #a2d1fc;
-    display: inline-block;
-    float: left;
-    margin: 0px 10px 0px 0px;
-    height: 60px;
+.commentTime textarea{
+    width: 100%; font-size: 13px; font-weight: 500; color: #333; padding: 5px 10px; resize: none; border-radius: 3px; background-color: #fff;
+    border: 1px solid #a2d1fc; display: inline-block; float: left; margin: 0px 10px 0px 0px; height: 60px;
     }
-   .timSelWid {
+.timSelWid {
    width: 140px !important;
    } 
