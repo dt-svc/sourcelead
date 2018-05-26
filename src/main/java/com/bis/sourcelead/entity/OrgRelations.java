@@ -133,6 +133,9 @@ public class OrgRelations implements Serializable{
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name="IS_OFFSHORE_RELATION")
+	private String isOffShoreRelation;
+	
 	@Transient
 	@JsonProperty
     private String orgName;
@@ -1118,6 +1121,14 @@ public class OrgRelations implements Serializable{
 	public void setLocationJsonId(Long locationJsonId)
 	{
 		this.locationJsonId = locationJsonId;
+	}
+
+	public String getIsOffShoreRelation() {
+		return isOffShoreRelation;
+	}
+
+	public void setIsOffShoreRelation(String isOffShoreRelation) {
+		this.isOffShoreRelation = isOffShoreRelation;
 	}
 
 	

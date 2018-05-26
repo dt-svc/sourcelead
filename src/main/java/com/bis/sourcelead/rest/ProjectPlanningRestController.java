@@ -987,6 +987,7 @@ public class ProjectPlanningRestController {
 				orgRelations.setCreatedDate(new Date());
 				orgRelations.setUpdatedBy(user.getUserCode());
 				orgRelations.setUpdatedDate(new Date());
+				orgRelations.setIsOffShoreRelation(Constants.YES);
 				
 				Set<OrgSpoc> orgSpocSet = new HashSet<>();
 				OrgSpoc orgSpoc = new OrgSpoc();

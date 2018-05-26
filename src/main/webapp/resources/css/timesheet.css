@@ -1640,7 +1640,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
     }  
           
 .user_summary_edit.user_summary_edit_a  {
-    z-index:1100; left:0px; top:40px; height: auto; min-height:91.5%;
+    z-index:110; left:0px; top:40px; height: auto; min-height:91.5%;
     }  
 .useredit.useredit_a {
     padding:0px 0px 0px 0px;
