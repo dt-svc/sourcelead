@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -137,4 +138,8 @@ public interface ProjectMembersService {
 	public Boolean getPayRateOrBillRateChanges(ProjectMembers projectMembers,ProjectMembersDTO projectMembersDTO) throws Exception;
 	
 	public List<ProjectMembers> getProjectMembersListByOrgIdAndMasterCandidateId(Long orgId, Long masterCandidateId);
+
+	public List<ProjectMembers> getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) throws Exception;
+	
+	public ProjectMembers getProjectMemberByUserIdAndLoginOrglocationId(Long userId, Long orgLocationId) throws Exception;
 }

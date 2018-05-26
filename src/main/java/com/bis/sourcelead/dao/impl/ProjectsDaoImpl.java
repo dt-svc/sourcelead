@@ -29,6 +29,7 @@ import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dao.ProjectClientDao;
 import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1256,9 +1257,36 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		
 		return projectsList;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Projects> getAllProjectsBasedOnProjectType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) {
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String projectTypeQuery = "";
+		if(StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getTypeOfProject())) {
+			if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("client")) {
+				projectTypeQuery = " and projects.isClientProject = 'Y'";
+			}
+			else if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("internal")) {
+				projectTypeQuery = " and (projects.isClientProject IS NULL OR projects.isClientProject = 'N')";
+			}
+		}
+		
+		String query= "select projects.id,projects.projectName from Projects projects where  projects.id IN "
+				   +"("
+					 + " select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy  where  "
+					 + " (hierarchy.projectClientsId.orgLocationsId.id = :orgLocationsId and hierarchy.approverUserId.id = :userId "
+					 + " OR "
+					 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
+				  + " ))  "+projectTypeQuery;
+		List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", dayWiseTimesheetReoprtsDto.getLocationsId()).setLong("userId", dayWiseTimesheetReoprtsDto.getLoginUserId()).list();
+		System.out.println(projectsList.size());
+		return projectsList;
+	}
 	
-	
-	 
 	
 }
 

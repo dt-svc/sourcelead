@@ -28,10 +28,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetEntries;
 import com.bis.sourcelead.enums.Primary;
@@ -39,6 +41,7 @@ import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -54,6 +57,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Autowired
 	TimesheetEntriesDao timesheetEntriesDao;
 	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	
 	
@@ -271,6 +276,23 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		return pm;  
 	}
+	
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ProjectMembers getProjectMemberByUserIdAndLoginOrglocationId(Long userId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQueryForUserIdChecking = "(pm.projectMemberCandidteId.id IN(select cand.id from Candidate cand where cand.consultantUser.id = :userId))";
+		String query = " from ProjectMembers pm left join fetch pm.projects project left join fetch pm.employee left join fetch project.orgLocationsId orgloc where "+subQueryForUserIdChecking+" and orgloc.id = :orgLocationId" ;
+		List<ProjectMembers> pmList =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list(); 
+		ProjectMembers pm = null;
+		if(pmList != null && !pmList.isEmpty())  {
+			pm  = pmList.iterator().next();
+		}
+		return pm;  
+	}
+	
+	
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
@@ -1508,6 +1530,72 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		return pm;  
 	
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) throws Exception {
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		List<ProjectMembers> pmList = null;
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(dayWiseTimesheetReoprtsDto.getLocationsId());
+		
+		 Date startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
+		 Date endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
+		
+		
+		java.sql.Date sqlStartDate = null;
+		if(startDate != null){
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		
+		java.sql.Date sqlEndDate = null;
+		if(endDate!= null){
+			sqlEndDate = new java.sql.Date(endDate.getTime());
+		}
+		
+		String dateQuery = "";
+		if(dayWiseTimesheetReoprtsDto.getStartDate() != null && dayWiseTimesheetReoprtsDto.getEndDate() != null){
+			   dateQuery =  " and pm.id IN ( "
+                + "    select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( :endDate >= pmh.projectAssignedDate) "
+                + "  )  ";
+	     }
+		
+		String employmentTypeQuery = "";
+		if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()){
+			String empType = dayWiseTimesheetReoprtsDto.getEmploymentType().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
+			employmentTypeQuery = " and can.designation IN (:empType)";
+		}
+		
+		String projectQuery = "";
+		if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()){
+			String projectIds = dayWiseTimesheetReoprtsDto.getProjectIds().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
+			projectQuery = " and projects.id  IN (:projectIds)";
+		}
+		
+		String groupByCandidateId = "Group By can.id";
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		String query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where can.orgLocationId.id = :locationId "
+				  +projectQuery
+				  +dateQuery
+				  +employmentTypeQuery
+				  +groupByCandidateId;
+		if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty() && dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()){
+			pmList =  session.createQuery(query).setLong("locationId", dayWiseTimesheetReoprtsDto.getLocationsId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setParameterList("projectIds", dayWiseTimesheetReoprtsDto.getProjectIds()).setParameterList("empType", dayWiseTimesheetReoprtsDto.getEmploymentType()).list();
+		}else if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
+			pmList =  session.createQuery(query).setLong("locationId", dayWiseTimesheetReoprtsDto.getLocationsId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setParameterList("projectIds", dayWiseTimesheetReoprtsDto.getProjectIds()).list();
+		}else if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()){
+			pmList =  session.createQuery(query).setLong("locationId", dayWiseTimesheetReoprtsDto.getLocationsId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setParameterList("empType", dayWiseTimesheetReoprtsDto.getEmploymentType()).list();
+		}else{
+			pmList =  session.createQuery(query).setLong("locationId", dayWiseTimesheetReoprtsDto.getLocationsId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).list();
+		}
+		return pmList;
 	}
 	
 	

@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 
 public interface TimeSheetDayEntriesDao {
 
@@ -28,6 +27,8 @@ public interface TimeSheetDayEntriesDao {
 	 public Float getTotalHoursByProjectIdMasteCandidateIdandTimesheetDate(Long projectId, Long masterCandidateId,Date timesheetDate);
 
 	 public TimeSheetDayEntries getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(Long projectId,Long masterCandidateId, Date timesheetDate, Long projectTaskId);
+
+	List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(Long projectId, Date timesheetDate, Long projectMemberId)throws Exception;
 
 
 }
