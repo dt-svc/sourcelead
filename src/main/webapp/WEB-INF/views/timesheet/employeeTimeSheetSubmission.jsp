@@ -22,23 +22,6 @@
 					<a href="#" onclick="timesheetEntriesDivByTimeSubFrequency('${tsf.key}');">${tsf.value}</a>
 				</li>
 		   </c:forEach>
-		   <%-- <c:if 	test="${timesheetSubmissionDTO.timesheetStatus != 'NEW'}">
-					<div class="export dropdown">
-				<p class="dropdown-toggle" data-toggle="dropdown">
-					<i class="glyphicon glyphicon-export"></i>Export <i
-						class="fa fa-caret-down"></i>
-				</p>
-				<ul id="exporrtEntries" class="dropdown-menu dropdown-menu-right">
-					<li onclick='timesheetEntriesExport("pdf");'>
-						<i class="fa fa-file-pdf-o text-danger"></i>&nbsp;PDF
-					</li>
-					<li onclick='timesheetEntriesExport("excel");'>
-						<i class="fa fa-file-excel-o text-primary"></i>&nbsp;Excel</li>
-					<li class="hidden">Word<i class="fa fa-file-word-o"></i></li>
-				</ul>
-			</div>
-			<div class="clearfix"></div>
-		</c:if> --%>
 		   <div class="clearfix"></div>
 		</ul>
 		<div id="timesheetDivByTab">
@@ -1092,7 +1075,7 @@ function addTimeSheetRow() {
 	 $('#0docFile').attr("data-validation-optional","true");  */
 	 /* $('#0docFile').removeClass('error'); */
 	/*  $('#0docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); */ 
-	/*  if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){ */   
+	  if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){   
 		    var tbl = document.getElementById("timesheet");
 			var rowNum = $("#maxRowNumber").val();
 			var maxRowNum = parseInt(rowNum);
@@ -1304,7 +1287,7 @@ function addTimeSheetRow() {
 			 $(".time_btn").removeAttr("disabled");
 			 $("#loadTime").removeAttr("style"); 
 		   } */
-	   /*  } */	
+	    } 	
 	}	
         
         function disableInput(divId){
@@ -1615,27 +1598,32 @@ function checkHours(){
 </script>
 <script>
    function rowValidation(){ 
-	     var rowNum = $("#maxRowNumber").val();
-		 var jValue = parseInt(rowNum)+1;
-		 for (var j = 1; j < jValue; j++){
-			 var isEmpty = true;
-			 for (var i = 1; i < 8; i++){
-				 var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
-				 if (btemp !== undefined && btemp !=='####' && btemp !=='') {
-					 isEmpty = false;
-					 break;
+	   rowRemoveError();
+	   if ($('#timesheet_form').validate(false, validationSettings)){ 
+		   var rowNum = $("#maxRowNumber").val();
+			 var jValue = parseInt(rowNum)+1;
+			 for (var j = 1; j < jValue; j++){
+				 var isEmpty = true;
+				 for (var i = 1; i < 8; i++){
+					 var btemp = $("#"+j+"timeSheetDay"+i+"Id").val();
+					 if (btemp !== undefined && btemp !=='####' && btemp !=='') {
+						 isEmpty = false;
+						 break;
+					 }
+				 }
+				 if(isEmpty == true){
+					 $("#"+j+"projectMember1Id").find('p.jquery_form_error_message').remove(); 
+					 $("#"+j+"projectMember1Id").after("<p class='jquery_form_error_message'>Atleat One Date Should Be Filled</span>");
+					 $("#"+j+"projectMember1Id").attr('record-exist','yes');
+					 $("#"+j+"projectMember1Id").attr('record-exist-errorMsg','Atleat One Date Should Be Filled');
+				 }else{
+					 $("#"+j+"projectMember1Id").removeAttr( "record-exist record-exist-errormsg");
+					 $("#"+j+"projectMember1Id").find('p.jquery_form_error_message').remove();  
 				 }
 			 }
-			 if(isEmpty == true){
-				 $("#"+j+"taskTd").find('p.jquery_form_error_message').remove(); 
-				 $("#"+j+"task1Id").after("<p class='jquery_form_error_message'>Atleat One Date Should Be Filled</span>");
-				 $("#"+j+"task1Id").attr('record-exist','yes');
-				 $("#"+j+"task1Id").attr('record-exist-errorMsg','Atleat One Date Should Be Filled');
-			 }else{
-				 $("#"+j+"task1Id").removeAttr( "record-exist record-exist-errormsg");
-				 $("#"+j+"taskTd").find('p.jquery_form_error_message').remove();  
-			 }
-		 }
+	   }
+	     
+	   
    }
 
 </script>
@@ -1644,8 +1632,8 @@ function checkHours(){
 	     var rowNum = $("#maxRowNumber").val();
 		 var jValue = parseInt(rowNum)+1;
 		 for (var j = 1; j < jValue; j++){
-			 $("#"+j+"task1Id").removeAttr( "record-exist record-exist-errormsg");
-			 $("#"+j+"taskTd").find('p.jquery_form_error_message').remove();  
+			 $("#"+j+"projectMember1Id").removeAttr( "record-exist record-exist-errormsg");
+			 $("#"+j+"projectMember1IdS").find('p.jquery_form_error_message').remove();  
 		 }
    }
 </script>
@@ -1838,15 +1826,14 @@ function newSaveTimesheet(status){
 			
 		 }	
      }); */
-	
-	/*  var validationSettings = {
+     rowValidation();
+	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
 	 }; 
-	 if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){  */
-		 
+	 if ($('#timesheet_form').validate(false, validationSettings) && !$("#timeSheetErrorMsg").is(':visible')){ 
 		     if(status != null && status != 'undefined' && status != '' && ((status == 'Submitted') || (status == 'Draft'))){
 		    	   timesheetDbSave(status,savingType)
 	        	   return true;
@@ -1861,11 +1848,11 @@ function newSaveTimesheet(status){
 		    	 return false;
 		     }
               
-	 /*} else{ 
+	 } else{ 
 	 		 $(".time_btn").removeAttr("disabled");
 	 		 $("#loadTime").removeAttr("style"); 
 			return false;
-	   }  */
+	   }  
 }
 </script>
 <script type="text/javascript">

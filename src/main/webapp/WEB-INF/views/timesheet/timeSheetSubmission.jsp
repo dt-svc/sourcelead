@@ -595,7 +595,7 @@ function setTotals(){
 			    	 
 				     bsum = parseFloat(bsum) + parseInt(finalmin);
 				     
-				     var billableType = $("#"+j+"task1IdBillableTypeId").text();
+				     var billableType = $("#"+j+"task1IdBillableTypeId").val();
 				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Billable') {
 				    	 var billableHours = btemp;
 				    	 var billableSplit = billableHours.split(':');
@@ -1313,8 +1313,9 @@ function addTimeSheetRow(projectId) {
         function prepareBillableDetails(entryIndex,billableTypeId){
         	  var end = parseInt(entryIndex)+7;
          	  for (i = entryIndex; i < end; i++) {
-         		 $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskType']").val(taskType);
+         		 $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetTaskDTO.taskType']").val($("#"+ billableTypeId).val());
          	  }
+         	 setTotals(); 
         }
 	   //get project tasks 
 	   function getProjectTasks(projectTaskId,projectId){
