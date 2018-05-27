@@ -1266,16 +1266,11 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		String projectTypeQuery = "";
-		if(StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getTypeOfProject())) {
-			if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("client")) {
-				projectTypeQuery = " and projects.isClientProject = 'Y'";
-			}
-			else if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("internal")) {
-				projectTypeQuery = " and (projects.isClientProject IS NULL OR projects.isClientProject = 'N')";
-			}
-		}
 		
-		String query= "select projects.id,projects.projectName from Projects projects where  projects.id IN "
+		
+		projectTypeQuery = " and (projects.isClientProject IS NULL OR projects.isClientProject = 'N')";
+		
+		String query= "from Projects projects where  projects.id IN "
 				   +"("
 					 + " select hierarchy.projectId.id from ProjectApproverHierarchy hierarchy  where  "
 					 + " (hierarchy.projectClientsId.orgLocationsId.id = :orgLocationsId and hierarchy.approverUserId.id = :userId "
@@ -1283,7 +1278,18 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 					 + " (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = hierarchy.projectClientsId.orgLocationsId.id) )"
 				  + " ))  "+projectTypeQuery;
 		List<Projects> projectsList =  session.createQuery(query).setLong("orgLocationsId", dayWiseTimesheetReoprtsDto.getLocationsId()).setLong("userId", dayWiseTimesheetReoprtsDto.getLoginUserId()).list();
-		System.out.println(projectsList.size());
+		return projectsList;
+	}
+
+	@Override
+	@Transactional
+	public List<Projects> getAllClientProjectsByOrgLocationId(Long locationId) throws Exception {
+		
+		logger.debug("In ProjectsDaoImpl class getEndClientProjectByOrgLocationsIdAndClientOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Projects projects where projects.id  IN (select pc.projectId.id from ProjectClients pc where pc.orgLocationsId.id = :orgLocationsId and pc.orgRelationId IS NOT NULL)";
+		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", locationId).list();
+		
 		return projectsList;
 	}
 	

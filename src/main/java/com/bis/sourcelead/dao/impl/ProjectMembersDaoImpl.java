@@ -1565,11 +1565,12 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	     }
 		
 		String employmentTypeQuery = "";
+		String query= "";
 		if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()){
 			String empType = dayWiseTimesheetReoprtsDto.getEmploymentType().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
 			employmentTypeQuery = " and can.designation IN (:empType)";
 		}
-		
+	
 		String projectQuery = "";
 		if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()){
 			String projectIds = dayWiseTimesheetReoprtsDto.getProjectIds().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
@@ -1581,11 +1582,19 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		String query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where can.orgLocationId.id = :locationId "
-				  +projectQuery
-				  +dateQuery
-				  +employmentTypeQuery
-				  +groupByCandidateId;
+		if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("internal")) {
+			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where can.orgLocationId.id = :locationId "
+					 +projectQuery
+					  +dateQuery
+					  +employmentTypeQuery
+					  +groupByCandidateId;
+		}else {
+			 query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where (pc.orgRelationId IS NOT NULL and pc.orgRelationId.responderLocationId.id = :locationId OR pc.orgRelationId.locationId.id = :locationId) "
+					 +projectQuery
+					  +dateQuery
+					  +employmentTypeQuery
+					  +groupByCandidateId;
+		}
 		if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty() && dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()){
 			pmList =  session.createQuery(query).setLong("locationId", dayWiseTimesheetReoprtsDto.getLocationsId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setParameterList("projectIds", dayWiseTimesheetReoprtsDto.getProjectIds()).setParameterList("empType", dayWiseTimesheetReoprtsDto.getEmploymentType()).list();
 		}else if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {

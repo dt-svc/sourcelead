@@ -99,5 +99,7 @@ public interface ProjectsDao {
 	Projects getProjectByProjectName(String projectName) throws Exception;
 
 	public List<Projects> getAllProjectsBasedOnProjectType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto);
+	
+	List<Projects> getAllClientProjectsByOrgLocationId(Long locationId) throws Exception;
 
 }
