@@ -74,7 +74,7 @@ $(document).ready(function() {
 					return;
 				}
 				if(amountFrom > amountTo) {
-					$(this).find("input[data-name='amountTo']").parent().append("<p class='jquery_form_error_message'>To amount should be less than From amount</p>");
+					$(this).find("input[data-name='amountTo']").parent().append("<p class='jquery_form_error_message'>'To amount' should be greater than 'From amount'</p>");
 					flag = false;
 					return;
 				}
@@ -351,10 +351,19 @@ function Tax() {
 	
 	this.deletePTRow = function(ele) {
 		var removalRow = $(ele).closest("div[data-name='ptRow']");
-		$("#removeIds").val(($("#removeIds").val()!==""? $("#removeIds").val() + "," : "") + $(removalRow).data("id"));
+		if($(removalRow).data("id")!== undefined){
+			$("#removeIds").val(($("#removeIds").val()!==""? $("#removeIds").val() + "," : "") + $(removalRow).data("id"));
+		}
 		$(removalRow).remove();
 		tax.refreshPTRows();
 	}
+	
+/*	this.deletePTRow = function(ele) {
+		var removalRow = $(ele).closest("div[data-name='ptRow']");
+		$("#removeIds").val(($("#removeIds").val()!==""? $("#removeIds").val() + "," : "") + $(removalRow).data("id"));
+		$(removalRow).remove();
+		tax.refreshPTRows();
+	}*/
 	
 	this.refreshPTRows = function() {
 		pfRowId = 0;
@@ -435,7 +444,9 @@ function Tax() {
 	
 	this.deleteTDSRow = function(ele) {		
 		var removalRow = $(ele).closest("div[data-name='tdsRow']");
-		$("#removeIds").val(($("#removeIds").val()!==""? $("#removeIds").val() + "," : "") + $(removalRow).data("id"));
+		if($(removalRow).data("id")!== undefined) {
+			$("#removeIds").val(($("#removeIds").val()!==""? $("#removeIds").val() + "," : "") + $(removalRow).data("id"));
+		}
 		$(removalRow).remove();
 		tax.refreshTDSRows();
 	}
