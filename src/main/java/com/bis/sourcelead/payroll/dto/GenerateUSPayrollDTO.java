@@ -1,6 +1,8 @@
 package com.bis.sourcelead.payroll.dto;
 
-public class GenerateUSPayrollDTO {
+import com.bis.sourcelead.dto.SearchDTO;
+
+public class GenerateUSPayrollDTO extends SearchDTO{
 	
 	private String groupId;
 	

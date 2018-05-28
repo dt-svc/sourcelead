@@ -22,7 +22,13 @@ public class USPayrollDTO {
 	
 	private BigDecimal benefits;
 	
-	private String netPay; // 
+	private BigDecimal netPay;
+	
+	private BigDecimal regularHrsTotalAmt;	
+	
+	private BigDecimal otHoursTotalAmt;
+	
+	private BigDecimal payRate;
 	
 	public String getEmpId()
 	{
@@ -96,14 +102,39 @@ public class USPayrollDTO {
 	{
 		this.benefits = benefits;
 	}
-	public String getNetPay()
+	public BigDecimal getNetPay()
 	{
 		return netPay;
 	}
-	public void setNetPay(String netPay)
+	public void setNetPay(BigDecimal netPay)
 	{
 		this.netPay = netPay;
 	}
+	public BigDecimal getRegularHrsTotalAmt()
+	{
+		return regularHrsTotalAmt;
+	}
+	public void setRegularHrsTotalAmt(BigDecimal regularHrsTotalAmt)
+	{
+		this.regularHrsTotalAmt = regularHrsTotalAmt;
+	}
+	public BigDecimal getOtHoursTotalAmt()
+	{
+		return otHoursTotalAmt;
+	}
+	public void setOtHoursTotalAmt(BigDecimal otHoursTotalAmt)
+	{
+		this.otHoursTotalAmt = otHoursTotalAmt;
+	}
+	public BigDecimal getPayRate()
+	{
+		return payRate;
+	}
+	public void setPayRate(BigDecimal payRate)
+	{
+		this.payRate = payRate;
+	}
+	
 	
 	
 }

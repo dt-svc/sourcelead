@@ -386,9 +386,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		Query query = session.createQuery(queryStr.toString());
 		
 		
-		String countQuery = " Select count(*) from ProjectMembers pm where pm.projectMemberCandidteId.orgLocationId.id = :locationsId "
-				+ statusQuery
-				+ dateCountQuery;
+//		String countQuery = " Select count(*) from ProjectMembers pm where pm.projectMemberCandidteId.orgLocationId.id = :locationsId "
+//				+ statusQuery
+//				+ dateCountQuery;
 		
 		
 		if(startDate != null && endDate != null){
@@ -396,24 +396,25 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		
 		@SuppressWarnings("unchecked")
-		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setFirstResult(start).setMaxResults(length).list();;
+//		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setFirstResult(start).setMaxResults(length).list();
+		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).list();
 		response.setData(projectMemberList);
 		
-		Query countQ = session.createQuery(countQuery);
-		if(startDate != null && endDate != null){
-			countQ.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
-		}
-		countQ.setLong("locationsId", locationsId);
-		
-		List<Long> countList  = null;
-		if(countQ != null) {
-			countList  = countQ.list();
-		}
-		int recordsTotal=0;
-		if(countList != null && !countList.isEmpty()) {
-			recordsTotal  =  countList.iterator().next().intValue();
-		}
-		response.setRecordsTotal(recordsTotal);
+//		Query countQ = session.createQuery(countQuery);
+//		if(startDate != null && endDate != null){
+//			countQ.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+//		}
+//		countQ.setLong("locationsId", locationsId);
+//		
+//		List<Long> countList  = null;
+//		if(countQ != null) {
+//			countList  = countQ.list();
+//		}
+//		int recordsTotal=0;
+//		if(countList != null && !countList.isEmpty()) {
+//			recordsTotal  =  countList.iterator().next().intValue();
+//		}
+//		response.setRecordsTotal(recordsTotal);
 		
 		/*if(searchQuery.toString() != null && !searchQuery.toString().isEmpty()){
 			response.setRecordsFiltered(recordsFiltered);

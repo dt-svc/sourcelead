@@ -35,6 +35,7 @@ import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollContributionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
@@ -47,6 +48,7 @@ import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.AssociateTaxService;
 import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
+import com.bis.sourcelead.payroll.service.PayItemService;
 import com.bis.sourcelead.payroll.service.PayrollContributionService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
@@ -100,7 +102,8 @@ public class USPayrollRestController {
 	@Autowired
 	CommonUtil commonUtil;
 	
-	
+	@Autowired
+	PayItemService payItemService;
 	
 	/**
 	 * find all deduction types from lookup_data table 
@@ -713,5 +716,42 @@ public class USPayrollRestController {
 			payFrequency.add(sb.toString());
 		}
 		return payFrequency;
+	}
+	
+//	
+	
+	/**"
+	 * Add Pay Item for Organization
+	 * @param payItemDTO
+	 * @param request
+	 * @param response
+	 * @return Response<PayItemDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/addPayItem","/rest/addPayItem" }, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<PayItemDTO> addPayItem(PayItemDTO payItemDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<PayItemDTO>  resObj = payItemService.addPayItem(orgLocation,payItemDTO,loginUser);
+		return resObj;
+	}
+	
+	/**
+	 * Get Pay Item List By OrgLocation Id
+	 * @param payItemDTO
+	 * @param request
+	 * @param response
+	 * @return ResponseList<PayItemDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getPayItemList","/rest/getPayItemList" }, method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<PayItemDTO> getPayItemList(PayItemDTO payItemDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<PayItemDTO> resObj = payItemService.getPayItemByLocationId(orgLocation);
+		return resObj;
 	}
 }

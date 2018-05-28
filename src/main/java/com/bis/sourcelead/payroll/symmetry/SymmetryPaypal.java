@@ -40,7 +40,7 @@ public class SymmetryPaypal {
 			// The City GNIS code is 452890
 			STE.setStateParameters(locationCode, true, false, StateRounding.DEFAULTROUNDING, zero, zero, zero, false);
 			STE.setCalculationMethod(locationCode, CalcMethod.ANNUALIZED, CalcMethod.NONE);
-			STE.setWages(locationCode, WageType.REGULAR, new Hours(40.00), new Money(5000.00), zero, zero, zero);
+			STE.setWages(locationCode, WageType.REGULAR, new Hours(35.00), new Money(437.50), zero, zero, zero);
 			STE.setCountyParameters(locationCode, false, true);
 			// The miscellaneous parameters vary by state
 			// Indiana requires the following two parameters to withhold state

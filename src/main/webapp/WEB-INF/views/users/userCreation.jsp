@@ -54,11 +54,12 @@
 	      <div class="tabsMenu">
 	        <ul class="list-unstyled">
 	          <li class="current"><a href="#tab-1">Associates</a></li>
+	           <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
 	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
 	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
 	          <li class=""><a href="#tab-5" data-toggle="tab" id="associateContribution">Contribution</a></li>
-	          <li class=""><a href="#tab-6" data-toggle="tab" id="associateAdvances">Advances</a></li>
+<!-- 	          <li class=""><a href="#tab-6" data-toggle="tab" id="associateAdvances">Advances</a></li> -->
 	          <div class="clearfix"></div>
 	        </ul>
 			</div>
@@ -415,6 +416,7 @@
           </div>
         </div>
         </div>
+         <jsp:include page="associateSalary.jsp" />
        <jsp:include page="associateBankData.jsp" />
        <jsp:include page="associateTax.jsp" />
        <jsp:include page="associateDeduction.jsp" />

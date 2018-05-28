@@ -85,7 +85,7 @@ $(document).ready(function(){
         <div class="col-lg-12">
           <div class="pull-right">
             <input value="Save" class="btn btn-success btnSuccess" id="save_deductionType" type="button" onclick="saveDeduction();">
-            <input value="Cancel" class="btn btn-defualt ml10" onclick="window.location='${appPath}/payrollConfigure'" type="button">
+            <input value="Cancel" class="btn btn-defualt ml10" onclick="window.location='${appPath}/payrollConfiguration'" type="button">
           </div>
         </div>
       </div>      
@@ -158,7 +158,7 @@ function saveDeduction(){
 		        	  $("#addDeductionLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		        	  $.post(sourceleadUrl+"/savePayrollDeduction?"+tokenParamName+"="+tokenValue, formData, function(data) {
 		        		  $("#addDeductionLoading").removeAttr("style");
-		        		  location.replace(sourceleadUrl+ "/payrollConfigure");
+		        		  location.replace(sourceleadUrl+ "/payrollDeductionList");
 		        		  
 		        		    $("#selector2").removeAttr("style");
 			     			 $("#selector2").css({ display: "block" });
