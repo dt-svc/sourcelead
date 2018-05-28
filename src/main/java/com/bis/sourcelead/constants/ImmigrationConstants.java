@@ -32,7 +32,7 @@ public class ImmigrationConstants {
 	
 	public static final String[] IMPORT_IMMIGRATION_EXCEL_HEADERS = { "Emp ID", "Beneficiary First Name","Beneficiary Last name",
 			 "Beneficiary Email*", "Experience", "SSN", "I-94 Number",	"I-20 SEVIS Number If Student", "EAD Number If Student", "DOB*",	
-			 "Marital status*", "Petition Type*", "Template*", "Date of arrival", "Open on*", "Status*","Visa No.", "Visa Start Date", "Visa End Date","Law Firm/Client*",
+			 "Marital status*", "Petition Type*", "Template*", "Date of arrival", "Open on*", "Status*","Visa No.", "Visa Start Date", "Visa End Date","Company*",
 			 "Name", "Attorney/Contact email*", "Receipt no.", "Location", "LCA Start Date", "LCA End Date","LCA Number", "LCA Rate", "LCA Location","LCA Title",
 			 "Previous LCA Start Date", "Previous LCA end Date","Previous LCA Number","Previous LCA Rate","Previous LCA Title","Previous LCA Location"};
 	
@@ -77,4 +77,7 @@ public class ImmigrationConstants {
 	public static String IMMIGRATION_RFE_STATUS = "rfe";
 	
 	public static List<String> IMMIGRATION_RFE_STATUS_LIST = Arrays.asList("RFE","RFE Received","RFE Approved","RFE Denied","RFE Responded");
+	
+	public static List<String> MARRAIAGE_STATUS_LIST = Arrays.asList("Single","Married","","Divorced","Separated");
+	
 }
