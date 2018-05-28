@@ -250,6 +250,22 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
+	public long changeTaxFormStatus(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			SourceleadTaxForm sourceleadTaxForm = session.get(SourceleadTaxForm.class, id);
+			if (sourceleadTaxForm != null) {
+				sourceleadTaxForm.setActive(!sourceleadTaxForm.isActive());
+				return sourceleadTaxForm.getId();
+			} else
+				return -2;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	@Override
 	public long changeITDeclarationSectionStatus(long id) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();

@@ -4,6 +4,7 @@
 <script src="/resources/js/jquery.simplePagination.js"></script>
 <script type="text/javascript">
 	var activeTaxTab = "${activeTaxTab}";
+	var viewPage = "${viewPage}";
 </script>
 <script type="text/javascript" src='/resources/js/tax/tax.js'></script>
 <section class="content-wraper contentWraper">

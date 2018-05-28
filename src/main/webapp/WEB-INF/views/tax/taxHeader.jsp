@@ -1,4 +1,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script type="text/javascript">
+	var viewPage = "${viewPage}";
+</script>
 <div id="loading"></div>
 <div class="success_pop">
   <i class="fa fa-check-circle"></i><span>Operation executed successfully...</span>
@@ -12,11 +15,11 @@
 
 <div class="tabsMenu">
 	<ul class="list-unstyled">
-		<li class="${activeTaxTab == 'state' || activeTaxTab =='createStateTax' ? 'current' : ''}"><a
+		<li class="${activeTaxTab == 'state' ? 'current' : ''}"><a
 			href="${appPath}/stateTax/list" class="${activeTaxTab == 'state' ? 'active' : ''}">State</a></li>
 		<li class="${activeTaxTab == 'central' || activeTaxTab == 'createCentralTax' ? 'current' : ''}"><a
 			href="${appPath}/centralTax/list" class="${activeTaxTab == 'central' ? 'active' : ''}">Central</a></li>
-		<li class="${activeTaxTab == 'forms' || activeTaxTab == 'createForms' ? 'current' : ''}"><a
+		<li class="${activeTaxTab == 'forms' ? 'current' : ''}"><a
 			href="${appPath}/form/list" class="${activeTaxTab == 'forms' ? 'active' : ''}">Forms</a></li>	
 	</ul>
 </div>
@@ -29,7 +32,12 @@
 	<b>
 	<c:choose>
 		<c:when test="${activeTaxTab == 'forms'}">
-			<input id='confirmId' type='button' value='Ok' onclick='tax.changeFormSectionStatus()'>
+			<c:if test="${viewPage == 'tax/addForm'}">
+				<input id='confirmId' type='button' value='Ok' onclick='tax.changeFormSectionStatus()'>
+			</c:if>
+			<c:if test="${viewPage == 'tax/form_list'}">
+				<input id='confirmId' type='button' value='Ok' onclick='tax.changeFormStatus()'>
+			</c:if>
 		</c:when>
 		<c:otherwise>
 			<input id='confirmId' type='button' value='Ok' onclick='tax.changeTaxStatus()'>

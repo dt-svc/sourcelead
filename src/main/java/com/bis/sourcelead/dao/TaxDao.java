@@ -42,6 +42,8 @@ public interface TaxDao {
 
 	public long addITDeclarationSectionItem(SourceleadTaxSectionItem taxSectionItem);
 
+	public long changeTaxFormStatus(long id);
+
 	public long changeITDeclarationSectionStatus(long id);
 
 	public long changeITDeclarationSectionItemStatus(long id);

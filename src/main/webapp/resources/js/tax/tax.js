@@ -9,11 +9,11 @@ $(document).ready(function() {
 			tax.addDynamicPTRow(true);
 	} else if(activeTaxTab === "forms") {
 		tax.getTaxFormList();
-		if(formId) {
-			tax.getDynamicTaxForm(formId);
+		if(formId && formId > 0) {
+			tax.getDynamicTaxForm(formId, isEditable);
 		}
 		$("#formType").change(function() {
-			tax.getDynamicTaxForm($(this).val());
+			tax.getDynamicTaxForm($(this).val(), isEditable);
 		});
 		
 		$("#aa").click(function() {
@@ -286,6 +286,30 @@ function Tax() {
 		});
 	}
 	
+	this.changeFormStatus = function() {
+		var type = $("#confirmId").data("type");
+		var status = $("#confirmId").data("status");
+		$.post(sourceleadUrl + "/form/changeStatus", {id: $("#confirmId").data("id")}, function(response) {
+			if (response && response.response === "INVALID_DATA") {
+				showError(response.responseMessage);
+			} else if (response.response === "AWKWARD") {
+				location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
+				tax.closeChangeStatusPopup();
+				$(".success_pop").css("display","block");
+				$(".success_pop span").html((type === 3 ? "Form Section" : "Form Section Item")+" made as " + (status === 1 ? "inactive" : "active" ) + " successfully....");
+        		setTimeout(function() {
+        			tax.getTaxFormList();
+        			$(".success_pop").css("display","none");
+		 		},1000);
+			} else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
+		});
+	}
+	
 	this.changeFormSectionStatus = function() {
 		var type = $("#confirmId").data("type");
 		var status = $("#confirmId").data("status");
@@ -299,7 +323,7 @@ function Tax() {
 				$(".success_pop").css("display","block");
 				$(".success_pop span").html((type === 3 ? "Form Section" : "Form Section Item")+" made as " + (status === 1 ? "inactive" : "active" ) + " successfully....");
         		setTimeout(function() {
-        			tax.getDynamicTaxForm($("#taxFormId").val());
+        			tax.getDynamicTaxForm($("#taxFormId").val(), true);
         			$(".success_pop").css("display","none");
 		 		},1000);
 			} else if (response.indexOf('Sign In') !== -1) {
@@ -353,6 +377,7 @@ function Tax() {
 						result += "<td>";
 						result += "<div>";
 						result += "<ul class='list-unstyled list-inline mb0'>";
+						result += "<li><a href='view?formId=" + formList[e].id + "' title='Edit' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
 						result += "<li " + (formList[e].active ? "" : "class='disableBtn'") + "><a href='create?formId=" + formList[e].id + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
 						if(formList[e].active) {
 							result += "<li><a href='javascript:void()' onclick='tax.showChangeStatusPopup(" + formList[e].id + ", 1, 1)' title='Make InActive' class='text-danger'><i class='fa fa-trash'></i></a></li>";
@@ -379,9 +404,9 @@ function Tax() {
 		});
 	}
 	
-	this.getDynamicTaxForm = function(formId) {
+	this.getDynamicTaxForm = function(formId, isEditable) {
 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		$("#dynamicForm").load(sourceleadUrl+"/form/getDynamicForm?formId=" + formId, function(response, status, xhr){
+		$("#dynamicForm").load(sourceleadUrl+"/form/getDynamicForm?formId=" + formId + "&isEditable=" + isEditable, function(response, status, xhr){
 			if(status === "success") {
 				$("#loading").removeAttr("style");
 				
@@ -482,7 +507,7 @@ function callAddITDeclarationSectionRestService(formData, type) {
 				$(".success_pop").css("display","block");
         		$(".success_pop span").html("Tax Section " + (type === 1 ? "added" : "name updated") + " successfully....");
         		setTimeout(function() {
-        			tax.getDynamicTaxForm($("#taxFormId").val());
+        			tax.getDynamicTaxForm($("#taxFormId").val(), true);
         			$(".success_pop").css("display","none");
 		 		},1000);
         	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
@@ -523,7 +548,7 @@ function callAddITDeclarationSectionItemRestService(formData, type) {
 				$(".success_pop").css("display","block");
         		$(".success_pop span").html("Tax Section Item " + (type === 1 ? "added" : "updated") + " successfully....");
         		setTimeout(function() {
-        			tax.getDynamicTaxForm($("#taxFormId").val());
+        			tax.getDynamicTaxForm($("#taxFormId").val(), true);
         			$(".success_pop").css("display","none");
 		 		},1000);
         	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {

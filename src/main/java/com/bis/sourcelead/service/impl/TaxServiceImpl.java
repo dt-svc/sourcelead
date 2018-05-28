@@ -324,6 +324,27 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
+	public Response<String> changeTaxFormStatus(long id) {
+		Response<String> response = new Response<>();
+		try {
+			long result = taxDao.changeTaxFormStatus(id);
+			if (result > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (result == -2) {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
+
+	@Override
 	public Response<String> changeITDeclarationSectionStatus(long id) {
 		Response<String> response = new Response<>();
 		try {

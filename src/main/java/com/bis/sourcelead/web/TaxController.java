@@ -2,7 +2,6 @@ package com.bis.sourcelead.web;
 
 import java.util.Calendar;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -102,7 +101,7 @@ public class TaxController {
 			setYears(modelAndView, stateTaxDTO.getFinancialYear());
 			setStates(modelAndView);
 
-			modelAndView.addObject("activeTaxTab", "createStateTax");
+			modelAndView.addObject("activeTaxTab", "state");
 			modelAndView.setViewName("tax/addStateTax");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
@@ -282,22 +281,19 @@ public class TaxController {
 		return response;
 	}
 
-	@RequestMapping(value = "/form/create")
+	@RequestMapping(value = { "/form/create", "/form/view" })
 	public ModelAndView addTaxFormPage(HttpServletRequest request, @RequestParam(defaultValue = "0") long formId) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-
 			List<SourceleadTaxType> taxTypeList = taxService.getAllTaxesByType(1, false);
 			modelAndView.addObject("taxTypes", taxTypeList);
+			modelAndView.addObject("isEditable", request.getRequestURL().toString().contains("create"));
 			if (formId > 0) {
 				SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(formId);
 				modelAndView.addObject("form", sourceleadTaxFormDTO);
 				modelAndView.addObject("formId", formId);
 			}
 			modelAndView.addObject("formTypes", taxService.getTaxFormTypeList(false));
-			setYears(modelAndView, null);
-			setStates(modelAndView);
-
 			modelAndView.addObject("activeTaxTab", "forms");
 			modelAndView.setViewName("tax/addForm");
 		} catch (Exception e) {
@@ -307,10 +303,12 @@ public class TaxController {
 	}
 
 	@RequestMapping(value = "/form/getDynamicForm")
-	public ModelAndView getDynamicTaxForm(HttpServletRequest request, @RequestParam long formId) {
+	public ModelAndView getDynamicTaxForm(HttpServletRequest request, @RequestParam long formId,
+			@RequestParam(defaultValue = "false") boolean isEditable) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(formId);
+			modelAndView.addObject("isEditable", isEditable);
 			modelAndView.addObject("form", sourceleadTaxFormDTO);
 			modelAndView.addObject("activeTaxTab", "forms");
 			modelAndView.setViewName("tax/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
@@ -371,6 +369,26 @@ public class TaxController {
 					response.setResponseMessage(Result.FAILED.getValue());
 				}
 				response.setObject(result);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
+	@RequestMapping(value = "/form/changeStatus")
+	@ResponseBody
+	public Response<String> changeTaxFormStatus(HttpServletRequest request, @RequestParam(defaultValue = "0") long id) {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+				response = taxService.changeTaxFormStatus(id);
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

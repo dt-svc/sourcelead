@@ -4,6 +4,7 @@
 <script type="text/javascript">
 	var activeTaxTab = "${activeTaxTab}";
 	var formId = "${formId}";
+	var isEditable = ${isEditable};
 </script>
 <script type="text/javascript" src='/resources/js/tax/tax.js'></script>
 <section class="content-wraper contentWraper">
@@ -13,10 +14,10 @@
 			<div class="col-md-10">
 				<div class="clearfix row">
 					<div class="col-md-4 dropdown-select mt10 mb10">
-						<select class="selectpicker width100percnt" title="Select Form"
+						<select class="selectpicker width100percnt" title="Select Form" ${!isEditable ? "disabled='disabled'" : ""}
 							data-live-search="true" id="formType">
 							<c:forEach items="${formTypes}" var="form">
-								<option value="${form.id}">${form.name}</option>
+								<option value="${form.id}" ${formId == form.id ? "selected='selected'" : ""}>${form.name}</option>
 							</c:forEach>
 						</select>
 					</div>
@@ -25,6 +26,7 @@
 			</div>
 			<div class="clearfix"></div>
 			<!-- add dynamic forms here -->
+			
 			<div id="dynamicForm">
 				<div class="blankForm">
 				<div class="clearfix mt40"></div>

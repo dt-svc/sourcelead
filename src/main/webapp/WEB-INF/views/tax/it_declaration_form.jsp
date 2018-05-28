@@ -1,18 +1,20 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:if test="!${includedPage}">
+<%-- <c:if test="!${includedPage}">
 	<jsp:include page="../masterHeader.jsp" />
 	<jsp:include page="../masterSideNav.jsp" />
-</c:if>
+</c:if> --%>
 
 <!-- section fields -->
-<div class="clearfix"></div>
-<div class="col-md-12 text-center">
-	<a href="javascript:void(0)" title="Add New Section"
-		onClick="addSection();"
-		class="pull-right btn btn-success btnSuccess mb"> <i
-		class="fa fa-plus"></i> Add Section
-	</a>
-</div>
+<c:if test="${isEditable}">
+	<div class="clearfix"></div>
+	<div class="col-md-12 text-center">
+		<a href="javascript:void(0)" title="Add New Section"
+			onClick="addSection();"
+			class="pull-right btn btn-success btnSuccess mb"> <i
+			class="fa fa-plus"></i> Add Section
+		</a>
+	</div>
+</c:if>
 <div class="col-md-12">
 	<div class="clearfix"></div>
 	<c:forEach items="${form.sourceleadTaxSectionList}" var="section">
@@ -25,21 +27,23 @@
 								<div class="parentDiv">
 									<div class="editElementDiv">
 										<span class="edit-element">${section.name}</span>
-										<div class="faPencil">
-											<a
-												class="fa fa-pencil edit_sec_name mr10 ${section.active ? '' : 'disableBtn'}"
-												title="Edit Section Name"></a>
-											<c:choose>
-												<c:when test="${section.active}">
-													<a class="fa fa-trash text-danger" title="Delete Section"
-														onclick="tax.showChangeStatusPopup(${section.id}, 3, 1)"></a>
-												</c:when>
-												<c:otherwise>
-													<a class="fa fa-edit text-danger" title="Delete Section"
-														onclick="tax.showChangeStatusPopup(${section.id}, 3, 0)"></a>
-												</c:otherwise>
-											</c:choose>
-										</div>
+										<c:if test="${isEditable}">
+											<div class="faPencil">
+												<a
+													class="fa fa-pencil edit_sec_name mr10 ${section.active ? '' : 'disableBtn'}"
+													title="Edit Section Name"></a>
+												<c:choose>
+													<c:when test="${section.active}">
+														<a class="fa fa-trash text-danger" title="Delete Section"
+															onclick="tax.showChangeStatusPopup(${section.id}, 3, 1)"></a>
+													</c:when>
+													<c:otherwise>
+														<a class="fa fa-edit text-danger" title="Delete Section"
+															onclick="tax.showChangeStatusPopup(${section.id}, 3, 0)"></a>
+													</c:otherwise>
+												</c:choose>
+											</div>
+										</c:if>
 									</div>
 
 									<div class="row saveElementDiv">
@@ -64,12 +68,14 @@
 
 								</div>
 							</div>
-							<div class="col-md-2 col-md-offset-6">
-								<a href="javascript:void(0)" class="anchor-black"
-									title="Add Custom Item"
-									onClick="addSectionItem(${section.id},'${section.name}');"><i
-									class="fa fa-plus paddingRight"></i>Add Section Item</a>
-							</div>
+							<c:if test="${isEditable}">
+								<div class="col-md-2 col-md-offset-6">
+									<a href="javascript:void(0)" class="anchor-black"
+										title="Add Custom Item"
+										onClick="addSectionItem(${section.id},'${section.name}');"><i
+										class="fa fa-plus paddingRight"></i>Add Section Item</a>
+								</div>
+							</c:if>
 						</div>
 
 					</th>
@@ -79,7 +85,9 @@
 						<th>Items</th>
 						<th>Max Limit</th>
 						<th>Description</th>
-						<th>Action</th>
+						<c:if test="${isEditable}">
+							<th>Action</th>
+						</c:if>
 					</tr>
 				</c:if>
 			</thead>
@@ -125,7 +133,7 @@
 									</div>
 								</td>
 								<td>
-									<div class="tbldata-dotdot-big">
+									<div class="tbldata-dotdot-big" style="margin: 0px;">
 										<div class="editElementDiv">${sectionItem.description !=null ? sectionItem.description : "----"}</div>
 										<div class="saveElementDiv">
 											<form id="sectionItem_${sectionItem.id}_description_form">
@@ -137,31 +145,34 @@
 										</div>
 									</div>
 								</td>
-								<td>
-									<ul class="list-unstyled list-inline mt5 text-center">
-										<li><a title="Edit Row"
-											class="fa fa-pencil anchor-black editRow ${sectionItem.active ? '' : 'disableBtn'}"></a></li>
-										<c:choose>
-											<c:when test="${sectionItem.active}">
-												<li><a title="Inactive Row" data-id="${sectionItem.id}"
-													class="fa fa-trash text-danger deleteRow"
-													onclick="tax.showChangeStatusPopup(${sectionItem.id}, 4, 1)"></a></li>
-											</c:when>
-											<c:otherwise>
-												<li><a title="Active Row" data-id="${sectionItem.id}"
-													class="fa fa-edit text-success "
-													onclick="tax.showChangeStatusPopup(${sectionItem.id}, 4, 0)"></a></li>
-											</c:otherwise>
-										</c:choose>
+								<c:if test="${isEditable}">
+									<td>
+										<ul class="list-unstyled list-inline mt5 text-center">
+											<li><a title="Edit Row"
+												class="fa fa-pencil anchor-black editRow ${sectionItem.active ? '' : 'disableBtn'}"></a></li>
+											<c:choose>
+												<c:when test="${sectionItem.active}">
+													<li><a title="Inactive Row"
+														data-id="${sectionItem.id}"
+														class="fa fa-trash text-danger deleteRow"
+														onclick="tax.showChangeStatusPopup(${sectionItem.id}, 4, 1)"></a></li>
+												</c:when>
+												<c:otherwise>
+													<li><a title="Active Row" data-id="${sectionItem.id}"
+														class="fa fa-edit text-success "
+														onclick="tax.showChangeStatusPopup(${sectionItem.id}, 4, 0)"></a></li>
+												</c:otherwise>
+											</c:choose>
 
 
-										<li style="display: none;"><a title="Cancel Edit"
-											class="fa fa-remove text-danger cancelEditRow"></a></li>
-										<li style="display: none;"><a title="Save Row"
-											data-id="${sectionItem.id}"
-											class="fa fa fa-floppy-o text-primary saveRow"></a></li>
-									</ul>
-								</td>
+											<li style="display: none;"><a title="Cancel Edit"
+												class="fa fa-remove text-danger cancelEditRow"></a></li>
+											<li style="display: none;"><a title="Save Row"
+												data-id="${sectionItem.id}"
+												class="fa fa fa-floppy-o text-primary saveRow"></a></li>
+										</ul>
+									</td>
+								</c:if>
 							</tr>
 						</c:forEach>
 					</c:when>
@@ -179,14 +190,14 @@
 <!-- section fields ends -->
 
 <div class="clearfix"></div>
-<div class="clearfix footerstyelsNew">
+<!-- <div class="clearfix footerstyelsNew">
 	<div class="col-lg-12">
 		<div class="pull-right">
 			<input value="Save" class="btn btn-success btnSuccess" type="button">
 			<input value="Cancel" class="btn btn-default ml10" type="button">
 		</div>
 	</div>
-</div>
+</div> -->
 
 
 <!-- Popups -->

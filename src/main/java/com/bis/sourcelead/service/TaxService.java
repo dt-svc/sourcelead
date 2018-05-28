@@ -38,6 +38,8 @@ public interface TaxService {
 
 	long addITDeclarationSectionItem(SourceleadTaxSectionItemDTO sectionItemDTO);
 
+	Response<String> changeTaxFormStatus(long id);
+	
 	Response<String> changeITDeclarationSectionStatus(long id);
 
 	Response<String> changeITDeclarationSectionItemStatus(long id);
