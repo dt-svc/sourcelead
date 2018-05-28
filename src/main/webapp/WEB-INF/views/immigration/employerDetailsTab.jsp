@@ -16,7 +16,7 @@
 						</c:choose>
 				    </c:otherwise>
 				</c:choose>	
-		  	<span><input class="immigraTabSerach" id="employersDataSearch" type="text"></span>
+		  	<span><input class="immigraTabSerach" title="Name/Designation" placeholder="Name/Designation" id="employersDataSearch" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable">
@@ -123,7 +123,7 @@
 				<div class="row">
 				<label class="col-md-4">Employer<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8">
-              		<input type="text" class="form-control" placeholder="Employer" id = "name" name="name" data-validation="required validate_Space validate_length length2-100" field-name="Employer Name"/>
+              		<input type="text" class="form-control" placeholder="Employer" id = "name" name="name" data-validation="required validate_AlphaNumber validate_Space validate_length length2-100" field-name="Employer Name"/>
 				</div>
 				</div>
 			</div>
@@ -154,7 +154,7 @@
 				<div class="row">
 				<label class="col-md-4">Start Date</label>
               	<div class="col-md-4"> 
-              		<select class="newSelect"  name="startMonth" id="startMonth" onChange="monthIfYearRequired();">';
+              		<select class="newSelect"  name="startMonth" id="startMonth" onChange="monthIfYearRequired();">
 		                      <option value="">Select Month</option>
 							   <option value="1&January">January</option>
 		                      <option value="2&February">February</option>
@@ -175,14 +175,16 @@
 						field-name="Start Year"
 						data-validation="validate_Space validate_extno validate_length length4-4"
 						data-validation-optional="true">
+						
 				</div>
+				<p id="startYearValidation" class="text-danger small" style="display: none"></p>
 				</div>
 			</div>				
           <div class="col-sm-12 noPad mt clearfix" id = "endDateDivId">
 				<div class="row">
 				<label class="col-md-4">End Date</label>
               	<div class="col-md-4"> 
-              		<select class="newSelect"  name="endMonth" id="endMonth" onChange="monthIfYearRequired();">';
+              		<select class="newSelect"  name="endMonth" id="endMonth" onChange="monthIfYearRequired();">
 		                      <option value="">Select Month</option>
 							   <option value="1&January">January</option>
 		                      <option value="2&February">February</option>
@@ -199,11 +201,13 @@
 		                  </select>
 				</div>
 				<div class="col-md-4" id="startYearDiv">
-					<input type="text" max class="form-control input-sm" value="" id="endYear" name="endYear" placeholder="Enter Year"
+					<input type="text" max class="form-control input-sm" value="" id="endYear"  name="endYear" placeholder="Enter Year"
 						field-name="End Year"
 						data-validation="validate_Space validate_extno validate_length length4-4"
-						data-validation-optional="true">
+						data-validation-optional="true" onChange="monthIfYearRequired();">
+						
 				</div>
+				<p id="endYearValidation" class="small text-danger" style="display: none"></p>
 				</div>
 			</div>	
 			<div class="col-sm-12 noPad mt clearfix" id="immigrationEmpDocDiv">
@@ -272,6 +276,13 @@
 		$("#employerDetails_form")[0].reset();
 		$("#candidateEmpId").val('');
 		$('#emploView').find('p.jquery_form_error_message').remove();
+		$('#startYearDiv').find('p.jquery_form_error_message').remove();
+		$('#endDateDivId').find('p.jquery_form_error_message').remove();
+		$("#startYearValidation").find('p.jquery_form_error_message').remove();
+		$("#endYearValidation").find('p.jquery_form_error_message').remove();
+		$("#endMonth").find('p.jquery_form_error_message').remove();
+		$('#startYearValidation').removeAttr('style'); 
+		$('#endYearValidation').removeAttr('style'); 
 		$("#employerSave_Buton").removeAttr("disabled");
 	}
 	
@@ -322,4 +333,6 @@ function removeImmiEmpDocFile(){
 	else {
         $('#employersfilled').hide()
 	}
+  
+ 
 </script>

@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ImportTimesheetDTO;
 import com.bis.sourcelead.entity.Asset;
@@ -61,6 +62,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.CountriesService;
@@ -164,8 +166,11 @@ public class DataMigrationCommonUtil {
 	@Autowired 
 	private CountriesService countriesService;
 	
+	@Autowired 
+	private ImmigrationCommonService immigrationCommonService;
 	
-	@SuppressWarnings("unchecked")
+	
+	@SuppressWarnings("uncheckedCommon")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
 	{
 		logger.debug("In dataValidationForJobs method...");
@@ -1859,77 +1864,147 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				return false;
 			return pat.matcher(email).matches();
 		}
-		public void dataValidationForImmigration(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy,
-				User user, OrgLocations orgLocation)  throws Exception{
-			if(dataMigrationDTOJsonCopy.getString("beneficiaryEmail").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
-				errorSet.put("beneficiaryEmail", "Beneficiary Email is missing");
-			}
-			if(dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
-				errorSet.put("dateOfBirth", "DOB is missing");
-			}
-			if(dataMigrationDTOJsonCopy.getString("maritalStatus").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
-				errorSet.put("maritalStatus", "Marital status is missing");
-				
-			}
-			if(dataMigrationDTOJsonCopy.getString("petitionType").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("petitionType"))) {
-				errorSet.put("petitionType", "Petition Type is missing"); ///  dropdown value.
-			}
-			if(dataMigrationDTOJsonCopy.getString("template").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("template"))) {
-				errorSet.put("template", "Template is missing"); ///  dropdown value.
-			}
-			
-			if(dataMigrationDTOJsonCopy.getString("openOn").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("openOn"))) {
-				errorSet.put("openOn", "Open On is missing"); 
-			}
-			if(dataMigrationDTOJsonCopy.getString("status").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("status"))) {
-				errorSet.put("status", "Status is missing"); 
-			}
-			if(dataMigrationDTOJsonCopy.getString("lawFirmClient").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("lawFirmClient"))) {
-				errorSet.put("lawFirmClient", "Law Firm/Client is missing"); ///  dropdown value.
-			}
-		
-			if(dataMigrationDTOJsonCopy.getString("lawFirmContactEmail").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("lawFirmContactEmail"))) {
-				errorSet.put("lawFirmContactEmail", "Attorney/Contact email is missing"); ///  dropdown value.
-				
-			}
-			
-			/*if(!dataMigrationDTOJsonCopy.getString("category").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("category"))) {
-				AssetCategory  category= assetCategoryService.getAssetCategoryListByLocationIdAndName(orgLocation.getId(), dataMigrationDTOJsonCopy.getString("category").trim());
-				if(category == null){
-					errorSet.put("category", dataMigrationDTOJsonCopy.getString("category")+" is Not Exist");
-				}else{
-					dataMigrationDTOJsonCopy.put("category", category.getId().toString());	
+
+	public void dataValidationForImmigration(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy,
+			User user, OrgLocations orgLocation) throws Exception {
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
+			errorSet.put("beneficiaryEmail", "Beneficiary Email is missing"); // need to validate email address.
+		} else {
+			String email = dataMigrationDTOJsonCopy.getString("beneficiaryEmail");
+			boolean emailVaild = isValidEmailAddress(email);
+			if (emailVaild) {
+				User userByEmail = userService.findByEmailAndOrgLocationsId(email, orgLocation.getId());
+				if (userByEmail == null) {
+					errorSet.put("beneficiaryEmail", "Beneficiary Email is not found");
+				}else {
+					 dataMigrationDTOJsonCopy.put("candidateId",userByEmail.getId());
+					// System.out.println("candidateId INSIDE---->>>>>"+dataMigrationDTOJsonCopy.getString("candidateId"));
 				}
-			}*/
+			} else {
+				errorSet.put("beneficiaryEmail", "Beneficiary Email is is not a valid email address");
+			}
+		}
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
+			errorSet.put("dateOfBirth", "DOB is missing");
+		}
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
+			errorSet.put("maritalStatus", "Marital status is missing");/// dropdown value.
+		} else {
+			String maritalStatus = dataMigrationDTOJsonCopy.getString("maritalStatus");
+			if (!ImmigrationConstants.MARRAIAGE_STATUS_LIST.contains(maritalStatus)) {
+				errorSet.put("maritalStatus", "Marital status is invalid input");/// dropdown value.
+			}
+		}
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType"))) {
+			errorSet.put("petitionType", "Petition Type is missing"); /// dropdown value.
+
+		} else {
 			
-			/*if(!dataMigrationDTOJsonCopy.getString("assignAssetStr").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("assignAssetStr"))) {
-				StringBuffer assignAssetStrSB = new StringBuffer();
-				String[] assignUsere = dataMigrationDTOJsonCopy.getString("assignAssetStr").split("&");
-				int assignUsereCoiunt = assignUsere.length;
-				int incr = 0;
-				for(String as:assignUsere) {
-					String[] email = as.split("#");
-					boolean emailVaild = isValidEmailAddress(email[0]);
-					if(emailVaild == true) {		 
-						User user2 = userService.findByEmailAndOrgLocationsId(email[0], orgLocation.getId());
-						if(user2 != null) {
-							incr++;
-							UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user2.getId(), orgLocation.getId());
-							email[0] = userRole.getId().toString();
-							assignAssetStrSB.append(email[0]).append("#").append(email[1]);
-							if(assignUsereCoiunt > 1 && incr < assignUsereCoiunt) {
-								assignAssetStrSB.append("&");
-							}
-						}else {
-							errorSet.put("employeeEmail",email[0]);
-						}
-						
-					}else {
-						errorSet.put("assignAssetStr", "invalid date");
-					}
-				}
-				dataMigrationDTOJsonCopy.put("assignAssetStr",assignAssetStrSB.toString());
-			}*/
+			LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(Constants.VISA,
+					dataMigrationDTOJsonCopy.getString("petitionType"));
+			if (data == null) {
+				errorSet.put("petitionType", "Petition Type is not found"); /// dropdown value.
+			}else {
+				//dataMigrationDTOJsonCopy.setString("petitionType", data.getId().toString());
+				dataMigrationDTOJsonCopy.put("petitionType", data.getId());
+			}
+
+		}
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("template"))) {
+			errorSet.put("template", "Template is missing"); /// dropdown value.
+		} else {
+			Long tempId = immigrationCommonService.getTemplateDetailsByNameAndOrgLoacationId(
+					dataMigrationDTOJsonCopy.getString("template"), orgLocation);
+			if (tempId == null)
+				errorSet.put("template", "Template name is not found");
+			else
+				dataMigrationDTOJsonCopy.put("template", tempId); 
 			
 		}
+
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("openOn"))) {
+			errorSet.put("openOn", "Open On is missing");
+		}
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("status"))) {
+			errorSet.put("status", "Status is missing");
+		}
+		else {
+			
+			LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(ImmigrationConstants.PETITION_STATUS,
+					dataMigrationDTOJsonCopy.getString("status"));
+			if (data == null) {
+				errorSet.put("status", "status is not found"); /// dropdown value.
+			}else {
+				dataMigrationDTOJsonCopy.put("status", data.getId()); 
+			}
+
+		}
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("company"))) {// company  start
+			errorSet.put("company", "Company is missing"); /// dropdown value.
+		} else {
+			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
+			  boolean orgFound = false;
+			for (OrgRelations rel : vendorsList) {
+				if(StringUtils.isNotBlank(orgLocation.getIsLawFirm()) && orgLocation.getIsLawFirm().equalsIgnoreCase("Y")) {
+				if (rel.getLocationId().getOrgLocationName().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("company"))) {
+					dataMigrationDTOJsonCopy.put("company", rel.getId());
+					orgFound = true;
+					break;
+					 /// dropdown value.
+				   }
+				}else {
+					if (rel.getResponderLocationId().getOrgLocationName().equalsIgnoreCase(dataMigrationDTOJsonCopy.getString("company"))) {
+						dataMigrationDTOJsonCopy.put("company", rel.getId());
+						orgFound = true;
+						break;
+						 /// dropdown value.
+					   }
+				}
+			}
+			if(!orgFound)
+			errorSet.put("company", "Company is not found"); //
+			
+		} // company end
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("companyContactEmail"))) {
+			errorSet.put("companyContactEmail", "Attorney/Contact email is missing"); /// dropdown value.
+
+		} else {
+			String email = dataMigrationDTOJsonCopy.getString("companyContactEmail");
+			String venodorId = dataMigrationDTOJsonCopy.getString("company");
+			boolean isSpocFound = false;
+			boolean emailVaild = isValidEmailAddress(email);
+			if (emailVaild && StringUtils.isNotBlank(venodorId)) {
+				// User userByEmail = userService.findByEmailAndOrgLocationsId(email,
+				// orgLocation.getId());
+				List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(Long.parseLong(venodorId));
+				if (vendorContactsList != null) {
+					for (OrgSpoc vendorContacts : vendorContactsList) {
+						if (StringUtils.isNotBlank(orgLocation.getIsLawFirm())
+								&& orgLocation.getIsLawFirm().equalsIgnoreCase("Y")) {
+							if (vendorContacts.getClientUser().getEmail().equalsIgnoreCase(email)) {
+								dataMigrationDTOJsonCopy.put("companyContactEmail",
+										vendorContacts.getId());
+								isSpocFound = true;
+								break;
+							}
+						} else {
+							if (vendorContacts.getVendorUser().getEmail().equalsIgnoreCase(email)) {
+								dataMigrationDTOJsonCopy.put("companyContactEmail",
+										vendorContacts.getId());
+								isSpocFound = true;
+								break;
+							}
+						}
+					}
+                    if(!isSpocFound)
+					errorSet.put("companyContactEmail", "Attorney/Contact email is not found");
+				}
+
+			} else {
+				errorSet.put("companyContactEmail", "Attorney/Contact email is not a valid email address");
+			}
+
+		}
+
+	  }
 	}
