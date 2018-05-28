@@ -1247,7 +1247,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    		if(roleType != null) {
 	    			userDTO.setUserType(roleType.getUserType());
 	    		}else {
-	    			userDTO.setUserType(Constants.GLOBAL_USER);
+	    			UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(mrguser.getId());
+	    			userDTO.setUserType(primaryRole.getUserType());
 	    		}
 	    		userDTO.setName(mrguser.getFullName());
 	    		userDTOList.add(userDTO);
@@ -1274,7 +1275,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		if(roleType != null) {
 			    			userDTO.setUserType(roleType.getUserType());
 			    		}else {
-			    			userDTO.setUserType(Constants.GLOBAL_USER);
+			    			UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(mrguser2.getId());
+			    			userDTO.setUserType(primaryRole.getUserType());
 			    		}
 			    		
 			    		userDTO.setName(mrguser2.getFullName());

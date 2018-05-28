@@ -776,7 +776,8 @@ public class UsersListRestController {
 				if(null != userRole1){
 					user.setUserType(userRole1.getUserType());
 				}else {
-					user.setUserType(Constants.GLOBAL_USER);
+					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					user.setUserType(primaryRole.getUserType());
 				}
 		  }
 		 userRole.setAllReportingManagers(reportingManagersList);

@@ -393,7 +393,7 @@ $(document).ready(function(){
 				}
 				
 				result = result + '			<div class="project_details_cta">';
-				result = result + '				<strong>Global User:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
+				result = result + '				<strong>Global Manager:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
 				
 				
@@ -1599,7 +1599,7 @@ $("#editRoleDetailsList").empty();
 					result = result + '<div class="checkbox checkBox">';
 					result = result + '<label>';
 					result = result + '<input type="checkbox" value="Y" '+globalChecked+' name="isGlobalAccess">';
-					result = result + 'Is Global Access</label>';
+					result = result + 'Is Global Manager</label>';
 					result = result + '</div>';
 					result = result + '</div>';
 					result = result + '</div>';

@@ -206,7 +206,7 @@
 		                <div class="checkbox checkBox">
 		                  <label>
 		                    <input type="checkbox" value="Y" name="isGlobalAccess">
-		                    Is Global Access</label>
+		                    Is Global Manager</label>
 		                </div>
 		                 </div>
                </div> 
