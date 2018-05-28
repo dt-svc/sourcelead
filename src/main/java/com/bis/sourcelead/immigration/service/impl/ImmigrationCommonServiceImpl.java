@@ -171,7 +171,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			lcaSummaryLst = savePetitionLcaSummaryList(immigrationDTO, candidate, user, requirement, orgLocations);
 			if (ids != null && ids.length != 0) {
 				for (String id : ids) {
-					immigrationCommonDao.deleteCandidateResidenceDetails(Long.parseLong(id), Long.parseLong("0"));
+					if(!id.equals("")) {
+						immigrationCommonDao.deleteCandidateResidenceDetails(Long.parseLong(id), Long.parseLong("0"));
+					}
 				}
 			}
 

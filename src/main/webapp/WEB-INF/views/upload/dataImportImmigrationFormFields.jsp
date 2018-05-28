@@ -7,9 +7,9 @@
 <!-- below rows.count are equal to column indexes in excel and those fields are mandatory-->
 <c:forEach var="columnHeader" items="${columnHeaders}" varStatus="rows">
 	<c:choose>
-		<c:when test="${rows.count == 4 || rows.count == 10 || rows.count == 11
-		  || rows.count == 12 || rows.count == 13|| rows.count == 15|| 
-			 rows.count == 16|| rows.count == 20 || rows.count == 22}">
+		<c:when test="${rows.count == 1 || rows.count == 2 || rows.count == 3
+			|| rows.count == 9 || rows.count == 11|| rows.count == 12|| 
+			rows.count == 14|| rows.count == 15 || rows.count == 24 || rows.count == 26}">
 			<div class="form-group">
 				<label class="col-md-4 text-right mt5">${columnHeader} <span
 					class="text-danger paddingLeft">*</span>

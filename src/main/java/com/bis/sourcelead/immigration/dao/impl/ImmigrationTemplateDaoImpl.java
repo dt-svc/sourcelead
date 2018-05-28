@@ -451,7 +451,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             query.setLong("templateId", templateId);
             query.setString("reason", reason);
             int result = query.executeUpdate();
-            //System.out.println(" updated ImmigrationTemplate records count : " + result);
+            /*//System.out.println(" updated ImmigrationTemplate records count : " + result);
             logger.debug(" updated ImmigrationTemplate records count : " + result);
             // update ImmigrationTemplateDocs
             queryString = "UPDATE ImmigrationTemplateDocs SET status = 0  where immigrationTempId = :templateId";
@@ -466,7 +466,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             query.setLong("templateId", templateId);
             result = query.executeUpdate();
             //System.out.println(" updated ImmigrationTemplateForms records count : " + result);
-            logger.debug(" updated ImmigrationTemplateForms records count : " + result);
+            logger.debug(" updated ImmigrationTemplateForms records count : " + result);*/
         }
     }
     
@@ -481,7 +481,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             Query query = session.createQuery(queryString);
             query.setLong("templateId", templateId);
             int result = query.executeUpdate();
-            // update ImmigrationTemplateDocs
+            /*// update ImmigrationTemplateDocs
             queryString = "UPDATE ImmigrationTemplateDocs SET status = 1  where immigrationTempId = :templateId";
             query = session.createQuery(queryString);
             query.setLong("templateId", templateId);
@@ -490,7 +490,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
             queryString = "UPDATE ImmigrationTemplateForms SET status = 1  where immigrationTempId = :templateId";
             query = session.createQuery(queryString);
             query.setLong("templateId", templateId);
-            result = query.executeUpdate();
+            result = query.executeUpdate();*/
             }
     }
 
