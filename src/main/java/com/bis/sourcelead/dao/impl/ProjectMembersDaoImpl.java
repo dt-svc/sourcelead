@@ -1588,8 +1588,14 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					  +dateQuery
 					  +employmentTypeQuery
 					  +groupByCandidateId;
-		}else {
+		}else if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("client")){
 			 query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where (pc.orgRelationId IS NOT NULL and pc.orgRelationId.responderLocationId.id = :locationId OR pc.orgRelationId.locationId.id = :locationId) "
+					 +projectQuery
+					  +dateQuery
+					  +employmentTypeQuery
+					  +groupByCandidateId;
+		}else {
+			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where ((pc.orgRelationId IS NOT NULL and pc.orgRelationId.responderLocationId.id = :locationId OR pc.orgRelationId.locationId.id = :locationId) OR can.orgLocationId.id = :locationId) "
 					 +projectQuery
 					  +dateQuery
 					  +employmentTypeQuery
