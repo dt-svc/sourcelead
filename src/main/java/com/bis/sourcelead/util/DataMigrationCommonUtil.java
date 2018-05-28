@@ -2212,13 +2212,13 @@ public class DataMigrationCommonUtil {
 		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaType"))) {
 			errorSet.put("visaType", "Job is missing"); /// dropdown value.
 		} else {
-			Requirement requirement = requirementService.getRequirementByGeneratedIdAndLocationId(
-					dataMigrationDTOJsonCopy.getString("immigrationJobId"), orgLocation.getId());
-			if (requirement == null) {
+			LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(Constants.VISA,
+					dataMigrationDTOJsonCopy.getString("visaType"));
+			if (data == null) {
 				errorSet.put("visaType", "Job is not found"); /// dropdown value.
 			} else {
 				// dataMigrationDTOJsonCopy.setString("petitionType", data.getId().toString());
-				dataMigrationDTOJsonCopy.put("visaType", requirement.getId());
+				dataMigrationDTOJsonCopy.put("visaType", data.getId());
 			}
 
 		}
