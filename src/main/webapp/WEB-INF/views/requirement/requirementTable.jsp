@@ -132,7 +132,7 @@ function prepareRequirementData(url,sourceleadUrl){
    result = result +"    <th>Generated ID</th>"; 
    result = result +"    <th>Title</th>"; 
    result = result +"    <th>Client</th>";
-   result = result +"    <th>Rate</th>";
+   result = result +"    <th>Pay Rate</th>";
    result = result +"    <th>Bill Rate</th>";
    result = result +"    <th>Type</th>"; 
    result = result +"    <th>Location</th>"; 
