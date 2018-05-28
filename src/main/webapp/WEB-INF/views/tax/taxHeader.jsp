@@ -16,6 +16,8 @@
 			href="${appPath}/stateTax/list" class="${activeTaxTab == 'state' ? 'active' : ''}">State</a></li>
 		<li class="${activeTaxTab == 'central' || activeTaxTab == 'createCentralTax' ? 'current' : ''}"><a
 			href="${appPath}/centralTax/list" class="${activeTaxTab == 'central' ? 'active' : ''}">Central</a></li>
+		<li class="${activeTaxTab == 'forms' || activeTaxTab == 'createForms' ? 'current' : ''}"><a
+			href="${appPath}/form/list" class="${activeTaxTab == 'forms' ? 'active' : ''}">Forms</a></li>	
 	</ul>
 </div>
 
@@ -25,7 +27,14 @@
 	<p>You are choosing to delete the Tax</p>
 	<div>&nbsp;&nbsp;&nbsp;</div>
 	<b>
-		<input id='confirmId' type='button' value='Ok' onclick='tax.changeTaxStatus()'>
+	<c:choose>
+		<c:when test="${activeTaxTab == 'forms'}">
+			<input id='confirmId' type='button' value='Ok' onclick='tax.changeFormSectionStatus()'>
+		</c:when>
+		<c:otherwise>
+			<input id='confirmId' type='button' value='Ok' onclick='tax.changeTaxStatus()'>
+		</c:otherwise>
+	</c:choose>
 		<input class='u_can_color' type='button' value='Cancel' onClick='tax.closeChangeStatusPopup()'>
 	</b>
 </div>

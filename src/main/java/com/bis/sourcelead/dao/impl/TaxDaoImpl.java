@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.ProfessionalTax;
+import com.bis.sourcelead.entity.SourceleadTaxForm;
+import com.bis.sourcelead.entity.SourceleadTaxSection;
+import com.bis.sourcelead.entity.SourceleadTaxSectionItem;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 
@@ -158,6 +161,118 @@ public class TaxDaoImpl implements TaxDao {
 			if (stateTax != null) {
 				stateTax.setActive(!stateTax.isActive());
 				return stateTax.getId();
+			} else
+				return -2;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SourceleadTaxForm> getTaxFormTypeList(boolean isAdminFlag) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from SourceleadTaxForm st";
+			if (!isAdminFlag) {
+				query += " where st.active=:active";
+			}
+			Query queryObj = session.createQuery(query);
+			if (!isAdminFlag) {
+				queryObj.setBoolean("active", true);
+			}
+			List<SourceleadTaxForm> stList = queryObj.list();
+			return stList;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public SourceleadTaxForm getTaxFormType(long taxFormId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(SourceleadTaxForm.class, taxFormId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public SourceleadTaxSection getTaxSection(long taxSectionId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(SourceleadTaxSection.class, taxSectionId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public long addITDeclarationSection(SourceleadTaxSection taxSection) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(taxSection);
+			return taxSection.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	public SourceleadTaxSectionItem getTaxSectionItem(long taxSectionItemId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(SourceleadTaxSectionItem.class, taxSectionItemId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public long addITDeclarationSectionItem(SourceleadTaxSectionItem taxSectionItem) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(taxSectionItem);
+			return taxSectionItem.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	public long changeITDeclarationSectionStatus(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			SourceleadTaxSection sourceleadTaxSection = session.get(SourceleadTaxSection.class, id);
+			if (sourceleadTaxSection != null) {
+				sourceleadTaxSection.setActive(!sourceleadTaxSection.isActive());
+				return sourceleadTaxSection.getId();
+			} else
+				return -2;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	@Override
+	public long changeITDeclarationSectionItemStatus(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			SourceleadTaxSectionItem sourceleadTaxSectionItem = session.get(SourceleadTaxSectionItem.class, id);
+			if (sourceleadTaxSectionItem != null) {
+				sourceleadTaxSectionItem.setActive(!sourceleadTaxSectionItem.isActive());
+				return sourceleadTaxSectionItem.getId();
 			} else
 				return -2;
 		} catch (Exception e) {

@@ -46,7 +46,7 @@
 						<tr>
 							<th>State</th>
 							<th>Type of Tax</th>
-							<th>Action</th>
+							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody id="stateList">

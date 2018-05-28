@@ -3,9 +3,13 @@ package com.bis.sourcelead.service;
 import java.util.List;
 
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
+import com.bis.sourcelead.dto.SourceleadTaxSectionDTO;
+import com.bis.sourcelead.dto.SourceleadTaxSectionItemDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.ProfessionalTax;
+import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 
 public interface TaxService {
@@ -23,5 +27,19 @@ public interface TaxService {
 	ProfessionalTax getProfessionalTaxById(long id);
 
 	Response<String> changeStateTaxStatus(long stateTaxId);
+
+	List<SourceleadTaxFormDTO> getTaxFormTypeList(boolean includeAll);
+
+	long addITDeclarationSection(SourceleadTaxSectionDTO sectionDTO);
+
+	public SourceleadTaxFormDTO getTaxFormType(long taxFormId);
+
+	public SourceleadTaxFormDTO getTaxFormType(SourceleadTaxForm sourceleadTaxForm, boolean includeAll);
+
+	long addITDeclarationSectionItem(SourceleadTaxSectionItemDTO sectionItemDTO);
+
+	Response<String> changeITDeclarationSectionStatus(long id);
+
+	Response<String> changeITDeclarationSectionItemStatus(long id);
 
 }

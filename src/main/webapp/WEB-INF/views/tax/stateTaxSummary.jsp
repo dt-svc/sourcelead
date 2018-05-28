@@ -16,7 +16,7 @@
 			<div class="clerfix viewlabel-b">
 				<div class="modal-body">
 
-					<div class="viewgrid-header pull-right zIndex">
+					<div class="viewgrid-header pull-right zIndex ${stateTax.active?'':'disableBtn'}">
 						<a href="create?stateTaxId=${stateTax.id}" class="btn btn-default btn-sm" title="Edit"><i
 							class="fa fa-pencil paddingRight"></i>Edit</a>
 					</div>

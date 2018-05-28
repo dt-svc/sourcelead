@@ -1,0 +1,75 @@
+package com.bis.sourcelead.entity;
+
+import java.io.Serializable;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "SOURCELEAD_TAX_FORM")
+public class SourceleadTaxForm implements Serializable {
+
+	/**
+	 * @author Mahaveer Manoj
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID", nullable = false)
+	private long id;
+
+	@Column(name = "NAME")
+	private String name;
+
+	@Column(name = "ACTIVE")
+	private boolean active;
+
+	@OneToMany(mappedBy = "sourceleadTaxForm", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<SourceleadTaxSection> sourceleadTaxSectionList;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public List<SourceleadTaxSection> getSourceleadTaxSectionList() {
+		return sourceleadTaxSectionList;
+	}
+
+	public void setSourceleadTaxSectionList(List<SourceleadTaxSection> sourceleadTaxSectionList) {
+		this.sourceleadTaxSectionList = sourceleadTaxSectionList;
+	}
+
+}
