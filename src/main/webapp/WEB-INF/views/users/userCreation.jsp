@@ -199,19 +199,15 @@
                 </div>
                 </div> 
                 
-                
                 <div class="form-group">
-		             <label class="col-md-3"></label>
-		              <div class="col-md-9">
-		                <div class="checkbox checkBox">
-		                  <label>
-		                    <input type="checkbox" value="Y" name="isGlobalAccess">
-		                    Is Global Manager</label>
-		                </div>
-		                 </div>
-               </div> 
-               
-               <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
+                  <label class="col-md-3">Designation</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" id="designation" name="designation"  field-name="Desgination" data-validation="required validate_Space validate_Name validate_length length2-250" >
+                  </div>
+                </div>
+                
+                
+           <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
             <label class="col-md-3">Employment Other Type</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="designationOtherType" name="designationOtherType"   field-name="Job Type" value="">
@@ -270,7 +266,16 @@
                   </div>
             </div>
             		
-            
+            <div class="form-group">
+		             <label class="col-md-3"></label>
+		              <div class="col-md-9">
+		                <div class="checkbox checkBox">
+		                  <label>
+		                    <input type="checkbox" value="Y" name="isGlobalAccess">
+		                    Is Global Manager</label>
+		                </div>
+		                 </div>
+               </div> 
                 
                  <div class="form-group">
                      <label class="col-md-3">Rate</label>
