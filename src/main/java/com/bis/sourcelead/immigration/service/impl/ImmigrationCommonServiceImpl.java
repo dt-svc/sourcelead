@@ -593,7 +593,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		LookUpData uscisStatus = lookUpDataService.getLookUpDataByIdAndCategory(ImmigrationConstants.PETITION_STATUS,
 				Long.parseLong(immigrationDTO.getCurrUscisStatus()));
 		immigration.setCurrUscisStauts(uscisStatus);
-		if (immigrationDTO.getArrivalDate() != null && !immigrationDTO.getArrivalDate().equals("null")) {
+		if (StringUtils.isNotBlank(immigrationDTO.getArrivalDate()) && !immigrationDTO.getArrivalDate().equals("null")) {
 			immigration.setDateOfArrival(
 					commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), immigrationDTO.getArrivalDate()));
 		}
@@ -1710,12 +1710,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		String totalExperience = null;
 		String experienceMonths = null;
 		String experienceYears = null;
-		if(!exportView.getExperienceYears().isEmpty() && exportView.getExperienceYears() != null){
+		if(StringUtils.isNotBlank(exportView.getExperienceYears())){
 			experienceYears = exportView.getExperienceYears() +" years ";
 		}else {
 			experienceYears = " 0 years ";
 		}
-		if(!exportView.getExperienceMonths().isEmpty() && exportView.getExperienceMonths() !=null){
+		if(StringUtils.isNotBlank(exportView.getExperienceMonths())){
 			experienceMonths = exportView.getExperienceMonths() +" months";
 		}else {
 			experienceMonths = " 0 months";

@@ -2209,19 +2209,19 @@ public class DataMigrationCommonUtil {
 
 		}
 		
-		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaType"))) {
-			errorSet.put("visaType", "Job is missing"); /// dropdown value.
+		/*if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaType"))) {
+			errorSet.put("visaType", "Visa Type is missing"); /// dropdown value.
 		} else {
 			LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(Constants.VISA,
 					dataMigrationDTOJsonCopy.getString("visaType"));
 			if (data == null) {
-				errorSet.put("visaType", "Job is not found"); /// dropdown value.
+				errorSet.put("visaType", "Visa Type is not found"); /// dropdown value.
 			} else {
 				// dataMigrationDTOJsonCopy.setString("petitionType", data.getId().toString());
 				dataMigrationDTOJsonCopy.put("visaType", data.getId());
 			}
 
-		}
+		}*/
 
 		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("openOn"))) {
 			errorSet.put("openOn", "Open On is missing");
