@@ -2137,18 +2137,17 @@ public class TimesheetRestController {
 			for (Long taskId : entriesMap.keySet()) {
 				for (WeekDaysDTO weekDay : tsDTO.getWeekDays()) {
 					if (valuesMap.get(taskId + "" + weekDay.getDate()) == null) {
-						ProjectTasks pt = projectTasksService.getTasksId(taskId.toString());
+						TimesheetEntriesDTO tempteDTO =  entriesMap.get(taskId).getFirst();
+						//ProjectTasks pt = projectTasksService.getTasksId(taskId.toString());
 						TimesheetEntriesDTO teDTO = new TimesheetEntriesDTO();
 						teDTO.setDayOfTheDate(weekDay.getDayOfTheDate());
 						teDTO.setDate(weekDay.getDate());
 						teDTO.setEditable(weekDay.isEditable());
 						teDTO.setHours("HH:MM");
 						TimesheetTaskDTO timesheetTaskDTO = new TimesheetTaskDTO();
-						if (pt != null) {
-							timesheetTaskDTO.setId(pt.getId());
-							timesheetTaskDTO.setTaskType(pt.getBillableType());
-							timesheetTaskDTO.setTaskName(pt.getTaskName());
-						}
+						timesheetTaskDTO.setId(tempteDTO.getTimesheetTaskDTO().getId());
+						timesheetTaskDTO.setTaskType(tempteDTO.getTimesheetTaskDTO().getTaskType());
+						timesheetTaskDTO.setTaskName(tempteDTO.getTimesheetTaskDTO().getTaskName());
 						teDTO.setTimesheetTaskDTO(timesheetTaskDTO);
 						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
 						if (tsDTOList == null) {
