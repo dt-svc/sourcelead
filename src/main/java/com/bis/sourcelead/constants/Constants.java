@@ -1098,5 +1098,4 @@ public class Constants {
 	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
 	
-	public static final String GLOBAL_USER = "Global User";
 }

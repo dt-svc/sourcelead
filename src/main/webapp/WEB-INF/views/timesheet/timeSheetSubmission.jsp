@@ -266,26 +266,20 @@
 														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
 														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
 														       <c:if test="${pt.id == entry.key}">
-														        <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-																	       <c:forEach var="ted" items="${entry.value}">
-																                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
-																           </c:forEach>
-															       </c:if>
-															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
-															             <c:set var="taskType" value="${pt.taskType}" />
-															        </c:if>
+															       <c:forEach var="ted" items="${entry.value}">
+														                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
+														           </c:forEach>
 														          <c:set var="taskId" value="${pt.id}" />
 														          <c:set var="taskName" value="${pt.taskName}" />
 														         <option value='${pt.id}' selected>${pt.taskName}</option>
 														       </c:if>
 														       <c:if test="${pt.id != entry.key}">
-														       <c:if test="${not empty pt.generatedId}" >
-														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
-														       </c:if>
-														        <c:if test="${empty pt.generatedId}" >
-														       		<option value='${pt.id},${pt.taskType},${pt.taskName}'>${pt.taskName} </option>
-														       </c:if>
-														          
+															       <c:if test="${not empty pt.generatedId}" >
+															       		<option value='${pt.id},${taskType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
+															       </c:if>
+															        <c:if test="${empty pt.generatedId}" >
+															       		<option value='${pt.id},${taskType},${pt.taskName}'>${pt.taskName} </option>
+															       </c:if>
 														       </c:if>
 														   </c:forEach>
 														</c:if>
@@ -307,13 +301,9 @@
 																           </c:forEach>
 															       </c:if>
 															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
-															             <c:set var="taskType" value="${pt.taskType}" />
-															             <select id="${entryCount.index+1}task1IdBillableTypeId" name="${entryCount.index+1}task1IdBillableTypeId"  field-name="Billble Type" onchange="prepareBillableDetails('${entryIndex}','${entryCount.index+1}task1IdBillableTypeId')">  
-															                  <option value=''>--select BillableType--</option>
-															                  <option value='Billable' ${!empty pt.taskType && pt.taskType == 'Billable' ?'selected':''}>Billable</option>
-															                  <option value='Non-Billable' ${!empty pt.taskType && pt.taskType == 'Non-Billable' ?'selected':''}>Non-Billable</option>
-														                  </select>
-									                  
+															             <c:forEach var="ted" items="${entry.value}">
+															                 <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
+									                                      </c:forEach>
 															        </c:if> 
 														           <c:set var="taskId" value="${pt.id}" />
 														           <c:set var="taskName" value="${pt.taskName}" />

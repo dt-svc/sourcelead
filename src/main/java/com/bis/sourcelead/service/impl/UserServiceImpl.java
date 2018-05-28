@@ -1520,7 +1520,8 @@ public class UserServiceImpl implements UserService {
 				if(null != userRole){
 					user.setUserType(userRole.getUserType());
 				}else {
-					user.setUserType(Constants.GLOBAL_USER);
+					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					user.setUserType(primaryRole.getUserType());
 				}
 			}
 		}

@@ -11,6 +11,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -87,15 +88,16 @@ public List<Projects> getProjectListBasedOnStartAndEndDate(DayWiseTimesheetReopr
 
 
 @RequestMapping(value="/getProjectMembersBasedOnProjectId")
-public String getProjectMembersBasedOnProjectId(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws Exception {
+public List<ProjectMembers> getProjectMembersBasedOnProjectId(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws Exception {
+	List<ProjectMembers> projectMemberList = null;
 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	dayWiseTimesheetReoprtsDto.setLocationsId(orgLocations.getId());
 	dayWiseTimesheetReoprtsDto.setLoginUserId(loginUser.getId());
-	List<ProjectMembers> projectMemberList = projectMemberService.getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
-	ObjectMapper mapper = new ObjectMapper();
-	String projectMemberListJson = mapper.writeValueAsString(projectMemberList);
-	return projectMemberListJson;
+	if(dayWiseTimesheetReoprtsDto.getStartDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate()) && dayWiseTimesheetReoprtsDto.getEndDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
+		 projectMemberList = projectMemberService.getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
+	}
+	return projectMemberList;
 }
 
 
