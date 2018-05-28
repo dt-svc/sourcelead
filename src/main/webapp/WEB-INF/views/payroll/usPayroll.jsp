@@ -64,92 +64,9 @@ $(document).ready(function(){
 </div>
 
 <div class="tableScroll">
- <div class="styleTables clearfix mt datatable_filter">
- <div id="USPayrollDiv"  class="clients_wrap_table datatable_filter"></div>
-<!--<table>
-	<thead>
-		<tr>
-			<th>
-				<div class="checkbox-new pull-left">
-					<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox">
-					<label for="all" class="checkbox-custom-label"></label>
-				</div>
-			</th>
-			<th>Emp ID</th>
-			<th>Emp Name</th>
-			<th>Regular<br>Hours</th>
-			<th>OT<br>Hours</th>
-			<th>Gross<br>Pay</th>
-			<th>Pretax<br>Deduction</th>
-			<th>Post<br>Deduction</th>
-			<th>Taxes</th>
-			<th>Net<br>Pay</th>
-		</tr>
-	</thead>	
-<tbody>
-	<tr>
-		<td>
-			<div class="checkbox-new pull-left ml5">
-				<input id="emp1" class="checkbox-custom" name="paidComponent" type="checkbox">
-				<label for="emp1" class="checkbox-custom-label"></label>
-			</div>
-		</td>
-		<td>
-			<div class="tblminwidth-50">
-				0022338790
-			</div>
-		</td>
-		<td>
-			<div class="tbldata-dotdot-vsm">
-				Rajkumarvinnokota Animolkumar
-			</div>
-		</td>
-		<td>
-			<div class="tblminwidth-50">
-				40Hrs
-			</div>
-			<div class="tblminwidth-50 clearfix text-danger">
-				200$
-			</div>
-		</td>
-		
-		<td>
-			<div class="tblminwidth-50">
-				3Hrs
-			</div>
-			<div class="tblminwidth-50 clearfix text-danger">
-				100$
-			</div>
-		</td>
-		<td>
-			<div class="tblminwidth-50 clearfix">
-				300$
-			</div>
-		</td>
-		
-		<td>
-			<div class="tblminwidth-50 clearfix">
-				50$
-			</div>
-		</td>
-		<td>
-			<div class="tblminwidth-50 clearfix">
-				50$
-			</div>
-		</td>
-		<td>
-			<div class="tblminwidth-50 clearfix">
-				100$
-			</div>
-		</td>
-		<td>
-			<div class="tblminwidth-50 clearfix">
-				<a href="javascript:void(0)">200$</a>
-			</div>
-		</td>
-	</tr>           		
-</tbody>
-</table>-->
+ <div class="styleTables clearfix mt">
+ <div id="USPayrollDiv"></div>
+ <div id="testDiv"></div>
 </div> 
 </div>
 <div class="clearfix mt"></div>
@@ -322,9 +239,100 @@ function getGroupFrequency(){
 
 
 
+
+<script>
+function runUSPayroll(){
+	alert("Hiu");
+	if ($('#generate_payroll_form').validate(false, validationSettings)){  
+		var searchValue = $("#dataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+		var groupId = $("#groupId").val();
+		var payPeriod = $("#payPeriod").val();
+		var payrollPayDate = $("#payrollPayDate").val();
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate,                 
+		        success: function(data) {
+		        	
+		            var json = data.data;
+		        	var result = "";
+		        	result += '<table>';
+		        	result += '<thead>';
+		        	result += '<tr>';
+		        	result += '<th>';
+		        	result += '<div class="checkbox-new pull-left">';
+		        	result += '<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox">';
+		        	result += '<label for="all" class="checkbox-custom-label"></label>';
+		        	result += '</div>';
+		        	result += '</th>';
+		        	result += '<th>Emp ID</th>';
+		        	result += '<th>Emp Name</th>';
+		        	result += '<th>Regular<br>Hours</th>';
+		        	result += '<th>Payrate</th>';
+		        	result += '<th>OT<br>Hours</th>';
+		        	result += '<th>Gross<br>Pay</th>';
+		        	result += '<th>Pretax<br>Deduction</th>';
+		        	result += '<th>Post<br>Deduction</th>';
+		        	result += '<th>Taxes</th>';
+		        	result += '<th>Net<br>Pay</th>';
+		        	result += '</tr>';
+		        	result += '</thead>	';
+		        	result += '<tbody>';
+		        	if(json != null && json.length > 0){
+		        		for (var i=0; i<json.length; i++){
+		        			var opt = json[i];
+		        			result += '<tr>';
+				        	result += '<td>';
+				        	result += '<div class="checkbox-new pull-left ml5">';
+				        	result += '<input id="emp1" class="checkbox-custom" name="paidComponent" type="checkbox">';
+				        	result += '<label for="emp1" class="checkbox-custom-label"></label>';
+				        	result += '</div>';
+				        	result += '</td>';
+				        	result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
+				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
+				        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
+				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.payRate+'</div></td>';
+				        	if(opt.overtimeHours != null && opt.overtimeHours != '' && opt.overtimeHours != 'undefined'){
+				        		result += '<td><div class="tblminwidth-50">'+opt.overtimeHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.otHoursTotalAmt.toFixed(2)+'</div></td>';
+				        	}else{
+				        		result += '<td><div class="tblminwidth-50">0.00</div><div class="tblminwidth-50 clearfix text-danger">$ 0.00</div></td>';
+				        	}
+				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
+				        	result += '</td><td><div class="tblminwidth-50 clearfix">$ '+opt.preTaxDeduction.toFixed(2)+'</div></td>';
+				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.postTaxDeduction.toFixed(2)+'</div></td>';
+				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.taxes.toFixed(2)+'</div></td>';
+				        	result += '<td><div class="tblminwidth-50 clearfix"><a href="javascript:void(0)">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
+				        	result += '</tr>';  	
+			        	}
+			        	
+		        	}
+		        	result += '</tbody>';
+		        	result += '</table>';
+		        	alert(result);
+		        	$("#testDiv").empty();
+		        	$("#testDiv").append(result);
+		        },
+		    });
+		 
+		return true; 
+    }else{
+   return false;
+   	  } 
+	}
+	
+$('body').on('blur', '#generate_payroll_form', function() {
+	$("#generate_payroll_form").showHelpOnFocus();
+	$("#generate_payroll_form").validateOnBlur(false, validationSettings);  
+});
+
+
+</script>
+
+
+
  
 <script type="text/javascript">
-function runUSPayroll(){
+function runUSPayrollRajashekar(){
 	if ($('#generate_payroll_form').validate(false, validationSettings)){  
 			var searchValue = $("#dataTableSearch").val();
 			searchValue = searchValue ? searchValue : "";

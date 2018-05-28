@@ -78,7 +78,7 @@ $(document).ready(function(){
 	        <div class="col-lg-12">
 	          <div class="pull-right">
 	            <input value="Save" class="btn btn-success btnSuccess" id="save_contributionType" type="button" onclick="saveContribution();">
-	            <input value="Cancel" class="btn btn-default ml10" onclick="window.location='${appPath}/payrollContribution';" type="button">
+	            <input value="Cancel" class="btn btn-default ml10" onclick="window.location='${appPath}/payrollConfiguration';" type="button">
 	          </div>
 	        </div>
       	</div>   
