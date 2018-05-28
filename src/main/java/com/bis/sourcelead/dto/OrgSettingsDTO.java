@@ -62,9 +62,9 @@ public class OrgSettingsDTO extends CommonDTO{
 	@Required(desc = "dba")
 	private String dba;
 	
-	@Required(desc = "workingDaysPerWeek")
 	private String workingDaysPerWeek;
 	
+	private String weekOffDays;
 	
 	@Required(desc = "generatedUserId")
 	private String generatedUserId;
@@ -398,6 +398,14 @@ public class OrgSettingsDTO extends CommonDTO{
 
 	public void setWorkingDaysPerWeek(String workingDaysPerWeek) {
 		this.workingDaysPerWeek = workingDaysPerWeek;
+	}
+
+	public String getWeekOffDays() {
+		return weekOffDays;
+	}
+
+	public void setWeekOffDays(String weekOffDays) {
+		this.weekOffDays = weekOffDays;
 	}
 
 	

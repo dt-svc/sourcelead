@@ -620,7 +620,7 @@ public class ProjectPlanningRestController {
 	    			
 					 OrgLocations vendorOrgLocation = candidate.getOrgLocationId();
 					 OrgLocations clientOrgLocation = projectPlanningRequest.getOrgLocationId();
-		    		 orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocation.getId(),orgLocations.getId());
+		    		 orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocation.getId(),clientOrgLocation.getId());
 		    		 OrgSpoc orgSpoc = null;
 		    		 if(orgRelations == null) {
 

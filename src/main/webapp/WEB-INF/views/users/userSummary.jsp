@@ -393,8 +393,14 @@ $(document).ready(function(){
 				}
 				
 				result = result + '			<div class="project_details_cta">';
-				result = result + '				<strong>Global Manager:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
+				result = result + '				<strong>Is Global Manager:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
+				
+				if(json.designation != null && json.designation != "" && json.designation != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Designation:</strong><span class="fix">'+json.designation+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				}
 				
 				
 				if(json.roleChangeReason != null && json.roleChangeReason != "" && json.roleChangeReason != 'undefined'){
@@ -1485,6 +1491,12 @@ $("#editRoleDetailsList").empty();
 			 	     	result = result+"</select>"; 
 			 	     	result = result + ' </div>';
 					}
+					
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Designation<span class="text-danger">&nbsp;*</span></label>';
+					result = result + ' <input type="text" value="'+json.designation+'" name="designation" id="designation" field-name="Designation" data-validation="required validate_Space validate_Name validate_length length2-250"/>';
+					result = result + ' </div>';
 					
 					// moving date bottom to top
 					 result = result + ' <div class="user_summary_edit_cta">';

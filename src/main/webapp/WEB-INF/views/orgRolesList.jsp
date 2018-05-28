@@ -40,6 +40,7 @@ padding-right: 254px; padding-top: 10px;
 					</sec:authorize>
 			  	 <a href="<c:url value='${appPath}/addDepartment'/>"><i class="fa fa-plus"></i>Department</a>
 			     <a href="<c:url value='${appPath}/roleHierarchy'/>"><i class="fa fa-plus"></i>Hierarchy</a>
+			     <!-- <a href="javascript:void(0)" onClick="showGradePopUp();" ><i class="glyphicon glyphicon-plus"></i>Add Grade</a> -->
                  <a href="javascript:void(0)" class="addcon-pop"><i class="glyphicon glyphicon-plus"></i>Add Role</a>
                  </div>
               </sec:authorize>
@@ -71,26 +72,137 @@ padding-right: 254px; padding-top: 10px;
                             
                           </div>
                         </div>
+                        
 				<!-- Popup Div -->              
-              
-              </div>
-			
+			</div>
+
+     </div>
+ </div>
 			    <div class="project_wrap_table datatable_filter">
 			    				<table id="rolesList" class="display" cellspacing="0" width="100%">
 								</table>
 				</div>	   
 					
-			</div>
-	   </div>	
 	   <div class="vendor_wrap_mask"></div>
 	   <div id="updateRoleDiv"></div>	
+	   
+	   <div class="comMask"></div>
+  <div class="modal paymentaccount-modal" id="gradePopup" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" onclick="closeGradePopUp();" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add/Edit Grade</h4>
+        </div>
+        <div class="modal-body">
+        	<form:form class="clearfix"  id="addgrade_form"  name="addgrade_form" method="POST">
+	      		<div class="form-group clearfix minHeight40">
+		           <label class="col-md-4">Grade<span class="text-danger">&nbsp;*</span></label>
+		           <div class="col-md-8">
+		                 <input type="text" id="grade" name="grade" class="form-control" data-required="required"/>
+		           </div>
+	           </div>
+	           
+	           <div class="form-group clearfix minHeight40">
+		           <label class="col-md-4">Designation</label>
+		           <div class="col-md-8">
+		                 <input type="text" id="designation" name="designation" class="form-control" data-required="required"/>
+		           </div>
+	           </div>
+	           
+	           <div class="form-group clearfix minHeight40">
+		           <label class="col-md-4">Min Wage/Salary</label>
+		           
+		          <div class="col-md-2 padding_right dropdown-select drpdownCurrency">
+						<select id="minSalRateCurrency" name="minSalRateCurrency">
+						<option ${SourceLeadWeb_currencyCode  == 'INR' ? 'selected' : ''} value="INR">INR</option>
+						<option ${SourceLeadWeb_currencyCode  == 'AUD' ? 'selected' : ''} value="AUD">AUD</option>
+						<option ${SourceLeadWeb_currencyCode  == 'USD' ? 'selected' : ''} value="USD">USD</option>
+						<option ${SourceLeadWeb_currencyCode  == 'GBP' ? 'selected' : ''} value="GBP">GBP</option>
+						<option ${SourceLeadWeb_currencyCode  == 'SGD' ? 'selected' : ''} value="SGD">SGD</option>
+						<option ${SourceLeadWeb_currencyCode  == 'EUR' ? 'selected' : ''} value="EUR">EUR</option>
+						</select>
+				</div>
+	
+		          <div class="col-md-3 padding_right padding_left inputRate">
+		                 <input type="text" id="minSalary" name="minSalary" class="form-control" data-validation-optional="true"/>
+		           </div>
+		           
+		          <div class="col-md-3 padding_left drpdownMonthly dropdown-select">
+					<select id="minSalRateType" name="minSalRateType">
+					<option value="Hourly">Hourly</option>
+					<option value="Weekly">Weekly</option>
+					<option value="Bi-weekly">Bi-weekly</option>
+					<option value="Semi-Monthly">Semi-Monthly</option>
+					<option value="Monthly">Monthly</option>
+					<option value="Bi-Monthly">Bi-Monthly</option>
+					<option value="Yearly">Yearly</option>
+					</select>
+				</div>
+			</div>
+			
+			
+			<div class="form-group clearfix minHeight40">
+		           <label class="col-md-4">Max Wage/Salary</label>
+		           
+		          <div class="col-md-2 padding_right dropdown-select drpdownCurrency">
+					<select id="maxSalRateCurrency" name="maxSalRateCurrency">
+						<option ${SourceLeadWeb_currencyCode  == 'INR' ? 'selected' : ''} value="INR">INR</option>
+						<option ${SourceLeadWeb_currencyCode  == 'AUD' ? 'selected' : ''} value="AUD">AUD</option>
+						<option ${SourceLeadWeb_currencyCode  == 'USD' ? 'selected' : ''} value="USD">USD</option>
+						<option ${SourceLeadWeb_currencyCode  == 'GBP' ? 'selected' : ''} value="GBP">GBP</option>
+						<option ${SourceLeadWeb_currencyCode  == 'SGD' ? 'selected' : ''} value="SGD">SGD</option>
+						<option ${SourceLeadWeb_currencyCode  == 'EUR' ? 'selected' : ''} value="EUR">EUR</option>
+					</select>
+				</div>
+	
+		          <div class="col-md-3 padding_right padding_left inputRate">
+		                 <input type="text" id="maxSalary" name="maxSalary" class="form-control" data-validation-optional="true"/>
+		           </div>
+		           
+		          <div class="col-md-3 padding_left drpdownMonthly dropdown-select">
+					<select id="maxSalRateType" name="maxSalRateType">
+					<option value="Hourly">Hourly</option>
+					<option value="Weekly">Weekly</option>
+					<option value="Bi-weekly">Bi-weekly</option>
+					<option value="Semi-Monthly">Semi-Monthly</option>
+					<option value="Monthly">Monthly</option>
+					<option value="Bi-Monthly">Bi-Monthly</option>
+					<option value="Yearly">Yearly</option>
+					</select>
+				</div>
+			</div>
+			
+			</form:form>
+		</div>
+			<div class="clearfix"></div>
+	        <div class="modal-footer">
+	         <button type="button" class="btn btn-primary"  onclick="closeGradePopUp();" >Cancel</button>
+	          <button type="button" class="btn btn-primary" id="saveGradeButton" onclick="saveGrade();" >Save</button>
+	        </div>
+         </div>
+        	
+        </div>
+        </div>
  </section>
  
  
  
  <jsp:include page="masterFooter.jsp" />	
  
+ <script>
+ function showGradePopUp() {
+	    $(".modal.paymentaccount-modal").fadeIn();
+	    $(".comMask").fadeIn();
+	}
  
+ function closeGradePopUp() {
+	    $(".modal.paymentaccount-modal").fadeOut();
+	    $(".comMask").fadeOut();
+	}
+ </script>
  
  <script type="text/javascript">
 function validateRoleName(){

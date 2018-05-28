@@ -334,6 +334,10 @@ public class UserRole implements Serializable {
 	
 	@Transient
 	private String employeMentType; 
+	
+	@Transient
+	@JsonProperty
+	private String candidateDesignation;
 
 	@Transient
 	@JsonProperty
@@ -992,6 +996,14 @@ public class UserRole implements Serializable {
 
 	public void setAssignedUsersCountToResourceManager(Integer assignedUsersCountToResourceManager) {
 		this.assignedUsersCountToResourceManager = assignedUsersCountToResourceManager;
+	}
+
+	public String getCandidateDesignation() {
+		return candidateDesignation;
+	}
+
+	public void setCandidateDesignation(String candidateDesignation) {
+		this.candidateDesignation = candidateDesignation;
 	}
 
 	
