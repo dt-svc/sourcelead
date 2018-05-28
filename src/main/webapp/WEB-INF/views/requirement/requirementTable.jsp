@@ -224,9 +224,14 @@ function jpagination(url,sourceleadUrl){
 		         "data": "requirementUUID",
 		         "render": function ( data, type, opt, meta ) {
 		         		   var result = "";
-		         		  result = result +" <td><div class=' widthIcon widthIcon-three'>";
-		         		  
-		      	        '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+		         		  result = result +" <td><div class=' widthIcon widthIcon-four'>";
+		         		
+		         		 if((opt.isRequirementReleased != 'Y') && ('${SourceLeadWeb_loginUserRole}' ==  'ROLE_ADMIN' || '${SourceLeadWeb_loginUserRole}' == 'ROLE_SOURCELEAD_ADMIN')){
+		         		 		result = result +'<div class="text-center"><a href="javascript:void(0)" title="Select for Delete Job" class="add-applicant"><i class="fa fa-trash trashIcon" id="'+opt.requirementUUID+'" onclick="selectDeleteJob(this);" ></i></a></div>';
+		         		 }else{
+		         				result = result +'<div class="text-center"><i class="fa fa-trash disableTrashIcon"></i></div>';
+		         		 }
+		         		  '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 		      		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 		      		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        
 		      		        }
@@ -718,3 +723,67 @@ function getAssignedMembersDiv(reqId){
 	
 }
 </script>
+<script>
+var reqUUIDArr = new Array();
+function selectDeleteJob(event) {
+	$(event).toggleClass("trashActive");
+	var x = $(event).attr('id');
+	reqUUIDArr.push(x);
+	if($(event).attr('class') == "fa fa-trash trashIcon"){
+		reqUUIDArr = jQuery.grep(reqUUIDArr, function(value) {
+			  return value != x;
+			});
+	}
+
+	if (reqUUIDArr != "") {
+	 $("#forceDeleteBtn").show();	
+	}else {
+		$("#forceDeleteBtn").hide();
+	}
+}
+
+function confirmForceDeleteBtn(){
+	$.ajax({
+		type: "POST",
+	    url: sourceleadUrl+"/forceDeleteForSelectedJobs?"+tokenParamName+"="+tokenValue+"&reqUUIDArr="+reqUUIDArr, 
+	    success: function(result) {
+	    	if(result.object === 'MissingData'){
+	  			showError("Invalid data");
+	  		}else{
+	  			if (result.response === "SESSION_TIMEDOUT") {
+	  				location.replace(sourceleadUrl);
+                } else if (result.response === "AWKWARD") {
+                    location.href = "/errorPage";
+                } else if (result.response === "SUCCESS") {
+				  	
+                	
+                } else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+                    showError("Operation failed, please try again");
+                }
+	  		}
+	    },
+	});
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+
+function jobForceDelete(){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>You are sure to want to Delete?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirmForceDeleteBtn' type='button' value='Ok' onClick='confirmForceDeleteBtn();'><input class='u_can_color' type='button'  value='Cancel' onClick='closeJobDeleteConformation();'></b>";
+	result = result +"	</div>";
+	$("#deleteJobPopUpDiv").empty();
+	$("#deleteJobPopUpDiv").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function closeJobDeleteConformation(){
+	$("#remove_user_pop, .project_inn_mask").fadeOut();
+}
+</script>
+<div id="deleteJobPopUpDiv"></div>

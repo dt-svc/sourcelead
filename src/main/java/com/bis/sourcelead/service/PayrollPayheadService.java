@@ -4,6 +4,7 @@ import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
+import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 
 public interface PayrollPayheadService {
 
@@ -17,4 +18,7 @@ public interface PayrollPayheadService {
 	
 	Boolean findPayrollPayheadByNameAndLocationId(PayrollPayheadDTO payrollPayheadDTO) throws Exception;
 	
+	PayrollPayheadSalarySetup savePayrollPayheadSalarySetup(PayrollPayheadSalarySetup payrollPayheadSalarySetup) throws Exception;
+	
+	PayrollPayheadSalarySetup getPayrollPayheadSalarySetupByUUID(String uuid) throws Exception;
 }

@@ -8,6 +8,7 @@ import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
+import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.service.PayrollPayheadService;
 
 @Service
@@ -42,6 +43,16 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 	public Boolean findPayrollPayheadByNameAndLocationId(PayrollPayheadDTO payrollPayheadDTO) throws Exception {
 		Boolean flag = payrollPayheadDao.findPayrollPayheadByNameAndLocationId(payrollPayheadDTO);
 		return flag;
+	}
+	
+	@Override
+	public PayrollPayheadSalarySetup savePayrollPayheadSalarySetup(PayrollPayheadSalarySetup payrollPayheadSalarySetup) throws Exception {
+		return payrollPayheadDao.savePayrollPayheadSalarySetup(payrollPayheadSalarySetup);
+	}
+
+	@Override
+	public PayrollPayheadSalarySetup getPayrollPayheadSalarySetupByUUID(String uuid) throws Exception {
+		return payrollPayheadDao.getPayrollPayheadSalarySetupByUUID(uuid);
 	}
 
 }

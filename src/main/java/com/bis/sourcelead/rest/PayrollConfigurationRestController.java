@@ -9,16 +9,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.PayrollBonusDTO;
 import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.PayrollPayheadSalarySetupDTO;
 import com.bis.sourcelead.dto.PayrollPaytypeDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -26,6 +29,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollBonus;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.entity.PayrollPayhead;
+import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.entity.PayrollPaytype;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
@@ -34,6 +38,7 @@ import com.bis.sourcelead.service.PayrollBonusService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollPaytypeService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -44,6 +49,11 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 public class PayrollConfigurationRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PayrollConfigurationRestController.class);
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -706,6 +716,114 @@ public class PayrollConfigurationRestController {
 						response.setResponse(Result.AWKWARD.name());
 						response.setResponseMessage(Result.AWKWARD.getValue());
 						logger.error(ExceptionUtils.getFullStackTrace(e));
+					}
+					return response;
+				}
+			 
+			 
+			 @RequestMapping(value = "/getSalarySetupForPayhead", method = RequestMethod.POST)
+				public ModelAndView getSalarySetupForPayhead(PayrollPayheadDTO payrollPayheadDTO, HttpServletRequest request) throws Exception
+				{
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+					ModelAndView model = new ModelAndView();
+					PayrollPayhead payrollPayhead = payrollPayheadService.getPayrollPayheadByUUID(payrollPayheadDTO.getUuid());
+					
+					model.addObject("payrollPayhead", payrollPayhead);
+					
+					ResponseList<PayrollPayheadDTO> responsePayheadList;
+					try {
+						responsePayheadList = payrollPayheadService.getPayrollPayheadList(orgLocations);
+						model.addObject("payheadList",responsePayheadList.getData());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					model.addObject("uuid", payrollPayheadDTO.getUuid());
+					model.setViewName("indPayroll/salarySetupPopup");
+					model.addObject("sourceleadUrl", sourceleadUrl);
+					return model;
+				}
+			 
+			 @RequestMapping(value = "/storePayheadWithSalarySetup" , method = RequestMethod.POST)
+				public Response<PayrollPayheadDTO> storePayheadWithSalarySetup(PayrollPayheadDTO payrollPayheadDTO, HttpServletRequest request) throws Exception
+				{
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+					Response<PayrollPayheadDTO> response = new Response<>();
+					if (user != null) {
+						/*if (Validator.validate(payrollPayheadDTO)) {*/
+							try {
+								if(StringUtils.isNotBlank(payrollPayheadDTO.getUuid())) {
+									PayrollPayheadSalarySetup payrollPayheadSalarySetup = null;
+									PayrollPayhead payrollPayhead = payrollPayheadService.getPayrollPayheadByUUID(payrollPayheadDTO.getUuid());
+									if(payrollPayhead != null) {
+										if(!payrollPayheadDTO.getMethod().equalsIgnoreCase(payrollPayhead.getMethod()) || !payrollPayheadDTO.getFormula().equalsIgnoreCase(payrollPayhead.getFormula())) {
+											if(StringUtils.isNotBlank(payrollPayheadDTO.getMethod())) {
+												payrollPayhead.setMethod(payrollPayheadDTO.getMethod());
+											}else {
+												payrollPayhead.setMethod(null);
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayheadDTO.getFormula())) {
+												payrollPayhead.setFormula(payrollPayheadDTO.getFormula());
+											}else {
+												payrollPayhead.setFormula(null);
+											}
+											payrollPayhead = payrollPayheadService.savePayrollPayhead(payrollPayhead);
+										}
+									}
+									if (payrollPayheadDTO.getSalarySetup() != null && payrollPayheadDTO.getSalarySetup().size() > 0) {
+										for (PayrollPayheadSalarySetupDTO ppss : payrollPayheadDTO.getSalarySetup()) {
+											
+											if(StringUtils.isNotBlank(ppss.getUuid())) {
+												payrollPayheadSalarySetup = payrollPayheadService.getPayrollPayheadSalarySetupByUUID(ppss.getUuid());
+												payrollPayheadSalarySetup.setUpdatedDate(new Date());
+												payrollPayheadSalarySetup.setUpdatedBy(user);
+											}else {
+												payrollPayheadSalarySetup = new PayrollPayheadSalarySetup();
+												payrollPayheadSalarySetup.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+												payrollPayheadSalarySetup.setCreatedDate(new Date());
+												payrollPayheadSalarySetup.setCreatedBy(user);
+											}
+											
+											payrollPayheadSalarySetup.setPayhead(payrollPayhead);
+											payrollPayheadSalarySetup.setStatus(Constants.RECORD_ACTIVE);
+											
+											if(ppss.getFormulaPercentage() != null) {
+												payrollPayheadSalarySetup.setFormulaPercentage(ppss.getFormulaPercentage());
+											}else {
+												payrollPayheadSalarySetup.setFormulaPercentage(null);
+											}
+											
+											if(ppss.getFormulaPayhead() != null) {
+												PayrollPayhead pph = new PayrollPayhead();
+												pph.setId(ppss.getFormulaPayhead());
+												payrollPayheadSalarySetup.setFormulaPayhead(pph);
+											}else {
+												payrollPayheadSalarySetup.setFormulaPayhead(null);
+											}
+											
+											payrollPayheadSalarySetup = payrollPayheadService.savePayrollPayheadSalarySetup(payrollPayheadSalarySetup);
+										}
+									}
+									response.setResponse(Result.SUCCESS.name());
+									response.setResponseMessage(Result.SUCCESS.getValue());
+								} else{
+									response.setResponse(Result.AWKWARD.name());
+									response.setResponseMessage(Result.AWKWARD.getValue());
+									logger.error("<<<<<< Error: Payhead UUID missing >>>>>>");
+								}
+							} catch (Exception e) {
+								response.setResponse(Result.AWKWARD.name());
+								response.setResponseMessage(Result.AWKWARD.getValue());
+								logger.error(ExceptionUtils.getFullStackTrace(e));
+							}
+						/*}else {
+							response.setResponse(Result.INVALID_DATA.name());
+							response.setResponseMessage(Result.INVALID_DATA.getValue());
+						}*/
+					}else {
+						response.setResponse(Result.SESSION_TIMEDOUT.name());
+						response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 					}
 					return response;
 				}

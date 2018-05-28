@@ -22,9 +22,8 @@ import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.PayrollBonus;
 import com.bis.sourcelead.entity.PayrollPayhead;
-import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -95,6 +94,8 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 				PayheadDTO.setComponent(payRollPayhead.getComponent());
 				PayheadDTO.setTax(payRollPayhead.getTax());
 				PayheadDTO.setUuid(payRollPayhead.getUuid());
+				PayheadDTO.setMethod(payRollPayhead.getMethod());
+				PayheadDTO.setFormula(payRollPayhead.getFormula());
 				payrollPayheadDTOList.add(PayheadDTO);
 			}
 		}
@@ -229,4 +230,35 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 		return flag;
 	}
 	
+	
+	@Override
+	@Transactional
+	public PayrollPayheadSalarySetup savePayrollPayheadSalarySetup(PayrollPayheadSalarySetup payrollPayheadSalarySetup) throws Exception {
+		logger.debug("Adding PayrollPayheadSalarySetup");
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (payrollPayheadSalarySetup != null) {
+				session.saveOrUpdate(payrollPayheadSalarySetup);
+			}
+			logger.debug("payrollPayheadSalarySetup Added Successfully");
+		} catch (ConstraintViolationException exception) {
+			StringBuffer message= new StringBuffer(MessageFormat.format(duplicateValue,"PAYROLL_PAYHEAD_SALARY_SETUP"));
+			throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return payrollPayheadSalarySetup;
+	}
+	
+
+	@Override
+	@Transactional
+	public PayrollPayheadSalarySetup getPayrollPayheadSalarySetupByUUID(String uuid) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from PayrollPayheadSalarySetup ppss where ppss.uuid = :uuid and ppss.status = '1' ";  
+		List<PayrollPayheadSalarySetup> payrollPayheadSalarySetupList =  session.createQuery(query).setString("uuid", uuid).list();
+		PayrollPayheadSalarySetup payrollPayheadSalarySetup = null;
+		if (payrollPayheadSalarySetupList != null && payrollPayheadSalarySetupList.size() > 0) {
+			payrollPayheadSalarySetup = (PayrollPayheadSalarySetup) payrollPayheadSalarySetupList.iterator().next();
+		}
+		return payrollPayheadSalarySetup;
+	}
 }
