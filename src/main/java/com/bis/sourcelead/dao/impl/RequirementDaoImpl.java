@@ -2195,13 +2195,9 @@ public class RequirementDaoImpl implements RequirementDao {
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Requirement requirement where requirement.generatedId =:generatedId and requirement.orgLocationId = :orgLocationId";
-		List requirementList = session.createQuery(query).setString("generatedId", generatedId)
-				.setLong("orgLocationId", orgLocationId).list();
+		Requirement requirement = (Requirement)session.createQuery(query).setString("generatedId", generatedId)
+				.setLong("orgLocationId", orgLocationId).uniqueResult();
 
-		Requirement requirement = null;
-		if (requirementList != null && !requirementList.isEmpty()) {
-			requirement = (Requirement) requirementList.iterator().next();
-		}
 		return requirement;
 	}
 
