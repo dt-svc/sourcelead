@@ -197,11 +197,12 @@ public class TaxServiceImpl implements TaxService {
 					st = taxDao.getStateTax(stateTaxDTO.getStatetaxuuid());
 				} else {
 					st = new StateTax();
+					String sttaxuuid = SourceLeadRandomCodeHelper.generateRandomTaxId();
+					st.setStatetaxuuid(sttaxuuid);
 				}
-				String sttaxuuid = SourceLeadRandomCodeHelper.generateRandomTaxId();
 				st.setId(stateTaxDTO.getId());
 				st.setFinancialYear(stateTaxDTO.getFinancialYear());
-				st.setStatetaxuuid(sttaxuuid);
+
 				st.setActive(true);
 				st.setSourceleadTaxType(getTaxTypeById(stateTaxDTO.getTaxTypeId()));
 				st.setStates(statesService.getStateById(stateTaxDTO.getStateId()));
@@ -242,14 +243,18 @@ public class TaxServiceImpl implements TaxService {
 	@Override
 	public long saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) {
 		try {
-			List<CentralTax> ctList = taxDao.getCentralTaxList(centralTaxDTO.getCtfinancialYear(),centralTaxDTO.getSourceleadTaxId());
+			List<CentralTax> ctList = taxDao.getCentralTaxList(centralTaxDTO.getCtfinancialYear(), centralTaxDTO.getSourceleadTaxId());
 			if (centralTaxDTO.getId() == 0 && ctList != null && ctList.size() > 0) {
 				return -1;
 			} else {
-				
-				String cttaxuuid = SourceLeadRandomCodeHelper.generateRandomTaxId();
-				CentralTax ct = new CentralTax();
-				ct.setCentraltaxuuid(cttaxuuid);
+				CentralTax ct = null;
+				if (centralTaxDTO.getId() > 0) {
+					ct = taxDao.getCentralTax(centralTaxDTO.getCentraltaxuuid());
+				} else {
+					ct = new CentralTax();
+					String cttaxuuid = SourceLeadRandomCodeHelper.generateRandomTaxId();
+					ct.setCentraltaxuuid(cttaxuuid);
+				}
 				ct.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
 				ct.setEmployeepf(centralTaxDTO.getEmployeepf());
 				ct.setEmployerpf(centralTaxDTO.getEmployerpf());
@@ -334,7 +339,7 @@ public class TaxServiceImpl implements TaxService {
 		}
 		return response;
 	}
-	
+
 	@Override
 	public Response<String> changeCentralTaxStatus(long centralTaxId) {
 		Response<String> response = new Response<>();
@@ -388,6 +393,7 @@ public class TaxServiceImpl implements TaxService {
 				section = taxDao.getTaxSection(sectionDTO.getId());
 			} else {
 				section = new SourceleadTaxSection();
+				section.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
 			}
 			if (section != null) {
 				section.setName(sectionDTO.getName());

@@ -14,6 +14,7 @@ public class SourceleadTaxSectionDTO implements Serializable {
 	private String name;
 	private String description;
 	private boolean active;
+	private String uuid;
 	private long taxFormId;
 	private String taxFormName;
 	private List<SourceleadTaxSectionItemDTO> sourceleadTaxSectionItemList;
@@ -76,5 +77,13 @@ public class SourceleadTaxSectionDTO implements Serializable {
 
 	public void setSourceleadTaxSectionItemList(List<SourceleadTaxSectionItemDTO> sourceleadTaxSectionItemList) {
 		this.sourceleadTaxSectionItemList = sourceleadTaxSectionItemList;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 }

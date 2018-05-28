@@ -36,6 +36,17 @@ public class SourceleadTaxSection implements Serializable {
 	@Column(name = "DESCRIPTION")
 	private String description;
 
+	@Column(name = "UUID")
+	private String uuid;
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
 	public String getDescription() {
 		return description;
 	}

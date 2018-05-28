@@ -4,14 +4,22 @@
 	<jsp:include page="../masterSideNav.jsp" />
 </c:if> --%>
 
+<div class="clearfix"></div>
 <!-- section fields -->
 <c:if test="${isEditable}">
-	<div class="clearfix"></div>
 	<div class="col-md-12 text-center">
 		<a href="javascript:void(0)" title="Add New Section"
 			onClick="addSection();"
 			class="pull-right btn btn-success btnSuccess mb"> <i
 			class="fa fa-plus"></i> Add Section
+		</a>
+	</div>
+</c:if>
+<c:if test="${!isEditable}">
+	<div class="col-md-12 text-center">
+		<a href="create?formId=${form.id}" title="Edit Form"
+			class="pull-right btn btn-success btnSuccess mb"> <i
+			class="fa fa-plus"></i> Edit
 		</a>
 	</div>
 </c:if>
