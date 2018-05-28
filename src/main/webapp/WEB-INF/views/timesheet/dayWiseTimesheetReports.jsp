@@ -9,6 +9,7 @@
 $( document ).ready(function() {
     getProjectListBasedOnStartAndEndDate();
     getAllUserListBasedOnOrgLocationId();
+    datePickeerTest();
 });
 </script>
 
@@ -180,15 +181,10 @@ function getProjectListBasedOnStartAndEndDate(){
             url: sourceleadUrl + "/getProjectListBasedOnStartAndEndDate?startDate=" + startDate +"&endDate="+ endDate+"&typeOfProject="+typeOfProject,
             type: "POST",
             success: function (json) {
-            	
             	var output = "";
-            
-            	for (var i=0; i<json.length; i++)
-				{
-            		    var opt = json[i];
-		        		output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
-		        		
-				}
+            	$.each(json, function(i, item) {
+            		output = output + "<option value='" +item.id+ "'>"+item.projectName+"</option>";
+        		});
             	$("#projectList").empty();
                 $("#projectList").append(output);
                 $('#projectList').trigger("chosen:updated");
@@ -220,11 +216,10 @@ function getProjectMemberFromProjectId(){
         url: sourceleadUrl + "/getProjectMembersBasedOnProjectId?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&employmentType="+designationType+"&typeOfProject="+projectType,
         type: "POST",
         success: function (result) {
-        	var obj = jQuery.parseJSON(result);
         	var output = "";
         	output = output + "<option value=''>--select Associate--</option>";
-        	if(obj != null && obj !='' && obj !='undefined'){
-        		$.each(obj, function(i, item) {
+        	if(result != null && result !='' && result !='undefined'){
+        		$.each(result, function(i, item) {
             		output = output + "<option value='" +item.id+ "'>"+item.candidateName+"</option>";
         		});
         	}
@@ -239,7 +234,7 @@ function getProjectMemberFromProjectId(){
 
 <script>
 function runExport(){
-	if ($('#timesheetExportForm').validate(false, validationSettings)){ 
+	/* if ($('#timesheetExportForm').validate(false, validationSettings)){  */
 	var projectIds  = $('#projectList').val();
 	var templateType = "";
 	
@@ -257,9 +252,9 @@ function runExport(){
 	if(startDate != null && startDate !='' && startDate !='undefined' && endDate != null && endDate !='' && endDate !='undefined'){
 		window.location.href = sourceleadUrl+"/exportDaywiseTimesheetReport?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&projectMemberListId="+projectMemberList+"&templateType="+templateType;
 	}
-}else{
+/* }else{
 	return false;
-}
+} */
 }
 
 function getAllUserListBasedOnOrgLocationId(){
