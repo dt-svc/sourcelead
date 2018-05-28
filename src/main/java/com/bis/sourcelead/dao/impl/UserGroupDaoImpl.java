@@ -107,12 +107,16 @@ public class UserGroupDaoImpl implements UserGroupDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserGroup> userIdViewList = null;
+		Long id = 0l;
+		if(userGroupDTO.getId() != null){
+			id = userGroupDTO.getId();
+		}
 		if(StringUtils.isNotBlank(userGroupDTO.getGroupId())){
-			String query = "from UserGroup ug where ug.orgLocationId = :orgLocationId and ug.groupId = :groupId and ug.id <> :id";
-			userIdViewList = session.createQuery(query.toString()).setLong("orgLocationId", locationId).setString("groupId", userGroupDTO.getGroupId()).setLong("id", userGroupDTO.getId()).list();
+			String query = "from UserGroup ug where ug.orgLocationId = :orgLocationId and ug.groupId = :groupId and ug.id <> :id and ug.status <> 0";
+			userIdViewList = session.createQuery(query.toString()).setLong("orgLocationId", locationId).setString("groupId", userGroupDTO.getGroupId()).setLong("id", id).list();
 		}else if(StringUtils.isNotBlank(userGroupDTO.getGroupName())){
-			String query = "from UserGroup ug where ug.orgLocationId = :orgLocationId and ug.groupName = :groupName and ug.id <> :id";
-			userIdViewList = session.createQuery(query.toString()).setLong("orgLocationId", locationId).setString("groupName", userGroupDTO.getGroupName()).setLong("id", userGroupDTO.getId()).list();
+			String query = "from UserGroup ug where ug.orgLocationId = :orgLocationId and ug.groupName = :groupName and ug.id <> :id and ug.status <> 0";
+			userIdViewList = session.createQuery(query.toString()).setLong("orgLocationId", locationId).setString("groupName", userGroupDTO.getGroupName()).setLong("id", id).list();
 		}
 		if(userIdViewList != null && userIdViewList.size() > 0){
 			return true;
@@ -133,11 +137,25 @@ public class UserGroupDaoImpl implements UserGroupDao{
 
 	@Override
 	@Transactional
-	public UserGroup findUserGroupById(Long groupId)
+	public UserGroup findUserGroupById(String groupUUID)
 	{
 		UserGroup userGroup = null;
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from UserGroup userGroup where userGroup.id = :groupId and userGroup.status = 1";
+		String query = "from UserGroup userGroup where userGroup.groupUUID = :groupUUID and userGroup.status = 1";
+		List<UserGroup> userGroupList = session.createQuery(query.toString()).setString("groupUUID", groupUUID).list();
+		if(userGroupList != null && userGroupList.size() >0) {
+			userGroup = userGroupList.get(0);
+		}
+		return userGroup;
+	}
+	
+	@Override
+	@Transactional
+	public UserGroup getUserGroupByGroupId(long groupId)
+	{
+		UserGroup userGroup = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserGroup userGroup where userGroup.id = :groupId";
 		List<UserGroup> userGroupList = session.createQuery(query.toString()).setLong("groupId", groupId).list();
 		if(userGroupList != null && userGroupList.size() >0) {
 			userGroup = userGroupList.get(0);

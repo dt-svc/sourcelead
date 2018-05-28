@@ -141,5 +141,7 @@ public interface UserRoleDao {
 
 	List<AssociateDepartmentView> getUserRolesByDepartmentId(String departmentId, Long orgLocationId, List<UserIdView> userIdView);
 
+	public List<UserRole> getUserListByUserIdList(List<Long> userIdList, Long orgLocationId);
+
 
 }

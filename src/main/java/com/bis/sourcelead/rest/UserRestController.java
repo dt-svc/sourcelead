@@ -41,6 +41,7 @@ import org.springframework.web.client.RestTemplate;
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
@@ -202,8 +203,6 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	@Autowired
 	AssetService assetService;
 	private Org org;
-	
-	
 	
 	@Autowired
 	UserGroupService userGroupService;
@@ -1506,6 +1505,22 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		  OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		  return userGroupService.validateUserGroupIdOrGroupName(orgLocations,userGroupDTO);
+	 }
+	 
+	 @RequestMapping(value = "/getUserGroupByGroupUUID" , method = RequestMethod.GET)
+	 public Response<UserGroupDTO> getUserGroupByGroupUUID(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  Response<UserGroupDTO> userGroupDto =  userGroupService.findUserGroupById(userGroupDTO.getGroupUUID());
+		  return userGroupDto;
+	 }
+	 
+	 @RequestMapping(value = "/deleteUserGroupByUUID" , method = RequestMethod.GET)
+	 public Response<UserGroupDTO> deleteUserGroupByUUID(UserGroupDTO userGroupDTO,HttpServletRequest request)throws Exception {
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  Response<UserGroupDTO> userGroupDto =  userGroupService.deleteUserGroupByUUID(userGroupDTO.getGroupUUID(),loginUser);
+		  return userGroupDto;
 	 }
 	 
 }

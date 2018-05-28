@@ -824,5 +824,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return associateDepartmentViewList;
 	}
     
+	@Override
+	public List<UserRole> getUserListByUserIdList(List<Long> userIdList,Long orgLocationId)
+	{
+		return userRoleDao.getUserListByUserIdList(userIdList,orgLocationId);
+	}
 
 }

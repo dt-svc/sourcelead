@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -21,6 +22,8 @@ import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
 import com.bis.sourcelead.service.UserGroupService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class UserGroupServiceImpl implements UserGroupService{
@@ -30,24 +33,33 @@ public class UserGroupServiceImpl implements UserGroupService{
 	@Autowired
 	UserGroupDao userGroupDao;
 	
+	@Autowired
+	UserService userService;
+	
 	@Override
 	public Response<UserGroup> createUserGroup(OrgLocations orgLocations, UserGroupDTO userGroupDTO, User user)
 	{
 		Response<UserGroup> resObj = new Response<>();
 		try {
 			if (Validator.validate(userGroupDTO)) {
-				UserGroup userGroup = new UserGroup();
+				UserGroup userGroup = null;
+				if(userGroupDTO.getId() != null && userGroupDTO.getId() > 0){
+					userGroup = userGroupDao.getUserGroupByGroupId(userGroupDTO.getId());
+					userGroup.setUpdatedDate(new Date());
+					userGroup.setUpdatedBy(user.getUserCode());
+				}else{
+					userGroup = new UserGroup();
+					userGroup.setCreatedDate(new Date());
+					userGroup.setCreatedBy(user.getUserCode());
+				}
 				userGroup.setGroupId(userGroupDTO.getGroupId());
 				userGroup.setGroupName(userGroupDTO.getGroupName());
 				userGroup.setDepartmentId(userGroupDTO.getDepartment());
 				userGroup.setUserId(userGroupDTO.getAssociateIds());
 				userGroup.setDescription(userGroupDTO.getDescription());
 				userGroup.setPayFrequency(userGroupDTO.getPayFrequency());
-				userGroup.setCreatedDate(new Date());
-				userGroup.setUpdatedDate(new Date());
-				userGroup.setCreatedBy(user.getUserCode());
-				userGroup.setUpdatedBy(user.getUserCode());
 				userGroup.setOrgLocationId(orgLocations);
+				userGroup.setGroupUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				userGroup.setStatus(1);
 				UserGroup savedUserGroup = userGroupDao.saveUserGroup(userGroup);
 				if(savedUserGroup != null) {
@@ -81,6 +93,7 @@ public class UserGroupServiceImpl implements UserGroupService{
 				ugDTO.setGroupId(ug.getGroupId());
 				ugDTO.setGroupName(ug.getGroupName());
 				ugDTO.setDescription(ug.getDescription());
+				ugDTO.setGroupUUID(ug.getGroupUUID());
 				ugDTO.setPayFrequency(ug.getPayFrequency());
 				if(ug.getUserId() !=null && !"".equalsIgnoreCase(ug.getUserId())) {
 					String numOfAss = ug.getUserId().replaceAll("\\s+","");
@@ -128,8 +141,58 @@ public class UserGroupServiceImpl implements UserGroupService{
 	}
 
 	@Override
-	public UserGroup findUserGroupById(Long groupId)
+	public Response<UserGroupDTO> findUserGroupById(String groupUUID)
 	{
-		return userGroupDao.findUserGroupById(groupId);
+		Response<UserGroupDTO> res = new Response<>();
+		try {
+			UserGroup ug = userGroupDao.findUserGroupById(groupUUID);
+			if(ug != null){
+				UserGroupDTO ugDto = new UserGroupDTO();
+				ugDto.setId(ug.getId());
+				ugDto.setGroupId(ug.getGroupId());
+				ugDto.setGroupName(ug.getGroupName());
+				ugDto.setGroupUUID(ug.getGroupUUID());
+				ugDto.setPayFrequency(ug.getPayFrequency());
+				ugDto.setDepartment(ug.getDepartmentId());
+				ugDto.setUserId(ug.getUserId());
+				ugDto.setDescription(ug.getDescription());
+				
+				res.setResponse(Result.SUCCESS.name());
+				res.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				res.setResponse(Result.FAILED.name());
+				res.setResponseMessage(Result.FAILED.getValue());
+			}
+		}catch (Exception e){
+			res.setResponse(Result.AWKWARD.name());
+			res.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		
+		return res;
+	}
+
+	@Override
+	public Response<UserGroupDTO> deleteUserGroupByUUID(String groupUUID, User loginUser)
+	{
+		Response<UserGroupDTO> res = new Response<>();
+		try {
+			UserGroup ug = userGroupDao.findUserGroupById(groupUUID);
+			if(ug != null){
+				ug.setStatus(Constants.RECORD_INACTIVE);
+				ug.setUpdatedBy(loginUser.getUserCode());
+				ug.setUpdatedDate(new Date());
+				userGroupDao.saveUserGroup(ug);
+				res.setResponse(Result.SUCCESS.name());
+				res.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				res.setResponse(Result.FAILED.name());
+				res.setResponseMessage(Result.FAILED.getValue());
+			}
+		}catch (Exception e){
+			res.setResponse(Result.AWKWARD.name());
+			res.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		
+		return res;
 	}
 }

@@ -19,6 +19,8 @@ public interface UserGroupService {
 
 	List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation);
 
-	UserGroup findUserGroupById(Long groupId);
+	Response<UserGroupDTO> findUserGroupById(String groupUUID);
+
+	Response<UserGroupDTO> deleteUserGroupByUUID(String groupUUID, User loginUser);
 
 }
