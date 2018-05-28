@@ -12,31 +12,45 @@
 		<div class="tablelist-wrap">
 			<div class="clearfix">
 				<div class="col-md-2 dropdown-select mt10 mb10">
-					<select class="form-control">
+					<select class="form-control" id="centralTaxYearList" onchange="tax.getCentralTaxList()">
 						<c:forEach items="${yearList}" var="year">
 							<option ${year.value==true?"selected=selected":""} value="${year.key}">${year.key}</option>
 						</c:forEach>
 					</select>
 				</div>
 				<div class="col-md-3 dropdown-select mt10 mb10 hidden">
-					<select class="selectpicker width100percnt"
-						title="Select Type of Tax" data-live-search="true">
-						<option>Income tax</option>
-						<option>Sales tax</option>
-						<option>Excise duty</option>
-						<option>Service tax</option>
-						<option>Custom duty</option>
+					<select class="selectpicker width100percnt">
 					</select>
 				</div>
 				<div class="col-md-10">
-					<a href="create"
-						class=" mt5 pull-right btn btn-success btnSuccess anchorWhite">
-						+ Create</a>
+					<a href="create" class=" mt5 pull-right btn btn-success btnSuccess anchorWhite">+ Create</a>
 				</div>
 				<div class="clearfix"></div>
 			</div>
-			<div class="styleTables">
-				<table>
+			
+			
+				<div class="styleTables">
+				<table id="centralListTable">
+					<thead>
+						<tr>
+							<th>Type of Tax</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody id="centralList">
+					</tbody>
+				</table>
+				<table id="noResultsTable" style="display: none;">
+					<tr class='odd'>
+						<td colspan='7' class='dataTables_empty' valign='top'></td>
+					</tr>
+				</table>
+			</div>
+			
+			
+			
+		<!-- 	<div class="styleTables">
+				<tableid="centralListTable">
 					<thead>
 						<tr>
 							<th>Type of Tax</th>
@@ -81,26 +95,7 @@
 					</tbody>
 				</table>
 			</div>
-
-			<nav>
-				<ul id="paging" class="pagination pull-right mr">
-					<li><a href="#">Previous</a></li>
-					<li><a href="#">2</a></li>
-					<li><a href="#">3</a></li>
-					<li><a href="#">4</a></li>
-					<li><a href="#">5</a></li>
-					<li class="disabled"><a href="#">6</a></li>
-					<li data-page="last"><a href="#">Next</a></li>
-				</ul>
-				<div class="clearfix"></div>
-			</nav>
-
-
-
+ -->
 		</div>
-
-
 	</div>
-
-
 </section>

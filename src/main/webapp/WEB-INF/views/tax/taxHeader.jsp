@@ -7,10 +7,10 @@
   <i class="fa fa-check-circle"></i><span>Operation executed successfully...</span>
 </div>
 <section class="content-header clearfix">
-	<div class="pull-left">
-		<h2>State Tax</h2>
+	<div class="pull-left" >
+		<h2> ${activeTaxTab == 'state' || activeTaxTab =='createStateTax' ? 'State Tax' : 'Central Tax'}</h2>
 	</div>
-	<div class="pull-right brud-crum">Home &raquo; State Tax</div>
+	<div class="pull-right brud-crum">Home &raquo; ${activeTaxTab == 'state' || activeTaxTab =='createStateTax' ? 'State Tax' : 'Central Tax'}</div>
 </section>
 
 <div class="tabsMenu">

@@ -17,10 +17,9 @@
 				<div class="modal-body">
 
 					<div class="viewgrid-header pull-right zIndex ${stateTax.active?'':'disableBtn'}">
-						<a href="create?stateTaxId=${stateTax.id}" class="btn btn-default btn-sm" title="Edit"><i
+						<a href="create?stateTaxId=${stateTax.statetaxuuid}" class="btn btn-default btn-sm" title="Edit"><i
 							class="fa fa-pencil paddingRight"></i>Edit</a>
 					</div>
-
 
 					<div class="row">
 						<div class="col-md-12">

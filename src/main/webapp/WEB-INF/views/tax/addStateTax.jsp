@@ -15,6 +15,7 @@
 		<div class="tablelist-wrap">
 			<form action="" id="addStateTaxForm" method="post">
 				<input type="hidden" value="${stateTax.id}" name="id" />
+				<input type = "hidden" value = "${stateTax.statetaxuuid }" name ="statetaxuuid">
 				<input type="hidden" value="" name="removeIds" id="removeIds"/>
 				<c:if test="${stateTax.id > 0}">
 				<input type="hidden" value="${stateTax.taxTypeId}" name="taxTypeId"/>
@@ -44,7 +45,7 @@
 						</div>
 						<div class="col-md-4 dropdown-select mt10 mb10">
 							<select class="selectpicker width100percnt" title="Select State"
-								data-live-search="true" id="state" field-name="State"
+								data-live-search="true" id="state" field-name="State" 
 								data-validation="required" name="stateId">
 								<option value="0">Select State</option>
 								<c:forEach items="${stateList}" var="s">

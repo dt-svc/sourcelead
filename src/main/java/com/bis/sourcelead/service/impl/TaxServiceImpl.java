@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,23 +9,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.TaxDao;
+import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.ProfessionalTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxSectionDTO;
 import com.bis.sourcelead.dto.SourceleadTaxSectionItemDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
+
+import com.bis.sourcelead.dto.TdsDTO;
+import com.bis.sourcelead.entity.CentralTax;
+import com.bis.sourcelead.entity.OrgLocations;
+
 import com.bis.sourcelead.dto.helper.Paginator;
+
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxSection;
 import com.bis.sourcelead.entity.SourceleadTaxSectionItem;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
+
+import com.bis.sourcelead.entity.Tds;
+import com.bis.sourcelead.entity.User;
+
 import com.bis.sourcelead.enums.Result;
+
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class TaxServiceImpl implements TaxService {
@@ -56,10 +71,25 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public StateTaxDTO getStateTax(long stateTaxId) {
+	public List<CentralTaxDTO> getCentralTaxList(String yearFrequency) {
+		List<CentralTaxDTO> centralTaxList = new LinkedList<>();
+		try {
+			List<CentralTax> ctList = taxDao.getCentralTaxList(yearFrequency, 0);
+			if (ctList != null && !ctList.isEmpty()) {
+				for (CentralTax ct : ctList) {
+					centralTaxList.add(getCentralTaxDTO(ct, false));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return centralTaxList;
+	}
+
+	public StateTaxDTO getStateTax(String statetaxuuid) {
 		StateTaxDTO stateTaxDTO = new StateTaxDTO();
 		try {
-			StateTax stateTax = taxDao.getStateTax(stateTaxId);
+			StateTax stateTax = taxDao.getStateTax(statetaxuuid);
 			if (stateTax != null) {
 				stateTaxDTO = getStateTaxDTO(stateTax, true);
 			}
@@ -67,6 +97,20 @@ public class TaxServiceImpl implements TaxService {
 			e.printStackTrace();
 		}
 		return stateTaxDTO;
+	}
+
+	@Override
+	public CentralTaxDTO getCentralTax(String centraltaxuuid) {
+		CentralTaxDTO centralTaxDTO = new CentralTaxDTO();
+		try {
+			CentralTax centralTax = taxDao.getCentralTax(centraltaxuuid);
+			if (centralTax != null) {
+				centralTaxDTO = getCentralTaxDTO(centralTax, true);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return centralTaxDTO;
 	}
 
 	public StateTaxDTO getStateTaxDTO(StateTax stateTax, boolean includeAll) {
@@ -79,6 +123,7 @@ public class TaxServiceImpl implements TaxService {
 			stateTaxDTO.setTaxTypeId(stateTax.getSourceleadTaxType().getId());
 			stateTaxDTO.setTaxType(stateTax.getSourceleadTaxType().getDescription());
 			stateTaxDTO.setActive(stateTax.isActive());
+			stateTaxDTO.setStatetaxuuid(stateTax.getStatetaxuuid());
 			if (includeAll) {
 				List<ProfessionalTaxDTO> professionalTaxList = new LinkedList<>();
 				for (ProfessionalTax pt : stateTax.getProfessionalTaxList()) {
@@ -101,6 +146,44 @@ public class TaxServiceImpl implements TaxService {
 		return null;
 	}
 
+	public CentralTaxDTO getCentralTaxDTO(CentralTax centralTax, boolean includeAll) {
+		try {
+			CentralTaxDTO centralTaxDTO = new CentralTaxDTO();
+			centralTaxDTO.setId(centralTax.getId());
+			centralTaxDTO.setCeilvalueEsi(centralTax.getCeilvalueesi());
+			centralTaxDTO.setCeilvaluepf(centralTax.getCeilvaluepf());
+			centralTaxDTO.setEmployeeEsi(centralTax.getEmployeeesi());
+			centralTaxDTO.setEmployerEsi(centralTax.getEmployeresi());
+			centralTaxDTO.setEmployeepf(centralTax.getEmployeepf());
+			centralTaxDTO.setEmployerpf(centralTax.getEmployerpf());
+			centralTaxDTO.setNoofemployees(centralTax.getNoofemployees());
+			centralTaxDTO.setSourceleadTaxId(centralTax.getSourceleadTaxType().getId());
+			centralTaxDTO.setSourceleadTaxType(centralTax.getSourceleadTaxType().getDescription());
+			centralTaxDTO.setCtfinancialYear(centralTax.getCtfinancialYear());
+			centralTaxDTO.setCentraltaxuuid(centralTax.getCentraltaxuuid());
+			centralTaxDTO.setActive(centralTax.isActive());
+			if (includeAll) {
+				List<TdsDTO> tdsTaxList = new LinkedList<>();
+				for (Tds tds : centralTax.getTdsList()) {
+					TdsDTO tdsDTO = new TdsDTO();
+					tdsDTO.setAge(tds.getAge());
+					tdsDTO.setFromamount(tds.getFromamount());
+					tdsDTO.setToamount(tds.getToamount());
+					tdsDTO.setPercentage(tds.getPercentage());
+					tdsDTO.setEducationceiss(tds.getEducationceiss());
+					tdsDTO.setSurcharge(tds.getSurcharge());
+					tdsDTO.setId(tds.getId());
+					tdsTaxList.add(tdsDTO);
+				}
+				centralTaxDTO.setTdsTaxList(tdsTaxList);
+			}
+			return centralTaxDTO;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@Override
 	public long addStateTax(StateTaxDTO stateTaxDTO) {
 		try {
@@ -111,17 +194,20 @@ public class TaxServiceImpl implements TaxService {
 			} else {
 				StateTax st = null;
 				if (stateTaxDTO.getId() > 0) {
-					st = taxDao.getStateTax(stateTaxDTO.getId());
+					st = taxDao.getStateTax(stateTaxDTO.getStatetaxuuid());
 				} else {
 					st = new StateTax();
 				}
+				String sttaxuuid = SourceLeadRandomCodeHelper.generateRandomTaxId();
 				st.setId(stateTaxDTO.getId());
 				st.setFinancialYear(stateTaxDTO.getFinancialYear());
+				st.setStatetaxuuid(sttaxuuid);
 				st.setActive(true);
 				st.setSourceleadTaxType(getTaxTypeById(stateTaxDTO.getTaxTypeId()));
 				st.setStates(statesService.getStateById(stateTaxDTO.getStateId()));
 
-				// While editing, if an existing ProfessionalTax row is deleted, then it should
+				// While editing, if an existing ProfessionalTax row is deleted,
+				// then it should
 				// be manually delete as below by iterating all removeIds
 				if (stateTaxDTO.getRemoveIds() != null && !stateTaxDTO.getRemoveIds().isEmpty()) {
 					for (String id : stateTaxDTO.getRemoveIds().split(",")) {
@@ -146,6 +232,61 @@ public class TaxServiceImpl implements TaxService {
 				}
 				st.setProfessionalTaxList(ptList);
 				return taxDao.addStateTax(st);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	public long saveCentralTax(CentralTaxDTO centralTaxDTO, User user, OrgLocations orgLocations) {
+		try {
+			List<CentralTax> ctList = taxDao.getCentralTaxList(centralTaxDTO.getCtfinancialYear(),centralTaxDTO.getSourceleadTaxId());
+			if (centralTaxDTO.getId() == 0 && ctList != null && ctList.size() > 0) {
+				return -1;
+			} else {
+				
+				String cttaxuuid = SourceLeadRandomCodeHelper.generateRandomTaxId();
+				CentralTax ct = new CentralTax();
+				ct.setCentraltaxuuid(cttaxuuid);
+				ct.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
+				ct.setEmployeepf(centralTaxDTO.getEmployeepf());
+				ct.setEmployerpf(centralTaxDTO.getEmployerpf());
+				ct.setNoofemployees(centralTaxDTO.getNoofemployees());
+				ct.setCeilvalueesi(centralTaxDTO.getCeilvalueEsi());
+				ct.setCeilvaluepf(centralTaxDTO.getCeilvaluepf());
+				ct.setEmployeeesi(centralTaxDTO.getEmployeeEsi());
+				ct.setEmployeresi(centralTaxDTO.getEmployerEsi());
+				ct.setCtfinancialYear(centralTaxDTO.getCtfinancialYear());
+				ct.setActive(true);
+				ct.setSourceleadTaxType(getTaxTypeById(centralTaxDTO.getSourceleadTaxId()));
+
+				if (centralTaxDTO.getRemoveIds() != null && !centralTaxDTO.getRemoveIds().isEmpty()) {
+					for (String id : centralTaxDTO.getRemoveIds().split(",")) {
+						taxDao.removeTDSTax(taxDao.getTDSById(Long.valueOf(id)));
+					}
+				}
+
+				HashSet<Tds> tdsList = new LinkedHashSet<>();
+				for (TdsDTO tdsDTO : centralTaxDTO.getTdsTaxList()) {
+					Tds tds = null;
+					if (tdsDTO.getId() > 0) {
+						tds = getTDSById(tdsDTO.getId());
+					} else {
+						tds = new Tds();
+					}
+					tds.setAge(tdsDTO.getAge());
+					tds.setFromamount(tdsDTO.getFromamount());
+					tds.setToamount(tdsDTO.getToamount());
+					tds.setPercentage(tdsDTO.getPercentage());
+					tds.setEducationceiss(tdsDTO.getEducationceiss());
+					tds.setSurcharge(tdsDTO.getSurcharge());
+					tds.setCentraltaxid(ct);
+					tdsList.add(tds);
+				}
+				ct.setTdsList(tdsList);
+				return taxDao.storeCentralTax(ct);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -192,6 +333,37 @@ public class TaxServiceImpl implements TaxService {
 			e.printStackTrace();
 		}
 		return response;
+	}
+	
+	@Override
+	public Response<String> changeCentralTaxStatus(long centralTaxId) {
+		Response<String> response = new Response<>();
+		try {
+			long result = taxDao.changeCentralTaxStatus(centralTaxId);
+			if (result > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (result == -2) {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
+
+	@Override
+	public Tds getTDSById(long id) {
+		try {
+			return taxDao.getTDSById(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override

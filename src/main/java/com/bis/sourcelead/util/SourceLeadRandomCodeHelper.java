@@ -62,4 +62,8 @@ public class SourceLeadRandomCodeHelper {
 		String UUID = RandomStringUtils.randomNumeric(8);
 		return UUID;
 	}
+	public static String generateRandomTaxId() {
+		String UUID = RandomStringUtils.randomAlphanumeric(8);
+		return UUID;
+	}
 }

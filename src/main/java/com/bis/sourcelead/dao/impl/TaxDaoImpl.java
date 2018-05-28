@@ -6,23 +6,27 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.helper.Paginator;
+import com.bis.sourcelead.entity.CentralTax;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxSection;
 import com.bis.sourcelead.entity.SourceleadTaxSectionItem;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
+import com.bis.sourcelead.entity.Tds;
 
 @Repository
 @Transactional
 public class TaxDaoImpl implements TaxDao {
-
+	private static final Logger logger = LoggerFactory.getLogger(TaxDaoImpl.class);
 	@Autowired
 	private SessionFactory sessionFactory;
 
@@ -96,10 +100,44 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
-	public StateTax getStateTax(long stateTaxId) {
+	public long storeCentralTax(CentralTax centralTax) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			return session.get(StateTax.class, stateTaxId);
+			session.saveOrUpdate(centralTax);
+			return centralTax.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	public StateTax getStateTax(String statetaxuuid) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from StateTax st";
+			query += " where st.statetaxuuid = :statetaxuuid";
+			Query queryObj = session.createQuery(query).setString("statetaxuuid", statetaxuuid);
+			List<StateTax> stateTaxUUIDList = queryObj.list();
+			if (stateTaxUUIDList != null && !stateTaxUUIDList.isEmpty()) {
+				return stateTaxUUIDList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public CentralTax getCentralTax(String centraltaxuuid) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CentralTax ct";
+			query += " where ct.centraltaxuuid = :centraltaxuuid";
+			Query queryObj = session.createQuery(query).setString("centraltaxuuid", centraltaxuuid);
+			List<CentralTax> centralTaxUUIDList = queryObj.list();
+			if (centralTaxUUIDList != null && !centralTaxUUIDList.isEmpty()) {
+				return centralTaxUUIDList.get(0);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -151,6 +189,33 @@ public class TaxDaoImpl implements TaxDao {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CentralTax> getCentralTaxList(String yearFrequency, long taxTypeId) {
+		List<CentralTax> centralTaxList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from CentralTax ct";
+			if (yearFrequency != null && !yearFrequency.isEmpty()) {
+				query += " where ct.ctfinancialYear = :yearFrequency";
+			}
+			if (taxTypeId > 0) {
+				query += (query.contains("where") ? " and " : " where ") + "ct.sourceleadTaxType.id=:taxTypeId";
+			}
+			Query queryObj = session.createQuery(query);
+			if (yearFrequency != null && !yearFrequency.isEmpty()) {
+				queryObj.setString("yearFrequency", yearFrequency);
+			}
+			if (taxTypeId > 0) {
+				queryObj.setLong("taxTypeId", taxTypeId);
+			}
+			centralTaxList = queryObj.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return centralTaxList;
 	}
 
 	@Override
@@ -266,6 +331,23 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
+	public long changeCentralTaxStatus(long centralTaxId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			CentralTax centralTax = session.get(CentralTax.class, centralTaxId);
+			if (centralTax != null) {
+				centralTax.setActive(!centralTax.isActive());
+				return centralTax.getId();
+
+			} else
+				return -2;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	@Override
 	public long changeITDeclarationSectionStatus(long id) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -295,6 +377,28 @@ public class TaxDaoImpl implements TaxDao {
 			e.printStackTrace();
 		}
 		return -1;
+	}
+
+	public boolean removeTDSTax(Tds tds) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.delete(tds);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public Tds getTDSById(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(Tds.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
