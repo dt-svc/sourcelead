@@ -184,6 +184,14 @@ public class OrgSettingsRestController {
 					SourceLeadSessionManager.setSessionAttribute(request, "website", orgLocations.getWebsite());
 					SourceLeadSessionManager.setSessionAttribute(request, "dba", orgLocations.getDba());
 					SourceLeadSessionManager.setSessionAttribute(request, "businessType", orgSettings.getBusinessType());
+					List<String> weekOffDaysList = new ArrayList<>();
+					if(orgLocations.getWeekOffDays() != null && !orgLocations.getWeekOffDays().isEmpty()) {
+						String[] weekOffDays = orgLocations.getWeekOffDays().split(",");
+						for(int i=0; i < weekOffDays.length; i++) {
+							weekOffDaysList.add(weekOffDays[i]);
+						}
+					}
+					SourceLeadSessionManager.setSessionAttribute(request, "weekOffDaysList", weekOffDaysList);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 			}else{

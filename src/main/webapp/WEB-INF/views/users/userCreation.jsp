@@ -200,7 +200,7 @@
                 </div> 
                 
                 <div class="form-group">
-                  <label class="col-md-3">Designation</label>
+                  <label class="col-md-3">Designation<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="designation" name="designation"  field-name="Desgination" data-validation="required validate_Space validate_Name validate_length length2-250" >
                   </div>

@@ -41,6 +41,7 @@ padding-right: 254px; padding-top: 10px;
 			  	 <a href="<c:url value='${appPath}/addDepartment'/>"><i class="fa fa-plus"></i>Department</a>
 			     <a href="<c:url value='${appPath}/roleHierarchy'/>"><i class="fa fa-plus"></i>Hierarchy</a>
                  <a href="javascript:void(0)" class="addcon-pop"><i class="glyphicon glyphicon-plus"></i>Add Role</a>
+                 <a href="javascript:void(0)" onClick="showGradePopUp();" ><i class="glyphicon glyphicon-plus"></i>Add Grade</a>
                  </div>
               </sec:authorize>
               
@@ -71,9 +72,26 @@ padding-right: 254px; padding-top: 10px;
                             
                           </div>
                         </div>
+                        
 				<!-- Popup Div -->              
-              
-              </div>
+			</div>
+
+<!-- Grade Popup Div --> 			
+ <div class="comMask"></div>
+  <div class="modal paymentaccount-modal" id="paymentAccountPopup" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" onclick="closeGradePopUp();" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add/Edit Grade</h4>
+        </div>
+        <div class="modal-body">
+        </div>
+        </div>
+     </div>
+ </div>
 			
 			    <div class="project_wrap_table datatable_filter">
 			    				<table id="rolesList" class="display" cellspacing="0" width="100%">
@@ -90,7 +108,17 @@ padding-right: 254px; padding-top: 10px;
  
  <jsp:include page="masterFooter.jsp" />	
  
+ <script>
+ function showGradePopUp() {
+	    $(".modal.paymentaccount-modal").fadeIn();
+	    $(".comMask").fadeIn();
+	}
  
+ function closeGradePopUp(type) {
+	    $(".modal.paymentaccount-modal").fadeOut();
+	    $(".comMask").fadeOut();
+	}
+ </script>
  
  <script type="text/javascript">
 function validateRoleName(){
