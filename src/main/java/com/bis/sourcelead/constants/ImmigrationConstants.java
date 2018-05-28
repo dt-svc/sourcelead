@@ -80,6 +80,4 @@ public class ImmigrationConstants {
 	
 	public static List<String> MARRAIAGE_STATUS_LIST = Arrays.asList("Single","Married","","Divorced","Separated");
 	
-	public static List<String> COMPANY_STATUS_LIST = Arrays.asList("Law Firm","Client");
-	
 }

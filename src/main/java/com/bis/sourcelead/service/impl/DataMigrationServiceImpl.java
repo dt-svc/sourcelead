@@ -492,8 +492,8 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		    	immDto.setAttorneyEmail(dataMigrationDTOJsonCopy.getString("companyContactEmail"));
 		    	
 		    	immDto.setJobId("3");// Sql as of now hard coded value.
-		    	immDto.setAttorneyId("4"); // immigrationServices.
-		    	immDto.setAttorneyContact("4");
+		    	immDto.setAttorneyId(dataMigrationDTOJsonCopy.getString("company")); // immigrationServices.
+		    	immDto.setAttorneyContact(dataMigrationDTOJsonCopy.getString("companyContactEmail"));
 		    	//
 		    	immDto.setCurrUscisStatus(dataMigrationDTOJsonCopy.getString("status")); // currUscisStatus status in immigration.
 		    	immDto.setReceiptNo(dataMigrationDTOJsonCopy.getString("receiptNo"));
