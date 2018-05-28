@@ -1366,6 +1366,11 @@ $("#editRoleDetailsList").empty();
 			    var manager = "";
 			    var designationOtherType = "";
 			    var globalChecked = '';
+			    var designation = '';
+			    
+			    if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+     			 	designation = json.designation;
+   			 	 }
 			    
 			    if(json.isGlobal == 'Y'){
 			    	globalChecked = 'checked';
@@ -1495,7 +1500,7 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Designation<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" value="'+json.designation+'" name="designation" id="designation" field-name="Designation" data-validation="required validate_Space validate_Name validate_length length2-250"/>';
+					result = result + ' <input type="text" value="'+designation+'" name="designation" id="designation" field-name="Designation" data-validation="required validate_Space validate_Name validate_length length2-250"/>';
 					result = result + ' </div>';
 					
 					// moving date bottom to top
