@@ -162,4 +162,6 @@ public interface UserDao {
 	
 	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
 
+	List<User> getUsersListForSignatoryByOrglocationId(Long locationId);
+
 }
