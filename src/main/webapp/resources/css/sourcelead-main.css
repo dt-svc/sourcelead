@@ -8923,6 +8923,10 @@ ul.jobsboard-list > li:hover {
 .modal-lg.salaryHistory_modalLg {
 	width: 1024px;
 }
+.downloadInput input {
+	width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    background: transparent; border: none; font-weight: 400; margin-left: 0; padding-left: 5px !important;
+}
 /* forms edit element styles */
 @media (max-width: 320px) {
 .uasrch-selectpicker {
