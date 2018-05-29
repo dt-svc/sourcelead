@@ -2144,7 +2144,7 @@ public class DataMigrationCommonUtil {
 		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
 			errorSet.put("beneficiaryEmail", "Beneficiary Email is missing"); // need to validate email address.
 		} else {
-			String email = dataMigrationDTOJsonCopy.getString("beneficiaryEmail");
+			String email = dataMigrationDTOJsonCopy.getString("beneficiaryEmail").trim();
 			boolean emailVaild = isValidEmailAddress(email);
 			if (emailVaild) {
 				User userByEmail = userService.findByEmailAndOrgLocationsId(email, orgLocation.getId());
@@ -2162,14 +2162,14 @@ public class DataMigrationCommonUtil {
 		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
 			errorSet.put("dateOfBirth", "DOB is missing");
 		}
-		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
+	/*	if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
 			errorSet.put("maritalStatus", "Marital status is missing");/// dropdown value.
 		} else {
 			String maritalStatus = dataMigrationDTOJsonCopy.getString("maritalStatus");
 			if (!ImmigrationConstants.MARRAIAGE_STATUS_LIST.contains(maritalStatus)) {
 				errorSet.put("maritalStatus", "Marital status is invalid input");/// dropdown value.
 			}
-		}
+		}*/
 		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("petitionType"))) {
 			errorSet.put("petitionType", "Petition Type is missing"); /// dropdown value.
 
