@@ -272,7 +272,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.name !== null && opt.name !== '' && opt.name !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot'>" + opt.name + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot' title='"+opt.name+"' >" + opt.name + "</div></td>";
                         } else {
                             result = result + "<td><div class='tbldata-dotdot'>---</div></td>";
                         }
