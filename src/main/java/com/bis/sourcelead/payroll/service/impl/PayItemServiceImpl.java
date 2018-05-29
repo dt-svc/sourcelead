@@ -79,7 +79,7 @@ public class PayItemServiceImpl implements PayItemService{
 	}
 
 	@Override
-	public ResponseList<PayItemDTO> getPayItemByLocationId(OrgLocations orgLocation)
+	public ResponseList<PayItemDTO> getPayItemByLocationId(OrgLocations orgLocation,String associateEmpType)
 	{
 		ResponseList<PayItem> payItemList = payItemDao.getPayItemByLocationId(orgLocation);
 		ResponseList<PayItemDTO> responseList = new ResponseList<>();
@@ -95,7 +95,10 @@ public class PayItemServiceImpl implements PayItemService{
 					payItemDTO.setAllowOverTime(item.getAllowOverTime());
 					payItemDTO.setDescription(item.getDescription());
 					payItemDTO.setPayItemUUID(item.getPayItemUuid());
-					list.add(payItemDTO);
+					if(item.getAllowEmployeementType().contains(associateEmpType)) {
+						list.add(payItemDTO);
+					}
+					
 				});
 				responseList.setData(list);
 				responseList.setResponse(Result.SUCCESS.name());

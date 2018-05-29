@@ -756,7 +756,7 @@ public class USPayrollRestController {
 	public ResponseList<PayItemDTO> getPayItemList(PayItemDTO payItemDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<PayItemDTO> resObj = payItemService.getPayItemByLocationId(orgLocation);
+		ResponseList<PayItemDTO> resObj = payItemService.getPayItemByLocationId(orgLocation,payItemDTO.getAssociateEmpType());
 		return resObj;
 	}
 	

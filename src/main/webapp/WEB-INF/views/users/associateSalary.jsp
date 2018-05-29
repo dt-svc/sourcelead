@@ -1,12 +1,12 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
   
-<script>
+<!-- <script>
 $(document).ready(function(){
    getPayItemList();
 });
 </script>
-
+ -->
   <div id="tab-6" class="tabsMenu_tabs_inn clearfix">
  	<div id="loading"></div>
  	 <form:form id="associate_salary_form" name="associate_salary_form" method="post">
@@ -209,7 +209,8 @@ function calculateHourlyRateSal(){
 
 <script>
   function getPayItemList(){
-		$.get(sourceleadUrl+"/getPayItemList?"+tokenParamName+"="+tokenValue+"", function(response) {
+	     var associateEmpType = $("#empType").val();
+		$.get(sourceleadUrl+"/getPayItemList?"+tokenParamName+"="+tokenValue+"&associateEmpType="+associateEmpType, function(response) {
 			  if (response.response === "AWKWARD") {
 			    location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
@@ -339,9 +340,6 @@ function calculateHourlyRateSal(){
  <script type="text/javascript">
  function saveAssocioateSal() {
 	 var userId = $("#associateId").val();
-	 alert("userId"+userId);
-	var empType = $("#empType").val(); 
-      alert(empType);
 	 if ($('#associate_salary_form').validate(false, validationSettings)){ 
 			   var formData = $($('#associate_salary_form')[0]).serialize();
 				$("#saveAssocioateSal").attr("disabled", "disabled");

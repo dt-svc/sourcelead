@@ -23,6 +23,8 @@ public class PayItemDTO {
 	
 	private String payItemUUID;
 	
+	private String associateEmpType;
+	
 	public Long getId()
 	{
 		return id;
@@ -86,6 +88,14 @@ public class PayItemDTO {
 	public void setPayItemUUID(String payItemUUID)
 	{
 		this.payItemUUID = payItemUUID;
+	}
+	public String getAssociateEmpType()
+	{
+		return associateEmpType;
+	}
+	public void setAssociateEmpType(String associateEmpType)
+	{
+		this.associateEmpType = associateEmpType;
 	}
 	
 	

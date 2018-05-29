@@ -654,6 +654,7 @@ function getEmployeementType(designationType){
 						document.getElementById("associateSalary").removeAttribute("class"); 
 						associateBanking.href="#tab-6"; 
 						$("#associateSalary").click();
+						 getPayItemList();
 						/* location.replace(sourceleadUrl+"/usersList"); */
 					}
 				},

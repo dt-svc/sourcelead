@@ -10,5 +10,5 @@ public interface PayItemService {
 
 	Response<PayItemDTO> addPayItem(OrgLocations orgLocation, PayItemDTO payItemDTO, User loginUser);
 
-	ResponseList<PayItemDTO> getPayItemByLocationId(OrgLocations orgLocation);
+	ResponseList<PayItemDTO> getPayItemByLocationId(OrgLocations orgLocation, String associateEmpType);
 }
