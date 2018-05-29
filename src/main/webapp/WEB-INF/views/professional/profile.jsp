@@ -273,7 +273,7 @@ function getProfessionalInfo(){
 				 result = result +'	    </div>';
 				 
 				 result = result +'	    <div class="col-md-4">';
-				 result = result +'	        <h5>Rates</h5>';
+				 result = result +'	        <h5>Remuneration</h5>';
 				 result = result +'	        <div class="skills mt10">';
 				 result = result +'<ul class ="list-unstyled">';
 				 result = result +'	            <li> <i class="fa fa-money" title="Current Rate"></i>';

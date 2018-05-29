@@ -2313,6 +2313,21 @@ function clearCustomEndDate(){
 	};
 </script>
 
+<script>
+function refreshSigningAuthority2(){
+	var sequentialOwner1 = $("#sequentialOwner1").val();
+	var result = "";
+	<c:forEach var="user" items="${userList}">
+		if(sequentialOwner1 != "${user.id}"){
+			result = result +  '<option value="${user.id}"> ${user.firstName} ${user.lastName}</option>';
+		}
+	</c:forEach>
+	$("#sequentialOwner2").empty();
+	$("#sequentialOwner2").append(result);
+	$('#sequentialOwner2').trigger("chosen:updated");
+}
+</script>
+
 <!-- <script>
 	$(".clearUpload").click(function(){
 		$("#uploadFile").val("");

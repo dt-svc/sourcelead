@@ -1,5 +1,6 @@
 package com.bis.sourcelead.immigration.dao.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -925,12 +926,34 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ImmigrationDashboardView getImmigrationDashBoardDetails(OrgLocations orgLocations) {
-		ImmigrationDashboardView dashboardObj = null;
+		ImmigrationDashboardView dashboardObj = new ImmigrationDashboardView();
+		
+		List<ImmigrationDashboardView> dashboardObjLst= new ArrayList<ImmigrationDashboardView>();
+		dashboardObj.setDraftsCount(BigDecimal.ZERO);  // set default values as zero.
+		dashboardObj.setReqSentCount(BigDecimal.ZERO);
+		dashboardObj.setInProgressCount(BigDecimal.ZERO);
+		dashboardObj.setApporovedCount(BigDecimal.ZERO);
+		dashboardObj.setRejectedCount(BigDecimal.ZERO);
+		dashboardObj.setRfeCount(BigDecimal.ZERO);
+		dashboardObj.setDeniedCount(BigDecimal.ZERO);
+		dashboardObj.setOthersCount(BigDecimal.ZERO);
+		
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String queryString = "from ImmigrationDashboardView immDview where immDview.orgLocationId = :orgLocationsId or "
 					+ "immDview.attorneyLocationId = :attorneyLocationId";
-			dashboardObj = (ImmigrationDashboardView) session.createQuery(queryString).setLong("orgLocationsId", orgLocations.getId()).setLong("attorneyLocationId", orgLocations.getId()).uniqueResult();
+			dashboardObjLst = session.createQuery(queryString).setLong("orgLocationsId", orgLocations.getId()).setLong("attorneyLocationId", orgLocations.getId()).list();
+			for(ImmigrationDashboardView Obj: dashboardObjLst) {
+				dashboardObj.setDraftsCount(dashboardObj.getDraftsCount().add(Obj.getDraftsCount()));
+				dashboardObj.setReqSentCount(dashboardObj.getReqSentCount().add(Obj.getReqSentCount()));
+				dashboardObj.setInProgressCount(dashboardObj.getInProgressCount().add(Obj.getInProgressCount()));
+				dashboardObj.setApporovedCount(dashboardObj.getApporovedCount().add(Obj.getApporovedCount()));
+				dashboardObj.setRejectedCount(dashboardObj.getRejectedCount().add(Obj.getRejectedCount()));
+				dashboardObj.setRfeCount(dashboardObj.getRfeCount().add(Obj.getRfeCount()));
+				dashboardObj.setDeniedCount(dashboardObj.getDeniedCount().add(Obj.getDeniedCount()));
+				dashboardObj.setOthersCount(dashboardObj.getOthersCount().add(Obj.getOthersCount()));
+			  }
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1695,7 +1695,7 @@ function getVendorOrgname(vendorOrgname){
 							
 							result = result + '<div class="project_details_cta">';
 								result = result + '<strong>Web Url:</strong>';
-								if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
+								if(json.webSite !=null && json.webSite !=''  && json.webSite !='null' && json.webSite !='undefined'){
 								result = result + '<span title="'+json.webSite+'">'+json.webSite+'</span><div class="clearfix"></div>';
 								}else{
 									result = result + '<span> --- </span><div class="clearfix"></div>';

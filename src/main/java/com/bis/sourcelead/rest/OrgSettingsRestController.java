@@ -894,7 +894,7 @@ public class OrgSettingsRestController {
 	public List<AddUserDTO> getAssociatesForSignatory(HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<User> associatesList = userService.getUsersListByOrglocationId(orgLocations.getId());
+		List<User> associatesList = userService.getUsersListForSignatoryByOrglocationId(orgLocations.getId());
 		List<AddUserDTO> userDtoList = new ArrayList<>();
 		for(User user : associatesList){
 			AddUserDTO userdto = new AddUserDTO();

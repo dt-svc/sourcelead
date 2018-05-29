@@ -92,6 +92,7 @@
 					 	 var isLawFirm;
 					 	 var isAccountingFirm;
 					 	 
+					 	 
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
 						}
@@ -101,8 +102,9 @@
 						if(json.city != null && json.city !='' && json.city !='undefined'){
 							city = json.city;
 						}
-						if(json.webSite !=null && json.webSite !='' && json.webSite !='undefined'){
+						if(json.webSite != null && json.webSite != 'null' && json.webSite !=''  && json.webSite !='undefined'){
 							website = json.webSite;
+							alert(website)
 						}
 						if(json.zipcode != null && json.zipcode !='' && json.zipcode !='undefined'){
 							zipcode = json.zipcode;
@@ -112,7 +114,6 @@
 						}else if(json.country != null && json.country !='' && json.country !='undefined'){
 							location = json.country;
 						}
-						
 						isLawFirm = (json.isLawFirm =='Y' ? true : false);
 						isAccountingFirm = (json.isAccountingFirm =='Y' ? true :false);
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
@@ -124,7 +125,7 @@
 							
 							result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 							result = result + '<label>Website</label>';
-							result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" readonly="readonly" title="'+json.webSite+'" value="'+json.webSite+'" placeholder="website" ></div>';
+							result = result + '<input type="text"  id="companyWebsite" name="companyWebsite" field-name="Website" readonly="readonly" title="'+website+'" value="'+website+'" placeholder="website" ></div>';
 							result = result + '</div>';
 							
 							result = result + '<div class="user_summary_edit_cta">';

@@ -1168,7 +1168,7 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgLocations.setCity("");
 			}
-			if (clientDTO.getWebSite()!=null) {
+			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
 				orgLocations.setWebsite(clientDTO.getWebSite());
 			}
 			if (StringUtils.isNotBlank(clientDTO.getState())) {
@@ -1329,9 +1329,7 @@ public class ClientServiceImpl implements ClientService {
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
 				orgLocations.setWebsite(clientDTO.getCompanyWebsite());
-			} else {
-				orgLocations.setWebsite("");
-			}
+			} 
 			if (StringUtils.isNotBlank(clientDTO.getCity())) {
 				orgLocations.setCity(clientDTO.getCity());
 			} else {
