@@ -393,8 +393,14 @@ $(document).ready(function(){
 				}
 				
 				result = result + '			<div class="project_details_cta">';
-				result = result + '				<strong>Global User:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
+				result = result + '				<strong>Is Global Manager:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
+				
+				if(json.designation != null && json.designation != "" && json.designation != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Designation:</strong><span class="fix">'+json.designation+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				}
 				
 				
 				if(json.roleChangeReason != null && json.roleChangeReason != "" && json.roleChangeReason != 'undefined'){
@@ -1360,6 +1366,11 @@ $("#editRoleDetailsList").empty();
 			    var manager = "";
 			    var designationOtherType = "";
 			    var globalChecked = '';
+			    var designation = '';
+			    
+			    if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+     			 	designation = json.designation;
+   			 	 }
 			    
 			    if(json.isGlobal == 'Y'){
 			    	globalChecked = 'checked';
@@ -1486,6 +1497,12 @@ $("#editRoleDetailsList").empty();
 			 	     	result = result + ' </div>';
 					}
 					
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Designation<span class="text-danger">&nbsp;*</span></label>';
+					result = result + ' <input type="text" value="'+designation+'" name="designation" id="designation" field-name="Designation" data-validation="required validate_Space validate_Name validate_length length2-250"/>';
+					result = result + ' </div>';
+					
 					// moving date bottom to top
 					 result = result + ' <div class="user_summary_edit_cta">';
 					    result = result + ' <label>Department</label>';
@@ -1599,7 +1616,7 @@ $("#editRoleDetailsList").empty();
 					result = result + '<div class="checkbox checkBox">';
 					result = result + '<label>';
 					result = result + '<input type="checkbox" value="Y" '+globalChecked+' name="isGlobalAccess">';
-					result = result + 'Is Global Access</label>';
+					result = result + 'Is Global Manager</label>';
 					result = result + '</div>';
 					result = result + '</div>';
 					result = result + '</div>';

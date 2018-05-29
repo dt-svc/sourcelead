@@ -705,7 +705,6 @@ public class UsersListRestController {
 	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
 	public @ResponseBody UserRole getUserDetailsById(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
-		String resultJson = null;
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
@@ -776,7 +775,8 @@ public class UsersListRestController {
 				if(null != userRole1){
 					user.setUserType(userRole1.getUserType());
 				}else {
-					user.setUserType(Constants.GLOBAL_USER);
+					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					user.setUserType(primaryRole.getUserType());
 				}
 		  }
 		 userRole.setAllReportingManagers(reportingManagersList);
@@ -1977,6 +1977,10 @@ public class UsersListRestController {
 				userRole.setReportingManager(reportingManager);
 			} else {
 				userRole.setReportingManager(null);
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				userRole.setDesignation(addUserDTO.getDesignation());
 			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getResourceManager())){

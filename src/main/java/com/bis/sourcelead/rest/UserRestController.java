@@ -511,7 +511,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 					if(null != userRole){
 						user.setUserType(userRole.getUserType());
 					}else {
-						user.setUserType(Constants.GLOBAL_USER);
+						UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+						user.setUserType(primaryRole.getUserType());
 					}
 					level2ManagersList.add(user);
 				}
@@ -1342,7 +1343,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 				if(userRole != null){
 					user.setUserType(userRole.getUserType());
 				}else {
-					user.setUserType(Constants.GLOBAL_USER);
+					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					user.setUserType(primaryRole.getUserType());
 				}
 			}
 			return reportingManagersList;

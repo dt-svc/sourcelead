@@ -52,6 +52,30 @@
 						var allowOffShore = "";
 						var flatPercentageId = "";
 						var invoiceFrequency = "";
+						var reportingManagerAsApprover = "";
+						var ticketNumberRequired = "";
+						var taskCommentsRequired = "";
+						
+						if (json.isReportingManagerAsApprover != null && json.isReportingManagerAsApprover != '' && json.isReportingManagerAsApprover != 'undefined'
+							&& json.isReportingManagerAsApprover == 'Y') {
+							reportingManagerAsApprover = "YES"
+						}else{
+							reportingManagerAsApprover = "NO"
+						}
+						
+						if (json.isTicketNumberRequired != null && json.isTicketNumberRequired != '' && json.isTicketNumberRequired != 'undefined'
+							&& json.isTicketNumberRequired == 'Y') {
+							ticketNumberRequired = "YES"
+						}else{
+							ticketNumberRequired = "NO"
+						}
+						
+						if (json.isTaskCommentsRequired != null && json.isTaskCommentsRequired != '' && json.isTaskCommentsRequired != 'undefined'
+							&& json.isTaskCommentsRequired == 'Y') {
+							taskCommentsRequired = "YES"
+						}else{
+							taskCommentsRequired = "NO"
+						}
 						
 						
 						if (json.isTimesheetAttachmentRequired != null && json.isTimesheetAttachmentRequired != '' && json.isTimesheetAttachmentRequired != 'undefined'
@@ -205,7 +229,7 @@
 						}
 
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Invoice Frequency:</strong><span>';
+						result = result + '<strong>Timesheet Frequency:</strong><span>';
 						result = result + '	<span title="'+invoiceFrequency+'">'+invoiceFrequency+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 
@@ -268,6 +292,25 @@
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Allow Freelance Developers:</strong>';
 						result = result + '<span>'+allowFreeLance+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Reporting Manager will be T/E approver:</strong>';
+						result = result + '<span>'+reportingManagerAsApprover+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong> Ref/Ticket Number Required In Time Sheets:</strong>';
+						result = result + '<span>'+ticketNumberRequired+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Task Comments required In Time Sheets:</strong>';
+						result = result + '<span>'+taskCommentsRequired+'</span><div class="clearfix"></div>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
@@ -485,6 +528,10 @@ function editClientProjectDetails(projectId){
                         var allowTimeEntryAfterDeadLine = "";
                         var allowBidding = "";
                         var reoprtingManagerChecked = "";
+                        var ticketNumberRequired = "";
+						var taskCommentsRequired = "";
+						
+                        
                         <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	              		  var sectionId = '${section.id}';
 	              		  preapareCustomFieldDetails(projectId,sectionId);
@@ -493,6 +540,16 @@ function editClientProjectDetails(projectId){
 	              		if(json.isReportingManagerAsApprover != null && json.isReportingManagerAsApprover != '' && json.isReportingManagerAsApprover != 'undefined' && json.isReportingManagerAsApprover == 'Y'){
 	              			reoprtingManagerChecked = "checked";
 	              		}
+	              		
+	              		if (json.isTicketNumberRequired != null && json.isTicketNumberRequired != '' && json.isTicketNumberRequired != 'undefined'
+							&& json.isTicketNumberRequired == 'Y') {
+	              			ticketNumberRequired = "checked"
+						}
+						
+						if (json.isTaskCommentsRequired != null && json.isTaskCommentsRequired != '' && json.isTaskCommentsRequired != 'undefined'
+							&& json.isTaskCommentsRequired == 'Y') {
+							taskCommentsRequired = "checked"
+						}
                         
                         if(json.allowRemote != null && json.allowRemote != '' && json.allowRemote != 'undefined' && json.allowRemote == 'true'){
                         	allowRemote = "checked";
@@ -796,10 +853,18 @@ function editClientProjectDetails(projectId){
 				 
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta projectdetails_checkbox">';
 						result = result + '<label>&nbsp;</label>';
-							
+						
+						
+						  result = result + '<div class="checkBox">';
+					    	result = result + '<label> <input type="checkbox" value="Y" '+ticketNumberRequired+'  name="isTicketNumberRequired">Ref/Ticket Number Required In Time Sheets</label>';	
+						 result = result + '</div>';
+						
+						 result = result + '<div class="checkBox">';
+					    	result = result + '<label> <input type="checkbox" value="Y" '+taskCommentsRequired+'  name="isTaskCommentsRequired">Task Comments required In Time Sheets</label>';	
+						 result = result + '</div>';
+						
 					    result = result + '<div class="checkBox">';
 					    	result = result + '<label> <input type="checkbox" value="Y" '+allowFreeLance+'  name="isAllowFreelanceDevelopers">Allow Freelance Developers</label>';	
-						
 						result = result + '</div>';
 
 						result = result + '<div class="checkBox">';

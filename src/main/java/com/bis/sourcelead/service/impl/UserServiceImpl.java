@@ -277,6 +277,11 @@ public class UserServiceImpl implements UserService {
 	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
 	   if(userRole == null){
 		   userRole = getUserRoleDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
+		   
+		   if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				 userRole.setDesignation(addUserDTO.getDesignation());
+		    }
+		   
 		   if(null == user.getId()){
 				userRole.setIsPrimary(1);
 				 if(sourceType.equalsIgnoreCase("PROJECTS")){
@@ -295,6 +300,10 @@ public class UserServiceImpl implements UserService {
 			if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
 				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
 			}
+			
+		 if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				 userRole.setDesignation(addUserDTO.getDesignation());
+		    }
 	   }
 		
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
@@ -1520,7 +1529,8 @@ public class UserServiceImpl implements UserService {
 				if(null != userRole){
 					user.setUserType(userRole.getUserType());
 				}else {
-					user.setUserType(Constants.GLOBAL_USER);
+					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					user.setUserType(primaryRole.getUserType());
 				}
 			}
 		}
