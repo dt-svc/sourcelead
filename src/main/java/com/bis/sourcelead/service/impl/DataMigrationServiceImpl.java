@@ -517,10 +517,37 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
 				immDto.setEmail(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"));
 			}
-			/*if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("experience"))
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("experience"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("experience"))) {
-				immDto.setExperience(dataMigrationDTOJsonCopy.getString("experience"));
-			}*/
+				if (dataMigrationDTOJsonCopy.getString("experience").matches("[-a-zA-Z]+")) {
+					// jsonObj.put("experienceYears", "0");
+					immDto.setExperienceYears("0");
+					immDto.setExperienceMonths("0");
+				} else {
+					String exp[] = getExperienceYearsAndMonths(dataMigrationDTOJsonCopy.getString("experience"));
+					if (exp.length > 1) {
+						immDto.setExperienceYears(exp[0]);
+						if (!exp[1].matches("[a-zA-Z]+")) {
+							if (!"years".equalsIgnoreCase(exp[1])) {
+								int months = ((Number) NumberFormat.getInstance().parse(exp[1])).intValue();
+								immDto.setExperienceMonths(String.valueOf(months));
+							}
+
+						}
+					} else {
+						if (exp[0].contains("years") || exp[0].contains("Years")) {
+							int years = ((Number) NumberFormat.getInstance().parse(exp[0])).intValue();
+							immDto.setExperienceYears(String.valueOf(years));
+							immDto.setExperienceMonths("0");
+						} else {
+							immDto.setExperienceYears("");
+							immDto.setExperienceMonths("");
+						}
+
+					}
+
+				}
+			}
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("ssn"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("ssn"))) {
 				immDto.setSsnNumber(dataMigrationDTOJsonCopy.getString("ssn"));
@@ -569,40 +596,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			 * 
 			 * 
 			 */
-			
-			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))
-					&& !"null".equals(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
-				if (dataMigrationDTOJsonCopy.getString("experience").matches("[-a-zA-Z]+")) {
-					//jsonObj.put("experienceYears", "0");
-					immDto.setExperienceYears("0");
-					immDto.setExperienceMonths("0");
-				}else{
-					 String exp[] = getExperienceYearsAndMonths(dataMigrationDTOJsonCopy.getString("experience"));
-					 if(exp.length >1){
-						 immDto.setExperienceYears(exp[0]);
-							if(!exp[1].matches("[a-zA-Z]+")){
-								if(!"years".equalsIgnoreCase(exp[1])){
-								int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
-								immDto.setExperienceMonths(String.valueOf(months));
-								}
-									
-							} 
-					 }else{
-						 if(exp[0].contains("years") || exp[0].contains("Years") ){
-							 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
-							 immDto.setExperienceYears(String.valueOf(years));
-							 immDto.setExperienceMonths("0");
-						 }else{
-							 immDto.setExperienceYears("");
-							 immDto.setExperienceMonths("");
-						 }
-						 
-					 }
-						
-						
-				}
-			}
-			
 			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("immigrationJobId"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("immigrationJobId"))) {
