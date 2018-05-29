@@ -1397,7 +1397,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 				assocDeptViewList = session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationId).setParameterList("userList", userList).list();
 			}
 		}else {
-			if(StringUtils.isNoneBlank(departmentId)) {
+			if(StringUtils.isNotBlank(departmentId)) {
 				List<Long> deptList = Stream.of(departmentId.split(",")).map(Long::parseLong).collect(Collectors.toList());
 				String query = "from AssociateDepartmentView assView where assView.userState <> 'INACTIVE' and assView.departmentId IN (:departmentId) and assView.orgLocationsId = :orgLocationsId and assView.empOrgLocationsId = :orgLocationsId";
 				assocDeptViewList = session.createQuery(query.toString()).setParameterList("departmentId", deptList).setLong("orgLocationsId", orgLocationId).list();
@@ -1410,5 +1410,15 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return assocDeptViewList;
 	}
 
+	@Override
+	@Transactional
+	public List<UserRole> getUserListByUserIdList(List<Long> userIdList, Long orgLocationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userList = null;
+		String query = "from UserRole uRole where uRole.user.id IN (:userIdList) and uRole.orgLocations.id =:orgLocationId";
+		userList = session.createQuery(query).setParameterList( "userIdList", userIdList ).setLong("orgLocationId", orgLocationId).list();
+		return userList;
+	}
 
 }

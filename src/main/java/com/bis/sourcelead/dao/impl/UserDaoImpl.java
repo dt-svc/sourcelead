@@ -1506,4 +1506,5 @@ public class UserDaoImpl implements UserDao {
 		}
 		return user;
 	}
+
 }
