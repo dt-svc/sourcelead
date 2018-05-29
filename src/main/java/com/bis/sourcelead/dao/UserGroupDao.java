@@ -20,6 +20,8 @@ public interface UserGroupDao {
 
 	List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation);
 
-	UserGroup findUserGroupById(Long groupId);
+	UserGroup findUserGroupById(String groupUUID);
+
+	UserGroup getUserGroupByGroupId(long id);
 
 }

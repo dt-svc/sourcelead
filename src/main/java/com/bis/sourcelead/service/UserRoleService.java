@@ -162,4 +162,6 @@ public interface UserRoleService {
 
    List<AssociateDepartmentView> getUserRolesByDepartmentId(String departmentId, Long orgLocationId);
 
+   	 List<UserRole> getUserListByUserIdList(List<Long> userIdList, Long orgLocationId);
+
 }

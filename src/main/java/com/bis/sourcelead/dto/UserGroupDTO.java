@@ -1,10 +1,13 @@
 package com.bis.sourcelead.dto;
 
+import java.util.List;
+
 import com.bis.sourcelead.annotations.Required;
+import com.bis.sourcelead.entity.User;
 
 public class UserGroupDTO extends SearchDTO{
 	
-	private long id;
+	private Long id;
 	
 	@Required(desc = "Group Id")
 	private String groupId;
@@ -33,12 +36,16 @@ public class UserGroupDTO extends SearchDTO{
 	
 	private String numOfAssociates;
 	
-	public long getId()
+	private String groupUUID;
+	
+	private List<User> userList;
+	
+	public Long getId()
 	{
 		return id;
 	}
 	
-	public void setId(long id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}
@@ -161,6 +168,26 @@ public class UserGroupDTO extends SearchDTO{
 	public void setNumOfAssociates(String numOfAssociates)
 	{
 		this.numOfAssociates = numOfAssociates;
+	}
+
+	public String getGroupUUID()
+	{
+		return groupUUID;
+	}
+
+	public void setGroupUUID(String groupUUID)
+	{
+		this.groupUUID = groupUUID;
+	}
+
+	public List<User> getUserList()
+	{
+		return userList;
+	}
+
+	public void setUserList(List<User> userList)
+	{
+		this.userList = userList;
 	}
 	
 }

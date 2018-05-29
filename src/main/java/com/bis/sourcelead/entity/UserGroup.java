@@ -29,6 +29,9 @@ public class UserGroup {
 	@Column(name = "GROUP_ID")
 	private String groupId;
 	
+	@Column(name = "GROUP_UUID")
+	private String groupUUID;
+	
 	@Column(name = "GROUP_NAME")
 	private String groupName;
 	
@@ -188,7 +191,14 @@ public class UserGroup {
 	{
 		this.updatedBy = updatedBy;
 	}
-	
-	
-	
+
+	public String getGroupUUID()
+	{
+		return groupUUID;
+	}
+
+	public void setGroupUUID(String groupUUID)
+	{
+		this.groupUUID = groupUUID;
+	}
 }

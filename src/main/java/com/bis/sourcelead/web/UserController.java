@@ -1,5 +1,6 @@
 package com.bis.sourcelead.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.dto.UserGroupDTO;
+import com.bis.sourcelead.entity.AssociateDepartmentView;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Department;
@@ -29,6 +33,8 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -91,6 +97,8 @@ public class UserController {
 	@Autowired
 	DepartmentService departmentService;
 
+	@Autowired
+	UserGroupDao userGroupDao;
 	
 	/**
 	 * To forward user creation jsp page
@@ -272,6 +280,26 @@ public class UserController {
 		       return model;
 		}
 		
-	
+		@RequestMapping(value = "/addUserGroup")
+		public ModelAndView addUserGroup(UserGroupDTO userGroupDto , HttpServletRequest request,HttpServletResponse response) throws Exception {
+			   OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			   ModelAndView model = new ModelAndView();
+			   List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(loginOrgLocation.getId());
+			   model.addObject("departmentList", departmentList);
+			   if(StringUtils.isNotBlank(userGroupDto.getGroupUUID())){
+				   UserGroup userGroup = userGroupDao.findUserGroupById(userGroupDto.getGroupUUID());
+				   model.addObject("userGroup", userGroup);
+				   String[] userIds = userGroup.getUserId().split(",");
+				   List<Long> userIdList = new ArrayList<>();
+				   for(int i=0;i<userIds.length;i++){
+						userIdList.add(Long.parseLong(userIds[i]));
+				   }
+				   List<UserRole> userList = userRoleService.getUserListByUserIdList(userIdList,loginOrgLocation.getId());
+				   model.addObject("selectedUserList", userList);
+			   }
+			   model.addObject("sourceleadUrl", sourceleadUrl);
+			   model.setViewName("users/addUserGroup");
+		       return model;
+		}
 		
 }
