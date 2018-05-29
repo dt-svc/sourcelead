@@ -141,6 +141,9 @@ $(document).ready(function(){
 		 result = result + '<div id="tab-24" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
 		 result = result + '</div>';
 		 
+		 result = result + '<div id="tab-25" class="clearfix axes-details">';
+		 result = result + '</div>';
+		 
 		 result = result + '<div id="candidateSideDiv">';
 		 result = result + '</div>';
 		 result = result + '</div>';

@@ -670,12 +670,12 @@ public class USPayrollRestController {
 		 * @throws Exception
 		 */
 	@RequestMapping(value = { "/getUsersVGroupPayPeriod","/rest/getUsersVGroupPayPeriod" }, method = RequestMethod.GET)
-	public List<String> getUsersVGroupPayPeriod(@RequestParam(value = "groupId", required = false) Long groupId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public List<String> getUsersVGroupPayPeriod(@RequestParam(value = "groupUUID", required = false) String groupUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		List<String> listDates = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		UserGroup userGroup = userGroupService.findUserGroupById(groupId);
-		if ("Weekly".equalsIgnoreCase(userGroup.getPayFrequency())) {
+		Response<UserGroupDTO> userGroup = userGroupService.findUserGroupById(groupUUID);
+		if ("Weekly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
 			Calendar now = Calendar.getInstance(); // Gets the current date and
 			int year = now.get(Calendar.YEAR);
 			int month = now.get(Calendar.MONTH);
@@ -761,7 +761,14 @@ public class USPayrollRestController {
 	}
 	
 	
-	
+	/**
+	 * Add Associate Salary
+	 * @param associateSalaryDTO
+	 * @param request
+	 * @param response
+	 * @return Response<AssociateSalaryDTO>
+	 * @throws Exception
+	 */
 	@RequestMapping(value = { "/addAssociateSal","/rest/addAssociateSal" }, method = RequestMethod.POST)
 	@ResponseBody
 	public Response<AssociateSalaryDTO> addAssociateSal(AssociateSalaryDTO associateSalaryDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -770,5 +777,14 @@ public class USPayrollRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<AssociateSalaryDTO>  resObj = associateSalaryService.addAssociateSal(orgLocation,associateSalaryDTO,loginUser);
 		return resObj;
+	}
+	
+	@RequestMapping(value = { "/findAssociateSalary","/rest/findAssociateSalary" }, method = RequestMethod.GET)
+	@ResponseBody
+	public AssociateSalaryDTO findAssociateSalary(@RequestParam(value = "userId",required = false) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		AssociateSalaryDTO  associateSalaryDTO = associateSalaryService.findAssociateSalaryByUserId(userId,orgLocation);
+		return associateSalaryDTO;
 	}
 }

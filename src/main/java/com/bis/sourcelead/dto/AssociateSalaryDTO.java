@@ -26,6 +26,8 @@ public class AssociateSalaryDTO {
 	
 	private String userId;
 	
+	private String associateSalUUID;
+	
 	List<AssociatePayItemDTO> associatePayItemDto;
 	
 	
@@ -108,6 +110,14 @@ public class AssociateSalaryDTO {
 	public void setUserId(String userId)
 	{
 		this.userId = userId;
+	}
+	public String getAssociateSalUUID()
+	{
+		return associateSalUUID;
+	}
+	public void setAssociateSalUUID(String associateSalUUID)
+	{
+		this.associateSalUUID = associateSalUUID;
 	}
 	
 	

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -33,6 +35,24 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			}
 		} catch (Exception exception) {
 			logger.error("add associate salary failed due to : "+exception.getMessage());
+		}
+		return associateSalary;
+	}
+
+
+	@Override
+	@Transactional
+	public AssociateSalary findAssociateSalaryByUserId(Long userId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		AssociateSalary associateSalary = null;
+		try {
+			List<AssociateSalary> associateSalaryList = session.createQuery("from AssociateSalary associateSalary where associateSalary.userId.id=:userId and associateSalary.status = 1" ).setLong( "userId", userId).setLong("userId", userId).list();
+		 if(associateSalaryList !=null && associateSalaryList.size() >0) {
+			 associateSalary =  associateSalaryList.get(0);
+		 }
+		}catch (Exception e) {
+			logger.error("findAssociateSalaryByUserId failed due to :"+e.getMessage());
 		}
 		return associateSalary;
 	}

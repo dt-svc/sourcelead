@@ -37,7 +37,7 @@ $(document).ready(function(){
 			<select id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
 				<option value="">--Select User Group--</option>
                     <c:forEach var="ug" items="${userGroupList}">
-					<option value="${ug.id}">${ug.groupName}</option>
+					<option value="${ug.groupUUID}">${ug.groupName}</option>
 				</c:forEach>
 			</select>
 			</div>
@@ -95,10 +95,10 @@ $(document).ready(function(){
 
 <script>
 function getGroupFrequency(){
-	var groupId = $("#groupId").val();
+	var groupUUID = $("#groupId").val();
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getUsersVGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupId="+groupId                  , 
+	        url: sourceleadUrl+"/getUsersVGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID                  , 
 	        success: function(json) {
 	        var output = "";
 			for (var i=0; i<json.length; i++)
