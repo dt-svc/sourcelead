@@ -68,15 +68,6 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 	  					</div>
 				    </c:when>
 				    <c:otherwise>
-				        <c:choose>
-						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
-						        <div class="col-md-4">
-					  				<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
-					  			</div>
-						    </c:when>
-						    <c:otherwise>
-						    </c:otherwise>
-						</c:choose>
 				    </c:otherwise>
 			</c:choose>
   			<div class="col-md-2 clearfix mt10">
