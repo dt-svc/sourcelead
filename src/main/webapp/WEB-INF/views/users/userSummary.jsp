@@ -361,6 +361,12 @@ $(document).ready(function(){
 				result = result + '					<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
 				
+				if(json.gradeId != null && json.gradeId != "" && json.gradeId != 'undefined' ){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				 <strong>Grade:</strong><span class="fix">'+json.gradeId.gradeName+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
+				
 				if(json.reportingManager != null && json.reportingManager != "" && json.reportingManager != 'undefined' && json.reportingManager.firstName != null && json.reportingManager.firstName != "" && json.reportingManager.firstName != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Reporting Manager:</strong><span class="fix">'+json.reportingManager.firstName+' '+json.reportingManager.lastName+'</span><div class="clearfix"></div>';
@@ -1503,8 +1509,26 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <input type="text" value="'+designation+'" name="designation" id="designation" field-name="Designation" data-validation="required validate_Space validate_Name validate_length length2-250"/>';
 					result = result + ' </div>';
 					
+					
+					    result = result + ' <div class="user_summary_edit_cta">';
+					    result = result + ' <label>Grade</label>';
+						result = result + '  <select class="form-control chosen-select" id="grade" name="grade" field-name="Grade" data-validation-optional="true">'+
+			 	     	"<option value=''>-Select Grade-</option>";    
+			 	     	 for (var i=0; i<json.gradesList.length; i++)
+	    					{
+			 	     		grade = json.gradesList[i];
+	    		 	    	   var selected = '';
+	    		 	    	  if(json.gradeId != null && json.gradeId != "" && json.gradeId != 'undefined' && json.gradeId.id == grade.id){
+	    		 	    		 selected = 'selected';
+	    		 	    	 }
+	    		 	    	result = result+"<option value='"+grade.id+"' "+selected+">"+grade.gradeName+"</option>"; 
+	    					}
+			 	     	result = result+"</select>"; 
+						result = result + '</div>'; 
+						
+					
 					// moving date bottom to top
-					 result = result + ' <div class="user_summary_edit_cta">';
+					    result = result + ' <div class="user_summary_edit_cta">';
 					    result = result + ' <label>Department</label>';
 						result = result + '<select class="form-control chosen-select" id="department" name="department"  field-name="Department" '+json.departmentName+'>';
 						result = result + '</select>';
