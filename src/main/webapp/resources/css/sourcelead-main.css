@@ -8528,7 +8528,7 @@ ul.horizentalTabStyles li a {
 }
 .contentareaInner-styles .form-control, .contentareaInner-styles .chosen-container-single .chosen-single
 {
-	border: 1px solid #A8B7C7 !important; border-radius: 3px; box-shadow: none; background-color:transparent;
+	border: 1px solid #A8B7C7 ; border-radius: 3px; box-shadow: none; background-color:transparent;
 }
 .content-wraper.contentWraper .content-header  {
 	/*border-bottom: 1px solid #A8B7C7 !important; margin-bottom: 15px; */color: #5D6388 !important;

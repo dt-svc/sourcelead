@@ -2,7 +2,9 @@ package com.bis.sourcelead.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.bis.sourcelead.payroll.entity.PayItem;
@@ -49,24 +52,11 @@ public class AssociateSalary {
 	@Column(name = "GROSS_SALARY")
 	private BigDecimal grossSalary;
 	
-	@Column(name = "HOURLY")
-	private BigDecimal hourly;
+	@Column(name = "HOURLY_RATE")
+	private BigDecimal hourlyRate;
 	
-	@ManyToOne
-	@JoinColumn(name = "PAY_ITEM_ID")
-	private PayItem payItemId;
-	
-	@Column(name = "OVERRIDE")
-	private String overRide;
-	
-	@Column(name = "EFFECTIVE_DATE")
-	private Date effectiveDate;
-	
-	@Column(name = "END_DATE")
-	private Date endDate;
-	
-	@Column(name = "PAY_ITEM_AMOUNT")
-	private BigDecimal payItemAmount;
+	@Column( name ="ALLOW_OVER_TIME_PAY")
+	private String allowOverTimePay;
 	
 	@Column(name = "ASSOCIATE_SALARY_UUID")
 	private String associateSalaryUuid;
@@ -86,6 +76,10 @@ public class AssociateSalary {
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "associateSalary")
+	private Set<AssociatePayItem> associatePayItem;
 
 	public Long getId()
 	{
@@ -168,64 +162,25 @@ public class AssociateSalary {
 		this.grossSalary = grossSalary;
 	}
 
-	public BigDecimal getHourly()
+
+	public BigDecimal getHourlyRate()
 	{
-		return hourly;
+		return hourlyRate;
 	}
 
-	public void setHourly(BigDecimal hourly)
+	public void setHourlyRate(BigDecimal hourlyRate)
 	{
-		this.hourly = hourly;
+		this.hourlyRate = hourlyRate;
 	}
 
-	public PayItem getPayItemId()
+	public String getAllowOverTimePay()
 	{
-		return payItemId;
+		return allowOverTimePay;
 	}
 
-	public void setPayItemId(PayItem payItemId)
+	public void setAllowOverTimePay(String allowOverTimePay)
 	{
-		this.payItemId = payItemId;
-	}
-
-	public String getOverRide()
-	{
-		return overRide;
-	}
-
-	public void setOverRide(String overRide)
-	{
-		this.overRide = overRide;
-	}
-
-	public Date getEffectiveDate()
-	{
-		return effectiveDate;
-	}
-
-	public void setEffectiveDate(Date effectiveDate)
-	{
-		this.effectiveDate = effectiveDate;
-	}
-
-	public Date getEndDate()
-	{
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate)
-	{
-		this.endDate = endDate;
-	}
-
-	public BigDecimal getPayItemAmount()
-	{
-		return payItemAmount;
-	}
-
-	public void setPayItemAmount(BigDecimal payItemAmount)
-	{
-		this.payItemAmount = payItemAmount;
+		this.allowOverTimePay = allowOverTimePay;
 	}
 
 	public String getAssociateSalaryUuid()
@@ -286,6 +241,16 @@ public class AssociateSalary {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public Set<AssociatePayItem> getAssociatePayItem()
+	{
+		return associatePayItem;
+	}
+
+	public void setAssociatePayItem(Set<AssociatePayItem> associatePayItem)
+	{
+		this.associatePayItem = associatePayItem;
 	}
 
 	

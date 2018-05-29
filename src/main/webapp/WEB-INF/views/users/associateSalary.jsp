@@ -8,24 +8,26 @@ $(document).ready(function(){
 </script>
 
   <div id="tab-6" class="tabsMenu_tabs_inn clearfix">
+ 	<div id="loading"></div>
+ 	 <form:form id="associate_salary_form" name="associate_salary_form" method="post">
             <div class="clearfix row minHeightcol5">
               <div class="col-md-12 mb">
                 <div class="clearfix row">
                   <div class="col-md-5">
                     <label>Pay Type</label>
                     <div>
-                      <select class="sel" id="payType" name="payType">
-                        <option selected>--Select--</option>
-                        <option>hourlyRate</option>
-                        <option>Salary</option>
-                        <option>Commission Only</option>
+                      <select class="sel" id="payType" name="payType" id="payType" data-validation="required" field-name="Pay Type">
+                        <option value="">--Select--</option>
+                        <option value="HourlyRate">Hourly Rate</option>
+                        <option value = "Salary">Salary</option>
+                        <option value= "Commission Only">Commission Only</option>
                       </select>
                     </div>
                   </div>
                    <div class="col-md-5">
                     <label>Pay Frequency</label>
                     <div>
-                      <select class="sel" id="payFrequency" name="payFrequency" onchange="getPayFreqHours();">
+                      <select class="sel" id="payFrequency" name="payFrequency" onchange="getPayFreqHours();" data-validation="required" field-name="Pay Frequency">
                         <option value="">--Select--</option>
                         <option value="Annual">Annually</option>
                         <option value="Monthly">Monthly</option>
@@ -53,7 +55,7 @@ $(document).ready(function(){
                     </div>
                   </div>  
                    <div class="col-md-5">
-                    <label>hourlyRate Rate</label>
+                    <label>Hourly Rate</label>
                     <div>
                       <input type="text" class="form-control" id="hourlyRate" name="hourlyRate" onblur = "calculateHourlyRateSal();">
                     </div>
@@ -70,94 +72,9 @@ $(document).ready(function(){
                   <div class="clearfix"></div>
                   <h4 class="col-md-12">Pay Item</h4>
                  <div class="clearfix col-md-12">
-                 	<table class="table">
-                 		<thead>
-                 			<tr>
-                 				<th>
-								<div class="checkbox-new">
-										<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox">
-										<label for="all" class="checkbox-custom-label">
-									</label>
-								</div>
-                 				</th>
-                 				<th>Pay Items</th>
-                 				<th>Schedule</th>
-                 				<th>Override</th>
-                 				<th>Effective Date</th>
-                 				<th>End Date</th>
-                 				<th>Amount</th>
-                 				<th>Action</th>
-                 			</tr>
-                 		</thead>
-                 		<tbody>
-                 		<div id="payItemDiv"></div>
-                 			<!-- <tr>
-                 			<td>
-								<div class="checkbox-new">
-									<input id="bonus" class="checkbox-custom" name="paidComponent" type="checkbox">
-									<label for="bonus" class="checkbox-custom-label"></label>
-								</div>
-                 				</td>
-                 			
-                 				<td>
-									<div class="tblminwidth-100 text-left">Bonus</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-125">
-										<select class="sel">
-											<option selected="">--Select--</option>
-											<option>Every Pay</option>
-											<option>Every First Month Pay</option>
-											<option>Every Quarter</option>
-											<option>Annually</option>
-										</select>
-									</div>
-                 				</td>
-                 				<td>
-								<div class="tblminwidth-125">
-									<select class="sel">
-									<option selected="">--Select--</option>
-									<option>override1</option>
-									<option>override2</option>
-									<option>override3</option>
-									<option>override4</option>
-									<option>override5</option>
-									</select>
-								</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-50">
-										<input class="form-control calendar" value="Enter" type="text">
-									</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-50">
-										<input class="form-control calendar" value="Enter" type="text">
-									</div>
-                 				</td>
-                 				<td>
-									<div class="tblminwidth-50">
-										<input class="form-control" value="Enter" type="text">
-									</div>
-                 				</td>
-                 				<td>
-                 					<ul class="list-inline list-unstyled tblminwidth-50 mt5">
-                 						<li><a href="javascript:void(0)" title="Save" class="anchor-black"><i class="fa fa-floppy-o"></i></a></li>
-                 						<li><a href="javascript:void(0)" title="Reset" class="anchor-black"><i class="fa fa-refresh"></i></a></li>
-                 					</ul>
-                 				</td>
-                 			</tr> -->
-                 	
-                 		</tbody>
-                 	</table>
+                 <div id="payItemDiv"></div>
                  	
                  </div>
-                 
-                 
-                  
-                  
-                  
-                                                      
 					<div class="clearfix"></div>
                   <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
@@ -165,7 +82,7 @@ $(document).ready(function(){
 			     </div>
                   <div class="col-md-6">
                    <div class="pull-right">
-                    <input value="Save & Continue" class="btn btn-success btnSuccess" type="button">
+                    <input value="Save & Continue" class="btn btn-success btnSuccess" id="save_asso_sal_button" type="button" onclick="saveAssocioateSal();">
                     <input value="Cancel" class="btn btn-default ml10" type="button">
                     </div>
                   </div>
@@ -175,6 +92,7 @@ $(document).ready(function(){
                 </div>
               </div>
             </div>
+            </form:form>
           </div>
           
 <script>
@@ -289,32 +207,167 @@ function calculateHourlyRateSal(){
 
 
 
-<!-- <script type="text/javascript">
- function addPayItem() {
-	 if ($('#add_pay_item_form').validate(false, validationSettings)){ 
-			   /*  var formData = getFormData("add_pay_item_form"); */
-			   var formData = $($('#add_pay_item_form')[0]).serialize();
-				$("#save_payitem_button").attr("disabled", "disabled");
+<script>
+  function getPayItemList(){
+		$.get(sourceleadUrl+"/getPayItemList?"+tokenParamName+"="+tokenValue+"", function(response) {
+			  if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
+				var result = "";				        	
+				result = result +'<table class="table">';
+				result = result +'<thead>';
+				result = result +'<tr>';
+				result = result +'<th>';
+				result = result +'	<div class="checkbox-new">';
+				result = result +'	<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox">';
+				result = result +'	<label for="all" class="checkbox-custom-label">';
+				result = result +'</label>';
+				result = result +'</div>';
+				result = result +'	</th>';
+				result = result +'	<th>Pay Items</th>';
+				result = result +'	<th>Schedule</th>';
+				result = result +'	<th>Override</th>';
+				result = result +'	<th>Effective Date</th>';
+				result = result +'	<th>End Date</th>';
+				result = result +'<th>Amount</th>';
+				result = result +'	<th>Action</th>';
+				result = result +'	</tr>';
+				result = result +'</thead>';
+         	
+				result = result +'<tbody>';
+				if(response !=null && response !=''){
+					 for (var i=0; i<response.data.length; i++)
+						{
+			        		 var opt = response.data[i];
+			        		result = result +' <tr>';
+			        		result = result +' <td>';
+			        		result = result +' 	<div class="checkbox-new">';
+			        		result = result +' 	<input class="checkbox-custom" id="'+i+'payItemCheck" name="associatePayItemDto['+i+'].payItemCheck" type="checkbox">';
+			        		result = result +' 	<label for="'+i+'payItemCheck" class="checkbox-custom-label"></label>';
+			        		result = result +' </div>';
+			        		result = result +' </td>';
+	                 			
+			        		result = result +' <td>';
+			        		/* result = result +' <div class="tblminwidth-100 text-left" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" >'+opt.payItemName+'</div>'; */
+			        		result = result +' <input type="text" class="form-control tabField" id="'+i+'payItemName" name="associatePayItemDto['+i+'].payItemName" value='+opt.payItemName+'>';
+			        		result = result +' </td>';
+			        		result = result +' <td>';
+			        		if(opt.paySchedule != '' && opt.paySchedule != 'undefined' && opt.paySchedule != null){
+			        			result = result +' <input type="text" class="form-control tabField" id="'+i+'payItemSchedule" name="associatePayItemDto['+i+'].payItemSchedule" value='+opt.paySchedule+'>';
+			        		}else{
+			        			result = result +' <div class="tblminwidth-100 text-left">--</div>';
+			        		}
+			        		
+			        		result = result +' </td>';
+			        		result = result +'<td>';
+			        		result = result +'<div class="tblminwidth-125">';
+			        		result = result +'	<select class="sel" id="'+i+'overRide" name="associatePayItemDto['+i+'].overRide">';
+			        		result = result +'	<option value="">--Select--</option>';
+			        		result = result +'	<option value="YES">Yes</option>';
+			        		result = result +'	<option value="NO">No</option>';
+			        		result = result +'	</select>';
+			        		result = result +'</div>';
+							result = result +'</td>';
+							result = result +'<td>';
+							result = result +'	<div class="tblminwidth-50">';
+							result = result +'		<input class="form-control calendar" placeholder="Effective Date" id="'+i+'effectiveDate" name="associatePayItemDto['+i+'].effectiveDate" type="text">';
+							result = result +'	</div>';
+							result = result +'</td>';
+							result = result +'<td>';
+							result = result +'	<div class="tblminwidth-50">';
+							result = result +'		<input class="form-control calendar" placeholder="End Date" id="'+i+'endDate" name="associatePayItemDto['+i+'].endDate" type="text">';
+							result = result +'	</div>';
+							result = result +'</td>';
+							result = result +'<td>';
+							result = result +'<div class="tblminwidth-50">';
+							result = result +'	<input class="form-control" id="'+i+'payItemAmount" name="associatePayItemDto['+i+'].payItemAmount"  type="text">';
+							result = result +'</div>';
+							result = result +'</td>';
+							result = result +'<td>';
+							result = result +'	<ul class="list-inline list-unstyled tblminwidth-50 mt5">';
+							result = result +'		<li><a href="javascript:void(0)" title="Save" class="anchor-black"><i class="fa fa-floppy-o"></i></a></li>';
+							result = result +'		<li><a href="javascript:void(0)" title="Reset" class="anchor-black"><i class="fa fa-refresh"></i></a></li>';
+							result = result +'	</ul>';
+							result = result +'</td>';
+							result = result +'</tr>';
+							 
+						}
+					 
+				}
+				result = result +'</tbody>';
+				result = result +'</table>';
+				result = result +'</tbody>';
+				result = result +'</table>';
+             	
+				$("#payItemDiv").empty();
+				$("#payItemDiv").append(result);
+				
+				
+				if(response !=null && response !=''){
+				var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+				var finalDateFormat = getJSDateFormat(locationDate);
+				 for (var i=0; i<response.data.length; i++)
+					{
+					 $("#"+i+"effectiveDate").datepicker({
+						 dateFormat: finalDateFormat,
+						 changeMonth: true,
+						  	  changeYear: true,
+						  	minDate: 0
+						 });
+						 $("#"+i+"endDate").datepicker({
+							 dateFormat: finalDateFormat,
+							 changeMonth: true,
+						  	  changeYear: true,
+						 });
+						 
+						}
+				 
+				} 
+				 
+				
+				
+         }else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			} 
+		}); 
+  }
+  </script>
+  
+  
+ <script type="text/javascript">
+ function saveAssocioateSal() {
+	 var userId = $("#associateId").val();
+	 alert("userId"+userId);
+	var empType = $("#empType").val(); 
+      alert(empType);
+	 if ($('#associate_salary_form').validate(false, validationSettings)){ 
+			   var formData = $($('#associate_salary_form')[0]).serialize();
+				$("#saveAssocioateSal").attr("disabled", "disabled");
 				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	            $( "#save_payitem_button" ).addClass('button').val('Processing..');
+	            $( "#saveAssocioateSal" ).addClass('button').val('Processing..');
 	            $.ajax({
 					type : "POST",
 	        	    data: formData,
-					url : sourceleadUrl+"/addPayItem?"+tokenParamName+"="+tokenValue+"",
+					url : sourceleadUrl+"/addAssociateSal?"+tokenParamName+"="+tokenValue+"&userId="+userId,
 					success : function(result) {
 						 if (result && result.response === "INVALID_DATA") {
-			                    $("#save_payitem_button").removeAttr("disabled");
-			                    $("#save_payitem_button").removeAttr('button').val('Save');
+			                    $("#saveAssocioateSal").removeAttr("disabled");
+			                    $("#saveAssocioateSal").removeAttr('button').val('Save');
 			                    showError(result.responseMessage);
 			                } else if (result.response === "AWKWARD") {
 			                    location.href = "/errorPage";
 			                } else if (result.response === "SUCCESS") {
-			                	 location.replace(sourceleadUrl+ "/viewPayItem");
+								var associateBanking = document.getElementById("associateBanking");
+								document.getElementById("associateBanking").removeAttribute("class"); 
+								associateBanking.href="#tab-2"; 
+								$("#associateBanking").click();
 			                } else if (result.indexOf('Sign In') !== -1) {
 								location.replace(sourceleadUrl);
 							} else {
-			                    $("#save_payitem_button").removeAttr("disabled");
-			                    $("#save_payitem_button").addClass('button').val('Save');
+			                    $("#saveAssocioateSal").removeAttr("disabled");
+			                    $("#saveAssocioateSal").addClass('button').val('Save');
 			                    showError("Operation failed, please try again");
 			                }
 						
@@ -327,93 +380,17 @@ function calculateHourlyRateSal(){
 	  }
     }
  
-   $('body').on('blur', '#add_pay_item_form', function() {
-		$("#add_pay_item_form").showHelpOnFocus();
-		$("#add_pay_item_form").validateOnBlur(false, validationSettings);  
+   $('body').on('blur', '#associate_salary_form', function() {
+		$("#associate_salary_form").showHelpOnFocus();
+		$("#associate_salary_form").validateOnBlur(false, validationSettings);  
    });
   
  
-</script>  -->
-
-
-
+</script>
 
 <script>
-  function getPayItemList(){
-		$.get(sourceleadUrl+"/getPayItemList?"+tokenParamName+"="+tokenValue+"", function(response) {
-			  if (response.response === "AWKWARD") {
-			    location.href = "/errorPage";
-			} else if (response.response === "SUCCESS") {
-				var result = "";				        	
-				if(response !=null && response !=''){
-					 for (var i=0; i<response.data.length; i++)
-						{
-			        		 var opt = response.data[i];
-			        		result = result +' <tr>';
-			        		result = result +' <td>';
-			        		result = result +' 	<div class="checkbox-new">';
-			        		result = result +' 	<input id="bonus" class="checkbox-custom" name="paidComponent" type="checkbox">';
-			        		result = result +' 	<label for="bonus" class="checkbox-custom-label"></label>';
-			        		result = result +' </div>';
-			        		result = result +' </td>';
-	                 			
-			        		result = result +' <td>';
-			        		result = result +' <div class="tblminwidth-100 text-left">Bonus</div>';
-			        		result = result +' </td>';
-			        		result = result +' <td>';
-			        		result = result +' <div class="tblminwidth-125">';
-			        		result = result +' 	<select class="sel">';
-			        		result = result +' 	<option selected="">--Select--</option>';
-			        		result = result +' 	<option>Every Pay</option>';
-			        		result = result +' 	<option>Every First Month Pay</option>';
-			        		result = result +' 	<option>Every Quarter</option>';
-			        		result = result +' 	<option>Annually</option>';
-			        		result = result +' </select>';
-			        		result = result +'</div>';
-			        		result = result +'</td>';
-			        		result = result +'<td>';
-			        		result = result +'<div class="tblminwidth-125">';
-			        		result = result +'	<select class="sel">';
-			        		result = result +'	<option selected="">--Select--</option>';
-			        		result = result +'	<option>override1</option>';
-			        		result = result +'	<option>override2</option>';
-			        		result = result +'	<option>override3</option>';
-			        		result = result +'	<option>override4</option>';
-			        		result = result +'	<option>override5</option>';
-			        		result = result +'	</select>';
-			        		result = result +'</div>';
-							result = result +'</td>';
-							result = result +'<td>';
-							result = result +'	<div class="tblminwidth-50">';
-							result = result +'		<input class="form-control calendar" value="Enter" type="text">';
-							result = result +'	</div>';
-							result = result +'</td>';
-							result = result +'<td>';
-							result = result +'	<div class="tblminwidth-50">';
-							result = result +'		<input class="form-control calendar" value="Enter" type="text">';
-							result = result +'	</div>';
-							result = result +'</td>';
-							result = result +'<td>';
-							result = result +'<div class="tblminwidth-50">';
-							result = result +'	<input class="form-control" value="Enter" type="text">';
-							result = result +'</div>';
-							result = result +'</td>';
-							result = result +'<td>';
-							result = result +'	<ul class="list-inline list-unstyled tblminwidth-50 mt5">';
-							result = result +'		<li><a href="javascript:void(0)" title="Save" class="anchor-black"><i class="fa fa-floppy-o"></i></a></li>';
-							result = result +'		<li><a href="javascript:void(0)" title="Reset" class="anchor-black"><i class="fa fa-refresh"></i></a></li>';
-							result = result +'	</ul>';
-							result = result +'</td>';
-							result = result +'</tr>';
-						}
-				}
-				$("#payItemDiv").empty();
-				$("#payItemDiv").append(result);
-         }else if (response.indexOf('Sign In') !== -1) {
-				location.replace(sourceleadUrl);
-			} else {
-			    showError("Operation failed, please try again");
-			} 
-		}); 
-  }
-  </script>
+function selectCheckBox(i){
+	var isChecked = $("#"+i+"payItemCheck").is(':checked');
+	$("#"+i+"payItemCheck").val(isChecked);
+}
+</script>  

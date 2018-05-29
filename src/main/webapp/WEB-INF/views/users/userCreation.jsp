@@ -49,6 +49,7 @@
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Associates List</a> &raquo; Add Associate </div>
         </section>
         <input type="hidden" id="associateId" name="associateId">
+        <input type="hidden" id="empType" name="empType">
         <!--New theme-->
         <div class="user_summ_wrap contentareaInner-styles">
 	      <div class="tabsMenu">
@@ -648,10 +649,11 @@ function getEmployeementType(designationType){
 					} 
 					else {
 						$("#associateId").val(result.object.userId);
-						var associateBanking = document.getElementById("associateBanking");
-						document.getElementById("associateBanking").removeAttribute("class"); 
-						associateBanking.href="#tab-2"; 
-						$("#associateBanking").click();
+						$("#empType").val(result.object.designationType);
+						var associateBanking = document.getElementById("associateSalary");
+						document.getElementById("associateSalary").removeAttribute("class"); 
+						associateBanking.href="#tab-6"; 
+						$("#associateSalary").click();
 						/* location.replace(sourceleadUrl+"/usersList"); */
 					}
 				},
@@ -1286,6 +1288,11 @@ function clearDateofJoin(){
 					associateAdvances.className = "disabledLink";
 				} 
 				
+				var associateSalary = document.getElementById("associateSalary");
+				if(associateSalary){
+					associateSalary.href = "#";
+					associateSalary.className = "disabledLink";
+				} 
 				// associateContribution associateAdvances
 
 $(document).ready(function() {
