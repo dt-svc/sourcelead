@@ -186,25 +186,10 @@ function validateShortCode(){
 								</select> <span class="hidden">Select Status</span>
 							</div>
 						</div>
-						<!--<div class="form-group">
-							<label class="col-md-3">Timesheet Frequency <span
-								class="text-danger">*</span></label>
-							<div class="col-md-9" id="chosen-frequency">
-								<select class="form-control chosen-select"
-									id="timeSheetFrequency" name="timeSheetFrequency"
-									onchange="removeFrequencyValidation();"
-									field-name="Timesheet Frequency" data-validation="required">
-									<option value="">--Timesheet Frequency-</option>
-									<option value="Weekly">Weekly</option>
-									<option value="Bi-Weekly">Bi-Weekly</option>
-									<option value="Semi-Monthly">Semi-Monthly</option>
-									<option value="Monthly">Monthly</option>
-								</select>
-							</div>
-						</div> -->
+						
 						
 						<div class="form-group">
-							<label class="col-md-3">Invoice Frequency <span
+							<label class="col-md-3">Timesheet Frequency <span
 								class="text-danger">*</span></label>
 							<div class="col-md-9" id="chosen-InvoiceFrequency">
 								<select class="form-control chosen-select" id="invoiceFrequency"
@@ -218,6 +203,29 @@ function validateShortCode(){
 								</select>
 							</div>
 						</div>
+						
+						
+						<div class="form-group">
+					             <label class="col-md-3"></label>
+					              <div class="col-md-9">
+					                <div class="checkbox checkBox">
+					                  <label>
+					                    <input type="checkbox" value="Y" name="isTicketNumberRequired" id="isTicketNumberRequired">
+					                   Ref/Ticket Number Required In Time Sheets</label>
+					                </div>
+					                 </div>
+			               </div>
+			               
+			               <div class="form-group">
+					             <label class="col-md-3"></label>
+					              <div class="col-md-9">
+					                <div class="checkbox checkBox">
+					                  <label>
+					                    <input type="checkbox" value="Y" name="isTaskCommentsRequired" id="isTaskCommentsRequired">
+					                   Task Comments Required In Time Sheets</label>
+					                </div>
+					                 </div>
+			               </div>
 
 						 <div class="form-group">
 							<label class="col-md-3"></label>
@@ -830,6 +838,18 @@ function getProjectDetails(){
         		   document.getElementById("isReportingManagerAsApprover").checked = true;
         	   }else{
         		   document.getElementById("isReportingManagerAsApprover").checked = false;
+        	   }
+        	   
+        	   if(json.isTicketNumberRequired == 'Y'){
+        		   document.getElementById("isTicketNumberRequired").checked = true;
+        	   }else{
+        		   document.getElementById("isTicketNumberRequired").checked = false;
+        	   }
+        	   
+        	   if(json.isTaskCommentsRequired == 'Y'){
+        		   document.getElementById("isTaskCommentsRequired").checked = true;
+        	   }else{
+        		   document.getElementById("isTaskCommentsRequired").checked = false;
         	   }
         	   
         	   

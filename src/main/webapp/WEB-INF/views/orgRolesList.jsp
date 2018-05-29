@@ -40,7 +40,7 @@ padding-right: 254px; padding-top: 10px;
 					</sec:authorize>
 			  	 <a href="<c:url value='${appPath}/addDepartment'/>"><i class="fa fa-plus"></i>Department</a>
 			     <a href="<c:url value='${appPath}/roleHierarchy'/>"><i class="fa fa-plus"></i>Hierarchy</a>
-			     <!-- <a href="javascript:void(0)" onClick="showGradePopUp();" ><i class="glyphicon glyphicon-plus"></i>Add Grade</a> -->
+			     <a href="javascript:void(0)" onClick="showGradePopUp();" ><i class="glyphicon glyphicon-plus"></i>Add Grade</a>
                  <a href="javascript:void(0)" class="addcon-pop"><i class="glyphicon glyphicon-plus"></i>Add Role</a>
                  </div>
               </sec:authorize>

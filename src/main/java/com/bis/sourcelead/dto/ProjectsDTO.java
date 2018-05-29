@@ -201,6 +201,10 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String isReportingManagerAsApprover;
 	
+	private String isTicketNumberRequired;
+	
+	private String isTaskCommentsRequired;
+	
 	public String getExpenseId() {
 		return expenseId;
 	}
@@ -942,5 +946,21 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setIsReportingManagerAsApprover(String isReportingManagerAsApprover) {
 		this.isReportingManagerAsApprover = isReportingManagerAsApprover;
+	}
+
+	public String getIsTicketNumberRequired() {
+		return isTicketNumberRequired;
+	}
+
+	public void setIsTicketNumberRequired(String isTicketNumberRequired) {
+		this.isTicketNumberRequired = isTicketNumberRequired;
+	}
+
+	public String getIsTaskCommentsRequired() {
+		return isTaskCommentsRequired;
+	}
+
+	public void setIsTaskCommentsRequired(String isTaskCommentsRequired) {
+		this.isTaskCommentsRequired = isTaskCommentsRequired;
 	}
 }

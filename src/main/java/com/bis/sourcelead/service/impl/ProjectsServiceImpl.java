@@ -442,6 +442,19 @@ public class ProjectsServiceImpl implements ProjectsService{
     		projects.setIsReportingManagerAsApprover(Constants.NO);
     	}
     	
+    	
+    	if(!isNullOrEmpty(projectsDTO.getIsTicketNumberRequired()) && projectsDTO.getIsTicketNumberRequired().equalsIgnoreCase(Constants.YES)) {
+    		projects.setIsTicketNumberRequired(Constants.YES);
+    	}else {
+    		projects.setIsTicketNumberRequired(Constants.NO);
+    	}
+    	
+    	if(!isNullOrEmpty(projectsDTO.getIsTaskCommentsRequired()) && projectsDTO.getIsTaskCommentsRequired().equalsIgnoreCase(Constants.YES)) {
+    		projects.setIsTaskCommentsRequired(Constants.YES);
+    	}else {
+    		projects.setIsTaskCommentsRequired(Constants.NO);
+    	}
+    	
     	if(!isNullOrEmpty(projectsDTO.getProjectDescription())){
     	projects.setDescription(projectsDTO.getProjectDescription());
     	}
@@ -1183,6 +1196,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    }
 	    
 	    projectsDTO.setIsReportingManagerAsApprover(projects.getIsReportingManagerAsApprover());
+	    projectsDTO.setIsTaskCommentsRequired(projects.getIsTaskCommentsRequired());
+	    projectsDTO.setIsTicketNumberRequired(projects.getIsTicketNumberRequired());
 	    
 	    User createdByUseraName= userService.getUserDetailsByUserCode(projects.getCreatedBy());
 	    if(null !=createdByUseraName){
@@ -1507,6 +1522,18 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    		projects.setIsReportingManagerAsApprover(Constants.YES);
 		    	}else {
 		    		projects.setIsReportingManagerAsApprover(Constants.NO);
+		    	}
+		    	
+		    	if(StringUtils.isNotBlank(projectDTO.getIsTicketNumberRequired())){
+		    		projects.setIsTicketNumberRequired(Constants.YES);
+		    	}else {
+		    		projects.setIsTicketNumberRequired(Constants.NO);
+		    	}
+		    	
+		    	if(StringUtils.isNotBlank(projectDTO.getIsTaskCommentsRequired())){
+		    		projects.setIsTaskCommentsRequired(Constants.YES);
+		    	}else {
+		    		projects.setIsTaskCommentsRequired(Constants.NO);
 		    	}
 		    	
 		    	if(StringUtils.isNotBlank(projectDTO.getDescription())){
