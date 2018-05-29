@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
+import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -49,6 +50,9 @@ public class EmploymentVerificationTemplateRestController {
 	
 	@Autowired
 	private EmployeeVerificationTemplateService employeeVerificationTemplateService;
+	
+	@Autowired
+	private ReportsUtil reportsUtil;
 	
 	private static final Logger logger = LoggerFactory.getLogger(EmploymentVerificationTemplateRestController.class);
 	
@@ -90,31 +94,10 @@ public class EmploymentVerificationTemplateRestController {
 	{
 		EmployeeVerificationTemplate empTemplate = employeeVerificationTemplateService.getEmploymentVerificationtemplateByTemplateUUID(tempUUID);
 		
-		try {
 			String header = "<div style='text-align: center;'>"+empTemplate.getTemplateName()+"<br></br></div><br></br><br></br><br></br>";
 			String totalBody =header+ empTemplate.getTemplateContent();
-		     org.jsoup.nodes.Document doc = Jsoup.parse(totalBody);
-		     doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);    
-	         String finalString=doc.html();
-		    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-		   
-		    Document document = new Document();
-		    PdfWriter writer = PdfWriter.getInstance(document, byteArray);
-		    document.open();
-		    XMLWorkerHelper.getInstance().parseXHtml(writer, document, new StringReader(finalString));
-		    document.close();
-		    byte[] pdfBytes = byteArray.toByteArray();
-	  	    response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
-	  	    response.setContentType("application/pdf");
-	  	    response.setContentLength(pdfBytes.length);
-	          ServletOutputStream sos = response.getOutputStream();
-	          sos.write(pdfBytes);
-	          sos.flush();
-	          sos.close();
-		} catch (Exception e) {
-		    e.printStackTrace();
-		}
-		
+			if(empTemplate.getLetterHead() != null)
+			reportsUtil.viewCompleteletterheadData(totalBody, empTemplate.getLetterHead(), response);
     	
 	}
 	
