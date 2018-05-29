@@ -792,7 +792,7 @@ function reActivateCandidateAlertMessage(candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>
-function candidateProfile(candidateId,candidateType){
+function candidateProfile(candidateId,candidateType,isAssociate){
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
@@ -819,14 +819,18 @@ function candidateProfile(candidateId,candidateType){
 									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 									   '</sec:authorize>'; 
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-									   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+									   if(isAssociate != "Y"){
+										   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+									   }
 									   '</sec:authorize>';
 								   } else {
 									   '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
 									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 									   '</sec:authorize>'; 
 									   '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE\')">';
-									   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+									   if(isAssociate != 'Y'){
+										   result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; 
+									   }
 									   '</sec:authorize>';
 								   }
 								result = result + '</div>';
