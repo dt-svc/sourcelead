@@ -145,10 +145,16 @@ function getVendorList(){
 	        	"sortable": false,
 	            "render": function ( data, type, report, meta ) {
 	            	    var result = "";
-	            	    if( report.website != null && report.website != '' && report.website != 'undefined'){
+	            	    
+	            	    var webSite = "";
+	              		if(report.website != 'null' && report.website != null && report.website != '' && report.website != 'undefined'){
+	              			webSite = report.website;
+	    		   		}
+	            	   
+	            	    if( webSite != null && webSite != '' && webSite != 'undefined'){
 	    		   			result = result +'<td>';
 	    		   			result = result +'<div>';
-	    		   			result = result +'<span class="tbldata-dotdot-vsm" title='+report.website+'>'+report.website+'</span>';
+	    		   			result = result +'<span class="tbldata-dotdot-vsm" title='+webSite+'>'+webSite+'</span>';
 	    		   			result = result +'</div>';
 	    		   			result = result +'</td>';
 	    		   		}else{

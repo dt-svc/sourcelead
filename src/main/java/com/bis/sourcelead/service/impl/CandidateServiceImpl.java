@@ -1324,7 +1324,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			}
 			
 			if(StringUtils.isNotBlank(candidateDTO.getDateofBirth())){
-				candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(candidateDTO.getDateFormat(), candidateDTO.getDateofBirth()));
+				candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), candidateDTO.getDateofBirth()));
 			}else{
 				candidate.setDateOfBirth(null);
 			}

@@ -226,6 +226,9 @@ right: 15px;
 </script>
 
 <script>
+$(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
+})
 		function logoutFormSubmit() {
 			document.getElementById("logoutForm").submit();
 		}

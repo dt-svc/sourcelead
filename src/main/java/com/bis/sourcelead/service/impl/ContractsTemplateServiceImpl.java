@@ -235,6 +235,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts = contractsTemplateDao.getContractById(Long.parseLong(contractsDTO.getContrId()));
 			if(null != contracts && null != contracts.getParentContractId()){
 				vendorContracts = contractsTemplateDao.getChildContractById(contracts.getParentContractId().getId());
+			}else{
+				if(!Constants.PENDING.equalsIgnoreCase(contracts.getTemplateSubmissionStatus()))
+					vendorContracts = new Contracts();
 			}
 			if(null != user){
 				contracts.setUpdatedBy(user.getUserCode());
@@ -883,7 +886,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	private Set<ContractOwnerHierarchy> getOwnersList(ContractsDTO contractDTO, Contracts contract, User user) throws Exception {
-		Integer status = deleteContractOwnerHierarchyListByContractId(contract.getId());
+		Integer status = 0;
+		if(contract.getId() != null)
+			status = deleteContractOwnerHierarchyListByContractId(contract.getId());
 		
 		Set<ContractOwnerHierarchy> ownersList = new HashSet<>();
 		if("Parallel".equalsIgnoreCase(contractDTO.getOwnersType())){
@@ -980,9 +985,15 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					vendorName.append(contracts.getContactUser().getFirstName());	
 				}
 			}else{
-				vendorName.append("---");
+				for(ContractOwnerHierarchy coh : contracts.getParentContractId().getOwnerHierarchyList()){
+					if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
+						vendorName.append(coh.getOwnerUserId().getFirstName()).append((coh.getOwnerUserId().getLastName())).append(" , ");
+					}else{
+						vendorName.append(coh.getOwnerUserId().getFirstName()).append(" , ");
+					}
+				}
 			}
-			venContractsDto.setVendorContactName(vendorName.toString());
+			venContractsDto.setVendorContactName(vendorName.toString().replaceAll("\\s*,\\s*$", ""));
 			
 			if(null != contracts.getOrgRelations()){
 			 	OrgRelations orgRelations = orgRelationsService.getClientAndVendorOrgDeatilsById(orgLocation.getId(), contracts.getOrgRelations().getId());
@@ -1136,12 +1147,18 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 				if(null != contracts.getContactUser().getFirstName() && null != contracts.getContactUser().getLastName()){
 					vendorName.append(contracts.getContactUser().getFirstName()).append((contracts.getContactUser().getLastName()));
 				}else{
-					vendorName.append("---");
+					vendorName.append(contracts.getContactUser().getFirstName());
 				}
 			}else{
-				vendorName.append("---");
+				for(ContractOwnerHierarchy coh : contracts.getParentContractId().getOwnerHierarchyList()){
+					if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
+						vendorName.append(coh.getOwnerUserId().getFirstName()).append((coh.getOwnerUserId().getLastName())).append(" , ");
+					}else{
+						vendorName.append(coh.getOwnerUserId().getFirstName()).append(" , ");
+					}
+				}
 			}
-			clientConDto.setVendorContactName(vendorName.toString());
+			clientConDto.setVendorContactName(vendorName.toString().replaceAll("\\s*,\\s*$", ""));
 			if(contracts.getContractsTemplate() != null){
 			clientConDto.setTemplateId(contracts.getContractsTemplate().getId().toString());
 			}
