@@ -2,6 +2,7 @@ package com.bis.sourcelead.payroll.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,8 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "US_PAY_ITEM")
@@ -48,7 +51,6 @@ public class PayItem {
 		@Column(name = "PAY_ITEM_UUID")
 		private String payItemUuid;
 		
-		
 		@Column(name = "STATUS")
 		private Integer status;
 		
@@ -63,6 +65,10 @@ public class PayItem {
 
 		@Column(name = "UPDATED_BY")
 		private String updatedBy;
+		
+		@Transient
+		@JsonProperty
+		private List<String> empType;
 
 		public Long getId()
 		{
@@ -193,7 +199,15 @@ public class PayItem {
 		{
 			this.payItemUuid = payItemUuid;
 		}
-		
-		
+
+		public List<String> getEmpType()
+		{
+			return empType;
+		}
+
+		public void setEmpType(List<String> empType)
+		{
+			this.empType = empType;
+		}
 		
 }

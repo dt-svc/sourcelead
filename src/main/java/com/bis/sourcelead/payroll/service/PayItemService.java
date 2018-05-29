@@ -5,10 +5,17 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
+import com.bis.sourcelead.payroll.entity.PayItem;
 
 public interface PayItemService {
 
 	Response<PayItemDTO> addPayItem(OrgLocations orgLocation, PayItemDTO payItemDTO, User loginUser);
 
 	ResponseList<PayItemDTO> getPayItemByLocationId(OrgLocations orgLocation);
+
+	PayItem getPayItemByUUID(String payItemUUID);
+
+	Response<PayItem> deletePayItemByUUID(PayItemDTO payItemDTO, User user);
+
+	Response<PayItem> validatePayItemName(PayItemDTO payItemDTO, OrgLocations orgLocation);
 }

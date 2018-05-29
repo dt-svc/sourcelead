@@ -52,21 +52,21 @@ public class AssociateSalary {
 	@Column(name = "HOURLY")
 	private BigDecimal hourly;
 	
-	@ManyToOne
+	/*@ManyToOne
 	@JoinColumn(name = "PAY_ITEM_ID")
-	private PayItem payItemId;
+	private PayItem payItemId;*/
 	
-	@Column(name = "OVERRIDE")
-	private String overRide;
+	/*@Column(name = "OVERRIDE")
+	private String overRide;*/
 	
-	@Column(name = "EFFECTIVE_DATE")
+	/*@Column(name = "EFFECTIVE_DATE")
 	private Date effectiveDate;
 	
 	@Column(name = "END_DATE")
-	private Date endDate;
+	private Date endDate;*/
 	
-	@Column(name = "PAY_ITEM_AMOUNT")
-	private BigDecimal payItemAmount;
+	/*@Column(name = "PAY_ITEM_AMOUNT")
+	private BigDecimal payItemAmount;*/
 	
 	@Column(name = "ASSOCIATE_SALARY_UUID")
 	private String associateSalaryUuid;
@@ -178,7 +178,7 @@ public class AssociateSalary {
 		this.hourly = hourly;
 	}
 
-	public PayItem getPayItemId()
+	/*public PayItem getPayItemId()
 	{
 		return payItemId;
 	}
@@ -226,7 +226,7 @@ public class AssociateSalary {
 	public void setPayItemAmount(BigDecimal payItemAmount)
 	{
 		this.payItemAmount = payItemAmount;
-	}
+	}*/
 
 	public String getAssociateSalaryUuid()
 	{

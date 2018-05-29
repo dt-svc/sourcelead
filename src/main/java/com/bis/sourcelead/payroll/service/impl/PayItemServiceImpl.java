@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,11 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.OptionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.payroll.dao.PayItemDao;
 import com.bis.sourcelead.payroll.dto.PayItemDTO;
@@ -36,9 +40,18 @@ public class PayItemServiceImpl implements PayItemService{
 	public Response<PayItemDTO> addPayItem(OrgLocations orgLocation, PayItemDTO payItemDTO, User loginUser)
 	{
 		Response<PayItemDTO> resObj = new Response<>();
+		PayItem payItem = null;
 		try {
 			if (Validator.validate(payItemDTO)) {
-				PayItem payItem = new PayItem();
+				if(StringUtils.isNotBlank(payItemDTO.getPayItemUUID())){
+					payItem = payItemDao.getPayItemByUUID(payItemDTO.getPayItemUUID());
+				}else{
+					payItem = new PayItem();
+					payItem.setCreatedBy(loginUser.getUserCode());
+					payItem.setCreatedDate(new Date());
+					payItem.setPayItemUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				}
+				
 				payItem.setPayItemName(payItemDTO.getPayItemName());
 				if (!"".equalsIgnoreCase(payItemDTO.getPaySchedule())) {
 					payItem.setPaySchedule(payItemDTO.getPaySchedule());
@@ -52,12 +65,7 @@ public class PayItemServiceImpl implements PayItemService{
 					payItem.setAllowEmployeementType(allowEmpType);
 				}
 				payItem.setDescription(payItemDTO.getDescription());
-				payItem.setCreatedBy(loginUser.getUserCode());
-				payItem.setCreatedDate(new Date());
-				payItem.setUpdatedBy(loginUser.getUserCode());
-				payItem.setUpdatedDate(new Date());
 				payItem.setOrgLocationId(orgLocation);
-				payItem.setPayItemUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				payItem.setStatus(1);
 				PayItem savedPayItem = payItemDao.addPayItem(payItem);
 				if (savedPayItem != null) {
@@ -110,5 +118,58 @@ public class PayItemServiceImpl implements PayItemService{
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return responseList;
+	}
+
+	@Override
+	public PayItem getPayItemByUUID(String payItemUUID)
+	{
+		return payItemDao.getPayItemByUUID(payItemUUID);
+	}
+
+	@Override
+	public Response<PayItem> deletePayItemByUUID(PayItemDTO payItemDTO, User user)
+	{
+		Response<PayItem> res = new Response<>();
+		try {
+			PayItem payitem = payItemDao.getPayItemByUUID(payItemDTO.getPayItemUUID());
+			if(payitem != null){
+				payitem.setStatus(Constants.RECORD_INACTIVE);
+				payitem.setUpdatedBy(user.getUserCode());
+				payitem.setUpdatedDate(new Date());
+				payItemDao.addPayItem(payitem);
+				res.setResponse(Result.SUCCESS.name());
+				res.setResponseMessage(Result.SUCCESS.getValue());
+			}else{
+				res.setResponse(Result.FAILED.name());
+				res.setResponseMessage(Result.FAILED.getValue());
+			}
+		}catch (Exception e){
+			res.setResponse(Result.AWKWARD.name());
+			res.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		
+		return res;
+	}
+
+	@Override
+	public Response<PayItem> validatePayItemName(PayItemDTO payItemDTO,OrgLocations orgLocations)
+	{
+		Response<PayItem> resObj = new Response<>();
+		if(orgLocations != null){
+			try {
+				boolean flag = payItemDao.validatePayItemName(payItemDTO, orgLocations.getId());
+				if (flag) {
+					resObj.setResponse("Record Exists");
+					resObj.setResponseMessage("Record Exists");
+				}else {
+					resObj.setResponse(Result.SUCCESS.name());
+					resObj.setResponseMessage(Result.SUCCESS.getValue());
+				}
+			}catch (Exception e) {
+				resObj.setResponse(Result.AWKWARD.name());
+				resObj.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}
+		return resObj;
 	}
 }

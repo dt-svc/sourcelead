@@ -3,6 +3,7 @@ package com.bis.sourcelead.payroll.rest;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserGroupDTO;
@@ -41,6 +44,7 @@ import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
 import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
+import com.bis.sourcelead.payroll.entity.PayItem;
 import com.bis.sourcelead.payroll.entity.PayrollContribution;
 import com.bis.sourcelead.payroll.entity.PayrollDeduction;
 import com.bis.sourcelead.payroll.service.AssociateBankDataService;
@@ -104,6 +108,9 @@ public class USPayrollRestController {
 	
 	@Autowired
 	PayItemService payItemService;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	/**
 	 * find all deduction types from lookup_data table 
@@ -665,12 +672,12 @@ public class USPayrollRestController {
 		 * @throws Exception
 		 */
 	@RequestMapping(value = { "/getUsersVGroupPayPeriod","/rest/getUsersVGroupPayPeriod" }, method = RequestMethod.GET)
-	public List<String> getUsersVGroupPayPeriod(@RequestParam(value = "groupId", required = false) Long groupId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public List<String> getUsersVGroupPayPeriod(@RequestParam(value = "groupId", required = false) String groupUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		List<String> listDates = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		UserGroup userGroup = userGroupService.findUserGroupById(groupId);
-		if ("Weekly".equalsIgnoreCase(userGroup.getPayFrequency())) {
+		Response<UserGroupDTO> userGroup = userGroupService.findUserGroupById(groupUUID);
+		if ("Weekly".equalsIgnoreCase(userGroup.getObject().getPayFrequency())) {
 			Calendar now = Calendar.getInstance(); // Gets the current date and
 			int year = now.get(Calendar.YEAR);
 			int month = now.get(Calendar.MONTH);
@@ -728,9 +735,9 @@ public class USPayrollRestController {
 	 * @return Response<PayItemDTO>
 	 * @throws Exception
 	 */
-	@RequestMapping(value = { "/addPayItem","/rest/addPayItem" }, method = RequestMethod.POST)
+	@RequestMapping(value = { "/createPayItem","/rest/createPayItem" }, method = RequestMethod.POST)
 	@ResponseBody
-	public Response<PayItemDTO> addPayItem(PayItemDTO payItemDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	public Response<PayItemDTO> createPayItem(PayItemDTO payItemDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -753,5 +760,37 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ResponseList<PayItemDTO> resObj = payItemService.getPayItemByLocationId(orgLocation);
 		return resObj;
+	}
+	
+	@RequestMapping(value = "/editPayItem")
+	public ModelAndView editPayItem(PayItemDTO payItemDTO ,HttpServletRequest request) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		if(StringUtils.isNotBlank(payItemDTO.getPayItemUUID())){
+			List<String> empList = Arrays.asList(Constants.EMPLOYMENT_TYPES);
+			model.addObject("empList" , empList);
+			PayItem payItem = payItemService.getPayItemByUUID(payItemDTO.getPayItemUUID());
+			payItem.setEmpType(Arrays.asList(payItem.getAllowEmployeementType().split("\\s*,\\s*")));
+			model.addObject("payItem", payItem);
+		}
+		model.setViewName("payroll/addPayItem");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
+	@RequestMapping(value = "/deletePayItem")
+	public Response<PayItem> deletePayItem(PayItemDTO payItemDTO ,HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<PayItem> res = payItemService.deletePayItemByUUID(payItemDTO,user);
+		return res;
+	}
+	
+	@RequestMapping(value = "/validatePayItemName")
+	public Response<PayItem> validatePayItemName(PayItemDTO payItemDTO ,HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<PayItem> res = payItemService.validatePayItemName(payItemDTO,orgLocation);
+		return res;
 	}
 }

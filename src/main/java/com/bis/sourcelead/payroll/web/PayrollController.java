@@ -1,10 +1,13 @@
 package com.bis.sourcelead.payroll.web;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -12,15 +15,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.entity.File;
+import com.bis.sourcelead.payroll.entity.PayItem;
 import com.bis.sourcelead.payroll.entity.PayrollFileValidator;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.BisUserMappingService;
+import com.bis.sourcelead.payroll.service.PayItemService;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
@@ -44,6 +52,9 @@ public class PayrollController {
 	private BisUserMappingService bisUserMappingService;
 	@Autowired
 	private WageTaxSummaryService wageTaxSummaryService;
+	
+	@Autowired
+	PayItemService payItemService;
 	
 	@InitBinder
 	private void initBinder(WebDataBinder binder)
@@ -343,10 +354,13 @@ public class PayrollController {
 		}
 		// sessionData.setNav(Constants.PAYROLL);
 		request.getSession().setAttribute("sessionData", sessionData);
+		List<String> empList = Arrays.asList(Constants.EMPLOYMENT_TYPES);
+		model.addObject("empList" , empList);
 		model.setViewName("payroll/addPayItem");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
+	
 	
 	/**
 	 * View PayItem List
