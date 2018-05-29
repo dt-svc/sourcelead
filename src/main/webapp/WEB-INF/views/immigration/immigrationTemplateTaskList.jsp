@@ -71,7 +71,7 @@
                 <div class="col-md-6 noPad">
                     <div class="col-md-12 mb10" id = "taskNameDiv">
                         <label>Subject<span class="text-danger">*</span></label>
-                        <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" field-name= "Subject" data-validation = "required validate_Space validate_length length2-500">
+                        <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" field-name= "Subject" data-validation = "required validate_Space validate_length length2-100">
                     </div>
                     <div class="col-md-12 mb10">
                         <label>Priority</label>
@@ -217,7 +217,7 @@
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.taskName != null && opt.taskName != '' && opt.taskName != 'undefined') {
-                            result = result + '<td name="subject" data-name="subject">' + opt.taskName + '</td>';
+                            result = result + '<td name="subject"  data-name="subject"><div class="tbldata-dotdot-me" title = "'+opt.taskName+'">' + opt.taskName + '</div></td>';
                             result = result + '<input type="hidden" id="startDate' + opt.id + '" value="' + opt.taskName + '"/>';
                         } else {
                             result = result + '<td>---</td>';

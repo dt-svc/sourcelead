@@ -111,15 +111,15 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })	
-	public List<CandidateEmployers> getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, Long loc, String searchVal)
+	public List<CandidateEmployers> getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, String searchVal)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1'";
+		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1'";
 		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
 			query = query + " and (candidateEmployers.name like :searchVal or candidateEmployers.designation like :searchVal) ";
 		}
 		query = query + " ORDER BY (candidateEmployers.startYear) DESC, candidateEmployers.id DESC";  
-		Query candidateQuery = session.createQuery(query).setLong("orgLocationId", loc).setLong("candidateId", candidateId);
+		Query candidateQuery = session.createQuery(query).setLong("candidateId", candidateId);
 		if(!StringUtils.isEmpty(searchVal) && searchVal != null) {
 			candidateQuery.setParameter("searchVal", "%"+searchVal+"%");
 		}

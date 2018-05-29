@@ -30,31 +30,42 @@ public class ImmigrationConstants {
 	public static final Integer STATUS_IN_ACTIVE = 0;
 	public static final String IMMIGRATION_UPLOAD ="immigrationUpload";
 	
-	public static final String[] IMPORT_IMMIGRATION_EXCEL_HEADERS = { "Emp ID", "Beneficiary First Name","Beneficiary Last name",
-			 "Beneficiary Email*", "Experience", "SSN", "I-94 Number",	"I-20 SEVIS Number If Student", "EAD Number If Student", "DOB*",	
-			 "Marital status*", "Petition Type*", "Template*", "Date of arrival", "Open on*", "Status*","Visa No.", "Visa Start Date", "Visa End Date","Company*",
-			 "Name", "Attorney/Contact email*", "Receipt no.", "Location", "LCA Start Date", "LCA End Date","LCA Number", "LCA Rate", "LCA Location","LCA Title",
-			 "Previous LCA Start Date", "Previous LCA end Date","Previous LCA Number","Previous LCA Rate","Previous LCA Title","Previous LCA Location"};
-	
-	@SuppressWarnings("serial")
-	public static final Map HEADERS_NAMES_MAP = new HashMap<Integer, String>(){{
-		put(1,"empId");put(2,"beneficiaryFirstName");put(3,"beneficiaryLastName");put(4,"beneficiaryEmail");put(5,"experience");put(6,"ssn");put(7,"i94Number");
-		put(8,"i20Number");put(9,"eadNumber");put(10,"dateOfBirth");put(11,"maritalStatus");put(12,"petitionType");
-		put(13,"template");put(14,"dateOfArrival");put(15,"openOn");put(16,"status");put(17,"visaNo");put(18,"visaStartDate");
-		put(19,"visaEndDate");put(20,"company");put(21,"companyName");put(22,"companyContactEmail");put(23,"receiptNo");put(24,"location");put(25,"lcaStartDate");put(26,"lcaEndDate");put(27,"lcaNumber");
-		put(28,"lcaRate");put(29,"lcaLocation");put(30,"lcaTitle");put(31,"prevLcaStartDate");put(32,"prevLcaEndDate");put(33,"prevLcaNumber");put(34,"pevLcaRate");put(35,"prevLcaTitle");put(36,"prevLcaLocation");
-	}};
-	public static final Map HEADERS_FIELD_NAMES_MAP = new HashMap<Integer, String>(){{
-		put(4,"Beneficiary Email");
-		put(10,"DOB");
-		put(11,"Marital status");
-		put(12,"Petition Type");
-		put(13,"Template");
-		put(15,"Open on");
-		put(16,"Status");
-		put(20,"Company");
-		put(22,"Attorney/Contact email Email");
-	}};
+	public static final String[] IMPORT_IMMIGRATION_EXCEL_HEADERS = {"Beneficiary First Name","Beneficiary Last Name",
+            "Beneficiary Email", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB",    
+            "Marital status", "Petition Type", "Template", "Date of arrival", "Open on", "Status","Passport No","Passport Country","Passport Start Date","Passport End Date","Visa No.", "Visa Country","Visa Start Date", "Visa End Date","Company",
+            "Visa Type","Attorney/Contact email", "Receipt No.", "Location", "LCA Start Date", "LCA End Date","LCA Number", "LCA Rate Currency","LCA Rate","LCA Rate Per", "LCA Location","LCA Title","Job ID",
+            "Previous LCA Start Date", "Previous LCA end Date","Previous LCA Number","Previous LCA Title","Previous LCA Location"};
+   
+   public static final String[] IMPORT_DOWNLOAD_IMMIGRATION_EXCEL_HEADERS = {"Beneficiary First Name*","Beneficiary Last Name*",
+            "Beneficiary Email*", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB*",    
+            "Marital status*", "Petition Type*", "Template*", "Date of arrival", "Open on*", "Status*","Passport No","Passport Country","Passport Start Date","Passport End Date","Visa No.", "Visa Country","Visa Start Date", "Visa End Date","Company*",
+            "Visa Type","Attorney/Contact email*", "Receipt No.", "Location", "LCA Start Date", "LCA End Date","LCA Number", "LCA Rate Currency","LCA Rate","LCA Rate Per", "LCA Location","LCA Title","Job ID",
+            "Previous LCA Start Date", "Previous LCA end Date","Previous LCA Number","Previous LCA Title","Previous LCA Location"};
+   
+   
+   @SuppressWarnings("serial")
+   public static final Map HEADERS_NAMES_MAP = new HashMap<Integer, String>(){{
+       put(1,"beneficiaryFirstName");put(2,"beneficiaryLastName");put(3,"beneficiaryEmail");put(4,"experience");put(5,"ssn");put(6,"i94Number");put(7,"i20Number");
+       put(8,"eadNumber");put(9,"dateOfBirth");put(10,"maritalStatus");put(11,"petitionType");put(12,"template");
+       put(13,"dateOfArrival");put(14,"openOn");put(15,"status");put(16,"passportNo");put(17,"passportCountry");put(18,"passportStartDate");
+       put(19,"passportEndDate");put(20,"visaNo");put(21,"visaCountry");put(22,"visaStartDate");put(23,"visaEndDate");put(24,"company");put(25,"visaType");put(26,"companyContactEmail");put(27,"receiptNo");
+       put(28,"benficiarylocation");put(29,"lcaStartDate");put(30,"lcaEndDate");put(31,"lcaNumber");put(32,"lcaRateCurrency");put(33,"lcaRate");put(34,"lcaRatePer");put(35,"lcaLocation");put(36,"lcaTitle");put(37,"immigrationJobId");put(38,"prevLcaStartDate");put(39,"prevLcaEndDate");
+       put(40,"prevLcaNumber");put(41,"prevLcaTitle");put(42,"prevLcaLocation");
+   }};
+   
+   public static final Map HEADERS_FIELD_NAMES_MAP = new HashMap<Integer, String>(){{
+       put(1,"Beneficiary First Name");
+       put(2,"Beneficiary Last Name");
+       put(3,"Beneficiary Email");
+       put(9,"DOB");
+       put(10,"Marital status");
+       put(11,"Petition Type");
+       put(12,"Template");
+       put(14,"Open on");
+       put(15,"Status");
+       put(24,"Company");
+       put(26,"Attorney/Contact email Email");
+   }};
 	
 	public static List<String> IMMIGRATION_INPROGRESS_STATUS_LIST= Arrays.asList("Filled", "Reviewed & Send to attorney", "Request for modifications","Reviewed & Filed","Motion to Re-Open");
 
