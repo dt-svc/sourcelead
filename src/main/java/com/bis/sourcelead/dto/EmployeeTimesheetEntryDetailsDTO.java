@@ -28,9 +28,11 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 	
 	private List<ProjectMembersDTO> submittedProjectMembersList;
 	
-	private List<EmployeeTimeSheetSubmissionDTO> submissionList;
+	private List<EmployeeTimesheetSubmissionDTO> submissionList;
 	
-	private EmployeeTimeSheetSubmissionDTO timesheetSubmission;
+	private EmployeeTimesheetSubmissionDTO timesheetSubmission;
+	
+	private List<EmployeeTimesheetFileInfoDTO> timsheetAttachments;
 	
 	private Map<Long,EmployeeTimeSheetSubmissionStatusDTO> statusMap;
 	
@@ -150,12 +152,20 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 		this.projectMembersList = projectMembersList;
 	}
 
-	public List<EmployeeTimeSheetSubmissionDTO> getSubmissionList() {
+	public List<EmployeeTimesheetSubmissionDTO> getSubmissionList() {
 		return submissionList;
 	}
 
-	public void setSubmissionList(List<EmployeeTimeSheetSubmissionDTO> submissionList) {
+	public void setSubmissionList(List<EmployeeTimesheetSubmissionDTO> submissionList) {
 		this.submissionList = submissionList;
+	}
+
+	public EmployeeTimesheetSubmissionDTO getTimesheetSubmission() {
+		return timesheetSubmission;
+	}
+
+	public void setTimesheetSubmission(EmployeeTimesheetSubmissionDTO timesheetSubmission) {
+		this.timesheetSubmission = timesheetSubmission;
 	}
 
 	public Integer getMaxRowCount() {
@@ -166,13 +176,7 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 		this.maxRowCount = maxRowCount;
 	}
 
-	public EmployeeTimeSheetSubmissionDTO getTimesheetSubmission() {
-		return timesheetSubmission;
-	}
-
-	public void setTimesheetSubmission(EmployeeTimeSheetSubmissionDTO timesheetSubmission) {
-		this.timesheetSubmission = timesheetSubmission;
-	}
+	
 
 	public Map<Long, EmployeeTimeSheetSubmissionStatusDTO> getStatusMap() {
 		return statusMap;
@@ -260,6 +264,14 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 
 	public void setSubmittedProjectMembersList(List<ProjectMembersDTO> submittedProjectMembersList) {
 		this.submittedProjectMembersList = submittedProjectMembersList;
+	}
+
+	public List<EmployeeTimesheetFileInfoDTO> getTimsheetAttachments() {
+		return timsheetAttachments;
+	}
+
+	public void setTimsheetAttachments(List<EmployeeTimesheetFileInfoDTO> timsheetAttachments) {
+		this.timsheetAttachments = timsheetAttachments;
 	}
 	
      
