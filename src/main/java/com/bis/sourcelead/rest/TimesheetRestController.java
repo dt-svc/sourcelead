@@ -47,7 +47,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
-import com.bis.sourcelead.dto.EmployeeTimeSheetSubmissionDTO;
+import com.bis.sourcelead.dto.EmployeeTimesheetSubmissionDTO;
 import com.bis.sourcelead.dto.EmployeeTimeSheetSubmissionStatusDTO;
 import com.bis.sourcelead.dto.EmployeeTimesheetEntryDetailsDTO;
 import com.bis.sourcelead.dto.FileInfo;
@@ -235,6 +235,11 @@ public class TimesheetRestController {
 	public ModelAndView getEmployeeTimesheetEntryDetailsWeb(TimesheetExpenseEntryDetailsUtilDTO eedDTO,
 			HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		if (orgLocations == null && StringUtils.isNotEmpty(eedDTO.getLocationCode())) {
+			orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
+		}
 		try {
 			EmployeeTimesheetEntryDetailsDTO tedDTO = getEmployeeTimesheetEntryDetails(eedDTO, request);
 			List<ProjectMembersDTO> freshProjectMembersList = new LinkedList<>();
@@ -281,6 +286,9 @@ public class TimesheetRestController {
 					}
 					
 				}
+				
+				
+				
 				tedDTO.getProjectMembersList().clear();
 				tedDTO.setProjectMembersList(freshProjectMembersList);
 				tedDTO.setSubmittedProjectMembersList(submittedProjectMembersList);
@@ -289,6 +297,17 @@ public class TimesheetRestController {
 				}else {
 					tedDTO.setSubmitButtonVisible(true);
 				}
+				Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+				if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+					avgWorkingHoursPerDay = 8; 
+				}
+				Integer workingDaysPerWeek = orgLocations.getWorkingDaysPerWeek();
+				if(workingDaysPerWeek == null || workingDaysPerWeek == 0) {
+					workingDaysPerWeek = 5; 
+				}
+				
+				Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
+				model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
 				
 				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
 				model.setViewName("timesheet/employeeTImesheetInvoiceList");
@@ -565,7 +584,7 @@ public class TimesheetRestController {
 				currentSubFrequencyStartDate.replaceAll("/", "-"));
 		Date actualEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
 				currentSubFrequencyEndDate.replaceAll("/", "-"));
-		LinkedList<EmployeeTimeSheetSubmissionDTO> etsDTOList = new LinkedList<>();
+		LinkedList<EmployeeTimesheetSubmissionDTO> etsDTOList = new LinkedList<>();
 		Map<Long,EmployeeTimeSheetSubmissionStatusDTO> ettsDTOMap = new LinkedHashMap<>();
 		int editableCount = 1;
 		if(projectMembersList != null && !projectMembersList.isEmpty()) {
@@ -603,7 +622,7 @@ public class TimesheetRestController {
 					List<ProjectTasks> projectsTasks = projectTasksService.getAllTasksByProjectId(pm.getProjects().getId());
 					if(entryMap != null && !entryMap.isEmpty()) {
 					    for(Map.Entry<Long,LinkedList<TimesheetEntriesDTO>> entry : entryMap.entrySet()) {
-							EmployeeTimeSheetSubmissionDTO etsDTO = new EmployeeTimeSheetSubmissionDTO();
+							EmployeeTimesheetSubmissionDTO etsDTO = new EmployeeTimesheetSubmissionDTO();
 							Long pmId = null;
 							String taskType = "";
 							String ticketNumber = "";
@@ -641,7 +660,7 @@ public class TimesheetRestController {
 			etd.setSubmissionList(etsDTOList);
 			etd.setMaxRowCount(etsDTOList.size());
 		}else {
-			EmployeeTimeSheetSubmissionDTO etsDTO = new EmployeeTimeSheetSubmissionDTO();
+			EmployeeTimesheetSubmissionDTO etsDTO = new EmployeeTimesheetSubmissionDTO();
 			List<TimesheetEntriesDTO> edtoList = getTimesheetEntriesForEmptySubmissions(orgLocations, actualStartDate, actualEndDate, etd);
 			etsDTO.setTimesheetEntries(edtoList);
 			etsDTOList.add(etsDTO);
@@ -1608,6 +1627,8 @@ public class TimesheetRestController {
 	public ModelAndView saveEmployeeTimesheetEntriesWeb(EmployeeTimesheetEntryDetailsDTO tedDTO, HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
 		try {
 				tedDTO = saveEmployeeTimesheetEntries(tedDTO, request);
 				List<ProjectMembersDTO> freshProjectMembersList = new LinkedList<>();
@@ -1663,6 +1684,17 @@ public class TimesheetRestController {
 						tedDTO.setSubmitButtonVisible(true);
 					}
 				}
+				Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+				if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+					avgWorkingHoursPerDay = 8; 
+				}
+				Integer workingDaysPerWeek = orgLocations.getWorkingDaysPerWeek();
+				if(workingDaysPerWeek == null || workingDaysPerWeek == 0) {
+					workingDaysPerWeek = 5; 
+				}
+				
+				Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
+				model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
 				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
 				model.setViewName("timesheet/employeeTImesheetInvoiceList");
 						
@@ -2054,7 +2086,7 @@ public class TimesheetRestController {
 			eedDTO.setCurrentTimeSubFrequency(tedDTO.getCurrentTimeSubFrequency());
 			tedDTO  =  getEmployeeTimesheetSubFrequencyListByCurrentFrequency(eedDTO, tedDTO, loginOrgLocation,candidate, request);
 			String status = "";
-			EmployeeTimeSheetSubmissionDTO tsDTO = null;
+			EmployeeTimesheetSubmissionDTO tsDTO = null;
 			if (tedDTO.getTimesheetSubmission() != null) {
 				tsDTO = tedDTO.getTimesheetSubmission();
 			}

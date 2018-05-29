@@ -177,6 +177,12 @@ public class Projects implements Serializable{
     
     @Column(name = "NOTIFY_BUDGET_AT")
    	private String notifyBudgetAt;
+    
+    @Column(name = "IS_TICKET_NUMBER_REQUIRED")
+   	private String isTicketNumberRequired;
+    
+    @Column(name = "IS_TASK_COMMENTS_REQUIRED")
+   	private String isTaskCommentsRequired;
 	
      
     
@@ -1037,6 +1043,22 @@ public class Projects implements Serializable{
 
 	public void setIsReportingManagerAsApprover(String isReportingManagerAsApprover) {
 		this.isReportingManagerAsApprover = isReportingManagerAsApprover;
+	}
+
+	public String getIsTicketNumberRequired() {
+		return isTicketNumberRequired;
+	}
+
+	public void setIsTicketNumberRequired(String isTicketNumberRequired) {
+		this.isTicketNumberRequired = isTicketNumberRequired;
+	}
+
+	public String getIsTaskCommentsRequired() {
+		return isTaskCommentsRequired;
+	}
+
+	public void setIsTaskCommentsRequired(String isTaskCommentsRequired) {
+		this.isTaskCommentsRequired = isTaskCommentsRequired;
 	}
 	
 }

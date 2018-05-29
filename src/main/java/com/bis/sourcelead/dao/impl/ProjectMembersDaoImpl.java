@@ -1582,8 +1582,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		
-		if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("internal")) {
-			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where can.orgLocationId.id = :locationId "
+		if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("internal") ) {
+			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where can.orgLocationId.id = :locationId"
 					 +projectQuery
 					  +dateQuery
 					  +employmentTypeQuery
@@ -1595,7 +1595,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					  +employmentTypeQuery
 					  +groupByCandidateId;
 		}else {
-			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where ((pc.orgRelationId IS NOT NULL and pc.orgRelationId.responderLocationId.id = :locationId OR pc.orgRelationId.locationId.id = :locationId) OR can.orgLocationId.id = :locationId) "
+			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects where can.orgLocationId.id = :locationId "
 					 +projectQuery
 					  +dateQuery
 					  +employmentTypeQuery

@@ -60,6 +60,7 @@ import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Department;
@@ -86,6 +87,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -230,6 +232,9 @@ public class UsersListRestController {
 	
 	@Autowired
     ProjectsIndexHelper projectsIndexHelper;
+	
+	@Autowired
+	AssociateGradesService associateGradesService;
 	
 	
 	/**
@@ -705,7 +710,6 @@ public class UsersListRestController {
 	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
 	public @ResponseBody UserRole getUserDetailsById(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
-		String resultJson = null;
 
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
@@ -761,6 +765,9 @@ public class UsersListRestController {
 			}
 			
 		}
+		
+		List<AssociateGrades> gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
+		userRole.setGradesList(gradesList);
 		
 		List<User> reportingManagersList = new ArrayList<>();
 		List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userRole.getUser().getId(), userRole.getRoles().getId(), orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
@@ -1980,6 +1987,10 @@ public class UsersListRestController {
 				userRole.setReportingManager(null);
 			}
 			
+			if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				userRole.setDesignation(addUserDTO.getDesignation());
+			}
+			
 			if(StringUtils.isNotBlank(addUserDTO.getResourceManager())){
 				User resourceManager = new User();
 				resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
@@ -2006,6 +2017,14 @@ public class UsersListRestController {
 				userRole.setIsGlobal(Constants.YES);
 			}else {
 				userRole.setIsGlobal(Constants.NO);
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getGrade())) {
+				AssociateGrades grades = new AssociateGrades();
+				grades.setId(Long.valueOf(addUserDTO.getGrade()));
+				userRole.setGradeId(grades);
+			}else {
+				userRole.setGradeId(null);
 			}
 			
 			if(addUserDTO.getCustomFormData() !=null) {

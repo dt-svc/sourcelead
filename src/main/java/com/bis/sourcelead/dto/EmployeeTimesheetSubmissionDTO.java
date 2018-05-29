@@ -7,7 +7,7 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class EmployeeTimeSheetSubmissionDTO implements Serializable{
+public class EmployeeTimesheetSubmissionDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

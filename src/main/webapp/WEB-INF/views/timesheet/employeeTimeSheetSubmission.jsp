@@ -275,49 +275,49 @@
 												<div >
 												<input type="hidden" id="entryIndexValue" value="${entryIndex}"/>
 													<input disabled="" id="rowTotal1Id" name="rowTotal1Id"
-														class="inline_field" value="HH:MM" placeholder="00:00"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
 														type="text">
 												</div>
 											</td>
 											<td>
 												<div >
 													<input disabled="" id="rowTotal2Id" name="rowTotal2Id"
-														class="inline_field" value="HH:MM" placeholder="00:00"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
 														type="text">
 												</div>
 											</td>
 											<td>
 												<div >
 													<input disabled="" id="rowTotal3Id" name="rowTotal3Id"
-														class="inline_field" value="HH:MM" placeholder="00:00"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
 														type="text">
 												</div>
 											</td>
 											<td>
 												<div >
 													<input disabled="" id="rowTotal4Id" name="rowTotal4Id"
-														class="inline_field" value="HH:MM" placeholder="00:00"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
 														type="text">
 												</div>
 											</td>
 											<td>
 												<div >
 													<input disabled="" id="rowTotal5Id" name="rowTotal5Id"
-														class="inline_field" value="HH:MM" placeholder="00:00"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
 														type="text">
 												</div>
 											</td>
 											<td>
 												<div >
 													<input disabled="" id="rowTotal6Id" name="rowTotal6Id"
-														class="inline_field" value="HH:MM" placeholder="00:00"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
 														type="text">
 												</div>
 											</td>
 											<td>
 												<div >
 													<input disabled="" id="rowTotal7Id" name="rowTotal7Id"
-														class="inline_field" value="HH:MM" placeholder="00:00"
+														class="inline_field noBorder" value="HH:MM" placeholder="00:00"
 														type="text">
 												</div>
 											</td>
@@ -327,172 +327,254 @@
 						            </table>
 						            </div>
 						            </div>
-						            <div class="timesheet_bot">
-									    	<div class="timesheet_week_comm">
-									            <div class="totalWrap">
-									                 <ul>
-														<li><span>Billable Hours</span><input
-															id="grandBillableTotal"
-															value="" placeholder="HH/HH" readonly="" type="text"></li>
-														<li><span>Non-Billable Hours</span><input
-															id="grandNonBillableTotal"
-															value="" placeholder="HH/HH" readonly="" type="text"></li>
-														<li><span>Total Hours</span><input id="grandTotal" 
-															value="" placeholder="HH/HH" readonly="" type="text"></li>
-														<div class="clearfix"></div>
-													</ul>
-									            </div>
-									            <div class="clearfix"></div>
-									    	    <div class="timesheet_button clearfix">
-									    	    <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
-									    	        <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
-											         <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
-									    	    </c:if>
-									        </div>              
-									        </div>
-									    	<div class="clearfix"></div>
-									
-									    </div>  
-						          </div>
-						        </div>        	
-						  </div>
-	    </div>
-	<input type="hidden" name="_ignore"
-		style="border-color: rgb(51, 51, 51);">
-</div>
-
-
-<!-- AddRow and Add Attachments Divs  ####-->
-        <div id="divadttTd0" style="display:none;">   
-             <div class="timeAdd"> 
-              <select id="REPLACEROWIDprojectMember1Id"  name="REPLACEROWIDprojectMember1Id" onchange="flushtasks('REPLACEROWIDtask1Id');setTaskStatus('REPLACEROWIDprojectMember1Id');"  field-name="Project">  
-              <option value=''>--select Project--</option>
-               <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
-	                   <option value='${pMember.id}'>${pMember.projectName} </option> 
-	            </c:forEach>
-              </select>
-             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="timeRemoveBtn"/>
-             </div>
-        </div>
-         <div id="divadttTd1" style="display:none;">   
-             <div class="taskDropDown"> 
-              <select id="REPLACEROWIDtask1Id"  name="REPLACEROWIDtask1Id" class="smfield"  field-name="Task" onchange="prepareProjectTaskDetails('ENTRYINDEX','REPLACEROWIDtask1Id','REPLACEROWIDprojectMember1Id')"  onclick="getProjectTasks('REPLACEROWIDtask1Id','REPLACEROWIDprojectMember1Id')">  
-              <option value=''>--select task--</option>
-              </select>
-             </div>
-        </div>
-        <div id="divadttTd2" style="display:none;">
-	    	   <span id="REPLACEROWIDtask1IdBillableTypeId" name="REPLACEROWIDtask1IdBillableTypeId" ></span>	
-   		</div>
-   		 <div id="divadttTd10" style="display:none;">
-	    	  <div><input type="text" id="REPLACEROWIDticketNumber1Id" name="REPLACEROWIDticketNumber1Id" onblur="setTaskNumber('ENTRYINDEX','REPLACEROWIDticketNumber1Id');" class="timeTick"></div>	
-   		</div>
-   		<div id="divadttTd11" style="display:none;">
-	    	  <div><b>New</b></div>	
-   		</div>
-   		
-   		
-        <div id="divadttTd3" style="display:none;">
-               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
-			   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
-			   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-			   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
-               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
-               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
-	    	   <input type="text" disabled onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay1Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-               <div class="timesheet_comm">
-                <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment1Id');"></i>
-                <span class="teskcomment" id="REPLACEROWIDcomment1Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea1Id" ></textarea></span>
-               </div>
-   		</div>
-        <div id="divadttTd4" style="display:none;">
+									    <div class="timesheet_bot">
+							           <%-- <div class="commentFile">
+											<h2>Attachmets & Comments <i class="fa fa-plus Cursor" onclick="addTimeSheetCommentRow()"></i> </h2>
+											<div class="">
+											   <input type='hidden' name='maxAttRowNumber' id='maxAttRowNumber'  value='1' />
+												<table id="attTimesheet">
+													<tr id="timesheetAttRow0">
+													   <td>
+													       <div class="timeAdd">
+														        <select id="attProjMemberId" name="timsheetAttachments[0].projectMemberId"  class="form-control input-sm" field-name="Project">
+																	<option value=''>--select project--</option> 
+															        <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
+																	     <option value='${pm.id}'>${pm.projectName} </option> 
+																	 </c:forEach>
+															    </select>
+														    </div> 
+														</td>
+														<td>
+	                                                         <div id="attachmentInnerDiv0Id">
+	                                                          <input type='hidden' name='0maxAttDivRowNumber' id='0maxAttDivRowNumber'  value='1' />
+	                                                               <!--  <div class="timeAtt">
+			                                                               <div class="attFile"><i class="fa fa-download"></i>filename.jpg</div>
+										                                    <div class="timeAttBtn">
+										                                        <i class="fa fa-eye"></i><i class="fa fa-trash"></i>
+										                                    </div>
+			                                                         </div>   --> 
+																	<div id="0AttchmentDiv0Id" class="addRowBtn">
+																	  <div class="input-group col-md-12" style="margin:0 auto">
+																		<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+																		  <input style="display: none;" id="0docFile0" multiple  onchange="validateUploadFile('0','0',this);" class="upload" type="file">
+																		  </span></label>
+																		<input class="form-control input-sm" id="0uploadFile0"   placeholder="Attachment" type="text">
+																	  </div>
+																	  <input type="button" value="" onclick="addAttachmentRow('0');" class="addRowIcon"/>
+																	</div>
+															</div>
+														</td>
+														<td>
+															<input type="text" name="timsheetAttachments[0].weekComment" class="form-control  input-sm" placeholder="Comment" />
+														</td>
+													</tr>						
+												</table>
+											</div>
+							            </div>  --%>   
+							    	   <div class="timesheet_week_comm">
+							            <div class="totalWrap">
+							                 <ul>
+												<li><span>Billable Hours</span><input
+													id="grandBillableTotal"
+													value="" placeholder="HH/HH" readonly="" type="text"></li>
+												<li><span>Non-Billable Hours</span><input
+													id="grandNonBillableTotal"
+													value="" placeholder="HH/HH" readonly="" type="text"></li>
+												<li><span>Total Hours</span><input id="grandTotal" 
+													value="" placeholder="HH/HH" readonly="" type="text"></li>
+												<div class="clearfix"></div>
+											</ul>
+							            </div>
+							            <div class="clearfix"></div>
+							    	    <div class="timesheet_button clearfix">
+							    	    <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+							    	        <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
+									         <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
+							    	    </c:if>
+							         </div>              
+							        </div>
+							    	<div class="clearfix"></div>
+							        </div>
+								          </div>
+								        </div>        	
+								   </div>
+								 </div>
+					<input type="hidden" name="_ignore">
+			 </div>
+	        <!-- AddRow Divs  ####-->
+	        <div id="divadttTd0" style="display:none;">   
+	             <div class="timeAdd"> 
+	              <select id="REPLACEROWIDprojectMember1Id"  name="REPLACEROWIDprojectMember1Id" onchange="flushtasks('REPLACEROWIDtask1Id');setTaskStatus('REPLACEROWIDprojectMember1Id');"  field-name="Project">  
+	              <option value=''>--select Project--</option>
+	               <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
+		                   <option value='${pMember.id}'>${pMember.projectName} </option> 
+		            </c:forEach>
+	              </select>
+	             <input type="button" value="" onClick="removeTimeSheetRow('REPLACEROWID')" class="timeRemoveBtn"/>
+	             </div>
+	        </div>
+	         <div id="divadttTd1" style="display:none;">   
+	             <div class="taskDropDown"> 
+	              <select id="REPLACEROWIDtask1Id"  name="REPLACEROWIDtask1Id" class="smfield"  field-name="Task" onchange="prepareProjectTaskDetails('ENTRYINDEX','REPLACEROWIDtask1Id','REPLACEROWIDprojectMember1Id')"  onclick="getProjectTasks('REPLACEROWIDtask1Id','REPLACEROWIDprojectMember1Id')">  
+	              <option value=''>--select task--</option>
+	              </select>
+	             </div>
+	        </div>
+	        <div id="divadttTd2" style="display:none;">
+		    	   <span id="REPLACEROWIDtask1IdBillableTypeId" name="REPLACEROWIDtask1IdBillableTypeId" ></span>	
+	   		</div>
+	   		 <div id="divadttTd10" style="display:none;">
+		    	  <div><input type="text" id="REPLACEROWIDticketNumber1Id" name="REPLACEROWIDticketNumber1Id" onblur="setTaskNumber('ENTRYINDEX','REPLACEROWIDticketNumber1Id');" class="timeTick"></div>	
+	   		</div>
+	   		<div id="divadttTd11" style="display:none;">
+		    	  <div><b>New</b></div>	
+	   		</div>
+	   		
+	   		
+	        <div id="divadttTd3" style="display:none;">
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
 				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
 				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
-	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
-	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
-                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-				  <input type="text" disabled onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay2Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-                  <div class="timesheet_comm">
-                      <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment2Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDcomment2Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea2Id" ></textarea></span></div>
-        </div>
-        <div id="divadttTd5" style="display:none;">
-                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
-				   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
-				   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-	               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
-	               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
-	               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
-                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-				  <input type="text" onblur='editMe(this);' disabled  id="REPLACEROWIDtimeSheetDay3Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-                  <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment3Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDcomment3Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea3Id"></textarea></span></div>
-        </div>
-        <div id="divadttTd6" style="display:none;">
-                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
-				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
-				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
-	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
-	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-				  <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay4Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-                  <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment4Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDcomment4Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea4Id"></textarea></span></div>           
-        </div>
-        <div id="divadttTd7" style="display:none;">
-                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
-				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
-				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
-	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
-	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-				  <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay5Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-                  <div class="timesheet_comm">
-                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment5Id');"></i>
-                  <span class="teskcomment" id="REPLACEROWIDcomment5Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea5Id"></textarea></span></div>  
-    	 </div>
-         <div id="divadttTd8" style="display:none;">
-                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
-				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
-				   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
-	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
-	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-			     <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay6Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-                 <div class="timesheet_comm">
-                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment6Id');"></i>
-                 <span class="teskcomment" id="REPLACEROWIDcomment6Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea6Id"></textarea></span></div>
-         </div>
-         <div id="divadttTd9" style="display:none;">
-                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
-				 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
-				 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
-                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
-                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
-                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
-                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
-	             <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
-			     <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay7Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-                 <div class="timesheet_comm">
-                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment7Id');"></i>
-                 <span class="teskcomment" id="REPLACEROWIDcomment7Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea7Id"></textarea></span></div>            
-    	 </div>
-
- <script>
+		    	   <input type="text" disabled onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay1Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	               <div class="timesheet_comm">
+	                <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment1Id');"></i>
+	                <span class="teskcomment" id="REPLACEROWIDcomment1Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea1Id" ></textarea></span>
+	               </div>
+	   		</div>
+	        <div id="divadttTd4" style="display:none;">
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+					  <input type="text" disabled onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay2Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	                  <div class="timesheet_comm">
+	                      <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment2Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDcomment2Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea2Id" ></textarea></span></div>
+	        </div>
+	        <div id="divadttTd5" style="display:none;">
+	                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+					   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+					   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+	                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+		               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+		               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+		               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+	                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+					  <input type="text" onblur='editMe(this);' disabled  id="REPLACEROWIDtimeSheetDay3Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	                  <div class="timesheet_comm">
+	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment3Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDcomment3Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea3Id"></textarea></span></div>
+	        </div>
+	        <div id="divadttTd6" style="display:none;">
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+					  <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay4Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	                  <div class="timesheet_comm">
+	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment4Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDcomment4Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea4Id"></textarea></span></div>           
+	        </div>
+	        <div id="divadttTd7" style="display:none;">
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+					  <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay5Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	                  <div class="timesheet_comm">
+	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment5Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDcomment5Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea5Id"></textarea></span></div>  
+	    	 </div>
+	         <div id="divadttTd8" style="display:none;">
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+					   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+				     <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay6Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	                 <div class="timesheet_comm">
+	                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment6Id');"></i>
+	                 <span class="teskcomment" id="REPLACEROWIDcomment6Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea6Id"></textarea></span></div>
+	         </div>
+	         <div id="divadttTd9" style="display:none;">
+	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
+					 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskName" />
+					 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.taskType"/>
+	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].projectMemberId"/>
+	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
+	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetStatus" /> 
+	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
+		             <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
+				     <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay7Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
+	                 <div class="timesheet_comm">
+	                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment7Id');"></i>
+	                 <span class="teskcomment" id="REPLACEROWIDcomment7Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea7Id"></textarea></span></div>            
+	    	 </div>
+	    	 
+	    	  <!--  Add Attachments Divs  ####-->
+              <%-- <div id="divComentTd0" style="display:none;">  
+                      <div class="timeAdd">
+                       <select id="REPLACEROWIDattProjMemberId"  class="form-control input-sm" disabled name="timsheetAttachments[REPLACEROWID].projectMemberId"  field-name="Project">  
+			               <option value=''>--select Project--</option>
+			               <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
+				                   <option value='${pMember.id}'>${pMember.projectName} </option> 
+				            </c:forEach>
+		                </select>
+                        <input type="button" value="" onClick="removeTimeSheetCommentRow('REPLACEROWID')" class="timeRemoveBtn"/>
+                      </div> 
+		             
+	          </div>
+	          <div id="divComentTd1" style="display:none;">  
+	                <div id="attachmentInnerDivREPLACEROWIDId">
+	                    <input type='hidden' name='REPLACEROWIDmaxAttDivRowNumber' id='REPLACEROWIDmaxAttDivRowNumber'  value='1' />
+	                     <div id="REPLACEROWIDAttchmentDiv0Id" class="addRowBtn">
+						  <div class="input-group col-md-12" style="margin:0 auto">
+							<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+							  <input style="display: none;" multiple  id="REPLACEROWIDdocFile0"  onchange="validateUploadFile('REPLACEROWID','0',this);"  class="upload" type="file">
+							  </span></label>
+							<input class="form-control input-sm" id="REPLACEROWIDuploadFile0" placeholder="Attachment" type="text">
+						  </div>
+						  <input type="button" value="" onclick="addAttachmentRow('REPLACEROWID');" class="addRowIcon"/>
+					   </div>	
+				   </div>
+	          </div>
+	          <div id="divComentTd2" style="display:none;">   
+	                   <input type="text" name="timsheetAttachments[REPLACEROWID].weekComment" class="form-control input-sm" placeholder="Comment"  />
+	          </div>
+	          
+	          
+	          <div id="divAttachmentTd0" style="display:none;">
+		           <div id="COMMENTROWIDAttchmentDivREPLACEROWIDId" class="addRowBtn">
+						   <div class="input-group col-md-12" style="margin:0 auto">
+							<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+							  <input style="display: none;" multiple  id="COMMENTROWIDdocFileREPLACEROWID"  onchange="validateUploadFile('COMMENTROWID','REPLACEROWID',this);"  class="upload" type="file">
+							  </span></label>
+							<input class="form-control input-sm" id="COMMENTROWIDuploadFileREPLACEROWID" placeholder="Attachment" type="text">
+						   </div>
+						   <input type="button" value="" onclick="removeAttRow('COMMENTROWID','REPLACEROWID');" class="addRowIcon removeIcon"/>
+					</div>	
+		    </div>	 --%>
+   <script>
 	function timesheetEntriesDivByTimeSubFrequency(currentTimeSubFrequency){ 
 	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	               var invoiceFrequency = $("#invoiceFrequency").val();
@@ -1061,7 +1143,60 @@ function withdrawMyTimesheet(){
 }
 </script>
 
-
+<script>
+  function addAttachmentRow(rowNum){
+	  var attRowNum = $("#"+rowNum+"maxAttDivRowNumber").val();
+	  var maxRowNum = parseInt(attRowNum);
+	  $("#"+rowNum+"maxAttDivRowNumber").val(maxRowNum+1);
+	  var divadAttStr =  document.getElementById("divAttachmentTd0").innerHTML;
+	  divadAttStr = divadAttStr.replace(/COMMENTROWID/g, ( parseInt(rowNum)));
+	  divadAttStr = divadAttStr.replace(/REPLACEROWID/g, (maxRowNum));
+	  $("#attachmentInnerDiv"+parseInt(rowNum)+"Id").append(divadAttStr); 
+  }
+</script>
+<script>
+  function removeAttRow(comNum,rowNum){
+	 $("#"+comNum+"AttchmentDiv"+rowNum+"Id").remove();
+  }
+</script>
+<script>
+  function removeTimeSheetCommentRow(rowId){
+		 document.getElementById("timesheetAttRow"+rowId).style.display = 'none';
+		 document.getElementById("timesheetAttRow"+rowId).value= '';
+		 var  rId = "timesheetAttRow"+rowId;
+		  var r = document.getElementById("attTimesheet").rows[rId];
+          var count = (r.cells.length);
+	       for(i=0;i<count;i++){
+	        r.deleteCell(0);
+	      } 
+  }
+</script>
+<script>
+   function addTimeSheetCommentRow() { 
+	    var tbl = document.getElementById("attTimesheet");
+		var rowNum = $("#maxAttRowNumber").val();
+		var maxRowNum = parseInt(rowNum);
+		$("#maxAttRowNumber").val(maxRowNum+1); 
+		var row = tbl.insertRow(maxRowNum);
+		row.setAttribute("id", "timesheetAttRow"+maxRowNum);
+		 
+		  
+		var cell0 = row.insertCell(0);
+		var divadcmTd0Str = document.getElementById("divComentTd0").innerHTML;
+		divadcmTd0Str = divadcmTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
+		cell0.innerHTML = divadcmTd0Str;
+		
+		var cell1 = row.insertCell(1);
+		var divadcmTd1Str = document.getElementById("divComentTd1").innerHTML;
+		divadcmTd1Str = divadcmTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
+		cell1.innerHTML = divadcmTd1Str;
+		
+		var cell2 = row.insertCell(2);
+		var divadcmTd2Str = document.getElementById("divComentTd2").innerHTML;
+		divadcmTd2Str = divadcmTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+		cell2.innerHTML = divadcmTd2Str;
+   }
+</script>
 <!-- this script is for add row functionality at Timesheet screen -->
 <script>
 var validationSettings = {
@@ -1070,6 +1205,10 @@ var validationSettings = {
 		scrollToTopOnError : true,
 		dateFormat : 'yyyy/mm/dd' 
 }; 
+
+//removeTimeSheetCommentRow
+/* addTimeSheetCommentRow
+	divComentTd0 */
 function addTimeSheetRow() {
 	/*  $('#0docFile').removeAttr('data-validation');
 	 $('#0docFile').attr("data-validation-optional","true");  */
@@ -1408,13 +1547,7 @@ function addTimeSheetRow() {
 
 <!-- this script is for remove timesheet -->
 <script type="text/javascript">	
-
 function removeTimeSheetRow(rowId) { 
-	
-			var rowNum = $("#maxRowNumber").val();
-			var maxRowNum = parseInt(rowNum);
-			/* $("#maxRowNumber"+submissionId).val(maxRowNum - 1);  */
-			
 			 document.getElementById("timesheetRow"+rowId).style.display = 'none';
 			 document.getElementById("timesheetRow"+rowId).value= '';
 			 var  rId = "timesheetRow"+rowId;
@@ -1446,39 +1579,39 @@ function editMe(local){
 		 var min1 = minutes.charAt(0);
 		 var min2 = minutes.charAt(1);
 		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-			 $("#"+id).val("0"+hours1+":00");
-			setTotals();
-			 // checkHours(); 
+			  $("#"+id).val("0"+hours1+":00");
+			  setTotals();
+			  checkHours(); 
 		 }
 		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val("0"+hours2+":00");
-			setTotals();
-			//  checkHours(); 
+			 setTotals();
+			 checkHours(); 
 		 }
 		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val("00:"+min1+"0");
-			setTotals();
-			 // checkHours(); 
+			 setTotals();
+			 checkHours(); 
 		 }
 		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
 			 $("#"+id).val("00:0"+min2);
-			setTotals();
-			 // checkHours(); 
+			  setTotals();
+			  checkHours(); 
 		 }
 		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val(hours+":00");
 			 setTotals();
-			// checkHours(); 
+			checkHours(); 
 		 }
 		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val(hours+":"+"0"+min1);
 			setTotals();
-			 // checkHours(); 
+			  checkHours(); 
 		 }
 		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
 			 $("#"+id).val(hours+":"+"0"+min2);
 			 setTotals();
-			 // checkHours(); 
+			 checkHours(); 
 		 }
 		 else if(!isNaN(hours)&& !isNaN(minutes)){
 			  var hrmin= hours * 60;
@@ -1493,11 +1626,11 @@ function editMe(local){
 			  }
 			  $("#"+id).val(hours+":"+minutes);
 			 setTotals();
-			  // checkHours(); 
+			   checkHours(); 
 		 }else if(isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
 		     $("#"+id).val("00:00");
 		    setTotals();
-		     // checkHours(); 
+		     checkHours(); 
 		 }
 		 
 		 /* else{
@@ -1627,6 +1760,7 @@ function checkHours(){
    }
 
 </script>
+
 <script>
    function rowRemoveError(){ 
 	     var rowNum = $("#maxRowNumber").val();
@@ -1692,29 +1826,31 @@ function validate_fileupload(fileName)
 </script>
 
 <script type="text/javascript">
-function validateUploadFile(id)
+function validateUploadFile(rowId,attNumber,item)
 {
-	  var selectedFile = $('#'+id+'docFile').val();
-	  if(validate_fileupload(selectedFile)){
-		   var docSize = $('#'+id+'docFile')[0].files[0].size;
-	       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
+	$('#'+rowId+'uploadFile'+attNumber).val(item.value.replace(/C:\\fakepath\\/i, ''));
+	  //var selectedFile = $('#'+rowId+'uploadFile'+attNumber).val();
+	 /*  if(validate_fileupload(selectedFile)){ */
+		 //  var docSize = $('#'+rowId+'docFile'+attNumber)[0].files[0].size;
+		   fileUpload(''+rowId+'docFile'+attNumber, "timesheetDocuments", "timesheet_form","timsheetAttachments["+rowId+"].fileInfo","","");
+	      // $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	     /*  if(docSize > 2097152){ 
 	    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
 	    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
 			  $('#'+id+'docFile').attr('record-exist','yes');
 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	      }else{
+	     }else{
 	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
    		 	 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
    		 	 fileUpload(""+id+"docFile", "timesheetDocuments", "timesheet_form","timesheetSubmission.fileInfo","","");
-	      }
-	  }
-	  else{
+	      } */
+	 // }
+	 /*  else{
 		      $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
 		      $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
 			  $('#'+id+'docFile').attr('record-exist','yes');
 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Invalid Format'); 
-	  }
+	  }  */
 	
 }
 </script>
@@ -1826,7 +1962,8 @@ function newSaveTimesheet(status){
 			
 		 }	
      }); */
-     rowValidation();
+     checkHours();
+     validateTimesheetHours();
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1854,6 +1991,62 @@ function newSaveTimesheet(status){
 			return false;
 	   }  
 }
+</script>
+<!-- if(result != "" && result != null && result != 'undefined'){
+		//showError(result+" hours should not be more than 24");
+		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
+		$("#timeSheetErrorMsg").removeAttr('style');
+		$("#timeSheetErrorMsg").attr('style','display:block;');
+		$("#timeSheetErrorMsg").empty();
+		$("#timeSheetErrorMsg").append(outPut);
+		var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
+		$("#hideError").empty();
+		$("#hideError").append(error);
+	 }else{
+	    $("#timeSheetErrorMsg").removeAttr('style');
+	    $("#timeSheetErrorMsg").attr('style','display:none;');
+		$("#timeSheetErrorMsg").empty();
+		$("#hideError").empty();
+	}  -->
+<script>
+
+function validateTimesheetHours(){
+	 var total = $("#grandTotal").val();
+	 var wokingHoursPerWk ='${minimumWorkingHoursPerWeek}'; 
+	 if(total != "" && total != null && total != 'undefined'){
+		 total = total.replace(":",".")
+		 var grandTotal = parseFloat(total);
+		 if(grandTotal < wokingHoursPerWk){
+			    var outPut = "<p> Week Total Hours Should be Minimum "+wokingHoursPerWk+" <b>X</b></p>";
+				$("#timeSheetErrorMsg").removeAttr('style');
+				$("#timeSheetErrorMsg").attr('style','display:block;');
+				$("#timeSheetErrorMsg").empty();
+				$("#timeSheetErrorMsg").append(outPut);
+				var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
+				$("#hideError").empty();
+				$("#hideError").append(error); 
+		 }else{
+			    $("#timeSheetErrorMsg").removeAttr('style');
+			    $("#timeSheetErrorMsg").attr('style','display:none;');
+				$("#timeSheetErrorMsg").empty();
+				$("#hideError").empty();
+			}
+		 
+		 $(".time_pop b").click(function(){
+				$("#timeSheetErrorMsg").removeAttr('style');
+				$("#timeSheetErrorMsg").attr('style','display:none;');
+			    $("#timeSheetErrorMsg").empty();
+			}); 
+		 
+	 }
+			
+	
+}
+
+
+
+
+
 </script>
 <script type="text/javascript">
 function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMembersId,from){

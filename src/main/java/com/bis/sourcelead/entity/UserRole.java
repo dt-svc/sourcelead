@@ -129,6 +129,11 @@ public class UserRole implements Serializable {
     
     @Column(name = "LOGIN_SECURITY")
 	private String loginSecurity;
+    
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "GRADE_ID", nullable = false)
+	private AssociateGrades gradeId;
 
 	@Transient
 	@JsonProperty
@@ -198,6 +203,10 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	List<User> allReportingManagers;
+	
+	@Transient
+	@JsonProperty
+	List<AssociateGrades> gradesList;
 	
 	@Transient
 	@JsonProperty
@@ -334,6 +343,10 @@ public class UserRole implements Serializable {
 	
 	@Transient
 	private String employeMentType; 
+	
+	@Transient
+	@JsonProperty
+	private String candidateDesignation;
 
 	@Transient
 	@JsonProperty
@@ -992,6 +1005,30 @@ public class UserRole implements Serializable {
 
 	public void setAssignedUsersCountToResourceManager(Integer assignedUsersCountToResourceManager) {
 		this.assignedUsersCountToResourceManager = assignedUsersCountToResourceManager;
+	}
+
+	public String getCandidateDesignation() {
+		return candidateDesignation;
+	}
+
+	public void setCandidateDesignation(String candidateDesignation) {
+		this.candidateDesignation = candidateDesignation;
+	}
+
+	public AssociateGrades getGradeId() {
+		return gradeId;
+	}
+
+	public void setGradeId(AssociateGrades gradeId) {
+		this.gradeId = gradeId;
+	}
+
+	public List<AssociateGrades> getGradesList() {
+		return gradesList;
+	}
+
+	public void setGradesList(List<AssociateGrades> gradesList) {
+		this.gradesList = gradesList;
 	}
 
 	

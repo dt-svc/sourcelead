@@ -50,6 +50,7 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -277,6 +278,11 @@ public class UserServiceImpl implements UserService {
 	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
 	   if(userRole == null){
 		   userRole = getUserRoleDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
+		   
+		   if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				 userRole.setDesignation(addUserDTO.getDesignation());
+		    }
+		   
 		   if(null == user.getId()){
 				userRole.setIsPrimary(1);
 				 if(sourceType.equalsIgnoreCase("PROJECTS")){
@@ -295,6 +301,10 @@ public class UserServiceImpl implements UserService {
 			if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
 				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
 			}
+			
+		 if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				 userRole.setDesignation(addUserDTO.getDesignation());
+		    }
 	   }
 		
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
@@ -302,6 +312,12 @@ public class UserServiceImpl implements UserService {
 			userRole.setIsGlobal(Constants.YES);
 		}else {
 			userRole.setIsGlobal(Constants.NO);	
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getGrade())) {
+			AssociateGrades grades = new AssociateGrades();
+			grades.setId(Long.valueOf(addUserDTO.getGrade()));
+			userRole.setGradeId(grades);
 		}
 		userRoleList.add(userRole);
 		user.setUserRole(userRoleList);

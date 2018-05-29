@@ -37,6 +37,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String isGlobalAccess;
 		
+		private String grade;
+		
 		@Required(desc = "reportingManager")
 		private String reportingManager;
 		
@@ -744,6 +746,14 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setAssignResourceManagers(String assignResourceManagers) {
 			this.assignResourceManagers = assignResourceManagers;
+		}
+
+		public String getGrade() {
+			return grade;
+		}
+
+		public void setGrade(String grade) {
+			this.grade = grade;
 		}
 		
 }
