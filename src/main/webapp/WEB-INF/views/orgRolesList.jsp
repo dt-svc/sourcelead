@@ -145,6 +145,38 @@ padding-right: 254px; padding-top: 10px;
 			
 			
 			<div class="form-group clearfix minHeight40">
+		           <label class="col-md-4">Mid Wage/Salary</label>
+		           
+		          <div class="col-md-2 padding_right dropdown-select drpdownCurrency">
+					<select id="midSalRateCurrency" name="midSalRateCurrency">
+						<option ${SourceLeadWeb_currencyCode  == 'INR' ? 'selected' : ''} value="INR">INR</option>
+						<option ${SourceLeadWeb_currencyCode  == 'AUD' ? 'selected' : ''} value="AUD">AUD</option>
+						<option ${SourceLeadWeb_currencyCode  == 'USD' ? 'selected' : ''} value="USD">USD</option>
+						<option ${SourceLeadWeb_currencyCode  == 'GBP' ? 'selected' : ''} value="GBP">GBP</option>
+						<option ${SourceLeadWeb_currencyCode  == 'SGD' ? 'selected' : ''} value="SGD">SGD</option>
+						<option ${SourceLeadWeb_currencyCode  == 'EUR' ? 'selected' : ''} value="EUR">EUR</option>
+					</select>
+				</div>
+	
+		          <div class="col-md-3 padding_right padding_left inputRate">
+		                 <input type="text" id="midSalary" name="midSalary" class="form-control" data-validation-optional="true"/>
+		           </div>
+		           
+		          <div class="col-md-3 padding_left drpdownMonthly dropdown-select">
+					<select id="midSalRateType" name="midSalRateType">
+					<option value="Hourly">Hourly</option>
+					<option value="Weekly">Weekly</option>
+					<option value="Bi-weekly">Bi-weekly</option>
+					<option value="Semi-Monthly">Semi-Monthly</option>
+					<option value="Monthly">Monthly</option>
+					<option value="Bi-Monthly">Bi-Monthly</option>
+					<option value="Yearly">Yearly</option>
+					</select>
+				</div>
+			</div>
+			
+			
+			<div class="form-group clearfix minHeight40">
 		           <label class="col-md-4">Max Wage/Salary</label>
 		           
 		          <div class="col-md-2 padding_right dropdown-select drpdownCurrency">
@@ -179,7 +211,7 @@ padding-right: 254px; padding-top: 10px;
 		</div>
 			<div class="clearfix"></div>
 	        <div class="modal-footer">
-	         <button type="button" class="btn btn-primary"  onclick="closeGradePopUp();" >Cancel</button>
+	         <button type="button" class="btn btn-danger"  onclick="closeGradePopUp();" >Cancel</button>
 	          <button type="button" class="btn btn-primary" id="saveGradeButton" onclick="saveGrade();" >Save</button>
 	        </div>
          </div>
