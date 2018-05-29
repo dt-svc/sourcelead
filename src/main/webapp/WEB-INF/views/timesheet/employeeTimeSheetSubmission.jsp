@@ -328,7 +328,7 @@
 						            </div>
 						            </div>
 									    <div class="timesheet_bot">
-							            <%-- <div class="commentFile">
+							           <%-- <div class="commentFile">
 											<h2>Attachmets & Comments <i class="fa fa-plus Cursor" onclick="addTimeSheetCommentRow()"></i> </h2>
 											<div class="">
 											   <input type='hidden' name='maxAttRowNumber' id='maxAttRowNumber'  value='1' />
@@ -336,7 +336,7 @@
 													<tr id="timesheetAttRow0">
 													   <td>
 													       <div class="timeAdd">
-														        <select id="attProjMemberId" name="attProjMemberId"  class="form-control input-sm" field-name="Project">
+														        <select id="attProjMemberId" name="timsheetAttachments[0].projectMemberId"  class="form-control input-sm" field-name="Project">
 																	<option value=''>--select project--</option> 
 															        <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
 																	     <option value='${pm.id}'>${pm.projectName} </option> 
@@ -356,22 +356,21 @@
 																	<div id="0AttchmentDiv0Id" class="addRowBtn">
 																	  <div class="input-group col-md-12" style="margin:0 auto">
 																		<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
-																		  <input style="display: none;" multiple id="uploadBtn" class="upload" type="file">
+																		  <input style="display: none;" id="0docFile0" multiple  onchange="validateUploadFile('0','0',this);" class="upload" type="file">
 																		  </span></label>
-																		<input class="form-control input-sm" id="uploadFile" placeholder="Attachment" type="text">
+																		<input class="form-control input-sm" id="0uploadFile0"   placeholder="Attachment" type="text">
 																	  </div>
 																	  <input type="button" value="" onclick="addAttachmentRow('0');" class="addRowIcon"/>
 																	</div>
 															</div>
 														</td>
 														<td>
-															<input type="text" class="form-control input-sm" placeholder="Comment" />
+															<input type="text" name="timsheetAttachments[0].weekComment" class="form-control  input-sm" placeholder="Comment" />
 														</td>
 													</tr>						
 												</table>
 											</div>
-							
-							            </div>     --%> 
+							            </div>  --%>   
 							    	   <div class="timesheet_week_comm">
 							            <div class="totalWrap">
 							                 <ul>
@@ -533,9 +532,9 @@
 	    	 </div>
 	    	 
 	    	  <!--  Add Attachments Divs  ####-->
-              <div id="divComentTd0" style="display:none;">  
+              <%-- <div id="divComentTd0" style="display:none;">  
                       <div class="timeAdd">
-                       <select id="REPLACEROWIDattProjMemberId"  class="form-control input-sm" name="REPLACEROWIDattProjMemberId"  field-name="Project">  
+                       <select id="REPLACEROWIDattProjMemberId"  class="form-control input-sm" disabled name="timsheetAttachments[REPLACEROWID].projectMemberId"  field-name="Project">  
 			               <option value=''>--select Project--</option>
 			               <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
 				                   <option value='${pMember.id}'>${pMember.projectName} </option> 
@@ -551,16 +550,16 @@
 	                     <div id="REPLACEROWIDAttchmentDiv0Id" class="addRowBtn">
 						  <div class="input-group col-md-12" style="margin:0 auto">
 							<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
-							  <input style="display: none;" multiple id="uploadBtn" class="upload" type="file">
+							  <input style="display: none;" multiple  id="REPLACEROWIDdocFile0"  onchange="validateUploadFile('REPLACEROWID','0',this);"  class="upload" type="file">
 							  </span></label>
-							<input class="form-control input-sm" id="uploadFile" placeholder="Attachment" type="text">
+							<input class="form-control input-sm" id="REPLACEROWIDuploadFile0" placeholder="Attachment" type="text">
 						  </div>
 						  <input type="button" value="" onclick="addAttachmentRow('REPLACEROWID');" class="addRowIcon"/>
 					   </div>	
 				   </div>
 	          </div>
 	          <div id="divComentTd2" style="display:none;">   
-	                   <input type="text" class="form-control input-sm" placeholder="Comment" />
+	                   <input type="text" name="timsheetAttachments[REPLACEROWID].weekComment" class="form-control input-sm" placeholder="Comment"  />
 	          </div>
 	          
 	          
@@ -568,13 +567,13 @@
 		           <div id="COMMENTROWIDAttchmentDivREPLACEROWIDId" class="addRowBtn">
 						   <div class="input-group col-md-12" style="margin:0 auto">
 							<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
-							  <input style="display: none;" multiple id="uploadBtn" class="upload" type="file">
+							  <input style="display: none;" multiple  id="COMMENTROWIDdocFileREPLACEROWID"  onchange="validateUploadFile('COMMENTROWID','REPLACEROWID',this);"  class="upload" type="file">
 							  </span></label>
-							<input class="form-control input-sm" id="uploadFile" placeholder="Attachment" type="text">
+							<input class="form-control input-sm" id="COMMENTROWIDuploadFileREPLACEROWID" placeholder="Attachment" type="text">
 						   </div>
 						   <input type="button" value="" onclick="removeAttRow('COMMENTROWID','REPLACEROWID');" class="addRowIcon removeIcon"/>
 					</div>	
-		    </div>	
+		    </div>	 --%>
    <script>
 	function timesheetEntriesDivByTimeSubFrequency(currentTimeSubFrequency){ 
 	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
@@ -1580,39 +1579,39 @@ function editMe(local){
 		 var min1 = minutes.charAt(0);
 		 var min2 = minutes.charAt(1);
 		 if(!isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
-			 $("#"+id).val("0"+hours1+":00");
-			setTotals();
-			 // checkHours(); 
+			  $("#"+id).val("0"+hours1+":00");
+			  setTotals();
+			  checkHours(); 
 		 }
 		 if(isNaN(hours1) && !isNaN(hours2) && isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val("0"+hours2+":00");
-			setTotals();
-			//  checkHours(); 
+			 setTotals();
+			 checkHours(); 
 		 }
 		 else if(isNaN(hours)  && !isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val("00:"+min1+"0");
-			setTotals();
-			 // checkHours(); 
+			 setTotals();
+			 checkHours(); 
 		 }
 		 else if(isNaN(hours)  && isNaN(min1) && !isNaN(min2)){
 			 $("#"+id).val("00:0"+min2);
-			setTotals();
-			 // checkHours(); 
+			  setTotals();
+			  checkHours(); 
 		 }
 		 else if(!isNaN(hours)  && isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val(hours+":00");
 			 setTotals();
-			// checkHours(); 
+			checkHours(); 
 		 }
 		 else if(!isNaN(hours)&& !isNaN(min1) && isNaN(min2)){
 			 $("#"+id).val(hours+":"+"0"+min1);
 			setTotals();
-			 // checkHours(); 
+			  checkHours(); 
 		 }
 		 else if(!isNaN(hours)&& isNaN(min1) && !isNaN(min2)){
 			 $("#"+id).val(hours+":"+"0"+min2);
 			 setTotals();
-			 // checkHours(); 
+			 checkHours(); 
 		 }
 		 else if(!isNaN(hours)&& !isNaN(minutes)){
 			  var hrmin= hours * 60;
@@ -1627,11 +1626,11 @@ function editMe(local){
 			  }
 			  $("#"+id).val(hours+":"+minutes);
 			 setTotals();
-			  // checkHours(); 
+			   checkHours(); 
 		 }else if(isNaN(hours1) && isNaN(hours2) && isNaN(min1) && isNaN(min2)){
 		     $("#"+id).val("00:00");
 		    setTotals();
-		     // checkHours(); 
+		     checkHours(); 
 		 }
 		 
 		 /* else{
@@ -1761,6 +1760,7 @@ function checkHours(){
    }
 
 </script>
+
 <script>
    function rowRemoveError(){ 
 	     var rowNum = $("#maxRowNumber").val();
@@ -1826,29 +1826,31 @@ function validate_fileupload(fileName)
 </script>
 
 <script type="text/javascript">
-function validateUploadFile(id)
+function validateUploadFile(rowId,attNumber,item)
 {
-	  var selectedFile = $('#'+id+'docFile').val();
-	  if(validate_fileupload(selectedFile)){
-		   var docSize = $('#'+id+'docFile')[0].files[0].size;
-	       $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
+	$('#'+rowId+'uploadFile'+attNumber).val(item.value.replace(/C:\\fakepath\\/i, ''));
+	  //var selectedFile = $('#'+rowId+'uploadFile'+attNumber).val();
+	 /*  if(validate_fileupload(selectedFile)){ */
+		 //  var docSize = $('#'+rowId+'docFile'+attNumber)[0].files[0].size;
+		   fileUpload(''+rowId+'docFile'+attNumber, "timesheetDocuments", "timesheet_form","timsheetAttachments["+rowId+"].fileInfo","","");
+	      // $("#"+id+"docFileuploadFileGroup").find('p.jquery_form_error_message').remove();
+	     /*  if(docSize > 2097152){ 
 	    	  $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
 	    	  $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
 			  $('#'+id+'docFile').attr('record-exist','yes');
 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	      }else{
+	     }else{
 	    	 $('input#'+id+'docFile').removeAttr( "record-exist record-exist-errormsg");
    		 	 $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
    		 	 fileUpload(""+id+"docFile", "timesheetDocuments", "timesheet_form","timesheetSubmission.fileInfo","","");
-	      }
-	  }
-	  else{
+	      } */
+	 // }
+	 /*  else{
 		      $('#'+id+'docFileuploadFileGroup').find('p.jquery_form_error_message').remove();
 		      $('#'+id+'docFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
 			  $('#'+id+'docFile').attr('record-exist','yes');
 			  $('#'+id+'docFile').attr('record-exist-errorMsg','Invalid Format'); 
-	  }
+	  }  */
 	
 }
 </script>
@@ -1960,7 +1962,8 @@ function newSaveTimesheet(status){
 			
 		 }	
      }); */
-     rowValidation();
+     checkHours();
+     validateTimesheetHours();
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1988,6 +1991,62 @@ function newSaveTimesheet(status){
 			return false;
 	   }  
 }
+</script>
+<!-- if(result != "" && result != null && result != 'undefined'){
+		//showError(result+" hours should not be more than 24");
+		var outPut = "<p>"+result+" hours should not be more than 24<b>X</b></p>";
+		$("#timeSheetErrorMsg").removeAttr('style');
+		$("#timeSheetErrorMsg").attr('style','display:block;');
+		$("#timeSheetErrorMsg").empty();
+		$("#timeSheetErrorMsg").append(outPut);
+		var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
+		$("#hideError").empty();
+		$("#hideError").append(error);
+	 }else{
+	    $("#timeSheetErrorMsg").removeAttr('style');
+	    $("#timeSheetErrorMsg").attr('style','display:none;');
+		$("#timeSheetErrorMsg").empty();
+		$("#hideError").empty();
+	}  -->
+<script>
+
+function validateTimesheetHours(){
+	 var total = $("#grandTotal").val();
+	 var wokingHoursPerWk ='${minimumWorkingHoursPerWeek}'; 
+	 if(total != "" && total != null && total != 'undefined'){
+		 total = total.replace(":",".")
+		 var grandTotal = parseFloat(total);
+		 if(grandTotal < wokingHoursPerWk){
+			    var outPut = "<p> Week Total Hours Should be Minimum "+wokingHoursPerWk+" <b>X</b></p>";
+				$("#timeSheetErrorMsg").removeAttr('style');
+				$("#timeSheetErrorMsg").attr('style','display:block;');
+				$("#timeSheetErrorMsg").empty();
+				$("#timeSheetErrorMsg").append(outPut);
+				var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
+				$("#hideError").empty();
+				$("#hideError").append(error); 
+		 }else{
+			    $("#timeSheetErrorMsg").removeAttr('style');
+			    $("#timeSheetErrorMsg").attr('style','display:none;');
+				$("#timeSheetErrorMsg").empty();
+				$("#hideError").empty();
+			}
+		 
+		 $(".time_pop b").click(function(){
+				$("#timeSheetErrorMsg").removeAttr('style');
+				$("#timeSheetErrorMsg").attr('style','display:none;');
+			    $("#timeSheetErrorMsg").empty();
+			}); 
+		 
+	 }
+			
+	
+}
+
+
+
+
+
 </script>
 <script type="text/javascript">
 function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMembersId,from){

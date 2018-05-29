@@ -17,8 +17,10 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
+import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsListDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -30,7 +32,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/app")
@@ -101,6 +102,18 @@ public List<ProjectMembers> getProjectMembersBasedOnProjectId(DayWiseTimesheetRe
 }
 
 
+/*@RequestMapping(value="/dayEntriesReportList")
+public ModelAndView getDayEntriesList(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws Exception {
+	ModelAndView model = new ModelAndView();
+	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	List<DayWiseTimesheetReoprtsListDTO>  listDto = dayEntryReportsService.getDayEntriesList(dayWiseTimesheetReoprtsDto,orgLocations, loginUser) ;
+	model.addObject("dayWiseTimesheetReoprtsList",listDto);
+	model.setViewName("timesheet/dayEntriesReportList");
+	return model;
+}*/
+
+
 @RequestMapping(value="/exportDaywiseTimesheetReport")
 public void exportDaywiseTimesheetReport(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request,HttpServletResponse response) throws Exception {
 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
@@ -108,17 +121,18 @@ public void exportDaywiseTimesheetReport(DayWiseTimesheetReoprtsDTO dayWiseTimes
 
 	File file = null;
 	if ("excel".equalsIgnoreCase(dayWiseTimesheetReoprtsDto.getExportType())) {
-		/*if(dayWiseTimesheetReoprtsDto.getTemplateType()!= null && dayWiseTimesheetReoprtsDto.getTemplateType().equalsIgnoreCase("proJectMembersExport")) {
-			file = dayEntryReportsService.exportDayEntryReportsWithoutProject(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
-		}else {*/
-			/*file = dayEntryReportsService.exportDayEntryReports(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);*/
-			file = dayEntryReportsService.exportDayEntryReportsTemplateOne(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
-		/*}*/
-		
-	} else {
-		file = null;
+		if(dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
+			file = dayEntryReportsService.exportDayEntryReportsWithoutProjectExcel(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
+		}else {
+			file = dayEntryReportsService.exportDayEntryReportsWithProjectExcel(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
+		}
+	} else if("pdf".equalsIgnoreCase(dayWiseTimesheetReoprtsDto.getExportType())){
+		if(!dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
+			file = dayEntryReportsService.exportDayEntryReportsWithoutProjectPdf(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
+		}else {
+			file = dayEntryReportsService.exportDayEntryReportsWithProjectPdf(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
+		}
 	}
-
 	if (file != null) {
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 		if (mimeType == null) {
