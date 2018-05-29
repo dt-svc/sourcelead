@@ -1296,8 +1296,8 @@ $(document).ready(function() {
 	$("#tab-1").show()
     $(".tabsMenu a").click(function(event) {
         event.preventDefault();
-        //$(this).parent().addClass("current");
-        //$(this).parent().siblings().removeClass("current");
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
         $(".tabsMenu_tabs_inn").not(tab).css("display", "none");
         $(tab).fadeIn();
