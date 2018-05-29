@@ -183,8 +183,6 @@ $(document).ready(function(){
 	}
  
  function closeGradePopUp() {
-	    $(".modal.paymentaccount-modal").fadeOut();
-	    $(".comMask").fadeOut();
 	    
 	    $('#gradeName').val('');
 	    $('#designation').val('');
@@ -208,6 +206,9 @@ $(document).ready(function(){
 	    $('#minSalDiv').find('p.jquery_form_error_message').remove();
 	    $('#midSalDiv').find('p.jquery_form_error_message').remove();
 	    $('#maxSalDiv').find('p.jquery_form_error_message').remove();
+	    
+	    $(".modal.paymentaccount-modal").fadeOut();
+	    $(".comMask").fadeOut();
 		
 	}
  </script>
