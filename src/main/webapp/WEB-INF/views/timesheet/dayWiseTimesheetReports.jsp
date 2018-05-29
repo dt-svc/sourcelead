@@ -258,7 +258,7 @@ function getProjectMemberFromProjectId(){
             		output = output + "<option value='" +item.id+ "'>"+item.candidateName+"</option>";
         		});
         	}
-        	#n        	$("#projectMemberList").empty();
+        	$("#projectMemberList").empty();
             $("#projectMemberList").append(output);
             $('#projectMemberList').trigger("chosen:updated");
         }
