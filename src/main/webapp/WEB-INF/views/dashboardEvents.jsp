@@ -6,6 +6,9 @@
 .chosen-container {
     width: 100% !important;
 }
+.add_inter  .customchosen-select .chosen-container {
+width: 100% !important;
+}
 .validationError p.jquery_form_error_message {
 width: 75px; padding: 0 !important;
 }
@@ -53,139 +56,196 @@ width: 75px; padding: 0 !important;
 <script type="text/javascript">
 window.onload = function() { 
 	getInterviewsandTasks();
+	getInterviewsDates();
 	}
+</script>
+
+<script>
+function getInterviewsDates(){
+	var sourceleadUrl ='${sourceleadUrl}';
+	var dates = {}
+	 $.ajax({
+		type: "POST",
+        url: sourceleadUrl+"/getInterviewsTaskDates?${_csrf.parameterName}=${_csrf.token}",
+        success: function(result) {
+        		if (result.response === "FAILED") {
+		    		showError(result.responseMessage);
+		    	} else if (result.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (result.response === "SUCCESS") {
+		    		var data = result.data;
+		    		if(data.length > 0){
+		          		 for(var i=0; i<data.length; i++){
+		          			dates[new Date(data[i]).getTime()]='visible';
+		          		 }
+		          	 }
+		          	eventCalendar(dates);
+		    	}else if (result.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    		showError("Operation failed, please try again");
+	    	}
+        }
+	}); 
+}
 </script>
 
 <script type="text/javascript">
 	function getInterviewsandTasks() {
 		var sourceleadUrl ='${sourceleadUrl}';
+		var date = '';
 		var date = $("#eventCalendar").val();
+		if(date == null || date == '' || date == 'undefined'){
+			date = new Date(); 
+			var month = parseInt(date.getMonth())+parseInt(1);
+			  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			  if(locationDate.match("yyyy-MM-dd")){
+			      date = date.getFullYear()+"-"+month+"-"+date.getDate();
+			  }if(locationDate.match("dd-MM-yyyy")){
+				  date = date.getDate()+"-"+month+"-"+date.getFullYear();
+			  }if(locationDate.match("MM-dd-yyyy")){
+				  date = month+"-"+date.getDate()+"-"+date.getFullYear();
+			  }if(locationDate.match("yyyy-dd-MM")){
+				  date = date.getFullYear()+"-"+date.getDate()+"-"+month;
+			  }
+		}
+		
+		
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getInterviewsandTasks?${_csrf.parameterName}=${_csrf.token}&dateRange="+date,
 	        success: function(data) {
-	        	 var json = JSON.parse(data);
-	        	 var result = "";
-	        	 var opt = "";
-	        	 $("#dayOfweek").text(json.dayOfweek);
-	        	 $("#selectedDate").text(json.selectedDate);
- 
-	        	 for(var i=0; i<json.interviewerList.length; i++)
-					{
-	        		 
-	        		 var report = json.interviewerList[i];
-	        			var clientName = "---";
-	        		 if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined' && report.interviewSourceType != 'INTERVIEW'){
- 		       			clientName = report.clientName;
- 		       		}
-	        		 
-	        		 result = result + '   <div class="clearfix">  ';
-	        		 result = result + '   <div class="eventList clearfix">  ';
-					 result = result + '      <div class="media">              ';
-					 result = result + '          <div class="media-left">     ';
-					 result = result + '              <div>'+report.startTimeStr+'</div>       ';
-					 result = result + '              <div>'+report.endTimeStr+'</div>        ';
-					 result = result + '          </div>                       ';
-					 result = result + '              <div class="media-body paddingLeft">   ';
-					 result = result + '                  <figure class="pull-left">         ';
-					 result = result + '                  <img src="resources/images/interview_icons.png" class="img-responsive" width="40">    ';
-					 result = result + '                  </figure>                                                                   ';
-					 result = result + '                      <div class="pull-left event_details form-horizontal">                   ';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Name:</label>'+report.candidateName+' </p>    ';
-					 result = result + '									 <div class="personalInfo pull-right">                                          ';
-					 result = result + ' 									<i class="fa fa-ellipsis-v" title="Email & Phone"></i>                         ';
-					 result = result + '										<div class="userdetails">                                                      ';
-					 result = result + ' 									<p><i class="fa fa-envelope"></i><label>'+report.candidateEmail+'</label></p>     ';
-					 result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
-					 result = result + ' 									</div>                                                                         ';
-					 result = result + ' 								</div>                                                                         ';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Job:</label> <a href="'+sourceleadUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Client:</label> '+clientName+'</p>    ';
-					 result = result + '                          <div class="feedBack"> ';
-					
-					 
-					  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
-                    	  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" >';
-						  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
-                        	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
-						  }else{
-							  result = result+'<i class="fa fa-handshake-o"></i>';
-						  }
-						  result = result+'</a>';
-                      }   
-					  
- 				 result = result + '                          </div>                                                                               ';
-					 result = result + '                      </div>                                                                                   ';
-					 result = result + '              </div>                                                                                           ';
-					 result = result + '      </div>   ';
-					 result = result+' <div id="feedbackInterviewerId"></div>';
-					 result = result + '  </div>                                                                                                       ';
-					}
-	        	 
-	        	 for(var i=0; i<json.tasksList.length; i++)
-					{
-	        		 var report = json.tasksList[i];
-	        		 var taskTime ="";
-	        		 var priority = "";
-	        		 var description="";
-	        		 if(report.taskTime != null && report.taskTime != '' && report.taskTime != 'undefined'){
-		        			taskTime = report.taskTime;
-		        		}
-	        		 if(report.priority != null && report.priority != '' &&  report.priority != 'undefined'){
-		        			priority = report.priority;
-		        		}
-	        		 else{
-		        			priority = "--";
-		        		}
-	        		 if(report.description != null && report.description != '' &&  report.description != 'undefined'){
-	        			 description = report.description;
-		        		}
-	        		 else{
-	        			 description = "--";
-		        		}
-					     opt = opt + '  <div class="eventList clearfix">       ';
-					 	 opt = opt + '     <div class="media">                 ';
-					 	 opt = opt + '         <div class="media-left">        ';
-					 	 opt = opt + '             <div>'+taskTime+'</div>           ';
-					 	 opt = opt + '         </div>                          ';
-					 	 opt = opt + '             <div class="media-body paddingLeft"> ';
-					 	 opt = opt + '                 <figure class="pull-left">       ';
-					 	 opt = opt + '                 <img src="resources/images/task-icon.png" class="img-responsive" width="40">    ';
-					 	 opt = opt + '                 </figure>                                                             ';
-					 	 opt = opt + '                     <div class="pull-left event_details">                             ';
-					 	 opt = opt + '                         <p><label class="text-muted small col-md-2">Subject:</label> '+report.subject+'</p>         ';
-					 	 opt = opt + '                     <div class="clearfix"></div>            ';
-					 	 opt = opt + '                     <div class="row">            ';
-					 	 opt = opt + '                     <div class="col-md-5">            ';
-					 	 opt = opt + '                         <p class="text-danger"><label class="text-muted small col-md-6" style="width:45%;">Priority:</label> '+priority+'</p>   ';
-					 	 opt = opt + '                     </div>            ';
-					 	 opt = opt + '                     <div class="col-md-5">            ';
-					 	 opt = opt + '                         <p><label class="text-muted small col-md-6">Status:</label> '+report.taskStatus+'</p>                    ';
-					 	 opt = opt + '                     </div>            ';
-					 	 
-					 	opt = opt + '                     </div>            ';
-					 	 
-					 	opt= opt+ '                         <p><label class="text-muted small col-md-2" style="width:15.7%;">Des.:</label><div class="col-md-10 paddingLeft">'+description+'</div></p>';
-					 	opt =opt + '                     </div>            ';
-					 	opt =opt + '             </div>                    ';
-					 	opt =opt + '     </div>                            ';
-					 	opt =opt + ' </div>                                ';
-					}
-	        	 if(json.tasksList.length<=0 && json.interviewerList.length<=0){
-			        	result = result + '<div class="row">                                            ';
-						result = result + '	<div class="dataTables_empty" style="border: 1px solid #ddd;margin: 0px 15px;">                                     ';
-						result = result + '	</div>                                                      ';
-						result = result + ' </div>                                                    ';
-						result = result + ' </div>                                                    ';
-	        	 }
-	        	 result = result + '<div class="mask_inner"></div>';
-	        	 $("#interviewDiv").empty();
-	           	 $("#interviewDiv").append(result);
-	           	 $("#taskDiv").empty();
-	           	 $("#taskDiv").append(opt);
-	        }
+	        	if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+		        	 var json = data.object;
+		        	 var result = "";
+		        	 var opt = "";
+		        	 $("#dayOfweek").text(json.dayOfweek);
+		        	 $("#selectedDate").text(json.selectedDate);
+	 
+		        	 for(var i=0; i<json.interviewerList.length; i++)
+						{
+		        		 
+		        		 var report = json.interviewerList[i];
+		        			var clientName = "---";
+		        		 if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined' && report.interviewSourceType != 'INTERVIEW'){
+	 		       			clientName = report.clientName;
+	 		       		}
+		        		 
+		        		 result = result + '   <div class="clearfix">  ';
+		        		 result = result + '   <div class="eventList clearfix">  ';
+						 result = result + '      <div class="media">              ';
+						 result = result + '          <div class="media-left">     ';
+						 result = result + '              <div>'+report.startTimeStr+'</div>       ';
+						 result = result + '              <div>'+report.endTimeStr+'</div>        ';
+						 result = result + '          </div>                       ';
+						 result = result + '              <div class="media-body paddingLeft">   ';
+						 result = result + '                  <figure class="pull-left">         ';
+						 result = result + '                  <img src="/resources/images/interview_icons.png" class="img-responsive" width="40">    ';
+						 result = result + '                  </figure>                                                                   ';
+						 result = result + '                      <div class="pull-left event_details form-horizontal">                   ';
+						 result = result + '                          <p><label class="text-muted small col-md-2">Name:</label>'+report.candidateName+' </p>    ';
+						 result = result + '									 <div class="personalInfo pull-right">                                          ';
+						 result = result + ' 									<i class="fa fa-ellipsis-v" title="Email & Phone"></i>                         ';
+						 result = result + '										<div class="userdetails">                                                      ';
+						 result = result + ' 									<p><i class="fa fa-envelope"></i><label>'+report.candidateEmail+'</label></p>     ';
+						 result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
+						 result = result + ' 									</div>                                                                         ';
+						 result = result + ' 								</div>                                                                         ';
+						 result = result + '                          <p><label class="text-muted small col-md-2">Job:</label> <a href="'+sourceleadUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
+						 result = result + '                          <p><label class="text-muted small col-md-2">Client:</label> '+clientName+'</p>    ';
+						 result = result + '                          <div class="feedBack"> ';
+						
+						 
+						  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
+	                    	  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" >';
+							  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
+	                        	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
+							  }else{
+								  result = result+'<i class="fa fa-handshake-o"></i>';
+							  }
+							  result = result+'</a>';
+	                      }   
+						  
+	 				 result = result + '                          </div>                                                                               ';
+						 result = result + '                      </div>                                                                                   ';
+						 result = result + '              </div>                                                                                           ';
+						 result = result + '      </div>   ';
+						 result = result+' <div id="feedbackInterviewerId"></div>';
+						 result = result + '  </div>                                                                                                       ';
+						}
+		        	 
+		        	 for(var i=0; i<json.tasksList.length; i++)
+						{
+		        		 var report = json.tasksList[i];
+		        		 var taskTime ="";
+		        		 var priority = "";
+		        		 var description="";
+		        		 if(report.taskTime != null && report.taskTime != '' && report.taskTime != 'undefined'){
+			        			taskTime = report.taskTime;
+			        		}
+		        		 if(report.priority != null && report.priority != '' &&  report.priority != 'undefined'){
+			        			priority = report.priority;
+			        		}
+		        		 else{
+			        			priority = "--";
+			        		}
+		        		 if(report.description != null && report.description != '' &&  report.description != 'undefined'){
+		        			 description = report.description;
+			        		}
+		        		 else{
+		        			 description = "--";
+			        		}
+						     opt = opt + '  <div class="eventList clearfix">       ';
+						 	 opt = opt + '     <div class="media">                 ';
+						 	 opt = opt + '         <div class="media-left">        ';
+						 	 opt = opt + '             <div>'+taskTime+'</div>           ';
+						 	 opt = opt + '         </div>                          ';
+						 	 opt = opt + '             <div class="media-body paddingLeft"> ';
+						 	 opt = opt + '                 <figure class="pull-left">       ';
+						 	 opt = opt + '                 <img src="/resources/images/task-icon.png" class="img-responsive" width="40">    ';
+						 	 opt = opt + '                 </figure>                                                             ';
+						 	 opt = opt + '                     <div class="pull-left event_details">                             ';
+						 	 opt = opt + '                         <p><label class="text-muted small col-md-2">Subject:</label> '+report.subject+'</p>         ';
+						 	 opt = opt + '                     <div class="clearfix"></div>            ';
+						 	 opt = opt + '                     <div class="row">            ';
+						 	 opt = opt + '                     <div class="col-md-5">            ';
+						 	 opt = opt + '                         <p class="text-danger"><label class="text-muted small col-md-6" style="width:45%;">Priority:</label> '+priority+'</p>   ';
+						 	 opt = opt + '                     </div>            ';
+						 	 opt = opt + '                     <div class="col-md-5">            ';
+						 	 opt = opt + '                         <p><label class="text-muted small col-md-6">Status:</label> '+report.taskStatus+'</p>                    ';
+						 	 opt = opt + '                     </div>            ';
+						 	 
+						 	opt = opt + '                     </div>            ';
+						 	 
+						 	opt= opt+ '                         <p><label class="text-muted small col-md-2" style="width:15.7%;">Des.:</label><div class="col-md-10 paddingLeft">'+description+'</div></p>';
+						 	opt =opt + '                     </div>            ';
+						 	opt =opt + '             </div>                    ';
+						 	opt =opt + '     </div>                            ';
+						 	opt =opt + ' </div>                                ';
+						}
+		        	 if(json.tasksList.length<=0 && json.interviewerList.length<=0){
+				        	result = result + '<div class="row">                                            ';
+							result = result + '	<div class="dataTables_empty" style="border: 1px solid #ddd;margin: 0px 15px;">                                     ';
+							result = result + '	</div>                                                      ';
+							result = result + ' </div>                                                    ';
+							result = result + ' </div>                                                    ';
+		        	 }
+		        	 result = result + '<div class="mask_inner"></div>';
+		        	 $("#interviewDiv").empty();
+		           	 $("#interviewDiv").append(result);
+		           	 $("#taskDiv").empty();
+		           	 $("#taskDiv").append(opt);
+		    	}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
+		    }
 		});
-		
 	}
 	
 </script>
@@ -317,15 +377,15 @@ function dashboardAddInterview(){
 	
 	result = result + '<div class="row pad2">';
 	result = result + '<div class="col-md-12 mt10">';
-	result = result + '<div class="ne-ch">';
+	result = result + '<div class="ne-ch row">';
 	result = result + '<label><input type="checkbox" name="notificationToApplicant" value="Y" checked="checked" ><b>Notify to Applicants</b></label>';
 	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time</b></label>';
 	result = result + '</div>';
 	
 	
-	result = result + '<div id="emptyTemplate" style="dispaly:none">';
+	result = result + '<div id="emptyTemplate" style="dispaly:none" class="row">';
 	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
-	result = result + '<div class="chosen-select col-md-3 select-field">';
+	result = result + '<div class="chosen-select col-md-4 customchosen-select">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';
 	result = result + '</div>';
@@ -384,27 +444,37 @@ function interviewTemplate(){
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?${_csrf.parameterName}=${_csrf.token}", 
-	        success: function(data) {
-	        var json = JSON.parse(data);
-	        var output = "";
-	        if(json.length > 0){
-	         	for (var i=0; i<json.length; i++)
-	 			{
-	 	        		var opt = json[i];
-	 	        		
-	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
-	 			}
-	         	$("#interviewSubmissionTemplate").empty();
-	 	        $("#interviewSubmissionTemplate").append(output);
-	 	       
-	 	        $("#interviewSubmissionTemplate").chosen();
-	 			$("#interviewSubmissionTemplate").trigger('chosen:update');
-	 			$('.chosen-container').css({'width': '100% !important'});
-	 			
-	        }else{
-	        	$("#emptyTemplate").empty();
-	        }
-	       
+	        success: function(result) {
+	        	if (result.response === "FAILED") {
+  		    		showError(result.responseMessage);
+  		    	} else if (result.response === "AWKWARD") {
+  		    		location.href = "/errorPage";
+  		    	} else if (result.response === "SUCCESS") {
+  		    		var json = result.data;
+			        var output = "";
+			        if(json.length > 0){
+			         	for (var i=0; i<json.length; i++)
+			 			{
+			 	        		var opt = json[i];
+			 	        		if(opt.isDefault == "Y"){
+			 	        			output = output + "<option value='" +opt.id+ "' selected>"+opt.templateName+"</option>";
+			 	        		}else{
+				 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+			 	        		} 
+			 			}
+			         	$("#interviewSubmissionTemplate").empty();
+			 	        $("#interviewSubmissionTemplate").append(output);
+			 	       
+			 	        $("#interviewSubmissionTemplate").chosen();
+			 			$("#interviewSubmissionTemplate").trigger('chosen:update');
+			 			$('.chosen-container').css({'width': '100% !important'});
+			 			
+			        }else{
+			        	$("#emptyTemplate").empty();
+			        }
+  		    	}else {
+		    		showError("Operation failed, please try again");
+		    	}
 	        },
 	    });
 }
@@ -611,6 +681,7 @@ function getRequirements(){
 
 <script>
 function selectAndGetApplicantsForRequirement(){
+	$("#reqDiv").find('p.text-primary').empty();
 		$('#isClientInterview').attr('checked', false);
 		$("#isClientInterviewDiv").hide();
 		getApplicantsForRequirement();
@@ -634,31 +705,40 @@ function getApplicantsForRequirement(){
 		    	type: "POST",
 		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+selectedReqId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
 		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var appCount = json.length;
-		        	$("#1applicant").attr("data-placeholder", appCount+" Applicants available");
-		        	$("#reqDiv").find('p.jquery_form_error_message').remove();		        	
-		        	var output = "";
-		        	for (var i=0; i<appCount; i++)
-					{
-		        		var opt = json[i];
-		        		if(opt.createdUser !=null && opt.createdUser !='' && opt.createdUser != 'undefined'){
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";	
-		        		}else{
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
-		        		}
-		        		
-		        		if(opt.isClientSubmission == 'Y'){
-		        			$("#isClientInterviewDiv").css("display","block");
-		        		}else{
-		        			$('#isClientInterview').attr('checked', false);
-		        			$("#isClientInterviewDiv").hide();
-		        		}
-					}
-		        	$("#1applicant").empty();
-		        	$("#1applicant").append(output);
-		        	$("#1applicant").trigger("chosen:updated");
-			       
+		        	if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		var json = data.data;
+			        	var appCount = json.length;
+			        	$("#1applicant").attr("data-placeholder", appCount+" Applicants available");
+			        	$("#reqDiv").find('p.jquery_form_error_message').remove();		        	
+			        	var output = "";
+			        	for (var i=0; i<appCount; i++)
+						{
+			        		var opt = json[i];
+			        		if(opt.createdUser !=null && opt.createdUser !='' && opt.createdUser != 'undefined'){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";	
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+			        		}
+			        		
+			        		if(opt.isClientSubmission == 'Y'){
+			        			$("#isClientInterviewDiv").css("display","block");
+			        		}else{
+			        			$('#isClientInterview').attr('checked', false);
+			        			$("#isClientInterviewDiv").hide();
+			        		}
+						}
+			        	$("#1applicant").empty();
+			        	$("#1applicant").append(output);
+			        	$("#1applicant").trigger("chosen:updated");
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 		        },
 		    });
 	}else{
@@ -712,21 +792,29 @@ function getTimezonesListForInterview(){
 		    	type: "POST",
 		        url: sourceleadUrl+"/getAllInterviewers?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	for (var i=0; i<json.length; i++)
-					{
-		        		var opt = json[i];
-		        		if(opt.lastName != 'undefined' && opt.lastName != null && opt.lastName!=""){
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
-		        		}else{
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";
-		        		}
-					}
-		        	$("#1interviewer").empty();
-		        	$("#1interviewer").append(output);
-		        	$("#1interviewer").chosen();
-		        	$("#1interviewer").trigger("chosen:updated");
+		        	if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		var json = data.data;
+			        	var output = "";
+			        	for (var i=0; i<json.length; i++)
+						{
+			        		var opt = json[i];
+			        		if(opt.lastName != 'undefined' && opt.lastName != null && opt.lastName!=""){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";
+			        		}
+						}
+			        	$("#1interviewer").empty();
+			        	$("#1interviewer").append(output);
+			        	$("#1interviewer").chosen();
+			        	$("#1interviewer").trigger("chosen:updated");
+			    	}else {
+			    		showError("Operation failed, please try again");
+			    	}
 		        },
 		    });
  	}
@@ -789,7 +877,7 @@ function cancelAddInterviewDiv(){
         if(selectedInterviewApplicants <= 50){
 	        $("#add_interview").attr("disabled", "disabled");
 	 		$("#add_interview" ).addClass('button').val('Processing..');
-	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   	     $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
@@ -826,7 +914,7 @@ function cancelAddInterviewDiv(){
 </script>
 	
   <script>
-  $(function() {
+  function eventCalendar(dates) {
 	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatEDashboardeventCalendar = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -838,20 +926,34 @@ function cancelAddInterviewDiv(){
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormatEDashboardeventCalendar = 'yy-dd-mm'; 
 	  }
+	  
     $("#eventCalendar" ).datepicker({
 	  changeMonth: true,
       changeYear: true,
       dateFormat : finalDateFormatEDashboardeventCalendar,
       onSelect : function(selected) {
   		getInterviewsandTasks();
-	   }
+	   },
+	    beforeShowDay: function(date) {
+	  	  var hlText = dates[date.getTime()];
+	        return (hlText)?[true, "Highlighted", '']: [true, '', ''];
+	  	}
     });
-  });
+  } 
       
-      $(function(){
+ $(function(){
    $('#example').timepicker(); 
 });
-  </script> 	
+  </script>  
+ 
+  <style>
+  .Highlighted a{
+	   background-color : #9ACD32 !important;
+	   font-weight:bold !important;
+	   font-size: 12pt;
+}
+  </style>
+  	
  <!-- <script>
  function personalInfo(){
      $(".userdetails").toggle();

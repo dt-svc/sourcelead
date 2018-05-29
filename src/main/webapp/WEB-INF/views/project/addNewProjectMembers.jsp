@@ -25,7 +25,7 @@
       <div class="pull-left">
         <h2>Assign Project Members <span id="projectName"></span></h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/projectDashboard'/>">Home</a> &raquo; <a href="<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>">Project Members</a> &raquo; Request Associates</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=team'/>">Project Members</a> &raquo; Request Associates</div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -43,7 +43,9 @@
 				<div class="form-footer clearfix miniFoot">
 				  <div class="col-lg-12">
 					<div class="pull-right">
-					  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=projectMembers'/>'"  class="btn btn-danger">
+
+					  <input type="button" value="Cancel"  onClick="javascript:window.location.href = '<c:url value='${appPath}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=team'/>'"  class="btn btn-danger">
+
 					  <input type="button" value="Save" onClick="assignMembers()" class="btn btn-primary ml10">
 					</div>
 				  </div>
@@ -57,12 +59,9 @@
 		<div id="REPLACEROWIDcandidateName" class="tbldata-dotdot pull-left">
 		</div>
 		
-		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDcandidateId" name="projectMembers[REPLACEROWID].candidateId" />
-		
-		<input type="hidden" class="form-control input-sm"
-			id="REPLACEROWIDprojectMemberId" name="projectMembers[REPLACEROWID].projectMemberId">
-		</input>
+		<input type="hidden" class="form-control input-sm" id="REPLACEROWIDcandidateId" name="projectMembers[REPLACEROWID].candidateId" />
+		<input type="hidden"  name="projectMembers[REPLACEROWID].validateRow" value="true">
+		<input type="hidden" class="form-control input-sm" id="REPLACEROWIDprojectMemberId" name="projectMembers[REPLACEROWID].projectMemberId">
 		
 	</div>
 </div>
@@ -81,7 +80,7 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate" data-validation="required validate_Space validate_float validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDpayRate" name="projectMembers[REPLACEROWID].payRate" field-name="Pay Rate"  data-validation="required validate_Space validate_float validate_length length1-15">
                   </div>
                   
                   <div class="pull-left drpdownMonthly dropdown-select">
@@ -112,7 +111,7 @@
                      </select>
                   </div>
                   <div class="pull-left inputRate">
-                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="projectMembers[REPLACEROWID].billRate" data-validation-optional="true"  data-validation="validate_Space validate_float validate_length length1-15">
+                      <input class="form-control input-sm" type="text" id="REPLACEROWIDbillRate" name="projectMembers[REPLACEROWID].billRate" field-name="Bill Rate" value="0" data-validation="required validate_Space validate_float validate_length length1-15">
                   </div>
                   <div class="pull-left drpdownMonthly dropdown-select">
                   <select id="REPLACEROWIDbillRateRateType" name="projectMembers[REPLACEROWID].billRateRateType">
@@ -235,8 +234,8 @@ function getAssignedMembers(){
 	 
 	 $("#searchAssociatesList").empty();
      $("#searchAssociatesList").append(result);
-     
-     loadProjectAssignedMembers(projectId);
+     emptyRecordsList();
+    // loadProjectAssignedMembers(projectId);
      
 }
 </script>
@@ -270,6 +269,14 @@ function emptyRecordsList(){
 		        		
 		        		for(var i=0; i<json.length; i++){
 		        			var opt = json[i];
+		        			var startDateStr = '';
+		        			
+		        			if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+		        				startDateStr = opt.startDateStr;
+		        			}else{
+		        				startDateStr = opt.projectAssignedDateStr;
+		        			}
+		        			
 		        			
 	        			    var checkMaxTsRowNum = $("#maxTsRowNum").val();
 		      				var tbl = document.getElementById("addRequestTbl");
@@ -319,11 +326,10 @@ function emptyRecordsList(){
 		      				}
 		      				
 		      				
-		      				
 		      				var startDateText = "";
 		    				var cell3 = row.insertCell(3);
 		    				startDateText = startDateText+"<div  class='tbldata-dotdot-100'>";
-		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberStartDate" value="'+opt.startDateStr+'"  name="projectMembers['+maxRowNum+'].memberStartDate"  >';
+		    				startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberStartDate" value="'+startDateStr+'"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
 		    				startDateText = startDateText+'</div>';
 		    				cell3.innerHTML = startDateText;
 		    				
@@ -331,7 +337,7 @@ function emptyRecordsList(){
 		    				var endDateText = "";
 		    				var cell4 = row.insertCell(4);
 		    				endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-		    				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+opt.endDateStr+'"  name="projectMembers['+maxRowNum+'].memberEndDate" >';
+		    				endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberEndDate" value="'+opt.endDateStr+'"  name="projectMembers['+maxRowNum+'].memberEndDate" readonly >';
 		    				endDateText = endDateText+'</div>';
 		    				cell4.innerHTML = endDateText;
 		    				
@@ -357,14 +363,14 @@ function emptyRecordsList(){
 		    									dateFormat : finalDateFormatAssignEmpUpdate,
 		    									changeMonth: true,
 		    									changeYear: true, 
-		    									minDate:opt.startDateStr,
+		    									minDate:startDateStr,
 		    									maxDate:opt.endDateStr,
 		    							        onClose : function(selected) {
 		    							        	var dt = $(this).datepicker('getDate', '+1d');
 		    										dt.setDate(dt.getDate() + 1);
 		    										$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
 		    						                removeStartDateValidation(maxRowNum);
-		    										getEstimatedHours(maxRowNum)
+		    										//getEstimatedHours(maxRowNum)
 		    									}
 		    								});
 
@@ -379,7 +385,7 @@ function emptyRecordsList(){
 		    										dt.setDate(dt.getDate() - 1);
 		    										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
 		    										 
-		    						                getEstimatedHours(maxRowNum)
+		    						               // getEstimatedHours(maxRowNum)
 		    									}
 		    								});
 		    								
@@ -388,7 +394,7 @@ function emptyRecordsList(){
 		    									dateFormat : finalDateFormatAssignEmpUpdate,
 		    									changeMonth: true,
 		    									changeYear: true, 
-		    									minDate:opt.startDateStr,
+		    									minDate:startDateStr,
 		    									 
 		    							        onClose : function(selected) {
 		    							        	var dt = $(this).datepicker('getDate', '+1d');
@@ -396,7 +402,7 @@ function emptyRecordsList(){
 		    										$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
 		    										 
 		    						                removeStartDateValidation(maxRowNum);
-		    										getEstimatedHours(maxRowNum)
+		    										//getEstimatedHours(maxRowNum)
 		    									}
 		    								});
 
@@ -409,7 +415,7 @@ function emptyRecordsList(){
 		    							        	var dt = $(this).datepicker('getDate', '-1d');
 		    										dt.setDate(dt.getDate() - 1);
 		    										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
-		    						                getEstimatedHours(maxRowNum)
+		    						                //getEstimatedHours(maxRowNum)
 		    									}
 		    								});
 		    							}
@@ -477,7 +483,7 @@ function getEstimatedHours(rowId){
 	if(startDate && endDate){
 		 var sourceleadUrl ='${sourceleadUrl}';
 		 var averageWorkingHours = '${SourceLeadWeb_orgLocations.averageWorkingHours}';
-		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		 $("#resourceListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/getEstimatedHoursForResourceRequest?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate+"&averageWorkingHours="+averageWorkingHours+"&locationId="+locationId, 
@@ -504,7 +510,16 @@ function getAssociates(){
 	      
 	result = result +'<ul class="pull-right">';
 	
-
+	result = result +'<li class="dropdown">';
+	result = result +'<span class="dropdown-toggle" id="menu4" data-toggle="dropdown">';
+	result = result +'<i class="fa fa-filter"></i><span>Team</span><i class="glyphicon glyphicon-play"></i></span>|';
+	          
+	result = result +'<div class="dropdown-menu bootstrap_dropdownMenu" role="menu" aria-labelledby="menu1">';
+	result = result +'<ul class="location-filter">';
+	result = result +'<div id="orgLocationTeams"></div>';  
+	result = result +'</ul>';
+	result = result +'</div>';
+	result = result +'</li>'; 
 	        
 	result = result +'<li class="dropdown">';
 	result = result +'<span class="dropdown-toggle" id="menu3" data-toggle="dropdown">';
@@ -547,6 +562,7 @@ function getAssociates(){
 	 $("#associatesList").empty();
      $("#associatesList").append(result);
      getOrgLocationRoles();
+     getOrgLocationTeams();
  	
 }
 </script>
@@ -569,6 +585,33 @@ function getOrgLocationRoles(){
 	        	$("#orgLocationRoles").empty();
 		        $("#orgLocationRoles").append(output);
 		        getAssociatesFilter();
+	        }
+	        
+	 });
+}
+
+function getOrgLocationTeams(){
+	var orgLocations = '${SourceLeadWeb_orgLocations.id}';
+	 var sourceleadUrl ='${sourceleadUrl}';
+	 var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getOrgLocationTeamList?${_csrf.parameterName}=${_csrf.token}&orgLocationId="+orgLocationId,  
+	        success: function(json) {
+	        	
+	        	var output = "";
+	        	if(json.length > 0){
+	        		for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + '<li><input value="'+opt.id+'" name="teams"  type="checkbox" onclick="getAssociatesFilter()"><label>'+opt.name+'</label></li>';
+					}
+	        	}else{
+	        		output = output + '<li><label>&nbsp;&nbsp;&nbsp;<font color="red">No teams configured</font></label></li>';
+	        	}
+	        	
+	        	$("#orgLocationTeams").empty();
+		        $("#orgLocationTeams").append(output);
 	        }
 	        
 	 });
@@ -607,7 +650,7 @@ function getAssociatesFilter(){
     	result = result +'</div>'; 
     	result = result +'</div>';
     	result = result +'   <div class="modal-footer">';
-     	result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addRequestedResources();">Add</button>';
+     	result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button"  onClick="this.disabled=true;addRequestedResources();$(this).blur();">Add</button>';
      	result = result +'   </div>'; 
      	$("#associatesListFilter").empty();
 	    $("#associatesListFilter").append(result);
@@ -626,6 +669,12 @@ function candidatesDataTableList(){
 	$('input:checkbox[name=roles]:checked').each(function() 
 		    {
 		roles.push($(this).val());
+	    });
+	
+	var teams = [];
+	$('input:checkbox[name=teams]:checked').each(function() 
+		    {
+		teams.push($(this).val());
 	    });
 	
 	var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
@@ -653,7 +702,7 @@ function candidatesDataTableList(){
 	  
 	     var searchValue = $("#candidateDataTableSearch").val();
 		 searchValue = searchValue ? searchValue : "";
-		 var url = sourceleadUrl+"/getRequestedAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&roles="+roles+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID;
+		 var url = sourceleadUrl+"/getRequestedAssociatesList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&roles="+roles+"&teams="+teams+"&resourceType="+resourceType+"&selectedAssociates="+selectedAssociates+"&projectUUID="+projectUUID;
 		 candidatesPagination(sourceleadUrl,url);
 	
 }
@@ -840,7 +889,7 @@ function candidatesPagination(sourceleadUrl,url){
 	            	    var candidateResume = "";
 	            	    
 	            	    if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
-		        			candidateResume = '<a  class="fa fa-download" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.resumeUUID+'\"title="Download"></a>';
+		        			candidateResume = '<a  class="fa fa-download" download href=\"'+report.fileUrl+'\" title="Download"></a>';
 		        		}else{
 		        			candidateResume = "-----";
 		        		} 
@@ -873,7 +922,7 @@ function candidatesPagination(sourceleadUrl,url){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     },
 	     "initComplete": function( settings, json ) {
 	    	 checkOrUncheckParent(json.data);
@@ -1012,7 +1061,7 @@ function removeStartDateValidation(rowId){
 			var startDateText = "";
 			var cell3 = row.insertCell(3);
 			startDateText = startDateText+"<div  class='tbldata-dotdot-100' id='"+maxRowNum+"startDate' >";
-			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" data-validation="required" value="'+projectStartDate+'" field-name="Start Date" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" >';
+			startDateText = startDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  data-validation="required" value="'+projectStartDate+'" field-name="Start Date" id="'+maxRowNum+'memberStartDate"  name="projectMembers['+maxRowNum+'].memberStartDate" readonly>';
 			startDateText = startDateText+'</div>';
 			cell3.innerHTML = startDateText;
 			
@@ -1020,7 +1069,7 @@ function removeStartDateValidation(rowId){
 			var endDateText = "";
 			var cell4 = row.insertCell(4);
 			endDateText = endDateText+"<div  class='tbldata-dotdot-100'>";
-			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="projectMembers['+maxRowNum+'].memberEndDate" >';
+			endDateText = endDateText+'<input type="text" class="form-control input-sm calendar" onchange="getEstimatedHours('+maxRowNum+')"  id="'+maxRowNum+'memberEndDate" value="'+projectEndDate+'" name="projectMembers['+maxRowNum+'].memberEndDate" readonly>';
 			endDateText = endDateText+'</div>';
 			cell4.innerHTML = endDateText;
 			
@@ -1052,7 +1101,7 @@ function removeStartDateValidation(rowId){
 									dt.setDate(dt.getDate() + 1);
 									$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
 					                removeStartDateValidation(maxRowNum);
-									getEstimatedHours(maxRowNum)
+									//getEstimatedHours(maxRowNum)
 								}
 							});
 
@@ -1066,7 +1115,7 @@ function removeStartDateValidation(rowId){
 						        	 var dt = $(this).datepicker('getDate', '-1d');
 										dt.setDate(dt.getDate() - 1);
 										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
-					                getEstimatedHours(maxRowNum)
+					                //getEstimatedHours(maxRowNum)
 								}
 							});
 							
@@ -1081,7 +1130,7 @@ function removeStartDateValidation(rowId){
 									dt.setDate(dt.getDate() + 1);
 									$("#"+maxRowNum+"memberEndDate").datepicker("option", "minDate", dt);
 					                removeStartDateValidation(maxRowNum);
-									getEstimatedHours(maxRowNum)
+									//getEstimatedHours(maxRowNum)
 								}
 							});
 
@@ -1095,7 +1144,7 @@ function removeStartDateValidation(rowId){
 										dt.setDate(dt.getDate() - 1);
 										$("#"+maxRowNum+"memberStartDate").datepicker("option", "maxDate", dt);
 									 
-					                getEstimatedHours(maxRowNum)
+					                //getEstimatedHours(maxRowNum)
 								}
 							});
 						}
@@ -1159,13 +1208,24 @@ function assignMembers(){
       		var orgLocationId = '${SourceLeadWeb_orgLocations.id}';
       		var projectClientUUID = '${projectClientUUID}';
       		
-       		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+       		$("#associateRequestLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
       		$.ajax({
 					type : "POST",
 	  	    	    data : formData,
 					url : sourceleadUrl+"/assignProjectMembersToProject?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&userId="+userId+"&orgLocationId="+orgLocationId, 
 					success : function(result) {
-						location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=projectMembers");
+						if (result && result.response === "INVALID_DATA") {
+							$("#associateRequestLoading").removeAttr("style");
+		                    showError(result.responseMessage);
+		                } else if (result.response === "AWKWARD") {
+		                    location.href = "/errorPage";
+		                } else if (result.response === "SUCCESS") {
+							location.replace(sourceleadUrl+"/projectSummary?projectUUID="+projectUUID+"&projectClientUUID="+projectClientUUID+"&tabType=team");
+		                }else if (result.indexOf('Sign In') !== -1) {
+								location.replace(sourceleadUrl);
+							} else {
+			                    showError("Operation failed, please try again");
+			                }
 					},
 				}); 
       		 return true;

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ExpensesEntriesDTO;
@@ -37,7 +38,12 @@ public interface ExpensesService {
 
 	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType)throws Exception;
 
-	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId)throws Exception;
+	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId,Long locationsId)throws Exception;
+	
+	public List<Expenses> getExpensesByProjectIdAndMasterCandidateId(Long projectId,Long masterCandidateId) throws Exception;
 
+	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	public List<Expenses> getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(Long projectId, Long OrglocationId,Date startDate,Date endDate)throws Exception;
 	
 }

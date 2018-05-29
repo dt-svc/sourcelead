@@ -21,5 +21,5 @@ public interface ProjectBudgetDao {
 	
 	Long getProjectBudgetReqestedIdByProjectId(Long projectId, Integer generatedIdcount);
 	
-	List<ProjectBudget>  getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC) throws Exception;
+	List<ProjectBudget>  getProjectBudgetByProjectTaskIdAndApprovedStatus(Long projectId, Long orgLocationID) throws Exception;
 }

@@ -45,7 +45,7 @@ public class ExpensesReportDaoImpl implements ExpensesReportDao {
 	public List<ExpensesApproverHierarchy> getAllExpensesReportListByLoginUserIdAndOrgLocationId(Long loginUserId, Long loginOrgLocationId)throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ExpensesApproverHierarchy expensesHierarchy left join fetch expensesHierarchy.expenseId expenses left join fetch expensesHierarchy.hierarchyId pah left join fetch pah.projectMembers proMembers left join fetch proMembers.employee left join fetch pah.approverUserId user where user.id =:loginUserId and expenses.orgLocationId.id =:loginOrgLocationId";
-		List<ExpensesApproverHierarchy> expensesList =session.createQuery(query).setLong("loginOrgLocationId", loginOrgLocationId).setLong("loginUserId", loginUserId).setCacheable(true).list();
+		List<ExpensesApproverHierarchy> expensesList =session.createQuery(query).setLong("loginOrgLocationId", loginOrgLocationId).setLong("loginUserId", loginUserId).list();
 		logger.info("list for expenses");
 		return expensesList;
 	}
@@ -61,7 +61,29 @@ public class ExpensesReportDaoImpl implements ExpensesReportDao {
 				java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 				java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
 				String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers left join fetch expenses.projects project left join fetch expenses.masterCandidateId mc  where project.id = :projectId and mc.id = :masterCandidateId and expenses.endDate  BETWEEN :startDate and :endDate";
-				expenses =session.createQuery(query).setLong("projectId", pm.getProjects().getId()).setLong("masterCandidateId", pm.getMasterCandidateId().getId()).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).setCacheable(true).list();
+				expenses =session.createQuery(query).setLong("projectId", pm.getProjects().getId()).setLong("masterCandidateId", pm.getMasterCandidateId().getId()).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).list();
+			}else{
+				String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers left join fetch expenses.projects project left join fetch expenses.masterCandidateId mc where project.id = :projectId and mc.id = :masterCandidateId";
+				expenses =session.createQuery(query).setLong("projectId", pm.getProjects().getId()).setLong("masterCandidateId", pm.getMasterCandidateId().getId()).list();
+			}
+		} catch (Exception e) {}
+		return expenses;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Expenses> getExpensesByProjectMemberIdAndExpenseStartAndEndDateForClaimedExpenses(Long projectMembersId,Date startDate, Date endDate) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Expenses> expenses = null;
+		try {
+			ProjectMembers pm = projectMembersDao.getProjectMemberById(projectMembersId);
+			if(startDate !=null && endDate !=null){
+				java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+				java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+				String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers left join fetch expenses.projects project left join fetch expenses.masterCandidateId mc  where project.id = :projectId and mc.id = :masterCandidateId and  (:startDate<= date(expenses.updatedDate) AND date(expenses.updatedDate)<= :endDate)";
+				expenses =session.createQuery(query).setLong("projectId", pm.getProjects().getId()).setLong("masterCandidateId", pm.getMasterCandidateId().getId()).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).list();
 			}else{
 				String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers left join fetch expenses.projects project left join fetch expenses.masterCandidateId mc where project.id = :projectId and mc.id = :masterCandidateId";
 				expenses =session.createQuery(query).setLong("projectId", pm.getProjects().getId()).setLong("masterCandidateId", pm.getMasterCandidateId().getId()).list();
@@ -79,7 +101,7 @@ public class ExpensesReportDaoImpl implements ExpensesReportDao {
 		List<ExpensesApproverHierarchy> expensesApproverHierarchy = null;
 		try {
 			    ProjectMembers pm = projectMembersDao.getProjectMemberById(proMembersId); 
-				session.createQuery(query).setLong("projectId", pm.getProjects().getId()).setLong("masterCandidateId", pm.getMasterCandidateId().getId()).setDate("startDate", startDate).setDate("endDate", endDate).setCacheable(true).list();
+				session.createQuery(query).setLong("projectId", pm.getProjects().getId()).setLong("masterCandidateId", pm.getMasterCandidateId().getId()).setDate("startDate", startDate).setDate("endDate", endDate).list();
 		} catch (Exception e) {}
 		return expensesApproverHierarchy;
 	}

@@ -17,7 +17,7 @@ window.onload = function () {
 
 <%--       <a href="<c:url value='/payrollAllBalanceReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">All Balance Report</a> --%>
  <%--  <a href="<c:url value='/searchBasedReport'/>" class="ml10 mt5" id=generateReportId title="Generate Report">Search Based Report</a>--%>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a> &raquo; Employee Payroll Invoice </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Employee Payroll Invoice </div>
 
     </section>
     <section class="project_side_wrap_inn_tabs payroll-invoice">
@@ -160,7 +160,7 @@ function redirect() {
     function getIncomeData(){
     	var empId = $("#empId").val();
     	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-    	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+    	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
     		  var sourceleadUrl ='${sourceleadUrl}';
     				  $.ajax({
     				    	type: "GET",
@@ -293,7 +293,7 @@ function redirect() {
   function getChecks(){
 	     var empId = $("#empId").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			  var sourceleadUrl ='${sourceleadUrl}';
 					  $.ajax({
 					    	type: "GET",
@@ -470,7 +470,7 @@ function empChecksListPagination(){
 function getWagesTaxSummaryByEmpId(){
 	 var empId = $("#empId").val();
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			  var sourceleadUrl ='${sourceleadUrl}';
 					  $.ajax({
 					    	type: "GET",
@@ -590,7 +590,7 @@ function wagesAndTaxEmpTablePagination(){
 function getAccontDeductions(){
 	 var empId = $("#empId").val();
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",
@@ -807,7 +807,7 @@ function closeModalExpenses(){
 function getHRDeductions(){
 	 var empId = $("#empId").val();
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  var sourceleadUrl ='${sourceleadUrl}';
 				  $.ajax({
 				    	type: "GET",

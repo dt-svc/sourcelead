@@ -15,7 +15,7 @@ font-size: 1.5em;
       <div class="pull-left">
         <h2>Department List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="orgRolesList">Roles List</a> &raquo;  Department List </div>
+      <div class="pull-right brud-crum"><a href="${appPath}/orgRolesList">Roles List</a> &raquo;  Department List </div>
     </section>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -73,7 +73,7 @@ $(document).ready(function() {
                         </div>
                       </div>
                       <div class="clearfix mr">
-                        <button type="button" id= "save_Department"class="btn btn-sm btn-primary pull-right" onclick="saveDepartment();">Add</button>
+                        <button type="button" class="btn btn-sm btn-primary pull-right" onclick="saveDepartment();">Add</button>
                       </div>
                     </div>
 				</div>
@@ -194,27 +194,43 @@ function departmentPagination(){
 		 $(".addcon-pop, .adddoc-pop, .collapse-div-adduser, .collapse-div").click(function(e){
 			 e.stopPropagation();
 		 });
-		 /* $('html').click(function(){
+		 $('html').click(function(){
 		    $(".collapse-div-adduser").removeClass("show-div");
 			$(".collapse-div").removeClass("show-div");
-		   });	 */
-  </script> 
+		   });	
+  </script>
 
 <script>
 function saveDepartment(){
 	if ($('#department_form').validate(false, validationSettings)) {
-		var frm = $('#department_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		var jsonData = encodeURIComponent(con);
 		var sourceleadUrl = '${sourceleadUrl}';
-		$("#save_Department").attr("disabled", "disabled");
+		var formData = getFormData1("department_form");
 		$.ajax({
-			type : "GET",
-			url : sourceleadUrl+ "/storeDepartment?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
-			success : function(result) {
-				 $("#departmentCloseDiv").toggleClass('show-div');
-				 location.reload();
+			type: "POST",
+			data: formData,
+		    processData: false, 
+	 		contentType: false,
+			url : sourceleadUrl+ "/storeDepartment?${_csrf.parameterName}=${_csrf.token}",
+			success : function(data) {
+				if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+		        		showError(data.responseMessage);
+  	    		    $("#hierarchyLoading").removeAttr('style');
+  	    		}
+            		else if (data.response === "AWKWARD") {
+            			location.href = "/errorPage";
+  	    		}
+            		else if(data.response === "SUCCESS"){
+            			 $("#departmentCloseDiv").toggleClass('show-div');
+        				 location.reload();
+		        	    }
+            		else if (data.indexOf('Sign In') !== -1) {
+            			location.replace(sourceleadUrl);
+  				} else {
+  					showError("Operation failed, please try again");
+  				    $("#hierarchyLoading").removeAttr('style');
+  				}
+				
+				
 			},
 		});
 		return true;
@@ -304,7 +320,7 @@ function editDepartment(departmentId){
 				result = result + '		<div class="col-md-12 mt5 clearfix"> ';
 				result = result + '		<div class="pull-right">  ';
 				if(json.status == 1){
-					result = result + '		  <input type="button" value="Save" id="edit_Department" class="btn btn-primary" onclick="saveEditDepartment('+departmentId+');">';	
+					result = result + '		  <input type="button" value="Save" class="btn btn-primary" onclick="saveEditDepartment('+departmentId+');">';	
 				}else{
 					result = result + '		  <input type="button" value="Add" class="btn btn-primary" onclick="updateDepartment('+departmentId+');">';
 				}
@@ -337,17 +353,34 @@ function editCancel(){
 <script>
 function saveEditDepartment(departmentId){
 	if ($('#editDepartment_form').validate(false, validationSettings)) {
-		var frm = $('#editDepartment_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		var jsonData = encodeURIComponent(con);
+		
 		var sourceleadUrl = '${sourceleadUrl}';
+		var formData = getFormData1("editDepartment_form");
 		$.ajax({
-			type : "GET",
-			url : sourceleadUrl+ "/updateDepartment?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData+"&departmentId="+departmentId,
-			success : function(result) {
-				cancelTermination();
-				location.reload();
+			type : "POST",
+			data: formData,
+		    processData: false, 
+	 		contentType: false,
+	 		url : sourceleadUrl+ "/updateDepartment?${_csrf.parameterName}=${_csrf.token}&departmentId="+departmentId,
+			success : function(data) {
+				
+				if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+	        		showError(data.responseMessage);
+	    		}
+        		else if (data.response === "AWKWARD") {
+        			location.href = "/errorPage";
+	    		}
+        		else if(data.response === "SUCCESS"){
+        			cancelTermination();
+    				location.reload();
+	        	    }
+        		else if (data.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
+				
+				
 			},
 		});
 		return true;
@@ -437,14 +470,12 @@ function validateDepartmentname(departmentId){
 		url : sourceleadUrl+ "/validateDepartmentname?${_csrf.parameterName}=${_csrf.token}&departmentName="+DepartmentName+"&departmentId="+departmentId,
 		success : function(data) {
 			 if (data == true ) {
-				$("#edit_Department").attr("disabled","disabled");
-				 $("input#eidtdepartmentName").after("<p class='jquery_form_error_message'>"+ DepartmentName+ " is Already Existed</span>");
+				$("input#eidtdepartmentName").after("<p class='jquery_form_error_message'>"+ DepartmentName+ " is Already Existed</span>");
 				document.getElementById("eidtdepartmentName").setAttribute('record-exist', 'yes');
 				document.getElementById("eidtdepartmentName").setAttribute('record-exist-errorMsg',DepartmentName+ ' is Already Existed');
 				//$('input#eidtdepartmentName').removeAttr( "record-exist record-exist-errormessage");
 			} else {
 				$('input#eidtdepartmentName').removeAttr("record-exist record-exist-errormsg");
-				$("#edit_Department").removeAttr("disabled");
 			} 
 		},
 	});
@@ -463,13 +494,11 @@ function validDepartmentname(){
 		url : sourceleadUrl+ "/validateDepartmentname?${_csrf.parameterName}=${_csrf.token}&departmentName="+DepartmentName,
 		success : function(data) {
 			 if (data == true) {
-				$("#save_Department").attr("disabled", "disabled");
-				 $("input#departmentName").after("<p class='jquery_form_error_message'>"+ DepartmentName+ " is Already Existed</span>");
+				$("input#departmentName").after("<p class='jquery_form_error_message'>"+ DepartmentName+ " is Already Existed</span>");
 				document.getElementById("departmentName").setAttribute('record-exist', 'yes');
 				document.getElementById("departmentName").setAttribute('record-exist-errorMsg',DepartmentName+ ' is Already Existed');
 			} else {
 				$('input#departmentName').removeAttr("record-exist record-exist-errormsg");
-				$("#save_Department").removeAttr("disabled");
 			} 
 		},
 	});

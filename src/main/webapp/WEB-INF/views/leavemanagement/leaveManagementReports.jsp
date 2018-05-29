@@ -5,9 +5,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/amcharts.js"></script>
-<script src="resources/js/serial.js"></script>
-<script src="resources/js/pie.js"></script>
+<script src="/resources/js/amcharts.js"></script>
+<script src="/resources/js/serial.js"></script>
+<script src="/resources/js/pie.js"></script>
 
  <%-- <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
 	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
@@ -27,13 +27,16 @@
 </script>
 
 
+<input type="hidden" id="leaveEmptyMessage" name="leaveEmptyMessage" />
+<div id="popUp"></div>
+
  <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Leave Management</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Leave Management</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Leave Management</div>
     </section>
     <div class="timesheet_out">
       <div class="clients_side_wrap_inn no_pad">
@@ -41,7 +44,7 @@
         
          <sec:authorize access="hasRole('ROLE_APPLY_LEAVE')"> 
              <div class="pull-right">
-                 <a href="<c:url value='/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
+                 <a href="<c:url value='${appPath}/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
              </div>
          </sec:authorize>  
           <ul class="project-tabs-menu projecttabs-custom">
@@ -60,7 +63,7 @@
                 <div class="row">
                   <div class="clearfix"></div>
                   <div class="col-md-12">
-                    <h4 class="leaves-heading">My Time off balance</h4>
+                    <h4 class="leaves-heading">Leave Balance</h4>
                     <div class="time-balance">
                     <div id="pichartLeaveTypeIdDiv" class="timeBalance-scroll clearfix"></div>
                     </div>
@@ -71,20 +74,12 @@
                         <div class="row">
                             <div class="col-md-5"><strong class="leaves-heading">List of Holidays</strong></div>
                             <div class="col-md-3 noPad dropdown-select">
-                                <select class="form-control" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
+                                 <select class="form-control" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
                                     <option value="">--Select Year--</option>
-                                    <option>2020</option>
-                                    <option>2019</option>
-                                    <option>2018</option>
-                                    <option>2017</option>
-                                    <option>2016</option>
-                                    <option>2015</option>
-                                    <option>2014</option>
-                                    <option>2013</option>
-                                    <option>2012</option>
-                                    <option>2011</option>
-                                    <option>2010</option>
-                                </select>
+                    			<c:forEach var="year" items="${yearsList}">
+	                    			<option value="${year}">${year}</option>
+                     			</c:forEach> 
+                                </select> 
                             </div>
                             <div class="col-md-4 noPad">&nbsp</div>
                             </div>
@@ -158,6 +153,16 @@
                  <div class="clearfix mt5">
                    <h4 class="heading col-md-4">Top leave Takers</h4>
                     <div class="timesheet_head clearfix col-md-8">
+                    <ul class="list-unstyled noPad pull-left">
+                    	<li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
+					        	<div id="exportPop" class="ExpPop">
+					              <ul>
+					                <li onclick="leavePdfExport();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+					                <li onclick="leaveExcelExport();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+					              </ul>
+					            </div>
+					          </li>  
+                    </ul>
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
                             <div class="form-group">
@@ -331,7 +336,10 @@ function getHolidaysList(){
 	if($("#reportYear").val() !=null && $("#reportYear").val() != 'undefined' && $("#reportYear").val() != ''){
 		reportYear = $("#reportYear").val();
 	}
-	$.get(sourceleadUrl+"/getHolidaysList?orgLocationId="+orgLocationId+"&reportYear="+reportYear+"", function(data) {
+	$.get(sourceleadUrl+"/getHolidaysList?orgLocationId="+orgLocationId+"&reportYear="+reportYear+"", function(response) {
+		if (response.response === "AWKWARD") {
+		    location.href = "/errorPage";
+		} else if (response.response === "SUCCESS") {
 		var result = "";				        	
 				result = result + '<table id="viewHolidaysTable" class="display table table-bordered" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
@@ -343,11 +351,11 @@ function getHolidaysList(){
 				result = result + '</tr>';
 				result = result + '</thead>	';
 				result = result + '<tbody>';
-				if(data !=null && data !=''){
+				if(response !=null && response !=''){
 					var j = 1;
-					 for (var i=0; i<data.length; i++)
+					 for (var i=0; i<response.data.length; i++)
 						{
-			        		 var opt = data[i];
+			        		 var opt = response.data[i];
 			        		 if(opt.isFuture == 'Y'){
 			        			 result = result + ' <tr class="text-success">';
 			        		 }else{
@@ -372,6 +380,11 @@ function getHolidaysList(){
 				$("#holidayListDiv").empty();
 				$("#holidayListDiv").append(result);
 				viewHolidaysTable();
+		} else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+		    showError("Operation failed, please try again");
+		}
 		}); 
 }
 </script>
@@ -446,7 +459,7 @@ function getEmployeeLeavesList(){
 		        }
 		        result += '        <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">';
 		        if(opt.isSunday == "Y" && opt.isSunday != null && opt.isSunday != '' && opt.isSunday != 'undefined'){
-		        	if(opt.isSundayHalfDay == "Y" && opt.isSundayHalfDay != null && opt.isSundayHalfDay != '' && opt.isSundayHalfDay != 'undefined'){
+		        	if((opt.isSundayHalfDay == "Y" && opt.isSundayHalfDay != null && opt.isSundayHalfDay != '' && opt.isSundayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">S</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">S</li>';
@@ -454,9 +467,8 @@ function getEmployeeLeavesList(){
 		        }else{
 		        	result += '            <li title="Date">S</li>';
 		        }
-		        
 		        if(opt.isMonday == "Y" && opt.isMonday != null && opt.isMonday != '' && opt.isMonday != 'undefined'){
-		        	if(opt.isMondayHalfDay == "Y" && opt.isMondayHalfDay != null && opt.isMondayHalfDay != '' && opt.isMondayHalfDay != 'undefined'){
+		        	if((opt.isMondayHalfDay == "Y" && opt.isMondayHalfDay != null && opt.isMondayHalfDay != '' && opt.isMondayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">M</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">M</li>';
@@ -466,7 +478,7 @@ function getEmployeeLeavesList(){
 		        }
 		        
 		        if(opt.isTuesday == "Y" && opt.isTuesday != null && opt.isTuesday != '' && opt.isTuesday != 'undefined'){
-		        	if(opt.isTuesdayHalfDay == "Y" && opt.isTuesdayHalfDay != null && opt.isTuesdayHalfDay != '' && opt.isTuesdayHalfDay != 'undefined'){
+		        	if((opt.isTuesdayHalfDay == "Y" && opt.isTuesdayHalfDay != null && opt.isTuesdayHalfDay != '' && opt.isTuesdayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">T</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">T</li>';
@@ -476,7 +488,7 @@ function getEmployeeLeavesList(){
 		        }
 		        
 		        if(opt.isWednesday == "Y" && opt.isWednesday != null && opt.isWednesday != '' && opt.isWednesday != 'undefined'){
-		        	if(opt.isWednesdayHalfDay == "Y" && opt.isWednesdayHalfDay != null && opt.isWednesdayHalfDay != '' && opt.isWednesdayHalfDay != 'undefined'){
+		        	if((opt.isWednesdayHalfDay == "Y" && opt.isWednesdayHalfDay != null && opt.isWednesdayHalfDay != '' && opt.isWednesdayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">W</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">W</li>';
@@ -486,7 +498,7 @@ function getEmployeeLeavesList(){
 		        }
 		        
 		        if(opt.isThursday == "Y" && opt.isThursday != null && opt.isThursday != '' && opt.isThursday != 'undefined'){
-		        	if(opt.isThursdayHalfDay == "Y" && opt.isThursdayHalfDay != null && opt.isThursdayHalfDay != '' && opt.isThursdayHalfDay != 'undefined'){
+		        	if((opt.isThursdayHalfDay == "Y" && opt.isThursdayHalfDay != null && opt.isThursdayHalfDay != '' && opt.isThursdayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">T</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">T</li>';
@@ -496,7 +508,7 @@ function getEmployeeLeavesList(){
 		        }
 		        
 		        if(opt.isFriday == "Y" && opt.isFriday != null && opt.isFriday != '' && opt.isFriday != 'undefined'){
-		        	if(opt.isFridayHalfDay == "Y" && opt.isFridayHalfDay != null && opt.isFridayHalfDay != '' && opt.isFridayHalfDay != 'undefined'){
+		        	if((opt.isFridayHalfDay == "Y" && opt.isFridayHalfDay != null && opt.isFridayHalfDay != '' && opt.isFridayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">F</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">F</li>';
@@ -506,7 +518,7 @@ function getEmployeeLeavesList(){
 		        }
 		        
 		        if(opt.isSaturday == "Y" && opt.isSaturday != null && opt.isSaturday != '' && opt.isSaturday != 'undefined'){
-		        	if(opt.isSaturdayHalfDay == "Y" && opt.isSaturdayHalfDay != null && opt.isSaturdayHalfDay != '' && opt.isSaturdayHalfDay != 'undefined'){
+		        	if((opt.isSaturdayHalfDay == "Y" && opt.isSaturdayHalfDay != null && opt.isSaturdayHalfDay != '' && opt.isSaturdayHalfDay != 'undefined') || opt.duration == "Half Day"){
 		        		result += '            <li title="Date" class="halfday">S</li>';
 		        	}else{
 		        		result += '            <li title="Date" class="fullday">S</li>';
@@ -620,7 +632,11 @@ function totalLeaveByEmployeeBarChart(data){
 					}
 				],
 				"guides": [],
-				"valueAxes": [],
+				"valueAxes": [
+					{
+						"stackType": "regular"
+					}
+				],
 				"allLabels": [],
 				"balloon": {
 					"offsetY": 4,
@@ -648,8 +664,8 @@ function getPieChartBasedOnUser(){
        			for (var i = 0; i < data.length; i++) {
       		 		 var opt = data[i];
       		 		 var numberOfDaysCount = 0;
-      		 		 if(opt.numberOfDaysCount != null && opt.numberOfDaysCount != "" && opt.numberOfDaysCount != 'undefined'){
-      		 			numberOfDaysCount = opt.numberOfDaysCount 
+      		 		 if(opt.totalNoOfDays != null && opt.totalNoOfDays != "" && opt.totalNoOfDays != 'undefined'){
+      		 			numberOfDaysCount = opt.totalNoOfDays 
       		 		 }
       		 		result = result +'  <div class="col-md-2 mb">';
       	            result = result +'   <h4 class="text-center tbldata-dotdot-vsm" title="'+opt.name+'">'+opt.name+'</h4>';
@@ -1006,6 +1022,7 @@ function getPieChartBasedOnUser(){
 
 <script>	
 	function prepareTopLeaveTakersList(url) {
+		$("#leaveEmptyMessage").val(0);
 		$("#topLeaveTakersDiv").empty();
 		var result = "";
 		result = result + "<table id='topLeaveTakersTable' class='display' cellspacing='0' width='100%' >";
@@ -1047,6 +1064,7 @@ function topLeaveTakersPagination(url){
 		    	  	"targets": colIndex++,
 		    	  	"data": "empName",
 		    	  	"render": function(data, type, report, meta) {
+		    	  		$("#leaveEmptyMessage").val(1);
 		    	  		var result = "";
 		    	  		result = result + '<td>';
 		    	  		result = result + '<div class="tbldata-dotdot-big" title="">';
@@ -1189,4 +1207,106 @@ function topLeaveTakersPagination(url){
 	  
 	});
 </script>
+
+
+<script>
+$('#mypop').click(function(){
+		$("#exportPop").toggle();
+ });
+ $("html").click(function(){
+	$("#exportPop, .ExpPop").hide(200);
+ });
+ $(".billing_dashboard, .nav-tabs").click(function(){
+	$("#exportPop, .ExpPop").hide(200);
+ });
+ 
+ $("#exportPop, #mypop, .nav-tabs, .billing_dashboard").click(function(e) {  
+     e.stopPropagation();
+ });
+</script>
+
+
+<script>
+function leavePdfExport(){
+	
+	var reportYear = "";
+	var reportMonth = "";
+	var reportFromDate = "";
+	var reportEndDate = "";
+	var emptyExport = $("#leaveEmptyMessage").val();
+	
+	if($("#topLeaveTakersreportYear").val() !=null && $("#topLeaveTakersreportYear").val() != 'undefined' && $("#topLeaveTakersreportYear").val() != ''){
+		reportYear = $("#topLeaveTakersreportYear").val();
+	}
+	if($("#reportMonth").val() !=null && $("#reportMonth").val() != 'undefined' && $("#reportMonth").val() != ''){
+		reportMonth = $("#reportMonth").val();	
+	}
+	if($("#reportFromDate").val() !=null && $("#reportFromDate").val() != 'undefined' && $("#reportFromDate").val() != ''){
+		 reportFromDate = $("#reportFromDate").val();	
+	}
+	if($("#reportEndDate").val() !=null && $("#reportEndDate").val() != 'undefined' && $("#reportEndDate").val() != ''){
+		 reportEndDate = $("#reportEndDate").val();	
+	}
+
+	if(emptyExport > 0){
+	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=PDF";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_leave_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Leaves List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_leave_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+}
+
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function leaveExcelExport(){
+	
+	var reportYear = "";
+	var reportMonth = "";
+	var reportFromDate = "";
+	var reportEndDate = "";
+	var emptyExport = $("#leaveEmptyMessage").val();
+	
+	if($("#topLeaveTakersreportYear").val() !=null && $("#topLeaveTakersreportYear").val() != 'undefined' && $("#topLeaveTakersreportYear").val() != ''){
+		reportYear = $("#topLeaveTakersreportYear").val();
+	}
+	if($("#reportMonth").val() !=null && $("#reportMonth").val() != 'undefined' && $("#reportMonth").val() != ''){
+		reportMonth = $("#reportMonth").val();	
+	}
+	if($("#reportFromDate").val() !=null && $("#reportFromDate").val() != 'undefined' && $("#reportFromDate").val() != ''){
+		 reportFromDate = $("#reportFromDate").val();	
+	}
+	if($("#reportEndDate").val() !=null && $("#reportEndDate").val() != 'undefined' && $("#reportEndDate").val() != ''){
+		 reportEndDate = $("#reportEndDate").val();	
+	}
+	if(emptyExport > 0){
+	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=EXCEL";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_leave_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Leaves List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_leave_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+}
+</script>
+
+
 <jsp:include page="../masterFooter.jsp" />

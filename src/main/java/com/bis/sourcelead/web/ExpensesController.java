@@ -1,6 +1,7 @@
 package com.bis.sourcelead.web;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -8,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,6 +38,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class ExpensesController {
 	
 	@Value("${sourceleadUrl}")
@@ -79,6 +82,7 @@ public class ExpensesController {
 	{
 		
 		ModelAndView model = new ModelAndView();
+		try{
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (null == sessionData) {
 			sessionData = new SessionMaintainanceData();
@@ -87,6 +91,10 @@ public class ExpensesController {
 		request.getSession().setAttribute("sessionData", sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/myExpensesList");
+		}catch(Exception e){
+			  model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/myExpensesList");
+		}
 		return model;
 	}
 	
@@ -95,6 +103,7 @@ public class ExpensesController {
 	public ModelAndView addExpense(HttpServletRequest request, @RequestParam(value="expenseId", required=false)String expenseId, @RequestParam(value="expenseLocationCode", required=false)String expenseLocationCode) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
+		 try {
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (null == sessionData) {
 			sessionData = new SessionMaintainanceData();
@@ -146,15 +155,18 @@ public class ExpensesController {
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addExpense");
+	  }catch(Exception e){
+			 model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/addExpense");
+		 }
 		return model;
 		
 	}
-	
-	@RequestMapping(value = "/expenses")
-	public ModelAndView expenses(HttpServletRequest request) throws Exception
+	@RequestMapping(value={"/expenses","/expenses/{expensesStatus}"})
+	public ModelAndView expenses(@PathVariable Optional<String> expensesStatus, HttpServletRequest request) throws Exception
 	{
-		
 		ModelAndView model = new ModelAndView();
+		try{
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (null == sessionData) {
 			sessionData = new SessionMaintainanceData();
@@ -162,7 +174,14 @@ public class ExpensesController {
 		sessionData.setNav(Constants.MY_EXPENSES);
 		request.getSession().setAttribute("sessionData", sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
+		if(expensesStatus.isPresent()) {
+			model.addObject("expensesStatusFormDashBoard",expensesStatus.get());
+		}
 		model.setViewName("expenses/expenses");
+		}catch(Exception e){
+			 model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/expenses");
+		}
 		return model;
 	}
 		
@@ -172,6 +191,7 @@ public class ExpensesController {
 	{
 		
 		ModelAndView model = new ModelAndView();
+		try{
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (null == sessionData) {
 			sessionData = new SessionMaintainanceData();
@@ -221,7 +241,7 @@ public class ExpensesController {
 			   isSahReopened = true;
 		     }
 		     model.addObject("isSahReopened", isSahReopened);	
-		     Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(eah.getExpenseId().getProjectMembers().getId(), loginUser);
+		     Boolean isSuperUser = commonUtil.isSuperAdminForProjectMemberToReopenTimeOrExpenseses(eah.getExpenseId().getProjectMembers().getId(), loginUser,orgLoc);
 			 model.addObject("isSuperUser", isSuperUser);	
 			 
 			
@@ -240,12 +260,11 @@ public class ExpensesController {
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addApprovalExpense");
+		}catch(Exception e){
+			  model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/addApprovalExpense");
+		}
 		return model;
 	}
-	
-	
-	
-	
-	
 
 }

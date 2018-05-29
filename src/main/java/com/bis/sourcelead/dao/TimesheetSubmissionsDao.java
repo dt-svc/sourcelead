@@ -40,7 +40,7 @@ public interface TimesheetSubmissionsDao {
     
     Date getRightNavStartDateForApproverBasedOnCurrentStartDate(Long  approverUserId,Long empUserId,Date currentStartDate);
     
-    public void saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception;
+    public List<TimesheetSubmissions> saveAllTimesheetSubmissions(List<TimesheetSubmissions> timesheetSubmissionsList) throws Exception;
 
     public Date getNextMondayByProjectMemberId(Long pojectMemberId) throws Exception; 
     
@@ -77,6 +77,10 @@ public interface TimesheetSubmissionsDao {
 	public HashSet<TimesheetSubmissions> getWeekFrequencyByProjMemId(Long projectId) throws Exception;
 	
 	public List<TimesheetSubmissions> getTimeSheetSubmissionByProjectMemberId(Long pojectMemberId) throws Exception;
+	
+	public List<TimesheetSubmissions> getTimesheetSubmissionsByProjectIdAndMasterCandidateId(Long projectId,Long masterCandidateId) throws Exception;
+
+	public TimesheetSubmissions getSubmissionDetailsByProjectIdMasterCandiDateIdStartDateandEndDate(Long projectId,Long masterCanidateId, Date frequencyStartDate, Date frequencyEndDate);
 
 
 }

@@ -17,7 +17,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Add Leave Options</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='/viewOptions'/>">Leave Options List</a> &raquo; Add Leave Options</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='${appPath}/viewOptions'/>">Leave Options List</a> &raquo; Add Leave Options</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="loading"></div> 
@@ -170,11 +170,18 @@ function saveLeaveOption(){
 			var userId = '${SourceLeadWeb_userId}';
 		  	/* var formData = getFormData("add_option_form"); */
 		  	var formData = $($('#add_option_form')[0]).serialize();
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post(sourceleadUrl+"/saveLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(data) {
-				if(data == true){
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$.post(sourceleadUrl+"/saveLeaveOption?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(result) {
+				 if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		   }  else if (result.response === "SUCCESS") { 
 					location.replace(sourceleadUrl+ "/viewOptions");
-				}
+				}else if (result.indexOf('Sign In') !== -1) {
+           			location.replace(sourceleadUrl);
+           		} else {
+           		    showError("Operation failed, please try again");
+           		}
+			$("#loading").hide();
 			}); 
 			return true;
 	 }else{ 

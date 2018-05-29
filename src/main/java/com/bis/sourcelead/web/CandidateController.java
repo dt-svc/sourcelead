@@ -1,8 +1,6 @@
 package com.bis.sourcelead.web;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -25,15 +23,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateDocumentsService;
@@ -42,14 +41,18 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class CandidateController {
 	private static final Logger logger = LoggerFactory.getLogger(CandidateController.class);
 	@Value("${sourceleadUrl}")
@@ -83,9 +86,16 @@ public class CandidateController {
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
 	
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	private CandidateDocumentsService candidateDocumentsService;
+	
+	@Autowired
+	private SourceleadFormSectionsService sourceleadFormSectionsService;
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
 	/**
 	 * Handles to display candidate jsp
 	 * @return ModelAndView
@@ -148,6 +158,11 @@ public class CandidateController {
 				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
 				model.addObject("skillsList", skillsList);
 				
+				SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
+			     model.addObject("actionId",action.getId());
+			     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+				 model.addObject("sourceleadSectionList",sections);
+				
 				return model;
 		    }
 		 
@@ -160,7 +175,8 @@ public class CandidateController {
 			,@RequestParam(value="searchValue", required=false)String searchValue,
 			HttpServletRequest request,
 			@RequestParam(value="candidateKeyword", required=false)String candidateKeyword,
-			@RequestParam(value="candidateIdSearchId", required=false)String candidateIdSearchId) throws Exception {
+			@RequestParam(value="candidateIdSearchId", required=false)String candidateIdSearchId,
+			@RequestParam(value="candidateUUID", required=false)String  candidateUUID) throws Exception {
 		
 		logger.debug("--------candidatesList------");
 		
@@ -176,6 +192,11 @@ public class CandidateController {
 		model.setViewName("candidates/candidatesList");
 		
 		if(candidateKeyword != null && !candidateKeyword.equalsIgnoreCase("undefined") && candidateKeyword.equalsIgnoreCase("candidateSearch")){
+		    model.addObject("candidateKeyword", candidateKeyword);
+		    model.addObject("candidateIdSearchId",candidateIdSearchId);
+		}
+		
+		if(candidateKeyword != null && !candidateKeyword.equalsIgnoreCase("undefined") && candidateKeyword.equalsIgnoreCase("requestedDocumentNotification")){
 		    model.addObject("candidateKeyword", candidateKeyword);
 		    model.addObject("candidateIdSearchId",candidateIdSearchId);
 		}
@@ -209,6 +230,11 @@ public class CandidateController {
 	        List<States> statesList = statesService.getAllStatesByCountry(countries.getName());
 	        model.addObject("statesList", statesList);
 		}
+		
+		//approver list
+		List<User> requirementApproverList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_REQUIREMENT));
+		model.addObject("requirementApproverList", requirementApproverList);
+				
 		
 	/*	List<Candidate>   candidatesList = candidateService.getCandidatesListByOrgLocationID(orgLocations.getId(),org.getId(),Constants.CANDIDATE_ACTIVE,"");
 		model.addObject("candidatesList", candidatesList);*/
@@ -244,7 +270,14 @@ public class CandidateController {
 					msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "consultantCreateMsg");
 					model.addObject("msg", msg);
 					SourceLeadSessionManager.removeSessionAttribute(request, "consultantCreateMsg");
-				}		
+				}	
+				
+		if(StringUtils.isNotBlank(candidateUUID)) {
+			Candidate candidate = candidateService.getCandidateByUUID(candidateUUID);	
+			model.addObject("candidateId", candidate.getId());
+			model.addObject("candidateUUID", candidateUUID);
+		}
+		
 		
 		return model;
 
@@ -402,12 +435,12 @@ public class CandidateController {
 		 CandidateDocuments candidateDocuments =  candidateDocumentsService.getCandidateDocumentByDocumentUUID(documentUUID);	
 			    
 		 byte[] pdfBytes = null;
-			if("application/pdf".equalsIgnoreCase(candidateDocuments.getFileContentType())){
+			/*if("application/pdf".equalsIgnoreCase(candidateDocuments.getFileContentType())){
 				pdfBytes = candidateDocuments.getDocFile();
 			}
 			else{
 				 pdfBytes = pdfConversionUtil.convertDocToPdf(candidateDocuments.getDocFile());
-			}
+			}*/
 			 response.setHeader("Content-disposition","inline; filename=contractPdf.pdf");
 		  	    response.setContentType("application/pdf");
 		  	    ServletOutputStream sos = response.getOutputStream();

@@ -25,6 +25,8 @@ public interface OrgRelationsService {
 	
 	public List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception;
 	
+	public OrgRelations getClientsByOrgLocationIdAndName(Long orgLocationId, String name) throws Exception;
+	
 	List<OrgRelations> getAllClientsByOrgNameOrgLocationId(String  orgName,Long orgLocationId) throws Exception;
 	
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception;
@@ -60,7 +62,9 @@ public interface OrgRelationsService {
 	List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId,Long loginUserId) throws Exception;
 	
 	List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId,String type);
-
+	
+	List<OrgRelations> getClientOrVendorListByOrgLocationIdForImmigration(Long orgLocationId,String type);
+	
 	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception;
@@ -69,9 +73,12 @@ public interface OrgRelationsService {
 
 	OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId,Long locationId) throws Exception;
 	
+	OrgRelations getOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId,Long locationId) throws Exception;
+	
 	OrgRelations getOrgRelationsByUUID(String UUID) throws Exception;
 	
 	ResponseList<OrgSpoc>  getAllVendorsContactFilterListByOrgLocationIdAndTabAccessAndDTO(OrgSpocDTO orgSpocDTO,Long id, Long orgLocationId, String relationType,String vendorStatus, List<Long> vendorOrgLocationsIds) throws Exception;
 
 	ResponseList<OrgRelations> getAllVendorsFilterByOrgLocationIdAndOrgRelationDTO(OrgRelationDTO orgRelationDTO ,Long id,String status, String vendorsRelationId) throws Exception;
+
 }

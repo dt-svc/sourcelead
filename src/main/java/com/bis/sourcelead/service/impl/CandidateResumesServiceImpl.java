@@ -93,12 +93,6 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 					activitySummary.append("Title").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResumeDTO.getTitle()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
 				
-				if (StringUtils.isNotBlank(candidateResumeDTO.getTitle())) {
-					candidateResume.setTitle(candidateResumeDTO.getTitle());
-				}else {
-					candidateResume.setTitle(candidateResume.getFileName());
-				}
-				
 				if (candidateResume.getDescription() != null) {
 					activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResumeDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				}
@@ -115,6 +109,11 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				candidateResume.setFileName(fileInfo.getFileName());
 				candidateResume.setFileContentType(fileInfo.getContentType());
 				FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");
+			}
+			if (StringUtils.isNotBlank(candidateResumeDTO.getTitle())) {
+				candidateResume.setTitle(candidateResumeDTO.getTitle());
+			}else {
+				candidateResume.setTitle(candidateResume.getFileName());
 			}
 		}
 		else {
@@ -146,8 +145,12 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END);
 				}
 				// candidateResume.setDocFile(multiFile.getBytes());
-				candidateResume.setFileURL(fileInfo.getFileURL());
-				candidateResume.setFileName(fileInfo.getFileName());
+				if(StringUtils.isNotBlank(fileInfo.getFileURL())) {
+					candidateResume.setFileURL(fileInfo.getFileURL());
+				}
+				if(StringUtils.isNotBlank(fileInfo.getFileName())) {
+					candidateResume.setFileName(fileInfo.getFileName());
+				}
 				
 				if (StringUtils.isBlank(candidateResumeDTO.getTitle())) {
 					candidateResume.setTitle(fileInfo.getFileName());

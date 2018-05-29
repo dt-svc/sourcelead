@@ -48,6 +48,16 @@ private static final long serialVersionUID = 1L;
 	private BigDecimal expenseAmountDivId;
 	
 	private List<Long> removedDocumentIds;
+	
+	private String projectClientUUID;
+	 
+	private String projectUUID;
+	
+	private String orgRelationUUID;
+	
+	private String expensesRejectedReason;
+	
+	private String projectStatus;
 
 	public Long getId() {
 		return id;
@@ -222,5 +232,52 @@ private static final long serialVersionUID = 1L;
 	public void setRemovedDocumentIds(List<Long> removedDocumentIds) {
 		this.removedDocumentIds = removedDocumentIds;
 	}
+
+	public String getProjectClientUUID()
+	{
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID)
+	{
+		this.projectClientUUID = projectClientUUID;
+	}
+
+	public String getProjectUUID()
+	{
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID)
+	{
+		this.projectUUID = projectUUID;
+	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getExpensesRejectedReason() {
+		return expensesRejectedReason;
+	}
+	public void setExpensesRejectedReason(String expensesRejectedReason) {
+		this.expensesRejectedReason = expensesRejectedReason;
+	}
+
+	public String getProjectStatus() {
+		return projectStatus;
+	}
+
+	public void setProjectStatus(String projectStatus) {
+		this.projectStatus = projectStatus;
+	}
+	
+	
 
 }

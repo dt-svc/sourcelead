@@ -3,13 +3,13 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Transient;
-
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Required;
-import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 public class RequirementDTO extends CommonDTO {
 
+	private long id;
+	
 	private String staticPath;
 
 	private List<FileInfo> fileInfo;
@@ -26,6 +26,8 @@ public class RequirementDTO extends CommonDTO {
 	private String jobType;
 
 	private String jobId;
+	
+	private String importValue;
 
 	private String otherJobType;
 
@@ -61,7 +63,6 @@ public class RequirementDTO extends CommonDTO {
 
 	private String isreceivingApplicants;
 
-	@Required(desc = "location")
 	private String location;
 
 	private String countryReq;
@@ -76,8 +77,22 @@ public class RequirementDTO extends CommonDTO {
 
 	private String skills;
 
+	private String medicalClearence;
+	
+	private String securityClearance;
+	
+	private String overTime;
+	
+	private String backgroundCheck;
+	
+	private String gender;
+	
+	private String experienceLevel;
+	
+	
 	private List<String> visa;
 
+	@CleanHtml(escape=false)
 	private String description;
 
 	private List<String> noticePeriod;
@@ -88,14 +103,18 @@ public class RequirementDTO extends CommonDTO {
 
 	private String isClient;
 
+	@Required(desc = "client", dependsOn = "isClient", parentValue = "Y")
 	private String selectClient;
 
 	private String clientCurrencyCode;
 
 	private String clientRate;
+	
+	private String clientMaxRate;
 
 	private String clientRateType;
 
+	@Required(desc = "clientForm", dependsOn = "isClient", parentValue = "Y")
 	private String clientSubmissionForm;
 
 	private String cd;
@@ -126,8 +145,42 @@ public class RequirementDTO extends CommonDTO {
 	
 	private String noOfOfferedApplicants;
 	
+	private String noOfApplicants;
 	
 
+	private String projectClientID;
+	
+	private String projectName;
+
+	private String sortColumn;
+	
+	private String sortOrder;
+	 
+	private List<Map<String, String>> order;
+	 
+	private String searchValue;
+	
+	private String jobCampaignType;
+	
+	private int start;
+	 
+	private int length;
+	
+	private List<CustomFormFieldDTO> customFormData;
+	
+	private String url;
+	
+	private String fileURL;
+	
+	private String fileContentType;
+	
+	private String fileName;
+	
+	private List<RequirementLocationsDTO> locationInfo;
+	
+	private List<RequirementLocationsDTO> savedLocationInfo;
+
+	private List<String> locationsList;
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
@@ -210,6 +263,7 @@ public class RequirementDTO extends CommonDTO {
 
 	private String saveType;
 
+	@Required(desc = "clientContact", dependsOn = "isClient", parentValue = "Y")
 	private String selectContact;
 
 	private String assignedToMaxCount;
@@ -1031,4 +1085,265 @@ public class RequirementDTO extends CommonDTO {
 		this.currentRateCurrency = currentRateCurrency;
 	}
 
+
+	public String getMedicalClearence()
+	{
+		return medicalClearence;
+	}
+
+	public void setMedicalClearence(String medicalClearence)
+	{
+		this.medicalClearence = medicalClearence;
+	}
+
+	public String getSecurityClearance()
+	{
+		return securityClearance;
+	}
+
+	public void setSecurityClearance(String securityClearance)
+	{
+		this.securityClearance = securityClearance;
+	}
+
+	public String getOverTime()
+	{
+		return overTime;
+	}
+
+	public void setOverTime(String overTime)
+	{
+		this.overTime = overTime;
+	}
+
+	public String getBackgroundCheck()
+	{
+		return backgroundCheck;
+	}
+
+	public void setBackgroundCheck(String backgroundCheck)
+	{
+		this.backgroundCheck = backgroundCheck;
+	}
+
+	public String getGender()
+	{
+		return gender;
+	}
+
+	public void setGender(String gender)
+	{
+		this.gender = gender;
+	}
+
+	public String getExperienceLevel()
+	{
+		return experienceLevel;
+	}
+
+	public void setExperienceLevel(String experienceLevel)
+	{
+		this.experienceLevel = experienceLevel;
+	}
+
+	public String getClientMaxRate()
+	{
+		return clientMaxRate;
+	}
+
+	public void setClientMaxRate(String clientMaxRate)
+	{
+		this.clientMaxRate = clientMaxRate;
+	}
+
+	
+
+	public String getProjectClientID()
+	{
+		return projectClientID;
+	}
+
+	public void setProjectClientID(String projectClientID)
+	{
+		this.projectClientID = projectClientID;
+	}
+
+	public String getProjectName()
+	{
+		return projectName;
+	}
+
+	public void setProjectName(String projectName)
+	{
+		this.projectName = projectName;
+	}
+
+
+	public String getSortColumn()
+	{
+		return sortColumn;
+	}
+
+	public void setSortColumn(String sortColumn)
+	{
+		this.sortColumn = sortColumn;
+	}
+
+	public String getSortOrder()
+	{
+		return sortOrder;
+	}
+
+	public void setSortOrder(String sortOrder)
+	{
+		this.sortOrder = sortOrder;
+	}
+
+	public List<Map<String, String>> getOrder()
+	{
+		return order;
+	}
+
+	public void setOrder(List<Map<String, String>> order)
+	{
+		this.order = order;
+	}
+
+	public String getSearchValue()
+	{
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue)
+	{
+		this.searchValue = searchValue;
+	}
+
+	public String getJobCampaignType()
+	{
+		return jobCampaignType;
+	}
+
+	public void setJobCampaignType(String jobCampaignType)
+	{
+		this.jobCampaignType = jobCampaignType;
+	}
+
+	public int getStart()
+	{
+		return start;
+	}
+
+	public void setStart(int start)
+	{
+		this.start = start;
+	}
+
+	public int getLength()
+	{
+		return length;
+	}
+
+	public void setLength(int length)
+	{
+		this.length = length;
+	}
+
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
+	}
+
+
+	public String getNoOfApplicants() {
+		return noOfApplicants;
+	}
+
+	public void setNoOfApplicants(String noOfApplicants) {
+		this.noOfApplicants = noOfApplicants;
+	}
+
+	public String getUrl()
+	{
+		return url;
+	}
+
+	public void setUrl(String url)
+	{
+		this.url = url;
+	}
+
+	public String getFileURL()
+	{
+		return fileURL;
+	}
+
+	public void setFileURL(String fileURL)
+	{
+		this.fileURL = fileURL;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
+
+	public String getFileName()
+	{
+		return fileName;
+	}
+
+	public void setFileName(String fileName)
+	{
+		this.fileName = fileName;
+	}
+
+
+	public List<RequirementLocationsDTO> getLocationInfo() {
+		return locationInfo;
+	}
+
+	public void setLocationInfo(List<RequirementLocationsDTO> locationInfo) {
+		this.locationInfo = locationInfo;
+	}
+	public String getImportValue() {
+		return importValue;
+	}
+
+	public List<RequirementLocationsDTO> getSavedLocationInfo() {
+		return savedLocationInfo;
+	}
+
+	public void setSavedLocationInfo(List<RequirementLocationsDTO> savedLocationInfo) {
+		this.savedLocationInfo = savedLocationInfo;
+	}
+
+	public void setImportValue(String importValue) {
+		this.importValue = importValue;
+
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
+	}
 }

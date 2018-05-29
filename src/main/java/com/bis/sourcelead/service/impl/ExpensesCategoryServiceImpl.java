@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,8 +70,12 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 			}
 		
 		
-		if(jsonObject.has("taxPercentageReward") && null != jsonObject.getString("taxPercentageReward") && !"".equals(jsonObject.getString("taxPercentageReward")) ){
-			expensesCategory.setAllowedAmount(Float.parseFloat(jsonObject.getString("taxPercentageReward")));
+		if(jsonObject.has("taxPercentageReward") && null != jsonObject.getString("taxPercentageReward")){
+			if(StringUtils.isNotBlank(jsonObject.getString("taxPercentageReward"))) {
+				expensesCategory.setAllowedAmount(Float.parseFloat(jsonObject.getString("taxPercentageReward")));
+			}else {
+				expensesCategory.setAllowedAmount(0);
+			}
 			expensesCategory.setAmountType("Percentage");
 		}
 			

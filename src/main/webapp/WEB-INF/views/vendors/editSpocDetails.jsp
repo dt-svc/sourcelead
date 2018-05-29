@@ -237,9 +237,9 @@
 						
 						result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 						result = result + ' <div class="row">';
-						result = result + ' <div class="col-md-7">';
+						result = result + ' <div class="col-md-7 phoneValid">';
 						result = result + '<label>Phone No:</label>';
-						result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" readonly="readonly" >';
+						result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true">';
 						result = result + '</div>';
 						
 						result = result + ' <div class="col-md-5 errBotVal">';
@@ -281,9 +281,9 @@
 		        			result = result + ' <select id="spocStatus" name="spocStatus">';
 							result = result + ' <option '+selected1+'>Active</option>';
 							result = result + ' <option '+selected2+'>In-Active</option>';
-							result = result + ' <option '+selected3+'>New</option>';
+							/*result = result + ' <option '+selected3+'>New</option>';
 							result = result + ' <option '+selected4+'>Negotiation</option>';
-							result = result + ' <option '+selected5+'>Contracted</option>';
+							result = result + ' <option '+selected5+'>Contracted</option>';*/
 							result = result + ' </select>';
 		        		}
 						result = result + ' </div>'
@@ -392,7 +392,7 @@
 	 			$("#vendorEditMsg").html("Contact Details Updated");
 		    	vendorDetailsbySpocId(spocId,newOwner,spocUserId,ownerId); 
 		    	//getVendorContactLists();
-		    	getVendorContactListsELK();
+		    	getVendorContactList();
 		    	vendorEditMsgFadein();
 			});
 	     	return true;

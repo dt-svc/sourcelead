@@ -266,5 +266,25 @@ public class ProjectApproverHierarchyServiceImpl implements ProjectApproverHiera
 	public ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientId(Long projectId, Long projectClientId) throws Exception {
 		return projectApproverHierarchyDao.getApproverUsersByProjectIdAndProjectClientId(projectId, projectClientId);
 	}
+
+
+	@Override
+	public ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(Long approverUserId,
+			Long projectClientId) throws Exception {
+		return projectApproverHierarchyDao.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(approverUserId, projectClientId);
+	}
+
+
+	@Override
+	public ProjectApproverHierarchy getProjectApproverByUserIdAndProjectIdOrgLocationId(Long userId, Long projectId, Long orgLocationId) throws Exception {
+		return projectApproverHierarchyDao.getProjectApproverByUserIdAndProjectIdOrgLocationId(userId, projectId, orgLocationId);
+	}
+
+
+	@Override
+	public List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectClientId(Long projectClientId)
+			throws Exception {
+		return projectApproverHierarchyDao.getProjectsHierarchyListByProjectClientId(projectClientId);
+	}
 	
 }

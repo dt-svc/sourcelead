@@ -12,25 +12,37 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.jgroups.util.Responses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ProjectsDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectBudget;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.ProjectBudgetService;
+import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
@@ -69,7 +81,20 @@ public class PdfUtil {
 	private OrgLocationService orgLocationService;
 	
 	@Autowired
-	 CommonUtil commonUtil;
+	SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	
+	@Autowired
+	ProjectClientService projectClientService;
+	
+	@Autowired
+	ProjectBudgetService projectBudgetService;
+	
+	@Autowired
+	OrgLocationsDao orgLocationsDao;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
 			java.util.List<UserRole> inactiveList, java.util.List<UserRole> notLoggedInList, ArrayList<UserRole> userRolesList,
@@ -80,11 +105,11 @@ public class PdfUtil {
 
 	    /*File file = new File("users_"+dateFormat.format(new Date())+".pdf");*/
 	    StringBuilder sbUser =  new StringBuilder();
-	    sbUser.append("users_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+	    sbUser.append("associates_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append("users_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
-
+	    File file = File.createTempFile(fileSB.append("associates_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+	    System.out.println("***************************************"+file.getAbsolutePath());
 	    file.setReadable(true);
 	    
 	    try {
@@ -96,7 +121,7 @@ public class PdfUtil {
 	        BaseColor myColor = WebColors.getRGBColor("#000000");
 	        boldFont.setColor(myColor);
 	        StringBuilder userStyle = new StringBuilder();
-	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Users");
+	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Associates");
           
 
 	        StringBuilder orgNameSB = new StringBuilder();
@@ -108,28 +133,19 @@ public class PdfUtil {
             int activeCount = 0; 
             int notLoggedInCount = 0; 
 	        List orderedList = new List(List.ORDERED);
-	        
-	        if("ACTIVE".equalsIgnoreCase(userState)){
-	        	activeCount = userRolesList.size();
-			 }else{
-				 if(activeList !=null){
-					 activeCount = activeList.size();
-				 }
-			 }
-	        if("INACTIVE".equalsIgnoreCase(userState)){
-	        	inActiveCount = userRolesList.size();
-			 }else{
-				 if(inactiveList !=null){
-					 inActiveCount = inactiveList.size();
-				 }
-			 }
-	        if("NOT_LOGGEDIN".equalsIgnoreCase(userState)){
-	        	notLoggedInCount = userRolesList.size(); 
-			 }else{
-				 if(notLoggedInList != null){
-					 notLoggedInCount = notLoggedInList.size();
-				 }
-			 }
+	        //userRole list developed by laxman  
+	        for(UserRole ur:userRolesList) {
+	        	if("ACTIVE".equalsIgnoreCase(ur.getUserState().toString())){
+	        		activeCount++;
+	        	} 
+	        	if("INACTIVE".equalsIgnoreCase(ur.getUserState().toString())){
+	        		inActiveCount++;
+	        	} 
+	        	if("NOT_LOGGEDIN".equalsIgnoreCase(ur.getUserState().toString())){
+	        		notLoggedInCount++;
+	        	} 
+	        }
+	      
 	        orderedList.add(new ListItem("Active:"+activeCount));
 	        orderedList.add(new ListItem("Inactive:"+inActiveCount));
 	        orderedList.add(new ListItem("Not Loggedin:"+notLoggedInCount));
@@ -141,7 +157,7 @@ public class PdfUtil {
 	        cell1.setColspan(11);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{3, 5, 3,5, 5, 3,5,3,5,5,3});
+            table.setWidths(new int[]{3, 5, 3,5, 5, 5,5,5,5,3});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -166,7 +182,7 @@ public class PdfUtil {
                 }
                 table.completeRow();
             }
-	        document.addTitle("Users Table");
+	        document.addTitle("Associates Table");
 	        table.setSpacingBefore(15f);
 	        document.add(table);
 	        logger.info("Pdf table created !!");
@@ -228,30 +244,36 @@ public class PdfUtil {
 		   }else{
 			   userArray[4] = "--";
 		   }
-		   if(userRoles.getUser().getLocation() !=null){
+		   /*if(userRoles.getUser().getLocation() !=null){
 			   userArray[7] = userRoles.getUser().getLocation();
 		   }else{
 			   userArray[7] = "--";
-		   }
+		   }*/
 		   if(userRoles.getRoles() != null){
-			   userArray[8] = userRoles.getRoles().getDisplayName();
+			   userArray[7] = userRoles.getRoles().getDisplayName();
+		   }else{
+			   userArray[7] = "--";
+		   }StringBuilder fullName=new StringBuilder();
+		   if(userRoles.getReportingManager() !=null){
+			   if(userRoles.getReportingManager().getLastName()!=null)
+			   {
+			   userArray[8] = fullName.append(userRoles.getReportingManager().getFirstName()).append(" ").append(userRoles.getReportingManager().getLastName()).toString();
+			   }else
+			   {
+				   userArray[8] = userRoles.getReportingManager().getFirstName();
+			   }
 		   }else{
 			   userArray[8] = "--";
 		   }
-		   if(userRoles.getReportingManager() !=null){
-			   userArray[9] = userRoles.getReportingManager().getFirstName();
-		   }else{
-			   userArray[9] = "--";
-		   }
 		   
 		   if(userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "N".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && !"INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-			   userArray[10] =  "Invite";
+			   userArray[9] =  "Invite";
 	   		   }else if((userRoles.getIsMailSent() != null && !"".equalsIgnoreCase(userRoles.getIsMailSent().toString()) && "Y".equalsIgnoreCase(userRoles.getIsMailSent().toString())) &&  (userRoles.getUserState() !=null && "NOT_LOGGEDIN".equalsIgnoreCase(userRoles.getUserState().toString()))){
-	   		   userArray[10] =  "Resend";
+	   		   userArray[9] =  "Resend";
 	   		   }else if(userRoles.getUserState() !=null && "ACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-	   			 userArray[10] =  "Active";
+	   			 userArray[9] =  "Active";
 	   		   }else if(userRoles.getUserState() !=null && "INACTIVE".equalsIgnoreCase(userRoles.getUserState().toString())){
-	   			userArray[10] =  "In-active";
+	   			userArray[9] =  "In-active";
 	   		   }
 		   
 		return userArray;
@@ -821,7 +843,7 @@ public class PdfUtil {
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 	        // Create an instance of PdfPTable. After that we transform the header 
-            int[] columnWidths = new int[]{3, 5, 5,3, 2,3,3};
+            int[] columnWidths = new int[]{3, 5, 5,3, 2,3};
             PdfPTable table = getPdfTable(headers,columnWidths,titleName.toString()); 
 	        table.completeRow();
 	        java.util.List<String[]> cantactsList = new ArrayList<>();
@@ -878,7 +900,7 @@ public class PdfUtil {
 			contactsArray[4] = "--";
 		}
 		
-		UserRole userRole = userRoleService.getUserRoleByUserId(orgSpoc.getVendorUser().getId());
+		/*UserRole userRole = userRoleService.getUserRoleByUserId(orgSpoc.getVendorUser().getId());
 		
 		if(null != userRole){
 		if (userRole.getRoles().getDisplayName() != null && !"".equalsIgnoreCase(userRole.getRoles().getDisplayName())) {
@@ -886,11 +908,11 @@ public class PdfUtil {
 		}
 		}else{
 			contactsArray[5] = "--";
-		}
+		}*/
 		if (orgSpoc.getSpocStatus() != null && !"".equalsIgnoreCase(orgSpoc.getSpocStatus())) {
-			contactsArray[6] = orgSpoc.getSpocStatus();
+			contactsArray[5] = orgSpoc.getSpocStatus();
 		}else{
-			contactsArray[6] = "--";
+			contactsArray[5] = "--";
 		}
 		return contactsArray;
 	}
@@ -979,7 +1001,6 @@ public class PdfUtil {
 	    
 
 	private String[] prepareEmployeeArray(ProjectMembers projectMember, String[] headers) {
-		
 			if(projectMember.getProjectMemberCandidteId().getConsultantUser() != null){
 				 UserRole userRole;
 				try {
@@ -1032,11 +1053,13 @@ public class PdfUtil {
 			}else {
 				empArray[6] = "--";
 			}
-			if (projectMember.getDraftHrs() != null && !"".equalsIgnoreCase(projectMember.getDraftHrs())) {
-				empArray[7] = projectMember.getDraftHrs();
+			if(projectMember.getCandidateId() != null){
+				 Float approvalTimesheetsSubmissionsCountAsEmployee = submissionApproverHierarchyService.getTotalApprovedOrRejectedHoursByMasterCandidateIdAndProjectIdForEmployee(projectMember.getMasterCandidateId().getId(), projectMember.getProjects().getId(), "APPROVED");
+				    empArray[7] = String.valueOf(approvalTimesheetsSubmissionsCountAsEmployee);
 			}else {
 				empArray[7] = "--";
 			}
+			
 		return empArray;
 	}
 	
@@ -1050,5 +1073,275 @@ public class PdfUtil {
 	    }
 	
 	
+	
+	public File createProjectPdfTable(ResponseList<ProjectsDTO> projectsList, OrgLocations orgLocations)throws Exception {
+		String[] headers = Constants.PROJECT_EXCEL_HEADERS;
+	    Document document = new Document(PageSize.LETTER.rotate());
+
+	    StringBuilder sbUser =  new StringBuilder();
+	    sbUser.append("projects_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append("projects_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+	    file.setReadable(true);
+	    
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder userStyle = new StringBuilder();
+	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Projects");
+          
+
+	        StringBuilder orgNameSB = new StringBuilder();
+            Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(orgLocations.getOrgLocationName()).toString());
+            para.setAlignment(Element.ALIGN_CENTER);
+            document.add(para);
+	        List orderedList = new List(List.ORDERED);
+	        document.add(orderedList);
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        PdfPTable table = new PdfPTable(headers.length);
+	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+	        cell1.setColspan(9);
+	        headerCellStyle(cell1);
+	        table.setWidthPercentage(100);
+            table.setWidths(new int[]{3,5,5,3,3,3,5,4});
+            table.addCell(cell1);
+	        for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+	            cell.setBackgroundColor(myBorderColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> projectList = new ArrayList<>();
+	        java.util.List<ProjectsDTO> list =  projectsList.getData();
+	        for(ProjectsDTO projects : list){
+	        	projectList.add(prepareProjectsStringArray(projects,headers,orgLocations));
+	        }
+	        for (String[] userArray: projectList) {
+                for (int i = 0; i < userArray.length; i++) {
+                    String datum = userArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        document.addTitle("Projects Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+		return file;
+	}
+	private String[] prepareProjectsStringArray(ProjectsDTO projects, String[] headers,OrgLocations orgLocations) throws Exception {
+		String projectArray[] = new String[headers.length];
+     	 ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+
+     	 if(projects.getProjectSequeneNumber() != null) {
+     		projectArray[0] = projects.getProjectSequeneNumber();
+     	 }else {
+     		projectArray[0] = "--";
+     	 }
+     	 
+     	if(projects.getProjectName() != null) {
+     		projectArray[1] = projects.getProjectName();
+     	}else {
+     		projectArray[1] = "--";
+
+     	}
+     	 
+     	Set<ProjectApproverHierarchy> projectApproverHierarchies = projectClients.getProjectApproverHierarchyList();
+	    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+	    	if(approverHierarchy.getLevel() == 1 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
+	    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFullName());
+	    	}else if(approverHierarchy.getLevel() == 2 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
+	    		projects.setManagerLevel2(approverHierarchy.getApproverUserId().getFullName());
+	    	}
+	    }
+	    String projectManagers = "";
+	    if(projects.getManagerLevel1() != null){
+  		  projectManagers = projects.getManagerLevel1();
+ 		  }
+  	    if(projects.getManagerLevel2() != null ){
+    	 projectManagers = projects.getManagerLevel2();
+		 }
+  	  
+  	  if(projects.getManagerLevel1() != null  && projects.getManagerLevel2() != null ){
+ 		   projectManagers = projects.getManagerLevel1()+","+projects.getManagerLevel2();
+	 	 }
+	  	if(projectManagers != null) {
+	 		projectArray[2] = projectManagers;
+	 	}else {
+	 		projectArray[2] = "--";
+	
+	 	}
+	  	
+	  	if(projects.getInvoiceFrequency() != null) {
+	 		projectArray[3] = projects.getInvoiceFrequency();
+	  	}else {
+	 		projectArray[3] = "--";
+	  	}
+  	  
+	  	
+	  	
+		OrgLocations orglo = orgLocationsDao.getOrgLocations(orgLocations.getId());
+	  	if(projects.getOrgLocationsId() == orglo.getId().longValue()) {
+			 java.util.List<ProjectBudget>  budgetList = projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),orglo.getId());
+			    if(budgetList != null && budgetList.size() > 0) {
+			    	 double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();
+						if(budgetList.size() >0) {
+							ProjectBudget projectBudget = budgetList.iterator().next();
+							projects.setProjectbudgetCurrency(projectBudget.getEstimatedBudgetCurrency());
+						}
+						projects.setProjectbudgetAmount(budgetSum);
+						projectArray[4] = projects.getProjectbudgetCurrency()+ " " +budgetSum;
+			    }else {
+			    	projectArray[4] = "--";
+			    }
+		 }
+	  	
+  	   
+		if(projects.getEndDateStr() != null && projects.getStartDateStr() != null){
+			projectArray[5] = projects.getStartDateStr() +"  " +projects.getEndDateStr();
+		}else {
+			projectArray[5] = projects.getStartDateStr();
+		}
+		
+		
+		 if(projectClients.getOrgRelationId() != null){
+    		 
+ 			if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+ 				projects.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+ 				projectArray[6] = projects.getClient();
+				}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					projects.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+					projectArray[6] =projects.getClient();
+				}
+ 	  }else {
+			projectArray[6] = "--";
+ 	  }
+		 
+		 if(projects.getProjectStatus().toString() != null){
+				projectArray[7] = projects.getProjectStatus().toString();
+			}else {
+				projectArray[7] = "--";
+			}
+		
+		return projectArray;
+	}
+	public File createProjectTasksPdfTable(ResponseList<ProjectTasks> responseTaskList, OrgLocations orgLocations) throws Exception {
+		String[] headers = Constants.PROJECT_TASKS_PDF_HEADERS;
+	    Document document = new Document(PageSize.LETTER.rotate());
+
+	    StringBuilder sbUser =  new StringBuilder();
+	    sbUser.append("projects_Tasks_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append("project_Tasks_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date())).toString(),".pdf");
+	    file.setReadable(true);
+	    
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder userStyle = new StringBuilder();
+	        userStyle.append(orgLocations.getOrgLocationName()).append(" ").append("Project_Tasks");
+          
+
+	        StringBuilder orgNameSB = new StringBuilder();
+            Paragraph para = new Paragraph(orgNameSB.append("Organization : ").append(orgLocations.getOrgLocationName()).toString());
+            para.setAlignment(Element.ALIGN_CENTER);
+            document.add(para);
+	        List orderedList = new List(List.ORDERED);
+	        document.add(orderedList);
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        PdfPTable table = new PdfPTable(headers.length);
+	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+	        cell1.setColspan(9);
+	        headerCellStyle(cell1);
+	        table.setWidthPercentage(100);
+            table.setWidths(new int[]{5,3,3,5,3});
+            table.addCell(cell1);
+	        for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+	            cell.setBackgroundColor(myBorderColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> arrayTaskLists = new ArrayList<>();
+	        for(ProjectTasks tasks : responseTaskList.getData()){
+	        	arrayTaskLists.add(prepareProjectTasksStringArray(tasks,headers,orgLocations));
+	        }
+	        for (String[] userArray: arrayTaskLists) {
+                for (int i = 0; i < userArray.length; i++) {
+                    String datum = userArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        document.addTitle("Projects Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+		return file;
+	}
+	private String[] prepareProjectTasksStringArray(ProjectTasks projectTassks, String[] headers, OrgLocations orgLocations) {
+		String projectTaskArray[] = new String[headers.length];
+		
+		if(projectTassks.getGeneratedId() != null) {
+			projectTaskArray[0] = projectTassks.getGeneratedId() +"-"+ projectTassks.getTaskName(); 
+		}else {
+			projectTaskArray[0] = projectTassks.getTaskName(); 
+		}
+		projectTaskArray[1] = projectTassks.getTaskTypes(); 
+		if(projectTassks.getTaskPriotiry() != null) {
+			projectTaskArray[2] = projectTassks.getTaskPriotiry(); 
+		}else {
+			projectTaskArray[2] = "--"; 
+		}
+		if(projectTassks.getTaskAssignedUsers() != null) {
+			String assignedTo = projectTassks.getTaskAssignedUsers().toString().replaceAll("\\[", "").replaceAll("\\]","");
+			projectTaskArray[3] = assignedTo; 
+		}else {
+			projectTaskArray[3] = "--"; 
+		}
+		projectTaskArray[4] = projectTassks.getTaskStaus(); 
+		
+		return projectTaskArray;
+	}
 	
 	}

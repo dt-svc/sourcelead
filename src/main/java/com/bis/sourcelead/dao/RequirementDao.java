@@ -2,9 +2,10 @@ package com.bis.sourcelead.dao;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
@@ -23,6 +24,8 @@ public interface RequirementDao {
 	public Long getRequirementListByOrgLocationID(Long orgLocationId) throws Exception;
 	
 	public Requirement getRequirementByRequirementId(Long requirementId) throws Exception;
+	
+	public Requirement getRequirementByRequirementIdAndJobTitle(Long requirementId, String url) throws Exception;
 	
 	public Boolean getRequirementByParentRequirementIdAndSpocId(Long requirementId, Long spocId) throws Exception;
 	
@@ -73,6 +76,8 @@ public interface RequirementDao {
     public Requirement getRequirementByRequirementIdOrgLocationsId(String id,Long requirementId, Long orgLocationsId) throws Exception;
 	
     public Requirement getRequirementByRequirementUUID(String requirementUUID) throws Exception;
+    
+    public Requirement getRequirementByAccessibleUserIdAndRequirementUUID(Long userId, String requirementUUID) throws Exception;
     
 	public Boolean validateJobid(String id, Long orgLocationsId) throws Exception;
 
@@ -142,6 +147,31 @@ public interface RequirementDao {
 	/*boolean checkForOldrecordsInCandidtesUsingOrgLocationid(Long orglocationId);
 
 	boolean checkForOldrecordsInProjectsUsingOrgLocationid(Long orglocationId);*/
+	
+	/**
+	 * get all jobs(OPEN) based on orglocationId 
+	 * This method for Job Campaigns
+	 * @param orglocationId
+	 * @param submissionStatus
+	 * @return
+	 * @throws Exception
+	 */
+	
+	public List<Requirement> getAllRequirementsByOrlocationIdAndOpenSubmissionStatus(Long orglocationId)throws Exception;
+	
+	public List<Requirement> getAllAssinedRequirementsOrgLocationIdAndUserId(Long orglocationId,Long userId)throws Exception;
+
+	public Requirement getRequirementByShortURL(String shortURL) throws Exception;
+
+	public ResponseList<RequirementDTO> getAllRequirementsForJobCampaing(RequirementDTO requirementDTO,Long orglocationId,Long userId,String dateFormat)throws Exception;
+	
+	public List<RequirementDTO> getAllCampaignRequirementsByIdsList(List<Long> requirementIds)throws Exception;
+	
+	public List<Requirement> getAssignedRequirementListByOrgLocationIdAndUserIdAndPostedDateAndManagerId(Long orgLocationId, String userType, Long userId, String userCode, String numberOfDays,Long managerId) throws Exception;
+
+    public ResponseList<RequirementDTO> getRequirementList(Long id, String search, Long location, String employmentType, int pageNo, int pageSize);
+    
+    public List<RequirementDTO> getAllManagerRequirementForJobSharing(Date[] searchDates,Long managerUserId,Long orgLocationId) throws Exception;
 
 	
 }

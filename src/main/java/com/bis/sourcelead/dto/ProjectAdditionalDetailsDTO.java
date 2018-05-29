@@ -3,6 +3,7 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -10,6 +11,7 @@ public class ProjectAdditionalDetailsDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
+	@Required(desc="projectLocation")
 	private String projectLocation;
 	
 	private String industry;

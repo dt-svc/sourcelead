@@ -57,6 +57,13 @@ public interface ProjectApproverHierarchyDao {
 	 */
 	public List<ProjectApproverHierarchy> getApproverUserIdsByOrgLocationIdAndLevelAndFrequency(Long orgLocationId, String invoiceFrequency, int managerLevel)throws Exception;
 	
+	public ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(Long approverUserId, Long projectClientId) throws Exception;
+	
 	public ProjectApproverHierarchy getProjectApproverByProjectId(Long ProjectId) throws Exception;
+	
+	public ProjectApproverHierarchy getProjectApproverByUserIdAndProjectIdOrgLocationId(Long userId,Long projectId,Long orgLocationId) throws Exception;
+	
+	List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectClientId(Long projectClientId) throws Exception;
+
 	
 }

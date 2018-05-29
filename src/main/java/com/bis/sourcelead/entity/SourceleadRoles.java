@@ -20,8 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "SOURCELEAD_ROLES", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="sourceleadRoles")
+@Table(name = "SOURCELEAD_ROLES")
 public class SourceleadRoles implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -37,12 +36,15 @@ public class SourceleadRoles implements Serializable{
 	@Column(name = "DISPLAY_NAME")
 	private String DisplayName;
 	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@Column(name = "ACTION_ID")
 	@Type(type="text")
 	private String actionId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "HIERARCHY_ID")
 	private RoleHierarchy roleHierarchy;
 	
@@ -142,6 +144,14 @@ public class SourceleadRoles implements Serializable{
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 	
 	

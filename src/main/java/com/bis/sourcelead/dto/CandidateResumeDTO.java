@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.entity.Candidate;
 
 public class CandidateResumeDTO {
@@ -20,6 +21,7 @@ public class CandidateResumeDTO {
 	
 	private String title ;
 	
+	@CleanHtml(escape=false)
 	private String description ;
 	
 	private String fileContentType;
@@ -39,6 +41,12 @@ public class CandidateResumeDTO {
     private String updatedDate;
     
     private String candidateResumeUpdateDateToString;
+    
+    private String resumeId;
+    
+    private String loginUserId;
+    
+    private String orgLocationId;
 
 	public Long getId()
 	{
@@ -188,6 +196,36 @@ public class CandidateResumeDTO {
 	public void setCandidateResumeUpdateDateToString(String candidateResumeUpdateDateToString)
 	{
 		this.candidateResumeUpdateDateToString = candidateResumeUpdateDateToString;
+	}
+
+	public String getResumeId()
+	{
+		return resumeId;
+	}
+
+	public void setResumeId(String resumeId)
+	{
+		this.resumeId = resumeId;
+	}
+
+	public String getLoginUserId()
+	{
+		return loginUserId;
+	}
+
+	public void setLoginUserId(String loginUserId)
+	{
+		this.loginUserId = loginUserId;
+	}
+
+	public String getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
 	} 
 
 	

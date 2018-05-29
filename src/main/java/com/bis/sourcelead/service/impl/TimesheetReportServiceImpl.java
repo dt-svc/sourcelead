@@ -35,12 +35,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.TimesheetReportsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
@@ -82,6 +85,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	private OrgLocationService orgLocationService;
 	
 	@Value("${sourceleadUrl}")
     String sourceleadUrl;
@@ -245,7 +251,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	 public StringBuilder timesheetReportsTableDiv(String year,String month,OrgLocations orgLocations,User loginUser) throws Exception{
 		 //DateFormat format = Constants.DF_DMY;
 		 //DateFormat format= LoginSessionController.DATEFORMAT;
-		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
+		  DateFormat shortormat = Constants.SHORT_DF_STD_DM;
 		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(month,year);
 		  Date startDate = dateList.get("STARTDATE");
 		  Date endDate = dateList.get("ENDDATE");
@@ -296,7 +302,6 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			timesheetApprovalDiv.append("	        	<tbody>");
 			for (ProjectMembers projectMember : projectMembers)
 			{
-				 ProjectMembers pmWithUser = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
 				  User consultantUser = null;
 					 String fileUrl = "";
 				 if(projectMember != null && projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
@@ -346,7 +351,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				     }else{
 				    	 timesheetApprovalDiv.append("<td><div class='sm'><i title='").append("--").append("'>").append("--").append("</i></div></td>");	 
 				     }
-				     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
+				     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate);
 			    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
 				     float monthTotalHours            = 0f;
 					 float monthBillableTotalHours    = 0f;
@@ -534,13 +539,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public File prepareTimeSheetExport(String frequencyYear, String frequencyMonth, User loginUser,OrgLocations orgLocations) throws Exception {
+	public File prepareTimeSheetExport(TimesheetReportsDTO timesheetReportsDTO,User loginUser,OrgLocations orgLocations) throws Exception {
 		File file = null;
 		StringBuilder weekFrequencyDates = new StringBuilder(); 
 		//DateFormat format = Constants.DF_DMY;
 		 //DateFormat  format = LoginSessionController.DATEFORMAT;
 		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
-		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(frequencyMonth,frequencyYear);
+		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(timesheetReportsDTO.getFrequencyMonth(),timesheetReportsDTO.getFrequencyYear());
 		  Date startDate = dateList.get("STARTDATE");
 		  Date endDate = dateList.get("ENDDATE");
 		  
@@ -601,7 +606,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	    StringBuilder sbTsReports =  new StringBuilder();
 	    sbTsReports.append("timesheetSheet_").append(dateFormat.format(new Date()));
 	    StringBuilder fileSB = new StringBuilder();
-	    file = File.createTempFile(fileSB.append(orgLocations.getOrgLocationName()).append("_TimeSheetReports_").append(frequencyMonth).append("-").append(frequencyYear).append("-").toString(),".pdf");
+	    file = File.createTempFile(fileSB.append(orgLocations.getOrgLocationName()).append("_TimeSheetReports_").append(timesheetReportsDTO.getFrequencyMonth()).append("-").append(timesheetReportsDTO.getFrequencyYear()).append("-").toString(),".pdf");
 	    file.setReadable(true);
 
 	    try {
@@ -612,10 +617,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	        StringBuilder userStyle = new StringBuilder();
 	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
 			BaseColor myColor = WebColors.getRGBColor("#000000");
-			userStyle.append(orgLocations.getOrgLocationName()).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports");
+			userStyle.append(orgLocations.getOrgLocationName()).append("-").append(timesheetReportsDTO.getFrequencyMonth()).append("-").append(timesheetReportsDTO.getFrequencyYear()).append(" ").append("TimeSheetReports");
 			
 			StringBuilder orgNameSB = new StringBuilder();
-            Paragraph para = new Paragraph(orgNameSB.append(orgLocations.getOrgLocationName()).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports").toString());
+            Paragraph para = new Paragraph(orgNameSB.append(orgLocations.getOrgLocationName()).append("-").append(timesheetReportsDTO.getFrequencyMonth()).append("-").append(timesheetReportsDTO.getFrequencyYear()).append(" ").append("TimeSheetReports").toString());
             para.setAlignment(Element.ALIGN_CENTER);
             document.add(para);
 			
@@ -642,10 +647,11 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	            table.addCell(cell);
 	        }
             table.completeRow();
-            List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserId(startDate, endDate, orgLocations.getId(), loginUser.getId());
+            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports");
+            
             java.util.List<String[]> reportList = new ArrayList<>();
-            for(ProjectMembers promembers:projectMembers){
-            	reportList.add(prepareTimesheetReportData(promembers,header,displayWeeksList,loginUser,startDate,endDate));
+            for(ProjectMembers promembers:projectMembers.getData()){
+            	reportList.add(prepareTimesheetReportData(promembers,orgLocations.getId(),header,displayWeeksList,loginUser,startDate,endDate));
             }
             for (String[] tsreportList: reportList) {
                 for (int i = 0; i < tsreportList.length; i++) {
@@ -667,13 +673,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		return file;
 	}
 	
-	private String[] prepareTimesheetReportData(ProjectMembers projectMember, String[] header, LinkedHashMap<Date, Date> displayWeeksList, User loginUser, Date startDate, Date endDate) throws Exception {
+	private String[] prepareTimesheetReportData(ProjectMembers projectMember,Long locationId, String[] header, LinkedHashMap<Date, Date> displayWeeksList, User loginUser, Date startDate, Date endDate) throws Exception {
 		String timeSheetReportsArray[] = new String[header.length];
 		
 		StringBuilder nameAndId = new StringBuilder();
 			if(null != projectMember.getProjectMemberCandidteId()){
 				        nameAndId.append(projectMember.getProjectMemberCandidteId().getFullName());
-						if(projectMember.getEmployee() != null){
+						if(projectMember.getEmployee() != null && projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotBlank(projectMember.getEmployee().getEmployeeId())){
 							nameAndId.append("-").append(projectMember.getEmployee().getEmployeeId()).toString();
 						}
 						timeSheetReportsArray[0] =	nameAndId.toString();	
@@ -685,7 +691,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				timeSheetReportsArray[1] = projectMember.getProjectMemberCandidteId().getEmail();
 			 }else{
 				 timeSheetReportsArray[1] = "--";
-			 }if(projectMember.getProjectMemberCandidteId().getMobilePhone() !=null){
+			 }
+			if(projectMember.getProjectMemberCandidteId().getMobilePhone() !=null && StringUtils.isNotBlank(projectMember.getProjectMemberCandidteId().getMobilePhone() )){
 				 timeSheetReportsArray[2] = projectMember.getProjectMemberCandidteId().getMobilePhone();
 			 }else{
 				 timeSheetReportsArray[2] = "--";
@@ -696,7 +703,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 }else{
 				 timeSheetReportsArray[3] = "--";
 			 }
-			 if(projectMember.getEmployee() != null && projectMember.getEmployee().getRate() !=null){
+			 if(projectMember.getEmployee() != null && projectMember.getEmployee().getRate() != null && StringUtils.isNotBlank(projectMember.getEmployee().getRate())){
 				 StringBuilder rateString = new StringBuilder();
 				 timeSheetReportsArray[4] = rateString.append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString();
 			 }else{
@@ -708,21 +715,28 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 }else{
 				 timeSheetReportsArray[5] = "--";
 			 }
-			
-			if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId()){
-				OrgRelations orgRelation =  projectMember.getProjectMemberCandidteId().getOrgRelationId();
-				 timeSheetReportsArray[6] = orgRelation.getResponderLocationId().getOrgLocationName(); 
-				 
-			 }else{
-				 timeSheetReportsArray[6] = "--";
-			 }
-			if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId() && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
+			 
+			 if(null != projectMember.getProjectClientsId().getOrgRelationId()){
+			   	 OrgRelations orgRelations = orgRelationsService.getOrgRelationById(projectMember.getProjectClientsId().getOrgRelationId().getId());
+			  	 if(null != projectMember.getProjectClientsId().getOrgRelationId().getLocationId() && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId() != null && projectMember.getProjectClientsId().getOrgRelationId().getLocationId().getId().longValue() == locationId.longValue()){
+							if(orgRelations.getResponderLocationId() != null){
+								timeSheetReportsArray[6] = orgRelations.getResponderLocationId().getOrgLocationName();
+								
+							}
+						}
+						if(null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId() && null != projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId() && projectMember.getProjectClientsId().getOrgRelationId().getResponderLocationId().getId().longValue() == locationId.longValue()){
+							if(orgRelations.getLocationId() != null){
+								timeSheetReportsArray[6] = orgRelations.getLocationId().getOrgLocationName();
+							}
+						}
+			    }else{
+			    	timeSheetReportsArray[6] = "--";
+				}
+			 
+			if(null != projectMember.getProjectMemberCandidteId() && null !=  projectMember.getProjectMemberCandidteId().getOrgRelationId() && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
 				OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-				timeSheetReportsArray[7] = orgRelation.getResponderLocationId().getOrgLocationName();
-				
-			 }else{
-				 timeSheetReportsArray[7] = "--";
-			 }
+				timeSheetReportsArray[7] = orgRelation.getResponderLocationId().getOrgLocationName(); 
+			}
 			
 			if(projectMember.getProjects().getInvoiceFrequency() !=null){
 				timeSheetReportsArray[8] = projectMember.getProjects().getInvoiceFrequency();
@@ -735,7 +749,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 float  monthBillableTotalHours = 0f;
 			 float monthNonBillableTotalHours = 0f;
 			 Submission_ApprovalStatus combinedApprovalStatus = null; 
-			 sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
+			 sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),locationId,projectMember.getId(),startDate,endDate);
 			if(displayWeeksList != null && !displayWeeksList.isEmpty()){
 	    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
 	    	    	 //String approvalClass = "class='draft'";
@@ -836,14 +850,14 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
 
 	@Override
-	public File prepareTimeSheetExportExcel(String frequencyYear, String frequencyMonth, User loginUser,OrgLocations orgLocations) throws IOException, Exception {
+	public File prepareTimeSheetExportExcel(TimesheetReportsDTO timesheetReportsDTO, User loginUser,OrgLocations orgLocations) throws IOException, Exception {
 		File file = null;
 		
 		StringBuilder weekFrequencyDates = new StringBuilder(); 
 		//DateFormat format = Constants.DF_DMY;
 		 //DateFormat  format = LoginSessionController.DATEFORMAT;
 		 DateFormat shortormat = Constants.SHORT_DF_STD_DM;
-		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(frequencyMonth,frequencyYear);
+		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(timesheetReportsDTO.getFrequencyMonth(),timesheetReportsDTO.getFrequencyYear());
 		  Date startDate = dateList.get("STARTDATE");
 		  Date endDate = dateList.get("ENDDATE");
 		  
@@ -893,20 +907,20 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		}else{
 		 replacedOrgName = orgLocations.getOrgLocationName();
 		}
-		Sheet createExcelsheet = createExcelworkbook.createSheet(sheetName.append(replacedOrgName).append("-").append(frequencyMonth).append("-").append(frequencyYear).append(" ").append("TimeSheetReports").toString());
+		Sheet createExcelsheet = createExcelworkbook.createSheet(sheetName.append(replacedOrgName).append("-").append(timesheetReportsDTO.getFrequencyMonth()).append("-").append(timesheetReportsDTO.getFrequencyYear()).append(" ").append("TimeSheetReports").toString());
 		Row writeRow = null;
 		createExcelsheet = gettimesheetReportsExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,weekFrequencyDates);
 		
 		
 		int column = 0;
-		 List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserId(startDate, endDate, orgLocations.getId(), loginUser.getId());
-		 for(ProjectMembers promembers:projectMembers){
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports");
+		 for(ProjectMembers promembers:projectMembers.getData()){
 			 writeRow = createExcelsheet.createRow(column + 1);
 			 createExcelsheet = prepareTimesheetReportDataExcel(promembers,displayWeeksList,loginUser,createExcelsheet,writeRow,startDate,endDate,orgLocations);
 			 column++;
          }
 		 StringBuilder fileSB = new StringBuilder();
-		 file = File.createTempFile(fileSB.append(replacedOrgName).append("_TimeSheetReports_").append(frequencyMonth).append("-").append(frequencyYear).append("-").toString(),".xls");
+		 file = File.createTempFile(fileSB.append(replacedOrgName).append("_TimeSheetReports_").append(timesheetReportsDTO.getFrequencyMonth()).append("-").append(timesheetReportsDTO.getFrequencyYear()).append("-").toString(),".xls");
 		 file.setReadable(true);
 		 FileOutputStream fos = new FileOutputStream(file);
 		 try {
@@ -942,7 +956,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	private Sheet prepareTimesheetReportDataExcel(ProjectMembers projectMember, LinkedHashMap<Date, Date> displayWeeksList,User loginUser, Sheet createExcelsheet, Row writeRow, Date startDate, Date endDate, OrgLocations orgLocations) throws Exception {
 		createExcelsheet.getDefaultRowHeight();
 		StringBuilder sbid = new StringBuilder();
-		if(null != (projectMember.getEmployee().getEmployeeId()) && !"".equalsIgnoreCase(projectMember.getEmployee().getEmployeeId())){
+		if(projectMember.getEmployee()!= null) {
+		if(projectMember.getEmployee() != null && projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotBlank(projectMember.getEmployee().getEmployeeId())){
 			 writeRow.createCell(0).setCellValue(sbid.append(projectMember.getEmployee().getEmployeeId()).toString());
 			 createExcelsheet.autoSizeColumn(0);
 		}
@@ -954,7 +969,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 writeRow.createCell(2).setCellValue(projectMember.getProjectMemberCandidteId().getEmail());
 			 createExcelsheet.autoSizeColumn(2);
 		}
-		if(null != projectMember.getProjectMemberCandidteId().getMobilePhone()){
+		if( projectMember.getProjectMemberCandidteId().getMobilePhone() != null ){
 			 writeRow.createCell(3).setCellValue(projectMember.getProjectMemberCandidteId().getMobilePhone());
 			 createExcelsheet.autoSizeColumn(3);
 		}
@@ -962,12 +977,12 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 writeRow.createCell(4).setCellValue(projectMember.getProjectMemberCandidteId().getDesignationType());
 			 createExcelsheet.autoSizeColumn(4);
 		}
-		if(null != projectMember.getEmployee().getRate()){
+		if( projectMember.getEmployee().getRate() != null){
 			StringBuilder rateString = new StringBuilder();
 			 writeRow.createCell(5).setCellValue(rateString.append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString());
 			 createExcelsheet.autoSizeColumn(5);
 		}
-		
+	}
 		if(null != projectMember.getProjects().getProjectName()){
 			 writeRow.createCell(6).setCellValue(projectMember.getProjects().getProjectName()); 
 			 createExcelsheet.autoSizeColumn(6);
@@ -976,9 +991,30 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		
 		if(null != projectMember.getProjectMemberCandidteId() && null !=  projectMember.getProjectMemberCandidteId().getOrgRelationId()){
 			OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-			 writeRow.createCell(7).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName()); 
-			 createExcelsheet.autoSizeColumn(7);
+				if(orgRelation.getLocationId().getId().longValue()  == orgLocations.getId().longValue()) {
+					writeRow.createCell(7).setCellValue(" "); 
+					 createExcelsheet.autoSizeColumn(7);
+				}else {
+					writeRow.createCell(7).setCellValue(orgRelation.getLocationId().getOrgLocationName()); 
+					 createExcelsheet.autoSizeColumn(7);
+				} 
+			
 		}
+		
+		if(projectMember.getProjectClientsId() != null ){
+			 OrgRelations orgRelation = projectMember.getProjectClientsId().getOrgRelationId();
+			 if(projectMember.getProjectClientsId().getOrgRelationId() != null) { 
+			 OrgLocations orglocations = orgLocationService.getOrgLocations(orgRelation.getResponderLocationId().getId());
+			 writeRow.createCell(7).setCellValue(orglocations.getOrg().getOrgName());
+			 createExcelsheet.autoSizeColumn(7);
+			 	}else {
+			 		 writeRow.createCell(7).setCellValue(" ");
+				}
+			}else {
+				 writeRow.createCell(7).setCellValue(" ");
+			}
+		
+		
 		if(null != projectMember.getProjectMemberCandidteId() && null !=  projectMember.getProjectMemberCandidteId().getOrgRelationId() && (projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C-1099")||projectMember.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("C2C"))){
 			OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
 			writeRow.createCell(8).setCellValue(orgRelation.getResponderLocationId().getOrgLocationName()); 
@@ -996,7 +1032,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		 float  monthBillableTotalHours = 0f;
 		 float monthNonBillableTotalHours = 0f;
 		 Submission_ApprovalStatus combinedApprovalStatus = null;
-    	sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),projectMember.getId(),startDate,endDate);
+    	sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate);
 		if(displayWeeksList != null && !displayWeeksList.isEmpty()){
     	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
     	     float weekTotalHours = 0f;

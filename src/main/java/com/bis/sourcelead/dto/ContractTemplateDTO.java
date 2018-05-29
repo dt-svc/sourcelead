@@ -3,6 +3,7 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.entity.OrgLocations;
 
 public class ContractTemplateDTO extends SearchDTO implements Serializable {
@@ -13,7 +14,10 @@ public class ContractTemplateDTO extends SearchDTO implements Serializable {
 	private List<String> templateType;
 	private List<String> contractType;
 	private String letterHead;
+	
+	@CleanHtml(escape=false)
 	private String description;
+	
 	private String templateContent;
 	private String templateUUID;
 	private String templateStatus;

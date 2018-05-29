@@ -28,15 +28,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "LEAVE", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leave")
+@Table(name = "USER_LEAVE")
 public class Leave {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	private String id;
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -82,7 +81,10 @@ public class Leave {
 	private String reason;
 	
 	@Column(name = "NUMBER_OF_DAYS")
-	private String numberOfDays;
+	private int numberOfDays;
+	
+	@Column(name = "EXTRA_LEAVES_TAKEN")
+	private float extraLeavesTaken;
 	
 	@Column(name = "REJECTED_REASON",columnDefinition = "TEXT default NULL")
 	private String rejectedReason;
@@ -123,6 +125,9 @@ public class Leave {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
+	@Column(name = "LEAVE_UUID")
+	private String leaveUUID;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveid")
@@ -150,7 +155,7 @@ public class Leave {
 	
 	@Transient
 	@JsonProperty
-	private Integer balanceLeavesCount;
+	private float balanceLeavesCount;
 	
 	@Transient
 	@JsonProperty
@@ -160,11 +165,11 @@ public class Leave {
 	@JsonProperty
 	private int totalLeavesTaken;
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -394,22 +399,34 @@ public class Leave {
 		this.createdDateStr = createdDateStr;
 	}
 
-	public Integer getBalanceLeavesCount() {
+	public float getBalanceLeavesCount()
+	{
 		return balanceLeavesCount;
 	}
 
-	public void setBalanceLeavesCount(Integer balanceLeavesCount) {
+	public void setBalanceLeavesCount(float balanceLeavesCount)
+	{
 		this.balanceLeavesCount = balanceLeavesCount;
 	}
 
-	public String getNumberOfDays() {
+	public int getNumberOfDays() {
 		return numberOfDays;
 	}
 
-	public void setNumberOfDays(String numberOfDays) {
+	public void setNumberOfDays(int numberOfDays) {
 		this.numberOfDays = numberOfDays;
 	}
 	
+	public float getExtraLeavesTaken()
+	{
+		return extraLeavesTaken;
+	}
+
+	public void setExtraLeavesTaken(float extraLeavesTaken)
+	{
+		this.extraLeavesTaken = extraLeavesTaken;
+	}
+
 	public String getApprovedByUser()
 	{
 		return approvedByUser;
@@ -434,6 +451,16 @@ public class Leave {
 
 	public void setTotalLeavesTaken(int totalLeavesTaken) {
 		this.totalLeavesTaken = totalLeavesTaken;
+	}
+
+	public String getLeaveUUID()
+	{
+		return leaveUUID;
+	}
+
+	public void setLeaveUUID(String leaveUUID)
+	{
+		this.leaveUUID = leaveUUID;
 	}
 
 }

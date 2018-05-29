@@ -3,10 +3,10 @@
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
 
 
 <section class="content-wraper">
@@ -16,7 +16,7 @@
           <div class="pull-left">
             <h2>Vendor Onboard Template</h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='vendorOnboardTemplateList'/>">Onboard Templates List</a> &raquo; Add Onboard Template </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/vendorOnboardTemplateList'/>">Onboard Templates List</a> &raquo; Add Onboard Template </div>
     </section>
     
     <div class="content-area content-new clearfix">
@@ -47,12 +47,13 @@
                   </div>
                   <div class="col-md-6">
                     <label>Template Description <span class="text-danger paddingLeft">*</span></label>
-                    <textarea rows="1" class="form-control input-sm" name="description" field-name="Template Description"  data-validation="required validate_Space validate_length length2-500"></textarea>
+                      <textarea rows="3" class="form-control input-sm" name="description" field-name="Template Description"  data-validation="required validate_length length2-500"></textarea>
+ 
                   </div>
                 </div>
                 <div class="form-footer clearfix mt">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/vendorOnboardTemplateList'">
+                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/vendorOnboardTemplateList'">
                     <input type="button" value="Save" id="save_button"  onclick="createTemplate('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplate('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -90,7 +91,7 @@
                 
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/vendorOnboardTemplateList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/vendorOnboardTemplateList'">
                     <input type="button" value="Save" id="save_doc_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -180,8 +181,8 @@
                                       <input type="radio"  name="assignedToType" checked="checked" onclick="validateAssignToType('assingToVendor');">
                                       Vendor</label>
                                     <label class="paddingLeft">
-                                      <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
-                                      User </label>
+                                      <input type="radio" name="assignedToType" value="Associate" onclick="validateAssignToType('assingToUser');">
+                                      Associate </label>
                                   </div>
                                   
                                   <div id="assignToUserDiv" style="display: none;" class="mt10">
@@ -194,7 +195,7 @@
 	                               <div class="col-md-12 mb10">
                                   <div class="row">
                                     <div class="col-md-12">
-                                      <label><strong>Due after:<span class="text-danger">*</span></strong></label>
+                                      <label><strong>Due Before:<span class="text-danger">*</span></strong></label>
                                                                             
                                       <!-- Form inline Due after -->
                                       
@@ -202,7 +203,7 @@
 										   <div class="col-md-6 paddingRight">
 											<label class="small">Months</label> <br>
 												<div class="select-field">
-													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due after" name="taskMonths" onchange="validateDueAfter();">
+													<select class="form-control input-sm" id="taskMonths" data-validation="required" field-name="Due before" name="taskMonths" onchange="validateDueAfter();">
 														<option selected value=''>--Select Month--</option>
 														<c:forEach begin="1" end="12" varStatus="loop">
 															<option>${loop.index}</option>
@@ -489,17 +490,24 @@ function getAssignToUsersList(){
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
-        	 var result = "";
-        	for (var i=0; i<json.length; i++)
-			{
-        		var report = json[i];
-        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
-			}
-        	 $("#onboardAssignedTo").empty();
-           	 $("#onboardAssignedTo").append(result); 
-           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    		var result = "";
+	    		var json = response.data;
+	        	for (var i=0; i<json.length; i++) {
+	        		var report = json[i];
+	        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+				}
+	        	 $("#onboardAssignedTo").empty();
+	           	 $("#onboardAssignedTo").append(result); 
+	           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
    }); 
 }
@@ -537,28 +545,41 @@ function createTemplate(saveType){
 	    	$("#save_button").attr("disabled", "disabled");
     		$("#save_continue_button").attr("disabled", "disabled");
     		var formData = getFormData("onboardTemplate_form");
-	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 	        	type : "POST",
   	    	    data: formData,
 		    	url: sourceleadUrl+"/createNewVendorOnBoardingTemplate?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(json) {
-		        	if(saveType == 'saveAndContinue'){
-		        		var $tabs = $('.tabbable li');
-		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
-		     	        document.getElementById("templateDocs").disabled = false;
-		     	        getTemplateVendorDocumentsDetails(json.id);
-		        	}
+		        success: function(response) {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+		    		    showError(response.responseMessage);
+		    	  	} else if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
+		    			if(saveType == 'saveAndContinue'){
+			        		var $tabs = $('.tabbable li');
+			     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+			     	        document.getElementById("templateDocs").disabled = false;
+			     	        getTemplateVendorDocumentsDetails(response.object.id);
+			        	}
+			        	
+		     	        $("#templateId").val(response.object.id);
+		     	        $("#onboardtemplateId").val(response.object.id);
+		     	        $("#documentstemplateId").val(response.object.id);
+		     	        $("#taskstemplateId").val(response.object.id);
+		     	       
+		     	        $("#save_button").removeAttr("disabled")
+		        	    $("#save_continue_button").removeAttr("disabled")
+		        	    
+		     	        $("#loading").removeAttr("style");
+		    			
+		    		}else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
 		        	
-	     	        $("#templateId").val(json.id);
-	     	        $("#onboardtemplateId").val(json.id);
-	     	        $("#documentstemplateId").val(json.id);
-	     	        $("#taskstemplateId").val(json.id);
-	     	       
-	     	        $("#save_button").removeAttr("disabled")
-	        	    $("#save_continue_button").removeAttr("disabled")
-	        	    
-	     	        $("#loading").removeAttr("style");
+		        	
 		        },
 		    }); 
 	        return true;
@@ -573,7 +594,15 @@ $('body').on('blur', '#onboardTemplate_form', function() {
 	$("#onboardTemplate_form").validateOnBlur(false, validationSettings);  
 });
 </script>
-
+<script>
+$(document).on("keypress", 'form', function (e) {
+    var code = e.keyCode || e.which;
+    if (code == 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+</script>
 <script>
 function createTemplateDocs(saveType){
 			var validationSettings = {
@@ -590,26 +619,36 @@ function createTemplateDocs(saveType){
 		   $("#save_continue_doc_button").attr("disabled", "disabled");
 		   var formData = getFormData("templateDocuments_form");
 		   
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 		      type : "POST",
     	      data: formData,
 	    	  url: sourceleadUrl+"/saveVendorOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
-		      success :function(result) {
-		    	 	  if(saveType == 'saveAndContinue'){
-		        		var $tabs = $('.tabbable li');
-		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
-		     	        document.getElementById("templateTasks").disabled = false;
-		     	        $("#onboardTaskDiv").val('Y');
-		     	        getVendorOnboardingTasksList();
-		        	}else{
-		        		getTemplateVendorDocumentsDetails();
-		        		
-		        	}
-		    	  
-		    	  $("#save_doc_button").removeAttr("disabled");
-	      	      $("#save_continue_doc_button").removeAttr("disabled");
-		    	  $("#loading").removeAttr("style");
+		      success :function(response) {
+		    	  if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+		    		    showError(response.responseMessage);
+		    	  	} else if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
+		    			if(saveType == 'saveAndContinue'){
+			        		var $tabs = $('.tabbable li');
+			     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+			     	        document.getElementById("templateTasks").disabled = false;
+			     	        $("#onboardTaskDiv").val('Y');
+			     	        getVendorOnboardingTasksList();
+			        	}else{
+			        		getTemplateVendorDocumentsDetails();
+			        		
+			        	}
+			    	  
+			    	  $("#save_doc_button").removeAttr("disabled");
+		      	      $("#save_continue_doc_button").removeAttr("disabled");
+			    	  $("#loading").removeAttr("style");
+		    		}else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
 		    	  
 		      }
 	    	  
@@ -645,26 +684,32 @@ function saveOnboardTask(){
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        var formData = getFormData1("addonboardTask_form");
 	        
-	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 	        	type : "POST",
   	    	    data: formData,
   	    	    processData: false,
 		        contentType:false,
 	    	    url: sourceleadUrl+"/saveVendorOnBoardTemplateTasks?${_csrf.parameterName}=${_csrf.token}", 
-		        success: function(result) {
-		        	
-		        	if(result == 'success'){
-		        		$("#onboardtasksLoading").removeAttr("style");
-			        	flushOnboardTask();
-			        	getAssignToUsersList();
-			        	getVendorOnboardingTasksList();
-			        	
-			        	document.getElementById("selector").style.display = 'block';
-			        	$("#selector").fadeIn(150);
-			        	$('#selector').delay(1000).fadeOut('slow');
-		        	}
-		        	
+		        success: function(response) {
+		        	 if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+			    		    showError(response.responseMessage);
+			    	  	} else if (response.response === "AWKWARD") {
+			    		    location.href = "/errorPage";
+			    		} else if (response.response === "SUCCESS") {
+				        		$("#onboardtasksLoading").removeAttr("style");
+					        	flushOnboardTask();
+					        	getAssignToUsersList();
+					        	getVendorOnboardingTasksList();
+					        	
+					        	document.getElementById("selector").style.display = 'block';
+					        	$("#selector").fadeIn(150);
+					        	$('#selector').delay(1000).fadeOut('slow');
+			    		}else if (response.indexOf('Sign In') !== -1) {
+			    			location.replace(sourceleadUrl);
+			    		} else {
+			    		    showError("Operation failed, please try again");
+			    		}
 		        },
 		    });  
 	        return true;
@@ -724,13 +769,23 @@ function getTemplateDetails(){
         $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/getVendorOnboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
-	        success: function(json) {
+	        success: function(response) {
 	        	
-	        	 $("input[name=templateName]").val(json.templateName);
-	        	 $("textarea[name=description]").val(json.description);
-	        	 
-	        	 $("#onboardTasksList").empty();
-		        
+	        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	    		    showError(response.responseMessage);
+	    	  	} else if (response.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (response.response === "SUCCESS") {
+	    			 $("input[name=templateName]").val(response.object.templateName);
+		        	 $("textarea[name=description]").val(response.object.description);
+		        	 
+		        	 $("#onboardTasksList").empty();
+	    		}else if (response.indexOf('Sign In') !== -1) {
+	    			location.replace(sourceleadUrl);
+	    		} else {
+	    		    showError("Operation failed, please try again");
+	    		}
+	        	
 	        },
 	    }); 
 	}
@@ -749,57 +804,68 @@ function getTemplateVendorDocumentsDetails(templateId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getVendorOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
-		        success: function(json) {
-		        	
-		        	 var result = "";
+		        success: function(response) {
+		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+		    		    showError(response.responseMessage);
+		    	  	} else if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
+		    			var result = "";
+			        	 
+	                	 for (var i = 0; i < response.data.length; i++) { 
+	                		 var opt = response.data[i]; 
+	                		 var checked = '';
+	                		 if(opt.isRequired == 'Y'){
+	                			 checked = "checked";
+	                		 }
+	                		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
+	                		 result = result +"<input type='text' id='"+i+"savedDoc' value='"+opt.documentName+"' title='"+opt.documentName+"' readonly class='form-control input-sm vendorinput'></input>";
+	                		 
+	                	/* 	 result = result +"<div class='positionRelative inputpadding'>";
+	                		 if(opt.fileUrl != null){
+	                			 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileUrl+"\"></a></i>";
+	               				 result = result +"<input type='button' value='"+opt.fileName+"'>";
+	               				 result = result +"</a>";
+	                		 }else{
+	                			 result = result +"<i class=''></i>";
+	               				 result = result +"<input type='button' value='No document uploaded'>";
+	                		 }
+	                		 
+	           				 result = result +"</div>"; */
+	           				 
+	           				 result = result +"<label class='switch switchvendor-custom pull-left ml-mr'>";
+	                   	     result = result +"<input type='checkbox' "+checked+" id='"+opt.id+"docChecked' onclick='alertRequiredMessage(\""+opt.documentUUID+"\"\,"+opt.id+")'>"
+	                   	     result = result +'<div class="slider round"></div>';
+	                  		 result = result +'</label>';
+	           				
+	           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
+	           				 result = result +"</strong>";
+	                	 }
+	                	 
+	                	 result = result +"<input type='hidden' name='contractsAttcahmentMaxRowNumber'  id='contractsAttcahmentMaxRowNumber' value='1' />";
+	                	 result = result +"<input type='hidden' id='addedDocumentsRowCount' value='1' />";
+	                	 result = result +"<table class='timesheetAttachment'  id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
+	                	 result = result +"<tr id='divAttachmentTsRow0'>";
+	                	 result = result +"<td><input type='text' placeholder='Document Name' onblur='validateDocumentName(0)' class='form-control input-sm vendorinput'  data-validation-optional='true' field-name='Document' name='vendorDocumentsFileInfo[0].docFileName' id='0contractsdocFileName'></td>";
+	                	 result = result +"<td>"; 
+	                	 result = result +"<label class='switch pull-left ml-mr switchvendor-custom'>";
+	                	 result = result +"<input type='checkbox' checked id='0checked' name='vendorDocumentsFileInfo[0].checked' onclick='checkDocument(0)' value='Y'>"
+	                	 result = result +'<div class="slider round"></div>';
+	               		 result = result +'</label>';
+	                	 result = result +"</td>";
+	                	 result = result +"<td><i class='fa fa-plus' id='addDocRow' onClick='addContractsAttachment()'></i></td>";
+	                	 result = result +"</tr>";
+	                	 result = result +"</table>";
+	                	 $("#savedContractsAttachments").empty();
+	                	 $("#savedContractsAttachments").append(result);
+	                	 $("#onboardTasksList").empty();
+		    			
+		    		}else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
 		        	 
-                	 for (var i = 0; i < json.length; i++) { 
-                		 var opt = json[i]; 
-                		 var checked = '';
-                		 if(opt.isRequired == 'Y'){
-                			 checked = "checked";
-                		 }
-                		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
-                		 result = result +"<input type='text' id='"+i+"savedDoc' value='"+opt.documentName+"' title='"+opt.documentName+"' readonly class='form-control input-sm vendorinput'></input>";
-                		 
-                	/* 	 result = result +"<div class='positionRelative inputpadding'>";
-                		 if(opt.fileUrl != null){
-                			 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileUrl+"\"></a></i>";
-               				 result = result +"<input type='button' value='"+opt.fileName+"'>";
-               				 result = result +"</a>";
-                		 }else{
-                			 result = result +"<i class=''></i>";
-               				 result = result +"<input type='button' value='No document uploaded'>";
-                		 }
-                		 
-           				 result = result +"</div>"; */
-           				 
-           				 result = result +"<label class='switch switchvendor-custom pull-left ml-mr'>";
-                   	     result = result +"<input type='checkbox' "+checked+" id='"+opt.id+"docChecked' onclick='alertRequiredMessage(\""+opt.documentUUID+"\"\,"+opt.id+")'>"
-                   	     result = result +'<div class="slider round"></div>';
-                  		 result = result +'</label>';
-           				
-           				 result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument(\""+opt.documentUUID+"\","+opt.id+",\""+documentType+"\");' >";
-           				 result = result +"</strong>";
-                	 }
-                	 
-                	 result = result +"<input type='hidden' name='contractsAttcahmentMaxRowNumber'  id='contractsAttcahmentMaxRowNumber' value='1' />";
-                	 result = result +"<input type='hidden' id='addedDocumentsRowCount' value='1' />";
-                	 result = result +"<table class='timesheetAttachment'  id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
-                	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><input type='text' placeholder='Document Name' onblur='validateDocumentName(0)' class='form-control input-sm vendorinput'  data-validation-optional='true' field-name='Document' name='vendorDocumentsFileInfo[0].docFileName' id='0contractsdocFileName'></td>";
-                	 result = result +"<td>"; 
-                	 result = result +"<label class='switch pull-left ml-mr switchvendor-custom'>";
-                	 result = result +"<input type='checkbox' checked id='0checked' name='vendorDocumentsFileInfo[0].checked' onclick='checkDocument(0)' value='Y'>"
-                	 result = result +'<div class="slider round"></div>';
-               		 result = result +'</label>';
-                	 result = result +"</td>";
-                	 result = result +"<td><i class='fa fa-plus' id='addDocRow' onClick='addContractsAttachment()'></i></td>";
-                	 result = result +"</tr>";
-                	 result = result +"</table>";
-                	 $("#savedContractsAttachments").empty();
-                	 $("#savedContractsAttachments").append(result);
-                	 $("#onboardTasksList").empty();
 			        
 		        },
 		    });
@@ -816,7 +882,7 @@ function validateDocumentName(id){
 	 for (var i = 0; i < checkMaxTsRowNum; i++) { 
 		
 		 if(id != i){
-			 if(documentName != "undefined"){
+			 if(documentName != "undefined" && documentName != '' && documentName != null){
 				 var docName = $("#"+i+"contractsdocFileName").val();
 				 if(documentName == docName){
 					 flag = false;
@@ -917,7 +983,7 @@ function alertRequiredMessage(documentUUID,id){
 function docIsRequiredOrNot(documentUUID){
 	
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/requiredOrNotTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
@@ -990,71 +1056,80 @@ function getVendorOnboardingTasksList(){
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "GET",
 	    url: sourceleadUrl+"/getVendorOnboardTemplateTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-	    success: function(json) {
-        	 var result = "";
-        	if(json.length > 0){ 
-	        	for (var i=0; i<json.length; i++)
-				{
-	        		var report = json[i];
-	        		
-	        		var prority = '';
-	        		var repeat = '';
-	        		
-	        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
-	        			prority = report.priority;
-	        		}else{
-	        			prority = '----';
-	        		}
-	        		
-	        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
-	        			repeat = report.taskRepeat;
-	        		}else{
-	        			repeat = '----';
-	        		}
-	        		
-	        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
-	        		result = result +'<div class="media-body">';
-	        		result = result +'<div class="clearfix taskheder">';
-	        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i></a></label>';
-	        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
-	        		result = result +'</div>';
-	        		result = result +'<ul class="list-inline list-description mt10">';
-	        		
-	        		result = result +'<li><span>Assign To:</span>';
-	        		
-	        		if(report.usersList.length > 0){
-	        			for(var j=0; j<report.usersList.length; j++){
-		 					result = result +'<label>'+report.usersList[j]+'</label>';
-		 				}
-	        		}else{
-	 					result = result +'Onboarding Vendor';
-	 				}
-	        		result = result +'</li>';
-	        		
-	        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
-	        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
-	        		result = result +'</ul>';
-	        		result = result +'</div>';
-	        		result = result +'</div>';
-				}
-        	}else{
-        		result = result +'<div><h4>No Tasks Found</h4></div>';
-        	}
-        	
-        	result = result +'<div class="form-footer clearfix mt">';
-    		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
-    		result = result +'</div>';
-    		result = result +'</div>';
-    		
-    		 $("#onboardTasksList").empty();
-           	 $("#onboardTasksList").append(result); 
-    		
-        	 
+	    success: function(response) {
+	    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+    		    showError(response.responseMessage);
+    	  	} else if (response.response === "AWKWARD") {
+    		    location.href = "/errorPage";
+    		} else if (response.response === "SUCCESS") {
+    			 var result = "";
+    	        	if(response.data.length > 0){ 
+    		        	for (var i=0; i<response.data.length; i++)
+    					{
+    		        		var report = response.data[i];
+    		        		
+    		        		var prority = '';
+    		        		var repeat = '';
+    		        		
+    		        		if(report.priority != null && report.priority != '' && report.priority != 'undefined'){
+    		        			prority = report.priority;
+    		        		}else{
+    		        			prority = '----';
+    		        		}
+    		        		
+    		        		if(report.taskRepeat != null && report.taskRepeat != '' && report.taskRepeat != 'undefined'){
+    		        			repeat = report.taskRepeat;
+    		        		}else{
+    		        			repeat = '----';
+    		        		}
+    		        		
+    		        		result = result +'<div class="clearfix taskwidget_inner" id="onboardTask'+report.id+'">';
+    		        		result = result +'<div class="media-body">';
+    		        		result = result +'<div class="clearfix taskheder">';
+    		        		result = result +'<label> <span class="paddingRight">Subject:</span> <strong class="text-primary">'+report.taskName+'</strong><a href="#"><i class="fa fa-trash text-danger paddingLeft" onClick="deleteTask('+report.id+');"></i></a></label>';
+    		        		result = result +'<label class="small pull-right text-muted"> <span>'+report.dueAfterString+'</span> </label>';
+    		        		result = result +'</div>';
+    		        		result = result +'<ul class="list-inline list-description mt10">';
+    		        		
+    		        		result = result +'<li><span>Assign To:</span>';
+    		        		
+    		        		if(report.usersList.length > 0){
+    		        			for(var j=0; j<report.usersList.length; j++){
+    			 					result = result +'<label>'+report.usersList[j]+'</label>';
+    			 				}
+    		        		}else{
+    		 					result = result +'Onboarding Vendor';
+    		 				}
+    		        		result = result +'</li>';
+    		        		
+    		        		result = result +'<li><span>Priority:</span>'+prority+'</li>';
+    		        		result = result +'<li><span>Repeat:</span> '+repeat+'</li>';
+    		        		result = result +'</ul>';
+    		        		result = result +'</div>';
+    		        		result = result +'</div>';
+    					}
+    	        	}else{
+    	        		result = result +'<div><h4>No Tasks Found</h4></div>';
+    	        	}
+    	        	
+    	        	result = result +'<div class="form-footer clearfix mt">';
+    	    		result = result +'<div class="pull-right mr">';
+    	    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
+    	    		result = result +'</div>';
+    	    		result = result +'</div>';
+    	    		
+    	    		 $("#onboardTasksList").empty();
+    	           	 $("#onboardTasksList").append(result); 
+    		}else if (response.indexOf('Sign In') !== -1) {
+    			location.replace(sourceleadUrl);
+    		} else {
+    		    showError("Operation failed, please try again");
+    		}
+	    	
 	    }
    }); 
 	
@@ -1073,13 +1148,23 @@ function deleteTask(taskId){
 	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteVendorOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
-	        success: function(data) {
-	        	if(data == 'success'){
-	        		document.getElementById("onboardTask"+taskId).remove();
-	        		if($("#onboardTasksList div[id*=onboardTask]").length === 0) {
-	        			$("#onboardTasksList").prepend("<div><h4>No Tasks Found</h4></div>");
-	        		}
-	        	}
+	        success: function(response) {
+	        	
+	        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	    		    showError(response.responseMessage);
+	    	  	} else if (response.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (response.response === "SUCCESS") {
+		        		document.getElementById("onboardTask"+taskId).remove();
+		        		if($("#onboardTasksList div[id*=onboardTask]").length === 0) {
+		        			$("#onboardTasksList").prepend("<div><h4>No Tasks Found</h4></div>");
+		        		}
+	    		}else if (response.indexOf('Sign In') !== -1) {
+	    			location.replace(sourceleadUrl);
+	    		} else {
+	    		    showError("Operation failed, please try again");
+	    		}
+	        	
 	        },
 	    });
 }
@@ -1091,13 +1176,25 @@ function saveAndFinishOnboardTemplate(templateId){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
 	$("#finish_task").attr("disabled", "disabled");
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishVendorOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
-	    success: function(data) {
-	    	 $("#finish_task").removeAttr("disabled");
-	    	 location.replace(sourceleadUrl+"/vendorOnboardTemplateList"); 
+	    success: function(response) {
+	    	
+	    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+    		    showError(response.responseMessage);
+    	  	} else if (response.response === "AWKWARD") {
+    		    location.href = "/errorPage";
+    		} else if (response.response === "SUCCESS") {
+    			 $("#finish_task").removeAttr("disabled");
+    	    	 location.replace(sourceleadUrl+"/vendorOnboardTemplateList");
+    		}else if (response.indexOf('Sign In') !== -1) {
+    			location.replace(sourceleadUrl);
+    		} else {
+    		    showError("Operation failed, please try again");
+    		}
+	    	 
 	    }
   }); 
 	
@@ -1277,7 +1374,7 @@ $('#nexttab').on('click', function() {
     </script>
 
   <jsp:include page="../masterFooter.jsp" />
-  <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+  <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   <script>
 // Back To Top 
     $(window).scroll(function() {

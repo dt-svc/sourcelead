@@ -5,7 +5,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<link rel="stylesheet" href="resources/css/style.css" />
+<link rel="stylesheet" href="/resources/css/style.css" />
 
 <script>
 		$(document).ready(function() {
@@ -19,6 +19,7 @@
 <!-- For add New Interview -->
 <script>
 function addOffer(requirementId){
+	 $(".clearUpload").hide();
 	$('.action-pop').slideUp();
 	var clientSubmissions = '${clientSubmissions}';
 	
@@ -36,15 +37,16 @@ function addOffer(requirementId){
 				result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 				
 				result = result + '<input type="hidden" id="isFlushCandidateRequired" name="isFlushCandidateRequired">';
+				result = result + '<input type="hidden" id="clientOffer" name="clientOffer" value="N">';
 				
 				/* result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>'; */
-				result= result + '	            <div class="add_inter_head"> <span>Generate Offer</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedOfferApplicantsCount">0</b></span>';
+				result= result + '	            <div class="add_inter_head"> <span>Generate Offer</span><span class="text-success col-md-offset-1">Total candidates selected: <b id="selectedOfferApplicantsCount">0</b></span>';
 				result= result + '	              <div class="clearfix"></div>';
 				result= result + '	            </div>';
 				
 				if(clientSubmissions == 'Y'){
 				    result = result + '<input type="checkbox" name="isClientOffer" id="isClientOffer" class="isClient" onclick="myOfferFunction();">';
-			        result = result + '<label>&nbsp;&nbsp;<strong>Is Client Offer</strong>&nbsp;&nbsp;</label>';
+			        result = result + '<label>&nbsp;&nbsp;<strong>Clients Offer</strong>&nbsp;&nbsp;</label>';
 				} 
 				
 				result= result + '	            <table cellpadding="0" cellspacing="0" id="addOfferTbl">';
@@ -66,7 +68,7 @@ function addOffer(requirementId){
 				result = result + '<div class="ne-ch">';
 				
 				result= result + ' <label>';
-				result= result + '<input type="checkbox" checked onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
+				result= result + '<input type="checkbox" checked onclick="NotifyToApplicant();" id="notifyToApplicant" value="Y" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
 			   
 				if(data =="true"){
 					result= result + '<input type="hidden" value="Y"  id="notifyToVendor" name="notifyToVendor"/>';
@@ -100,7 +102,17 @@ function addOffer(requirementId){
 				$("body").css('overflow-y', 'hidden');
 				
 				addOfferRow();
-    
+				
+				
+				$(".clearUpload").click(function(){
+					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadFile").val("");
+					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadBtn").val("");
+					$(".clearUpload").hide();
+					document.getElementById("OfferAttachmentuploadFile").value("");
+				        $("#addOffer_form input[data-id*=OfferAttachmentuploadBtn]").remove();
+				        
+				});
+				
 	        },
 	    });
 	 
@@ -198,11 +210,12 @@ function selectOfferApplicants(){
 </div> -->
             
 <div id="divOfferTd5" style="display: none; float: left;">
-	<div class="input-group" id="OfferAttachmentuploadFileGroup">
+	<div class="input-group errorInptgroup" id="OfferAttachmentuploadFileGroup">
         <label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-          <input type="file" style="display: none;"  multiple id="OfferAttachmentuploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" onblur="validateDoc(this);"></span>
+          <input type="file" style="display: none;" id="OfferAttachmentuploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" onblur="validateDoc(this);"></span>
 		</label> 
 		<input type="text" class="form-control file1" readonly id="OfferAttachmentuploadFile" placeholder="Upload File."  >
+		<div class="clearUpload"></div>
      </div>                 
 </div>
 
@@ -410,7 +423,7 @@ function validateRateAndRateType(){
   		$("#add_offer").attr("disabled", "disabled");
   		$("#add_offer" ).addClass('button').val('Processing..');  
   		
-  		 $("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+  		 $("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 	    	type: "POST",
  	    	data: formData,
@@ -473,40 +486,6 @@ function cancelOfferPopup(){
 }
 </script>
  
-<!-- <script type="text/javascript">
- function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
-	 var existingApplicantsIds = [];    
-	 for(i=rowId ; i > 0; i--){
-		 var applicant = $("#"+(i)+"applicantId").val();
-		 if(applicant != null && applicant != '' && applicant != 'undefined'){
-			 existingApplicantsIds.push(applicant);
-		 }
-	 }
-	
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 var requirementId = $("#reqId").val();
-     
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
-					}
-		        	$("#"+rowId+"applicantId").empty();
-		        	$("#"+rowId+"applicantId").append(output);
-		        	$("#"+rowId+"applicantId").trigger("chosen:updated");
-			       
-		        },
-		    });
-	
- }
-</script>  -->
 
 <script type="text/javascript">
  function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
@@ -672,6 +651,11 @@ $(function(){
 <script>
 function myOfferFunction(){
 	$("#isFlushCandidateRequired").val('Y');
+	if(document.getElementById('isClientOffer').checked) {
+		 $("#clientOffer").val("Y");
+    }else{
+    	$("#clientOffer").val("N");
+    }
 	getShortListAndSubmittedAndInterviewedCandidates();
 }
 </script>
@@ -692,8 +676,9 @@ function otherJobType(id){
 }
 </script>
 
-<<script type="text/javascript">
+<script type="text/javascript">
 $(document.body).on('change', '#OfferAttachmentuploadBtn' ,function(){
+	 $(".clearUpload").show();
 	 $('#OfferAttachmentuploadFile').val(this.value.split( '\\' ).pop());
 	 $("#OfferAttachmentuploadFile").focus();
 	 if(validate_fileupload(this.value)){
@@ -701,9 +686,9 @@ $(document.body).on('change', '#OfferAttachmentuploadBtn' ,function(){
 		 var docSize = this.files[0].size;
 	      $("#OfferAttachmentuploadFileGroup").find('p.jquery_form_error_message').remove();
 	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
+	    	  //document.getElementById("OfferAttachmentuploadFile").value = '';
 	    	  $('#OfferAttachmentuploadFileGroup').find('p.jquery_form_error_message').remove();
-			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $("input#OfferAttachmentuploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
 			  document.getElementById("OfferAttachmentuploadFile").setAttribute('record-exist','yes');
 			  document.getElementById("OfferAttachmentuploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
 	      }else{
@@ -713,5 +698,6 @@ $(document.body).on('change', '#OfferAttachmentuploadBtn' ,function(){
 	 }
 });
 </script>
+
   
 <jsp:include page="../masterFooter.jsp" />

@@ -25,7 +25,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_PLANNING_NEW_RESOURCE_REQUEST")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectPlanningNewResourceRequest")
 public class ProjectPlanningNewResourceRequest implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -41,12 +40,12 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
 	@Column(name = "OTHER_ROLE")
 	private String otherRole;
     
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.EAGER)
    	@JoinColumn(name = "ROLE_ID")
   	private Roles roleId;
 	 
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "PROJECT_PLANNING_REQUREST_ID")
 	@JsonBackReference
@@ -112,17 +111,17 @@ public class ProjectPlanningNewResourceRequest implements Serializable{
     @Column(name = "UPDATED_DATE")
     private Date updatedDate;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
 	
-    @NotFound(action=NotFoundAction.IGNORE)
+    
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
 
-    @NotFound(action=NotFoundAction.IGNORE)
+    
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "ORG_LOCATION_ID")
   	private OrgLocations orgLocationId;

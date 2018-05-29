@@ -13,6 +13,7 @@ import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.HolidayService;
 import com.bis.sourcelead.service.LeaveService;
@@ -20,6 +21,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class HolidayServiceImpl implements HolidayService{
@@ -53,6 +55,7 @@ public class HolidayServiceImpl implements HolidayService{
 			holiday = new Holiday();
 			holiday.setCreatedDate(new Date());
 			holiday.setCreatedBy(user.getUserCode());
+			holiday.setHolidayUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
 		if(holidayDTO != null)
 		{
@@ -145,6 +148,8 @@ public class HolidayServiceImpl implements HolidayService{
 			if(StringUtils.isNotBlank(hlist.getDescription()))
 		    hDTO.setDescription(hlist.getDescription());
 			
+			hDTO.setHolidayUUID(hlist.getHolidayUUID());
+			
 			Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), new Date());
 			Date fromDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), hlist.getFromDate());
 			if(fromDate.before(currentDate)){
@@ -211,6 +216,27 @@ public class HolidayServiceImpl implements HolidayService{
 	@Override
 	public List<Holiday> validateHoliDayDates(String fromDate, String toDate, OrgLocations orgLocations) throws Exception {
 		return holidayDAO.validateHoliDayDates(fromDate,toDate,orgLocations);
+	}
+	
+	
+	public List<Holiday> getHolidaybyLocationIdAndFromdate(Date fromDate,Date endDate,Long orgLocationId)throws Exception {
+		return holidayDAO.getHolidaybyLocationIdAndFromdate(fromDate,endDate,orgLocationId);
+	}
+
+	@Override
+	public Holiday getHolidaysByUUID(String holidayUUID)
+	{
+		return holidayDAO.getHolidaysByUUID(holidayUUID);
+	}
+
+	@Override
+	public List<ProjectTasks> getHolidayProjectTaskByorgLocationIdAndHolidayId(Long orglocationId, Long holidayId) {
+		return holidayDAO.getHolidayProjectTaskByorgLocationIdAndHolidayId(orglocationId,holidayId);
+	}
+
+	@Override
+	public List<Holiday> getAllHoliday() {
+		return holidayDAO.getAllHoliday();
 	}
 	
 	

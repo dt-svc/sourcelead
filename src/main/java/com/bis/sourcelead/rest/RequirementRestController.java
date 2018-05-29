@@ -2,12 +2,15 @@ package com.bis.sourcelead.rest;
 
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
@@ -23,14 +26,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CombinedList;
+import com.bis.sourcelead.entity.JobShareCandidate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+
+import com.bis.sourcelead.entity.OrgRelations;
+
+import com.bis.sourcelead.entity.Projects;
+
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
@@ -42,9 +55,13 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.JobShareService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -58,6 +75,9 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -72,6 +92,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 
 @RestController
+@RequestMapping("/app")
 public class RequirementRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementRestController.class);
@@ -132,7 +153,18 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 private RequirementElkUtil requirementElkUtil;
+	
+	 @Autowired
+	 private ProjectsService projectsService;
 	 
+	 @Autowired
+	 private RequirementDao requirementDao; 
+	 
+	 @Autowired
+	 private OrgRelationsService orgRelationsService;
+	 
+	 @Autowired
+	 JobShareService jobShareService;
 	/**
 	 * @author prasad k
 	 * @since sept 13 2016
@@ -155,55 +187,71 @@ public class RequirementRestController {
 	 * @throws NullPointer
 	 */
 	@RequestMapping(value = "/storeRequirement", method = RequestMethod.POST)
-	public @ResponseBody String storeRequirement(RequirementDTO requirementDTO, HttpServletRequest request, @RequestParam(value = "saveType", required = false) String saveType) throws Exception
+	public @ResponseBody Response<String> storeRequirement(RequirementDTO requirementDTO, HttpServletRequest request, @RequestParam(value = "saveType", required = false) String saveType) throws Exception
 	{
+		Response<String> response =  new Response<>();
 		if (Validator.validate(requirementDTO)) {
 			requirementDTO.setStaticPath(staticPath);
 		//	FileUploadUtil.fillUploadedFileInfo(requirementDTO, requirementDTO.getFileInfo());
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			requirementDTO.setDateFormat(orgLocation.getDateFormat());
-			Requirement requirement = requirementService.storeRequirement(requirementDTO, orgLocation, user);
-			if (requirementDTO.getSaveType().equalsIgnoreCase("saveType")
-					&& (null == (requirementDTO.getRequirementId())
-							|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
-				StringBuilder reqUpdateMsg = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" job  saved to Draft").toString());
+			if(user != null) {
+				try {
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					requirementDTO.setDateFormat(orgLocation.getDateFormat());
+					Requirement requirement = requirementService.storeRequirement(requirementDTO, orgLocation, user);
+					if (requirementDTO.getSaveType().equalsIgnoreCase("saveType")
+							&& (null == (requirementDTO.getRequirementId())
+									|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
+						StringBuilder reqUpdateMsg = new StringBuilder();
+						SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg.append("Success!! New ").append(requirement.getJobTitle()).append(" job  saved to Draft").toString());
+					}
+					else if (requirementDTO.getSaveType().equalsIgnoreCase("save")
+							&& (null == (requirementDTO.getRequirementId())
+									|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
+						StringBuilder reqUpdateMsg1 = new StringBuilder();
+						SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg1.append("Success!! New ").append(requirement.getJobTitle()).append(" job  saved").toString());
+					}
+					else if (requirementDTO.getSaveType().equalsIgnoreCase("submitForApproval")
+							&& (null == (requirementDTO.getRequirementId())
+									|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
+						StringBuilder reqUpdateMsg2 = new StringBuilder();
+						SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg2.append("Success!! New ").append(requirement.getJobTitle()).append(" job  submitted for approval").toString());
+					}
+					else if ((requirementDTO.getRequirementId() != null)
+							&& !(requirementDTO.getRequirementId().isEmpty())
+							&& (requirementDTO.getSaveType().equalsIgnoreCase("save"))) {
+						StringBuilder reqUpdateMs3 = new StringBuilder();
+						SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMs3.append("Success!! ").append(requirement.getJobTitle()).append(" details updated").toString());
+					}
+					else if ((requirementDTO.getRequirementId() != null)
+							&& !(requirementDTO.getRequirementId().isEmpty())
+							&& (requirementDTO.getSaveType().equalsIgnoreCase("submitForApproval"))) {
+						StringBuilder reqUpdateMsg4 = new StringBuilder();
+						SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg4.append("Success!! ").append(requirement.getJobTitle()).append(" Updated and Submitted ").toString());
+					}
+					else if ((requirementDTO.getRequirementId() != null)
+							&& !(requirementDTO.getRequirementId().isEmpty())
+							&& (requirementDTO.getSaveType().equalsIgnoreCase("draft"))) {
+						StringBuilder reqUpdateMs5 = new StringBuilder();
+						SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMs5.append("Success!!  ").append(requirement.getJobTitle()).append(" Updated in Draft Stage").toString());
+					}
+					response.setObject(requirement.getRequirementUUID());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+					e.printStackTrace();
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
-			else if (requirementDTO.getSaveType().equalsIgnoreCase("save")
-					&& (null == (requirementDTO.getRequirementId())
-							|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
-				StringBuilder reqUpdateMsg1 = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg1.append("Success!! New ").append(requirement.getJobTitle()).append(" job  saved").toString());
-			}
-			else if (requirementDTO.getSaveType().equalsIgnoreCase("submitForApproval")
-					&& (null == (requirementDTO.getRequirementId())
-							|| "".equalsIgnoreCase(requirementDTO.getRequirementId().toString()))) {
-				StringBuilder reqUpdateMsg2 = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg2.append("Success!! New ").append(requirement.getJobTitle()).append(" job  submitted for approval").toString());
-			}
-			else if ((requirementDTO.getRequirementId() != null)
-					&& !(requirementDTO.getRequirementId().isEmpty())
-					&& (requirementDTO.getSaveType().equalsIgnoreCase("save"))) {
-				StringBuilder reqUpdateMs3 = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMs3.append("Success!! ").append(requirement.getJobTitle()).append(" details updated").toString());
-			}
-			else if ((requirementDTO.getRequirementId() != null)
-					&& !(requirementDTO.getRequirementId().isEmpty())
-					&& (requirementDTO.getSaveType().equalsIgnoreCase("submitForApproval"))) {
-				StringBuilder reqUpdateMsg4 = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMsg4.append("Success!! ").append(requirement.getJobTitle()).append(" Updated and Submitted ").toString());
-			}
-			else if ((requirementDTO.getRequirementId() != null)
-					&& !(requirementDTO.getRequirementId().isEmpty())
-					&& (requirementDTO.getSaveType().equalsIgnoreCase("draft"))) {
-				StringBuilder reqUpdateMs5 = new StringBuilder();
-				SourceLeadSessionManager.setSessionAttribute(request, "reqCreateMsg", reqUpdateMs5.append("Success!!  ").append(requirement.getJobTitle()).append(" Updated in Draft Stage").toString());
-			}
-			return "success";
+			return response;
 		}
 		else
-			return "MissingData";
+			response.setObject("MissingData");
+			return response;
 	}
 	
 	/**
@@ -226,8 +274,19 @@ public class RequirementRestController {
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsgTemplate", reqTemplateSuccessMessage.append("Success!! ").append(requirementDTO.getJobTitle()).append(" template  saved").toString());
 		return "success";
 	}
-	
-	
+	@RequestMapping(value = "/deleteJobDoc", method = RequestMethod.POST)
+	public @ResponseBody String deleteJobDoc(@RequestParam(value = "requirementId", required = false) Long requirementId,HttpServletRequest request) throws Exception{
+		
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		if(requirement != null){
+		requirement.setFileURL(null);
+		requirement.setFileName(null);
+		requirement.setFileContentType(null);
+		requirementDao.storeRequirement(requirement);
+		}
+		return "success";
+	}
 	/**
 	 * @author sarath kumaar
 	 * @since oct 18 2016
@@ -301,6 +360,7 @@ public class RequirementRestController {
 						if(isLoginUserAsAdmin.equalsIgnoreCase("true")){
 							if (status.equalsIgnoreCase("APPROVED")) {
 								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+								requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
 							} else if (status.equalsIgnoreCase("REJECTED")) {
 								requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
 							}
@@ -568,60 +628,49 @@ public class RequirementRestController {
 	 */
 
 	@RequestMapping(value = "/getUserList", method = RequestMethod.POST)
-	public @ResponseBody String getUserList(@RequestParam(value = "teamType", required = false) String teamType,
+	public @ResponseBody ResponseList<User> getUserList(@RequestParam(value = "teamType", required = false) String teamType,
 			HttpServletRequest request) throws Exception {
-
-		String resultJson;
+		ResponseList<User> response =  new ResponseList<>();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	if(loginUser != null) {
+			try {
 
-      //		List<User> usersList = userService.getOwnersByOrgLocationId(orgLocation.getId());
-		
-	    // This is made static as requirment action id is 146
-		
-		ArrayList<User> mynewList =  new ArrayList<User>();
-		List<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
-       
-		//   Commented because Team Lead not required to show in team Members List By Default he is added in to the  RequirementAssignTo
-		
-		/*
-		// adding team owner as  a Team Member
-		if(!teamType.equalsIgnoreCase("") && !teamType.equalsIgnoreCase("undefined") && !teamType.contains("role") && !teamType.contains("All")){
-			Team team = teamService.getTeamByTeamId(Long.parseLong(teamType));
-			usersList.add(team.getOwnerUserId());
-		}*/
-		
-		
-		for(User user : usersList){
-	            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId(),orgLocation.getId());
-	            user.setAssignJobCount(assign.size());
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
-				if(null != userRole){
-					user.setUserType(userRole.getUserType());
-					 mynewList.add(user);
-				}
-		   }
-		
-		resultJson = commonUtil.toJSON(usersList);
-		return resultJson;
-		
-		/*List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(),teamType);
-		for(User user : usersList){
-
-		// List<User> usersList =
-		// userService.getOwnersByOrgLocationId(orgLocation.getId());
-		List<User> usersList = userService.getUsersByTeamType(orgLocation.getId(), teamType);
-		for (User user : usersList) {
-
-			List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId());
-
-			user.setAssignJobCount(assign.size());
-			UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
-			if (userRole != null) {
-				user.setUserType(userRole.getUserType());
+			    // This is made static as requirment action id is 146
+				
+				ArrayList<User> mynewList =  new ArrayList<User>();
+				List<User> usersList = userService.getUsersByTeamTypeAndTabId(orgLocation.getId(),teamType, Long.valueOf(Constants.TAB_REQUIREMENT));
+		       
+				//   Commented because Team Lead not required to show in team Members List By Default he is added in to the  RequirementAssignTo
+				
+				/*
+				// adding team owner as  a Team Member
+				if(!teamType.equalsIgnoreCase("") && !teamType.equalsIgnoreCase("undefined") && !teamType.contains("role") && !teamType.contains("All")){
+					Team team = teamService.getTeamByTeamId(Long.parseLong(teamType));
+					usersList.add(team.getOwnerUserId());
+				}*/
+				
+				for(User user : usersList){
+			            List<RequirementAssignTo> assign = requirementService.getUserAssignJobCount(user.getId(),orgLocation.getId());
+			            user.setAssignJobCount(assign.size());
+						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocation.getId());
+						if(null != userRole){
+							user.setUserType(userRole.getUserType());
+							 mynewList.add(user);
+						}
+				   }
+				response.setData(mynewList);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
+	 	}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		resultJson = commonUtil.toJSON(usersList);
-		return resultJson;*/
+		return response;
 	}
 
 	@RequestMapping(value = "/getApproverTwoByUserId", method = RequestMethod.POST)
@@ -696,50 +745,60 @@ public class RequirementRestController {
 	 * @throws NullPointer
 	 */
 	@RequestMapping(value = "/getTeamsList", method = RequestMethod.POST)
-	public @ResponseBody String getTeamsList(@RequestParam(value = "reqId", required = false) Long reqId, HttpServletRequest request) throws Exception {
-		String resultJson;
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		CombinedList combinedList = new CombinedList();
+	public @ResponseBody Response<CombinedList> getTeamsList(@RequestParam(value = "reqId", required = false) Long reqId, HttpServletRequest request) throws Exception {
+		Response<CombinedList> response =  new Response<>();
 		
-		List<RequirementAssignTo> requirementAssignTo = null;
-		if(!Objects.isNull(reqId)){
-			requirementAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(reqId, orgLocation.getId());
-		}
-
-		Boolean isTeamViewAccess = commonUtil.hasRole("ROLE_VIEW_TEAM");
-		if (isTeamViewAccess) {
-			List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
-			if (null != teamsList) {
-				for(Team team : teamsList){
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(loginUser != null) {
+			try {
+					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					CombinedList combinedList = new CombinedList();
 					
-					if(null != requirementAssignTo){
-						if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() != null && t.getTeamId().getId().equals(team.getId()))) {
-							team.setIsTeamAssigned("Y");
+					List<RequirementAssignTo> requirementAssignTo = null;
+					if(!Objects.isNull(reqId)){
+						requirementAssignTo = requirementAssignToService.getAssignedToMembersByRequirementIdAndOrgLocationId(reqId, orgLocation.getId());
+					}
+			
+					Boolean isTeamViewAccess = commonUtil.hasRole("ROLE_VIEW_TEAM");
+					if (isTeamViewAccess) {
+						List<Team> teamsList = teamService.getTeamListByOrgLocationID(orgLocation.getId());
+						if (null != teamsList) {
+							for(Team team : teamsList){
+								
+								if(null != requirementAssignTo){
+									if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() != null && t.getTeamId().getId().equals(team.getId()))) {
+										team.setIsTeamAssigned("Y");
+									}
+								}
+							}
+							combinedList.setTeams(teamsList);
 						}
 					}
-				}
-				combinedList.setTeams(teamsList);
-			}
-		}
-
-		List<Roles> rolesList = roleService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),
-				Long.valueOf(Constants.TAB_REQUIREMENT));
-		if (null != rolesList) {
-			for(Roles role : rolesList){
-				if(null != requirementAssignTo){
-					if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() == null && t.getRoleId() != null && t.getRoleId().getId().equals(role.getId()))) {
-						role.setIsRoleAssigned("Y");
+			
+					List<Roles> rolesList = roleService.getTabAccessRolesListByOrgLocationIdAndTabId(orgLocation.getId(),
+							Long.valueOf(Constants.TAB_REQUIREMENT));
+					if (null != rolesList) {
+						for(Roles role : rolesList){
+							if(null != requirementAssignTo){
+								if (requirementAssignTo.stream().anyMatch(t -> t.getTeamId() == null && t.getRoleId() != null && t.getRoleId().getId().equals(role.getId()))) {
+									role.setIsRoleAssigned("Y");
+								}
+							}
+						}
+						combinedList.setRoles(rolesList);
 					}
+					response.setObject(combinedList);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
 				}
+		 	}else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 			}
-			combinedList.setRoles(rolesList);
-		}
-		
-		
-		
-
-		resultJson = commonUtil.toJSON(combinedList);
-		return resultJson;
+		return response;
 	}
 
 	/**
@@ -756,15 +815,19 @@ public class RequirementRestController {
 			@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "count", required = false) Long offset,CandidateDTO candidateDTO)
 			throws Exception {
 		
-		//OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ResponseList<CandidateIndex> candidateListCopy = null;
-		RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
-	    if(null != recommendedCustomizeScore){ 
-		//candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocation.getId(), recommendedCustomizeScore,offset);
-	    	candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId,null,candidateDTO);
-	    }
+		try {
+			RecommendedCustomizeScore  recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementId);
+		    if(null != recommendedCustomizeScore){ 
+		    	candidateListCopy = recommendationsService.getRecommendationsUpdateWithScoreByUsingElk(orgLocationId, recommendedCustomizeScore, requirementId,null,candidateDTO);
+		    }
+		    candidateListCopy.setResponse(Result.SUCCESS.name());
+		    candidateListCopy.setResponseMessage(Result.SUCCESS.getValue());
+		}catch(Exception e) {
+			candidateListCopy.setResponse(Result.AWKWARD.name());
+			candidateListCopy.setResponseMessage(Result.AWKWARD.getValue());
+		}
 		return candidateListCopy;
-
 	}
 
 	
@@ -916,5 +979,172 @@ public class RequirementRestController {
 	    	requirement =	requirementService.getRequirementDetailsById(Long.parseLong(requirementId));
 	    	}
 			return commonUtil.toJSON(requirement);
+
 		} 
+	    
+
+	@RequestMapping(value = "/refreshRequirementClientList", method = RequestMethod.POST)
+		public @ResponseBody ResponseList<OrgRelations> refreshClientList(HttpServletRequest request) throws Exception {
+			ResponseList<OrgRelations> response = new ResponseList<>();
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(user != null) {
+				try {
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					List<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+					for(OrgRelations ocl :orgClientList){
+						/*ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+						ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());*/
+						if(orgLocations.getId().equals(ocl.getLocationId().getId())){
+							ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+							ocl.setLocationID(ocl.getResponderLocationId().getId().toString());
+		        		}if(orgLocations.getId().equals(ocl.getResponderLocationId().getId())){
+		        			ocl.setOrgName(ocl.getLocationId().getOrgLocationName());
+		        			ocl.setLocationID(ocl.getLocationId().getId().toString());
+		        		}
+					 }
+					response.setData(orgClientList);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		   return response;
+		}
+	    
+
+	    
+		/*@RequestMapping(value = "/getAllProjectsByOrgRelationIdAndInProgress", method = RequestMethod.GET)
+	 	public @ResponseBody  List<Projects>  getAllProjectsByOrgRelationId(HttpServletRequest request, HttpServletResponse response) throws Exception
+	 	{
+	     	//String resultJson;
+	     	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	     	List<Projects> projectList = projectsService.getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(orgLocations.getId());
+	 	   // resultJson = commonUtil.toJSON(projectList);
+	 	    return projectList;
+	 	}*/
+
+	    
+	@RequestMapping(value = "/saveOrUpdateAssignToTeam", method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveOrUpdateAssignToTeam(@RequestParam(value = "assignedIdVal", required = false) String assignedIdVal, @RequestParam(value = "requirementId", required = false) String requirementId, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<String> response =  new Response<>();
+	 	if(user != null) {
+			try {
+				requirementAssignToService.updateRequirementAssignToListByRequirementId(assignedIdVal, requirementId, orgLocations, user);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/getAssignedMembersForEdit", method = RequestMethod.POST)
+	public @ResponseBody Response<String> getAssignedMembersForEdit(@RequestParam(value = "reqId", required = false) String reqId, HttpServletRequest request) throws Exception
+	{
+		Response<String> response =  new Response<>();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	if(loginUser != null) {
+			try {
+				List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(reqId));
+				String existedUser = "";
+				String comma = "";
+				for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
+					comma = (requirementAssignToList.indexOf(requirementAssignTo) > 0 )? "," : "";
+					
+					if (requirementAssignTo.getTeamId() != null) {
+						existedUser = existedUser + comma+requirementAssignTo.getAssignUserId().getId().toString() + ","
+								+ requirementAssignTo.getTeamId().getId().toString();
+					}
+					else {
+						existedUser = existedUser + comma+requirementAssignTo.getAssignUserId().getId().toString()
+								+ ",undefined";
+					}
+				}
+				response.setObject(existedUser);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+	 	}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	
+
+	
+	@RequestMapping(value = "/shareRecomendedApplicant", method = RequestMethod.POST)
+	public @ResponseBody Response<String>  shareRecomendedApplicant(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request)throws Exception {
+		Response<String> response = new Response<>();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(loginUser != null) {
+			try {
+				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+				requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidate);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	
+	@RequestMapping(value = "/shareAllRecommendations", method = RequestMethod.POST)
+	public @ResponseBody Response<String> shareAllRecommendations(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateIds", required = false) String candidateIds,HttpServletRequest request)throws Exception {
+		Response<String> response = new Response<>();
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(loginUser != null) {
+			try {
+				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				
+				String[] candidateId = candidateIds.split(",");
+				if(candidateId != null &&  candidateId.length>0 && candidateId[0] != null && candidateId[0] != ""){
+					for(String candidateid   : candidateId){
+						Candidate candidates = candidateService.getCandidateByCandidateId(Long.valueOf(candidateid));
+								JobShareCandidate jobShareCandidate = new JobShareCandidate();
+								jobShareCandidate.setCandidateId(candidates);
+								jobShareCandidate.setJobId(requirement);
+								jobShareCandidate.setCreatedDate(new Date());
+								jobShareService.saveJobShareCandidate(jobShareCandidate);
+								requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidates);
+						}
+				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	
+	
 }

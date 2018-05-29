@@ -2,8 +2,10 @@ package com.bis.sourcelead.util;
 
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
@@ -18,20 +21,19 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.Months;
 import org.joda.time.Weeks;
 
 import com.bis.sourcelead.constants.Constants;
 
 public  class CalendarUtil {
-
-	public static void main(String[] args){
-	 //System.out.println(CommonUtil.getCombinedHours(8.45f, 8.30f));
-		System.out.println(Months.monthsBetween(new LocalDate(), new LocalDate()));
+	/*public static void main(String[] args){
+		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
+		currentCal.setLenient(false);
+		currentCal.setTime(new Date());
+		System.out.println(currentCal.getTime());
+		System.out.println(new Date());
 		
-	 /*Months.monthsBetween(new LocalDate(), new LocalDate());*/
-	}
+	}*/
 	/*public static void main(String[] args){
 		Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
 		currentCal.setLenient(false);
@@ -195,6 +197,156 @@ public  class CalendarUtil {
 	     }
 		return startEndDate;
    }*/
+	
+	
+	/***
+	 *  getUTC formatted Date String For a given Date and Dateformat
+	 * @param dateWithTime
+	 * @param dateFormat
+	 * @return
+	 */
+	public static String getUTCDateTimeStrForGivenDate(Date dateWithTime,String dateFormat) {
+	    DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+	    String dateStr = utcFormat.format(dateWithTime);
+        
+        
+        DateFormat currentTFormat = new SimpleDateFormat(dateFormat+" HH:mm:ss");
+        currentTFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String converted_date = null;
+		try {
+			converted_date = currentTFormat.format(utcFormat.parse(dateStr));
+		} catch (ParseException e) {}
+	
+	    return converted_date;
+   }
+	
+	/***
+	 *  getUTC formatted Date  For a given Date and Dateformat
+	 * @param dateWithTime
+	 * @param dateFormat
+	 * @return
+	 */
+	public static Date getUTCDateTimeForGivenDate(Date dateWithTime,String dateFormat) {
+		String converted_dateStr = getUTCDateTimeStrForGivenDate(dateWithTime, dateFormat);
+		DateFormat df = new SimpleDateFormat(dateFormat+" HH:mm:ss");
+		Date converted_date = null;
+		try {
+			converted_date = df.parse(converted_dateStr);
+		}catch (Exception e) {}
+	    return converted_date;
+    }
+	
+	
+	public static String getDateStrForGivenTimeZone(String timeZoneId,Date dateWithTime,String dateFormat) {
+		    DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		    String dateStr = utcFormat.format(dateWithTime);
+	        utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+	        
+	        DateFormat currentTFormat = new SimpleDateFormat(dateFormat);
+	        currentTFormat.setTimeZone(TimeZone.getTimeZone(timeZoneId));
+	        String converted_date = null;
+			try {
+				converted_date = currentTFormat.format(utcFormat.parse(dateStr));
+			} catch (ParseException e) {}
+		
+		    return converted_date;
+	}
+	public static Date getDateForGivenTimeZone(String timeZoneId,Date dateWithTime,String dateFormat) {
+		String converted_dateStr = getDateStrForGivenTimeZone(timeZoneId, dateWithTime, dateFormat);
+		DateFormat df = new SimpleDateFormat(dateFormat);
+		Date converted_date = null;
+		try {
+			converted_date = df.parse(converted_dateStr);
+		}catch (Exception e) {}
+	    return converted_date;
+	}
+	
+	
+	public static String getDateTimeStrForGivenTimeZone(String timeZoneId,Date dateWithTime,String dateFormat) {
+	    DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    String dateStr = utcFormat.format(dateWithTime);
+        utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        
+        DateFormat currentTFormat = new SimpleDateFormat(dateFormat+" HH:mm:ss");
+        currentTFormat.setTimeZone(TimeZone.getTimeZone(timeZoneId));
+        String converted_date = null;
+		try {
+			converted_date = currentTFormat.format(utcFormat.parse(dateStr));
+		} catch (ParseException e) {}
+	
+	    return converted_date;
+   }
+	
+	public static Date getDateTimeForGivenTimeZone(String timeZoneId,Date dateWithTime,String dateFormat) {
+		String converted_dateStr = getDateTimeStrForGivenTimeZone(timeZoneId, dateWithTime, dateFormat);
+		DateFormat df = new SimpleDateFormat(dateFormat+" HH:mm:ss");
+		Date converted_date = null;
+		try {
+			converted_date = df.parse(converted_dateStr);
+		}catch (Exception e) {}
+	    return converted_date;
+	}
+	
+	public static String getTimesheetHoursDisplayFormat(Float hours2){
+		float cthHours = 0;
+		float cthHoursValue = (int) cthHours;
+		float cthMinutesValue = cthHours - cthHoursValue;
+		float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+		float wthHours = hours2;
+		float wthHoursValue = (int) wthHours;
+		float wthMinutesValue = wthHours - wthHoursValue;
+		float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+		float totalMinutes = totalCthMinutes+totalWthMinutes;
+
+		float actualHours = (int) (totalMinutes / 60); //since both are ints, you get an int
+		float actualMinutes = (totalMinutes % 60)/100;
+		
+		final DecimalFormat decimalFormat = new DecimalFormat("00.00");                
+		String actualTimeString = null;
+		if(actualMinutes != 0){
+			actualTimeString = decimalFormat.format((actualHours+actualMinutes));
+		}
+		else{
+			actualTimeString = decimalFormat.format(actualHours+actualMinutes);
+		}
+		
+		return actualTimeString;
+	}
+
+	
+	public static String getHalfTimesheetHoursDisplayFormat(Float hours2){
+		float cthHours = 0;
+		float cthHoursValue = (int) cthHours;
+		float cthMinutesValue = cthHours - cthHoursValue;
+		float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
+
+		float wthHours = hours2;
+		float wthHoursValue = (int) wthHours;
+		float wthMinutesValue = wthHours - wthHoursValue;
+		float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
+
+		float totalMinutes = totalCthMinutes+totalWthMinutes;
+
+		float halfDayMinutes = totalMinutes/2;
+		
+		float actualHours = (int) (halfDayMinutes / 60); //since both are ints, you get an int
+		float actualMinutes = (halfDayMinutes % 60)/100;
+		
+		final DecimalFormat decimalFormat = new DecimalFormat("00.00");                
+		String actualTimeString = null;
+		if(actualMinutes != 0){
+			actualTimeString = decimalFormat.format((actualHours+actualMinutes));
+		}
+		else{
+			actualTimeString = decimalFormat.format(actualHours+actualMinutes);
+		}
+		
+		return actualTimeString;
+	}
+	
 	
 	public static LinkedHashSet<String> getMonthStringsFromStartDateAndEndDate(Date frequencyStartDate,Date frequencyEndDate) {
 	 	 int monthDiff =monthsBetween(frequencyStartDate, frequencyEndDate);
@@ -663,6 +815,36 @@ public  class CalendarUtil {
 		return flag;
 	}
 
+	
+	public static boolean isGivenDateBetweenDateRange(String weekStartDate,String weekEndDate,String date,String dateFormat) {
+		Boolean flag = false;
+		if(StringUtils.isNotEmpty(weekStartDate) && StringUtils.isNotEmpty(weekEndDate)){
+			DateFormat format = new SimpleDateFormat(dateFormat.replaceAll("-", "/"));
+			Date startDate = null;
+			Date endDate = null;
+			Date currentDate = null;
+			try {
+				currentDate = format.parse(date.replaceAll("-", "/"));
+				if(dateFormat.contains("-")){
+					startDate = format.parse(weekStartDate.replaceAll("-", "/"));
+					endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				}
+				else{
+					startDate = format.parse(weekStartDate.replaceAll("-", "/"));
+					endDate = format.parse(weekEndDate.replaceAll("-", "/"));
+				}
+				
+				flag =   ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
+			} catch (ParseException e) {}
+			
+			
+		}
+		return flag;
+	}
+	
+	public static boolean isGivenDateBetweenDateRange(Date startDate,Date endDate,Date currentDate) {
+		return	 ((currentDate.after(startDate) && currentDate.before(endDate)) || (currentDate.equals(startDate)) || ((currentDate.equals(endDate))));
+	}
 	public static HashMap<String,Date> getMonthStartDateByGivenDate(Date date,Integer monthPreference){
 		HashMap<String,Date> dateList = new HashMap<String,Date>();
 		Calendar calendar = Calendar.getInstance();   
@@ -776,6 +958,13 @@ public  class CalendarUtil {
 		calendar.add(Calendar.DAY_OF_YEAR, 1);
 		return format.format(calendar.getTime()); 
 	}
+	
+	public static Date getNextDate(Date  curDate) throws ParseException {
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(curDate);
+		calendar.add(Calendar.DAY_OF_YEAR, 1);
+		return calendar.getTime(); 
+	}
 
 	/*public static String getShortDateFromLongDate(String  curDate) throws ParseException {
 		final DateFormat format =Constants.DF_DMY;
@@ -865,13 +1054,89 @@ public  class CalendarUtil {
 		//		return Year.now().getValue();
 	}
 	
-	
-
-	
 	public static String getCurrentMonth()
 	{
 		Calendar cal = Calendar.getInstance();
 		DateFormat format =Constants.M;
 		return format.format(cal.getTime());
 	}
+	
+	public static long getNumberOfDaysForReports(Date date1, Date date2){
+		long diff = date2.getTime() - date1.getTime();
+		long  numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+		return numberofDays+1;
+		
+		/* long diff = date2.getTime() - date1.getTime();
+		long  numberofDays = 0L;
+		if(DateUtils.isSameDay(date1, date2)) {
+			return numberofDays+1;
+		}else {
+			numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+			if(numberofDays == 0) {
+				return numberofDays+2;
+			}else {
+				return numberofDays+1;
+			}
+		
+		}*/
+
+	}
+	
+	public static int  getNumberOfBillableDates(Date assignDate, Date terminatedDate) {
+	    int count = 0;
+	    Calendar start = Calendar.getInstance();
+	    start.setTime(assignDate);
+	    Calendar end = Calendar.getInstance();
+	    end.setTime(terminatedDate);
+	    end.add(Calendar.DAY_OF_YEAR, 1); //Add 1 day to endDate to make sure endDate is included into the final list
+	    while (start.before(end)) {
+	    	 SimpleDateFormat simpleDateformat = new SimpleDateFormat("E");
+	    	 String day_Of_Date = simpleDateformat.format(start.getTime());
+	    	 if(!day_Of_Date.equals("Sat") && !day_Of_Date.equals("Sun")) {
+	    		 count++;
+	    	 }
+	        start.add(Calendar.DAY_OF_YEAR, 1);
+	    }
+	    return count;
+	}
+
+ public static List<Date> getListOfDaysBetweenTwoDates(Date assignDate, Date terminatedDate) {
+    List<Date> result = new ArrayList<Date>();
+    Calendar start = Calendar.getInstance();
+    start.setTime(assignDate);
+    Calendar end = Calendar.getInstance();
+    end.setTime(terminatedDate);
+    end.add(Calendar.DAY_OF_YEAR, 1); //Add 1 day to endDate to make sure endDate is included into the final list
+    while (start.before(end)) {
+        result.add(start.getTime());
+        start.add(Calendar.DAY_OF_YEAR, 1);
+    }
+    return result;
 }
+ 
+ public static long getNumberOfDaysCount(Date date1, Date date2){
+		long diff = date2.getTime() - date1.getTime();
+		long  numberofDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)+1;
+		return numberofDays;
+
+	}
+ public static String getMonthFromGivenDate(Date date){
+	    SimpleDateFormat   simpleDateFormat = new SimpleDateFormat("MMMM");
+		return simpleDateFormat.format(date);
+	}
+ public static String getYearFromGivenDate(Date date){
+	    SimpleDateFormat   simpleDateFormat = new SimpleDateFormat("YYYY");
+		return simpleDateFormat.format(date);
+	}
+ 
+ public static Date removeTime(Date date) {    
+     Calendar cal = Calendar.getInstance();  
+     cal.setTime(date);  
+     cal.set(Calendar.HOUR_OF_DAY, 0);  
+     cal.set(Calendar.MINUTE, 0);  
+     cal.set(Calendar.SECOND, 0);  
+     cal.set(Calendar.MILLISECOND, 0);  
+     return cal.getTime(); 
+ }
+}
+

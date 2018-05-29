@@ -13,9 +13,11 @@ public interface RestrictDayService {
 
 	public List<RestrictDay> getRestrictDayListByOrgLocationId(Long orgLocationId) throws Exception;
 
-	public RestrictDay getRestrictDayById(String restrictDayId);
+	public RestrictDay getRestrictDayById(Long restrictDayId);
 
 	public List<RestrictDay> validateRestrictDayDates(String fromDate, String toDate, OrgLocations orgLocations) throws Exception;
 
 	public boolean checkDuplicateRestrictDay(RestrictDayDTO restrictDayDTO) throws Exception;
+
+	public RestrictDay getRestrictDayByUUID(String restrictUUID);
 }

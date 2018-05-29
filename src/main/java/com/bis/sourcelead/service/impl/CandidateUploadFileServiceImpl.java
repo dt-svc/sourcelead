@@ -6,8 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +21,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +33,13 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidatesImport;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CandidateUploadFileService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgSpocService;
 
 /**
  * 
@@ -49,6 +52,12 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 	private static final Logger logger = LoggerFactory.getLogger(CandidateUploadFileServiceImpl.class);
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
 	
 	@Override
 	public String uploadCandidateFile(MultipartFile multipartFile, OrgLocations orgLocations, User user, String isMailChecked, Org org, Long roleHierarchyId) throws Exception
@@ -121,7 +130,9 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 							else {
 								candidateImport.setLastName(row.getCell(1).toString());
 							}
+							
 							candidateImport.setEmailId(row.getCell(2).toString().trim());
+							
 							if (row.getCell(3) != null) {
 								String mobileNumber = getCellValueAsString(row.getCell(3), fileName);
 								candidateImport.setMobileNumber(mobileNumber);
@@ -171,8 +182,28 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 							else {
 								candidateImport.setDesignationType("");
 							}
-							if (row.getCell(10) != null) {
-								String experienceYears = getCellValueAsString(row.getCell(10), fileName);
+							
+							// add two cells after designationType
+							
+							// Cell Vendor
+							if(row.getCell(10) != null) {
+								String vendor = getCellValueAsString(row.getCell(10), fileName);
+								candidateImport.setVendor(vendor);
+							}else {
+								candidateImport.setVendor("");
+							}
+							
+							// Cell Vendor Contact
+							
+							if(row.getCell(11) != null) {
+								String vendorContact = getCellValueAsString(row.getCell(11), fileName);
+								candidateImport.setVendorContact(vendorContact);
+							}else {
+								candidateImport.setVendorContact("");
+							}
+							
+							if (row.getCell(12) != null) {
+								String experienceYears = getCellValueAsString(row.getCell(12), fileName);
 								candidateImport.setExperience(experienceYears);
 							}
 							else {
@@ -185,44 +216,49 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 							else {
 								candidateImport.setExperienceMonths("");
 							}*/
-							if (row.getCell(11) != null) {
-								String expectedRate = getCellValueAsString(row.getCell(11), fileName);
+							if (row.getCell(13) != null) {
+								String expectedRate = getCellValueAsString(row.getCell(13), fileName);
 								
 								candidateImport.setExpectedRate(getExpectedRateValid(expectedRate));
 							}
 							else {
 								candidateImport.setExpectedRate("");
 							}
-							if (row.getCell(12) != null) {
-								String expectedRateType = getCellValueAsString(row.getCell(12), fileName);
+							
+							if (row.getCell(14) != null) {
+								String expectedRateType = getCellValueAsString(row.getCell(14), fileName);
 								candidateImport.setExpectedRateType(expectedRateType);
 							}
 							else {
 								candidateImport.setExpectedRateType("");
 							}
-							if (row.getCell(13) != null) {
-								String skillsName = getCellValueAsString(row.getCell(13), fileName);
+							
+							if (row.getCell(15) != null) {
+								String skillsName = getCellValueAsString(row.getCell(15), fileName);
 								candidateImport.setSkillsName(skillsName);
 							}
 							else {
 								candidateImport.setSkillsName("");
 							}
-							if (row.getCell(14) != null) {
-								String education = getCellValueAsString(row.getCell(14), fileName);
+							
+							if (row.getCell(16) != null) {
+								String education = getCellValueAsString(row.getCell(16), fileName);
 								candidateImport.setEducation(education);
 							}
 							else {
 								candidateImport.setEducation("");
 							}
-							if (row.getCell(15) != null) {
-								String employers = getCellValueAsString(row.getCell(15), fileName);
+							
+							if (row.getCell(17) != null) {
+								String employers = getCellValueAsString(row.getCell(17), fileName);
 								candidateImport.setEmployers(employers);
 							}
 							else {
 								candidateImport.setEmployers("");
 							}
-							if (row.getCell(16) != null) {
-								String primarySkill = getCellValueAsString(row.getCell(16), fileName);
+							
+							if (row.getCell(18) != null) {
+								String primarySkill = getCellValueAsString(row.getCell(18), fileName);
 								candidateImport.setPrimarySkill(primarySkill);
 							}
 							else {
@@ -356,12 +392,30 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		else {
 			writeRow.createCell(9).setCellValue("");
 		}
-		if (row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
-			String experienceYears = getCellValueAsString(row.getCell(10), fileName);
-			writeRow.createCell(10).setCellValue(experienceYears);
+		
+		// Vendor,Vendor Contact
+		
+		if(row.getCell(10) != null && !"".equalsIgnoreCase(row.getCell(10).toString())) {
+			String vendor = getCellValueAsString(row.getCell(10), fileName);
+			writeRow.createCell(10).setCellValue(vendor);
+		}else {
+			writeRow.createCell(10).setCellValue("");
+		}
+		
+		if(row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())){
+			String vendorContact = getCellValueAsString(row.getCell(11), fileName);
+			writeRow.createCell(11).setCellValue(vendorContact);
+		}else {
+			writeRow.createCell(11).setCellValue("");
+		}
+		
+		
+		if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
+			String experienceYears = getCellValueAsString(row.getCell(12), fileName);
+			writeRow.createCell(12).setCellValue(experienceYears);
 		}
 		else {
-			writeRow.createCell(10).setCellValue("");
+			writeRow.createCell(12).setCellValue("");
 		}
 		/*if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
 			String experienceMonths = getCellValueAsString(row.getCell(11), fileName);
@@ -370,49 +424,55 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		else {
 			writeRow.createCell(11).setCellValue("");
 		}*/
-		if (row.getCell(11) != null && !"".equalsIgnoreCase(row.getCell(11).toString())) {
-			String expectedRate = getCellValueAsString(row.getCell(11), fileName);
-			writeRow.createCell(11).setCellValue(expectedRate);
-		}
-		else {
-			writeRow.createCell(11).setCellValue("");
-		}
-		if (row.getCell(12) != null && !"".equalsIgnoreCase(row.getCell(12).toString())) {
-			String expectedRateType = getCellValueAsString(row.getCell(12), fileName);
-			writeRow.createCell(12).setCellValue(expectedRateType);
-		}
-		else {
-			writeRow.createCell(12).setCellValue("");
-		}
 		if (row.getCell(13) != null && !"".equalsIgnoreCase(row.getCell(13).toString())) {
-			String skillsName = getCellValueAsString(row.getCell(13), fileName);
-			writeRow.createCell(13).setCellValue(skillsName);
+			String expectedRate = getCellValueAsString(row.getCell(13), fileName);
+			writeRow.createCell(13).setCellValue(expectedRate);
 		}
 		else {
 			writeRow.createCell(13).setCellValue("");
 		}
+		
 		if (row.getCell(14) != null && !"".equalsIgnoreCase(row.getCell(14).toString())) {
-			String education = getCellValueAsString(row.getCell(14), fileName);
-			writeRow.createCell(14).setCellValue(education);
+			String expectedRateType = getCellValueAsString(row.getCell(14), fileName);
+			writeRow.createCell(14).setCellValue(expectedRateType);
 		}
 		else {
 			writeRow.createCell(14).setCellValue("");
 		}
+		
 		if (row.getCell(15) != null && !"".equalsIgnoreCase(row.getCell(15).toString())) {
-			String employers = getCellValueAsString(row.getCell(15), fileName);
-			writeRow.createCell(15).setCellValue(employers);
+			String skillsName = getCellValueAsString(row.getCell(15), fileName);
+			writeRow.createCell(15).setCellValue(skillsName);
 		}
 		else {
 			writeRow.createCell(15).setCellValue("");
 		}
+		
 		if (row.getCell(16) != null && !"".equalsIgnoreCase(row.getCell(16).toString())) {
-			String primarySkill = getCellValueAsString(row.getCell(16), fileName);
-			writeRow.createCell(16).setCellValue(primarySkill);
+			String education = getCellValueAsString(row.getCell(16), fileName);
+			writeRow.createCell(16).setCellValue(education);
 		}
 		else {
 			writeRow.createCell(16).setCellValue("");
 		}
-		writeRow.createCell(17).setCellValue(candidateImport.getReason());
+		
+		if (row.getCell(17) != null && !"".equalsIgnoreCase(row.getCell(17).toString())) {
+			String employers = getCellValueAsString(row.getCell(17), fileName);
+			writeRow.createCell(17).setCellValue(employers);
+		}
+		else {
+			writeRow.createCell(17).setCellValue("");
+		}
+		
+		if (row.getCell(18) != null && !"".equalsIgnoreCase(row.getCell(18).toString())) {
+			String primarySkill = getCellValueAsString(row.getCell(18), fileName);
+			writeRow.createCell(18).setCellValue(primarySkill);
+		}
+		else {
+			writeRow.createCell(18).setCellValue("");
+		}
+		
+		writeRow.createCell(19).setCellValue(candidateImport.getReason());
 	}
 	
 	private boolean validateCandidateExeclData(Row row, CandidatesImport candidateImport, String fileName, OrgLocations orgLocations) throws Exception
@@ -451,8 +511,8 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 				}
 			}
 			
-			if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
-				String expectedRate=getCellValueAsString(row.getCell(11), fileName);
+			if(row.getCell(13) !=null && !"".equalsIgnoreCase(row.getCell(13).toString())){
+				String expectedRate=getCellValueAsString(row.getCell(13), fileName);
 				
 				if(expectedRate !=null && !"".equalsIgnoreCase(expectedRate)){
 					boolean isValidated =isExpectedRateValid(expectedRate);
@@ -462,6 +522,54 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 					}
 				}
 			}
+			
+			if (row.getCell(9) == null || "".equalsIgnoreCase(row.getCell(9).toString())) {
+				candidateImport.setReason("Employment Type is Required");
+				return false;
+			}
+			
+			if("C2C".equalsIgnoreCase(row.getCell(9).getStringCellValue())) {
+				
+			if(row.getCell(10) !=null && !"".equalsIgnoreCase(row.getCell(10).toString())){
+				List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+				Long vendorId = 0l;
+				for(OrgRelations rel : vendorsList) {
+					if((row.getCell(10).toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (row.getCell(10).toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+						vendorId = rel.getId();
+						break;
+					}
+				}
+				
+				
+				if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
+					List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
+					
+					for(OrgSpoc vendorContacts : vendorContactsList) {
+						if(row.getCell(11).toString().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
+							return true;
+						}else {
+							candidateImport.setReason("No contact exists with entered email");
+							return false;
+						}
+					}
+					if(vendorContactsList == null || vendorContactsList.size() == 0) {
+						candidateImport.setReason("No Active contacts exists with this vendor");
+						return false;
+					}
+				}
+				
+			}
+			
+			/*else {
+				if(row.getCell(11) !=null && !"".equalsIgnoreCase(row.getCell(11).toString())){
+					candidateImport.setReason("vendor is mandatory if you have entered contact");
+					return false;
+				}else {
+					candidateImport.setReason("vendor details are mandatory.");
+					return false;
+				}
+			}*/
+		}
 			
 		}
 		return true;
@@ -486,16 +594,23 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		
 	}
 	
-	private CandidateDTO populateJsonObject(CandidatesImport candidate, OrgLocations orgLocations, String isMailChecked) throws JSONException, ParseException
+	private CandidateDTO populateJsonObject(CandidatesImport candidate, OrgLocations orgLocations, String isMailChecked) throws Exception
 	{
 		
 		CandidateDTO  candidateDTO = new CandidateDTO();
+		
+		Candidate cand = candidateService.getCandidateByEmailAndOrgLocationId(candidate.getEmailId(), orgLocations.getId());
+		
+		if(cand != null && cand.getId() != null)
+			candidateDTO.setCandidateId(String.valueOf(cand.getId()));
+		
 		//JSONObject jsonObj = new JSONObject();
 		candidateDTO.setFirstName(candidate.getFirstName());
 		if (null != candidate.getLastName()) {
 			candidateDTO.setLastName(candidate.getLastName());
 		}
 		candidateDTO.setEmail(candidate.getEmailId());
+		
 //		jsonObj.put("email", candidate.getEmailId());
 		if (null != candidate.getMobileNumber()) {
 			candidateDTO.setMobilePhone(candidate.getMobileNumber());
@@ -521,7 +636,7 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		}
 		else {
 			//jsonObj.put("designationType", "C2C");
-			candidateDTO.setDesignationType("C2C");
+			candidateDTO.setDesignationType("W-2");
 		}
 		if (null != candidate.getExperience()) {
 			if (candidate.getExperience().matches("[-a-zA-Z]+")) {
@@ -661,6 +776,27 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 			candidateDTO.setInviteEmail(isMailChecked);
 		}
 		
+		// Vendor and Vendor Contact
+		
+		List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+		Long vendorId = 0l;
+		for(OrgRelations rel : vendorsList) {
+			if((candidate.getVendor().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (candidate.getVendor().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+				vendorId = rel.getId();
+			}
+		}
+		if(vendorId > 0) {
+			candidateDTO.setVendors(String.valueOf(vendorId));
+		}
+		
+		List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
+		
+		for(OrgSpoc vendorContacts : vendorContactsList) {
+			if(candidate.getVendorContact().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
+				candidateDTO.setVendorcontact(String.valueOf(vendorContacts.getId()));
+			}
+		}
+		
 		return candidateDTO;
 	}
 	
@@ -729,13 +865,13 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 	
 	/**
 	 * Handles Mobile number valid or not
-	 * 
+	 *  var rgx = /^[0-9]*\.?[0-9]*$/;
 	 * @param mobileNmber
 	 * @return
 	 */
 	private boolean isMobileNumberValid(String mobileNmber)
 	{
-		String regex = "([\\.\\-\\s+\\/()]*[0-9][\\.\\-\\s+\\/()]*){8,15}";
+		String regex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
 		boolean flag;
 		String mobNum = mobileNmber.trim();
 		if (mobNum.length() > 9 && mobNum.length() <= 20) {
@@ -767,15 +903,20 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 		excelHeader.createCell(7).setCellValue(Constants.CANDIDATE_ADDRESS);
 		excelHeader.createCell(8).setCellValue(Constants.CANDIDATE_DESIGNATION);
 		excelHeader.createCell(9).setCellValue(Constants.CANDIDATE_TYPE);
-		excelHeader.createCell(10).setCellValue(Constants.CANDIDATE_EXPERIENCE);
+		
+		//vendor,Vendor Contact
+		excelHeader.createCell(10).setCellValue(Constants.CANDIDATE_VENDOR_NAME);
+		excelHeader.createCell(11).setCellValue(Constants.CANDIDATE_VENDOR_CONTACT);
+		
+		excelHeader.createCell(12).setCellValue(Constants.CANDIDATE_EXPERIENCE);
 		/*excelHeader.createCell(11).setCellValue(Constants.CANDIDATE_EXPERIENCE_MONTHS);*/
-		excelHeader.createCell(11).setCellValue(Constants.CANDIDATE_EXPECTED_RATE);
-		excelHeader.createCell(12).setCellValue(Constants.CANDIDATE_EXPECTED_RATE_TYPE);
-		excelHeader.createCell(13).setCellValue(Constants.CANDIDATE_SKILLS_NAME);
-		excelHeader.createCell(14).setCellValue(Constants.CANDIDATE_EDUCATION);
-		excelHeader.createCell(15).setCellValue(Constants.CANDIDATE_EMPLOERS);
-		excelHeader.createCell(16).setCellValue(Constants.CANDIDATE_PRIMARY_SKILL);
-		excelHeader.createCell(17).setCellValue(Constants.FAILED_REASON);
+		excelHeader.createCell(13).setCellValue(Constants.CANDIDATE_EXPECTED_RATE);
+		excelHeader.createCell(14).setCellValue(Constants.CANDIDATE_EXPECTED_RATE_TYPE);
+		excelHeader.createCell(15).setCellValue(Constants.CANDIDATE_SKILLS_NAME);
+		excelHeader.createCell(16).setCellValue(Constants.CANDIDATE_EDUCATION);
+		excelHeader.createCell(17).setCellValue(Constants.CANDIDATE_EMPLOERS);
+		excelHeader.createCell(18).setCellValue(Constants.CANDIDATE_PRIMARY_SKILL);
+		excelHeader.createCell(19).setCellValue(Constants.FAILED_REASON);
 		return createExcelsheet;
 	}
 	

@@ -36,7 +36,7 @@ public class StatesDaoImpl implements StatesDao{
 		logger.debug("In StatesDaoImpl getAllStatesByCountryCode method");
 		Session session = this.sessionFactory.getCurrentSession();
 		Query query= session.createQuery("from States states where states.countryCode = :countryCode order by states.stateName ASC");
-		List<States> statesList = query.setString("countryCode", countryCode).setCacheable(true).list();
+		List<States> statesList = query.setString("countryCode", countryCode).list();
 		return statesList;
 	}
 
@@ -46,7 +46,7 @@ public class StatesDaoImpl implements StatesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<States> states = new ArrayList<States>();
 		logger.debug("StatesDaoImpl getStatesByStateName");
-		states = session.createQuery("from States where stateName = :name" ).setString( "name", name ).setCacheable(true).list();
+		states = session.createQuery("from States where stateName = :name" ).setString( "name", name ).list();
 		if (states.size() > 0) {
 			return states.get(0);
 		} else {
@@ -63,7 +63,7 @@ public class StatesDaoImpl implements StatesDao{
 		String[] states = name.split(",");
 		for (String stateName : states) {
 			String query = "select state.stateCode from States state where state.stateName = :name";
-			statesList =  session.createQuery(query).setString( "name", stateName ).setCacheable(true).list();
+			statesList =  session.createQuery(query).setString( "name", stateName ).list();
 			stateCodesList.addAll(statesList);
 		}
 		return stateCodesList;

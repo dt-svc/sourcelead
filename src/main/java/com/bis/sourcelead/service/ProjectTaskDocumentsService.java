@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.dto.ProjectTaskDocumentDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.entity.ProjectTaskDocuments;
 
@@ -24,5 +25,5 @@ public interface ProjectTaskDocumentsService {
 
 	void deleteProjectTaskDocumentByPorjectTaskDocumentId(Long porjectTaskDocumentId) throws Exception;
 
-	void storeProjectTaskDocuments(ProjectTasksDTO projectTasksDTO, String projectTaskId, Long documentId, Long userId)throws Exception;
+	void storeProjectTaskDocuments(ProjectTaskDocumentDTO projectTaskDocumentDTO)throws Exception;
 }

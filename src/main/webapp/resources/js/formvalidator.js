@@ -397,7 +397,7 @@ jQueryFormUtils.validatePhoneNumber = function(tele) {
     tele = tele.replace(/([-|\+])/g, '');
     return tele.length > 8 && tele.match(/[^0-9]/g) === null;*/
     tele = tele.replace(/([-|\+])/g, '');
-	return tele.length > 8 &&  tele.match(/^(?=.*[0-9])[- +()0-9]+$/);
+	return tele.length > 8 &&  tele.match(/^(?=.*[0-9])[. - +()0-9]+$/);
 };
 
 
@@ -1013,17 +1013,29 @@ jQueryFormUtils.validateDateFormat = function(val) {
 jQueryFormUtils.validateNumberAlphabet = function(val) {
     return val.trim().match(/^[0-9][A-Z a-z 0-9]*[0-9a-zA-Z]$/) !== null;
 };
+
+//******************Validate Alphanumeric ******
+jQueryFormUtils.validateNumberAndAlphabet = function(val) {
+    return val.trim().match(/^[a-zA-Z0-9]*$/) !== null;
+};
 //******************Validate Alphanumeric and must start with Alphabet******
 jQueryFormUtils.validateAlphaNumber = function(val) {
 	return val.trim().match(/^[A-Za-z][A-Z a-z 0-9]*$/) !== null;
 };
+
+//**** validate Alphanumeric value must start with Alphabet and contains numeric and SpecialChar
+jQueryFormUtils.validateAlphaNumericSpecialChar = function(val) {
+	return val.trim().match(/^[a-zA-Z][a-zA-Z0-9 .,$;@#]*$/) !== null;
+};
+
+
 jQueryFormUtils.validatespace = function(val) {
    // return val.match(/[^\s-]/) !== null;
 	 return val.trim().match(/^[^\s-](.*)*$/) !== null;
 };
 
 jQueryFormUtils.validatefile_image = function(val) {
-    return val.toLowerCase().match(/(.*)(jpg|gif|png)$/) !== null;
+    return val.toLowerCase().match(/(.*)(jpg|JPG|png|gif)$/) !== null;
 };
 
 jQueryFormUtils.validatefile_doc = function(val) {
@@ -1037,6 +1049,13 @@ jQueryFormUtils.validatefile_docimgpdf = function(val) {
 jQueryFormUtils.validatefile_resume = function(val) {
     return val.toLowerCase().match(/(.*)(docx|doc|pdf|rtf)$/) !== null;
 };
+
+//images
+
+jQueryFormUtils.validatefile_img = function(val) {
+    return val.toLowerCase().match(/(.*)(jpg|jpeg|png|gif)$/) !== null;
+};
+
 jQueryFormUtils.validatefile_pdf = function(val) {
     return val.toLowerCase().match(/(.*)(pdf)$/) !== null;
 };
@@ -1203,6 +1222,12 @@ jQueryFormUtils.validateName = function(val) {
             return validationErrorMsg || language.badResume;
         }
         
+        //simple img file check
+        
+        else if (validationRules.indexOf('validateImg') > -1 && !jQueryFormUtils.validatefile_img(value, validationRules)) {
+            return validationErrorMsg || language.badImage;
+        }
+        
         // simple File Pdf check
         else if (validationRules.indexOf('validatepdf') > -1 && !jQueryFormUtils.validatefile_pdf(value, validationRules)) {
             return validationErrorMsg || language.badPdf;
@@ -1277,10 +1302,17 @@ jQueryFormUtils.validateName = function(val) {
         else if (validationRules.indexOf('validate_NumberAlphabet') > -1 && !jQueryFormUtils.validateNumberAlphabet(value)) {
             return validationErrorMsg || language.badNumberAlphabet;
         }
+        else if (validationRules.indexOf('validate_NumberAndAlphabet') > -1 && !jQueryFormUtils.validateNumberAndAlphabet(value)) {
+            return validationErrorMsg || language.badNumberAndAlphabet;
+        }
 // Validate if  Must start with Alphabet - Alphanumeric allowed
         else if (validationRules.indexOf('validate_AlphaNumber') > -1 && !jQueryFormUtils.validateAlphaNumber(value)) {
             return validationErrorMsg || language.badAlphaNumber;
       }
+     // Validate if  Must start with Alphabet - Alphanumeric and special characters allowed       
+        else if(validationRules.indexOf('validate_AlphaNumeric_SpecialChar') > -1 && !jQueryFormUtils.validateAlphaNumericSpecialChar(value)) {
+            return validationErrorMsg || language.badAlphaNumericSpecialChar;
+        }
         
      // Validate Mask Phone
         else if (validationRules.indexOf('validate_MaskPhone') > -1 && !jQueryFormUtils.validateMaskPhone(value)) {
@@ -1385,7 +1417,9 @@ jQueryFormUtils.LANG =  {
 	badPassword: 'Must Contain at least one special character',
 	badPassLength:'Password length must be greater than 6 characters',
 	badNumberAlphabet:'Allows Only Alphanumeric and must start with a Number',
+	badNumberAndAlphabet:'Allows Only Alphanumeric',
 	badAlphaNumber:'Allows Only Alphanumeric and must start with an Alphabet',
+	badAlphaNumericSpecialChar:'Allows Alphanumeric and Special Characters and must start with an Alphabet',
 	badImage:'Invalid Image Format Use .jpeg,jpg,gif,png formats only',
 	badDoc:'doc,docx,pdf,txt formats allowed',
 	badFileFormat:'Invalid Format Use .doc,pdf,txt,docx,jpeg,jpg,gif,png formats only',

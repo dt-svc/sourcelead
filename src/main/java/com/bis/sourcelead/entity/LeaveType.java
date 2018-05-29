@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,23 +27,19 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "LEAVE_TYPE", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "leaveType")
+@Table(name = "LEAVE_TYPE")
 public class LeaveType {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-//	@Column(columnDefinition = "BINARY(16)")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORGLOCATION_ID", nullable = false)
 	private OrgLocations orgLocations;
 	
-	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DEPARTMENT_ID", nullable = false)
 	private Department departmentId;
 	
@@ -94,7 +91,9 @@ public class LeaveType {
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	@Column(name = "LEAVE_TYPE_UUID")
+	private String leaveTypeUUID;
+	
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveTypeid")
 	private Set<LeaveRole> leaveTypeRolesSet;
@@ -113,6 +112,54 @@ public class LeaveType {
 	
 	@Column(name = "VISIBILITY_TO_ALL_USERS")
 	private String visibilityToAllUsers;
+	
+	@Column(name = "PERIOD")
+	private String period;
+	
+	@Column(name = "LEAVE_EFFECTIVE")
+	private String leaveEffective;
+	
+	@Column(name = "NEW_JOINEE")
+	private Integer newJoinee;
+	
+	@Column(name = "EXPERIENCED_TYPE")
+	private String experiencedType;
+	
+	@Column(name = "EXPERIENCED_DURATION")
+	private Integer experiencedDuration;
+	
+	@Column(name = "EXPERIENCED_APPLICABLE_DAYS")
+	private Integer experiencedApplicableDays;
+	
+	@Column(name = "REASON_REQUIRED")
+	private String reasonRequired;
+	
+	@Column(name = "ATTACHMENT_REQUIRED")
+	private String attachmentRequired;
+	
+	@Column(name = "OVERDRAW_LEAVES")
+	private String overdrawLeaves;
+	
+	@Column(name = "DONATE_LEAVE")
+	private String donateLeave;
+	
+	@Column(name = "PRIOR_LEAVE_APPLYING")
+	private String priorLeaveApplying;
+	
+	@Column(name = "PRIOR_DAYS")
+	private Integer priorDays;
+	
+	@Column(name = "LEAVE_DURATION")
+	private String leaveDuration;
+	
+	@Column(name = "MIN_DAYS")
+	private Integer minDays;
+	
+	@Column(name = "MAX_DAYS")
+	private Integer maxDays;
+	
+	@Column(name = "NO_OF_DAYS")
+	private Integer noOfDays;
 	
 	@Transient
 	@JsonProperty
@@ -138,95 +185,128 @@ public class LeaveType {
 	@JsonProperty
 	private int takenLeaveCounts;
 	
+	@Transient
+	@JsonProperty
+	private float totalBalanceLeaveCounts;
+	
+	@Transient
+	@JsonProperty
+	private float leaveTypeBalanceLeaveCount;
+	
+	@Transient
+	@JsonProperty
+	private float takenLeaves;
 
-	public String getId() {
+	public Long getId()
+	{
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id)
+	{
 		this.id = id;
 	}
 
-	public OrgLocations getOrgLocations() {
+	public OrgLocations getOrgLocations()
+	{
 		return orgLocations;
 	}
 
-	public void setOrgLocations(OrgLocations orgLocations) {
+	public void setOrgLocations(OrgLocations orgLocations)
+	{
 		this.orgLocations = orgLocations;
 	}
 
-	public Department getDepartmentId() {
+	public Department getDepartmentId()
+	{
 		return departmentId;
 	}
 
-	public void setDepartmentId(Department departmentId) {
+	public void setDepartmentId(Department departmentId)
+	{
 		this.departmentId = departmentId;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(String name)
+	{
 		this.name = name;
 	}
 
-	public String getDuration() {
+	public String getDuration()
+	{
 		return duration;
 	}
 
-	public void setDuration(String duration) {
+	public void setDuration(String duration)
+	{
 		this.duration = duration;
 	}
 
-	public String getHours() {
+	public String getHours()
+	{
 		return hours;
 	}
 
-	public void setHours(String hours) {
+	public void setHours(String hours)
+	{
 		this.hours = hours;
 	}
 
-	public String getTypeOfHours() {
+	public String getTypeOfHours()
+	{
 		return typeOfHours;
 	}
 
-	public void setTypeOfHours(String typeOfHours) {
+	public void setTypeOfHours(String typeOfHours)
+	{
 		this.typeOfHours = typeOfHours;
 	}
 
-	public String getLeaveType() {
+	public String getLeaveType()
+	{
 		return leaveType;
 	}
 
-	public void setLeaveType(String leaveType) {
+	public void setLeaveType(String leaveType)
+	{
 		this.leaveType = leaveType;
 	}
 
-	public String getApplicableToUsers() {
+	public String getApplicableToUsers()
+	{
 		return applicableToUsers;
 	}
 
-	public void setApplicableToUsers(String applicableToUsers) {
+	public void setApplicableToUsers(String applicableToUsers)
+	{
 		this.applicableToUsers = applicableToUsers;
 	}
 
-	public String getLeavesCarryforward() {
+	public String getLeavesCarryforward()
+	{
 		return leavesCarryforward;
 	}
 
-	public void setLeavesCarryforward(String leavesCarryforward) {
+	public void setLeavesCarryforward(String leavesCarryforward)
+	{
 		this.leavesCarryforward = leavesCarryforward;
 	}
 
-	public String getNumbefrOfLeavesPeryear() {
+	public String getNumbefrOfLeavesPeryear()
+	{
 		return numbefrOfLeavesPeryear;
 	}
 
-	public void setNumbefrOfLeavesPeryear(String numbefrOfLeavesPeryear) {
+	public void setNumbefrOfLeavesPeryear(String numbefrOfLeavesPeryear)
+	{
 		this.numbefrOfLeavesPeryear = numbefrOfLeavesPeryear;
 	}
-	
+
 	public String getNumbefrOfLeavesPerMonth()
 	{
 		return numbefrOfLeavesPerMonth;
@@ -237,51 +317,73 @@ public class LeaveType {
 		this.numbefrOfLeavesPerMonth = numbefrOfLeavesPerMonth;
 	}
 
-	public String getDescription() {
+	public String getDescription()
+	{
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(String description)
+	{
 		this.description = description;
 	}
 
-	public String getStatus() {
+	public String getStatus()
+	{
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(String status)
+	{
 		this.status = status;
 	}
 
-	public Date getCreatedDate() {
+	public String getColorCode()
+	{
+		return colorCode;
+	}
+
+	public void setColorCode(String colorCode)
+	{
+		this.colorCode = colorCode;
+	}
+
+	public Date getCreatedDate()
+	{
 		return createdDate;
 	}
 
-	public void setCreatedDate(Date createdDate) {
+	public void setCreatedDate(Date createdDate)
+	{
 		this.createdDate = createdDate;
 	}
 
-	public String getCreatedBy() {
+	public String getCreatedBy()
+	{
 		return createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(String createdBy)
+	{
 		this.createdBy = createdBy;
 	}
 
-	public Date getUpdatedDate() {
+	public Date getUpdatedDate()
+	{
 		return updatedDate;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
+	public void setUpdatedDate(Date updatedDate)
+	{
 		this.updatedDate = updatedDate;
 	}
 
-	public String getUpdatedBy() {
+	public String getUpdatedBy()
+	{
 		return updatedBy;
 	}
 
-	public void setUpdatedBy(String updatedBy) {
+	public void setUpdatedBy(String updatedBy)
+	{
 		this.updatedBy = updatedBy;
 	}
 
@@ -345,6 +447,166 @@ public class LeaveType {
 		this.visibilityToAllUsers = visibilityToAllUsers;
 	}
 
+	public String getPeriod()
+	{
+		return period;
+	}
+
+	public void setPeriod(String period)
+	{
+		this.period = period;
+	}
+
+	public String getLeaveEffective()
+	{
+		return leaveEffective;
+	}
+
+	public void setLeaveEffective(String leaveEffective)
+	{
+		this.leaveEffective = leaveEffective;
+	}
+
+	public Integer getNewJoinee()
+	{
+		return newJoinee;
+	}
+
+	public void setNewJoinee(Integer newJoinee)
+	{
+		this.newJoinee = newJoinee;
+	}
+
+	public String getExperiencedType()
+	{
+		return experiencedType;
+	}
+
+	public void setExperiencedType(String experiencedType)
+	{
+		this.experiencedType = experiencedType;
+	}
+
+	public Integer getExperiencedDuration()
+	{
+		return experiencedDuration;
+	}
+
+	public void setExperiencedDuration(Integer experiencedDuration)
+	{
+		this.experiencedDuration = experiencedDuration;
+	}
+
+	public Integer getExperiencedApplicableDays()
+	{
+		return experiencedApplicableDays;
+	}
+
+	public void setExperiencedApplicableDays(Integer experiencedApplicableDays)
+	{
+		this.experiencedApplicableDays = experiencedApplicableDays;
+	}
+
+	public String getReasonRequired()
+	{
+		return reasonRequired;
+	}
+
+	public void setReasonRequired(String reasonRequired)
+	{
+		this.reasonRequired = reasonRequired;
+	}
+
+	public String getAttachmentRequired()
+	{
+		return attachmentRequired;
+	}
+
+	public void setAttachmentRequired(String attachmentRequired)
+	{
+		this.attachmentRequired = attachmentRequired;
+	}
+
+	public String getOverdrawLeaves()
+	{
+		return overdrawLeaves;
+	}
+
+	public void setOverdrawLeaves(String overdrawLeaves)
+	{
+		this.overdrawLeaves = overdrawLeaves;
+	}
+
+	public String getDonateLeave()
+	{
+		return donateLeave;
+	}
+
+	public void setDonateLeave(String donateLeave)
+	{
+		this.donateLeave = donateLeave;
+	}
+
+	public String getPriorLeaveApplying()
+	{
+		return priorLeaveApplying;
+	}
+
+	public void setPriorLeaveApplying(String priorLeaveApplying)
+	{
+		this.priorLeaveApplying = priorLeaveApplying;
+	}
+
+	public Integer getPriorDays()
+	{
+		return priorDays;
+	}
+
+	public void setPriorDays(Integer priorDays)
+	{
+		this.priorDays = priorDays;
+	}
+
+	public String getLeaveDuration()
+	{
+		return leaveDuration;
+	}
+
+	public void setLeaveDuration(String leaveDuration)
+	{
+		this.leaveDuration = leaveDuration;
+	}
+
+	public Integer getMinDays()
+	{
+		return minDays;
+	}
+
+	public void setMinDays(Integer minDays)
+	{
+		this.minDays = minDays;
+	}
+
+	public Integer getMaxDays()
+	{
+		return maxDays;
+	}
+
+	public void setMaxDays(Integer maxDays)
+	{
+		this.maxDays = maxDays;
+	}
+
+	public Integer getNoOfDays()
+	{
+		return noOfDays;
+	}
+
+	public void setNoOfDays(Integer noOfDays)
+	{
+		this.noOfDays = noOfDays;
+	}
+
 	public String getCreatedUser()
 	{
 		return createdUser;
@@ -365,44 +627,84 @@ public class LeaveType {
 		this.updatedUser = updatedUser;
 	}
 
-	public int getRemainingTotalLeaveCounts() {
+	public int getRemainingTotalLeaveCounts()
+	{
 		return remainingTotalLeaveCounts;
 	}
 
-	public void setRemainingTotalLeaveCounts(int remainingTotalLeaveCounts) {
+	public void setRemainingTotalLeaveCounts(int remainingTotalLeaveCounts)
+	{
 		this.remainingTotalLeaveCounts = remainingTotalLeaveCounts;
 	}
 
-	public String getColorCode() {
-		return colorCode;
-	}
-
-	public void setColorCode(String colorCode) {
-		this.colorCode = colorCode;
-	}
-
-	public int getPendingLeaveCounts() {
+	public int getPendingLeaveCounts()
+	{
 		return pendingLeaveCounts;
 	}
 
-	public void setPendingLeaveCounts(int pendingLeaveCounts) {
+	public void setPendingLeaveCounts(int pendingLeaveCounts)
+	{
 		this.pendingLeaveCounts = pendingLeaveCounts;
 	}
 
-	public int getBalanceLeaveCounts() {
+	public int getBalanceLeaveCounts()
+	{
 		return balanceLeaveCounts;
 	}
 
-	public void setBalanceLeaveCounts(int balanceLeaveCounts) {
+	public void setBalanceLeaveCounts(int balanceLeaveCounts)
+	{
 		this.balanceLeaveCounts = balanceLeaveCounts;
 	}
 
-	public int getTakenLeaveCounts() {
+	public int getTakenLeaveCounts()
+	{
 		return takenLeaveCounts;
 	}
 
-	public void setTakenLeaveCounts(int takenLeaveCounts) {
+	public void setTakenLeaveCounts(int takenLeaveCounts)
+	{
 		this.takenLeaveCounts = takenLeaveCounts;
 	}
 
+	public String getLeaveTypeUUID()
+	{
+		return leaveTypeUUID;
+	}
+
+	public void setLeaveTypeUUID(String leaveTypeUUID)
+	{
+		this.leaveTypeUUID = leaveTypeUUID;
+	}
+
+	public float getTotalBalanceLeaveCounts()
+	{
+		return totalBalanceLeaveCounts;
+	}
+
+	public void setTotalBalanceLeaveCounts(float totalBalanceLeaveCounts)
+	{
+		this.totalBalanceLeaveCounts = totalBalanceLeaveCounts;
+	}
+
+	public float getLeaveTypeBalanceLeaveCount()
+	{
+		return leaveTypeBalanceLeaveCount;
+	}
+
+	public void setLeaveTypeBalanceLeaveCount(float leaveTypeBalanceLeaveCount)
+	{
+		this.leaveTypeBalanceLeaveCount = leaveTypeBalanceLeaveCount;
+	}
+
+	public float getTakenLeaves()
+	{
+		return takenLeaves;
+	}
+
+	public void setTakenLeaves(float takenLeaves)
+	{
+		this.takenLeaves = takenLeaves;
+	}
+	
 }

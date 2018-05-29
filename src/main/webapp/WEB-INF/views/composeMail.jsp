@@ -4,8 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link rel="stylesheet" href="resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
-<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="/resources/css/bootstrap-multiselect.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}" type="text/css">
 
 
 <style>
@@ -20,10 +20,16 @@ display: none;
 .mt40{
  margin-top: 50px !important;
 }
+.compose-mail .chosen-container-multi .chosen-choices li.search-field input[type="text"] {
+    height: 35px;
+    line-height: 35px;
+    width: 500px !important;
+}
 </style>
 
  <script>
  $(document).ready(function(){
+	 $(".clearUpload").hide();
 	 var UUID = '${UUID}';
 	
 	 if(null != UUID && UUID != '' && UUID != 'undefined'){
@@ -39,6 +45,11 @@ display: none;
 			 $("#emailsList").empty();
 			 $("#emailsList").append("<option value='" +fromEmail+ "' selected>"+fromEmail+"</option>");
 			 $("#emailsList").trigger("chosen:updated");
+           var toEmail = '${toEmail}';
+			 
+			 $("#emailsList").empty();
+			 $("#emailsList").append("<option value='" +toEmail+ "' selected>"+toEmail+"</option>");
+			 $("#emailsList").trigger("chosen:updated");
 		 }
 	 }
 });
@@ -50,8 +61,8 @@ display: none;
       <div class="pull-left">
         <h2>Compose Mail</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='/mailBox'/>"> Mailbox</a>
-			&raquo; Compose Email</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/mailBox/mails'/>"> Mailbox</a>
+			&raquo; Compose Mail</div>
     </section>
     
     
@@ -72,7 +83,7 @@ display: none;
           <label class="col-md-2 control-label text-primary small">To</label>
           <div class="col-md-10 positionRelative disable-choosen-dropdown">
 
-          <select class="form-control" field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" name="Toemails" data-validation-optional="true" data-validation="validate_email"  field-name="Toemails" >
+           <select class="form-control" field-name="To List" multiple data-placeholder="Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email" id="emailsList" name="Toemails" data-validation-optional="true" data-validation="validate_email"  field-name="Toemails" >
             </select>
             
             <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
@@ -92,7 +103,7 @@ display: none;
                     <h4 class="modal-title">Select Mailer</h4>
                    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
                     <label class="paddingLeft paddingRight">
-               	    <input  type="radio" id="usersCheck" name="users" checked onclick="getUserList('All')"><strong class="paddingLeft">Users</strong></label>
+               	    <input  type="radio" id="usersCheck" name="users" checked onclick="getUserList('All')"><strong class="paddingLeft">Associates</strong></label>
                	    <label class="paddingLeft">
                	    <input type="radio" id="contactsCheck" name="users" onclick="getContactsList()"><strong class="paddingLeft">My Contacts</strong></label>
                	    </c:if>
@@ -147,7 +158,9 @@ display: none;
               <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip"></i>
                 <input type="file" name="attachfile" style="display: none;"  id="attachfileBtn" class="upload">
                 </b> </label>
+               
               <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="Files are not selected...">
+              <div class="clearUpload"></div>
             </div>
           </div>
         </div>
@@ -159,7 +172,7 @@ display: none;
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
               <button type="button" class="btn btn-sm btn-success" onclick="sendEmails();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
-              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='mailBox'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
+              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '<c:url value='${appPath}/mailBox/mails'/>'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
           </div>
         <!-- Attachment button --> 
@@ -174,10 +187,16 @@ display: none;
   </section>
   
   
-  <!-- <script type="text/javascript" src="resources/js/bootstrap-multiselect.js"></script>
-  <script src="resources/js/bootstrap3-wysihtml5.all.min.js"></script>  -->
+  <!-- <script type="text/javascript" src="/resources/js/bootstrap-multiselect.js"></script>
+  <script src="/resources/js/bootstrap3-wysihtml5.all.min.js"></script>  -->
   
-  <script src="resources/js/nicEdit.js"></script> 
+  <script src="/resources/js/nicEdit.js"></script> 
+  
+		<script type="text/javascript">
+$(function() { 
+	tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
+});
+</script> 
   
   
   <script>
@@ -190,15 +209,11 @@ display: none;
    <script>
   function loadMailBoxDetails(UUID){
 	  var sourceleadUrl = '${sourceleadUrl}';
-	  
 			 $.ajax({
-				 
 				 type: "POST",
 			        url: sourceleadUrl+"/getUserMailBoxDetailsByUUID?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID, 
 			        success: function(data) {
 			        	var json = JSON.parse(data);
-			        	
-			        	
 			        	 $("input[name=subject]").val(json['subject']);
 			    		 
 			        	 if(json['comments'] != '' && json['comments'] != null && json['comments'] != 'undefied'){
@@ -207,8 +222,8 @@ display: none;
 			        	 }
 			        	 
 			        	 if(json['comments'] == null && json['body'] != '' && json['body'] != null && json['body'] != 'undefied'){
-			        		 //nicEditors.findEditor('bodytext').setContent('<br/><br/>'+json['body']);
-			        		 $('#bodytext').summernote('editor.pasteHTML','<br/><br/>'+json['body']);
+			        		 nicEditors.findEditor('bodytext').setContent('<br/><br/>'+json['body']);
+// 			        		 $('#bodytext').summernote('editor.pasteHTML','<br/><br/>'+json['body']);
 			        	 }
 			        	
 			        }
@@ -218,6 +233,7 @@ display: none;
   $(function() {
 		$("#attachfileBtn").change(function() {
 			fileUpload("attachfileBtn", "Email Documents", "email_form");
+			$(".clearUpload").show();
 		});
 	 });
   </script> 
@@ -237,27 +253,6 @@ display: none;
 });
 </script>
 
-<script type="text/javascript">
-$(function(){
-	       var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-	       
-	       
-	    
-	       
-	       $('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-		  })
-});
-</script>
-
-  
   
   <script type="text/javascript">
 	function sendEmails() {
@@ -276,7 +271,7 @@ $(function(){
 		   	    }
 		  		else{
 		  			
-			  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			  			$("#mailLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			  		 	$.ajax({
 			  		 		type : "POST",
 			  	    	    data: formData,
@@ -285,7 +280,7 @@ $(function(){
 			  		        contentType:false, 
 			  				url : sourceleadUrl+"/sendEmailToUsers?${_csrf.parameterName}=${_csrf.token}",
 			  				success : function(result) {
-			  						location.replace(sourceleadUrl+"/mailBox");
+			  						location.replace(sourceleadUrl+"/mailBox/mails");
 			  				},
 			  			});  
 			  		
@@ -394,7 +389,7 @@ function textBoxCancel(){
   <script>
 function getUserList(teamType){  
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#userList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $("#userList").empty(); 
 	  $.ajax({
            type : "POST",
@@ -498,10 +493,20 @@ function getUserList(teamType){
 
 <script>
 function getContactsList(){
+	
 	    var result = "";
 	 	result = result +" <div class='remove_search'>";
 	 	result = result +" <input type='text' placeholder='Search' id='contactsDataTableSearch'/>";
 	 	result = result +"</div>";
+	 	
+	 	result = result +'       <div class="col-xs-12 col-md-4 paddingLeft selectpicker100 mb10 mt">';
+ 		result = result +'     <select id="groupsFilter" name="groupsFilter" class="selectpicker" multiple data-actions-box="true" onchange="contactsDataTableList();" style="display:block !important" title="--Select Group--">';
+		<c:forEach var="conGroup" items="${contactsGroupList}">
+		result = result +' <option value="${conGroup.id}">${conGroup.groupName}</option>';
+        </c:forEach>
+ 		
+ 		result = result +'          </select>';
+ 		result = result +'       </div>';
 	 	
 	    result = result +'<div class="clearfix popupFilter">';
   		result = result +'<div class="mt clearfix popupFilter"><br/><br/>'; 
@@ -512,6 +517,7 @@ function getContactsList(){
 		result = result +'<th>&nbsp;&nbsp;<input type="checkbox" id="checkAllUsers" onclick="toggleAllContacts(this);"></th>';
 		result = result +'<th>Contact Name</th>';
 		result = result +'<th>Email</th>';
+		result = result +'<th>Group</th>';
 		result = result +'<th>Source</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
@@ -529,6 +535,8 @@ function getContactsList(){
 	    $("#userList").append(result);
 	    contactUsers = [];
 	    contactsDataTableList();
+	   
+	    $("#groupsFilter").selectpicker("refresh");
 }
 </script>
 
@@ -538,7 +546,13 @@ function contactsDataTableList(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#contactsDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue;
+	 var contactsGroups = '';
+	 if($("#groupsFilter").val() != null){
+		 contactsGroups = $("#groupsFilter").val();
+	 }
+	
+	 
+	 var url = sourceleadUrl+"/getUserContactsListForMalling?searchValue="+searchValue+"&groupIdsList="+contactsGroups;
 	 contactsPagination(url);
 }
 </script>
@@ -561,6 +575,7 @@ function contactsPagination(url,sourceleadUrl){
         	{ "data": "ischeck" },
             { "data": "contactName" },
             { "data": "email"},
+            { "data": "groups" },
             { "data": "source"}
            
         ],
@@ -601,6 +616,20 @@ function contactsPagination(url,sourceleadUrl){
 	      
 	          },{
 		    	  "targets": colIndex++,
+	              "data": "groups",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  if(opt.groupsList != null){
+	            		  result = result + '<td data-title="Id"><div class="tbldata-dotdot" title="'+opt.groupsList+'">'+opt.groupsList+'</div></td>';
+	            	  }else{
+	            		  result = result + '<td data-title="Id"><div>----</div></td>';
+	            	  }
+	            	  
+		              return result;
+	              		
+	              }
+	          },{
+		    	  "targets": colIndex++,
 	              "data": "source",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
@@ -618,7 +647,7 @@ function contactsPagination(url,sourceleadUrl){
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": "", 
-	     		 "sProcessing": "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 	     }
     } );
     $("#example").wrap("<div class='modal-body-custom modalAlign mailerpopup' style='overflow-x: auto;'></div>"); 
@@ -806,66 +835,6 @@ function getContactEmails(){
 		});
 	});
 </script> 
-  <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			
-			
-			  //Adding Customized Emails to the list
-	        var select, chosen;
-		    select = $("#emailsList");
-		    select.chosen({ no_results_text: 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.bind(('keydown keyup'), function(e)
-		    { 
-		    	if(this.value === 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email') {
-		    		this.placeholder = this.value;
-		    		this.value = "";
-		    	} else {
-		    		this.placeholder = "";
-		    	}
-		    	
-		    	 var enterEmailArray = this.value.split(/[ ,]+/);
-		    	 if(enterEmailArray.length > 1){
-	        		 for (var i=0; i < enterEmailArray.length; i++) {
-	        			 var option = $("<option>").val(enterEmailArray[i].replace(",","")).text(enterEmailArray[i].replace(",",""));
-	        			 select.append(option);
-	 		             select.find(option).prop('selected', true);
-	 	        		 $("#emailsList").trigger("chosen:updated");
-	                 }
-		    	 }else{
-			    	var newEmail = this.value.replace(","," ");
-			    	
-			    	 
-			        if (tagItBykeyForEmails(e) && (newEmail != null  && newEmail != '' && newEmail != 'undefined'))
-			        {
-			        	preventTabkey(e); 
-			        	var par = this.parent;
-			        		 var option = $("<option>").val(newEmail.replace(",","")).text(newEmail.replace(",",""));
-			        		 select.append(option);
-					            select.find(option).prop('selected', true);
-				        		$("#emailsList").trigger("chosen:updated");
-				        		
-				        		
-			        }
-		    	 }
-		    });
-		    
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-});
-</script> 
-
 <script>
 function validateEmail(email){
 	var re = /(\w+)\@(\w+)\.[a-zA-Z]/g;
@@ -924,10 +893,27 @@ document.getElementById("attachfileBtn").onchange = function () {
 
 
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	bkLib.onDomLoaded(function() { nicEditors.allTextAreas() });
+</script> -->
+<script type="text/javascript">
+bkLib.onDomLoaded(function() {
+    nicEditors.editors.push(
+        new nicEditor().panelInstance(
+            document.getElementById('bodytext')
+        )
+    );
+});
 </script>
 
 
+<script>
+	$(".clearUpload").click(function(){
+		$("#attachfile-mail").val("");
+		$("#attachfileBtn").val("");
+	        $("#email_form input[data-id*=attachfileBtn]").remove();
+	        $(".clearUpload").hide();
+	});
+</script>
   
 <jsp:include page="masterFooter.jsp" />

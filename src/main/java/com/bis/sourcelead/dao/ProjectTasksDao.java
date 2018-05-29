@@ -27,6 +27,8 @@ public interface ProjectTasksDao {
     
     public List<ProjectTasks> getAllTasksByProjectIdAndTaskType(Long projectId,Long TaskType)throws Exception;
     
+    public ProjectTasks getProjectTasksByProjectIdAndProjectIdAndTaskName(Long projectId,String taskName)throws Exception;
+    
     public List<ProjectTasks> getAllTasksByProjectIdAndSubTaskType(Long projectId,Long subTaskType)throws Exception;
     
     public List<ProjectTasks> getAllTasksByProjectId(Long projectId)throws Exception;
@@ -47,11 +49,14 @@ public interface ProjectTasksDao {
     
     Integer getProjectTasksListCountByProjectIdAndStatus(Long projectId,String  status) throws Exception;
     
-    public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC)throws Exception;
+    public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId, Date startDateUTC, Date endDateUTC)throws Exception;
     
-    public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC)throws Exception;
+    public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId, Date startDateUTC, Date endDateUTC)throws Exception;
     
-	ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO,Long projectId,String taskType,String taskStatus,String userRole,String assignedMembers)throws Exception;
+	ResponseList<ProjectTasks> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO,Long projectId,String taskType,String taskStatus,String userRole,String assignedMembers)throws Exception;
 
+	public ProjectTasks getProjectTaskByleaveTypeId(long leaveTypeId, Long projectId);
+	
+	List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId)throws Exception;
     
 }

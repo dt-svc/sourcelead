@@ -27,6 +27,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.ClientVendorExport;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
@@ -34,12 +35,14 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 
 @Controller
+@RequestMapping("/app")
 public class ProjectsDashboardController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectsDashboardController.class);
@@ -66,6 +69,9 @@ public class ProjectsDashboardController {
 	 
 	 @Autowired
 	 private ProjectClientService projectClientService;
+	 
+	 @Autowired
+	 UserRoleService userRoleService;
 	 
 	 /**
 	 * This method for redirect projectDashboard
@@ -111,6 +117,8 @@ public class ProjectsDashboardController {
 					orgRelations.setClientName(orgRelations.getLocationId().getOrgLocationName());
 				}
 			}
+			
+			
         }
         model.addObject("add_client", orgClientList);
         model.addObject("clientListSize", orgClientList.size());
@@ -130,7 +138,10 @@ public class ProjectsDashboardController {
 			model.addObject("endDate",endDate);
 			model.addObject("status",status);
 		}
-
+        
+        List<User> projectManagersList = userRoleService.getAllProjectManagersAssignedToProjects(loginOrgLocations.getId());
+        model.addObject("projectManagersList", projectManagersList);
+        model.addObject("projectManagersListSize", projectManagersList.size());
         
        /* List<Long> projectIds = projectsService.getProjectIdsByOrgLocationsId(loginOrgLocations.getId());
         

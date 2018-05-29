@@ -32,6 +32,10 @@ public class CandidateEducationDTO extends CommonDTO {
 	
 	private String updatedBy;
 	
+	private String staticPath;
+	
+	private List<FileInfo> fileInfo;
+	
 	private String scoreType;
 	
 	private String score;
@@ -53,6 +57,12 @@ public class CandidateEducationDTO extends CommonDTO {
 	private LinkedHashSet<String> allAndCandidateEducations;
 	
 	private long candidateId;
+	
+	private long loginUserId;
+	
+	private long orgLocationId;
+	
+	private long candidateEducationId;
 	
 	public String getName() {
 		return name;
@@ -248,6 +258,52 @@ public class CandidateEducationDTO extends CommonDTO {
 	public void setCandidateId(long candidateId)
 	{
 		this.candidateId = candidateId;
+	}
+
+	public long getLoginUserId()
+	{
+		return loginUserId;
+	}
+
+	public void setLoginUserId(long loginUserId)
+	{
+		this.loginUserId = loginUserId;
+	}
+
+	public long getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(long orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+
+	public long getCandidateEducationId()
+	{
+		return candidateEducationId;
+	}
+
+	public void setCandidateEducationId(long candidateEducationId)
+	{
+		this.candidateEducationId = candidateEducationId;
+	}
+
+	public String getStaticPath() {
+		return staticPath;
+	}
+
+	public void setStaticPath(String staticPath) {
+		this.staticPath = staticPath;
+	}
+
+	public List<FileInfo> getFileInfo() {
+		return fileInfo;
+	}
+
+	public void setFileInfo(List<FileInfo> fileInfo) {
+		this.fileInfo = fileInfo;
 	}
 
 	

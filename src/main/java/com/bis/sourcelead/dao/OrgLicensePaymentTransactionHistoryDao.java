@@ -1,0 +1,8 @@
+package com.bis.sourcelead.dao;
+
+import com.bis.sourcelead.entity.OrgLicensePaymentTransactionHistory;
+
+public interface OrgLicensePaymentTransactionHistoryDao {
+
+	OrgLicensePaymentTransactionHistory saveOrgLicensePaymentTransactionHistory(OrgLicensePaymentTransactionHistory orgLicensePaymentTransactionHistory) throws Exception;
+}

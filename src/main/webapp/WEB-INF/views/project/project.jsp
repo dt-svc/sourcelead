@@ -6,12 +6,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
-<link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
-<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
-<script src="resources/js/editor.js?staticTime=${staticTime}"></script>
-<link href="resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+
+<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
+<script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
 
 <style>
@@ -115,12 +114,12 @@ function validateShortCode(){
 			<h2>Create Project</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
-			&raquo;<a href="<c:url value='/projectDashboard'/>"> Projects List</a>
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
+			&raquo;<a href="<c:url value='${appPath}/projectDashboard'/>"> Projects List</a>
 			&raquo; Create Project
 	</section>
 	<div class="content-area clearfix">
-		<div id="loading"></div>
+		<div id="projectDetailsloading"></div>
 		
 		<div class="newPrDetails newPrDetailsPMO"> 
       		<div class="newPrTabs">
@@ -135,6 +134,7 @@ function validateShortCode(){
 		<div class="project_tabs">
 		<div class="clearfix form-area form-horizontal toggle-div remove-div  newPrTabs_inn mt" id="tab-a">
 			<form:form id="project_form" name="project_form" method="post">
+			<input type="hidden" id="actionId" value="${actionId}">
 				<div class="row">
 					<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 
@@ -160,14 +160,13 @@ function validateShortCode(){
 							<div class="col-md-9">
 								<div class="row">
 									<div class="col-lg-6 positionRelative" id="StartDateDiv">
-										<input type="text" class="form-control" value="" id="startDate" name="startDate" field-name="Start Date" placeholder="Start Date" data-validation="required" readonly="readonly" > <span
-											class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>
+										<input type="text" class="form-control calendar" value="" id="startDate" name="startDate" field-name="Start Date" placeholder="Start Date" data-validation="required" readonly="readonly" > 
 									</div>
 									<div class="col-lg-6 positionRelative" id="endDateDiv">
-										<input type="text" class="form-control" value="" id="endDate"
-											name="endDate" field-name="End Date" placeholder="End Date" readonly="readonly">
-										<span class="input-group-addon input-groupAddon"><i
-											class="fa fa-calendar"></i></span>
+									<div class="input-group errorInptgroup">
+										<input type="text" class="form-control calendar" value="" id="endDate" name="endDate" field-name="End Date" placeholder="End Date" readonly="readonly">
+										 <span class="input-group-addon" onClick="clearProjectEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+									</div>
 									</div>
 									<span class="hidden">Enter Project Id</span>
 								</div>
@@ -187,7 +186,7 @@ function validateShortCode(){
 								</select> <span class="hidden">Select Status</span>
 							</div>
 						</div>
-						<div class="form-group">
+						<!--<div class="form-group">
 							<label class="col-md-3">Timesheet Frequency <span
 								class="text-danger">*</span></label>
 							<div class="col-md-9" id="chosen-frequency">
@@ -202,16 +201,32 @@ function validateShortCode(){
 									<option value="Monthly">Monthly</option>
 								</select>
 							</div>
+						</div> -->
+						
+						<div class="form-group">
+							<label class="col-md-3">Invoice Frequency <span
+								class="text-danger">*</span></label>
+							<div class="col-md-9" id="chosen-InvoiceFrequency">
+								<select class="form-control chosen-select" id="invoiceFrequency"
+									name="invoiceFrequency" onchange="removeInvoiceFrequencyValidation();"
+									field-name="Invoice Frequency" data-validation="required">
+									<option value="">-Invoice Frequency-</option>
+									<option value="Weekly">Weekly</option>
+									<option value="Bi-Weekly">Bi-Weekly</option>
+									<option value="Semi-Monthly">Semi-Monthly</option>
+									<option value="Monthly">Monthly</option>
+								</select>
+							</div>
 						</div>
 
-						<div class="form-group">
+						 <div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="checkBox">
 									<label> <input type="checkbox" value="Y" name="isAllowFreelanceDevelopers" id="isAllowFreelanceDevelopers" > Allow Freelance Developers </label>
 								</div>
 							</div>
-						</div>
+						</div> 
 
 						<div class="form-group">
 							<label class="col-md-3"></label>
@@ -232,19 +247,19 @@ function validateShortCode(){
 						</div>
 
 
-						<div class="form-group">
+						<div class="form-group" id="flatPercentageDivId">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
 								<div class="input-group">
 									<div class="input-group-btn selp-custom-min tblminwidth-125" id="flatPercentageId" >
-										<select class="form-control chosen-select"  name="flatPercentageId" id="flatPercentId">
+										<select class="form-control chosen-select"  name="flatPercentageId" id="flatPercentId" onchange="changeOverTime();">
 											<option value="flat">FLAT</option>
 											<option value="percentage">PERCENTAGE</option>
 										</select>
 									</div>
 									<input type="number" min="0" max="100" step="0.5" value="0"
 										id="flatPercentage" name="flatPercentage" maxlength="5"
-										class="form-control" data-validation-optional="true" onblur="">
+										class="form-control" data-validation-optional="true" onkeyup="flatPercentageType();" onblur="">
 								</div>
 							</div>
 						</div>
@@ -265,7 +280,7 @@ function validateShortCode(){
 							</label>
 							<div class="col-md-9">
 
-								<input type="text" class="form-control" name="projectName" id="projectName" placeholder="Project name" data-validation="required validate_Space validate_length length2-250"
+								<input type="text" class="form-control" name="projectName" id="projectName" placeholder="Project name" onblur="validateProjectName();" data-validation="required validate_Space validate_length length2-250"
 									field-name="Project Name" value=""> <span class="hidden">Project Name</span> <span class="hidden" >Enter Project Id</span>
 
 							</div>
@@ -302,25 +317,9 @@ function validateShortCode(){
 							</div>
 						</c:if>
 						
-						<div class="form-group">
-							<label class="col-md-3">Invoice Frequency <span
-								class="text-danger">*</span></label>
-							<div class="col-md-9" id="chosen-InvoiceFrequency">
-								<select class="form-control chosen-select" id="invoiceFrequency"
-									name="invoiceFrequency" onchange="removeInvoiceFrequencyValidation();"
-									field-name="Invoice Frequency" data-validation="required">
-									<option value="">-Invoice Frequency-</option>
-									<option value="Weekly">Weekly</option>
-									<option value="Bi-Weekly">Bi-Weekly</option>
-									<option value="Semi-Monthly">Semi-Monthly</option>
-									<option value="Monthly">Monthly</option>
-								</select>
-							</div>
-						</div>
-
 						<div class="form-group" id="shortCodeDivId">
 							<label class="col-md-3"> Project Short Code <span
-								class="text-danger">*</span>
+								class="text-danger">* </span><i class='fa fa-info-circle' title='The internal unique code for the project'></i>
 							</label>
 							<div class="col-md-9">
 								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation="required validate_length length3-3"
@@ -328,6 +327,7 @@ function validateShortCode(){
 
 							</div>
 						</div>
+						
 						<div class="form-group">
 							<label class="col-md-3"></label>
 							<div class="col-md-9">
@@ -363,13 +363,19 @@ function validateShortCode(){
 								</div>
 							</div>
 						</div>
-					</div>
-
-
-
-
-
+					</div>	
+						<div class="clearfix mb myForm">
+						<div class="clearfix"></div>
+			            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+			               <c:if test="${sectionOrder.index == 0}">
+			                  <div id="customDiv${section.id}"></div>
+			               </c:if>
+			            </c:forEach>
+						</div>
+						
+					
 				</div>
+				
 				<!--  div row end -->
 <!-- dont remove the code because next implement code Laxman -->
 				<!--  div row start -->
@@ -391,8 +397,8 @@ function validateShortCode(){
 						<div class="form-group" id="EstimatedHoursDiv">
 							<label class="col-md-3">Estimated hours</label>
 							<div class="col-md-9">
-								<input type="text" value="" id="estimatedHours"  name="estimatedHours" class="form-control"
-									data-validation-optional="true" class="form-control" onblur="">
+								<input type="text" value="" id="estimatedHours"  class="form-control" data-validation-optional="true"
+									data-validation="validate_Space validate_float validate_length length1-15" class="form-control" onblur="">
 							</div>
 						</div>
 
@@ -404,7 +410,7 @@ function validateShortCode(){
 								      <input type="text" class="pull-left btn btn-primary btn-block" value="%" readonly>
 					                </div>
 									<input type="text" value="" id="notifyBudgetAt" name="notifyBudgetAt" class="form-control"
-										data-validation="validate_Space validate_length length2-50" data-validation-optional="true" class="form-control" >
+										data-validation="validate_Space validate_length length1-50" data-validation-optional="true" class="form-control" onkeyup="recSelectType();" >
 								</div>
 							</div>
 						</div>
@@ -428,14 +434,14 @@ function validateShortCode(){
 					                  
 					                </select>
 					                </div>
-									<input type="text" value="" id="estimatedBudget" name="estimatedBudget" class="form-control"
-										data-validation="validate_Space validate_length length1-50" data-validation-optional="true" class="form-control" >
+									<input type="text" value="" id="estimatedBudget"  class="form-control"
+										data-validation="validate_Space validate_float validate_length length1-15" data-validation-optional="true" class="form-control" >
 								</div>
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label class="col-md-3">Budget Approver</label>
+							<label class="col-md-3">Budget Approver <i class='fa fa-info-circle' title='The person who approves the budget for the project'></i></label>
 							<div class="col-md-9" id="chosen-budgetapprover">
 								<select class="form-control" id="budgetApprover" name="budgetApproverUser" onchange="" field-name="Budget Approver" onchange="getBudgetApprover();">
 								<option value="">-- Select Budget Approver --</option>
@@ -461,7 +467,7 @@ function validateShortCode(){
 					<!--  Documents Section -->
 					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 						<div class="row mt mb10">
-						<h5 class="col-md-1 paddingRight">Documents</h5>
+						<h5 class="col-md-1 paddingRight">Documents <i class='fa fa-info-circle' title='The project documents'></i></h5>
 						<div class="col-md-10 paddingLeft">
 						<input id="Button1" type="button" value="Add Document" onclick="addFileUpload()" class="btn btn-sm btn-primary" />
 						</div>
@@ -477,6 +483,11 @@ function validateShortCode(){
 						<span><input type="checkbox" id="isMailToProjectManager" name="isMailToProjectManager">&nbsp;Mail to manager</span>
 					</div> -->
 					
+		            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		               <c:if test="${sectionOrder.index == 1}">
+		                  <div id="customDiv${section.id}"></div>
+		               </c:if>
+		            </c:forEach>
 
 				</div>
 
@@ -486,7 +497,7 @@ function validateShortCode(){
 				<div class="form-footer clearfix mt">
 					<div class="col-lg-12">
 						<div class="pull-right">
-							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/projectDashboard'/>'" class="btn btn-danger ml">
+							<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/projectDashboard'/>'" class="btn btn-danger ml">
 							<input type="button" value="Save & Continue" id="save_project" onclick="saveProject();flushSaveProject()" class="btn btn-primary">
 						</div>
 					</div>
@@ -510,6 +521,7 @@ function removeFrequencyValidation(){
 }
 
 function allowOverTime(){
+	
 	if ($('#isAllowOverTime').is(":checked"))
 	{
 		$('#flatPercentageId').attr('style','visibility:visible');
@@ -517,6 +529,11 @@ function allowOverTime(){
 	}else{
 		$('#flatPercentageId').attr('style','visibility:hidden');
 		$('#flatPercentage').attr('style','visibility:hidden');
+		
+		$('#flatPercentage').val('');
+		$('#flatPercentageDivId').parent().find('p.jquery_form_error_message').remove(); 
+		$("#save_project").removeAttr("disabled");
+		
 	}
 	
 }
@@ -639,7 +656,7 @@ function getStatus(){
 			dateFormat : 'yyyy/mm/dd'
 		};
 		
-		var ee = $("#txtEditor").val($('.Editor-editor').text()); 
+		var ee = $("#txtEditor").val($('.Editor-editor').html()); 
 
 		if ($('#project_form').validate(false, validationSettings)) {
 // 		   var frm = $('#project_form').serializeFormJSON();
@@ -652,38 +669,46 @@ function getStatus(){
 		    var estimatedHours = document.getElementById("estimatedHours").value;
 		    
 		    
-		    if(formData.get("estimatedBudget") === "") {
-		    	formData.set("estimatedBudget","0");
-		    }
-		    if(formData.get("estimatedHours") === "") {
-		    	formData.set("estimatedHours","0");
-		    }
+// 		    if(formData.get("estimatedBudget") === "") {
+// 		    	formData.set("estimatedBudget","0");
+// 		    }
+// 		    if(formData.get("estimatedHours") === "") {
+// 		    	formData.set("estimatedHours","0");
+// 		    }
 		    
-		   /*  if(estimatedBudget === "") {
-		    	formData["estimatedBudget"] = "0";
-		    }
-		    if(estimatedHours === "") {
-		    	formData["estimatedHours"] = "0";
-		    } */
+		    	formData.append("estimatedBudget", estimatedBudget === "" ? "0" : estimatedBudget);
+		    	formData.append("estimatedHours", estimatedHours === "" ? "0" : estimatedHours);
 		    
-     		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     		$("#projectDetailsloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 						type : "POST",
 						data: formData,
 		  		        processData: false,
 		  		        contentType:false, 
 						url : sourceleadUrl+ "/storeProject?${_csrf.parameterName}=${_csrf.token}",
-						success : function(projects) {
-								 $("#projectId").val(projects.id);
-								 $("#projectUUID").val(projects.projectUUID);
-								 $("#startDateStr").val(projects.startDateStr);
-								 $("#endDateStr").val(projects.endDateStr);
-								 
-								 $("#loading").removeAttr("style");
-								 var assignedMembers = document.getElementById("assignedMembers");
-								 document.getElementById("assignedMembers").removeAttribute("class");
-								 assignedMembers.href="#tab-b"; 
-								 assignedMembers.click();
+						success : function(result) {
+								if (result && result.response === "INVALID_DATA") {
+	  								$("#projectDetailsloading").removeAttr("style");
+	  			                    showError(result.responseMessage);
+	  			                } else if (result.response === "AWKWARD") {
+	  			                    location.href = "/errorPage";
+	  			                } else if (result.response === "SUCCESS") {
+	  			                	var projects = result.object;
+	  			                	 $("#projectId").val(projects.id);
+									 $("#projectUUID").val(projects.projectUUID);
+									 $("#startDateStr").val(projects.startDateStr);
+									 $("#endDateStr").val(projects.endDateStr);
+									 
+									 $("#projectDetailsloading").removeAttr("style");
+									 var assignedMembers = document.getElementById("assignedMembers");
+									 document.getElementById("assignedMembers").removeAttribute("class");
+									 assignedMembers.href="#tab-b"; 
+									 $("#assignedMembers").click();
+	  			                } else if (result.indexOf('Sign In') !== -1) {
+	  								location.replace(sourceleadUrl);
+	  							} else {
+	  			                    showError("Operation failed, please try again");
+	  			                }
 
 						},
 					});
@@ -710,7 +735,7 @@ function getProjectDetails(){
 	if(projectId){
 		$("#FileUploadContainer").empty();
 		
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#projectDetailsloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		var sourceleadUrl ='${sourceleadUrl}';
         $.ajax({
 	    	type: "POST",
@@ -722,7 +747,7 @@ function getProjectDetails(){
 	        	
 	        	if(json.projectSequeneNumber != null && json.projectSequeneNumber != 'undefined'){
 	        		 $("input[name=projectSequeneNumber]").val(json.projectSequeneNumber);
-	        		 $("input[name=projectSequeneNumber]").attr("readonly","readonly");
+// 	        		 $("input[name=projectSequeneNumber]").attr("readonly","readonly");
 	        		 $('#projectSequeneNumber').removeAttr('onblur');
 	        	}
 	        	
@@ -750,7 +775,7 @@ function getProjectDetails(){
 	           
         	   $("select[name=status]").val(projectStatus);
         	   
-        	   $('#timeSheetFrequency').val(json.timesheetFrequency).trigger('chosen:updated');
+        	 //  $('#timeSheetFrequency').val(json.timesheetFrequency).trigger('chosen:updated');
         	   $('#invoiceFrequency').val(json.invoiceFrequency).trigger('chosen:updated');
         	   
         	   if(json.allowFreeLance == 1){
@@ -845,7 +870,7 @@ function getProjectDetails(){
       			   }
       			 
       			   
-      			   $("#loading").removeAttr("style");
+      			   $("#projectDetailsloading").removeAttr("style");
 		        
 	        },
 	    });  
@@ -1179,8 +1204,142 @@ function getBudgetApprover(approverUserId){
 
 <script>
 	$(document).ready(function() {
-		$("#txtEditor").Editor().trim();
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentField(sectionId);
+		 </c:forEach>
+	});
+</script>
+
+
+<script>
+	$(document).ready(function() {
+		$("#txtEditor").Editor();
 		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
 		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 	});
- </script>
+</script>
+ 
+<script>
+function getCustomDependentField(sectionId){
+	$.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
+
+<script>
+function validateProjectName(){
+	var projectUUID = document.getElementById("projectUUID").value;
+	var projectName = document.getElementById("projectName").value;
+	
+	$.ajax({
+		type : "GET",
+		url : sourceleadUrl+ "/validateOrgLocationProjectName?${_csrf.parameterName}=${_csrf.token}&projectUUID="+projectUUID+"&projectName="+projectName,
+		success : function(data) {
+			if (data == true) {
+				$("input#projectName").after("<p class='jquery_form_error_message'>"+ projectName+ " is Already Existed</span>");
+				document.getElementById("projectName").setAttribute('record-exist', 'yes');
+				document.getElementById("projectName").setAttribute('record-exist-errorMsg',projectName+ ' is Already Existed');
+				$('input#projectName').removeAttr( "record-exist record-exist-errorMsg");
+				$("#save_project").attr("disabled", "disabled");
+			} else {
+				$('input#projectName').removeAttr("record-exist record-exist-errormsg");
+				$("#save_project").removeAttr("disabled");
+			}
+		},
+	});
+}
+</script>
+ 
+ 
+ 
+ <script type="text/javascript">
+function recSelectType(){
+	 var canScore = document.getElementById("notifyBudgetAt").value;
+	 $('#EstimatedBudgetDiv').parent().find('p.jquery_form_error_message').remove(); 
+		  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		  if(canScore.match(floatNum)){
+			  $("#save_project").removeAttr("disabled");
+			   return true;
+		  }		  
+		 else{
+				$("input#notifyBudgetAt").parent().after("<p class='jquery_form_error_message'><span>Enter your Valid Percentage</span>");
+				 $("#save_project").attr("disabled", "disabled");
+				return false; 
+		 	 }
+
+	 
+	
+		 }
+	  
+</script>
+
+ <script type="text/javascript">
+function flatPercentageType(){
+	var flatPercentId  = $("#flatPercentId").val();
+	 var flatPercentage = document.getElementById("flatPercentage").value;
+	 $('#flatPercentageDivId').parent().find('p.jquery_form_error_message').remove();
+	 var floatNum = "";
+	 
+	 if(flatPercentage != '' && flatPercentage != 'undefined' && flatPercentage != null){
+		 if(flatPercentId == 'flat'){
+			  var floatNum = /^(\d{0,10}(\.\d{0,10})?|100)$/
+		 }else{
+			  var floatNum = /^(\d{0,2}(\.\d{0,2})?|100)$/
+		 }
+		  if(flatPercentage.match(floatNum)){
+			  $("#save_project").removeAttr("disabled");
+			   return true;
+		  }		  
+		 else{
+			 if(flatPercentId == 'flat'){
+					$("input#flatPercentage").parent().after("<p class='jquery_form_error_message'><span>Enter  valid flat value length 1 to 10</span>");
+			 }else{
+					$("input#flatPercentage").parent().after("<p class='jquery_form_error_message'><span>Enter  valid percentage</span>");
+			 }
+				 $("#save_project").attr("disabled", "disabled");
+				return false; 
+		 	 }
+		 
+	    }else{
+			$("input#flatPercentage").parent().after("<p class='jquery_form_error_message'><span>Enter value</span>");
+			$("#save_project").attr("disabled", "disabled");
+	    }
+}
+function changeOverTime(){
+	 $('#flatPercentageDivId').parent().find('p.jquery_form_error_message').remove();
+	 $("#flatPercentage").val(0);
+
+}
+	  
+</script>
+
+<!-- <script type="text/javascript">
+    $(function () {
+        $("#endDate").bind("click", function () {
+            $("#status")[0].selectedIndex = 0;
+        });
+    });
+</script> -->
+
+  <script>
+ /* function clearStartDate(){
+	$("#startDate").val("");
+	}; */ 
+function clearProjectEndDate(){
+		 $("#endDate").val("");
+		 $("#status").empty();
+		 $('#status').append('<option >Select Status</option>');
+		 $('#status').append('<option >In-Progress</option>');
+		 $('#status').append('<option >Not Started</option>');
+		 $('#status').append('<option >Completed</option>');
+		 $('#status').append('<option >On-Hold</option>');
+		 $('#status').append('<option >Dropped</option>');
+	}
+</script> 

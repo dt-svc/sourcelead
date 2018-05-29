@@ -3,7 +3,8 @@
 package com.bis.sourcelead.dto;
 
 import java.util.List;
-import java.util.Map;
+
+import com.bis.sourcelead.annotations.CleanHtml;
 
 public class CandidateDocumentsDTO {
 
@@ -19,6 +20,7 @@ public class CandidateDocumentsDTO {
 	
 	private String documentOtherType;
 	
+	@CleanHtml(escape=false)
 	private String description;
 	
 	private String isConfidential;
@@ -53,13 +55,19 @@ public class CandidateDocumentsDTO {
 	
 	private String userIdStr;
 	
-	private long requestDocumentId;
+	private String requestDocumentId;
 	
-	private String requestDocStatus;
+	private String requestedDocStatus;
 	
 	private String docUploadStatus;
 	
 	private String requestedDocRejectedReason;
+	
+	private long loginUserId;
+	
+	private long orgLocationId;
+	
+	private String documentId;
 	
 	public String getCandidateId()
 	{
@@ -277,24 +285,23 @@ public class CandidateDocumentsDTO {
 		this.userIdStr = userIdStr;
 	}
 
-	public long getRequestDocumentId()
-	{
+	
+
+	
+	public String getRequestDocumentId() {
 		return requestDocumentId;
 	}
 
-	public void setRequestDocumentId(long requestDocumentId)
-	{
+	public void setRequestDocumentId(String requestDocumentId) {
 		this.requestDocumentId = requestDocumentId;
 	}
 
-	public String getRequestDocStatus()
-	{
-		return requestDocStatus;
+	public String getRequestedDocStatus() {
+		return requestedDocStatus;
 	}
 
-	public void setRequestDocStatus(String requestDocStatus)
-	{
-		this.requestDocStatus = requestDocStatus;
+	public void setRequestedDocStatus(String requestedDocStatus) {
+		this.requestedDocStatus = requestedDocStatus;
 	}
 
 	public String getDocUploadStatus()
@@ -316,5 +323,37 @@ public class CandidateDocumentsDTO {
 	{
 		this.requestedDocRejectedReason = requestedDocRejectedReason;
 	}
+
+	public long getLoginUserId()
+	{
+		return loginUserId;
+	}
+
+	public void setLoginUserId(long loginUserId)
+	{
+		this.loginUserId = loginUserId;
+	}
+
+	public long getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(long orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getDocumentId()
+	{
+		return documentId;
+	}
+
+	public void setDocumentId(String documentId)
+	{
+		this.documentId = documentId;
+	}
+	
+	
 	
 }

@@ -7,7 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,24 +33,34 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.AmexUploadFile;
+import com.bis.sourcelead.entity.Asset;
+import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.BoPaymentTypes;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Shift;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.AmexFileUploadService;
 import com.bis.sourcelead.service.AssetCategoryService;
-import com.bis.sourcelead.service.BoComericaTransService;
+import com.bis.sourcelead.service.AssetCustomFieldService;
+import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.BoPaymentTypesService;
 import com.bis.sourcelead.service.BoUploadedFilesService;
 import com.bis.sourcelead.service.ChaseUploadFileService;
 import com.bis.sourcelead.service.ComericaFileUploadService;
-
 import com.bis.sourcelead.service.EmployeesService;
-import com.bis.sourcelead.service.UploadFileService;
-
+import com.bis.sourcelead.service.ShiftService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.validation.FileValidator;
@@ -56,6 +70,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
+@RequestMapping("/app")
 public class BackOfficeController {
 	
 private static final Logger logger = LoggerFactory.getLogger(BackOfficeController.class);
@@ -64,28 +79,49 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	private String sourceleadUrl;
 	
 	@Autowired
-	FileValidator fileValidator;
+	private FileValidator fileValidator;
 
 	@Autowired
-	AmexFileUploadService amexFileUploadService;
+	private AmexFileUploadService amexFileUploadService;
 	
 	@Autowired
-	BoUploadedFilesService boUploadedFilesService;
+	private BoUploadedFilesService boUploadedFilesService;
 	
 	@Autowired
-	ComericaFileUploadService comericaFileUploadService;
+	private ComericaFileUploadService comericaFileUploadService;
 	
 	@Autowired
-	ChaseUploadFileService chaseUploadFileService;
+	private ChaseUploadFileService chaseUploadFileService;
 	
 	@Autowired
-	BoPaymentTypesService boPaymentTypesService;
+	private BoPaymentTypesService boPaymentTypesService;
 	
 	@Autowired
-	EmployeesService employeesService;
+	private EmployeesService employeesService;
 	
 	@Autowired
-	AssetCategoryService assetCategoryService;
+	private AssetCategoryService assetCategoryService;
+	
+	@Autowired
+	private AssetService assetService;
+	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
+	@Autowired
+	private UserRoleService userRoleService;
+	
+	@Autowired
+	private ShiftService shiftService;
+	
+	@Autowired
+	private SourceleadFormSectionsService sourceleadFormSectionsService;
+	
+	@Autowired
+	private AssetCustomFieldService assetCustomFieldService;
 	
 	@RequestMapping(value = "/finance")
 	public ModelAndView finance(HttpServletRequest request) throws Exception {
@@ -211,6 +247,18 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
 		model.addObject("employeesList", employeesList);
 		
+		List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(orgLocations.getId());
+		model.addObject("userRoleList", userRoleList);
+		
+		List<Shift> siftList = shiftService.getShiftList(orgLocations.getId());
+		model.addObject("siftList", siftList);
+		
+	     SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_ASSET);
+	     model.addObject("actionId",action.getId());
+	     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+	     model.addObject("sourceleadSectionList",sections); 
+	     
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -224,6 +272,41 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 		
 	}
 	
+	
+	@RequestMapping(value = "/assetManagementSummary")
+	public ModelAndView assetManagementSummary(@RequestParam(value="assetId", required=false) Long assetId,HttpServletRequest request) throws Exception {
+	
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		ModelAndView model = new ModelAndView();
+		model.setViewName("backOffice/assetManagementSummary");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		List<AssetCategory> assetCategoriesList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
+		model.addObject("assetCategoriesList", assetCategoriesList);
+		
+		List<Employees> employeesList = employeesService.getEmployeesByLocationId(orgLocations.getId());
+		model.addObject("employeesList", employeesList);
+		
+		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+		if(sessionData == null)
+		{
+			sessionData = new SessionMaintainanceData();
+		}
+		sessionData.setNav(Constants.AssetManagement);
+		
+		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_ASSET);
+	     model.addObject("actionId",action.getId());
+	     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+	     model.addObject("sourceleadSectionList",sections);
+		
+		request.getSession().setAttribute("sessionData",sessionData);
+		Asset asset = assetService.getAssetById(assetId);
+		model.addObject("asset",asset);
+		
+		return model;
+		
+	}
 	
 	  @RequestMapping(value = "/getAssetCategories")
 	    public String getAssetCategories(HttpServletRequest request) throws Exception {
@@ -296,6 +379,70 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 			response.getOutputStream().flush();	
 	}
 	
+	@RequestMapping(value = "/addAndEditAssetAssign", method = RequestMethod.POST)
+	public ModelAndView addAndEditAssetAssign(@RequestParam(value="assetId", required=false) Long assetId,HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_ASSET);
+	     model.addObject("actionId",action.getId());
+	     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+	     model.addObject("sourceleadSectionList",sections); 
+		if(assetId != null) {
+			Asset asset = assetService.getAssetById(assetId);
+			model.addObject("assetAssignData",asset);
+			
+			String issueDateStr = commonUtil.dateStrFromOrgDateFormatter(asset.getOrgLocations().getDateFormat(),asset.getIssueDate());
+			model.addObject("issueDateStr",issueDateStr);
+			
+			List<AssetAssign> assignAssetList = assetService.getAssignAssetListByAssetId(assetId);
+			model.addObject("assignAssetList",assignAssetList);
+			
+			
+			 action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_ASSET);
+			 sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+			 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+			 if(sections != null && !sections.isEmpty()) {
+				 for(SourceleadSectionDTO sec:sections) {
+					 for(OrglocationFormFieldsDTO customFields:sec.getCustomFieldsList()) {
+						 CustomFormFieldDTO custom = new CustomFormFieldDTO();
+						 custom.setCustomFormFieldId(customFields.getId());
+						 formFieldId.add(custom);
+					 }
+				 }
+				 if(formFieldId != null && !formFieldId.isEmpty() && assetId != null) {
+				 Map<Long, String[]> assetData = assetCustomFieldService.getAssetCustomFieldDataByAssetId(orgLocations.getOrg().getId(),formFieldId,assetId);
+				 Map<Long,String> dataMap = new HashMap<>();
+				 if(assetData!= null && !assetData.isEmpty()) {
+					 for(Entry<Long, String[]> assetCustomData:assetData.entrySet()) {
+						String labelName = assetCustomData.getValue()[0];
+						 String labelData = assetCustomData.getValue()[1];
+						 Long id = assetCustomData.getKey();
+						 StringBuilder keyValue =  new StringBuilder();
+						 keyValue.append(labelName).append("$").append(labelData);
+						 dataMap.put(id, keyValue.toString());
+						 model.addObject("AssetCustomFieldlabelNameAndValue",dataMap);
+					 	}
+				 	}
+				 }
+			 }
+			
+			
+			
+		}
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		
+		List<AssetCategory> assetCategoriesList = assetCategoryService.getAssetCategoryListByLocationId(orgLocations.getId());
+		model.addObject("assetCategoriesList", assetCategoriesList);
+		
+		List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(orgLocations.getId());
+		model.addObject("userRoleList", userRoleList);
+		
+		List<Shift> siftList = shiftService.getShiftList(orgLocations.getId());
+		model.addObject("siftList", siftList);
+		
+		model.setViewName("backOffice/addAssetPopup");
+		return model;
+	}
 	
 	private String toJSON(Object obj){
         XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

@@ -15,7 +15,7 @@
       <div class="pull-left">
         <h2>Shift</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configuration</a> &raquo; Shift</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; Shift</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -25,7 +25,7 @@
     <div class="timesheet_head">
       <ul>
           <li>
-               <a href="<c:url value='/addShift'/>" title="Add Shift">
+               <a href="<c:url value='${appPath}/addShift'/>" title="Add Shift">
                 <i class="fa fa-plus paddingRight"></i>Add Shift
               </a>
           </li>
@@ -57,7 +57,12 @@ function getShiftList(){
         
    }); 
 }
-function populategShiftList(json){
+function populategShiftList(response){
+	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+	    showError(response.responseMessage);
+  	} else if (response.response === "AWKWARD") {
+	    location.href = "/errorPage";
+	} else if (response.response === "SUCCESS") {
        var result = '';
        result = result +' <table width="100%" width="100%" cellpadding="0" cellspacing="0" id="shiftTableId">';
    result = result +' <thead>';
@@ -72,8 +77,8 @@ function populategShiftList(json){
    result = result +' </tr>';
    result = result +' </thead>';
    result = result +' <tbody>';
-   for (var i=0; i<json.data.length; i++){
-           var report = json.data[i];
+   for (var i=0; i<response.data.length; i++){
+           var report = response.data[i];
            result = result +'  <tr>';                                                                                                                  
            result = result +'  <td>';                                                                                                                  
            result = result +'    <div class="tbldata-dotdot-150">';                                                                          
@@ -107,8 +112,8 @@ function populategShiftList(json){
            result = result +'  <td>';
            result = result +'     <div class="tblminwidth-50">'    
            if(report.status == 1){
-           result = result +'          <span title="Edit" class="paddingRight" onclick="editShift(\''+report.id+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></span>';       
-           result = result +'          <span title="Delete" class="paddingLeft"><i onclick= "deleteShift(\''+report.id+'\');" class="fa fa-trash text-danger cursorPointer"></i></span>';         
+           result = result +'          <span title="Edit" class="paddingRight" onclick="editShift(\''+report.shiftUUID+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></span>';       
+           result = result +'          <span title="Delete" class="paddingLeft"><i onclick= "deleteShift(\''+report.shiftUUID+'\');" class="fa fa-trash text-danger cursorPointer"></i></span>';         
            }else{
         	   result = result +'          <span class="paddingRight" >NA</span>'; 
            }
@@ -122,6 +127,11 @@ function populategShiftList(json){
    $("#shiftDev").empty();
    $("#shiftDev").append(result);
     shiftPagination();
+	} else if (response.indexOf('Sign In') !== -1) {
+		location.replace(sourceleadUrl);
+	} else {
+	    showError("Operation failed, please try again");
+	}
 }
 </script>
 
@@ -147,7 +157,7 @@ function shiftPagination(){
 
 <script type="text/javascript">
 function editShift(shiftId) {
-	window.location.href = sourceleadUrl + "/editleaveshift?&shiftId="+shiftId;
+	window.location.href = sourceleadUrl + "/editleaveshift?shiftUUID="+shiftId;
 }
 </script>
 
@@ -156,7 +166,7 @@ function deleteShift(shiftId){
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
       $.ajax({
       type : "GET",
-       url: sourceleadUrl+"/deleteShift?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&shiftId="+shiftId,       
+       url: sourceleadUrl+"/deleteShift?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&shiftUUID="+shiftId,       
        success :function(data) {
     	   location.replace(sourceleadUrl+ "/viewShift");
       }

@@ -1,3 +1,3 @@
 
 
-CALL sourcelead.AlterTableAddColumn ('sourcelead','EMPLOYEE','DEPARTMENT_ID','BIGINT(20) NULL  AFTER `SPOC_ID`');
+CALL AlterTableAddColumn ('EMPLOYEE','DEPARTMENT_ID','BIGINT(20) NULL  AFTER `SPOC_ID`');

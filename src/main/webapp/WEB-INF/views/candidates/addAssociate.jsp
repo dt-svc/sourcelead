@@ -2,9 +2,10 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 	
-	<link href="resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 	
 	<script type="text/javascript">
 		window.onload = function () {
@@ -15,6 +16,7 @@
 	 
 	 <script>
 		$(document).ready(function() {
+			$(".clearUpload").hide();
 			document.getElementById("addcandidate_form").reset();
 		});
 	</script>
@@ -26,7 +28,7 @@
     <div class="pull-left">
       <h2>Add Associate</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Add Associate</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/associatesList'/>"> Associate List</a> &raquo; Add Associate</div>
   </section>
   <div class="content-area content-new clearfix">
   <div id="loading"></div> 
@@ -224,23 +226,37 @@
 							<div class="form-group">
 								<label class="col-md-3"><span class="pull-left">Vendor</span><span
 									class="text-danger pull-left" id="man1">*</span></label>
-								<div class="col-md-9" id="errorvendor">
+								<div class="col-md-9 chooRadius" id="errorvendor">
+								<div class="input-group col-md-10 pull-left">
 									<select class="chosen-select form-control" name="vendors"
 										id="vendors" placeholder="Select Vendor" field-name="Vendor"
 										onchange="getVendorContactList();removeValiationVendor();">
 									</select>
+									<span class="input-group-addon cursorPointer bg-blue" onclick="getVendorsByOrgLocation();addassociateEmptyVendorContact();"><i class="fa fa-refresh "></i></span>
 								</div>
+								<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+		                     	<a href="<c:url value="/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			                     </sec:authorize>
+			                   </div>	
 							</div>
 
 							<div class="form-group">
 								<label class="col-md-3"><span class="pull-left">Vendor
 										Contact</span><span class="text-danger pull-left" id="man2">*</span></label>
-								<div class="col-md-9" id="errorvendorContact">
+								<div class="col-md-9 chooRadius" id="errorvendorContact">
+								<div class="input-group col-md-10 pull-left">
 									<select class="chosen-select form-control" name="vendorcontact"
 										id="vendorcontact" field-name="Vendor Contact"
 										placeholder="Select Vendor Contact"
 										onchange="removeValiationVendorContact();">
 									</select>
+									<span class="input-group-addon cursorPointer bg-blue" onclick="getVendorContactList();"><i class="fa fa-refresh "></i></span>
+								</div>
+								<span class="col-md-2 noPad clearfix" onclick="selectedVendor();">
+			                       <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')"> 
+			                          <a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+			                       </sec:authorize>
+		                         </span>
 								</div>
 							</div>
 						</div>
@@ -361,14 +377,16 @@
 
 						<div class="form-group">
 							<label class="col-md-3">Attach Resume</label>
-							<div class="col-md-9">
+							<div class="col-md-9 positionRelative">
 								<div class="input-group col-md-12" id="uploadFileGroup"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> 
 									<span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File <input type="file" style="display: none;" id="uploadBtn" class="upload"> </span>
 									</label> 
+									
 									<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ..." field-name="Upload Resume"
 										data-validation="validatedoc " data-validation-optional="true">
+										<div class="clearUpload"></div>
 								</div>
 							</div>
 						</div>
@@ -457,7 +475,7 @@
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary"> 
-						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='/associatesList'/>'" class="btn btn-default ml">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/associatesList'/>'" class="btn btn-default ml">
 					</div>
 				</div>
 			</div>
@@ -578,157 +596,38 @@ function validate_fileupload(fileName)
 }
 </script>
 
-
 <!-- Eductions and Skills Autocomplete Scripts Starts Here -->
+<script>
+  $(function() { 
+	  tagIt("candidateSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+		tagIt("candidateEducation", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education');;
+
+	});
+  </script>
+
 <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			
-		   $("#country").chosen();
-	       $("#state").chosen();
-	       $("#city").chosen();
-	       
-	       
-	       
-	        //Adding Customized Skills to the list
-	        var select, chosen;
-		    select = $("#candidateSkills");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    chosen = select.data('chosen');
-		    
-		    $("#candidateSkills").chosen().change(function(event) {
-		    	 var sourceleadUrl ='${sourceleadUrl}';
-		    	var allSkills = $(event.target).val();
-		   
-		    	
-		    	$.ajax({
-			    	type: "POST",
-			        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
-			        success: function(data) {
-			        	var primarySkill = data;
-			        	      $("#primarySkill").val(primarySkill);
-			        	
-			        },
-			    });
-		    	
-		    });
-		    
-		    chosen.search_field.on('keydown keyup', function(e)
-				    {
-				    	   var skillsArray = this.value.split(",");
-					    	 if(skillsArray.length > 1){
-				        		 for (var i=0; i < skillsArray.length; i++) {
-				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-				        			 select.append(option);
-				 		             select.find(option).prop('selected', true);
-				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-				 	        		 $("#candidateSkills").trigger("chosen:updated");
-				                 }
-					    	 }else{
-					    		var focussedSkills = $("ul.chosen-results").find("li.active-result.highlighted");
-				    			var newSkill = this.value.replace(","," ");
-				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-				                 {
-				    				 preventTabkey(e);
-				                   // below code manually enter skills are taken
-				    				  
-				                   var isNewSkill = true;
-									 $("#candidateSkills option:selected").each(function(){
-										 if(this.value.toUpperCase() === newSkill.toUpperCase() && this.value.toLowerCase() === newSkill.toLowerCase()){
-											 isNewSkill = false;
-											 return false;
-										 }
-				                    
-				                   });
-									
-										if(focussedSkills.length > 0){
-											var skillOption  = $("<option>").val(focussedSkills.first().text()).text(focussedSkills.first().text());
-											select.append(skillOption);
-											select.find(skillOption).prop('selected',true);
-											select.find(skillOption).siblings("[value='"+ focussedSkills.first().text()+"']").remove();
-											$("#candidateSkills").trigger("chosen:updated");
-									   }
-									   else{
-										   if(isNewSkill){
-											var option = $("<option>").val(newSkill).text(newSkill);
-											select.append(option);
-											select.find(option).prop('selected', true);
-										   }
-									   }
-									
-					               $("#candidateSkills").trigger("chosen:updated"); 
-				                   
-				                }
-						       
-			    	         }
-		    	});
-		    
-		    //Adding Customized Educations to the list
-	        var selectone, chosenone;
-	        selectone = $("#candidateEducation");
-	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
-	        chosenone = selectone.data('chosen');
-	        chosenone.search_field.on('keydown keyup', function(e1)
-	    		    {
-	    	        	var focussedEducations = $("ul.chosen-results").find("li.active-result.highlighted");
-	    		    	var newEducation = this.value.replace(",","");
-	    		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-	    		        {
-	    		        	preventTabkey(e1);
-	    		        	var isNewEducation = true;
-	    					 $("#candidateEducation option:selected").each(function(){
-	    						 if(this.value.toUpperCase() === newEducation.toUpperCase() && this.value.toLowerCase() === newEducation.toLowerCase()){
-	    							 isNewEducation = false;
-	    							 return false;
-	    						 }
-	                       
-	                      });
-	    					 
-	    					 
-	    							if(focussedEducations.length > 0){
-	    								var educationOption  = $("<option>").val(focussedEducations.first().text()).text(focussedEducations.first().text());
-	    								selectone.append(educationOption);
-	    								selectone.find(educationOption).prop('selected',true);
-	    								selectone.find(educationOption).siblings("[value='"+ focussedEducations.first().text()+"']").remove();
-	    								$("#candidateEducation").trigger("chosen:updated");
-	    						   }
-	    						   else{
-	    							   if(isNewEducation){
-	    								var option = $("<option>").val(newEducation).text(newEducation);
-	    								selectone.append(option);
-	    								selectone.find(option).prop('selected', true);
-	    							   }
-	    						   }
-	    						
-	    					 
-	    					 
-	    		        	
-	                        //end
-	    	        		$("#candidateEducation").trigger("chosen:updated");
-	    	        		
-	    		        }
-	    		    }); 
-		    //Adding Customized Educations to the list
-	       
-	       
-	       
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-			var $this = $(this);
-			$this.next().css({'width': '100%'});
-			})
-			
-			$("#candidateSkills").val('').trigger("chosen:updated");
-	       $("#candidateEducation").val('').trigger("chosen:updated");
-				
-				
+    $("#candidateSkills").chosen().change(function(event) {
+    	 var sourceleadUrl ='${sourceleadUrl}';
+    	var allSkills = $(event.target).val();
+    	$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/profileBySkillSet?"+tokenParamName+"="+tokenValue+"&allSkills="+allSkills, 
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		var primarySkill = response.object;
+	        	    $("#primarySkill").val(primarySkill);
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+	        },
+	    });
+    });
+   	$("#candidateSkills").val('').trigger("chosen:updated");
+	$("#candidateEducation").val('').trigger("chosen:updated");
 </script> 
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
 
@@ -744,18 +643,26 @@ function validate_fileupload(fileName)
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateCandidateEmail?"+tokenParamName+"="+tokenValue+"&email="+email+"&candidateType=N", 
-		        success: function(data) {
-		        	if(data == 'true'){
-		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
-						  document.getElementById("email").setAttribute('record-exist','yes');
-						  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
-		        	}
-		        	else{
-		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-		        		 $("#store_candidate" ).addClass('button').val('Save');
-                         $("#store_candidate").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'true'){
+			        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+							  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+							  document.getElementById("email").setAttribute('record-exist','yes');
+							  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+			        	}
+			        	else{
+			        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+			        		 $("#store_candidate" ).addClass('button').val('Save');
+	                         $("#store_candidate").removeAttr("disabled");
+			        	}
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });
@@ -934,7 +841,6 @@ function rateValidations(){
 		            		$('#vendors').append('<option value='+opt.id+' >'+opt.orgName+'</option>');
 		            }
 		            $('#vendors').trigger("chosen:updated");
-		            //getVendorContactList();
 		            
 		        }
 		 });
@@ -1041,6 +947,31 @@ if(type == 'C2C' || type == 'C2C-1099'){
  $(function() {
 		$("#uploadBtn").change(function() {
 			fileUpload("uploadBtn", "resumes", "addcandidate_form");
+			$(".clearUpload").show();
 		});
 	 });
  </script>
+
+ <script>
+function addassociateEmptyVendorContact(){
+	$("#vendorcontact").empty();
+	 $('#vendorcontact').append('<option value="">--select Vendor contact--</option>');
+   $('#vendorcontact').trigger("chosen:updated");
+}
+</script>
+<script>
+	 function selectedVendor(){
+		 var vid =  $('#vendors').val();
+		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
+	 }
+	 </script>
+
+ 
+ <script>
+	$(".clearUpload").click(function(){
+		$("#uploadFile").val("");
+		 $(".clearUpload").hide();
+	        $("#addcandidate_form input[data-id*=uploadBtn]").remove();
+	});
+</script>
+

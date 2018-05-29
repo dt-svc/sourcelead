@@ -3,9 +3,13 @@ package com.bis.sourcelead.dto;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Transient;
+
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.entity.InvoiceDocument;
 import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.InvoiceTax;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BillingDTO {
 	
@@ -24,7 +28,9 @@ public class BillingDTO {
 	private Long linkInvoiceReferenceId;
 	private Date invoiceDate;
 	private Date dueDate;
+	@CleanHtml(escape=false)
 	private String billingAddress;
+	@CleanHtml(escape=false)
 	private String accountDetails;
 	private String discountAmount;
 	private String afterDiscountValue;
@@ -92,6 +98,9 @@ public class BillingDTO {
 	private String memberId;
 	private String expensesFrequency;
 	private String expId;
+	private PaymentAccountDTO paymentAccountDTO;
+	private String orgRelationUUID;
+	
 	public Long getId()
 	{
 		return id;
@@ -756,8 +765,18 @@ public class BillingDTO {
 	{
 		this.expId = expId;
 	}
-	
-	
-	
-	
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+	public PaymentAccountDTO getPaymentAccountDTO() {
+		return paymentAccountDTO;
+	}
+	public void setPaymentAccountDTO(PaymentAccountDTO paymentAccountDTO) {
+		this.paymentAccountDTO = paymentAccountDTO;
+	}
 }

@@ -6,15 +6,15 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="/resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
-<script src="resources/js/pie.js"></script> 
-<script src="resources/js/amcharts.js"></script> 
-<script src="resources/js/serial.js"></script> 
+<script src="/resources/js/pie.js"></script> 
+<script src="/resources/js/amcharts.js"></script> 
+<script src="/resources/js/serial.js"></script> 
 
 <style>
 #billing_chartdiv {
@@ -42,7 +42,7 @@ $(document).ready(function(){
 			<div class="pull-left">
 				<h2>Finance Reports </h2>
 			</div>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a> &raquo; Finance Reports </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Finance Reports </div>
 </section>
 
 
@@ -203,8 +203,8 @@ function getCustomBillingReports(invoiceType){
 		$.ajax({
 	         type : "GET",
 	         url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
-	         success :function(data) {
-	        	  var json = JSON.parse(data);
+	         success :function(json) {
+// 	        	  var json = JSON.parse(data);
 		        	 getBillingReportsChart(invoiceType,json);
 	        	/*  var json = JSON.parse(data);
 	        	 var result = "";
@@ -267,8 +267,8 @@ function getCustomPayableBillingReports(invoiceType){
 		$.ajax({
 	         type : "GET",
 	         url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
-	         success :function(data) {
-	        	 var json = JSON.parse(data);
+	         success :function(json) {
+// 	        	 var json = JSON.parse(data);
 	        	 var result = "";
 	        	 result = result +'<div class="project_tabs_inn_head">';
 	        	 result = result +'</div>';
@@ -285,8 +285,8 @@ function getCustomPayableBillingReports(invoiceType){
 	        	 result = result +'</tr>';
 	        	 result = result +'</thead>';	
 	        	 result = result +'<tbody>';
-	        	 for (var i = 0; i < json.length; i++) { 
-	        		 var opt = json[i]; 
+	        	 for (var i = 0; i < json.data.length; i++) { 
+	        		 var opt = json.data[i]; 
 	        		 $("#netIncome").html(opt.netIncome);
 		        	 $("#receivedAmount").html(opt.recievableAmount);
 		        	 $("#payableAmount").html(opt.payableAmount); 
@@ -492,8 +492,8 @@ function getBillingReports(invoiceType){
 			$.ajax({
 		    	type: "GET",
 		    	 url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
-		         success: function(data) {
-		        	 var json = JSON.parse(data);
+		         success: function(json) {
+// 		        	 var json = JSON.parse(data);
 		        	 getBillingReportsChart(invoiceType,json);
 		         }
 			});	

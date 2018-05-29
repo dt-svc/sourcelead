@@ -255,11 +255,6 @@ public class TimesheetSubmissionsServiceTest {
 		logger.info(" getTimeSheetSubmissionsListByStatus"+timesheetSubmissionslist.size());
 	}*/
 	
-	//@Test
-	public void getTimeSheetSubmissionsCountByUserId() throws Exception{
-		TimeSheetSubmissionCount timesheetSubmissioncount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserId(3l);
-	    assertNotNull(timesheetSubmissioncount);
-	}
 	
 	/*@Test
 	public void getTotalDraftAndSubmittedHoursByuserId() throws Exception{
@@ -300,7 +295,7 @@ public class TimesheetSubmissionsServiceTest {
 	
 	//@Test
 	public void getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover() throws Exception{
-		TimeSheetSubmissionCount getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(3l, 3l);
+		TimeSheetSubmissionCount getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(3l, 3l,"");
 		assertNotNull(getTimeSheetSubmissionsCount);
 	}
 	
@@ -391,7 +386,7 @@ public class TimesheetSubmissionsServiceTest {
 	public void getTimeSheetSubmissionsCountByUserIdAndOrgLocationId() throws Exception{
 		Long masterCandidateId=1l;
 		Long orgLocationId=1l;
-		TimeSheetSubmissionCount tms = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(masterCandidateId, orgLocationId);
+		TimeSheetSubmissionCount tms = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(masterCandidateId, orgLocationId,"All");
 		tms.getApprovalTimesheetsSubmissionsHoursCount();
 		assertNotNull(tms);
 		

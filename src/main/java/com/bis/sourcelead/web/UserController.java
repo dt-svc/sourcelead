@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +16,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -35,6 +42,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 
 @Controller
+@RequestMapping("/app")
 public class UserController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -66,6 +74,16 @@ public class UserController {
 	@Autowired
     CountriesService countriesService;
 	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
+
+	@Autowired
+	LookUpDataService lookUpDataService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
+	
+
 	
 	/**
 	 * To forward user creation jsp page
@@ -73,7 +91,7 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('ROLE_CREATE_USER')")
+	@PreAuthorize("hasRole('ROLE_CREATE_ASSOCIATE')")
 	@RequestMapping(value = "/userCreation")
 	public ModelAndView userCreation(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -94,12 +112,49 @@ public class UserController {
 		    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		    model.addObject("rolesList", rolesList);
 		    
-		    
-		    model.addObject("averageWorkingHours",orgLocations.getAverageWorkingHours());
+		     SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_ASSOCIATE);
+		     model.addObject("actionId",action.getId());
+		     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+		     model.addObject("sourceleadSectionList",sections); 
+		     
+		     model.addObject("averageWorkingHours",orgLocations.getAverageWorkingHours());
 		   		    
 		    commonUtil.highLightMenu(Constants.Users, request);
 		    
 			model.setViewName("users/userCreation");
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			
+		return model;
+
+	}
+	
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_CREATE_ASSOCIATE')")
+	@RequestMapping(value = "/addAssociateFromLocations")
+	public ModelAndView addAssociateFromLocations(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		ModelAndView model = new ModelAndView();
+		
+		    Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		
+		    Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
+			if(null != countries){
+            model.addObject("loginCountryName", countries.getName());
+            model.addObject("currencyCode", countries.getCurrency());
+			}
+		    
+		    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
+		    model.addObject("rolesList", rolesList);
+		    
+		    List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredOrgLocationsExceptLoggedInLocation(orgLocations.getId(), org.getId());
+		 	model.addObject("orgLocationsList", orgLocationsList);
+		   		    
+		    commonUtil.highLightMenu(Constants.Users, request);
+		    
+			model.setViewName("users/addAssociateFromLocations");
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			
 		return model;
@@ -113,12 +168,12 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_VIEW_USER', 'ROLE_VIEW_EDIT_USER', 'ROLE_VIEW_DELETE_USER')")
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE','ROLE_VIEW_ASSOCIATE')")
 	@RequestMapping(value = "/userSummaryDetails")
 	public ModelAndView userSummaryDetails(HttpServletRequest request,
-			@RequestParam(value = "userId", required = false) Long userId) throws Exception {
-		ModelAndView model = new ModelAndView();
-		
+			@RequestParam(value = "userCode", required = false) String userCode,@RequestParam(value = "userId", required = false) String userId) throws Exception {
+			ModelAndView model = new ModelAndView();
+			commonUtil.highLightMenu(Constants.Users, request);
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			String isTimeSheetEnrolled = (String) SourceLeadSessionManager.getSessionAttribute(request,"timesheet");
 			Countries countries = countriesService.getCountriesByCountryName(orgLocations.getCountry());
@@ -126,27 +181,44 @@ public class UserController {
             model.addObject("loginCountryName", countries.getName());
             model.addObject("currencyCode", countries.getCurrency());
 			}
-			User user = userService.getUserByIdAndOrgLocationsId(userId, orgLocations.getId());
+			
+			List<LookUpData> educationsList = lookUpDataService.getLookUpDataByCategory(Constants.EDUCATIONS);
+			model.addObject("educationsList", educationsList);
+		   
+			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
+		    model.addObject("documentsList", documentsList);
+		    if(userId != null && StringUtils.isNoneEmpty(userId)) {
+		    	User user = userService.getUserById(Long.parseLong(userId));
+		    	userCode = user.getUserCode();
+		    }
+			User user = userService.getUserByUserCodeAndOrgLocationsId(userCode, orgLocations.getId());
 			if(user != null){
 				// to get a project list by userId
                
 				/*List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
 				model.addObject("org_projectsList", projectsList);*/
-				
+				Candidate candidate = null;
+				candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 				if(!isNullOrEmpty(isTimeSheetEnrolled) && isTimeSheetEnrolled.equalsIgnoreCase("Y")){
-					Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(userId, orgLocations.getId());
-					Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocations.getId());
-					TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLocations.getId());
+					Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(user.getId(), orgLocations.getId());
+					if(candidate.getMasterCandidateId() != null) {
+						TimeSheetSubmissionCount userdetails  = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLocations.getId(),"All");
+						model.addObject("totalOpenTimeSheetCount", userdetails.getSavedTimesheetSubmissionCount().intValue());
+						model.addObject("approvedTimeSheetsCount", userdetails.getApprovedTimesheetSubmissionCount().intValue());
+						model.addObject("rejectedTimeSheetsCount", userdetails.getRejectedTimesheetSubmissionCount().intValue());
+						model.addObject("waitingTimeSheetsCount", userdetails.getWaitingForApprovalTimesheetSubmissionCount().intValue());
+						model.addObject("assignedProjectsCount", assignedProjectsCount);
+					}
 					
-					model.addObject("totalOpenTimeSheetCount", userdetails.getSavedTimesheetSubmissionCount().intValue());
-					model.addObject("approvedTimeSheetsCount", userdetails.getApprovedTimesheetSubmissionCount().intValue());
-					model.addObject("rejectedTimeSheetsCount", userdetails.getRejectedTimesheetSubmissionCount().intValue());
-					model.addObject("waitingTimeSheetsCount", userdetails.getWaitingForApprovalTimesheetSubmissionCount().intValue());
-					model.addObject("assignedProjectsCount", assignedProjectsCount);
 				}
 				
+				 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_ASSOCIATE);
+			     model.addObject("actionId",action.getId());
+			     List<SourceleadSectionDTO> sections = commonUtil.getSourceleadFormSectionsByActionId(request, action.getId());
+			     model.addObject("sourceleadSectionList",sections); 
 				
-				request.setAttribute("userId", userId);
+				request.setAttribute("candidateId", candidate.getId());
+				request.setAttribute("userId", user.getId());
 				model.setViewName("users/userSummary");
 			}else{
 				model.setViewName("registration/persmissionDenied");
@@ -166,4 +238,6 @@ public class UserController {
 	 protected static boolean isNullOrEmpty(String str) {
 			return str == null || "".equals(str.trim());
 		}
+	 
+	
 }

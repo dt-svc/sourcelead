@@ -29,7 +29,7 @@ window.onload = function() {
 function getRequirementList(){
 	    var status = "";
 	    var clients = "";
-		$("#reqStagesLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#reqStagesLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	    $.ajax({
 	         type : "POST",
 	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients,    
@@ -61,24 +61,35 @@ function prepareReportDataDiv(data){
     	var report= json[i];
     	result = result + '<tr>';
         result = result + '<td>';
-        result = result + '<div><span title="'+report.jobTitle+'">'+report.jobTitle+'</span></div> ';
+        result = result + '<div class="tbldata-dotdot-sm"><span title="'+report.jobTitle+'">'+report.jobTitle+'</span></div> ';
         result = result + '</td>';
 
         result = result + '<td>';
         if(report.clientName != null && report.clientName != '' && report.clientName !='undefined'&& report.clientName != null && report.clientName != ''){
-       	result = result + '<div><span title="'+report.clientName+'">'+report.clientName+'</span></div>';
+       	result = result + '<div class="tbldata-dotdot-sm"><span title="'+report.clientName+'">'+report.clientName+'</span></div>';
  		} else{
-		result = result + '<div><span>---</span></div>';
+		result = result + '<div class="tbldata-dotdot-sm"><span>---</span></div>';
 		    }
         result = result + '</td>';
         
        	 result = result + '<td>';
-        if(report.country != null && report.country != '' && report.country !='undefined'&& report.country != null && report.country != ''){
-       	 result = result + "<div><span>"+report.country+"</span></div>";
-        }
-        else{
-		 result = result + "<div><span>---</span></div>";
-		    }
+	       	 result = result +'<div class="positionRelative">';
+		         for(var k=0; k<1; k++){
+		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+report.locationsList[k]+'</p>';
+		         }
+		        result = result +'<div class="show_Empdetails showjoblist">';
+		      	result = result +'<i class="fa fa-ellipsis-v"></i>';
+		
+		      	result = result +'<div class="emailvalues emailvaluesNew">';
+		      	
+				for(var k=0; k<report.locationsList.length; k++){
+					result = result +'<p><i class="fa fa-map-marker"></i>'+report.locationsList[k]+'</p>';
+			        	
+		  	 	}
+	      	result = result +'</div>';
+	      	result = result +'</div>';
+	  	   result = result +'</div>'; 
+  	 
          result = result + '</td>';
         
          result = result + '<td>';
@@ -288,7 +299,7 @@ function getRequirementStageList(){
       <h2 class="pull-left">Job Stages Reports</h2>
 		
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a>&nbsp;&raquo; Jobs Stages</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a>&nbsp;&raquo; Jobs Stages</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">

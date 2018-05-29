@@ -17,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesCategoryDao;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ExpensesCategory;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -37,6 +40,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  *
  */
 @RestController
+@RequestMapping("/app")
 public class ExpensesCategoryRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
@@ -64,14 +68,27 @@ public class ExpensesCategoryRestController {
 	 */
 	
 	@RequestMapping(value = "/storeExpensesCategory", method = RequestMethod.POST)
-	public @ResponseBody String storeExpensesCategory(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
-
+	public @ResponseBody Response<String> storeExpensesCategory(@RequestParam(value = "json", required = false) String json,HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
 		String jsonc = "{" + json + "}";
 		JSONObject jsonObject = new JSONObject(jsonc);
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		expensesCategoryService.storeExpenseCategory(jsonObject,loginOrgLocation.getId(), user);
-		return "success";
+		if(user != null){
+			try{
+				expensesCategoryService.storeExpenseCategory(jsonObject,loginOrgLocation.getId(), user);
+				response.setObject("success");
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.name());
+	    	}catch(Exception e) {
+	    		response.setResponse(Result.AWKWARD.name());
+	    		response.setResponseMessage(Result.AWKWARD.name());
+	    	}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.name());
+		}
+		return response;
 	}
 	
 	
@@ -85,12 +102,28 @@ public class ExpensesCategoryRestController {
 	 */
 	
 	@RequestMapping(value = "/getExpensesCategoryList", method = RequestMethod.GET)
-	public @ResponseBody List<ExpensesCategory> getExpensesCategoryList(HttpServletRequest request) throws Exception {
+	public @ResponseBody ResponseList<ExpensesCategory> getExpensesCategoryList(HttpServletRequest request)  {
 		/*String resultJson = null;*/
+		ResponseList<ExpensesCategory> response = new ResponseList<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(user != null){
+		try{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndCategoryId(orgLocations.getId());
 		/*resultJson = toJSON(expensesCategoryList);*/
-		return expensesCategoryList;
+		response.setData(expensesCategoryList);
+		response.setResponse(Result.SUCCESS.name());
+		response.setResponseMessage(Result.SUCCESS.name());
+		}catch(Exception e) {
+    		response.setResponse(Result.AWKWARD.name());
+    		response.setResponseMessage(Result.AWKWARD.name());
+    	}
+	}else {
+		response.setResponse(Result.SESSION_TIMEDOUT.name());
+		response.setResponseMessage(Result.SESSION_TIMEDOUT.name());
+	}
+		
+		return response;
 	}
 	
 		
@@ -103,18 +136,28 @@ public class ExpensesCategoryRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getExpensesCategoryByCategoryId")
-	public String getExpensesCategoryByCategoryId(@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
-		String resultJson;
+	public Response<ExpensesCategory> getExpensesCategoryByCategoryId(@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
+		Response<ExpensesCategory> response = new Response();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if(user != null){
+		try{
 		ExpensesCategory  expensesCategoryList = expensesCategoryService.getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(categoryId);
-		
-				
 				 List<LookUpData> expCatList = lookUpDataService.getLookUpDataByCategory(Constants.EXPENSESCATEGORY); 
-					
 				 expensesCategoryList.setExpenseCategoryList(expCatList);
-				
-				     resultJson = commonUtil.toJSON(expensesCategoryList);
-				     return resultJson;
-	}
+				     response.setObject(expensesCategoryList);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.name());
+						}catch(Exception e) {
+				    		response.setResponse(Result.AWKWARD.name());
+				    		response.setResponseMessage(Result.AWKWARD.name());
+				    	}
+					}else {
+						response.setResponse(Result.SESSION_TIMEDOUT.name());
+						response.setResponseMessage(Result.SESSION_TIMEDOUT.name());
+					}
+						
+						return response;
+					}
 	
 	/**
 	 * This Method is for update  ExpensesCategory by category ID
@@ -126,17 +169,31 @@ public class ExpensesCategoryRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/upDateExpensesCategoryByCategoryId")
-	public String upDateExpensesCategoryByCategoryId(@RequestParam(value="json", required=false) String  json,@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
-
+	public Response<String> upDateExpensesCategoryByCategoryId(@RequestParam(value="json", required=false) String  json,@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<>();
 		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    if(user != null){
+				try{
 		    ExpensesCategory  expensesCategory;
 			String jsonc = "{" + json + "}";
 			JSONObject jsonObj = new JSONObject(jsonc);
 			
 			expensesCategory = expensesCategoryService.storeExpenseCategory(jsonObj,loginOrgLocation.getId(),user);
-			return "success";
+			response.setObject("success");
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.name());
+    	}catch(Exception e) {
+    		response.setResponse(Result.AWKWARD.name());
+    		response.setResponseMessage(Result.AWKWARD.name());
+    	}
+	}else {
+		response.setResponse(Result.SESSION_TIMEDOUT.name());
+		response.setResponseMessage(Result.SESSION_TIMEDOUT.name());
 	}
+	return response;
+}
+
 	
 	/**
 	 * This Method is for remove  ExpensesCategory by category ID
@@ -148,14 +205,29 @@ public class ExpensesCategoryRestController {
 	 */
 	
 		@RequestMapping(value = "/removeExpensesCategoryByCategoryId")
-		public String removeExpensesCategoryByCategoryId(@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
-			String resultJson;
+		public Response<String> removeExpensesCategoryByCategoryId(@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
+			//String resultJson;
+			Response<String> response = new Response<>();
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    if(user != null){
+				try{
 			ExpensesCategory  expensesCategory = expensesCategoryService.removeExpensesCategoryByCategoryId(categoryId);
-			 resultJson = commonUtil.toJSON(expensesCategory);
-
-			 return resultJson;
+			// resultJson = commonUtil.toJSON(expensesCategory);
+				response.setObject("success");
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.name());
+	    	}catch(Exception e) {
+	    		response.setResponse(Result.AWKWARD.name());
+	    		response.setResponseMessage(Result.AWKWARD.name());
+	    	}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.name());
 		}
-		
+		return response;
+	}
+
 		/**
 		 * This Method is for ReActivate  ExpensesCategory by category ID
 		 * 
@@ -165,13 +237,32 @@ public class ExpensesCategoryRestController {
 		 * @throws Exception
 		 */
 		@RequestMapping(value = "/reActiveExpenseCategoryByCategoryId")
-		public ExpensesCategory reActiveExpenseCategoryByCategoryId(@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
+		public Response<String> reActiveExpenseCategoryByCategoryId(@RequestParam(value = "categoryId", required = false) Long categoryId,HttpServletRequest request) throws Exception {
+			
+			Response<String> response = new Response<>();
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    if(user != null){
+				try{
+			
+			
 			ExpensesCategory expenCat = expensesCategoryService.getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(categoryId);
 			expenCat.setStatus(Constants.MEMBER_ACTIVE);
 			expenCat = expensesCategoryDao.storeExpenseCategory(expenCat);
-			 return expenCat;
-		}
-		
+			response.setObject("success");
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.name());
+    	}catch(Exception e) {
+    		response.setResponse(Result.AWKWARD.name());
+    		response.setResponseMessage(Result.AWKWARD.name());
+    	}
+	}else {
+		response.setResponse(Result.SESSION_TIMEDOUT.name());
+		response.setResponseMessage(Result.SESSION_TIMEDOUT.name());
+	}
+	return response;
+}
+
 		/**
 		 * This Method is used for To Check Expense Category Name Is Unique Or Not
 		 * 
@@ -182,12 +273,26 @@ public class ExpensesCategoryRestController {
 		 */
 		
 		@RequestMapping(value = "/validateExpenseCategoryType")
-		public Boolean validateExpenseCategoryType(@RequestParam(value="name", required=false) String  name ,HttpServletRequest request) throws Exception {
-				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		public Response<String> validateExpenseCategoryType(@RequestParam(value="name", required=false) String  name ,HttpServletRequest request) throws Exception {
+			Response<String> response = new Response<>();
+		    OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		    if(user != null){
+				try{
 				Boolean expCategory = expensesCategoryService.validateExpensesCategoryType(loginOrgLocation.getId(), name );
-				return expCategory;
+				response.setObject(expCategory.toString());
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.name());
+	    	}catch(Exception e) {
+	    		response.setResponse(Result.AWKWARD.name());
+	    		response.setResponseMessage(Result.AWKWARD.name());
+	    	}
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.name());
 		}
-	
+		return response;
+	}
 	
 	 private String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {

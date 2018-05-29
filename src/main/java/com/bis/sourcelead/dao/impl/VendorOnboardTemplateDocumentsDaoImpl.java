@@ -46,7 +46,7 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from VendorOnboardingTemplateDocuments documents left join fetch documents.vendorOnboardingTemplateId where documents.vendorOnboardingTemplateId.id = :templateId "
 	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
-	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("templateId", templateId).setString("documentType", documentType).setCacheable(true).list();
+	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("templateId", templateId).setString("documentType", documentType).list();
         return documentsList;
 	}
 
@@ -75,7 +75,7 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
 	public VendorOnboardingTemplateDocuments getVendorOnBoardingTemplateDocumentsBydocumentUUID(String documentUUID)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<VendorOnboardingTemplateDocuments> documents = session.createQuery("from VendorOnboardingTemplateDocuments documents where documents.documentUUID =:documentUUID" ).setString( "documentUUID", documentUUID ).setCacheable(true).list();
+		List<VendorOnboardingTemplateDocuments> documents = session.createQuery("from VendorOnboardingTemplateDocuments documents where documents.documentUUID =:documentUUID" ).setString( "documentUUID", documentUUID ).list();
 		if (documents.size() > 0) {
 			return documents.get(0);
 		} else {
@@ -91,7 +91,7 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from VendorOnboardingTemplateDocuments documents left join fetch documents.vendorOnboardingTemplateId where documents.vendorOnboardingTemplateId.id IN (:templateIdList) "
 	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
-	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setParameterList("templateIdList", templateIdList).setString("documentType", documentType).setCacheable(true).list();
+	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setParameterList("templateIdList", templateIdList).setString("documentType", documentType).list();
         return documentsList;
 	}
 
@@ -104,7 +104,7 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from VendorOnboardingTemplateDocuments documents left join fetch documents.vendorOnboardingId where documents.vendorOnboardingId.id = :vendorOnboardingId "
 	    		+ " and documents.status = '1' ";
-	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("vendorOnboardingId", vendorOnboardingId).setCacheable(true).list();
+	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("vendorOnboardingId", vendorOnboardingId).list();
         return documentsList;
 	}
 
@@ -114,7 +114,7 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
 	public VendorOnboardingTemplateDocuments getVendorOnBoardingTemplateDocumentsById(Long id) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<VendorOnboardingTemplateDocuments> documents = session.createQuery("from VendorOnboardingTemplateDocuments documents where documents.id = :id and documents.status = '1' " ).setLong( "id", id ).setCacheable(true).list();
+		List<VendorOnboardingTemplateDocuments> documents = session.createQuery("from VendorOnboardingTemplateDocuments documents where documents.id = :id and documents.status = '1' " ).setLong( "id", id ).list();
 		if (documents.size() > 0) {
 			return documents.get(0);
 		} else {
@@ -131,7 +131,7 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from VendorOnboardingTemplateDocuments documents left join fetch documents.vendorOnboardingTemplateId where documents.vendorOnboardingTemplateId.id = :templateId "
 	    		+ " and documents.status = '1' ";
-	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("templateId", templateId).setCacheable(true).list();
+	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("templateId", templateId).list();
         return documentsList;
 	}
 
@@ -141,7 +141,8 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
 	public Integer getTemplateDocumentsCountByTemplateId(Long templateId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query ="select count(*) from VendorOnboardingTemplateDocuments documents where documents.vendorOnboardingTemplateId.id = :templateId ";
+		String query ="select count(*) from VendorOnboardingTemplateDocuments documents where documents.vendorOnboardingTemplateId.id = :templateId "
+				+ " and documents.status = '1' ";
 		List<Long> docsCount = session.createQuery(query.toString()).setLong("templateId", templateId).list();
 			Integer count = 0;
 			if(docsCount != null && !docsCount.isEmpty()){
@@ -159,7 +160,7 @@ public class VendorOnboardTemplateDocumentsDaoImpl implements VendorOnboardTempl
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from VendorOnboardingTemplateDocuments documents left join fetch documents.vendorOnboardingId where documents.vendorOnboardingId.id = :vendorOnboardingId "
 	    		+ " and documents.status = '1' and documents.isRequired = 'Y' ";
-	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("vendorOnboardingId", vendorOnboardingId).setCacheable(true).list();
+	    List<VendorOnboardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("vendorOnboardingId", vendorOnboardingId).list();
         return documentsList;
 	
 	}

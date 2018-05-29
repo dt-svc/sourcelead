@@ -1,7 +1,10 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class CrowdSourcingUserBankAccountsDTO {
 
+	@Required(desc="accountHolderName")
 	 private String accountHolderName;
 	 
 	 private String country;
@@ -10,6 +13,7 @@ public class CrowdSourcingUserBankAccountsDTO {
 	 
 	 private String bankName;
 	 
+	 @Required(desc="accountNumber")
 	 private String accountNumber;
 	 
 	 private String bankCode;

@@ -25,7 +25,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_PLANNING_RESOURCE_REQUEST")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectPlanningResourceRequest")
 public class ProjectPlanningResourceRequest implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -35,14 +34,14 @@ public class ProjectPlanningResourceRequest implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "PROJECT_PLANNING_REQUREST_ID")
 	@JsonBackReference
   	private ProjectPlanningRequest projectPlanningRequestId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CANDIDATE_ID")
 	@JsonBackReference
   	private Candidate candidateId;
@@ -98,7 +97,7 @@ public class ProjectPlanningResourceRequest implements Serializable{
     @Column(name = "REQUEST_UUID")
    	private String requestUUID;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "ORG_LOCATION_ID")
   	private OrgLocations orgLocationId;
@@ -109,12 +108,12 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CREATED_BY")
   	private User createdBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "UPDATED_BY")
   	private User updatedBy;
@@ -143,7 +142,10 @@ public class ProjectPlanningResourceRequest implements Serializable{
     @JsonProperty
     private String candidateLocation;
 
-	
+    @Transient
+	@JsonProperty
+	private String requestedUser;
+    
 	
 
 	public Long getId() {
@@ -341,7 +343,7 @@ public class ProjectPlanningResourceRequest implements Serializable{
 			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
 			startDateStr = dateFormat.format(startDate);;	
 		}else{
-			startDateStr = "-------";
+			startDateStr = "";
 		}
 		return startDateStr;
 	}
@@ -355,7 +357,7 @@ public class ProjectPlanningResourceRequest implements Serializable{
 			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
 			endDateStr = dateFormat.format(endDate);	
 		}else{
-			endDateStr = "-------";
+			endDateStr = "";
 		}
 		return endDateStr;
 	}
@@ -440,6 +442,12 @@ public class ProjectPlanningResourceRequest implements Serializable{
 	public void setCandidateLocation(String candidateLocation) {
 		this.candidateLocation = candidateLocation;
 	}
-	
-	
+
+	public String getRequestedUser() {
+		return requestedUser;
+	}
+
+	public void setRequestedUser(String requestedUser) {
+		this.requestedUser = requestedUser;
+	}
 }

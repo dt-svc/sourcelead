@@ -148,7 +148,7 @@
 													&& opt.resumeId != ''
 													&& opt.resumeId != 'undefined') {
 												result = result
-												+ '         <td><div><span><a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a></span></div></td>';
+												+ '         <td><div><span><a download class="glyphicon glyphicon-download-alt" title="Download" href=\"'+opt.fileURL+'\"></a><a class="fa fa-eye ml10" title="View" onclick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a></span></div></td>';
 											} else {
 												result = result
 														+ '         <td><div>--</div></td>';
@@ -390,9 +390,7 @@
 													&& opt.requirementCurrentStatus != 'UNFILLEDCLOSED') {
 												if (opt.submissionStatus == 'REJECTED') {
 													result = result
-															+ '<td><div class="tblwidth-150"><span>'
-															+ opt.submissionStatus
-															+ '</span>';
+															+ '<td><div class="tblwidth-150"><span>' + opt.submissionDisplayStatus + '</span>';
 													if (opt.rejectedReason != null
 															&& opt.rejectedReason != ''
 															&& opt.rejectedReason != 'undefined'
@@ -407,21 +405,6 @@
 																+ opt.rejectedReason
 																+ '</p></div></i></div></td>';
 													}
-
-													if (opt.rejectedReason != null
-															&& opt.rejectedReason != ''
-															&& opt.rejectedReason != 'undefined'
-															&& opt.rejectedCategoryType == null) {
-														result = result
-																+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
-																+ "<font color='red'>Category</font>: "
-																+ "Bad Fit"
-																+ '<br>'
-																+ "Reason: "
-																+ opt.rejectedReason
-																+ '</p></div></i></div></td>';
-													}
-
 													if (opt.rejectedReason != null
 															&& opt.rejectedReason != ''
 															&& opt.rejectedReason != 'undefined'
@@ -439,26 +422,54 @@
 																+ opt.rejectedReason
 																+ '</p></div></i></div></td>';
 													}
-												} else {
+												} else if (opt.submissionStatus == 'BACKOUT') {
+													result = result
+													+ '<td><div class="tblwidth-150"><span>'
+													+ opt.submissionStatus
+													+ '</span>';
+											if (opt.backOutReason != null
+													&& opt.backOutReason != ''
+													&& opt.backOutReason != 'undefined'
+													&& opt.backOutCategoryType != null
+													&& opt.backOutCategoryType != 'Other') {
+												result = result
+														+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+														+ "<font color='red'>Category</font>: "
+														+ opt.backOutCategoryType
+														+ '<br>'
+														+ "Reason: "
+														+ opt.backOutReason
+														+ '</p></div></i></div></td>';
+											}
+											if (opt.backOutReason != null
+													&& opt.backOutReason != ''
+													&& opt.backOutReason != 'undefined'
+													&& opt.backOutCategoryType != null
+													&& opt.backOutCategoryType == 'Other') {
+												result = result
+														+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+														+ "<font color='red'>Category</font>:"
+														+ opt.backOutCategoryType
+														+ '<br>'
+														+ "Other: "
+														+ opt.backOutCategoryOther
+														+ '<br>'
+														+ "Reason: "
+														+ opt.backOutReason
+														+ '</p></div></i></div></td>';
+											}
+										}else {
 													result = result
 															+ '<td><div class="tblwidth-150">';
 													result = result
 															+ '<select id="rejectApplicantSelectspocState'
 															+ opt.id
-															+ '" onChange="rejectApplicant('
-															+ opt.id + ','
-															+ requirementId
-															+ ',\''
-															+ submissionType
-															+ '\')";>';
-													result = result
-															+ "<option value='Status'>"
-															+ opt.submissionStatus
-															+ "</option><option value='Reject'>Reject</option>";
+															+ '" onChange="rejectApplicant(' + opt.id + ',' + requirementId + ',\'' + submissionType + '\')";>';
+													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option><option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERACCEPTED'
 															|| opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
 														result = result
-																+ '<option value="backout">Back-Out</option>';
+																+ '<option value="backout">BackOut</option>';
 													}
 													result = result
 															+ '</select>';
@@ -466,10 +477,7 @@
 															+ '</div></td>';
 												}
 											} else {
-												result = result
-														+ '<td><div class="tblwidth-150"><span>'
-														+ opt.submissionStatus
-														+ '</span>';
+												result = result + '<td><div class="tblwidth-150"><span>' + opt.submissionDisplayStatus + '</span>';
 											}
 											return result;
 										}
@@ -487,7 +495,7 @@
 								"sSearch" : "",
 								"sZeroRecords" : "",
 								"sEmptyTable" : "",
-								"sProcessing" : "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
 		$("#requirementsPagination").wrap(
@@ -498,5 +506,46 @@
 				requirementPipeline(requirementId, submissionType);
 			}
 		});
+		 var submissionId = '${submissionId}';
+		 var candidateId = '${candidateId}';
+		 var requirementId = '${requirementId}';
+		 var submissionStatus = '${submissionStatus}';
+		
+		 
+		 if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined' && submissionStatus =="REJECTED" && submissionType != "all" && submissionType != "DUPLICATE_APPLICANTS" && submissionType != "REQUEST_SENT" && submissionType != "SHORTLIST" && submissionType != "SUBMIT_TO_CLIENT" && submissionType != "INTERVIEW" && submissionType != "OFFERMADE"){
+			 $("#detailsTab").removeClass("current");
+				 $('li[name=applicantNotification]').addClass("current");
+		    	   requirementStatusBar(requirementId);
+		    	   $("#applicantli").addClass("reqAct");
+// 		    	   $("#submitToClientli").addClass("reqAct");
+		    	   requirementPipeline(requirementId,'all');
+				 }
+		 else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined' && submissionStatus =="SUBMIT_TO_CLIENT" && submissionType != "all" && submissionType != "DUPLICATE_APPLICANTS" && submissionType != "REQUEST_SENT" && submissionType != "SHORTLIST" && submissionType != "REJECTED" && submissionType != "INTERVIEW" && submissionType != "OFFERMADE"){
+			 $("#detailsTab").removeClass("current");
+			 $('li[name=applicantNotification]').addClass("current");
+	    	   requirementStatusBar(requirementId);
+	    	   $("#applicantli").removeClass("reqAct");
+	    	   $("#submitToClientli").addClass("reqAct");
+	    	   requirementPipeline(requirementId,'SUBMIT_TO_CLIENT');
+	    	   if('${subStatus}'!=null && '${subStatus}'!='' && '${subStatus}'!='undefined' && '${subStatus}' == 'SUBMISSION'){
+	    		   getRateListDiv(submissionId, candidateId)
+	    	   }
+	    	   
+			 }
+		 else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined' && submissionType != "all" && submissionType != "DUPLICATE_APPLICANTS" && submissionType != "REQUEST_SENT" && submissionType != "SHORTLIST" && submissionType != "REJECTED" && submissionType != "INTERVIEW" && submissionType != "OFFERMADE" && submissionStatus =="all"){
+			 $("#detailsTab").removeClass("current");
+			 $('li[name=applicantNotification]').addClass("current");
+	    	   requirementStatusBar(requirementId);
+	    	   $("#applicantli").removeClass("reqAct");
+	    	   $("#submitToClientli").addClass("reqAct");
+	    	   requirementPipeline(requirementId,'all');
+	    	   if('${subStatus}'!=null && '${subStatus}'!='' && '${subStatus}'!='undefined' && '${subStatus}' == 'SUBMISSION'){
+	    		   getRateListDiv(submissionId, candidateId)
+	    	   }
+			 }
+		 else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined' && submissionType !="all" &&  submissionStatus !="SUBMIT_TO_CLIENT" && submissionStatus !="all" || submissionStatus =="REJECTED"){
+			applicantQuickViewProfile(submissionId,candidateId);
+			 getSubmissionDetailsSideBar(submissionId,candidateId,requirementId);
+		 }
 	}
 </script>

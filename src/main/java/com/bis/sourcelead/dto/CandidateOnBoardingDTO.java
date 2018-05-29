@@ -111,6 +111,26 @@ public class CandidateOnBoardingDTO implements Serializable {
 	
 	private String onboardSubmitted;
 	
+	private String rejectedReason;
+	
+	private int start;
+	
+	private int length;
+	
+	private String searchValue;
+	
+	private Map<String, String> search;
+	
+	private List<Map<String, String>> order;
+	
+	private String sortColumn;
+	
+	private String sortOrder;
+	
+	private String vendors;
+	
+	private String vendorContact;
+	
 	public String getCandidateOnBoardStatus() {
 		return candidateOnBoardStatus;
 	}
@@ -520,4 +540,88 @@ public class CandidateOnBoardingDTO implements Serializable {
 	public void setOnboardingTemplate(String onboardingTemplate) {
 		this.onboardingTemplate = onboardingTemplate;
 	}
+
+	public String getRejectedReason()
+	{
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason)
+	{
+		this.rejectedReason = rejectedReason;
+	}
+
+	public int getStart() {
+		return start;
+	}
+
+	public void setStart(int start) {
+		this.start = start;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+
+	public Map<String, String> getSearch() {
+		return search;
+	}
+
+	public void setSearch(Map<String, String> search) {
+		this.search = search;
+	}
+
+	public List<Map<String, String>> getOrder() {
+		return order;
+	}
+
+	public void setOrder(List<Map<String, String>> order) {
+		this.order = order;
+	}
+
+	public String getSortColumn() {
+		return sortColumn;
+	}
+
+	public void setSortColumn(String sortColumn) {
+		this.sortColumn = sortColumn;
+	}
+
+	public String getSortOrder() {
+		return sortOrder;
+	}
+
+	public void setSortOrder(String sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
+	public String getVendors() {
+		return vendors;
+	}
+
+	public void setVendors(String vendors) {
+		this.vendors = vendors;
+	}
+
+	public String getVendorContact() {
+		return vendorContact;
+	}
+
+	public void setVendorContact(String vendorContact) {
+		this.vendorContact = vendorContact;
+	}
+	
+	
 }

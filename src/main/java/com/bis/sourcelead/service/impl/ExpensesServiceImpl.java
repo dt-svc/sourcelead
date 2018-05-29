@@ -39,11 +39,11 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.CandidateService;
-import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.ExpensesApprovalService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
-import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -92,9 +92,6 @@ public class ExpensesServiceImpl implements ExpensesService{
 	private ConversionUtil conversionUtil;
 	
 	@Autowired
-	private CountriesService countriesService;
-	
-	@Autowired
 	private CandidateService candidateService;
 	
 	@Autowired
@@ -104,7 +101,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	private ProjectMembersService projectMembersService;
 	
 	@Autowired
-	private OrgRelationsService orgRelationsService;
+	private ExpensesApprovalService expensesApprovalService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesServiceImpl.class);
 	
@@ -247,6 +244,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		            StringBuilder edDate=new StringBuilder();
 		            StringBuilder purposeStringBuilder =new StringBuilder();
 		            StringBuilder totalStringBuilder =new StringBuilder();
+		            StringBuilder statusStringBuilder = new StringBuilder();
 		            ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId());
 		            
 			        orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenses.getExpenseId()).toString()));
@@ -273,6 +271,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        	}else{
 			        		orderedList.add(new ListItem(purposeStringBuilder.append("Purpose :").append("--").toString()));	
 			        	}
+			      
 			        if(expenses.getTotalAmount() != 0){
 			        	StringBuilder str = new StringBuilder();
 			        	BigDecimal bd = new BigDecimal(Double.toString(expenses.getTotalAmount()));
@@ -281,6 +280,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        	}else{
 			        		orderedList.add(new ListItem(totalStringBuilder.append("TotalAmount :").append("00.00").toString()));	
 			        	}
+			        if(null != expenses.getExpenseStatus()){
+			        	orderedList.add(new ListItem(statusStringBuilder.append("Status :").append(expenses.getExpenseStatus()).toString()));
+			        }else {
+			        	orderedList.add(new ListItem(statusStringBuilder.append("Status :").append("--").toString()));	
+			        }
 			       }else if(approverType.equalsIgnoreCase("APPROVER")){
 			    	   StringBuilder expenseId=new StringBuilder();
 			    	   	StringBuilder nameBuilder=new StringBuilder();
@@ -449,8 +453,9 @@ public class ExpensesServiceImpl implements ExpensesService{
 			 }
 			 
 			 if(approverType.equalsIgnoreCase("APPROVER")){
-				 if(expEntries.getExpensesId().getExpenseStatus() != null && !"".equalsIgnoreCase(expEntries.getExpensesId().getExpenseStatus().toString())){	
-					   userArray[7] = expEntries.getExpensesId().getExpenseStatus().getValue();
+				 if(expEntries.getExpensesId() != null){	
+					 ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expEntries.getExpensesId().getId(),orgLoc.getId());
+					   userArray[7] = eah.getExpenseStatus().getValue().toUpperCase();
 				   }else{
 					   userArray[7] = "--";
 				 } 
@@ -923,7 +928,6 @@ public class ExpensesServiceImpl implements ExpensesService{
 		cell23.setCellStyle(style);
 
 		Cell cell24 = writeRow.createCell(1);
-		StringBuilder str = new StringBuilder();
 		BigDecimal bd = new BigDecimal(Double.toString(expenseDetails.getTotalAmount()));
 		bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
 		cell24.setCellValue(bd.toString());
@@ -1242,20 +1246,39 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 
 	@Override
-	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId) throws Exception {
-
-		List<ExpensesEntries> entriesList = expensesEntriesService.getExpensesEntriesByExpenseId(expenseId);
+	public List<ExpensesEntriesDTO> getApprovedExpenses(Long expenseId,Long locationsId) throws Exception {
 		List<ExpensesEntriesDTO> expensesEntriesDTOList = new ArrayList<>();
-		for(ExpensesEntries entries : entriesList){
-			ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
-			expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
-			expensesEntriesDTO.setEntryDescription(entries.getDescription());
-			expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
-			expensesEntriesDTO.setAmount(entries.getAmount());
-			expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
-			expensesEntriesDTOList.add(expensesEntriesDTO);
+		ExpensesApproverHierarchy eah = expensesApprovalService.getApprovedExpenseByExpenseIdAndLocationId(expenseId, locationsId);
+		if(eah != null) {
+			List<ExpensesEntries> entriesList = expensesEntriesService.getExpensesEntriesByExpenseId(expenseId);
+			for(ExpensesEntries entries : entriesList){
+					ExpensesEntriesDTO  expensesEntriesDTO = new ExpensesEntriesDTO();
+					expensesEntriesDTO.setDateOccurred(ConversionUtil.getDateAsString(entries.getExpenseDate()));
+					expensesEntriesDTO.setEntryDescription(entries.getDescription());
+					expensesEntriesDTO.setCategoryAmount(String.valueOf(entries.getAmount()));
+					expensesEntriesDTO.setAmount(entries.getAmount());
+					expensesEntriesDTO.setCategoryName(entries.getExpensesCategoryId().getExpensesName());
+					expensesEntriesDTOList.add(expensesEntriesDTO);
+			}
 		}
+		
 		return expensesEntriesDTOList;
+	}
+
+	@Override
+	public List<Expenses> getExpensesByProjectIdAndMasterCandidateId(Long projectId, Long masterCandidateId)
+			throws Exception {
+		return expensesDao.getExpensesByProjectIdAndMasterCandidateId(projectId, masterCandidateId);
+	}
+
+	@Override
+	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId) throws Exception {
+		return expensesDao.getAllExpensesByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public List<Expenses> getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(Long projectId, Long OrglocationId,Date startDate, Date endDate) throws Exception {
+		return expensesDao.getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(projectId, OrglocationId,startDate,endDate);
 	}
 	
 }

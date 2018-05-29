@@ -26,6 +26,7 @@ import com.bis.sourcelead.service.OptionsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class OptionsServiceImpl implements OptionsService{
@@ -51,14 +52,19 @@ public class OptionsServiceImpl implements OptionsService{
 	@Override
 	public Option saveLeaveOptions(OptionsDTO optionsDTO) throws Exception {
 		
+		User user = userService.getUserById(Long.parseLong(optionsDTO.getUserId()));
 		Option option = null;
 		if(StringUtils.isNotBlank(optionsDTO.getOptionId())) {
-			option = optionsDao.getOptionsById(optionsDTO.getOptionId());
-		}else {
-		  option = new Option();
+			option = optionsDao.getOptionsByOptionId(optionsDTO.getOptionId());
+		}
+		else {
+			option = new Option();
+			option.setCreatedDate(new Date());
+			option.setCreatedBy(user.getUserCode());
+			option.setOptionUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(optionsDTO.getOrgLocationId()));
-		User user = userService.getUserById(Long.parseLong(optionsDTO.getUserId()));
+		
 		if (StringUtils.isNotBlank(optionsDTO.getDepartment())) {
 			Department department = departmentService.getDepartmentById(Long.parseLong(optionsDTO.getDepartment()));
 			option.setDepartmentId(department);
@@ -80,10 +86,9 @@ public class OptionsServiceImpl implements OptionsService{
 		if(optionsDTO.getWorkingHours() !=null) {
 			option.setWorkingHours(optionsDTO.getWorkingHours());
 		}
+		
 		option.setStatus("1");
-		option.setCreatedDate(new Date());
 		option.setUpdatedDate(new Date());
-		option.setCreatedBy(user.getUserCode());
 		option.setUpdatedBy(user.getUserCode());
 		
 		return optionsDao.saveLeaveOption(option);
@@ -148,6 +153,7 @@ public class OptionsServiceImpl implements OptionsService{
 			if(op.getWorkingHours() !=null) {
 				optionsDTO.setWorkingHours(op.getWorkingHours());
 			}
+			optionsDTO.setOptionUUID(op.getOptionUUID());
 			optionsDTOList.add(optionsDTO);
 		});
 		return optionsDTOList;

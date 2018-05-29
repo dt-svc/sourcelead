@@ -2,10 +2,9 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+//import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -17,12 +16,13 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionCounts;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -38,6 +38,7 @@ import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+
 /**
  * 
  * @author Rajashekar
@@ -52,6 +53,9 @@ public class PdfUtilPipelineHelper  {
 	RequirementService requirementService;
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	private RequirementLocationsService requirementLocationService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -604,11 +608,31 @@ public class PdfUtilPipelineHelper  {
 	            document.add(para);
 		        // Create an instance of PdfPTable. After that we transform the header and
 	            List orderedList = new List(List.ORDERED);
+	           // List orderedList = new ArrayList<>();
 	            StringBuilder reqNameBuilder=new StringBuilder();
+	            String jobloclist = "";
 	            StringBuilder locBuilder=new StringBuilder();
+	            StringBuilder joblocBuilder=new StringBuilder();
 	            StringBuilder expBuilder=new StringBuilder();
 		        orderedList.add(new ListItem(reqNameBuilder.append("Job Name :").append(requirement.getJobTitle()).toString()));
-		        orderedList.add(new ListItem(locBuilder.append("Location :").append(requirement.getCountry()).toString()));
+		        java.util.List<RequirementLocations> locationsList;
+		        try {
+					locationsList = requirementLocationService.getRequirementLocationsListByRequirementId(requirement.getId());
+					if(locationsList != null && !locationsList.isEmpty()) {
+						for(RequirementLocations locationsJob : locationsList) {
+							if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+								jobloclist = joblocBuilder.append(locationsJob.getLocation()).append("\n").append("         ").toString();
+
+							}
+						}
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				 orderedList.add(new ListItem(locBuilder.append("Location :").append(jobloclist).toString()));
+
+		        //orderedList.add(new ListItem(locBuilder.append("Location :").append(requirement.getCountry()).toString()));
 		        if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp()) && requirement.getMaxExp() !=null && !"".equalsIgnoreCase(requirement.getMaxExp())){
 			        orderedList.add(new ListItem(expBuilder.append("Experience :").append(requirement.getMinExp()).append("-").append(requirement.getMaxExp()).toString()));
 				}else if(requirement.getMinExp() != null && !"".equalsIgnoreCase(requirement.getMinExp())){

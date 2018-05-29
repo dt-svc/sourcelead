@@ -1,0 +1,6 @@
+SET SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `TEMPLATE_TYPE`='org' WHERE UNIQUE_SCENARIO_NAME IN ('Timesheet Scheduler','Release Mechanism','Requirement Posting','AssignToTeamMembers','Forward the Mail','VendorAcceptedOffer','Timesheet Scheduler Level1 Manager','ApplicantWillReceiveMailAboutTheAcceptanceOfRequirementByManager','Task Mechanism',
+'Editprojecttomanager','Editprojecttoteammember','ModifiedRequirementStatusMailtoVendorContact','HotListAlertMail','UserRoleChanged','UserNewActionAssigned','UserNewActionAssignedAsaApprover','UserNewActionAssignedAsaReportingManager','UserNewActionAssignedAsaTeamOwnerUser','UserNewActionAssignedAsaProjectApproverUser','InvoiceClientPayableEmail','InvoiceAcceptMailtoClient',
+'InvoiceAcceptMailtoVendor','InvoiceRejectMailtoVendor','InvoiceRejectMailtoClient','CandidateInvitation','ProposeNewTime','VendorProposeNewTime','ApplicantAuthorizationManagerAcceptance','OffBoardingProcessApplicantTermination','RequestForDocumentsToCandidates','InvoiceClientPayableReminderEmail','InvoiceClientReceivableReminderEmail','entity_type_rescheduled_email','OffBoardingProcessMailToReportingManager','OffBoardingApplicantDealayProcess','UserTerminatedEmail',
+'ApplicantAcceptOffer','ApplicantRejectOffer','SpocPointOfContatChangeEmail','HolidayRemainder','LoginOTPEmail','MailtoAssignEmployeeinProjecttask');
+SET SQL_SAFE_UPDATES=1;

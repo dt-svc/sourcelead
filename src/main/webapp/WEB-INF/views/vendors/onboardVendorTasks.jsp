@@ -34,7 +34,7 @@ function getVendorOnboardTasksList(){
 	        				 priority = "--";
 	        			 }
 	        			 result = result +'<ul id="task'+opt.id+'">';
-		        		 result = result +'<li>Subject : '+opt.subject+'</li>';
+		        		 result = result +'<li>Subject : <span title="'+opt.subject+'">'+opt.subject+'</span></li>';
 		        		 result = result +'<li><i class="fa fa-star-o"></i>Priority : '+priority+'</li>';
 		        		 result = result +'<li><i class="fa fa-clock-o"></i>Task Date : '+opt.vendorTaskDateStr+'</li>';
 		        		 
@@ -75,7 +75,7 @@ function changeTaskStatus(taskId){
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/changeVendorOnboardTaskStatus?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
 	         success: function(result) {
-	        	 $("#tasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        	 $("#tasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        	 $("#tasksLoading").removeAttr("style");
 	        }
 	 });
@@ -88,7 +88,7 @@ function saveAndFinishVendorOnbord(){
 	var vendorOnboardId = '${vendorOnboardId}';
 	var notificationUUID = '${notificationUUID}';
 	
-	$("#tasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#tasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/validateVendorOnboardRequiredAttachedDocuments?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 

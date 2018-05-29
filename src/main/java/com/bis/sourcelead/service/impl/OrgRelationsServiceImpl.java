@@ -73,6 +73,12 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		List<OrgRelations> emplist= orgRelationsDao.getAllClientsByOrgLocationId(orgLocationId);
 		return emplist;
 	}
+	
+	@Override
+	public OrgRelations getClientsByOrgLocationIdAndName(Long orgLocationId, String name) throws Exception {
+		OrgRelations client= orgRelationsDao.getClientsByOrgLocationIdAndName(orgLocationId, name);
+		return client;
+	}
 
 	@Override
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception {
@@ -133,10 +139,27 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			}else{
 				orgRelations.setInitiatorType("Client"); 
 				orgRelations.setResponderType("Vendor");
-				orgRelations.setVendorRelationStatus("Draft");
-				orgRelations.setIsVendorDetailsFilled(Constants.YES);
-				orgRelations.setIsVendorDocumentsFilled(Constants.NO);
-				orgRelations.setIsVendorTasksFilled(Constants.NO);
+				if (StringUtils.isNotBlank(clientDTO.getIsLawFirm()) && clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
+						orgRelations.setIsLawFirm(Constants.YES);
+				} else {
+					orgRelations.setIsLawFirm(Constants.NO);
+				}
+				if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
+						orgRelations.setIsAccountingFirm(Constants.YES);
+				} else {
+					orgRelations.setIsAccountingFirm(Constants.NO);
+				}
+				if(StringUtils.isNotBlank(clientDTO.getClientSaveFromType()) && "BulkVendorSaving".equalsIgnoreCase(clientDTO.getClientSaveFromType())){
+					orgRelations.setVendorRelationStatus("Sent");
+					orgRelations.setIsVendorDetailsFilled(Constants.YES);
+					orgRelations.setIsVendorDocumentsFilled(Constants.YES);
+					orgRelations.setIsVendorTasksFilled(Constants.YES);
+					}else{
+					orgRelations.setVendorRelationStatus("Draft");
+					orgRelations.setIsVendorDetailsFilled(Constants.YES);
+					orgRelations.setIsVendorDocumentsFilled(Constants.NO);
+					orgRelations.setIsVendorTasksFilled(Constants.NO);
+					}
 				
 				 if(clientDTO.getTemplateId() != null && clientDTO.getTemplateId().size() > 0){
 				    	StringBuilder templateIds = new StringBuilder();
@@ -360,10 +383,10 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				 }else{
 					 StringBuilder spocNameSB = new StringBuilder();
 					 orgSpoc.setSpocEmail(orgSpoc.getVendorUser().getEmail());
-					 if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
-							spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString(); 
+					 if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
+							spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString(); 
 						 }else{
-							spocNameSB.append(orgSpoc.getClientUser().getFirstName());
+							spocNameSB.append(orgSpoc.getVendorUser().getFirstName());
 						 }
 					 orgSpoc.setSpocName(spocNameSB.toString());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getVendorUser().getMobilePhone());
@@ -532,6 +555,11 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	public List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId, String type) {
 		return orgRelationsDao.getClientOrVendorListByOrgLocationId(orgLocationId, type);
 	}
+	
+	@Override
+	public List<OrgRelations> getClientOrVendorListByOrgLocationIdForImmigration(Long orgLocationId, String type) {
+		return orgRelationsDao.getClientOrVendorListByOrgLocationIdForImmigration(orgLocationId, type);
+	}
 
 	@Override
 	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception {
@@ -556,9 +584,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	}
 
 	@Override
-	public OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId, Long locationId)
+	public OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long locationId, Long responderLocationId)
 			throws Exception {
-		return orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(responderLocationId, locationId);
+		return orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(locationId, responderLocationId);
 	}
 
 	@Override
@@ -578,6 +606,12 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		ResponseList<OrgSpoc> vandorContactList = orgRelationsDao.getAllVendorsContactFilterListByOrgLocationIdAndTabAccessDTO(orgSpocDTO,loginUserId, userIds, orgLocationId, relationType, vendorStatus, Long.valueOf(Constants.TAB_REQUIREMENT), vendorOrgLocationsIds);
 		return vandorContactList;
 	 
+	}
+
+	@Override
+	public OrgRelations getOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId, Long locationId)
+			throws Exception {
+		return orgRelationsDao.getOrgRelationByResponderLocationIdAndLocationId(responderLocationId, locationId);
 	}
 	
 }

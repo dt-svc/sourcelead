@@ -11,10 +11,10 @@
     bottom: -26px;
 }
 </style>
-<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/light.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
 function getDayWiseReports(projectId){
@@ -29,6 +29,8 @@ function getDayWiseReports(projectId){
 		overdueTask(projectId,reportType,"","");
 		tasksprogressChart(projectId,reportType,"","");
 		budgetStatusReport(projectId,reportType,"","");
+		timesheetReport(projectId,reportType,"","");
+		expensesReport(projectId,reportType,"","");
 		document.getElementById("projectReportDiv").style.display="none";
 		document.getElementById("tasksStatusCoutnDiv").style.display="block";
 	}
@@ -39,10 +41,13 @@ function submitBtn(projectId){
 		var reportType = $("#filterDates").val();
 		var startDate = $("#startDate").val();
 		var endDate = $("#endDate").val();
-		stackTaskReport(projectId,reportType,startDate,endDate);
+		taskReports(projectId,reportType,startDate,endDate);
+// 		stackTaskReport(projectId,reportType,startDate,endDate);
 		overdueTask(projectId,reportType,startDate,endDate);
 		tasksprogressChart(projectId,reportType,startDate,endDate);
 		budgetStatusReport(projectId,reportType,startDate,endDate);
+		timesheetReport(projectId,reportType,startDate,endDate);
+		expensesReport(projectId,reportType,startDate,endDate);
 	}
 	$('body').on('blur', '#projectTasksReports_form', function() {
 		$("#projectTasksReports_form").showHelpOnFocus();
@@ -64,13 +69,25 @@ function submitBtn(projectId){
 			
 				result = result + ' <div class="col-md-2 dropdown-select">';
 				result = result + ' <select class="form-control" onChange="getDayWiseReports('+projectId+')" id="filterDates">';
+				result = result + '	<option value="Last_7_days">Last 7 days</option>';
+		        result = result + ' <option value="Last_15_days">Last 15 days</option>';
+		        result = result + ' <option value="1_month" selected>1 month</option>';
+		        result = result + ' <option value="3_months">3 months</option>';
+		        result = result + ' <option value="YTD" >YTD</option>';
+				result = result + '   <option value="upToDate" >UpToDate</option>';
+		        result = result + ' <option value="Last_Year">Last Year</option>';
+		        result = result + ' <option value="custom">Custom</option>';
+		        
+	            /* 
 				result = result + '   <option value="today">Today</option>';
 				result = result + '   <option value="yesterday">Yesterday</option>';
 				result = result + '   <option value="week">1 Week ago</option>';
 				result = result + '   <option value="twoweeks">2 Weeks ago</option>';
 				result = result + '   <option value="month" selected>1 Month ago</option>';
 				result = result + '   <option value="twomonths">2 Months ago</option>';
-				result = result + '    <option value="custom">Custom</option> ';
+				result = result + '   <option value="YTD" >YTD</option>';
+				result = result + '   <option value="upToDate" >UpToDate</option>';
+				result = result + '    <option value="custom">Custom</option> '; */
 				result = result + ' </select>';
 				result = result + ' </div>';
 				
@@ -165,7 +182,7 @@ function submitBtn(projectId){
 			
 			/* ================== Expenses and Timesheet reports =============== */
 			
-			/* result = result + '	<div class="clearfix mt">';
+		    result = result + '	<div class="clearfix mt">';
 			result = result + '    <div class="col-md-6">';
 			result = result + '     <div class="projectDashboad clearfix positionRelative">';
 			result = result + '         <h4>Expenses</h4>';
@@ -177,54 +194,32 @@ function submitBtn(projectId){
 			result = result + '         <h4>Timesheet</h4>';
 			result = result + '        <div id="timesheet-report" style="width: 100%; height: 150px;" class="clearfix"></div>';
 			result = result + '         <div class="timesheet-list">';
-			result = result + '             <div class="row clearfix">';
-			result = result + '                 <label class="col-md-8"><strong>Total Hours:</strong></label>';
-			result = result + '                 <div class="col-md-4">2000</div>';
-			result = result + '             </div>';
-			result = result + '             <div class="row clearfix">';
-			result = result + '                 <label class="col-md-8"><strong>Billable:</strong></label>';
-			result = result + '                 <div class="col-md-4">1500</div>';
-			result = result + '             </div>';
-			result = result + '             <div class="row clearfix">';
-			result = result + '                 <label class="col-md-8"><strong>Non Billable:</strong></label>';
-			result = result + '                 <div class="col-md-4">500</div>';
-			result = result + '             </div>';
 			result = result + '         </div>';
+			
 			result = result + '     </div>';
 			result = result + '    </div>';
 			result = result + ' </div>';
-			 */
+			 
 			
 			/* =================   Budget Status  ================  */
-			/* result = result + '	<div class="clearfix mt">';
-			result = result + '  <div class="col-md-6">';
+			result = result + '	<div class="clearfix mt">';
+			result = result + '  <div class="col-md-6 mb">';
 			result = result + '      <div class="projectDashboad-widget">';
 			result = result + '  <div class="clearfix projectDashboad-header">';
 			result = result + '    <h4>Budget Status</h4>';
 			result = result + '    <p>Track budget and manage work proactively</p>';
 			result = result + '  </div>';
-			result = result + '          <div class="row">';
-			result = result + '          <div class="col-md-6">';
-			result = result + '              <label class="form-control-static">Remaining Budget: <span class="paddingLeft"><strong>$ 25000</strong></span></label>';
-			result = result + '              <div id="budgetStatus" style="height: 180px; width: 100%;">';
-			result = result + '              </div>';
-			result = result + '          </div>';
-			result = result + '          <div class="col-md-6">';
-			result = result + '              <p class="form-control-static">Remaining Hours: <span class="paddingLeft"><strong>20 Hours</strong></span></p>';
-			result = result + '              <div id="hoursStatus" style="height: 180px; width: 100%;">';
-			result = result + '              </div>';
-			result = result + '          </div>';
-			result = result + '      </div>';
+			result = result + '  <div id="budgetStatusDivId"></div>';
 			result = result + '  </div>';
-			result = result + '      </div>'; */
+			result = result + '      </div>';  
 			
-			
+			result = result + '	<div class="clearfix"></div>';
 			
 			
 			
 			/* =============== Overdue Work Items =============== */
 			
-		/* 	result = result + '      <div class="col-md-3">';
+		 	/* result = result + '      <div class="col-md-3">';
 			result = result + '     <div class="projectDashboad-widget">';
 			result = result + '      <div class="clearfix projectDashboad-header">';
 			result = result + '        <h4>Top 5 Taskminators</h4>';
@@ -235,7 +230,7 @@ function submitBtn(projectId){
 			result = result + '                 <div class="media">';
 			result = result + '                     <div class="media-left">';
 			result = result + '                     <a href="#">';
-			result = result + '                         <img alt="64x64" class="media-object" style="width: 25px; height: 25px;" title="" src="resources/images/userprofile-img.png">';
+			result = result + '                         <img alt="64x64" class="media-object" style="width: 25px; height: 25px;" title="" src="/resources/images/userprofile-img.png">';
 			result = result + '                     </a>';
 			result = result + '                     </div>';
 			result = result + '                     <div class="media-body">';
@@ -250,10 +245,10 @@ function submitBtn(projectId){
 			result = result + '              </div>';
 			result = result + '          </div>';
 			result = result + '     </div>';
-			result = result + '  </div>'; */
+			result = result + '  </div>';  */
 			
 			/* ==================  Overdue Work Items ================  */
-			/* result = result + '	<div class="col-md-3">'; 
+			 /* result = result + '	<div class="col-md-3">'; 
 			result = result + '	  <div class="projectDashboad-widget">';
 			result = result + '	    <div class="clearfix projectDashboad-header">';
 			result = result + '	      <h4>Top 5 Bugminators</h4>';
@@ -262,7 +257,7 @@ function submitBtn(projectId){
 			result = result + '	    <div class="OverdueWorkItems" style="height: 225px; width: 100%;">';
 			result = result + '	      <div class="column-data clearfix mt scroll-pane">';
 			result = result + '	        <div class="media">';
-			result = result + '	          <div class="media-left"> <a href="#"> <img alt="64x64" class="media-object" style="width: 25px; height: 25px;" title="" src="resources/images/userprofile-img.png"> </a> </div>';
+			result = result + '	          <div class="media-left"> <a href="#"> <img alt="64x64" class="media-object" style="width: 25px; height: 25px;" title="" src="/esources/images/userprofile-img.png"> </a> </div>';
 			result = result + '	          <div class="media-body">';
 			result = result + '	            <div class="taskminators-txt">';
 			result = result + '	              <p title="Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque.  "> Cras sit amet nibh libero. </p>';
@@ -272,7 +267,7 @@ function submitBtn(projectId){
 			result = result + '	      </div>';
 			result = result + '	    </div>';
 			result = result + '	  </div>';
-			result = result + '	</div>'; */
+			result = result + '	</div>';  */
 			
 			
 			
@@ -292,14 +287,6 @@ function submitBtn(projectId){
 			$("#tab-5").append(result);
 			$("#tab-5").show();
 
-// 			taskReports(projectId,reportType,startDate,endDate);
-			expensesReport();
-			timesheetReport();
-// 			budgetStatusReport();
-// 			hoursStatusReport();
-// 			tasksprogressChart(projectId);
-// 			overdueTask(projectId);
-			
 			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 			  var finalDateFormatRepo = '';
 			  if(locationDate.match("yyyy-MM-dd")){
@@ -551,12 +538,12 @@ function getDonutChartDetails(data){
 				"type": "pie",
 				"adjustPrecision": true,
 				"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b>([[percents]]%)</span>",
-				"innerRadius": "70%",
-				"labelRadius": -25,
+				"innerRadius": "80%",
+				"labelRadius": -20,
 				"labelText": "",
 				"pieX": "50%",
-				"pieY": "50%",
-				"pullOutRadius": "5%",
+				"pieY": "40%",
+				"pullOutRadius": "9%",
 				"startRadius": "0%",
 				"alpha": 0,
 				"alphaField": "column-1",
@@ -828,148 +815,7 @@ function getDonutChartDetails(data){
 		});
 }
 </script>
- <script>
- function expensesReport(){
-	//Expenses pie chart: 
-     AmCharts.makeChart("expenses-report",
-{
-	"type": "pie",
-	"adjustPrecision": true,
-	"balloonText": "[[title]] <br> $  [[value]]",
-	"gradientType": "linear",
-	"innerRadius": "60%",
-	"labelRadius": 0,
-	"labelText": "[[title]]:[[percents]]%",
-	"minRadius": 0,
-	"pieX": "35%",
-	"pieY": "50%",
-	"radius": "48%",
-	"colors": [
-		"#a9cf55",
-		"#3fc4df",
-		"#f26950"
-	],
-	"labelsEnabled": false,
-	"marginBottom": 0,
-	"marginTop": 0,
-	"maxLabelWidth": 100,
-	"tabIndex": -2,
-	"titleField": "category",
-	"valueField": "column-1",
-	"visibleInLegendField": "column-1",
-	"fontSize": 12,
-	"handDrawScatter": 0,
-	"handDrawThickness": 0,
-	"percentPrecision": 0,
-	"allLabels": [],
-	"balloon": {
-		"fixedPosition": false
-	},
-	"legend": {
-		"enabled": true,
-		"accessibleLabel": " [[title]]",
-		"marginLeft": 0,
-		"marginRight": 0,
-		"markerLabelGap": 10,
-		"markerSize": 12,
-		"position": "left",
-		"spacing": 0,
-		"valueText": "$ [[value]]"
-	},
-	"titles": [],
-	"dataProvider": [
-		{
-			"category": "Approved",
-			"column-1": "4000"
-		},
-		{
-			"category": "Submitted",
-			"column-1": "2000"
-		},
-		{
-			"category": "Rejected",
-			"column-1": "1000"
-		}
-	]
-}		);
-	 
- }
- </script>
- <script>
- function timesheetReport() {
- AmCharts.makeChart("timesheet-report",
-	{
-		"type": "pie",
-		"adjustPrecision": true,
-		"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b>Hrs</span>",
-		"innerRadius": "60%",
-		"labelRadius": -25,
-		"minRadius": 0,
-		"pieX": "25%",
-		"pieY": "50%",
-		"pullOutRadius": "0%",
-		"radius": "48%",
-		"startRadius": "0%",
-		"alpha": 0,
-		"alphaField": "column-1",
-		"colors": [
-			"#a9cf55",
-			"#ffce42",
-			"#3fc4df",
-			"#f26950"
-		],
-		"descriptionField": "category",
-		"labelsEnabled": false,
-		"marginBottom": 0,
-		"marginTop": 0,
-		"outlineThickness": 7,
-		"pullOutDuration": 0,
-		"pullOutOnlyOne": true,
-		"startAlpha": 1,
-		"titleField": "category",
-		"valueField": "column-1",
-		"handDrawScatter": 20,
-		"handDrawThickness": 10,
-		"percentPrecision": 0,
-		"allLabels": [],
-		"balloon": {},
-		"legend": {
-			"enabled": true,
-			"combineLegend": true,
-			"labelWidth": 75,
-			"marginRight": 0,
-			"markerLabelGap": 10,
-			"markerSize": 15,
-			"periodValueText": "",
-			"position": "left",
-			"tabIndex": 1,
-			"top": 0,
-			"valueText": "[[value]] hrs",
-			"width": 200
-		},
-		"titles": [],
-		"dataProvider": [
-			{
-				"category": "Approved",
-				"column-1": "150"
-			},
-			{
-				"category": "Submitted",
-				"column-1": "200"
-			},
-			{
-				"category": "Saved",
-				"column-1": "50"
-			},
-			{
-				"category": "Rejected",
-				"column-1": "10"
-			}
-		]
-	}
-);
- }
- </script>
+ 
  
  <script>
  function budgetStatusReport(projectId,reportType,startDate,endDate){
@@ -977,6 +823,28 @@ function getDonutChartDetails(data){
 	        type : "POST",
 	         url: sourceleadUrl+"/ProjectTasks/geBudgetStatusReport?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
 	         success :function(data) {
+	        	 var remainingBudget  = data.budgetTotal - data.actualBudget;
+	        	 var  remainingHours  = data.estimatedHours - data.actualHours;
+	        	 if(data.currency != null && data.currency != "" && data.currency != "undefined"){
+	        		 currency = data.currency;
+	        	 }else{
+	        		 currency = "";
+	        	 }
+	        	 var result = ""
+	        	result = result + '          <div class="row">';
+	 			result = result + '          <div class="col-md-6">';
+	 			result = result + '              <label class="form-control-static">Remaining Budget: <span class="paddingLeft"><strong>'+currency+' '+remainingBudget+'</strong></span></label>';
+	 			result = result + '              <div id="budgetStatus" style="height: 180px; width: 100%;">';
+	 			result = result + '              </div>';
+	 			result = result + '          </div>';
+	 			result = result + '          <div class="col-md-6">';
+	 			result = result + '              <p class="form-control-static">Remaining Hours: <span class="paddingLeft"><strong>'+remainingHours+' Hours</strong></span></p>';
+	 			result = result + '              <div id="hoursStatus" style="height: 180px; width: 100%;">';
+	 			result = result + '              </div>';
+	 			result = result + '          </div>';
+	 			result = result + '      </div>';
+	 			$("#budgetStatusDivId").empty();
+	 			$("#budgetStatusDivId").append(result);
 	        	 budgetTotal(data)
 	        	 hoursStatusReport(data);
 	         }
@@ -985,21 +853,23 @@ function getDonutChartDetails(data){
  function budgetTotal(data){
 	 var budgetTotal = "";
 	 var currency = "";
-	 if(data.budgetTotal != null && data.budgetTotal != '' && data.budgetTotal != 'undefined'){
-		 budgetTotal = data.budgetTotal;
-	 }
 	 if(data.currency != null && data.currency != '' && data.currency !='undefined'){
 		 currency = data.currency;
 	 }
+	 if(data.invoiceCurrency != null && data.invoiceCurrency != "" && data.invoiceCurrency != "undefined"){
+		 invoiceCurrency = data.invoiceCurrency;
+	 }else{
+		 invoiceCurrency = "";
+	 }
 	 var totalBudgetChart  = [
 			{
-				"category": ""+currency+" "+budgetTotal+" <br> Budget",
-				"column-1": "50",
+				"category": ""+currency+" "+data.budgetTotal+" <br> Budget",
+				"column-1": data.budgetTotal,
 				"color": "#42a5f5"
 			},
 			{
-				"category": "$ 175000 <br> Expended",
-				"column-1": "50",
+				"category": ""+invoiceCurrency+" "+data.actualBudget+" <br> Expended",
+				"column-1": data.actualBudget,
 				"color": "#e57373"
 			}
 		];
@@ -1058,12 +928,12 @@ function getDonutChartDetails(data){
 	 var budgetHours = [
 			{
 				"category": ""+data.estimatedHours+" <br> Estimated Hours",
-				"column-1": "50",
+				"column-1": data.estimatedHours,
 				"color": "#42a5f5"
 			},
 			{
-				"category": "180 <br> Actual Hours",
-				"column-1": "30",
+				"category": ""+data.actualHours+" <br> Actual Hours",
+				"column-1": data.actualHours,
 				"color": "#e57373"
 			}
 		];
@@ -1268,11 +1138,15 @@ function getTaskPercentge(data){
 					result = result + '                       <div class="text-center">';
 					
 					if(report.taskAssignedUsers.length == 0){
-						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="resources/images/qmrk-userImg.png" title="Not Assigned">';
+						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="/resources/images/qmrk-userImg.png" title="Not Assigned">';
 					}else if(report.taskAssignedUsers.length == 1){
-						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src='+report.userFileUrl+' title="'+report.userName+'">';
+						if(report.userFileUrl != null){
+							result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src='+report.userFileUrl+' title="'+report.userName+'">';
+						}else{
+							result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="/resources/images/userprofile-img.png" title="'+report.userName+'">';
+						}
 					}else {
-						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="resources/images/multiuser.png" title="'+report.taskAssignedUsers+'">';
+						result = result + '       <img class="media-object" style="width: 25px; height: 25px;" src="/resources/images/multiuser.png" title="'+report.taskAssignedUsers+'">';
 					}
 					 
 					result = result + '                        </div>';
@@ -1298,3 +1172,154 @@ function getTaskPercentge(data){
 		});
  }
  </script>
+ 
+ <script>
+ function timesheetReport(projectId,reportType,startDate,endDate){
+	 $.post(sourceleadUrl+"/ProjectTasks/getTimesheetTotatalHoursByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(data) {
+		 timesheetReportChart(data);
+	 });
+ }
+ </script>
+ <script>
+ function timesheetReportChart(data) {
+ AmCharts.makeChart("timesheet-report",
+		 {
+		"type": "pie",
+		"adjustPrecision": true,
+		"balloonText": "[[title]]: <span style='font-size:14px'>[[value]]</span> hrs<br>Billable:   <span style='font-size:14px'>[[billable]]</span> hrs<br>Non-Billable:  <span style='font-size:14px'> [[nonBillable]]</span> hrs",
+		"innerRadius": "60%",
+		"labelRadius": -25,
+		"minRadius": 0,
+		"pieX": "50%",
+		"pieY": "50%",
+		"pullOutRadius": "0%",
+		"radius": "48%",
+		"startRadius": "0%",
+		"alpha": 0,
+		"alphaField": "column-1",
+		"colors": [
+			"#a9cf55",
+			"#ffce42",
+			"#3fc4df",
+			"#f26950"
+		],
+		"descriptionField": "category",
+		"labelsEnabled": false,
+		"marginBottom": 0,
+		"marginTop": 0,
+		"outlineThickness": 7,
+		"pullOutDuration": 0,
+		"pullOutOnlyOne": true,
+		"startAlpha": 1,
+		"titleField": "category",
+		"valueField": "column-1",
+		"accessibleTitle": "",
+		"handDrawScatter": 20,
+		"handDrawThickness": 10,
+		"percentPrecision": 0,
+		"allLabels": [],
+		"balloon": {},
+		"legend": {
+			"enabled": true,
+			"combineLegend": true,
+			"labelWidth": 75,
+			"marginRight": 0,
+			"markerLabelGap": 10,
+			"markerSize": 15,
+			"periodValueText": "",
+			"position": "left",
+			"tabIndex": 1,
+			"top": 0,
+			"valueText": "[[value]] hrs",
+			"width": 200
+		},
+		"titles": [],
+		"dataProvider": [
+			{
+				"category": "Approved",
+				"column-1": data.approvedHours,
+				"billable": data.approvedBillableHours,
+				"nonBillable": data.approvedNonBillableHours
+			},
+			{
+				"category": "Submitted",
+				"column-1": data.submittedHours,
+				"billable": data.submittedBillableHours,
+				"nonBillable": data.submittedNonBillableHours
+			},
+			{
+				"category": "Saved",
+				"column-1": data.savedHours,
+				"billable": data.savedBillableHours,
+				"nonBillable": data.savedNonBillableHours
+			},
+			{
+				"category": "Rejected",
+				"column-1": data.rejectedHours,
+				"billable": data.rejectedBillableHours,
+				"nonBillable": data.rejectedNonBillableHours
+			}
+		]
+	}
+);
+ }
+ </script>
+ 
+ 
+ 
+ <script>
+ function expensesReport(projectId,reportType,startDate,endDate){
+	 $.post(sourceleadUrl+"/ProjectTasks/getExpensesByProjectId?"+tokenParamName+"="+tokenValue+"&projectId="+projectId+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, function(data) {
+		 expensesReportCahrt(data);
+	 });
+ }
+ </script>
+ <script>
+ function expensesReportCahrt(data){
+     AmCharts.makeChart("expenses-report", {
+ 		"type": "pie",
+ 		"balloonText": "[[title]] <br> $  [[value]]",
+ 		"innerRadius": "60%",
+ 		"labelText": "",
+ 		"pieX": "50%",
+ 		"pieY": "50%",
+ 		"radius": "45%",
+ 		"colorField": "color",
+ 		"colors": [],
+ 		"titleField": "category",
+ 		"valueField": "column-1",
+ 		"allLabels": [],
+ 		"balloon": {
+ 			"fixedPosition": false
+ 		},
+ 		"legend": {
+ 			"enabled": true,
+ 			"align": "center",
+ 			"markerLabelGap": 10,
+ 			"markerSize": 12,
+ 			"position": "left",
+ 			"valueText": "$ [[value]]"
+ 		},
+ 		"titles": [],
+ 		"dataProvider": [
+ 			{
+ 				"category": "Approved",
+ 				"column-1": data.approvedAmount,
+ 				"color": "#a9cf55"
+ 			},
+ 			{
+ 				"category": "Submitted",
+ 				"column-1": data.submittedAmount,
+ 				"color": "#3fc4df"
+ 			},
+ 			{
+ 				"category": "Rejected",
+ 				"column-1": data.rejectedAmount,
+ 				"color": "#f26950"
+ 			}
+ 		]
+   });
+	 
+ }
+ </script>
+ 

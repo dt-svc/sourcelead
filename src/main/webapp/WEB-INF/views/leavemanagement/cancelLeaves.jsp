@@ -8,6 +8,12 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		getCancelledLeavesList();
+		if ('${notifyLink}' == "notifyLink") 
+		{
+		var leaveUUID = '${leaveUUID}';
+		var orgLocationId = '${orgLocationId}';
+		getRequestedAproveSummary(leaveUUID,orgLocationId);
+		}
 	});
 </script>
 
@@ -18,7 +24,7 @@
 			<h2>Cancelled</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">
 				Home</a> &raquo; Cancelled Leaves
 		</div>
 	</section>
@@ -69,7 +75,7 @@
 		$("#loading")
 				.attr(
 						'style',
-						'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+						'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 
 		$
 				.get(
@@ -77,7 +83,8 @@
 								+ tokenParamName + "=" + tokenValue
 								+ "&orgLocationId=" + orgLocationId
 								+ "&status=CANCELLED&userId=" + userId,
-						function(json) {
+						function(response) {
+						if (response.response === "SUCCESS") {
 							var result = "";
 							result = result
 									+ '<table id="cancelledListTable" class="display" cellspacing="0" width="100%" >';
@@ -94,10 +101,10 @@
 							result = result + '</tr>';
 							result = result + '</thead>	';
 							result = result + '<tbody>';
-							var data = json.data;
-							if (data != null && data != '') {
-								for (var i = 0; i < data.length; i++) {
-									var opt = data[i];
+							//var data = json.data;
+							if (response != null && response != '') {
+								for (var i = 0; i < response.data.length; i++) {
+									var opt = response.data[i];
 									result = result + ' <tr>';
 									result = result + ' <td>';
 									result = result
@@ -106,7 +113,7 @@
 											+ '     <div class="pull-left tbldata-dotdot-me" title="'
 											+ opt.leaveType
 											+ '" onclick="getRequestedAproveSummary(\''
-											+ opt.id
+											+ opt.leaveUUID
 											+ '\','
 											+ orgLocationId
 											+ ');">'
@@ -213,23 +220,33 @@
 										$("body").css('overflow-y', 'auto');
 										$('.addcandidate-popup').fadeOut(200);
 									});
+						}else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+					    } else if (response.response === "AWKWARD") {
+						    location.href = "/errorPage";
+					     }
+						else {
+						    showError("Operation failed, please try again");
+						}
 						});
 	}
 </script>
 
 <script>
-	function getRequestedAproveSummary(leaveId, orgLocationId) {
+	function getRequestedAproveSummary(leaveUUID, orgLocationId) {
 		$.get(
 						sourceleadUrl + "/getRequestedAproveSummary?"
 								+ tokenParamName + "=" + tokenValue
-								+ "&leaveId=" + leaveId + "&orgLocationId="
+								+ "&leaveUUID=" + leaveUUID + "&orgLocationId="
 								+ orgLocationId,
-						function(data) {
-							if (data != null) {
+						function(response) {
+							if(response.response === "SUCCESS") {
+								   if(response != null){
 								$(".new_side_wrap").addClass(
 										"new_side_wrap_active");
 								$(".side_mask").fadeIn(200);
 								$("body").css('overflow-y', 'hidden');
+								var data = response.object;
 								var result = "";
 								result = result
 										+ ' <div class="viewgrid-header pull-right zIndex positionRelative">';
@@ -253,8 +270,8 @@
 								result = result
 										+ '<label class="col-md-2 control-label"><b>Leave Type:</b></label>';
 								result = result + '<div class="col-md-8">';
-								if(data.leaveType != null && data.leaveType !='' && data.leaveType !='undefined'){
-									 result = result +'<span>'+data.leaveType+'</span>';
+								if(data.leaveName != null && data.leaveName !='' && data.leaveName !='undefined'){
+									 result = result +'<span>'+data.leaveName+'</span>';
 								 }else{
 						            	result = result +' <span>--</span>';
 						            }
@@ -286,8 +303,8 @@
 								result = result
 										+ '<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
 								result = result + ' <div class="col-md-8">';
-								if(data.leavesTaken != null && data.leavesTaken !='' && data.leavesTaken !='undefined'){
-									 result = result +'<span>'+data.leavesTaken+'</span>';
+								if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
+									 result = result +'<span>'+data.actualLeavesTaken+'</span>';
 								 }else{
 						            	result = result +' <span>--</span>';
 						            }
@@ -408,6 +425,17 @@
 								$("#leaveSummaryId").append(result);
 
 							}
+							   } else if (response && response.response === "INVALID_DATA") {
+									//$(".new_side_wrap").removeClass("new_side_wrap_active");
+					   		    showError(response.responseMessage);
+							   } else if (response.indexOf('Sign In') !== -1) {
+									location.replace(sourceleadUrl);
+							    } else if (response.response === "AWKWARD") {
+								    location.href = "/errorPage";
+							     }
+								else {
+								    showError("Operation failed, please try again");
+								}   
 
 						});
 	}

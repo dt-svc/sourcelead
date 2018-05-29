@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -19,8 +20,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.json.JSONException;
@@ -33,9 +40,13 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.ProjectApproverHierarchyDao;
+import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.ProjectsDao;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ClientProjectDTO;
+import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -43,37 +54,60 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Expenses;
+import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
+import com.bis.sourcelead.entity.Leave;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.LookUpData;
+import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
+import com.bis.sourcelead.entity.ProjectCustomFieldData;
+import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocuments;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
+import com.bis.sourcelead.entity.ProjectMembersRateHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.ExpensesApprovalService;
+import com.bis.sourcelead.service.ExpensesService;
+import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrglocationFormFieldsService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectCustomFieldDataService;
+import com.bis.sourcelead.service.ProjectDocumentFolderService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
+import com.bis.sourcelead.service.ProjectMembersRateHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
@@ -82,15 +116,18 @@ import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.UniversalSearchHelper;
 import com.bis.sourcelead.web.RegistrationController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@SuppressWarnings("unchecked")
 @Service
 public class ProjectsServiceImpl implements ProjectsService{
 	
@@ -101,6 +138,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 	
 	@Autowired
 	HttpServletRequest request;
@@ -154,13 +194,16 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 private SourceleadPasswordEncoder sourceleadPasswordEncoder;
 	 
 	 @Autowired
-	 private ProjectTasksService tasksService;
+	 private LookUpDataService lookUpDataService;
 	 
 	 @Autowired
 	 private ProjectTasksService projectTasksService;
 	 
 	 @Autowired
 	 private TimesheetSubmissionsService timesheetSubmissionsService;
+	 
+	 @Autowired
+	 private ExpensesService expensesService;
 	 
 	 @Autowired
 	 private ProjectsIndexHelper projectsIndexHelper;
@@ -180,7 +223,45 @@ public class ProjectsServiceImpl implements ProjectsService{
      @Autowired
      ProjectBudgetService projectBudgetService;
      
+	 @Autowired
+	 ProjectDocumentFolderService projectDocumentFolderService;
 	 
+	 
+	 @Autowired
+	 private OrglocationFormFieldsService orglocationFormFieldsService;
+	 
+	 @Autowired
+	 private ProjectCustomFieldDataService projectCustomFieldDataService;
+	 
+	 @Autowired
+	 private ProjectTasksDao tasksDao;
+	 
+	 @Autowired
+	 OrgSpocDao orgSpocDao;
+	 
+	 @Autowired
+	 CandidateService candidateService;
+	 
+	 @Autowired
+	 MasterCandidateService masterCandidateService;
+	 
+	 @Autowired
+	 ExpensesApprovalService expensesApprovalService;
+	 
+	 @Autowired
+	 ProjectMembersRateHistoryService projectMembersRateHistoryService;
+
+	private UserDTO userStatus;
+	
+	@Autowired
+	private PdfUtil pdfUtil;
+	
+	@Autowired
+	private LeaveTypeService leaveTypeService;
+	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioconService;
+	
 	 
 /*	 @Override
 		public String getProjectId(OrgLocations orgLocations) {
@@ -208,7 +289,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	public Projects saveProject(Projects projects) throws Exception{
 		logger.debug("In ProjectsServiceImpl class saveProject method...");
 		projects.setUpdatedDate(commonUtil.currentDate());
-		return projectsDao.saveProject(projects);
+		return  projectsDao.saveProject(projects);
 	}
 
 	@Override
@@ -351,13 +432,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 		projects =  projectsDao.getProjectById(Long.parseLong(projectsDTO.getProjectId()));
 	 	}else{
 	 		projects =  new Projects();
-	 		projects.setProjectSequeneNumber(projectsDTO.getProjectSequeneNumber().trim());
 	 		projects.setProjectUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 	 		projects.setIsDefaultProject(Constants.NO);
 	 	}
     	
     	projects.setProjectName(projectsDTO.getProjectName().trim());
-    	
+    	if(!isNullOrEmpty(projectsDTO.getProjectSequeneNumber())) {
+    		projects.setProjectSequeneNumber(projectsDTO.getProjectSequeneNumber().trim());
+    	}
     	
     	if(!isNullOrEmpty(projectsDTO.getProjectDescription())){
     	projects.setDescription(projectsDTO.getProjectDescription());
@@ -374,14 +456,16 @@ public class ProjectsServiceImpl implements ProjectsService{
     	
 		if(!isNullOrEmpty(projectsDTO.getInvoiceFrequency())){
 			projects.setInvoiceFrequency(projectsDTO.getInvoiceFrequency());
+			projects.setTimesheetFrequency(projectsDTO.getInvoiceFrequency());
 	    }else{
 	    	projects.setInvoiceFrequency(Constants.WEEKLY);
+	    	projects.setTimesheetFrequency(Constants.WEEKLY);
 	    }
 		
-		if(!isNullOrEmpty(projectsDTO.getTimeSheetFrequency())){
+		/*if(!isNullOrEmpty(projectsDTO.getTimeSheetFrequency())){
 			projects.setTimesheetFrequency(projectsDTO.getTimeSheetFrequency());
 		}
-		
+		*/
 		
 		if(!isNullOrEmpty(projectsDTO.getIsAllowFreelanceDevelopers())){
 			projects.setAllowFreeLance(BooleanUtils.toBoolean(projectsDTO.getIsAllowFreelanceDevelopers(),"Y",""));
@@ -401,8 +485,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setAllowOvertime(null);
 		}
 		
-		if(projectsDTO.getFlatPercentage() != null){
-			projects.setFlatPercent(projectsDTO.getFlatPercentage());
+		if(!projectsDTO.getFlatPercentage().isEmpty()){
+			projects.setFlatPercent(Double.parseDouble(projectsDTO.getFlatPercentage()));
 		}
 		
 		if(!isNullOrEmpty(projectsDTO.getFlatPercentageId())){
@@ -438,28 +522,39 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projects.setAllowBidding(null);
 		}
 		
+		
 		Set<ProjectDocuments> projDocDBList = new HashSet<>();
 		if(projectsDTO .getUploadedFileInfo() != null &&  !projectsDTO.getUploadedFileInfo().isEmpty()) {
-			List<FileInfo> projectDocumentsList = projectsDTO .getUploadedFileInfo();
-			for(FileInfo fileInfo : projectDocumentsList){
-				ProjectDocuments documents = new ProjectDocuments();
-				documents.setFileName(fileInfo.getFileName());
-				documents.setFileType(fileInfo.getContentType());
-				documents.setFileUrl(fileInfo.getFileURL());
-				documents.setStatus(Constants.CANDIDATE_ACTIVE);
-				documents.setProjects(projects);
-				projDocDBList.add(documents);
+			
+			Set<ProjectDocumentFolder> projectDocumentFolder = storeDocumentFolder(projects,user);
+			projects.setProjectDocumentFolder(projectDocumentFolder);
+			
+			//save documents
+			for(ProjectDocumentFolder pdf : projectDocumentFolder) {
+				List<FileInfo> projectDocumentsList = projectsDTO .getUploadedFileInfo();
+				for(FileInfo fileInfo : projectDocumentsList){
+					ProjectDocuments documents = new ProjectDocuments();
+					documents.setFileName(fileInfo.getFileName());
+					documents.setFileType(fileInfo.getContentType());
+					documents.setFileUrl(fileInfo.getFileURL());
+					documents.setStatus(Constants.CANDIDATE_ACTIVE);
+					documents.setProjects(projects);
+					documents.setProjectFolderId(pdf);
+					documents.setCreatedBy(user);
+					documents.setCreatedByName(user.getFullName());
+					documents.setCreatedDate(commonUtil.currentDate());
+					projDocDBList.add(documents);
+				}
 			}
+			
 			projects.setProjectDocuments(projDocDBList);
 	        for(FileInfo fileInfo : projectsDTO.getUploadedFileInfo()){
 				FileUploadUtil.moveFile(projectsDTO.getStaticPath(), fileInfo, "projects");
 			}
 		}
 		
-		if(projectsDTO.getEstimatedBudget() > 0 || projectsDTO.getEstimatedHours() > 0 || StringUtils.isNotBlank(projectsDTO.getBudgetApproverUser())) {
 			Set<ProjectBudget> projectBudget = storeProjectBudget(projectsDTO,user,projects);
 			projects.setProjectBudget(projectBudget);
-		}
 		
 		
 		if(!isNullOrEmpty(projectsDTO.getStatus())){
@@ -467,6 +562,8 @@ public class ProjectsServiceImpl implements ProjectsService{
     	}
 		if(StringUtils.isNotBlank(projectsDTO.getNotifyBudgetAt())) {
 			projects.setNotifyBudgetAt(projectsDTO.getNotifyBudgetAt());
+		}else {
+			projects.setNotifyBudgetAt(null);
 		}
 		projects.setProjectShortCode(projectsDTO.getProjectShortCode());
     	projects.setCreatedDate(commonUtil.currentDate());
@@ -480,10 +577,14 @@ public class ProjectsServiceImpl implements ProjectsService{
     	//save the default tasks
 	    if(projects.getId() == null){
 	    	Set<ProjectTasks>  projectTasksList = getDefaultTasksForProject(projects);
+	    	Set<ProjectTasks> leaveTypeTasksList  = getLeaveTasksForProjectBasedOnOrgLocationId(projects,loginOrgLocation);
+	    	if(leaveTypeTasksList != null && !leaveTypeTasksList.isEmpty()) {
+	    		projectTasksList.addAll(leaveTypeTasksList);
+	    	}
 			projects.setProjectTasks(projectTasksList);
 	    }
-		
-		Set<ProjectClients> projectClientsList = getProjectClientsForProject(projectsDTO,projects,loginOrgLocation,user);
+
+	    Set<ProjectClients> projectClientsList = getProjectClientsForProject(projectsDTO,projects,loginOrgLocation,user);
 		projects.setProjectClients(projectClientsList);
 		
 		
@@ -493,6 +594,26 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projects.setIsProjectMembersFilled(Constants.NO);
 		projects.setIsProjectAdditionalDetailsFilled(Constants.NO);
 		Projects updatedProjects = saveProject(projects);
+		
+		
+		if(projectsDTO.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:projectsDTO.getCustomFormData()) {
+				if(customFields != null && customFields.getCustomFormFieldId() > 0) {
+					ProjectCustomFieldData projectsCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						projectsCustomFields = projectCustomFieldDataService.getprojectFieldDataById(customFields.getEntityId());
+					}else {
+						projectsCustomFields = new ProjectCustomFieldData();
+					}
+				projectsCustomFields.setProjects(updatedProjects);
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				projectsCustomFields.setOrglocationsFormFields(orgFormField);
+				projectsCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				projectCustomFieldDataService.saveProjectCustomFieldData(projectsCustomFields);
+				}
+				
+			}	
+		}
 		
 		/*
 		 * Saving Project DB data as ElasticSearch Documents
@@ -504,34 +625,69 @@ public class ProjectsServiceImpl implements ProjectsService{
 		
 	}
 	
+	private Set<ProjectDocumentFolder> storeDocumentFolder(Projects projects, User user) throws Exception {
+		Set<ProjectDocumentFolder> projectDocumentFolderList = new HashSet<ProjectDocumentFolder>();
+		ProjectDocumentFolder pdf = null;
+		if(projects.getId() != null) {
+			pdf = projectDocumentFolderService.getProjectDocumentFolderByProjectId(projects.getId());
+		}
+		if(pdf == null){
+			pdf  = new ProjectDocumentFolder();
+		}
+		pdf.setProjectId(projects);
+		pdf.setFoderName("Default Folder");
+		pdf.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
+		pdf.setCreatedBy(user);
+		pdf.setCreatedDate(commonUtil.currentDate());
+		projectDocumentFolderList.add(pdf);
+		return projectDocumentFolderList;
+	}
+
 	private Set<ProjectBudget> storeProjectBudget(ProjectsDTO projectsDTO ,User user,Projects projects) throws  Exception {
 		ProjectBudget projectBudget = null;
-		 HashSet<ProjectBudget> projectBudgetList = new HashSet<ProjectBudget>(); 
-		if(projects.getId() != null) {
-			 projectBudget = projectBudgetService.getProjectBudgetsById(projects.getId());
-			 projectBudget.setUpdatedDate(new Date());
-			 projectBudget.setUpdateUserId(user);
+		HashSet<ProjectBudget> projectBudgetList = new HashSet<ProjectBudget>(); 
+		if(projectsDTO.getEstimatedBudget() > 0 || projectsDTO.getEstimatedHours() > 0 || StringUtils.isNotBlank(projectsDTO.getBudgetApproverUser())) {
+			if(projects.getId() != null) {
+				projectBudget = projectBudgetService.getProjectBudgetsByProjectId(projects.getId());
+			}
+			 if(projectBudget == null) {
+				    projectBudget = new ProjectBudget();
+					projectBudget.setCreateUserId(user);
+					projectBudget.setUpdateUserId(user);
+					projectBudget.setCreatedDate(new Date());
+					projectBudget.setBudgetRequestedId(generatebudgetRequestId(projects,projectsDTO));
+			 }else {
+				 projectBudget.setUpdatedDate(new Date());
+				 projectBudget.setUpdateUserId(user);
+			 }
+			projectBudget.setProjectId(projects);
+			projectBudget.setBudgetStatus(Constants.BUDGET_REQUEST_APPROVED);
+			projectBudget.setEstimatedHours((double)projectsDTO.getEstimatedHours());
+			projectBudget.setEstimatedBudgetCurrency(projectsDTO.getEstimatedBudgetCurrency());
+			projectBudget.setStatus(Constants.RECORD_ACTIVE);
+			projectBudget.setEstimatedBudgetValue((double)projectsDTO.getEstimatedBudget());
+			projectBudget.setBudgetDescription(projectsDTO.getProjectName());
+			if(StringUtils.isNotBlank(projectsDTO.getBudgetApproverUser())) {
+				User use = userService.getUserById(Long.valueOf(projectsDTO.getBudgetApproverUser()));
+				projectBudget.setApproverUserId(use);
+			}else {
+				projectBudget.setApproverUserId(null);
+			}
+			projectBudgetList.add(projectBudget);
 		}else {
-			projectBudget = new ProjectBudget();
-			projectBudget.setCreateUserId(user);
-			projectBudget.setUpdateUserId(user);
-			projectBudget.setCreatedDate(new Date());
-			projectBudget.setBudgetRequestedId(generatebudgetRequestId(projects,projectsDTO));
+			if(projects.getId() != null) {
+				 projectBudget = projectBudgetService.getProjectBudgetsByProjectId(projects.getId());
+				 if(projectBudget != null) {
+					 projectBudget.setEstimatedHours(null);
+					 projectBudget.setEstimatedBudgetCurrency(projectsDTO.getEstimatedBudgetCurrency());
+					 projectBudget.setEstimatedBudgetValue(null);
+					 projectBudget.setStatus(Constants.RECORD_INACTIVE);
+					 projectBudget.setApproverUserId(null);
+					 projectBudgetList.add(projectBudget);
+				 }
+				 
+			}
 		}
-		projectBudget.setProjectId(projects);
-		projectBudget.setBudgetStatus(Constants.BUDGET_REQUEST_APPROVED);
-		projectBudget.setEstimatedHours(projectsDTO.getEstimatedHours());
-		projectBudget.setEstimatedBudgetCurrency(projectsDTO.getEstimatedBudgetCurrency());
-		projectBudget.setStatus(Constants.RECORD_ACTIVE);
-		projectBudget.setEstimatedBudgetValue(projectsDTO.getEstimatedBudget());
-		projectBudget.setBudgetDescription(projectsDTO.getProjectName());
-		if(StringUtils.isNotBlank(projectsDTO.getBudgetApproverUser())) {
-			User use = userService.getUserById(Long.valueOf(projectsDTO.getBudgetApproverUser()));
-			projectBudget.setApproverUserId(use);
-		}else {
-			projectBudget.setApproverUserId(null);
-		}
-		projectBudgetList.add(projectBudget);
 		return projectBudgetList;
 	}
 
@@ -611,15 +767,17 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 * setting default tasks for every project
 	 * @param projects
 	 * @return set
+	 * @throws Exception 
 	 */
-	private Set<ProjectTasks> getDefaultTasksForProject(Projects projects) {
+	private Set<ProjectTasks> getDefaultTasksForProject(Projects projects) throws Exception {
 		Set<ProjectTasks> set = new HashSet<>();
 		String[] defaultTasks = Constants.DEFAULT_TASKS;
+		int generatedId = 1;
 		for (String taskName : defaultTasks) {
 			ProjectTasks projectTasks = new ProjectTasks();
 			projectTasks.setTaskName(taskName);
 			projectTasks.setDescription(taskName);
-			if (!Constants.HOLIDAY.equalsIgnoreCase(taskName) && !Constants.COMPENSATORY_LEAVE.equalsIgnoreCase(taskName) && !Constants.WORK_FROM_HOME.equalsIgnoreCase(taskName)) {
+			if (!Constants.HOLIDAY.equalsIgnoreCase(taskName) && !Constants.COMPENSATORY_LEAVE.equalsIgnoreCase(taskName) && !Constants.WORK_FROM_HOME.equalsIgnoreCase(taskName) && !Constants.SYSTEM_TASK_BILLABE.equalsIgnoreCase(taskName)) {
 				projectTasks.setBillableType(Constants.TASK_NON_BILLABLE);
 			} else {
 				projectTasks.setBillableType(Constants.TASK_BILLABLE);
@@ -631,15 +789,78 @@ public class ProjectsServiceImpl implements ProjectsService{
 			LookUpData taskStatusLookUpData = new LookUpData();
 			taskStatusLookUpData.setId(1069L);
 			projectTasks.setTaskStatus(taskStatusLookUpData);
+			projectTasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
 			projectTasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			projectTasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects, generatedId));
 			projectTasks.setCreatedDate(new Date());
 			projectTasks.setUpdatedDate(new Date());
+			projectTasks.setPercentage(0);
 			projectTasks.setProjectId(projects);
 			set.add(projectTasks);
+			generatedId++;
 		}
 		return set;
 	}
 	
+	private Set<ProjectTasks> getLeaveTasksForProjectBasedOnOrgLocationId(Projects projects, OrgLocations loginOrgLocation) throws Exception {
+		Set<ProjectTasks> set = new HashSet<>();			
+		List<LeaveType> leaveTypeList  = leaveTypeService.getLeaveTypeListByLocationId(loginOrgLocation.getId().toString());
+					for(LeaveType leaveType:leaveTypeList) {
+						if(projects != null) {
+							ProjectTasks  tasks  = new ProjectTasks();
+							LookUpData taskType = lookUpDataService.getTasksTypeByUniqueKey(Constants.GENERAL);
+							tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+							tasks.setTaskName(leaveType.getName());
+							tasks.setDescription(leaveType.getName());
+							if(leaveType.getLeaveType().equalsIgnoreCase("Non Billable")) {
+								tasks.setBillableType("Non-Billable");
+							}else {
+								tasks.setBillableType("Billable");
+							}
+							tasks.setProjectId(projects);
+							tasks.setTaskType(taskType);
+							tasks.setLeaveType(leaveType);
+							LookUpData taskStatus = lookUpDataService.getTasksById(Constants.TaskStatusID);
+							tasks.setTaskStatus(taskStatus);
+							tasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
+							tasks.setCreatedBy(leaveType.getCreatedBy());
+							tasks.setCreatedDate(new Date());
+							tasks.setUpdatedBy(leaveType.getCreatedBy());
+							tasks.setUpdatedDate(new Date());
+							set.add(tasks);
+							}
+						}
+			return set;
+	}
+	
+	
+	public String getProjectTaskGenaratedId(Projects projects) throws Exception {
+		Integer generatedIdcount = 0;
+		Long number = 1L;
+		String requirementId = null;
+		 
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(projects.getProjectShortCode());
+		String generatedUsreId = sbuilder.toString();
+		for (int i = 0; i < generatedUsreId.length(); i++) {
+			char ch = generatedUsreId.charAt(i);
+			if (Character.isAlphabetic(ch)) {
+				generatedIdcount++;
+			}
+		}
+		generatedIdcount = generatedIdcount + 1;
+		Integer checkNumber = tasksDao.getProjectTasksCountByProjectId(projects.getId()); 
+		if (checkNumber == null) {
+			requirementId = number.toString();
+		} else {
+			Integer reqId = checkNumber + 1;
+			requirementId = reqId.toString();
+		}
+		final DecimalFormat decimalFormat = new DecimalFormat("0");
+		String convetredRequirementsId = decimalFormat.format(Long.parseLong(requirementId));
+		
+		return sbuilder.append(convetredRequirementsId).toString();
+	}
 	
 	private Set<ProjectClients> getProjectClientsForProject(ProjectsDTO projectsDTO,Projects projects,OrgLocations orglocations,User user) throws Exception {
 		Set<ProjectClients> projectClientsSet = new HashSet<>();
@@ -771,24 +992,26 @@ public class ProjectsServiceImpl implements ProjectsService{
 	@Override
 	public void userEmailNotificationForTimeSheetSubmission(User user,Long locationsId,Map<String, String> timesheetFrequencyMap,Projects projects,String level) throws Exception {
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
-		
+		UserRole userStatus = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),locationsId);
+		if("ACTIVE".equalsIgnoreCase(userStatus.getUserState().toString())) {
 		Set<Projects> projectsSet = new HashSet<>();
+		
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 StringBuilder fromNameSB = new StringBuilder();
-		 emailMessage.setFromName(fromNameSB.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		 emailMessage.setFromName(Constants.SOURCELEAD_ADMIN_UNIQUE);
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 globalVarsMap.put("firstName", emailMessage.getFirstName());
-		 globalVarsMap.put("lastName",emailMessage.getLastName());
+		 globalVarsMap.put("FirstName", emailMessage.getFirstName());
+		 globalVarsMap.put("LastName",emailMessage.getLastName());
 		 globalVarsMap.put("administratorFirstName", "SourceLead");
 		 globalVarsMap.put("administratorLastName","Admin");
 		 globalVarsMap.put("role",user.getUserType());
-		 globalVarsMap.put("userEmailId",user.getEmail()); //
+		 globalVarsMap.put("UserEmailId",user.getEmail()); //
 		 LinkedList<String> frequency = new LinkedList<>();
 		 StringBuilder tempHTML = new StringBuilder();
 		 tempHTML.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
@@ -821,27 +1044,42 @@ public class ProjectsServiceImpl implements ProjectsService{
 			
 			
 	     tempHTML.append("</table> ");
-		 globalVarsMap.put("weekFrequency",tempHTML.toString());
+		 globalVarsMap.put("WeekFrequency",tempHTML.toString());
 		 //setting the Recipient information
 		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
+		 EmailScenario  emailScenario = null;
+		 if(orgLocations != null)
+			 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			  if(emailScenario == null){
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+			   }
+			  //covert subject,body and signature
+				 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+				 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+				 String signature = null;
+				 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+					 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+				 }
+				 String url = sourceleadUrl;
 		 
 		 //construct HTML template using required data
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
 		 
+		//configured Email
+			
+		 String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+		 if(StringUtils.isNotBlank(fromMail)){
+			 emailMessage.setFromEmail(fromMail);
+		 } 
+		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,locationsId,iAdressArray,new ArrayList<EmailAttachment>());
 		 sendWeeklyBaseNotiFication(user,orgLocations,projectsSet);
+		}
 	}
 
 
@@ -863,14 +1101,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    Map<String, String> globalVarsMap = new HashMap<String, String>();
 			    globalVarsMap.put("firstName", user.getFirstName());
 			    globalVarsMap.put("lastName",user.getLastName());
-				String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
+			    String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
 				emailScenario.setBody(body);
 				emailScenario.setOrgCode(emp.getOrgLocations().getOrg().getOrgCode());
 				String actionLink = "";
 				OrgLocations loginOrgLocation = new OrgLocations();
 			   loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
 			   loginOrgLocation.setOrg(emp.getOrgLocations().getOrg());
-			   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);	
+			   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario,new HashMap<String,String>());	
 		}
 	}
 	
@@ -897,14 +1135,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 					    Map<String, String> globalVarsMap = new HashMap<String, String>();
 					    globalVarsMap.put("firstName", user.getFirstName());
 					    globalVarsMap.put("lastName",user.getLastName());
-						String body = emailScenerioUtil.buildBody(emailScenario.getBody(),globalVarsMap);
+					    String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
 						emailScenario.setBody(body);
 						emailScenario.setOrgCode(emp.getOrgLocations().getOrg().getOrgCode());
 						String actionLink = "";
 						OrgLocations loginOrgLocation = new OrgLocations();
 					   loginOrgLocation.setLocationCode(emp.getOrgLocations().getLocationCode());
 					   loginOrgLocation.setOrg(emp.getOrgLocations().getOrg());
-					   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario);
+					   emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, loginOrgLocation, emailScenario,new HashMap<String,String>());
 //		    	}
 		    }
 		}
@@ -946,6 +1184,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    	projectsDTO.setProjectSequeneNumber(projects.getProjectSequeneNumber());
 	    }
 	   
+	    if(projects.getProjectShortCode() != null){
+	    	projectsDTO.setProjectShortCode(projects.getProjectShortCode());
+	    }
+	    
 	    User createdByUseraName= userService.getUserDetailsByUserCode(projects.getCreatedBy());
 	    if(null !=createdByUseraName){
 	    	StringBuilder userName = new StringBuilder();
@@ -967,7 +1209,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    if(projectApproverHierarchies != null && projectApproverHierarchies.size() > 0) {
 		 	for(ProjectApproverHierarchy approverHierarchy : projectApproverHierarchies){
 		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 1 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
-		    		projectsDTO.setManager1(approverHierarchy.getApproverUserId().getId());
+		    		projectsDTO.setManager1(approverHierarchy.getApproverUserId().getId().intValue());
 		    		projectsDTO.setManager1Name(approverHierarchy.getApproverUserId().getFullName());
 		    		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(approverHierarchy.getApproverUserId().getId(),loginOrgLocations.getId());
 		    		if(null != userRole){
@@ -976,7 +1218,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    		projectsDTO.setManagerLevel1(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
 		    	if(approverHierarchy.getLevel() != null && approverHierarchy.getLevel() == 2 && (approverHierarchy.getStatus() == null || approverHierarchy.getStatus().equalsIgnoreCase("1"))){
-		    		projectsDTO.setManager2(approverHierarchy.getApproverUserId().getId());
+		    		projectsDTO.setManager2(approverHierarchy.getApproverUserId().getId().intValue());
 		    		projectsDTO.setManager2Name(approverHierarchy.getApproverUserId().getFullName());
 		    		projectsDTO.setManagerLevel2(projectApprover.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());
 		    	}
@@ -990,7 +1232,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    List<UserDTO> userDTOList = new ArrayList<>();
 	    if(userList != null && userList.size() > 0) {
 	    	for(User mrguser : userList) {
-	    		UserRole roleType = userRoleService.getUserByUserId(mrguser.getId());
+	    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser.getId(),loginOrgLocations.getId());
 	    		UserDTO userDTO = new UserDTO();
 	    		userDTO.setId(mrguser.getId());
 	    		userDTO.setUserType(roleType.getUserType());
@@ -1000,12 +1242,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 	    }
 	    projectsDTO.setManagersList(userDTOList);
 	    
-	    if(projectsDTO.getManager1() != null){
-	    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(projectsDTO.getManager1(),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+	    if(projectsDTO.getManager1() != 0){
+	    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long.valueOf(projectsDTO.getManager1()),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
 			  List<UserDTO> mrguserDTOList = new ArrayList<>();
 			    if(userList != null && userList.size() > 0) {
 			    	for(User mrguser2 : userListwithoutmaneger1) {
-			    		UserRole roleType = userRoleService.getUserByUserId(mrguser2.getId());
+			    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser2.getId(),loginOrgLocations.getId());
 			    		UserDTO userDTO = new UserDTO();
 			    		userDTO.setId(mrguser2.getId());
 			    		userDTO.setUserType(roleType.getUserType());
@@ -1032,6 +1274,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
 					projectsDTO.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
 				}
+				projectsDTO.setOrgRelationUUID(projectClients.getOrgRelationId().getUUID());
  	  }
 	    
 		
@@ -1071,9 +1314,10 @@ public class ProjectsServiceImpl implements ProjectsService{
 		projectsDTO.setOvertimeRateType(projects.getOvertimeRateType());
 		projectsDTO.setProjectStatus(projects.getProjectStatus().toString());
 		projectsDTO.setProjectName(projects.getProjectName());
-		projectsDTO.setOrgLocationId(projects.getOrgLocationsId().getId());
+		projectsDTO.setOrgLocationId(projects.getOrgLocationsId().getId().intValue());
 		projectsDTO.setTimeSheetFrequency(projects.getTimesheetFrequency());
 		projectsDTO.setInvoiceFrequency(projects.getInvoiceFrequency());
+		projectsDTO.setProjectUUID(projects.getProjectUUID());
 		if(projects.getFlatPercent() != null) {
 			projectsDTO.setFlatPercent(projects.getFlatPercent().toString());
 		}
@@ -1136,37 +1380,18 @@ public class ProjectsServiceImpl implements ProjectsService{
 			}
 		 globalVarsMap.put("projectName", projects.getProjectName());
 		 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrgLocationName());
-		  
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_MANAGER,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 if(null != projects.getOrgLocationsId())
-		 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.EDITPROJECT_MAIL_MANAGER,new ArrayList<EmailAttachment>());
 		 
 		//calling the sendNotification method of emailScenerioUtil
 		EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_MANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
-		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
 		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager, loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 	 
 	 
@@ -1209,36 +1434,18 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 globalVarsMap.put("projectName", projects.getProjectName());
 		 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrgLocationName());
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 if(null != projects.getOrgLocationsId())
-		 emailScenerioUtil.sendEmail(emailMessage,projects.getOrgLocationsId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
-		 
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.EDITPROJECT_MAIL_TEAMMEMBER,new ArrayList<EmailAttachment>());
 		 
 		//calling the sendNotification method of emailScenerioUtil
 		EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EDITPROJECT_MAIL_TEAMMEMBER,Constants.ENTITY_TYPE_NOTIFICATION);
-		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		notificationScenario.setOrgCode(loginOrgCode);
 		//String url = null;
 		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, emp.getUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
 	}
 	
 	@Override
@@ -1246,14 +1453,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 	 	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	String loginOrgCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "orgCode");
 	 	//SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
-		 Date currentDate = new Date();
+		 Date currentDate = CalendarUtil.removeTime(new Date());
 		 Date previousEndDate = null;
          Projects projects = getProjectById(projectId);
 	        	 
                if(StringUtils.isNotBlank(projectDTO.getProjectSequeneNumber())){
 			    	 projects.setProjectSequeneNumber(projectDTO.getProjectSequeneNumber());
+			     }else {
+			    	 projects.setProjectSequeneNumber(null); 
 			     }
-		        
 		        
 		    	projects.setProjectName(projectDTO.getProjectName());
 		    	
@@ -1294,8 +1502,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 					projects.setAllowBidding(null);
 				}
 				
-				if(projectDTO.getFlatPercentage() != null){
-					projects.setFlatPercent(projectDTO.getFlatPercentage());
+				if(projectDTO.getFlatPercentage() != null && !projectDTO.getFlatPercentage().isEmpty()){
+					projects.setFlatPercent(Double.parseDouble(projectDTO.getFlatPercentage()));
 				}else{
 					projects.setFlatPercent(null);
 				}
@@ -1305,9 +1513,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 				}else{
 					projects.setOvertimeRateType(null);
 				}
-		    	
-		    	
-		    	projects.setProjectStatus(Project_Status.getNameByValue(projectDTO.getProjectStatusId()));
+				
+					    	
+		    	projects.setProjectStatus(Project_Status.getNameByValue(projectDTO.getStatus()));
 		    	
 		    			 //SimpleDateFormat format=loginOrgLocation.getLocFullFormDateFormatter();
 //			    	     SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -1353,7 +1561,15 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    		HashSet<Long> templist = null;
 			    		Collection<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectId,loginOrgLocation.getId());
 			    		ProjectClients pc = null;
+			    		Boolean isLevel2ManagerExists = false;
+			    		Long level1HierarchyId = null;
+			    		Long level2HierarchyId = null;
 			    		for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+				    			 if(prHierarchy.getLevel() == 1){
+						    		 level1HierarchyId = prHierarchy.getId();
+						    	 }else {
+						    		 level2HierarchyId = prHierarchy.getId();
+						    	 }
 			    			     pc = prHierarchy.getProjectClientsId();
 								 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
 								 Long fieldValuelong = null;
@@ -1364,6 +1580,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 								     }
 								     if(prHierarchy.getLevel() == 2 &&  StringUtils.isNotBlank(projectDTO.getLevel2Manager())){
 								    	 if(!"".equalsIgnoreCase(projectDTO.getLevel2Manager())){
+								    		 isLevel2ManagerExists = true;
 								    		 fieldValuelong = Long.valueOf(projectDTO.getLevel2Manager());
 								    	 }
 								    	 
@@ -1425,7 +1642,8 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    			}
 			    		}
 			    		
-			    		if(templist != null && !templist.isEmpty()){
+			    	
+		    		/*if(templist != null && !templist.isEmpty()){
 			    			//getting projectmember userId's who are added to the project
 			    			freshlist.removeAll(templist);
 			    			if(freshlist != null && !freshlist.isEmpty()){
@@ -1437,8 +1655,81 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    				}
 			    			}
 			    			
-			    		}
+			    		}*/
 			    		
+			    		
+			    		
+			    		 /**
+			    		  * Storing Submission Approver Hierarchy Records based on Changes Made Against Level1 and Level2 Approvers
+			    		  */
+			    		 LinkedList<SubmissionApproverHierarchy> saHierarchyList = new LinkedList<SubmissionApproverHierarchy>();
+			    		 if(isLevel2ManagerExists){
+			    			 List<SubmissionApproverHierarchy> sahList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyId(level1HierarchyId);
+				    	     if(sahList != null && !sahList.isEmpty()){
+				    	    	 for(SubmissionApproverHierarchy sah :sahList){
+				    	    		 SubmissionApproverHierarchy subSah =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyIdAndSubmissionId(level2HierarchyId, sah.getSubmissionId().getId());
+				    	    		 if(subSah != null && (StringUtils.isEmpty(subSah.getStatus())  || (StringUtils.isNotEmpty(subSah.getStatus()) && subSah.getStatus().equalsIgnoreCase("0")))){
+				    	    			    subSah.setSubmissionStatus(sah.getSubmissionStatus());
+				    	    			    subSah.setBillingStatus(sah.getBillingStatus());
+				    	    			    subSah.setInvoiceStatus(sah.getInvoiceStatus());
+				    	    			    subSah.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+											subSah.setCreatedDate(commonUtil.currentDate());
+											subSah.setCreatedBy(user.getUserCode());
+											subSah.setUpdatedDate(commonUtil.currentDate());
+											subSah.setUpdatedBy(user.getUserCode());
+											subSah.setRejectedReason(sah.getRejectedReason());
+											subSah.setActionPerformedBy(sah.getActionPerformedBy());
+											subSah.setReopenedUser(sah.getReopenedUser());
+											subSah.setReopenReason(sah.getReopenReason());
+											subSah.setReopenRejectedReason(sah.getReopenRejectedReason());
+											subSah.setStatus("1");
+											saHierarchyList.add(subSah);
+				    	    		 }
+				    	    		 else{
+				    	    			    SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
+				    	    			    ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+				    	    			    pah.setId(level2HierarchyId);
+											saHierarchy.setHeirarchyId(pah);
+											saHierarchy.setSubmissionId(sah.getSubmissionId());
+											saHierarchy.setSubmissionStatus(sah.getSubmissionStatus());
+											saHierarchy.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+											saHierarchy.setFrequencyStartDate(sah.getFrequencyStartDate());
+											saHierarchy.setFrequencyEndDate(sah.getFrequencyEndDate());
+											saHierarchy.setCreatedDate(commonUtil.currentDate());
+											saHierarchy.setCreatedBy(user.getUserCode());
+											saHierarchy.setUpdatedDate(commonUtil.currentDate());
+											saHierarchy.setBillingStatus(sah.getBillingStatus());
+											saHierarchy.setInvoiceStatus(sah.getInvoiceStatus());
+											saHierarchy.setRejectedReason(sah.getRejectedReason());
+											saHierarchy.setActionPerformedBy(sah.getActionPerformedBy());
+											saHierarchy.setReopenedUser(sah.getReopenedUser());
+											saHierarchy.setReopenReason(sah.getReopenReason());
+											saHierarchy.setReopenRejectedReason(sah.getReopenRejectedReason());
+											saHierarchy.setUpdatedBy(user.getUserCode());
+											saHierarchy.setStatus("1");
+											saHierarchyList.add(saHierarchy);
+				    	    		 }
+				    	    	 }
+				    	     }
+						 }
+			    		 else{
+			    			if(level2HierarchyId != null) {
+			    				 List<SubmissionApproverHierarchy> sahList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyId(level2HierarchyId);
+					    	     if(sahList != null && !sahList.isEmpty()){
+					    	    	 for(SubmissionApproverHierarchy sah :sahList){
+					    	    		 sah.setStatus("0");
+										 saHierarchyList.add(sah);
+					    	    	 }
+					    	     }
+			    			}
+			    		
+			    		 }
+			    		 if(saHierarchyList != null && !saHierarchyList.isEmpty()){
+			    			 for(SubmissionApproverHierarchy sah : saHierarchyList){
+			    				 submissionApproverHierarchyService.updateSubmissionApproverHierarchy(sah);
+			    			 }
+			    			 
+			    		 }
 		    	}
 			    projects.setUpdatedBy(user.getUserCode());
 			    projects.setUpdatedDate(currentDate);
@@ -1446,10 +1737,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	projects = commonUtil.terminateProject(projects);
 			    	 updateProject(projects);
 			    }
-			    else if(projects.getEndDate() != null && currentDate.after(projects.getEndDate()) && !(projects.getEndDate().equals(currentDate))) {
+			    else if(projects.getEndDate() != null && currentDate.after(projects.getEndDate())) {
 			    		projects = commonUtil.terminateProject(projects);
 				    	updateProject(projects);
-			    	
 			    }
 			    else{
 			    	projects = updateProject(projects);
@@ -1473,7 +1763,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 									  projectMember.setMemberHistoryList(memberHistoryList);
 								  }
 								  projectMembersService.saveProjectMember(projectMember);
-			    	    		/* if(projectMember.getEmployee()!= null && projectMember.getEmployee().getUser() != null){
+			    	    		/*if(projectMember.getEmployee()!= null && projectMember.getEmployee().getUser() != null){
 			    	    			 commonUtil.storeTimesheetSubmissionRecords(projectMember.getEmployee().getUser());
 			    	    		 }*/
 			    	    	 }
@@ -1481,6 +1771,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    	}
 			    }
 		 
+			   
 				/*
 	    	     * Termination Of ProjectMember whose assignDate is greaterthan project endDate /
 	    	     *   in-activate the submissions whose startDate is greaterthan project endDate
@@ -1499,11 +1790,38 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    }
 				
 			    
+			    if(projectDTO.getCustomFormData() !=null) {
+					for( CustomFormFieldDTO customFields:projectDTO.getCustomFormData()) {
+						if(customFields != null && customFields.getCustomFormFieldId() > 0) {
+							ProjectCustomFieldData projectsCustomFields = null;
+							if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+								projectsCustomFields = projectCustomFieldDataService.getprojectFieldDataById(customFields.getEntityId());
+							}else {
+								projectsCustomFields = new ProjectCustomFieldData();
+							}
+						projectsCustomFields.setProjects(projects);
+						OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+						projectsCustomFields.setOrglocationsFormFields(orgFormField);
+						projectsCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+						projectCustomFieldDataService.saveProjectCustomFieldData(projectsCustomFields);
+						}
+						
+					}	
+				}
+			    
+			    
 			  /*  Set<ProjectMembers>  projectMemberList = projectMembersService.prepareProjectMembersListByJson(jsonObj,request, projects);
 				projects.setProjectMembers(projectMemberList);*/
 				 /*
 	    		 * Updating Project data as ElasticSearch Documents
 	    		 */
+			    
+			    if(projectDTO.getClientlocationId() != null && !projectDTO.getClientlocationId().isEmpty()) {
+			    	
+			    	String[] clientDetails = projectDTO.getClientlocationId().split(",");
+			    	makeInternalProjectAsClientProject(projects, Long.parseLong(clientDetails[0]),Long.parseLong(clientDetails[1]),loginOrgLocation);
+			    }
+			    
 	    		saveOrUpdateProjectElkDocument(projects);
 
 	    		
@@ -1850,10 +2168,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	
 	@Override
-	public List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation) throws Exception {
+	public List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation,String roleIds,String teamIds) throws Exception {
 		
-		
-		List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status,loginOrgLocation);
+		List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,status,loginOrgLocation,roleIds,teamIds);
 		Projects pr = projectsDao.getProjectById(projectId);
 		
 		ArrayList<ProjectMembers> projectMembersArrList = new ArrayList<ProjectMembers>();
@@ -1868,9 +2185,17 @@ public class ProjectsServiceImpl implements ProjectsService{
 
 				 }
 				 if(pm.getProjectMemberCandidteId().getConsultantUser() != null){
-					 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), pm.getProjects().getOrgLocationsId().getId());
+					 UserRole userRole = null;
+					 if(pm.getProjects().getOrgLocationsId().getId().compareTo(loginOrgLocation.getId()) != 1) {
+						 userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), pm.getProjects().getOrgLocationsId().getId());
+					 }else {
+						 userRole = userRoleService.getUserRoleByUserIdAndLocationId(pm.getProjectMemberCandidteId().getConsultantUser().getId(), loginOrgLocation.getId());
+					 }
+					 
 					 if(userRole != null){
 						 pm.setUserRoleType(userRole.getUserType());
+						 pm.setUserRoleId(userRole.getId());
+						 pm.setProjectMemberStatus(userRole.getUserState().name());
 					 } 
 				 }else{
 					 pm.setUserRoleType("Candidate");
@@ -1885,14 +2210,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(pm.getId());
 			 }
 			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
-				 pm.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pmh.getProjectAssignedDate()));
+				 pm.setProjectAssignedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),pmh.getProjectAssignedDate()));
             }
 	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
-	       		pm.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pmh.getProjectTerminationDate()));
+	       		pm.setProjectEndDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),pmh.getProjectTerminationDate()));
 	       	 }
 	       	 //to set actual project end date
 	       	 if(pm.getProjects().getEndDate() != null){
-	        		pm.setEndDate(commonUtil.dateStrFromOrgDateFormatter(pr.getOrgLocationsId().getDateFormat(),pm.getProjects().getEndDate()));
+	        		pm.setEndDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),pm.getProjects().getEndDate()));
 	        	 }
 	       	 if(pm.getProjectMemberCandidteId() != null && pm.getProjectMemberCandidteId().getConsultantUser() != null && pm.getProjectMemberCandidteId().getConsultantUser().getId() != null){
 	          		pm.setUserId(pm.getProjectMemberCandidteId().getConsultantUser().getId().toString());
@@ -1917,6 +2242,38 @@ public class ProjectsServiceImpl implements ProjectsService{
 	                
 	                
 	       	 }	
+	       	 
+	       	 
+	       	 List<ProjectMembersRateHistory> pmrhList = projectMembersRateHistoryService.getProjectMembersRateHistoryListByProjectMemberId(pm.getId());
+	       	 if(pmrhList != null && !pmrhList.isEmpty()) {
+	       		Date date = commonUtil.orgLocationCommonDate(new Date(), loginOrgLocation);
+	       		for(ProjectMembersRateHistory pmrh : pmrhList) {
+	       			if(pmrh.getPayRateEndDate() != null && date.before((pmrh.getPayRateEndDate()))) {
+	       				pm.setPayRate(pmrh.getPayRate());
+	       				pm.setPayRateCurrency(pmrh.getPayRateCurrency());
+	       				pm.setPayRateType(pmrh.getPayRateType());
+	       				
+	       				break;
+	       			}
+	       		}
+	       		
+	       		
+	       		for(ProjectMembersRateHistory pmrh : pmrhList) {
+	       			if(pmrh.getBillRateEndDate() != null && date.before((pmrh.getBillRateEndDate()))) {
+	       				pm.setCurrentBillRate(pmrh.getBillRate());
+	       				pm.setBillRateCurrency(pmrh.getBillRateCurrency());
+	       				pm.setRateType(pmrh.getBillRateType());
+	       				
+	       				break;
+	       			}
+	       		}
+	       		 
+	       		pm.setRateHistroyList(Constants.YES);
+	       	 }else {
+	       		pm.setRateHistroyList(Constants.NO);
+	       	 }
+	       	 
+	       	 
 			 projectMembersArrList.add(pm);
 		 }
 		}
@@ -1929,45 +2286,60 @@ public class ProjectsServiceImpl implements ProjectsService{
 @Override
 public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,User user1) throws Exception {
 	     User user = null;
+	     
 	     if(user1!=null){
 	    	 user = user1;
 	     }else{
 	    	 user = orgLocations.getUser();
 	     }
 	     if(user != null){
+	    	 UserRole userStatus = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocations.getId());
+	    	 if("ACTIVE".equalsIgnoreCase(userStatus.getUserState().toString())){
 	    	 StringBuilder fNameStringBuilder=new StringBuilder();
 			 EmailMessage emailMessage = new EmailMessage();
 			 emailMessage.setFirstName(user.getFirstName());
 			 emailMessage.setLastName(user.getLastName());
 			 emailMessage.setToEmail(user.getEmail());
 			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
-			 emailMessage.setFromName(fNameStringBuilder.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+			 emailMessage.setFromName(Constants.SOURCELEAD_ADMIN_UNIQUE);
 			// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 			//setting the class filed values
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
-			 globalVarsMap.put("firstName", emailMessage.getFirstName());
-			 globalVarsMap.put("lastName",emailMessage.getLastName());
+			 globalVarsMap.put("FirstName", emailMessage.getFirstName());
+			 globalVarsMap.put("LastName",emailMessage.getLastName());
 			 globalVarsMap.put("administratorFirstName", user.getFirstName());
 			 globalVarsMap.put("administratorLastName",user.getLastName());
 			 globalVarsMap.put("role",user.getUserType());
-			 globalVarsMap.put("userEmailId",user.getEmail()); //
-			 globalVarsMap.put("weekFrequency",tempHTML.toString());
+			 globalVarsMap.put("UserEmailId",user.getEmail()); //
+			 globalVarsMap.put("WeekFrequency",tempHTML.toString());
 			 //setting the Recipient information
 			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 			
 			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_MANAGER_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
-			
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;
+			 EmailScenario  emailScenario = null;
+			 if(orgLocations != null)
+				 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.TIMESHEET_MANAGER_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				  if(emailScenario == null){
+						emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_MANAGER_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
+				   }
+				  //covert subject,body and signature
+					 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+					 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+					 String signature = null;
+					 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+						 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+					 }
+					 String url = sourceleadUrl;
 			 
 			 //construct HTML template using required data
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+			 if(StringUtils.isNotBlank(fromMail)){
+				 emailMessage.setFromEmail(fromMail);
+			 } 
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
@@ -1976,7 +2348,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			}
 			 
 	     }
-	    
+	     }
 		
 }
 
@@ -1993,26 +2365,36 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			public void tereminateAsProjectApprover(Long approverUser,User user,Long userId,OrgLocations orgLocations) throws Exception {
 				
 				   boolean flag = false;
-				
 		    		List<ProjectApproverHierarchy> projectApproverList = projectApproverHierarchyService.getProjectApproversListByUserIdAndOrgLocationId(userId,orgLocations.getId());
 		    		Integer projectApproverCount = getProjectApproversCountByUserIdAndOrgLocationId(userId,orgLocations.getId());
 		    		for(ProjectApproverHierarchy hierarchy : projectApproverList){
-		    			
+		    			User usr = userService.getUserById(Long.valueOf(approverUser));
+		    			User terminatedUser = hierarchy.getApproverUserId();
+							ProjectApproverHierarchy pah = projectApproverHierarchyService.getProjectApproverByUserIdAndProjectIdOrgLocationId(Long.valueOf(approverUser), hierarchy.getProjectId().getId(), orgLocations.getId());
+							if(pah != null) {
+								if(pah.getLevel() == 2) {
+									pah.setStatus(String.valueOf(Constants.RECORD_INACTIVE));
+									projectApproverHierarchyService.saveProjectApproverHierarchy(pah);
+									hierarchy.setApproverUserId(usr);
+									hierarchy.setUpdatedBy(user.getUserCode());
+									hierarchy.setUpdatedDate(new Date());
+								}else {
+									hierarchy.setStatus(String.valueOf(Constants.RECORD_INACTIVE));
+								}
+								
+							}else {
+								hierarchy.setApproverUserId(usr);
+								hierarchy.setUpdatedBy(user.getUserCode());
+								hierarchy.setUpdatedDate(new Date());
+							}
 							
-						   
-							User usr = userService.getUserById(Long.valueOf(approverUser));
-							User terminatedUser = hierarchy.getApproverUserId();
-							hierarchy.setApproverUserId(usr);
-							hierarchy.setUpdatedBy(user.getUserCode());
-							hierarchy.setUpdatedDate(new Date());
-						
 							
-							List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(hierarchy.getProjectId().getId(), orgLocations.getId());	
+							/*List<ProjectApproverHierarchy> hierarchyList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(hierarchy.getProjectId().getId(), orgLocations.getId());	
 							for(ProjectApproverHierarchy approverHierarchy : hierarchyList){
 								if(approverHierarchy.getApproverUserId().getId().equals(usr.getId())){
 									flag = true;
 								}
-							}
+							}*/
 							
 							/*if(flag == false){
 								
@@ -2060,56 +2442,34 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			
 			
 			
-			private void assignedNewUserAsaassignedProjectManager(User loginUser, User assUserName, Long userId, OrgLocations orgLocations,Integer projectApproverCount) throws Exception {
-				 EmailMessage emailMessage = new EmailMessage();
-				 emailMessage.setFirstName(loginUser.getFirstName());
-				 emailMessage.setLastName(loginUser.getLastName());
-				 emailMessage.setToEmail(assUserName.getEmail());
-				 emailMessage.setFromEmail(loginUser.getEmail());
-				 emailMessage.setCreatedBy(loginUser.getUserCode());
-				 StringBuilder msgBuild = new StringBuilder();
-				emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-				emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-				//setting the class filed values
-				 Map<String, String> globalVarsMap = new HashMap<String, String>();
-				 	 User termentaedUserName = userService.getUserById(userId);
-					 globalVarsMap.put("loginUser", loginUser.getFirstName());
-					 globalVarsMap.put("assignedUser", assUserName.getFirstName());
-					 globalVarsMap.put("reqCount", projectApproverCount.toString());
-					 globalVarsMap.put("terminatedUser",termentaedUserName.getFirstName());
-					 StringBuilder loginBuilder = new StringBuilder();
-					 globalVarsMap.put("loginURL",loginBuilder.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-				  
-				  
-				
-				 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-				
-				 //getting the current EmailScenario by EmailScenario unique name and entity type
-				 //using same migration which has been already used in updatedRequirementMailToManager method
-				 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER,Constants.ENTITY_TYPE_EMAIL);
-				 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER,Constants.ENTITY_TYPE_NOTIFICATION);
-			
-				 
-				 //covert subject,body and signature
-				 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-				 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-				 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-				 String url = sourceleadUrl;
-				 
-				 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
-				 notificationScenario.setBody(notificationbody);
-			
-				 //construct HTML template using required data
-				 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-				 emailMessage.setSubject(subject);
-				 emailMessage.setMessageBody(emailTemplate);
-				 
-				 //calling the sendEmail method of emailScenerioUtil
-				 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario);
-				}
-			
+	private void assignedNewUserAsaassignedProjectManager(User loginUser, User assUserName, Long userId, OrgLocations orgLocations, Integer projectApproverCount) throws Exception
+	{
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(loginUser.getFirstName());
+		emailMessage.setLastName(loginUser.getLastName());
+		emailMessage.setToEmail(assUserName.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		StringBuilder msgBuild = new StringBuilder();
+		emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		User termentaedUserName = userService.getUserById(userId);
+		globalVarsMap.put("loginUser", loginUser.getFullName());
+		globalVarsMap.put("assignedUser", assUserName.getFirstName());
+		globalVarsMap.put("reqCount", projectApproverCount.toString());
+		globalVarsMap.put("terminatedUser", termentaedUserName.getFirstName());
+		StringBuilder loginBuilder = new StringBuilder();
+		globalVarsMap.put("loginURL", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER, Constants.ENTITY_TYPE_NOTIFICATION);
+		String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		notificationScenario.setBody(notificationbody);
+		// calling the sendEmail method of emailScenerioUtil
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.USER_NEW_ACTION_ASSIGNED_As_A_PROJECT_APROVER,new ArrayList<EmailAttachment>());
+		String actionLink = "";
+		emailScenerioUtil.sendNotification(actionLink, loginUser, assUserName, orgLocations, notificationScenario, new HashMap<String, String>());
+	}
 			
 
 			/*@Override
@@ -2149,10 +2509,10 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 						 BoolQueryBuilder anyBoolQueryBuilder = QueryBuilders.boolQuery();
 						 for(String keywd : anyKeyWordArray){
 							 BoolQueryBuilder anyBoolSubQueryBuilder = QueryBuilders.boolQuery();
-							ArrayList<MatchQueryBuilder> matchQueryBuilderList = universalSearchHelper.getProjectsMatchQueryBuilderList(keywd);
-							if(matchQueryBuilderList != null && !matchQueryBuilderList.isEmpty()){
-								for(MatchQueryBuilder matchQueryBuilder :matchQueryBuilderList){
-									anyBoolSubQueryBuilder.should(matchQueryBuilder);
+							ArrayList<QueryBuilder> QueryBuilderList = universalSearchHelper.getProjectsQueryBuilderList(keywd);
+							if(QueryBuilderList != null && !QueryBuilderList.isEmpty()){
+								for(QueryBuilder QueryBuilder :QueryBuilderList){
+									anyBoolSubQueryBuilder.should(QueryBuilder);
 								}
 								anyBoolQueryBuilder.should(anyBoolSubQueryBuilder);
 							}
@@ -2303,6 +2663,521 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 				return projectsDao.getProjectCountByOrgLocationIdAndUserCode(orgLocationId, userCode);
 			}
 
+			@Override
+			public Projects getProjectByOrgLocationsIdAndProjectName(Long orgLocationsId,String projectName) throws Exception {
+				return projectsDao.getProjectByOrgLocationsIdAndProjectName(orgLocationsId,projectName);
+			}
+
+			@Override
+			public List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,
+					String projectClientUUID) throws Exception {
+				return projectsDao.getAllProjectsByOrgLocationIdAndStatusForTransfer(orgLocationId, projectClientUUID);
+			}
+
+			@Override
+			public Projects makeInternalProjectAsClientProject(Projects projects, Long orgRelationId,Long clientOrgLocationId,OrgLocations loginOrgLocation)
+					throws Exception {
+				
+				OrgRelations orgRelations = orgRelationsService.getOrgRelationById(orgRelationId);
+				OrgLocations clientOrgLocations = orgLocationService.getOrgLocations(clientOrgLocationId);
+				if(clientOrgLocations != null && orgRelations != null) {
+					projects.setOrgLocationsId(clientOrgLocations);
+					updateProject(projects);
+					List<ProjectClients> projectClientsList = projectClientService.getProjectClientsListByProjectId(projects.getId());
+					if(projectClientsList != null && projectClientsList.size() > 0) {
+						for(ProjectClients projectClients : projectClientsList) {
+							if(projectClients.getOrgLocationsId().getId().equals(loginOrgLocation.getId()) && projectClients.getOrgRelationId() == null) {
+								projectClients.setOrgRelationId(orgRelations);
+							}
+							if(projectClients.getLevel() != null) {
+								Integer level = projectClients.getLevel();
+								projectClients.setLevel(level+1);
+							}
+							projectClients.setIsEndClient(null);
+							projectClientService.storeProjectClients(projectClients);
+						}
+					}
+					
+					ProjectClients projectClients = new ProjectClients();
+					OrgSpoc orgSpoc = orgSpocDao.getGusetClientOrgSpocByOrgRelationId(orgRelationId);
+					projectClients.setProjectId(projects);
+					projectClients.setOrgLocationsId(clientOrgLocations);
+					projectClients.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+					projectClients.setStatus(1);
+					projectClients.setLevel(1);
+					projectClients.setIsEndClient(Constants.YES);
+					projectClients.setCreatedDate(projects.getCreatedDate());
+					projectClients.setUpdatedDate(projects.getUpdatedDate());
+					projectClients.setCreatedBy(orgSpoc.getClientUser());
+					projectClients.setUpdatedBy(orgSpoc.getClientUser());
+					projectClients = projectClientService.storeProjectClients(projectClients);
+					
+					ProjectApproverHierarchy projectApproverHierarchy = new ProjectApproverHierarchy();
+					projectApproverHierarchy.setProjectId(projects);
+					projectApproverHierarchy.setProjectClientsId(projectClients);
+					projectApproverHierarchy.setApproverUserId(orgSpoc.getClientUser());
+					projectApproverHierarchy.setLevel(1);
+					projectApproverHierarchy.setStatus("1");
+					projectApproverHierarchyService.saveProjectApproverHierarchy(projectApproverHierarchy);
+					
+					ProjectBudget projectBudget = projectBudgetService.getProjectBudgetsByProjectId(projects.getId());
+					if(projectBudget != null) {
+						projectBudget.setApproverUserId(orgSpoc.getClientUser());
+						projectBudgetService.saveProjectBudget(projectBudget);
+					}
+					
+					
+					ProjectClients loginOrgProjectClient = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), loginOrgLocation.getId());
+					if(loginOrgProjectClient != null) {
+						List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectClientId(loginOrgProjectClient.getId());
+						if(projectMembersList != null && projectMembersList.size() > 0) {
+							for(ProjectMembers projectMembers : projectMembersList) {
+								Candidate candidate = null;
+								candidate = candidateService.findByCandidateEmail(projectMembers.getProjectMemberCandidteId().getEmail(), clientOrgLocationId);
+								CandidateDTO candidateDTO = new CandidateDTO();
+								candidateDTO.setEmail(projectMembers.getProjectMemberCandidteId().getEmail());
+								candidateDTO.setMobilePhone(projectMembers.getProjectMemberCandidteId().getMobilePhone());
+								candidateDTO.setFirstName(projectMembers.getProjectMemberCandidteId().getFirstName());
+								candidateDTO.setLastName(projectMembers.getProjectMemberCandidteId().getLastName());
+								MasterCandidate masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
+								if(candidate == null) {
+									candidate = new Candidate();
+									if(null == masterCandidate){
+										masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, orgSpoc.getClientUser());
+									}
+									
+									candidate.setMasterCandidateId(masterCandidate);
+									candidate.setFirstName(projectMembers.getProjectMemberCandidteId().getFirstName());
+									candidate.setLastName(projectMembers.getProjectMemberCandidteId().getLastName());
+									candidate.setEmail(projectMembers.getProjectMemberCandidteId().getEmail());
+									candidate.setOrgRelationId(orgRelations);
+									candidate.setSpocId(orgSpoc);
+									candidate.setParentCandidateId(projectMembers.getProjectMemberCandidteId());
+									candidate.setDesignationType("C2C");
+									candidate.setIsAssociate(Constants.NO);
+									candidate.setOrgLocationId(clientOrgLocations);
+									candidateService.addCandidate(candidate);
+									candidateService.saveOrUpdateCandidateElkDocument(candidate);
+								}else {
+									candidate.setOrgRelationId(orgRelations);
+									candidate.setSpocId(orgSpoc);
+									candidate.setParentCandidateId(projectMembers.getProjectMemberCandidteId());
+									candidateService.addCandidate(candidate);
+									candidateService.saveOrUpdateCandidateElkDocument(candidate);
+								}
+								
+								ProjectMembers clientProjectMembers = new ProjectMembers();
+								clientProjectMembers.setProjects(projects);
+								clientProjectMembers.setProjectClientsId(projectClients);
+								clientProjectMembers.setProjectMemberCandidteId(candidate);
+								clientProjectMembers.setMasterCandidateId(masterCandidate);
+								clientProjectMembers.setProjectAssignedDate(projectMembers.getProjectAssignedDate());
+								clientProjectMembers.setProjectEndDate(projectMembers.getProjectEndDate());
+								clientProjectMembers.setCurrentBillRate(projectMembers.getCurrentBillRate());
+								clientProjectMembers.setRateType(projectMembers.getRateType());
+								clientProjectMembers.setBillRateCurrency(projectMembers.getBillRateCurrency());
+								clientProjectMembers.setStatus(projectMembers.getStatus());
+								clientProjectMembers.setIsManuallyTerminated(projectMembers.getIsManuallyTerminated());
+								clientProjectMembers.setCreatedDate(projectMembers.getCreatedDate());
+								clientProjectMembers.setCreatedBy(projectMembers.getCreatedBy());
+								clientProjectMembers.setUpdatedBy(projectMembers.getUpdatedBy());
+								clientProjectMembers.setUpdatedDate(projectMembers.getUpdatedDate());
+								clientProjectMembers.setTerminateReason(projectMembers.getTerminateReason());
+								clientProjectMembers.setPayRateCurrency(projectMembers.getPayRateCurrency());
+								clientProjectMembers.setPayRate(projectMembers.getPayRate());
+								clientProjectMembers.setPayRateType(projectMembers.getPayRateType());
+								clientProjectMembers.setEstimatedHours(projectMembers.getEstimatedHours());
+								clientProjectMembers.setEstimatedBudget(projectMembers.getEstimatedBudget());
+								clientProjectMembers = projectMembersService.saveProjectMember(clientProjectMembers);
+								
+								ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersAllHistoryByProjectMemberId(projectMembers.getId());
+								if(projectMembersHistory != null) {
+									ProjectMembersHistory clientProjectMembersHistory = new ProjectMembersHistory();
+									clientProjectMembersHistory.setProjectMemberId(clientProjectMembers);
+									clientProjectMembersHistory.setProjectAssignedDate(projectMembersHistory.getProjectAssignedDate());
+									clientProjectMembersHistory.setProjectTerminationDate(projectMembersHistory.getProjectTerminationDate());
+									clientProjectMembersHistory.setStatus(projectMembersHistory.getStatus());
+									clientProjectMembersHistory.setCreatedDate(projectMembersHistory.getCreatedDate());
+									clientProjectMembersHistory.setCreatedBy(projectMembersHistory.getCreatedBy());
+									clientProjectMembersHistory.setUpdatedBy(projectMembersHistory.getUpdatedBy());
+									clientProjectMembersHistory.setUpdatedDate(projectMembersHistory.getUpdatedDate());
+									projectMembersHistoryService.updateProjectMembersHistory(clientProjectMembersHistory);
+								}
+								
+								List<TimesheetSubmissions> timesheetSubmissionsList =  timesheetSubmissionsService.getTimesheetSubmissionsByProjectIdAndMasterCandidateId(projects.getId(),masterCandidate.getId());
+								if(timesheetSubmissionsList != null && timesheetSubmissionsList.size() > 0) {
+									for(TimesheetSubmissions submissions : timesheetSubmissionsList){
+										if(projectApproverHierarchy != null) {
+											SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployee(submissions.getId());
+											SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
+											saHierarchy.setHeirarchyId(projectApproverHierarchy);
+											saHierarchy.setSubmissionId(submissions);
+					    			        saHierarchy.setFrequencyStartDate(sah.getFrequencyStartDate());
+										    saHierarchy.setFrequencyEndDate(sah.getFrequencyEndDate());
+											saHierarchy.setSubmissionStatus(sah.getSubmissionStatus());
+											saHierarchy.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+											saHierarchy.setCreatedDate(sah.getCreatedDate());
+											saHierarchy.setCreatedBy(sah.getCreatedBy());
+											saHierarchy.setActionPerformedBy(sah.getActionPerformedBy());
+											saHierarchy.setRejectedReason(sah.getRejectedReason());
+											saHierarchy.setReopenedUser(sah.getReopenedUser());
+											saHierarchy.setReopenRejectedReason(sah.getReopenRejectedReason());
+											saHierarchy.setUpdatedDate(sah.getUpdatedDate());
+											saHierarchy.setUpdatedBy(sah.getUpdatedBy());
+											saHierarchy.setStatus(sah.getStatus());
+											submissionApproverHierarchyService.addSubmissionApproverHierarchy(saHierarchy);
+										}
+									}
+								}
+								
+								
+								List<Expenses> expList  = expensesService.getExpensesByProjectIdAndMasterCandidateId(projects.getId(),masterCandidate.getId());
+								if(expList != null && !expList.isEmpty()) {
+									for(Expenses expense : expList){
+										ExpensesApproverHierarchy eah = expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expense.getId());
+										ExpensesApproverHierarchy eaHierarchy = new ExpensesApproverHierarchy();
+										eaHierarchy.setHierarchyId(projectApproverHierarchy);
+										eaHierarchy.setExpenseId(expense);
+										eaHierarchy.setExpenseStatus(eah.getExpenseStatus());
+										eaHierarchy.setExpenseApprovalStatus(eah.getExpenseApprovalStatus());
+										eaHierarchy.setCreatedDate(eah.getCreatedDate());
+										eaHierarchy.setCreatedBy(eah.getCreatedBy());
+										eaHierarchy.setUpdatedDate(eah.getUpdatedDate());
+										eaHierarchy.setUpdatedBy(eah.getUpdatedBy());
+										eaHierarchy.setStatus(eah.getStatus());
+										eaHierarchy.setActionPerformedBy(eah.getActionPerformedBy());
+										eaHierarchy.setRejectedReason(eah.getRejectedReason());
+										eaHierarchy.setReopenedUser(eah.getReopenedUser());
+										eaHierarchy.setReopenRejectedReason(eah.getReopenRejectedReason());
+										expensesApprovalService.saveExpensesApproverHierarchy(eaHierarchy);
+									}
+								}
+							}
+						}
+					}
+					
+					
+				}
+				
+				projects.setIsTimesheetAttachmentRequired(1);
+				projectsDao.updateProject(projects);
+				return projects;
+			}
+
+			@Override
+			public List<Projects> getAllProjectByOrgLocationsId(Long orgLocationId) throws Exception {
+				return projectsDao.getAllProjectByOrgLocationsId(orgLocationId);
+			}
+
+			@Override
+			public Projects getClientProjectApproversUpdate(String projectClientUUID, User user,
+					ProjectsDTO projectDTO) throws Exception {
+				
+				ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID); 
+				Projects projects = getProjectById(projectClients.getProjectId().getId());
+				
+				if(StringUtils.isNotBlank(projectDTO.getLevel1Manager()) && projectClients != null){
+		    		HashSet<Long> oldlist = new HashSet<>();
+		    		HashSet<Long> freshlist = new HashSet<>();
+		    		HashSet<Long> templist = null;
+		    		List<ProjectApproverHierarchy> projectApproverHierarchies = projectApproverHierarchyService.getProjectsHierarchyListByProjectClientId(projectClients.getId());
+		    		ProjectClients pc = null;
+		    		Boolean isLevel2ManagerExists = false;
+		    		Long level1HierarchyId = null;
+		    		Long level2HierarchyId = null;
+		    		for(ProjectApproverHierarchy prHierarchy :projectApproverHierarchies ){
+			    			 if(prHierarchy.getLevel() == 1){
+					    		 level1HierarchyId = prHierarchy.getId();
+					    	 }else {
+					    		 level2HierarchyId = prHierarchy.getId();
+					    	 }
+		    			     pc = prHierarchy.getProjectClientsId();
+							 ProjectApproverHierarchy pah  = projectApproverHierarchyService.getByProjectApproverHierarchyId(prHierarchy.getId());
+							 Long fieldValuelong = null;
+							     String level1UserDetails[] = projectDTO.getLevel1Manager().split(",");
+							     if(prHierarchy.getLevel() == 1 || (prHierarchy.getLevel() == 2 && projectApproverHierarchies.size() == 1))
+							     {
+							    	 fieldValuelong = Long.valueOf(level1UserDetails[0]);
+							     }
+							     if(prHierarchy.getLevel() == 2 &&  StringUtils.isNotBlank(projectDTO.getLevel2Manager())){
+							    	 if(!"".equalsIgnoreCase(projectDTO.getLevel2Manager())){
+							    		 isLevel2ManagerExists = true;
+							    		 fieldValuelong = Long.valueOf(projectDTO.getLevel2Manager());
+							    	 }
+							    	 
+							     }
+							      if(prHierarchy.getLevel() == 2 && (StringUtils.isEmpty(projectDTO.getLevel2Manager()))){
+							    	 oldlist.add(pah.getApproverUserId().getId());
+							    	 pah.setStatus("0");
+							    	 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							     }
+							     
+							     if(fieldValuelong != null){
+							    	 User usr = userService.getUserById(fieldValuelong);
+									 oldlist.add(pah.getApproverUserId().getId());
+									 freshlist.add(usr.getId());
+									 pah.setApproverUserId(usr);
+									 pah.setStatus("1");
+									 projectApproverHierarchyService.updateProjectApproverHierarchy(pah);
+							     }
+							    
+		    	    }
+		    		
+		    		// if   we  are adding new  level 2 manager while editing
+		    		if(projectApproverHierarchies.size()== 1){ 	
+						if(StringUtils.isNotBlank(projectDTO.getLevel2Manager())){
+							Long[] ids = new Long[10];
+							User approverUserId2 = new User();
+							ProjectApproverHierarchy pah2 = new ProjectApproverHierarchy();
+							pah2.setProjectId(projects);
+							approverUserId2.setId(Long.parseLong(projectDTO.getLevel2Manager()));
+							pah2.setApproverUserId(approverUserId2);
+							pah2.setLevel(2);
+							pah2.setProjectClientsId(pc);
+							pah2.setStatus("1");
+							ids[1] = approverUserId2.getId();
+							projectApproverHierarchyService.saveProjectApproverHierarchy(pah2);
+							freshlist.add(Long.parseLong(projectDTO.getLevel2Manager()));
+							
+						}
+					 }
+		    		if(oldlist != null && !oldlist.isEmpty()){
+		    			templist = (HashSet<Long>) oldlist.clone();
+		    		}
+		    		//getting projectmember userId's who are terminated or who are dropped from project
+		    		oldlist.removeAll(freshlist);
+		    		if(oldlist != null && !oldlist.isEmpty()){
+		    			for(Long terminatedUserId : oldlist){
+		    				if(projects != null && projects.getId() != null){
+		    					ProjectMembers pm = projectMembersService.getProjectMemberByUserIdAndProjectId(terminatedUserId, projects.getId());
+			    				if(null != pm && pm.getId() != null){
+			    					ProjectMembersHistory projectMembersHistory = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(pm.getId());
+			    					if(projectMembersHistory != null){
+			    						projectMembersHistory.setProjectTerminationDate(commonUtil.currentDate());
+				    					projectMembersHistoryService.updateProjectMembersHistory(projectMembersHistory);
+			    					}
+				    				commonUtil.terminateProjectMemberByProjectMemberId(pm.getId(), Primary.Yes);
+			    				}
+			    				 
+		    				}
+		    			}
+		    		}
+		    		
+		    		if(templist != null && !templist.isEmpty()){
+		    			//getting projectmember userId's who are added to the project
+		    			freshlist.removeAll(templist);
+		    			if(freshlist != null && !freshlist.isEmpty()){
+		    				for(Long freshlyaddedUserId : freshlist){
+		    					UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(freshlyaddedUserId,projects.getOrgLocationsId().getId());
+		    					if(userRole != null && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_ADMIN)){
+		    						storeProjectMemberByMemberUserIdAndLoginUser(freshlyaddedUserId, user, projects, commonUtil.currentDate());
+		    					}
+		    				}
+		    			}
+		    			
+		    		}
+		    		 /**
+		    		  * Storing Submission Approver Hierarchy Records based on Changes Made Against Level1 and Level2 Approvers
+		    		  */
+		    		 LinkedList<SubmissionApproverHierarchy> saHierarchyList = new LinkedList<SubmissionApproverHierarchy>();
+		    		 if(isLevel2ManagerExists){
+		    			 List<SubmissionApproverHierarchy> sahList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyId(level1HierarchyId);
+			    	     if(sahList != null && !sahList.isEmpty()){
+			    	    	 for(SubmissionApproverHierarchy sah :sahList){
+			    	    		 SubmissionApproverHierarchy subSah =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyIdAndSubmissionId(level2HierarchyId, sah.getSubmissionId().getId());
+			    	    		 if(subSah != null && (StringUtils.isEmpty(subSah.getStatus())  || (StringUtils.isNotEmpty(subSah.getStatus()) && subSah.getStatus().equalsIgnoreCase("0")))){
+			    	    			    subSah.setSubmissionStatus(sah.getSubmissionStatus());
+			    	    			    subSah.setBillingStatus(sah.getBillingStatus());
+			    	    			    subSah.setInvoiceStatus(sah.getInvoiceStatus());
+			    	    			    subSah.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+										subSah.setCreatedDate(commonUtil.currentDate());
+										subSah.setCreatedBy(user.getUserCode());
+										subSah.setUpdatedDate(commonUtil.currentDate());
+										subSah.setUpdatedBy(user.getUserCode());
+										subSah.setRejectedReason(sah.getRejectedReason());
+										subSah.setActionPerformedBy(sah.getActionPerformedBy());
+										subSah.setReopenedUser(sah.getReopenedUser());
+										subSah.setReopenReason(sah.getReopenReason());
+										subSah.setReopenRejectedReason(sah.getReopenRejectedReason());
+										subSah.setStatus("1");
+										saHierarchyList.add(subSah);
+			    	    		 }
+			    	    		 else{
+			    	    			    SubmissionApproverHierarchy saHierarchy = new SubmissionApproverHierarchy();
+			    	    			    ProjectApproverHierarchy pah = new ProjectApproverHierarchy();
+			    	    			    pah.setId(level2HierarchyId);
+										saHierarchy.setHeirarchyId(pah);
+										saHierarchy.setSubmissionId(sah.getSubmissionId());
+										saHierarchy.setSubmissionStatus(sah.getSubmissionStatus());
+										saHierarchy.setSubmissionApprovalStatus(sah.getSubmissionApprovalStatus());
+										saHierarchy.setFrequencyStartDate(sah.getFrequencyStartDate());
+										saHierarchy.setFrequencyEndDate(sah.getFrequencyEndDate());
+										saHierarchy.setCreatedDate(commonUtil.currentDate());
+										saHierarchy.setCreatedBy(user.getUserCode());
+										saHierarchy.setUpdatedDate(commonUtil.currentDate());
+										saHierarchy.setBillingStatus(sah.getBillingStatus());
+										saHierarchy.setInvoiceStatus(sah.getInvoiceStatus());
+										saHierarchy.setRejectedReason(sah.getRejectedReason());
+										saHierarchy.setActionPerformedBy(sah.getActionPerformedBy());
+										saHierarchy.setReopenedUser(sah.getReopenedUser());
+										saHierarchy.setReopenReason(sah.getReopenReason());
+										saHierarchy.setReopenRejectedReason(sah.getReopenRejectedReason());
+										saHierarchy.setUpdatedBy(user.getUserCode());
+										saHierarchy.setStatus("1");
+										saHierarchyList.add(saHierarchy);
+			    	    		 }
+			    	    	 }
+			    	     }
+					 }
+		    		 else{
+		    			if(level2HierarchyId != null) {
+		    				 List<SubmissionApproverHierarchy> sahList =  submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectApproverHierarchyId(level2HierarchyId);
+				    	     if(sahList != null && !sahList.isEmpty()){
+				    	    	 for(SubmissionApproverHierarchy sah :sahList){
+				    	    		 sah.setStatus("0");
+									 saHierarchyList.add(sah);
+				    	    	 }
+				    	     }
+		    			}
+		    		
+		    		 }
+		    		 if(saHierarchyList != null && !saHierarchyList.isEmpty()){
+		    			 for(SubmissionApproverHierarchy sah : saHierarchyList){
+		    				 submissionApproverHierarchyService.updateSubmissionApproverHierarchy(sah);
+		    			 }
+		    			 
+		    		 }
+	    	}
+				return projects;
+			}
+
+			
+			@Override
+			public Projects getProjectByProjectName(String projectName) throws Exception {
+				return projectsDao.getProjectByProjectName(projectName);
+			}
+
+			@Override
+			public File getPdfFile(ResponseList<ProjectsDTO> projectsList, OrgLocations orgLocations) throws Exception {
+				return pdfUtil.createProjectPdfTable(projectsList, orgLocations);
+			}
+			
+			
+			@Override
+			public Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<ProjectsDTO> projectsList, OrgLocations orgLocations)  throws Exception{
+				Row writeRow = null;
+		        createExcelsheet = getExcelSheetWithHeader(createExcelsheet,writeRow,createExcelworkbook,projectsList,orgLocations);
+		        java.util.List<ProjectsDTO> list =  projectsList.getData();
+		        int column=0;
+		        for(ProjectsDTO projects : list){
+		       	 writeRow = createExcelsheet.createRow(column+1);
+		       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,column,projects,orgLocations);
+		       	 column++;
+		        }
+				return createExcelsheet;
+			}
+
+			private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, int column, ProjectsDTO projects,OrgLocations orgLocations) throws Exception {
+
+			     	 ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+		
+			     	 if(projects.getProjectSequeneNumber() != null) {
+			     		 writeRow.createCell(0).setCellValue(projects.getProjectSequeneNumber()); 
+			     	 }else {
+			     		writeRow.createCell(0).setCellValue("--");
+			     	 }
+			     	 
+			     	 if(projects.getProjectName() != null) {
+			     		writeRow.createCell(1).setCellValue(projects.getProjectName());
+			     	 } 
+			     	 
+			     	Set<ProjectApproverHierarchy> projectApproverHierarchies = projectClients.getProjectApproverHierarchyList();
+				    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+				    	if(approverHierarchy.getLevel() == 1 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
+				    		projects.setManagerLevel1(approverHierarchy.getApproverUserId().getFullName());
+				    	}else if(approverHierarchy.getLevel() == 2 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
+				    		projects.setManagerLevel2(approverHierarchy.getApproverUserId().getFullName());
+				    	}
+				    }
+				    String projectManagers = "";
+				    if(projects.getManagerLevel1() != null){
+			  		  projectManagers = projects.getManagerLevel1();
+			 		  }
+			  	    if(projects.getManagerLevel2() != null ){
+			    	 projectManagers = projects.getManagerLevel2();
+					 }
+			  	  
+			  	  if(projects.getManagerLevel1() != null  && projects.getManagerLevel2() != null ){
+			 		   projectManagers = projects.getManagerLevel1()+","+projects.getManagerLevel2();
+				 	 }
+				  	if(projectManagers != null) {
+				  		writeRow.createCell(2).setCellValue(projectManagers);
+				 	} 
+				  	
+				  	if(projects.getInvoiceFrequency() != null) {
+				  		writeRow.createCell(3).setCellValue(projects.getInvoiceFrequency());
+				  	}else {
+				  		writeRow.createCell(3).setCellValue("--");
+				  	}
+			  	  
+				  	
+				  	
+					OrgLocations orglo = orgLocationService.getOrgLocations(orgLocations.getId());
+				  	if(projects.getOrgLocationsId() == orglo.getId().longValue()) {
+						 java.util.List<ProjectBudget>  budgetList = projectBudgetService.getProjectBudgetByProjectTaskId(projects.getId(),orglo.getId());
+						    if(budgetList != null && budgetList.size() > 0) {
+						    	 double budgetSum = budgetList.stream().filter(p->p.getEstimatedBudgetValue() !=null).mapToDouble(p->p.getEstimatedBudgetValue()).sum();
+									if(budgetList.size() >0) {
+										ProjectBudget projectBudget = budgetList.iterator().next();
+										projects.setProjectbudgetCurrency(projectBudget.getEstimatedBudgetCurrency());
+									}
+									projects.setProjectbudgetAmount(budgetSum);
+							  		writeRow.createCell(4).setCellValue(projects.getProjectbudgetCurrency()+ " " +budgetSum);
+		
+						    }else {
+						    	writeRow.createCell(4).setCellValue("--");
+						    }
+					 }
+				  	
+				  	
+					if(projects.getEndDateStr() != null && projects.getStartDateStr() != null){
+						writeRow.createCell(5).setCellValue(projects.getStartDateStr() +" To " +projects.getEndDateStr());
+					}else {
+						writeRow.createCell(5).setCellValue(projects.getStartDateStr());
+					}
+					
+					
+					 if(projectClients.getOrgRelationId() != null){
+			    		 
+			 			if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+			 				projects.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+			 				writeRow.createCell(6).setCellValue(projects.getClient());
+							}if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+								projects.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+								writeRow.createCell(6).setCellValue(projects.getClient());
+							}
+			 	  }else {
+			 		 writeRow.createCell(6).setCellValue("--");
+			 	  }
+					 
+				 if(projects.getProjectStatus().toString() != null){
+					 writeRow.createCell(7).setCellValue(projects.getProjectStatus().toString());
+				} 
+				return createExcelsheet;
+			}
+
+			private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, ResponseList<ProjectsDTO> projectsList, OrgLocations orgLocations) {
+				 CellStyle style = createExcelworkbook.createCellStyle();
+			     style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			     style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			     Font font = createExcelworkbook.createFont();
+		         font.setColor(IndexedColors.BLACK.getIndex());
+		         style.setFont(font);
+		         String headers [] = Constants.PROJECT_EXCEL_HEADERS;
+		 		return createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
+			}
+
+			
 
 
 }

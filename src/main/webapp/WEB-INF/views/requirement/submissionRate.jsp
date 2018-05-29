@@ -15,14 +15,14 @@
 
 <title>Welcome to Source Lead :: Account List</title>
 	<!-- Bootstrap -->
-	<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-	<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-	<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-	<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-	<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
-	<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+	<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+	<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+	<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 </head>
 
 <script>
@@ -62,7 +62,7 @@ width: auto;
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5"></i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5"></i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -131,7 +131,7 @@ width: auto;
 									  <p class="reason-msg">You are not interested for the position <B> ${requirementSubmission.requirement.jobTitle}</B></p>
 								  </div>
 								  <div class="col-md-6" id="rejectIdDiv">
-									  <div class="col-md-12">
+									  <div class="col-md-12" id="rejectReasonDiv">
 										  <label>Reason for Reject</label>
 										  <textarea class="form-control" rows="2" placeholder="Reason" id="rejectId"></textarea>	
 									  </div>
@@ -210,7 +210,7 @@ width: auto;
   </footer>
   <!-- Footer Area --> 
 </div>
-<script type="text/javascript" src='resources/js/slead-common.js'></script>
+<script type="text/javascript" src='/resources/js/slead-common.js'></script>
 </body>
 </html>
 
@@ -222,24 +222,28 @@ width: auto;
 			var submissionId = '${submissionId}';
 			var type = '${type}';
 			var rejectreason = document.getElementById("rejectId").value;
-			var frm = $('#reject_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+"/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason+"&type="+type,
-						success : function(data) {
-							if(data == "success"){
-								$('#rejectIdDiv').empty();
-								$('#rejectIdDiv').append("<span>Your Rejected Reason is submitted successfully !!</span>");	
-							}else if(data == "failure"){
-								$('#rejectIdDiv').empty();
-								$('#rejectIdDiv').append("<span>Your decision is already submitted !!</span>");	
-							}
-						},
-					});
-			       
+			if(rejectreason != null && rejectreason != ''){
+				var frm = $('#reject_form').serializeFormJSON();
+				var con = JSON.stringify(frm);
+				con = con.replace(/[{}]/g, "");
+				
+				$.ajax({
+							type : "POST",
+							url : sourceleadUrl+"/ws/storeReject?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason+"&type="+type,
+							success : function(data) {
+								if(data == "success"){
+									$('#rejectIdDiv').empty();
+									$('#rejectIdDiv').append("<span>Your Rejected Reason is submitted successfully !!</span>");	
+								}else if(data == "failure"){
+									$('#rejectIdDiv').empty();
+									$('#rejectIdDiv').append("<span>Your decision is already submitted !!</span>");	
+								}
+							},
+						});
+			}else{
+				$("#rejectReasonDiv").find('p.jquery_form_error_message').remove();
+				$("#rejectReasonDiv").after("<p class='jquery_form_error_message'>Rejected reason is required</p>");
+			}
 	} 
 </script>
 
@@ -254,7 +258,7 @@ width: auto;
 			con = con.replace(/[{}]/g, "");
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/storeApplicantRejectReason?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason,
+						url : sourceleadUrl+"/ws/storeApplicantRejectReason?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&rejectreason="+rejectreason,
 						success : function(data) {
 							if(data == "success"){
 								$('#rejectApplicantIdDiv').empty();
@@ -291,13 +295,21 @@ width: auto;
 						data: formData,
 						processData: false,
 					    contentType:false, 
-						url : sourceleadUrl+'/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
-						success : function(result) {
-							$('#rateProposal').val('');
-							$('#rateType').val('');
-							$('#negotiationButtonId').addClass('button').val('submit').removeAttr("disabled");
-							$("#fieldsDiv").css({ display: "none" });
-							getNegotiationHistory();
+						url : sourceleadUrl+'/ws/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
+						success : function(data) {
+							if (data.response === "FAILED") {
+					    		showError(data.responseMessage);
+					    	} else if (data.response === "AWKWARD") {
+					    		location.href = "/errorPage";
+					    	} else if (data.response === "SUCCESS") {
+					    		$('#rateProposal').val('');
+								$('#rateType').val('');
+								$('#negotiationButtonId').addClass('button').val('submit').removeAttr("disabled");
+								$("#fieldsDiv").css({ display: "none" });
+								getNegotiationHistory();
+					    	}else {
+					    		showError("Operation failed, please try again");
+					    	}
 						},
 			});   
 		}else{
@@ -330,70 +342,75 @@ function tagItBykeyForEmails(e){
 			var candidateId = '${candidateId}';
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId,
+						url : sourceleadUrl+"/ws/getRateHistoryBySubmissionIdPublic?&submissionId="+submissionId+"&candidateId="+candidateId,
 						success : function(data) {
-							if("success"){
-								var json = JSON.parse(data);
-								var result = "";
-								result = result +"<html>";
-			                	 result = result +"<table id='rateNegotiationTable' width='100%' cellpadding='0' border='2' cellspacing='0'>"; 
-			                     result = result +"<thead>"; 
-			                     result = result +"  <tr>"; 
-			                     result  = result + '<th> Job Title </th>';
-// 			                 	 result  = result + '<th> Job Rate </th>';
-			                 	 result  = result + '<th> Proposed Rate </th>';
-			                 	 result  = result + '<th> Proposed By </th>';
-			                     result = result +"  </tr>"; 
-			                     result = result +"</thead>";
-			                     result = result +"<tbody>"; 
-			                     for (var i = 0; i < json.length; i++) { 
-			                    	 var opt = json[i]; 
-			                    	 if(opt.expectedRatePer != null && opt.expectedRatePer != '' && opt.expectedRatePer != 'undefined'){
-			                    		 expectedRatePer = opt.expectedRatePer;
-			                    	 }else{
-			                    		 expectedRatePer ="";
-			                    	 }
-			                    	 
-			                    	 if(i==0){
-			                    		 result  = result + '<input type="hidden" id="lastProposedBy" value='+opt.previouslyProposedBy+'>';
-			                    	 }
-			                    	 result  = result + '         <tr>';
-			                    	 if(opt.requirementName != null && opt.requirementName != '' && opt.requirementName != 'undefined'){
-			                    	    result  = result + '<td><div><span>'+opt.requirementName+'</span></div></td>';
-		                    	     }else{
-		                    	    	 result  = result + ' <td><div><span>--</span></div></td>';
-		                    	     }
-			                    	 if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined' && opt.expectedRateType != null && opt.expectedRateType != '' && opt.expectedRateType != 'undefined'){
-			                    	 result  = result + ' <td><div><span>'+opt.expectedRate+' '+expectedRatePer+'/'+opt.expectedRateType+' </span></div></td>';
-			                    	 }else if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
-			                    		 result  = result + ' <td><div><span>'+opt.expectedRate+'</span></div></td>';
-			                    	 }else{
-			                    		 result  = result + ' <td><div><span>---</span></div></td>';
-			                    	 }
-			                    	 /* if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
-				                    	 result  = result + '<td><div><span>'+opt.expectedRate+'</span></div></td>';
-			                    	 }else{
-			                    		 result  = result + '<td><div><span>--</span></div></td>'; 
-			                    	 } */
-			                    	 
-			                    	 if(opt.proposeByName != null && opt.proposeByName != '' && opt.proposeByName != 'undefined'){
-				                    	 result  = result + '<td><div><span>'+opt.proposeByName+'</span></div></td>';
-			                    	 }else{
-			                    		 result  = result + '<td><div><span>--</span></div></td>';
-			                    	 }
-			                    	
-			                    	 result  = result + '</tr>';
-			                      } 
-			                     result = result +" </tbody>";
-			                     result = result +"</table>";
-			                     result = result +"</html>";
-			                 
-			                     $("#ratehistoryDiv").empty(); 
-			                     $("#ratehistoryDiv").append(result); 
-			                     isShowForm(actionUsertype);
-			                     pagination();
-							}
-							
+							 if (data.response === "FAILED") {
+						    		showError(data.responseMessage);
+						    	} else if (data.response === "AWKWARD") {
+						    		location.href = "/errorPage";
+						    	} else if (data.response === "SUCCESS") {
+									var json = data.data;
+									var result = "";
+									result = result +"<html>";
+				                	 result = result +"<table id='rateNegotiationTable' width='100%' cellpadding='0' border='2' cellspacing='0'>"; 
+				                     result = result +"<thead>"; 
+				                     result = result +"  <tr>"; 
+				                     result  = result + '<th> Job Title </th>';
+	// 			                 	 result  = result + '<th> Job Rate </th>';
+				                 	 result  = result + '<th> Proposed Rate </th>';
+				                 	 result  = result + '<th> Proposed By </th>';
+				                     result = result +"  </tr>"; 
+				                     result = result +"</thead>";
+				                     result = result +"<tbody>"; 
+				                     for (var i = 0; i < json.length; i++) { 
+				                    	 var opt = json[i]; 
+				                    	 if(opt.expectedRatePer != null && opt.expectedRatePer != '' && opt.expectedRatePer != 'undefined'){
+				                    		 expectedRatePer = opt.expectedRatePer;
+				                    	 }else{
+				                    		 expectedRatePer ="";
+				                    	 }
+				                    	 
+				                    	 if(i==0){
+				                    		 result  = result + '<input type="hidden" id="lastProposedBy" value='+opt.previouslyProposedBy+'>';
+				                    	 }
+				                    	 result  = result + '         <tr>';
+				                    	 if(opt.requirementName != null && opt.requirementName != '' && opt.requirementName != 'undefined'){
+				                    	    result  = result + '<td><div><span>'+opt.requirementName+'</span></div></td>';
+			                    	     }else{
+			                    	    	 result  = result + ' <td><div><span>--</span></div></td>';
+			                    	     }
+				                    	 if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined' && opt.expectedRateType != null && opt.expectedRateType != '' && opt.expectedRateType != 'undefined'){
+				                    	 result  = result + ' <td><div><span>'+opt.expectedRate+' '+expectedRatePer+'/'+opt.expectedRateType+' </span></div></td>';
+				                    	 }else if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
+				                    		 result  = result + ' <td><div><span>'+opt.expectedRate+'</span></div></td>';
+				                    	 }else{
+				                    		 result  = result + ' <td><div><span>---</span></div></td>';
+				                    	 }
+				                    	 /* if(opt.expectedRate != null && opt.expectedRate != '' && opt.expectedRate != 'undefined'){
+					                    	 result  = result + '<td><div><span>'+opt.expectedRate+'</span></div></td>';
+				                    	 }else{
+				                    		 result  = result + '<td><div><span>--</span></div></td>'; 
+				                    	 } */
+				                    	 
+				                    	 if(opt.proposeByName != null && opt.proposeByName != '' && opt.proposeByName != 'undefined'){
+					                    	 result  = result + '<td><div><span>'+opt.proposeByName+'</span></div></td>';
+				                    	 }else{
+				                    		 result  = result + '<td><div><span>--</span></div></td>';
+				                    	 }
+				                    	
+				                    	 result  = result + '</tr>';
+				                      } 
+				                     result = result +" </tbody>";
+				                     result = result +"</table>";
+				                     result = result +"</html>";
+				                 
+				                     $("#ratehistoryDiv").empty(); 
+				                     $("#ratehistoryDiv").append(result); 
+				                     isShowForm(actionUsertype);
+				                     pagination();
+						    	}else {
+						    		showError("Operation failed, please try again");
+						    	}
 						},
 					});
 			       

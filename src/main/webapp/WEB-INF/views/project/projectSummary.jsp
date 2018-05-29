@@ -12,6 +12,16 @@
 margin: 0.1% 2%;
 }
  </style>
+ 
+ <!-- <script>
+	$(document).ready(function() {
+		  <c:forEach var="section" items="${sourceleadSectionListForProjectTask}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomDependentFieldProjectTask(sectionId);
+		 </c:forEach> 
+	});
+</script> -->
+ 
 
       <!-- Content Area -->
        <section class="content-wraper">
@@ -22,7 +32,7 @@ margin: 0.1% 2%;
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
-          <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/projectDashboard'/>">Projects List</a> &raquo;Project Summary</div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/projectDashboard'/>">Projects List</a> &raquo;Project Summary</div>
         </section>
 	   
 		   
@@ -34,8 +44,12 @@ margin: 0.1% 2%;
 			</div>	
 	   </section>
  	   <div id="popUp"></div>
+ 	   <div id="teampopUp"></div>
+ 	   <div id="projectMemberDetailsPopUp"></div>
+ 	   <div id="projectMemberRateHistoryPopUp"></div>
             <!--   Popup's   -->	
             <jsp:include page="employee.jsp" />
+            <jsp:include page="projectTeam.jsp" />
             <jsp:include page="projectDetails.jsp" />
             <jsp:include page="projectTasks.jsp" />
             <jsp:include page="projectDocuments.jsp"/>
@@ -73,12 +87,13 @@ window.onload = function () {
 		  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'; 
 		  	    '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">' 
 		  	         result = result + '<li id="requestResources"><a href="#tab-2" id="empTab" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Planning</a></li>';
-		  	    '</sec:authorize>';
+				  	  result = result + '<li class="" id="projectTeam"><a href="#tab-6" id="teamTab" onClick="projectTeam('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Team</a></li>';
+		  	         '</sec:authorize>';
 		  	    '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'
-			  	    result = result + '<li class="current"><a href="#tab-2" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Planning</a></li>';
-			  	'</sec:authorize>';
+			  	    result = result + '<li class=""><a href="#tab-2" onClick="projectEmployee('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Planning</a></li>';
+			  	    result = result + '<li class="" id="projectTeam"><a href="#tab-6" onClick="projectTeam('+projectId+',\''+startDateStr+'\',\''+endDateStr+'\',\''+status+'\',\''+projectName+'\');" >Team</a></li>';
+			  	    '</sec:authorize>';
 		  	  '</sec:authorize>';
-		  	
 		  	
 		  	 if('${isClientOrgActive}' == "N" || '${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){   
 		  		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
@@ -90,12 +105,11 @@ window.onload = function () {
 				  	'</sec:authorize>';
 			  	'</sec:authorize>';
 		  	 }
-	  	   
+		  	 
+		  	'<sec:authorize access="hasAnyRole(\'ROLE_ADD_DOCUMENTS\',\'ROLE_VIEW_EDIT_DOCUMENTS\')">'; 
+		  	result = result + ' <li><a href="#tab-4" onClick="projectDocuments('+projectId+');" >Documents</a></li>';
+		  	'</sec:authorize>';
 		  	if('${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){
-			  	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
-			  	   result = result + ' <li><a href="#tab-4" onClick="projectDocuments('+projectId+');" >Documents</a></li>';
-				'</sec:authorize>';
-				
 				//this condition is for hiding the report subtab for client project in vendor login
 				 result = result + ' <li><a href="#tab-5" onClick="projectReports('+projectId+');getDayWiseReports('+projectId+');" >Reports</a></li>';
 		  	  }
@@ -121,6 +135,9 @@ window.onload = function () {
 			result = result + '<div id="tab-5" class="project_tabs_inn">';
 		  	result = result + '</div>';
 		  	
+		  	result = result + '<div id="tab-6" class="project_tabs_inn">';
+		  	result = result + '</div>';
+		  	
 		  	result = result + '</div>'; 
 		  	$("#projectSideDiv").empty();  
 		    $("#projectSideDiv").append(result);  
@@ -128,17 +145,28 @@ window.onload = function () {
 		    $("#projectNameById").append(projectName); 
 		  	if(tabType != null && tabType != '' && tabType != 'undefined'){
 				 if(tabType == "tasks"){
-					 document.getElementById('projectTaskTab').className = 'current'
-					 projectTask(projectId, status)
+					 if('${isClientOrgActive}' == "N" || '${postedOrgLocationId}' == '${SourceLeadWeb_orgLocations.id}'){   
+				  		 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\')">' ; 
+				  		 			if(document.getElementById('projectTaskTab') != null){
+	 									document.getElementById('projectTaskTab').className = 'current'
+				  		 			}
+									projectTask(projectId, status);
+					  	'</sec:authorize>';
+				  	 }
 				 }else  if(tabType == "projectMembers"){
 					 document.getElementById('requestResources').className = 'current'
+				      $( "#details" ).removeClass( "current" );
 					 projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
 					 document.getElementById('projectMembersTab').click();
 				 }else if(tabType == "resources") {
 					 document.getElementById('requestResources').className = 'current'
 					 projectEmployee(projectId,startDateStr,endDateStr,status,projectName);
 					 document.getElementById('resourceTab').click();
+				 }else if(tabType == "team"){
+					 document.getElementById('projectTeam').className = 'current'
+						 projectTeam(projectId,startDateStr,endDateStr,status,projectName);
 				 }
+				 if(document.getElementById("details") != null)
 			     document.getElementById("details").removeAttribute("class")
 			}else{
 				  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\')">'; 
@@ -156,11 +184,14 @@ window.onload = function () {
 				      projectTask(projectId, status)
 				  '</sec:authorize>';
 			  	'</sec:authorize>'; 
+				 
+// 				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_DOCUMENTS\',\'ROLE_VIEW_EDIT_DOCUMENTS\')">'; 
+// 			  	projectDocuments(projectId)
+// 			  	'</sec:authorize>';
+			  	
 			}
  }
  </script> 
- 
-
 <script>
 function removeErroeMsg(){
 	$(".dataTables_empty").html("");
@@ -214,6 +245,14 @@ $(document).ready(function() {
 		
 });
 </script> 
+
+
+
+
+
+
+
+
 <script>
 	// Close Advanced Search
 	function closePop(){

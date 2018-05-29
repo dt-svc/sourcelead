@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="CLASS_FIELD")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="classField")
 public class ClassField implements Serializable{
 	
 	
@@ -32,7 +31,7 @@ public class ClassField implements Serializable{
 	@Column(name="ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="ENTITY_TYPE_ID", nullable=false )	
 	private EntityType entityTypeId;
@@ -42,6 +41,13 @@ public class ClassField implements Serializable{
 	
 	@Column(name="DELIM_STR", nullable = false)
 	private String delimStr;
+	
+	@Column(name="DELIMITER_STR", nullable = false)
+	private String delimiter;
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="EMAIL_SCENARIO_ID", nullable=false )	
+	private EmailScenario emailScenarioId;
 
 	public Long getId() {
 		return id;
@@ -75,4 +81,22 @@ public class ClassField implements Serializable{
 	public void setDelimStr(String delimStr) {
 		this.delimStr = delimStr;
 	}
+
+	public String getDelimiter() {
+		return delimiter;
+	}
+
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
+	}
+
+	public EmailScenario getEmailScenarioId() {
+		return emailScenarioId;
+	}
+
+	public void setEmailScenarioId(EmailScenario emailScenarioId) {
+		this.emailScenarioId = emailScenarioId;
+	}
+	
+	
 }

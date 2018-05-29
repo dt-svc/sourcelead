@@ -1,7 +1,7 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
@@ -14,7 +14,7 @@
 	border: 1px solid #ccc !important
 }
 </style>
-<script type="text/javascript" src='resources/js/slead-common.js'></script>
+<script type="text/javascript" src='/resources/js/slead-common.js'></script>
 <script type="text/javascript">
 //On document ready
 $(function(){
@@ -109,9 +109,10 @@ function vendorAssociatesList(orgRelationId){
 			                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
 			                }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
 			                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
-
-			                }else{
+			                }else if(opt.country != null && opt.country !='' && opt.country !='undefined'){
 			                    result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
+			                }else{
+			                	result = result +"<td><div><span>--</span></div></td>";
 			                }
 			               	
 			               	if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill !='undefined'){

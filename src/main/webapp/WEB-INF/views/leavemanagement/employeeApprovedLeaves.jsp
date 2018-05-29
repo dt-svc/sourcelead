@@ -17,7 +17,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Approved Leaves</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Approved Leaves</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"> Home</a> &raquo; Approved Leaves</div>
     </section>
  <div id="popUp"></div>
 <div class="content-area content-new clearfix">
@@ -42,8 +42,10 @@ $(document).ready(function(){
     </div>
        <div id="loading"></div>
     <div class="clients_wrap_table datatable_filter">
-		<div class='remove_search mt10'>
+		<div class='dynamic_search dynamic_search-new mt10'>
 		 <input type='text' placeholder='Search' id='approvedLeavesTableSearch'/>
+        <span class="cursorPointer" title="Search"><i class="fa fa-search" onclick="getApprovedEmployeesList();"></i></span>    
+		 
 		</div>
     <div id="approvedLeavesDiv"></div>
   </div>
@@ -101,6 +103,7 @@ function prepareApprovedEmployeesList(url){
 		result = result + '<th>Leave Type</th>';
 		result = result + '<th>Duration</th>';
 		result = result + '<th>No Of Days</th>';
+		result = result + '<th>No Of Extra Days</th>';
 		result = result + '<th>Leaves Taken</th>';
 		result = result + '<th>Approved By</th>';
 		result = result + '<th>Approved On</th>';
@@ -142,7 +145,7 @@ function approvedEmployeesPagination(url){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
 	    	  		  result = result + '     <div class="proj_show divmax-width">';
-	    	  		  result = result + ' <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.id+'\','+opt.orgLocationId+');"></i>'; 
+	    	  		  result = result + ' <div class="pull-left tbldata-dotdot cursorPointer" title="'+opt.empName+'('+opt.empType+')" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');">'+opt.empName+'('+opt.empType+')</div><i class="fa fa-binoculars pull-right" onclick="getRequestedAproveSummary(\''+opt.leaveUUID+'\','+opt.orgLocationId+');"></i>'; 
 	    	  		  result = result + '     </div>';
 	    	  		  return result; 
 	    	  	}
@@ -168,15 +171,23 @@ function approvedEmployeesPagination(url){
               "data": "noOfDays",
               "render": function ( data, type, opt, meta ) {
             	   var result = "";
-            	   result = result + '     <div class="tblminwidth-75">'+opt.noOfDays+'</div>';		 
+            	   result = result + '     <div class="tblminwidth-75">'+opt.appliedNoOfDays+'</div>';		 
             	    return result; 
               }
-            }, {
+            },{
+                "targets": colIndex++,
+                "data": "noOfDays",
+                "render": function ( data, type, opt, meta ) {
+              	   var result = "";
+              	      result = result + '     <div class="tblminwidth-75">'+opt.extraLeavesTaken+'</div>';	 
+              	    return result; 
+                }
+              }, {
                 "targets": colIndex++,
                 "data": "leavesTaken",
                 "render": function ( data, type, opt, meta ) {
                 		 var result = "";
-                		result = result + '     <div class="tblminwidth-75">'+opt.leavesTaken+'</div>';
+                		result = result + '     <div class="tblminwidth-75">'+opt.actualLeavesTaken+'</div>';
     	                return result; 
                 }
           },{
@@ -184,7 +195,11 @@ function approvedEmployeesPagination(url){
 	    	  	"data": "approvedBy",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		result = result + '     <div title="'+opt.approvedBy+'" class="tblminwidth-75">'+opt.approvedBy+'</div>';
+	    	  		 if(opt.approvedBy != null && opt.approvedBy != 'undefined' && opt.approvedBy != ''){
+	    	  			result = result + '     <div title="'+opt.approvedBy+'" class="tblminwidth-75">'+opt.approvedBy+'</div>';
+	    	  		 }else{
+	    	  			result = result + '     <div class="tblminwidth-75">System Approved</div>';
+	    	  		 }
   	                return result; 
 	    	  	}
 	    	  },{
@@ -201,7 +216,7 @@ function approvedEmployeesPagination(url){
                   "render": function ( data, type, opt, meta ) {
                 	   var result = "";
                 	   '<sec:authorize access="hasAnyRole(\'ROLE_CANCEL_LEAVE\')">';
-                       result = result + '<a href="javascript:void(0)" title="CANCEL" onclick="CancelLeave(\''+opt.id+'\');"><div><b class="proj_closed cursorPointer">CANCEL</b></div></a>';
+                       result = result + '<a href="javascript:void(0)" title="CANCEL" onclick="CancelLeave(\''+opt.leaveUUID+'\');"><div><b class="proj_closed cursorPointer">CANCEL</b></div></a>';
 	                   '</sec:authorize>';
 	                   '<sec:authorize access="!hasAnyRole(\'ROLE_CANCEL_LEAVE\')">';
 	                       result = result + '<a><b>---</b></a>';
@@ -247,7 +262,7 @@ $(".proj_close, .side_mask").click(function(){
   
  
 <script>
-function CancelLeave(id){
+function CancelLeave(leaveUUID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>"; 
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -255,7 +270,7 @@ function CancelLeave(id){
 	result = result +"		<p>Are you sure you want to Cancel ?</p>";
 	result = result +"		<textarea  id='reasonForCancel' name='reasonForCancel'  placeholder='Comments here' ></textarea>";
 	result = result + ' <div id="reasonForCancelDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="confirmCancel(\''+id+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="confirmCancel(\''+leaveUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -265,7 +280,7 @@ function CancelLeave(id){
 </script>
 
 <script>
-function confirmCancel(id){
+function confirmCancel(leaveUUID){
 	var reason = $("#reasonForCancel").val();
 	var userId = '${SourceLeadWeb_userId}';
 	if(reason != null && reason != ''){
@@ -275,11 +290,21 @@ function confirmCancel(id){
 		}else{
 			 $.ajax({
 				   	type: "POST",
-				    url: sourceleadUrl+"/storeCancelReason?"+tokenParamName+"="+tokenValue+"&id="+id+"&reason="+reason+"&userId="+userId,
-		   		    success: function(data) {
+				    url: sourceleadUrl+"/storeCancelReason?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&reason="+reason+"&userId="+userId,
+		   		    success: function(response) {
+		   		     if (response && response.response === "INVALID_DATA") {
+			    		    showError(response.responseMessage);
+			    		} else if (response.response === "AWKWARD") {
+			    		    location.href = "/errorPage";
+			    		} else if (response.response === "SUCCESS") {
 		   		    	$("#popUp").empty();
 		   			 	$(".project_inn_mask").fadeOut(200);
-		   			 	location.replace(sourceleadUrl+"/employeeCancelLeaves");	
+		   			 	location.replace(sourceleadUrl+"/employeeCancelLeaves");
+			    		} else if (response.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
 		   		    }
 			     });
 		}
@@ -300,16 +325,18 @@ function cancelTermination(){
 
 
 <script>
-function getRequestedAproveSummary(leaveId,orgLocationId){
-	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveId="+leaveId+"&orgLocationId="+orgLocationId, function(data) {
-		   if(data != null){
+function getRequestedAproveSummary(leaveUUID,orgLocationId){
+	   $.get(sourceleadUrl+"/getRequestedAproveSummary?"+tokenParamName+"="+tokenValue+"&leaveUUID="+leaveUUID+"&orgLocationId="+orgLocationId, function(response) {
+		   if(response.response === "SUCCESS") {
+			   if(response != null){
 			$(".new_side_wrap").addClass("new_side_wrap_active");
 			$(".side_mask").fadeIn(200);
 			$("body").css('overflow-y', 'hidden');
+			var data = response.object;
 			 var result = "";	
 			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
 			 result = result +' <span class="btn btn-primary btn-sm mr10">APPROVED</span>';
-			 result = result +' <span class="btn btn-danger btn-sm" title="CANCEL" onClick="CancelLeave(\''+leaveId+'\')">CANCEL</span>';
+			 result = result +' <span class="btn btn-danger btn-sm" title="CANCEL" onClick="CancelLeave(\''+leaveUUID+'\')">CANCEL</span>';
 			 result = result +'<div class="clearfix"></div>';
 			 result = result +'<div class="cancel-reason" id="cancelReason">';
 			 result = result +'<div class="clearfix">';
@@ -351,7 +378,7 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
 			 result = result +' </div>';
 			 result = result +'</div>';
 			 result = result +'<div class="col-md-12 mb">';
-			 result = result +'<label class="col-md-2 control-label"><b>Employee Type:</b></label>';
+			 result = result +'<label class="col-md-2 control-label"><b>Role:</b></label>';
 			 result = result +' <div class="col-md-8">';
 			 if(data.empType != null && data.empType !='' && data.empType !='undefined'){
 				 result = result +'<span>'+data.empType+'</span>';
@@ -393,8 +420,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>No of leaves taken:</b></label>';
              result = result +' <div class="col-md-8">';
-             if(data.leavesTaken != null && data.leavesTaken !='' && data.leavesTaken !='undefined'){
-				 result = result +'<span>'+data.leavesTaken+'</span>';
+             if(data.actualLeavesTaken != null && data.actualLeavesTaken !='' && data.actualLeavesTaken !='undefined'){
+				 result = result +'<span>'+data.actualLeavesTaken+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -403,8 +430,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>This month:</b></label>';
              result = result +'<div class="col-md-8">';
-             if(data.thisMonthLeaves != null && data.thisMonthLeaves !='' && data.thisMonthLeaves !='undefined'){
-				 result = result +'<span>'+data.thisMonthLeaves+'</span>';
+             if(data.thisMonthLeavesTaken != null && data.thisMonthLeavesTaken !='' && data.thisMonthLeavesTaken !='undefined'){
+				 result = result +'<span>'+data.thisMonthLeavesTaken+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -413,8 +440,8 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              result = result +'<div class="col-md-12 mb">';
              result = result +'<label class="col-md-2 control-label"><b>Balance leaves:</b></label>';
              result = result +'<div class="col-md-8">';
-             if(data.balanceleaves != null && data.balanceleaves !='' && data.balanceleaves !='undefined'){
-				 result = result +'<span>'+data.balanceleaves+'</span>';
+             if(data.totalBalLeaves != null && data.totalBalLeaves !='' && data.totalBalLeaves !='undefined'){
+				 result = result +'<span>'+data.totalBalLeaves+'</span>';
 			 }else{
 	            	result = result +' <span>--</span>';
 	            }
@@ -477,7 +504,19 @@ function getRequestedAproveSummary(leaveId,orgLocationId){
              $("#leaveSummaryId").empty();
              $("#leaveSummaryId").append(result);
             
-		}	
+		}
+		   } else if (response && response.response === "INVALID_DATA") {
+				//$(".new_side_wrap").removeClass("new_side_wrap_active");
+		    showError(response.responseMessage);
+		   } else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+		    } else if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+		     }
+			else {
+			    showError("Operation failed, please try again");
+			}	   
+		 
 		 
 	});  
 }

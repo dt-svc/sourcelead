@@ -14,7 +14,7 @@
 	width:100% !important;
 	padding: 0 10px !important;
 	border: 1px solid #ccc;
-	background:url("resources/images/arrow-w.png") no-repeat 95% center; background-size:10px;
+	background:url("/resources/images/arrow-w.png") no-repeat 95% center; background-size:10px;
 	}
 	.vendor_wrap_inn_table table tr:hover .proj_show i {
 	    visibility:visible; opacity:1;color:#333;
@@ -38,7 +38,7 @@
 
 <script>
 function teamList(){  
-	  $("#teamList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#teamList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
 		  type : "POST",
             url: sourceleadUrl+"/getTeamListByOrgLocationID?"+tokenParamName+"="+tokenValue+"",       
@@ -179,6 +179,7 @@ function teamEditDetails(teamId){
 	        	outPut = outPut+ '<div class="clearfix mb10">';
 	        	outPut = outPut+ '<div class="col-md-6" id="teamNameDiv">';
 	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
+	        	outPut = outPut+ '<input type = "hidden" name="tabType" value="editTeamForm"/>';
 	        	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
 	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'"  onblur="validateTeamName();">';
 	        	outPut = outPut+ '                </div>';
@@ -277,8 +278,21 @@ function storeEditedTeam(teamId){
 			$("#team_form").attr("disabled", "disabled");
 	       
 			$.post(sourceleadUrl+"/storeEditedTeam?"+tokenParamName+"="+tokenValue+"", formData, function(data) {
-				  sideBar(teamId);
-				  teamList();
+				if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+	        		showError(data.responseMessage);
+	    		}
+        		else if (data.response === "AWKWARD") {
+        			location.href = "/errorPage";
+	    		}
+        		else if(data.response === "SUCCESS"){
+        			sideBar(teamId);
+  				  	teamList();
+	        	    }
+        		else if (data.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
 	        });
 		   
 			return true; 
@@ -292,7 +306,7 @@ function storeEditedTeam(teamId){
 			$("#team_form").validateOnBlur(false, validationSettings);
 		});
 
-</script>   
+</script>  
 
 <script>
 function addTeam(){ 
@@ -302,6 +316,7 @@ function addTeam(){
 	outPut = outPut+ '<div class="form-horizontal clearfix">';
 	outPut = outPut+ '<div class="clearfix mb10">';
 	/* outPut = outPut + '<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">'; */
+	outPut = outPut+ '<input type = "hidden" name="tabType" value="teamForm"/>';
 	outPut = outPut+ '<div class="col-md-12">';
 	outPut = outPut+ '<label>Team Name<b class="text-danger">*</b> </label>';
 	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">';
@@ -427,7 +442,7 @@ function addMember(teamId){
 
 <script>
 function projectMemberList(teamId){
-		  $("#projectMemberList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		  $("#projectMemberList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		  $.ajax({
 	           type : "POST",
 	            url: sourceleadUrl+"/getTeamMembersListByTeamID?"+tokenParamName+"="+tokenValue+"&teamId="+teamId,       
@@ -615,7 +630,7 @@ function TeamMemberpagination(){
     <div class="pull-left">
       <h2>Team</h2>
     </div>
-    <div class="pull-right brud-crum"> <a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Team</div>
+    <div class="pull-right brud-crum"><a href="${appPath}/orgRolesList">Roles List</a>&raquo; Team</div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -678,7 +693,7 @@ function TeamMemberpagination(){
 
 <!--   Error Message   --> 
  
- <script>
+<script>
 function storeTeam(){
 	
 	   var validationSettings = {
@@ -699,8 +714,24 @@ function storeTeam(){
 	  		         processData: false,
 	  		         contentType:false, 
 					url : sourceleadUrl+ "/storeTeam?"+tokenParamName+"="+tokenValue+"",
-					success : function(result) {
-						location.replace(sourceleadUrl+"/team");
+					success : function(data) {
+						if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+	 		        		showError(data.responseMessage);
+	      	    		}
+	                		else if (data.response === "AWKWARD") {
+	                			location.href = "/errorPage";
+	      	    		}
+	                		else if(data.response === "SUCCESS"){
+	                			location.replace(sourceleadUrl+"/team");
+				        	    }
+	                		else if (data.indexOf('Sign In') !== -1) {
+	                			location.replace(sourceleadUrl);
+	      				} else {
+	      					showError("Operation failed, please try again");
+	      				}
+						
+						
+						
 
 					},
 				});
@@ -714,7 +745,7 @@ function storeTeam(){
 			$("#team_form").showHelpOnFocus();
 			$("#team_form").validateOnBlur(false, validationSettings);
 		});
-</script>   
+</script>     
 
 <script type="text/javascript">
 function getTeamOwners(){ 
@@ -810,7 +841,7 @@ function deleteSelectedTeam(teamId){
 		 $(".project_inn_mask").fadeOut(200);
 			
 		 $("#deleteTeam"+teamId).html("<td colspan='5'  id='loading"+teamId+"'></td>");
-		 $("#loading"+teamId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		 $("#loading"+teamId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		 
 		 $.ajax({
 		   	type: "POST",
@@ -848,7 +879,7 @@ function storeTeamMembers(teamId){
     	        processData: false,
     	        contentType:false,
         	   	url : sourceleadUrl+"/storeTeamMembers?"+tokenParamName+"="+tokenValue+"teamId="+teamId,
-				success : function(data) {
+        		success : function(data) {
 					sideBar(teamId);
 					teamList();
             		 
@@ -1035,7 +1066,7 @@ function getTeamMembersListExceptExistedTeamMembersList(teamId){
 
 <script>
 function getCandidateListForTeam(teamId,teamName){
-	$("#teamSideDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#teamSideDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getHotCandidateListForTeamByTeamId?"+tokenParamName+"="+tokenValue+"&teamId="+teamId,
@@ -1154,7 +1185,7 @@ function cpagination(){
 function removeFromTeam(id){
 	if(id){
 		 $("#removeCandidate"+id).html("<td colspan='8'  id='loading"+id+"'></td>");
-		 $("#loading"+id).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		 $("#loading"+id).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		 
 			 $.ajax({ 
 		    	type: "POST",

@@ -21,4 +21,8 @@ public interface CandidateReferencesDao {
 	
 	Boolean validateReferenceEmail(String referenceEmail, Long candidateId,Long candidateReferenceId) throws Exception;
 
+	public CandidateReferences validateReferenceEmailByReferEmailAndReferId(String referEmail,Long referId) throws Exception;
+
+	Boolean validateReferenceEmailByReferEmailAndCandidateId(String referenceEmail, Long candidateId) throws Exception;
+	
 }

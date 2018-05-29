@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
@@ -27,9 +25,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.ExpensesSearchDTO;
+import com.bis.sourcelead.dto.ExpensesApproverDTO;
+import com.bis.sourcelead.dto.ExpensesApproverHierarchyDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -41,6 +42,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
@@ -55,6 +57,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.math.BigDecimal;
 
 @RestController
+@RequestMapping("/app")
 public class ExpensesApprovalRestController {
 
 	@Autowired
@@ -91,6 +94,10 @@ public class ExpensesApprovalRestController {
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
 	
+
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
+	
 	/*@RequestMapping(value = "/getExpensesApprovalList")
 	public List<ExpensesApproverHierarchy> getExpensesApprovalList(HttpServletRequest request, String expenseStatus, String startDate, String endDate) throws Exception {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -101,47 +108,63 @@ public class ExpensesApprovalRestController {
 	
 	
 	@RequestMapping(value = "/getExpensesApprovalList")
-	public ResponseList<ExpensesApproverHierarchy> getExpensesApprovalList(HttpServletRequest request, ExpensesSearchDTO expSearchDTO) throws Exception {
+	public ModelAndView getExpensesApprovalList(HttpServletRequest request, ExpensesApproverDTO expensesApproverDTO) throws Exception {
+		 ModelAndView model = new ModelAndView();
+		try {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<ExpensesApproverHierarchy> expApperoverHierarchy = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expSearchDTO.getExpenseStatus(), expSearchDTO.getStartDate(), expSearchDTO.getEndDate(),expSearchDTO.getSearchValue(),expSearchDTO.getStart(),expSearchDTO.getLength());
-		 //SearchResponse searchResponseForCount = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_REQUIREMENT_INDEX, Constants.ELK_REQUIREMENT_INDEX,0, 10, "createdDate", SortOrder.DESC, boolQueryBuilderForCount);
-		 //resp.setRecordsTotal(searchResponseForCount == null ? resp.getRecordsFiltered() : Long.valueOf(searchResponseForCount.getHits().getTotalHits()).intValue());
-		
-			return expApperoverHierarchy;
+		ExpensesApproverDTO expApperoverdto = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expensesApproverDTO);
+		model.addObject("totalRows",expApperoverdto.getTotalRows());
+		model.addObject("pageCount",expApperoverdto.getPageCount());
+		model.addObject("pageSize",expApperoverdto.getPageSize());
+		model.addObject("searchValue",expApperoverdto.getSearchValue());
+		model.addObject("expenseStatus",expApperoverdto.getExpenseStatus());
+		model.addObject("orgLocationDateFormat",orgLoc.getDateFormat());
+		model.addObject("expApperoverHierarchydto",expApperoverdto.getExpensesApproverHierarchyDTO());
+		model.setViewName("expenses/expensesApprovalListDataTable");
+		}catch(Exception e) {
+			 model.addObject("AWKWARD", true);
+			  model.setViewName("expenses/expensesApprovalListDataTable");
+		}
+		return model;
    }
 	
 	
 	
 	@RequestMapping(value = "/getExpensesApprovalListForExports")
-	public void getExpensesApprovalListForExports(HttpServletRequest request,HttpServletResponse response,@RequestParam(value="type", required=false) String type,@RequestParam(value="expenseStatus", required=false) String expenseStatus,@RequestParam(value="startDate", required=false) String startDate,@RequestParam(value="endDate", required=false) String endDate) throws Exception {
+	public void getExpensesApprovalListForExports(HttpServletRequest request,HttpServletResponse response,ExpensesApproverDTO expensesApproverDTO) throws Exception {
+
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		File file=null;
-		ResponseList<ExpensesApproverHierarchy> expApperoverHierarchyList = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expenseStatus, startDate, endDate,null,0,0);
-		List<ExpensesApproverHierarchy> expApperoverHierarchy = expApperoverHierarchyList.getData();
-		if(type.equalsIgnoreCase("pdf"))
-			file = expensesApprovalService.getExpensesApproverHierarchyListForPdf(expApperoverHierarchy,orgLoc,loginUser);
-		else
-			file = expensesApprovalService.getExpensesApproverHierarchyListForExcel(expApperoverHierarchy,orgLoc,loginUser);
-		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			mimeType = "application/octet-stream";
+		ExpensesApproverDTO expApperoverHierarchyList = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(loginUser, orgLoc, expensesApproverDTO);
+		List<ExpensesApproverHierarchyDTO> expApperoverHierarchy = expApperoverHierarchyList.getExpensesApproverHierarchyDTO();
+		if(expApperoverHierarchy != null && !expApperoverHierarchy.isEmpty()) {
+			if(expensesApproverDTO.getType().equalsIgnoreCase("pdf"))
+				file = expensesApprovalService.getExpensesApproverHierarchyListForPdf(expApperoverHierarchy,orgLoc,loginUser);
+			else
+				file = expensesApprovalService.getExpensesApproverHierarchyListForExcel(expApperoverHierarchy,orgLoc,loginUser);
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();	
+			if(file != null){
+				file.delete();
+			}
 		}
-		response.setContentType(mimeType);
-		StringBuilder fileName = new StringBuilder();
-		response.setHeader("Content-Disposition", fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
-		response.setContentLength((int) file.length());
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
-		inputStream.close();
-		response.getOutputStream().close();
-		response.getOutputStream().flush();	
-		if(file != null){
-			file.delete();
-		}
+		
    }
 	
+	//unused method
 	@RequestMapping(value = "/getExpensesApprovalDetailsByExpenseId")
 	public String getExpensesApprovalListByExpenseId(@RequestParam(value="expenseId", required=false) String expenseId) throws Exception {
 		Expenses expenses = expensesService.getExpenseById(Long.parseLong(expenseId));
@@ -152,9 +175,10 @@ public class ExpensesApprovalRestController {
 		return commonUtil.toJSON(expenses);
    }
 	
-	
+	//unused method
 	@RequestMapping(value = "/getExpensesApprovalCategoryByExpenseId")
-	public String getExpensesApprovalCategoryByExpenseId(@RequestParam(value="expenseId", required=false) String expenseId,@RequestParam(value="locationCode") String locationCode) throws Exception {
+	public ResponseList<ExpensesEntries> getExpensesApprovalCategoryByExpenseId(@RequestParam(value="expenseId", required=false) String expenseId,@RequestParam(value="locationCode") String locationCode) throws Exception {
+		ResponseList<ExpensesEntries> reponseEntries = new ResponseList<ExpensesEntries>();
 		List<ExpensesEntries> expensesEntries = expensesEntriesService.getExpensesEntriesByExpenseId(Long.parseLong(expenseId));
 		
 		 OrgLocations orglo = orgLocationService.getOrgLocationsByLocationCode(locationCode);
@@ -163,19 +187,19 @@ public class ExpensesApprovalRestController {
 		for(ExpensesEntries expEntries:expensesEntries){
 			expEntries.setExpenseDateString(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),expEntries.getExpenseDate()));
 		}
-		return commonUtil.toJSON(expensesEntries);
+		reponseEntries.setData(expensesEntries);
+		return reponseEntries;
    }
 	
 	
-	
-	
-	
-	
     @RequestMapping(value = "/saveExpenseApprovalStatusByExpenseId", method = RequestMethod.POST)
-    public  String saveExpenseApprovalStatusByExpenseId(HttpServletRequest request,@RequestParam(value="expenseId", required=false) Long expenseId,
-                                                @RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason) throws Exception{
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    public  Response<String> saveExpenseApprovalStatusByExpenseId(HttpServletRequest request,@RequestParam(value="expenseId", required=false) Long expenseId,
+        @RequestParam(value="approvalStatus", required=false) String approvalStatus,@RequestParam(value="rejectedReason", required=false) String rejectedReason){
+    	Response<String> reponse = new Response<String>();
+    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		if(user != null && orgLoc != null) {
+    	try {
 		 String currencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
 	 	expensesApprovalService.updateApprovalStatusByApproverForExpense(expenseId, user.getId(),approvalStatus, rejectedReason,orgLoc);
 	 	ExpensesApproverHierarchy eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(user.getId(), expenseId, orgLoc.getId());
@@ -191,7 +215,7 @@ public class ExpensesApprovalRestController {
 	 	            String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getStartDate());
 	 	            String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),eah.getExpenseId().getEndDate());
 	 			    //For Employee
-			 		sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getConsultantUser().getFirstName(), projectMembers.getProjectMemberCandidteId().getConsultantUser().getLastName(), projectMembers.getProjectMemberCandidteId().getConsultantUser().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
+			 		sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,projectMembers.getProjectMemberCandidteId().getFirstName(), projectMembers.getProjectMemberCandidteId().getLastName(), projectMembers.getProjectMemberCandidteId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);
 			 		 
 			 		//For Approvers of EndClient
 			 		 List<ProjectApproverHierarchy> approverList =  projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
@@ -205,13 +229,17 @@ public class ExpensesApprovalRestController {
 			 		sendEmailToVendorAtExpensesApprovalStatus(eah.getExpenseId().getTotalAmount(),projectMembers,user,orgLoc,startDate, endDate,rejectedReason,currencyCode,approvalStatus);
 		 	   }
 	 	}
-	 	
-	 	
-	 	
-	 	
-	 	
-	 	
-        return "success";
+		 	reponse.setResponse(Result.SUCCESS.name());
+		 	reponse.setResponseMessage(Result.SUCCESS.name());
+    	}catch(Exception e) {
+    		reponse.setResponse(Result.AWKWARD.name());
+    	 	reponse.setResponseMessage(Result.AWKWARD.name());
+    	}
+	}else {
+		reponse.setResponse(Result.SESSION_TIMEDOUT.name());
+	 	reponse.setResponseMessage(Result.SESSION_TIMEDOUT.name());
+	}
+        return reponse;
     }
 
    
@@ -243,7 +271,7 @@ public class ExpensesApprovalRestController {
 			 Map<String, String> globalVarsMap = new HashMap<String, String>();
 //			 globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
 //			 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
-		     globalVarsMap.put("employeename",projectMembers.getProjectMemberCandidteId().getConsultantUser().getFullName());
+		     globalVarsMap.put("employeename",projectMembers.getProjectMemberCandidteId().getFullName());
 			
 //			 globalVarsMap.put("managerFirstName",projectManager.getFirstName());
 //			 globalVarsMap.put("managerLastName",projectManager.getLastName());
@@ -254,7 +282,7 @@ public class ExpensesApprovalRestController {
 			 globalVarsMap.put("orgname",user.getFirstName()+(orgLoc.getOrg().getOrgName()));
 			 
 			 StringBuilder loginURLSB = new StringBuilder();
-			 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadUrl).append("/").append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			 globalVarsMap.put("loginlink",loginURLSB.toString());
 			 StringBuilder amountCurrencyType = new StringBuilder();
 			 BigDecimal amountCurrencyType1 = new BigDecimal(Double.toString(amount));
@@ -264,47 +292,28 @@ public class ExpensesApprovalRestController {
 			 amountCurrencyType.append(amountCurrencyType1).append(" ").append(currencyCode);
 			 globalVarsMap.put("amount",amountCurrencyType1.toString());
 			 globalVarsMap.put("reason",rejectedReason);
-			 
-			 //setting the Recipient information
-			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-			 
-			 //getting the current EmailScenario by EmailScenario unique name and entity type
-			 EmailScenario  emailScenario = null;
+	
 			 if(status.equals("REJECTED")){
-	             emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_REJECTED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_EMAIL);
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLoc.getOrg(),orgLoc,Constants.EXPENSES_REJECTED_EMAIL_TOVENDOR,new ArrayList<EmailAttachment>());
 			 }else{
-				 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_APPROVED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_EMAIL);
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLoc.getOrg(),orgLoc,Constants.EXPENSES_APPROVED_EMAIL_TOVENDOR,new ArrayList<EmailAttachment>());
 			 }
-			 
-			 //covert subject,body and signature
-			 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-			 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-			 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-			 String url = sourceleadUrl;
-			 
-			 //construct HTML template using required data
-			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLoc.getOrg(),orgLoc);
-			 emailMessage.setSubject(subject);
-			 emailMessage.setMessageBody(emailTemplate);
-			 
-			 //calling the sendEmail method of emailScenerioUtil
-			 emailScenerioUtil.sendEmail(emailMessage,orgLoc.getId(),iAdressArray,new ArrayList<EmailAttachment>());
-			 
-			 
+			
 			//calling the sendNotification method of emailScenerioUtil
 			EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.EXPENSES_APPROVED_EMAIL_TOVENDOR,Constants.ENTITY_TYPE_NOTIFICATION);
-			String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(),globalVarsMap);
+			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 			notificationScenario.setBody(notificationBody);
 			notificationScenario.setOrgCode(orgLoc.getLocationCode());
 			//String url = null;
 			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, user, approver.getApproverUserId(), orgLoc, notificationScenario);
+			emailScenerioUtil.sendNotification(actionLink, user, approver.getApproverUserId(), orgLoc, notificationScenario,new HashMap<String,String>());
 			
 		    }
 		}
 	}
     private void sendEmailNotificationToEmployeeAndApproversOfEndClient(Expenses expenses,String currencyCode,String firstName,String lastName,String toEmail,User loginUser,OrgLocations loginOrgLocation,ProjectMembers projectMembers,String startDate, String endDate,String status,String rejectedReason) throws Exception{
-		 EmailMessage emailMessage = new EmailMessage();
+		
+    	EmailMessage emailMessage = new EmailMessage();
     	 emailMessage.setFirstName(firstName);
 	 	 emailMessage.setLastName(lastName);
 	 	 emailMessage.setToEmail(toEmail);
@@ -328,7 +337,7 @@ public class ExpensesApprovalRestController {
 			 globalVarsMap.put("managerUser",loginUser.getFirstName());
 		 }
 		 
-		 globalVarsMap.put("employeeUser",projectMembers.getProjectMemberCandidteId().getConsultantUser().getFullName());
+		 globalVarsMap.put("employeeUser",projectMembers.getProjectMemberCandidteId().getFullName());
 		 globalVarsMap.put("projectName",projectMembers.getProjects().getProjectName());
 		 globalVarsMap.put("expenseId",expenses.getExpenseId());
 		 globalVarsMap.put("frequencyType",projectMembers.getProjects().getInvoiceFrequency());
@@ -364,44 +373,32 @@ public class ExpensesApprovalRestController {
 		 }
 		 
 		 StringBuilder loginURLSB = new StringBuilder();
-		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadUrl).append("/").append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = null;
 		 if("REJECTED".equalsIgnoreCase(status)){
-			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_REJECTED_EXPENSE,Constants.ENTITY_TYPE_EMAIL);
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MANAGER_REJECTED_EXPENSE,new ArrayList<EmailAttachment>());
 		 }
 		 if("APPROVED".equalsIgnoreCase(status)){
-			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE,Constants.ENTITY_TYPE_EMAIL);
+			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE,new ArrayList<EmailAttachment>());
 		 }
-		 
 		
-		 // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once 
-		 // TODO @Shivayogi  i have checked it,its working fine . if migration is not there it will throw null pointer.
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, loginOrgLocation.getOrg(),loginOrgLocation);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 emailScenerioUtil.sendEmail(emailMessage,loginOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 EmailScenario  notificationScenario = null;
+		 String actionLink="";
+		 StringBuilder notificationLink = new StringBuilder();
 		 if("REJECTED".equalsIgnoreCase(status)){
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("addExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
 			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_REJECTED_EXPENSE,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }
 		 if("APPROVED".equalsIgnoreCase(status)){
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("addExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
+
 			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }
 		 // TODO @Rajashekar notificationScenario.getBody() may throw NullPointerException please check it once 
-		String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getSubject(),globalVarsMap);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		notificationScenario.setOrgCode(loginOrgLocation.getLocationCode());
-		String actionLink = "";
-		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario);  
+		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());  
    }
 	
 	

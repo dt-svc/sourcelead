@@ -53,7 +53,7 @@ $(document).ready(function() {
       <div class="pull-left">
         <h2>Add Holiday</h2>
       </div>
-     <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='/viewHoliday'/>">Holiday List</a> &raquo; Add Holiday</div>
+     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/leaveConfiguration'/>"> Leave Configuration</a> &raquo;<a href="<c:url value='${appPath}/viewHoliday'/>">Holiday List</a> &raquo; Add Holiday</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="holidayLoading"></div>
@@ -72,7 +72,6 @@ $(document).ready(function() {
               <label class="col-md-3">Date<span class="text-danger">*</span></label>
               <div class="col-md-9">
                       <div class="clearfix row">
-                      
                       <div class="col-sm-5 paddingRight" id="errFromDate">
                       <input type="text" class="form-control calendar" value="${holidayDTO.fromDateStr}" field-name="From Date" data-validation="required" name="fromDate" id="fromDate" placeholder="From Date" readonly>
                       </div>
@@ -109,7 +108,7 @@ $(document).ready(function() {
                       
                       </div>
                       
-                      <div class="clearfix row mt10 mb10">
+                      <div class="clearfix row mt25 mb10">
                       <div class="col-sm-5 paddingRight" id="errToDate">
                       <input type="text" class="form-control calendar" value="${holidayDTO.toDateStr}" field-name="To Date" data-validation="required" name="toDate" id="toDate"  placeholder="To Date" readonly>
                       </div>
@@ -208,10 +207,21 @@ $(document).ready(function() {
 		var userId = '${SourceLeadWeb_userId}';
 		if ($('#holiday_form').validate(false, validationSettings)) {
 		  	var formData = $($('#holiday_form')[0]).serialize();
-		  	 $("#holidayLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.post(sourceleadUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(data) {
-				$("#holidayLoading").removeAttr("style");	
-				location.replace(sourceleadUrl+ "/viewHoliday");
+		  	 $("#holidayLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$.post(sourceleadUrl+"/saveHoliday?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"", formData, function(result) {
+				if (result.response === "INVALID_DATA") {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			$("#holidayLoading").removeAttr("style");	
+					location.replace(sourceleadUrl+ "/viewHoliday");
+	    		} else if (result.indexOf('Sign In') !== -1) {
+	    			location.replace(sourceleadUrl);
+	    		} else {
+	    		    showError("Operation failed, please try again");
+	    		}
+				 $("#holidayLoading").hide();
 			});
 			return true;
 		} else {
@@ -314,4 +324,13 @@ function validateHolidayName(){
 	}
 </script>
 
+<!-- <script>
+function clearStartDate(){
+	$("#fromDate").val("");
+	};
+function clearToDate(){
+	$("#toDate").val("");
+	};
+	
+</script> -->
 <jsp:include page="../masterFooter.jsp" />

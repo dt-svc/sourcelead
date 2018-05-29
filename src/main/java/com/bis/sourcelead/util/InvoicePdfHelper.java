@@ -12,12 +12,14 @@ import java.util.Date;
 import java.util.Set;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
@@ -33,6 +35,7 @@ import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.web.LoginSessionController;
 import com.itextpdf.text.BaseColor;
@@ -88,6 +91,9 @@ public class InvoicePdfHelper {
 
 	@Autowired
 	TimeZoneService timeZoneService;
+	
+	@Autowired
+	OrgService orgService;
 
 	OrgLocationService orgLocationService;
 	public File createPdfTableForInvoice(Invoice invoice, OrgLocations orgLocation, User user, Org org,
@@ -129,26 +135,29 @@ public class InvoicePdfHelper {
 
 				p = new Paragraph(user.getFullName(), font10);
 				p.add(new Chunk(glue));
-				p.add("Billing Id :-" + invoice.getInvoiceId());
+				p.add("Billing Id : " + invoice.getInvoiceId());
 				p.setFont(font10);
 				document.add(p);
 
 				p = new Paragraph(user.getEmail(), font10);
 				p.add(new Chunk(glue));
-				p.add("Billing Date :" + createdDate);
+				p.add("Billing Date : " + createdDate);
 				p.setFont(font10);
 				document.add(p);
 
 				p = new Paragraph(address.toString(), font10);
 				p.add(new Chunk(glue));
 				p.setFont(font10);
-				p.add("Due Date :" + dueDate);
+				p.add("Due Date : " + dueDate);
 				document.add(p);
 
 				p = new Paragraph(orgLocation.getPhone(), font10);
 				p.add(new Chunk(glue));
 				p.setFont(font10);
-				p.add("Payment Terms-" + invoice.getPaymentFrequency());
+				if(StringUtils.isNotBlank(invoice.getPaymentFrequency()))
+				p.add("Payment Terms : " + invoice.getPaymentFrequency());
+				else
+					p.add("Payment Terms : " + "--");
 				document.add(p);
 
 				OrgRelations orgRel = orgRelationsService.getOrRelationsById(invoice.getOrgRelationID().getId());
@@ -173,35 +182,103 @@ public class InvoicePdfHelper {
 				p.setSpacingAfter(8);
 				document.add(p);
 
-				PdfPTable tableq = new PdfPTable(2);
-				tableq.setWidthPercentage(100);
-				StringBuilder toAddress = new StringBuilder();
+				if(invoice.getPaymentAccount() != null) {
+					PaymentAccountDTO paymentAccount  = orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null);
+					if(paymentAccount.getAccountType().equalsIgnoreCase("WEPAY")) {
+						p = new Paragraph(invoice.getContactUser().getFullName(), font10);
+						p.add(new Chunk(glue));
+						p.add("Account Type : " + paymentAccount.getAccountType());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(invoice.getContactUser().getEmail(), font10);
+						p.add(new Chunk(glue));
+						p.add("Email : " + paymentAccount.getEmail());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(orgRel.getResponderLocationId().getOrgLocationName(), font10);
+						p.add(new Chunk(glue));
+						p.add("First Name : " + paymentAccount.getFirstName());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(clientAddress.toString(), font10);
+						p.add(new Chunk(glue));
+						p.add("Last Name : " + paymentAccount.getLastName());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(invoice.getContactUser().getMobilePhone(), font10);
+						document.add(p);
+						
+					}else {
 
-				toAddress.append(invoice.getContactUser().getFullName());
-				toAddress.append(System.getProperty("line.separator"));
+						p = new Paragraph(invoice.getContactUser().getFullName(), font10);
+						p.add(new Chunk(glue));
+						p.add("Account Type : " + paymentAccount.getAccountType());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(invoice.getContactUser().getEmail(), font10);
+						p.add(new Chunk(glue));
+						p.add("Bank Name : " + paymentAccount.getBankName());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(orgRel.getResponderLocationId().getOrgLocationName(), font10);
+						p.add(new Chunk(glue));
+						p.add("Account Number : " + paymentAccount.getAccountNumber());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(clientAddress.toString(), font10);
+						p.add(new Chunk(glue));
+						p.add("IFSC Code : " + paymentAccount.getRoutingNumber());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(invoice.getContactUser().getMobilePhone(), font10);
+						p.add(new Chunk(glue));
+						p.add("First Name : " + paymentAccount.getFirstName());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph("", font10);
+						p.add(new Chunk(glue));
+						p.add("Last Name : " + paymentAccount.getLastName());
+						p.setFont(font10);
+						document.add(p);
+						
+					}
+				}else {
 
-				toAddress.append(invoice.getContactUser().getEmail());
-				toAddress.append(System.getProperty("line.separator"));
+					PdfPTable tableq = new PdfPTable(2);
+					tableq.setWidthPercentage(100);
+					StringBuilder toAddress = new StringBuilder();
 
-				toAddress.append(orgRel.getResponderLocationId().getOrgLocationName());
-				toAddress.append(System.getProperty("line.separator"));
+					toAddress.append(invoice.getContactUser().getFullName());
+					toAddress.append(System.getProperty("line.separator"));
 
-				toAddress.append(clientAddress.toString());
-				toAddress.append(System.getProperty("line.separator"));
+					toAddress.append(invoice.getContactUser().getEmail());
+					toAddress.append(System.getProperty("line.separator"));
 
-				if (invoice.getContactUser().getMobilePhone() != null
-						&& !"".equals(invoice.getContactUser().getMobilePhone())) {
-					toAddress.append(invoice.getContactUser().getMobilePhone());
+					toAddress.append(orgRel.getResponderLocationId().getOrgLocationName());
+					toAddress.append(System.getProperty("line.separator"));
+
+					toAddress.append(clientAddress.toString());
+					toAddress.append(System.getProperty("line.separator"));
+
+					if (invoice.getContactUser().getMobilePhone() != null
+							&& !"".equals(invoice.getContactUser().getMobilePhone())) {
+						toAddress.append(invoice.getContactUser().getMobilePhone());
+					}
+
+					tableq.addCell(getCellValue(toAddress.toString(), PdfPCell.ALIGN_LEFT));
+					tableq.addCell(getCellValue("", PdfPCell.ALIGN_RIGHT));
+
+					document.add(tableq);
 				}
-
-				tableq.addCell(getCellValue(toAddress.toString(), PdfPCell.ALIGN_LEFT));
-				if (invoice.getAccountDetails() != null && !"".equals(invoice.getAccountDetails())) {
-					tableq.addCell(getCellValue(invoice.getAccountDetails(), PdfPCell.ALIGN_RIGHT));
-				} else {
-					tableq.addCell(getCellValue("--", PdfPCell.ALIGN_RIGHT));
-				}
-
-				document.add(tableq);
 
 				PdfPTable table = new PdfPTable(2);
 				table = new PdfPTable(7);
@@ -464,26 +541,29 @@ public class InvoicePdfHelper {
 
 				p = new Paragraph(user.getFullName(), font10);
 				p.add(new Chunk(glue));
-				p.add("Invoice Id-" + invoice.getInvoiceId());
+				p.add("Invoice Id : " + invoice.getInvoiceId());
 				p.setFont(font10);
 				document.add(p);
 
 				p = new Paragraph(user.getEmail(), font10);
 				p.add(new Chunk(glue));
-				p.add("Invoice Date-" + createdDate);
+				p.add("Invoice Date : " + createdDate);
 				p.setFont(font10);
 				document.add(p);
 
 				p = new Paragraph(address.toString(), font10);
 				p.add(new Chunk(glue));
 				p.setFont(font10);
-				p.add("Due Date-" + dueDate);
+				p.add("Due Date :" + dueDate);
 				document.add(p);
 
 				p = new Paragraph(orgLocation.getPhone(), font10);
 				p.add(new Chunk(glue));
 				p.setFont(font10);
-				p.add("Payment Terms-" + invoice.getPaymentFrequency());
+				if(StringUtils.isNotBlank(invoice.getPaymentFrequency()))
+					p.add("Payment Terms : " + invoice.getPaymentFrequency());
+					else
+						p.add("Payment Terms : " + "--");
 				document.add(p);
 
 				OrgRelations orgRel = orgRelationsService.getOrRelationsById(invoice.getOrgRelationID().getId());
@@ -507,35 +587,105 @@ public class InvoicePdfHelper {
 				p.add("Bank Details");
 				p.setSpacingAfter(8);
 				document.add(p);
-				PdfPTable tableq = new PdfPTable(2);
-				tableq.setWidthPercentage(100);
-				StringBuilder toAddress = new StringBuilder();
+				
+				if(invoice.getPaymentAccount() != null) {
+					PaymentAccountDTO paymentAccount  = orgService.getPaymentAccount(invoice.getPaymentAccount().getId(), null);
+					if(paymentAccount.getAccountType().equalsIgnoreCase("WEPAY")) {
+						p = new Paragraph(invoice.getContactUser().getFullName(), font10);
+						p.add(new Chunk(glue));
+						p.add("Account Type : " + paymentAccount.getAccountType());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(invoice.getContactUser().getEmail(), font10);
+						p.add(new Chunk(glue));
+						p.add("Email : " + paymentAccount.getEmail());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(orgRel.getResponderLocationId().getOrgLocationName(), font10);
+						p.add(new Chunk(glue));
+						p.add("First Name : " + paymentAccount.getFirstName());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(clientAddress.toString(), font10);
+						p.add(new Chunk(glue));
+						p.add("Last Name : " + paymentAccount.getLastName());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(invoice.getContactUser().getMobilePhone(), font10);
+						document.add(p);
+						
+					}else {
 
-				toAddress.append(invoice.getContactUser().getFullName());
-				toAddress.append(System.getProperty("line.separator"));
+						p = new Paragraph(invoice.getContactUser().getFullName(), font10);
+						p.add(new Chunk(glue));
+						p.add("Account Type : " + paymentAccount.getAccountType());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(invoice.getContactUser().getEmail(), font10);
+						p.add(new Chunk(glue));
+						p.add("Bank Name : " + paymentAccount.getBankName());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(orgRel.getResponderLocationId().getOrgLocationName(), font10);
+						p.add(new Chunk(glue));
+						p.add("Account Number : " + paymentAccount.getAccountNumber());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(clientAddress.toString(), font10);
+						p.add(new Chunk(glue));
+						p.add("IFSC Code : " + paymentAccount.getRoutingNumber());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph(invoice.getContactUser().getMobilePhone(), font10);
+						p.add(new Chunk(glue));
+						p.add("First Name : " + paymentAccount.getFirstName());
+						p.setFont(font10);
+						document.add(p);
+						
+						p = new Paragraph("", font10);
+						p.add(new Chunk(glue));
+						p.add("Last Name : " + paymentAccount.getLastName());
+						p.setFont(font10);
+						document.add(p);
+						
+					}
+				}else {
 
-				toAddress.append(invoice.getContactUser().getEmail());
-				toAddress.append(System.getProperty("line.separator"));
+					PdfPTable tableq = new PdfPTable(2);
+					tableq.setWidthPercentage(100);
+					StringBuilder toAddress = new StringBuilder();
 
-				toAddress.append(orgRel.getResponderLocationId().getOrgLocationName());
-				toAddress.append(System.getProperty("line.separator"));
+					toAddress.append(invoice.getContactUser().getFullName());
+					toAddress.append(System.getProperty("line.separator"));
 
-				toAddress.append(clientAddress.toString());
-				toAddress.append(System.getProperty("line.separator"));
+					toAddress.append(invoice.getContactUser().getEmail());
+					toAddress.append(System.getProperty("line.separator"));
 
-				if (invoice.getContactUser().getMobilePhone() != null
-						&& !"".equals(invoice.getContactUser().getMobilePhone())) {
-					toAddress.append(invoice.getContactUser().getMobilePhone());
+					toAddress.append(orgRel.getResponderLocationId().getOrgLocationName());
+					toAddress.append(System.getProperty("line.separator"));
+
+					toAddress.append(clientAddress.toString());
+					toAddress.append(System.getProperty("line.separator"));
+
+					if (invoice.getContactUser().getMobilePhone() != null
+							&& !"".equals(invoice.getContactUser().getMobilePhone())) {
+						toAddress.append(invoice.getContactUser().getMobilePhone());
+					}
+
+					tableq.addCell(getCellValue(toAddress.toString(), PdfPCell.ALIGN_LEFT));
+					tableq.addCell(getCellValue("", PdfPCell.ALIGN_RIGHT));
+
+					document.add(tableq);
 				}
-
-				tableq.addCell(getCellValue(toAddress.toString(), PdfPCell.ALIGN_LEFT));
-				if (invoice.getAccountDetails() != null && !"".equals(invoice.getAccountDetails())) {
-					tableq.addCell(getCellValue(invoice.getAccountDetails(), PdfPCell.ALIGN_RIGHT));
-				} else {
-					tableq.addCell(getCellValue("--", PdfPCell.ALIGN_RIGHT));
-				}
-
-				document.add(tableq);
+				
 				PdfPTable table = new PdfPTable(2);
 				table = new PdfPTable(7);
 				table.setWidthPercentage(100);
@@ -1071,7 +1221,13 @@ public class InvoicePdfHelper {
 		}
 
 		if (null != invoice.getInvoiceStatus() && !"".equalsIgnoreCase(invoice.getInvoiceStatus())) {
-			billingArray[10] = invoice.getInvoiceStatus();
+			if(Constants.SENT.equalsIgnoreCase(invoice.getInvoiceStatus())){
+				billingArray[10] = "Sent";
+			}else if(Constants.DRAFT.equalsIgnoreCase(invoice.getInvoiceStatus())){
+				billingArray[10] = "Draft";
+			}else{
+				billingArray[10] = invoice.getInvoiceStatus();
+			}
 		} else {
 			billingArray[10] = "--";
 		}

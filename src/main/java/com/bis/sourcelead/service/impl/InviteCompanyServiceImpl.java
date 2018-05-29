@@ -1,24 +1,34 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.InviteCompanyDao;
 import com.bis.sourcelead.dto.InviteCompanyDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.ScheduleMaintenanceDTO;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.InviteCompany;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ScheduleMaintenance;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InviteCompanyService;
@@ -130,25 +140,8 @@ public class InviteCompanyServiceImpl implements InviteCompanyService{
 		 StringBuilder  inviteComapnyServiceDiv  = buildInviteCompanyServices();
 		 globalVarsMap.put("ServicesList", inviteComapnyServiceDiv.toString());
 		
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
-		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVITE_COMPANY,Constants.ENTITY_TYPE_EMAIL);
-		
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = null;
-		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url,orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
-		 
 		 //calling the sendEmail method of emailScenerioUtil
-		 emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.INVITE_COMPANY,new ArrayList<EmailAttachment>());
 		
 	}
  
@@ -171,5 +164,42 @@ public class InviteCompanyServiceImpl implements InviteCompanyService{
 				tempHTML.append("</html>");
 		return tempHTML;
 	}
-	
+
+	@Override
+	public void storeScheduleMaintenance(ScheduleMaintenanceDTO maintenanceDTO) throws ParseException {
+		ScheduleMaintenance maintenance = new ScheduleMaintenance();
+		if(maintenanceDTO.getId() != null) {
+			maintenance.setId(maintenanceDTO.getId());
+		}
+		maintenance.setScheduleMessage(maintenanceDTO.getScheduleMessage());
+		DateFormat dateFormat = new SimpleDateFormat ("MM/dd/yyyy hh:mm a");
+		maintenance.setStartDate(dateFormat.parse(maintenanceDTO.getStartDate()));
+		maintenance.setEndDate(dateFormat.parse(maintenanceDTO.getEndDate()));
+		maintenance.setCreatedDate(new Date());
+		inviteCompanyDao.storeScheduleMaintenance(maintenance);
+	}
+
+	@Override
+	public ScheduleMaintenanceDTO getScheduleStatus() throws ParseException {
+		ScheduleMaintenance scheduleMaintenance = inviteCompanyDao.getScheduleStatus(new Date());
+		ScheduleMaintenanceDTO maintenanceDTO = null;
+		if(scheduleMaintenance != null) {
+			maintenanceDTO = new ScheduleMaintenanceDTO();
+			maintenanceDTO.setStartDate(scheduleMaintenance.getStartDate().toString());
+			maintenanceDTO.setScheduleMessage(scheduleMaintenance.getScheduleMessage());
+			maintenanceDTO.setEndDate(scheduleMaintenance.getEndDate().toString());
+		}
+		return maintenanceDTO;
+	}
+
+	@Override
+	public ResponseList<ScheduleMaintenanceDTO> getScheduleMaintenanceList(ScheduleMaintenanceDTO scheduleMaintenanceDTO, String searchValue) throws ParseException{
+		return inviteCompanyDao.getScheduleMaintenanceList(scheduleMaintenanceDTO, searchValue);
+	}
+
+	@Override
+	public void deleteScheduleMaintenance(String id) {
+		inviteCompanyDao.deleteScheduleMaintenance(id);
+	}
+
 }

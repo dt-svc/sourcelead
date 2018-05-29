@@ -11,6 +11,7 @@ import com.bis.sourcelead.beans.BillingReportDTO;
 import com.bis.sourcelead.beans.CurrencyConversionResponse;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.InvoiceAmount;
@@ -26,6 +27,8 @@ public interface InvoiceService {
 	ResponseList<Invoice> invoiceListByOrgLocationId(OrgLocations orgLocations,Date startDateUTC, Date endDateUTC,InvoiceDTO invoiceDTO) throws Exception;
 
 	Invoice getInvoicetById(Long invoiceId) throws Exception;
+	
+	public Boolean getInvoiceByInvoiceId(String invoiceId, Long orgLocationsId, String invoiceType) throws Exception;
 	
 	List<Contracts> getSowcontractListByAssociateId(Long candidateId, Long orgLocationId, Long orgRelationId,String contractType)throws Exception;
 
@@ -44,7 +47,7 @@ public interface InvoiceService {
 //	Invoice saveProjectInvoice(JSONObject jsonObj, User user, OrgLocations orgLocation, String saveType, List<MultipartFile> attachedfileList, String invoiceType)throws Exception;
 
 
-	void updateSubmissionApproverHiearachy(List<String> submissionApproverHierarchyIds, String invoiceFrequency,String invoiceType)throws Exception;
+	void updateSubmissionApproverHiearachy(Invoice invoice,String invoiceType)throws Exception;
 
 	void sendInvoiceMail(User user, OrgLocations orglocations, Invoice invoice,String invoiceType,List<TimesheetSubmissionsDocuments> docusList) throws Exception;
 
@@ -74,12 +77,13 @@ public interface InvoiceService {
 
 	Invoice getInvoicetByParentId(Long invoiceId)throws Exception;
 
-	boolean deleteInvoice(Long invoiceId, String reason, String invoiceType)throws Exception;
+	boolean deleteInvoice(String invoiceUUID, String reason, String invoiceType)throws Exception;
 
 	Invoice saveExpenseInvoice(InvoiceDTO invoiceDTO, User user, OrgLocations orgLocation, String saveType,String invoiceType, Org org, String currencyCode, String invoiceCategory)throws Exception;
 
 	void updateExpensesForinvoice(Invoice invoice, String invoiceType)throws Exception;
 
-	
+	List<Invoice> getAllBillsAndInvoicesBYProjectIdOrgLocationIdInvoiceStatusStartDateAndEndDate(Long projectId,Long orgLocationId,String invoiceStatus,Date startDate,Date endDate)throws Exception;
+
 
 }

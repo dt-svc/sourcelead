@@ -26,6 +26,8 @@ public interface OrgRelationsDao {
 	
 	public List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception;
 	
+	public OrgRelations getClientsByOrgLocationIdAndName(Long orgLocationId, String name) throws Exception;
+	
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	public Long getNumberOfProjectsPerClient(Long orgLocationId) throws Exception;
@@ -55,6 +57,8 @@ public interface OrgRelationsDao {
 	public List<OrgRelations> getAllClientsByOrgNameOrgLocationId(String orgName, Long orgLocationId);
 	
 	List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId,String type);
+	
+	List<OrgRelations> getClientOrVendorListByOrgLocationIdForImmigration(Long orgLocationId,String type);
 
 	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception;
 
@@ -63,6 +67,8 @@ public interface OrgRelationsDao {
 	public List<OrgRelations> getAllClientsByOrgLocationIdAndDomain(Long orgLocationId, String domain, String responderType);
 	
 	OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId,Long locationId) throws Exception;
+	
+	OrgRelations getOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId,Long locationId) throws Exception;
 	
 	OrgRelations getOrgRelationsByUUID(String UUID) throws Exception;
 	

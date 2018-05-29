@@ -31,6 +31,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
 import com.ibm.icu.math.BigDecimal;
 
 @Service
@@ -63,7 +64,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 	ConversionUtil conversionUtil;
 
 	@Override
-	public InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO,JSONObject jsonObj, User user, OrgLocations orgLocation,
+	public InvoicePayment saveInvoicePayment(InvoicePaymentDTO invoicePaymentDTO, User user, OrgLocations orgLocation,
 			MultipartFile multiFile, Long invoiceId) throws Exception {
 
 		Invoice invoice = invoiceDao.getInvoicetById(invoiceId);
@@ -199,6 +200,7 @@ public class InvoicePaymentServiceImpl implements InvoicePaymentService {
 				invoicePayment.setFileContentType(file.getContentType());
 				invoicePayment.setFileName(file.getFileName());
 				invoicePayment.setFileURL(file.getFileURL());
+				FileUploadUtil.moveFile(invoicePaymentDTO.getStaticPath(), file, "incoiceDocuments");
 			}
 		}
 		

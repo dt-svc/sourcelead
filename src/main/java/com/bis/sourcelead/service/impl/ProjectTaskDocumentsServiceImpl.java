@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTaskDocumentDao;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.ProjectTaskDocumentDTO;
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.entity.ProjectTaskDocuments;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -72,49 +73,53 @@ public class ProjectTaskDocumentsServiceImpl implements ProjectTaskDocumentsServ
 
 	
 	@Override
-	public void storeProjectTaskDocuments(ProjectTasksDTO projectTasksDTO, String projectTaskId, Long documentId, Long userId)throws Exception {
-		User user = userService.getUserById(userId);
+	public void storeProjectTaskDocuments(ProjectTaskDocumentDTO projectTaskDocumentDTO)throws Exception {
+		User user = userService.getUserById(Long.valueOf(projectTaskDocumentDTO.getLoginUserId()));
 		ProjectTaskDocuments projectTaskDoc = null;
 		ProjectTaskDocuments oldProjectTaskDoc = null;
 		StringBuffer activity = null;
 		StringBuffer activitySummary = null;
-		if(documentId != null) {
-			projectTaskDoc =  projectTaskDocumentDao.getProjectTaskDocumentsById(Long.valueOf(documentId));
+		if(projectTaskDocumentDTO.getDocumentId() != null) {
+			projectTaskDoc =  projectTaskDocumentDao.getProjectTaskDocumentsById(Long.valueOf(projectTaskDocumentDTO.getDocumentId()));
 			
 			//this code is get the old document data
-			 oldProjectTaskDoc =  projectTaskDocumentDao.getProjectTaskDocumentsById(Long.valueOf(documentId));
+			 oldProjectTaskDoc =  projectTaskDocumentDao.getProjectTaskDocumentsById(Long.valueOf(projectTaskDocumentDTO.getDocumentId()));
 			 activity = new StringBuffer();
 		     activitySummary = new StringBuffer();
 		     activity.append("Edit Document");	
 		}else {
 			 projectTaskDoc = new ProjectTaskDocuments();
 		}
-		if (projectTasksDTO.getTaskDescription() != null && !projectTasksDTO.getTaskDescription().isEmpty()) {
-				projectTaskDoc.setDescription(projectTasksDTO.getTaskDescription());
+		if (projectTaskDocumentDTO.getTaskDescription() != null && !projectTaskDocumentDTO.getTaskDescription().isEmpty()) {
+				projectTaskDoc.setDescription(projectTaskDocumentDTO.getTaskDescription());
+		}else {
+			projectTaskDoc.setDescription(null);
 		}
-		if (projectTasksDTO.getDocumentName() != null && !projectTasksDTO.getDocumentName().isEmpty() ) {
-			projectTaskDoc.setDocumentName(projectTasksDTO.getDocumentName());
+		if (projectTaskDocumentDTO.getDocumentName() != null && !projectTaskDocumentDTO.getDocumentName().isEmpty() ) {
+			projectTaskDoc.setDocumentName(projectTaskDocumentDTO.getDocumentName());
+		}else {
+			projectTaskDoc.setDocumentName(null);
 		}
 		
-		ProjectTasks  projectTask = projectTasksService.getTasksId(projectTaskId);
+		ProjectTasks  projectTask = projectTasksService.getTasksId(projectTaskDocumentDTO.getProjectTaskId());
 		projectTaskDoc.setProjectTaskId(projectTask);
 		projectTaskDoc.setStatus(Constants.CANDIDATE_ACTIVE);
 		
-		if(projectTasksDTO.getFileInfo() != null) {
-			FileInfo fileInfo = projectTasksDTO.getFileInfo().get(0);
-			if (projectTasksDTO.getFileInfo() != null) {
+		if(projectTaskDocumentDTO.getFileInfo() != null) {
+			FileInfo fileInfo = projectTaskDocumentDTO.getFileInfo().get(0);
+			if (projectTaskDocumentDTO.getFileInfo() != null) {
 				projectTaskDoc.setFileURL(fileInfo.getFileURL());
 				projectTaskDoc.setFileName(fileInfo.getFileName());
 				projectTaskDoc.setFileType(fileInfo.getContentType());
 			}
-			FileUploadUtil.moveFile(projectTasksDTO.getStaticPath(), fileInfo, "tasks");
+			FileUploadUtil.moveFile(projectTaskDocumentDTO.getStaticPath(), fileInfo, "tasks");
 		}
 		
 		
 		ProjectTaskDocuments projectDoc  = projectTaskDocumentDao.updateProjectTaskDocuments(projectTaskDoc);
 		
 		
-		if(documentId != null) {
+		if(projectTaskDocumentDTO.getDocumentId() != null) {
 		     activitySummary.append(oldProjectTaskDoc.getFileName()).append(" to ").append(projectDoc.getFileName());
 			 projectTaskActivityService.saveProjectTaskActivities(activity.toString(), activitySummary.toString(),projectTaskDoc.getProjectTaskId(),user);
 		}else {

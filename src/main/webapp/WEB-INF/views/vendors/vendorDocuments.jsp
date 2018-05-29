@@ -1,7 +1,7 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -276,7 +276,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	
 	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
+	result = result+'							<div class="input-group" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary" onChange="vendorDocFileSaving();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file"  id="uploadBtn" style="display: none;"  class="upload">';
 	result = result+'	                            </span> </label>';
@@ -302,14 +302,20 @@ function addDocument(vendorLocationId,orgRelationId) {
     result = result  +'	                   </div>';
 	
 	result = result  +'                  <div class="clearfix mb10">                                                                                                          ';
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" name="startDate" class="form-control input-sm" field-name="startDate" id="startDate" onclick="educationStartDate();" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="Start Date" id="edu-startDate" readonly>                           ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearVendorDocuStartDate();"></div>';
+	result  = result + '                   </div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	
-	result = result  +'                    <div class="col-md-6 positionRelative">                                                                                            ';
+	result = result  +'                    <div class="col-md-6">                                                                                            ';
+	result  = result + '                   <div>';
 	result = result  +'                      <input type="text" name="endDate" class="form-control input-sm" field-name="endDate" id="endDate" data-validation="required" class="form-control input-sm" data-validation-optional="true" value="" placeholder="End Date" id="edu-endDate" readonly>                               ';
 	result = result  +'                      <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>                                           ';
+	result  = result + '					<div class="clearDate" onClick="clearVendorDocuEndDate();"></div>';
+	result  = result + '                   </div>';
 	result = result  +'                    </div>                                                                                                                             ';
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
@@ -528,7 +534,7 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     		            for(var i=0; i<json.orgSpocsList.length; i++){
     		            	 spoc = json.orgSpocsList[i];
 	    		 	    	  if(json.spocUser != null && json.spocUser != "" && json.spocUser != 'undefined' && json.spocUser.id == spoc.vendorUser.id){
-	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'" selected>'+spoc.spocName+'</option>');
+	    		 	    		  $('#spoc').append('<option value="'+spoc.spocUserId+'" selected>'+spoc.spocName+'&nbsp;('+spoc.ownerName+')</option>');
 	    		 	    	  }else{
 	    		 	    		 $('#spoc').append('<option value="'+spoc.spocUserId+'">'+spoc.spocName+'</option>');
 	    		 	    	  }
@@ -543,7 +549,7 @@ function getClientDocument(vendorLocationId,orgRelationId,docId){
     		            for(var j=0; j<json.ownersList.length; j++){
     		            	  owner = json.ownersList[j];
 	    		 	    	  if(json.ownerUser != null && json.ownerUser != "" && json.ownerUser != 'undefined' && json.ownerId == owner.id){
-	    		 	    		 $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
+	    		 	    		  $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
 	    		 	    	  }
 	    		 	    	  else if((json.ownerUser == null || json.ownerUser == "" || json.ownerUser == 'undefined') && (owner.id == sourceLeadUserId)){
 	    		 	    		 $('#owner').append('<option value="'+owner.id+'" selected>'+owner.firstName+' '+owner.lastName+'</option>');
@@ -635,9 +641,9 @@ function deleteVendorDocument(vendorLocationId,orgRelationId,docId,docName){
 	var result = "";
 	result = result  +'          <form role="form"  id="docu_form" name="docu_form" method="post" > ';
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a remove_uservalidation'>";
 	result = result +"		<p>Document delete message here</p>";
-	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
+	result = result +"		<textarea  id='terminateReason' name='terminateReason'  data-validation = 'required' field-name='comment' placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='saveReasonForVendorDoc("+vendorLocationId+","+orgRelationId+","+docId+",\""+docName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDocTermination();'></b>";
 	result = result +"	</div>";
@@ -673,14 +679,21 @@ function saveReasonForVendorDoc(vendorLocationId,orgRelationId,docId,docName){
         			 vendorDocMsgFadein();
    		    }
 	     });
+		
 	}else{
-		if(terminateReason){
-			$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
-			$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
-		}
+		return false;
+	  }
+	
+	 /* else{
+	if(terminateReason){
+		$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+	}else{
+		$("#terminateReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 	}
+} */
+
 }
+
 </script>
 <!-- Show success message after form submission script -->
 <script>
@@ -705,3 +718,16 @@ function vendorDocFileSaving()
 }
 </script>
 <!-- script for dateformat in datepicker End -->
+<!-- <script>
+	function clearUpload(){
+		$("#uploadFile").val("");
+	}
+</script> -->
+<script>
+function clearVendorDocuStartDate(){
+	$("#startDate").val("");
+	};
+function clearVendorDocuEndDate(){
+	$("#endDate").val("");
+	};
+</script>

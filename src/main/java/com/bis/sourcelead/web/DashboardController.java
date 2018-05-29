@@ -45,6 +45,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  */
 
 @Controller
+@RequestMapping("/app")
 public class DashboardController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DashboardController.class);
@@ -74,7 +75,7 @@ public class DashboardController {
 		logger.debug("display the dash board page");
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("/dashboard");
+		model.setViewName("dashboard");
 		return model;
 	}
 	
@@ -130,11 +131,11 @@ public class DashboardController {
 		sessionData.setNav(Constants.Dashboard);
 		String stage ="SUBMISSION" ;
 		
-		List<RequirementSubmissionHistory> toDayReqApplicantscount = getReqSubmissionListByStage(request,stage,tab);
+//		List<RequirementSubmissionHistory> toDayReqApplicantscount = getReqSubmissionListByStage(request,stage,tab);
 		
 		model.addObject("tab",tab);
 		model.addObject("reqList","appList");
-		model.addObject("toDayReqApplicantscount", toDayReqApplicantscount);
+//		model.addObject("toDayReqApplicantscount", toDayReqApplicantscount);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementApplicantsList");
@@ -157,7 +158,7 @@ public class DashboardController {
 		String stage ="SUBMIT_TO_CLIENT" ;
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(orgLocationId));
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
-		List<RequirementSubmissionHistory> toDayReqSubmissionsList = getReqSubmissionListByStage(request,stage,tab);
+		/*List<RequirementSubmissionHistory> toDayReqSubmissionsList = getReqSubmissionListByStage(request,stage,tab);
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			for (RequirementSubmissionHistory requirementSubmissionHistory2 : toDayReqSubmissionsList) {
 				 List<RequirementSubmissionHistory> requirementSubmissionHistory = requirementSubmissionHistoryService.getRequirementHistoryByLocationIdAndStage(loginOrgLocations.getId(), "SUBMISSION", requirementSubmissionHistory2.getSubmissionId().getId());
@@ -168,11 +169,11 @@ public class DashboardController {
 					requirementSubmissionHistory2.getSubmissionId().setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementSubmissionHistory2.getCreatedDate()));
 					requirementSubmissionHistory2.getSubmissionId().setSubmittedBy(requirementSubmissionHistory2.getCreatedUser());
 				}
-			}
+			}*/
 		
 		model.addObject("tab",tab);
 		model.addObject("reqList","subList");
-		model.addObject("toDayReqSubmissionsList", toDayReqSubmissionsList);
+//		model.addObject("toDayReqSubmissionsList", toDayReqSubmissionsList);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementSubmissionsList");
@@ -193,7 +194,7 @@ public class DashboardController {
 		sessionData.setNav(Constants.Dashboard);
 		String stage ="INTERVIEW" ;
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<RequirementSubmissionHistory> toDayReqInterviewscount = getReqSubmissionListByStage(request,stage,tab);
+		/*List<RequirementSubmissionHistory> toDayReqInterviewscount = getReqSubmissionListByStage(request,stage,tab);
 	  // SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 		for (RequirementSubmissionHistory requirementSubmissionHistory2 : toDayReqInterviewscount) {
 			int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocations.getId(), requirementSubmissionHistory2.getSubmissionId().getRequirement().getId(), "INTERVIEWED");
@@ -202,10 +203,10 @@ public class DashboardController {
 			for (RequirementSubmissionHistory rsh : requirementSubmissionHistory) {
 			      requirementSubmissionHistory2.getSubmissionId().setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getCreatedDate()));
 		    }
-		  }
+		  }*/
 		model.addObject("tab",tab);
 		model.addObject("reqList","interList");
-		model.addObject("toDayReqInterviewscount", toDayReqInterviewscount);
+//		model.addObject("toDayReqInterviewscount", toDayReqInterviewscount);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementInterviewsList");
@@ -226,7 +227,7 @@ public class DashboardController {
 		String stage ="OFFERMADE" ;
 		
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<RequirementSubmissionHistory> toDayReqOfferscount = getReqSubmissionListByStage(request,stage,tab);
+		/*List<RequirementSubmissionHistory> toDayReqOfferscount = getReqSubmissionListByStage(request,stage,tab);
 		//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 		for (RequirementSubmissionHistory requirementSubmissionHistory : toDayReqOfferscount) {
 			List<RequirementOffers> offersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmissionHistory.getSubmissionId().getId(), loginOrgLocations.getId());
@@ -246,12 +247,12 @@ public class DashboardController {
 				if("OFFERMADE".equalsIgnoreCase(requirementSubmissionHistory.getToStage())){
 					requirementSubmissionHistory.getSubmissionId().setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),requirementSubmissionHistory.getCreatedDate()));
 				}
-		}
+		}*/
 		
 		
 		model.addObject("tab",tab);
 		model.addObject("reqList","offerlist");
-		model.addObject("toDayReqOfferscount", toDayReqOfferscount);
+//		model.addObject("toDayReqOfferscount", toDayReqOfferscount);
 		request.getSession().setAttribute("sessionData",sessionData);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("requirement/requirementOffersList");
@@ -259,42 +260,66 @@ public class DashboardController {
 	}
 	
 	
-	private List<RequirementSubmissionHistory> getReqSubmissionListByStage(HttpServletRequest request, String stage, String tab) throws Exception
+
+	public List<RequirementSubmissionHistory> getReqSubmissionListByStage(HttpServletRequest request, String stage, String tab) throws Exception
 	{
 		OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
 		Timezone timezone = null;
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if(loginOrgLocations.getTimezone() != null){
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (loginOrgLocations.getTimezone() != null) {
 			timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 		}
 		String userType = null;
 		Date startUTCDate = null;
 		Date endUTCDate = null;
-		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		if("today".equals(tab)){
-			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-			 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-			 String startDate = outputFormatter.print(zoned);
-			 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-			 startUTCDate = TZ_DF_TS.parse(startDateString);
-			 String endDate = outputFormatter1.print(zoned);
-			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-			 endUTCDate = TZ_DF_TS.parse(endDateString);
-		}else{
-			 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-			 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-			 String startDate = outputFormatter.print(zoned);
-			 String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-			 startUTCDate = TZ_DF_TS.parse(startDateString);
+		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
+		if ("today".equals(tab)) {
+
+			DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+			String customStartTimeStr = outputFormatter.print(zoned);
+			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+			String endDate = outputFormatter1.print(zoned);
+			Date endDateString = TZ_DF_TS.parse(endDate);
+			endUTCDate = endDateString;
+
+			/*
+			 * DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+			 * DateTimeFormatter outputFormatter =
+			 * DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00"); DateTimeFormatter
+			 * outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59"); String
+			 * startDate = outputFormatter.print(zoned); String startDateString =
+			 * CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE,
+			 * startDate); startUTCDate = TZ_DF_TS.parse(startDateString); String endDate =
+			 * outputFormatter1.print(zoned); String endDateString =
+			 * CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE,
+			 * endDate); endUTCDate = TZ_DF_TS.parse(endDateString);
+			 */
+		} else {
+
+			DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+			String customStartTimeStr = outputFormatter.print(zoned);
+			startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+
+			/*
+			 * DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+			 * DateTimeFormatter outputFormatter =
+			 * DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00"); String startDate =
+			 * outputFormatter.print(zoned); String startDateString =
+			 * CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE,
+			 * startDate); startUTCDate = TZ_DF_TS.parse(startDateString);
+			 */
 		}
-		
-		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
+
+		if (Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)) {
 			userType = Constants.ADMIN;
-		} 
-		
-		return requirementSubmissionService.getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(loginOrgLocations.getId(),stage,tab,userType,user,startUTCDate,endUTCDate);
+		}
+
+		return requirementSubmissionService.getRequirementSubmissionsListByOrgLocationsIdAndSubmissionStatus(
+				loginOrgLocations.getId(), stage, tab, userType, user, startUTCDate, endUTCDate);
 	}
 
 	

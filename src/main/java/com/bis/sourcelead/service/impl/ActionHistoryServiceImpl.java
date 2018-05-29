@@ -1,11 +1,14 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.ActionHistoryDao;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.ActionHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
@@ -23,10 +26,20 @@ public class ActionHistoryServiceImpl implements ActionHistoryService{
 	}
 	
 	@Override
+	public List<ActionHistory> getAllActionPerformedByUserActionUUID(String actionUUID, Long orgLocation) {
+		return actionHistoryDao.getAllActionHistoryListByActionUUID(actionUUID, orgLocation);
+	}
+	
+	@Override
 	public List<ActionHistory> getAllOrglocationsActionHistoryList(Long userSessionId) {
 		return actionHistoryDao.getAllOrglocationsActionHistoryList(userSessionId);
 	}
 
+	@Override
+	public List<ActionHistory> getAllOrglocationsActionHistoryListActionUUID(String actionUUID) {
+		return actionHistoryDao.getAllOrglocationsActionHistoryListActionUUID(actionUUID);
+	}
+	
 	@Override
 	public void saveActionHistory(String methodName, UserLoginLogoutSession userLoginLogoutSession,OrgLocations orgLocations,String type) {
 		try {
@@ -35,6 +48,24 @@ public class ActionHistoryServiceImpl implements ActionHistoryService{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public UserDTO getAllActionHistoryByUserId(Long userId)throws Exception
+	{
+		return actionHistoryDao.getAllActionHistoryByUserId(userId);
+	}
+
+	@Override
+	public List<ActionHistory> getAllMultipleIpsByUserId(Long userId)throws Exception
+	{
+		return actionHistoryDao.getAllMultipleIpsByUserId(userId);
+	}
+
+	@Override
+	public List<Long> getAllUserIdsByFrequencyBasedOnActivity(Date[] freqDates)
+	{
+		return actionHistoryDao.getAllUserIdsByFrequencyBasedOnActivity(freqDates);
 	}
 	
 	

@@ -278,5 +278,9 @@ public interface RequirementSubmissionService {
 	RequirementSubmission getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(Long sourceSubmissionId, Long vendorLocationId) throws Exception;
 	
 	ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO)throws Exception;
+	
+	List<RequirementSubmission> getSubmmisionsForIsClientJob(List<Long> submissionIds) throws Exception;
+	
+	RequirementSubmission getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(Long requirementId,Long candidateId) throws Exception;
 
 }

@@ -27,6 +27,7 @@ import com.bis.sourcelead.dao.RequirementReportDao;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementReportService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
@@ -67,6 +69,9 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	
 	@Autowired
 	private RequirementRateSubmissionNegotiationService requirementRateSubmissionNegotiationService;
+	
+	@Autowired
+	private RequirementLocationsService requirementLocationsService;
 	
 	@Override
 	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user, String reportType, String customStartDate, String customEndDate) throws Exception
@@ -133,6 +138,17 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		for (Requirement requirement : requirementList) {
 			//String postedDate = getDateStr(requirement.getCreatedDate(), timezone);
 			requirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirement.getCreatedDate()));
+			 List<String> requirementLocationsList = new ArrayList<>();
+	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+	    	    if(locationsList != null && !locationsList.isEmpty()) {
+	    	    	for(RequirementLocations locations : locationsList) {
+	    	    		requirementLocationsList.add(locations.getLocation());
+	    	    	}
+	    	    }
+	    	    requirement.setLocationsList(requirementLocationsList);
+	    	    
+			
+			
 			if(requirement.getClientId() != null){
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
 					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());

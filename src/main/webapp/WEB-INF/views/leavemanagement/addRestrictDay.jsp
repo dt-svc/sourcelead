@@ -5,6 +5,13 @@
 
 <script>
  window.onload = function() {
+	 var restrictdayId = '${restrictDay.id}';
+		if(restrictdayId != null && restrictdayId != '' && restrictdayId != 'undefined'){
+			$("#restrictDayId").val(restrictdayId);
+		}else{
+			$("#restrictDayId").val(0);
+		}
+	 
 	 var applicable = '${restrictDay.applicableToAll}';
 	 if(applicable == 'N'){
 		 $("#selectRoles").show();
@@ -19,7 +26,7 @@
       <div class="pull-left">
         <h2>Add Restrict Day</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configuration</a> &raquo; <a href="<c:url value='/viewRestrictDay'/>">Restrict Day List</a> &raquo; Add Restrict Day</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; <a href="<c:url value='${appPath}/viewRestrictDay'/>">Restrict Day List</a> &raquo; Add Restrict Day</div>
     </section>
     <div class="content-area content-new clearfix">
     <div id="restrictLoading"></div>
@@ -31,7 +38,7 @@
     <div class="form-group">
        <label class="col-md-3">Name<span class="text-danger paddingLeft">*</span></label>
        <div class="col-md-9">
-       <input type="hidden" id="restrictDayId" name="restrictDayId" value="${restrictDay.id}"/>
+       <input type="hidden" id="restrictDayId" name="restrictDayId" value=""/>
        <input type="text" name="restrictName" placeholder="Restrict Name" value="${restrictDay.restrictName}" field-name="Restrict Name" class="form-control" data-validation="required validate_length length1-250">
        </div>
     </div>
@@ -55,7 +62,7 @@
        </div>
     </div>
     <div class="form-group">
-       <label class="col-md-3 paddingRight">Applicable For All</label>
+       <label class="col-md-3 paddingRight">Applicable for all<i class='fa fa-info-circle' title="If 'YES' the Restrict Day will be apllicable for all users .If 'NO' the Restrict Day will be applicable to the selected users"></i></label>
        <div class="col-md-9">
  			<div class="clearfix mb"> 
  			<c:if test="${empty restrictDay.applicableToAll}">
@@ -114,7 +121,7 @@
         <div class="col-lg-12">
           <div class="pull-right">
             <input type="button" value="Save" class="btn btn-primary" onclick="storeRestrictedDay();">
-            <input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='/viewRestrictDay'/>'" >
+            <input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/viewRestrictDay'/>'" >
           </div>
         </div>
       </div>
@@ -130,12 +137,21 @@ function storeRestrictedDay(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
          if ($('#restrictDay_form').validate(false, validationSettings)){  
  	 	  	var formData = $($('#restrictDay_form')[0]).serialize();
-		        	  $("#restrictLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		        	  $.post(sourceleadUrl+"/storeRestrictedDay?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"",formData, function(data) {
-			  				if(data == "success"){
-			  					$("#restrictLoading").removeAttr("style");
+		        	  $("#restrictLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		        	  $.post(sourceleadUrl+"/storeRestrictedDay?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"",formData, function(result) {
+		        		  if (result && result.response === "INVALID_DATA") {
+		  	    		    showError(result.responseMessage);
+		  	    		   } else if (result.response === "AWKWARD") {
+		  	    		    location.href = "/errorPage";
+		  	    		   } else if (result.response === "SUCCESS") {   
+		        		        $("#restrictLoading").removeAttr("style");
 	    		     			location.replace(sourceleadUrl+"/viewRestrictDay");
-			  				}
+			  				} else if (result.indexOf('Sign In') !== -1) {
+		               			location.replace(sourceleadUrl);
+		               		} else {
+		               		    showError("Operation failed, please try again");
+		               		}
+						$("#restrictLoading").hide();
 			  			   }); 
 		    	         return true; 
          }else{
@@ -237,6 +253,14 @@ function removeEndValid(){
 	$('#endDateDiv').find('p.jquery_form_error_message').remove();
 }
  </script>
-
+<!-- <script>
+function clearStartDate(){
+	$("#startDate").val("");
+	};
+function clearEndDate(){
+	$("#endDate").val("");
+	};
+	
+</script> -->
 
 <jsp:include page="../masterFooter.jsp" />

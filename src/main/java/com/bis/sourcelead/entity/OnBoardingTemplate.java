@@ -21,8 +21,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "ON_BOARDING_TEMPLATE", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="onBoardingTemplate")
+@Table(name = "ON_BOARDING_TEMPLATE")
 public class OnBoardingTemplate implements Serializable{
 
 
@@ -33,7 +32,7 @@ public class OnBoardingTemplate implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;

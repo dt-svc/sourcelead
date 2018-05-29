@@ -2,27 +2,36 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class LeaveTypeDTO {
+	@Required(desc = "Name")
 	private String name;
+	@Required(desc = "Duration")
 	private String duration;
 	private String hours;
 	private String hoursType;
 	private String billingType;
 	private String applicableToUsers;
+	@Required(desc = "Department", dependsOn="applicableToUsers",parentValue="N")
 	private String department;
+	@Required(desc = "Roles", dependsOn="applicableToUsers",parentValue="N")
 	private List<String> roles;
 	private String carryforward;
 	private String noOfLeavesPerYear;
 	private String description;
 	private String leavePolicy;
+	@Required(desc = "Policy Name", dependsOn="leavePolicy",parentValue="Y")
 	private String policyName;
 	private String visibilityToAllUsers;
+	@Required(desc = "Policy Description", dependsOn="leavePolicy",parentValue="Y")
 	private String leavePolicyDescription;
 	private String orgLocationId;
 	private String noOfLeavesPerMonth;
 	private String loginUserId;
-	private String leaveTypeId;
+	private long leaveTypeId;
 	private String deleteReason;
+	@Required(desc = "Color Code",dependsOn="leaveEffective",parentValue={"All Employees","Experienced"})
 	private String colorCode;
 	private int approvedCount;
 	private int pendingCount;
@@ -30,6 +39,51 @@ public class LeaveTypeDTO {
 	private int cancelCount;
 	private String numberOfDaysCount;
 	private String status;
+	@Required(desc = "Period")
+	private String period;
+	@Required(desc = "Leave Effective")
+	private String leaveEffective;
+	@Required(desc = "New Joinee",dependsOn="leaveEffective",parentValue="Experienced")
+	private String newJoinee;
+	@Required(desc = "Min Days",dependsOn="leaveEffective",parentValue="Experienced")
+	private String experiencedType;
+	@Required(desc = "Min Days",dependsOn="leaveEffective",parentValue="Experienced")
+	private String experiencedDuration;
+	@Required(desc = "Min Days",dependsOn="leaveEffective",parentValue="Experienced")
+	private String experiencedApplicableDays;
+	private String reasonRequired;
+	private String attachmentRequired;
+	private String overdrawLeaves;
+	private String donateLeave;
+	private String priorLeaveApplying;
+	@Required(desc = "Min Days", dependsOn="priorLeaveApplying",parentValue="Y")
+	private String priorDays;
+	private String leaveDuration;
+	@Required(desc = "Min Days", dependsOn="leaveDuration",parentValue="Y")
+	private String minDays;
+	@Required(desc = "Max Days", dependsOn="leaveDuration",parentValue="Y")
+	private String maxDays;
+	@Required(desc = "No. of Days",dependsOn="leaveEffective",parentValue="All Employees")
+	private String noOfDays;
+	private String leaveTypeUUID;
+	
+	private float totalApprovedCount;
+	private float totalPendingCount;
+	private float totalRejectedCount;
+	private float totalCancelCount;
+	private float totalNoOfDays;
+	private String createdUser;
+	private String updatedUser;
+	
+	
+	public String getLeaveTypeUUID()
+	{
+		return leaveTypeUUID;
+	}
+	public void setLeaveTypeUUID(String leaveTypeUUID)
+	{
+		this.leaveTypeUUID = leaveTypeUUID;
+	}
 	
 	public String getName()
 	{
@@ -175,11 +229,11 @@ public class LeaveTypeDTO {
 	{
 		this.loginUserId = loginUserId;
 	}
-	public String getLeaveTypeId()
+	public long getLeaveTypeId()
 	{
 		return leaveTypeId;
 	}
-	public void setLeaveTypeId(String leaveTypeId)
+	public void setLeaveTypeId(long leaveTypeId)
 	{
 		this.leaveTypeId = leaveTypeId;
 	}
@@ -247,6 +301,192 @@ public class LeaveTypeDTO {
 	{
 		this.status = status;
 	}
+	public String getPeriod()
+	{
+		return period;
+	}
+	public void setPeriod(String period)
+	{
+		this.period = period;
+	}
+	public String getLeaveEffective()
+	{
+		return leaveEffective;
+	}
+	public void setLeaveEffective(String leaveEffective)
+	{
+		this.leaveEffective = leaveEffective;
+	}
 	
+	public String getExperiencedType()
+	{
+		return experiencedType;
+	}
+	public void setExperiencedType(String experiencedType)
+	{
+		this.experiencedType = experiencedType;
+	}
+	
+	
+	public String getReasonRequired()
+	{
+		return reasonRequired;
+	}
+	public void setReasonRequired(String reasonRequired)
+	{
+		this.reasonRequired = reasonRequired;
+	}
+	public String getAttachmentRequired()
+	{
+		return attachmentRequired;
+	}
+	public void setAttachmentRequired(String attachmentRequired)
+	{
+		this.attachmentRequired = attachmentRequired;
+	}
+	public String getOverdrawLeaves()
+	{
+		return overdrawLeaves;
+	}
+	public void setOverdrawLeaves(String overdrawLeaves)
+	{
+		this.overdrawLeaves = overdrawLeaves;
+	}
+	public String getDonateLeave()
+	{
+		return donateLeave;
+	}
+	public void setDonateLeave(String donateLeave)
+	{
+		this.donateLeave = donateLeave;
+	}
+	public String getPriorLeaveApplying()
+	{
+		return priorLeaveApplying;
+	}
+	public void setPriorLeaveApplying(String priorLeaveApplying)
+	{
+		this.priorLeaveApplying = priorLeaveApplying;
+	}
+	public String getLeaveDuration()
+	{
+		return leaveDuration;
+	}
+	public void setLeaveDuration(String leaveDuration)
+	{
+		this.leaveDuration = leaveDuration;
+	}
+	public String getNewJoinee()
+	{
+		return newJoinee;
+	}
+	public void setNewJoinee(String newJoinee)
+	{
+		this.newJoinee = newJoinee;
+	}
+	public String getExperiencedDuration()
+	{
+		return experiencedDuration;
+	}
+	public void setExperiencedDuration(String experiencedDuration)
+	{
+		this.experiencedDuration = experiencedDuration;
+	}
+	public String getExperiencedApplicableDays()
+	{
+		return experiencedApplicableDays;
+	}
+	public void setExperiencedApplicableDays(String experiencedApplicableDays)
+	{
+		this.experiencedApplicableDays = experiencedApplicableDays;
+	}
+	public String getPriorDays()
+	{
+		return priorDays;
+	}
+	public void setPriorDays(String priorDays)
+	{
+		this.priorDays = priorDays;
+	}
+	public String getMinDays()
+	{
+		return minDays;
+	}
+	public void setMinDays(String minDays)
+	{
+		this.minDays = minDays;
+	}
+	public String getMaxDays()
+	{
+		return maxDays;
+	}
+	public void setMaxDays(String maxDays)
+	{
+		this.maxDays = maxDays;
+	}
+	public String getNoOfDays()
+	{
+		return noOfDays;
+	}
+	public void setNoOfDays(String noOfDays)
+	{
+		this.noOfDays = noOfDays;
+	}
+	public float getTotalApprovedCount()
+	{
+		return totalApprovedCount;
+	}
+	public void setTotalApprovedCount(float totalApprovedCount)
+	{
+		this.totalApprovedCount = totalApprovedCount;
+	}
+	public float getTotalPendingCount()
+	{
+		return totalPendingCount;
+	}
+	public void setTotalPendingCount(float totalPendingCount)
+	{
+		this.totalPendingCount = totalPendingCount;
+	}
+	public float getTotalRejectedCount()
+	{
+		return totalRejectedCount;
+	}
+	public void setTotalRejectedCount(float totalRejectedCount)
+	{
+		this.totalRejectedCount = totalRejectedCount;
+	}
+	public float getTotalCancelCount()
+	{
+		return totalCancelCount;
+	}
+	public void setTotalCancelCount(float totalCancelCount)
+	{
+		this.totalCancelCount = totalCancelCount;
+	}
+	public float getTotalNoOfDays()
+	{
+		return totalNoOfDays;
+	}
+	public void setTotalNoOfDays(float totalNoOfDays)
+	{
+		this.totalNoOfDays = totalNoOfDays;
+	}
+	public String getCreatedUser()
+	{
+		return createdUser;
+	}
+	public void setCreatedUser(String createdUser)
+	{
+		this.createdUser = createdUser;
+	}
+	public String getUpdatedUser()
+	{
+		return updatedUser;
+	}
+	public void setUpdatedUser(String updatedUser)
+	{
+		this.updatedUser = updatedUser;
+	}
 	
 }

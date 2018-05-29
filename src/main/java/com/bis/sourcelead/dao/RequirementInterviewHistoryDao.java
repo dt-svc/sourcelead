@@ -3,8 +3,10 @@ package com.bis.sourcelead.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.Timezone;
+import com.bis.sourcelead.entity.User;
 
 public interface RequirementInterviewHistoryDao {
 	
@@ -45,4 +47,6 @@ public interface RequirementInterviewHistoryDao {
 	List<RequirementInterviewHistory> getAllRecruiterSubmittedInterviews(String dateRange,Long userId,String currentTime, Date startUTCDate, Date endUTCDate,Timezone timezone)throws Exception;
 	
 	List<RequirementInterviewHistory> getCrowdSorurcingInterviews(Long submissionId) throws Exception;
+	
+	Long getCountOfAllInterviewAssignedToLoginUser(Long loginOrgLocationId, String userType, Long userId, String userCode) throws Exception;
 }

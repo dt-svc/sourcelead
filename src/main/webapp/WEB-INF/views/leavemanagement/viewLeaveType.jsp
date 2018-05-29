@@ -4,6 +4,11 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
 
+  <script src="https://cdn.jsdelivr.net/g/mark.js(jquery.mark.min.js)"></script> 
+  <script src="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.js"></script> 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/datatables.mark.js/2.0.0/datatables.mark.min.css" type="text/css" media="all" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.13/features/mark.js/datatables.mark.min.css" media="all" />
+  
 <script type="text/javascript">
 $(document).ready(function(){
    getLeaveTypesList();
@@ -16,7 +21,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Leave Type</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configuration</a> &raquo; Leave Type</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; Leave Type</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -29,7 +34,7 @@ $(document).ready(function(){
     <div class="timesheet_head">
       <ul>
           <li>
-              <a href="<c:url value='/addLeaveType'/>" title="Add Leave Type">
+              <a href="<c:url value='${appPath}/addLeaveType'/>" title="Add Leave Type">
                 <i class="fa fa-plus paddingRight"></i>Add Leave Type
               </a>
           </li>
@@ -59,8 +64,11 @@ $(document).ready(function(){
  <script>
  function getLeaveTypesList(){
 	 var locationId = '${SourceLeadWeb_orgLocationId}';
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	 $.get( sourceleadUrl+ "/getLeaveTypesByLocationid?&orgLocationId="+locationId, function(data) {
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.get( sourceleadUrl+ "/getLeaveTypesByLocationid?&orgLocationId="+locationId, function(response) {
+		 if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {
 	    	 var result = "";
 	    	 result += '<table id="leaveTypeListTable" class="display" cellspacing="0" width="100%" >';
 	         result += '<thead>';
@@ -68,20 +76,20 @@ $(document).ready(function(){
 	         result += '    <th>Name</th>';
 	         result += '    <th>Duration</th>';
 	         result += '    <th>Type</th>';
-	         result += '    <th>No.of Leaves</th>';
+// 	         result += '    <th>No.of Leaves</th>';
 	         result += '    <th>Status</th>';
 	         result += '    <th>Action</th>';
 	         result += '  </tr>';
 	         result += '</thead>';
 	         result += '<tbody>';
 	         
-	    	 for(i=0;i < data.length;i++){
-	    		 var report = data[i];
+	    	 for(i=0;i < response.data.length;i++){
+	    		 var report = response.data[i];
 	    		 result += '<tr>';
 		         result += '    <td>';
 		         if(report.name != null && report.name != '' && report.name != 'undefined'){
-		        	 result += '      <div class="proj_show tbldata-dotdot-big" onclick="openLeaveTypeSummary(\''+report.id+'\');">';
-		        	 result += '          <div class="pull-left tbldata-dotdot-me" title="'+report.name+'" onclick="openLeaveTypeSummary(\''+report.id+'\');">'+report.name+'</div>';
+		        	 result += '      <div class="proj_show tbldata-dotdot-big" onclick="openLeaveTypeSummary(\''+report.leaveTypeUUID+'\');">';
+		        	 result += '          <div class="pull-left tbldata-dotdot-me" title="'+report.name+'" >'+report.name+'</div>';
 		        	 result += '          <i class="fa fa-binoculars pull-right"></i>';
 			         result += '      </div>';
 		         } 
@@ -96,11 +104,11 @@ $(document).ready(function(){
 		        	 result += '      <div title="'+report.leaveType+'" class="tbldata-dotdot-100">'+report.leaveType+'</div>'; 
 		         }
 		         result += '    </td>';
-		         result += '    <td>';
+		         /* result += '    <td>';
 		         if(report.numbefrOfLeavesPeryear != null && report.numbefrOfLeavesPeryear != '' && report.numbefrOfLeavesPeryear != 'undefined'){
 		        	 result += '        <div title="'+report.numbefrOfLeavesPeryear+'" class="tblminwidth-75">'+report.numbefrOfLeavesPeryear+'</div>'; 
 		         }
-		         result += '    </td>';
+		         result += '    </td>'; */
 		         result += '    <td>';
 		         if(report.status != null && report.status != '' && report.status != 'undefined'){
 		        	 if(report.status == 1){
@@ -113,11 +121,11 @@ $(document).ready(function(){
 		         result += '    </td>';
 		         result += '    <td>';
 		         result += '        <div class="tblminwidth-50">';
-		         result += '            <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'/editLeaveType?leaveTypeId='+report.id+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
+		         result += '            <span title="Edit" class="paddingRight"><a href="'+sourceleadUrl+'/editLeaveType?leaveTypeUUID='+report.leaveTypeUUID+'"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
 		         if(report.status == 1){
-		              	result += '            <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteLeaveType(\''+report.id+'\')"></i></span>';
+		              	result += '            <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteLeaveType(\''+report.leaveTypeUUID+'\')"></i></span>';
 		         }else{
-		        	 	result += '            <span title="Reactive" class="paddingLeft"><i class="fa fa-repeat text-primary cursorPointer" onclick="reactiveLeaveType(\''+report.id+'\')"></i></span>';
+		        	 	result += '            <span id="spin'+report.leaveTypeUUID+'" title="Reactive" class="paddingLeft"><i class="fa fa-repeat text-primary cursorPointer" onclick="reactiveLeaveType(\''+report.leaveTypeUUID+'\')"></i></span>';
 		         }
 		         result += '        </div>';
 		         result += '    </td>';
@@ -136,6 +144,12 @@ $(document).ready(function(){
        			$(".side_mask").fadeIn(200);
        			$("body").css('overflow-y', 'hidden');
        		});
+       		
+			} else if (response.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+			    showError("Operation failed, please try again");
+			}
      });
  }
  </script>
@@ -148,6 +162,7 @@ $(document).ready(function(){
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	 "mark": true,
 	    	"oLanguage": {
 	     		"sSearch": "",
 	     		 "sZeroRecords": "", "sEmptyTable": ""
@@ -161,9 +176,11 @@ $(document).ready(function(){
  <script>
 function deleteLeaveType(typeId){
 	 $(".project_inn_mask").remove();
+	 $("#deleteLeaveTypeDiv").empty();
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
-	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a positionRelative'>";
+	result = result +"	<div id='leaveTypeReasonLoad'></div>";
 	result = result +"		<textarea id='reason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reason' value='' placeholder='Reason' rows='2' onclick='validateReason();'></textarea>";
 	result = result + ' <div id="deleteLeaveTypeDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteType(\""+typeId+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectPopup();'></b>";
@@ -179,24 +196,31 @@ function deleteType(typeId){
 	 reason = reason.replace(/\s/g, "")
 	if(reason.match(/^[^\s-](.*)*$/) != null){
 		$("#deleteLeaveTypeDiv").empty(); 
+		$("#leaveTypeReasonLoad").attr('style','position:absolute; width:100%; height:150px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+typeId+"&deleteReason="+reason+"&loginUserId="+loginUserId,	    	   
-		    success: function(data) {
-	             if(data == true){
+		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeUUID="+typeId+"&deleteReason="+reason+"&loginUserId="+loginUserId,	    	   
+		    success: function(result) {
+	             if(result.response === "SUCCESS"){
 	 				location.replace(sourceleadUrl+ "/viewLeaveTypes");
-	 			 }
-	             $("#selector1").removeAttr("style");
-	  			 $("#selector1").css({ display: "block" });
-	  			 $("#msgDiv").html("Leave Type removed");
-	  			 $("#popUp").empty();
-	 			 $(".project_inn_mask").fadeOut(200);
-	             msgFadein();
+	 				$("#leaveTypeReasonLoad").removeAttr("style");
+		             $("#selector1").removeAttr("style");
+		  			 $("#selector1").css({ display: "block" });
+		  			 $("#msgDiv").html("Leave Type removed");
+		  			 $("#popUp").empty();
+		 			 $(".project_inn_mask").fadeOut(200);
+		             msgFadein();
+	 			 }else if (result.indexOf('Sign In') !== -1) {
+	 				location.replace(sourceleadUrl);
+	 			} else {
+	 			    showError("Operation failed, please try again");
+	 			}
+	             
 		    }
 	   });
 	}else{
 		if(reason.length == 0){
-			$("#deleteLeaveTypeDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+			$("#deleteLeaveTypeDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ;
 		}else{
 			$("#deleteLeaveTypeDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 		}
@@ -204,20 +228,27 @@ function deleteType(typeId){
 }
 
 function reactiveLeaveType(typeId, from){
-	var loginUserId = '${SourceLeadWeb_user.id}'
 	
+	$("#spin"+typeId).empty();
+	$("#spin"+typeId).prepend('<i class="fa fa-spinner fa-spin"></i>');
+	
+	var loginUserId = '${SourceLeadWeb_user.id}'
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeId="+typeId+"&status=reactive",	    	   
-		    success: function(data) {
-	             if(data == true){
-	            	 if(from == "summary"){
+		   	url: sourceleadUrl+"/deleteLeaveType?"+tokenParamName+"="+tokenValue+"&leaveTypeUUID="+typeId+"&status=reactive",	    	   
+		    success: function(result) {
+		    	  if(result.response === "SUCCESS"){
+	                if(from == "summary"){
 	            		 openLeaveTypeSummary(typeId);
 	            		 getLeaveTypesList();
 	            	 }else{
 	 				 	location.replace(sourceleadUrl+ "/viewLeaveTypes");
 	            	 }
-	             }
+	             }else if (result.indexOf('Sign In') !== -1) {
+		 				location.replace(sourceleadUrl);
+		 		  } else {
+		 			    showError("Operation failed, please try again");
+		 		  }
 		    }
 		
 		});
@@ -246,14 +277,21 @@ function msgFadein() {
 </script>
 
 <script>
-function openLeaveTypeSummary(typeId){
+function openLeaveTypeSummary(leaveTypeUUID){
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
 	$("body").css('overflow-y', 'hidden');
 	$.ajax({
 	   	type: "POST",
-	   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeId="+typeId,	    	   
-	    success: function(report) {
+	   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	    	   
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+			    location.href = "/errorPage";
+			} else if (response.response === "SUCCESS") {	    	
+				 /* if(response !=null && response !=''){
+					 for (var i=0; i<response.data.length; i++) { 
+			        		 var report = response.data[i]; */
+			        		 var report = response.object;
 	    	var result = "";
 			result +='<div class="new_side_wrap">';
 			result +='  <div class="clients_side_wrap_inn">';
@@ -264,9 +302,9 @@ function openLeaveTypeSummary(typeId){
 			if(report.status == 1){
 			result +='            <a href="javascript:void(0)" class= "btn btn-primary btn-sm mr10" title="Active">Active</a>';
 	        }else{
-	        	result +='            <a class= "btn btn-danger btn-sm mr10" onclick="reactiveLeaveType(\''+report.id+'\', \'summary\')" title="InActive">InActive</a>';
+	        	result +='            <a class= "btn btn-danger btn-sm mr10" onclick="reactiveLeaveType(\''+report.leaveTypeUUID+'\', \'summary\')" title="Re-Active">Re-Active</a>';
 	        }
-			result +='              <a href="'+sourceleadUrl+'/editLeaveType?leaveTypeId='+typeId+'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a> ';
+			result +='              <a href="'+sourceleadUrl+'/editLeaveType?leaveTypeUUID='+leaveTypeUUID+'" class="btn btn-default btn-sm" title="Edit"><i class="fa fa-pencil paddingRight"></i>Edit</a> ';
 			result +='          </div> ';
 			
 			
@@ -304,16 +342,16 @@ function openLeaveTypeSummary(typeId){
 			}
 			result +='                  </div>';
 			result +='              </div>';
-			result +='              <div class="col-md-12 mb">';
-			result +='                  <label class="col-md-2 control-label"><b>No. of Leaves Per Year:</b></label>';
-			result +='                  <div class="col-md-8">';
-			if(report.numbefrOfLeavesPeryear != null && report.numbefrOfLeavesPeryear != '' && report.numbefrOfLeavesPeryear != 'undefined'){
-				result +='                      <span>'+report.numbefrOfLeavesPeryear+'</span>';
-			}else{
-				result +='                      <span>---</span>';
-			}
-			result +='                  </div>';
-			result +='              </div>';
+// 			result +='              <div class="col-md-12 mb">';
+// 			result +='                  <label class="col-md-2 control-label"><b>No. of Leaves Per Year:</b></label>';
+// 			result +='                  <div class="col-md-8">';
+// 			if(report.numbefrOfLeavesPeryear != null && report.numbefrOfLeavesPeryear != '' && report.numbefrOfLeavesPeryear != 'undefined'){
+// 				result +='                      <span>'+report.numbefrOfLeavesPeryear+'</span>';
+// 			}else{
+// 				result +='                      <span>---</span>';
+// 			}
+// 			result +='                  </div>';
+// 			result +='              </div>';
 			result +='              <div class="col-md-12 mb">';
 			result +='                  <label class="col-md-2 control-label"><b>Description:</b></label>';
 			result +='                  <div class="col-md-8">';
@@ -324,6 +362,177 @@ function openLeaveTypeSummary(typeId){
 			}
 			result +='                  </div>';
 			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Period:</b></label>';
+	 		if(report.period != null && report.period != '' && report.period != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.period+'</span>';
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#101010;">Leave Effective:</b></label>';
+	 		if(report.leaveEffective != null && report.leaveEffective != '' && report.leaveEffective != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.leaveEffective+'</span>';
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			
+			if(report.noOfDays != null && report.noOfDays != '' && report.noOfDays != 'undefined'){
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>No Of Days:</b></label>';
+	 		
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.noOfDays+'</span>';
+	 			result +='                  </div>';
+	 		
+			
+			result +='              </div>';
+			}
+			
+			if(report.newJoinee != null && report.newJoinee != '' && report.newJoinee != 'undefined'){
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>New Joinee:</b></label>';
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.newJoinee+'</span>';
+	 			result +='                  </div>';
+			
+			result +='              </div>';
+	 		}
+			
+			if((report.experiencedType != null && report.experiencedType != '' && report.experiencedType != 'undefined') 
+					&& (report.experiencedDuration != null && report.experiencedDuration !='' && report.experiencedDuration != 'undefined')
+					&& (report.experiencedApplicableDays != null && report.experiencedApplicableDays !='' && report.experiencedApplicableDays != 'undefined')){
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Experienced:</b></label>';
+	 			result +='                  <div class="col-md-8">';
+	 				result +='                      <span>'+report.experiencedDuration+'</span>';
+		 			result +='                      <span>'+report.experiencedType+'</span>'
+		 			result +='                      <span>/'+report.experiencedApplicableDays+'day(s)</span>';
+	 			
+	 			result +='                  </div>';
+	 		
+			result +='              </div>';
+			}
+			
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Reason Required:</b></label>';
+	 		if(report.reasonRequired != null && report.reasonRequired != '' && report.reasonRequired != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			if(report.reasonRequired == 'Y'){
+	 				result +='                      <span>Yes</span>';
+	 			}else{
+	 				result +='                      <span>No</span>';
+	 			}
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Attachment Required:</b></label>';
+	 		if(report.attachmentRequired != null && report.attachmentRequired != '' && report.attachmentRequired != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			if(report.attachmentRequired == 'Y'){
+	 				result +='                      <span>Yes</span>';
+	 			}else{
+	 				result +='                      <span>No</span>';
+	 			}
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Overdraw Leaves:</b></label>';
+	 		if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			if(report.overdrawLeaves == 'Y'){
+	 			     result +='                      <span>Yes</span>';
+	 			}else{
+	 				 result +='                      <span>No</span>';
+	 			}
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Donate Leave:</b></label>';
+	 		if(report.donateLeave != null && report.donateLeave != '' && report.donateLeave != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			if(report.donateLeave == 'Y'){
+	 			     result +='                      <span>Yes</span>';
+	 		   }else{
+	 			     result +='                      <span>No</span>';
+	 		   }
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#101010;">Prior Leave Applying:</b></label>';
+	 		if(report.priorLeaveApplying != null && report.priorLeaveApplying != '' && report.priorLeaveApplying != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			if(report.priorLeaveApplying == 'Y'){
+	 			    result +='                      <span>Yes</span>';
+	 			}else{
+	 				result +='                      <span>No</span>';
+	 			}
+	 			result +='                  </div>';
+	 		}
+			
+			result +='              </div>';
+			
+			if(report.priorDays != null && report.priorDays != '' && report.priorDays != 'undefined'){
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Prior Days:</b></label>';
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.priorDays+'</span>';
+	 			result +='                  </div>';
+			
+			result +='              </div>';
+			}
+			
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#101010;">Leave Duration:</b></label>';
+	 		if(report.leaveDuration != null && report.leaveDuration != '' && report.leaveDuration != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+     			if(report.leaveDuration == 'Y'){
+     				result +='                      <span>Yes</span>';
+	 			}else{
+	 				result +='                      <span>No</span>';
+	 			}
+	 			
+	 			result +='                  </div>';
+	 			
+	 		}
+			
+			result +='              </div>';
+			
+			if(report.minDays != null && report.minDays != '' && report.minDays != 'undefined'){
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Min Days:</b></label>';
+	 		
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.minDays+'</span>';
+	 			result +='                  </div>';
+			
+			result +='              </div>';
+			}
+			
+			if(report.maxDays != null && report.maxDays != '' && report.maxDays != 'undefined'){
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>Max Days:</b></label>';
+	 		
+	 			result +='                  <div class="col-md-8">';
+	 			result +='                      <span>'+report.maxDays+'</span>';
+	 			result +='                  </div>';
+			
+			result +='              </div>';
+			}
+			
+			if(report.leavePolicy != null && report.leavePolicy != '' && report.leavePolicy != 'undefined'){
 			result +='              <div class="clearfix"></div>';
 			result +='             <div class="col-md-12 mb">';
 			result +='                  <h4>Leave Policies</h4>';
@@ -332,11 +541,8 @@ function openLeaveTypeSummary(typeId){
 			result +='             <div class="col-md-12 mb">';
 			result +='                  <label class="col-md-2 control-label"><b>Policy Name:</b></label>';
 			result +='                  <div class="col-md-8">';
-			if(report.policyName != null && report.policyName != '' && report.policyName != 'undefined'){
 				result +='                      <span>'+report.policyName+'</span>';
-			}else{
-				result +='                      <span>---</span>';
-			}
+				
 			result +='                  </div>';
 			result +='              </div>';
 			result +='              <div class="col-md-12 mb">';
@@ -349,18 +555,19 @@ function openLeaveTypeSummary(typeId){
 			}
 			result +='                  </div>';
 			result +='              </div>';
+			if(report.visibilityToAllUsers != null && report.visibilityToAllUsers != '' && report.visibilityToAllUsers != 'undefined' && report.visibilityToAllUsers == 'Y'){
 			result +='              <div class="col-md-12 mb">';
 			result +='                 <label class="col-md-2 control-label">&nbsp;&nbsp;</label>';
 			result +='                 <div class="checkBox col-md-8">';
-			if(report.visibilityToAllUsers != null && report.visibilityToAllUsers != '' && report.visibilityToAllUsers != 'undefined' && report.visibilityToAllUsers == 'Y'){
+			
 				result +='                  <input type="checkbox" Checked disabled="true" value="" name="visible">Visible to all users';
-			}else{
-				result +='                  <input type="checkbox" disabled="true" value="" name="visible">Visible to all users';
-			}
+			
 			result +='                 </div>';
 			result +='              </div>';
+			}
+	    }
 			result +='              <div class="col-md-12 mb mt40">';
-			result +='                  <label class="col-md-2 control-label"><b>Crated By:</b></label>';
+			result +='                  <label class="col-md-2 control-label"><b>Created By:</b></label>';
 			result +='                  <div class="col-md-8">';
 			if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
 				result +='                      <span>'+report.createdUser+'</span>';
@@ -387,7 +594,8 @@ function openLeaveTypeSummary(typeId){
 			result +='  </div>';
 			result +='  </div>';
 			result +='</div>';
-			
+						/* }
+				 } */ 
 			$("#typeSummaryDiv").empty();
 			$("#typeSummaryDiv").append(result);
 			$(".new_side_wrap").addClass("new_side_wrap_active");
@@ -396,6 +604,12 @@ function openLeaveTypeSummary(typeId){
 				$(".side_mask").fadeOut(200);
 				$("body").css('overflow-y', 'auto');
 			});	
+	    }else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+		    showError("Operation failed, please try again");
+		}
+	    	
 	    }
 	   });
 }

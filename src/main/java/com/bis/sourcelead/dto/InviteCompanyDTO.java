@@ -1,7 +1,10 @@
 package com.bis.sourcelead.dto;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class InviteCompanyDTO {
 
+	@Required(desc="company name")
 	private String companyName;
 	
 	private String location;
@@ -12,8 +15,10 @@ public class InviteCompanyDTO {
 	
 	private String inviteCity;
 	
+	@Required(desc="name")
 	private String name;
 	
+	@Required(desc="email")
 	private String email;
 	
 	private String phoneNumber;

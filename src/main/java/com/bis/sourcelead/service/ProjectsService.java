@@ -1,9 +1,12 @@
 package com.bis.sourcelead.service;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ClientProjectDTO;
@@ -26,6 +29,8 @@ public interface ProjectsService {
 		
 		List<Projects> getProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
 		
+		List<Projects> getAllProjectByOrgLocationsId(Long orgLocationId) throws Exception;
+		
 		List<Projects> getEndClientProjectByOrgLocationsIdAndClientOrgLocationId(Long orgLocationsId,Long clientOrgLocationId) throws Exception;
 	
 		List<Projects> getProjectByOrgLocationsIdAndEndDateGraterthanCurrentDate(Long orgLocationsId, Long loginUserId) throws Exception;
@@ -33,6 +38,8 @@ public interface ProjectsService {
 		List<Projects> getAllProjectsEndDateGraterthanCurrentDate() throws Exception;
 		
 	    Projects getPrimaryProjectByOrgLocationsId(Long orgLocationsId) throws Exception;
+	    
+	    Projects getProjectByOrgLocationsIdAndProjectName(Long orgLocationsId,String projectName) throws Exception;
 		
 		Boolean deleteProjectById(Long id) throws Exception;
 		
@@ -110,7 +117,7 @@ public interface ProjectsService {
 		
 		Boolean validateTasksName(String taskname, Long projectId) throws Exception;
 		
-		List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation) throws Exception ;
+		List<ProjectMembers> getProjectEmployeeListByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation,String roleIds,String teamIds) throws Exception ;
 
 		List<Projects> getClientProjectsByOrgRelationId(Long orgRelationId, Long orgLocationId)throws Exception ;
 
@@ -119,6 +126,18 @@ public interface ProjectsService {
 		Projects getProjectByProjectUUID(String projectUUID) throws Exception;
 		
 		ResponseList<ProjectsDTO> getProjectsListByClientsAndStatus(ProjectsDTO projectsDTO,Long userId,String clients,String status,Long orgLocationId,String userRole,Long candidateId) throws Exception;
+		
+		List<Projects> getAllProjectsByOrgLocationIdAndStatusForTransfer(Long orgLocationId,String projectClientUUID) throws Exception ;
+		
+		Projects makeInternalProjectAsClientProject(Projects projects,Long orgRelationId,Long clientOrgLocationId,OrgLocations loginOrgLocation) throws Exception;
+		
+		Projects getClientProjectApproversUpdate(String projectClientUUID,User user,ProjectsDTO projectsDTO) throws Exception ;
+
+		Projects getProjectByProjectName(String projectName) throws Exception;
+
+		Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<ProjectsDTO> projectsList, OrgLocations orgLocations)throws Exception;
+
+		File getPdfFile(ResponseList<ProjectsDTO> projectsList, OrgLocations orgLocations)throws Exception;
 		
 //		public String getProjectId(OrgLocations orgLocations);
 		

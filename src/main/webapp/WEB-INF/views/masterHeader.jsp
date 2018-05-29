@@ -10,10 +10,27 @@
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
+ <c:set var='appPath' value="/app" scope="application"></c:set>
 
  <script type="text/javascript">
-    var staticTime='${staticTime}'
+    var staticTime='${staticTime}';
+    var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
  </script>
+ 
+<!--  <script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script> -->
  
 <meta charset="utf-8">
 <meta http-equiv="Pragma" content="private">
@@ -21,25 +38,27 @@
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
-<title>Welcome to Source Lead :: The Recruitment Application</title>
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" />
-<link href="resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<!-- <link href="resources/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"> -->
-<link href="resources/css/buttons.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
-<link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/font-awesome.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css?staticTime=${staticTime}">
-<link href="resources/css/editor.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<title>Welcome to Source Lead</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+<link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" />
+<link href="/resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<!-- <link href="/resources/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"> -->
+<link href="/resources/css/buttons.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/dataTablePagination.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link href="/resources/css/editor.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="/resources/css/bootstrap-datetimepicker.min.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="/resources/css/dataTables.searchHighlight.css?staticTime=${staticTime}" type="text/css" >
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
- <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE" type="text/javascript"></script>
+ <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -47,109 +66,116 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 <jsp:include page="masterJs.jsp" />
+<link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
 
 <!-- This requirement.css for only requirement.jsp  -->
 <c:if test='${viewPage == "requirement/requirement"}'>
-	<link href="resources/css/requirement.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+	<link href="/resources/css/requirement.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 </c:if>
 
 </head>
 
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
 <!--  Amcharts -->
 <c:if test='${viewPage == "reports/reportsDashboard"}'>
-	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/reports/export.min.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+	<script src="/resources/amcharts/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/amcharts/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/amcharts/plugins/export/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css?staticTime=${staticTime}" type="text/css" media="all" />
+	<script src="/resources/amcharts/themes/light.js?staticTime=${staticTime}"></script>
+ 
  </c:if>
  
  <c:if test='${viewPage == "reports/applicantsReport"}'>
-	 <script src="resources/reports/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="resources/reports/pie.js?staticTime=${staticTime}"></script>
-	<script src="resources/reports/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
-	<script src="resources/reports/light.js?staticTime=${staticTime}"></script>
+	 <script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/pie.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="/resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
+	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
 </c:if>
 
 <c:if test='${viewPage == "reports/applicantsReceivedReport"}'>
-	<script src="resources/reports/highcharts.js"></script>
-	<script src="resources/reports/exporting.js"></script> 
+	<script src="/resources/reports/highcharts.js"></script>
+	<script src="/resources/reports/exporting.js"></script> 
 </c:if>
 
-<c:if test='${viewPage == "reports/requirementStageReports"}'>
-	<script src="resources/reports/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="resources/reports/piechart.js?staticTime=${staticTime}"></script>
-	<script src="resources/reports/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
-	<script src="resources/reports/light.js?staticTime=${staticTime}"></script>
+<c:if test='${viewPage == "reports/requirementStageReports" || viewPage == "reports/usersUsageReportList"}'>
+	<script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/piechart.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
+	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
+	
 </c:if>
 
-<c:if test='${viewPage == "reports/requirementAssignToReports" || viewPage == "reports/requirementAssignToReports" || viewPage == "reports/vendorsReport"}'>
-	 <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/reports/export.min.js?staticTime=${staticTime}"></script> 
-	 <script src="resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+<c:if test='${viewPage == "reports/requirementAssignToReports" || viewPage == "reports/requirementAssignToReports" || viewPage == "reports/vendorsReport" || viewPage == "reports/paidBillReportGraph" || viewPage == "reports/receivedInvoiceReportGraph"}'>
+	 <script src="/resources/js/pie.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/serial.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/themes/light.js?staticTime=${staticTime}"></script> 
  </c:if>
 
 
-<c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" }'>
-	<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/light.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+<c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" || viewPage == "reports/perfomanceClientReports"}'>
+	<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
  <c:if test='${viewPage == "leavemanagement/applyLeave"}'>
-    <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+    <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
  <%-- <c:if test='${viewPage == "leavemanagement/addLeaveType"}'>
-	<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
-	<link href="resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
-	<script src="resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script> 
-	<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
+	<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
+	<link href="/resources/css/bootstrap-colorpicker.min.css?staticTime=${staticTime}" rel="stylesheet">
+	<script src="/resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script> 
+	<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
  </c:if> --%>
  
 <!--  Amcharts -->
-<script src="resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
-<script src="resources/js/moment.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/datetime-moment.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap-colorpicker.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/datetime-moment.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap-datetimepicker.min.js?staticTime=${staticTime}"></script>
+
+<script src="/resources/js/dataTables.searchHighlight.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.highlight.js?staticTime=${staticTime}"></script>
 
 <!--  Data tables script files -->
-<!-- <script src="resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
-<script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/dataTables.buttons.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<!-- <script src="/resources/js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script> -->
+<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/dataTables.buttons.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 
-<script src="resources/js/jszip.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/jszip.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <!--  chosen jquery -->
-<script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
 <!--  chosen jquery -->
-<script src="resources/js/pdfmake.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/vfs_fonts.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/buttons.html5.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<%-- <script src="resources/js/buttons.print.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script> --%>
-<%-- <script src="resources/js/buttons.flash.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script> --%>
+<script src="/resources/js/pdfmake.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/vfs_fonts.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/buttons.html5.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<%-- <script src="/resources/js/buttons.print.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script> --%>
+<%-- <script src="/resources/js/buttons.flash.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script> --%>
 <!--  Data tables script files ends -->
 
 
 
 <!-- these files for autocomplete with tagit -->
-<link href="resources/css/jquery-tagit.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/csc.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<link href="/resources/css/jquery-tagit.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/csc.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.min.js?staticTime=${staticTime}" type="text/javascript" charset="utf-8"></script>
 <!-- end files for autocomplete with tagit -->
 
 
@@ -240,10 +266,12 @@ function getNotificationsByuserId(){
 				result = result + ' <li>';
 				result = result + '<div class="clearfix msg">';
 				result = result + '<div class="msg-img"> <span>';
+				if(opt.userType !=null && opt.userType !='' && opt.userType !='undefined' && opt.fileUrl !=null && opt.fileUrl !='' && opt.fileUrl !='undefined'){
 				result = result + ' <img class="img-circle" title='+opt.firstName+' alt='+opt.userType+' onerror="predefineProfileImage(this);" src='+opt.fileUrl+'>';
+				}
 				result = result + ' </span> </div>';
 				result = result + '<div class="msg-content">';
-				result = result + ' <a href="#"><p>'+opt.body+'</p>';
+				result = result + ' <a href="<c:url value="/app/notificationsList"/>"><p>'+opt.body+'</p>';
 				/* result = result + ' <c:out value='+userId+' />'; */
 				result = result + ' <span>'+opt.calDays+'</span></a> ';
 				result = result + '</div>';
@@ -255,7 +283,7 @@ function getNotificationsByuserId(){
 			result = result + '<div class="clearfix msg_blank">All Caught UP!!! </div>'
 		}
           result = result + '</ul>';
-         result = result + '<div class="headerwidget-footer"> <a href="<c:url value="/notificationsList"/>">View All</a> </div>';
+         result = result + '<div class="headerwidget-footer"> <a href="<c:url value="/app/notificationsList"/>">View All</a> </div>';
           result = result + ' </div>';
 		
 		$("#ndiv").empty();
@@ -345,13 +373,13 @@ function preventTabkey(e){
 
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 
@@ -408,10 +436,10 @@ function preventTabkey(e){
   <i>
  	 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
  	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	 	<img src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
+ 	 	<img data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
  	 </c:if>
  	  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
- 	  <img src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
+ 	  <img data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" class="img-responsive mt5">
  	 </c:if>
  	 </c:if>
  	 
@@ -419,11 +447,11 @@ function preventTabkey(e){
 				<div class="text-logo">
 				 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 					<c:if test="${!empty SourceLeadWeb_orgName}">
-					<span class="tbldata-dotdot" title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
+					<span class="tbldata-dotdot" data-id="orgLogoImage" title="${SourceLeadWeb_orgName}">${SourceLeadWeb_orgName}</span>
 					</c:if>
 				</c:if>
 				<c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-				<span class="tbldata-dotdot" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}">${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}</span>
+				<span class="tbldata-dotdot" data-id="orgLogoImage" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}">${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}</span>
 				</c:if>
 				</div>
 	</c:if>
@@ -439,8 +467,8 @@ function preventTabkey(e){
 			<select id="searchType" name="searchType" class="selectpicker uasrch pull-left show-menu-arrow" >
 			<option data-icon="fa fa-th-large" ${searchType == "All" ?"selected='selected'":""} value="All">All</option>
 			<c:forEach var="userTabs" items="${SourceLeadWeb_tabsList}">
-		       <c:if test="${userTabs.tabName == 'Users'}">
-	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Users</option>
+		       <c:if test="${userTabs.tabName == 'Associates'}">
+	                 <option data-icon="fa fa-users"  ${searchType == "Users" ?"selected='selected'":""} value="Users">Associates</option>
 	           </c:if>
 	           <c:if test="${userTabs.tabName == 'Jobs'}"> 
 	                <option data-icon="fa fa-briefcase" ${searchType == "Requirement" ?"selected='selected'":""} value="Requirement">Jobs</option>
@@ -496,14 +524,14 @@ function preventTabkey(e){
           <div class="user-details">
             <div class="user-media">
               <div class="logn-image">
-              <img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"> </div>
+              <a href="<c:url value='${appPath}/userProfile'/>"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_userName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"></a> </div>
               <div class="user-media-body">
                 <p><span>${SourceLeadWeb_userName}</span></p>
                 <p>${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}</p>
               </div>
             </div>
             <ul class="list-unstyled">
-              <li><a href="<c:url value='/userProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
+              <li><a href="<c:url value='${appPath}/professionalProfile'/>"><span><i class="fa fa fa-user"></i></span>&nbsp;Profile</a></li>
               <li><a href="javascript:logoutFormSubmit()"><span><i class="fa fa-sign-out"></i></span>&nbsp;Log Out</a></li>
             </ul>
           </div>
@@ -524,22 +552,31 @@ function preventTabkey(e){
 	          </li>
             </c:if> --%>
             
-            <li class="reportsH">
+             <li class="reportsH">
 					<a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i></a>
 	        </li>
-            
             <li class="reportsH">
-					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-newspaper-o"></i></a>
+					<a title="Connections"  href="<c:url value='${sourceleadUrl}/loadConnectedList?status=connected'/>" id="connections"><i class="fa fa-sitemap"></i><span class="label label-warning">${SourceLeadWeb_connectionReceivedCount > 0 ? SourceLeadWeb_connectionReceivedCount : ''}</span></a>
 	        </li>
             
-            <sec:authorize access="hasRole('ROLE_DASHBOARD_REPORTS')">
+            <li class="reportsH">
+					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
+	        </li>
+            
+            <sec:authorize access="hasAnyRole('ROLE_DASHBOARD_REPORTS','ROLE_ENROLL_ORG')"> 
 	            <li class="reportsH">
 					<a title="Reports" href="<c:url value='${sourceleadUrl}/reportsDashboard'/>"><i class="fa fa-pie-chart"></i></a>
 	            </li>
-            </sec:authorize>
+             </sec:authorize> 
+            
+            <%-- <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
+	            <li class="reportsH">
+					<a title="Usage Reports" href="${appPath}/userUsageReport"><i class="fa fa-pie-chart"></i></a>
+	            </li>
+            </sec:authorize> --%>
             
             <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-            	<li><a href="<c:url value='${sourceleadUrl}/mailBox'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
+            	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="fa fa-envelope"></i>  <span class="label label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount > 0 ?SourceLeadWeb_unReadMailsCount : ''}</span> </a></li>
             </sec:authorize>
             <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
             <li> <a href="javascript:void(0)" title="Locations" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
@@ -551,11 +588,15 @@ function preventTabkey(e){
 			              <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == null && SourceLeadWeb_loginUserRole != 'ROLE_PRODUCTION_SUPPORT'}">
 			              
 				              <c:if test="${links.roles.displayName != 'Professional' && links.roles.displayName != 'Independent Recruiter'}">
-					              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
+					              
+					              <c:if test="${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null}">
+					              		<a class="sopcSwith">
+					              </c:if>
+					              		<a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}','${links.user.id}');" class="sopcSwith">
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_user.id == links.user.id ? 'active-comp' : ''}">
+						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 						                     </div>
 						                   </div>
 						                   <div class="pull-left">
@@ -568,11 +609,11 @@ function preventTabkey(e){
 				              </c:if>
 				              
 				              <c:if test="${links.roles.displayName == 'Professional'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith">
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == 'Professional' ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'active-comp' : ''}">
+						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 					                       </div>
 						                   </div>
 						                   <div class="pull-left">
@@ -584,11 +625,11 @@ function preventTabkey(e){
 				              </c:if>
 				              
 				              <c:if test="${links.roles.displayName == 'Independent Recruiter'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}'/>" class="sopcSwith">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith">
 						                <div class="clearfix">
 						                   <div class="pull-left image-parent positionRelative">
-						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == 'Recruiter' ? 'active-comp' : ''}">
-						                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+						                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'active-comp' : ''}">
+						                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 					                       </div>
 						                   </div>
 						                   <div class="pull-left">
@@ -606,7 +647,7 @@ function preventTabkey(e){
 					                <div class="clearfix">
 					                   <div class="pull-left image-parent positionRelative">
 					                   <div class="imageParent org-imagelink ${links.id == SourceLeadWeb_orgLocationId  ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.org.orgCode}">
+					                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.org.fileUrl}">
 					                     </div>
 					                   </div>
 					                   <div class="pull-left">
@@ -656,38 +697,84 @@ function preventTabkey(e){
             </div> --%>
           </li>
 <%--           </c:if> --%>
+
+
+          <li class="reportsH">
+					<a title="Account Settings" href="<c:url value='${sourceleadUrl}/userProfile'/>"><i class="fa fa-user-circle"></i></a>
+	      </li>
           
           <sec:authorize access="!hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')"> 
            <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG','ROLE_ENROLL_NEW_ROLE','ROLE_VIEW_EDIT_ORG_SETTINGS','ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE','ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')"> 
 	            <li id="settingArea"> <a href="#" title="Settings" class="settings"> <i class="fa fa-cog fa-spin fa-fw"></i></a>
 	            <div class="setting-area">
 	              <ul class="list-unstyled">
+	                     
+	                     
+	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
-	                     <li><a href="<c:url value="/enrolledOrgsList" />"><i class="fa fa-cubes" aria-hidden="true"></i>View Orgs</a></li>
+	                     <li><a href="<c:url value='${sourceleadUrl}/loadScheduleMaintenance'/>" id="scheduleMPopup"><i class="fa fa-cubes" aria-hidden="true"></i>Schedule Maintenance</a></li>
 	                     </sec:authorize>
 	                     
-	                     <li><a href="<c:url value="/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
-	                     <li><a href="<c:url value="/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
+	                     <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+	                        <li><a href="<c:url value="/app/orgLicenseSubscriptionList" />"><i class="fa fa-location-arrow" aria-hidden="true"></i>License Upgrade</a></li>
+	                     </c:if>
 	                     
+	                     <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
+	                      <li><a id="subMenu" href="javascript:void(0)"><i class="fa fa-upload"></i>Bulk Import<i class="fa fa-caret-down arrRight"></i></a>
+						 	<div class="subMenuView">
+		                     <a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank">Bulk Import</a>
+		                     <a data-toggle="modal" href="javascript:void(0)" id='bulkImport'>Process File(s)</a>
+	                     	</div>
+	                     </li>
+
+                       </sec:authorize>
+	                     
+
+<%-- 	                     <li><a href="<c:url value="/app/license" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>License</a></li> --%>
+						 
+
+	                     <li><a href="<c:url value="/app/orgChart" />"><i class="fa fa-sitemap" aria-hidden="true"></i>Org Chart</a></li>
 	                     <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
-	                        <li><a href="<c:url value="/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
+	                        <li><a href="<c:url value="/app/orgRolesList" />"><i class="fa fa-key" aria-hidden="true"></i>Role Configuration</a></li>
 	                     </sec:authorize>
 	                      <sec:authorize access="hasRole('ROLE_VIEW_EDIT_ORG_SETTINGS')"> 
-	               		      <li><a href="<c:url value="/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
+	               		      <li><a href="<c:url value="/app/orgSettings" />"><i class="fa fa-gears" aria-hidden="true"></i>Org Settings</a></li>
 	               		 </sec:authorize>
 	                     
 	                     <sec:authorize access="hasAnyRole('ROLE_CREATE_APPLICANT_TEMPLATE','ROLE_VIEW_APPLICANT_TEMPLATE','ROLE_VIEW_EDIT_APPLICANT_TEMPLATE','ROLE_ADD_CONTRACT_TEMPLATE','ROLE_VIEW_EDIT_CONTRACT_TEMPLATE','ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE','ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')"> 
-	                     <li><a href="<c:url value="/orgTemplates" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
+	                     <li><a href="<c:url value="/app/orgTemplates" />"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Templates</a></li>
 						 </sec:authorize>
 
 						  <sec:authorize access="hasAnyRole('ROLE_ADD_EXPENSE_TYPE','ROLE_VIEW_EDIT_EXPENSE_TYPE','ROLE_DELETE_EXPENSE_TYPE')">
-						  	<li><a href="<c:url value="/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
+						  	<li><a href="<c:url value="/app/expenseCategory" />"><i class="fa fa-file-text" aria-hidden="true"></i>Expense Category</a></li>
 						  </sec:authorize>
-						  <li><a href="<c:url value="/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
+						  <li><a href="<c:url value="/app/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
 						  
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
-						  	<li><a href="<c:url value="/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configure</a></li>
+						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configuration</a></li>
 						  </sec:authorize>
+						  
+					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
+					  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
+					  	</sec:authorize>
+						 
+						 <sec:authorize access="hasAnyRole('ROLE_HOTLIST_CAMPAIGN','ROLE_JOB_CAMPAIGN')">
+							 <li><a id="campSubMenu" href="javascript:void(0)"><i class="fa fa-bullhorn"></i>Campaigns <i class="fa fa-caret-down arrRight"></i></a>
+							 	<div class="campsubMenuView">
+				
+				                    <a href="<c:url value='${appPath}/campaignSendersList'/>"><i class="fa fa-circle-o" title="Senders"></i>Senders</a>
+									<a href="<c:url value='${appPath}/recipientsList'/>"><i class="fa fa-circle-o" title="Recipients"></i>Recipients</a>
+									
+								</div>
+							 </li> 	
+						   </sec:authorize>
+
+					   <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
+	                     <li><a href="<c:url value='${sourceleadUrl}/guestOrgActionRoles'/>" ><i class="fa fa-key" aria-hidden="true"></i>Guest Action Roles</a></li>
+                       </sec:authorize>
+                       <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
+	                     <li><a href="<c:url value='${sourceleadUrl}/emailTemplates'/>" ><i class="fa fa-key" aria-hidden="true"></i>Email Templates</a></li>
+                       </sec:authorize>
 	              </ul>
 	            </div>
 	          </li>
@@ -700,12 +787,12 @@ function preventTabkey(e){
             	<ul class="list-unstyled">
             	
             	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}"> 
-            	<li><a href="<c:url value="/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
+            	<li><a href="<c:url value="/app/bulk-resume-import.html" />" target="_blank"><i class="fa fa-upload" aria-hidden="true"></i>Bulk Import</a></li>
             	</c:if> 
             	
-            	<li><a href="<c:url value="/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
+            	<li><a href="<c:url value="/app/bankAccountDetails" />"><i class="fa fa-university" aria-hidden="true"></i>Account</a></li>
             	
-            	<li><a href="<c:url value="/jobAlertList" />"><i class="fa fa-bell-o" aria-hidden="true"></i>Alerts</a></li>
+            	<li><a href="<c:url value="/app/jobAlertList" />"><i class="fa fa-bell-o" aria-hidden="true"></i>Alerts</a></li>
             	</ul>
             	</div>
             	</li>
@@ -724,20 +811,99 @@ function preventTabkey(e){
 	          </li>
           </c:if> --%>
           
-          <li class="flag-image"><a><img src="resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
+          <li class="flag-image"><a><img src="/resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
 
         </ul>
       </div>
     </nav>
   </header>
   
+  <div class="authenticationMask" >
+  <div class="signWrapOtp">
+  	<div id="directtwoStepAuthDiv">
+  		<jsp:include page="otpVerification.jsp"></jsp:include>
+  	</div>
+  </div>
+  </div>
+  
+  <!--  Alert message for Switching Locaction -->
+  <div class="location-alert alert alert-danger alert-dismissable zInPop" id="locationAlert">
+    <a href="#" class="loc-alertclose close">&times;</a>
+    <strong>Alert !</strong> <span>Your are not able to Save Required data is Missing.</span>
+  </div>
+ <!--  Alert message for Switching Locaction -->
+  
+ <script type="text/javascript">
+ var hasLocationAccess = "";
+ function checkAuth(locationId,roleId,orgSecurity,userId){
+	checkLocationAccess(locationId,roleId,orgSecurity,userId);
+	 
+ }
+ function otpClose(){
+	 $(".authenticationMask").fadeOut(); 
+ }
+ $(".loc-alertclose").click(function(){
+	 $(".location-alert").fadeOut();
+ })
+
+ function getUserDetailsbyroleId(roleId){
+	 $.ajax({
+		 type : "POST",
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+roleId,        
+	       success :function(data) {
+	    	   if(data != null){
+	    		   $("#directtwoStepAuthDiv").empty();
+	    		   $("#directtwoStepAuthDiv").append(data);
+	    		   $("#gobackBtn").hide();
+	    		   $(".otpBackNew").show();
+	    		   $("#otpBackNewId").val("switchOtp");
+	    		   $("#resendOTP").attr("style","display:none");
+	    		   $("#sendOTP").attr("style","display:block");
+	    	   }
+	       },						     
+	}); 
+ }
+ 
+ function checkLocationAccess(locationId,roleId,orgSecurity,userId){
+	 $.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+roleId,        
+	       success :function(result) {
+	    	   if(result == true){
+	    			 if(('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'N') || ('${SourceLeadWeb_isAuthenticated}' == 'Y' && orgSecurity == 'Y')){
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);   
+	    			 }else if('${SourceLeadWeb_isAuthenticated}' == 'N' && orgSecurity == 'Y'){
+	    				 $(".authenticationMask").fadeIn();
+	    				 getUserDetailsbyroleId(roleId);
+	    			 }else{
+	    				 location.replace(sourceleadUrl+"/dashboard/"+locationId+"/"+userId);    
+	    			 }
+	    		 }else{
+	    			 $(".location-alert").fadeIn();
+	    			 $(".location-alert").fadeOut(5000);
+	    		 }
+	    	   
+	      },
+	  });
+ }
+ </script>
+ 
   
   <script>
-	$('.sopcSwith').each(function() {
+	$('.sopcSwith, .authenticationMask').each(function() {
 		var $this = $(this);
 		$this.on("contextmenu",function(e){
 			  return false;
 		});
+		
+		$(document).keydown(function (event) {
+			if (event.keyCode == 123) { // Prevent F12
+		        return false;
+		    }else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) { // Prevent Ctrl+Shift+I        
+		        return false;
+		    }
+		});
+		 
 	})
   </script>
   
@@ -931,7 +1097,7 @@ function notificationStatusAsRead(){
   <div class="theme-color">
       <span class="icon-theme theme-styels" title="click here">
           <figure class="rotate">
-            <img src="resources/images/theme-icon.png" class="img-responsive" title="Themes">
+            <img src="/resources/images/theme-icon.png" class="img-responsive" title="Themes">
           </figure>
       </span>
     <ul class="list-unstyled">
@@ -945,30 +1111,42 @@ function notificationStatusAsRead(){
   </div>
 <!--  Theme Swithcer div ends  -->
 
+<!--  Support div -->
+  <div id="mySidenav" class="sidenav">
+	<a href="/app/sourceleadTicketList" title="Report Issue"><span class="fa fa-ticket"></span></a>
+<!--   <a href="add-ticket.html">Support</a> -->
+</div>
+<!--  Support div ends  -->
+
 
 <script type="text/javascript">
 	function saveTask() {
 		if ($('#task_form').validate(false, validationSettings)) {
-			var frm = $('#task_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
+			 var form = $('#task_form')[0];
+	         var formData = $($('#task_form')[0]).serialize();
 			var sourceleadUrl = '${sourceleadUrl}';
-			$.ajax({
-						type : "POST",
-						url : sourceleadUrl+ "/storeTasks?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData,
-						success : function(result) {
-							taskwidget();
-							    document.getElementById("assignedTasksDivId").className = 'active'
-								document.getElementById("closedTasksDivId").removeAttribute("class")
-								document.getElementById("myTaskDivId").removeAttribute("class")
-								$("#closed-task, #my-task").hide();
-							    $("#other-task").show().css("opacity", "1");
-							assignedTasksList('assignedTasks');
-							/* tasksList('myTask');
-							assignTasksList(); */
-						},
-					});
+			$.post(sourceleadUrl + "/storeTasks?" + tokenParamName + "=" + tokenValue + "", formData, function(result) {
+				
+				if (result && result.response === "INVALID_DATA") {
+				    showError(result.responseMessage);
+				}else if (result.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				}else if (result.response === "SUCCESS") {
+					taskwidget();
+				    document.getElementById("assignedTasksDivId").className = 'active'
+					document.getElementById("closedTasksDivId").removeAttribute("class")
+					document.getElementById("myTaskDivId").removeAttribute("class")
+					$("#closed-task, #my-task").hide();
+				    $("#other-task").show().css("opacity", "1");
+				    assignedTasksList('assignedTasks');
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+			
+			});
+	
 			return true;
 		} else {
 			return false;
@@ -1425,7 +1603,7 @@ function universalSearch(){
 		 window.location.href = sourceleadUrl + "/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
 	 }
 	 else if(searchType == "Requirement") {
-		 window.location.href = sourceleadUrl + "/requirementList?searchResult=universalRequirementSearchList&searchValue="+searchValue;
+		 window.location.href = sourceleadUrl + "/jobs?searchResult=universalRequirementSearchList&searchValue="+searchValue;
 	 }
 	 else {
 		window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
@@ -1529,6 +1707,39 @@ $("#searchType").selectpicker('refresh');
    	<i class="fa fa-check-circle"></i><span id="inviteCompanyMsgDiv"></span>
 </div>
 <div class="sideMask"></div>
+<div class="modal modalBulkImport" class="invite" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Bulk Import</h4>
+        </div>
+        <form:form id="bulkImportForm" name="bulkImportForm" method="post">
+         
+        <div class="modal-body invite_class">
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight" title="Path"><i class="fa fa-folder-open-o  paddingRight text-info" aria-hidden="true"></i>Folder Path<span class="text-danger paddingLeft">*</span></label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Folder Path" id="folderPath" name="folderPath" field-name="Folder Path" data-validation="required validate_Space">
+                </div>
+            </div>
+            <div id='bulkImportStatus' class="form-group clearfix">
+            </div>
+       </div>
+       
+       <div class="clearfix form-footer">
+            <div class="pull-right mr">
+          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="processCopiedFiles();"> <i class="paddingRight"></i>Continue</button>
+          <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushBulkImportPath();"></i>Cancel
+            </button>
+                </div>
+        </div>
+     </form:form>
+   </div>
+  </div>
+</div>
 <div class="modal modalInvite" class="invite" role="dialog">
     <div class="modal-dialog">
     
@@ -1563,7 +1774,14 @@ $("#searchType").selectpicker('refresh');
                 <label class="col-md-4 paddingRight">
                     <i class="fa fa-envelope paddingRight text-info"></i>Email<span class="text-danger paddingLeft">*</span></label>
                 <div class="col-md-8 paddingLeft">
-                    <input type="text" class="form-control input-sm" placeholder="Email" id="inviteCompanyemail" name="email" field-name="Email" data-validation="required validate_Space validate_length length2-100 validate_email">
+                <div class="input-group errorInptgroup">
+                    <input type="text" class="form-control input-sm" placeholder="Email" id="inviteCompanyemail" name="email" field-name="Email"  onblur="verifyEmail2();"  data-validation="required validate_Space validate_length length2-100 validate_email">
+                        <span id="emailStatusIconDiv" class="input-group-addon">
+	                    	<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>
+	                  	</span>
+                
+                </div>
+                
                 </div>
             </div>
                         <div class="form-group clearfix">
@@ -1586,6 +1804,61 @@ $("#searchType").selectpicker('refresh');
       
     </div>
   </div>
+  
+  <%-- <div class="modal modalInvite" class="invite" id="scheduleMPopDiv" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Schedule Maintenance</h4>
+        </div>
+        <form:form id="inviteCompany_form" name="inviteCompany_form" method="post">
+         
+        <div class="modal-body invite_class">
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight" title="Company Name"><i class="fa fa-building paddingRight text-info"></i>Date <span class="text-danger paddingLeft">*</span></label>
+                <div class="col-md-8 paddingLeft">                  
+					<div class="input-group errorInptgroup">
+						<input type="text" value="" name="scheduleDate" class="form-control calendar" id="scheduleDate" readonly="readonly">
+	                    <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+					</div>                    
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-md-4 paddingRight"><i class="fa fa-map-marker paddingRight text-info"></i>Message</label>
+                <div class="col-md-8 paddingLeft">
+                    <input type="text" class="form-control input-sm" placeholder="Message" name="message" id="scheduleMessage">
+                </div>
+            </div>
+        </div>
+        <div class="clearfix form-footer">
+            <div class="pull-right mr">
+          <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="saveInviteCompany();"> <i class="fa fa-send paddingRight"></i>Send </button>
+          <button type="button" class="btnClose btn btn-default btn-sm ml10"><i class="fa fa-close paddingRight" onclick="flushInviteCompany();"></i>Cancel
+            </button>
+                </div>
+        </div>
+        </form:form>
+        
+      </div>
+      
+    </div>
+  </div> --%>
+  
+  <script>
+  
+$(document).ready(function(){
+	$("#subMenu").click(function(){
+		$(".subMenuView").slideToggle(100);
+	});
+	$("#campSubMenu").click(function(){
+		$(".campsubMenuView").slideToggle(100);
+	});	
+});
+</script>
+  
   <script>
   function flushInviteCompany(){
 	  document.getElementById("inviteCompany_form").reset();
@@ -1597,16 +1870,48 @@ $("#searchType").selectpicker('refresh');
   $(".modalInvite").fadeIn();
   $(".sideMask").fadeOut();
   });
+  $("#bulkImport").click(function(){
+	  $(".modalBulkImport").fadeIn();
+	  $(".sideMask").fadeOut();
+	  });
   $(".close").click(function(){
 	  $(".modalInvite").fadeOut();
+	  $(".modalBulkImport").fadeOut();
 	  $(".sideMask").fadeOut();
 	  flushInviteCompany();
-	  });
+	  flushBulkImportPath();
+ });
   $(".btnClose").click(function(){
 	  $(".modalInvite").fadeOut();
+	  $(".modalBulkImport").fadeOut();
 	  $(".sideMask").fadeOut();
 	  flushInviteCompany();
+	  flushBulkImportPath();
 	  });
+  
+  function flushBulkImportPath() {
+	  $("#folderPath").val('');
+  }
+  
+  function processCopiedFiles() {
+	  if ($('#bulkImportForm').validate(false, validationSettings)) {
+		  var val = $("#folderPath").val().trim();
+		  $.post(sourceleadUrl+"/process-uploaded-files", {path: val}, function(data) {
+			  if(data && data.indexOf("Session timedout") !== -1) {
+				  alert(data);
+				  setTimedout('location.href=${sourceleadLoginUrl}', 3000);
+			  } else if(data) {
+				  $("#bulkImportStatus").html(data)
+				  if(data.indexOf("Invalid") === -1) {
+					  $("#folderPath").val('');
+				  }
+			  }
+		  });
+	  } else {
+			return false;
+		}
+	 
+  }
   </script>
 <!--  Company invite pop ends -->
 
@@ -1614,23 +1919,32 @@ $("#searchType").selectpicker('refresh');
 <script>
 function saveInviteCompany() {
 	if ($('#inviteCompany_form').validate(false, validationSettings)) {
-		
-			var formData = getFormData1("inviteCompany_form");
+			var formData = getFormData("inviteCompany_form");
 			var sourceleadUrl = '${sourceleadUrl}';
 			$.ajax({
 					  type : "POST",
 					  data: formData,
-	 		          processData: false,
-	 		          contentType:false, 
 					url : sourceleadUrl+ "/storeInviteCompany?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
-						 $(".modalInvite").fadeOut();
-						  $(".sideMask").fadeOut(); 
-						  $("#inviteCompanyId").removeAttr("style");
-	            		  $("#inviteCompanyId").css({ display: "block" });
-	        			  $("#inviteCompanyMsgDiv").html("Thank you for referring sourcelead");
-	        			  companyMsgFadeinFunction();
-	        			  flushInviteCompany();
+						
+						if (result && result.response === "INVALID_DATA") {
+						    showError(result.responseMessage);
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+							  $(".modalInvite").fadeOut();
+							  $(".sideMask").fadeOut(); 
+							  $("#inviteCompanyId").removeAttr("style");
+		            		  $("#inviteCompanyId").css({ display: "block" });
+		        			  $("#inviteCompanyMsgDiv").html("Thank you for referring sourcelead");
+		        			  companyMsgFadeinFunction();
+		        			  flushInviteCompany();
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
+	        			  
 					},
 				});
 		return true;
@@ -1648,7 +1962,18 @@ $('body').on('blur', '#inviteCompany_form', function() {
 		$("#inviteCompanyId").fadeIn(200);
         $('#inviteCompanyId').fadeOut(3000);
 	}
-</script> 
+</script>
+
+<%-- <c:if test='${viewPage == "campaignSender"}'> --%>
+<script src="/resources/js/campaignSender.js"></script>
+<div id='campaignSender' class='popUpOut'></div> 
+
+<script src="/resources/js/campaignRecipient.js"></script>
+<div id='campaignRecipient' class='popUpReci'></div> 
+<%-- </c:if> --%>
+
+
+ 
 <!-- 
 <script>
 // This example displays an address form, using the autocomplete feature
@@ -1715,10 +2040,10 @@ function geolocate() {
 
 <script>
 function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId,type,addressId) {
-    initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId);
+    initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId,latitudeId,longtitudeId);
     geolocate(latitudeId,longtitudeId);
 }
-function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId) {
+function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId,latitudeId,longtitudeId) {
     if(type == "invite"){
     	 var input = (document.getElementById(locationId));
     	    var options = {
@@ -1766,11 +2091,15 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
   $("#"+countryId).val(address.country).change();
   $("#"+countryId).trigger("chosen:updated");
 
+  $("#"+latitudeId).val(place.geometry.location.lat());
+  $("#"+longtitudeId).val(place.geometry.location.lng());
+  
   if(type == "invite"){
 	  getTimezonesList();
   }
-  zipcodeMask(address.country,zipCodeId);	
-  
+  if(type != "editAssociate"){
+    zipcodeMask(address.country,zipCodeId);	
+  }
 });
 }
 function geolocate(latitudeId,longtitudeId) {
@@ -1779,8 +2108,12 @@ function geolocate(latitudeId,longtitudeId) {
             var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             var latitude = position.coords.latitude;
             var longitude = position.coords.longitude;
-            document.getElementById("latitude").value = latitude;
-            document.getElementById("longitude").value = longitude;
+            if(latitudeId != null && latitudeId != '' && latitudeId !='undefined'){
+            	$("#"+latitudeId).val(latitude);
+            }
+            if(longtitudeId != null && longtitudeId != '' && longtitudeId != 'undefined'){
+                $("#"+longtitudeId).val(longitude);
+            }
             autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
         });
     }
@@ -1816,5 +2149,21 @@ function zipcodeMask(country,zipCodeId){
 <script>
   var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
-<script src="resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
 
+
+<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
+<script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+
+
+<script type="text/javascript">
+function verifyEmail2() {
+	var email = document.getElementById("inviteCompanyemail").value;
+	if(email != null && email != ''){
+	      validateEmailForExistenceUniversally(email, '#inviteCompanyemail');
+	}else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
+	}
+}
+
+</script>

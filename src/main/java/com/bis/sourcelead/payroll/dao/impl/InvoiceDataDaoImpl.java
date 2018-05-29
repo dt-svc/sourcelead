@@ -4,12 +4,11 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,7 +22,6 @@ import com.bis.sourcelead.dto.InvoiceDetailsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.payroll.dao.InvoiceDataDao;
-import com.bis.sourcelead.payroll.entity.HrDeductions;
 import com.bis.sourcelead.payroll.entity.InvoiceData;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
@@ -63,6 +61,12 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<InvoiceData> invoiceDetailsList = null;
 		ResponseList<InvoiceData> response = new ResponseList<>();
+		
+		String qry = "";
+		if(StringUtils.isNotBlank(invoiceDetailsDTO.getSortColumn())) {
+			qry = " order by ind."+ invoiceDetailsDTO.getSortColumn() +" "+invoiceDetailsDTO.getSortOrder();
+		}
+		
 		String query = "from InvoiceData ind  left join fetch ind.orgLocationId where ind.orgLocationId.id =:orgLocationId";
 		String countQuery = "from InvoiceData ind  where ind.orgLocationId.id =:orgLocationId";
 		
@@ -105,16 +109,16 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 					.append("OR ind.arPaid like '%" + invoiceDetailsDTO.getSearchValue() + "%' ")
 					.append("OR ind.oldNew like '%" + invoiceDetailsDTO.getSearchValue() + "%' ");
 			}
-		Query queryObj = session.createQuery(query + query1.toString());
+		Query queryObj = session.createQuery(query + query1.toString()+qry);
 		if (invoiceDetailsDTO != null && invoiceDetailsDTO.getLength() > 0) {
 			queryObj.setFirstResult(invoiceDetailsDTO.getStart());
 			queryObj.setMaxResults(invoiceDetailsDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+			queryObj.setLong("orgLocationId", orgLocation.getId()).list();
 		}
 		invoiceDetailsList = queryObj.list();
 		int count = 0;
 		int filteredCount = 0;
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).setCacheable(true).list();
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocation.getId()).list();
 		if(countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
@@ -161,7 +165,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 		/*Session session = this.sessionFactory.getCurrentSession();
 		List<InvoiceData> invoiceDataList = null;
 		String query = "from InvoiceData iData  left join fetch iData.orgLocationId where iData.orgLocationId.id =:orgLocationId";
-		invoiceDataList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		invoiceDataList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		if (invoiceDataList != null && invoiceDataList.size() > 0) {
 			return invoiceDataList;
 		}
@@ -174,7 +178,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<InvoiceData> invoiceDataList = null;
 		String query = "from InvoiceData iData  left join fetch iData.orgLocationId where iData.orgLocationId.id =:orgLocationId and iData.sku=:empId";
-		invoiceDataList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).setCacheable(true).list();
+		invoiceDataList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
 		if (invoiceDataList != null && invoiceDataList.size() > 0) {
 			return invoiceDataList;
 		}
@@ -187,7 +191,7 @@ public class InvoiceDataDaoImpl implements InvoiceDataDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "SELECT MAX(inv.version) FROM InvoiceData inv where inv.orgLocationId.id =:orgLocationId";
-		List<Integer> version = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		Integer count = 0;
 		if(version != null && !version.isEmpty() && version.get(0) != null){
 				count = version.get(0).intValue();

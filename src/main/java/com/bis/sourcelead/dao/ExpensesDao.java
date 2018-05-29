@@ -22,7 +22,10 @@ public interface ExpensesDao {
 	public Expenses getExpenseById(long id);
     public Expenses getExpenseByExpenseUniqueId(String expenseId, Long loginUserId)throws Exception;
 	public List<Expenses> getExpensesByProjectMemberId(Long projectMemberId, String invoiceType);
-	}
+	public List<Expenses> getExpensesByProjectIdAndMasterCandidateId(Long projectId,Long masterCandidateId) throws Exception;
+	public List<Expenses> getAllExpensesByOrgLocationId(Long orgLocationId);
+	public List<Expenses> getAllExpensesByProjectIdOrgLocationIdStartDateAndEndDate(Long projectId, Long orglocationId,Date startDate, Date endDate);
+}
 	
 
 

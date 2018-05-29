@@ -86,7 +86,7 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 			}
 			
         }
-		return query.setCacheable(true).list();
+		return query.list();
 	}
 
 	@Override
@@ -111,12 +111,13 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 		Session session = this.sessionFactory.getCurrentSession();
 		String from = "from  ExpensesApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pc left join fetch hierarchy.approverUserId approver left join fetch sah.expenseId exp  left join fetch exp.projectMembers pm left join fetch pm.projectMemberCandidteId cand left join fetch cand.orgRelationId rel left join fetch pm.projects projects left join fetch pm.employee emp left join fetch emp.user user where "
 			+ " pc.orgLocationsId.id = :orgLocationId"
-			+ " and ( ("
+			+ " and ( ( hierarchy.approverUserId.id = :userId )"
+			/*+ " and ( ("
 			+ "      hierarchy.approverUserId.id = :userId and "
 			+ "       (     (( emp.user.id IS NULL) OR (emp.user.id IS NOT NULL and hierarchy.level = '2' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id and subeah.hierarchyId.level = '2'))) "
 			+ "          OR (( emp.user.id IS NULL) OR (emp.user.id IS NOT NULL and hierarchy.level = '1' and emp.user.id NOT IN(select subeah.hierarchyId.approverUserId.id from ExpensesApproverHierarchy subeah where subeah.expenseId.id = sah.expenseId.id))) "
 			+ "       )"
-			+ "      ) "
+			+ "      ) "*/
 		    /*
 			 *  logged in user as admin but not in project_approver_hierarchy(hint:logged in user is admin but not assigned to project as approver)
 			 */
@@ -137,6 +138,8 @@ public class ExpensesApproverHierarchyDaoImpl implements ExpensesApproverHierarc
 				query.setParameter(str, (long) params.get(str));
 			}
         }
-		return query.setCacheable(true).list();
+		return query.list();
 	}
+
+	
 }

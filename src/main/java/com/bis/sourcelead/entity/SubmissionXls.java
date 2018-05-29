@@ -21,8 +21,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 
 @Entity
-@Table(name = "SUBMISSION_XLS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "submissionXls")
+@Table(name = "SUBMISSION_XLS")
 public class SubmissionXls implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -32,8 +31,8 @@ public class SubmissionXls implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REQUIREMENT_ID")
 	private Requirement requirement;
 	

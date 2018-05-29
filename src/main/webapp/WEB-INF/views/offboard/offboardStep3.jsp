@@ -7,19 +7,19 @@
  </c:if>
 
 
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/chosen.min.css?staticTime=${staticTime}">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css?staticTime=${staticTime}">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet" type="text/css">
 
 <script type="text/javascript">
  var sourceleadUrl ='${sourceleadUrl}';
@@ -42,7 +42,7 @@
 					                <div class="clearfix">
 					                   <div class="pull-left image-parent positionRelative">
 					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+					                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 					                     </div>
 					                   </div>
 					                   <div class="pull-left mt5">
@@ -60,7 +60,7 @@
 	          </c:if>
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
-					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" />
 					</div>
 				</c:if>
 				
@@ -83,6 +83,7 @@
 		  
 		  <div class="welCo1"> 
 			<div id="loading"></div>
+			<h5>Offboard Task List</h5>
 				<div class="step4">
 					<c:if test="${tasksListSize > 0}">
 					<c:forEach var="tasks" items="${tasksList}">
@@ -109,8 +110,8 @@
 		  </div>	
 		  
 		  <div class="welBtns">
-			<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='/offboardStep2'/>'" >
-			<input type="button"  value="Proceed to next step" id="save_button"  onclick="javascript:window.location.href = '<c:url value='/offboardStep4'/>'" class="Brig">
+			<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='/app/offboardStep2'/>'" >
+			<input type="button"  value="Proceed to next step" id="save_button"  onclick="javascript:window.location.href = '<c:url value='/app/offboardStep4'/>'" class="Brig">
 			<div class="clearfix"></div>
 		</div>
 		
@@ -119,23 +120,28 @@
 </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-  <script src="resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
-  <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script> 
 
 <script>
 function changeTaskStatus(taskId){
-	$("#task"+taskId).attr('style',' height:50px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
-	
+	$("#task"+taskId).attr('style',' height:50px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 	 $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/changeTaskStatusForOnboardAndOffboardCandidate?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
-	        success: function(onboardId) {
-	        	$("#task"+taskId).removeAttr("style");
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		$("#task"+taskId).removeAttr("style");
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	        },
 	    });
-	
-	 
 }
 </script>
 
@@ -163,7 +169,7 @@ function changeTaskStatus(taskId){
   
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 

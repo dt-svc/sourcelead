@@ -4,13 +4,17 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.MasterCandidate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -53,7 +57,7 @@ public interface CandidateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate) throws Exception;
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter) throws Exception;
 	
 	/**
 	 * @param candidateId
@@ -109,6 +113,8 @@ public interface CandidateService {
 	
 	public Integer getAllCandidatesCountForCampaignByTeam(List<Long> teamId,String type,Long orgLocationId)throws Exception;
 	
+	public Integer getCandidatesCountByLocation(Long orgLocationId)throws Exception;
+	
 	public List<Candidate> getAllCandidatesForHotListingWhoAreTerminating(Long orgLocationId,Integer datRange,Long reportingManagerUserId)throws Exception;
 
 	List<Object> getAllUniversalSearchCandidateList(OrgLocations orgLocation, String searchValue) throws Exception;
@@ -120,6 +126,8 @@ public interface CandidateService {
 	public Candidate getCandidateById(Long candidateId) throws Exception;
 	
 	Candidate getCandidateByParentCandidateId(Long parentCandidateId) throws Exception;
+	
+	Candidate getCandidateByParentCandidateIdAndOrgLocationId(Long parentCandidateId,Long orgLocationId) throws Exception;
 	
 	public List<Candidate> getCandidatesByOrgLocationIDAndSearchText(Long orgLocationId,Long requirementId, String candidateType,String searchApplicant) throws Exception;
 	
@@ -174,7 +182,7 @@ public interface CandidateService {
 	
 	public Candidate storeCandidateForUsers(CandidateDTO candidateDTO,AddUserDTO addUserDTO,User user,OrgLocations orgLocations,MasterCandidate masterCandidate,User loginUser) throws Exception;
 	
-	public ResponseList<CandidateDTO> getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId,List<Long> roleIds,String resourceType,List<Long> associatesIds,Long projectId)throws Exception ;
+	public ResponseList<CandidateDTO> getRequestedCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId,List<Long> roleIds,List<Long> teamIds,String resourceType,List<Long> associatesIds,Long projectId)throws Exception ;
 
 	public int getCandidatePercentage(Candidate can, OrgLocations loginOrgLocation) throws Exception;
 
@@ -183,5 +191,17 @@ public interface CandidateService {
 	String getCandidateId(OrgLocations orgLocations);
 	
 	public ResponseList<CandidateDTO> getCandidateListByOrgLocationIdAndOrgRelationId(Long orgLocationId,Long orgRelationId) throws Exception;
+	
+	public Candidate getCandidateByShortURL(String shortURL) throws Exception;
+	
+	List<Candidate> getAllAssociatesByOrglocationIdAndEmploymentType(Long orgLocationId, String employeementType) throws Exception;
+	
+	public ResponseList<CandidateDTO> getLocationCandidatesList(CandidateDTO candidateDTO,Long orgLocationsId,List<Long> roleIds,List<Long> associatesIds,Long loginOrgLocationId)throws Exception ;
+	
+	public void saveOrglocationAsssociate(AddAssociateDTO addAssociateDTO, User user, OrgLocations orgLocations,Org org) throws Exception;
+	
+	Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception;
+	
+	public Candidate getCandidateByEmail(String email) throws Exception;
 
 }

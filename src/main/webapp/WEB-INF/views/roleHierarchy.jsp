@@ -10,7 +10,7 @@
       <div class="pull-left">
         <h2>Hierarchy Level</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="orgRolesList">Roles List</a> &raquo; Hierarchy List </div>
+      <div class="pull-right brud-crum"><a href="${appPath}/orgRolesList">Roles List</a> &raquo; Hierarchy List </div>
     </section>
     
    <!-- Role Persmission -->
@@ -38,7 +38,7 @@
         </div>
         <div class="modal-body">
            <div class="form-group" id="levelDiv">
-            <input type="text" class="form-control input-sm" data-validation="required validate_Space validate_length length2-20" field-name="Level" onblur="validateLevelName();"onkeyup="validateLevelName();"  placeholder="Enter Level" name="level" id="level" autocomplete="off" autofocus>
+            <input type="text" class="form-control input-sm" data-validation="required validate_Space validate_length length2-20" field-name="Level"  onblur="validateLevelName();"  placeholder="Enter Level" name="level" id="level" autocomplete="off" autofocus>
             <input type="hidden" name="hierarchyId" id="hierarchyId">
            </div>
         </div>
@@ -123,27 +123,38 @@ backdrop: 'static'
 		
 		 if ($('#addnew_hierarchy').validate(false, validationSettings)){ 
 			
-          		
-    		    var frm = $('#addnew_hierarchy').serializeFormJSON();
-    	        var con = JSON.stringify(frm);
-    	        con = con.replace(/[{}]/g, "");
-    	        
-    	        //It will escape all the special characters
-   	        var jsonData = encodeURIComponent(con);
-       		var sourceleadUrl ='${sourceleadUrl}';
+        	var sourceleadUrl ='${sourceleadUrl}';
        		$("#add_hierarchy").attr("disabled", "disabled");
-       		$("#hierarchyLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-       		
+       		$("#hierarchyLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+       		var formData = getFormData1("addnew_hierarchy");
 
 			$.ajax({
 			 	
 				type: "POST",
-		    	 url: sourceleadUrl+"/addNewRoleHierarcy?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+				data: formData,
+ 		    	processData: false, 
+		 		contentType: false,
+		    	 url: sourceleadUrl+"/addNewRoleHierarcy?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(data) {
-		        	if(data != null && data != ''){
-	   	        	    location.replace(sourceleadUrl+"/roleHierarchy");  
-		        	}
-			        
+		        	
+		        	if (data && (data.response === "INVALID_DATA" || data.response === "INVALID_USER")) {
+ 		        		showError(data.responseMessage);
+      	    		    $("#hierarchyLoading").removeAttr('style');
+      	    		}
+                		else if (data.response === "AWKWARD") {
+                			location.href = "/errorPage";
+      	    		}
+                		else if(data.response === "SUCCESS"){
+                			$("#hierarchyLoading").removeAttr('style');
+                			location.replace(sourceleadUrl+"/roleHierarchy"); 
+			        	    }
+                		else if (data.indexOf('Sign In') !== -1) {
+                			location.replace(sourceleadUrl);
+      				} else {
+      					showError("Operation failed, please try again");
+      				    $("#hierarchyLoading").removeAttr('style');
+      				}
+		            
 		        },
 					});
 			return true;
@@ -194,18 +205,19 @@ backdrop: 'static'
  
  <script type="text/javascript">
 function validateLevelName(){
-	var levelName = document.getElementById("level").value;
+	// 	var levelName = document.getElementById("level").value;
+	var levelName = document.getElementById("level").value.trim();
 	var hierarchyId = document.getElementById("hierarchyId").value;
 	var sourceleadUrl = '${sourceleadUrl}';
-	if(levelName) {
-		$("#add_hierarchy").attr("disabled", "disabled");
+	if(levelName.match(/^[^\s-](.*)*$/) !== null) {
+		 $('#levelDiv').find('p.jquery_form_error_message').remove(); 
 		$.ajax({
 			type : "GET",
 			url: sourceleadUrl+"/validateRoleHierarchyLevelName?${_csrf.parameterName}=${_csrf.token}&levelName="+levelName+"&hierarchyId="+hierarchyId, 
 			success : function(data) {
 				var result = data;
 				if (result == "invalid") {
-					$("#add_hierarchy").removeAttr("disabled");
+					$("#add_hierarchy").attr("disabled", "disabled");
 				    $('#levelDiv').find('p.jquery_form_error_message').remove(); 
 		    	    $("input#level").after("<p class='jquery_form_error_message'>"+levelName+" is Already Existed</span>");
     				$('input#level').attr('record-exist','yes');
@@ -268,7 +280,7 @@ function updateHierarchyOrder(hierarchyOrder){
 	$("#popup").empty();
 	$(".project_inn_mask").fadeOut(200);
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 if(hierarchyOrder){
 		 $.ajax({
 		    	type: "POST",
@@ -288,7 +300,7 @@ function cancel(){
 	$("#popup").empty();
 	$(".project_inn_mask").fadeOut(200);
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	location.replace(sourceleadUrl+"/roleHierarchy");  
 }
 </script>

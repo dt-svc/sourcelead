@@ -1,0 +1,3 @@
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear {{OffBoardingProcessApplicantTermination.applicantName}},\n\nThis is to inform you that you have been {{OffBoardingProcessApplicantTermination.offboardReason}} from your services with {{OffBoardingProcessApplicantTermination.companyName}}.\nWe Thank you for your time and service at {{OffBoardingProcessApplicantTermination.companyName}}.\n\nIf you have further questions or concerns please Contact Human resources.\n\nPlease click here to complete the exit formalities.\n\n{{OffBoardingProcessApplicantTermination.loginLink}}' WHERE `UNIQUE_SCENARIO_NAME`='OffBoardingProcessApplicantTermination' and `ENTITY_TYPE`='Email';
+SET SQL_SAFE_UPDATES = 1;

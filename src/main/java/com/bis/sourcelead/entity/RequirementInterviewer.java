@@ -23,8 +23,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Entity
-	@Table(name = "REQUIREMENT_INTERVIEWER", catalog = "sourcelead")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirementInterviewer")
+	@Table(name = "REQUIREMENT_INTERVIEWER")
 	public class RequirementInterviewer implements Serializable{
 
 	
@@ -35,13 +34,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INTERVIEW_ID", nullable=false )        
     private RequirementInterview requirementInterview;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INTERVIEWER_USER_ID", nullable=false )        
     private User interviewerUser;
 	
@@ -73,22 +72,28 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String feedbackStatus;
 	
 	@Transient
+	@JsonProperty
 	private String interviewStartTime;
 	
 	@Transient
+	@JsonProperty
 	private String interviewEndTime;
 	
 	@Transient
+	@JsonProperty
 	private String requirementTitle;
 	
 	
 	@Transient
+	@JsonProperty
 	private String interviewType;
 
 	@Transient
+	@JsonProperty
 	private List<RequirementInterviewer> interviewerList;
 	
 	@Transient
+	@JsonProperty
 	private List<RequirementInterview> applicantsList;
 	
 	

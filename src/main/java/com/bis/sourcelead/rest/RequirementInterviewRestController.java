@@ -5,7 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProposeTime;
@@ -31,8 +35,8 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProposeTimeService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
@@ -44,9 +48,9 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 
 /**
  * Prasanna Vadla
@@ -95,49 +99,60 @@ public class RequirementInterviewRestController {
 	 @Autowired
 	 RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
-	@RequestMapping(value = "/getAllInterviewers")
-	public @ResponseBody String getAllApprovers(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/app/getAllInterviewers")
+	public @ResponseBody ResponseList<User> getAllApprovers(HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		String resultJson = null;
-		
-		List<User> interviewersNewList = new ArrayList<>();
-		
-		List<User> interviewersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
-		for(User userList:interviewersList){
-			/*UserRole user = userRoleService.getUserRoleByUserIdAndLocationId(userList.getId(), orgLocations.getId());
-		   */
-			interviewersNewList.add(userList);
-			/*if(!Constants.EMPLOYEE.equals(user.getUserType())){
+		ResponseList<User> response = new ResponseList<>();
+		try {
+			List<User> interviewersNewList = new ArrayList<>();
+			List<User> interviewersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+			for(User userList:interviewersList){
 				interviewersNewList.add(userList);
-			}*/
+			}
+			response.setData(interviewersNewList);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		}catch(Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
-		resultJson = commonUtil.toJSON(interviewersNewList);
-		return resultJson;
-
+		return response;
 	}
 	
-	@RequestMapping(value = "/getAllShortListCandidates")
-	public @ResponseBody String getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
+	@RequestMapping(value = "/app/getAllShortListCandidates")
+	public @ResponseBody ResponseList<RequirementSubmission> getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			                                              @RequestParam(value="existingApplicantsIds", required=false) List<Long> existingApplicantsIds,
 			                                              @RequestParam(value="isClientInterview", required=false) String isClientInterview,
 			                                              HttpServletRequest request) throws Exception {
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<RequirementSubmission> response = new ResponseList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
-		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-		String resultJson = null;
-		List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations, requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
-		for (RequirementSubmission sub : shortListCandidatesList) {
-			 StringBuilder nameBuilder = new StringBuilder();
-			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(sub.getId());
-			if(StringUtils.isNotBlank(requirementSubmissionTemplateFields.getLastName())){
-				sub.setCandidateName(nameBuilder.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
-			}else{
-				sub.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
+		if(user != null) {
+			try {
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				List<RequirementSubmission> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations, requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+				for (RequirementSubmission sub : shortListCandidatesList) {
+					 StringBuilder nameBuilder = new StringBuilder();
+					RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(sub.getId());
+					if(StringUtils.isNotBlank(requirementSubmissionTemplateFields.getLastName())){
+						sub.setCandidateName(nameBuilder.append(requirementSubmissionTemplateFields.getFirstName()).append(" ").append(requirementSubmissionTemplateFields.getLastName()).toString());
+					}else{
+						sub.setCandidateName(requirementSubmissionTemplateFields.getFirstName());
+					}
+					sub.setIsClientSubmission(sub.getRequirement().getIsClientJob());
+				}
+				response.setData(shortListCandidatesList);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
 			}
-			sub.setIsClientSubmission(sub.getRequirement().getIsClientJob());
+		}else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 		}
-		resultJson = commonUtil.toJSON(shortListCandidatesList);
-		return resultJson;
+		return response;
 	}
 	
 	/**To add interview
@@ -148,7 +163,7 @@ public class RequirementInterviewRestController {
 	 * @throws Exception
 	 */
 	@PreAuthorize("hasRole('ROLE_ADD_INTERVIEW')")
-	@RequestMapping(value = "/saveInterview" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/saveInterview" , method = RequestMethod.POST)
 	   public String saveInterview(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
 			
  	    String json1 = "{" + json + "}";
@@ -165,7 +180,7 @@ public class RequirementInterviewRestController {
 
   }
 	
-    @RequestMapping(value = "/updateRescheduleInterview" , method = RequestMethod.POST)
+    @RequestMapping(value = "/app/updateRescheduleInterview" , method = RequestMethod.POST)
     public String updateRescheduleInterview(@RequestParam(value="jsonData", required=false) String json, HttpServletRequest request) throws Exception {
 			
  	    String json1 = "{" + json + "}";
@@ -180,7 +195,7 @@ public class RequirementInterviewRestController {
 	
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
-	@RequestMapping(value = "/getAllInternalInterviews" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getAllInternalInterviews" , method = RequestMethod.POST)
 	 public @ResponseBody  String getAllInternalInterviews(@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
 		
 	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -193,7 +208,7 @@ public class RequirementInterviewRestController {
 	   }
 	
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
-	@RequestMapping(value = "/getScheduledInterviewsListForSelectedApplicants" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getScheduledInterviewsListForSelectedApplicants" , method = RequestMethod.POST)
 	 public @ResponseBody  String getScheduledInterviewsListForSelectedApplicants(@RequestParam(value="selectedReqId", required=false) String selectedReqId, @RequestParam(value="selectedSubmissions", required=false) String selectedSubmissions, HttpServletRequest request) throws Exception {
 		
 	     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -261,7 +276,7 @@ public class RequirementInterviewRestController {
 	
 	  
 	@PreAuthorize("hasAnyRole('ROLE_VIEW_INTERVIEW','ROLE_VIEW_CANCEL_INTERVIEW')")
-	@RequestMapping(value = "/getAllCustomerInterviews" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getAllCustomerInterviews" , method = RequestMethod.POST)
 	 public @ResponseBody  String getAllCustomerInterviews(@RequestParam(value="submissionId", required=false) Long submissionId,
 			 @RequestParam(value = "requirementId", required = false) Long requirementId,
 			 HttpServletRequest request) throws Exception {
@@ -282,7 +297,7 @@ public class RequirementInterviewRestController {
 	 * @throws Exception
 	 */
 	
-	@RequestMapping(value = "/saveProposeTime" , method = RequestMethod.POST)
+	@RequestMapping(value = {"/saveProposeTime", "/app/saveProposeTime"} , method = RequestMethod.POST)
 	   public String saveProposeTime(@RequestParam(value="jsonData", required=false) String json,@RequestParam(value="submissionId", required=false) Long submissionId, HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org loginOrg = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -324,6 +339,8 @@ public class RequirementInterviewRestController {
 			 //Applicant to created by interviewer send Email
 			 if(orgLocations != null){
 			requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),orgLocations,loginOrg,user);	 
+			 }else{
+			   requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),requirementSubmission.getOrgLocations(),loginOrg,user);	 
 			 }
 			 if(user != null){
 			 requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory);
@@ -339,7 +356,7 @@ public class RequirementInterviewRestController {
 	 * @return resultJson
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/getProposeTime" , method = RequestMethod.POST)
+	@RequestMapping(value = "/app/getProposeTime" , method = RequestMethod.POST)
 	 public @ResponseBody  String getProposeTime(@RequestParam(value="interviewId", required=false) Long interviewId, @RequestParam(value="locationId", required=false) Long locationId,HttpServletRequest request) throws Exception {
 		 String resultJson = null;
 		 List<ProposeTime> proposeTimeList = proposeTimeService.getProposeTimeByInterViewId(interviewId);
@@ -363,7 +380,7 @@ public class RequirementInterviewRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	 @RequestMapping(value = "/acceptProposeTime" , method = RequestMethod.POST)
+	 @RequestMapping(value = "/app/acceptProposeTime" , method = RequestMethod.POST)
 	    public String acceptProposeTime(@RequestParam(value="jsonData", required=false) String json,@RequestParam(value="proposeTimeId", required=false) Long proposeTimeId,
 	    		@RequestParam(value="proposeDate", required=false) String proposeDate,@RequestParam(value="proposeTime", required=false) String proposeTime,HttpServletRequest request) throws Exception {
 				
@@ -377,7 +394,7 @@ public class RequirementInterviewRestController {
 	   }
 	 
 	 
-	 /*@RequestMapping(value = "/acceptOrRejectInterview")
+	 /*@RequestMapping(value = "/ws/acceptOrRejectInterview")
 	 @ResponseBody  String acceptOrRejectInterview(@RequestParam(value="interviewStatus", required=false) String interviewStatus,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 			 HttpServletRequest request) throws Exception {
@@ -400,7 +417,7 @@ public class RequirementInterviewRestController {
 		return message;
 	 }	*/
 	 
-	 @RequestMapping(value = "/sendMailToapplicant")
+	 @RequestMapping(value = "/app/sendMailToapplicant")
 	 @ResponseBody String sendMailToapplicant(@RequestParam(value="submissionId", required=false) String submissionId,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 				@RequestParam(value = "interviewHistoryId", required = false) String interviewHistoryId,
@@ -422,7 +439,7 @@ public class RequirementInterviewRestController {
 		 
 		return "success";
 	 }		
-	 @RequestMapping(value = "/sendMailToVendor")
+	 @RequestMapping(value = "/app/sendMailToVendor")
 	 @ResponseBody String sendMailToVendor(@RequestParam(value="submissionId", required=false) String submissionId,
 				@RequestParam(value = "requirementInterviewId", required = false) String requirementInterviewId,
 				@RequestParam(value = "interviewHistoryId", required = false) String interviewHistoryId,
@@ -468,139 +485,206 @@ public class RequirementInterviewRestController {
 	 
 	 
 	 
+	 @RequestMapping(value = "/app/getInterviewSlotDates")
+		public ResponseList<String> getInterviewSlotDates(@RequestParam(value = "applicantSubmissionIds", required = false) String applicantSubmissionIds,
+				@RequestParam(value = "interviewerIds", required = false) String interviewerIds, HttpServletRequest request) throws Exception {
+		 	ResponseList<String> response = new ResponseList<>();
+		 	try {
+					OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					List<String> interviewDatesList = new ArrayList<>();
+					List<Long> interviewUserIdList = new ArrayList<>();
+					List<Long> submissionsList = new ArrayList<>();
+					List<Date> interviewerDatesList = new ArrayList<>();
+					List<Date> candidatesDatesList = new ArrayList<>();
+					Set<Date> datesList = new LinkedHashSet<>();
+					
+					if(interviewerIds != null && !interviewerIds.isEmpty()) {
+						String[] interviewerUserIds = interviewerIds.split(",");
+						for(int i=0;i<interviewerUserIds.length;i++) {
+							interviewUserIdList.add(Long.valueOf(interviewerUserIds[i]));
+						}
+						interviewerDatesList = requirementInterviewService.getInterviewDatesForInterviewrsInterviewSlots(interviewUserIdList, loginOrgLocations.getId());
+					}
+					
+					if(applicantSubmissionIds != null && !applicantSubmissionIds.isEmpty()) {
+						String[] submissionIds = applicantSubmissionIds.split(",");
+						for(int i=0;i<submissionIds.length;i++) {
+							submissionsList.add(Long.valueOf(submissionIds[i]));
+						}
+						candidatesDatesList = requirementInterviewService.getInterviewDatesForCandidateInterviewSlots(submissionsList);
+					}
+					
+					if(interviewerDatesList != null && interviewerDatesList.size() > 0) {
+						datesList.addAll(interviewerDatesList);
+					}
+					
+					if(candidatesDatesList != null && candidatesDatesList.size() > 0) {
+						datesList.addAll(candidatesDatesList);
+					}
+					
+					Timezone timezone = null;
+					if(loginOrgLocations.getTimezone() != null){
+						timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+					}
+					if(datesList != null && datesList.size() > 0) {
+						for(Date date : datesList) {
+							    String converted_dateStr =  CalendarUtil.getDateStrForGivenTimeZone(timezone.getTimeZoneId(), date, "yyyy/MM/dd");
+							    if(StringUtils.isNotEmpty(converted_dateStr)) {
+							    	 interviewDatesList.add(converted_dateStr);
+							    }
+						}
+					}
+					response.setData(interviewDatesList);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+			}catch(Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+			return response;
+		}
+		
 	 
 	 
-	 
-	 @RequestMapping(value = "/getInterviewerAndApplicantsDetails")
-		public @ResponseBody String getInterviewerAndApplicantsDetails(
+	 @RequestMapping(value = "/app/getInterviewerAndApplicantsDetails")
+		public @ResponseBody Response<RequirementInterviewer> getInterviewerAndApplicantsDetails(
 				@RequestParam(value = "applicantSubId", required = false) String applicantSubId,
 				@RequestParam(value = "interviewerIds", required = false) String interviewerIds,
 				@RequestParam(value = "date", required = false) String date,
 				HttpServletRequest request) throws Exception {
+		 	Response<RequirementInterviewer> response = new Response<>();
 			OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			
-			Timezone timezone = null;
-			if(loginOrgLocations.getTimezone() != null){
-				timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
-			}
-			//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
-			Date startUTCDate = null;
-			Date endUTCDate = null;
-			DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-			DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-			Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),date);
-			
-			String startTimeTS = Constants.TZ_DF.format(startTime); 
-			String endTimeTS = END_TZ_DF.format(startTime);
-			String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startTimeTS);
-			String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endTimeTS);
-				 startUTCDate = TZ_DF_TS.parse(startDateString);
-				 endUTCDate = TZ_DF_TS.parse(endDateString);
-			
-			RequirementInterviewer reqInterviwer = new RequirementInterviewer();
-			//interviewer interviews list	 
-			List<Long> interviewersList = new ArrayList<>();
-			
-			List<RequirementInterviewer> selectedInterviewerList = new ArrayList<>();
-			if(!interviewerIds.equalsIgnoreCase("null")){
-				
-				for (String interviewId : interviewerIds.split(","))
-					interviewersList.add(Long.valueOf(interviewId));
-			
-				selectedInterviewerList =  requirementInterviewerService.getinterviewListByOrgLocationAndUserId(loginOrgLocations,interviewersList,startUTCDate,endUTCDate);
-				for (RequirementInterviewer requirementInterviewer : selectedInterviewerList) {
-					User interviewrUser = userService.getUserById(requirementInterviewer.getInterviewerUser().getId());
-					if(interviewrUser.getLastName() !=null){
-						requirementInterviewer.setInterviewerName(interviewrUser.getFirstName()+" "+interviewrUser.getLastName());
-					}else{
-						requirementInterviewer.setInterviewerName(interviewrUser.getFirstName());
+			if(user != null) {
+				try {
+					Timezone timezone = null;
+					if(loginOrgLocations.getTimezone() != null){
+						timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
 					}
-					RequirementInterview reqInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewer.getRequirementInterview().getId().toString());
-					//requirementInterviewer.setInterviewStartTime(reqInterview.getStartTime().toString());
-					//requirementInterviewer.setInterviewEndTime(reqInterview.getEndTime().toString());
-					DateFormat eventstartTimrFroDashBoard = new SimpleDateFormat( "hh:mm aa");
-					reqInterview.setCandidateName(reqInterview.getSubmissionId().getCandidate().getFirstName());
-					if(null != timezone.getTimeZoneId() && null != reqInterview.getId() && null != reqInterview.getStartTime()){
-						String currentTimeStr = Constants.TZ_DF.format(reqInterview.getStartTime());  
-						String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
-						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-						currentDateInTimezone = eventstartTimrFroDashBoard.format(converteDate);
-						requirementInterviewer.setInterviewStartTime(currentDateInTimezone);
+					//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
+					Date startUTCDate = null;
+					Date endUTCDate = null;
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					DateFormat END_TZ_DF = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
+					Date startTime =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(),date);
+					
+					String startTimeTS = Constants.TZ_DF.format(startTime); 
+					String endTimeTS = END_TZ_DF.format(startTime);
+					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startTimeTS);
+					String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endTimeTS);
+						 startUTCDate = TZ_DF_TS.parse(startDateString);
+						 endUTCDate = TZ_DF_TS.parse(endDateString);
+					
+					RequirementInterviewer reqInterviwer = new RequirementInterviewer();
+					//interviewer interviews list	 
+					List<Long> interviewersList = new ArrayList<>();
+					
+					List<RequirementInterviewer> selectedInterviewerList = new ArrayList<>();
+					if(!interviewerIds.equalsIgnoreCase("null")){
+						
+						for (String interviewId : interviewerIds.split(","))
+							interviewersList.add(Long.valueOf(interviewId));
+					
+						selectedInterviewerList =  requirementInterviewerService.getinterviewListByOrgLocationAndUserId(loginOrgLocations,interviewersList,startUTCDate,endUTCDate);
+						for (RequirementInterviewer requirementInterviewer : selectedInterviewerList) {
+							User interviewrUser = userService.getUserById(requirementInterviewer.getInterviewerUser().getId());
+							if(interviewrUser.getLastName() !=null){
+								requirementInterviewer.setInterviewerName(interviewrUser.getFirstName()+" "+interviewrUser.getLastName());
+							}else{
+								requirementInterviewer.setInterviewerName(interviewrUser.getFirstName());
+							}
+							RequirementInterview reqInterview = requirementInterviewService.getRequirementInterviewById(requirementInterviewer.getRequirementInterview().getId().toString());
+							//requirementInterviewer.setInterviewStartTime(reqInterview.getStartTime().toString());
+							//requirementInterviewer.setInterviewEndTime(reqInterview.getEndTime().toString());
+							DateFormat eventstartTimrFroDashBoard = new SimpleDateFormat( "hh:mm aa");
+							reqInterview.setCandidateName(reqInterview.getSubmissionId().getCandidate().getFirstName());
+							if(null != timezone.getTimeZoneId() && null != reqInterview.getId() && null != reqInterview.getStartTime()){
+								String currentTimeStr = Constants.TZ_DF.format(reqInterview.getStartTime());  
+								String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+								Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+								currentDateInTimezone = eventstartTimrFroDashBoard.format(converteDate);
+								requirementInterviewer.setInterviewStartTime(currentDateInTimezone);
+							}
+							
+							if(null  != timezone.getTimeZoneId() && null != reqInterview.getId() && null != reqInterview.getEndTime()){
+								String currentTimeStr = Constants.TZ_DF.format(reqInterview.getEndTime());  
+								String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
+								Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+								String eventstartTimrFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
+								requirementInterviewer.setInterviewEndTime(eventstartTimrFroDashBoardStr);
+							}
+							requirementInterviewer.setRequirementTitle(reqInterview.getSubmissionId().getRequirement().getJobTitle());
+							
+							if(reqInterview.getInterviewType()!=null){
+								requirementInterviewer.setInterviewType(reqInterview.getInterviewType());
+							}
+							else{
+								requirementInterviewer.setInterviewType("--");
+							}
+						}
 					}
 					
-					
-					if(null  != timezone.getTimeZoneId() && null != reqInterview.getId() && null != reqInterview.getEndTime()){
-						String currentTimeStr = Constants.TZ_DF.format(reqInterview.getEndTime());  
-						String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
-						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-						String eventstartTimrFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
-						requirementInterviewer.setInterviewEndTime(eventstartTimrFroDashBoardStr);
+					reqInterviwer.setInterviewerList(selectedInterviewerList);
+					//applicantslist
+					List<RequirementInterview> requirementInterview = new ArrayList<>();
+					if(!applicantSubId.equalsIgnoreCase("null")){
+						List<String> submissionsList = new ArrayList<String>(Arrays.asList(applicantSubId.split(",")));
+						List<Long> submissionsIds = new ArrayList<>();
+						for (String subId : submissionsList){
+							submissionsIds.add(Long.valueOf(subId));
+						}
+						
+						List<Long> candidateIds  = requirementSubmissionService.getcandidateListBySubmissionId(submissionsIds,loginOrgLocations.getId());
+						
+						List<Long> submissionsIdList = requirementSubmissionService.getSubmissionIdByCandidateId(candidateIds,loginOrgLocations.getId());
+						
+						
+						requirementInterview = requirementInterviewService.getRequirementInterviewsBySubmissionAndOrgLocId(submissionsIdList,loginOrgLocations.getId(),startUTCDate,endUTCDate);
+						for(RequirementInterview reqInterview : requirementInterview){
+							DateFormat eventstartTimrFroDashBoard = new SimpleDateFormat( "hh:mm aa");
+							reqInterview.setCandidateName(reqInterview.getSubmissionId().getCandidate().getFirstName());
+							if(null != timezone.getTimeZoneId() && null != reqInterview.getId() && null != reqInterview.getStartTime()){
+								String currentTimeStr = Constants.TZ_DF.format(reqInterview.getStartTime());  
+								String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
+								Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+								currentDateInTimezone = eventstartTimrFroDashBoard.format(converteDate);
+								reqInterview.setInterviewStartDateTimeStr(currentDateInTimezone);
+							}
+							
+							
+							if(null  != timezone.getTimeZoneId() && null != reqInterview.getId() && null != reqInterview.getEndTime()){
+								String currentTimeStr = Constants.TZ_DF.format(reqInterview.getEndTime());  
+								String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
+								Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+								String eventstartTimrFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
+								reqInterview.setInterviewEndtDateTimeStr(eventstartTimrFroDashBoardStr);
+							}
+							else{
+								reqInterview.setInterviewEndtDateTimeStr("");
+							}
+							/*reqInterview.setInterviewStartDateTimeStr(reqInterview.getStartTime().toString());
+							reqInterview.setInterviewEndtDateTimeStr(reqInterview.getEndTime().toString());*/
+							if(reqInterview.getInterviewType()!=null){
+								reqInterview.setInterviewType(reqInterview.getInterviewType());
+							}
+							else{
+								reqInterview.setInterviewType("--");
+							}
+							reqInterview.setRequirementTitle(reqInterview.getSubmissionId().getRequirement().getJobTitle());
+						}
 					}
-					requirementInterviewer.setRequirementTitle(reqInterview.getSubmissionId().getRequirement().getJobTitle());
-					
-					if(reqInterview.getInterviewType()!=null){
-						requirementInterviewer.setInterviewType(reqInterview.getInterviewType());
-					}
-					else{
-						requirementInterviewer.setInterviewType("--");
-					}
-					
+					reqInterviwer.setApplicantsList(requirementInterview);
+					response.setObject(reqInterviwer);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch(Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
 				}
-				
-			}
-			
-			reqInterviwer.setInterviewerList(selectedInterviewerList);
-			//applicantslist
-			List<RequirementInterview> requirementInterview = new ArrayList<>();
-			if(!applicantSubId.equalsIgnoreCase("null")){
-				List<String> submissionsList = new ArrayList<String>(Arrays.asList(applicantSubId.split(",")));
-				List<Long> submissionsIds = new ArrayList<>();
-				for (String subId : submissionsList){
-					submissionsIds.add(Long.valueOf(subId));
-				}
-				
-				List<Long> candidateIds  = requirementSubmissionService.getcandidateListBySubmissionId(submissionsIds,loginOrgLocations.getId());
-				
-				List<Long> submissionsIdList = requirementSubmissionService.getSubmissionIdByCandidateId(candidateIds,loginOrgLocations.getId());
-				
-				
-				requirementInterview = requirementInterviewService.getRequirementInterviewsBySubmissionAndOrgLocId(submissionsIdList,loginOrgLocations.getId(),startUTCDate,endUTCDate);
-				for(RequirementInterview reqInterview : requirementInterview){
-					DateFormat eventstartTimrFroDashBoard = new SimpleDateFormat( "hh:mm aa");
-					reqInterview.setCandidateName(reqInterview.getSubmissionId().getCandidate().getFirstName());
-					if(null != timezone.getTimeZoneId() && null != reqInterview.getId() && null != reqInterview.getStartTime()){
-						String currentTimeStr = Constants.TZ_DF.format(reqInterview.getStartTime());  
-						String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE ,timezone.getTimeZoneId(), currentTimeStr);
-						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-						currentDateInTimezone = eventstartTimrFroDashBoard.format(converteDate);
-						reqInterview.setInterviewStartDateTimeStr(currentDateInTimezone);
-					}
-					
-					
-					if(null  != timezone.getTimeZoneId() && null != reqInterview.getId() && null != reqInterview.getEndTime()){
-						String currentTimeStr = Constants.TZ_DF.format(reqInterview.getEndTime());  
-						String currentDateInTimezone= CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE  ,timezone.getTimeZoneId(), currentTimeStr);
-						Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
-						String eventstartTimrFroDashBoardStr = eventstartTimrFroDashBoard.format(converteDate);
-						reqInterview.setInterviewEndtDateTimeStr(eventstartTimrFroDashBoardStr);
-					}
-					else{
-						reqInterview.setInterviewEndtDateTimeStr("");
-					}
-					/*reqInterview.setInterviewStartDateTimeStr(reqInterview.getStartTime().toString());
-					reqInterview.setInterviewEndtDateTimeStr(reqInterview.getEndTime().toString());*/
-					if(reqInterview.getInterviewType()!=null){
-						reqInterview.setInterviewType(reqInterview.getInterviewType());
-					}
-					else{
-						reqInterview.setInterviewType("--");
-					}
-					reqInterview.setRequirementTitle(reqInterview.getSubmissionId().getRequirement().getJobTitle());
-				}
-			}
-			reqInterviwer.setApplicantsList(requirementInterview);
-				return  commonUtil.toJSON(reqInterviwer);
-			}
-
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}	
+			return response;
+		}
 }

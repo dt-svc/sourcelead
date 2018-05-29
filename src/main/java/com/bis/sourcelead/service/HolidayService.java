@@ -1,11 +1,12 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.entity.Holiday;
-import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
 
 public interface HolidayService {
 	
@@ -20,6 +21,12 @@ public interface HolidayService {
 
 	public List<Holiday> validateHoliDayDates(String fromDate, String toDate, OrgLocations orgLocations) throws Exception;
 
-	
+	public List<Holiday> getHolidaybyLocationIdAndFromdate(Date fromDate,Date endDate,Long orgLocationId)throws Exception;
+
+	public Holiday getHolidaysByUUID(String holidayUUID);
+
+	public List<ProjectTasks> getHolidayProjectTaskByorgLocationIdAndHolidayId(Long orglocationId, Long holidayId);
+
+	public List<Holiday> getAllHoliday();
 
 }

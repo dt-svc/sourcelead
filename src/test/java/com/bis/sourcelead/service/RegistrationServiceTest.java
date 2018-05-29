@@ -50,7 +50,7 @@ public class RegistrationServiceTest {
 		registration.setWebsite("www.tesla.com");
 		User user = new User();
 		user.setId(3L);
-		registrationService.addRegistration(registration, user, " ", " ",1l,null);
+		registrationService.addRegistration(registration, user,1l,null);
 		logger.info("registration added successfully");
 		
 	}
@@ -88,7 +88,7 @@ public class RegistrationServiceTest {
 		user.setPassword("PWD123");
         File file = new File("C:\\testing.txt");
         byte[] bFile = new byte[(int) file.length()];
-		user.setDocFile(bFile);
+//		user.setDocFile(bFile);
 		Set<PasswordResets> passwordResets = new HashSet<PasswordResets>();
 		PasswordResets ps = new PasswordResets();
 		ps.setUser(user);

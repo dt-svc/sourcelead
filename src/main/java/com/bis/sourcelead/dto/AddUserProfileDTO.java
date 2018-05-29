@@ -4,10 +4,13 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class AddUserProfileDTO{
 	
 	private String id;
 	
+	@Required(desc="firstName")
 	private String firstName;
 	
 	private String staticPath;
@@ -39,6 +42,8 @@ public class AddUserProfileDTO{
 	private String designation;
 	private Long userId;
 	private String orgLocationId;
+	
+	private String loginSecurity;
 
 	public String getId() {
 		return id;
@@ -186,7 +191,14 @@ public class AddUserProfileDTO{
 		this.orgLocationId = orgLocationId;
 	}
 
-	
-	
+	public String getLoginSecurity()
+	{
+		return loginSecurity;
+	}
+
+	public void setLoginSecurity(String loginSecurity)
+	{
+		this.loginSecurity = loginSecurity;
+	}
 	
 }

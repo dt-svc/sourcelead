@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -7,12 +8,17 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectAssignTask;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.User;
 
 public interface ProjectTasksService {
 	
@@ -25,6 +31,8 @@ public interface ProjectTasksService {
     public ProjectTasks getTasksId(String id)throws Exception;
     
     public ProjectTasks getProjectTasksByUUID(String taskUUD)throws Exception;
+    
+    public ProjectTasks getProjectTasksByProjectIdAndProjectIdAndTaskName(Long projectId,String taskName)throws Exception;
     
     public Boolean deleteTask(String id)throws Exception;
     
@@ -60,17 +68,36 @@ public interface ProjectTasksService {
 	
 	public void updateBillingType(String billing, String taskId, Long userId)throws Exception;
 	
+	public void updateDueDate(String dueDate, String taskId, Long userId)throws Exception;
+	
+	public void updateEstimatedTime(String estimatedTime, String taskId, Long userId)throws Exception;
+	
+	public void updateOwner(Long ownerId, String taskId, Long userId)throws Exception;
+	
+	public void updateEpic(Long epicId, String taskId, Long userId)throws Exception;
+	
+	public void updateUserStory(Long userStoryId, String taskId, Long userId)throws Exception;
+	
 	public String saveProjectTasksDTOByProjectId(Long projectId, ProjectTasksDTO projectTasksDTO, Long userId) throws Exception;
 	
 	public Long getProjectTasksGeneratedIdByProjectId(Long projectId,Integer generatedIdCount) throws Exception;
 	
 	Integer getProjectTasksListCountByProjectIdAndStatus(Long projectId,String  status) throws Exception;
 	
-	public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC)throws Exception;
+	public List<ProjectTasks> getOverdueTaskListByProjectId(Long projectId, Date startDateUTC, Date endDateUTC)throws Exception;
 	
-	 public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId,String filterDate, Date startDateUTC, Date endDateUTC)throws Exception;
+	 public List<ProjectTasks> getAllTasksByProjectIdAndFilter(Long projectId, Date startDateUTC, Date endDateUTC)throws Exception;
 	 
-	 ResponseList<ProjectTasksDTO> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO,Long projectId,String taskType,String taskStatus,String userRole,String assignedMembers)throws Exception;
+	 ResponseList<ProjectTasks> getAllProjectTasksByProjectIdAndTaskTypeAndTaskStatus(ProjectTasksDTO projectTasksDTO,Long projectId,String taskType,String taskStatus,String userRole,String assignedMembers)throws Exception;
 
-	 
+	 public void SendMailtoAssigntoMembersaboutAddingTask(ProjectAssignTask projectAssignTask, ProjectTasksDTO projectTasksDTO, ProjectTasks tasks, OrgLocations loginOrgLocation,User loginUser) throws Exception;
+
+	public Sheet getTaskExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, ResponseList<ProjectTasks> taskList, OrgLocations orgLocations) throws Exception;
+
+	public File getTaskPdfFile(ResponseList<ProjectTasks> taskList, OrgLocations orgLocations) throws Exception;
+
+	public ProjectTasks getProjectTaskByleaveTypeId(long leaveTypeId, Long projectId);
+	
+	List<ProjectTasks> getTasksListByLeaveType(Long levaTypeId)throws Exception;
+ 	 
 }

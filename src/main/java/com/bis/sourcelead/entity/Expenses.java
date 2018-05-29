@@ -37,8 +37,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ibm.icu.math.BigDecimal;
 
 @Entity
-@Table(name = "EXPENSES", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "Expenses")
+@Table(name = "EXPENSES")
 public class Expenses implements Serializable {
 private static final long serialVersionUID = 1L;
 
@@ -47,14 +46,14 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="LOCATION_ID", nullable=false ) 
 	@JsonBackReference
     private OrgLocations orgLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
 	@JsonBackReference
 	private ProjectMembers projectMembers;
@@ -112,25 +111,25 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "BILLING_PAYABLE_STATUS")
 	private String billingPayableStatus;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", nullable=false)
 	@JsonBackReference
 	private Projects projects;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false) 
 	@JsonBackReference
     private MasterCandidate masterCandidateId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy="expensesId")
 	@JsonBackReference
 //  @Fetch(FetchMode.SELECT)
     private Set<ExpensesEntries> expensesEntries;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy="expenseId")
 	@JsonBackReference
    // @Fetch(FetchMode.SELECT)
@@ -183,6 +182,18 @@ private static final long serialVersionUID = 1L;
 	@Transient
 	@JsonProperty
 	private String expenseLocationCode;
+	
+	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+	
+	@Transient
+	@JsonProperty
+	private String orgRelationId;
+	
+	@Transient
+	@JsonProperty
+	private String expensesRejectedReason;
 	
 	public Long getId() {
 		return id;
@@ -479,8 +490,36 @@ private static final long serialVersionUID = 1L;
 		this.expenseLocationCode = expenseLocationCode;
 	}
 
-	
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
 
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+
+	public String getExpensesRejectedReason() {
+		return expensesRejectedReason;
+	}
+
+	public void setExpensesRejectedReason(String expensesRejectedReason) {
+		this.expensesRejectedReason = expensesRejectedReason;
+	}
+
+	
+	
 
 //	public List<ExpensesEntries> getExpenseEntriesList() {
 //		return expenseEntriesList;

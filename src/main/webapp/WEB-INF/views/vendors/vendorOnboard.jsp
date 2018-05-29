@@ -3,6 +3,15 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
+<style>
+.disabledLink
+{
+	color: #333;
+	text-decoration : none;
+	pointer-events: none;
+}
+</style>
+
 
 <section class="content-wraper">
 	<section class="content-header clearfix">
@@ -10,7 +19,7 @@
 			<h2>Onboarding</h2>
 		</div>
 		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendor On-board
+			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendor On-board
 		</div>
 	</section>
 	
@@ -20,8 +29,8 @@
 		<div id="popup"></div>
 		<ul class="newPrTabsMenu">
 				<li class="current" onclick="getVendorOnboardDetails();"><a href="#tab-a" data-toggle="tab">Details</a></li>
-				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments">Documents</a></li>
-				<li><a href="#tab-c" data-toggle="tab" id="vendorTasks">Tasks</a></li>
+				<li><a href="#tab-b" data-toggle="tab" id="vendorDocuments" onclick="getOnboardDocuments();">Documents</a></li>
+				<li><a href="#tab-c" data-toggle="tab" id="vendorTasks" onclick="getVendorOnboardTasksList();">Tasks</a></li>
 				<div class="clearfix mb"></div>
 			  </ul>
 			  <div class="clearfix"></div>
@@ -39,22 +48,22 @@
 								<div class="col-xs-12 col-sm-9 col-md-9">
 									<div class="form-group">
 											<label class="col-md-4">Client Name :</label>
-											<p class="tbldata-dotdot-me" id="clientName"></p>
+											<div class="pull-left" id="clientName"></div>
 									</div>
 									
 									<div class="form-group">
 										<label class="col-md-4">Website :</label>
-										<p class="tbldata-dotdot-me" id="website"></p>
+										<div class="pull-left"  id="website"></div>
 								    </div>
 								    
 								    <div class="form-group">
 										<label class="col-md-4">Location :</label>
-										<p class="tbldata-dotdot-me" id="location"></p>
+										<div class="pull-left" id="location"></div>
 								    </div>
 								    
 								    <div class="form-group">
 										<label class="col-md-4">Address :</label>
-										<p class="tbldata-dotdot-me" id="address"></p>
+										<div class="pull-left" id="address"></div>
 								    </div>
 								
 								</div>
@@ -73,17 +82,17 @@
 								<div class="col-xs-12 col-sm-9 col-md-9">
 									<div class="form-group">
 											<label class="col-md-4">Contact Name :</label>
-											<p class="tbldata-dotdot-me" id="clientContactName"></p>
+											<div class="pull-left" id="clientContactName"></div>
 									</div>
 									
 									<div class="form-group">
 										<label class="col-md-4">Email :</label>
-										<p class="tbldata-dotdot-me" id="clientContactEmail"></p>
+										<div class="pull-left" id="clientContactEmail"></div>
 								    </div>
 								    
 								    <div class="form-group">
 										<label class="col-md-4">Phone :</label>
-										<p class="tbldata-dotdot-me" id="clientContactPhone"></p>
+										<div class="pull-left" id="clientContactPhone"></div>
 								    </div>
 								
 								</div>
@@ -102,17 +111,17 @@
 								<div class="col-xs-12 col-sm-9 col-md-9">
 									<div class="form-group">
 											<label class="col-md-4">Vendor Name :</label>
-											<p class="tbldata-dotdot-me" id="vendorName"></p>
+											<div class="pull-left" id="vendorName"></div>
 									</div>
 									
 									<div class="form-group">
 										<label class="col-md-4">Website :</label>
-										<p class="tbldata-dotdot-me" id="vendorWebsite"></p>
+										<div class="pull-left" id="vendorWebsite"></div>
 								    </div>
 								    
 								    <div class="form-group">
 										<label class="col-md-4">Location :</label>
-										<p class="tbldata-dotdot-me" id="vendorLocation"></p>
+										<div class="pull-left" id="vendorLocation"></div>
 								    </div>
 								    
 								    <!-- <div class="form-group">
@@ -149,7 +158,7 @@
 								
 									<div class="form-group">
 										<label class="col-md-3">Payment Term</label>
-										<div class="col-md-9">
+										<div class="col-md-9 dropdown-select">
 											<select class="form-control" id="paymentTermId"
 												name="paymentTerm">
 												<option selected="selected" disabled value="">Select
@@ -166,7 +175,7 @@
 									
 									<div class="form-group">
 										<label class="col-md-3">Tier</label>
-										<div class="col-md-9">
+										<div class="col-md-9 dropdown-select">
 											<select class="form-control" id="tier" name="tier" data-validation="required" field-name="Tier">
 												<option value="Tier-1">Tier-1</option>
 												<option value="Tier-2">Tier-2</option>
@@ -179,7 +188,7 @@
 									
 									<div class="form-group">
 										<label class="col-md-3">Currency</label>
-										<div class="col-md-9">
+										<div class="col-md-9 dropdown-select">
 											<select class="form-control" id="currency" name="currency">
 											    <option value="">--Select Currency--</option>
 												<option value="INR" ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
@@ -360,10 +369,7 @@
 			vendorTasks.href = "#";
 			vendorTasks.className = "disabledLink";
 		}
-		
-		
 		getVendorOnboardDetails();
-	
 		
 		$("#tab-a").show()
 	    $(".newPrTabsMenu a").click(function(event) {
@@ -374,14 +380,14 @@
 	        $(".newPrTabs_inn").not(tab).css("display", "none");
 	        $(tab).fadeIn();
 	    });
+		
 	});
 </script>
 
 <script>
 function getVendorOnboardDetails(){
-	
 	var onboardSubmittedStatus = '${onboardSubmittedStatus}';
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	if(onboardSubmittedStatus == 'N'){
 		var vendorOnboardId = '${vendorOnboardId}';
 		var notificationUUID = '${notificationUUID}';
@@ -389,7 +395,7 @@ function getVendorOnboardDetails(){
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getVendorOnboardDetailsByVendorOnboardId?${_csrf.parameterName}=${_csrf.token}&vendorOnboardId="+vendorOnboardId+"&notificationUUID="+notificationUUID, 
 		        success: function(json) {
-		        	$("#clientName").html("<p title='"+json.clientName+"'>"+json.clientName+"</p>");
+		        	$("#clientName").html("<p title='"+json.clientName+"' class='tbldata-dotdot-me'>"+json.clientName+"</p>");
 		        	if(json.clientWebsite != null && json.clientWebsite != 'undefined' && json.clientWebsite != ''){
 		        		$("#website").html("<p title='"+json.clientWebsite+"'>"+json.clientWebsite+"</p>");
 		        	}else{
@@ -397,32 +403,37 @@ function getVendorOnboardDetails(){
 		        	}
 		        	
 		        	if(json.clientLocation != null && json.clientLocation != 'undefined' && json.clientLocation != ''){
-		        		$("#location").html("<p title='"+json.clientLocation+"'>"+json.clientLocation+"</p>");
+		        		$("#location").html("<p title='"+json.clientLocation+"' class='tbldata-dotdot-me'>"+json.clientLocation+"</p>");
 		        	}else{
 		        		$("#location").html("-------");
 		        	}
 		        
 		        	
 		        	if(json.clientAddress != null && json.clientAddress != 'undefined' && json.clientAddress != ''){
-		        		$("#address").html("<p title='"+json.clientAddress+"'>"+json.clientAddress+"</p>");
+		        		$("#address").html("<p title='"+json.clientAddress+"' class='tbldata-dotdot-me'>"+json.clientAddress+"</p>");
 		        	}else{
 		        		$("#address").html("-------");
 		        	}
 		        	
 		        	$("#vendorName").html("<p title='"+json.vendorName+"'>"+json.vendorName+"</p>");
 		        	if(json.vendorWebsite != null){
-		        		$("#vendorWebsite").html("<p title='"+json.vendorWebsite+"'>"+json.vendorWebsite+"</p>");
+		        		$("#vendorWebsite").html("<p title='"+json.vendorWebsite+"' class='tbldata-dotdot-me'>"+json.vendorWebsite+"</p>");
 		        	}else{
 		        		$("#vendorWebsite").html("-------");
 		        	}
 		        	
-		        	$("#vendorLocation").html("<p title='"+json.vendorLocation+"'>"+json.vendorLocation+"</p>");
-		        	
+		        	if(json.vendorLocation != null && json.vendorLocation != "" && json.vendorLocation != "undefined"){
+		        		$("#vendorLocation").html("<p title='"+json.vendorLocation+"' class='tbldata-dotdot-me'>"+json.vendorLocation+"</p>");
+		        	}else{
 
-		        	$("#clientContactName").html("<p title='"+json.clientContactName+"'>"+json.clientContactName+"</p>");
-		        	$("#clientContactEmail").html("<p title='"+json.clientContactEmail+"'>"+json.clientContactEmail+"</p>");
+		        		$("#vendorLocation").html("<p title='"+json.vendorLocation+"'>--</p>");
+
+		        	}
+		        	
+		        	$("#clientContactName").html("<p title='"+json.clientContactName+"' class='tbldata-dotdot-me'>"+json.clientContactName+"</p>");
+		        	$("#clientContactEmail").html("<p title='"+json.clientContactEmail+"' class='tbldata-dotdot-me'>"+json.clientContactEmail+"</p>");
 		        	if(json.clientContactPhone != null){
-		        		$("#clientContactPhone").html("<p title='"+json.clientContactPhone+"'>"+json.clientContactPhone+"</p>");
+		        		$("#clientContactPhone").html("<p title='"+json.clientContactPhone+"' class='tbldata-dotdot-me'>"+json.clientContactPhone+"</p>");
 		        	}else{
 		        		$("#clientContactPhone").html("-------");
 		        	}
@@ -514,18 +525,18 @@ function saveVendorOnboard(){
 	if ($('#vendor_onboard_form').validate(false, validationSettings)) {
 		var vendorOnboardId = '${vendorOnboardId}';
 	  	var formData = $($('#vendor_onboard_form')[0]).serialize();
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.post(sourceleadUrl+"/acceptAndSaveVendorOnboard?"+tokenParamName+"="+tokenValue+"&vendorOnboardId="+vendorOnboardId, formData, function(data) {
 					 $("#loading").removeAttr("style");
 					 var vendorDocuments = document.getElementById("vendorDocuments");
 					 $("#vendorDocuments").removeClass("disabledLink");
 					 vendorDocuments.href="#tab-b"; 
 					 
-					 vendorDocuments.addEventListener("click", function() {
+					/*  vendorDocuments.addEventListener("click", function() {
 						 getOnboardDocuments();
-					});
+					}); */
 					 
-					 vendorDocuments.click();
+					 $("#vendorDocuments").click();
 					 
 				}); 
 		return true;

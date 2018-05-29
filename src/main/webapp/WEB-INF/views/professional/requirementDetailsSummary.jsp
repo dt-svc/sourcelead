@@ -13,27 +13,28 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead :: Job Summary</title>
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
-<script src="resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
+<script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 </head>
  
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
-<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
 
 
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
+var sourceleadLoginUrl = '${sourceleadLoginUrl}';
 </script>
 
 <style type="text/css">
@@ -136,7 +137,7 @@ window.onload = function () {
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/SourceLead-logo.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/SourceLead-logo.png" alt="Source Lead"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -158,7 +159,7 @@ window.onload = function () {
 <script>
 function publicRequirementProfile(requirementUUID){
 	
-	
+	var sourceleadLoginUrl = '${sourceleadLoginUrl}';
 	var contactUUID = '${contactUUID}';
 	var requirementUUID = '${requirementUUID}';
 	var referUUID = '${referUUID}';
@@ -270,7 +271,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'          <div class="col-md-3">';
 				 result = result +'         <div class="openPostBtns">';
 				 
-				 result = result +'<a href="'+sourceleadUrl+'" class="refer">Refer</a>';
+				 result = result +'<a href="'+sourceleadLoginUrl+'" class="refer">Refer</a>';
 			     result = result +'<a href="'+sourceleadUrl+"/register?contactUUID="+contactUUID+'&requirementUUID='+requirementUUID+'&referUUID='+referUUID+'" class="jobApply">Apply</a>'; 
 				
 				 result = result +'          </div>';
@@ -317,7 +318,7 @@ function publicRequirementProfile(requirementUUID){
 </script>
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 <jsp:include page="../socialinviterscripts.jsp" />

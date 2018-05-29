@@ -1,7 +1,10 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+
+import com.bis.sourcelead.annotations.Required;
 
 public class ProjectMembersDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -27,19 +30,25 @@ public class ProjectMembersDTO implements Serializable {
 	
 	private String payRateCurrency;
 	
+	@Required(desc="payRate")
 	private Double payRate;
 	
 	private String payRateRateType;
 	
 	private String billRateCurrency;
 	
+	@Required(desc="billRate")
 	private Double billRate;
 	
 	private String billRateRateType;
 	
 	private String memberStartDate;
-	
+
 	private String memberEndDate;
+	
+	private String billRateEstimatedDate;
+	
+	private String payRateEstimatedDate;
 	
 	private Double estHours;
 	
@@ -47,7 +56,11 @@ public class ProjectMembersDTO implements Serializable {
 	
 	private Long projectId;
 	
+	private String validateRow;
+	
 	List<ExpensesCategoryListDTO> expenseCategoryList;
+	
+	private String orgRelationUUID;
 	
 	
 
@@ -229,6 +242,39 @@ public class ProjectMembersDTO implements Serializable {
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
 	}
-	
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getBillRateEstimatedDate() {
+		return billRateEstimatedDate;
+	}
+
+	public void setBillRateEstimatedDate(String billRateEstimatedDate) {
+		this.billRateEstimatedDate = billRateEstimatedDate;
+	}
+
+	public String getPayRateEstimatedDate() {
+		return payRateEstimatedDate;
+	}
+
+	public void setPayRateEstimatedDate(String payRateEstimatedDate) {
+		this.payRateEstimatedDate = payRateEstimatedDate;
+	}
+
+	public String getValidateRow() {
+		return validateRow;
+	}
+
+	public void setValidateRow(String validateRow) {
+		this.validateRow = validateRow;
+	}
 	
 }

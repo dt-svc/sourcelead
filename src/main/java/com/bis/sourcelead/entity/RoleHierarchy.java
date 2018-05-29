@@ -21,8 +21,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "ROLE_HIERARCHY", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="roleHierarchy")
+@Table(name = "ROLE_HIERARCHY")
 public class RoleHierarchy implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -38,8 +37,8 @@ public class RoleHierarchy implements Serializable{
 	@Column(name = "HIERARCHY_LEVEL")
 	private Integer hierarchyLevel;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocations;
 	

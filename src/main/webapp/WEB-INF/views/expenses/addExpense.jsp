@@ -16,7 +16,7 @@
 
  <script type="text/javascript">
 		window.onload = function () {
-			getClientBasedOnSelectedProject();
+			//getClientBasedOnSelectedProject();
 			
 			var entrySize = '${expenses.expenseEntry.size()}';
 			if(entrySize>0){
@@ -26,6 +26,13 @@
 				$('#maxRecCount').val('1');
 			}
 		 };
+</script>
+ <script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
 </script>
 <!-- View Content Area Starts-->
 <c:if test = "${type == 'view'}">
@@ -42,10 +49,10 @@
     
 	 <c:choose>
 	    <c:when test="${expenses.id !='' && expenses.id != null}">
-	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view"'/>">View Expenses</a> &raquo; Edit Expense</div> 
+	        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view"'/>">View Expenses</a> &raquo; Edit Expense</div> 
 	    </c:when>    
 	    <c:otherwise>
-	       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expenses'/>">My Expenses</a> &raquo; Add Expense</div> 
+	       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/expenses'/>">My Expenses</a> &raquo; Add Expense</div> 
 	    </c:otherwise>
 	</c:choose>
     
@@ -59,7 +66,7 @@
 	             <div class="form-group">
 					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-9" id="errProject">
-	                   <c:if test="${submissionStatus != 'SUBMITTED'}">
+	                   <c:if test="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED'}">
 						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
@@ -69,7 +76,7 @@
 							</c:forEach>
 						</select>
 						</c:if>
-						<c:if test="${submissionStatus == 'SUBMITTED'}">
+						<c:if test="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED'}">
 						<select class="chosen-select form-control" onchange="flushDetailsExpenses();getClientBasedOnSelectedProject();removeErrProject();" id="projectMemberId" name="projectMemberId" field-name="Project" data-validation="required" disabled="disabled">
 							<c:if test="${fn:length(expEntry.projectMembersList) gt 0}">
 								<option value="">Select Project</option>
@@ -84,9 +91,9 @@
 				</div>
 
 				 <div class="form-group">
-                  <label class="col-md-3">Purpose</label>
+                  <label class="col-md-3">Purpose <i class='fa fa-info-circle' title='The expenditure particulars'></i></label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" id="expensePurposeId" autocomplete="off" name="expensePurpose" value="${expenses.expensePurpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" autocomplete="off"   name="expensePurpose" value="${expenses.expensePurpose}" id="expensePurposeId" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
                 </div> 
 					
@@ -104,15 +111,23 @@
 	                  </div>
 				</div>               
 	            <div class="form-group">
-	              <label class="col-md-3">Start & End date<span class="text-danger">&nbsp;*</span></label>
+	              <label class="col-md-3">Start & End date<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='Expenditure particulars should be added between the specified duration only'></i></label>
 	              <div class="col-md-9" >
 						<div class="row">
+						  
 						  <div class="col-lg-6 evDaPa" id="dateDiv">
+						    <div class="input-group errorInptgroup">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+						      <span class="input-group-addon" onClick="clearStartDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						  </div>
 						  </div>
 						  <div class="col-lg-6" id="errEnd">
+						  <div class="input-group errorInptgroup">
 							  <input type="text" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
-						  </div> 		  
+						      <span class="input-group-addon" onClick="clearEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+						  </div> 
+						  </div>
+						  		  
 						</div>
 	              </div>
 	            </div>
@@ -150,16 +165,38 @@
 			<tbody>
 			     <c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
-			           <td><div id="categoryDateDiv${(2*(entryCount.count))-1}">${entry.dateOccurred}</div></td>
-			           <td><div id="categoryTypeDiv${(2*(entryCount.count))-1}" title="${entry.categoryName}">${entry.categoryName}</div></td>
-			           <td><div id="entryDesDiv${(2*(entryCount.count))-1}" class="tbldata-dotdot-me" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
-			           <td><div id="expenseAmountDiv${(2*(entryCount.count))-1}">${entry.categoryAmount}</div></td>
-			           <td><div id="expenseRateType${(2*(entryCount.count))-1}">${entry.categoryAmountType}</div></td>
-			           <td><div id="paymentModeDiv${(2*(entryCount.count))-1}">${entry.paymentMode}</div></td>
-			           <td><div id="paidByDiv${(2*(entryCount.count))-1}">${entry.paidBy}</div></td>
+			           <td>
+			                <input type='hidden' id="categoryDateDivInput${(2*(entryCount.count))-1}" value="${entry.dateOccurred}"/>
+			                <div id="categoryDateDiv${(2*(entryCount.count))-1}"> ${entry.dateOccurred}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="categoryTypeDivInput${(2*(entryCount.count))-1}" value="${entry.categoryTypeId},${entry.allowedAmount}"/>
+			               <div id="categoryTypeDiv${(2*(entryCount.count))-1}" title="${entry.categoryName}">${entry.categoryName}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="receiptIssuedByDivInput${(2*(entryCount.count))-1}" value="${entry.receiptIssuedBy}"/>
+			               <input type='hidden' id="entryDesDivInput${(2*(entryCount.count))-1}" value="${entry.entryDescription}"/>
+			               <div id="entryDesDiv${(2*(entryCount.count))-1}" class="tbldata-dotdot-me" title="${entry.entryDescription}">${entry.entryDescription}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="expenseAmountDivInput${(2*(entryCount.count))-1}" value="${entry.categoryAmount}"/>
+			               <div id="expenseAmountDiv${(2*(entryCount.count))-1}">${entry.categoryAmount}</div>
+			          </td>
+			          <td>
+			              <input type='hidden' id="expenseRateTypeDivInput${(2*(entryCount.count))-1}" value="${entry.categoryAmountType}"/>
+			              <div id="expenseRateTypeDiv${(2*(entryCount.count))-1}">${entry.categoryAmountType}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="paymentModeDivInput${(2*(entryCount.count))-1}" value="${entry.paymentMode}"/>
+			               <div id="paymentModeDiv${(2*(entryCount.count))-1}">${entry.paymentMode}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="paidByDivInput${(2*(entryCount.count))-1}" value="${entry.paidBy}"/>
+			               <div id="paidByDiv${(2*(entryCount.count))-1}">${entry.paidBy}</div>
+			          </td>
 			           <td><div id="hideAndShowDetailsDiv${(2*(entryCount.count))-1}">
 			                <i class="fa fa-pencil-square-o AddRow" title="Edit Expenses"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
-			                <i class="glyphicon glyphicon-trash Cred" title="Delete Expenses"  onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
+		                <i class="glyphicon glyphicon-trash Cred" title="Delete Expenses"  onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
 			              </div>
 			          </td>
 			        </tr>
@@ -227,7 +264,7 @@
 		                 
 						<div class="col-md-12 minHeight mb">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
-							<textarea rows="3"  id="entryDes${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpacesMyExp(${(2*(entryCount.count))-1});">${entry.entryDescription}</textarea>
+							<textarea rows="3"  id="entryDes${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_length length1-5000" onblur="removeWhiteSpacesMyExp(${(2*(entryCount.count))-1});">${entry.entryDescription}</textarea>
 						</div>		
 		                    <div id='attachmentSection' class='col-md-4 minHeight'>
 		                   <div class="uploadFile timesheet_week_comm edit-Expense-upload">
@@ -241,9 +278,9 @@
 			                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' value='N'/>
 			                             <a class='downicon' href='${entryDoc.fileURL}' download>
 			                                 <i class='glyphicon glyphicon-save'></i>
-								             <input type='button' value='${entryDoc.fileName}'/>
-								        </a>
-								        <input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${(2*(entryCount.count))-1});deleteAttchment(${entryDoc.fileDbId})" />
+								            <input type='button' value='${entryDoc.fileName}'/>
+							        </a>
+						        <input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${(2*(entryCount.count))-1});deleteAttchment(${entryDoc.fileDbId})" />
 			                         </strong>
 			                         </c:if>
 			                       </c:forEach>
@@ -262,7 +299,7 @@
 						      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 							      <div class="pull-right  mr mt10">
 							        <input type="button" value="Update" id="addExpenseCategoryButton${entryCount.count}" class="btn btn-primary ml" onclick="addExpenseCategory(${(2*(entryCount.count))-1});">
-							        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
+			        <input type="button" id="cancelExpenseCategoryButton${entryCount.count}" value="Cancel" class="btn btn-default ml" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Cancel');">
 							      </div>
 						      </div>
 							 <div class="clearfix" style="position: static;"></div>
@@ -274,12 +311,17 @@
 	</table>
 </div>
 <div class="form-footer clearfix mt">
-		  <div class="col-lg-12">
+		   <div class="col-lg-12">
 			<div class="pull-right">
-			  <input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
-			  <input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
-			 <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addExpense?expenseId=${expenses.id}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
-			</div>
+			<input type="button" value="Save" id ="draftForApprovalExpensesId" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('draft');">
+			<input type="button" id ="submitForApprovalExpensesId"value="Submit for Approval" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('submitted');">
+			<c:if test ="${!empty expenses.expenseAutoId}">
+			  <input type="button" value="Cancel" id ="cancelForApprovalExpensesId"  class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
+	        </c:if>
+			<c:if test ="${empty expenses.expenseAutoId}">
+			  <input type="button" value="Cancel" id="cancelForApprovalExpensesId" class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/expenses'/>' "  >
+			</c:if>
+		   </div>
 		  </div>
 		</div>
                 
@@ -290,12 +332,18 @@
   </section>
 </c:if>
 
-
+<script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 <script type="text/javascript">
 function removeWhiteSpacesMyExp(rowCount){
-	var el = document.getElementsByName("entryDes"+rowCount)[0];
-	var val = el.value.replace(/(^\s*)|(\s*$)/gi,"")
-	$("#entryDes"+rowCount).val(val);
+	 var el = $("#entryDes"+rowCount).val();
+	 $("#entryDes"+rowCount).val(removeEmptyLines(el));
+	
 }
 </script>
 
@@ -352,7 +400,13 @@ function removeWhiteSpacesMyExp(rowCount){
 	      		formData.append("json",jsonData); */
 				var form = $('#add_expenses_form')[0];
 	      		var formData = new FormData(form); 
-				$( "#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
+	      		if(status == 'submitted'){
+					$("#submitForApprovalExpensesId" ).addClass('button').val('Processing..');
+	      		}
+				if(status == 'draft'){
+					$("#draftForApprovalExpensesId" ).addClass('button').val('Processing..');
+				}
+				
 	     		$.ajax({
 	       	        type : "POST",
 	        	    data: formData,
@@ -468,7 +522,7 @@ function expensesDateCheck(){
 
 <script>
 function withdrawMyExpense(id){
-	$("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	$("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	      type : "POST",
    	       url: sourceleadUrl+"/withDrawExpense?"+tokenParamName+"="+tokenValue+"&expenseId="+'${expenses.id}',		
@@ -532,7 +586,6 @@ if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
             if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
                 event.preventDefault();
         });
-    });
 </script>
 
 <script>
@@ -569,5 +622,23 @@ function flushDetailsExpenses(){
 	} 
 }
 </script>
-
+ <!-- <script>
+function clearProjectStartDate(){
+	$("#projectStartDateExpensesId").val("");
+	};
+function clearProjectEndDate(){
+		$("#projectEndDateExpensesId").val("");
+		};	
+</script>
+ -->
+ 
+ <script>
+function clearStartDate(){
+	$("#startDate").val("");
+	};
+	
+function clearEndDate(){
+	$("#endDate").val("");
+	};
+</script>
 <jsp:include page="../masterFooter.jsp" />

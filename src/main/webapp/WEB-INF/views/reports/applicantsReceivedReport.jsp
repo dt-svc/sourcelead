@@ -125,37 +125,7 @@ function requirementReportPagination(){
 }
 
 </script>
-<script>
-	$(function() {
-		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatAppreports = getJSDateFormat(locationDate);
-		$('#ExportStartDate').datepicker({
-			changeMonth: true,
-			changeYear: true, 
-			dateFormat : finalDateFormatAppreports,
-			onSelect : function(selected) {
-				 var dt = $(this).datepicker('getDate', '+1d');
-		            dt.setDate(dt.getDate() + 1);
-				$("#ExportEndDate").datepicker("option", "minDate", dt);
-				addValidClass();
-			}
-		
-		});
-		
-		$('#ExportEndDate').datepicker({
-			changeMonth: true,
-			changeYear: true, 
-			dateFormat : finalDateFormatAppreports,
-			onSelect : function(selected) {
-				 var dt = $(this).datepicker('getDate', '-1d');
-		            dt.setDate(dt.getDate() - 1);
-				$("#ExportStartDate").datepicker("option", "maxDate", dt);
-				addValidClass();
-			}
-		});
-		
-	});
-</script>	
+ 
 <script>
 function toDate(selector) {
     var from = $(selector).val().split("-");
@@ -165,10 +135,10 @@ function toDate(selector) {
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2 class="pull-left">Applicants Reports</h2>
+      <h2 class="pull-left">Applicants Received Reports</h2>
 		
     </div>
-        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants Received Reports </div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Applicants Received Reports </div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -241,7 +211,7 @@ function toDate(selector) {
 				<span><i class="glyphicon glyphicon-send"></i></span><b id="submitToClientCount">0</b>
 			</li>
 			<li title="Interviews" id="interviewli" class="colorTwo">
-				<span><img src="resources/images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
+				<span><img src="/resources/images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
 			</li>
 			<li title="Offers" id="offermadeli">
 				<span><i class="fa fa-tags"></i></span><b id="offerCount">0</b>
@@ -280,9 +250,37 @@ function custDates(){
 	var reportType = $("#reportTypeId").val();
 	if(reportType=="custom"){
 	    $(".cusShow").show();
+	    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatAppreports = getJSDateFormat(locationDate);
+		$('#ExportStartDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : finalDateFormatAppreports,
+			onSelect : function(selected) {
+				 var dt = $(this).datepicker('getDate', '+1d');
+		            dt.setDate(dt.getDate() + 1);
+				$("#ExportEndDate").datepicker("option", "minDate", dt);
+				addValidClass();
+			}
+		
+		});
+		
+		$('#ExportEndDate').datepicker({
+			changeMonth: true,
+			changeYear: true, 
+			dateFormat : finalDateFormatAppreports,
+			onSelect : function(selected) {
+				 var dt = $(this).datepicker('getDate', '-1d');
+		            dt.setDate(dt.getDate() - 1);
+				$("#ExportStartDate").datepicker("option", "maxDate", dt);
+				addValidClass();
+			}
+		});
 	}
 	if(reportType!="custom"){
 	    $(".cusShow").hide();
+	    $("#ExportStartDate").datepicker("destroy");
+		 $("#ExportEndDate").datepicker("destroy");
 	}
 }
 </script>
@@ -517,11 +515,12 @@ function getDayWiseReports(){
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
 	if(reportType!="custom"){
-		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
          type : "POST",
          url: sourceleadUrl+"/getApplicantReceivedReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
+        	  $("#applicantsLoderDiv").removeAttr("style");
 	        	 prepareReportDataDiv(data);
 	        	 var json = JSON.parse(data);
 	        	 getAllCounts(json.length,reportType,startDate,endDate);
@@ -589,7 +588,7 @@ function getCustomReports(){
 		$("#reportEndDate").empty().append("End Date is Required") ; 
 	}
 	else{
-		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
 	         /*  url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, */  
@@ -676,7 +675,7 @@ var chart = AmCharts.makeChart("chartdiv", {
 
 
 <!-- <script src="resources/reports/highcharts.js"></script>
-<script src="resources/reports/exporting.js"></script>  -->
+<script src="/resources/reports/exporting.js"></script>  -->
   
 	<script>
 	function applicantReceivedReportLineChart(chartData,applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData,requestSentData){

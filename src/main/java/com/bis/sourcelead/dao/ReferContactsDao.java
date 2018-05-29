@@ -21,4 +21,13 @@ public interface ReferContactsDao {
 	List<ReferContacts> getUserContactsListByUserIdAndRequirementId(Long userId,Long requirementId) throws Exception;
 	
 	ReferContacts getReferContactsById(Long id) throws Exception;
+	
+	Boolean validateGoogleEamil(String email, Long loginUserId) throws Exception;
+
+	ReferContacts findByEmail(String recipientMail)throws Exception;
+	
+	ReferContacts getReferContactsByFromUserIdAndToUserId(Long fromUserId, Long toUserId) throws Exception;
+	
+	ReferContacts deleteContactById(ReferContacts referContacts) throws Exception;
+
 }

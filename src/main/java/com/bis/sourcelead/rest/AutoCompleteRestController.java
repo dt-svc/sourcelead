@@ -57,7 +57,7 @@ public class AutoCompleteRestController {
 	@Autowired
 	private CommonUtil commonUtil;
 	
-	@RequestMapping(value = "/clientAutoComplete")
+	@RequestMapping(value = "/app/clientAutoComplete")
     public String clientAutoComplete(HttpServletRequest request) throws Exception {
     	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
     	Collection<OrgRelations> clientsList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId());
@@ -68,7 +68,7 @@ public class AutoCompleteRestController {
     	return resultJson;
 	}
     
-    @RequestMapping(value = "/countryAutoComplete")
+    @RequestMapping(value = {"/app/ws/countryAutoComplete" ,"/app/countryAutoComplete"})
     public String countryAutoComplete() throws Exception {
     	
     	ArrayList<String> countriesList = new ArrayList<>();
@@ -90,7 +90,7 @@ public class AutoCompleteRestController {
         return result;
 	}
     
-    @RequestMapping(value = "/sourceLeadCountryAutoComplete")
+    @RequestMapping(value = "/app/sourceLeadCountryAutoComplete")
     public String sourceLeadCountryAutoComplete() throws Exception {
     	
     	ArrayList<String> countriesList = new ArrayList<>();
@@ -113,7 +113,7 @@ public class AutoCompleteRestController {
 	}
     
     
-    @RequestMapping(value = "/locationAutoComplete")
+    @RequestMapping(value = "/app/locationAutoComplete")
     public String locationAutoComplete(@RequestParam(value="countryName", required=false) String countryName) throws Exception {
     	ArrayList<String> countriesList = new ArrayList<>();
     	List<String> countryList = countriesService.getAllStatesAndCitiesByCountryName(countryName);
@@ -130,7 +130,7 @@ public class AutoCompleteRestController {
         return result;
 	}
     
-    @RequestMapping(value = "/getStatesByCountry")
+    @RequestMapping(value = {"/app/ws/getStatesByCountry" ,"/app/getStatesByCountry"})
     public String getStatesByCountry(@RequestParam(value="countryName", required=false) String countryName) throws Exception {
     	
     	ArrayList<String> statesList = new ArrayList<>();
@@ -153,7 +153,7 @@ public class AutoCompleteRestController {
 	}
     
     
-    @RequestMapping(value = "/getCitiesByStateAndCountry")
+    @RequestMapping(value = {"/app/ws/getCitiesByStateAndCountry", "app/getCitiesByStateAndCountry"})
     public String getCitiesByStateAndCountry(@RequestParam(value="countryName", required=false) String countryName, @RequestParam(value="stateName", required=false) String stateName) throws Exception {
     	
     	ArrayList<String> citiesList = new ArrayList<>();
@@ -170,6 +170,23 @@ public class AutoCompleteRestController {
 		JSONArray mJSONArray = new JSONArray(Arrays.asList(temp));
 		String result = mJSONArray.toString();
         return result;
+	}
+    
+    
+    @RequestMapping(value = {"/app/ws/getCitiesByCountryCode", "app/getCitiesByCountryCode"})
+    public List<String> getCitiesByCountryCode(@RequestParam(value="countryCode", required=false) String countryCode) throws Exception {
+    	
+    	List<String> citiesList = new ArrayList<>();
+    	
+    	List<Webgeocities> cities = webgeocitiesService.getAllCitiesByCountryCode(countryCode);
+    	if(cities != null && !cities.isEmpty())
+    	{
+    		for(Webgeocities city: cities){
+    			citiesList.add(city.getCityName());
+    		}
+    	}
+		
+        return citiesList;
 	}
     
 }

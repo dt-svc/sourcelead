@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
@@ -153,6 +155,8 @@ public interface UserService  {
 	
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 	
+	public User getTabAccessOwnersByOrgLocationIdEmailAndTabId(Long orgLocationsId, String email, Long tabId) throws Exception;
+	
 	/**
 	 * @author Prasad salina
 	 * @param currentApproverId
@@ -180,6 +184,8 @@ public interface UserService  {
 	
 	User getUserByEmailAndUserType(String email,String userType) throws Exception;
 	
+	User getUserByEmail(String email) throws Exception;
+	
 	User getUserByUserName(String userName) throws Exception;
 
 	List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long id, Long valueOf, List<Long> ownersList) throws Exception;
@@ -193,6 +199,19 @@ public interface UserService  {
 	
 	List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId,Long orgLocationId) throws Exception;
 
+	User getUserByVerficationUUID(String token);
+	
+	User getUserByUserCodeAndOrgLocationsId(String userCode, Long orgLocationsId) throws Exception;
+	
+	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception;
+
+	ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO, OrgLocations orgLocation) throws Exception;
+	
+	List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception;
+
+	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
+
+	List<User> getUsersListForSignatoryByOrglocationId(Long id);
 }	
 		
 	

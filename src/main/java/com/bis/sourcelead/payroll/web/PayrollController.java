@@ -45,6 +45,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
  *
  */
 @Controller
+@RequestMapping("/app")
 public class PayrollController {
 	
 	@Value("${sourceleadUrl}")
@@ -105,7 +106,7 @@ public class PayrollController {
 		   ModelAndView model = new ModelAndView();
 		   model.addObject("sourceleadUrl", sourceleadUrl);
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		   List<User> usersList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
+		   List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
 		   usersList.sort((User report1, User report2)-> report1.getFirstName().compareToIgnoreCase(report2.getFirstName()));
 		   
 		   List<WageTaxSummary> wageTaxSummaryList = wageTaxSummaryService.getAllImportedUsers(orgLocations);

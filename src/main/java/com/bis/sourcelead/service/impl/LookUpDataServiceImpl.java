@@ -66,10 +66,27 @@ public class LookUpDataServiceImpl implements LookUpDataService {
 	public LookUpData getTasksById(Long id) throws Exception {
 		return lookUpDataDao.getTasksById(id);
 	}
+	
+	@Override
+	public LookUpData getLookUpdataByCategoryAndName(String category,String Name) throws Exception {
+		return lookUpDataDao.getLookUpdataByCategoryAndName(category,Name);
+	}
 
 	@Override
 	public LookUpData getTasksTypeByUniqueKey(String uniqueKey) throws Exception {
 		return lookUpDataDao.getTasksTypeByUniqueKey(uniqueKey);
+	}
+
+	@Override
+	public LookUpData getRequirementExperienceLevelyUniqueKey(String uniqueKey) throws Exception
+	{
+		return lookUpDataDao.getRequirementExperienceLevelyUniqueKey(uniqueKey);
+	}
+
+	@Override
+	public LookUpData getLookUpDataByIdAndCategory(String visaType, long id) {
+
+		return lookUpDataDao.getLookUpDataByIdAndCategory(visaType, id);
 	}
 	
 }

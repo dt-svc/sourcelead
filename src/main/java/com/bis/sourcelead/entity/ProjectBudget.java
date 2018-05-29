@@ -23,8 +23,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "PROJECT_BUDGET", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectBudget")
+@Table(name = "PROJECT_BUDGET")
 public class ProjectBudget implements Serializable{
 	
 private static final long serialVersionUID = 1L;

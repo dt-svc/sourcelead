@@ -33,10 +33,13 @@ public class DatabaseConnectionConfig {
 
 	@Value("${jdbc.driverClass}")
 	private String driverClass;
+	
+	@Value("${jdbc.schema}")
+	private String schema;
 
 	@Value("${jdbc.url}")
 	private String jdbcUrl;
-
+	
 	@Value("${jdbc.username}")
 	private String user;
 
@@ -56,8 +59,13 @@ public class DatabaseConnectionConfig {
 	@Value("${elk.host}")
 	private String host;
 	
+	@Value("${elk.tcport}")
+	private String tcport;
+	
 	@Value("${static.path}")
 	private String staticPath;
+	
+	
 	
 
 	public ComboPooledDataSource getComboPooledDataSource() {
@@ -115,6 +123,22 @@ public class DatabaseConnectionConfig {
 	{
 		this.staticPath = staticPath;
 	}
-	
+
+	public String getSchema() {
+		return schema;
+	}
+
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
+
+	public String getTcport() {
+		return tcport;
+	}
+
+	public void setTcport(String tcport) {
+		this.tcport = tcport;
+	}
+
 	
 }

@@ -419,7 +419,7 @@
 											var result = "";
 											result = result
 													+ '<td><div class="tblwidth-150"><span>'
-													+ opt.submissionStatus
+													+ opt.submissionDisplayStatus
 													+ '</span>';
 											if (opt.rejectedReason != null
 													&& opt.rejectedReason != ''
@@ -434,21 +434,6 @@
 														+ opt.rejectedReason
 														+ '</p></div></i></div></td>';
 											}
-
-											if (opt.rejectedReason != null
-													&& opt.rejectedReason != ''
-													&& opt.rejectedReason != 'undefined'
-													&& opt.rejectedCategoryType == null) {
-												result = result
-														+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
-														+ "<font color='red'>Category</font>: "
-														+ "Bad Fit"
-														+ '<br>'
-														+ "Reason: "
-														+ opt.rejectedReason
-														+ '</p></div></i></div></td>';
-											}
-
 											if (opt.rejectedReason != null
 													&& opt.rejectedReason != ''
 													&& opt.rejectedReason != 'undefined'
@@ -481,7 +466,7 @@
 								"sSearch" : "",
 								"sZeroRecords" : "",
 								"sEmptyTable" : "",
-								"sProcessing" : "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
 		$("#requirementsPagination").wrap(

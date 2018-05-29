@@ -72,7 +72,7 @@ public class RequirementOfferHistoryDaoImpl implements RequirementOfferHistoryDa
 		logger.debug("In RequirementOfferHistoryDaoImpl class getRequirementInternalAndIsClientOfferssBySubmissionIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementOfferHistory roh where roh.submissionId.id = :submissionId and roh.orgLocationId.id = :orgLocationsId ";
-		List<RequirementOfferHistory> offersList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		List<RequirementOfferHistory> offersList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).list();
 		
 		return offersList;
 	}
@@ -83,7 +83,7 @@ public class RequirementOfferHistoryDaoImpl implements RequirementOfferHistoryDa
 		logger.debug("In RequirementOfferHistoryDaoImpl class getAllRequirementOfferHistoriesByOfferId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementOfferHistory roh where roh.offerId.id = :offerId  ";
-		List<RequirementOfferHistory> offersList =  session.createQuery(query).setLong("offerId", offerId).setCacheable(true).list();
+		List<RequirementOfferHistory> offersList =  session.createQuery(query).setLong("offerId", offerId).list();
 		
 		return offersList;
 	}
@@ -95,7 +95,7 @@ public class RequirementOfferHistoryDaoImpl implements RequirementOfferHistoryDa
 		logger.debug("In RequirementOfferHistoryDaoImpl class getRequirementInternalAndIsClientOffersHistoryBySubmissionIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementOfferHistory roh where roh.submissionId.id = :submissionId and roh.orgLocationId.id = :orgLocationsId ";
-		List<RequirementOfferHistory> offersHistoryList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		List<RequirementOfferHistory> offersHistoryList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).list();
 		
 		return offersHistoryList;
 	}
@@ -107,8 +107,8 @@ public class RequirementOfferHistoryDaoImpl implements RequirementOfferHistoryDa
 		  
 		    logger.debug("In RequirementOfferHistoryDaoImpl class getCrowdSourcingOfferDetailsBySubmissionId method");
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementOfferHistory roh where roh.submissionId.id = :submissionId ";
-			List<RequirementOfferHistory> offersList =  session.createQuery(query).setLong("submissionId", submissionId).setCacheable(true).list();
+			String query = "from RequirementOfferHistory roh left join fetch roh.offerId left join fetch roh.submissionId where roh.submissionId.id = :submissionId ";
+			List<RequirementOfferHistory> offersList =  session.createQuery(query).setLong("submissionId", submissionId).list();
 			
 			return offersList;
 			}

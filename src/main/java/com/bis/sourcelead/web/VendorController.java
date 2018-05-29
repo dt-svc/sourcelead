@@ -28,20 +28,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.UploadedFile;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.entity.VendorOnboardingTemplate;
-import com.bis.sourcelead.service.ClientImportsService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.SourceleadActionsService;
+import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorImportService;
@@ -52,6 +56,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class VendorController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(VendorController.class);
@@ -89,7 +94,11 @@ public class VendorController {
 	@Autowired
 	VendorOnboardService vendorOnboardService;
 	
+	@Autowired
+	private SourceleadActionsService sourceleadActionsService;
 	
+	@Autowired
+	private SourceleadFormSectionsService sourceleadFormSectionsService;
 
 	/* This method is used for landing page of vendors tab. So, who has vendors tab access they can see vendors list. No preAuthorize for this method */
 	@RequestMapping(value = "/vendorsList")
@@ -98,8 +107,11 @@ public class VendorController {
 			@RequestParam(value="searchType", required=false)String searchType,
 			@RequestParam(value="responderLocationId", required=false)String responderLocationId,
 			@RequestParam(value="orgRelationId", required=false)String orgRelationId,
+			@RequestParam(value="orgRelationUUID", required=false)String orgRelationUUID,
 			@RequestParam(value="orgName", required=false)String orgName,
-			@RequestParam(value="vendorKeyword", required=false)String vendorKeyword) throws Exception {
+			@RequestParam(value="vendorKeyword", required=false)String vendorKeyword,
+			@RequestParam(value="contactsTab", required=false)String contactsTab) throws Exception {
+		
 		
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -111,10 +123,17 @@ public class VendorController {
 		
 		//for get the owners list for spocs
 		//List<User> userList = userService.getOwnersByOrgLocationId(orgLoc.getId());
+		
+		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
+	     model.addObject("actionId",action.getId());
+	     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLoc.getId());
+		 model.addObject("sourceleadSectionList",sections);
+		
 		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLoc.getId(),Long.valueOf(Constants.TAB_VENDOR));
 		model.addObject("userList", userList);
 	
 		model.addObject("loginOrgLocId",orgLoc.getId());
+		model.addObject("contactsTab",contactsTab);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("vendors/vendorsList");
 		List<Countries> countryList = countriesService.getAllCountries();
@@ -178,6 +197,20 @@ public class VendorController {
 			SourceLeadSessionManager.removeSessionAttribute(request, "vendorImport");
 		}
 		
+		if(orgRelationUUID != null){
+			OrgRelations orgRelations = orgRelationsService.getOrgRelationsByUUID(orgRelationUUID);
+			if(orgRelations.getLocationId().getId().longValue() == orgLoc.getId().longValue()){
+				model.addObject("vendorLocationId", orgRelations.getResponderLocationId().getId());
+				model.addObject("vendorName", orgRelations.getResponderLocationId().getOrgLocationName());
+			}else{
+				model.addObject("vendorLocationId", orgRelations.getLocationId().getId());
+				model.addObject("vendorName", orgRelations.getLocationId().getOrgLocationName());
+			}
+			
+			model.addObject("orgRelationId", orgRelations.getId());
+			model.addObject("orgRelationUUID", orgRelationUUID);
+		}
+		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -209,6 +242,12 @@ public class VendorController {
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_VENDOR));
 			model.addObject("userList", userList);
 			SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
+			
+			 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
+		     model.addObject("actionId",action.getId());
+		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+			 model.addObject("sourceleadSectionList",sections);
+			
 			if(sessionData == null)
 			{
 				sessionData = new SessionMaintainanceData();
@@ -257,9 +296,10 @@ public class VendorController {
 	 */
 	@PreAuthorize("hasRole('ROLE_CREATE_VENDOR_CONTACT')")
 	@RequestMapping(value = "/addVendorContact")
-	public ModelAndView addVendorContac(HttpServletRequest request){
+	public ModelAndView addVendorContac(HttpServletRequest request,@RequestParam(value = "vid", required = false) String vid) {
 		ModelAndView model = new ModelAndView();
 		try{
+			model.addObject("vid",vid);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("vendors/addVendorContact");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

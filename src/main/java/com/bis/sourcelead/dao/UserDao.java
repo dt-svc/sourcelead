@@ -1,11 +1,15 @@
 package com.bis.sourcelead.dao;
 
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
 public interface UserDao {
@@ -101,6 +105,8 @@ public interface UserDao {
 	
 	public List<User> getTabAccessOwnersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 	
+	public User getTabAccessOwnersByOrgLocationIdEmailAndTabId(Long orgLocationsId, String email, Long tabId) throws Exception;
+	
 	/**
 	 * @author Prasad salina
 	 * @param currentApproverId
@@ -124,6 +130,8 @@ public interface UserDao {
 	
 	User getUserByEmailAndUserType(String email,String userType) throws Exception;
 	
+	User getUserByEmail(String email) throws Exception;
+	
 	User getUserByUserName(String userName) throws Exception;
 
 	List<User> getTabAccessOwnersByOrgLocationIdAndTabIdAndNotOwners(Long orgLocationsId, Long tabId,
@@ -141,5 +149,19 @@ public interface UserDao {
 	public List<User> getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(Long userId, Long roleId, Long orgLocationsId) throws Exception;
 	
 	List<User> getUserListByRoleActionIdAndOrgLocationId(Long roleActionId,Long orgLocationId) throws Exception;
+
+	User getUserByVerficationUUID(String token);
+	
+	User getUserByUserCodeAndOrgLocationsId(String userCode, Long orgLocationsId) throws Exception;
+	
+	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception;
+
+	ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO, OrgLocations orgLocation) throws Exception;
+	
+	List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception;
+	
+	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
+
+	List<User> getUsersListForSignatoryByOrglocationId(Long locationId);
 
 }

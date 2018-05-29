@@ -118,6 +118,25 @@ public class ConversionUtil {
 	}
 	
 	
+	public  Double currencyConvert(String fromCurrencyCode, String toCurrencyCode, double amount)
+	{
+		
+		if ((fromCurrencyCode != null && !fromCurrencyCode.isEmpty())
+				&& (toCurrencyCode != null && !toCurrencyCode.isEmpty())) {
+			
+			CurrencyConversionResponse response = getResponse(API_PROVDIER + "/latest?base="
+					+ fromCurrencyCode);
+			if (response != null) {
+				
+				String rate = response.getRates().get(toCurrencyCode);
+				double conversionRate = Double.valueOf((rate != null) ? rate : "0.0");
+				return conversionRate * amount;
+			}
+		}
+		return 0d;
+	}
+	
+	
 	
 	// Method to get the response from API
 	private static CurrencyConversionResponse getResponse(String strUrl)
@@ -463,5 +482,9 @@ public class ConversionUtil {
 		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy hh:mm:ss");
 		return formatter.format(date);
 	}
+	
+	
+	
+	
 	
 }

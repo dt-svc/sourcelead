@@ -1,4 +1,4 @@
-package com.bis.sourcelead.dao.impl;
+	package com.bis.sourcelead.dao.impl;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
@@ -48,8 +49,8 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	public List<Holiday> getAllHolidaysList(Long id) {
 		String status = "1";
 		Session session = this.sessionFactory.getCurrentSession();
-		String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status";
-		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).setCacheable(true).list();
+		String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status ORDER BY holiday.fromDate ASC";
+		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).list();
 		return holidayList;
 	}
 	
@@ -58,11 +59,9 @@ public class HolidayDaoImpl  implements HolidayDAO{
 	public List<Holiday> getAllHolidaysListBasedOnYear(Long id,Long reportYear) {
 		String status = "1";
 		Session session = this.sessionFactory.getCurrentSession();
-		Date[] dates = commonUtil.getStartDateEndDateByYear(reportYear.intValue());
-		java.sql.Date satrtDate = new java.sql.Date(dates[0].getTime());
-		java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
-		String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and holiday.fromDate >= '"+satrtDate+"' AND holiday.toDate <= '"+endDate+"'";
-		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).setCacheable(true).list();
+        String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and (year(holiday.fromDate)='"+reportYear+"'  OR year(holiday.toDate)= '"+reportYear+"') ORDER BY holiday.fromDate ASC";
+		//String from = "from Holiday holiday where holiday.orgLocations.id =:id  and holiday.status =:status and holiday.fromDate >= '"+satrtDate+"' AND holiday.toDate <= '"+endDate+"'";
+		List<Holiday> holidayList = session.createQuery(from).setLong("id", id).setString("status", status).list();
 		return holidayList;
 	}
 	
@@ -72,7 +71,7 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		Holiday holiday = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Holiday holiday where holiday.id= :holidayId";
-		List<Holiday> holidayList = session.createQuery(query).setString("holidayId", holidayId).setCacheable(true).list();
+		List<Holiday> holidayList = session.createQuery(query).setString("holidayId", holidayId).list();
 		if (holidayList != null && holidayList.size() > 0) {
 			holiday = holidayList.get(0);
 		}
@@ -101,8 +100,55 @@ public class HolidayDaoImpl  implements HolidayDAO{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Holiday hday  where hday.orgLocations.id = :orgLocationId and ((hday.fromDate <= :fromDate and hday.toDate >= :fromDate) or (hday.fromDate <= :toDate and hday.toDate >= :toDate))";
-		List<Holiday> restrictDayList = session.createQuery(query).setParameter("fromDate", fromDate).setParameter("toDate", toDate).setLong("orgLocationId", orgLocations.getId()).setCacheable(true).list();
+		List<Holiday> restrictDayList = session.createQuery(query).setParameter("fromDate", fromDate).setParameter("toDate", toDate).setLong("orgLocationId", orgLocations.getId()).list();
 		return restrictDayList;
+	}
+
+	@Override
+	@Transactional
+	public List<Holiday> getHolidaybyLocationIdAndFromdate(Date fromDate, Date endDate, Long orgLocationId) throws Exception
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Holiday hday where (hday.fromDate >= :fromDate and hday.fromDate <= :endDate) and hday.orgLocations.id = :orgLocationId";
+		List<Holiday> holiday = session.createQuery(query).setParameter("fromDate", fromDate).setParameter("endDate", endDate).setLong("orgLocationId", orgLocationId).list();
+		if (holiday.size() > 0) {
+			return holiday;
+		}
+		else {
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Holiday getHolidaysByUUID(String holidayUUID)
+	{
+		Holiday holiday = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Holiday holiday where holiday.holidayUUID= :holidayUUID";
+		List<Holiday> holidayList = session.createQuery(query).setString("holidayUUID", holidayUUID).list();
+		if (holidayList != null && holidayList.size() > 0) {
+			holiday = holidayList.get(0);
+		}
+		return holiday;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectTasks> getHolidayProjectTaskByorgLocationIdAndHolidayId(Long orglocationId, Long holidayId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query="from ProjectTasks proTask left join fetch proTask.holiday holiday left join fetch holiday.orgLocations orgLoc  where holiday.id = :holidayId and orgLoc.id = :orglocationId";
+		List<ProjectTasks> projectTasks = session.createQuery(query).setLong("orglocationId", orglocationId).setLong("holidayId", holidayId).list();
+		return projectTasks;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Holiday> getAllHoliday() {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query="from Holiday holiday";
+		List<Holiday> holidayList = session.createQuery(query).list();
+		return holidayList;
 	}
 
 

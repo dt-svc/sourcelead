@@ -24,8 +24,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "USER_MAIL_BOX", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userMailBox")
+@Table(name = "USER_MAIL_BOX")
 public class UserMailBox implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -35,13 +34,13 @@ public class UserMailBox implements Serializable{
     @Column(name = "ID")
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="USER_ID")        
     private User userId;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID")        
     private OrgLocations orgLocationId;
 	
@@ -65,6 +64,9 @@ public class UserMailBox implements Serializable{
 	@Type(type="text")
 	private String subject;
 	
+	@Column(name = "SALUTATION")
+	private String salutation;
+	
 	@Column(name = "BODY")
 	@Type(type="text")
 	private String body;
@@ -73,9 +75,16 @@ public class UserMailBox implements Serializable{
 	@Type(type="text")
 	private String campaignTableData;
 	
+	@Column(name = "MAIL_TYPE")
+	private Integer mailType;
+	
 	@Column(name = "CANDIDATE_ID")
 	@Type(type="text")
 	private String candidateId;
+	
+	@Column(name = "REQUIREMENT_ID")
+	@Type(type="text")
+	private String requirementId;
 	
 	@Column(name = "UUID")
 	private String uuid;
@@ -112,11 +121,6 @@ public class UserMailBox implements Serializable{
 	@Transient
 	private Integer totalUnReadMailsCount;
 	
-	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
@@ -246,6 +250,17 @@ public class UserMailBox implements Serializable{
 		this.campaignTableData = campaignTableData;
 	}
 
+	
+	public Integer getMailType()
+	{
+		return mailType;
+	}
+
+	public void setMailType(Integer mailType)
+	{
+		this.mailType = mailType;
+	}
+
 	public String getCandidateId() {
 		return candidateId;
 	}
@@ -368,14 +383,6 @@ public class UserMailBox implements Serializable{
 		this.candidatesList = candidatesList;
 	}
 
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
-
 	public String getFileContentType() {
 		return fileContentType;
 	}
@@ -455,4 +462,25 @@ public class UserMailBox implements Serializable{
 	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
 	}
+
+	public String getRequirementId()
+	{
+		return requirementId;
+	}
+
+	public void setRequirementId(String requirementId)
+	{
+		this.requirementId = requirementId;
+	}
+
+	public String getSalutation() {
+		return salutation;
+	}
+
+	public void setSalutation(String salutation) {
+		this.salutation = salutation;
+	}
+	
+	
+	
 }

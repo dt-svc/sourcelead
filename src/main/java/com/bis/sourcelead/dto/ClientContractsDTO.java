@@ -96,6 +96,12 @@ public class ClientContractsDTO {
 	private Long approverUserId;
 	private Long ownerUser;
 	private String templateId;
+    private String orgRelationUUID;
+	private String spocUUID;
+	private String templateFileURL;
+	private String billingCycle;
+	private String isOwner;
+	private String revisedReason;
 	
 	public Long getId()
 	{
@@ -925,6 +931,61 @@ public class ClientContractsDTO {
 	public void setTemplateId(String templateId)
 	{
 		this.templateId = templateId;
+	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getSpocUUID()
+	{
+		return spocUUID;
+	}
+
+	public void setSpocUUID(String spocUUID)
+	{
+		this.spocUUID = spocUUID;
+	}
+	public String getTemplateFileURL() {
+		return templateFileURL;
+	}
+
+	public void setTemplateFileURL(String templateFileURL) {
+		this.templateFileURL = templateFileURL;
+	}
+
+	public String getBillingCycle() {
+		return billingCycle;
+	}
+
+	public void setBillingCycle(String billingCycle) {
+		this.billingCycle = billingCycle;
+	}
+
+	public String getIsOwner()
+	{
+		return isOwner;
+	}
+
+	public void setIsOwner(String isOwner)
+	{
+		this.isOwner = isOwner;
+	}
+
+	public String getRevisedReason()
+	{
+		return revisedReason;
+	}
+
+	public void setRevisedReason(String revisedReason)
+	{
+		this.revisedReason = revisedReason;
 	}
 	
 }

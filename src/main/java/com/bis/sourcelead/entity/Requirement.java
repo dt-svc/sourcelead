@@ -18,15 +18,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
@@ -42,8 +39,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 *
 	 */
 	@Entity
-	@Table(name = "REQUIREMENT", catalog = "sourcelead")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement1")
+	@Table(name = "REQUIREMENT")
 	public class Requirement implements Serializable{
 
 	
@@ -98,6 +94,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "APPRVER_HIERARCHY")
 	private String approverHierarchy;
 	
+	@Column(name = "URL")
+	private String url;
 	
 	@Column(name = "COUNTRY", columnDefinition = "TEXT default NULL")
 	private String country;
@@ -117,16 +115,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "SKILLS", columnDefinition = "TEXT default NULL")
 	private String skills;
 	
-	@Column(name = "DESCRIPTION" , columnDefinition = "TEXT default NULL")
+	@Column(name = "DESCRIPTION" , columnDefinition = "LONGTEXT default NULL")
 	private String description;
 	
 	@Column(name = "NOTICEPERIOD", columnDefinition = "TEXT default NULL")
 	private String noticePeriod;
 	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
@@ -166,6 +160,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Column(name = "CLIENT_RATE")
 	private String clientRate;
+	
+	@Column(name = "CLIENT_MAX_RATE")
+	private String clientMaxRate;
 	
 	@Column(name = "CLIENT_RATE_TYPE")
 	private String clientRateType;
@@ -218,6 +215,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Column(name = "REQUIREMENT_SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
+	@JsonProperty
 	private REQUIREMENT_SUBMISSION_STATUS requirementSubmissionStatus;
 	
 	@Column(name = "REQUIREMENT_SUBMISSION_PREVIOUS_STATUS")
@@ -233,7 +231,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String clientSubmissionTemplateJsonString;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="PARENT_REQUIREMENT_ID")        
     private Requirement parentRequirement;
 	
@@ -290,6 +288,36 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "RELEASE_JOB_TO_ALL_USERS")
 	private String releaseJobToAllUsers;
 	
+	@Column(name = "MEDICAL_CLEARENCE")
+	private String medicalClearence;
+	
+	@Column(name = "SECURITY_CLEARANCE")
+	private String securityClearance;
+	
+
+	@Column(name = "OVER_TIME")
+	private String overTime;
+	
+	@Column(name = "BACKGROUNG_CHECK")
+	private String backgroundCheck;
+	
+	@Column(name = "GENDER")
+	private String gender;
+	
+	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+    @JoinColumn(name="PROJECT_CLIENT_ID", nullable=true) 
+	private ProjectClients projectClientID;
+	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+    @JoinColumn(name="EXPERIENCE_LEVEL", nullable=true) 
+	private LookUpData experienceLevel;
+	
+	 
 	@Transient
 	private String closedDateStringFormat;
 	
@@ -306,6 +334,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String isJobApplied;
 	
 	@Transient
+	private String projectName;
+	
+	@Transient
 	private String msg;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
@@ -318,14 +349,34 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
 	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@Fetch(FetchMode.SELECT)
+	private Set<RequirementLocations> requirementLocations = new HashSet<RequirementLocations>(0);
+	
+	
 	@Transient
 	private String searchType;;
+	
+	@Transient
+	@JsonProperty
+	private List<String> locationsList;
 	
 	@Transient
 	@JsonProperty
 	private String clientName;
 	
 	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+	
+	@Transient
+	@JsonProperty
+	private String spocUUID;
+	
+	@Transient
+	@JsonProperty
 	private String requirementApproverHierarchyStatus;
 	
 	@Transient
@@ -371,6 +422,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Transient
 	@JsonProperty
+	private String orgImageUrl;
+	
+	@Transient
+	@JsonProperty
+	private String orgRelationId;
+	
+	@Transient
+	@JsonProperty
 	private String noOfShortlistedApplicants;
 	
 	@Transient
@@ -413,21 +472,27 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String isLoginUserAsInitiator;
 	
 	@Transient
+	@JsonProperty
 	private String mailBody;
 	
 	@Transient
+	@JsonProperty
 	private String submitToClientFromMailId;
 	
 	@Transient
+	@JsonProperty
 	private String submitToClientToMailId;
 	
 	@Transient
+	@JsonProperty
 	private String submitToClientMailSubject;
 	
 	@Transient
+	@JsonProperty
 	private Integer totalApplicantsForRequirement;
 	
 	@Transient
+	@JsonProperty
 	private String approvedBy;
 	
 	@Transient
@@ -506,6 +571,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @Transient
     @JsonProperty
     private String isRequirementRelesedToPublic;
+    
+    
 	 
     @Transient
 	@JsonProperty
@@ -521,6 +588,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	
 	@Column(name = "FILE_URL")
 	private String fileURL;
+	
+	@Transient
+	@JsonProperty
+	private String assignedMembersCount;
+	
+	@Transient
+	@JsonProperty
+	private String experienceLevelStr;
 	
 	public String getRequirementOrgName() {
 		return requirementOrgName;
@@ -753,14 +828,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
 	}
 
 	public String getFileContentType() {
@@ -1730,6 +1797,192 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setFileURL(String fileURL)
 	{
 		this.fileURL = fileURL;
+	}
+
+	public String getUrl()
+	{
+		return url;
+	}
+
+	public void setUrl(String url)
+	{
+		this.url = url;
+	}
+	
+	public String getMedicalClearence()
+	{
+		return medicalClearence;
+	}
+
+	public void setMedicalClearence(String medicalClearence)
+	{
+		this.medicalClearence = medicalClearence;
+	}
+
+	public String getSecurityClearance()
+	{
+		return securityClearance;
+	}
+
+	public void setSecurityClearance(String securityClearance)
+	{
+		this.securityClearance = securityClearance;
+	}
+
+	public String getOverTime()
+	{
+		return overTime;
+	}
+
+	public void setOverTime(String overTime)
+	{
+		this.overTime = overTime;
+	}
+
+	public String getBackgroundCheck()
+	{
+		return backgroundCheck;
+	}
+
+	public void setBackgroundCheck(String backgroundCheck)
+	{
+		this.backgroundCheck = backgroundCheck;
+	}
+
+	public String getGender()
+	{
+		return gender;
+	}
+
+	public void setGender(String gender)
+	{
+		this.gender = gender;
+	}
+
+	public String getClientMaxRate()
+	{
+		return clientMaxRate;
+	}
+
+	public void setClientMaxRate(String clientMaxRate)
+	{
+		this.clientMaxRate = clientMaxRate;
+	}
+
+	
+
+	public ProjectClients getProjectClientID()
+	{
+		return projectClientID;
+	}
+
+	public void setProjectClientID(ProjectClients projectClientID)
+	{
+		this.projectClientID = projectClientID;
+	}
+
+	public String getProjectName()
+	{
+		return projectName;
+	}
+
+	public void setProjectName(String projectName)
+	{
+		this.projectName = projectName;
+	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+
+	public String getSpocUUID()
+	{
+		return spocUUID;
+	}
+
+	public void setSpocUUID(String spocUUID)
+	{
+		this.spocUUID = spocUUID;
+	}
+
+	public LookUpData getExperienceLevel()
+	{
+		return experienceLevel;
+	}
+
+	public void setExperienceLevel(LookUpData experienceLevel)
+	{
+		this.experienceLevel = experienceLevel;
+	}
+
+
+	public Set<RequirementLocations> getRequirementLocations() {
+		return requirementLocations;
+	}
+
+	public void setRequirementLocations(Set<RequirementLocations> requirementLocations) {
+		this.requirementLocations = requirementLocations;
+	}
+
+
+	public String getAssignedMembersCount()
+	{
+		return assignedMembersCount;
+	}
+
+	public void setAssignedMembersCount(String assignedMembersCount)
+	{
+		this.assignedMembersCount = assignedMembersCount;
+	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
+	}
+	
+	public String getExperienceLevelStr() {
+		if(StringUtils.isNotEmpty(experienceLevelStr))
+			return experienceLevelStr;
+		else{
+			if(experienceLevel != null){
+				experienceLevelStr = experienceLevel.getName();
+			}
+			return experienceLevelStr;
+		}
+	}
+
+	public void setExperienceLevelStr(String experienceLevelStr)
+	{
+		this.experienceLevelStr = experienceLevelStr;
+	}
+
+	public String getOrgImageUrl()
+	{
+		return orgImageUrl;
+	}
+
+	public void setOrgImageUrl(String orgImageUrl)
+	{
+		this.orgImageUrl = orgImageUrl;
 	}
 
 	

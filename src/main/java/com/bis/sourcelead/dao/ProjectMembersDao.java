@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.enums.Primary;
@@ -44,6 +45,7 @@ public interface ProjectMembersDao {
 	
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserIdForExpenseReports(Date startDate, Date endDate,Long locationsId, Long approverUserId);
 	
+	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndActiveStatusRecords(Long projectClientsId) throws Exception;
 	/**
 	 * @author Prasad Salina
 	 * @param empId
@@ -59,7 +61,7 @@ public interface ProjectMembersDao {
     
     public List<ProjectMembers> getAllTerminatedProjectMembersIdsByTimesheet() throws Exception;
 
-	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId);
+	public List<ProjectMembers> getAllProjectsByUserId(Long userId,Long orgLocationId, String fromType);
 
 	public Integer getAllProjectMembersCountByProjectId(Long id);
 	
@@ -79,7 +81,7 @@ public interface ProjectMembersDao {
 	
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Long locationsId, Long approverUserId);
 	
-	public List<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId);
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor);
 
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(String status,String startDate,String endDate,Long projectId);
 	
@@ -95,7 +97,7 @@ public interface ProjectMembersDao {
 
 	public List<ProjectMembers> getAllProjectsbyEmployeeId(Long employeeId);
 	
-	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId,String status) throws Exception;
+	public List<ProjectMembers> getAllProjectMembersByProjectClientIdAndStatus(Long projectClientsId,String status,String roleIds,String teamIds) throws Exception;
 	
 	public ProjectMembers getProjectMemberByCandidateIdAndProjectIdAndOrgLocationId(Long candidateId,Long projectId,Long orgLocationId) throws Exception;
 	
@@ -109,5 +111,13 @@ public interface ProjectMembersDao {
 	
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId) throws Exception;
 	
+	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationIdForExpences(Long masterCandidateId, Long projectId,Long locationId) throws Exception;
+	
 	public ProjectMembers getConsultantUserProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
+
+	ProjectMembers getProjectMembersByCandidateIdAndProjectClientId(Long candidateId,Long projectClientsId) throws Exception;
+	
+	public List<ProjectMembers> getAllProjectMembersByProjectClientId(Long projectClientsId) throws Exception;
+	
+	public ProjectMembers getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId) throws Exception;
 }

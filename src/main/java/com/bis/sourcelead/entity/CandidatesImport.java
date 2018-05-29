@@ -60,6 +60,10 @@ private String primarySkill;
 
 private String reason;
 
+private String vendor;
+
+private String vendorContact;
+
 public String getFirstName() {
 	return firstName;
 }
@@ -256,6 +260,20 @@ public void setReason(String reason) {
 	this.reason = reason;
 }
 
+public String getVendor() {
+	return vendor;
+}
 
+public void setVendor(String vendor) {
+	this.vendor = vendor;
+}
+
+public String getVendorContact() {
+	return vendorContact;
+}
+
+public void setVendorContact(String vendorContact) {
+	this.vendorContact = vendorContact;
+}
 
 }

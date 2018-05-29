@@ -17,7 +17,7 @@
       <div class="pull-left">
         <h2>Holidays List</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='/leaveConfiguration'/>">Leave Configuration</a> &raquo; Holiday</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/leaveConfiguration'/>">Leave Configuration</a> &raquo; Holiday</div>
     </section>
     
 <div class="content-area content-new clearfix">
@@ -27,7 +27,7 @@
     <div class="timesheet_head">
       <ul>
           <li>
-              <a href="<c:url value='/addHoliday'/>" title="Add Holiday"><i class="fa fa-plus paddingRight"></i>Add Holiday</a>
+              <a href="<c:url value='${appPath}/addHoliday'/>" title="Add Holiday"><i class="fa fa-plus paddingRight"></i>Add Holiday</a>
           </li>
         <div class="clearfix"></div>
       </ul>
@@ -49,24 +49,27 @@
 function getHolidaysList(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 // 	var userId = '${SourceLeadWeb_userId}';
-	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId, function(data) {
-		var result = "";	
+	$.get(sourceleadUrl+"/getHolidaysList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId, function(response) {
+		 if (response.response === "AWKWARD") {
+		    location.href = "/errorPage";
+		} else if (response.response === "SUCCESS") {
 		$("#viewHolidaysDiv").empty();
+		var result = "";
 				result = result + '<table id="viewHolidaysTableId" class="display" cellspacing="0" width="100%" >';
 				result = result + '<thead>';
 				result = result + '<tr>';
 				result = result +'<th>Holiday Name</th>';
 				result = result +'<th>From Date</th>';
-				result = result +'<th>To Date</th>';
+				result = result +'<th>To Date</th>';	
 				result = result + '<th>Description</th>';
 				result = result + '<th>Action</th>';
 				result = result + '</tr>';
 				result = result + '</thead>	';
 				result = result + '<tbody>';
-				if(data !=null && data !=''){
-					 for (var i=0; i<data.length; i++)
+				if(response !=null && response !=''){
+					 for (var i=0; i<response.data.length; i++)
 						{
-			        		 var opt = data[i];
+			        		 var opt = response.data[i];
 			        		 result = result + ' <tr>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="proj_show tbldata-dotdot-big">';
@@ -93,8 +96,8 @@ function getHolidaysList(){
 			        		 result = result + '  </td>';
 			        		 result = result + ' <td>';
 			        		 result = result + ' <div class="tblminwidth-50">';
-			        		 result = result +' <span title="Edit" class="paddingRight"><a href="<c:url value="/editHoliday?holidayId='+opt.id+'"/>"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
-			        		 result = result +' <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteHoliday(\''+opt.id+'\');"></i></span> ';
+			        		 result = result +' <span title="Edit" class="paddingRight"><a href="<c:url value="/app/editHoliday?holidayUUID='+opt.holidayUUID+'"/>"><i class="fa fa-pencil text-primary cursorPointer"></i></a></span> ';
+			        		 result = result +' <span title="Delete" class="paddingLeft"><i class="fa fa-trash text-danger cursorPointer" onclick="deleteHoliday(\''+opt.holidayUUID+'\');"></i></span> ';
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + '  </tr>';
@@ -106,12 +109,17 @@ function getHolidaysList(){
 				$("#viewHolidaysDiv").append(result);
 				$("#loading").removeAttr("style");
 				viewHolidaysTablePagination();
+		} else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+		    showError("Operation failed, please try again");
+		}
 		}); 
  }
 </script> 
 <script>
 function deleteHoliday(holidayId){
-			 $.get(sourceleadUrl+"/deleteHoliday?"+tokenParamName+"="+tokenValue+"&holidayId="+holidayId, function(data) {
+			 $.get(sourceleadUrl+"/deleteHoliday?"+tokenParamName+"="+tokenValue+"&holidayUUID="+holidayId, function(data) {
 				 location.replace(sourceleadUrl+ "/viewHoliday");
 			 }); 
 		

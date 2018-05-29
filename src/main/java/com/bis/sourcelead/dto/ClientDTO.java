@@ -2,6 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Required;
 
@@ -45,9 +46,12 @@ public class ClientDTO {
 	
 	private String address;
 	
+	@CleanHtml(escape=false)
 	private String billingAddress;
 	
 	private String paymentTerms;
+	
+	private String type;
 	
 	@Required(desc = "email")
 	@Email
@@ -102,8 +106,23 @@ public class ClientDTO {
 	
 	private CandidateDTO candidateDTO;
 	
+	private String isLawFirm;
+	
+	private String isAccountingFirm;
+	
+	public String getClientSaveFromType()
+	{
+		return clientSaveFromType;
+	}
+	public void setClientSaveFromType(String clientSaveFromType)
+	{
+		this.clientSaveFromType = clientSaveFromType;
+	}
 	private String UUID;
 	
+	private String clientSaveFromType;
+	
+	private List<CustomFormFieldDTO> customFormData;
 	
 	public String getOrgName() {
 		return orgName;
@@ -387,6 +406,30 @@ public class ClientDTO {
 	}
 	public void setUUID(String uUID) {
 		UUID = uUID;
+	}
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
 	}
 	
 }
