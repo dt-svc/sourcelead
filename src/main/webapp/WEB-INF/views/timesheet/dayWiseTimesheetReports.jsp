@@ -21,7 +21,7 @@ $( document ).ready(function() {
       </div>
       <div class="pull-right brud-crum">Home &raquo; Daily Timehseet</div>
     </section>
-    <form id="timesheetExportForm" name="timesheetExportForm">
+    <form id="timesheetExportForm" name="timesheetExportForm" action="/app/dayEntriesReportList" method="post">
     <div class="contentareaInner-styles clearfix">
       <div class="clearfix form-horizontal minHeight_225 minHeightcol5">
         <div class="row min">
@@ -42,7 +42,7 @@ $( document ).ready(function() {
             	  <div class="col-md-6">
               <label class="clearfix">From Date<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix input-group errorInptgroup">
-                <input type="text" class="form-control calendar" name="Website" value="" field-name="From Date" id="fromDate" onclick="datePickeerTest();" data-validation=" required">
+                <input type="text" readonly class="form-control calendar" name="startDate" value="" field-name="From Date" id="fromDate" onclick="datePickeerTest();" data-validation="required">
                  <span class="input-group-addon">
                  	<i class="colorRed fa fa-times cursorPointer" onclick="clearDate('from');"></i>
                  </span>
@@ -51,7 +51,7 @@ $( document ).ready(function() {
             	  <div class="col-md-6">
               <label class="clearfix">To Date<span class="text-danger">&nbsp;*</span></label>
               <div class="clearfix input-group errorInptgroup">
-                <input type="text" class="form-control calendar" name="Website" value="" field-name="To Date" id="toDate" onclick="datePickeerTest();" data-validation=" required">
+                <input type="text" readonly class="form-control calendar" name="endDate" value="" field-name="To Date" id="toDate" onclick="datePickeerTest();" data-validation="required">
                  <span class="input-group-addon">
                  	<i class="colorRed fa fa-times cursorPointer" onclick="clearDate('to');"></i>
                  </span>
@@ -64,12 +64,12 @@ $( document ).ready(function() {
            <div class="col-md-5">
               <label class="clearfix">By Project</label>
               <div class="clearfix">
-                <select id="projectList" class="form-control chosen-select" field-name="Project" data-placeholder="Select Project" multiple onchange="getProjectMemberFromProjectId();" data-validation=" required"></select>
+                <select id="projectList" name="projectIds" class="form-control chosen-select" field-name="Project" data-placeholder="Select Project" multiple onchange="getProjectMemberFromProjectId();"></select>
               </div>
             </div><div class="col-md-5">
               <label class="clearfix">Emp Type</label>
               <div class="clearfix">
-                <select class="form-control chosen-select" id="designationType" name="designationType" data-placeholder="Select Emp Type" multiple field-name="Employment type" onchange="getProjectMemberFromProjectId();">
+                <select class="form-control chosen-select" id="designationType" name="employmentType" data-placeholder="Select Emp Type" multiple field-name="Employment type" onchange="getProjectMemberFromProjectId();">
 	                 <option value="">--Select Employment type--</option>
 	                 <option value="C2C">C2C</option>
 	                 <option value="C2C-1099">C2C-1099</option>
@@ -85,14 +85,17 @@ $( document ).ready(function() {
              <div class="col-md-5">
               <label class="clearfix">By Associate</label>
               <div class="clearfix">
-                <select class="form-control chosen-select" id="projectMemberList" data-placeholder="Select Associate" multiple></select>
+                <select class="form-control chosen-select" id="projectMemberList" field-name="Associate" name="projectMemberListId" data-placeholder="Select Associate" multiple></select>
+              </div>
+              <div>
+              
               </div>
             </div>
              <div class="col-md-5">
               <label class="clearfix">Export to</label>
               <div class="clearfix">
                 <select class="form-contro sel" id="exportType">
-                  <!-- <option value="pdf">PDF</option> -->
+                 <!--  <option value="pdf">PDF</option> -->
                   <option value="excel">Excel</option>
                 </select>
               </div>
@@ -102,16 +105,16 @@ $( document ).ready(function() {
       </div>
 </div>
 </div>
-</form>
+
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Download" class="btn btn-success btnSuccess" type="button" onclick="runExport();">
+            <input value="Run" class="btn btn-success btnSuccess" onclick="runExport();">
             <input value="Reset" class="btn btn-default ml10" type="button" onclick="resetValues();">
           </div>
         </div>
       </div>      
-		
+</form>		
       <!-- Content Area Ends--> 
     
     
@@ -120,6 +123,35 @@ $( document ).ready(function() {
 
 
 <script>
+function validateDayEntriesReport(){
+	var projectIds  = $('#projectList').val();
+	var templateType = "";
+	
+	if(projectIds == null || projectIds =='' || projectIds=='undefined'){
+		projectIds = $("#projectList option[name='all']").val();
+	}
+	var startDate = $('#fromDate').val();
+	var endDate = $('#toDate').val();
+	var exportType = $('#exportType').val();
+	var projectMemberList = $('#projectMemberList').val();
+	if(projectMemberList == null || projectMemberList =='' || projectMemberList=='undefined'){
+		projectMemberList = '';
+	}
+	  if ($('#timesheetExportForm').validate(false, validationSettings)){
+		 $('#timesheetExportForm').submit();
+		 return true;
+	 }else{ 
+			return false;
+	 }  
+}
+
+var validationSettings = {
+    errorMessagePosition : 'element',
+    borderColorOnError : '',
+	scrollToTopOnError : true,
+	dateFormat : 'yyyy/mm/dd' 
+};
+
 function datePickeerTest(){
 		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatProjectSave = '';
@@ -170,6 +202,7 @@ function resetValues(){
 
 <script>
 function getProjectListBasedOnStartAndEndDate(){
+	var allProjectId = [];
 	var typeOfProject = 'All';
 	var startDate = $('#fromDate').val();
 	var endDate = $('#toDate').val();
@@ -184,7 +217,9 @@ function getProjectListBasedOnStartAndEndDate(){
             	var output = "";
             	$.each(json, function(i, item) {
             		output = output + "<option value='" +item.id+ "'>"+item.projectName+"</option>";
+            		allProjectId.push(item.id);
         		});
+            	output = output + "<option value='" +allProjectId+ "' name='all'></option>";
             	$("#projectList").empty();
                 $("#projectList").append(output);
                 $('#projectList').trigger("chosen:updated");
@@ -223,8 +258,7 @@ function getProjectMemberFromProjectId(){
             		output = output + "<option value='" +item.id+ "'>"+item.candidateName+"</option>";
         		});
         	}
-        	
-        	$("#projectMemberList").empty();
+        	#n        	$("#projectMemberList").empty();
             $("#projectMemberList").append(output);
             $('#projectMemberList').trigger("chosen:updated");
         }
@@ -232,14 +266,14 @@ function getProjectMemberFromProjectId(){
 }
 </script>
 
+
 <script>
 function runExport(){
-	/* if ($('#timesheetExportForm').validate(false, validationSettings)){  */
 	var projectIds  = $('#projectList').val();
 	var templateType = "";
 	
 	if(projectIds == null || projectIds =='' || projectIds=='undefined'){
-		projectIds = '';
+		projectIds = $("#projectList option[name='all']").val();
 		templateType = "proJectMembersExport";
 	}
 	var startDate = $('#fromDate').val();
@@ -249,12 +283,14 @@ function runExport(){
 	if(projectMemberList == null || projectMemberList =='' || projectMemberList=='undefined'){
 		projectMemberList = '';
 	}
-	if(startDate != null && startDate !='' && startDate !='undefined' && endDate != null && endDate !='' && endDate !='undefined'){
-		window.location.href = sourceleadUrl+"/exportDaywiseTimesheetReport?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&projectMemberListId="+projectMemberList+"&templateType="+templateType;
+	if ($('#timesheetExportForm').validate(false, validationSettings)){
+		if(startDate != null && startDate !='' && startDate !='undefined' && endDate != null && endDate !='' && endDate !='undefined'){
+			window.location.href = sourceleadUrl+"/exportDaywiseTimesheetReport?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&exportType="+exportType+"&projectMemberListId="+projectMemberList+"&templateType="+templateType;
+		}
+			return true;
+		}else{
+			return false;
 	}
-/* }else{
-	return false;
-} */
 }
 
 function getAllUserListBasedOnOrgLocationId(){
