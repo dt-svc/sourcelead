@@ -109,7 +109,7 @@ $(document).ready(function(){
 		 result = result + '<li><a href="#tab-22" onClick="associateTaxSummary('+userId+')" >TAX</a></li>';
 		 result = result + '<li><a href="#tab-23" onClick="associateDeductionSummary('+userId+')" >Deduction</a></li>';
 		 result = result + '<li><a href="#tab-24" onClick="associateContributionSummary('+userId+')"  >Contribution</a></li>';
-		 result = result + '<li><a href="#tab-25" onClick="" >Advances</a></li>';
+		 result = result + '<li><a href="#tab-25" onClick="associateSalSummary('+userId+')" >Salary</a></li>';
 		 result = result + '<li><a href="#tab-26" onClick="" >Payroll</a></li>';
 		
 		 result = result + '<div class="clearfix"></div>';
@@ -139,6 +139,9 @@ $(document).ready(function(){
 		 result = result + '</div>';
 		 
 		 result = result + '<div id="tab-24" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative taxes-details">';
+		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-25" class="clearfix axes-details">';
 		 result = result + '</div>';
 		 
 		 result = result + '<div id="candidateSideDiv">';
@@ -3811,4 +3814,5 @@ function savedCommentAndCount(candidateId){
 <jsp:include page="associateTaxSummary.jsp" />
 <jsp:include page="associateDeductionSummary.jsp" />
 <jsp:include page="associationContributionSummary.jsp" />
+<jsp:include page="associateSalSummary.jsp" />
  <%-- </sec:authorize>  --%>

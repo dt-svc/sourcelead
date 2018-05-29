@@ -2,10 +2,16 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.Required;
+
 public class AssociateSalaryDTO {
 	
+	private String id;
+	
+	@Required(desc = "Pay Type")
 	private String payType;
 	
+	@Required(desc = "Pay Frequency")
 	private String payFrequency;
 	
 	private String standardHours;
@@ -18,8 +24,21 @@ public class AssociateSalaryDTO {
 	
 	private String allowOverTimePay;
 	
+	private String userId;
+	
+	private String associateSalUUID;
+	
 	List<AssociatePayItemDTO> associatePayItemDto;
 	
+	
+	public String getId()
+	{
+		return id;
+	}
+	public void setId(String id)
+	{
+		this.id = id;
+	}
 	public String getPayType()
 	{
 		return payType;
@@ -83,6 +102,22 @@ public class AssociateSalaryDTO {
 	public void setAssociatePayItemDto(List<AssociatePayItemDTO> associatePayItemDto)
 	{
 		this.associatePayItemDto = associatePayItemDto;
+	}
+	public String getUserId()
+	{
+		return userId;
+	}
+	public void setUserId(String userId)
+	{
+		this.userId = userId;
+	}
+	public String getAssociateSalUUID()
+	{
+		return associateSalUUID;
+	}
+	public void setAssociateSalUUID(String associateSalUUID)
+	{
+		this.associateSalUUID = associateSalUUID;
 	}
 	
 	

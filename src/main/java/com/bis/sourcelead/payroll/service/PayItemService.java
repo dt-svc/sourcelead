@@ -18,4 +18,7 @@ public interface PayItemService {
 	Response<PayItem> deletePayItemByUUID(PayItemDTO payItemDTO, User user);
 
 	Response<PayItem> validatePayItemName(PayItemDTO payItemDTO, OrgLocations orgLocation);
+
+	ResponseList<PayItemDTO> getPayItemByLocationId(OrgLocations orgLocation, String associateEmpType);
+
 }

@@ -15,6 +15,7 @@ public class AssociatePayItemDTO {
 	private String createdBy;
 	private String updatedDate;
 	private String updatedBy;
+	private String payItemCheck;
 	public String getId()
 	{
 		return id;
@@ -118,6 +119,14 @@ public class AssociatePayItemDTO {
 	public void setUpdatedBy(String updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+	public String getPayItemCheck()
+	{
+		return payItemCheck;
+	}
+	public void setPayItemCheck(String payItemCheck)
+	{
+		this.payItemCheck = payItemCheck;
 	}
 	
 	

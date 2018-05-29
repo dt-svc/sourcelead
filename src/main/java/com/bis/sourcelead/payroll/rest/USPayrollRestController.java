@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserGroupDTO;
@@ -56,6 +57,7 @@ import com.bis.sourcelead.payroll.service.PayItemService;
 import com.bis.sourcelead.payroll.service.PayrollContributionService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
+import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserGroupService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -111,6 +113,10 @@ public class USPayrollRestController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+
+	@Autowired
+	AssociateSalaryService associateSalaryService;
+
 	
 	/**
 	 * find all deduction types from lookup_data table 
@@ -672,7 +678,7 @@ public class USPayrollRestController {
 		 * @throws Exception
 		 */
 	@RequestMapping(value = { "/getUsersVGroupPayPeriod","/rest/getUsersVGroupPayPeriod" }, method = RequestMethod.GET)
-	public List<String> getUsersVGroupPayPeriod(@RequestParam(value = "groupId", required = false) String groupUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public List<String> getUsersVGroupPayPeriod(@RequestParam(value = "groupUUID", required = false) String groupUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		List<String> listDates = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -758,7 +764,26 @@ public class USPayrollRestController {
 	public ResponseList<PayItemDTO> getPayItemList(PayItemDTO payItemDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		ResponseList<PayItemDTO> resObj = payItemService.getPayItemByLocationId(orgLocation);
+		ResponseList<PayItemDTO> resObj = payItemService.getPayItemByLocationId(orgLocation,payItemDTO.getAssociateEmpType());
+		return resObj;
+	}
+	
+	
+	/**
+	 * Add Associate Salary
+	 * @param associateSalaryDTO
+	 * @param request
+	 * @param response
+	 * @return Response<AssociateSalaryDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/addAssociateSal","/rest/addAssociateSal" }, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<AssociateSalaryDTO> addAssociateSal(AssociateSalaryDTO associateSalaryDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<AssociateSalaryDTO>  resObj = associateSalaryService.addAssociateSal(orgLocation,associateSalaryDTO,loginUser);
 		return resObj;
 	}
 	
@@ -792,5 +817,14 @@ public class USPayrollRestController {
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Response<PayItem> res = payItemService.validatePayItemName(payItemDTO,orgLocation);
 		return res;
+	}
+
+	@RequestMapping(value = { "/findAssociateSalary","/rest/findAssociateSalary" }, method = RequestMethod.GET)
+	@ResponseBody
+	public AssociateSalaryDTO findAssociateSalary(@RequestParam(value = "userId",required = false) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		AssociateSalaryDTO  associateSalaryDTO = associateSalaryService.findAssociateSalaryByUserId(userId,orgLocation);
+		return associateSalaryDTO;
 	}
 }
