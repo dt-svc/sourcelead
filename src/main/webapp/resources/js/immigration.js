@@ -238,7 +238,7 @@ function Immigration() {
         });
         }else if (reason.length >= 251){
         	$("#reasonForTemplateDiv").find('p.jquery_form_error_message').remove();
-			$("#reasonForTemplateDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason Length 1-250</font>") ; 
+			$("#reasonForTemplateDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason Length 1-250 characters</font>") ; 
         }else{
         	$("#reasonForTemplateDiv").find('p.jquery_form_error_message').remove();
 			$("#reasonForTemplateDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
