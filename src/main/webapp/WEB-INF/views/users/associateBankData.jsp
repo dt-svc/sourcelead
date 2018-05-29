@@ -43,7 +43,7 @@
                  <div class="clearfix"></div>
                  <div class="clearfix footerstyelsNew">
                   <div class="col-md-6">
-                 <input type="button" value="Previous" onclick="shiftToAssociateTab();" class="btn btn-default">
+                 <input type="button" value="Previous" onclick="shiftToSalaryTab();" class="btn btn-default">
 			     </div> 
                   <div class="col-md-6">
                    <div class="pull-right">
@@ -110,14 +110,14 @@
 </script> 
 
 <script>
-function shiftToAssociateTab(){
-	var associates = document.getElementById("associates");
-	document.getElementById("associates").removeAttribute("class"); 
-	associates.href="#tab-1"; 
+function shiftToSalaryTab(){
+	var associates = document.getElementById("associateSalary");
+	document.getElementById("associateSalary").removeAttribute("class"); 
+	associates.href="#tab-6"; 
 	$("#loading").removeAttr('style');
-	$("#create_user" ).addClass('button').val('Save & Continue');
-    $("#create_user").removeAttr("disabled");
-    $("#associates").click();
+	$("#save_asso_sal_button" ).addClass('button').val('Save & Continue');
+    $("#save_asso_sal_button").removeAttr("disabled");
+    $("#associateSalary").click();
 }
 </script>
 
@@ -149,7 +149,7 @@ function showHideAccountTypes(){
 </script> 
 <script>
 function skipAssociateBankDataJsp(){
-	var associateBanking = document.getElementById("associateTax");
+	var associateTax = document.getElementById("associateTax");
 	document.getElementById("associateTax").removeAttribute("class"); 
 	associateTax.href="#tab-3"; 
 	$("#associateTax").click();

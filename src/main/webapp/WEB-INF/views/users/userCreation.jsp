@@ -54,7 +54,7 @@
         <div class="user_summ_wrap contentareaInner-styles">
 	      <div class="tabsMenu">
 	        <ul class="list-unstyled">
-	          <li class="current"><a href="#tab-1">Associates</a></li>
+	          <li class="current"><a href="#tab-1" data-toggle="tab" id="associates">Associates</a></li>
 	           <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
 	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
