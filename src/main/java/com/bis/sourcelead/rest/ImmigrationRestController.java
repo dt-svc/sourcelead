@@ -1506,8 +1506,7 @@ public class ImmigrationRestController {
 				"orgLocations");
 		model.setViewName("/immigration/employerDetailsTab");
 		List<CandidateEmployers> candidatesEmployersList = candidateEmployersService
-				.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId),
-						orgLocations.getId(), searchVal);
+				.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId), searchVal);
 		model.addObject("candidatesEmployersList", candidatesEmployersList);
 		return model;
 	}
