@@ -2023,6 +2023,8 @@ public class UsersListRestController {
 				AssociateGrades grades = new AssociateGrades();
 				grades.setId(Long.valueOf(addUserDTO.getGrade()));
 				userRole.setGradeId(grades);
+			}else {
+				userRole.setGradeId(null);
 			}
 			
 			if(addUserDTO.getCustomFormData() !=null) {
