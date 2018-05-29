@@ -121,6 +121,8 @@ public interface RequirementService {
 
     public String getNoticePeriodByRequirementId(Long requirementId) throws Exception;
 
+    public Requirement getRequirementByGeneratedIdAndLocationId(String generatedId,Long orgLocationId)throws Exception;
+    
     // This method is if the user is requirement manager or approver or assignTo
     // or creator this method is for consolidated reports
     public List<Requirement> getAllRequirementsByOrglocationIdAndUserId(Long orgLocationId, User user) throws Exception;
