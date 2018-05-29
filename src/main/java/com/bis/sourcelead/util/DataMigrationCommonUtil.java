@@ -2208,20 +2208,45 @@ public class DataMigrationCommonUtil {
 			}
 
 		}
-		
-		/*if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaType"))) {
-			errorSet.put("visaType", "Visa Type is missing"); /// dropdown value.
-		} else {
-			LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(Constants.VISA,
-					dataMigrationDTOJsonCopy.getString("visaType"));
-			if (data == null) {
-				errorSet.put("visaType", "Visa Type is not found"); /// dropdown value.
-			} else {
-				// dataMigrationDTOJsonCopy.setString("petitionType", data.getId().toString());
-				dataMigrationDTOJsonCopy.put("visaType", data.getId());
+		if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
+																	&& !dataMigrationDTOJsonCopy.getString("passportNo").equals("null")) {
+			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportCountry")) || dataMigrationDTOJsonCopy.getString("passportCountry").equals("null")) {
+				errorSet.put("passportCountry", "passportCountry is invalid input");/// dropdown value.
 			}
+			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportStartDate")) || dataMigrationDTOJsonCopy.getString("passportStartDate").equals("null")) {
+				errorSet.put("passportStartDate", "passportStartDate is mandatory if you have entered passportNo");/// dropdown value.
+			}
+			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportEndDate")) || dataMigrationDTOJsonCopy.getString("passportEndDate").equals("null")) {
+				errorSet.put("passportEndDate", "passportEndDate is mandatory if you have entered passportNo");/// dropdown value.
+			}
+		}
+		        
+		if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("visaNo"))
+																	&& !dataMigrationDTOJsonCopy.getString("visaNo").equals("null")) {
+			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaCountry")) || dataMigrationDTOJsonCopy.getString("visaCountry").equals("null")) {
+				errorSet.put("visaCountry", "visaCountry is mandatory if you have entered visano");/// dropdown value.
+			}
+			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaStartDate")) || dataMigrationDTOJsonCopy.getString("visaStartDate").equals("null")){
+				errorSet.put("visaStartDate", "visaStartDate is mandatory if you have entered visano");/// dropdown value.
+			}
+			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaEndDate")) || dataMigrationDTOJsonCopy.getString("visaEndDate").equals("null")) {
+				errorSet.put("visaEndDate", "visaEndDate is mandatory if you have entered visano");/// dropdown value.
+			}
+			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaType")) || dataMigrationDTOJsonCopy.getString("visaType").equals("null")) {
+				errorSet.put("visaType", "Visa Type is missing"); /// dropdown value.
+			} else {
+				LookUpData data = lookUpDataService.getLookUpdataByCategoryAndName(Constants.VISA,
+						dataMigrationDTOJsonCopy.getString("visaType"));
+				System.out.println(" Visa Type--->"+dataMigrationDTOJsonCopy.getString("visaType"));
+				if (data == null) {
+					errorSet.put("visaType", "Visa Type is not found"); /// dropdown value.
+				} else {
+					// dataMigrationDTOJsonCopy.setString("petitionType", data.getId().toString());
+					dataMigrationDTOJsonCopy.put("visaType", data.getId());
+				}
 
-		}*/
+			}
+		}
 
 		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("openOn"))) {
 			errorSet.put("openOn", "Open On is missing");
