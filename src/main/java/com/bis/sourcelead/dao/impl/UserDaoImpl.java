@@ -1523,4 +1523,14 @@ public class UserDaoImpl implements UserDao {
         return userIds;
         
 	}
+
+	@Override
+	@Transactional
+	public List<User> getUsersListForSignatoryByOrglocationId(Long locationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<User> userList = null;
+		String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationId) and user.id NOT IN (select ols.userId.id from OrglocationSignatory ols where ols.orgLocationId.id = :orgLocationId) ORDER BY user.id DESC";
+		userList = session.createQuery(query).setLong( "orgLocationId", locationId).list();
+		return userList;
+	}
 }
