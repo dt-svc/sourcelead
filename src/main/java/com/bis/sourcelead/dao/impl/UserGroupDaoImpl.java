@@ -100,4 +100,48 @@ public class UserGroupDaoImpl implements UserGroupDao{
 		}
 		return response;
 	}
+
+	@Override
+	@Transactional
+	public boolean validateUserGroupIdOrGroupName(Long locationId, UserGroupDTO userGroupDTO)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserGroup> userIdViewList = null;
+		if(StringUtils.isNotBlank(userGroupDTO.getGroupId())){
+			String query = "from UserGroup ug where ug.orgLocationId = :orgLocationId and ug.groupId = :groupId and ug.id <> :id";
+			userIdViewList = session.createQuery(query.toString()).setLong("orgLocationId", locationId).setString("groupId", userGroupDTO.getGroupId()).setLong("id", userGroupDTO.getId()).list();
+		}else if(StringUtils.isNotBlank(userGroupDTO.getGroupName())){
+			String query = "from UserGroup ug where ug.orgLocationId = :orgLocationId and ug.groupName = :groupName and ug.id <> :id";
+			userIdViewList = session.createQuery(query.toString()).setLong("orgLocationId", locationId).setString("groupName", userGroupDTO.getGroupName()).setLong("id", userGroupDTO.getId()).list();
+		}
+		if(userIdViewList != null && userIdViewList.size() > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	@Override
+	@Transactional
+	public List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserGroup userGroup where userGroup.orgLocationId.id = :orgLocationId ";
+		List<UserGroup> userGroupList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).list();
+		return userGroupList;
+	}
+
+	@Override
+	@Transactional
+	public UserGroup findUserGroupById(Long groupId)
+	{
+		UserGroup userGroup = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from UserGroup userGroup where userGroup.id = :groupId and userGroup.status = 1";
+		List<UserGroup> userGroupList = session.createQuery(query.toString()).setLong("groupId", groupId).list();
+		if(userGroupList != null && userGroupList.size() >0) {
+			userGroup = userGroupList.get(0);
+		}
+		return userGroup;
+	}
 }

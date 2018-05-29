@@ -99,9 +99,37 @@ public class UserGroupServiceImpl implements UserGroupService{
 	}
 
 	@Override
-	public Response<UserGroup> validateUserGroupId(OrgLocations orgLocations, UserGroupDTO userGroupDTO)
+	public Response<UserGroup> validateUserGroupIdOrGroupName(OrgLocations orgLocations, UserGroupDTO userGroupDTO)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		Response<UserGroup> resObj = new Response<>();
+		if(orgLocations != null){
+			try {
+				boolean flag = userGroupDao.validateUserGroupIdOrGroupName(orgLocations.getId(), userGroupDTO);
+				if (flag) {
+					resObj.setResponse("Record Exists");
+					resObj.setResponseMessage("Record Exists");
+				}else {
+					resObj.setResponse(Result.SUCCESS.name());
+					resObj.setResponseMessage(Result.SUCCESS.getValue());
+				}
+			}catch (Exception e) {
+				resObj.setResponse(Result.AWKWARD.name());
+				resObj.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		}
+		
+		return resObj;
+	}
+
+	@Override
+	public List<UserGroup> getAllUserGroupsByLocationId(OrgLocations orgLocation)
+	{
+		return userGroupDao.getAllUserGroupsByLocationId(orgLocation);
+	}
+
+	@Override
+	public UserGroup findUserGroupById(Long groupId)
+	{
+		return userGroupDao.findUserGroupById(groupId);
 	}
 }

@@ -23,7 +23,7 @@ public class HelloPayrollWorldBis {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HelloPayrollWorldBis.class);
 	
-	STEPayrollCalculator STE;
+//	STEPayrollCalculator STE;
 	
 //	public HelloPayrollWorld() {
 //	}
@@ -33,7 +33,7 @@ public class HelloPayrollWorldBis {
 		System.out.println("Hi");
 	}
 	
-	public void runUSPayroll(User user, float totalHours, double amount, int payPeriod, AssociateTaxDTO associateTaxDTO, String STEhome, String jniHome)
+	public STEPayrollCalculator runUSPayroll(User user, float totalHours, double amount, int payPeriod, AssociateTaxDTO associateTaxDTO, String STEhome, String jniHome)
 //	public void hello(String locationCode)
 	{
 //		String STEhome = "/home/rajashekar/Desktop/Tools/ste/ste-root";
@@ -102,11 +102,12 @@ public class HelloPayrollWorldBis {
 			System.out.println("County Withholding:" + STE.getCountyCalc(locationCode));
 			System.out.println("");
 			System.out.println("************************************************");
-			
+			return STE;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 //		System.exit(0);
+		return null;
 	}
 
 	private WebServiceLocationCodeV2 getLocationCode(STEPayrollCalculator STE, User user)

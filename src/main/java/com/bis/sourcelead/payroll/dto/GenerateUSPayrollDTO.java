@@ -1,28 +1,30 @@
 package com.bis.sourcelead.payroll.dto;
 
-public class GenerateUSPayrollDTO {
+import com.bis.sourcelead.dto.SearchDTO;
+
+public class GenerateUSPayrollDTO extends SearchDTO{
 	
-	private String payrollStartDate;
+	private String groupId;
 	
-	private String payrollEndDate;
-	
+	private String payPeriod;
+	  
 	private String payrollPayDate;
 	
-	public String getPayrollStartDate()
+	public String getGroupId()
 	{
-		return payrollStartDate;
+		return groupId;
 	}
-	public void setPayrollStartDate(String payrollStartDate)
+	public void setGroupId(String groupId)
 	{
-		this.payrollStartDate = payrollStartDate;
+		this.groupId = groupId;
 	}
-	public String getPayrollEndDate()
+	public String getPayPeriod()
 	{
-		return payrollEndDate;
+		return payPeriod;
 	}
-	public void setPayrollEndDate(String payrollEndDate)
+	public void setPayPeriod(String payPeriod)
 	{
-		this.payrollEndDate = payrollEndDate;
+		this.payPeriod = payPeriod;
 	}
 	public String getPayrollPayDate()
 	{

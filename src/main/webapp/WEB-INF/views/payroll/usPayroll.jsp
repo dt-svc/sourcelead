@@ -3,14 +3,131 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<script>
+<!-- <script>
 $(document).ready(function(){
 	prepareUSPayrollList("NO_RECORDS");
 });
+</script> -->
+
+
+
+
+
+
+!-- Content Area -->
+<section class="content-wraper contentWraper">
+<section class="content-header clearfix">
+<div class="pull-left">
+<h2>Payroll</h2>
+</div>
+<div class="pull-right brud-crum">Home &raquo; Payroll</div>
+</section>
+
+
+<div class="clearfix"></div>
+<div class="timesheet_out">
+
+<div class="tablelist-wrap">
+<div class="timesheet_head minHeight">
+<form:form id="generate_payroll_form" name="generate_payroll_form" method="post">
+<div class="col-md-7 mt">
+	<div class="row">
+		<div class="col-md-3">
+			<div class="dropdown-select">
+			<select id="groupId" name="groupId" onchange="getGroupFrequency();" data-validation="required" field-name="User Group">
+				<option value="">--Select User Group--</option>
+                    <c:forEach var="ug" items="${userGroupList}">
+					<option value="${ug.id}">${ug.groupName}</option>
+				</c:forEach>
+			</select>
+			</div>
+		</div>
+		<div class="col-md-4 paddingLeft paddingRight">
+			<div class="dropdown-select">
+			<select id="payPeriod" name="payPeriod" data-validation="required" field-name="Pay Period">
+			</select>
+			</div>
+		</div>
+		<div class="col-md-3 paddingRight">
+			<input name="" class="form-control calendar" placeholder="Check Date" id="payrollPayDate" name="payrollPayDate" type="text" data-validation="required" field-name="Pay Date">
+		</div>
+		<div class="col-md-2">
+			<a  class="btn btn-success btnSuccess btn-sm anchorWhite" id="generateUSPayroll" onclick="runUSPayroll();">Run Payroll</a>
+		</div>
+	</div>						
+</div>
+<div class="clearfix"></div>
+<div class="remove_search">
+	<input placeholder="Search" type="text">
+</div>              
+</form:form>
+</div>
+
+<div class="tableScroll">
+ <div class="styleTables clearfix mt">
+ <div id="USPayrollDiv"></div>
+ <div id="testDiv"></div>
+</div> 
+</div>
+<div class="clearfix mt"></div>
+<nav class="clearfix">
+	
+<div class="col-md-2">
+			<a href="javascript:void(0)" class="btn anchorBlue">Exclude</a>
+</div>
+	<ul class="pull-right mr list-unstyled list-inline">
+		<li><a href="#" class="btn btn-primary btnSuccess">Sent for Approve</a></li>
+		<li><a href="#" class="btn btn-default ml mr">Confirm</a></li>
+		<li><a href="#" class="btn btn-default">Cancel</a></li>
+	</ul>
+<div class="clearfix"></div>
+</nav>	
+
+
+
+</div>
+
+
+</div>  
+
+
+<!-- New Code Here -->
+
+<script>
+function getGroupFrequency(){
+	var groupId = $("#groupId").val();
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getUsersVGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupId="+groupId                  , 
+	        success: function(json) {
+	        var output = "";
+			for (var i=0; i<json.length; i++)
+			{
+				var date = json[i].replace(",", " to ");
+				output = output + "<option value='" +json[i]+ "'>"+date+"</option>";
+			}
+			$("#payPeriod").empty();
+			$("#payPeriod").append(output);
+			$('#payPeriod').trigger("chosen:updated"); 
+	        },
+	    });
+}
 </script>
+<!-- New Code End Here -->
+
+<!--   Error Message   -->
+<div class="vendor_wrap_mask"></div>
+<div class="vendor_error">
+<textarea placeholder="Enter message"></textarea>
+<a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
+
+<!--   Error Message   --> 
+
+
+</section>
 
  <!-- Content Area -->
-  <section class="content-wraper">
+ <%--  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Generate Payroll</h2>
@@ -60,63 +177,14 @@ $(document).ready(function(){
  	 <input type='text' placeholder='Search' id='dataTableSearch'/>
  	</div>
         <div id="USPayrollDiv" class="clients_wrap_table datatable_filter"></div>
-         <!--  <table>
-            <tbody>
-            </tbody>
-            <thead>
-              <tr>
-                <th>Emp Id</th>
-                <th>Employee Name</th>
-                <th>Regular<br>Hours</th>
-                <th>Overtime<br>Hours</th>
-                <th>Gross Pay</th>
-                <th>Pre Tax <br> Deduction</th>
-                <th>Post Tax <br> Deduction</th>
-                <th>Taxes</th>
-                <th>Benefits</th>
-                <th>Net Pay</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                <div class="proj_show"><span>Emp0001</span><i class="fa fa-binoculars"></i></div></td>
-                <td><div>Jaden Smith</div></td>
-				<td>
-              		<div class="tblminwidth-75">40</div>
-              		<div class="tblminwidth-75">2000 $</div>
-                </td>
-				<td>
-              		<div class="tblminwidth-75">40</div>
-              		<div class="tblminwidth-75">2000$</div>
-                </td>				<td>
-              		<div class="tblminwidth-75">2000$</div>
-                </td>
-                <td><div class="tblminwidth-75"><a href="javascript:void(0)" onClick="preTax();">50$</a></div></td>
-                <td><div class="tblminwidth-75"><a href="javascript:void(0)" onClick="postTax();">100$</a></div></td>
-                <td><div class="tblminwidth-75"><a href="javascript:void(0)" onClick="taxes();">200$</a></div></td>
-                <td><div>200$</div></td>
-                <td><div class="tblminwidth-75">3000$</div></td>
-               </tr>
-            </tbody>
-          </table> -->
+        
+         
         </div>
-     <!--    <nav>
-          <ul id="paging" class="pagination">
-            <li><a href="#">Previous</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li class="disabled"><a href="#">6</a></li>
-            <li data-page="last"><a href="#">Next</a></li>
-          </ul>
-          <div class="clearfix"></div>
-        </nav> -->
+     
       </div>
     </div>
-  </section>
-  <!-- Content Area Ends--> 
+  </section> --%>
+
   
   <script>
   $( function() {
@@ -162,42 +230,7 @@ $(document).ready(function(){
 		      //minDate: 0  this line for to restrict selection of previous dates
 		  });
 		
-		/* $('#payrollStartDate').datepicker({
-			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '+1d');
-				dt.setDate(dt.getDate() + 1);
-				$("#payrollEndDate").datepicker("option", "minDate", dt);
-				addValidClass();
-			}
-		}); */
 		
-		/* $('#payrollEndDate').datepicker({
-			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '-1d');
-				dt.setDate(dt.getDate() - 1);
-				$("#startDate").datepicker("option", "maxDate", dt);
-				addValidClass();
-			}
-		}); */
-		
-		
-	/* 	$('#payrollPayDate').datepicker({
-			dateFormat : 'dd-mm-yy',
-			changeMonth: true,
-			changeYear: true, 
-			onSelect : function(selected) {
-				var dt = $(this).datepicker('getDate', '-1d');
-				dt.setDate(dt.getDate() - 1);
-				$("#payrollPayDate").datepicker("option", "maxDate", dt);
-				addValidClass();
-			}
-		}); */
 		
 	});
 </script>
@@ -207,16 +240,107 @@ $(document).ready(function(){
 
 
 
-<script type="text/javascript">
+<script>
 function runUSPayroll(){
-		if ($('#generate_payroll_form').validate(false, validationSettings)){  
+	alert("Hiu");
+	if ($('#generate_payroll_form').validate(false, validationSettings)){  
+		var searchValue = $("#dataTableSearch").val();
+		searchValue = searchValue ? searchValue : "";
+		var groupId = $("#groupId").val();
+		var payPeriod = $("#payPeriod").val();
+		var payrollPayDate = $("#payrollPayDate").val();
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate,                 
+		        success: function(data) {
+		        	
+		            var json = data.data;
+		        	var result = "";
+		        	result += '<table>';
+		        	result += '<thead>';
+		        	result += '<tr>';
+		        	result += '<th>';
+		        	result += '<div class="checkbox-new pull-left">';
+		        	result += '<input id="all" class="checkbox-custom" name="paidComponent" type="checkbox">';
+		        	result += '<label for="all" class="checkbox-custom-label"></label>';
+		        	result += '</div>';
+		        	result += '</th>';
+		        	result += '<th>Emp ID</th>';
+		        	result += '<th>Emp Name</th>';
+		        	result += '<th>Regular<br>Hours</th>';
+		        	result += '<th>Payrate</th>';
+		        	result += '<th>OT<br>Hours</th>';
+		        	result += '<th>Gross<br>Pay</th>';
+		        	result += '<th>Pretax<br>Deduction</th>';
+		        	result += '<th>Post<br>Deduction</th>';
+		        	result += '<th>Taxes</th>';
+		        	result += '<th>Net<br>Pay</th>';
+		        	result += '</tr>';
+		        	result += '</thead>	';
+		        	result += '<tbody>';
+		        	if(json != null && json.length > 0){
+		        		for (var i=0; i<json.length; i++){
+		        			var opt = json[i];
+		        			result += '<tr>';
+				        	result += '<td>';
+				        	result += '<div class="checkbox-new pull-left ml5">';
+				        	result += '<input id="emp1" class="checkbox-custom" name="paidComponent" type="checkbox">';
+				        	result += '<label for="emp1" class="checkbox-custom-label"></label>';
+				        	result += '</div>';
+				        	result += '</td>';
+				        	result += '<td><div class="tblminwidth-50">'+opt.empId+'</div></td>';
+				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.empName+'</div></td>';
+				        	result += '<td><div class="tblminwidth-50">'+opt.regularHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.regularHrsTotalAmt.toFixed(2)+'</div></td>';	
+				        	result += '<td><div class="tbldata-dotdot-vsm">'+opt.payRate+'</div></td>';
+				        	if(opt.overtimeHours != null && opt.overtimeHours != '' && opt.overtimeHours != 'undefined'){
+				        		result += '<td><div class="tblminwidth-50">'+opt.overtimeHours+'</div><div class="tblminwidth-50 clearfix text-danger">$ '+opt.otHoursTotalAmt.toFixed(2)+'</div></td>';
+				        	}else{
+				        		result += '<td><div class="tblminwidth-50">0.00</div><div class="tblminwidth-50 clearfix text-danger">$ 0.00</div></td>';
+				        	}
+				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.grossPay.toFixed(2)+'</div>';
+				        	result += '</td><td><div class="tblminwidth-50 clearfix">$ '+opt.preTaxDeduction.toFixed(2)+'</div></td>';
+				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.postTaxDeduction.toFixed(2)+'</div></td>';
+				        	result += '<td><div class="tblminwidth-50 clearfix">$ '+opt.taxes.toFixed(2)+'</div></td>';
+				        	result += '<td><div class="tblminwidth-50 clearfix"><a href="javascript:void(0)">$ '+opt.netPay.toFixed(2)+'</a></div></td>';
+				        	result += '</tr>';  	
+			        	}
+			        	
+		        	}
+		        	result += '</tbody>';
+		        	result += '</table>';
+		        	alert(result);
+		        	$("#testDiv").empty();
+		        	$("#testDiv").append(result);
+		        },
+		    });
+		 
+		return true; 
+    }else{
+   return false;
+   	  } 
+	}
+	
+$('body').on('blur', '#generate_payroll_form', function() {
+	$("#generate_payroll_form").showHelpOnFocus();
+	$("#generate_payroll_form").validateOnBlur(false, validationSettings);  
+});
+
+
+</script>
+
+
+
+ 
+<script type="text/javascript">
+function runUSPayrollRajashekar(){
+	if ($('#generate_payroll_form').validate(false, validationSettings)){  
 			var searchValue = $("#dataTableSearch").val();
 			searchValue = searchValue ? searchValue : "";
-			var payrollStartDate = $("#payrollStartDate").val();
-			var payrollEndDate = $("#payrollEndDate").val();
+			var groupId = $("#groupId").val();
+			var payPeriod = $("#payPeriod").val();
 			var payrollPayDate = $("#payrollPayDate").val();
-			var url = sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&payrollStartDate="+payrollStartDate+"&payrollEndDate="+payrollEndDate+"&payrollPayDate="+payrollPayDate;
-		    prepareUSPayrollList(url);
+			var url = sourceleadUrl+"/generateUSPayroll?searchValue="+searchValue+"&groupId="+groupId+"&payPeriod="+payPeriod+"&payrollPayDate="+payrollPayDate;
+ 		    prepareUSPayrollList(url);
 			return true; 
 	         }else{
 		    return false;
@@ -247,9 +371,10 @@ function prepareUSPayrollList(url){
         result = result +" </tbody>";
         result = result +"</table>";
       $("#USPayrollDiv").append(result);
-     if(url != 'NO_RECORDS'){
-    	 prepareUSPayrollPagination(url); 
-     }
+      prepareUSPayrollPagination(url); 
+     /* if(url != 'NO_RECORDS'){
+    	
+     } */
       
 }
 </script>
@@ -385,23 +510,5 @@ function prepareUSPayrollPagination(url){
 }
 </script>
 
-<!-- <script>
-function runUSPayroll(){
-	if ($('#generate_payroll_form').validate(false, validationSettings)){  
-		alert("Hi-1");    
-		var formData = getFormData("generate_payroll_form");
-		        	  $.post(sourceleadUrl+"/generateUSPayroll?"+tokenParamName+"="+tokenValue, formData, function(data) {
-		        		 alert("success");
-		  			   }); 
-		    	         return true; 
-         }else{
-	    		return false;
-	    	  } 
-}
 
-$('body').on('blur', '#generate_payroll_form', function() {
-	$("#generate_payroll_form").showHelpOnFocus();
-	$("#generate_payroll_form").validateOnBlur(false, validationSettings);  
-}); 
-</script> -->
 <jsp:include page="../masterFooter.jsp" />

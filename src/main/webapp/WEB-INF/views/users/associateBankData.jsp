@@ -78,7 +78,7 @@
 		                } else if (result.response === "AWKWARD") {
 		                    location.href = "/errorPage";
 		                } else if (result.response === "SUCCESS") {
-		                	/* $("#associateId").val(result.object.userId); */
+		                	$("#associateId").val(result.object.userId); 
 							var associateBanking = document.getElementById("associateTax");
 							document.getElementById("associateTax").removeAttribute("class"); 
 							associateTax.href="#tab-3"; 

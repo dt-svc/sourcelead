@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,14 +66,16 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 	@Override
 	public ResponseList<USPayrollDTO> generateUSPayroll(OrgLocations orgLocation, GenerateUSPayrollDTO generateUSPayrollDTO) throws Exception
 	{
-		Date actualStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), generateUSPayrollDTO.getPayrollStartDate().replaceAll("/", "-"));
-		Date actualEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), generateUSPayrollDTO.getPayrollEndDate().replaceAll("/", "-"));
+		String dates[] = generateUSPayrollDTO.getPayPeriod().split(",");
+		Date actualStartDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[0].replaceAll("/", "-"));
+		Date actualEndDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dates[1].replaceAll("/", "-"));
 		ResponseList<USPayrollDTO> usPayrollDTOResponse = new ResponseList<>();
 		List<USPayrollDTO> list = new ArrayList<>();
 		ResponseList<ProjectMembers> response = projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdForPayroll(orgLocation.getId(), actualStartDate, actualEndDate, 1, 10);
 		if (response != null && response.getData() != null && !response.getData().isEmpty()) {
 			int i = 1;
 			for (ProjectMembers pm : response.getData()) {
+				System.out.println("**********************"+pm.getProjectMemberCandidteId().getConsultantUser().getId());
 				Map<String, Float> hoursMap = submissionApproverHierarchyDao.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(), orgLocation.getId(), actualStartDate, actualEndDate);
 				USPayrollDTO usPayrollDTO = new USPayrollDTO();
 				StringBuffer sb = new StringBuffer();
@@ -86,6 +89,7 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 					sb.append(pm.getProjectMemberCandidteId().getFirstName());
 				}
 				usPayrollDTO.setEmpName(sb.toString());
+				usPayrollDTO.setPayRate(BigDecimal.valueOf(pm.getPayRate()));
 				double amount = getTotalAmount(totalHours,pm.getPayRate());
 				
 				User user = userService.getUserbyConsultantUserId(pm.getProjectMemberCandidteId().getConsultantUser().getId());
@@ -97,8 +101,20 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 //				String locationCode = "18-097-452890";
 //				String locationCode = "04-013-12233";       // Arizona Location Code  
 //				client.hello(locationCode);
-				helloPayrollWorld.runUSPayroll(user,totalHours,amount,invoiceFrequency,associateTaxDTO,STEhome,jniHome);
-//				helloPayrollWorld.hello();
+				usPayrollDTO.setRegularHrsTotalAmt(BigDecimal.valueOf(amount));
+				usPayrollDTO.setPreTaxDeduction(BigDecimal.valueOf(0.00));
+				usPayrollDTO.setPostTaxDeduction(BigDecimal.valueOf(0.00));
+				usPayrollDTO.setGrossPay(BigDecimal.valueOf(amount));
+				STEPayrollCalculator STE = helloPayrollWorld.runUSPayroll(user,totalHours,amount,invoiceFrequency,associateTaxDTO,STEhome,jniHome);
+				
+				System.out.println("FICA Withholding:" + STE.getFICACalc());
+				System.out.println("Medicare Withholding: " + STE.getMedicareCalc());
+				System.out.println("Federal Withholding: " + STE.getFederalCalc());
+				System.out.println("Earned Inc. Credit: " + STE.getEICCalc());
+//				System.out.println("State Withholding: " + STE.getStateCalc(locationCode));
+//				System.out.println("County Withholding:" + STE.getCountyCalc(locationCode));
+				usPayrollDTO.setTaxes(BigDecimal.valueOf(0.00));
+				usPayrollDTO.setNetPay(BigDecimal.valueOf(0.00));
 				if (pm.getEmployee() != null) {
 					usPayrollDTO.setEmpId(pm.getEmployee().getEmployeeId());
 				}

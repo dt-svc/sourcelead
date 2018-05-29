@@ -1,6 +1,9 @@
 package com.bis.sourcelead.payroll.rest;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +20,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserGroupDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserGroup;
 import com.bis.sourcelead.payroll.dao.AssociateContributionDao;
 import com.bis.sourcelead.payroll.dao.AssociateDeductionDao;
 import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
@@ -31,6 +36,7 @@ import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
 import com.bis.sourcelead.payroll.dto.ContributionDTO;
 import com.bis.sourcelead.payroll.dto.DeductionDTO;
 import com.bis.sourcelead.payroll.dto.GenerateUSPayrollDTO;
+import com.bis.sourcelead.payroll.dto.PayItemDTO;
 import com.bis.sourcelead.payroll.dto.PayrollContributionDTO;
 import com.bis.sourcelead.payroll.dto.PayrollDeductionDTO;
 import com.bis.sourcelead.payroll.dto.USPayrollDTO;
@@ -43,11 +49,14 @@ import com.bis.sourcelead.payroll.service.AssociateContributionService;
 import com.bis.sourcelead.payroll.service.AssociateDeductionService;
 import com.bis.sourcelead.payroll.service.AssociateTaxService;
 import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
+import com.bis.sourcelead.payroll.service.PayItemService;
 import com.bis.sourcelead.payroll.service.PayrollContributionService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
+import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserGroupService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
@@ -91,6 +100,16 @@ public class USPayrollRestController {
 	
 	@Autowired
 	UserGroupService userGroupService;
+	
+	@Autowired
+	CommonUtil commonUtil;
+	
+	@Autowired
+	PayItemService payItemService;
+	
+	@Autowired
+	AssociateSalaryService associateSalaryService;
+	
 	/**
 	 * find all deduction types from lookup_data table 
 	 * @param request
@@ -601,6 +620,9 @@ public class USPayrollRestController {
 		public ModelAndView usPayroll(HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
 			ModelAndView model = new ModelAndView();
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			List<UserGroup> userGroupList = userGroupService.getAllUserGroupsByLocationId(orgLocation);
+			model.addObject("userGroupList",userGroupList);
 			model.setViewName("payroll/usPayroll");
 			return model;
 		}
@@ -638,4 +660,115 @@ public class USPayrollRestController {
 			userGroupDTO.setSortOrder(sortColumnOrder);
 			return  userGroupService.findAllUserGroup(userGroupDTO,orgLocation);	
 		}
+		
+		/**
+		 * Get Pay Frequency By Group Frequency
+		 * @param groupId
+		 * @param request
+		 * @param response
+		 * @return List<String>
+		 * @throws Exception
+		 */
+	@RequestMapping(value = { "/getUsersVGroupPayPeriod","/rest/getUsersVGroupPayPeriod" }, method = RequestMethod.GET)
+	public List<String> getUsersVGroupPayPeriod(@RequestParam(value = "groupId", required = false) Long groupId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		List<String> listDates = null;
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		UserGroup userGroup = userGroupService.findUserGroupById(groupId);
+		if ("Weekly".equalsIgnoreCase(userGroup.getPayFrequency())) {
+			Calendar now = Calendar.getInstance(); // Gets the current date and
+			int year = now.get(Calendar.YEAR);
+			int month = now.get(Calendar.MONTH);
+			listDates = getNumberOfWeeks(year, month, orgLocation);
+		}
+		return listDates;
+	}
+		
+		
+		/**
+		 * Get all week start date and end date of year
+		 * @param year
+		 * @param month1
+		 * @param orgLocation 
+		 * @return List<List<String>> 
+		 */
+	private List<String> getNumberOfWeeks(int year, int month1, OrgLocations orgLocation)
+	{
+		List<String> payFrequency = new ArrayList<>();
+		SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+		List<List<String>> weekdates = new ArrayList<List<String>>();
+		List<String> dates;
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.YEAR, year);
+		for (int i = 0; i < month1; i++) {
+			c.set(Calendar.MONTH, i);
+			c.set(Calendar.DAY_OF_MONTH, 1);
+			while (c.get(Calendar.MONTH) == i) {
+				dates = new ArrayList<String>();
+				while (c.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+					c.add(Calendar.DAY_OF_MONTH, -1);
+				}
+				dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
+				c.add(Calendar.DAY_OF_MONTH, 6);
+				dates.add(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), c.getTime()));
+				weekdates.add(dates);
+				c.add(Calendar.DAY_OF_MONTH, 7);
+			}
+		}
+		for (List<String> innerList : weekdates) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(innerList.get(0)).append(",").append(innerList.get(1));
+			payFrequency.add(sb.toString());
+		}
+		return payFrequency;
+	}
+	
+//	
+	
+	/**"
+	 * Add Pay Item for Organization
+	 * @param payItemDTO
+	 * @param request
+	 * @param response
+	 * @return Response<PayItemDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/addPayItem","/rest/addPayItem" }, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<PayItemDTO> addPayItem(PayItemDTO payItemDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<PayItemDTO>  resObj = payItemService.addPayItem(orgLocation,payItemDTO,loginUser);
+		return resObj;
+	}
+	
+	/**
+	 * Get Pay Item List By OrgLocation Id
+	 * @param payItemDTO
+	 * @param request
+	 * @param response
+	 * @return ResponseList<PayItemDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/getPayItemList","/rest/getPayItemList" }, method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseList<PayItemDTO> getPayItemList(PayItemDTO payItemDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ResponseList<PayItemDTO> resObj = payItemService.getPayItemByLocationId(orgLocation);
+		return resObj;
+	}
+	
+	
+	
+	@RequestMapping(value = { "/addAssociateSal","/rest/addAssociateSal" }, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<AssociateSalaryDTO> addAssociateSal(AssociateSalaryDTO associateSalaryDTO , HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Response<AssociateSalaryDTO>  resObj = associateSalaryService.addAssociateSal(orgLocation,associateSalaryDTO,loginUser);
+		return resObj;
+	}
 }

@@ -49,16 +49,18 @@
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Associates List</a> &raquo; Add Associate </div>
         </section>
         <input type="hidden" id="associateId" name="associateId">
+        <input type="hidden" id="empType" name="empType">
         <!--New theme-->
         <div class="user_summ_wrap contentareaInner-styles">
 	      <div class="tabsMenu">
 	        <ul class="list-unstyled">
-	          <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
-	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking">Banking</a></li>
+	          <li class="current"><a href="#tab-1">Associates</a></li>
+	           <li class=""><a href="#tab-6" data-toggle="tab" id="associateSalary" >Salary</a></li>
+	          <li class=""><a href="#tab-2" data-toggle="tab" id="associateBanking" >Banking</a></li>
 	          <li class=""><a href="#tab-3" data-toggle="tab" id="associateTax" >TAX</a></li>
 	          <li class=""><a href="#tab-4" data-toggle="tab" id="associateDeduction">Deduction</a></li>
 	          <li class=""><a href="#tab-5" data-toggle="tab" id="associateContribution">Contribution</a></li>
-	          <li class=""><a href="#tab-6" data-toggle="tab" id="associateAdvances">Advances</a></li>
+<!-- 	          <li class=""><a href="#tab-6" data-toggle="tab" id="associateAdvances">Advances</a></li> -->
 	          <div class="clearfix"></div>
 	        </ul>
 			</div>
@@ -415,6 +417,7 @@
           </div>
         </div>
         </div>
+         <jsp:include page="associateSalary.jsp" />
        <jsp:include page="associateBankData.jsp" />
        <jsp:include page="associateTax.jsp" />
        <jsp:include page="associateDeduction.jsp" />
@@ -646,10 +649,11 @@ function getEmployeementType(designationType){
 					} 
 					else {
 						$("#associateId").val(result.object.userId);
-						var associateBanking = document.getElementById("associateBanking");
-						document.getElementById("associateBanking").removeAttribute("class"); 
-						associateBanking.href="#tab-2"; 
-						$("#associateBanking").click();
+						$("#empType").val(result.object.designationType);
+						var associateBanking = document.getElementById("associateSalary");
+						document.getElementById("associateSalary").removeAttribute("class"); 
+						associateBanking.href="#tab-6"; 
+						$("#associateSalary").click();
 						/* location.replace(sourceleadUrl+"/usersList"); */
 					}
 				},
@@ -1290,6 +1294,11 @@ function clearDateofJoin(){
 					associateAdvances.className = "disabledLink";
 				} 
 				
+				var associateSalary = document.getElementById("associateSalary");
+				if(associateSalary){
+					associateSalary.href = "#";
+					associateSalary.className = "disabledLink";
+				} 
 				// associateContribution associateAdvances
 
 $(document).ready(function() {
