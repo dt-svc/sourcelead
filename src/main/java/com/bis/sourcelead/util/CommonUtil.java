@@ -410,7 +410,7 @@ public class CommonUtil {
 
 	public static boolean isValidDate(String inDate) {
 	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	    dateFormat.setLenient(false);
+	  //  dateFormat.setLenient(false);
 	    try {
 	      dateFormat.parse(inDate.trim());
 	    } catch (ParseException pe) {
