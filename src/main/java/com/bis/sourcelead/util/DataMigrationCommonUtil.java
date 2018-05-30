@@ -2159,7 +2159,8 @@ public class DataMigrationCommonUtil {
 				errorSet.put("beneficiaryEmail", "Beneficiary Email is is not a valid email address");
 			}
 		}
-		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth")) && dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null")) {
+		
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth")) || dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null")) {
 			errorSet.put("dateOfBirth", "DOB is missing");
 		}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
 					errorSet.put("dateOfBirth", "DOB is invalid date");
@@ -2222,12 +2223,18 @@ public class DataMigrationCommonUtil {
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportCountry")) || dataMigrationDTOJsonCopy.getString("passportCountry").equals("null")) {
 				errorSet.put("passportCountry", "passportCountry is invalid input");/// dropdown value.
 			}
+			
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportStartDate")) || dataMigrationDTOJsonCopy.getString("passportStartDate").equals("null")) {
 				errorSet.put("passportStartDate", "passportStartDate is mandatory if you have entered passportNo");/// dropdown value.
-			}
+			}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("passportStartDate"))) {
+				errorSet.put("passportStartDate", "passportStartDate is invalid date");
+             }
+			
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportEndDate")) || dataMigrationDTOJsonCopy.getString("passportEndDate").equals("null")) {
 				errorSet.put("passportEndDate", "passportEndDate is mandatory if you have entered passportNo");/// dropdown value.
-			}
+			}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("passportEndDate"))) {
+				errorSet.put("passportEndDate", "passportEndDate is invalid date");
+            }
 			}else {
 				errorSet.put("passportNo", "passportNo is already exist.");
 			}
@@ -2243,12 +2250,19 @@ public class DataMigrationCommonUtil {
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaCountry")) || dataMigrationDTOJsonCopy.getString("visaCountry").equals("null")) {
 				errorSet.put("visaCountry", "visaCountry is mandatory if you have entered visano");/// dropdown value.
 			}
+			
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaStartDate")) || dataMigrationDTOJsonCopy.getString("visaStartDate").equals("null")){
 				errorSet.put("visaStartDate", "visaStartDate is mandatory if you have entered visano");/// dropdown value.
-			}
+			}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("visaStartDate"))) {
+				errorSet.put("visaStartDate", "visaStartDate is invalid date");
+            }
+			
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaEndDate")) || dataMigrationDTOJsonCopy.getString("visaEndDate").equals("null")) {
 				errorSet.put("visaEndDate", "visaEndDate is mandatory if you have entered visano");/// dropdown value.
-			}
+			}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("visaEndDate"))) {
+				errorSet.put("visaEndDate", "visaEndDate is invalid date");
+            }
+			
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaType")) || dataMigrationDTOJsonCopy.getString("visaType").equals("null")) {
 				errorSet.put("visaType", "Visa Type is missing"); /// dropdown value.
 			} else {
@@ -2268,10 +2282,37 @@ public class DataMigrationCommonUtil {
 		}
 			
 		}
-
-		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("openOn"))) {
-			errorSet.put("openOn", "Open On is missing");
+		
+		
+		if (!dataMigrationDTOJsonCopy.getString("dateOfArrival").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateOfArrival"))) {
+			errorSet.put("dateOfArrival", "dateOfArrival is invalid date");
 		}
+		
+
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("openOn")) || dataMigrationDTOJsonCopy.getString("openOn").equals("null")) {
+			errorSet.put("openOn", "Open On is missing");
+		}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("openOn"))) {
+			errorSet.put("openOn", "openOn is invalid date");
+        }
+		
+		
+		if (!dataMigrationDTOJsonCopy.getString("lcaStartDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("lcaStartDate"))) {
+			errorSet.put("lcaStartDate", "lcaStartDate is invalid date");
+		}
+		
+		if (!dataMigrationDTOJsonCopy.getString("lcaEndDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("lcaEndDate"))) {
+			errorSet.put("lcaEndDate", "lcaEndDate is invalid date");
+		}
+		
+		if (!dataMigrationDTOJsonCopy.getString("prevLcaStartDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("prevLcaStartDate"))) {
+			errorSet.put("prevLcaStartDate", "prevLcaStartDate is invalid date");
+		}
+		
+		if (!dataMigrationDTOJsonCopy.getString("prevLcaEndDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("prevLcaEndDate"))) {
+			errorSet.put("prevLcaEndDate", "prevLcaEndDate is invalid date");
+		}
+		
+		
 		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("status"))) {
 			errorSet.put("status", "Status is missing");
 		} else {
