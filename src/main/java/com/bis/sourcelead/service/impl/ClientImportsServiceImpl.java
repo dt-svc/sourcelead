@@ -1585,7 +1585,7 @@ public class ClientImportsServiceImpl implements ClientImportsService {
 													ClientDTO clientDTO = populateJsonObjectTemp(clientOrVendor, isMailSent, null, orgLocations, clientOrVendor.getOrgName(), "org", mainOrgLocation,user);
 													try {
 														clientDTO.setTemplateId(clientVendorUploadDTO.getTemplateId());
-														clientDTO.getAddUserDTO().setIsMailSent(Constants.YES);
+//														clientDTO.getAddUserDTO().setIsMailSent(Constants.YES);
 														OrgLocations invitedOrgLocation = clientService.storeClient(clientDTO,clientDTO.getAddUserDTO(),clientDTO.getCandidateDTO(), user, orgLocations, responderType, org);
 														clientOrVendor.setRecordStatus("1");
 														responseList.setStatusCode("success");
