@@ -11,6 +11,7 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -333,28 +334,33 @@ public class TimesheetRestController {
 				}else {
 					tedDTO.setSubmitButtonVisible(true);
 				}
-				
 				int workingDaysPerWeek = 0;
-				if(combinedMonEditable && !"Mon".contains(orgLocations.getWeekOffDays())) {
-					workingDaysPerWeek++;
-				}
-                if(combinedTueEditable && !"Tue".contains(orgLocations.getWeekOffDays())) {
-                	workingDaysPerWeek++;
-				}
-                if(combinedWedEditable && !"Wed".contains(orgLocations.getWeekOffDays())) {
-                	workingDaysPerWeek++;
-				}
-                if(combinedThuEditable && !"Thu".contains(orgLocations.getWeekOffDays())) {
-                	workingDaysPerWeek++;
-				}
-                if(combinedFriEditable && !"Fri".contains(orgLocations.getWeekOffDays())) {
-                	workingDaysPerWeek++;
-				}
-                if(combinedSatEditable && !"Sat".contains(orgLocations.getWeekOffDays())) {
-                	workingDaysPerWeek++;
-				}
-                if(combinedSunEditable && !"Sun".contains(orgLocations.getWeekOffDays())) {
-                	workingDaysPerWeek++;
+				if(StringUtils.isNotEmpty(orgLocations.getWeekOffDays())) {
+					 String[] strArray = orgLocations.getWeekOffDays().split(",");
+				     List<String> weekOffs = new ArrayList<String>(Arrays.asList(strArray));
+					if(combinedMonEditable && !weekOffs.contains("Mon")) {
+						workingDaysPerWeek++;
+					}
+	                if(combinedTueEditable && !weekOffs.contains("Tue")) {
+	                	workingDaysPerWeek++;
+					}
+	                if(combinedWedEditable && !weekOffs.contains("Wed")) {
+	                	workingDaysPerWeek++;
+					}
+	                if(combinedThuEditable && !weekOffs.contains("Thu")) {
+	                	workingDaysPerWeek++;
+					}
+	                if(combinedFriEditable && !weekOffs.contains("Fri")) {
+	                	workingDaysPerWeek++;
+					}
+	                if(combinedSatEditable && !weekOffs.contains("Sat")) {
+	                	workingDaysPerWeek++;
+					}
+	                if(combinedSunEditable && !weekOffs.contains("Sun")) {
+	                	workingDaysPerWeek++;
+					}
+				}else {
+					workingDaysPerWeek = 5;
 				}
                 
                 Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
@@ -1771,26 +1777,32 @@ public class TimesheetRestController {
 					}
 					
 					int workingDaysPerWeek = 0;
-					if(combinedMonEditable && !"Mon".contains(orgLocations.getWeekOffDays())) {
-						workingDaysPerWeek++;
-					}
-	                if(combinedTueEditable && !"Tue".contains(orgLocations.getWeekOffDays())) {
-	                	workingDaysPerWeek++;
-					}
-	                if(combinedWedEditable && !"Wed".contains(orgLocations.getWeekOffDays())) {
-	                	workingDaysPerWeek++;
-					}
-	                if(combinedThuEditable && !"Thu".contains(orgLocations.getWeekOffDays())) {
-	                	workingDaysPerWeek++;
-					}
-	                if(combinedFriEditable && !"Fri".contains(orgLocations.getWeekOffDays())) {
-	                	workingDaysPerWeek++;
-					}
-	                if(combinedSatEditable && !"Sat".contains(orgLocations.getWeekOffDays())) {
-	                	workingDaysPerWeek++;
-					}
-	                if(combinedSunEditable && !"Sun".contains(orgLocations.getWeekOffDays())) {
-	                	workingDaysPerWeek++;
+					if(StringUtils.isNotEmpty(orgLocations.getWeekOffDays())) {
+						 String[] strArray = orgLocations.getWeekOffDays().split(",");
+					     List<String> weekOffs = new ArrayList<String>(Arrays.asList(strArray));
+						if(combinedMonEditable && !weekOffs.contains("Mon")) {
+							workingDaysPerWeek++;
+						}
+		                if(combinedTueEditable && !weekOffs.contains("Tue")) {
+		                	workingDaysPerWeek++;
+						}
+		                if(combinedWedEditable && !weekOffs.contains("Wed")) {
+		                	workingDaysPerWeek++;
+						}
+		                if(combinedThuEditable && !weekOffs.contains("Thu")) {
+		                	workingDaysPerWeek++;
+						}
+		                if(combinedFriEditable && !weekOffs.contains("Fri")) {
+		                	workingDaysPerWeek++;
+						}
+		                if(combinedSatEditable && !weekOffs.contains("Sat")) {
+		                	workingDaysPerWeek++;
+						}
+		                if(combinedSunEditable && !weekOffs.contains("Sun")) {
+		                	workingDaysPerWeek++;
+						}
+					}else {
+						workingDaysPerWeek = 5;
 					}
 	                
 	                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
