@@ -9,7 +9,7 @@
 	<c:choose>
 		<c:when test="${rows.count == 1 || rows.count == 2 || rows.count == 3
 			|| rows.count == 9 || rows.count == 11|| rows.count == 12|| 
-			rows.count == 14|| rows.count == 15 || rows.count == 24 || rows.count == 26}">
+			rows.count == 14|| rows.count == 15 || rows.count == 25 || rows.count == 26 || rows.count == 37}">
 			<div class="form-group">
 				<label class="col-md-4 text-right mt5">${columnHeader} <span
 					class="text-danger paddingLeft">*</span>
