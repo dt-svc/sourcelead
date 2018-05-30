@@ -226,6 +226,7 @@
 		      dateFormat: finalDateFormatImmiEduSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
+		  	  yearRange: "-100:+0",
 		      onSelect: function (selected) {
 		            //var dt = new Date(selected);
 		            var dt = $(this).datepicker('getDate', '+1d');
