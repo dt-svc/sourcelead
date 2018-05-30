@@ -58,6 +58,19 @@ public class AssociateSalary {
 	@Column( name ="ALLOW_OVER_TIME_PAY")
 	private String allowOverTimePay;
 	
+	@Column( name ="INCREMENT_PERCENTAGE")
+	private String incrementPercentage;
+	
+	@Column( name ="EFFECTIVE_DATE")
+	private Date effectiveDate;
+	
+	@Column( name ="CHANGE_REASON")
+	private String changeReason;
+	
+
+	@Column( name ="SALARY_TYPE")
+	private String salaryType; 
+	
 	@Column(name = "ASSOCIATE_SALARY_UUID")
 	private String associateSalaryUuid;
 	
@@ -251,6 +264,46 @@ public class AssociateSalary {
 	public void setAssociatePayItem(Set<AssociatePayItem> associatePayItem)
 	{
 		this.associatePayItem = associatePayItem;
+	}
+
+	public String getIncrementPercentage()
+	{
+		return incrementPercentage;
+	}
+
+	public void setIncrementPercentage(String incrementPercentage)
+	{
+		this.incrementPercentage = incrementPercentage;
+	}
+
+	public Date getEffectiveDate()
+	{
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(Date effectiveDate)
+	{
+		this.effectiveDate = effectiveDate;
+	}
+
+	public String getChangeReason()
+	{
+		return changeReason;
+	}
+
+	public void setChangeReason(String changeReason)
+	{
+		this.changeReason = changeReason;
+	}
+
+	public String getSalaryType()
+	{
+		return salaryType;
+	}
+
+	public void setSalaryType(String salaryType)
+	{
+		this.salaryType = salaryType;
 	}
 
 	

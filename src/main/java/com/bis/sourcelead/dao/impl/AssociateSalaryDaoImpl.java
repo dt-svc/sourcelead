@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.AssociateSalaryDao;
 import com.bis.sourcelead.entity.AssociateSalary;
+import com.bis.sourcelead.entity.AssociateSalaryHistory;
 import com.bis.sourcelead.payroll.dao.impl.AssociateBankDataDaoImpl;
 
 @Repository
@@ -47,7 +48,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateSalary associateSalary = null;
 		try {
-			List<AssociateSalary> associateSalaryList = session.createQuery("from AssociateSalary associateSalary where associateSalary.userId.id=:userId and associateSalary.status = 1" ).setLong( "userId", userId).setLong("userId", userId).list();
+			List<AssociateSalary> associateSalaryList = session.createQuery("from AssociateSalary associateSalary where associateSalary.userId.id=:userId and associateSalary.status = 1" ).setLong("userId", userId).list();
 		 if(associateSalaryList !=null && associateSalaryList.size() >0) {
 			 associateSalary =  associateSalaryList.get(0);
 		 }
@@ -55,5 +56,39 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 			logger.error("findAssociateSalaryByUserId failed due to :"+e.getMessage());
 		}
 		return associateSalary;
+	}
+
+
+	@Override
+	@Transactional
+	public AssociateSalary findAssociateSalaryById(String id)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		AssociateSalary associateSalary = null;
+		try {
+			List<AssociateSalary> associateSalaryList = session.createQuery("from AssociateSalary associateSalary where associateSalary.id=:id and associateSalary.status = 1").setLong("id", Long.parseLong(id)).list();
+			if (associateSalaryList != null && associateSalaryList.size() > 0) {
+				associateSalary = associateSalaryList.get(0);
+			}
+		} catch (Exception e) {
+			logger.error("findAssociateSalaryByUserId failed due to :" + e.getMessage());
+		}
+		return associateSalary;
+	}
+
+
+	@Override
+	@Transactional
+	public AssociateSalaryHistory updaetAssociateSalHis(AssociateSalaryHistory associateSalHis)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (associateSalHis != null) {
+				session.saveOrUpdate(associateSalHis);
+			}
+		} catch (Exception exception) {
+			logger.error("add associate salary History failed due to : "+exception.getMessage());
+		}
+		return associateSalHis;
 	}
 }

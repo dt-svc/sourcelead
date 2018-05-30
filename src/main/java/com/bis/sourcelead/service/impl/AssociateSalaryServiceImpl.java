@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +21,14 @@ import com.bis.sourcelead.dto.AssociateSalaryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.entity.AssociatePayItem;
 import com.bis.sourcelead.entity.AssociateSalary;
+import com.bis.sourcelead.entity.AssociateSalaryHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class AssociateSalaryServiceImpl implements AssociateSalaryService{
@@ -48,7 +51,16 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 		Response<AssociateSalaryDTO> resObj = new Response<>();
 		try {
 			if (Validator.validate(associateSalaryDTO)) {
-				AssociateSalary associateSalary = new AssociateSalary();
+				AssociateSalary associateSalary = null;
+				if(StringUtils.isNotBlank(associateSalaryDTO.getId())) {
+					associateSalary = associateSalaryDao.findAssociateSalaryById(associateSalaryDTO.getId());
+				}else {
+					associateSalary  = new AssociateSalary();
+					User user = userService.getUserById(Long.parseLong(associateSalaryDTO.getUserId()));
+					associateSalary.setUserId(user);
+					Set<AssociatePayItem> assoPayItemSet = getAssociatePayItemSet(associateSalary,associateSalaryDTO,orgLocation,loginUser);
+					associateSalary.setAssociatePayItem(assoPayItemSet);
+				}
 				associateSalary.setPayType(associateSalaryDTO.getPayType());
 				associateSalary.setPayFrequency(associateSalaryDTO.getPayFrequency());
 				associateSalary.setStandardHours(associateSalaryDTO.getStandardHours());
@@ -56,18 +68,31 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 				associateSalary.setGrossSalary(new BigDecimal(associateSalaryDTO.getPerPaySal()));
 				associateSalary.setHourlyRate(new BigDecimal(associateSalaryDTO.getHourlyRate()));
 				associateSalary.setAllowOverTimePay(associateSalaryDTO.getAllowOverTimePay());
-				User user = userService.getUserById(Long.parseLong(associateSalaryDTO.getUserId()));
-				associateSalary.setUserId(user);
 				associateSalary.setOrgLocations(orgLocation);
-				Set<AssociatePayItem> assoPayItemSet = getAssociatePayItemSet(associateSalary,associateSalaryDTO,orgLocation,loginUser);
-				associateSalary.setAssociatePayItem(assoPayItemSet);
 				associateSalary.setCreatedDate(new Date());
 				associateSalary.setUpdatedDate(new Date());
 				associateSalary.setCreatedBy(loginUser.getUserCode());
 				associateSalary.setUpdatedBy(loginUser.getUserCode());
 				associateSalary.setStatus(1);
+				associateSalary.setAssociateSalaryUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				if(associateSalaryDTO.getIncreasePer() != null) {
+					associateSalary.setIncrementPercentage(associateSalaryDTO.getIncreasePer());
+				}
+				if(associateSalaryDTO.getEffectiveDate() != null) {
+					associateSalary.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), associateSalaryDTO.getEffectiveDate()));
+				}
+				if(associateSalaryDTO.getChangeReason() != null) {
+					associateSalary.setChangeReason(associateSalaryDTO.getChangeReason());
+				}
+				if(associateSalaryDTO.getSalaryType() != null) {
+					associateSalary.setSalaryType(associateSalaryDTO.getSalaryType());
+				}
+				
 				AssociateSalary saveAssociateSalary = associateSalaryDao.addAssociateSal(associateSalary);
 				if (saveAssociateSalary != null) {
+					if(StringUtils.isNotBlank(associateSalaryDTO.getId())) {
+						updateAssociateSalHistory(saveAssociateSalary,associateSalaryDTO,loginUser,orgLocation);
+					}
 					resObj.setResponse(Result.SUCCESS.name());
 					resObj.setResponseMessage(Result.SUCCESS.getValue());
 					associateSalaryDTO.setId(String.valueOf(saveAssociateSalary.getId()));
@@ -84,6 +109,46 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
 		return resObj;
+	}
+
+	private void updateAssociateSalHistory(AssociateSalary associateSalary, AssociateSalaryDTO associateSalaryDTO, User loginUser, OrgLocations orgLocation)
+	{
+		AssociateSalaryHistory associateSalHis = new AssociateSalaryHistory();
+		associateSalHis.setAssociateSalary(associateSalary);
+		associateSalHis.setPayType(associateSalary.getPayType());
+		associateSalHis.setPayFrequency(associateSalary.getPayFrequency());
+		associateSalHis.setStandardHours(associateSalary.getStandardHours());
+		associateSalHis.setAnnualSalary(associateSalary.getAnnualSalary());
+		associateSalHis.setGrossSalary(associateSalary.getGrossSalary());
+		associateSalHis.setHourlyRate(associateSalary.getHourlyRate());
+		associateSalHis.setPreviousPayType(associateSalaryDTO.getPreviousPayType());
+		associateSalHis.setPreviousPayFrequency(associateSalaryDTO.getPreviousPayFrequency());
+		associateSalHis.setPreviousStandardHours(associateSalaryDTO.getPreviousStandardHours());
+		associateSalHis.setPreviousAnnualSalary(new BigDecimal(associateSalaryDTO.getPreviousAnnualSal()));
+		associateSalHis.setPreviousGrossSalary(new BigDecimal(associateSalaryDTO.getPreviousPerPaySal()));
+		associateSalHis.setPreviousHourlyRate(new BigDecimal(associateSalaryDTO.getPreviousHourlyRate()));
+		associateSalHis.setPreviousGrossSalary(new BigDecimal(associateSalaryDTO.getPreviousHourlyRate()));
+		associateSalHis.setAssociateSalHistoryUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+		associateSalHis.setStatus(1);
+		if(associateSalaryDTO.getIncreasePer() != null) {
+			associateSalHis.setIncreasePercentage(associateSalaryDTO.getIncreasePer());
+		}
+		if(associateSalaryDTO.getEffectiveDate() != null && !"".equalsIgnoreCase(associateSalaryDTO.getEffectiveDate())) {
+			associateSalHis.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), associateSalaryDTO.getEffectiveDate()));
+		}
+		if(associateSalaryDTO.getChangeReason() != null) {
+			associateSalHis.setChangeReason(associateSalaryDTO.getChangeReason());
+		}
+		if(associateSalaryDTO.getSalaryType() != null) {
+			associateSalHis.setSalaryType(associateSalaryDTO.getSalaryType());
+		}
+		associateSalHis.setCreatedDate(new Date());
+		associateSalHis.setUpdatedDate(new Date());
+		associateSalHis.setCreatedBy(loginUser.getId());
+		associateSalHis.setUpdatedBy(loginUser.getId());
+		
+		
+		AssociateSalaryHistory associateSalaryHistory = associateSalaryDao.updaetAssociateSalHis(associateSalHis);
 	}
 
 	/**

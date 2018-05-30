@@ -30,6 +30,26 @@ public class AssociateSalaryDTO {
 	
 	List<AssociatePayItemDTO> associatePayItemDto;
 	
+	private String previousPayType;
+	
+	private String previousPayFrequency;
+	
+	private String previousStandardHours;
+	
+	private String previousAnnualSal;
+	
+	private String previousPerPaySal;
+	
+	private String previousHourlyRate;
+	
+	private String salaryType;
+	
+	private String effectiveDate;
+	
+	private String increasePer;
+	
+	private String changeReason;
+	
 	
 	public String getId()
 	{
@@ -118,6 +138,86 @@ public class AssociateSalaryDTO {
 	public void setAssociateSalUUID(String associateSalUUID)
 	{
 		this.associateSalUUID = associateSalUUID;
+	}
+	public String getPreviousPayType()
+	{
+		return previousPayType;
+	}
+	public void setPreviousPayType(String previousPayType)
+	{
+		this.previousPayType = previousPayType;
+	}
+	public String getPreviousPayFrequency()
+	{
+		return previousPayFrequency;
+	}
+	public void setPreviousPayFrequency(String previousPayFrequency)
+	{
+		this.previousPayFrequency = previousPayFrequency;
+	}
+	public String getPreviousStandardHours()
+	{
+		return previousStandardHours;
+	}
+	public void setPreviousStandardHours(String previousStandardHours)
+	{
+		this.previousStandardHours = previousStandardHours;
+	}
+	public String getPreviousAnnualSal()
+	{
+		return previousAnnualSal;
+	}
+	public void setPreviousAnnualSal(String previousAnnualSal)
+	{
+		this.previousAnnualSal = previousAnnualSal;
+	}
+	public String getPreviousPerPaySal()
+	{
+		return previousPerPaySal;
+	}
+	public void setPreviousPerPaySal(String previousPerPaySal)
+	{
+		this.previousPerPaySal = previousPerPaySal;
+	}
+	public String getPreviousHourlyRate()
+	{
+		return previousHourlyRate;
+	}
+	public void setPreviousHourlyRate(String previousHourlyRate)
+	{
+		this.previousHourlyRate = previousHourlyRate;
+	}
+	public String getSalaryType()
+	{
+		return salaryType;
+	}
+	public void setSalaryType(String salaryType)
+	{
+		this.salaryType = salaryType;
+	}
+	public String getEffectiveDate()
+	{
+		return effectiveDate;
+	}
+	public void setEffectiveDate(String effectiveDate)
+	{
+		this.effectiveDate = effectiveDate;
+	}
+	public String getIncreasePer()
+	{
+		return increasePer;
+	}
+	public void setIncreasePer(String increasePer)
+	{
+		this.increasePer = increasePer;
+	}
+	public String getChangeReason()
+	{
+		return changeReason;
+	}
+	public void setChangeReason(String changeReason)
+	{
+		this.changeReason = changeReason;
 	}
 	
 	

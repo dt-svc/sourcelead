@@ -112,7 +112,7 @@ function getPayFreqHours(){
 		$("#standardHours").val('40');
 	}
 	calculateSal();
-	calculatePayPerSal()
+	/* calculatePayPerSal() */
 }
 </script>
 
