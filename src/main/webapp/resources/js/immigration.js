@@ -251,7 +251,7 @@ function Immigration() {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=petitionDetails");
         } else if (status == 'saveContinue' || status == 'sendRequest') {
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
-        		$("#saveDraftButton").prop("disabled",true);
+        		$("#saveAsDraftButton").prop("disabled",true);
             	$("#savePageOneContinue").prop("disabled",true);
             	$("#sendRequestButton").prop("disabled",true);
                 var formData = getFormData("petitionDetailsForm");
@@ -291,7 +291,7 @@ function Immigration() {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=two");
         }else if(status == 'save'){
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
-        		$("#saveDraftButton").prop("disabled",true);
+        		$("#saveAsDraftButton").prop("disabled",true);
             	$("#savePageOneContinue").prop("disabled",true);
             	$("#sendRequestButton").prop("disabled",true);
                 var formData = getFormData("petitionDetailsForm");
@@ -308,9 +308,6 @@ function Immigration() {
                         	  immigrationId = result.data[0];
                           	candidateId = result.data[1];
                           	templateId= result.data[2];
-                          	$("#saveDraftButton").prop("disabled",false);
-                        	$("#savePageOneContinue").prop("disabled",false);
-                        	$("#sendRequestButton").prop("disabled",false);
                           }else{
                           	 showError("Operation failed, please try again");
                           }
