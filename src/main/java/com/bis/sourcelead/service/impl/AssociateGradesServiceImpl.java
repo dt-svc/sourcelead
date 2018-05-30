@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.AssociateGradesDao;
+import com.bis.sourcelead.dto.AssociateGradesDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.service.AssociateGradesService;
 
@@ -28,6 +30,18 @@ public class AssociateGradesServiceImpl implements AssociateGradesService{
 	@Override
 	public List<AssociateGrades> getAssociateGradesListByOrgLocationId(Long orgLocationId) throws Exception {
 		return associateGradesDao.getAssociateGradesListByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public ResponseList<AssociateGradesDTO> getAssociateGradesDTOListByOrgLocationId(AssociateGradesDTO associateGradesDTO,
+			Long orgLocationId) throws Exception {
+		return associateGradesDao.getAssociateGradesDTOListByOrgLocationId(associateGradesDTO, orgLocationId);
+	}
+
+	@Override
+	public AssociateGrades getAssociateGradesByGradeNameAndOrgLocationId(String gradeName, Long orgLocationId)
+			throws Exception {
+		return associateGradesDao.getAssociateGradesByGradeNameAndOrgLocationId(gradeName, orgLocationId);
 	}
 
 }

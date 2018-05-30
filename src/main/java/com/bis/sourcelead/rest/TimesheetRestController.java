@@ -11,6 +11,7 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -47,9 +48,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
-import com.bis.sourcelead.dto.EmployeeTimesheetSubmissionDTO;
 import com.bis.sourcelead.dto.EmployeeTimeSheetSubmissionStatusDTO;
 import com.bis.sourcelead.dto.EmployeeTimesheetEntryDetailsDTO;
+import com.bis.sourcelead.dto.EmployeeTimesheetSubmissionDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.Response;
@@ -253,7 +254,43 @@ public class TimesheetRestController {
 				Boolean isSUBMITTED = false;
 				Boolean isNEW = false;
 				String combinedStatus = "";
+				boolean combinedMonEditable =  false;
+				boolean combinedTueEditable =  false;
+				boolean combinedWedEditable =  false;
+				boolean combinedThuEditable =  false;
+				boolean combinedFriEditable =  false;
+				boolean combinedSatEditable =  false;
+				boolean combinedSunEditable =  false;
 				for(ProjectMembersDTO pmDTO :tedDTO.getProjectMembersList()) {
+					boolean monEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getMonEditable();
+					boolean tueEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getTueEditable();
+					boolean wedEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getWedEditable();
+					boolean thuEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getThuEditable();
+					boolean friEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getFriEditable();
+					boolean satEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getSatEditable();
+					boolean sunEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getSunEditable();
+					if(monEditable && !combinedMonEditable) {
+						combinedMonEditable = monEditable;
+					}
+					if(tueEditable && !combinedTueEditable) {
+						combinedTueEditable = tueEditable;
+					}
+					if(wedEditable && !combinedWedEditable) {
+						combinedWedEditable = wedEditable;
+					}
+					if(thuEditable && !combinedThuEditable) {
+						combinedThuEditable = thuEditable;
+					}
+					if(friEditable && !combinedFriEditable) {
+						combinedFriEditable = friEditable;
+					}
+					if(satEditable && !combinedSatEditable) {
+						combinedSatEditable = satEditable;
+					}
+					if(sunEditable && !combinedSunEditable) {
+						combinedSunEditable = sunEditable;
+					}
+					
 					if (tedDTO.getStatusMap().get(pmDTO.getId()) == null || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("REJECTED") 
 							|| tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("DRAFT")) {
 						isRejected = true;
@@ -279,7 +316,7 @@ public class TimesheetRestController {
 					
 					
 					if(tedDTO.getStatusMap().get(pmDTO.getId()) == null || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("REJECTED") 
-							|| tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("DRAFT") || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("DRAFT") ) {
+							|| tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("DRAFT") || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW") ) {
 						freshProjectMembersList.add(pmDTO);
 					}else{
 						submittedProjectMembersList.add(pmDTO);
@@ -297,18 +334,41 @@ public class TimesheetRestController {
 				}else {
 					tedDTO.setSubmitButtonVisible(true);
 				}
-				Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+				int workingDaysPerWeek = 0;
+				if(StringUtils.isNotEmpty(orgLocations.getWeekOffDays())) {
+					 String[] strArray = orgLocations.getWeekOffDays().split(",");
+				     List<String> weekOffs = new ArrayList<String>(Arrays.asList(strArray));
+					if(combinedMonEditable && !weekOffs.contains("Mon")) {
+						workingDaysPerWeek++;
+					}
+	                if(combinedTueEditable && !weekOffs.contains("Tue")) {
+	                	workingDaysPerWeek++;
+					}
+	                if(combinedWedEditable && !weekOffs.contains("Wed")) {
+	                	workingDaysPerWeek++;
+					}
+	                if(combinedThuEditable && !weekOffs.contains("Thu")) {
+	                	workingDaysPerWeek++;
+					}
+	                if(combinedFriEditable && !weekOffs.contains("Fri")) {
+	                	workingDaysPerWeek++;
+					}
+	                if(combinedSatEditable && !weekOffs.contains("Sat")) {
+	                	workingDaysPerWeek++;
+					}
+	                if(combinedSunEditable && !weekOffs.contains("Sun")) {
+	                	workingDaysPerWeek++;
+					}
+				}else {
+					workingDaysPerWeek = 5;
+				}
+                
+                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
 				if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
 					avgWorkingHoursPerDay = 8; 
 				}
-				Integer workingDaysPerWeek = orgLocations.getWorkingDaysPerWeek();
-				if(workingDaysPerWeek == null || workingDaysPerWeek == 0) {
-					workingDaysPerWeek = 5; 
-				}
-				
 				Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
 				model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
-				
 				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
 				model.setViewName("timesheet/employeeTImesheetInvoiceList");
 			}
@@ -599,7 +659,7 @@ public class TimesheetRestController {
 						continue;	
 					pmDTOList.add(ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm));
 					Map<Long,LinkedList<TimesheetEntriesDTO>> entryMap = getEmployeeTimesheetSubmissionByProjectMemberId(new LinkedList(etd.getWeekDays()),pm,request, orgLocations, actualStartDate, actualEndDate, etd);
-					Long entrySizeCheck = 1l;
+					Long entrySizeCheck = 0l;
 					for(Long key : entryMap.keySet()) {
 						entrySizeCheck = key;
 					}
@@ -614,11 +674,9 @@ public class TimesheetRestController {
 						etd.setSunEditable(etssDTO.getEditableMap().get("Sun"));
 					}
 					editableCount++;
+					ettsDTOMap.put(pm.getId(), etssDTO);
 					if(entrySizeCheck == 0)
 						continue;
-					
-					editableCount++;
-					ettsDTOMap.put(pm.getId(), etssDTO);
 					List<ProjectTasks> projectsTasks = projectTasksService.getAllTasksByProjectId(pm.getProjects().getId());
 					if(entryMap != null && !entryMap.isEmpty()) {
 					    for(Map.Entry<Long,LinkedList<TimesheetEntriesDTO>> entry : entryMap.entrySet()) {
@@ -1642,7 +1700,44 @@ public class TimesheetRestController {
 					Boolean isSUBMITTED = false;
 					Boolean isNEW = false;
 					String combinedStatus = "";
+					boolean combinedMonEditable =  false;
+					boolean combinedTueEditable =  false;
+					boolean combinedWedEditable =  false;
+					boolean combinedThuEditable =  false;
+					boolean combinedFriEditable =  false;
+					boolean combinedSatEditable =  false;
+					boolean combinedSunEditable =  false;
+							
 					for(ProjectMembersDTO pmDTO :tedDTO.getProjectMembersList()) {
+						boolean monEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getMonEditable();
+						boolean tueEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getTueEditable();
+						boolean wedEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getWedEditable();
+						boolean thuEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getThuEditable();
+						boolean friEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getFriEditable();
+						boolean satEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getSatEditable();
+						boolean sunEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getSunEditable();
+						if(monEditable && !combinedMonEditable) {
+							combinedMonEditable = monEditable;
+						}
+						if(tueEditable && !combinedTueEditable) {
+							combinedTueEditable = tueEditable;
+						}
+						if(wedEditable && !combinedWedEditable) {
+							combinedWedEditable = wedEditable;
+						}
+						if(thuEditable && !combinedThuEditable) {
+							combinedThuEditable = thuEditable;
+						}
+						if(friEditable && !combinedFriEditable) {
+							combinedFriEditable = friEditable;
+						}
+						if(satEditable && !combinedSatEditable) {
+							combinedSatEditable = satEditable;
+						}
+						if(sunEditable && !combinedSunEditable) {
+							combinedSunEditable = sunEditable;
+						}
+						
 						if (tedDTO.getStatusMap().get(pmDTO.getId()) == null || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("REJECTED") 
 								|| tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("DRAFT")) {
 							isRejected = true;
@@ -1665,15 +1760,12 @@ public class TimesheetRestController {
 							combinedStatus = "APPROVED";
 							
 						}
-						
-						
 						if(tedDTO.getStatusMap().get(pmDTO.getId()) == null || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("REJECTED") 
-								|| tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("DRAFT") || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("DRAFT") ) {
+								|| tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("DRAFT") || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW") ) {
 							freshProjectMembersList.add(pmDTO);
 						}else{
 							submittedProjectMembersList.add(pmDTO);
 						}
-						
 					}
 					tedDTO.getProjectMembersList().clear();
 					tedDTO.setProjectMembersList(freshProjectMembersList);
@@ -1683,18 +1775,45 @@ public class TimesheetRestController {
 					}else {
 						tedDTO.setSubmitButtonVisible(true);
 					}
-				}
-				Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-				if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
-					avgWorkingHoursPerDay = 8; 
-				}
-				Integer workingDaysPerWeek = orgLocations.getWorkingDaysPerWeek();
-				if(workingDaysPerWeek == null || workingDaysPerWeek == 0) {
-					workingDaysPerWeek = 5; 
+					
+					int workingDaysPerWeek = 0;
+					if(StringUtils.isNotEmpty(orgLocations.getWeekOffDays())) {
+						 String[] strArray = orgLocations.getWeekOffDays().split(",");
+					     List<String> weekOffs = new ArrayList<String>(Arrays.asList(strArray));
+						if(combinedMonEditable && !weekOffs.contains("Mon")) {
+							workingDaysPerWeek++;
+						}
+		                if(combinedTueEditable && !weekOffs.contains("Tue")) {
+		                	workingDaysPerWeek++;
+						}
+		                if(combinedWedEditable && !weekOffs.contains("Wed")) {
+		                	workingDaysPerWeek++;
+						}
+		                if(combinedThuEditable && !weekOffs.contains("Thu")) {
+		                	workingDaysPerWeek++;
+						}
+		                if(combinedFriEditable && !weekOffs.contains("Fri")) {
+		                	workingDaysPerWeek++;
+						}
+		                if(combinedSatEditable && !weekOffs.contains("Sat")) {
+		                	workingDaysPerWeek++;
+						}
+		                if(combinedSunEditable && !weekOffs.contains("Sun")) {
+		                	workingDaysPerWeek++;
+						}
+					}else {
+						workingDaysPerWeek = 5;
+					}
+	                
+	                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
+					if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+						avgWorkingHoursPerDay = 8; 
+					}
+					Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
+					model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
+	                
 				}
 				
-				Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
-				model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
 				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
 				model.setViewName("timesheet/employeeTImesheetInvoiceList");
 						

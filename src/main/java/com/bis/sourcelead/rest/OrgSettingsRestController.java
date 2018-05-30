@@ -44,6 +44,7 @@ import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.OrgSettingsDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.SourceleadRolesDTO;
 import com.bis.sourcelead.dto.TabsDTO;
@@ -1133,6 +1134,115 @@ public class OrgSettingsRestController {
 	}
 	
 	
+	@RequestMapping(value = "/app/getAssociatesGradesList", method = RequestMethod.POST)
+	public ResponseList<AssociateGradesDTO> getOnboardCandidateList(AssociateGradesDTO associateGradesDTO,
+			HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String[] tableColumns = { "gradeName", "designation", "minSalary", "midSalary", "maxSalary", "actions" };
+		int sortColumnIndex = 1; // by default sorting using updated date
+		String sortColumnOrder = "desc"; // by default descending order
+		if (associateGradesDTO.getOrder() != null && !associateGradesDTO.getOrder().isEmpty()) {
+			sortColumnIndex = Integer.parseInt(associateGradesDTO.getOrder().get(0).get("column"));
+			sortColumnOrder = associateGradesDTO.getOrder().get(0).get("dir");
+		}
+		associateGradesDTO.setSortColumn(tableColumns[sortColumnIndex]);
+		associateGradesDTO.setSortOrder(sortColumnOrder);
+		ResponseList<AssociateGradesDTO> gradesOnBoardingDTOList = associateGradesService.getAssociateGradesDTOListByOrgLocationId(associateGradesDTO, orgLocations.getId());
+		return gradesOnBoardingDTOList;
+	}
+	
+	@RequestMapping(value = "/app/getGradeDetails", method = RequestMethod.POST)
+	public AssociateGradesDTO getGradeDetails(@RequestParam(value="uuid", required=true) String uuid,
+			HttpServletRequest request) throws Exception {
+		AssociateGradesDTO gradesDTO = new AssociateGradesDTO();
+		AssociateGrades grades = associateGradesService.getAssociateGradesByUUID(uuid);
+		if(grades != null) {
+			gradesDTO.setGradeName(grades.getGradeName());
+			gradesDTO.setDesignation(grades.getDesignation());
+			
+			if(grades.getMinSalary() != null) {
+				gradesDTO.setMinSalary(String.valueOf(grades.getMinSalary()));
+				gradesDTO.setMinSalaryRateType(grades.getMinSalaryRateType());
+				gradesDTO.setMinSalaryRatePer(grades.getMinSalaryRatePer());
+				
+			}
+			
+			if(grades.getMidSalary() != null) {
+				gradesDTO.setMidSalary(String.valueOf(grades.getMidSalary()));
+				gradesDTO.setMidSalaryRateType(grades.getMidSalaryRateType());
+				gradesDTO.setMidSalaryRatePer(grades.getMidSalaryRatePer());
+			}
+			
+			if(grades.getMaxSalary() != null) {
+				gradesDTO.setMaxSalary(String.valueOf(grades.getMaxSalary()));
+				gradesDTO.setMaxSalaryRateType(grades.getMaxSalaryRateType());
+				gradesDTO.setMaxSalaryRatePer(grades.getMaxSalaryRatePer());
+			}
+			
+			
+			gradesDTO.setUuid(grades.getUuid());
+		}
+		return gradesDTO;
+	}
+	
+	
+	@RequestMapping(value = "/app/refreshGradesList", method = RequestMethod.POST)
+	public List<AssociateGradesDTO> refreshGradesList(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<AssociateGradesDTO> gradesDTOList = new ArrayList<>();
+		List<AssociateGrades> gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
+		if(gradesList != null && !gradesList.isEmpty()) {
+			for(AssociateGrades grades : gradesList) {
+				AssociateGradesDTO gradesDTO = new AssociateGradesDTO();
+				gradesDTO.setId(grades.getId());
+				gradesDTO.setGradeName(grades.getGradeName());	
+				gradesDTOList.add(gradesDTO);
+			}
+		}
+		return gradesDTOList;
+	}
+	
+	
+	@RequestMapping(value = "/app/deleteGradeDetails", method = RequestMethod.POST)
+	public AssociateGradesDTO deleteGradeDetails(@RequestParam(value="uuid", required=true) String uuid,
+			HttpServletRequest request) throws Exception {
+		AssociateGradesDTO gradesDTO = new AssociateGradesDTO();
+		AssociateGrades grades = associateGradesService.getAssociateGradesByUUID(uuid);
+		if(grades != null) {
+			grades.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+			associateGradesService.saveAssociateGrades(grades);
+		}
+		return gradesDTO;
+	}
+	
+	@RequestMapping(value = "/app/validateGradeName", method = RequestMethod.POST)
+	public String validateGradeName(@RequestParam(value="gradeName", required=true) String gradeName,@RequestParam(value="uuid", required=false) String uuid,
+			HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String result = "true";
+		List<AssociateGrades> gradesList = null;
+		if(StringUtils.isNotBlank(uuid)) {
+			AssociateGrades associateGrades = associateGradesService.getAssociateGradesByUUID(uuid);
+			if(associateGrades != null && associateGrades.getGradeName().equalsIgnoreCase(gradeName)) {
+				result = "true";
+			}else {
+				gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
+			}
+		}else {
+			  gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
+		}
+		
+		if(gradesList != null) {
+			for(AssociateGrades grades : gradesList) {
+				if(grades.getGradeName().equalsIgnoreCase(gradeName)) {
+					result = "false";
+				}
+			}
+		}
+		return result;
+	}
+	
+	
 	
 	@RequestMapping(value = "/app/addNewGrade", method = RequestMethod.POST)
 	public Response<String> addNewGrade(AssociateGradesDTO associateGradesDTO, HttpServletRequest request) throws Exception
@@ -1152,6 +1262,12 @@ public class OrgSettingsRestController {
 					}
 					
 					associateGrades.setGradeName(associateGradesDTO.getGradeName());
+					
+					if(StringUtils.isNotBlank(associateGradesDTO.getDesignation())) {
+						associateGrades.setDesignation(associateGradesDTO.getDesignation());
+					}else {
+						associateGrades.setDesignation(null);
+					}
 					
 					if(StringUtils.isNotBlank(associateGradesDTO.getMinSalary())) {
 						associateGrades.setMinSalary(Double.valueOf(associateGradesDTO.getMinSalary()));

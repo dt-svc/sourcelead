@@ -185,7 +185,7 @@
                   <label class="col-md-3">Role<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9 chooRadius chooErrorMessage" id="chosen-role">
                    <div class="input-group col-md-10 pull-left">
-                         <select class="form-control select-bg selectField" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
+                         <select class="form-control chosen-select" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
 		                        <c:forEach var="option" items="${rolesList}">
 									<option value="${option.id}">${option.displayName}</option>
@@ -205,6 +205,24 @@
                     <input type="text" class="form-control" id="designation" name="designation"  field-name="Desgination" data-validation="required validate_Space validate_Name validate_length length2-250" >
                   </div>
                 </div>
+                
+                <div class="form-group">
+                  <label class="col-md-3">Grade </label>
+                  <div class="col-md-9 chooRadius" id="chosen-role">
+                   <div class="input-group col-md-10 pull-left">
+                         <select class="form-control chosen-select" id="grade" name="grade" field-name="Grade"  data-validation-optional="true" >
+		                        <option value="">-Select Grade-</option>
+		                        <c:forEach var="option" items="${gradesList}">
+									<option value="${option.id}">${option.gradeName}</option>
+								</c:forEach>
+			              </select>
+			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshGradesList();"><i class="fa fa-refresh "></i></span>
+                  </div>
+		             <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+					<a href="<c:url value="/app/addGrade " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+					</sec:authorize>
+                </div> 
+                 </div> 
                 
                 
            <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
@@ -1119,7 +1137,8 @@ function editMe(local){
 		 $('#vendorcontact').trigger("chosen:updated");
 	 }
 	 </script>
-	 <script>
+
+<script>
 function refreshRoleList(){
 		 $.ajax({
 	      type : "POST",
@@ -1140,6 +1159,30 @@ function refreshRoleList(){
 	
 }
 </script>
+
+<script>
+function refreshGradesList(){
+	 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshGradesList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>-Select Grade-</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	       			output = output + "<option value='"+opt.id+"'>"+opt.gradeName+"</option>";
+				}
+	        	$("#grade").empty();
+		        $("#grade").append(output);
+		        $('#grade').trigger("chosen:updated");
+	        }
+		 });
+}
+</script>
+
+
+
 <script>
 	 function managerListEmpty(){
 		 $('#reportingManager').empty();

@@ -956,7 +956,8 @@ function assignEmployeeCancel(){
 
 
 <script>
-	$(function() {
+$(window).load(function() {
+	var dbStartDate = $("#startDate").val();
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatProjectSave = '';
 		  if(locationDate.match("yyyy-MM-dd")){
@@ -983,6 +984,7 @@ function assignEmployeeCancel(){
 			dateFormat : finalDateFormatProjectSave,
 			changeMonth: true,
 			changeYear: true, 
+			minDate:dbStartDate,
 			onSelect : function(selected) {
 				var dt = $(this).datepicker('getDate', '-1d');
 				dt.setDate(dt.getDate() - 1);
