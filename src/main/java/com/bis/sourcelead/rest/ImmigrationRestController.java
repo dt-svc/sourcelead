@@ -1993,9 +1993,11 @@ public class ImmigrationRestController {
 		// below code for adding candidate resume to downloading package.
 		CandidateResumes candidateResume = candidateResumesService
 				.getCandidateLatesResumes(immigration.getCandidate().getId(), Constants.CANDIDATE_ACTIVE);
-		if (StringUtils.isNotBlank(candidateResume.getFileURL())) {
-			// logger.debug("cadidateResume path "+candidateResume.getFileURL());
-			docsListMap.put("cadidateResume", candidateResume);
+		if(candidateResume != null) {
+			if (StringUtils.isNotBlank(candidateResume.getFileURL())) {
+				// logger.debug("cadidateResume path "+candidateResume.getFileURL());
+				docsListMap.put("cadidateResume", candidateResume);
+			}
 		}
 
 		docsListMap.put("immDocs", immigrationCanididateDocHistoryList);
