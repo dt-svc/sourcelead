@@ -24,7 +24,7 @@
 
     <section class="content-header clearfix cusFieldHead">
         <div class="pull-left positionRelative"><h2>Petition Templates</h2></div>
-        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Petition Templates</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a>&raquo; Petition Templates</div>
         <div class="clearfix"></div>
     </section>
 
@@ -272,7 +272,7 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.name !== null && opt.name !== '' && opt.name !== 'undefined') {
-                            result = result + "<td><div class='tbldata-dotdot'>" + opt.name + "</div></td>";
+                            result = result + "<td><div class='tbldata-dotdot' title='"+opt.name+"' >" + opt.name + "</div></td>";
                         } else {
                             result = result + "<td><div class='tbldata-dotdot'>---</div></td>";
                         }
