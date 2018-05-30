@@ -200,7 +200,7 @@ function printPage()
 		</div>
 		<div class="modal-footer">
 			<div class="clearfix">
-				<button type="button" class="btn btn-primary mr">Download</button>
+				<button type="button" class="btn btn-primary mr" onClick="downloadReport()">Download</button>
 				<button type="button" class="btn btn-default" onClick="closePOP()">Cancel</button>
 			</div>
 		</div>
