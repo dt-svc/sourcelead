@@ -123,25 +123,29 @@ $(document).ready(function() {
 
   <script>
   function runExport(type){
-		var projectIds  = '${exportDto.projectIds}';
+	  if('${exportDto.projectIds}' != null && '${exportDto.projectIds}' !='' && '${exportDto.projectIds}' !='undefined'){
+		  var projectIds  = ${exportDto.projectIds};
+	  }else{
+		  var projectIds  = '';  
+	  }
+	  if('${exportDto.employmentType}' != null && '${exportDto.employmentType}' !='' && '${exportDto.employmentType}'	!='undefined'){
+		  var employmentType  = '${exportDto.employmentType}';
+	  }else{
+		  var employmentType  = '';  
+	  }
+	  if('${exportDto.projectMemberListId}' != null && '${exportDto.projectMemberListId}' !='' && '${exportDto.projectMemberListId}'	!='undefined'){
+		  var projectMemberList  = ${exportDto.projectMemberListId};
+	  }else{
+		  var projectMemberList  = '';  
+	  }
 		var templateType = "";
-		var employmentType = '${exportDto.employmentType}';
-		if(projectIds == null || projectIds =='' || projectIds=='undefined'){
-			projectIds = '';
-		}
 		var startDate = '${exportDto.startDate}'.toString();
 		var endDate = '${exportDto.endDate}'.toString();
 		var exportType = type;
-		var projectMemberList = ${exportDto.projectMemberListId};
-		if(projectMemberList == null || projectMemberList =='' || projectMemberList=='undefined'){
-			projectMemberList = '';
-		}
 		
 		if(startDate != null && startDate !='' && startDate !='undefined' && endDate != null && endDate !='' && endDate !='undefined'){
 			window.location.href = sourceleadUrl+"/exportDaywiseTimesheetReport?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&exportType="+exportType+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList;
 		}
 	}
-  
-  
-  </script>
+ </script>
   

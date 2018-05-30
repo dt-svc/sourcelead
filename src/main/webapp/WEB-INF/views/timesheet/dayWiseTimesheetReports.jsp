@@ -129,6 +129,7 @@ function validateDayEntriesReport(){
 	
 	if(projectIds == null || projectIds =='' || projectIds=='undefined'){
 		projectIds = $("#projectList option[name='all']").val();
+		$('#projectList').val(projectIds);
 	}
 	var startDate = $('#fromDate').val();
 	var endDate = $('#toDate').val();

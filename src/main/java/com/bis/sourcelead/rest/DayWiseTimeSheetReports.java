@@ -17,10 +17,8 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
-import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsListDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.Projects;
@@ -101,17 +99,6 @@ public List<ProjectMembers> getProjectMembersBasedOnProjectId(DayWiseTimesheetRe
 	return projectMemberList;
 }
 
-
-/*@RequestMapping(value="/dayEntriesReportList")
-public ModelAndView getDayEntriesList(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws Exception {
-	ModelAndView model = new ModelAndView();
-	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-	User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	List<DayWiseTimesheetReoprtsListDTO>  listDto = dayEntryReportsService.getDayEntriesList(dayWiseTimesheetReoprtsDto,orgLocations, loginUser) ;
-	model.addObject("dayWiseTimesheetReoprtsList",listDto);
-	model.setViewName("timesheet/dayEntriesReportList");
-	return model;
-}*/
 
 
 @RequestMapping(value="/exportDaywiseTimesheetReport")
