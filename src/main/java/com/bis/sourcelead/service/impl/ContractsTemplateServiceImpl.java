@@ -762,8 +762,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts.setUpdatedDate(new Date());
 			vendorContracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			vendorContracts.setContractsTemplate(savedContracts.getContractsTemplate());
-			if (null != savedContracts.getContractType() && !"".equalsIgnoreCase(savedContracts.getContractType())
-					&& Constants.CUSTOM_TYPE.equalsIgnoreCase(savedContracts.getContractType())) {
+			if (null != savedContracts.getTypeOfContract() && !"".equalsIgnoreCase(savedContracts.getTypeOfContract())
+					&& Constants.CUSTOM_TYPE.equalsIgnoreCase(savedContracts.getTypeOfContract())) {
 				vendorContracts.setTypeOfContract(Constants.CUSTOM_TYPE);
 			}
 			else {

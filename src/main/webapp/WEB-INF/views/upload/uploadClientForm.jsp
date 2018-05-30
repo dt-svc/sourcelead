@@ -121,7 +121,7 @@ margin:10px 220px 0;
 			  </span>
             </div>
             <div class="panel-body checkBox">
-				  <label><input type="checkbox" checked="checked" value="Y" name="email"></label><span>Send Emails</span>
+				  <label><input type="checkbox" checked="checked" id="sendEmailsCheck" value="Y" name="email"></label><span>Send Emails</span>
 		    </div>
           </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -205,7 +205,12 @@ if ($('#upload_form').validate(false, validationSettings)){
 	var frm = $('#upload_form').serializeFormJSON();
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
-	
+	var isMailCheck = $('#sendEmailsCheck');
+	if (isMailCheck.is(':checked')) {
+		isMailCheck = "Y";
+	}else{
+		isMailCheck = "N";
+	}
 	//It will escape all the special characters
 	var jsonData = encodeURIComponent(con);
 	var form = $('#upload_form')[0];
@@ -220,7 +225,7 @@ if ($('#upload_form').validate(false, validationSettings)){
 	        processData: false,
 	        contentType:false,
     	    dataType : 'json',
-		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client", 	   
+		   url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client&isMailCheck="+isMailCheck, 	   
  		    success : function(json) {
  		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  		    	
