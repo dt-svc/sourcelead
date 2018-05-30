@@ -438,6 +438,13 @@ public class UploadFileServiceImpl implements UploadFileService {
 								userImport.setGrade("");
 							}
 							
+							if(row.getCell(16) != null) {
+								String designation = getCellValueAsString(row.getCell(16), fileName);
+								userImport.setDesignation(designation);
+							}else {
+								userImport.setDesignation("");
+							}
+							
 							  isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport.getEmployeeId(),userImport,orgLocations);
 							 if(isUserFound){
 								 if (row.getRowNum() > 0) {
@@ -559,6 +566,10 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				userRole.setGradeId(grades);
 			}
 		}
+		if(StringUtils.isNotBlank(userImport.getDesignation())) {
+			userRole.setDesignation(userImport.getDesignation());
+		}
+		
 		employee.setEmployeeId(userImport.getEmployeeId());
 		employee.setRate(userImport.getRate());
 		employee.setRatePer(userImport.getRatePer());
@@ -955,9 +966,17 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}
 			writeRow.createCell(15).setCellValue("");
 		}
+		
+		if (row.getCell(16) != null && !"".equalsIgnoreCase(row.getCell(16).toString())) {
+			
+			String designation = getCellValueAsString(row.getCell(16), fileName);
+			writeRow.createCell(16).setCellValue(designation);
+		} else {
+			writeRow.createCell(16).setCellValue("");
+		}
 			
 		if (userImport.getReason() !=null) {
-			writeRow.createCell(16).setCellValue(userImport.getReason());
+			writeRow.createCell(17).setCellValue(userImport.getReason());
 		} 
 	}
 	/**
@@ -994,6 +1013,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 					return isValidated;
 				}
 			}
+			
 			
 					
 			if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString())) {
@@ -1069,6 +1089,20 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				userImport.setReason("Employment Type is Required");
 				return false;
 			}
+			
+			
+			
+			if (row.getCell(16) == null || "".equalsIgnoreCase(row.getCell(16).toString())) {
+				userImport.setReason("Designation field is not filled");
+				return false;
+			}else if(row.getCell(16) != null && !"".equalsIgnoreCase(row.getCell(16).toString())){
+				isValidated = isFnameLnameValid(row.getCell(16).toString());
+				if(isValidated == false){
+					userImport.setReason("should contain above 2 char and should not allowed special charecters");
+					return isValidated;
+				}
+			}
+			
 			
 		// Employment Type,Vendor,Vendor Contact Name
 			
@@ -1273,6 +1307,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		excelHeader.createCell(13).setCellValue(Constants.ASSOCIATE_VENDOR);
 		excelHeader.createCell(14).setCellValue(Constants.ASSOCIATE_VENDOR_CONTACT);
 		excelHeader.createCell(15).setCellValue(Constants.ASSOCIATE_GRADE);
+		excelHeader.createCell(16).setCellValue(Constants.ASSOCIATE_DESIGNATION);
 		return sheet;
 	}
 	
@@ -1423,9 +1458,19 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			cell15.setCellValue("");
 		}
 		
+		if (record.get(Constants.ASSOCIATE_DESIGNATION) != null && !"".equalsIgnoreCase(record.get(Constants.ASSOCIATE_DESIGNATION))) {
+			Cell cell16 = writeRow.createCell(16);
+			cell16.setCellValue(record.get(Constants.ASSOCIATE_DESIGNATION));
+		} else {
+			Cell cell16 = writeRow.createCell(16);
+			cell16.setCellValue("");
+		}
+		
+		
+		
 		
 		if (userImport.getReason() !=null) {
-			writeRow.createCell(16).setCellValue(userImport.getReason());
+			writeRow.createCell(17).setCellValue(userImport.getReason());
 		} 
 	
 	}

@@ -969,6 +969,7 @@ function editClientProjectDetails(projectId){
 								dateFormat : finalDateFormatEduSave,
 								changeMonth: true,
 								changeYear: true, 
+								minDate : json.startDateStr,
 								onSelect : function(selected) {
 									var dt = $(this).datepicker('getDate', '-1d');
 									dt.setDate(dt.getDate() - 1);
