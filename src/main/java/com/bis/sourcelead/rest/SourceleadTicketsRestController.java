@@ -313,4 +313,10 @@ public class SourceleadTicketsRestController {
 		
 	   } 
 	 
+	 @RequestMapping(value = "getTicketDescription" , method = RequestMethod.POST)
+	 public  SourceleadTickets getTicketDescription(@RequestParam(value = "ticketUUID", required = false) String ticketUUID) throws Exception {
+		 SourceleadTickets ticket = sourceleadTicketService.getSourceleadTicketsByTicketUUID(ticketUUID);
+		 return ticket;
+	   }
+	 
 }
