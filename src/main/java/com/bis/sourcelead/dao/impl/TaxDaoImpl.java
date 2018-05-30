@@ -267,6 +267,22 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
+	public SourceleadTaxForm getTaxFormType(String uuid) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from SourceleadTaxForm st where st.uuid = :uuid";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("uuid", uuid);
+			List<SourceleadTaxForm> stList = queryObj.list();
+			if (stList != null && !stList.isEmpty())
+				return stList.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
 	public SourceleadTaxSection getTaxSection(long taxSectionId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();

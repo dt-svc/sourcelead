@@ -44,6 +44,8 @@ public interface TaxDao {
 
 	public SourceleadTaxForm getTaxFormType(long taxFormId);
 
+	public SourceleadTaxForm getTaxFormType(String uuid);
+
 	public long addITDeclarationSection(SourceleadTaxSection taxSection);
 
 	public SourceleadTaxSection getTaxSection(long taxSectionId);

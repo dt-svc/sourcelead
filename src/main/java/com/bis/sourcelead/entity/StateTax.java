@@ -46,7 +46,7 @@ public class StateTax implements Serializable {
 
 	@OneToMany(mappedBy = "stateTax", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<ProfessionalTax> professionalTaxList;
-	
+
 	@Column(name = "ACTIVE")
 	private boolean active;
 
@@ -109,5 +109,5 @@ public class StateTax implements Serializable {
 	public void setStatetaxuuid(String statetaxuuid) {
 		this.statetaxuuid = statetaxuuid;
 	}
-	
+
 }

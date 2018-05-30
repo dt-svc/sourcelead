@@ -90,7 +90,4 @@ public class ProfessionalTax implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
-
-
 }

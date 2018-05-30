@@ -26,7 +26,7 @@ public class StateTaxDTO implements Serializable {
 	private String stateName;
 
 	private boolean active;
-	
+
 	private String statetaxuuid;
 
 	@Required(desc = "Professional Tax List")
@@ -118,5 +118,4 @@ public class StateTaxDTO implements Serializable {
 		this.statetaxuuid = statetaxuuid;
 	}
 
-	
 }

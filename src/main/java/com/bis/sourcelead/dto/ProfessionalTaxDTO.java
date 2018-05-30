@@ -7,7 +7,7 @@ import com.bis.sourcelead.annotations.Required;
 public class ProfessionalTaxDTO implements Serializable {
 
 	/**
-	 * 
+	 * @author Mahaveer Manoj
 	 */
 	private static final long serialVersionUID = 1L;
 

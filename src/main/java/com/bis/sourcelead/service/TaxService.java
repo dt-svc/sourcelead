@@ -48,6 +48,8 @@ public interface TaxService {
 
 	public SourceleadTaxFormDTO getTaxFormType(long taxFormId);
 
+	public SourceleadTaxFormDTO getTaxFormType(String uuid);
+
 	public SourceleadTaxFormDTO getTaxFormType(SourceleadTaxForm sourceleadTaxForm, boolean includeAll);
 
 	long addITDeclarationSectionItem(SourceleadTaxSectionItemDTO sectionItemDTO);

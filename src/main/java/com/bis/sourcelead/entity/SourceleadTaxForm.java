@@ -33,6 +33,17 @@ public class SourceleadTaxForm implements Serializable {
 	@Column(name = "ACTIVE")
 	private boolean active;
 
+	@Column(name = "UUID")
+	private String uuid;
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
 	@OneToMany(mappedBy = "sourceleadTaxForm", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<SourceleadTaxSection> sourceleadTaxSectionList;
 

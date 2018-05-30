@@ -572,7 +572,7 @@ function Tax() {
 					for(var e in formList) {
 						var result = "<tr><td>";
 						result += "<div>";
-						result += "<a href='create?formId=" + formList[e].id + "'>" + formList[e].name + "</a>";
+						result += "<a href='create?uuid=" + formList[e].uuid + "'>" + formList[e].name + "</a>";
 						result += "</div>";
 						result += "</td>";
 						var sectionNames = "";
@@ -586,8 +586,8 @@ function Tax() {
 						result += "<td>";
 						result += "<div>";
 						result += "<ul class='list-unstyled list-inline mb0'>";
-						result += "<li><a href='view?formId=" + formList[e].id + "' title='Edit' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
-						result += "<li " + (formList[e].active ? "" : "class='disableBtn'") + "><a href='create?formId=" + formList[e].id + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
+						result += "<li><a href='view?uuid=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
+						result += "<li " + (formList[e].active ? "" : "class='disableBtn'") + "><a href='create?uuid=" + formList[e].uuid + "' title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";
 						if(formList[e].active) {
 							result += "<li><a href='javascript:void()' onclick='tax.showChangeStatusPopup(" + formList[e].id + ", 1, 1)' title='Make InActive' class='text-danger'><i class='fa fa-trash'></i></a></li>";
 						} else {

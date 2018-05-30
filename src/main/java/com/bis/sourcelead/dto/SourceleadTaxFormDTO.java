@@ -3,6 +3,8 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Column;
+
 public class SourceleadTaxFormDTO implements Serializable {
 
 	/**
@@ -13,6 +15,16 @@ public class SourceleadTaxFormDTO implements Serializable {
 	private long id;
 	private String name;
 	private boolean active;
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	private String uuid;
 	private List<SourceleadTaxSectionDTO> sourceleadTaxSectionList;
 
 	public long getId() {

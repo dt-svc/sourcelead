@@ -16,25 +16,19 @@ import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxSectionDTO;
 import com.bis.sourcelead.dto.SourceleadTaxSectionItemDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
-
 import com.bis.sourcelead.dto.TdsDTO;
+import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.CentralTax;
 import com.bis.sourcelead.entity.OrgLocations;
-
-import com.bis.sourcelead.dto.helper.Paginator;
-
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxSection;
 import com.bis.sourcelead.entity.SourceleadTaxSectionItem;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
-
 import com.bis.sourcelead.entity.Tds;
 import com.bis.sourcelead.entity.User;
-
 import com.bis.sourcelead.enums.Result;
-
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TaxService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -200,6 +194,7 @@ public class TaxServiceImpl implements TaxService {
 					String sttaxuuid = SourceLeadRandomCodeHelper.generateRandomTaxId();
 					st.setStatetaxuuid(sttaxuuid);
 				}
+
 				st.setId(stateTaxDTO.getId());
 				st.setFinancialYear(stateTaxDTO.getFinancialYear());
 
@@ -423,12 +418,26 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
+	public SourceleadTaxFormDTO getTaxFormType(String uuid) {
+		try {
+			SourceleadTaxForm sourceleadTaxForm = taxDao.getTaxFormType(uuid);
+			if (sourceleadTaxForm != null) {
+				return getTaxFormType(sourceleadTaxForm, true);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
 	public SourceleadTaxFormDTO getTaxFormType(SourceleadTaxForm sourceleadTaxForm, boolean includeAll) {
 		SourceleadTaxFormDTO sourceleadTaxFormDTO = new SourceleadTaxFormDTO();
 		try {
 			if (sourceleadTaxForm != null) {
 				sourceleadTaxFormDTO.setId(sourceleadTaxForm.getId());
 				sourceleadTaxFormDTO.setName(sourceleadTaxForm.getName());
+				sourceleadTaxFormDTO.setUuid(sourceleadTaxForm.getUuid());
 				sourceleadTaxFormDTO.setActive(sourceleadTaxForm.isActive());
 
 				if (includeAll) {
