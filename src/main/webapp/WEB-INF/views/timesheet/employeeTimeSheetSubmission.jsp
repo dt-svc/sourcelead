@@ -80,7 +80,7 @@
 											        <td id="${entryCount.index+1}projectTd">
 														<div class="timeAdd">
 														    <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
-														        <select id="${entryCount.index+1}projectMember1Id" name="${entryCount.index+1}projectMember1Id" onchange="flushtasks('${entryCount.index+1}task1Id');setTaskStatus('${entryCount.index+1}projectMember1Id');" data-validation="required" field-name="Project">
+														        <select id="${entryCount.index+1}projectMember1Id" name="${entryCount.index+1}projectMember1Id" onchange="enableOrDisableHours('${entryIndex}','${entryCount.index+1}projectMember1Id');flushtasks('${entryCount.index+1}task1Id');" data-validation="required" field-name="Project">
 																	<option value=''>--select project--</option> 
 															        <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
 															               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == pm.id}">
@@ -224,15 +224,12 @@
 													               <input onblur="editMe(this);" ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'} 
 													                id="${entryCount.index+1}timeSheetDay${teStatus.index+1}Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
 													                   <c:if test="${!empty te.comments || (empty te.comments && (!empty isEditable && isEditable == 'Y'))}">
-                                                                         <div class="timesheet_comm">                
+                                                                         <div class="timesheet_comm" id="commentDiv${entryIndex}">                
 													                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment${teStatus.index+1}Id");'></i>
 													                       <span class='teskcomment' id='${entryCount.index+1}comment${teStatus.index+1}Id'>
 													                             <textarea  ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
 			                                                               </span>
 			                                                             </div>
-													                   </c:if>
-													                    <c:if test="${empty te.comments && (!empty isEditable && isEditable == 'N')}">
-													                      <i class='blankDiv'></i>
 													                   </c:if>
 													               </div>
 													              <c:set var="entryIndex" value="${entryIndex+1}"/>
@@ -404,7 +401,7 @@
 	        <!-- AddRow Divs  ####-->
 	        <div id="divadttTd0" style="display:none;">   
 	             <div class="timeAdd"> 
-	              <select id="REPLACEROWIDprojectMember1Id"  name="REPLACEROWIDprojectMember1Id" onchange="flushtasks('REPLACEROWIDtask1Id');setTaskStatus('REPLACEROWIDprojectMember1Id');"  field-name="Project">  
+	              <select id="REPLACEROWIDprojectMember1Id"  name="REPLACEROWIDprojectMember1Id" onchange="flushtasks('REPLACEROWIDtask1Id');enableOrDisableHours('ENTRYINDEX','REPLACEROWIDprojectMember1Id');"  field-name="Project">  
 	              <option value=''>--select Project--</option>
 	               <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
 		                   <option value='${pMember.id}'>${pMember.projectName} </option> 
@@ -441,7 +438,7 @@
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].dayOfTheDate" value="DAYOFTHEDATE"/>
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 		    	   <input type="text" disabled onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay1Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-	               <div class="timesheet_comm">
+	               <div class="timesheet_comm" id="commentDivENTRYINDEX">
 	                <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment1Id');"></i>
 	                <span class="teskcomment" id="REPLACEROWIDcomment1Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea1Id" ></textarea></span>
 	               </div>
@@ -456,7 +453,7 @@
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 					  <input type="text" disabled onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay2Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-	                  <div class="timesheet_comm">
+	                  <div class="timesheet_comm" id="commentDivENTRYINDEX">
 	                      <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment2Id');"></i>
 	                  <span class="teskcomment" id="REPLACEROWIDcomment2Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea2Id" ></textarea></span></div>
 	        </div>
@@ -470,7 +467,7 @@
 		               <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 	                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 					  <input type="text" onblur='editMe(this);' disabled  id="REPLACEROWIDtimeSheetDay3Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-	                  <div class="timesheet_comm">
+	                  <div class="timesheet_comm" id="commentDivENTRYINDEX">
 	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment3Id');"></i>
 	                  <span class="teskcomment" id="REPLACEROWIDcomment3Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea3Id"></textarea></span></div>
 	        </div>
@@ -484,7 +481,7 @@
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 					  <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay4Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-	                  <div class="timesheet_comm">
+	                  <div class="timesheet_comm" id="commentDivENTRYINDEX">
 	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment4Id');"></i>
 	                  <span class="teskcomment" id="REPLACEROWIDcomment4Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea4Id"></textarea></span></div>           
 	        </div>
@@ -498,7 +495,7 @@
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 					  <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay5Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-	                  <div class="timesheet_comm">
+	                  <div class="timesheet_comm" id="commentDivENTRYINDEX">
 	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment5Id');"></i>
 	                  <span class="teskcomment" id="REPLACEROWIDcomment5Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea5Id"></textarea></span></div>  
 	    	 </div>
@@ -512,7 +509,7 @@
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 				     <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay6Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-	                 <div class="timesheet_comm">
+	                 <div class="timesheet_comm" id="commentDivENTRYINDEX">
 	                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment6Id');"></i>
 	                 <span class="teskcomment" id="REPLACEROWIDcomment6Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea6Id"></textarea></span></div>
 	         </div>
@@ -526,7 +523,7 @@
 	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 		             <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 				     <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay7Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
-	                 <div class="timesheet_comm">
+	                 <div class="timesheet_comm" id="commentDivENTRYINDEX">
 	                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment7Id');"></i>
 	                 <span class="teskcomment" id="REPLACEROWIDcomment7Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea7Id"></textarea></span></div>            
 	    	 </div>
@@ -1206,14 +1203,7 @@ var validationSettings = {
 		dateFormat : 'yyyy/mm/dd' 
 }; 
 
-//removeTimeSheetCommentRow
-/* addTimeSheetCommentRow
-	divComentTd0 */
 function addTimeSheetRow() {
-	/*  $('#0docFile').removeAttr('data-validation');
-	 $('#0docFile').attr("data-validation-optional","true");  */
-	 /* $('#0docFile').removeClass('error'); */
-	/*  $('#0docFileuploadFileGroup').find('p.jquery_form_error_message').remove(); */ 
 	  if ($('#timesheet_form').validate(false, validationSettings)&&!$("#timeSheetErrorMsg").is(':visible')){   
 		    var tbl = document.getElementById("timesheet");
 			var rowNum = $("#maxRowNumber").val();
@@ -1261,14 +1251,6 @@ function addTimeSheetRow() {
 			
 		    var cell4 = row.insertCell(4);
 			var isCell1Disabled = $("#1timeSheetDay1Id").prop('disabled');
-			/* if(isCell1Disabled){
-				$("#divadttTd3 :input[type=text]").attr('disabled','disabled');
-				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon');
-			}
-			else{ 
-				$("#divadttTd3 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd3').find('i').attr('class','glyphicon glyphicon-comment');
-			}  */
 			var divadttTd2Str = document.getElementById("divadttTd3").innerHTML;
 			divadttTd2Str = divadttTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd2Str = divadttTd2Str.replace(/ENTRYINDEX/g, (entryIndex)); 
@@ -1282,15 +1264,6 @@ function addTimeSheetRow() {
 			
 			entryIndex = parseInt(entryIndex)+1;
 			var cell5 = row.insertCell(5);
-			var isCell2Disabled = $("#1timeSheetDay2Id").prop('disabled');
-			/* if(isCell2Disabled){
-				$("#divadttTd4 :input[type=text]").attr('disabled','disabled');
-				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon');
-			}
-			else{ 
-				$("#divadttTd4 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd4').find('i').attr('class','glyphicon glyphicon-comment');
-			} */
 			var divadttTd3Str = document.getElementById("divadttTd4").innerHTML;
 			divadttTd3Str = divadttTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd3Str = divadttTd3Str.replace(/ENTRYINDEX/g, (entryIndex)); 
@@ -1304,15 +1277,6 @@ function addTimeSheetRow() {
 			
 			entryIndex = parseInt(entryIndex)+1;
 			var cell6 = row.insertCell(6);
-			var isCell3Disabled = $("#1timeSheetDay3Id").prop('disabled');
-			/* if(isCell3Disabled){
-				$("#divadttTd5 :input[type=text]").attr('disabled','disabled');
-				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon');
-			}
-			else{ 
-				$("#divadttTd5 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd5').find('i').attr('class','glyphicon glyphicon-comment');
-			} */
 			var divadttTd4Str = document.getElementById("divadttTd5").innerHTML;
 			divadttTd4Str = divadttTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd4Str = divadttTd4Str.replace(/ENTRYINDEX/g, (entryIndex)); 
@@ -1325,14 +1289,6 @@ function addTimeSheetRow() {
 			
 			entryIndex = parseInt(entryIndex)+1;
 			var cell7= row.insertCell(7);
-			 var isCell4Disabled = $("#1timeSheetDay4Id").prop('disabled');
-			/* if(isCell4Disabled){
-				$("#divadttTd6 :input[type=text]").attr("disabled", "disabled");
-				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon');
-			}else{ 
-				$("#divadttTd6 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd6').find('i').attr('class','glyphicon glyphicon-comment');
-			} */ 
 			var divadttTd5Str = document.getElementById("divadttTd6").innerHTML;
 			divadttTd5Str = divadttTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd5Str = divadttTd5Str.replace(/ENTRYINDEX/g, (entryIndex));
@@ -1345,15 +1301,6 @@ function addTimeSheetRow() {
 			
 			entryIndex = parseInt(entryIndex)+1;
 			var cell8 = row.insertCell(8);
-			var isCell5Disabled = $("#1timeSheetDay5Id").prop('disabled'); 
-			/*  if(isCell5Disabled){
-				$("#divadttTd7 :input[type=text]").attr("disabled", "disabled");
-				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon');
-			}
-			else{
-				$("#divadttTd7 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd7').find('i').attr('class','glyphicon glyphicon-comment');
-			 } */
 			var divadttTd6Str = document.getElementById("divadttTd7").innerHTML; 
 			divadttTd6Str = divadttTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd6Str = divadttTd6Str.replace(/ENTRYINDEX/g, (entryIndex));
@@ -1366,15 +1313,6 @@ function addTimeSheetRow() {
 			
 			entryIndex = parseInt(entryIndex)+1;
 			var cell9 = row.insertCell(9);
-			var isCell6Disabled = $("#1timeSheetDay6Id").prop('disabled');
-			/* if(isCell6Disabled){
-				$("#divadttTd8 :input[type=text]").attr("disabled", "disabled");
-				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon');
-			}
-			else{ 
-				$("#divadttTd8 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd8').find('i').attr('class','glyphicon glyphicon-comment');
-			}  */
 			var divadttTd7Str = document.getElementById("divadttTd8").innerHTML;
 			divadttTd7Str = divadttTd7Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd7Str = divadttTd7Str.replace(/ENTRYINDEX/g, (entryIndex)); 
@@ -1387,14 +1325,6 @@ function addTimeSheetRow() {
 			
 			entryIndex = parseInt(entryIndex)+1;
 			var cell10 = row.insertCell(10);
-		    var isCell7Disabled = $("#1timeSheetDay7Id").prop('disabled');
-			/* if(isCell7Disabled){
-				$("#divadttTd9 :input[type=text]").attr("disabled", "disabled");
-				$('.timesheet_comm','#divadttTd9').find('i').attr('class','glyphicon');
-			}else{ 
-				$("#divadttTd9 :input").removeAttr('disabled');
-				$('.timesheet_comm','#divadttTd9').find('i').attr('class','glyphicon glyphicon-comment');
-			} */
 			var divadttTd8Str = document.getElementById("divadttTd9").innerHTML;
 			divadttTd8Str = divadttTd8Str.replace(/REPLACEROWID/g, (maxRowNum));
 			divadttTd8Str = divadttTd8Str.replace(/ENTRYINDEX/g, (entryIndex)); 
@@ -1414,20 +1344,8 @@ function addTimeSheetRow() {
 			divadttTd11Str = divadttTd11Str.replace(/disabled/g, '');
 			cell11.innerHTML = divadttTd11Str;
 		    maskme();
-		    
-			//var projectTaskId = maxRowNum+"task1Id"; 
-			
-			//getProjectTasks(projectTaskId,projectId); 
-			
-		   /* var isTimesheetAttachmentRequired = $("#isTimesheetAttachmentRequired").val();
-		   if(isTimesheetAttachmentRequired != null && isTimesheetAttachmentRequired != "" && isTimesheetAttachmentRequired !="undefined" && isTimesheetAttachmentRequired == "Y"){
-			 $('#0docFile').removeAttr('data-validation-optional');
-			 $('#0docFile').attr("data-validation","required"); 
-			 $(".time_btn").removeAttr("disabled");
-			 $("#loadTime").removeAttr("style"); 
-		   } */
-	    } 	
-	}	
+	     } 	
+	 }	
         
         function disableInput(divId){
         	$("#"+divId+" :input").attr("disabled", "disabled");
@@ -1469,18 +1387,70 @@ function addTimeSheetRow() {
         	 $("#"+projectTaskId).append("<option value=''>--select task--</option>");
         }
         
-        function setTaskStatus(pmId){
-       	 var projectMemberId = $("#"+pmId).val();
- 		     if(projectMemberId != null && projectMemberId != '' && projectMemberId != 'undefined'){
- 		    	  <c:forEach var="entry" items="${employeeTimesheetEntryDetailsDTO.submissionList}" varStatus="entryCount">
-                      <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
-                           if('${statusEntry.key}' == projectMemberId){
-                        	   $("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetStatus']").val('${statusEntry.value.timesheetStatus}');
-                           }
+       function enableOrDisableHours(entryIndex,pmId){
+    	   var projectMemberId = $("#"+pmId).val();
+		     if(projectMemberId != null && projectMemberId != '' && projectMemberId != 'undefined'){
+                    <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
+                         if('${statusEntry.key}' == projectMemberId){
+                        	   var monEditable = '${statusEntry.value.monEditable}';
+	      	          		   var tueEditable = '${statusEntry.value.tueEditable}';
+	      	                   var wedEditable = '${statusEntry.value.wedEditable}';
+	      	                   var thuEditable = '${statusEntry.value.thuEditable}';
+	      	                   var friEditable = '${statusEntry.value.friEditable}';
+	      	                   var satEditable = '${statusEntry.value.satEditable}';
+	      	                   var sunEditable = '${statusEntry.value.sunEditable}';
+                        	  var end = parseInt(entryIndex)+7;
+                        	  var count = 1;
+            	          	  for (i = entryIndex; i < end; i++) {
+            	          		  $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").removeAttr("disabled");
+            	          		  $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").val("HH:MM");
+            	          		  $("#commentDiv"+i).find('i').removeAttr('class');
+            	          		  $("#commentDiv"+i).find('i').attr('class','glyphicon glyphicon-comment');
+            	          		  if(count == 1 && monEditable != "true"){
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  }else if(count == 2 && tueEditable != "true"){
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
+            	          			 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  } else if(count == 3 && wedEditable != "true"){
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
+            	          		 	 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  } else if(count == 4 && thuEditable != "true"){
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon glyphicon-comment');
+            	          		 	 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  } else if(count == 5 && friEditable != "true"){
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
+            	          		 	 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  } else if(count == 6 && satEditable != "true"){
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
+            	          		 	 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  } else if(count == 7 && sunEditable != "true"){
+            	          			 $("#commentDiv"+i+" textarea").val('')
+            	          			 $("#commentDiv"+i).find('i').removeAttr('class');
+            	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
+            	          		 	 $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("disabled","disabled");
+            	          		  }
+            	          		 count++;
+            	          		$("[name='timesheetSubmission.timesheetEntries["+i+"].timesheetStatus']").val('${statusEntry.value.timesheetStatus}');
+            	              } 
+                         }
 		                </c:forEach>
-		          </c:forEach>
- 		     }
+		     }
        }
+        
+        		
 	   //get project tasks 
 	   function getProjectTasks(projectTaskId,pmId){
 		   $("#"+projectTaskId).next('i').remove();
