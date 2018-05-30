@@ -250,9 +250,9 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	 * @throws Exception
     */
 	@Override
-	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, Long loc,String searchVal) throws Exception {
+	public List<CandidateEmployers>   getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, String searchVal) throws Exception {
 		
-		List<CandidateEmployers> ss = candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(candidateId, loc, searchVal);
+		List<CandidateEmployers> ss = candidateEmployersDao.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(candidateId, searchVal);
 		for(CandidateEmployers exp:ss) {
 			if(StringUtils.isNotBlank(exp.getStartMonth())) {
 			String startMonth = exp.getStartMonth().substring(exp.getStartMonth().lastIndexOf('&') + 1);

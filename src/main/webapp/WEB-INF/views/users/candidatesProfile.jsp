@@ -95,6 +95,12 @@ function editCandidate(candidateId){
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
             			 	}
+            			 	
+            			 	var middleName = '';
+            			 	if(json.middleName != null && json.middleName != '' && json.middleName != 'undefined'){
+            			 		middleName = json.middleName;            			 		
+            			 	}
+            			 	
         			 	    var mobilePhone = '';
             			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
             			 		mobilePhone = json.mobilePhone;            			 		
@@ -200,7 +206,7 @@ function editCandidate(candidateId){
 							result = result + '		            <input type="text" class="form-control input-sm" name="lastName" value="'+lastName+'" placeholder="Last Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							result = result + '		          <div class="col-md-4">';
-							result = result + '		            <input type="text" class="form-control input-sm" name="middleName" value="'+json.middleName+'" placeholder="Middle Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
+							result = result + '		            <input type="text" class="form-control input-sm" name="middleName" value="'+middleName+'" placeholder="Middle Name" data-validation="validate_AlphaNumber validate_Space validate_length length1-100" data-validation-optional="true">';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
 							if(json.isAssociate == 'Y'){
