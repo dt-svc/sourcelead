@@ -539,7 +539,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public File prepareTimeSheetExport(TimesheetReportsDTO timesheetReportsDTO,User loginUser,OrgLocations orgLocations) throws Exception {
+	public File prepareTimeSheetExport(TimesheetReportsDTO timesheetReportsDTO,User loginUser,OrgLocations orgLocations,String globalUser) throws Exception {
 		File file = null;
 		StringBuilder weekFrequencyDates = new StringBuilder(); 
 		//DateFormat format = Constants.DF_DMY;
@@ -647,7 +647,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	            table.addCell(cell);
 	        }
             table.completeRow();
-            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports");
+            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports",globalUser);
             
             java.util.List<String[]> reportList = new ArrayList<>();
             for(ProjectMembers promembers:projectMembers.getData()){
@@ -850,7 +850,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
 
 	@Override
-	public File prepareTimeSheetExportExcel(TimesheetReportsDTO timesheetReportsDTO, User loginUser,OrgLocations orgLocations) throws IOException, Exception {
+	public File prepareTimeSheetExportExcel(TimesheetReportsDTO timesheetReportsDTO, User loginUser,OrgLocations orgLocations,String globalUser) throws IOException, Exception {
 		File file = null;
 		
 		StringBuilder weekFrequencyDates = new StringBuilder(); 
@@ -913,7 +913,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		
 		
 		int column = 0;
-		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports");
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports",globalUser);
 		 for(ProjectMembers promembers:projectMembers.getData()){
 			 writeRow = createExcelsheet.createRow(column + 1);
 			 createExcelsheet = prepareTimesheetReportDataExcel(promembers,displayWeeksList,loginUser,createExcelsheet,writeRow,startDate,endDate,orgLocations);

@@ -50,6 +50,7 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -277,6 +278,11 @@ public class UserServiceImpl implements UserService {
 	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
 	   if(userRole == null){
 		   userRole = getUserRoleDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
+		   
+		   if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				 userRole.setDesignation(addUserDTO.getDesignation());
+		    }
+		   
 		   if(null == user.getId()){
 				userRole.setIsPrimary(1);
 				 if(sourceType.equalsIgnoreCase("PROJECTS")){
@@ -295,9 +301,24 @@ public class UserServiceImpl implements UserService {
 			if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
 				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
 			}
+			
+		 if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				 userRole.setDesignation(addUserDTO.getDesignation());
+		    }
 	   }
 		
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
+		if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess())) {
+			userRole.setIsGlobal(Constants.YES);
+		}else {
+			userRole.setIsGlobal(Constants.NO);	
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getGrade())) {
+			AssociateGrades grades = new AssociateGrades();
+			grades.setId(Long.valueOf(addUserDTO.getGrade()));
+			userRole.setGradeId(grades);
+		}
 		userRoleList.add(userRole);
 		user.setUserRole(userRoleList);
 		
@@ -538,6 +559,12 @@ public class UserServiceImpl implements UserService {
 			userRole.setReportingManager(reportingManager);
 		}else {
 			userRole.setReportingManager(user);
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getResourceManager())){
+			User resourceManager = new User();
+			resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
+			userRole.setResourceManager(resourceManager);
 		}
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
@@ -1491,6 +1518,41 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation) throws Exception {
 		return userDao.getUsersResponseListByOrglocationId(userDTO,orgLocation);
+	}
+
+	@Override
+	public List<User> getGlobalUsersByOrgId(Long roleId, Long orgId, Long tabId) throws Exception {
+		return userDao.getGlobalUsersByOrgId(roleId, orgId, tabId);
+	}
+
+	@Override
+	public List<User> getTabAccessGlobalOwnersByOrgIdAndTabId(Long orgLocationId,Long orgId, Long tabId) throws Exception {
+		
+		List<User> userList = null;
+		userList = userDao.getTabAccessGlobalOwnersByOrgIdAndTabId(orgId, tabId);
+		if(null != userList && !userList.isEmpty()){
+			for (User user : userList) {
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationId);
+				if(null != userRole){
+					user.setUserType(userRole.getUserType());
+				}else {
+					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					user.setUserType(primaryRole.getUserType());
+				}
+			}
+		}
+		return userList;
+	}
+
+	@Override
+	public List<User> getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId,
+			Long orgId, Long tabId) throws Exception {
+		return userDao.getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId, orgId, tabId);
+	}
+
+	@Override
+	public List<User> getResourceManagersByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getResourceManagersByOrgLocationIdAndTabId(orgLocationsId, tabId);
 	}
 	
 }

@@ -28,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
+import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -604,6 +605,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndCandidateId(locationsId, candidateId);
 	}
 	
+	@Override
+	public List<ProjectMembers> getProjectMembersListByOrgIdAndMasterCandidateId(Long orgId, Long masterCandidateId) {
+		return projectMembersDao.getProjectMembersListByOrgIdAndMasterCandidateId(orgId, masterCandidateId);
+	}
+	
 	
 	@Override
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(
@@ -621,8 +627,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
 			String timesheetFrequency, Date startDate, Date endDate, Long clientId, String status, Long locationsId,
-			Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor) {
-		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,projectName,start,length,timesheetFor);
+			Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor,String isGlobalUser) {
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,projectName,start,length,timesheetFor,isGlobalUser);
 	}
 	
 	@Override
@@ -689,10 +695,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation,String roleIds,String teamIds)
+	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation,String roleIds,String teamIds,String isGlobalAccess)
 			throws Exception {
-		
-		ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
+		ProjectClients projectClients = null;
+		if(StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
+			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgId(projectId, loginOrgLocation.getOrg().getId());
+		}else {
+			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
+		}
 		List<ProjectMembers> projectMembersList = null;
 		List<ProjectMembers> projectMembList = new ArrayList<>();
 		if(projectClients != null){
@@ -834,9 +844,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId,
-			Long orgRelationId) throws Exception {
+			Long orgRelationId,String isGlobalUser) throws Exception {
 
-		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLocationId);
+		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLocationId,isGlobalUser);
 
 		List<ProjectMembers> projectMemberfilteredList = projectMemberList.stream()
 						.filter(predicate -> predicate.getProjectMemberCandidteId().getOrgRelationId() !=null && predicate.getProjectMemberCandidteId().getOrgRelationId().getId().longValue() == orgRelationId)
@@ -1263,8 +1273,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 	
 	@Override
-	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long projectId,Long locationId) throws Exception {
-		return projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId, locationId);
+	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long projectId,Long locationId,String isGlobalUser) throws Exception {
+		return projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId, locationId,isGlobalUser);
 	}
 	
 
@@ -1578,8 +1588,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,
-			Long locationId) throws Exception {
-		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId);
+			Long locationId,String isGlobalUser) throws Exception {
+		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId,isGlobalUser);
 	}
 
 	@Override
@@ -1687,6 +1697,16 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			flag = true;
 		}
 		return flag;
+	}
+
+	@Override
+	public List<ProjectMembers> getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) throws Exception {
+		return projectMembersDao.getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
+	}
+
+	@Override
+	public ProjectMembers getProjectMemberByUserIdAndLoginOrglocationId(Long userId, Long orgLocationId)throws Exception {
+		return projectMembersDao.getProjectMemberByUserIdAndLoginOrglocationId(userId, orgLocationId);
 	}
 
 }

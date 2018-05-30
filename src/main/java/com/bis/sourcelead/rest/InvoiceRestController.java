@@ -933,6 +933,7 @@ public class InvoiceRestController {
 		ResponseList<ProjectMembers> responseList = new ResponseList<>();
 //		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
 		String endDateStr = frequencyArray[1];
@@ -948,7 +949,7 @@ public class InvoiceRestController {
 		if (null != sahList && sahList.size() > 0) {
 			for (SubmissionApproverHierarchy sah : sahList) {
 				ProjectMembers subPm = sah.getSubmissionId().getProjectMembers();
-				ProjectMembers projectMember = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(subPm.getMasterCandidateId().getId(), Long.parseLong(projectId), orgLocation.getId());
+				ProjectMembers projectMember = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(subPm.getMasterCandidateId().getId(), Long.parseLong(projectId), orgLocation.getId(),isGlobalAccess);
 				// Candidate candidate =
 				// candidateService.getCandidateByParentCandidateId(projectMember.getProjectMemberCandidteId().getId());
 				Candidate candidate = projectMember.getProjectMemberCandidteId();
@@ -1855,7 +1856,8 @@ public class InvoiceRestController {
 	{
 		ResponseList<ProjectMembers> responseList = new ResponseList<>();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<ProjectMembers> associatesList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId, orgLocation.getId());
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		List<ProjectMembers> associatesList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId, orgLocation.getId(),isGlobalAccess);
 		responseList.setData(associatesList);
 		return responseList;
 	}
@@ -1907,10 +1909,11 @@ public class InvoiceRestController {
 	 */
 	@RequestMapping(value = "/getVendorAssignedMembersForProjects", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseList<ProjectMembers> getVendorAssignedMembersForProjects(@RequestParam(value = "projectId", required = false) Long projectId, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId, @RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId) throws Exception
+	public ResponseList<ProjectMembers> getVendorAssignedMembersForProjects(@RequestParam(value = "projectId", required = false) Long projectId, @RequestParam(value = "orgRelationId", required = false) Long orgRelationId, @RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId,HttpServletRequest request) throws Exception
 	{
 		ResponseList<ProjectMembers> responseList = new ResponseList<>();
-		List<ProjectMembers> associatesList = projectMembersService.getVendorAssignedMembersForProjects(projectId, orgLocationId, orgRelationId);
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		List<ProjectMembers> associatesList = projectMembersService.getVendorAssignedMembersForProjects(projectId, orgLocationId, orgRelationId,isGlobalAccess);
 		responseList.setData(associatesList);
 		return responseList;
 	}

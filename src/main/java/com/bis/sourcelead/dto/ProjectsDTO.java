@@ -191,7 +191,19 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String clients;
 	
+	private String isGlobalAccess;
+	
 	private long orgLocationsId;
+	
+	private Long orgId;
+	
+	private String dateFormat;
+	
+	private String isReportingManagerAsApprover;
+	
+	private String isTicketNumberRequired;
+	
+	private String isTaskCommentsRequired;
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -902,5 +914,53 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setOrgLocationsId(long orgLocationsId) {
 		this.orgLocationsId = orgLocationsId;
+	}
+
+	public String getIsGlobalAccess() {
+		return isGlobalAccess;
+	}
+
+	public void setIsGlobalAccess(String isGlobalAccess) {
+		this.isGlobalAccess = isGlobalAccess;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+
+	public String getIsReportingManagerAsApprover() {
+		return isReportingManagerAsApprover;
+	}
+
+	public void setIsReportingManagerAsApprover(String isReportingManagerAsApprover) {
+		this.isReportingManagerAsApprover = isReportingManagerAsApprover;
+	}
+
+	public String getIsTicketNumberRequired() {
+		return isTicketNumberRequired;
+	}
+
+	public void setIsTicketNumberRequired(String isTicketNumberRequired) {
+		this.isTicketNumberRequired = isTicketNumberRequired;
+	}
+
+	public String getIsTaskCommentsRequired() {
+		return isTaskCommentsRequired;
+	}
+
+	public void setIsTaskCommentsRequired(String isTaskCommentsRequired) {
+		this.isTaskCommentsRequired = isTaskCommentsRequired;
 	}
 }

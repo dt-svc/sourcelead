@@ -439,7 +439,7 @@ position: relative; display: block; padding: 0 15px !important; transition: all 
 .side-bar {
 background-color: #375d81; left: 0; min-height: 100%; max-height: 100%; position: fixed; top: 50px; width: 190px; z-index: 810;
 padding-top: 0px; overflow-x:hidden; overflow-y:auto; /*transition: 0.3s ease-in-out; -moz-transition: 0.3s ease-in-out;
--webkit-transition: 0.3s ease-in-out;*/ 
+-webkit-transition: 0.3s ease-in-out;*/ padding-bottom: 125px; 
 }
 /* hide time sheet */
 .timesheet-menu, .backoffice-menu, .associates-menu, .billing-menu {
@@ -661,7 +661,7 @@ line-height: 35px; border-bottom: 1px solid #325475; transition: all 0.5s ease-i
 
 /* content Area Styels */
 .content-wraper {
-background: #e0e0e0; min-height: 620px; margin-left: 190px; padding: 0 30px 30px; padding-top: 53px;
+background: #e0e0e0; min-height: 620px; margin-left: 190px; padding: 0 20px 30px; padding-top: 53px;
 -moz-transition: all ease-in-out 0s; -ms-transition: all ease-in-out 0s; -webkit-transition: all ease-in-out 0s;
 transition: all ease-in-out 0s;
 }
@@ -8597,6 +8597,27 @@ table.tableNetpay thead > tr >  th {
 .tableNetpay .formControl.activeEdit {
 	border:1px solid #A8B7C7; padding-right: 5px; 
 }
+.tablePayslip .formControl {
+	border: transparent; width: 100%; padding:0px; text-align: left;
+}
+.tablePayslip .formControl.activeEdit {
+	border:1px solid #A8B7C7; padding:1px 5px; 
+}
+.tablePayslip table table {
+	margin-bottom: 0;
+}
+.tablePayslip table tr td {
+	border-top: 0;
+}
+.tablePayslip table table tr td {
+	text-align: left;
+}
+.tablePayslip table thead th {
+	background-color: #f1f1f1; border-bottom-width: 0;
+}
+.tablePayslip table tr th, .tablePayslip table tr td {
+	padding: 5px 10px;
+}
 .medaiAssociates {
 	padding: 5px 0; width: 250px; float: left;
 }
@@ -8747,6 +8768,166 @@ display: inline-block; width: 100%; clear:both;
 .phoneValid p.jquery_form_error_message {
  position: absolute; left: 18px; bottom: -14px;
 }
+/* forms edit element styles */
+.editElementDiv {
+	min-height: 25px; position: relative; transition: 0.3s ease-in-out;
+}
+.editElementDiv .edit-element {
+	float: left; width: 90%;
+}
+.editElementDiv .faPencil {
+	display:none; position:absolute; right: 0; top: 5px; transition: 0.3s ease-in-out;
+}
+.editElementDiv:hover .faPencil {
+	display: block;
+}
+.saveElementDiv {
+	display: none;
+}
+.globalMarketplace-parent {
+	position: relative;
+}
+.globalMarketplace-parent .globalMarketplace .progress {
+	margin-bottom: 10px; border-radius: 2px;
+}
+.globalMarketplace-parent .globalMarketplace {
+	display: none; position: absolute; z-index: 9; left: -125px; top:-8px; width: 150px; height: 100px; background-color: #fff;
+	border: 1px solid #ededed; padding: 10px; border-radius: 3px;
+	/*box-shadow: 0 3px 3px -2px rgba(0,0,0,.2),0 3px 4px 0 rgba(0,0,0,.14),0 1px 8px 0 rgba(0,0,0,.12);*/
+}
+.globalMarketplace-parent:hover .globalMarketplace {
+	display: block; 
+}
+.headerItems ul {
+	float: left;
+}
+.dropdown-inputbox {
+	width: 125px;
+}
+.dropdown-inputbox input[type="text"]{
+	width: 70px; float: left; margin-right:0;
+}
+.dropdown-inputbox select.sel {
+	width: 55px; float: left; height: 30px; background-position: 92%; border:none !important; box-shadow: none !important;
+}
+.dropdown-select.bgPosition select {
+	background-position: 90%;
+}
+.customSetprice {
+	display: none;
+}
+.tableDC {
+	background-color: #fff; padding: 5px; border: 1px solid #ededed; border-radius: 4px;
+	left: 25%; position: absolute; top: 25px; display: none; box-shadow: 0 1px 6px rgba(57,73,76,0.35);
+	z-index: 9; min-width: 250px;
+}
+.tableDC::after {
+border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 8px solid #ddd;
+content: ""; height: 0; margin-left: 32px; position: absolute; top:-8px; width: 0; left: 0;
+}
+.tableDC .tableInner {
+	min-height: 150px; max-height: 400px; overflow-y: auto;
+}
+.tableDC .table {
+	margin-bottom: 0;
+}
+.cardDesign-modal {
+	border: 1px solid #ededed; background-color: #fff;  display: table; width: 100%; 
+	position: relative;
+}
+.cardDesign-modal .colmd {
+	display: table-cell; padding:10px 5px;
+}
+.cardDesign-modal .colmd3 {
+	width: 25%; background-color: #f1f1f1;
+}
+.cardDesign-modal .colmd9 {
+	width: 75%;
+}
+.cardDesign-modal .globalCanImage {
+	width: 75px; height: 75px; margin: 0 auto; clear: both;
+}
+.cardDesign-modal .globalCanImage img {
+	max-height: 100%;  border-radius: 50%;
+}
+.cardDesign-modal .rating {
+	position: relative;
+}
+.cardDesign-modal .rating .fa {
+	font-size: 10px; color: #ccc;
+}
+.cardDesign-modal .rating .fa.rate-active {
+	color: #f60;
+}
+.tablehideSecondrow .styleTables table tbody > tr:nth-child(2n+2) {
+	display: none;
+}
+.multidropdown-caret.col-md-6 {
+	min-height: 45px !important;
+	
+}
+.multidropdown-caret .multiselect, .multidropdown-caret .btn-group, .btn-group-vertical  {
+	width: 95%;text-align: left;
+}
+.multidropdown-caret .caret {
+	float: right; top: -10px; position: relative;
+}
+.multidropdown-caret .multiselect-container li a{
+	padding-left: 0;
+}
+ul.jobsboard-list > li {
+	border: 1px solid #ededed; border-radius: 5px; padding: 10px; margin-bottom: 15px;
+}
+ul.jobsboard-list > li:hover {
+	background-color: #fafafa; border: 1px solid #e1e1e1;
+}
+.jobsboard-list li span.jobboard-company {
+	margin-bottom: 10px; display: inline-block; width: 100px; height: 33px;
+}
+.jobsboard-list li span.jobboard-company img {
+	max-height: 100%;
+}
+.jobsboard-list li ul.jobboard-btns li {
+	border: none; float: left; padding:0px; margin: 0;
+}
+.jobsboard-list li ul.jobboard-btns li .btn {
+	padding: 2px 8px; font-size: 13px;
+}
+.tableScroll {
+	min-height: 100px; max-height: 400px; overflow-y: auto;
+}
+.trashIcon {
+	color:#ededed;
+}
+.trashIcon:hover, .trashIcon.trashActive {
+	color:red;
+}
+.widthIcon.widthIcon-four {
+	width: 100px;
+}
+.customEvents-Calendar .ui-widget-content {
+	background: transparent;
+}
+.customEvents-Calendar .ui-state-default, .customEvents-Calendar .ui-widget-content .ui-state-default, .customEvents-Calendar .ui-widget-header .ui-state-default {
+	background: transparent;
+}
+.customEvents-Calendar table.ui-datepicker-calendar thead th {
+	background-color: #fff;
+}
+.customEvents-Calendar table.ui-datepicker-calendar tbody tr td {
+	background-color: #ededed;
+}
+.blankForm {
+    border: 1px solid #ededed; min-height: 200px; margin: 15px; text-align: center; font-size: 20px;
+}
+.modal-lg.salaryHistory_modalLg {
+	width: 1024px;
+}
+.downloadInput input {
+	width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    background: transparent; border: none; font-weight: 400; margin-left: 0; padding-left: 5px !important;
+}
+/* forms edit element styles */
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

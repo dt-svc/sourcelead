@@ -1568,7 +1568,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		
 		
 		
-		public void dataValidationForProjectTasks(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception {
+		public void dataValidationForProjectTasks(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,String isGlobalAccess) throws Exception {
 			 Projects project = projectsService.getProjectByProjectUUID(dataMigrationDTOJsonCopy.getString("projectUUID"));
 			if(dataMigrationDTOJsonCopy.getString("taskstype").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskstype"))) {
 				errorSet.put("taskstype", "Taskstype field is missing");
@@ -1675,7 +1675,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			
 			//Assigned To 
 			if(!dataMigrationDTOJsonCopy.getString("assignTaskId").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("assignTaskId"))) {
-			 List<ProjectMembers> projectAssignedList = projectsService.getProjectEmployeeListByProjectIdAndStatus(project.getId(),"Active",orgLocation,null,null);
+			 List<ProjectMembers> projectAssignedList = projectsService.getProjectEmployeeListByProjectIdAndStatus(project.getId(),"Active",orgLocation,null,null,isGlobalAccess);
 			 int incr = 0;
 			 String[] emails = dataMigrationDTOJsonCopy.getString("assignTaskId").trim().replace("\n","").toLowerCase().split(",");
 			 ArrayList<String> validEmails = new ArrayList<>();

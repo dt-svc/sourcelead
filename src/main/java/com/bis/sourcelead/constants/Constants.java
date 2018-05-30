@@ -41,6 +41,8 @@ public class Constants {
 	public static final String EMPLOYMENT_TYPE ="Employment Type*";
 	public static final String ASSOCIATE_VENDOR="Vendor";
 	public static final String ASSOCIATE_VENDOR_CONTACT="Vendor Contact(Email)";
+	public static final String ASSOCIATE_GRADE="Grade";
+	public static final String ASSOCIATE_DESIGNATION="Designation*";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";
 	public static final String FAILED_REASON = "Reason";
@@ -614,7 +616,7 @@ public class Constants {
 	public static final String[] PROJECT_TASKS_EXCEL_HEADERS = { "Task Name", "Task Type", "Priority", "Assigned To","Due Date","Estimated Time","Severity","Owner","Billing Type","Business Value", "Status","Description"};
 
 	public static final String[] DATA_MIGRATION_PROJECT_TASKS_EXCEL_HEADERS = { "Task Type" , "Task Name","Assigned To", "Due Date", "Priority", "Estimated Time","Severity","Status", "Owner","Billing Type","Currency Type","Business Value", "Description"};
-
+	
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
 	public static final String CLIENT = "Client";
@@ -1096,6 +1098,6 @@ public class Constants {
 	public static final String REPORT_FILTER_1_WEEK = "1_week";
 	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
+	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments"};
 	
-
 }
