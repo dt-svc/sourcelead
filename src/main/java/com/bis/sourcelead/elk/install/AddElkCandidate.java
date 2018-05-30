@@ -181,7 +181,7 @@ public class AddElkCandidate{
 				    	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 						candidateIndex.setCreatedDate(df.format(new java.util.Date(createdDateTimestamp.getTime())));
 				    }
-				    candidateIndex.setCreatedBy(rs.getString("CREATED_BY"));   
+				    candidateIndex.setCreatedByUserCode(rs.getString("CREATED_BY"));   
 					Timestamp updatedDateTimestamp = rs.getTimestamp("UPDATED_DATE");
 					if (updatedDateTimestamp != null){
 						DateFormat df = new SimpleDateFormat("yyyy-MM-dd");

@@ -95,6 +95,8 @@ public class CandidateIndex implements Serializable {
 	private String createdDate;
 
 	private String createdBy;
+	
+	private String createdByUserCode;
 
 	private String updatedDate;
 
@@ -966,6 +968,14 @@ public class CandidateIndex implements Serializable {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	public String getCreatedByUserCode() {
+		return createdByUserCode;
+	}
+
+	public void setCreatedByUserCode(String createdByUserCode) {
+		this.createdByUserCode = createdByUserCode;
 	}
 	
 }
