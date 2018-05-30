@@ -10,6 +10,9 @@ public class DayWiseTimesheetReoprtsListDTO {
 	private String billableHrs	;
 	private String nonBillableHrs;
 	private String status;
+	private String billableTotalCount;
+	private String nonBillableTotalCount;
+	
 	public String getTimesheetDate() {
 		return timesheetDate;
 	}
@@ -63,6 +66,18 @@ public class DayWiseTimesheetReoprtsListDTO {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public String getBillableTotalCount() {
+		return billableTotalCount;
+	}
+	public void setBillableTotalCount(String billableTotalCount) {
+		this.billableTotalCount = billableTotalCount;
+	}
+	public String getNonBillableTotalCount() {
+		return nonBillableTotalCount;
+	}
+	public void setNonBillableTotalCount(String nonBillableTotalCount) {
+		this.nonBillableTotalCount = nonBillableTotalCount;
 	}
 	
 	

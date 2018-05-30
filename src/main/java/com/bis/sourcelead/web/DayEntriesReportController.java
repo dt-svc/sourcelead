@@ -21,7 +21,7 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 @RequestMapping(value="/app")
-public class dayEntriesReportController {
+public class DayEntriesReportController {
 
 	@Autowired
 	private DayEntryReportsService dayEntryReportsService;
@@ -30,6 +30,7 @@ public class dayEntriesReportController {
 	@RequestMapping(value="/dayEntriesReportList",method= RequestMethod.POST)
 	public ModelAndView getDayEntriesList(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
+		model.addObject("exportDto",dayWiseTimesheetReoprtsDto);
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Map<List<DayWiseTimesheetReoprtsListDTO>, String[]>  listDto = dayEntryReportsService.getDayEntriesList(dayWiseTimesheetReoprtsDto,orgLocations, loginUser) ;
@@ -42,7 +43,6 @@ public class dayEntriesReportController {
 		}
 		model.addObject("startDate",dayWiseTimesheetReoprtsDto.getStartDate());
 		model.addObject("endDate",dayWiseTimesheetReoprtsDto.getEndDate());
-		model.addObject("exportDto",dayWiseTimesheetReoprtsDto);
 		model.setViewName("timesheet/dayEntriesReportList");
 		return model;
 	}
