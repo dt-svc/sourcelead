@@ -1268,10 +1268,6 @@ $("#experienceValue").change(function () {
 		      onSelect: function (selected) {
 		            //var dt = new Date(selected);
 		            var dt = $(this).datepicker('getDate', '+1d');
-		            console.log("dt");
-			           console.log(dt);
-			           console.log("dt.getDate()");
-			           console.log(dt.getDate());
 		            dt.setDate(dt.getDate() + 1);
 		            $("#lcaEndDate").datepicker("option", "minDate", dt);
 		        }
@@ -1281,12 +1277,7 @@ $("#experienceValue").change(function () {
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
-		        onSelect: function (selected) {
-		            //var dt = new Date(selected);
-		            var dt = $(this).datepicker('getDate', '-1d');
-		            dt.setDate(dt.getDate() - 1);
-		            $("#lcaStartDate").datepicker("option", "maxDate", dt);
-		        }
+		  	   minDate:1 
 		  });
 		  ///
 		  
