@@ -18,6 +18,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LetterHeadDao;
 import com.bis.sourcelead.dto.LetterHeadDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.LetterHead;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.service.LetterHeadService;
@@ -52,6 +53,24 @@ public @ResponseBody String saveLetterheadData(LetterHeadDTO letterHeadDTO,HttpS
 	return status;
 }
 
+@RequestMapping(value = "/validateletterHeadName",  method = RequestMethod.GET)
+public @ResponseBody Boolean validateletterHeadName(@RequestParam(value="letterHeadName", required=false) String letterHeadName, 
+		@RequestParam(value="letterHeadId", required=false) Long letterHeadId,HttpServletRequest request) throws Exception {
+       OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+      
+       boolean flag = false;
+       
+       LetterHead letterHead = null;
+       if(letterHeadId != null){
+    	   letterHead = letterHeadService.validateNameInEdit(letterHeadName,letterHeadId,orgLocation.getId());
+		}
+       
+       if(letterHead == null){
+		   flag = letterHeadService.validateLetterHeadName(letterHeadName,orgLocation);
+       }
+       return flag;
+      
+    }
 
 @RequestMapping(value = "/getAllLetterHeadList", method = RequestMethod.GET)
 public ResponseList<LetterHeadDTO> getAllLetterHeadList(LetterHeadDTO letterHeadDTO, HttpServletRequest request,HttpServletResponse response) throws Exception {
