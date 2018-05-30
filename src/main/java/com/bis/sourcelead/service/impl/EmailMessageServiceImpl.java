@@ -260,9 +260,9 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			} else {
 				if (null != emailMessage.getUserType() && (emailMessage.getUserType().equalsIgnoreCase("Professional")
 						|| emailMessage.getUserType().equalsIgnoreCase("Recruiter"))) {
-					message.setFrom(new InternetAddress(username, emailMessage.getFromEmail()));
+					message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromEmail()));
 				} else {
-					message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
+					message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
 				}
 
 				message.setRecipients(Message.RecipientType.TO, iAdressArray);
@@ -379,9 +379,9 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				} else {
 					if (null != emailMessage.getUserType() && (emailMessage.getUserType().equalsIgnoreCase("Professional")
 							|| emailMessage.getUserType().equalsIgnoreCase("Recruiter"))) {
-						message.setFrom(new InternetAddress(username, emailMessage.getFromEmail()));
+						message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromEmail()));
 					} else {
-						message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
+						message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
 					}
 
 					message.setRecipients(Message.RecipientType.TO, iAdressArray);

@@ -67,7 +67,7 @@
 					<div class="pull-right mb">
 						
 						<input type="hidden" name="id" id="id" value="${emailSceconf.email_UUID}"/>
-							<button type="button" id="save" class="btn btn-success btnSuccess mr" onClick="saveEmailNotification();">Save</button>
+							<button type="button" id="save" class="btn btn-primary pull-right" onClick="saveEmailNotification();">Save</button>
 							<!--  <button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="">Cancel</button> -->
 						</div>
 					</div>
@@ -254,12 +254,18 @@ function deleteFromMail(emailId){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p style='text-align: center;'>.Do you want to delete?</p>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteEmailFromMail('+emailId+')"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteEmailFromMail('+emailId+')"><input class="u_can_color" type="button"  value="Cancel" onclick="cancelDeleteMail()"></b>';
 	result = result +"	</div>";
 	$("#deleteFromMailDiv").append(result);
 	$("#remove_user_pop").slideDown(200);
 }
 
+function cancelDeleteMail(){
+	 alert("hello")
+		$("#deleteFromMailDiv").empty();
+		 $(".project_inn_mask").fadeOut(200);
+	}
+	
 function deleteEmailFromMail(emailId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
@@ -286,10 +292,6 @@ function deleteEmailFromMail(emailId){
 	});
 }
 
-function cancelTermination(){
-	$("#deleteFromMailDiv").empty();
-	 $(".project_inn_mask").fadeOut(200);
-}
 
 function changeDefaultemailConfig(ele, id) {
     $.post(sourceleadUrl+"/changeDefaultEmailConfig", {id: id, defaultAccount: $(ele).is(":checked")}, function(data) {
@@ -298,8 +300,9 @@ function changeDefaultemailConfig(ele, id) {
     });
 }
 
-
  </script>
+ 
+ 
  <div id="popUpEmailConfigDiv" class="modal editContactDiv" style='display: none; top:15%;'></div>
  <script>
  function editFromMail(emailUUID){

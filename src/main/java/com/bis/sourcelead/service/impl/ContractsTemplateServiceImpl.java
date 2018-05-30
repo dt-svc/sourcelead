@@ -3316,11 +3316,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		boolean flag = false;
 		Contracts contract = getContractByContractUUID(contractsDTO.getContractUUID());
 		String previousStage = contract.getTemplateSubmissionStatus();
+		Contracts vendorContracts = null;
 		for (ContractOwnerHierarchy coh : contract.getOwnerHierarchyList()) {
 			if (Constants.PARALLEL.equalsIgnoreCase(coh.getHierarchyType().getValue())) {
 				if (loginUser.getId().longValue() == coh.getOwnerUserId().getId().longValue() || "Admin".equalsIgnoreCase(roleName)) {
 					Set<ContractOwnerHierarchy> ownersList = new HashSet<>();
-					Contracts vendorContracts = new Contracts();
+					vendorContracts = new Contracts();
 					contract.setTemplateSubmissionStatus(Constants.PENDING);
 					coh.setTemplateSubmissionStatus(Constants.PENDING);
 					coh.setStatus(Constants.APPROVED);
@@ -3343,7 +3344,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 							contractsTemplateDao.saveContractsHistory(ch);
 //						}
 //					}
-					saveClientOrVendorContract(contract, vendorContracts, loginUser, loginOrgLocation);
+//					saveClientOrVendorContract(contract, vendorContracts, loginUser, loginOrgLocation);
 					flag = true;
 				}
 			}
@@ -3359,7 +3360,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 						coh.setStatus(Constants.APPROVED);
 					}
 					Set<ContractOwnerHierarchy> ownersList = new HashSet<>();
-					Contracts vendorContracts = new Contracts();
+					vendorContracts = new Contracts();
 					ownersList.add(coh);
 					contract.setOwnerHierarchyList(ownersList);
 					contract = saveNewContract(contract);
@@ -3380,12 +3381,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 								contractsTemplateDao.saveContractsHistory(ch);
 							}
 						}
-						saveClientOrVendorContract(contract, vendorContracts, loginUser, loginOrgLocation);
 					}
 					flag = true;
 				}
 			}
 		}
+		saveClientOrVendorContract(contract, vendorContracts, loginUser, loginOrgLocation);
 		return flag;
 	}
 

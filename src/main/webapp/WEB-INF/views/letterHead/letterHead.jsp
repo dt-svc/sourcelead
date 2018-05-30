@@ -26,11 +26,11 @@
             <h5>Letterhead Details</h5>
             <div class="form-group row">
             <label class="col-md-12">Letterhead Name<span class="text-danger paddingLeft">*</span></label>
-             <div class="col-md-12">
-                     <input type="text" class="form-control" id="letterHeadName" name="letterHeadName"  field-name="Letterhead Name" value="${letterHead.letterHeadName}"  data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-250" data-validation="required">
+             <div class="col-md-12" id="letterHeadNameDiv">
+                     <input type="text" class="form-control" id="letterHeadName" onblur="validateletterHeadName();" name="letterHeadName"  field-name="Letterhead Name" value="${letterHead.letterHeadName}"  data-validation="required validate_AlphaNumber validate_Space validate_length length1-250" data-validation="required">
               </div>
               </div>
-                    
+                  
                 <div class="form-group row">    
                <label class="col-md-12">Letterhead Description</label>
               <div class="col-md-12">
@@ -245,6 +245,33 @@
   
   </script>
   
+  
+  <script type="text/javascript">
+ function validateletterHeadName() {
+	 var letterHeadName = document.getElementById("letterHeadName").value;
+	 var letterHeadId = "${letterHead.id}";
+	  if(letterHeadName != null && letterHeadName != "undefined" && letterHeadName != ""){
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/validateletterHeadName?"+tokenParamName+"="+tokenValue+"&letterHeadName="+letterHeadName+"&letterHeadId="+letterHeadId, 
+		        success: function(data) {
+		        	 if(data == true){
+		        		 $('#letterHeadNameDiv').find('p.jquery_form_error_message').remove(); 
+						  $("input#letterHeadName").after("<p class='jquery_form_error_message'>"+letterHeadName+" is Already Existed</span>");
+						  $("#saveButton").attr("disabled", "disabled");
+		        	}
+		        	else{
+		        		 $('input#letterHeadName').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#letterHeadNameDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#saveButton").removeAttr("disabled");
+                      
+		        	}
+		        },
+		    });
+	 } 
+ }
+ </script>
+ 
   <script>
   $(function() {
 		$("#uploadBtn").change(function() {
