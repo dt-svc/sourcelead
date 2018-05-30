@@ -416,6 +416,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		
 		saveOrgLocationDefaultProject(registration, orgLocations, user);
 		commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
+		commonUtil.storeDefaultPayheadsWithOrgLocation(user, orgLocations);
 		
 		userService.saveOrUpdateUserElkDocument(userRole,employee,"sladmin");
 		userService.sendEmail(user, loginUser, password,orgLocations.getId());

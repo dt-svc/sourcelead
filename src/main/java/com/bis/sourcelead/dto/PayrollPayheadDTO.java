@@ -15,8 +15,6 @@ public class PayrollPayheadDTO implements Serializable{
 	 	
 	 	private Long id;
 	 	
-	 	private Long parentPayhead;
-	 
 	 	@Required(desc="name")
 		private String name;
 		
@@ -89,14 +87,6 @@ public class PayrollPayheadDTO implements Serializable{
 
 		public void setId(Long id) {
 			this.id = id;
-		}
-
-		public Long getParentPayhead() {
-			return parentPayhead;
-		}
-
-		public void setParentPayhead(Long parentPayhead) {
-			this.parentPayhead = parentPayhead;
 		}
 
 		public String getName() {

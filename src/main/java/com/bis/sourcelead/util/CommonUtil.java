@@ -3,7 +3,6 @@ package com.bis.sourcelead.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -23,7 +22,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -65,17 +63,19 @@ import org.springframework.stereotype.Component;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractsTemplate;
-import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
+import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
@@ -105,10 +105,11 @@ import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
-import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
+import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.MasterCandidateService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -163,6 +164,9 @@ public class CommonUtil {
 	
 	@Autowired
 	private ProjectsService projectsService;
+	
+	@Autowired
+	private PayrollPayheadService payrollPayheadService;
 	
 	@Autowired
 	private UserService userService;
@@ -2366,6 +2370,17 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 	}
 	  
   }
+  
+  
+  public void storeDefaultPayheadsWithOrgLocation(User user, OrgLocations orgLocations) throws Exception{
+	  OrgLocations sourceLeadOrgLocations = new OrgLocations();
+	  sourceLeadOrgLocations.setId(1l);
+		ResponseList<PayrollPayheadDTO> responsePayheadList = payrollPayheadService.getPayrollPayheadList(sourceLeadOrgLocations);
+		for(PayrollPayheadDTO payrollPayheadDTO : responsePayheadList.getData()) {
+			payrollPayheadDTO.setUuid(null);
+			payrollPayheadService.savePayrollPayhead(payrollPayheadDTO, user, orgLocations);
+		}
+	}
 
 		
 }

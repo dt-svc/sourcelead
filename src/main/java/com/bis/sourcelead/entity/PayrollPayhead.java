@@ -15,8 +15,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -27,11 +25,6 @@ public class PayrollPayhead {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
     private Long id;
-	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
-    @JoinColumn(name="PARENT_PAYHEAD_ID")        
-    private PayrollPayhead parentPayhead;
 	
 	@Column(name = "NAME")
 	private String name;
@@ -131,14 +124,6 @@ public class PayrollPayhead {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public PayrollPayhead getParentPayhead() {
-		return parentPayhead;
-	}
-
-	public void setParentPayhead(PayrollPayhead parentPayhead) {
-		this.parentPayhead = parentPayhead;
 	}
 
 	public String getName() {

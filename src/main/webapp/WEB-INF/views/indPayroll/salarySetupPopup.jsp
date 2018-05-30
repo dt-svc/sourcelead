@@ -36,33 +36,66 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="clearfix" id="formulaLabel">Amount</label>
+					<label class="clearfix" id="formulaLabel">${payrollPayhead.method == '% of Payheads' || payrollPayhead.method == 'Formula' ? 'Formula' : payrollPayhead.method == '% of CTC' || payrollPayhead.method == '% of Gross' ? 'Percentage' :'Amount'}</label>
 					<div class="clearfix">
-						<input type="text" class="form-control" id="formula" name="formula" placeholder="Enter amount" data-validation="validate_Space validate_length length1-5 validate_int" value="${payrollPayhead.formula}">
+						<input type="text" class="form-control" id="formula" name="formula" placeholder="Enter amount" data-validation="validate_Space validate_length length1-15 validate_int" value="${payrollPayhead.formula}">
 					</div>
 				</div>
 				<div class="form-group" id="payheadsFormulaGroup" ${payrollPayhead.method == '% of Payheads' ? '' : 'hidden'}>
+					<c:set var="rowIndex" value="0" scope="page" />
 					<label class="clearfix">Payheads</label>
 					<div class="row">
-						<div class="duplicateDiv form-group clearfix">
-							<div class="col-md-5">
-								<input type="text" class="form-control" id="formulaPercentage0" name="salarySetup[0].formulaPercentage" placeholder="Enter percentage" 
-									data-validation="validate_Space validate_length length1-5 validate_int">
+						<c:if test="${empty salarySetupList}">
+							<div class="duplicateDiv form-group clearfix">
+								<div class="col-md-5">
+									<input type="text" class="form-control" id="formulaPercentage0" name="salarySetup[0].formulaPercentage" placeholder="Enter percentage" 
+										data-validation-optional="true" data-validation="validate_Space validate_length length1-2">
+								</div>
+								<div class="col-md-6">
+									<select class="sel" id="formulaPayhead0" name="salarySetup[0].formulaPayhead">
+										<option value="">--Select payhead--</option>
+				                			<c:forEach var="list" items="${payheadList}">
+					                			<c:if test="${payrollPayhead.id != list.id}">
+					                				<option value="${list.id}">${list.name} (${list.shortCode})</option>
+					                			</c:if>
+											</c:forEach>
+									</select>
+								</div>
+								<div class="col-md-1">
+									<a href="javascript:void(0)" class="cloneDiv" ><i class="fa fa-plus mt10"></i></a> 			
+								</div>
 							</div>
-							<div class="col-md-6">
-								<select class="sel" id="formulaPayhead0" name="salarySetup[0].formulaPayhead">
-									<option value="">--Select payhead--</option>
-			                			<c:forEach var="list" items="${payheadList}">
-				                			<c:if test="${payrollPayhead.id != list.id}">
-				                				<option value="${list.id}">${list.name} (${list.shortCode})</option>
-				                			</c:if>
-										</c:forEach>
-								</select>
-							</div>
-							<div class="col-md-1">
-								<a href="javascript:void(0)" class="cloneDiv" title="Add"><i class="fa fa-plus mt10"></i></a> 			
-							</div>
-						</div>
+						</c:if>
+						<c:if test="${!empty salarySetupList}">
+							<c:forEach var="ppssList" items="${salarySetupList}" varStatus="loop">
+							<c:set var="rowIndex" value="${loop.index}" scope="page" />
+								<div class="duplicateDiv form-group clearfix">
+									<div class="col-md-5">
+										<input type="text" class="form-control" id="formulaPercentage${loop.index}" name="salarySetup[${loop.index}].formulaPercentage" placeholder="Enter percentage" 
+											data-validation-optional="true" data-validation="validate_Space validate_length length1-2 validate_int" value="${ppssList.formulaPercentage}">
+									</div>
+									<input type="hidden" id="uuid${loop.index}" name="salarySetup[${loop.index}].uuid" value="${ppssList.uuid}">
+									<div class="col-md-6">
+										<select class="sel" id="formulaPayhead${loop.index}" name="salarySetup[${loop.index}].formulaPayhead">
+											<option value="">--Select payhead--</option>
+					                			<c:forEach var="list" items="${payheadList}">
+						                			<c:if test="${payrollPayhead.id != list.id}">
+						                				<option value="${list.id}" ${ppssList.formulaPayhead == list.id ? 'selected' : ''}>${list.name} (${list.shortCode})</option>
+						                			</c:if>
+												</c:forEach>
+										</select>
+									</div>
+									<div class="col-md-1">
+										<c:if test="${loop.index == 0}">
+											<a href="javascript:void(0)" class="cloneDiv" ><i class="fa fa-plus mt10"></i></a>
+										</c:if>
+										<c:if test="${loop.index > 0}">
+											<a href="javascript:void(0)" class="cloneDiv" ><i class="fa fa-trash mt10" onclick="deleteRowCurrent(this)"></i></a>
+										</c:if>
+									</div>
+								</div>
+							</c:forEach>
+						</c:if>
 						<div id="duplicateDiv"></div>
 					</div>
 				</div>
@@ -87,10 +120,13 @@
             };
         
      // Clone Div
-     var rowIndex = 0;
+     /* var rowIndex = 0; */
+     	var rowIndex = '${rowIndex}';
     	$(".cloneDiv").click(function(){
     		rowIndex++;
     		$(this).parents(".duplicateDiv").clone().appendTo("#duplicateDiv").find("#formulaPercentage0").attr('name', 'salarySetup['+rowIndex+'].formulaPercentage').attr('id', 'formulaPercentage'+rowIndex).parents(".duplicateDiv").find("#formulaPayhead0").attr('name', 'salarySetup['+rowIndex+'].formulaPayhead').attr('id', 'formulaPayhead'+rowIndex).parents(".duplicateDiv").find(".fa-plus").removeClass("fa-plus").addClass("fa-trash").attr("onclick","deleteRowCurrent(this)");
+    		$("#formulaPercentage"+rowIndex).val("");
+    		$("#formulaPayhead"+rowIndex).val("");
     		/* $('#formulaPayhead'+rowIndex).chosen();
     		$('#formulaPayhead'+rowIndex).trigger("chosen:updated"); */
     	});
