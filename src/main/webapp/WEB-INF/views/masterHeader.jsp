@@ -718,7 +718,7 @@ function preventTabkey(e){
 	                     </sec:authorize>
 	                     
 	                     <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-	                        <li><a href="<c:url value="/app/orgLicenseSubscriptionList" />"><i class="fa fa-location-arrow" aria-hidden="true"></i>License Upgrade</a></li>
+	                        <li><a href="<c:url value="/app/orgLicenseSubscriptionList" />"><i class="fa fa-rocket" aria-hidden="true"></i>License Upgrade</a></li>
 	                     </c:if>
 	                     
 	                     <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
@@ -778,7 +778,7 @@ function preventTabkey(e){
 	                     <li><a href="<c:url value='${sourceleadUrl}/emailTemplates'/>" ><i class="fa fa-key" aria-hidden="true"></i>Email Templates</a></li>
                        </sec:authorize>
                         <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
-					       <li><a title="Invite" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i>Invite</a></li>
+					       <li><a title="Invite Company" data-toggle="modal" id="invitePop"><i class="fa fa-send"></i>Invite Company</a></li>
 	                   </c:if>
 	              </ul>
 	            </div>
