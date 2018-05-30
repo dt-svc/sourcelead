@@ -1801,25 +1801,28 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		if(exportView.getEmployerLocation() !=null){
 			 writeRow.createCell(28).setCellValue(exportView.getEmployerLocation()); 
 		}
-		if(exportView.getLcaTitle() !=null){
-			 writeRow.createCell(29).setCellValue(exportView.getLcaTitle()); 
+		if(exportView.getJobName() !=null){
+			 writeRow.createCell(30).setCellValue(exportView.getJobName()); 
+		}
+		if(exportView.getJobId() !=null){
+			 writeRow.createCell(31).setCellValue(exportView.getJobId()); 
 		}
 		if(exportView.getPreviousLcaStartDate() !=null){
-			 writeRow.createCell(30).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(32).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getPreviousLcaStartDate())); 
 		}
 		if(exportView.getPreviousLcaEndDate() !=null){
-			 writeRow.createCell(31).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(33).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getPreviousLcaEndDate())); 
 		}
 		if(exportView.getPreviousLcaNumber() !=null){
-			 writeRow.createCell(32).setCellValue(exportView.getPreviousLcaNumber()); 
+			 writeRow.createCell(34).setCellValue(exportView.getPreviousLcaNumber()); 
 		}
 		if(exportView.getPreviousLcaRate() !=null){
-			 writeRow.createCell(33).setCellValue(exportView.getPreviousLcaRate()); 
+			 writeRow.createCell(35).setCellValue(exportView.getPreviousLcaRate()); 
 		}
 		if(exportView.getPreviousEmployerLocation() !=null){
-			 writeRow.createCell(35).setCellValue(exportView.getPreviousEmployerLocation()); 
+			 writeRow.createCell(37).setCellValue(exportView.getPreviousEmployerLocation()); 
 		}
 		return createExcelsheet;
 	}
