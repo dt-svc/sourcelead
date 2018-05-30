@@ -55,6 +55,8 @@ private String vendorContact;
 
 private String employmentType;
 
+private String grade;
+
 
 
 public String getReason() {
@@ -209,6 +211,14 @@ public String getEmploymentType() {
 
 public void setEmploymentType(String employmentType) {
 	this.employmentType = employmentType;
+}
+
+public String getGrade() {
+	return grade;
+}
+
+public void setGrade(String grade) {
+	this.grade = grade;
 }
 
 
