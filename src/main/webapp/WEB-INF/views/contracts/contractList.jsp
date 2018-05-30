@@ -3846,8 +3846,7 @@ function getStageCounts(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
       type : "POST",
-       url: sourceleadUrl+"/getContractStageCounts?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,       
-       success :function(data) {
+       url: sourceleadUrl+"/getContractStageCounts?${_csrf.parameterName}=${_csrf.token}&recordId="+recordId+"&status="+status,success :function(data) {
     	   var json = JSON.parse(data);
     	   
     	   if(json.totalDraftCount != null && json.totalDraftCount != "" && json.totalDraftCount != 'undefined'){

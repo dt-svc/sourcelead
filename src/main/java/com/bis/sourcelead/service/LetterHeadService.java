@@ -23,4 +23,8 @@ LetterHead getLetterheadById(Long letterHeadId);
 
 void letterHeadData(LetterHead letterHead, HttpServletResponse response) throws Exception;
 
+Boolean validateLetterHeadName(String letterHeadName, OrgLocations orgLocation);
+
+LetterHead validateNameInEdit(String letterHeadName, Long letterHeadId, Long orgLocationId);
+
 }

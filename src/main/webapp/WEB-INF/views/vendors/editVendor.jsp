@@ -102,7 +102,7 @@
 						if(json.city != null && json.city !='' && json.city !='undefined'){
 							city = json.city;
 						}
-						if(json.webSite != null && json.webSite != 'null' && json.webSite !=''  && json.webSite !='undefined'){
+						if(json.webSite !== null && json.webSite != 'null' && json.webSite !=''  && json.webSite !='undefined'){
 							website = json.webSite;
 							alert(website)
 						}
