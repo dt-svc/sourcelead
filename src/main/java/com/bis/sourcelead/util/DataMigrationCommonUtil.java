@@ -2159,9 +2159,12 @@ public class DataMigrationCommonUtil {
 				errorSet.put("beneficiaryEmail", "Beneficiary Email is is not a valid email address");
 			}
 		}
-		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth")) && dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null")) {
 			errorSet.put("dateOfBirth", "DOB is missing");
-		}
+		}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
+					errorSet.put("dateOfBirth", "DOB is invalid date");
+	    }
+			
 	/*	if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
 			errorSet.put("maritalStatus", "Marital status is missing");/// dropdown value.
 		} else {
