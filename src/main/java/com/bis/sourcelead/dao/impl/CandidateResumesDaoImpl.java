@@ -256,7 +256,7 @@ public CandidateResumes getCandidateResumesListByCandidateId(Long candidateId) {
 public CandidateResumes getCandidateResumeByCandidateId(Long candidateId) throws Exception {
 	
 	Session session = this.sessionFactory.getCurrentSession();
-	String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.candidateId  where candidateResumes.candidateId.id =:candidateId and candidateResumes.status = '1' ";  
+	String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.candidateId  where candidateResumes.candidateId.id =:candidateId and candidateResumes.status = '1' ORDER BY candidateResumes.updatedDate DESC";  
 	List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).list();
 	CandidateResumes candidateResumes = null;
 	if(candidateResumesList != null && !candidateResumesList.isEmpty()){

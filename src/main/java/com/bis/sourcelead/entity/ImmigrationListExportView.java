@@ -167,8 +167,11 @@ public class ImmigrationListExportView implements Serializable {
 	@Column(name = "MARITAL_STATUS")
 	private String maritalStatus;
 	
-	@Column(name = "LCA_TITLE")
-	private String lcaTitle;
+	@Column(name = "JOB_NAME")
+	private String jobName;
+	
+	@Column(name = "JOB_ID")
+	private String jobId;
 	
 	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String location;
@@ -565,12 +568,20 @@ public class ImmigrationListExportView implements Serializable {
 		this.location = location;
 	}
 
-	public String getLcaTitle() {
-		return lcaTitle;
+	public String getJobName() {
+		return jobName;
 	}
 
-	public void setLcaTitle(String lcaTitle) {
-		this.lcaTitle = lcaTitle;
+	public void setJobName(String jobName) {
+		this.jobName = jobName;
 	}
-	
+
+	public String getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+	}
+
 }
