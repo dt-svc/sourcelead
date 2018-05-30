@@ -325,7 +325,7 @@
 						            </div>
 						            </div>
 									    <div class="timesheet_bot">
-							           <%-- <div class="commentFile">
+							            <%-- <div class="commentFile">
 											<h2>Attachmets & Comments <i class="fa fa-plus Cursor" onclick="addTimeSheetCommentRow()"></i> </h2>
 											<div class="">
 											   <input type='hidden' name='maxAttRowNumber' id='maxAttRowNumber'  value='1' />
@@ -367,7 +367,7 @@
 													</tr>						
 												</table>
 											</div>
-							            </div>  --%>   
+							            </div>  --%>  
 							    	   <div class="timesheet_week_comm">
 							            <div class="totalWrap">
 							                 <ul>
@@ -529,7 +529,7 @@
 	    	 </div>
 	    	 
 	    	  <!--  Add Attachments Divs  ####-->
-              <%-- <div id="divComentTd0" style="display:none;">  
+            <div id="divComentTd0" style="display:none;">  
                       <div class="timeAdd">
                        <select id="REPLACEROWIDattProjMemberId"  class="form-control input-sm" disabled name="timsheetAttachments[REPLACEROWID].projectMemberId"  field-name="Project">  
 			               <option value=''>--select Project--</option>
@@ -556,7 +556,7 @@
 				   </div>
 	          </div>
 	          <div id="divComentTd2" style="display:none;">   
-	                   <input type="text" name="timsheetAttachments[REPLACEROWID].weekComment" class="form-control input-sm" placeholder="Comment"  />
+	                   <input type="text" name="timsheetAttachments[REPLACEROWID].weekComment" disabled class="form-control input-sm" placeholder="Comment"  />
 	          </div>
 	          
 	          
@@ -570,7 +570,7 @@
 						   </div>
 						   <input type="button" value="" onclick="removeAttRow('COMMENTROWID','REPLACEROWID');" class="addRowIcon removeIcon"/>
 					</div>	
-		    </div>	 --%>
+		    </div>	
    <script>
 	function timesheetEntriesDivByTimeSubFrequency(currentTimeSubFrequency){ 
 	               var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
@@ -1181,6 +1181,7 @@ function withdrawMyTimesheet(){
 		var cell0 = row.insertCell(0);
 		var divadcmTd0Str = document.getElementById("divComentTd0").innerHTML;
 		divadcmTd0Str = divadcmTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divadcmTd0Str = divadcmTd0Str.replace(/disabled/g, ''); 
 		cell0.innerHTML = divadcmTd0Str;
 		
 		var cell1 = row.insertCell(1);
@@ -1191,6 +1192,7 @@ function withdrawMyTimesheet(){
 		var cell2 = row.insertCell(2);
 		var divadcmTd2Str = document.getElementById("divComentTd2").innerHTML;
 		divadcmTd2Str = divadcmTd2Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divadcmTd2Str = divadcmTd2Str.replace(/disabled/g, ''); 
 		cell2.innerHTML = divadcmTd2Str;
    }
 </script>
@@ -1933,7 +1935,7 @@ function newSaveTimesheet(status){
 		 }	
      }); */
      checkHours();
-     validateTimesheetHours();
+     validateTimesheetHours(status);
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1979,44 +1981,38 @@ function newSaveTimesheet(status){
 		$("#hideError").empty();
 	}  -->
 <script>
-
-function validateTimesheetHours(){
-	 var total = $("#grandTotal").val();
-	 var wokingHoursPerWk ='${minimumWorkingHoursPerWeek}'; 
-	 if(total != "" && total != null && total != 'undefined'){
-		 total = total.replace(":",".")
-		 var grandTotal = parseFloat(total);
-		 if(grandTotal < wokingHoursPerWk){
-			    var outPut = "<p> Week Total Hours Should be Minimum "+wokingHoursPerWk+" <b>X</b></p>";
-				$("#timeSheetErrorMsg").removeAttr('style');
-				$("#timeSheetErrorMsg").attr('style','display:block;');
-				$("#timeSheetErrorMsg").empty();
-				$("#timeSheetErrorMsg").append(outPut);
-				var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
-				$("#hideError").empty();
-				$("#hideError").append(error); 
-		 }else{
-			    $("#timeSheetErrorMsg").removeAttr('style');
-			    $("#timeSheetErrorMsg").attr('style','display:none;');
-				$("#timeSheetErrorMsg").empty();
-				$("#hideError").empty();
-			}
-		 
-		 $(".time_pop b").click(function(){
-				$("#timeSheetErrorMsg").removeAttr('style');
-				$("#timeSheetErrorMsg").attr('style','display:none;');
-			    $("#timeSheetErrorMsg").empty();
-			}); 
-		 
+function validateTimesheetHours(status){
+	 if(status != null && status != 'undefined' && status != '' && status == 'Submitted'){
+		 var total = $("#grandTotal").val();
+		 var wokingHoursPerWk ='${minimumWorkingHoursPerWeek}'; 
+		 if(total != "" && total != null && total != 'undefined'){
+			 total = total.replace(":",".")
+			 var grandTotal = parseFloat(total);
+			 if(grandTotal < wokingHoursPerWk){
+				    var outPut = "<p> Week Total Hours Should be Minimum "+wokingHoursPerWk+" <b>X</b></p>";
+					$("#timeSheetErrorMsg").removeAttr('style');
+					$("#timeSheetErrorMsg").attr('style','display:block;');
+					$("#timeSheetErrorMsg").empty();
+					$("#timeSheetErrorMsg").append(outPut);
+					var error = "<input  type='hidden' name='timesheetHiddenError' id='timesheetHiddenError'  data-validation='required' />";
+					$("#hideError").empty();
+					$("#hideError").append(error); 
+			 }else{
+				    $("#timeSheetErrorMsg").removeAttr('style');
+				    $("#timeSheetErrorMsg").attr('style','display:none;');
+					$("#timeSheetErrorMsg").empty();
+					$("#hideError").empty();
+				}
+			 
+			 $(".time_pop b").click(function(){
+					$("#timeSheetErrorMsg").removeAttr('style');
+					$("#timeSheetErrorMsg").attr('style','display:none;');
+				    $("#timeSheetErrorMsg").empty();
+				}); 
+			 
+		 }
 	 }
-			
-	
 }
-
-
-
-
-
 </script>
 <script type="text/javascript">
 function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMembersId,from){
