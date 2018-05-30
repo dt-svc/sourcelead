@@ -1265,12 +1265,7 @@ $("#experienceValue").change(function () {
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
-		      onSelect: function (selected) {
-		            //var dt = new Date(selected);
-		            var dt = $(this).datepicker('getDate', '+1d');
-		            dt.setDate(dt.getDate() + 1);
-		            $("#lcaEndDate").datepicker("option", "minDate", dt);
-		        }
+		  	  maxDate:0  
 		  });
 		  
 		  $('#lcaEndDate').datepicker({
