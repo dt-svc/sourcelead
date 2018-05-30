@@ -198,16 +198,10 @@ public class ExpensesRestController {
     			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(expenses.getOrgRelationId()));
     			expenses.setOrgRelationUUID(orgRelations.getUUID());
     		}*/
-            expensesDTOList.add(ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses,new ExpensesDTO()));
-            for(ExpensesDTO expDate:expensesDTOList) {
-        		if(expenses.getStartDate() != null){
-        			expDate.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getStartDate()));	
-        		}
-        		
-        		if(expenses.getEndDate() != null){
-        			expDate.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getEndDate()));	
-        		}
-            }
+            ExpensesDTO expDate =  ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses,new ExpensesDTO());
+            expDate.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getStartDate()));
+            expDate.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getEndDate()));	
+            expensesDTOList.add(expDate);
         }
         response.setData(expensesDTOList);
         response.setRecordsFiltered(expensesList.getRecordsFiltered());

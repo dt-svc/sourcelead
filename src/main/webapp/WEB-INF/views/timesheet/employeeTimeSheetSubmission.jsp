@@ -1405,7 +1405,7 @@ function addTimeSheetRow() {
                         	  var count = 1;
             	          	  for (i = entryIndex; i < end; i++) {
             	          		  $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").removeAttr("disabled");
-            	          		  $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").val("HH:MM");
+            	          		  $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").val("");
             	          		  $("#commentDiv"+i).find('i').removeAttr('class');
             	          		  $("#commentDiv"+i).find('i').attr('class','glyphicon glyphicon-comment');
             	          		  if(count == 1 && monEditable != "true"){
