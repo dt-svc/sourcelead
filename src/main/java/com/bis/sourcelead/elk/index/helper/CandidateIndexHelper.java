@@ -213,6 +213,8 @@ public class CandidateIndexHelper {
 				}else{
 					candidateIndex.setCreatedBy(sb.append(user.getFirstName()).append(" ").toString());
 				}
+				
+				candidateIndex.setCreatedByUserCode(user.getUserCode());
 			}
 			
 			

@@ -1454,10 +1454,13 @@ function exportToPdf(){
 		 candidateTypeFilter.push($(this).val());
 		 });
 	 
+	 var createdByRadio = $('input[name=createdByFilter]');
+	  var createdByFilter = createdByRadio.filter(':checked').val();
+	 
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable > 0){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&isAssociate=N";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=pdf"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -1511,11 +1514,14 @@ function exportToExcel(){
 		     {
 			 candidateTypeFilter.push($(this).val());
 			 });
+		 
+		 var createdByRadio = $('input[name=createdByFilter]');
+		  var createdByFilter = createdByRadio.filter(':checked').val();
 	  
 	  var candTypeRadio = $('input[name=candidateType]');
 	  var candidateType = candTypeRadio.filter(':checked').val();
 	  if(isCandidatesAvailable > 0){
-	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&isAssociate=N";	
+	  window.location.href = sourceleadUrl+"/getCandidatesExportList?&candidateStatus="+candidateStatus+"&exportType=xls"+"&candidateType="+candidateType+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter+"&isAssociate=N";	
 	  }else{
 		  var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -2636,11 +2642,14 @@ function resetCandidateFilter(){
 	$("ul#availabilityFilter > li input:checkbox").prop("checked",false);
 	$("ul#skillsUL > li input:checkbox").prop("checked",false);
 	$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
+	$("ul#createdByTypeFilter > li input:radio").prop("checked",false);
+	
 	
 	$("#dataTableSearch").val('');
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
 	document.getElementById("candidateCheck").checked = true;
+	document.getElementById("allCandidatesRadio").checked = true;
 	candidateList();
 }
 </script>		
@@ -2699,7 +2708,7 @@ function resetCandidateFilter(){
 				     <label><strong>Updated</strong></label>
 					 <div class="clearfix">
 						<ul class="list-unstyled" id="UpdatedFilter">
-						<li class="radioIput positionRelative" ><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="all" ><label for="candidateDayAgo">All</label></li>
+						<li class="radioIput positionRelative" ><input id="allCandidates" type="radio" name="upcandidateStatus" value ="all" ><label for="allCandidates">All</label></li>
                         <li class="radioIput positionRelative" ><input id="candidateToDay" type="radio" name="upcandidateStatus" value ="0"  ><label for="candidateDayAgo">Today</label></li>
                         <li class="radioIput positionRelative" ><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1" ><label for="candidateDayAgo">1 Day ago</label></li>
 						<li class="radioIput positionRelative" ><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3" ><label for="candidate3DayAgo">3 Days ago</label></li>
@@ -2715,9 +2724,9 @@ function resetCandidateFilter(){
 				 <div class="col-md-12 mb">
 				<label><strong>Created By</strong></label>
 				 <div class="clearfix">
-					<ul class="list-unstyled" id="candidateTypeFilter">
-					    <li class="checkBox positionRelative" ><input  type="checkbox" id="createdByCheck" name="createdByFilter"  value ="myCandidates"  ><label>My Candidates</label></li>
-						<li class="checkBox positionRelative" ><input  type="checkbox" id="createdByCheck"  name="createdByFilter"  value ="allCandidates" ><label>All Candidates</label></li>
+					<ul class="list-unstyled" id="createdByTypeFilter">
+					    <li class="radioIput positionRelative" ><input  type="radio" id="myCandidatesRadio" name="createdByFilter"  value ="myCandidates"  ><label>My Candidates</label></li>
+						<li class="radioIput positionRelative" ><input  type="radio" id="allCandidatesRadio"  name="createdByFilter"  value ="allCandidates" checked ><label>All Candidates</label></li>
                     </ul>
 				 </div>
 				 </div>  
