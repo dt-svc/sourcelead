@@ -428,7 +428,7 @@ public class ContractController {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 //		commonUtil.highLightMenu(Constants.List_by_status, request);
-		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
+		List<User> userList = contractsTemplateService.getSigningAuthoritiesForContract(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
 		List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
 		List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
 		for (OrgRelations orgRelations : orgRelationsList) {
@@ -593,7 +593,8 @@ public class ContractController {
 		}
 		
 //		commonUtil.highLightMenu(Constants.List_by_status, request);
-		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
+//		List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
+		List<User> userList = contractsTemplateService.getSigningAuthoritiesForContract(orgLocation.getId(),Long.valueOf(Constants.TAB_CONTRACTS));
 		List<OrgRelations> orgRelationsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
 		List<OrgRelations> clientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocation.getId());
 		for (OrgRelations orgRelations : orgRelationsList) {
