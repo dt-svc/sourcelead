@@ -55,7 +55,7 @@ $(document).ready(function(){
 	      		<div class="form-group clearfix minHeight40" id="gradeDiv">
 		           <label class="col-md-4">Grade<span class="text-danger">&nbsp;*</span></label>
 		           <div class="col-md-8">
-		                 <input type="text" id="gradeName" name="gradeName" class="form-control" onblur="validateGrade();" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100" field-name="Grade"/>
+		                 <input type="text" id="gradeName" name="gradeName" class="form-control" onblur="validateGrade();" data-validation="required validate_Space validate_AlphaNumber validate_length length1-20" field-name="Grade"/>
 		           </div>
 	           </div>
 	           

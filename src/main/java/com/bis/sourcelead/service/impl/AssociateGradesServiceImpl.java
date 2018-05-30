@@ -38,4 +38,10 @@ public class AssociateGradesServiceImpl implements AssociateGradesService{
 		return associateGradesDao.getAssociateGradesDTOListByOrgLocationId(associateGradesDTO, orgLocationId);
 	}
 
+	@Override
+	public AssociateGrades getAssociateGradesByGradeNameAndOrgLocationId(String gradeName, Long orgLocationId)
+			throws Exception {
+		return associateGradesDao.getAssociateGradesByGradeNameAndOrgLocationId(gradeName, orgLocationId);
+	}
+
 }

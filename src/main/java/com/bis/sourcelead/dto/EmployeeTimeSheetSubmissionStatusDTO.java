@@ -128,7 +128,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.weekCommentVisible = weekCommentVisible;
 	}
 
-	public boolean isMonEditable() {
+	public boolean getMonEditable() {
 		return monEditable;
 	}
 
@@ -136,7 +136,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.monEditable = monEditable;
 	}
 
-	public boolean isTueEditable() {
+	public boolean getTueEditable() {
 		return tueEditable;
 	}
 
@@ -144,7 +144,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.tueEditable = tueEditable;
 	}
 
-	public boolean isWedEditable() {
+	public boolean getWedEditable() {
 		return wedEditable;
 	}
 
@@ -152,7 +152,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.wedEditable = wedEditable;
 	}
 
-	public boolean isThuEditable() {
+	public boolean getThuEditable() {
 		return thuEditable;
 	}
 
@@ -160,7 +160,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.thuEditable = thuEditable;
 	}
 
-	public boolean isFriEditable() {
+	public boolean getFriEditable() {
 		return friEditable;
 	}
 
@@ -168,7 +168,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.friEditable = friEditable;
 	}
 
-	public boolean isSatEditable() {
+	public boolean getSatEditable() {
 		return satEditable;
 	}
 
@@ -176,7 +176,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.satEditable = satEditable;
 	}
 
-	public boolean isSunEditable() {
+	public boolean getSunEditable() {
 		return sunEditable;
 	}
 

@@ -209,4 +209,19 @@ public class AssociateGradesDaoImpl implements AssociateGradesDao{
 		response.setData(associateGradesDTOList);
 		return response;
 	}
+
+
+	@Override
+	@Transactional
+	public AssociateGrades getAssociateGradesByGradeNameAndOrgLocationId(String gradeName, Long orgLocationId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociateGrades grades where grades.gradeName = :gradeName and grades.orgLocationId = :orgLocationId and grades.status = '1' ";  
+		List<AssociateGrades> associateGradesList =  session.createQuery(query).setString("gradeName", gradeName).setLong("orgLocationId", orgLocationId).list();
+		AssociateGrades associateGrades = null;
+		if (associateGradesList != null && associateGradesList.size() > 0) {
+			associateGrades = (AssociateGrades) associateGradesList.iterator().next();
+		}
+		return associateGrades;
+	}
 }

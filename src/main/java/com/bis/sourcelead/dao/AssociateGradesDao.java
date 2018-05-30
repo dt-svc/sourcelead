@@ -15,5 +15,7 @@ public interface AssociateGradesDao {
 	List<AssociateGrades> getAssociateGradesListByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	ResponseList<AssociateGradesDTO> getAssociateGradesDTOListByOrgLocationId(AssociateGradesDTO associateGradesDTO,Long orgLocationId) throws Exception;
+	
+	AssociateGrades getAssociateGradesByGradeNameAndOrgLocationId(String gradeName,Long orgLocationId) throws Exception;
 
 }
