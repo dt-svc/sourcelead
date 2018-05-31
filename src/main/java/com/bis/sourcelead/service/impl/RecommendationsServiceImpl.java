@@ -947,13 +947,17 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	private float getSkillPercentage(Set<String> set, float percentPerSkill, int matchedSkillCount, String reqSkills) {
 		if(set != null && set.size() >0){
 			for(String skill : set){
-					if(reqSkills.equalsIgnoreCase(skill)){
+			String[] reSkills = reqSkills.split(",");
+				for(String reskill:reSkills) {
+					String reqSkl = reskill.trim();
+					if(reqSkl.equalsIgnoreCase(skill.trim())){
 						matchedSkillCount++;
 					}
+				}
+					
 			}
 		}
 		return matchedSkillCount*percentPerSkill;
-		
 	}
 
 	/**
