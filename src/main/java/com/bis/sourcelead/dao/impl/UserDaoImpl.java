@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
@@ -43,6 +45,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.OrgLocationService;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -52,6 +55,9 @@ public class UserDaoImpl implements UserDao {
 	
 	@Autowired
 	private UserRoleDao userRoleDao;
+	
+	@Autowired
+    OrgLocationService orgLocationService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -1415,80 +1421,90 @@ public class UserDaoImpl implements UserDao {
 	
 	}
 
+	@SuppressWarnings({ "unchecked", "unchecked" })
 	@Override
 	@Transactional
-	public ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation) throws Exception {
+	public ResponseList<UserRole> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation,Date[] searchDates) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
-	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationId) ";
-	     
-	    List<User> usersList = null;
-		ResponseList<User> response = new ResponseList<>();
-	     
+		 String query = "";
+		 java.sql.Date startDate = null;
+		 java.sql.Date endDate = null;
+		 java.sql.Date sqlDate = null;
+		 if(searchDates != null) {
+			  startDate = new java.sql.Date(searchDates[0].getTime()); 
+			  endDate = new java.sql.Date(searchDates[1].getTime()); 
+			 query = "from UserRole userRole  where  userRole.orgLocations=:orgLocationId  and date(userRole.user.createdDate) BETWEEN :startDate and :endDate ";
+		 }else {
+			 query = "from UserRole userRole  where  userRole.orgLocations=:orgLocationId";
+		 }
+	      
+
+	    List<UserRole> usersRoleList = null;
+		ResponseList<UserRole> response = new ResponseList<>();
+		List<Long> countlist = null;
 	    String qry = "";
 		if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
 				qry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
 		}
 	     
 	     StringBuilder query1 = new StringBuilder("");
-			if(StringUtils.isNotBlank(userDTO.getSearchValue())){
-				if(userDTO.getSearchValue().contains("/") || userDTO.getSearchValue().contains("-")){
-				String convertedDate=userDTO.getSearchValue();
-				if(userDTO.getSearchValue().contains("/")){
-					convertedDate = userDTO.getSearchValue().replaceAll("/", "-");
-				}
-				DateTimeFormatter orgFormat = new DateTimeFormatterBuilder().appendPattern(orgLocation.getDateFormat()).toFormatter();
-	            LocalDate parsedDate = LocalDate.parse(convertedDate, orgFormat);
-	            DateTimeFormatter f2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	            String newDate = parsedDate.format(f2);
-	            Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(newDate);
-	            java.sql.Date sqlDate = new java.sql.Date(searchDate.getTime());
-//	            String queryDate = "";
-//	            Query queryObjDate = session.createQuery(queryDate.toString()).setDate("sqlDate", sqlDate).setLong("orgLocationId", orgLocations.getId());
-//	            response.setData(queryObjDate.list());
-				}else{
-					if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
-					query1.append(" and (user.firstName like '%" + userDTO.getSearchValue() + "%' ")
-					.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ")
-					.append("OR user.email like '%" + userDTO.getSearchValue() + "%' ")
-					.append("OR user.mobilePhone like '%" + userDTO  .getSearchValue() + "%' ")
-//					.append("OR user.id like '%" + userDTO.getSearchValue() + "%' ")
-//					.append("OR  like '%" + userDTO.getSearchValue() + "%' ")
-//					.append("OR  like '%" + userDTO.getSearchValue() + "%' ")
-//					.append("OR  like '%" + userDTO.getSearchValue() + "%' ")
-//					.append("OR  like '%" + userDTO.getSearchValue() + "%' ")
-//					.append("OR  like '%" + userDTO.getSearchValue() + "%' ")
-//					.append("OR  like '%" + userDTO.getSearchValue() + "%' ")
-					.append("OR user.id like '%" + userDTO.getSearchValue() + "%' )");
-							
-				}
-				}
-			}
 	     
+	     if(StringUtils.isNotEmpty(userDTO.getSearchValue()) && userDTO.getSearchValue() != null) {
+	    	 Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
+			   Matcher matcher = pattern.matcher(userDTO.getSearchValue());
+			    if(matcher.matches() == true) {
+							if(userDTO.getSearchValue().contains("/")||(userDTO.getSearchValue().contains("-"))) {
+								String replacedValue = userDTO.getSearchValue().replaceAll("/", "-");
+								    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocation.getId());
+									SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
+							        java.util.Date utilDate = format.parse(replacedValue);
+							        sqlDate = new java.sql.Date(utilDate.getTime());
+							}
+			    }
+			    
+			    query1.append(" and (userRole.user.firstName like '%" + userDTO.getSearchValue() + "%' ")
+				.append("OR userRole.user.lastName like '%" + userDTO.getSearchValue() + "%' ")
+				.append("OR userRole.user.email like '%" + userDTO.getSearchValue() + "%' ")
+				.append("OR userRole.user.mobilePhone like '%" + userDTO  .getSearchValue() + "%' ")
+				.append("OR userRole.designation like '%" + userDTO  .getSearchValue() + "%' ")
+				.append("OR userRole.user.id like '%" + userDTO.getSearchValue() + "%' )");
+			    if(sqlDate != null) {
+			    	query1.append("OR userRole.updatedDate like '%" + sqlDate + "%' ");
+			    	query1.append("OR userRole.user.id IN(select employee.user.id from Employees employee where employee.hireDate like '%" + sqlDate + "%')");
+			    }
+	    	 
+	     }
 	     
 	     Query queryObj = session.createQuery(query + query1.toString()+qry);
-			if (userDTO != null && userDTO.getLength() > 0) {
-				queryObj.setFirstResult(userDTO.getStart());
-				queryObj.setMaxResults(userDTO.getLength());
-//				queryObj.setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+			
+			if(searchDates != null) {
+				usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();
+				 countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+			}else {
+				usersRoleList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+				 countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocation.getId()).list();
 			}
-			usersList = queryObj.setLong("orgLocationId", orgLocation.getId()).list();
+			
 			int count = 0;
 			int filteredCount = 0;
-
-			List<Long> countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocation.getId()).list();
 
 			if(countlist != null && !countlist.isEmpty()) {
 				count = countlist.iterator().next().intValue();
 			}
 			response.setRecordsTotal(count);
 			if (userDTO != null) {
-				List<Long> filteredCountlist  = session.createQuery("select count(*) " + query + query1.toString()).setLong("orgLocationId", orgLocation.getId()).list();
+				List<Long> filteredCountlist = null;
+				if(searchDates != null) {
+					filteredCountlist  = session.createQuery("select count(*) " + query + query1.toString()).setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
+				}else {
+					filteredCountlist  = session.createQuery("select count(*) " + query + query1.toString()).setLong("orgLocationId", orgLocation.getId()).list();
+				}
 				if(filteredCountlist != null && !filteredCountlist.isEmpty()) {
 					filteredCount = filteredCountlist.iterator().next().intValue();
 				}
 				response.setRecordsFiltered(filteredCount);
 			} 
-				response.setData(usersList);
+				response.setData(usersRoleList);
 				return response;
 	     
 	}
