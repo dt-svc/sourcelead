@@ -1778,6 +1778,7 @@ public class DataMigrationCommonUtil {
 					errorSet.put("assignAssetStr", "invalid date");
 				}
 			}
+
 			dataMigrationDTOJsonCopy.put("assignAssetStr", assignAssetStrSB.toString());
 		}
 
@@ -1791,6 +1792,15 @@ public class DataMigrationCommonUtil {
 			} else {
 				errorSet.put("workingStatus",
 						dataMigrationDTOJsonCopy.getString("workingStatus") + " is invalid Working Status");
+			}
+		
+		
+		
+		public void dataValidationForProjectTasks(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,String isGlobalAccess) throws Exception {
+			 Projects project = projectsService.getProjectByProjectUUID(dataMigrationDTOJsonCopy.getString("projectUUID"));
+			if(dataMigrationDTOJsonCopy.getString("taskstype").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskstype"))) {
+				errorSet.put("taskstype", "Taskstype field is missing");
+
 			}
 		}
 
@@ -1982,9 +1992,43 @@ public class DataMigrationCommonUtil {
 					dataMigrationDTOJsonCopy.put("taskStatus", taskStatus.getId().toString());
 				}
 			}
+
 			if (incr < 1) {
 				errorSet.put("taskStatus",
 						dataMigrationDTOJsonCopy.getString("taskStatus").trim() + " Invalid Task Status");
+
+			
+			//Assigned To 
+			if(!dataMigrationDTOJsonCopy.getString("assignTaskId").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("assignTaskId"))) {
+			 List<ProjectMembers> projectAssignedList = projectsService.getProjectEmployeeListByProjectIdAndStatus(project.getId(),"Active",orgLocation,null,null,isGlobalAccess);
+			 int incr = 0;
+			 String[] emails = dataMigrationDTOJsonCopy.getString("assignTaskId").trim().replace("\n","").toLowerCase().split(",");
+			 ArrayList<String> validEmails = new ArrayList<>();
+			 for(String email:emails) {
+				 if (isValid(email)) {
+					 validEmails.add(email);
+				 }
+			 }
+			 if(validEmails.size() > 0 ) {
+				 StringBuffer assignedSB = new StringBuffer();
+				 for(ProjectMembers pm:projectAssignedList) {
+					 if(validEmails.contains(pm.getMasterCandidateId().getEmail().trim().toLowerCase())) {
+						 incr++;
+							if(incr > 1) {
+								assignedSB.append(",");
+							}
+							assignedSB.append(pm.getId());
+			    	  } 
+				 } 
+				 if(incr > 0) {
+						 dataMigrationDTOJsonCopy.put("assignTaskId", assignedSB.toString());
+				 }else {
+					 errorSet.put("assignTaskId", dataMigrationDTOJsonCopy.getString("assignTaskId").trim()+" Assigned emails are not matchings");
+				 }
+			 }else {
+					errorSet.put("assignTaskId", dataMigrationDTOJsonCopy.getString("assignTaskId").trim()+" Invalid Email Formate");
+			  }
+
 			}
 		}
 

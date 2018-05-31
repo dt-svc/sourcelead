@@ -171,6 +171,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		String importStatus = null;
 		String finalImportStatus = null;
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
@@ -298,6 +299,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					}
 				}
 
+
 				switch (dataMigrationDTO.getUploadType()) {
 				case "jobUpload":
 					dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user,
@@ -322,6 +324,17 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					dataMigrationCommonUtil.dataValidationForImmigration(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
 					break;
+
+				
+				switch(dataMigrationDTO.getUploadType()){  
+			    case "jobUpload": dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;  
+			    case "timesheetUpload": 
+			    	String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
+			    	dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation,timeFrequency);break;  
+			    case "assetUpload": dataMigrationCommonUtil.dataValidationForAssets(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;
+			    
+			    case "projectTasks": dataMigrationCommonUtil.dataValidationForProjectTasks(errorSet, dataMigrationDTOJsonCopy, user, orgLocation,isGlobalAccess);break;
+
 
 				}
 

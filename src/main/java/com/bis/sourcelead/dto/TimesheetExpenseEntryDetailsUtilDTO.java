@@ -31,6 +31,10 @@ public class TimesheetExpenseEntryDetailsUtilDTO extends SearchDTO implements Se
 	private String timesheetStatus;
 	
 	private String redirectionRequestFrom;
+	
+	private String invoiceFrequency;
+	
+	private String weekFrequency;
 
 	public Long getUserId() {
 		return userId;
@@ -139,6 +143,23 @@ public class TimesheetExpenseEntryDetailsUtilDTO extends SearchDTO implements Se
 	public void setRedirectionRequestFrom(String redirectionRequestFrom) {
 		this.redirectionRequestFrom = redirectionRequestFrom;
 	}
+
+	public String getInvoiceFrequency() {
+		return invoiceFrequency;
+	}
+
+	public void setInvoiceFrequency(String invoiceFrequency) {
+		this.invoiceFrequency = invoiceFrequency;
+	}
+
+	public String getWeekFrequency() {
+		return weekFrequency;
+	}
+
+	public void setWeekFrequency(String weekFrequency) {
+		this.weekFrequency = weekFrequency;
+	}
+
 
 	
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.ProjectResourceRequestDTO;
 import com.bis.sourcelead.dto.ResourceRequestDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectPlanningRequest;
@@ -12,7 +13,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface ProjectPlanningRequestService {
 
-	public void saveProjectPlanningRequest(ResourceRequestDTO  resourceRequestDTO, User loginUser, OrgLocations orgLocations) throws JSONException, Exception;
+	public void saveProjectPlanningRequest(ProjectResourceRequestDTO  resourceRequestDTO, User loginUser, OrgLocations orgLocations) throws JSONException, Exception;
 	
 	List<ProjectPlanningRequest> getProjectPlanningRequestByProjectId(Long projectId) throws Exception;
 	
