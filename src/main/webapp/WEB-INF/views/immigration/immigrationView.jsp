@@ -1,7 +1,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <jsp:include page="../masterHeader.jsp" />
@@ -36,7 +35,15 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
         <h2>${immigration.generatedId}</h2>
         <!-- <span id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt paddingRight"></i>Download Package</span> -->
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigrations List</a> &raquo; Immigration Summery</div>
+       <c:choose>
+	   		<c:when test="${myImmigrationPage =='Y'}">
+	   			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/myImmigration">My Immigrations List</a> &raquo; My Immigration Summery</div>
+			</c:when>
+			<c:otherwise>
+				<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="/app/immigration/viewImmigrationList">Immigrations List</a> &raquo; Immigration Summery</div>
+			</c:otherwise>
+		</c:choose>
+      
         <input type="hidden" id = "candidateID" value = "${candidateId}">
 		<input type="hidden" id = "immigrationID" value = "${immigrationId}">
 		<input type="hidden" id = "templateID" value = "${templateId}">
@@ -54,11 +61,15 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 				<p><strong>Visa Type</strong>: ${immigration.petitionType}</p>
 				<p><strong>Attorney</strong>: ${immigration.attorneyName}</p>
   			</div>
-			<c:if test="${myImmigrationPage =='N'}">
-				<div class="col-md-4">
-	  				<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
-	  			</div>
-			</c:if>
+  			<c:choose>
+				    <c:when test="${myImmigrationPage == 'N'}">
+				       <div class="col-md-4">
+	  						<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
+	  					</div>
+				    </c:when>
+				    <c:otherwise>
+				    </c:otherwise>
+			</c:choose>
   			<div class="col-md-2 clearfix mt10">
   				<p id='packageZipfile' class="cursorPointer"><i class="glyphicon glyphicon-download-alt mr10"></i>Download Package</p>
   			</div>

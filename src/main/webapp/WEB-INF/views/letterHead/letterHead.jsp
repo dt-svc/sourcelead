@@ -26,11 +26,11 @@
             <h5>Letterhead Details</h5>
             <div class="form-group row">
             <label class="col-md-12">Letterhead Name<span class="text-danger paddingLeft">*</span></label>
-             <div class="col-md-12">
-                     <input type="text" class="form-control" id="letterHeadName" name="letterHeadName"  field-name="Letterhead Name" value="${letterHead.letterHeadName}"  data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-250" data-validation="required">
+             <div class="col-md-12" id="letterHeadNameDiv">
+                     <input type="text" class="form-control" id="letterHeadName" onblur="validateletterHeadName();" name="letterHeadName"  field-name="Letterhead Name" value="${letterHead.letterHeadName}"  data-validation="required validate_AlphaNumber validate_Space validate_length length1-250" data-validation="required">
               </div>
               </div>
-                    
+                  
                 <div class="form-group row">    
                <label class="col-md-12">Letterhead Description</label>
               <div class="col-md-12">
@@ -56,7 +56,7 @@
                     <label class="col-md-12">Template Type</label>
                     <div class="col-md-12">
                       <div class="clearfix">
-                        <select id="templateType" class="sel form-control" name="templateType" onChange="templateType()">
+                        <select id="templateType" class="sel form-control" name="templateType" >
                       	<option value="">-- Select --</option>
                       	<option value="Letter" ${letterHead.templateType eq 'Letter' ? 'selected' : ''}>Letter (8.5" x 11")</option>	
                       	<option value="A4" ${letterHead.templateType eq 'A4' ? 'selected' : ''}>A4 (8.268" x 11.693")</option>
@@ -66,22 +66,24 @@
                       </div>
                     </div>
                 </div>
-                <div class="row form-group clearfix">
+                <div class="row form-group clearfix" id="lead">
+                <div id="Source">
                     <label class="col-md-12">Padding</label>
                     <div class="col-md-3 paddingRight">
-                      <input type="text" name="paddingTop" placeholder="Top" class="form-control input-sm" value="${letterHead.paddingTop}">
+                      <input type="text" id="paddingTop" name="paddingTop" placeholder="Top" onblur="validateTemplateType();"class="form-control input-sm" value="${letterHead.paddingTop}">
                     </div>
                     <div class="col-md-3 paddingLeft paddingRight">
-                      <input type="text" name="paddingRight" placeholder="Right" class="form-control input-sm" value="${letterHead.paddingRight}">
+                      <input type="text" id="paddingRight" name="paddingRight" placeholder="Right" class="form-control input-sm" onblur="validateTemplateType();" value="${letterHead.paddingRight}">
                     </div>
                     <div class="col-md-3 paddingLeft paddingRight">
-                      <input type="text" name="paddingBottom" placeholder="Bottom" class="form-control input-sm" value="${letterHead.paddingBottom}">
+                      <input type="text" id="paddingBottom"  name="paddingBottom" placeholder="Bottom" class="form-control input-sm"onblur="validateTemplateType();" value="${letterHead.paddingBottom}">
                     </div>
                     <div class="col-md-3 paddingLeft">
-                      <input type="text" name="paddingLeft" placeholder="Left" class="form-control input-sm" value="${letterHead.paddingLeft}">
+                      <input type="text" id="paddingLeft"  name="paddingLeft" placeholder="Left" class="form-control input-sm" onblur="validateTemplateType();" value="${letterHead.paddingLeft}">
                     </div>
                 </div>
             </div> 
+            </div>
               
               <!-- Letterheadeer Body Area -->
 				<div class="letterhead-Header clearfix  col-md-3">
@@ -187,7 +189,7 @@
                 <div class="pull-right">
 <!--                   <button type="button" class="btn btn-default">Stored</button> -->
 <!--                   <button type="button" class="btn btn-default">Preview</button> -->
-                  <button type="button" class="btn btn-primary" id="saveButton" onclick="saveLetterheadData();">Save</button>
+                  <button type="button" class="btn btn-primary" id="saveButton" onmouseover="validateTemplateType();"   onclick="saveLetterheadData();">Save</button>
 <!--                   <button type="button" class="btn btn-primary">Print</button> -->
 						<button type="button" class="btn btn-default" onClick="javascript:window.location.href = '<c:url value='${appPath}/letterHeadList'/>'">Cancel</button>
                 </div>
@@ -200,17 +202,33 @@
       </form:form>
     </div>
   </section>
-  
   <script>
+  function validateTemplateType(){
+	  var templateType = $("#templateType").val();
+	  var paddingTop = $("#paddingTop").val();
+	  var paddingRight = $("#paddingRight").val();
+	  var paddingBottom = $("#paddingBottom").val();
+	  var paddingLeft = $("#paddingLeft").val();
+	  if(templateType != null && templateType != "" && templateType != "undefined"){
+		  if((paddingTop == null || paddingTop == "" || paddingTop == "undefined") ||
+			  (paddingRight == null || paddingRight == "" || paddingRight == "undefined") ||
+				  (paddingBottom == null || paddingBottom == "" || paddingBottom == "undefined") ||
+					  (paddingLeft == null || paddingLeft == "" || paddingLeft == "undefined")){
+			  $("#lead").find('div.jquery_form_error_message').remove();
+			 $("#Source").after("<div class='jquery_form_error_message'>Mandatory give the input</span>");
+			 $("#saveButton").attr("disabled",true);
+		  }else{
+			  $("#lead").find('div.jquery_form_error_message').remove();
+			  $("#saveButton").removeAttr("disabled");
+		  }
+	  }else{
+		  $("#lead").find('div.jquery_form_error_message').remove();
+		  $("#saveButton").removeAttr("disabled");
+	  }	  
+  }
   
   function saveLetterheadData(){
-	  
-	  var templateType = $("#templateType").val();
-	  if(templateType != null && templateType != "" && templateType != "undefined"){
-		  
-	  }
-	  
-	  var letterHeadUUID = '${letterHeadUUID}';
+		  var letterHeadUUID = '${letterHeadUUID}';
 	  		if ($('#letterHead_form').validate(false, validationSettings)) {
 			var formData = $($('#letterHead_form')[0]).serialize();
             $.post(sourceleadUrl+ "/saveLetterheadData?${_csrf.parameterName}=${_csrf.token}&letterHeadUUID="+letterHeadUUID, formData, function(data) {
@@ -221,11 +239,39 @@
 			return true;
 		} else {
 			return false;
-		}
+		} 
+	 
   }
   
   </script>
   
+  
+  <script type="text/javascript">
+ function validateletterHeadName() {
+	 var letterHeadName = document.getElementById("letterHeadName").value;
+	 var letterHeadId = "${letterHead.id}";
+	  if(letterHeadName != null && letterHeadName != "undefined" && letterHeadName != ""){
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/validateletterHeadName?"+tokenParamName+"="+tokenValue+"&letterHeadName="+letterHeadName+"&letterHeadId="+letterHeadId, 
+		        success: function(data) {
+		        	 if(data == true){
+		        		 $('#letterHeadNameDiv').find('p.jquery_form_error_message').remove(); 
+						  $("input#letterHeadName").after("<p class='jquery_form_error_message'>"+letterHeadName+" is Already Existed</span>");
+						  $("#saveButton").attr("disabled", "disabled");
+		        	}
+		        	else{
+		        		 $('input#letterHeadName').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#letterHeadNameDiv').find('p.jquery_form_error_message').remove(); 
+                         $("#saveButton").removeAttr("disabled");
+                      
+		        	}
+		        },
+		    });
+	 } 
+ }
+ </script>
+ 
   <script>
   $(function() {
 		$("#uploadBtn").change(function() {

@@ -53,7 +53,6 @@
         <div class="addImmiFoot">
             <a href="javascript:void(0)" onclick="immigration.gotoTemplatePreviousPage('formDetails')" class="pull-left">Back</a>
             <a href="javascript:void(0)" onclick="immigration.savePetitionTemplateDetailsValues()" class="nextBtn">Save Template</a>
-            <a href="javascript:void(0)">Reset</a>
             <div class="clearfix"></div>
         </div>   
     </div>
@@ -62,7 +61,7 @@
 <div class="popMask"></div>
 <div class="popUpOut popUpOutBig" id="taskViewPopup">
     <div class="popupHead">
-        <h2>Add Task</h2><a href="javascript:void(0)" class="fa fa-close popCan"></a>
+        <h2>Add Task</h2><a href="javascript:void(0)" onclick="immigration.removeFormValidationErrors('petitionTemplateTaskDetails')" class="fa fa-close popCan"></a>
     </div>
     <form id="petitionTemplateTaskDetails" name="petitionTemplateTaskDetails">
         <input type="hidden" name="templateId" id="immiTempId"/>
@@ -72,26 +71,26 @@
                 <div class="col-md-6 noPad">
                     <div class="col-md-12 mb10" id = "taskNameDiv">
                         <label>Subject<span class="text-danger">*</span></label>
-                        <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" onke field-name= "Subject" data-validation = "required validate_Space validate_length length2-500">
+                        <input type="text" id ="taskName" name="taskName" class="form-control input-sm error" placeholder="Subject" field-name= "Subject" data-validation = "required validate_Space validate_length length2-100">
                     </div>
                     <div class="col-md-12 mb10">
                         <label>Priority</label>
                         <select class="form-control input-sm valid" id="priority1" name="priority">
-                            <option selected="" disabled="">-- Select Priority --</option>
-                            <option>High</option>
-                            <option>Low</option>
-                            <option>Medium</option>
+                            <option value="" selected>-- Select Priority --</option>
+                            <option value="High">High</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
                         </select>
                     </div>
                     <div class="col-md-12 mb10">
                         <label>Repeat</label>
                         <select class="form-control input-sm valid" id="taskRepeat" name="taskRepeat">
-                            <option selected="" disabled="">-- Select Repeat --</option>
-                            <option>Never</option>
-                            <option>Daily</option>
-                            <option>Weekly</option>
-                            <option>Monthly</option>
-                            <option>Yearly</option>
+                            <option value="" selected>-- Select Repeat --</option>
+                            <option value="Never">Never</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
                         </select>
                     </div>
 
@@ -173,7 +172,7 @@
     </form>
     <div class="immiPopFoot">
         <input value="Add" onclick ="immigration.savePetitionTemplateTaskDetails()" class="" id="addTaskBtn" type="button">
-        <input value="Cancel" class="popCan" type="button">
+        <input value="Cancel" onclick="immigration.removeFormValidationErrors('petitionTemplateTaskDetails')" class="popCan" type="button">
     </div>		
 </div>	
 
@@ -218,7 +217,7 @@
                     "render": function (data, type, opt, meta) {
                         var result = "";
                         if (opt.taskName != null && opt.taskName != '' && opt.taskName != 'undefined') {
-                            result = result + '<td name="subject" data-name="subject">' + opt.taskName + '</td>';
+                            result = result + '<td name="subject"  data-name="subject"><div class="tbldata-dotdot-me" title = "'+opt.taskName+'">' + opt.taskName + '</div></td>';
                             result = result + '<input type="hidden" id="startDate' + opt.id + '" value="' + opt.taskName + '"/>';
                         } else {
                             result = result + '<td>---</td>';

@@ -102,6 +102,11 @@ function clientContracts(orgRelationId){
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
+	    result = result + '<input type="checkbox" value="WAITING_TO_SEND" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
+	    result = result + '<label class="paddingLeft" for="onboard1">Waiting To Send <b class="badge" id="WTOSCount">0</b></label>';
+	    result = result + '</li>';
+	    
+	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="WAITING_TO_BE_SIGNED" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
 	    result = result + '<label class="paddingLeft" for="onboard1">Waiting to be Signed <b class="badge" id="WTSCount">0</b></label>';
 	    result = result + '</li>';

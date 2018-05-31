@@ -3,6 +3,9 @@ package com.bis.sourcelead.immigration.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
 import com.bis.sourcelead.dto.CandidateFamilyDetailsDTO;
 import com.bis.sourcelead.dto.ImmigrationDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
@@ -33,7 +36,7 @@ public interface ImmigrationCommonService {
 	
 	List<ImmigrationTemplate> getImmigrationTemplateList(OrgLocations orgLocations);
 
-	Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations, String[] ids, String status, String sendRequest) throws Exception;
+	Immigration savePetitionDetails(ImmigrationDTO immigrationDTO, User user, OrgLocations orgLocations, String[] ids) throws Exception;
 
 	ImmigrationDTO getImmigrationDetails(String immigrationId, OrgLocations orgLocations);
 	
@@ -131,5 +134,9 @@ public interface ImmigrationCommonService {
 	public ImmigrationCandidateForms getImmigrationCandidateFormsDetailsByFormNameAndId(String formName, Long candidateId,Long immigrationId,Long id) throws Exception;
 	
 	public Boolean validateImmigrationCandidateForms(String formName, Long candidateId,Long immigrationId) throws Exception;
+
+	Sheet getExcelFile(Sheet createExcelsheet, Workbook createExcelworkbook, OrgLocations orgLocations);
+	
+	Long getTemplateDetailsByNameAndOrgLoacationId(String name, OrgLocations orgLocations);
 	
 }

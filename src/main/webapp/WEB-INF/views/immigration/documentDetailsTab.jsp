@@ -52,9 +52,9 @@
 			  </tr>
 			  <c:forEach var="canDocList" items="${immigrationCanDocList}" varStatus="rows">			  			  
 			<tr docid="${canDocList.id}" allowMultpleDocs= "${canDocList.allowMultiple}" docsHistoryList = "${fn:escapeXml(canDocList.docsHistoryList)}">
-				<td><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
-				<td><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
-				<td><div class="tblminwidth-50">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
+				<td title="${canDocList.documentTypeName}"><div class="tbldata-dotdot-vsm">${canDocList.documentTypeName}</div></td>
+				<td title = "${canDocList.description}"><div class="tbldata-dotdot-me">${canDocList.description}</div></td>
+				<td title = "${canDocList.isRequired == 'Y' ? 'YES':'NO'}"><div class="tblminwidth-50">${canDocList.isRequired == 'Y' ? "YES":"NO"}</div></td>
 				<c:if test="${!empty canDocList.upldedFileName}">
 				<td>
 					<c:choose>
@@ -75,7 +75,7 @@
 					</div>
 				</td>
 				</c:if>
-				<td><div class="tblminwidth-50">${canDocList.documentStatus}</div></td>
+				<td title ="${canDocList.documentStatus}"><div class="tblminwidth-50">${canDocList.documentStatus}</div></td>
 				<!-- <td class="immigraAction">
 					<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 					<div class="mmigraActionInn">
@@ -133,7 +133,7 @@
 		
 		
 		<!--  popup code start -->
-		<form id= "candidate_Immigration_Doc" name = "candidate_Immigration_Doc">
+		<form  name="candidate_Immigration_document_form"  id="candidate_Immigration_document_form"  method="POST">
 		<div class="popUpOut" id="docuView">
 		 <input type = "hidden" id= "immigrationCandidateDocId" name="immigrationCandidateDocId"/> 
 	 	<%-- <input type = "text" id= "immigrationcandidateId" name = "immigrationcandidateId" value = "${candidateId}">
@@ -156,7 +156,7 @@
 					</select>
 				<div class="clearfix"></div>
 			<div class="clearfix mt" id="documentOtherTypeDiv" style="display:none">
-				<input type="text" class="form-control" name="otherType"  id="documentOtherType" value="" placeholder="Document Other Type" field-name="Document Other Type" data-validation="required validate_Space validate_length length1-250">
+				<input type="text" class="form-control" name="otherType"  id="documentOtherType" value="" placeholder="Document Other Type" field-name="Document Other Type" >
 			</div>
 				</div>
 			</div>
@@ -166,7 +166,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Description</label>
               	<div class="col-md-8 padding_right">
-					<textarea rows="2" class="form-control" id= "description1" name = "description"></textarea>
+					<textarea rows="2" class="form-control" id= "description1" name = "description" field-name = "Description" data-validation="required validate_Space validate_length length2-250" data-validation-optional="true"></textarea>
 				</div>
 			</div>	
 			
@@ -185,29 +185,12 @@
 							</label>
 						  </div>	
 						  </div>
-						  
-				  <!-- <div class="col-md-4">
-				<div class="mt5 ml5 clearfix">
-				  <input id="multipleCheck" title="Allow multiple Docs" name="multiple" value = "N" onclick = "tempDocCheckBox()" type="checkbox">
-				  </div>
-				 </div> -->	
-			
-			<!-- <div class="col-sm-12 noPad mt clearfixclearfix">
-				<label class="col-md-4 padding_left">Document<span class="text-danger">&nbsp;*</span></label>
-              	<div class="col-md-8 padding_right">
-					<div class="input-group col-md-12" style="margin:0 auto">
-					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-					  <input type="file" style="display: none;" multiple id="uploadBtn"  class="upload">
-					  </span> </label>
-					<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume ...">
-				  </div>
-				</div>
-			</div>	 -->			
+				
 		
 		</div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button" id = "canDocSave_Button" onclick="saveCandidateDocs();">
+            <input value="Save" class="" type="button" id = "canDocSave_Button1" onclick="immigration.saveCandidateDocs();">
             <input value="Cancel" class="popCan" onclick="removeDocPopUp();" type="button">
           </div>		
 	</div>
@@ -445,16 +428,20 @@ function removeDocPopUp12(){
 	$("#uploadCanDocPop").fadeOut(100);
 	$(".comMask").fadeOut(100);
 	 $("div[id*='dynamicRow']").remove();
+	 $('#uploadRequestDoc_Form').find('p.jquery_form_error_message').remove();
 }
 
 function removeDocPopUp(){
 	$(".popMask").fadeOut(200);
 	$("#docuView").fadeOut(100);
-	$("#candidate_Immigration_Doc")[0].reset();
-	$("#description1").val('');
+	$("#candidate_Immigration_document_form")[0].reset();
+	$("#description1").text('');
 	$("#immigrationCandidateDocId").val('');
-	$('#candidate_Immigration_Doc input[name="multiple"]').prop('checked', false);
-	$('#candidate_Immigration_Doc input[name="isRequired"]').prop('checked', false);
+	$('#candidate_Immigration_document_form input[name="multiple"]').prop('checked', false);
+	$('#candidate_Immigration_document_form input[name="isRequired"]').prop('checked', false);
+	$("#docuView").find('p.jquery_form_error_message').remove();
+	$("#canDocSave_Button1").removeAttr("disabled");
+	
 	
 }
 /* $(function() {
@@ -545,18 +532,20 @@ function downlaodZipfileByDocId(docId){
 
 
 <script>
+
 function getDocumentTypeDiv(documentTypes){
 	 var existingDocumentType = $('#documentType').val(); 
 	 
 	 var selText= $(documentTypes).find("option:selected").text();
-	 
 	if(selText == 'Other'){
 		  document.getElementById("documentOtherTypeDiv").style.display="block";
-		  $("#documentOtherType").attr("data-validation-optional", "false");
-		  $("#documentOtherType").attr("data-validation", "required validate_Space validate_length length2-250");
+		  $('#documentOtherType').attr("data-validation","required validate_Space validate_length length1-250"); 
+		  $("#documentOtherTypeDiv").attr("data-validation-optional", "false");
+		  $("#documentOtherTypeDiv").attr("data-validation", "required validate_Space validate_length length2-250");
 	}else{
 		  document.getElementById("documentOtherTypeDiv").style.display="none";
-		  $("#documentOtherType").attr("data-validation-optional", "true");
+		  $("#documentOtherTypeDiv").attr("data-validation-optional", "true");
+		  $("#documentOtherTypeDiv").removeAttr("data-validation"); 
 		  $("#documentOtherType").find('p.jquery_form_error_message').remove();
 		  if(existingDocumentType == null || existingDocumentType == "" || existingDocumentType == "undefined" || existingDocumentType != 'Other'){
 			  $("#documentOtherType").val('');

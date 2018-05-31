@@ -1446,7 +1446,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 }
 
 	@Override
-	public Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType,User user,String contractType) throws Exception
+	public Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType,User user,String contractType,String globalUser) throws Exception
 	{
 		int count =0;
 		List<OrgRelations> clientVendorList = null;
@@ -1501,7 +1501,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  					if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
   	  						 projectMembersList = getClientProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
   	  					}else{
-  	  						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
+  	  						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice,globalUser);
   	  					}
   	  					if(null != projectMembersList && projectMembersList.size() >0){
   	  						populateClientDetails(vendorOrgLocation,invoice,orgRelation);
@@ -1805,7 +1805,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 * @return
 	 * @throws Exception
 	 */
-	private List<ProjectMembers> getVendorProjectAssinedMembersAutoInvoice(String frequency, OrgLocations orgLocation, Long projectId, Long orgRelationId, String contractType, Invoice invoice) throws Exception
+	private List<ProjectMembers> getVendorProjectAssinedMembersAutoInvoice(String frequency, OrgLocations orgLocation, Long projectId, Long orgRelationId, String contractType, Invoice invoice,String globalUser) throws Exception
 	{
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
@@ -1827,7 +1827,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 //				Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getProjectMemberCandidteId(),orgRelationId);
 //				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
 				
-				ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(projectMember.getMasterCandidateId().getId(), projectId, orgLocation.getId());
+				ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(projectMember.getMasterCandidateId().getId(), projectId, orgLocation.getId(),globalUser);
 				
 				Candidate candidate = pm.getProjectMemberCandidteId();
 				if (candidate != null && ("C2C".equalsIgnoreCase(candidate.getDesignationType()) || "C2C-1099".equalsIgnoreCase(candidate.getDesignationType()))) {

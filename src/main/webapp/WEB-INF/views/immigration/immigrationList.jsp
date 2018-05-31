@@ -225,20 +225,21 @@
 			</div>
 			  <ul class="pull-right">
 			    <sec:authorize access="hasAnyRole('ROLE_ADD_PETITION','ROLE_EDIT_VIEW_PETITION','ROLE_DELETE_PETITION')">
-			    <!-- <li title="Import"><a href="/app/uploadImmigrationForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li> -->
+			    
 				  <li class="noPad">
 					  <a href="${appPath}/immigration/loadNewPetition" class="btn btn-success btnSuccess anchorWhite btn-sm"><i class="fa fa-plus paddingRight"></i> New </a>
 				  </li>
-				 <!--  <li title="Export" class="mrPOP" id="mypop"><i
+				 <li title="Import"><a href="/app/uploadImmigrationForm"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+				 <li title="Export" class="mrPOP" id="mypop"><i
 							class="glyphicon glyphicon-export"></i>
 							<div id="exportPop">
 								<ul>
-									<li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+									<!-- <li onclick="exportToPdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li> -->
 									<li onclick="exportToExcel();"><i
 										class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
 								</ul>
 							</div>
-				</li> -->
+				</li>
                  </sec:authorize>
 			  </ul>
 			  <div class="remove_search">
@@ -343,14 +344,22 @@
 </div>
 
 <script>
-		/* function exportToPdf(){
-			window.location.href = sourceleadUrl+"/getRequirementExportListByOrgLocationID?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
+		function exportToPdf(){
+			window.location.href = sourceleadUrl+"/immigration/getImmigrationListExport?"+tokenParamName+"="+tokenValue+"&exportType=pdf";
+		}
+		
+		function exportToExcel(){
+			if (!table.data().count() ) {
+			    alert( 'Empty table' );
+			}else{
+				window.location.href = sourceleadUrl+"/immigration/getImmigrationListExport?"+tokenParamName+"="+tokenValue+"&exportType=excel";
+			}
 		}
 
 		$('#mypop').click(function(){
 			$("#exportPop").toggle();
 			$(".export_pop, #filter2ApprovedPop, #filter1ApprovedPop, .action-pop").slideUp();
-		}); */
+		}); 
 	// Close Advanced Search
 		function closePop(){
 			$("#immigrationFilterPopup").hide();
@@ -401,7 +410,7 @@
         $(".clientDetails").toggleClass('hidden', 500);
         });
 
-    	$('#filterFromYear').append($('<option />').val("").html("--Select--"));
+    	$('#filterFromYear').append($('<option />').val("").html("--Start Year--"));
         for (i = new Date().getFullYear(); i > 1900; i--)
         {
             $('#filterFromYear').append($('<option />').val(i).html(i));
@@ -410,7 +419,7 @@
         
         function getFilterTwoYear(selectedFrmYear){
         	$('#filterToYear').empty();
-        	$('#filterToYear').append($('<option />').val("").html("--Select--"));
+        	$('#filterToYear').append($('<option />').val("").html("--End Year--"));
         	for (i = new Date().getFullYear(); i >= selectedFrmYear ; i--)
             {
                 $('#filterToYear').append($('<option />').val(i).html(i));

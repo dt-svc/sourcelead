@@ -223,7 +223,7 @@ public class ProjectPlanningResourceRequestServiceImpl implements ProjectPlannin
 		EmailMessage emailMessage = new EmailMessage();
         emailMessage.setFirstName(loginUser.getFirstName());
         emailMessage.setLastName(loginUser.getLastName());
-        emailMessage.setToEmail(projectPlanningRequest.getProjectPlanningRequestId().getApproverUser().getEmail());
+        emailMessage.setToEmail(projectPlanningRequest.getApproverUser().getEmail());
         emailMessage.setFromEmail(loginUser.getEmail());
         emailMessage.setCreatedBy(loginUser.getUserCode());
         emailMessage.setFromEmail(loginUser.getEmail());

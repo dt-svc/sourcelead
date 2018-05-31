@@ -330,6 +330,7 @@ margin-bottom: 15px;
 						 var location = '';
 						 var appendComa1='';
 						 var appendComa2='';
+						 
 						if(json.country != null && json.country !='' && json.country !='undefined'){
 							country = json.country;
 						}
@@ -339,7 +340,7 @@ margin-bottom: 15px;
 						if(json.city != null && json.city !='' && json.city !='undefined'){
 							city = json.city;
 						}
-						if(json.webSite != null && json.webSite !='' && json.webSite !='undefined'){
+						if(json.webSite != null && json.webSite !='' && json.webSite !='null' && json.webSite !='undefined'){
 							website = json.webSite;
 						}
 						if(json.zipcode != null && json.zipcode !='' && json.zipcode !='undefined'){
@@ -351,6 +352,7 @@ margin-bottom: 15px;
 						}else if(json.country != null && json.country !='' && json.country !='undefined'){
 							location = json.country;
 						}
+						
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						if(json.orgType == 'Company'){
 								result = result + '<div class="user_summary_edit_cta">';
@@ -360,7 +362,7 @@ margin-bottom: 15px;
 								
 								result = result + '<div class="user_summary_edit_cta" id="companyWebsiteDiv">';
 								result = result + '<label>Website</label>';
-								result = result + '<input type="text"  id="companyWebsite" name="webSite" field-name="Website" readonly="readonly" value="'+website+'" placeholder="client website" ></div>';
+								result = result + '<input type="text"  id="companyWebsite" name="webSite" field-name="Website"  value="'+website+'" placeholder="client website" ></div>';
 								result = result + '</div>';
 								
 								result = result + '<div class="user_summary_edit_cta">';
@@ -377,7 +379,7 @@ margin-bottom: 15px;
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Country</label>';
-								result = result + ' <select class="form-control chosen-select" name="country" id="existingCountry" disabled field-name="Country" data-placeholder="Select Country" disabled data-validation="required" >';
+								result = result + ' <select class="form-control chosen-select" name="country" id="existingCountry"  field-name="Country" data-placeholder="Select Country"  data-validation="required" >';
 								result = result + '<option  '+ (country == "Australia" ? "selected" : '') +'>Australia</option>';
 								result = result + '<option  '+ (country == "France" ? "selected" : '') +'>France</option>';
 								result = result + '<option  '+ (country == "India" ? "selected" : '') +'>India</option>';

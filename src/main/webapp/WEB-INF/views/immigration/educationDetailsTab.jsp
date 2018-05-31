@@ -16,7 +16,7 @@
 						</c:choose>
 				    </c:otherwise>
 				</c:choose>
-		  	<span><input class="immigraTabSerach" id="educationSearchVal" type="text"></span>
+		  	<span><input class="immigraTabSerach" title="Education/Specialization/Institute/University" placeholder="Education/Specialization/Institute/University" id="educationSearchVal" type="text"></span>
 		</div>
 		
 	  	<div class="immigraTable overflow_Auto">
@@ -79,7 +79,7 @@
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
 						       <td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"
 										class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-										 onclick="dele	teEDucationDetailsById(${eduItems.id});" 
+										 onclick="deleteEDucationDetailsById(${eduItems.id});" 
 										 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>
@@ -130,7 +130,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Specialization</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id = "specialization" name = "specialization" placeholder="Specialization"/>
+              		<input type="text" class="form-control" id = "specialization" name = "specialization" placeholder="Specialization" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"/>
 				</div>
 			</div>				          
           <div class="col-sm-12 noPad mt clearfix">
@@ -166,13 +166,13 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Score</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id = "grade" name="grade" placeholder="Score" placeholder="Score"/>
+              		<input type="text" class="form-control" id = "grade" name="grade" placeholder="Score" placeholder="Score" data-validation="required validate_Space validate_length length1-4" data-validation-optional="true"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Institute/University</label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" class="form-control" id = "institute" name = "institute" placeholder="Institute"/>
+              		<input type="text" class="form-control" id = "institute" name = "institute" placeholder="Institute" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"/>
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">

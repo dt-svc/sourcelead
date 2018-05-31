@@ -41,6 +41,8 @@ public class Constants {
 	public static final String EMPLOYMENT_TYPE ="Employment Type*";
 	public static final String ASSOCIATE_VENDOR="Vendor";
 	public static final String ASSOCIATE_VENDOR_CONTACT="Vendor Contact(Email)";
+	public static final String ASSOCIATE_GRADE="Grade";
+	public static final String ASSOCIATE_DESIGNATION="Designation*";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";
 	public static final String FAILED_REASON = "Reason";
@@ -622,6 +624,13 @@ public class Constants {
 	public static final String[] PROJECT_TASKS_EXCEL_HEADERS = { "Task Name", "Task Type", "Priority", "Assigned To","Due Date","Estimated Time","Severity","Owner","Billing Type","Business Value", "Status","Description"};
 
 	public static final String[] DATA_MIGRATION_PROJECT_TASKS_EXCEL_HEADERS = { "Task Type" , "Task Name","Assigned To", "Due Date", "Priority", "Estimated Time","Severity","Status", "Owner","Billing Type","Currency Type","Business Value", "Description"};
+	
+
+	public static final String[] IMMIGRATION_LIST_EXCEL_HEADERS = { "Emp ID", "Beneficiary First Name", "Beneficiary Last Name", "Beneficiary Email", "Experience", "SSN", "I-94 Number", "I-20 SEVIS Number If Student", "EAD Number If Student",
+			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Company", "Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
+			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
+
+
 
 	public static final String SHORTLIST_CANDIDATE_COUNT = "shortlist_candidate :";
 	public static final String VENDOR = "Vendor";
@@ -1124,9 +1133,12 @@ public class Constants {
 	public static final String REPORT_FILTER_1_WEEK = "1_week";
 	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
+	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments"};
 	
+
 	public static final String EMAIL_SUCCESS = "success";
 	
+
 
 
 }

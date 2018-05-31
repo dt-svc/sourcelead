@@ -1,5 +1,6 @@
 package com.bis.sourcelead.immigration.dao.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
 import com.bis.sourcelead.entity.ImmigrationDashboardView;
+import com.bis.sourcelead.entity.ImmigrationListExportView;
 import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
@@ -722,7 +724,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			query1.append(" or (immView.currUscisStatus like '%" + searchValue + "%' )");
 			query1.append(" or (immView.country like '%" + searchValue + "%' )");
 			query1.append(" or (immView.petitionType like '%" + searchValue + "%' )");
-			if (orgLocations.getId() == immigrationListDTO.getOrgLocationId()) {
+			if (orgLocations.getId().equals(immigrationListDTO.getOrgLocationId())) {
 				query1.append(" or (immView.vendor like '%" + searchValue + "%' )");
 			} else {
 				query1.append(" or (immView.client like '%" + searchValue + "%' )");
@@ -754,7 +756,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		if (StringUtils.isNotBlank(immigrationListDTO.getSortColumn())) {
 			String sortColumnName = immigrationListDTO.getSortColumn();
 			if (sortColumnName.equalsIgnoreCase("orgName")) {
-				if (orgLocations.getId() == immigrationListDTO.getOrgLocationId()) {
+				if (orgLocations.getId().equals(immigrationListDTO.getOrgLocationId())) {
 					sortColumnName = "vendor";
 				} else {
 					sortColumnName = "client";
@@ -845,7 +847,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaStartDate()));
 				target.setLcaEndDateStr(
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaEndDate()));
-				if (orgLocations.getId() == source.getOrgLocationId()) {
+				if (orgLocations.getId().equals(source.getOrgLocationId())) {
 					target.setOrgName(source.getVendor());
 					target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG2);
 					target.setSpocName(source.getSpocNameVendor());
@@ -924,12 +926,34 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ImmigrationDashboardView getImmigrationDashBoardDetails(OrgLocations orgLocations) {
-		ImmigrationDashboardView dashboardObj = null;
+		ImmigrationDashboardView dashboardObj = new ImmigrationDashboardView();
+		
+		List<ImmigrationDashboardView> dashboardObjLst= new ArrayList<ImmigrationDashboardView>();
+		dashboardObj.setDraftsCount(BigDecimal.ZERO);  // set default values as zero.
+		dashboardObj.setReqSentCount(BigDecimal.ZERO);
+		dashboardObj.setInProgressCount(BigDecimal.ZERO);
+		dashboardObj.setApporovedCount(BigDecimal.ZERO);
+		dashboardObj.setRejectedCount(BigDecimal.ZERO);
+		dashboardObj.setRfeCount(BigDecimal.ZERO);
+		dashboardObj.setDeniedCount(BigDecimal.ZERO);
+		dashboardObj.setOthersCount(BigDecimal.ZERO);
+		
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String queryString = "from ImmigrationDashboardView immDview where immDview.orgLocationId = :orgLocationsId or "
 					+ "immDview.attorneyLocationId = :attorneyLocationId";
-			dashboardObj = (ImmigrationDashboardView) session.createQuery(queryString).setLong("orgLocationsId", orgLocations.getId()).setLong("attorneyLocationId", orgLocations.getId()).uniqueResult();
+			dashboardObjLst = session.createQuery(queryString).setLong("orgLocationsId", orgLocations.getId()).setLong("attorneyLocationId", orgLocations.getId()).list();
+			for(ImmigrationDashboardView Obj: dashboardObjLst) {
+				dashboardObj.setDraftsCount(dashboardObj.getDraftsCount().add(Obj.getDraftsCount()));
+				dashboardObj.setReqSentCount(dashboardObj.getReqSentCount().add(Obj.getReqSentCount()));
+				dashboardObj.setInProgressCount(dashboardObj.getInProgressCount().add(Obj.getInProgressCount()));
+				dashboardObj.setApporovedCount(dashboardObj.getApporovedCount().add(Obj.getApporovedCount()));
+				dashboardObj.setRejectedCount(dashboardObj.getRejectedCount().add(Obj.getRejectedCount()));
+				dashboardObj.setRfeCount(dashboardObj.getRfeCount().add(Obj.getRfeCount()));
+				dashboardObj.setDeniedCount(dashboardObj.getDeniedCount().add(Obj.getDeniedCount()));
+				dashboardObj.setOthersCount(dashboardObj.getOthersCount().add(Obj.getOthersCount()));
+			  }
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1357,7 +1381,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaStartDate()));
 				target.setLcaEndDateStr(
 						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getLcaEndDate()));
-				if (orgLocations.getId() == source.getOrgLocationId()) {
+				if (orgLocations.getId().equals(source.getOrgLocationId())) {
 					target.setOrgName(source.getVendor());
 					target.setOrgNameSel(ImmigrationConstants.ORG_NAME_SELECTED_ORG2);
 					target.setSpocName(source.getSpocNameVendor());
@@ -1405,5 +1429,23 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			return flag;
 		}
 			}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ImmigrationListExportView> getImmigrationListExportDetails(OrgLocations orgLocations) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String listQuery = "from ImmigrationListExportView immView  where immView.status = 1  and (immView.orgLocationId=:orgLocationId or immView.attorneyOrgLocationId =:orgLocationId) ";
+		List<ImmigrationListExportView> listExportViews = session.createQuery(listQuery).setParameter("orgLocationId", orgLocations.getId()).list();
+		return listExportViews;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getTemplateDetailsByNameAndOrgLoacationId(String templateName, OrgLocations orgLocations) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "select temp.id from ImmigrationTemplate temp where temp.name = :templateName and temp.orgLocations.id= :orgLocationId";
+		Long tempId = (Long) session.createQuery(query).setString("templateName", templateName).setLong("orgLocationId", orgLocations.getId()).uniqueResult();
+		return tempId;
+	}
 
 }

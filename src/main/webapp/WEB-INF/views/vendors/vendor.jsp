@@ -1020,7 +1020,7 @@ function getSpocUserDetails(){
 	        		    $('#nameIdDiv').find('p.jquery_form_error_message').remove();
 	        		 }else{
 	        			 $("#firstName").attr("disabled", false);
-	        			 //$("#firstName").val('');
+	        			 $("#firstName").val('');
 	        		 }
 	        		 
 	        		 if(json[1] != null && json[1] != ''){

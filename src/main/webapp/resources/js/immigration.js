@@ -166,7 +166,6 @@ function Immigration() {
             scrollToTopOnError: true,
             dateFormat: 'yyyy/mm/dd'
         };
-
         if ($('#petitionTemplateTaskDetails').validate(false, validationSettings)) {
             $("#immiTempId").val(immTemplId);
             var formData = getFormData1("petitionTemplateTaskDetails");
@@ -200,6 +199,10 @@ function Immigration() {
         $("#petitionTemplateTaskDetails").showHelpOnFocus();
         $("#petitionTemplateTaskDetails").validateOnBlur(false, validationSettings);
     });
+    
+    this.removeFormValidationErrors = function(formId){
+    	$("#"+formId).find('p.jquery_form_error_message').remove();
+    }
 
     this.editTemplateDetailsByRowId = function (templateUuid) {
         immTemplId = templateUuid; //updating global variable "immTemplId" with templateId.
@@ -235,7 +238,7 @@ function Immigration() {
         });
         }else if (reason.length >= 251){
         	$("#reasonForTemplateDiv").find('p.jquery_form_error_message').remove();
-			$("#reasonForTemplateDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason Length 1-250</font>") ; 
+			$("#reasonForTemplateDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason Length 1-250 characters</font>") ; 
         }else{
         	$("#reasonForTemplateDiv").find('p.jquery_form_error_message').remove();
 			$("#reasonForTemplateDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
@@ -244,16 +247,13 @@ function Immigration() {
     // immigration view navigation if don't required comment below code start here.
     this.savePageAndContinue = function (status) {
         //$("#newPetitionTemplateDiv").empty();
-    	if(status != 'saveContinue'){
-    		$("#currUscisStatus").removeAttr("data-validation");
-    	}
-    	$("#saveDraftButton").prop("disabled",true);
-    	$("#savePageOneContinue").prop("disabled",true);
-    	$("#sendRequestButton").prop("disabled",true);
         if (status == 'petitionDetails') {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=petitionDetails");
         } else if (status == 'saveContinue' || status == 'sendRequest') {
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
+        		$("#saveAsDraftButton").prop("disabled",true);
+            	$("#savePageOneContinue").prop("disabled",true);
+            	$("#sendRequestButton").prop("disabled",true);
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
                     url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
@@ -291,6 +291,9 @@ function Immigration() {
             $("#newPetitionTemplateDiv").load("/app" + immiModulePath + "/loadNewPetitionPage?forward=two");
         }else if(status == 'save'){
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
+        		$("#saveAsDraftButton").prop("disabled",true);
+            	$("#savePageOneContinue").prop("disabled",true);
+            	$("#sendRequestButton").prop("disabled",true);
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
                     url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
@@ -305,9 +308,6 @@ function Immigration() {
                         	  immigrationId = result.data[0];
                           	candidateId = result.data[1];
                           	templateId= result.data[2];
-                          	$("#saveDraftButton").prop("disabled",false);
-                        	$("#savePageOneContinue").prop("disabled",false);
-                        	$("#sendRequestButton").prop("disabled",false);
                           }else{
                           	 showError("Operation failed, please try again");
                           }
@@ -360,16 +360,15 @@ function Immigration() {
     
     this.savePassportVisaDetails= function(idType) {
     	var formId= "";
-	if(idType =="Passport"){
+    	if(idType =="Passport"){
 			formId ="CandidatePassportform";
-			$("#passport_save_id").attr("disabled",true);
 		}
 	 	else if(idType =="Visa"){
-  		formId ="CandidateVisaform";
-  		$("#visa_save_id").attr("disabled",true);
-  		 	  	}
+	  		formId ="CandidateVisaform";
+  		}
 	if ($('#'+formId).validate(false, validationSettings)) {
-			
+		$("#passport_save_id").attr("disabled",true);
+		$("#visa_save_id").attr("disabled",true);
 			var formData = getFormData(formId);
 		 	var candidateId = $('#candidateID').val();
             var immigrationId = $('#immigrationId').val();
@@ -395,7 +394,8 @@ function Immigration() {
 		                    }else{
 		                    	 showError("Operation failed, please try again");
 		                    }
-							
+							$("#passport_save_id").removeAttr("disabled");
+							$("#visa_save_id").removeAttr("disabled");
 			}
 		});
 		return true;
@@ -545,11 +545,12 @@ this.deletePassportVisaDetailsById=function(id,idType){
     	else if(relationType =="Mother"){
     		formId ="motherDetailsForm";
     	}
-    	$("#family_SaveButton").attr("disabled",true);
+    	
 		if ($('#'+formId).validate(false, validationSettings)) {
 			var formData = getFormData(formId);
 			 var candidateId = $('#candidateID').val();
 			 var immigrationId = $('#immigrationID').val();
+			 $("#family_SaveButton").attr("disabled",true);
 			$.ajax({
 				url : sourceleadUrl + immiModulePath+ "/saveCandidateFamilyDetails?candidateId="+candidateId+"&relationType="+relationType+"&memberId="+familyMemberId+"&immigrationId="+immigrationId,
 				type : "POST",
@@ -566,6 +567,8 @@ this.deletePassportVisaDetailsById=function(id,idType){
        				}else{
                    	 showError("Operation failed, please try again");
                    }
+					
+					$("#family_SaveButton").removeAttr("disabled");
 				}
 			});
 
@@ -733,6 +736,49 @@ this.deletePassportVisaDetailsById=function(id,idType){
 		});
 	}
 	
+	 this.saveCandidateDocs= function () {
+			
+		 var validationSettings = {
+		            errorMessagePosition: 'element',
+		            borderColorOnError: '',
+		            scrollToTopOnError: true,
+		            dateFormat: 'yyyy/mm/dd'
+		        };
+		 
+		
+			if ($('#candidate_Immigration_document_form').validate(false, validationSettings)) {
+		 
+				var formData = getFormData("candidate_Immigration_document_form");
+				var candidateId = $('#candidateID').val();
+				var templateId = $('#templateID').val();
+				var immigrationId = $('#immigrationID').val();
+
+	        $.ajax({
+	            url: sourceleadUrl + immiModulePath + "/saveCandidateImmigrationDocuments?"+ tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&templateId="+templateId,
+	            type: "POST",
+	            data: formData,
+	            success: function (data) {
+	                if (data == 'success') {
+	                	$('#docuView').hide();
+	                	$('.popMask').fadeOut();
+	                	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
+	                }
+	                $("#canDocSave_Button1").removeAttr("disabled");
+	            }
+	        });
+
+	        return true;
+	  } else {
+	        return false;
+	    }
+		
+	}
+	$('body').on('blur', '#candidate_Immigration_document_form', function () {
+	    $("#candidate_Immigration_document_form").showHelpOnFocus();
+	    $("#candidate_Immigration_document_form").validateOnBlur(false, validationSettings);
+	});
+	
+	
 }
 
 function deleteEDucationDetailsById(id){
@@ -783,6 +829,26 @@ function editEducationDEtailsByRowId(id){
 function editEmpDetailsByRowId(id){
 	 // update the variable with family member id in edit mode.
 	var candidateId = $("#candidateID").val();
+	var startYear = document.getElementById("startYear").value;
+	var endYear = document.getElementById("endYear").value;
+	var startMonth= document.getElementById("startMonth").value;
+	var endMonth= document.getElementById("endMonth").value;
+	
+	var SMdata = startMonth.split('&');
+	var sMonthNumber = SMdata[0];
+	
+	var EMdata = endMonth.split('&');
+	var eMonthNumber = EMdata[0];
+	
+	var startYearFlag = true;
+	var endYearFlag = true;
+	
+	 if((parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear==endYear) ){
+		 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
+	} else if((startYear > endYear ) && (endYear != '' && endYear != null && endYear != 'undefined')) {
+		document.getElementById("endYearValidation").style.display="block";
+		$("#endYearValidation").empty().append("End year should be greater than Start year") ; 
+	} else if(startYearFlag && endYearFlag) {
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/getCandidateEmpDetailsById?id="+id+"&candidateId="+candidateId,
         type: "GET",
@@ -814,6 +880,7 @@ function editEmpDetailsByRowId(id){
         	}
         }
     });
+	}
 }
 
 function udpateEduFormdata (formObj, idsArray, dataObj) {
@@ -944,6 +1011,32 @@ function saveEmployerDetails(status) {
         var formData = getFormData("employerDetails_form");
         var candidateId = $('#candidateID').val();
         var immigrationId = $('#immigrationID').val();
+        
+        var formData = getFormData("employerDetails_form");
+		var startYear = document.getElementById("startYear").value;
+		var endYear = document.getElementById("endYear").value;
+		
+		var startMonth= document.getElementById("startMonth").value;
+		var endMonth= document.getElementById("endMonth").value;
+		
+		var SMdata = startMonth.split('&');
+		var sMonthNumber = SMdata[0];
+		
+		var EMdata = endMonth.split('&');
+		var eMonthNumber = EMdata[0];
+		
+		var startYearFlag = true;
+		var endYearFlag = true;
+		
+		var currentYear = new Date().getFullYear();
+		if(( parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear == endYear)) {
+			 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
+		} else if((startYear > endYear ) && (endYear != '' && endYear != null && endYear != 'undefined')) {
+			document.getElementById("endYearValidation").style.display="block";
+			$("#endYearValidation").empty().append("End year should be greater than Start year") ; 
+		} else if(startYearFlag && endYearFlag) {
+			document.getElementById("endYearValidation").style.display="none";
+        
         $("#employerSave_Buton").attr("disabled",true);
         $.ajax({
             url: sourceleadUrl + immiModulePath + "/saveImmigrationEmployerDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
@@ -965,7 +1058,7 @@ function saveEmployerDetails(status) {
             }
         
         });
-
+		}
         return true;
     } else {
         return false;
@@ -978,42 +1071,7 @@ $('body').on('blur', '#employerDetails_form', function () {
 });
 
 
-function saveCandidateDocs() {
-	var validationSettings = {
-            errorMessagePosition: 'element',
-            borderColorOnError: '',
-            scrollToTopOnError: true,
-            dateFormat: 'yyyy/mm/dd'
-        };
-	$("#canDocSave_Button").attr("disabled",true);
-	if ($('#candidate_Immigration_Doc').validate(false, validationSettings)) {
-		var formData = getFormData("candidate_Immigration_Doc");
-		var candidateId = $('#candidateID').val();
-		var templateId = $('#templateID').val();
-		var immigrationId = $('#immigrationID').val();
-        $.ajax({
-            url: sourceleadUrl + immiModulePath + "/saveCandidateImmigrationDocuments?"+ tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&templateId="+templateId,
-            type: "POST",
-            data: formData,
-            success: function (data) {
-                if (data == 'success') {
-                	$('#docuView').hide();
-                	$('.popMask').fadeOut();
-                	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
-                }
-            }
-        });
 
-        return true;
-    } else {
-        return false;
-    }
-	
-}
-$('body').on('blur', '#candidate_Immigration_Doc', function () {
-    $("#candidate_Immigration_Doc").showHelpOnFocus();
-    $("#candidate_Immigration_Doc").validateOnBlur(false, validationSettings);
-});
 
 
 function displayImmigrationCandidateDocs(candidateId,templateid,immigrationId,searchVal){
@@ -1160,8 +1218,8 @@ function editResidenceDEtailsByRowId(id, isCurr){
 }
 
 function uploadRequestDoc(){
-	$("#uploadDocSave_Button").attr("disabled",true);
 	if ($('#uploadRequestDoc_Form').validate(false, validationSettings)) {
+		$("#uploadDocSave_Button").attr("disabled",true);
 	var formData = getFormData("uploadRequestDoc_Form");
 	var candidateId = $("#candidateID").val();
 	var immigrationId = $('#immigrationID').val();
@@ -1191,12 +1249,9 @@ function editDocumentDetailsByRowId(id){
      type: "GET",
      success: function (data) {
      	var formObj='';
-     	if(data!= null){
-     		
-     			formObj = $('#candidate_Immigration_Doc')[0]; // load the child form
+     	if(data != null){
+     			formObj = $('#candidate_Immigration_document_form')[0]; // load the child form
      			$("#addDocu").trigger('click');
-     		/*	$('#eduName').val(data.name); // to select the dropdwon value based on id value.
-     			$('#scoreEducationType').val(data.gradeType);*/
      			$('#documentType').val(data.documentType.id);
      			if(data.documentOtherType){
      			document.getElementById("documentOtherTypeDiv").style.display="block";
@@ -1206,9 +1261,9 @@ function editDocumentDetailsByRowId(id){
      			}
      			$('#description1').text(data.description);
      			if(data.allowMultiple == 'Y'){
-     				$('#candidate_Immigration_Doc input[name="multiple"]').prop('checked', true);
+     				$('#candidate_Immigration_document_form input[name="multiple"]').prop('checked', true);
      			}if(data.isRequired == 'Y'){
-     				$('#candidate_Immigration_Doc input[name="isRequired"]').prop('checked', true);
+     				$('#candidate_Immigration_document_form input[name="isRequired"]').prop('checked', true);
      			}
      			$('#immigrationCandidateDocId').val(data.id);
      	
@@ -1235,8 +1290,8 @@ function deleteDocumentDetailsByRowId(id){
 }
 
 function uploadRequestForm(){
-	$("#uploadFormSave_Button").attr("disabled",true);
 	if ($('#uploadRequestForm_Form').validate(false, validationSettings)) {
+		$("#uploadFormSave_Button").attr("disabled",true);
 	var formData = getFormData("uploadRequestForm_Form");
 	var candidateId = $("#candidateID").val();
 	var immigrationId = $('#immigrationID').val();
@@ -1418,12 +1473,12 @@ function validateCandidatePassportVisa(idType) {
 		        	if(data == true){
 		        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove();
 		        		  $("input#idNumber").after("<p class='jquery_form_error_message'>"+idNumberVal+" is Already Existed</span>");
-						  $("#passport_save_id").attr('disabled','disabled');
+						  $("#visa_save_id").attr('disabled','disabled');
 		        	}
 		        	else{
 		        		   $('input#idNumber').removeAttr( "record-exist record-exist-errormsg");
 		        		 $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
-                      $("#passport_save_id").removeAttr("disabled");
+                      $("#visa_save_id").removeAttr("disabled");
 		        	}
 		        }
 		        },
@@ -1465,4 +1520,72 @@ function validateImmigrationCandidateForms() {
 		        }
 		       
 		    });
+}
+
+function applyKeyEventsToYears() {
+	$("#startYear").keyup(function() {
+		if($(this).val() > new Date().getFullYear()) {
+			$("#startYearValidation").html("Start year shouldn't be greater than Current year");
+			$("#startYearValidation").show();
+			startYearFlag = false;
+		} else {
+			$("#startYearValidation").hide();
+			startYearFlag = true;
+		}
+	});
+	$("#endYear").keyup(function() {
+		if($(this).val() > new Date().getFullYear()) {
+			$("#endYearValidation").html("End year shouldn't be greater than Current year");
+			$("#endYearValidation").show();
+			endYearFlag = false;
+		} else {
+			$("#endYearValidation").hide();
+			endYearFlag = true;
+		} 
+	});
+}
+function monthIfYearRequired(){
+
+	var startMonth= document.getElementById("startMonth").value;
+	if(startMonth != null && startMonth != "" && startMonth != "undefined"){
+		
+		 $('#startYear').removeAttr('data-validation-optional');
+	    $('#startYear').attr("data-validation","required validate_Space validate_extno validate_length length4-4"); 
+	   
+	}else{
+		 $('#startYear').removeAttr('data-validation');
+		 $('#startYear').attr("data-validation-optional","true"); 
+	}
+	
+	var endMonth= document.getElementById("endMonth").value;
+	
+	if(endMonth != null && endMonth != "" && endMonth != "undefined"){
+		
+			 $('#endYear').removeAttr('data-validation-optional');
+		     $('#endYear').attr("data-validation","required validate_Space validate_extno validate_length length4-4"); 
+		}else{
+			 $('#endYear').removeAttr('data-validation');
+			 $('#endYear').attr("data-validation-optional","true"); 
+		}
+	
+	var startYear= document.getElementById("startYear").value;
+	var SMdata = startMonth.split('&');
+	var sMonthNumber = SMdata[0];
+	
+	var endYear= document.getElementById("endYear").value;
+	var EMdata = endMonth.split('&');
+	var eMonthNumber = EMdata[0];
+	if((startYear != " " && startYear != null && startYear != "undefined" ) && (endYear != " " && endYear != null && endYear != "undefined")){
+		
+	if(( parseInt(sMonthNumber) > parseInt(eMonthNumber)) && (startYear == endYear) ){
+		 $("#err").empty();
+		 $("#startYear").parent().after("<p class='jquery_form_error_message' id='err'><span>Start Month Should be less than end Month</span></p>");
+		}
+	if(parseInt(sMonthNumber) < parseInt(eMonthNumber))
+		 {
+		 $('#startYearDiv').parent().find('p.jquery_form_error_message').remove(); 
+		 }
+	
+	}
+
 }
