@@ -111,13 +111,7 @@ function cancel(){
  <script type="text/javascript">
  // Multiselect script
       var roleName = '${roleName}';
-      if(roleName == 'ROLE_ADMIN'){
-    	  $("#test-select").treeMultiselect({ enableSelectAll: false},roleName);
-      }else{
-    	  $("#test-select").treeMultiselect({ enableSelectAll: true },roleName);
-      }
-      
-      
+      $("#test-select").treeMultiselect({ enableSelectAll: true},roleName);
     </script>
     
     
