@@ -1781,13 +1781,21 @@ function hideCommonSOWFields(){
 			saveType = '${contractFromType}';
  		}
 			$("#customLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			 var formData = getFormData("newcontract_form");
+			var formData = getFormData1("newcontract_form");
 				var sourceleadUrl = '${sourceleadUrl}';
-	            $.post( sourceleadUrl+ "/saveCustomContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&typeOfContract="+conType1, formData, function(data) {
-	                       if(data == true){
+				
+				$.ajax({
+					type : "POST",
+					data: formData,
+	  		        processData: false,
+	  		        contentType:false, 
+					url : sourceleadUrl+ "/saveCustomContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType+"&typeOfContract="+conType1,
+					success : function(result) {
+						 if(result == true){
 	                    	   location.replace(sourceleadUrl+"/contractListbyStatus");
 	                       }
-	                    });
+					}
+                   });
 			return true;
 		} else {
 			$('#submissionOffersListDiv').find('p.text-primary').remove();

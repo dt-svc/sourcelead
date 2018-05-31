@@ -132,7 +132,8 @@ function approvedEmployeesPagination(url){
             { "data": "empName" },
             { "data": "leaveType"},
             { "data": "duration"},
-            { "data": "noOfDays" },
+            { "data": "noOfDays"},
+            { "data": "extraLeavesTaken"},
             { "data": "leavesTaken"},
             { "data": "approvedBy" },
             { "data": "updatedDate" },
@@ -176,10 +177,10 @@ function approvedEmployeesPagination(url){
               }
             },{
                 "targets": colIndex++,
-                "data": "noOfDays",
+                "data": "extraLeavesTaken",
                 "render": function ( data, type, opt, meta ) {
               	   var result = "";
-              	      result = result + '     <div class="tblminwidth-75">'+opt.extraLeavesTaken+'</div>';	 
+                  result = result + '     <div class="tblminwidth-75">'+opt.extraLeavesTaken+'</div>';	 
               	    return result; 
                 }
               }, {

@@ -237,77 +237,90 @@ public class DataMigrationDTO extends CommonDTO {
 	
 	// immigration import fields starts here date 17 May 2018. Srinivas Sabbu.
 	
-	private String empId;
-	
-	private String beneficiaryFirstName;
-	
-	private String beneficiaryLastName;
-	
-	private String beneficiaryEmail;
-	
-	private String experience;
-	
-	private String ssn;
-	
-	private String i94Number;
-	
-	private String i20Number;
-	
-	private String eadNumber;
-	
-	private String dateOfBirth;
-	
-	private String maritalStatus;
-	
-	private String petitionType;
-	
-	private String template;
-	
-	private String dateOfArrival;
-	
-	private String openOn;
-	
-	private String status; // Status field in excel as immigration status.
-	
-	private String visaNo;
-	
-	private String visaStartDate;
-	
-	private String visaEndDate;
-	
-	private String company;
-	
-	private String companyName; // name field in excel
-	
-	private String companyContactEmail; // AttorneyContactemail field in excel.
-	
-	private String receiptNo;
-	
-	private String benficiarylocation; // location field in excel
-	
-	private String lcaStartDate;
-	
-	private String lcaEndDate;
-	
-	private String lcaNumber;
-	
-	private String lcaRate;
-	
-	private String lcaLocation;
-	
-	private String lcaTitle;
-	
-	private String prevLcaStartDate;
-	
-	private String prevLcaEndDate;
-	
-	private String prevLcaNumber;
-	
-	private String pevLcaRate;
-	
-	private String prevLcaTitle;
-	
-	private String prevLcaLocation;
+private String beneficiaryFirstName;
+    
+    private String beneficiaryLastName;
+    
+    private String beneficiaryEmail;
+    
+    private String experience;
+    
+    private String ssn;
+    
+    private String i94Number;
+    
+    private String i20Number;
+    
+    private String eadNumber;
+    
+    private String dateOfBirth;
+    
+    private String maritalStatus;
+    
+    private String petitionType;
+    
+    private String template;
+    
+    private String dateOfArrival;
+    
+    private String openOn;
+    
+    private String status; // Status field in excel as immigration status.
+    
+    private String visaNo;
+    
+    private String visaStartDate;
+    
+    private String visaEndDate;
+    
+    private String passportNo;
+    
+    private String passportStartDate;
+    
+    private String passportEndDate;
+    
+    private String visaCountry;
+    
+    private String passportCountry;
+    
+    private String company;
+    
+    private String visaType; // name field in excel
+    
+    private String companyContactEmail; // AttorneyContactemail field in excel.
+    
+    private String receiptNo;
+    
+    private String benficiarylocation; // location field in excel
+    
+    private String lcaStartDate;
+    
+    private String lcaEndDate;
+    
+    private String lcaNumber;
+    
+    private String lcaRateCurrency;
+    
+    private String lcaRatePer;
+    
+    private String lcaRate;
+    
+    private String lcaLocation;
+    
+    private String lcaTitle;
+    
+    private String immigrationJobId;
+    
+    private String prevLcaStartDate;
+    
+    private String prevLcaEndDate;
+    
+    private String prevLcaNumber;
+    
+    
+    private String prevLcaTitle;
+    
+    private String prevLcaLocation;
 	
 // immigration fields ends here.	
 	
@@ -1331,14 +1344,6 @@ public class DataMigrationDTO extends CommonDTO {
 		this.projectClientUUID = projectClientUUID;
 	}
 
-	public String getEmpId() {
-		return empId;
-	}
-
-	public void setEmpId(String empId) {
-		this.empId = empId;
-	}
-
 	public String getBeneficiaryFirstName() {
 		return beneficiaryFirstName;
 	}
@@ -1492,14 +1497,6 @@ public class DataMigrationDTO extends CommonDTO {
 		this.company = company;
 	}
 
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
-
 	public String getCompanyContactEmail() {
 		return companyContactEmail;
 	}
@@ -1522,6 +1519,56 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setBenficiarylocation(String benficiarylocation) {
 		this.benficiarylocation = benficiarylocation;
+	}
+
+	public String getPassportNo() {
+		return passportNo;
+	}
+
+	public void setPassportNo(String passportNo) {
+		this.passportNo = passportNo;
+	}
+
+	public String getPassportStartDate() {
+		return passportStartDate;
+	}
+
+	public void setPassportStartDate(String passportStartDate) {
+		this.passportStartDate = passportStartDate;
+	}
+
+	public String getPassportEndDate() {
+		return passportEndDate;
+	}
+
+	public void setPassportEndDate(String passportEndDate) {
+		this.passportEndDate = passportEndDate;
+	}
+
+	public String getVisaCountry() {
+		return visaCountry;
+	}
+
+	public void setVisaCountry(String visaCountry) {
+		this.visaCountry = visaCountry;
+	}
+
+	public String getPassportCountry() {
+		return passportCountry;
+	}
+
+	public void setPassportCountry(String passportCountry) {
+		this.passportCountry = passportCountry;
+	}
+
+	
+
+	public String getVisaType() {
+		return visaType;
+	}
+
+	public void setVisaType(String visaType) {
+		this.visaType = visaType;
 	}
 
 	public String getLcaStartDate() {
@@ -1548,6 +1595,22 @@ public class DataMigrationDTO extends CommonDTO {
 		this.lcaNumber = lcaNumber;
 	}
 
+	public String getLcaRateCurrency() {
+		return lcaRateCurrency;
+	}
+
+	public void setLcaRateCurrency(String lcaRateCurrency) {
+		this.lcaRateCurrency = lcaRateCurrency;
+	}
+
+	public String getLcaRatePer() {
+		return lcaRatePer;
+	}
+
+	public void setLcaRatePer(String lcaRatePer) {
+		this.lcaRatePer = lcaRatePer;
+	}
+
 	public String getLcaRate() {
 		return lcaRate;
 	}
@@ -1570,6 +1633,14 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setLcaTitle(String lcaTitle) {
 		this.lcaTitle = lcaTitle;
+	}
+
+	public String getImmigrationJobId() {
+		return immigrationJobId;
+	}
+
+	public void setImmigrationJobId(String immigrationJobId) {
+		this.immigrationJobId = immigrationJobId;
 	}
 
 	public String getPrevLcaStartDate() {
@@ -1596,14 +1667,6 @@ public class DataMigrationDTO extends CommonDTO {
 		this.prevLcaNumber = prevLcaNumber;
 	}
 
-	public String getPevLcaRate() {
-		return pevLcaRate;
-	}
-
-	public void setPevLcaRate(String pevLcaRate) {
-		this.pevLcaRate = pevLcaRate;
-	}
-
 	public String getPrevLcaTitle() {
 		return prevLcaTitle;
 	}
@@ -1619,5 +1682,5 @@ public class DataMigrationDTO extends CommonDTO {
 	public void setPrevLcaLocation(String prevLcaLocation) {
 		this.prevLcaLocation = prevLcaLocation;
 	}
-	
+
 }
