@@ -52,6 +52,30 @@
 						var allowOffShore = "";
 						var flatPercentageId = "";
 						var invoiceFrequency = "";
+						var reportingManagerAsApprover = "";
+						var ticketNumberRequired = "";
+						var taskCommentsRequired = "";
+						
+						if (json.isReportingManagerAsApprover != null && json.isReportingManagerAsApprover != '' && json.isReportingManagerAsApprover != 'undefined'
+							&& json.isReportingManagerAsApprover == 'Y') {
+							reportingManagerAsApprover = "YES"
+						}else{
+							reportingManagerAsApprover = "NO"
+						}
+						
+						if (json.isTicketNumberRequired != null && json.isTicketNumberRequired != '' && json.isTicketNumberRequired != 'undefined'
+							&& json.isTicketNumberRequired == 'Y') {
+							ticketNumberRequired = "YES"
+						}else{
+							ticketNumberRequired = "NO"
+						}
+						
+						if (json.isTaskCommentsRequired != null && json.isTaskCommentsRequired != '' && json.isTaskCommentsRequired != 'undefined'
+							&& json.isTaskCommentsRequired == 'Y') {
+							taskCommentsRequired = "YES"
+						}else{
+							taskCommentsRequired = "NO"
+						}
 						
 						
 						if (json.isTimesheetAttachmentRequired != null && json.isTimesheetAttachmentRequired != '' && json.isTimesheetAttachmentRequired != 'undefined'
@@ -171,7 +195,7 @@
 						result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
 					    result  = result + '<i class="fa fa-check-circle"></i><span id="docMsgDiv2"></span>';
 					    result  = result + '</div>';
-						if(json.orgLocationId == '${SourceLeadWeb_orgLocations.id}'){
+						if((json.orgLocationId == '${SourceLeadWeb_orgLocations.id}') || ('${SourceLeadWeb_isGlobalAccess}' == 'Y')){
 							if(json.projectApprover == 'Y' || '${SourceLeadWeb_loginUserRole}' == 'ROLE_ADMIN'){
 								result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_PROJECT\')">'; 
 								result = result	+ '<a id="edit-user" href="javascript:editProjectDetails('+ projectId+ ')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
@@ -205,7 +229,7 @@
 						}
 
 						result = result + '<div class="project_details_cta">';
-						result = result + '<strong>Invoice Frequency:</strong><span>';
+						result = result + '<strong>Timesheet Frequency:</strong><span>';
 						result = result + '	<span title="'+invoiceFrequency+'">'+invoiceFrequency+'</span><div class="clearfix"></div>';
 						result = result + '	</div>';
 
@@ -249,7 +273,7 @@
 						result = result + '<input type="hidden" name="dbProjectStatus" id="dbProjectStatus" value="'+json.projectStatus+'" >';
 						result = result + '<div class="clearfix"></div>';
 
-						if(json.orgLocationId == '${SourceLeadWeb_orgLocations.id}'){
+						if((json.orgLocationId == '${SourceLeadWeb_orgLocations.id}') || ('${SourceLeadWeb_isGlobalAccess}' == 'Y')){
 						
 						result = result	+ '<div class="project_details_cta">';
 						result = result	+ '<strong>Team members:</strong><span>'+ json.projectMembersCount+ '</span><div class="clearfix"></div>';
@@ -268,6 +292,25 @@
 						result = result + '<div class="project_details_cta">';
 						result = result + '<strong>Allow Freelance Developers:</strong>';
 						result = result + '<span>'+allowFreeLance+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Reporting Manager will be T/E approver:</strong>';
+						result = result + '<span>'+reportingManagerAsApprover+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong> Ref/Ticket Number Required In Time Sheets:</strong>';
+						result = result + '<span>'+ticketNumberRequired+'</span><div class="clearfix"></div>';
+						result = result + '<div class="clearfix"></div>';
+						result = result + '</div>';
+						
+						result = result + '<div class="project_details_cta">';
+						result = result + '<strong>Task Comments required In Time Sheets:</strong>';
+						result = result + '<span>'+taskCommentsRequired+'</span><div class="clearfix"></div>';
 						result = result + '<div class="clearfix"></div>';
 						result = result + '</div>';
 						
@@ -484,10 +527,29 @@ function editClientProjectDetails(projectId){
                         var allowOffShore  = "";
                         var allowTimeEntryAfterDeadLine = "";
                         var allowBidding = "";
+                        var reoprtingManagerChecked = "";
+                        var ticketNumberRequired = "";
+						var taskCommentsRequired = "";
+						
+                        
                         <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	              		  var sectionId = '${section.id}';
 	              		  preapareCustomFieldDetails(projectId,sectionId);
 	              		</c:forEach>
+	              		
+	              		if(json.isReportingManagerAsApprover != null && json.isReportingManagerAsApprover != '' && json.isReportingManagerAsApprover != 'undefined' && json.isReportingManagerAsApprover == 'Y'){
+	              			reoprtingManagerChecked = "checked";
+	              		}
+	              		
+	              		if (json.isTicketNumberRequired != null && json.isTicketNumberRequired != '' && json.isTicketNumberRequired != 'undefined'
+							&& json.isTicketNumberRequired == 'Y') {
+	              			ticketNumberRequired = "checked"
+						}
+						
+						if (json.isTaskCommentsRequired != null && json.isTaskCommentsRequired != '' && json.isTaskCommentsRequired != 'undefined'
+							&& json.isTaskCommentsRequired == 'Y') {
+							taskCommentsRequired = "checked"
+						}
                         
                         if(json.allowRemote != null && json.allowRemote != '' && json.allowRemote != 'undefined' && json.allowRemote == 'true'){
                         	allowRemote = "checked";
@@ -689,6 +751,18 @@ function editClientProjectDetails(projectId){
 							result = result + '</select>';
 							result = result + '</div>';
 							
+							
+							
+							result = result + '<div class="col-md-4 mt">';
+							result = result + ' <label>&nbsp;</label>';
+							result = result + '<div class="checkbox checkBox margin-top0">';
+							result = result + '<label>';
+							result = result + '<input type="checkbox" value="Y" '+reoprtingManagerChecked+' id="isReportingManagerAsApprover" name="isReportingManagerAsApprover">';
+							result = result + 'Reporting Manager will be T/E approver</label>';
+							result = result + '</div>';
+							result = result + '</div>';
+							
+							
 
 						/* result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 						result = result + '	<label class="user_summary_edit_cta projectdetails_checkbox">Is Client Project </label>';
@@ -748,8 +822,7 @@ function editClientProjectDetails(projectId){
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta" id="endDateDiv">';
 						result = result + '<label>End date <span class="text-danger" id="endDateSpan" style="display: none; ">*</span></label>';
 						result = result +'<div class="input-group">';
-						result = result
-								+ '	<input class="calendar" type="text" placeholder="DD/MM/YY" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" field-name="End Date" readonly="readonly">';
+						result = result+ '	<input class="calendar" type="text" placeholder="End Date" value="'+endDateStr+'" id="endDateStr1" name="endDateStr1" field-name="End Date" readonly="readonly">';
 						result = result + '<input type="hidden" name="dbEndDateStr" id="dbEndDateStr" value="'+endDateStr+'" >';
 					    result = result +'<span class="input-group-addon" onClick="clearEndtDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
 
@@ -780,10 +853,18 @@ function editClientProjectDetails(projectId){
 				 
 						result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta projectdetails_checkbox">';
 						result = result + '<label>&nbsp;</label>';
-							
+						
+						
+						  result = result + '<div class="checkBox">';
+					    	result = result + '<label> <input type="checkbox" value="Y" '+ticketNumberRequired+'  name="isTicketNumberRequired">Ref/Ticket Number Required In Time Sheets</label>';	
+						 result = result + '</div>';
+						
+						 result = result + '<div class="checkBox">';
+					    	result = result + '<label> <input type="checkbox" value="Y" '+taskCommentsRequired+'  name="isTaskCommentsRequired">Task Comments required In Time Sheets</label>';	
+						 result = result + '</div>';
+						
 					    result = result + '<div class="checkBox">';
 					    	result = result + '<label> <input type="checkbox" value="Y" '+allowFreeLance+'  name="isAllowFreelanceDevelopers">Allow Freelance Developers</label>';	
-						
 						result = result + '</div>';
 
 						result = result + '<div class="checkBox">';
@@ -883,23 +964,32 @@ function editClientProjectDetails(projectId){
 						  }if(locationDate.match("yyyy-dd-MM")){
 							  finalDateFormatEduSave = 'yy-dd-mm'; 
 						  }
-						$('#endDateStr1').datepicker({
-							dateFormat : finalDateFormatEduSave,
-							showOn: 'focus',
-				            showButtonPanel: true,
-				            closeText: 'Clear', 
-							changeMonth: true,
-							changeYear: true, 
-							minDate : dt,
-							onClose : function(selected) {
-								addValidClass();
-								var event = arguments.callee.caller.caller.arguments[0];
-				                // If "Clear" gets clicked, then really clear it
-				                if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
-				                    $(this).val('');
-				                }
-							}
-						});
+						
+						  $('#endDateStr1').datepicker({
+								dateFormat : finalDateFormatEduSave,
+								changeMonth: true,
+								changeYear: true, 
+								minDate : json.startDateStr,
+								onSelect : function(selected) {
+									var dt = $(this).datepicker('getDate', '-1d');
+									dt.setDate(dt.getDate() - 1);
+									$("#startDateStr1").datepicker("option", "maxDate", dt);
+									addValidClass();
+									//this is section is for compare project end date with current date
+									//if project end date is less than current date, the project state should be COMPLETED
+									var dummyDate = $(this).val();
+					                var today = new Date();
+					                var dd = today.getDate();
+					                var mm = today.getMonth()+1; //January is 0!
+					                var yyyy = today.getFullYear();
+					                if(dd<10){
+					                    dd='0'+dd
+					                } 
+					                if(mm<10){
+					                    mm='0'+mm
+					                } 
+								}
+							});
 						
 						
 					    var config = {

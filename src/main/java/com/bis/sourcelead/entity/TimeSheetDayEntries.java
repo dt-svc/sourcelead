@@ -50,6 +50,9 @@ public class TimeSheetDayEntries implements Serializable{
 	@Column(name = "BILLABLE_HOURS")
 	private String billableHours;
 	
+	@Column(name = "TICKET_NUMBER")
+	private String ticketNumber;
+	
 	 
 	@Column(name = "NONBILLABLE_HOURS")
 	private String nonBillableHours;
@@ -214,6 +217,7 @@ public class TimeSheetDayEntries implements Serializable{
 		this.status = status;
 	}
 
+
 	public Long getTimesheetActivityId() {
 		return timesheetActivityId;
 	}
@@ -221,5 +225,15 @@ public class TimeSheetDayEntries implements Serializable{
 	public void setTimesheetActivityId(Long timesheetActivityId) {
 		this.timesheetActivityId = timesheetActivityId;
 	}
+
+	public String getTicketNumber() {
+		return ticketNumber;
+	}
+
+	public void setTicketNumber(String ticketNumber) {
+		this.ticketNumber = ticketNumber;
+	}
+
+
 	
 }

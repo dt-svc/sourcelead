@@ -42,8 +42,8 @@ public class ExpensesCategoryServiceImpl implements ExpensesCategoryService {
 	}
 	
 	@Override
-	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status) {
-		return expensesCategoryDao.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, status);
+	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status,String isGlobalUser) {
+		return expensesCategoryDao.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, status,isGlobalUser);
 	}
 
 	@Override

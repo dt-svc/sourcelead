@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
-import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.service.TimeSheetDayEntriesService;
 
 @Service
@@ -69,6 +68,11 @@ public class TimeSheetDayEntriesServiceImpl implements TimeSheetDayEntriesServic
 	@Override
 	public TimeSheetDayEntries getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(Long projectId,Long masterCandidateId, Date timesheetDate,Long projectTaskId) {
 		return timeSheetDayEntriesDao.getTimesheetDayEntryByProjectIdMasteCandidateIdandTimesheetDate(projectId,masterCandidateId,timesheetDate,projectTaskId);
+	}
+
+	@Override
+	public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(Long projectId,Date timesheetDate,Long projectMemberId) throws Exception {
+		return timeSheetDayEntriesDao.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(projectId, timesheetDate,projectMemberId);
 	}
 
 }

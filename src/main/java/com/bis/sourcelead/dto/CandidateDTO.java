@@ -228,6 +228,8 @@ public class CandidateDTO extends SearchDTO{
 	private List<CustomFormFieldDTO> customFormData;
 	
 	 private Map<String,String> candidateCustomFieldData;
+	 
+	 private Long userId;
 	
 	public String getCandidateId() {
 		return candidateId;
@@ -1063,6 +1065,7 @@ public class CandidateDTO extends SearchDTO{
 		this.teams = teams;
 	}
 
+
 	public String getMaritalStatus() {
 		return maritalStatus;
 	}
@@ -1095,8 +1098,14 @@ public class CandidateDTO extends SearchDTO{
 		this.dateofBirth = dateofBirth;
 	}
 
-	
-	
-	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 	
 }

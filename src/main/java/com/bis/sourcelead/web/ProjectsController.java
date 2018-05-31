@@ -41,6 +41,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -281,8 +282,17 @@ public class ProjectsController {
 	 @RequestMapping(value = "/getProjectLevel1Approvers", method = RequestMethod.GET)
 		public @ResponseBody List<User> getProjectLevel1Approvers(HttpServletRequest request) throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+			List<User> level1ApproversList = new ArrayList<>();
 			List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(orgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
-			return userList;
+			List<User> globalUserList = userService.getTabAccessGlobalOwnersByOrgIdAndTabId(orgLocations.getId(),org.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			if(userList != null && !userList.isEmpty()) {
+				level1ApproversList.addAll(userList);
+			}
+			if(globalUserList != null && !globalUserList.isEmpty()) {
+				level1ApproversList.addAll(globalUserList);
+			}
+			return level1ApproversList;
 		}
 	 
 	 
@@ -298,8 +308,9 @@ public class ProjectsController {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-				
-				boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId);
+				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+				ProjectClients projectClients = null;
+				boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId,isGlobalAccess);
 				
 				if(flag == true) {
 					Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
@@ -315,7 +326,7 @@ public class ProjectsController {
 						if(projects.getEndDate() != null){
 							model.addObject("projectEndDate", commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),projects.getEndDate()));
 						}
-						List<ProjectMembers> projectAssignMemberList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projects.getId(),"All",orgLocations,"","");
+						List<ProjectMembers> projectAssignMemberList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projects.getId(),"All",orgLocations,"","",isGlobalAccess);
 						model.addObject("projectAssignMemberList", projectAssignMemberList);
 						model.addObject("projectStatus", projects.getProjectStatus());
 						
@@ -324,7 +335,7 @@ public class ProjectsController {
 					
 					
 					if(StringUtils.isNotEmpty(projectClientUUID)){
-						ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
+						 projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
 						if(projectClients != null && projectClients.getOrgRelationId() != null){
 							if(projectClients.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
 								clientOrgLocations = projectClients.getOrgRelationId().getLocationId();
@@ -336,6 +347,11 @@ public class ProjectsController {
 								isClientOrgActive = Constants.YES;
 							}
 						}
+						
+						if(!projects.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+							isClientOrgActive = Constants.YES;
+						}
+						
 						model.addObject("isClientOrgActive", isClientOrgActive);
 					}
 					model.addObject("projectClientUUID", projectClientUUID);
@@ -344,7 +360,7 @@ public class ProjectsController {
 						model.addObject("tabType", tabType);
 					}
 					
-					ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocations.getId());
+					
 					Integer projectMembersCount = projectMembersService.getProjectMembersCountByProjectClientId(projectClients.getId());
 					model.addObject("projectMembersCount", projectMembersCount);
 					
@@ -543,9 +559,10 @@ public class ProjectsController {
 				
 				 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				 String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				 String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 				 
 				 Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-				 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId);
+				 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId,isGlobalAccess);
 				 
 				 if(flag == true) {
 					 Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
@@ -591,11 +608,12 @@ public class ProjectsController {
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-	    
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		 
 	    ModelAndView model = new ModelAndView();
 		
 	    Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-		 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId);
+		boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId,isGlobalAccess);
 	    
 	    if(flag == true) {
 	    Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
@@ -636,7 +654,8 @@ public class ProjectsController {
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-	    
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		
 	    ModelAndView model = new ModelAndView();
 	    
 	    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
@@ -649,7 +668,7 @@ public class ProjectsController {
 		request.getSession().setAttribute("sessionData",sessionData);
 		
 		Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-		 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId);
+		 boolean flag = commonUtil.isProjectAccessableToUser(projectUUID, projectClientUUID, loginUser, orgLocations, loginUserRole,candidateId,isGlobalAccess);
 	
 	    if(flag == true) {
 		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
