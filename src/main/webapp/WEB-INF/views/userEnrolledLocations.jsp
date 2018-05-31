@@ -40,7 +40,7 @@
 				<p><i class="fa fa-user"></i>Freelance Recruiter</p>
 				</c:when>
 				<c:otherwise>
-                <p><i class="fa fa-user"></i> ${userRole.roles.displayName}</p>
+                <p><i class="fa fa-user"></i> ${!empty userRole.designation ? userRole.designation : userRole.roles.displayName}</p>
                 </c:otherwise>
                 </c:choose>
 				
