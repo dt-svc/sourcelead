@@ -164,7 +164,7 @@
 		</div>
 	</div>
 	
-	<div class="landTempCta nomr">
+	<%-- <div class="landTempCta nomr">
 	<div class="pull-left mr10">
            <i class="fa fa-address-card-o fa-2x text-info"></i>
     </div>
@@ -180,7 +180,7 @@
 
 		</span>
 		</div>
-	</div>
+	</div> --%>
 	</c:if>
 	<div class="clearfix"></div>
 </section>
