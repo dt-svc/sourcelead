@@ -1448,4 +1448,13 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return tempId;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Immigration> getImmigrationsByOrgId(Long id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String listQuery = "from Immigration immi  where immi.status = 1  and (immi.orgLocationId.id = :orgLocationId or immi.attorneyOrgLocationId.id = :orgLocationId) ";
+		List<Immigration> immigrations = session.createQuery(listQuery).setParameter("orgLocationId", id).list();
+		return immigrations;
+	}
+
 }

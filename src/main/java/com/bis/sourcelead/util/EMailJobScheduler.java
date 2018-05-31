@@ -65,6 +65,8 @@ import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Leave;
@@ -83,6 +85,8 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
+import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
 import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
@@ -282,6 +286,12 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	EmailScenarioConfigurationService emailScenarioconService;
+	
+	@Autowired
+	private ImmigrationCommonService immigrationCommonService;
+	
+	@Autowired
+	private ImmigrationTemplateService immigrationTemplateService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -2660,6 +2670,71 @@ public class EMailJobScheduler {
 		// emailScenerioUtil.sendNotification(actionLink,receiver,owner,
 		// contracts.getOrgLocationId(), notificationScenario,new
 		// HashMap<String,String>());
+	}
+	
+	
+	/**
+	  * cron runs every day at 9 AM to send notifications email  about immigration template tasks selected users
+	  * @throws Exception
+	  */
+	@Scheduled(cron = "0 0 9 1/1 * ?")
+	@Async
+	public void immigrationTemplateTaskReminder() throws Exception {
+		List<Org> orgList = orgService.getOrgs();
+		for (Org org : orgList) {
+				List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+				for (OrgLocations ol : orgLocations) {
+					List<Immigration> immigrations = immigrationCommonService.getImmigrationsByOrgId(ol.getId());
+					if(!immigrations.isEmpty()) {
+						for(Immigration immigration : immigrations) {
+							List<ImmigrationTemplateTasks> templateTasks = immigrationTemplateService.getImmigrationTemplateTasksByTempId(immigration.getImmigrationTemplateId().getId());
+							if(!templateTasks.isEmpty()) {
+								for(ImmigrationTemplateTasks tasks : templateTasks) {
+									if(tasks.getTaskReminder() != null) {
+										String[] tasksReminders = tasks.getTaskReminder().split(",");
+								        if(tasksReminders.length != 0) {
+								        	Calendar cal = Calendar.getInstance();
+									        cal.setTime(tasks.getDueAfterDate());
+									        for(String taskReminder: tasksReminders) {
+									        	if(taskReminder.equalsIgnoreCase("1-days")) {
+									        		cal.add(Calendar.DATE, 1);
+									        		/*Due After date in time zone*/
+									        		String startTimeStr = Constants.TZ_DF.format(cal.getTime());
+									        		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+									        		String dueAfterDate = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, ol.getTimezone().getTimeZoneId(), startTimeStr);
+									        		Date convertedDueAfterDate = TZ_DF_TS.parse(dueAfterDate);
+									        		Date dueAfterDateInTimezone = commonUtil.getOrgLocationCurrentDate(ol.getDateFormat(),convertedDueAfterDate);
+									        		/*Current date in Time zone*/
+									        		cal.setTime(new Date());
+									        		String startCurrentTimeStr = Constants.TZ_DF.format(cal.getTime());
+									        		String currentDate = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, ol.getTimezone().getTimeZoneId(), startCurrentTimeStr);
+									        		Date convertedCurrentDate = TZ_DF_TS.parse(currentDate);
+									        		Date currentDateInTimezone = commonUtil.getOrgLocationCurrentDate(ol.getDateFormat(),convertedCurrentDate);
+									        		if(dueAfterDateInTimezone.equals(currentDateInTimezone)) {
+									        			
+									        		}
+									        		
+									        	}else if(taskReminder.equalsIgnoreCase("1-Week")) {
+									        		
+									        	}else if(taskReminder.equalsIgnoreCase("15-days")) {
+									        		
+									        	}else if(taskReminder.equalsIgnoreCase("1-Month")) {
+									        		
+									        	}else if(taskReminder.equalsIgnoreCase("90-days")) {
+									        		
+									        	}else if(taskReminder.equalsIgnoreCase("180-days")) {
+									        		
+									        	}
+									        }
+								        }
+									}
+								}
+							}
+						}
+					}
+				}
+		}
+		
 	}
 	
 }
