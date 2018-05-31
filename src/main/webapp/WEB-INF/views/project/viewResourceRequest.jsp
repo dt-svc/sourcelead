@@ -66,13 +66,6 @@ function getRequestedAssociatesList(){
 				result = result +'</div>';
 				
 				result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Approver :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label><strong>'+json.approverName+'</strong></label>  ';
-				result = result +' </div>';    
-				result = result +'</div>';
-				
-				result = result +'<div class="col-md-6">'; 
 				result = result +'<label class="col-md-4 control-label">Total Budget :</label>';
 				result = result +'<div class="col-md-8">';
 				result = result +'<label>${SourceLeadWeb_currencyCode}&nbsp;<strong>'+json.estimatedBudget+'</strong></label>  ';
@@ -86,12 +79,7 @@ function getRequestedAssociatesList(){
 				result = result +' </div>';    
 				result = result +'</div>';
 				
-				/* result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Status :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label><strong>'+json.requestStatus+'</strong></label>  ';
-				result = result +' </div>';    
-				result = result +'</div>'; */
+				
 				
 				result = result +'</div>';
 				result = result +'</div> ';  
@@ -102,6 +90,7 @@ function getRequestedAssociatesList(){
 				result = result +'                 <tr>';
 				result = result +'                     <th>Name</th>';
 				result = result +'                     <th>Location</th>';
+				result = result +'                     <th>Approver</th>';
 				result = result +'                     <th>Pay Rate</th>';
 				result = result +'                     <th>Bill Rate</th>';
 				result = result +'                     <th>Start Date</th>';
@@ -135,6 +124,10 @@ function getRequestedAssociatesList(){
 						
 						result = result +'<td>';
 					 	result = result +'<div class="tbldata-dotdot" title="'+opt.candidateLocation+'">'+opt.candidateLocation+'</div>';
+						result = result +'</td>';
+						
+						result = result +'<td>';
+					 	result = result +'<div class="tbldata-dotdot" title="'+opt.approverName+'">'+opt.approverName+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';

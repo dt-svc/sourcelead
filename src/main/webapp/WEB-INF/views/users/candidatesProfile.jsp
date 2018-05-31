@@ -841,8 +841,10 @@ function candidateProfile(candidateId,candidateType){
 									  /*  '</sec:authorize>'; */
 								   }else{
 									   /* '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'; */
-									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
-									  /*  '</sec:authorize>'; */ 
+									    if('${SourceLeadWeb_userId}' != json.userId){
+									   			result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+									    }
+									   /*  '</sec:authorize>'; */ 
 									   
 									   /* '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE\')">'; */
 									  /*  result = result + ' <a href="javascript:void(0)" onClick="removeCandidateAlertMessage('+candidateId+',\''+candidateType+'\');"><i class="glyphicon glyphicon-trash"></i>Remove</a>'; */ 

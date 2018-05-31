@@ -1428,7 +1428,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmission> getRequirementHistoryListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-	     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.candidate.id =:candidateId and rs.orgLocations =:orgLocationId";
+	     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.candidate.id =:candidateId and rs.orgLocations =:orgLocationId and rs.requirement IS NOT NULL ";
 	     List<RequirementSubmission> requirementHistoryList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
 	  return requirementHistoryList;
 	}
