@@ -887,7 +887,9 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	private Set<ContractOwnerHierarchy> getOwnersList(ContractsDTO contractDTO, Contracts contract, User user) throws Exception {
-		Integer status = deleteContractOwnerHierarchyListByContractId(contract.getId());
+		Integer status = 0;
+		if(contract.getId() != null)
+			status = deleteContractOwnerHierarchyListByContractId(contract.getId());
 		
 		Set<ContractOwnerHierarchy> ownersList = new HashSet<>();
 		if("Parallel".equalsIgnoreCase(contractDTO.getOwnersType())){
@@ -932,14 +934,24 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	}
 
 	@Override
-	public ResponseList<VendorContractsDTO> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception
+	public ResponseList<VendorContractsDTO> getAllContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName, String searchValue) throws Exception
 	{
 		ResponseList<VendorContractsDTO> responseList = new ResponseList<>();
 //		Contracts contractsForList = new Contracts();
-//		ContractsDTO contractsDTO = new ContractsDTO();
+		ContractsDTO contractsDTO = new ContractsDTO();
+		contractsDTO.setContractSubmissionType(contractSubmissionType);
+		contractsDTO.setTabType(Constants.VENDOR);
+		contractsDTO.setContractsType(contractsType);
+		contractsDTO.setContractStatus(contractStatus);
+		contractsDTO.setUserRoleName(userRoleName);
+		contractsDTO.setSearchValue(searchValue);
+		
 		
 //		if(tabType.equalsIgnoreCase(Constants.VENDOR)){
-			List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.VENDOR, contractsType, contractStatus, user, userRoleName);
+		
+		
+		
+			List<Contracts> vendorcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation, user, contractsDTO);
 			
 			List<VendorContractsDTO> venContractsList = new ArrayList<>();
 			for(Contracts contracts :vendorcontractsList ){
@@ -958,7 +970,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					}
 					
 				}else{
-					ownerName.append("---");
+					ownerUserIds.add(contracts.getOwnerUserId().getId());
+					if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
+						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+					}else{
+						ownerName.append(contracts.getOwnerUserId().getFirstName());
+					}
 				}
 				venContractsDto.setOwnerName(ownerName.toString().replaceAll("\\s*,\\s*$", ""));
 				
@@ -1033,6 +1050,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					venContractsDto.setContractUUID(contracts.getContractUUID());
 				}
 				
+				if(contracts.getAutoGenId() != null){
+					venContractsDto.setAutoGenId(contracts.getAutoGenId());
+				}
+				
 				if(contracts.getContractTitle() != null){
 					venContractsDto.setContractTitle(contracts.getContractTitle());
 				}
@@ -1098,6 +1119,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	    		}
 	    		venContractsList.add(venContractsDto);
 				}
+			responseList.setRecordsFiltered(venContractsList.size());
+	        responseList.setRecordsTotal(venContractsList.size());
 			responseList.setData(venContractsList);
 //		}
 		      return responseList;
@@ -1105,12 +1128,19 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	
 	
 	@Override
-	public ResponseList<ClientContractsDTO> getAllClientContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception
+	public ResponseList<ClientContractsDTO> getAllClientContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName, String searchValue) throws Exception
 	{
 		ResponseList<ClientContractsDTO> responseList = new ResponseList<>();
+		ContractsDTO contractsDTO = new ContractsDTO();
+		contractsDTO.setContractSubmissionType(contractSubmissionType);
+		contractsDTO.setTabType(Constants.CLIENT);
+		contractsDTO.setContractsType(contractsType);
+		contractsDTO.setContractStatus(contractStatus);
+		contractsDTO.setUserRoleName(userRoleName);
+		contractsDTO.setSearchValue(searchValue);
 	
 //		 if(tabType.equalsIgnoreCase(Constants.CLIENT)){
-			List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation,contractSubmissionType,Constants.CLIENT, contractsType, contractStatus, user, userRoleName);
+			List<Contracts> clientcontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation, user, contractsDTO);
 		
 			List<ClientContractsDTO> clientContractsList = new ArrayList<>();
 			for(Contracts contracts :clientcontractsList ){
@@ -1129,7 +1159,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					}
 					
 				}else{
-					ownerName.append("---");
+					ownerUserIds.add(contracts.getOwnerUserId().getId());
+					if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
+						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+					}else{
+						ownerName.append(contracts.getOwnerUserId().getFirstName());
+					}
 				}
 				clientConDto.setOwnerName(ownerName.toString().replaceAll("\\s*,\\s*$", ""));
 				
@@ -1203,6 +1238,10 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 					clientConDto.setContractUUID(contracts.getContractUUID());
 				}
 				
+				if(contracts.getAutoGenId() != null){
+					clientConDto.setAutoGenId(contracts.getAutoGenId());
+				}
+				
 				if(contracts.getContractTitle() != null){
 					clientConDto.setContractTitle(contracts.getContractTitle());
 				}
@@ -1267,17 +1306,26 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	    		}
 	    		clientContractsList.add(clientConDto);
 			}
+			responseList.setRecordsFiltered(clientContractsList.size());
+			responseList.setRecordsTotal(clientContractsList.size());
 			responseList.setData(clientContractsList);
 			return responseList;
 		}
 		 
 @Override
-public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName) throws Exception
+public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAndStatus(OrgLocations orgLocation,String contractSubmissionType, String tabType, String contractsType, String contractStatus, User user, String userRoleName, String searchValue) throws Exception
 	{
 		ResponseList<FullTimeContractsDTO> responseList = new ResponseList<>();
+		ContractsDTO contractsDTO = new ContractsDTO();
+		contractsDTO.setContractSubmissionType(contractSubmissionType);
+		contractsDTO.setTabType(Constants.FULL_TIME_OFFER);
+		contractsDTO.setContractsType(contractsType);
+		contractsDTO.setContractStatus(contractStatus);
+		contractsDTO.setUserRoleName(userRoleName);
+		contractsDTO.setSearchValue(searchValue);
 	
 //	else if(tabType.equalsIgnoreCase(Constants.FULL_TIME_OFFER)){
-			List<Contracts> fullTimeoffercontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation, contractSubmissionType, Constants.FULL_TIME_OFFER, contractsType, contractStatus, user, userRoleName);
+			List<Contracts> fullTimeoffercontractsList = contractsTemplateDao.getAllContractsByLocationIdAndStatus(orgLocation, user, contractsDTO);
 		
 			//fullTimeoffercontractsList 
 			List<FullTimeContractsDTO> fullTimeContractsList = new ArrayList<>();
@@ -1297,7 +1345,11 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 					}
 					
 				}else{
-					ownerName.append("---");
+					if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
+						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+					}else{
+						ownerName.append(contracts.getOwnerUserId().getFirstName());
+					}
 				}
 				fullTimeContract.setOwnerName(ownerName.toString().replaceAll("\\s*,\\s*$", ""));
 				
@@ -1402,6 +1454,8 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	    		}
 	    		fullTimeContractsList.add(fullTimeContract);
 			}
+			responseList.setRecordsFiltered(fullTimeContractsList.size());
+			responseList.setRecordsTotal(fullTimeContractsList.size());
 			responseList.setData(fullTimeContractsList);
 			
 //		}
