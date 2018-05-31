@@ -1139,14 +1139,14 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,payment
 			 '</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_BILL\')">';
-		 result = result +'      <li onclick="getPrint(\''+invoiceUUID+'\');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</li>';
+		 result = result +'      <li><a onclick="getPrint(\''+invoiceUUID+'\');"><i class="fa fa-print paddingLeft paddingRight" title="Print"></i>Print</a></li>';
 		 '</sec:authorize>'
 		 
 		 '<sec:authorize access="hasAnyRole(\'ROLE_DOWNLOAD_BILL\')">';
-		 result = result +'      <li onclick="downloadInvoice(\''+invoiceUUID+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</li>';
+		 result = result +'      <li><a onclick="downloadInvoice(\''+invoiceUUID+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Download"></i>Download</a></li>';
 		 '</sec:authorize>'
 		 
-		 result = result +'      <li onclick="linkPayableInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Bill</li>';
+		 result = result +'      <li><a onclick="linkPayableInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-link paddingLeft paddingRight" title="Link Invoice"></i>Link Bill</a></li>';
 	     result = result +'    </ul>';
     	 $("#popupDiv"+invoiceUUID+"").append(result);
     	 showMenu();
