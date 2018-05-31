@@ -114,7 +114,7 @@
 		<input type = "hidden" id="candidateEmpId"  name="candidateEmployeeId">
 		
 		<div class="popupHead">
-			<h2>Add Employer</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
+			<h2>Add Employer</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFunEmployer();"></a>
 		</div>
 		
 		<div class="popupMid clearfix overflow_inherint">
@@ -235,7 +235,7 @@
 		<div class="clearfix"></div>
 		<div class="immiPopFoot mt clearfix">
             <input value="Save"class="" type="button" id="employerSave_Buton" onclick="saveEmployerDetails('save');"> 
-            <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFun();">
+            <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFunEmployer();">
           </div>		
 	</div><!-- popup code end -->
 	<div class="immFoot clearfix">
@@ -270,7 +270,7 @@
 		$("#emploView").fadeIn(100);
 	});
 
-	function popFun() {
+	function popFunEmployer() {
 		$(".popMask").fadeOut(200);
 		$("#emploView").fadeOut(200);
 		$("#employerDetails_form")[0].reset();
@@ -280,10 +280,9 @@
 		$('#endDateDivId').find('p.jquery_form_error_message').remove();
 		$("#startYearValidation").find('p.jquery_form_error_message').remove();
 		$("#endYearValidation").find('p.jquery_form_error_message').remove();
+		$("#endYearValidation").empty();
 		$("#endMonth").find('p.jquery_form_error_message').remove();
 		$('#startYearValidation').removeAttr('style'); 
-		$('#endYearValidation').removeAttr('style'); 
-		$("#employerSave_Buton").removeAttr("disabled");
 	}
 	
 	$("#employersDataSearch").keyup(function (e) {

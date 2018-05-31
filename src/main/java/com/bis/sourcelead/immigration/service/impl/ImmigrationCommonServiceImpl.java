@@ -186,7 +186,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					candidateResume, lcaSummaryLst, residenceList);
 			// Copy IMMIGRATION_TEMPLATE_DOCUMENTS data to IMMIGRATION_CANDIDATE_DOCS table
 			// based on templateId
-			copyImmigrationConfiguredDocsToCandidate(immigrationObj, user, orgLocations);
+			
 			StringBuilder actionDesc = new StringBuilder();
 			if (StringUtils.isNotBlank(immigrationDTO.getImmigrationId())) {
 				actionDesc.append("Immigration Details Edited").toString();
@@ -198,10 +198,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 			// Copy IMMIGRATION_TEMPLATE_FORMS data to IMMIGRATION_CANDIDATE_FORMS table
 			// based on templateId
-			copyImmigrationConfiguredFormsToCandidate(immigrationObj, user, orgLocations);
+			
 
 			if (StringUtils.isEmpty(immigrationDTO.getImmigrationId())) {
 				copyImmigrationTemplateTaskToImmigrationTaskAndTask(immigrationObj, user, orgLocations);
+				copyImmigrationConfiguredFormsToCandidate(immigrationObj, user, orgLocations);
+				copyImmigrationConfiguredDocsToCandidate(immigrationObj, user, orgLocations);
 			}
 
 		} catch (Exception e) {

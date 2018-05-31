@@ -268,9 +268,11 @@ public class OrgSettingsController {
 		 }
 		 
 		 modulesList.add(dashobardTab);
-		 for(Tabs tabs : tabsList) {
-			 modulesList.add(tabs);
-			 modulesNamesList.add(tabs.getTabName());
+		 if(tabsList != null){
+			 for(Tabs tabs : tabsList) {
+				 modulesList.add(tabs);
+				 modulesNamesList.add(tabs.getTabName());
+			 }
 		 }
 		 
 		 model.addObject("modulesList", modulesList);
