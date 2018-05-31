@@ -397,6 +397,10 @@ public class LeaveServiceImpl implements LeaveService{
 				StringBuilder durationSb = new StringBuilder();
 				leaveDto.setId(laph.getLeaveid().getId());
 				Map<String,Float> nuberOfLeavestaken = null;
+				Calendar cal = Calendar.getInstance();
+		        cal.set(Calendar.DAY_OF_YEAR, 1);
+		        Date yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(cal.getTime()));
+		        Date fromDate = commonUtil.getDateFormat(Constants.DMY.format(leave.getFromDate()));
 				float leavesTaken = 0;
 				if (leave.getUser() != null) {
 					try {
@@ -440,7 +444,14 @@ public class LeaveServiceImpl implements LeaveService{
 				
 				float appliedLeavesCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
 				leaveDto.setAppliedNoOfDays(appliedLeavesCount);
-				
+				List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leave.getLeaveType().getId(), orgLocations.getId(),leave.getUser().getId(),yearStartDate,fromDate);
+				float carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType(),leave);
+				float extraLeaves = appliedLeavesCount - carryForwardLeaves;
+				if(extraLeaves > 0)
+					leaveDto.setExtraLeavesTaken(extraLeaves);
+				else
+					leaveDto.setExtraLeavesTaken(0);
+			
 				if(StringUtils.isNotBlank(leave.getDeleteReason())) {
 					leaveDto.setCancelReason(leave.getDeleteReason());
 				}

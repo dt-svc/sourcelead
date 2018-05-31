@@ -7,21 +7,13 @@
 	<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 <script>
 $(function() { 
-	
-  setTimeout(function () {
-    var description = '${sourceleadTicket.description}';
-	 $("textarea[name=description]").val(description);
-   	     $(".Editor-editor").html(description);
-	
-	}, 1000); 
-	
     $("#txtEditor").Editor();
 	$("#txtEditor").find(".Editor-editor").data-validation('required');
 });
 </script>
-
   <script type="text/javascript">
 		window.onload = function () {
+			getTicketDescription('${sourceleadTicket.ticketUUID}');
 			getUserModules();
 			var ticketUUID = '${ticketUUID}';
 			if(ticketUUID != '' && ticketUUID != 'undefined' && ticketUUID != null){
@@ -143,7 +135,7 @@ $(function() {
 			<div class="form-group row">
 				<label class="col-md-12">Description<span class="text-danger paddingLeft">&nbsp;*</span></label>
 				<div class="col-md-12 txtEditor_p">
-                        <textarea id="txtEditor" name="description"  value="${sourceleadTicket.description}" class="form-control newContrtextarea" field-name="Description" data-validation="required">${sourceleadTicket.description}</textarea>
+                        <textarea id="txtEditor" name="description"   class="form-control newContrtextarea" field-name="Description" data-validation="required"></textarea>
 				</div>
 			</div>  
 		</div>
@@ -351,5 +343,17 @@ function getUserModules(){
 	
 }
 </script>
-
+<script>
+function getTicketDescription(ticketUUID){
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/getTicketDescription?${_csrf.parameterName}=${_csrf.token}&ticketUUID="+ticketUUID, 	   
+			    success: function(result) {
+			    	$('#txtEditor').html(result.description);
+			    	$('.Editor-editor').html(result.description);
+			    }
+			    	 
+	     });
+}
+</script>
  <jsp:include page="masterFooter.jsp" />	

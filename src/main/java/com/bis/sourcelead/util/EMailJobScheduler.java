@@ -2205,6 +2205,20 @@ public class EMailJobScheduler {
 							commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), holidayEndDate));
 					globalVarsMap.put("holidayname", holidayNames);
 					InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+					
+					EmailScenario  emailScenario = null;
+					 if(orgLocations != null)
+					 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.HOLIDAY_REMAINDER,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+					  if(emailScenario == null){
+							emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.HOLIDAY_REMAINDER,Constants.ENTITY_TYPE_EMAIL);
+					   }
+					
+					//configured Email
+					String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+					 if(StringUtils.isNotBlank(fromMail)){
+						 emailMessage.setFromEmail(fromMail);
+					 } 
+					
 					commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.HOLIDAY_REMAINDER,new ArrayList<EmailAttachment>());
 					EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 							Constants.HOLIDAY_REMAINDER_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
