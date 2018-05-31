@@ -672,7 +672,7 @@ function getEmialSettings(){
 	 var result ="";
 	 
 	 result = result +'<div class="mail-box mail-content">';
-	 result = result +'<div class="mail-box-header"><h3 class="box-title">Mail accont setting</h3></div>';
+	 result = result +'<div class="mail-box-header"><h3 class="box-title">Mail account setting</h3></div>';
 	 result = result +'<div class="newMailCon">';
 	 result = result +'<h4>Setup email account for sending</h4>';
 	 result = result +'<p>Please select your provider</p>';

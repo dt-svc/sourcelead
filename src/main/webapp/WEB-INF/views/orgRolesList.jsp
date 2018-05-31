@@ -40,6 +40,7 @@ padding-right: 254px; padding-top: 10px;
 					</sec:authorize>
 			  	 <a href="<c:url value='${appPath}/addDepartment'/>"><i class="fa fa-plus"></i>Department</a>
 			     <a href="<c:url value='${appPath}/roleHierarchy'/>"><i class="fa fa-plus"></i>Hierarchy</a>
+			     <a href="<c:url value='${appPath}/addGrade'/>"><i class="fa fa-plus"></i>Grade</a>
                  <a href="javascript:void(0)" class="addcon-pop"><i class="glyphicon glyphicon-plus"></i>Add Role</a>
                  </div>
               </sec:authorize>
@@ -71,26 +72,25 @@ padding-right: 254px; padding-top: 10px;
                             
                           </div>
                         </div>
+                        
 				<!-- Popup Div -->              
-              
-              </div>
-			
+			</div>
+
+     </div>
+ </div>
 			    <div class="project_wrap_table datatable_filter">
 			    				<table id="rolesList" class="display" cellspacing="0" width="100%">
 								</table>
 				</div>	   
 					
-			</div>
-	   </div>	
 	   <div class="vendor_wrap_mask"></div>
 	   <div id="updateRoleDiv"></div>	
+  
  </section>
  
  
  
  <jsp:include page="masterFooter.jsp" />	
- 
- 
  
  <script type="text/javascript">
 function validateRoleName(){

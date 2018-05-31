@@ -14,7 +14,7 @@ public interface ProjectClientService {
 	
 	List<ProjectClients> getProjectClientsListByLoginUserAndOrgLocationId(Long orgLocationsId,Long userId) throws Exception;
 	
-	List<ProjectClients> getAllProjectClientsByApproverUserAndOrgLocationId(Long userId,Long orgLocationsId) throws Exception;
+	List<ProjectClients> getAllProjectClientsByApproverUserAndOrgLocationId(Long userId,Long orgLocationsId,String isGlobalUser) throws Exception;
 	
 	ProjectClients getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(Long projectId,Long orgLocationsId,Long orgRelationId) throws Exception;
 	
@@ -23,5 +23,7 @@ public interface ProjectClientService {
 	ProjectClients getProjectClientsByProjectID(Long projectId) throws Exception;
 	
 	public List<ProjectClients> getAllProjectsByOrgLocationIdAndStatusInProgressAndNotStarted(Long orgLocationsId) throws Exception;
+	
+	ProjectClients getProjectClientsByProjectIdAndOrgId(Long projectId,Long orgId) throws Exception;
 
 }

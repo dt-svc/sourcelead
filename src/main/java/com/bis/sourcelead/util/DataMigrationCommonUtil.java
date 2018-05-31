@@ -1778,6 +1778,7 @@ public class DataMigrationCommonUtil {
 					errorSet.put("assignAssetStr", "invalid date");
 				}
 			}
+
 			dataMigrationDTOJsonCopy.put("assignAssetStr", assignAssetStrSB.toString());
 		}
 
@@ -1791,6 +1792,15 @@ public class DataMigrationCommonUtil {
 			} else {
 				errorSet.put("workingStatus",
 						dataMigrationDTOJsonCopy.getString("workingStatus") + " is invalid Working Status");
+			}
+		
+		
+		
+		public void dataValidationForProjectTasks(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,String isGlobalAccess) throws Exception {
+			 Projects project = projectsService.getProjectByProjectUUID(dataMigrationDTOJsonCopy.getString("projectUUID"));
+			if(dataMigrationDTOJsonCopy.getString("taskstype").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("taskstype"))) {
+				errorSet.put("taskstype", "Taskstype field is missing");
+
 			}
 		}
 
@@ -1982,9 +1992,43 @@ public class DataMigrationCommonUtil {
 					dataMigrationDTOJsonCopy.put("taskStatus", taskStatus.getId().toString());
 				}
 			}
+
 			if (incr < 1) {
 				errorSet.put("taskStatus",
 						dataMigrationDTOJsonCopy.getString("taskStatus").trim() + " Invalid Task Status");
+
+			
+			//Assigned To 
+			if(!dataMigrationDTOJsonCopy.getString("assignTaskId").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("assignTaskId"))) {
+			 List<ProjectMembers> projectAssignedList = projectsService.getProjectEmployeeListByProjectIdAndStatus(project.getId(),"Active",orgLocation,null,null,isGlobalAccess);
+			 int incr = 0;
+			 String[] emails = dataMigrationDTOJsonCopy.getString("assignTaskId").trim().replace("\n","").toLowerCase().split(",");
+			 ArrayList<String> validEmails = new ArrayList<>();
+			 for(String email:emails) {
+				 if (isValid(email)) {
+					 validEmails.add(email);
+				 }
+			 }
+			 if(validEmails.size() > 0 ) {
+				 StringBuffer assignedSB = new StringBuffer();
+				 for(ProjectMembers pm:projectAssignedList) {
+					 if(validEmails.contains(pm.getMasterCandidateId().getEmail().trim().toLowerCase())) {
+						 incr++;
+							if(incr > 1) {
+								assignedSB.append(",");
+							}
+							assignedSB.append(pm.getId());
+			    	  } 
+				 } 
+				 if(incr > 0) {
+						 dataMigrationDTOJsonCopy.put("assignTaskId", assignedSB.toString());
+				 }else {
+					 errorSet.put("assignTaskId", dataMigrationDTOJsonCopy.getString("assignTaskId").trim()+" Assigned emails are not matchings");
+				 }
+			 }else {
+					errorSet.put("assignTaskId", dataMigrationDTOJsonCopy.getString("assignTaskId").trim()+" Invalid Email Formate");
+			  }
+
 			}
 		}
 
@@ -2159,9 +2203,13 @@ public class DataMigrationCommonUtil {
 				errorSet.put("beneficiaryEmail", "Beneficiary Email is is not a valid email address");
 			}
 		}
-		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
+		
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth")) || dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null")) {
 			errorSet.put("dateOfBirth", "DOB is missing");
-		}
+		}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
+					errorSet.put("dateOfBirth", "DOB is invalid date");
+	    }
+			
 	/*	if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
 			errorSet.put("maritalStatus", "Marital status is missing");/// dropdown value.
 		} else {
@@ -2219,12 +2267,18 @@ public class DataMigrationCommonUtil {
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportCountry")) || dataMigrationDTOJsonCopy.getString("passportCountry").equals("null")) {
 				errorSet.put("passportCountry", "passportCountry is invalid input");/// dropdown value.
 			}
+			
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportStartDate")) || dataMigrationDTOJsonCopy.getString("passportStartDate").equals("null")) {
 				errorSet.put("passportStartDate", "passportStartDate is mandatory if you have entered passportNo");/// dropdown value.
-			}
+			}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("passportStartDate"))) {
+				errorSet.put("passportStartDate", "passportStartDate is invalid date");
+             }
+			
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("passportEndDate")) || dataMigrationDTOJsonCopy.getString("passportEndDate").equals("null")) {
 				errorSet.put("passportEndDate", "passportEndDate is mandatory if you have entered passportNo");/// dropdown value.
-			}
+			}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("passportEndDate"))) {
+				errorSet.put("passportEndDate", "passportEndDate is invalid date");
+            }
 			}else {
 				errorSet.put("passportNo", "passportNo is already exist.");
 			}
@@ -2240,12 +2294,19 @@ public class DataMigrationCommonUtil {
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaCountry")) || dataMigrationDTOJsonCopy.getString("visaCountry").equals("null")) {
 				errorSet.put("visaCountry", "visaCountry is mandatory if you have entered visano");/// dropdown value.
 			}
+			
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaStartDate")) || dataMigrationDTOJsonCopy.getString("visaStartDate").equals("null")){
 				errorSet.put("visaStartDate", "visaStartDate is mandatory if you have entered visano");/// dropdown value.
-			}
+			}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("visaStartDate"))) {
+				errorSet.put("visaStartDate", "visaStartDate is invalid date");
+            }
+			
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaEndDate")) || dataMigrationDTOJsonCopy.getString("visaEndDate").equals("null")) {
 				errorSet.put("visaEndDate", "visaEndDate is mandatory if you have entered visano");/// dropdown value.
-			}
+			}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("visaEndDate"))) {
+				errorSet.put("visaEndDate", "visaEndDate is invalid date");
+            }
+			
 			if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("visaType")) || dataMigrationDTOJsonCopy.getString("visaType").equals("null")) {
 				errorSet.put("visaType", "Visa Type is missing"); /// dropdown value.
 			} else {
@@ -2265,10 +2326,37 @@ public class DataMigrationCommonUtil {
 		}
 			
 		}
-
-		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("openOn"))) {
-			errorSet.put("openOn", "Open On is missing");
+		
+		
+		if (!dataMigrationDTOJsonCopy.getString("dateOfArrival").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateOfArrival"))) {
+			errorSet.put("dateOfArrival", "dateOfArrival is invalid date");
 		}
+		
+
+		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("openOn")) || dataMigrationDTOJsonCopy.getString("openOn").equals("null")) {
+			errorSet.put("openOn", "Open On is missing");
+		}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("openOn"))) {
+			errorSet.put("openOn", "openOn is invalid date");
+        }
+		
+		
+		if (!dataMigrationDTOJsonCopy.getString("lcaStartDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("lcaStartDate"))) {
+			errorSet.put("lcaStartDate", "lcaStartDate is invalid date");
+		}
+		
+		if (!dataMigrationDTOJsonCopy.getString("lcaEndDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("lcaEndDate"))) {
+			errorSet.put("lcaEndDate", "lcaEndDate is invalid date");
+		}
+		
+		if (!dataMigrationDTOJsonCopy.getString("prevLcaStartDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("prevLcaStartDate"))) {
+			errorSet.put("prevLcaStartDate", "prevLcaStartDate is invalid date");
+		}
+		
+		if (!dataMigrationDTOJsonCopy.getString("prevLcaEndDate").equals("null") && !CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("prevLcaEndDate"))) {
+			errorSet.put("prevLcaEndDate", "prevLcaEndDate is invalid date");
+		}
+		
+		
 		if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("status"))) {
 			errorSet.put("status", "Status is missing");
 		} else {
