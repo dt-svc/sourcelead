@@ -109,7 +109,8 @@ public class CandidateRestController {
 	private CandidateResumesService candidateResumesService;
 	/*
 	 * @Autowired private CandidateSkillsService candidateSkillsService;
-	 */
+     */
+   
 	@Autowired
 	private UserService userService;
 	@Autowired
@@ -140,6 +141,7 @@ public class CandidateRestController {
 	RequirementService requirementService;
 	@Autowired
 	OrgLocationService orgLocationService;
+
 
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
@@ -257,6 +259,7 @@ public class CandidateRestController {
 	/*
 	 * @RequestMapping(value = "/validateSkillName" , method = RequestMethod.POST)
 	 * public @ResponseBody Boolean
+
 	 * validateSkillName(@RequestParam(value="skillName", required=false) String
 	 * skillName, @RequestParam(value="candidateId", required=false) String
 	 * candidateId, HttpServletRequest request) throws Exception { Boolean flag =
@@ -612,6 +615,7 @@ public class CandidateRestController {
 			List<RequirementSubmission> requirementSubmission = requirementSubmissionService
 					.getRequirementHistoryListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
 			for (RequirementSubmission req : requirementSubmission) {
+				if(req.getRequirement() != null) {
 				req.setPositionType(req.getRequirement().getJobTitle());
 				req.setCountry(req.getRequirement().getCountry());
 				req.setState(req.getRequirement().getState());
@@ -643,7 +647,7 @@ public class CandidateRestController {
 						req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName());
 					}
 				}
-
+			}
 			}
 			responseList.setData(requirementSubmission);
 			responseList.setResponse(Result.SUCCESS.name());

@@ -344,6 +344,7 @@ public class TimesheetEmailUtil {
 				emailMessage.setToEmail(projectManager.getEmail());
 				emailMessage.setFromEmail(loginUser.getEmail());
 				emailMessage.setCreatedBy(loginUser.getUserCode());
+				emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				String startDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyStartDate);
 				String endDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyEndDate);
 
@@ -492,7 +493,7 @@ public class TimesheetEmailUtil {
 				// calling the sendNotification method of emailScenerioUtil
 				EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
 						Constants.MAIL_PROJECT_MANAGER_TIMESHEET, Constants.ENTITY_TYPE_NOTIFICATION);
-				String notificationBody = emailScenerioUtil.buildBody(notificationScenario.getBody(), globalVarsMap);
+				String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 				notificationScenario.setBody(notificationBody);
 				notificationScenario.setOrgCode(loginOrgCode);
 				String actionLink = "";

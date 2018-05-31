@@ -287,6 +287,15 @@ public class LoginSessionController {
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+			List<String> weekOffDaysList = new ArrayList<>();
+			if(orgLocations.getWeekOffDays() != null && !orgLocations.getWeekOffDays().isEmpty()) {
+				String[] weekOffDays = orgLocations.getWeekOffDays().split(",");
+				for(int i=0; i < weekOffDays.length; i++) {
+					weekOffDaysList.add(weekOffDays[i]);
+				}
+			}
+			SourceLeadSessionManager.setSessionAttribute(request, "weekOffDaysList", weekOffDaysList);
+			
 			SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
@@ -353,7 +362,21 @@ public class LoginSessionController {
 					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportOrgLocationId", userRole.getRoles().getOrgLocations().getId());
 				}
 			}else{
-				List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(userRole.getUser().getId());
+				List<Long> accountUserList = new ArrayList<>();
+				List<Long> userIdsList = userService.getUserIdsListByLinkedUserId(userRole.getUser().getId());
+				if(userIdsList != null && !userIdsList.isEmpty()) {
+					for(Long userId : userIdsList) {
+						List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
+						accountUserList.addAll(linkedUserIdsList);
+					}
+				}
+				userIdsList.addAll(accountUserList);
+				userIdsList.add(userRole.getUser().getId());
+				if(userRole.getUser().getLinkUserId() != null) {
+					userIdsList.add(userRole.getUser().getLinkUserId().getId());
+				}
+				
+				List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
 				if(userSpocRolesList.size() > 1){
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
@@ -363,6 +386,8 @@ public class LoginSessionController {
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
+			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 			
 			
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");

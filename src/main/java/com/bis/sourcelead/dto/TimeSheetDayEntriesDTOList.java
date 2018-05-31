@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 public class TimeSheetDayEntriesDTOList {
+	private long timesheetEntryId;
 	private String employeeName;
 	private String approvalStatus; 
 	private String timesheetDate;
@@ -44,5 +45,12 @@ public class TimeSheetDayEntriesDTOList {
 	public void setProjectMemberId(Long projectMemberId) {
 		this.projectMemberId = projectMemberId;
 	}
+	public long getTimesheetEntryId() {
+		return timesheetEntryId;
+	}
+	public void setTimesheetEntryId(long timesheetEntryId) {
+		this.timesheetEntryId = timesheetEntryId;
+	}
+	
 	
 }

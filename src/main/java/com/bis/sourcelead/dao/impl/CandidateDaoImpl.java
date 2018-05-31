@@ -30,6 +30,7 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -79,6 +80,8 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
+	@Value("${jdbc.schema}")
+	private String schema;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -196,7 +199,7 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter) throws Exception {
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter,String createdByFilter,User user) throws Exception {
 
 		
 		String subQuery = null;
@@ -230,6 +233,12 @@ public class CandidateDaoImpl implements CandidateDao {
 				candidateTypeSubQuery = " and (cnadidate.isFavourite = '1') ";
 				
 			}
+			
+	   String createdBySubQuery = "";
+	   if(createdByFilter != null && !createdByFilter.isEmpty() && createdByFilter.equalsIgnoreCase("myCandidates")){
+		   createdBySubQuery = " and cnadidate.createdBy = '"+user.getUserCode()+"' ";
+	   }
+	   
 			
 			List<String> skillsList = new ArrayList<>();
 			if(StringUtils.isNotBlank(candidateFilterSkills)) {
@@ -287,7 +296,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
 	         
 			
-   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" "+avaliabilitySubQuery+" "+candidateTypeFilterSubQuery+" and ( cnadidate.updatedDate >= :endDate) ORDER BY cnadidate.id DESC ";  
+   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" "+avaliabilitySubQuery+" "+candidateTypeFilterSubQuery+" "+createdBySubQuery+" and ( cnadidate.updatedDate >= :endDate) ORDER BY cnadidate.id DESC ";  
 		     candidateList = session.createQuery(query)
 				                    .setDate("endDate", endDate)
 				                    .setLong("orgLocationId", orgLocationId).setString("varZero", "0").setParameterList("skillsList", skillsList).setParameterList("avalibilityList", avalibilityList)
@@ -296,7 +305,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				                    .list();
 		}else{
 			
-			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" "+avaliabilitySubQuery+" "+candidateTypeFilterSubQuery+" ORDER BY cnadidate.id DESC";  
+			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" "+avaliabilitySubQuery+" "+candidateTypeFilterSubQuery+" "+createdBySubQuery+" ORDER BY cnadidate.id DESC";  
 		    candidateList = session.createQuery(query)
 					               .setLong("orgLocationId", orgLocationId)
 					               .setLong("orgId", orgId).setString("varZero", "0").setParameterList("skillsList", skillsList).setParameterList("avalibilityList", avalibilityList).list();
@@ -954,7 +963,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.status ='1' ORDER BY cnadidate.id DESC";  
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.status ='1' and cnadidate.consultantUser !=null ORDER BY cnadidate.id DESC";  
         return  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
 
@@ -1255,14 +1264,14 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Long getCandidateGeneratedIdByOrgLocationId(Long orgLocationId,Integer generatedIdcount) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM sourcelead.CANDIDATE WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
+		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'"+generatedIdcount+"') AS UNSIGNED)) FROM "+schema+".CANDIDATE WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
 			count = (Long) maxCountList.iterator().next().longValue();
 		}
 		if(count == 0){
-			 query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'7') AS UNSIGNED)) FROM sourcelead.CANDIDATE WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
+			 query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'7') AS UNSIGNED)) FROM "+schema+".CANDIDATE WHERE ORG_LOCATION_ID = '"+ orgLocationId + "'";
 			 maxCountList = session.createSQLQuery(query).list();
 			 if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
 					count = (Long) maxCountList.iterator().next().longValue();
@@ -1569,6 +1578,16 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
+
+	public CandidateIdendities getCandidateIdentitiesNumberByCandidateId(Long id, String idType) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from CandidateIdendities ci  where ci.candidateId.id = :candidateId and ci.idType = :idType ";  
+		CandidateIdendities candidateIdendities =  (CandidateIdendities) session.createQuery(query).setLong("candidateId", id).setString("idType", idType).uniqueResult();
+		return candidateIdendities;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateByParentCandidateIdAndOrgLocationId(Long parentCandidateId, Long orgLocationId)
 			throws Exception {
 
@@ -1583,6 +1602,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			return null;
 		}
    	
+
 	}
 
 }

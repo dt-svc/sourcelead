@@ -35,7 +35,15 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String status;
 		
+		private String isGlobalAccess;
+		
+		private String grade;
+		
+		@Required(desc = "reportingManager")
 		private String reportingManager;
+		
+		@Required(desc = "resourceManager")
+		private String resourceManager;
 		
 		private String isMailSent;
 		
@@ -108,6 +116,14 @@ import com.bis.sourcelead.entity.UserRole;
 		private String vendorcontact;
 		
 		private String dateofJoin;
+		
+		private String middleName;
+		
+		private String gender;
+		
+		private String maritalStatus;
+		
+		private String dateofBirth;
 
 		private String isPrimary;
 
@@ -129,6 +145,8 @@ import com.bis.sourcelead.entity.UserRole;
 		private String extensionNumber;
 		
 		private String assignReportingManagers;
+		
+		private String assignResourceManagers;
 		
 		private String managerUsers;
 		
@@ -713,5 +731,71 @@ import com.bis.sourcelead.entity.UserRole;
 		public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
 			this.customFormData = customFormData;
 		}
+
+		public String getMiddleName() {
+			return middleName;
+		}
+
+		public void setMiddleName(String middleName) {
+			this.middleName = middleName;
+		}
+
+		public String getGender() {
+			return gender;
+		}
+
+		public void setGender(String gender) {
+			this.gender = gender;
+		}
+
+		public String getDateofBirth() {
+			return dateofBirth;
+		}
+
+		public void setDateofBirth(String dateofBirth) {
+			this.dateofBirth = dateofBirth;
+		}
+
+		public String getMaritalStatus() {
+			return maritalStatus;
+		}
+
+		public void setMaritalStatus(String maritalStatus) {
+			this.maritalStatus = maritalStatus;
+		}
+
+
+		public String getIsGlobalAccess() {
+			return isGlobalAccess;
+		}
+
+		public void setIsGlobalAccess(String isGlobalAccess) {
+			this.isGlobalAccess = isGlobalAccess;
+		}
+
+		public String getResourceManager() {
+			return resourceManager;
+		}
+
+		public void setResourceManager(String resourceManager) {
+			this.resourceManager = resourceManager;
+		}
+
+		public String getAssignResourceManagers() {
+			return assignResourceManagers;
+		}
+
+		public void setAssignResourceManagers(String assignResourceManagers) {
+			this.assignResourceManagers = assignResourceManagers;
+		}
+
+		public String getGrade() {
+			return grade;
+		}
+
+		public void setGrade(String grade) {
+			this.grade = grade;
+		}
+
 		
 }

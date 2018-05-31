@@ -76,7 +76,7 @@
 		var searchValue = $("#dataTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		searchValue = searchValue ? searchValue : "";
-		var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tab="+tab+"&submissionStatus=OFFERMADE&frequency="+customDates+"&fromDate="+fromDate+"&toDate="+toDate;
+		var url = sourceleadUrl+"/applicantList?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=OFFERMADE&frequency="+customDates+"&fromDate="+fromDate+"&toDate="+toDate;
 	    prepareOfferList(url);
 }
 </script> 

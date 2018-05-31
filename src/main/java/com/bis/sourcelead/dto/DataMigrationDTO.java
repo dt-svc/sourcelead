@@ -191,6 +191,8 @@ public class DataMigrationDTO extends CommonDTO {
 	
 	private List<AssetAssignDTO> assignAsset;
 	
+	private String assignAssetStr;
+	
 	/*Asset Uploads End*/
 	
    //	Project Tasks
@@ -232,6 +234,95 @@ public class DataMigrationDTO extends CommonDTO {
 	private String projectUUID;
 	
 	private String projectClientUUID;
+	
+	// immigration import fields starts here date 17 May 2018. Srinivas Sabbu.
+	
+private String beneficiaryFirstName;
+    
+    private String beneficiaryLastName;
+    
+    private String beneficiaryEmail;
+    
+    private String experience;
+    
+    private String ssn;
+    
+    private String i94Number;
+    
+    private String i20Number;
+    
+    private String eadNumber;
+    
+    private String dateOfBirth;
+    
+    private String maritalStatus;
+    
+    private String petitionType;
+    
+    private String template;
+    
+    private String dateOfArrival;
+    
+    private String openOn;
+    
+    private String status; // Status field in excel as immigration status.
+    
+    private String visaNo;
+    
+    private String visaStartDate;
+    
+    private String visaEndDate;
+    
+    private String passportNo;
+    
+    private String passportStartDate;
+    
+    private String passportEndDate;
+    
+    private String visaCountry;
+    
+    private String passportCountry;
+    
+    private String company;
+    
+    private String visaType; // name field in excel
+    
+    private String companyContactEmail; // AttorneyContactemail field in excel.
+    
+    private String receiptNo;
+    
+    private String benficiarylocation; // location field in excel
+    
+    private String lcaStartDate;
+    
+    private String lcaEndDate;
+    
+    private String lcaNumber;
+    
+    private String lcaRateCurrency;
+    
+    private String lcaRatePer;
+    
+    private String lcaRate;
+    
+    private String lcaLocation;
+    
+    private String lcaTitle;
+    
+    private String immigrationJobId;
+    
+    private String prevLcaStartDate;
+    
+    private String prevLcaEndDate;
+    
+    private String prevLcaNumber;
+    
+    
+    private String prevLcaTitle;
+    
+    private String prevLcaLocation;
+	
+// immigration fields ends here.	
 	
 	public String getEmployeeId() {
 		return employeeId;
@@ -1092,6 +1183,14 @@ public class DataMigrationDTO extends CommonDTO {
 		this.assignAsset = assignAsset;
 	}
 
+	public String getAssignAssetStr() {
+		return assignAssetStr;
+	}
+
+	public void setAssignAssetStr(String assignAssetStr) {
+		this.assignAssetStr = assignAssetStr;
+	}
+
 	public String getTaskName() {
 		return taskName;
 	}
@@ -1244,4 +1343,344 @@ public class DataMigrationDTO extends CommonDTO {
 	public void setProjectClientUUID(String projectClientUUID) {
 		this.projectClientUUID = projectClientUUID;
 	}
+
+	public String getBeneficiaryFirstName() {
+		return beneficiaryFirstName;
+	}
+
+	public void setBeneficiaryFirstName(String beneficiaryFirstName) {
+		this.beneficiaryFirstName = beneficiaryFirstName;
+	}
+
+	public String getBeneficiaryLastName() {
+		return beneficiaryLastName;
+	}
+
+	public void setBeneficiaryLastName(String beneficiaryLastName) {
+		this.beneficiaryLastName = beneficiaryLastName;
+	}
+
+	public String getBeneficiaryEmail() {
+		return beneficiaryEmail;
+	}
+
+	public void setBeneficiaryEmail(String beneficiaryEmail) {
+		this.beneficiaryEmail = beneficiaryEmail;
+	}
+
+	public String getExperience() {
+		return experience;
+	}
+
+	public void setExperience(String experience) {
+		this.experience = experience;
+	}
+
+	public String getSsn() {
+		return ssn;
+	}
+
+	public void setSsn(String ssn) {
+		this.ssn = ssn;
+	}
+
+	public String getI94Number() {
+		return i94Number;
+	}
+
+	public void setI94Number(String i94Number) {
+		this.i94Number = i94Number;
+	}
+
+	public String getI20Number() {
+		return i20Number;
+	}
+
+	public void setI20Number(String i20Number) {
+		this.i20Number = i20Number;
+	}
+
+	public String getEadNumber() {
+		return eadNumber;
+	}
+
+	public void setEadNumber(String eadNumber) {
+		this.eadNumber = eadNumber;
+	}
+
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public String getPetitionType() {
+		return petitionType;
+	}
+
+	public void setPetitionType(String petitionType) {
+		this.petitionType = petitionType;
+	}
+
+	public String getTemplate() {
+		return template;
+	}
+
+	public void setTemplate(String template) {
+		this.template = template;
+	}
+
+	public String getDateOfArrival() {
+		return dateOfArrival;
+	}
+
+	public void setDateOfArrival(String dateOfArrival) {
+		this.dateOfArrival = dateOfArrival;
+	}
+
+	public String getOpenOn() {
+		return openOn;
+	}
+
+	public void setOpenOn(String openOn) {
+		this.openOn = openOn;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getVisaNo() {
+		return visaNo;
+	}
+
+	public void setVisaNo(String visaNo) {
+		this.visaNo = visaNo;
+	}
+
+	public String getVisaStartDate() {
+		return visaStartDate;
+	}
+
+	public void setVisaStartDate(String visaStartDate) {
+		this.visaStartDate = visaStartDate;
+	}
+
+	public String getVisaEndDate() {
+		return visaEndDate;
+	}
+
+	public void setVisaEndDate(String visaEndDate) {
+		this.visaEndDate = visaEndDate;
+	}
+
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	public String getCompanyContactEmail() {
+		return companyContactEmail;
+	}
+
+	public void setCompanyContactEmail(String companyContactEmail) {
+		this.companyContactEmail = companyContactEmail;
+	}
+
+	public String getReceiptNo() {
+		return receiptNo;
+	}
+
+	public void setReceiptNo(String receiptNo) {
+		this.receiptNo = receiptNo;
+	}
+
+	public String getBenficiarylocation() {
+		return benficiarylocation;
+	}
+
+	public void setBenficiarylocation(String benficiarylocation) {
+		this.benficiarylocation = benficiarylocation;
+	}
+
+	public String getPassportNo() {
+		return passportNo;
+	}
+
+	public void setPassportNo(String passportNo) {
+		this.passportNo = passportNo;
+	}
+
+	public String getPassportStartDate() {
+		return passportStartDate;
+	}
+
+	public void setPassportStartDate(String passportStartDate) {
+		this.passportStartDate = passportStartDate;
+	}
+
+	public String getPassportEndDate() {
+		return passportEndDate;
+	}
+
+	public void setPassportEndDate(String passportEndDate) {
+		this.passportEndDate = passportEndDate;
+	}
+
+	public String getVisaCountry() {
+		return visaCountry;
+	}
+
+	public void setVisaCountry(String visaCountry) {
+		this.visaCountry = visaCountry;
+	}
+
+	public String getPassportCountry() {
+		return passportCountry;
+	}
+
+	public void setPassportCountry(String passportCountry) {
+		this.passportCountry = passportCountry;
+	}
+
+	
+
+	public String getVisaType() {
+		return visaType;
+	}
+
+	public void setVisaType(String visaType) {
+		this.visaType = visaType;
+	}
+
+	public String getLcaStartDate() {
+		return lcaStartDate;
+	}
+
+	public void setLcaStartDate(String lcaStartDate) {
+		this.lcaStartDate = lcaStartDate;
+	}
+
+	public String getLcaEndDate() {
+		return lcaEndDate;
+	}
+
+	public void setLcaEndDate(String lcaEndDate) {
+		this.lcaEndDate = lcaEndDate;
+	}
+
+	public String getLcaNumber() {
+		return lcaNumber;
+	}
+
+	public void setLcaNumber(String lcaNumber) {
+		this.lcaNumber = lcaNumber;
+	}
+
+	public String getLcaRateCurrency() {
+		return lcaRateCurrency;
+	}
+
+	public void setLcaRateCurrency(String lcaRateCurrency) {
+		this.lcaRateCurrency = lcaRateCurrency;
+	}
+
+	public String getLcaRatePer() {
+		return lcaRatePer;
+	}
+
+	public void setLcaRatePer(String lcaRatePer) {
+		this.lcaRatePer = lcaRatePer;
+	}
+
+	public String getLcaRate() {
+		return lcaRate;
+	}
+
+	public void setLcaRate(String lcaRate) {
+		this.lcaRate = lcaRate;
+	}
+
+	public String getLcaLocation() {
+		return lcaLocation;
+	}
+
+	public void setLcaLocation(String lcaLocation) {
+		this.lcaLocation = lcaLocation;
+	}
+
+	public String getLcaTitle() {
+		return lcaTitle;
+	}
+
+	public void setLcaTitle(String lcaTitle) {
+		this.lcaTitle = lcaTitle;
+	}
+
+	public String getImmigrationJobId() {
+		return immigrationJobId;
+	}
+
+	public void setImmigrationJobId(String immigrationJobId) {
+		this.immigrationJobId = immigrationJobId;
+	}
+
+	public String getPrevLcaStartDate() {
+		return prevLcaStartDate;
+	}
+
+	public void setPrevLcaStartDate(String prevLcaStartDate) {
+		this.prevLcaStartDate = prevLcaStartDate;
+	}
+
+	public String getPrevLcaEndDate() {
+		return prevLcaEndDate;
+	}
+
+	public void setPrevLcaEndDate(String prevLcaEndDate) {
+		this.prevLcaEndDate = prevLcaEndDate;
+	}
+
+	public String getPrevLcaNumber() {
+		return prevLcaNumber;
+	}
+
+	public void setPrevLcaNumber(String prevLcaNumber) {
+		this.prevLcaNumber = prevLcaNumber;
+	}
+
+	public String getPrevLcaTitle() {
+		return prevLcaTitle;
+	}
+
+	public void setPrevLcaTitle(String prevLcaTitle) {
+		this.prevLcaTitle = prevLcaTitle;
+	}
+
+	public String getPrevLcaLocation() {
+		return prevLcaLocation;
+	}
+
+	public void setPrevLcaLocation(String prevLcaLocation) {
+		this.prevLcaLocation = prevLcaLocation;
+	}
+
 }

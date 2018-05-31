@@ -31,7 +31,7 @@ $(document).ready(function(){
     		      </div>
      		<!--<a href="jobsPipline-list.html" class="btn btn-primary">List</a>-->
        
-        <div class="col-md-4 col-md-offset-1">
+<!--         <div class="col-md-4 col-md-offset-1"> -->
     <%-- <div class="dropdown-scroll">
 		<select class="chosen-select form-control" multiple data-placeholder="Select Vendor" id="orgIds" name="orgIds">
 		 <c:if test="${not empty vendorList}">
@@ -41,6 +41,15 @@ $(document).ready(function(){
 		</c:if>
 		</select>
 	</div> --%>
+<!--         </div> -->
+         <div class="col-md-4">
+          <select class="chosen-select form-control" multiple data-placeholder="Select Vendor" id="orgIds" name="orgIds">
+            <c:if test="${not empty vendorList}">
+               <c:forEach items="${vendorList}" var="vendor">
+   						<option value='${vendor.id }'>${vendor.orgName}</option>
+				</c:forEach>
+		</c:if>
+          </select>
         </div>
         <div class="col-md-2 dropdown-select">
         <div class="dropdown-select positionRelative">
@@ -72,7 +81,7 @@ $(document).ready(function(){
         <div class="col-md-2">
         <button type="button" class="btn btn-primary btn-sm	mt2" onclick="missingBillDataGraph();" id="customizeButton">Customize</button>
 		</div>
-		<div class="col-md-1">
+		<!-- <div class="col-md-1">
           <div class="btn-group bootstrap_dropdownMenu dropdownPadding">
             <button type="button" class="btn btn-primary btn-sm" title="Actions"><i class="fa fa-download"></i></button>
             <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"> <span class="caret"></span> </button>
@@ -80,7 +89,7 @@ $(document).ready(function(){
               <li role="Export" class="mt5 cursorPointer"><i class="fa fa-file-pdf-o paddingRight"></i>Export</li>
             </ul>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -206,7 +215,6 @@ function prepareapMissingBillGraph(data){
 				$("#last_years").show();
 				lastYearGraph(data);
 			}else{
-				alert("Hai");
 				$("#custom-select").hide();
 				$("#last_7days").hide();
 				$("#last_15days").hide();

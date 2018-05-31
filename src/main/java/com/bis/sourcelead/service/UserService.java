@@ -206,7 +206,20 @@ public interface UserService  {
 	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception;
 
 	ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO, OrgLocations orgLocation) throws Exception;
+	
+	List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception;
 
+	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
+
+	List<User> getGlobalUsersByOrgId(Long roleId,Long orgId,Long tabId) throws Exception;
+	
+	public List<User> getTabAccessGlobalOwnersByOrgIdAndTabId(Long orgLocationId,Long orgId,Long tabId) throws Exception;
+	
+	public List<User> getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId, Long orgId,Long tabId)throws Exception;
+	
+	List<User> getResourceManagersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+
+	List<User> getUsersListForSignatoryByOrglocationId(Long id);
 }	
 		
 	

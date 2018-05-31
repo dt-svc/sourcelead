@@ -237,9 +237,13 @@ var userId = '${SourceLeadWeb_user.id}';
 var orgLocationCode = '${SourceLeadWeb_locationCode}';
 var candiadteId = '${SourceLeadWeb_candidateId}';
 var timesheetType;
+
 var sourceleadUrl ='${sourceleadUrl}';
-console.log(sourceleadUrl.split("http://")[1])
-var sourceleadWebSocketUrl =sourceleadUrl.split("http://")[1];
+var sourceleadSocketUrl = sourceleadUrl.replace("http","ws");
+
+var sourceleadWebSocketUrl ='${sourceleadSocketUrl}';
+var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
+
 
 
   function timeSheetSubmissionStatusCount(type) { 
@@ -249,12 +253,12 @@ var sourceleadWebSocketUrl =sourceleadUrl.split("http://")[1];
 	  $("#approvedloading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:5; background-image:url("/resources/images/Spinner.gif"); background-position:center; background-repeat:no-repeat; background-size:60px;');
 	  
 	  timesheetType = type;
-	  wsocket = new WebSocket("ws://"+sourceleadWebSocketUrl.trim()+"/ws/dashBoardDynamicCount?userId="+userId+"&orgLocationCode="+orgLocationCode+"&candiadteId="+candiadteId+"&timesheetType="+timesheetType+"&countFor=timesheet");       
+	  wsocket = new WebSocket(sourceleadWebSocketUrl.trim()+"/ws/dashBoardDynamicCount?userId="+userId+"&orgLocationCode="+orgLocationCode+"&candiadteId="+candiadteId+"&timesheetType="+timesheetType+"&isGlobalAccess="+isGlobalAccess+"&countFor=timesheet");       
 	  wsocket.onmessage = onMessage; 
  }
   
   window.onbeforeunload = function() {
-		 var myWebSocket = new WebSocket("ws://"+sourceleadWebSocketUrl.trim()+"/ws/dashBoardDynamicCount?userId="+userId+"&orgLocationCode="+orgLocationCode+"&candiadteId="+candiadteId+"&timesheetType="+timesheetType+"&countFor=timesheet"); 
+		 var myWebSocket = new WebSocket(sourceleadWebSocketUrl.trim()+"/ws/dashBoardDynamicCount?userId="+userId+"&orgLocationCode="+orgLocationCode+"&candiadteId="+candiadteId+"&timesheetType="+timesheetType+"&isGlobalAccess="+isGlobalAccess+"&countFor=timesheet"); 
 		 myWebSocket.close();
  };
   

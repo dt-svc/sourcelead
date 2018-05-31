@@ -63,7 +63,7 @@
                 <div class="row">
                   <div class="clearfix"></div>
                   <div class="col-md-12">
-                    <h4 class="leaves-heading">My Time off balance</h4>
+                    <h4 class="leaves-heading">Leave Balance</h4>
                     <div class="time-balance">
                     <div id="pichartLeaveTypeIdDiv" class="timeBalance-scroll clearfix"></div>
                     </div>
@@ -1249,10 +1249,8 @@ function leavePdfExport(){
 	}
 
 	if(emptyExport > 0){
-		alert("1");
 	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=PDF";
 	}else{
-		alert("2");
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";
 		result = result +"	   <div id='empty_leave_pop' class='remove_user_pop remove_user_pop_a'>";

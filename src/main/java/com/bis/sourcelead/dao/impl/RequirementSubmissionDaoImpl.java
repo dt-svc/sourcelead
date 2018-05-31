@@ -88,6 +88,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Value("${SourceLead.106}")
 	private String duplicateValue;
 	
+	
 	private static final Logger logger = LoggerFactory.getLogger(RequirementSubmissionDaoImpl.class);
 	
 	@SuppressWarnings("unchecked")
@@ -95,7 +96,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception{
 		Session session = this.sessionFactory.getCurrentSession();	
-		String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.requirement.parentRequirement left join fetch rs.candidate candidate left join fetch candidate.consultantUser left join fetch rs.sourceSubmission left join fetch rs.candidateResumes   where rs.id = :submissionId";
+		String query = "from RequirementSubmission rs left join fetch rs.orgLocations left join fetch rs.requirement left join fetch rs.requirement.parentRequirement left join fetch rs.candidate candidate left join fetch candidate.consultantUser left join fetch rs.sourceSubmission left join fetch rs.candidateResumes   where rs.id = :submissionId";
 		List<RequirementSubmission>  submission = session.createQuery(query).setLong( "submissionId", submissionId).list();
 		logger.info("RequirementSubmission loaded successfully !!!");
 		return submission.get(0);
@@ -1427,7 +1428,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmission> getRequirementHistoryListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-	     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.candidate.id =:candidateId and rs.orgLocations =:orgLocationId";
+	     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.candidate.id =:candidateId and rs.orgLocations =:orgLocationId and rs.requirement IS NOT NULL ";
 	     List<RequirementSubmission> requirementHistoryList = session.createQuery(query).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
 	  return requirementHistoryList;
 	}

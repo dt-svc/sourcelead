@@ -44,7 +44,11 @@
 <link rel="stylesheet"3
 	href="/resources/css/timesheet.css?staticTime=${staticTime}"
 	type="text/css">
-
+<style type="text/css">
+.jobDesc b {
+display: inline-block;
+}
+</style>
 <script
 	src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=AIzaSyCIbxD8-aZ7Wgp6N-JeEJKVRIHGRpNMdRE"
 	type="text/javascript"></script>
@@ -2650,7 +2654,7 @@ function createAlert(requirementUUID){
         	
         	 result = result +'         <div class="form-group clearfix">';
         	 result = result +'         	<label class="col-md-3">Alert Frequency<span class="text-danger paddingLeft">*</span></label>';
-        	 result = result +'         	<div class="col-md-9">';
+        	 result = result +'         	<div class="col-md-9 dropdown-select">';
         	 result = result +'         		<select class="form-control" id="duration" name="duration" field-name="Alert Frequency" data-validation="required">';
         	 result = result +'         			<option selected value="">---Select Alert Frequency---</option>';
         	 result = result +'         			<option>Daily</option>';

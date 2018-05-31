@@ -18,6 +18,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddOrgLocationToOldRecordsForExpenses {
 private ComboPooledDataSource comboPooledDataSource;
+ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 
 private void AddNewSkills() throws SQLException {
 	 DataSource dataSource = comboPooledDataSource();
@@ -28,26 +30,26 @@ private void AddNewSkills() throws SQLException {
 		 Statement stmt3 = con.createStatement();
 		 Statement stmt4 = con.createStatement();
 		 Statement stmt5 = con.createStatement();
-		 String query = "SELECT * From sourcelead.EXPENSES_APPROVER_HIERARCHY "; 
+		 String query = "SELECT * From "+dbconfig.getSchema()+".EXPENSES_APPROVER_HIERARCHY "; 
 		 ResultSet eah = stmt.executeQuery(query);
 		 while(eah.next()){
 			Long eahId = eah.getLong("ID");
 			if(eah.getString("ACTIONPERFORMEDBY") != null && !eah.getString("ACTIONPERFORMEDBY").equalsIgnoreCase("")) {
 				String orgName = eah.getString("ACTIONPERFORMEDBY").trim();
-				String org = "SELECT * From sourcelead.ORG  where ORG_NAME = '"+orgName+"'";
+				String org = "SELECT * From "+dbconfig.getSchema()+".ORG  where ORG_NAME = '"+orgName+"'";
 				ResultSet orgData = stmt1.executeQuery(org);
 				if(orgData.next() == false) {
-					String user = "SELECT ID, CONCAT(FIRST_NAME,' ',IFNULL(LAST_NAME, '')) AS name FROM sourcelead.USER where CONCAT(FIRST_NAME,' ',LAST_NAME) = '"+orgName+"'";
+					String user = "SELECT ID, CONCAT(FIRST_NAME,' ',IFNULL(LAST_NAME, '')) AS name FROM "+dbconfig.getSchema()+".USER where CONCAT(FIRST_NAME,' ',LAST_NAME) = '"+orgName+"'";
 					ResultSet userData = stmt3.executeQuery(user);
 					while(userData.next()) {
 						Long  userId = userData.getLong("ID");
-						String orgLoc = "SELECT * FROM sourcelead.ORG_LOCATIONS";
+						String orgLoc = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS";
 						ResultSet orgLocat = stmt4.executeQuery(orgLoc);
 						while(orgLocat.next()) {
 							Long  primaryContactUser = orgLocat.getLong("PRIMARY_CONTACT_USER_ID");
 							Long  orgLocation = orgLocat.getLong("ID");
 							if(primaryContactUser == userId) {
-								String query1 = "UPDATE sourcelead.EXPENSES_APPROVER_HIERARCHY SET ACTION_BY_ORGLOC_ID = ? WHERE ID = ?";
+								String query1 = "UPDATE "+dbconfig.getSchema()+".EXPENSES_APPROVER_HIERARCHY SET ACTION_BY_ORGLOC_ID = ? WHERE ID = ?";
 								PreparedStatement pstmt = con.prepareStatement(query1);
 								pstmt.setLong(1, orgLocation);
 								pstmt.setLong(2, eahId);
@@ -61,11 +63,11 @@ private void AddNewSkills() throws SQLException {
 					/*ResultSet orgDataName = stmt5.executeQuery(org);
 					while(orgDataName.next()){*/
 						Long  orgId = orgData.getLong("ID");
-						String orgLoc = "SELECT * FROM sourcelead.ORG_LOCATIONS where ORG_ID = '"+orgId+"'";
+						String orgLoc = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS where ORG_ID = '"+orgId+"'";
 						ResultSet orgLocations = stmt2.executeQuery(orgLoc);
 						while(orgLocations.next()){
 							Long  orgLocation = orgLocations.getLong("ID");
-							String query1 = "UPDATE sourcelead.EXPENSES_APPROVER_HIERARCHY SET ACTION_BY_ORGLOC_ID = ? WHERE ID = ?";
+							String query1 = "UPDATE "+dbconfig.getSchema()+".EXPENSES_APPROVER_HIERARCHY SET ACTION_BY_ORGLOC_ID = ? WHERE ID = ?";
 							PreparedStatement pstmt = con.prepareStatement(query1);
 							pstmt.setLong(1, orgLocation);
 							pstmt.setLong(2, eahId);
@@ -87,10 +89,6 @@ private void AddNewSkills() throws SQLException {
 	
 	
 private DataSource comboPooledDataSource() {
-    @SuppressWarnings("resource")
-    ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-    DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
     this.comboPooledDataSource = new ComboPooledDataSource();
     try {
         comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

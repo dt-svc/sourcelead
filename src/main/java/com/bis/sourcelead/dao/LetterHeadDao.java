@@ -21,4 +21,8 @@ public interface LetterHeadDao {
 
 	LetterHead updateLetterhead(LetterHead letter);
 
+	Boolean validateLetterHeadName(String letterHeadName, OrgLocations orgLocation);
+
+	LetterHead validateNameInEdit(String letterHeadName, Long letterHeadId, Long orgLocationId);
+
 }

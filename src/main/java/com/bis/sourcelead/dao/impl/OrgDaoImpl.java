@@ -373,7 +373,7 @@ public class OrgDaoImpl implements OrgDao {
 		Session session = this.sessionFactory.openSession();
 		List<UserDTO> userList = new ArrayList<>();
 		try{
-			String query = "SELECT U.ID, U.FIRST_NAME, U.LAST_NAME, U.FILE_URL, R.DISPLAY_NAME, UR.REPORTING_MANAGER_ID, O.PRIMARY_CONTACT_USER_ID " + 
+			String query = "SELECT U.ID,U.USER_CODE,U.FIRST_NAME, U.LAST_NAME, U.FILE_URL, R.DISPLAY_NAME, UR.REPORTING_MANAGER_ID, O.PRIMARY_CONTACT_USER_ID " + 
 					" FROM USER U, USER_ROLE UR, ROLES R, ORG O, ORG_LOCATIONS OL " + 
 					" WHERE R.ID = UR.ROLE_ID AND U.ID = UR.USER_ID AND UR.ORG_LOCATIONS_ID = :orgLocationId AND R.ID NOT IN (95,96) "+ 
 					" AND O.ID = OL.ORG_ID AND OL.ID = UR.ORG_LOCATIONS_ID AND UR.USER_STATE !='INACTIVE' ORDER BY UR.REPORTING_MANAGER_ID;";
@@ -383,6 +383,7 @@ public class OrgDaoImpl implements OrgDao {
 				UserDTO user = new UserDTO();
 				int i = 0;
 				user.setId(Long.valueOf(record[i++].toString()));
+				user.setUserCode(record[i++].toString());
 				user.setName(record[i++].toString());
 				String lastName = record[i] == null ? "" : record[i].toString();
 				user.setName(user.getName()+(lastName.isEmpty() ? "" : " "+ lastName));
@@ -609,15 +610,18 @@ public class OrgDaoImpl implements OrgDao {
             pay.setAccountId(account.getAccountId());
             pay.setUserId(account.getUserId());
             pay.setAccountType(account.getAccountType());
-            pay.setDefaultAccount(account.isDefaultAccount());
             pay.setOrg(session.get(Org.class, account.getOrgId()));
             pay.setOrgLocation(session.get(OrgLocations.class, account.getOrgLocationId()));
             pay.setFirstName(account.getFirstName());
             pay.setLastName(account.getLastName());
             pay.setEmail(account.getEmail());
             pay.setBankName(account.getBankName());
+            pay.setBsrNumber(account.getBsrNumber());
+            pay.setMicrCode(account.getMicrCode());
             pay.setAccountNumber(account.getAccountNumber());
             pay.setRoutingNumber(account.getRoutingNumber());
+            
+            pay.setDefaultAccount(account.isDefaultAccount());
             pay.setDisabled(account.isDisabled());
             session.saveOrUpdate(pay);
             return pay.getId();
@@ -741,6 +745,8 @@ public class OrgDaoImpl implements OrgDao {
         pay.setFirstName(p.getFirstName());
         pay.setBankName(p.getBankName());
         pay.setLastName(p.getLastName());
+        pay.setBsrNumber(p.getBsrNumber());
+        pay.setMicrCode(p.getMicrCode());
         pay.setAccountNumber(p.getAccountNumber());
         pay.setRoutingNumber(p.getRoutingNumber());
         pay.setEmail(p.getEmail());

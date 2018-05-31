@@ -26,7 +26,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddSubscriptionToRegisteredOrgs {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat I
  * this method is using for org subscription
@@ -43,7 +44,7 @@ public void updateSubscription() throws IOException, SQLException {
 			
 		      System.out.println("----Adding subscription to orgs starts -----");
 		      
-			 String sql1 = "SELECT * FROM sourcelead.ROLES roles where roles.ROLE_NAME = 'ROLE_ADMIN' ";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".ROLES roles where roles.ROLE_NAME = 'ROLE_ADMIN' ";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -57,7 +58,7 @@ public void updateSubscription() throws IOException, SQLException {
 				 String timeZoneId = null;
 				 String actionIds = rs1.getString("ACTION_ID");
 				 
-				 String sql2 = "SELECT * FROM sourcelead.ORG_LOCATIONS orgloc where orgloc.ID = '"+orgLocationId+"' ";
+				 String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orgloc where orgloc.ID = '"+orgLocationId+"' ";
 				 Statement stmt2 = conn.createStatement();
 				 ResultSet rs2 = stmt2.executeQuery(sql2);
 				 if (rs2.next()) {
@@ -66,13 +67,13 @@ public void updateSubscription() throws IOException, SQLException {
 				 }
 				 
 				 
-				 String sql4 = "SELECT * FROM sourcelead.ORG_LICENSE_SUBSCRIPTION subscription where subscription.ORG_ID = '"+orgId+"' and subscription.COUNTRY = '"+country+"' ";
+				 String sql4 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LICENSE_SUBSCRIPTION subscription where subscription.ORG_ID = '"+orgId+"' and subscription.COUNTRY = '"+country+"' ";
 				 Statement stmt3 = conn.createStatement();
 				 ResultSet rs4 = stmt3.executeQuery(sql4);
 				 
 				 if(!rs4.next()) {
 					 
-					 String sql3 = "SELECT * FROM sourcelead.ORG org where org.ID = '"+orgId+"' ";
+					 String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".ORG org where org.ID = '"+orgId+"' ";
 					 Statement stmt4 = conn.createStatement();
 					 ResultSet rs3 = stmt4.executeQuery(sql3);
 					 if (rs3.next()) {
@@ -89,7 +90,7 @@ public void updateSubscription() throws IOException, SQLException {
 						 subscriptionType = "1";
 					 }
 					 
-			/*		 String sql5 = "SELECT * FROM sourcelead.countries countries where countries.Name = '"+country+"' ";
+			/*		 String sql5 = "SELECT * FROM "+dbconfig.getSchema()+".countries countries where countries.Name = '"+country+"' ";
 					 Statement stmt5 = conn.createStatement();
 					 ResultSet rs5 = stmt5.executeQuery(sql5);
 					 if(rs5.next()) {
@@ -111,12 +112,12 @@ public void updateSubscription() throws IOException, SQLException {
 						 String[] actionIdsList = actionIds.split(",");
 						 Set<Long> tabIds = new HashSet<>();
 						 for(int i=0 ; i<actionIdsList.length; i++) {
-							 String sql6 = "SELECT * FROM sourcelead.SOURCELEAD_ACTIONS actions where actions.ID = '"+actionIdsList[i]+"' ";
+							 String sql6 = "SELECT * FROM "+dbconfig.getSchema()+".SOURCELEAD_ACTIONS actions where actions.ID = '"+actionIdsList[i]+"' ";
 							 Statement stmt6 = conn.createStatement();
 							 ResultSet rs6 = stmt6.executeQuery(sql6);
 							 if(rs6.next()) {
 								 Long tabId = rs6.getLong("TAB_ID");
-								 String sql7 = "SELECT * FROM sourcelead.TABS tabs where tabs.ID = '"+tabId+"' ";
+								 String sql7 = "SELECT * FROM "+dbconfig.getSchema()+".TABS tabs where tabs.ID = '"+tabId+"' ";
 								 Statement stmt7 = conn.createStatement();
 								 ResultSet rs7 = stmt7.executeQuery(sql7);
 								 if(rs7.next()) {
@@ -141,7 +142,7 @@ public void updateSubscription() throws IOException, SQLException {
 						 String tabsBuilderString = tabsBuilder.substring(0, tabsBuilder.length()-1);
 						 
 						 
-					      String query1 = " insert into sourcelead.ORG_LICENSE_SUBSCRIPTION (ORG_ID, COUNTRY, SUBSCRIPTION_TYPE, USER_SUBSCRIPTION_TYPE, STORAGE_SUBSCRIPTION_TYPE,  "
+					      String query1 = " insert into "+dbconfig.getSchema()+".ORG_LICENSE_SUBSCRIPTION (ORG_ID, COUNTRY, SUBSCRIPTION_TYPE, USER_SUBSCRIPTION_TYPE, STORAGE_SUBSCRIPTION_TYPE,  "
 								+ "CURRENCY, INVOICE_AMOUNT, SUBSCRIPTION_TABS,FROM_DATE,TO_DATE,TIMEZONE_ID,UUID,STATUS,CREATED_BY,CREATED_DATE,IS_INVOICE_AMOUNT_PAID)"
 								+ " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			    		
@@ -192,10 +193,6 @@ public void updateSubscription() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

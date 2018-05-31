@@ -149,7 +149,7 @@ display: none;
             <select class="chosen-select" name="campaignjobs" data-validation="required" field-name="Jobs" multiple data-placeholder="&nbsp;Enter Jobs" id="selectedJobs">
             </select>
             
-            <span class="select-multiple" data-target="#requirement" onclick="selectJobsRadio();" data-toggle="modal"><i class="fa fa-th-large" title="Select Candidates"></i></span> 
+            <span class="select-multiple" data-target="#requirement" onclick="selectJobsRadio();" data-toggle="modal"><i class="fa fa-th-large" title="Select jobs"></i></span> 
             <!-- Modal content Multiple mail -->
             <div role="dialog" id="requirement" class="modal fade custom-modal">
               <div class="modal-dialog modal-lg">
@@ -361,7 +361,7 @@ function jobListChange(type){
     	result = result +'</div>';
     	result = result +'<div class="clearfix pull-right mr mb">';
      	result = result +'<button class="btn btn-primary"  type="button" id="assignbtnId" onclick="getCheckedJobs();">Add</button>';
-     	result = result +' <button class="btn btn-default" type="button">Close</button>';
+     	result = result +' <button class="btn btn-default" type="button" onclick="removeMessage();">Close</button>';
      	result = result +' </div>'; 
 	    $("#mailBoxJobsList").empty();
 	    $("#mailBoxJobsList").append(result);
@@ -561,7 +561,13 @@ function jobsPagination(url,type){
 </script>
 
 <!-- for job selection script stars -->
+<script type="text/javascript">
+$(function() { 
+	tagIt("otherEmails", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
+	tagIt("emailsList", 'Enter Emails And Press Enter-Key Or Comma(,) Or Space To Add New Email', 'tagItBykeyForEmails','emails');
 
+});
+</script> 
 
 <script>
 function toggleJobs(source) {
@@ -628,7 +634,7 @@ function checkJob(ele) {
 			}
 			
 			  //Adding Customized Emails to the list
-	        var select, chosen;
+	        /* var select, chosen;
 		    select = $("#otherEmails");
 		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosen = select.data('chosen');
@@ -656,9 +662,9 @@ function checkJob(ele) {
 				        } 
 		    	 }
 		    	
-		    });
+		    }); */
 
-		    var selectone, chosenone;
+		    /* var selectone, chosenone;
 		    selectone = $("#emailsList");
 		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Space Or Tab To Add New Email:' });
 		    chosenone = selectone.data('chosen');
@@ -685,7 +691,7 @@ function checkJob(ele) {
 				        }
 		    	 }
 		    
-		    });
+		    }); */
 
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);

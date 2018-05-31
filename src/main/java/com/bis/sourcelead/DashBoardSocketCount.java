@@ -3,7 +3,7 @@ package com.bis.sourcelead;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -33,7 +33,7 @@ public class DashBoardSocketCount {
 	private CandidateService candidateService = BeanUtil.getBean(CandidateService.class);
 	private CommonUtil commonUtil = BeanUtil.getBean(CommonUtil.class);
 	
-	private static Map<String, Session> sessionMap = new HashMap<>();
+	private static ConcurrentHashMap<String, Session> sessionMap = new ConcurrentHashMap<>();
 	private Thread rateThread;
 	private volatile boolean runnable = true;
 	
@@ -73,7 +73,7 @@ public class DashBoardSocketCount {
 		String orgLocationCode = session.getRequestParameterMap().get("orgLocationCode").get(0);
 		String timesheetType = session.getRequestParameterMap().get("timesheetType").get(0);
 		String candiadteId = session.getRequestParameterMap().get("candiadteId").get(0);
-		
+		String isGlobalAccess = session.getRequestParameterMap().get("isGlobalAccess").get(0);
 		Iterator<String> it = sessionMap.keySet().iterator();
 		while(it.hasNext()) {
 			if(it.next().equals(userId)) {
@@ -81,14 +81,14 @@ public class DashBoardSocketCount {
 				sessionMap.remove(userId);
 			}
 		}
-		DashBoardSocketCountDTO dashBoardCountDto = getDetails(userId,orgLocationCode,candiadteId,timesheetType);
+		DashBoardSocketCountDTO dashBoardCountDto = getDetails(userId,orgLocationCode,candiadteId,timesheetType,isGlobalAccess);
 		dashBoardCountDto.setSession(session);
 		sessionMap.put(userId, session);
-		System.out.println("New session opened: " + session.getId());
+		/*System.out.println("New session opened: " + session.getId());*/
 		initThread(dashBoardCountDto);
 	}
 
-	private DashBoardSocketCountDTO getDetails(String userId, String orgLocationCode, String candiadteId, String timesheetType) throws NumberFormatException, Exception {
+	private DashBoardSocketCountDTO getDetails(String userId, String orgLocationCode, String candiadteId, String timesheetType,String isGlobalAccess) throws NumberFormatException, Exception {
 		User user = userService.getUserById(Long.parseLong(userId));
 		OrgLocations loginOrgLocations = orglocationService.getOrgLocationsByLocationCode(orgLocationCode);
 		Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candiadteId));
@@ -97,6 +97,7 @@ public class DashBoardSocketCount {
 		dto.setCandidateId(candidate.getMasterCandidateId().getId().toString());
 		dto.setOrgLocationId(loginOrgLocations.getId().toString());
 		dto.setTimesheetType(timesheetType);
+		dto.setIsGlobalAccess(isGlobalAccess);
 		return dto;
 	}
 
@@ -105,7 +106,7 @@ public class DashBoardSocketCount {
 		String userId = session.getRequestParameterMap().get("userId").get(0);
 		sessionMap.remove(userId);
 		runnable = false;
-		System.err.println("Error on session " + session.getId());
+		/*System.err.println("Error on session " + session.getId());*/
 	}
 
 	@OnClose
@@ -121,7 +122,7 @@ public class DashBoardSocketCount {
 			}
 		}
 		runnable = false;
-		System.out.println("session closed: " + session.getId());
+		/*System.out.println("session closed: " + session.getId());*/
 	}
 
 	private void triggerCount(DashBoardSocketCountDTO dashBoardSocketCountDTO) {
@@ -131,7 +132,7 @@ public class DashBoardSocketCount {
 			if(dashBoardSocketCountDTO.getSession() != null && dashBoardSocketCountDTO.getSession().isOpen()){
 					String timesheetCountType = Constants.ALL_RECORDS;
 					if("employes".equalsIgnoreCase(dashBoardSocketCountDTO.getTimesheetType())){
-						timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long.parseLong(dashBoardSocketCountDTO.getUserId()), Long.parseLong(dashBoardSocketCountDTO.getOrgLocationId()),timesheetCountType );
+						timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long.parseLong(dashBoardSocketCountDTO.getUserId()), Long.parseLong(dashBoardSocketCountDTO.getOrgLocationId()),timesheetCountType,dashBoardSocketCountDTO.getIsGlobalAccess());
 					}else if("myTimesheets".equalsIgnoreCase(dashBoardSocketCountDTO.getTimesheetType())){
 						timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(Long.parseLong(dashBoardSocketCountDTO.getCandidateId()), Long.parseLong(dashBoardSocketCountDTO.getOrgLocationId()),timesheetCountType);
 					}
@@ -142,7 +143,7 @@ public class DashBoardSocketCount {
 					
 					
 				} else {
-					System.err.println("Closed session: " + dashBoardSocketCountDTO.getSession().getId());
+					/*System.err.println("Closed session: " + dashBoardSocketCountDTO.getSession().getId());*/
 					sessionMap.remove(dashBoardSocketCountDTO.getUserId());
 				}
 			

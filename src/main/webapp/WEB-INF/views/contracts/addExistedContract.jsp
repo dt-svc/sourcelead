@@ -5,9 +5,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<script type="text/javascript" src="/resources/js/contractCommonScripts.js"></script>
+
 <script>
 $(document).ready(function(){
 	$("#tempEye").hide();
+	
+	if('${contract.ownersType}' == "Sequential"){
+		 getSequentialApprovers();
+	 }else{
+		 getParallelApprovers();
+	 }
 });
 </script>
 <style type="text/css">
@@ -113,7 +121,7 @@ $(document).ready(function(){
             </div>
                      
              
-          <div class="form-group" >
+          <%-- <div class="form-group" >
               <label class="col-md-4">Signing Authority<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
                   <select class="chosen-select form-control" id="owner" name="owner" data-validation="required" field-name="Owner">
@@ -127,7 +135,7 @@ $(document).ready(function(){
                     <option>Owner-3</option> -->
                   </select>
               </div>
-          </div>             
+          </div>   --%>           
              <div class="form-group" id="dateDiv">
               <label class="col-md-4">Start & End date<span class="text-danger">&nbsp;*</span></label>
               <div class="col-md-8">
@@ -285,7 +293,78 @@ $(document).ready(function(){
               <div class="col-md-8">
                 <input type="text" class="form-control" id="jurisdiction" name="jurisdiction" field-name="State Jurisdiction" data-validation="validate_length length0-250">
               </div>
-            </div>         
+            </div>     
+            
+            <!-- Radio buttons for Sequential or Parallel function -->
+	   		 <div  class="clearfix"></div>
+                <div  class="ml pull-left apprverReq" >
+                <label class="rad" id="parallel">
+                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" checked="checked" onclick="getParallelApprovers();">
+                <i class="fa fa-align-center apprverReq-active" title="Parallel"></i>
+                </label>
+                <label class="rad" id="sequential">
+                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" ${'SEQUENTIAL'  == contract.ownersType ? 'checked' : ''} onclick="getSequentialApprovers();">
+                <i class="fa fa-retweet" title="Sequential"></i>
+                </label>
+                 
+                  <div id="navbar" class="glyphicon glyphicon-info-sign text-info ml"></div>
+                </div>
+                <!-- Radio buttons for Sequential or Parallel function -->
+           
+             <div  class="clearfix"></div>
+          <div class="form-group row" id="parallelAppDiv" style="display:block">
+              <label class="col-md-4">Signing Authority<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select multiple class="chosen-select form-control" id="parallelOwner" name="parallelOwner" data-placeholder="Select signing authority" data-validation="required" field-name="Owner">
+                  <c:forEach var="user" items="${userList}">
+	                  <c:if test = "${!empty contract.ownerUserId.id}">
+	                 	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == contract.ownerUserId.id ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+	                  <c:if test = "${empty contract.ownerUserId.id}">
+	                  	 <option value="${user.id}" ${user.id  == contract.ownerUserId.id ? 'selected' : user.id  == SourceLeadWeb_userId ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+                  </c:forEach>
+                  </select>
+              </div>
+          </div> 
+          
+           <div id="sequentialAppDiv" style="display:none">
+          <div class="form-group row">
+              <label class="col-md-4">Signing Authority1<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="chosen-select form-control" id="sequentialOwner1" name="sequentialOwner1" data-placeholder="Select signing authority1" data-validation="required" onchange="refreshSigningAuthority2();" field-name="Owner">
+                  <option value=''>Select Signing Authority1</option>
+                  <c:forEach var="user" items="${userList}">
+	                  <c:if test = "${!empty contract.sequentialOwner1}">
+	                 	 <option value="${user.id}" ${user.id  == contract.sequentialOwner1 ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+	                  <c:if test = "${empty contract.sequentialOwner1}">
+	                  	 <option value="${user.id}" ${user.id  == contract.sequentialOwner1 ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+                  </c:forEach>
+                  </select>
+              </div>
+          </div> 
+          
+          <div class="form-group row">
+              <label class="col-md-4">Signing Authority2<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-8">
+                  <select class="chosen-select form-control" id="sequentialOwner2" name="sequentialOwner2" data-placeholder="Select signing authority2" onchange="changeSaveButton();" data-validation="required" field-name="Owner">
+                  <option value=''>Select Signing Authority2</option>
+                  <c:forEach var="user" items="${userList}">
+	                  <c:if test = "${!empty contract.sequentialOwner2}">
+	                 	 <option value="${user.id}" ${user.id  == contract.sequentialOwner2 ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+	                  <c:if test = "${empty contract.sequentialOwner2}">
+	                  	 <option value="${user.id}" ${user.id  == contract.sequentialOwner2 ? 'selected' : ''} >${user.firstName} ${user.lastName}</option>
+	                  </c:if>
+                  </c:forEach>
+                  </select>
+              </div>
+          </div>
+          </div>  
+            
+                
             
         </div>
       </div>
@@ -468,6 +547,25 @@ $(document).ready(function(){
     </div>
     </form:form>
   </section>
+  
+  <div class="comMask"></div>
+<div class="modal validatePreexistingContact" id="validatePreexistingContact" style="display: none">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+			<h4 class="strong pull-left mb0 margin-top0">Generated Contracts</h4>
+				<a href="javascript:void(0)" class="close" onClick="closeVpec();">&times;</a>
+			</div>
+			<div class="modal-body">
+				 <div id="preExistContractMsg"></div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary pull-right" onClick="closeVpec();">Ok</button>
+			</div>
+		</div>
+	</div>
+</div>
+  
 <div id="divTaxTd1" style="display: none; float: left;">
 	<div class="select-field tblminwidth-75">
 		<div class="tblminwidth-50">
@@ -524,6 +622,14 @@ $(document).ready(function(){
 	<a class="btn btn-sm btn-danger pull-right" title="Remove row"
 		onclick="removeTaxRow(REPLACEROWID)"><i class="fa fa-remove"></i></a>
 </div>
+
+<script>
+function closeVpec(){
+	$(".validatePreexistingContact").fadeOut();
+	$(".comMask").fadeOut();
+}
+</script>
+
 <script>
 
 function check(id){
@@ -2104,6 +2210,21 @@ function clearExistedContractEndDate(){
 function clearExistedContractJoinDate(){
 	$("#joinDate").val("");
 	};
+</script>
+
+<script>
+function refreshSigningAuthority2(){
+	var sequentialOwner1 = $("#sequentialOwner1").val();
+	var result = "";
+	<c:forEach var="user" items="${userList}">
+		if(sequentialOwner1 != "${user.id}"){
+			result = result +  '<option value="${user.id}"> ${user.firstName} ${user.lastName}</option>';
+		}
+	</c:forEach>
+	$("#sequentialOwner2").empty();
+	$("#sequentialOwner2").append(result);
+	$('#sequentialOwner2').trigger("chosen:updated");
+}
 </script>
 <!-- <script>
 	$(".clearUpload").click(function(){

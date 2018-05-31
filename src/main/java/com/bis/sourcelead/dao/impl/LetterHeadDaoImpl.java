@@ -18,6 +18,7 @@ import com.bis.sourcelead.dto.LetterHeadDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
 import com.bis.sourcelead.entity.LetterHead;
+import com.bis.sourcelead.entity.OrgLocations;
 
 @Repository
 public class LetterHeadDaoImpl implements LetterHeadDao{
@@ -129,6 +130,33 @@ public class LetterHeadDaoImpl implements LetterHeadDao{
 	    session.saveOrUpdate(letter);
 	    logger.info("Successfully updated..!");
 		return letter;
+	}
+
+	@Override
+	@Transactional
+	public Boolean validateLetterHeadName(String letterHeadName, OrgLocations orgLocation) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="from LetterHead ltr where ltr.letterHeadName =:letterHeadName and ltr.orgLocationId.id =:orgLocationId and ltr.status = '1'";
+		LetterHead list = (LetterHead)session.createQuery(query).setString("letterHeadName", letterHeadName).setLong("orgLocationId", orgLocation.getId()).uniqueResult();
+		if(null != list ){
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+	@Override
+	@Transactional
+	public LetterHead validateNameInEdit(String letterHeadName,Long letterHeadId,Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="from LetterHead ltr where ltr.letterHeadName =:letterHeadName and ltr.id =:letterHeadId and ltr.orgLocationId.id =:orgLocationId and ltr.status = '1'";
+		LetterHead list = (LetterHead)session.createQuery(query).setString("letterHeadName", letterHeadName).setLong("orgLocationId", orgLocationId).setLong("letterHeadId", letterHeadId).uniqueResult();
+		/*if(null != list ){
+			return true;
+		}else {
+			return false;
+		}*/
+		return list;
 	}
 
 	

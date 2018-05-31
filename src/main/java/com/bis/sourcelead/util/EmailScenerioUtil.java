@@ -96,7 +96,7 @@ public class EmailScenerioUtil {
 	}
 
 	public String AssembleEmailMessage(EmailScenario emailScenario, EmailMessage emailMessage,String subject , String body, String signature, String url, Org org,OrgLocations orgLocations ){
-		String emailTemplate = EmailTemplateHTMLConversionUtil.convertBodyOfEmailTemplateToHTML(body, signature,emailScenario.getCallToActionText(), emailScenario.getButtonText(), url , emailMessage,org,orgLocations, emailScenario.getTabId());
+		String emailTemplate = EmailTemplateHTMLConversionUtil.convertBodyOfEmailTemplateToHTML(body, signature,emailScenario.getCallToActionText(), emailScenario.getButtonText(), url , emailMessage,org,orgLocations, emailScenario.getTabId(),emailScenario.getTemplateType());
 		return emailTemplate ;
 	} 
 	

@@ -520,7 +520,7 @@ $(document).ready(function () {
 		
 		 
 		 <div class="form-group">
-                      <label class="col-md-3">Closed Date</label>
+                      <label class="col-md-3">Date of Closure</label>
                          <div class="col-md-9">
                            <div class="input-group">
                               <input type="text"  name="closedDate" class="form-control calendar" id="closedDate" readonly="readonly" value="${requirement.closedDateStringFormat}">
@@ -1218,7 +1218,7 @@ $(document).ready(function () {
 		          <h3>Locations</h3>
 		        </div>
 		       <div class="col-md-6">
-				 <label class="col-md-12">Job Locations (Format  city,state,country)</label>
+				 <label class="col-md-12"> City, State, Country</label>
 				 <div class="clearfix"></div>
 					<div id="timesheetDocumentsId" class="timesheetDocs timesheetDocs-custom jobdocsCustom">
 		                      <div class="col-md-8 commentFile timesheet_week_comm onboardDocs">
@@ -1539,15 +1539,16 @@ $(document).ready(function () {
 <script>
 function changeValidationType() {
 	var isVisible	= $("div[name=fieldVisible]").attr("data-visible");
-	
 	if(isVisible == 'N'){
 		$("div[name=fieldVisible] input").each(function() {
 			if($(this).attr('data-check') && ($(this).attr('data-check') === true || $(this).attr('data-check') === "true")){
-				if($(this).attr('data-validation') && $(this).attr('data-validation') === "required") {
+				if($(this).attr('data-validation') && $(this).attr('data-validation').indexOf("required") !== -1) {
 					$(this).attr('data-validation-optional', 'true');
+					$(this).attr('data-valid1', $(this).attr('data-validation'))
 					$(this).removeAttr('data-validation');
 				} else if($(this).attr('data-validation-optional')) {
-					$(this).attr('data-validation', 'required');
+					$(this).attr('data-validation', $(this).attr('data-valid1'));
+					$(this).removeAttr('data-valid1');
 					$(this).removeAttr('data-validation-optional');
 				}
 			}

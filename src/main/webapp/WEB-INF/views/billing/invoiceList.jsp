@@ -623,14 +623,14 @@ function invoicePagination(url){
 				result = result +'     <div class="tblminwidth-90">';
 				 result = result +'  <div class="pull-right positionRelative menuWidget" >';
 				 if(report.invoiceStatus != "Received" && report.invoiceStatus != "Rejected" ){
-					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\');" ></i>  ';
+					 result = result +' <i class="fa fa-ellipsis-v" onClick="showPopUp(\''+report.invoiceUUID+'\',\''+report.invoiceStatus+'\',\''+report.invoiceParentId+'\',\''+report.total+'\',\''+report.fileUrl+'\',\''+report.paymentStatus+'\');" ></i>  ';
 						result = result +'  <div id="popupDiv'+report.invoiceUUID+'" class="invoicePopRg"></div>';
 				} 
 				result = result +'  </div> ';
 				if(report.invoiceType == "Receivable" && (report.invoiceParentId == null || report.invoiceParentId == '' || report.invoiceParentId == "undefined")){
 					if(report.paymentStatus == "Paid" || report.invoiceStatus == "DRAFT" || report.invoiceStatus == "Rejected" || report.invoiceStatus == "SENT"){
 						if(report.paymentStatus == "Paid"){
-							result = result +'           <span class="text-primary primary pull-left" >Receive</span>   ';
+							result = result +'           <span class="text-primary primary pull-left" >Paid</span>   ';
 						}else if(report.invoiceStatus == "DRAFT"){
 							result = result +'           <span class="successBtn primary pull-left">Send</span><i class="fa fa-trash text-danger pull-right cursorPointer mr5" title="Remove Invoice" onClick="deleteInvoice(\''+report.invoiceUUID+'\');";></i>';	
 						}else if(report.invoiceStatus == "Rejected"){
@@ -649,9 +649,9 @@ function invoicePagination(url){
 				}else{
 					if(report.invoiceStatus == "Accepted"){
 						if(report.paymentStatus == "Paid"){
-							result = result +'           <span class=" primary pull-left">paid</span>   ';	
+							result = result +'           <span class=" primary pull-left">Paid</span>   ';	
 						}else{
-							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">pay</span> </td>';
+							result = result +'           <span class="receiveBtn pull-left" onclick="receivePaymentPop1('+report.id+','+report.dueAmount+');">Receive</span> </td>';
 						}
 						
 					}else{
@@ -889,7 +889,7 @@ $('#mypop').click(function(){
 </script>
 
 <script>
-function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl){
+function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl,paymentStatus){
 	removePopup();
 	     result = "";
 	     if(invoiceParentId == 'undefined'){
@@ -905,9 +905,9 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 	     }
 		 result = result+' <i class="fa fa-close close-div closediv-small" onClick="removePopup();"></i>';
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
-		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT'){
+		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT' && paymentStatus != 'Paid'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_INVOICE_REMINDER\')">';
-			 result = result +'      <li onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+			 result = result +'      <a onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</a> ';
 			'</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_INVOICE\')">';
@@ -920,7 +920,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 	     '</sec:authorize>'
 	     if(invoiceStatus != 'DRAFT')
 	     {
-	     result = result +'      <li onclick="linkInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</li>';
+	     result = result +'      <a onclick="linkInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-link paddingLeft paddingRight" title="Link Invoice"></i>Link Invoice</a>';
 	     }
 	     result = result +'    </ul>';
     	 $("#popupDiv"+invoiceUUID+"").append(result);
@@ -999,7 +999,8 @@ function sendReminder(invoiceUUID){
            		} else if (result.response === "AWKWARD") {
            		    location.href = "/errorPage";
            		} else if (result.response === "SUCCESS") {
-           			
+           			$("#msgDiv").html("Successfully you have sent a reminder Mail..");
+          			msgFadein();
            		} else if (result.indexOf('Sign In') !== -1) {
            			location.replace(sourceleadUrl);
            		} else {

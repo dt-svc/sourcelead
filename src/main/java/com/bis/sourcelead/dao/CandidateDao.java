@@ -6,6 +6,7 @@ import java.util.List;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -21,7 +22,7 @@ public interface CandidateDao {
 	
 	public Long getCandidatesCountByOrgLocationID(Long orgLocationId, String candidateStatus);
 	
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId, Long orgId, Integer candidateState, String updatedDateRange, String candidateType, String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter) throws Exception;
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId, Long orgId, Integer candidateState, String updatedDateRange, String candidateType, String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter,String createdByFilter,User user) throws Exception;
 	
 	public Candidate getCandidateByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId) throws Exception;
 	
@@ -126,4 +127,6 @@ public interface CandidateDao {
 	Candidate getCandidateByEmailAndOrgLocationId(String email, Long orgLocationId) throws Exception;
 	
 	public Candidate getCandidateByEmail(String email) throws Exception;
+
+	public CandidateIdendities getCandidateIdentitiesNumberByCandidateId(Long id, String status);
 }
