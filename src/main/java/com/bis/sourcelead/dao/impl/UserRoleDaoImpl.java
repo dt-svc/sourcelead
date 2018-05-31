@@ -1321,11 +1321,11 @@ public class UserRoleDaoImpl implements UserRoleDao {
 			employmentTypeQuery = "and userRole.user.id IN (select emp.user.id from Employees emp where emp.orgLocations.id = :locationId "+subQuery7+" )";
 		}
 
-			String listQuery = "from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1'  "+subQuery2+""
+			String listQuery = "from UserRole userRole where userRole.orgLocations.id = :locationId  and userRole.user.id <> '1'  "+subQuery2+""
 					+ " and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_PROFESSIONAL' and userRole.roles.roleName <> 'ROLE_CROWDSOURCING_RECRUITER' "+subQuery+" "+subQuery3+" "+subQuery4+" "+subQuery5+" "+subQuery6+" "+employmentTypeQuery+" " ;
 			Query query = session.createQuery(listQuery+query1+sortingQry);
 			
-			userRoleList = query.setLong("locationId", locationId).setLong("userId", userId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
+			userRoleList = query.setLong("locationId", locationId).setParameterList("roleIds", userRolesList).setLong("varZero", 0).setParameterList("orgRelationsList", orgRelationsList).setParameterList("managerUserIds", managerUserIds).setParameterList("teamsList", teamsList).setParameterList("departmentsList", departmentsList).setFirstResult(userDTO.getStart()).setMaxResults(userDTO.getLength()).list();	
 			
 			
 			String queryCount = "Select count (*) from UserRole userRole where userRole.orgLocations.id = :locationId and userRole.user.id <> :userId and userRole.user.id <> '1' "+subQuery2+""
