@@ -407,7 +407,17 @@ public class CommonUtil {
 	    }
 		return date;
 	}
-	
+
+	public static boolean isValidDate(String inDate) {
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	  //  dateFormat.setLenient(false);
+	    try {
+	      dateFormat.parse(inDate.trim());
+	    } catch (ParseException pe) {
+	      return false;
+	    }
+	    return true;
+	  }
 	/**
 	 *  returns current date based on orglocation date format
 	 * @param orgDateFormat
@@ -2048,12 +2058,12 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		return usersDTOList;
 	}
 	
-	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole,Long candidateId) {
+	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole,Long candidateId,String isGlobalAccess) {
 		boolean flag = false;
 		try {
 			ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
 			if(projectClients != null) {
-				if(projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+				if((projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) || (StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES))) {
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
 						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());

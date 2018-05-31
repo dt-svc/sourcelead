@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -170,6 +171,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		String importStatus = null;
 		String finalImportStatus = null;
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
@@ -297,6 +299,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					}
 				}
 
+
 				switch (dataMigrationDTO.getUploadType()) {
 				case "jobUpload":
 					dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user,
@@ -314,7 +317,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 				case "projectTasks":
 					dataMigrationCommonUtil.dataValidationForProjectTasks(errorSet, dataMigrationDTOJsonCopy, user,
-							orgLocation);
+							orgLocation,isGlobalAccess);
 					break;
 
 				case "immigrationUpload":
@@ -474,11 +477,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			break;
 
 		case "timesheetUpload":
-			System.out.println("Time Sheet block");
+			logger.debug("Time Sheet block");
 			break;
 
 		case "projectTasks":
-			System.out.println("projectTasks");
+			logger.debug("projectTasks");
 
 			ProjectTasksDTO projectTasksDTO = new ProjectTasksDTO();
 			ObjectMapper tasksMapper = new ObjectMapper();
@@ -493,16 +496,17 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			break;
 
 		case "immigrationUpload":
-			System.out.println("inside Immigration uplod---->>>>>");
+			logger.debug("inside Immigration uplod---->>>>>");
 			ObjectMapper immigratoinMapper = new ObjectMapper();
 			immigratoinMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			immigratoinMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 			// below details need to pushed into immigration table.
-			System.out.println("dataMigrationDTOJsonCopy. get Template  ---->>>>>"
+			logger.debug("dataMigrationDTOJsonCopy. get Template  ---->>>>>"
 					+ dataMigrationDTOJsonCopy.getString("template"));
 			ImmigrationDTO immDto = new ImmigrationDTO();
 			// immDto.setEmpId(dataMigrationDTOJsonCopy.getString("empId"));
 			immDto.setCandidateId(dataMigrationDTOJsonCopy.getString("candidateId")); // setting candidate id manually
+		
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("beneficiaryFirstName"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("beneficiaryFirstName"))) {																			// for saving.
 				immDto.setFirstName(dataMigrationDTOJsonCopy.getString("beneficiaryFirstName"));
@@ -517,7 +521,34 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			}
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("experience"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("experience"))) {
-				immDto.setExperience(dataMigrationDTOJsonCopy.getString("experience"));
+				if (dataMigrationDTOJsonCopy.getString("experience").matches("[-a-zA-Z]+")) {
+					// jsonObj.put("experienceYears", "0");
+					immDto.setExperienceYears("0");
+					immDto.setExperienceMonths("0");
+				} else {
+					String exp[] = getExperienceYearsAndMonths(dataMigrationDTOJsonCopy.getString("experience"));
+					if (exp.length > 1) {
+						immDto.setExperienceYears(exp[0]);
+						if (!exp[1].matches("[a-zA-Z]+")) {
+							if (!"years".equalsIgnoreCase(exp[1])) {
+								int months = ((Number) NumberFormat.getInstance().parse(exp[1])).intValue();
+								immDto.setExperienceMonths(String.valueOf(months));
+							}
+
+						}
+					} else {
+						if (exp[0].contains("years") || exp[0].contains("Years")) {
+							int years = ((Number) NumberFormat.getInstance().parse(exp[0])).intValue();
+							immDto.setExperienceYears(String.valueOf(years));
+							immDto.setExperienceMonths("0");
+						} else {
+							immDto.setExperienceYears("");
+							immDto.setExperienceMonths("");
+						}
+
+					}
+
+				}
 			}
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("ssn"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("ssn"))) {
@@ -564,7 +595,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			 * immDto.setAttorneyContactName(dataMigrationDTOJsonCopy.getString(
 			 * "companyName")); immDto.setAttorneyEmail(dataMigrationDTOJsonCopy.getString(
 			 * "companyContactEmail"));
+			 * 
+			 * 
 			 */
+			
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("immigrationJobId"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("immigrationJobId"))) {
 				immDto.setJobId(dataMigrationDTOJsonCopy.getString("immigrationJobId"));// Sql as of now hard coded value.
@@ -670,5 +704,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 			break;
 		}
+	}
+	
+	private String[] getExperienceYearsAndMonths(String experience) {
+	    
+		return experience.split("[\\p{Punct}\\s]+");
+		
 	}
 }

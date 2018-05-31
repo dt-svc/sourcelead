@@ -207,7 +207,6 @@ function resourceRequestsTab(){
 	    		result = result + '	    <thead>';
 	    		result = result + '	     	<tr>';
 	    		result = result + '	         	<th>Request Id</th>';
-	    		result = result + '	             <th>Approver</th>';
 	    		result = result + '	             <th>Req. Resources</th>';
 	    		result = result + '	             <th>Allocated Resource</th>';
 	    		result = result + '	             <th>Estimated Hours<br></th>';
@@ -248,7 +247,6 @@ function resourceRequestsTab(){
 						}
 	    				
 	    			}
-	    			result = result + '	             <td><div class="tbldata-dotdot-vsm">'+report.approverName+'</div></td>';
 		    		result = result + '	             <td><div>'+report.requestedResources+'</div></td>';
 		    		result = result + '	             <td><div>'+report.allocatedResources+'</div></td>';
 		    		result = result + '	             <td><div>'+report.estimatedHours+' hrs</div></td>';

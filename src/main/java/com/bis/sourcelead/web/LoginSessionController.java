@@ -287,6 +287,15 @@ public class LoginSessionController {
 			}
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
+			List<String> weekOffDaysList = new ArrayList<>();
+			if(orgLocations.getWeekOffDays() != null && !orgLocations.getWeekOffDays().isEmpty()) {
+				String[] weekOffDays = orgLocations.getWeekOffDays().split(",");
+				for(int i=0; i < weekOffDays.length; i++) {
+					weekOffDaysList.add(weekOffDays[i]);
+				}
+			}
+			SourceLeadSessionManager.setSessionAttribute(request, "weekOffDaysList", weekOffDaysList);
+			
 			SourceLeadSessionManager.setSessionAttribute(request, "averageWorkingHours", orgLocations.getAverageWorkingHours());
 			SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 			SourceLeadSessionManager.setSessionAttribute(request, "locationCode", orgLocations.getLocationCode());
@@ -377,6 +386,8 @@ public class LoginSessionController {
 			
 			SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 			SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
+			SourceLeadSessionManager.setSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
+			SourceLeadSessionManager.setSessionAttribute(request, "designation", userRole.getDesignation());
 			
 			
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");

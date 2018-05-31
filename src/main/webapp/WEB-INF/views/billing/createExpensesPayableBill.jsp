@@ -899,8 +899,20 @@ var validationSettings = {
  <!-- Adding Date Pickers -->
   <script>
 	$(function() {
+		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatEndDate = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatEndDate = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatEndDate = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatEndDate = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatEndDate = 'yy-dd-mm'; 
+		  }
+
 		$('#invoiceDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
@@ -912,7 +924,7 @@ var validationSettings = {
 			}
 		});
 	  $('#dueDate').datepicker({
-			dateFormat : 'dd-mm-yy',
+			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
 			changeYear: true, 
 			onSelect : function(selected) {
@@ -1360,7 +1372,7 @@ function getVendorContacts(vendorContactId){
 
 <div id="divInvoiceExpTd4" style="display: none; float: left;">
 	<div class="tbldata-dotdot-vsm">  
-	     <input type="text" class="form-control input-sm valid" placeholder="Total" name="expenseInvoice[REPLACEROWID].total" id='REPLACEROWIDtotal'>   
+	     <input type="text" class="form-control input-sm valid" placeholder="Total" name="expenseInvoice[REPLACEROWID].total" id='REPLACEROWIDtotal' readonly="readonly">   
      </div>
 </div>
 

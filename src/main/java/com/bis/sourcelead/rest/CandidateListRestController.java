@@ -514,6 +514,13 @@ public class CandidateListRestController {
 			boolQueryBuilder.must(favBoolQueryBuilder);
 		}
 		
+		
+		if(StringUtils.isNotBlank(search.getCreatedByFilter()) && search.getCreatedByFilter().equalsIgnoreCase("myCandidates")) {
+			BoolQueryBuilder createdByBuilder = QueryBuilders.boolQuery();
+			createdByBuilder.must(QueryBuilders.matchQuery("createdByUserCode", user.getUserCode()));
+			boolQueryBuilder.must(createdByBuilder);
+		}
+		
 		if(StringUtils.isNotBlank(search.getCandidateTypeFilter())) {
 			String[] candidateType = search.getCandidateTypeFilter().split(",");
 			BoolQueryBuilder candidateBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -547,6 +554,22 @@ public class CandidateListRestController {
 				createdByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("createdBy", keywd));
 			}
 			boolQueryBuilder.must(createdByBoolQueryBuilder);
+		}
+		
+		
+		if (StringUtils.isNotEmpty(search.getCreatedByCandidates())) {
+			ArrayList<String> createdByArrayCandidate = getSearchKeywordsFromChosenSelectField(search.getCreatedByCandidates());
+			if(search.getCreatedByCandidates().equalsIgnoreCase("myCandidates")) {
+				
+				if (createdByArrayCandidate != null && !createdByArrayCandidate.isEmpty()) {
+					BoolQueryBuilder createdByBoolQueryBuilder = new BoolQueryBuilder();
+					for (String keywd : createdByArrayCandidate) {
+						createdByBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("updatedBy", user.getUserCode()));
+					}
+					boolQueryBuilder.must(createdByBoolQueryBuilder);
+				}
+			} 
+			
 		}
 
 		// updatedOn
@@ -925,6 +948,9 @@ public class CandidateListRestController {
 				candidateDTO.setIsAssociate(can.getIsAssociate());
 				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
+				if(can.getConsultantUser() != null) {
+					candidateDTO.setUserId(can.getConsultantUser().getId());
+				}
 				candidateDTO.setCandidateId(String.valueOf(can.getId()));
 				SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
 				if (action != null && action.getId() != null) {
@@ -1617,6 +1643,7 @@ public class CandidateListRestController {
 			@RequestParam(value = "candidateFilterSkills", required = false) String candidateFilterSkills,
 			@RequestParam(value = "availability", required = false) String availability,
 			@RequestParam(value = "candidateTypeFilter", required = false) String candidateTypeFilter,
+			@RequestParam(value = "createdByFilter", required = false) String createdByFilter,
 			@RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
@@ -1631,7 +1658,7 @@ public class CandidateListRestController {
 			candidatesList = candidateService.getCandidatesListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
 		} else {
 			candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
-					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability,candidateTypeFilter);
+					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,user);
 
 		}
 

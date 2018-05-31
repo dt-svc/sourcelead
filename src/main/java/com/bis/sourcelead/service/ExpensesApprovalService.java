@@ -15,9 +15,9 @@ import com.bis.sourcelead.entity.User;
 
 public interface ExpensesApprovalService {
 
-	ExpensesApproverDTO getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser,OrgLocations orgLoc,ExpensesApproverDTO expensesApproverDTO) throws Exception;
+	ExpensesApproverDTO getExpensesApproverHierarchyByApproverUserIdAndOrgLocationId(User loginUser,OrgLocations orgLoc,ExpensesApproverDTO expensesApproverDTO,String isGlobalUser) throws Exception;
 	
-	ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,Long expenseId,Long locationsId) throws Exception;
+	ExpensesApproverHierarchy getExpensesApproverHierarchyByApproverUserIdAndExpenseId(Long approverUserId,Long expenseId,Long locationsId,String isGlobalUser) throws Exception;
 	
 	List<ExpensesApproverHierarchy> getExpensesApproverHierarchyListByExpenseId(Long expenseId) throws Exception;
 	
@@ -33,7 +33,7 @@ public interface ExpensesApprovalService {
 	
 	Boolean isTheExpenseTotallyApproved(Long expenseId);
 	
-	public Boolean isReopenButtonVisibleForLoginOrg(Long expenseId,Long locationsId);
+	public Boolean isReopenButtonVisibleForLoginOrg(Long expenseId,Long locationsId,String isGlobalUser);
 	
 	ExpensesApproverHierarchy getexpensesApproverHierarchyForEmployeeByExpenseId(Long expenseId);
 	
@@ -43,9 +43,9 @@ public interface ExpensesApprovalService {
 	
 	void updateExpenseStatusByExpenseId(Long expenseId,String status);
 
-	File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy, OrgLocations orgLoc, User loginUser) throws IOException, Exception;
+	File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy, OrgLocations orgLoc, User loginUser,String isGlobalUser) throws IOException, Exception;
 
-	File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy,OrgLocations orgLoc, User loginUser)throws IOException, Exception;
+	File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy,OrgLocations orgLoc, User loginUser,String isGlobalUser)throws IOException, Exception;
 	
 	public void sendReopenExpenseAcceptOrRejectMail(Expenses expense,String reason, User loginUser, OrgLocations orgLoc, String type, User reopenedUser, String projectName) throws Exception;
 

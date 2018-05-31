@@ -505,39 +505,41 @@ public class FileUploadUtil {
 			} // adding files to immigration doc folder is completed.
 			// Adding canidate Resume to candidate docs list folder
 			CandidateResumes candidateResume = (CandidateResumes) docsListMap.get("cadidateResume");
-			File resumeDocfolder = new File(staticPath, orgId + "/" + orgLocationId + "/resumes");
-			files = resumeDocfolder.listFiles();
-			if (resumeDocfolder.exists() || resumeDocfolder.list().length > 0) {
-				DocsFoundFlag =true;
-			}
-			inStream = null;
-			outStream = null;
-			for (File f : files) {
-					String fullFileName = FilenameUtils.getName(candidateResume.getFileURL());
-					if (f.getName().equalsIgnoreCase(fullFileName)) {
-						File afile = new File(f.getAbsolutePath());
-						File bfile = new File(immDocFolder.getAbsolutePath() + File.separator + f.getName());
-						try {
-							inStream = new FileInputStream(afile);
-							outStream = new FileOutputStream(bfile);
-
-							byte[] buffer = new byte[1024];
-
-							int length;
-							// copy the file content in bytes
-							while ((length = inStream.read(buffer)) > 0) {
-								outStream.write(buffer, 0, length);
+			if(candidateResume != null) {
+				File resumeDocfolder = new File(staticPath, orgId + "/" + orgLocationId + "/resumes");
+				files = resumeDocfolder.listFiles();
+				if (resumeDocfolder.exists() || resumeDocfolder.list().length > 0) {
+					DocsFoundFlag =true;
+				}
+				inStream = null;
+				outStream = null;
+				for (File f : files) {
+						String fullFileName = FilenameUtils.getName(candidateResume.getFileURL());
+						if (f.getName().equalsIgnoreCase(fullFileName)) {
+							File afile = new File(f.getAbsolutePath());
+							File bfile = new File(immDocFolder.getAbsolutePath() + File.separator + f.getName());
+							try {
+								inStream = new FileInputStream(afile);
+								outStream = new FileOutputStream(bfile);
+	
+								byte[] buffer = new byte[1024];
+	
+								int length;
+								// copy the file content in bytes
+								while ((length = inStream.read(buffer)) > 0) {
+									outStream.write(buffer, 0, length);
+								}
+								inStream.close();
+								outStream.close();
+								// delete the original file
+								// afile.delete();
+								// System.out.println("File is copied successful!");
+							} catch (IOException e) {
+								e.printStackTrace();
 							}
-							inStream.close();
-							outStream.close();
-							// delete the original file
-							// afile.delete();
-							// System.out.println("File is copied successful!");
-						} catch (IOException e) {
-							e.printStackTrace();
 						}
-					}
-			}// end adding candidate resume to candidate docs folder. 
+				}// end adding candidate resume to candidate docs folder. 
+			}
 			
 			// adding files to candidate employer doc folder is starts here.
 			List<CandidateEmployers> empdocsList = (List<CandidateEmployers>) docsListMap.get("employerDocs");

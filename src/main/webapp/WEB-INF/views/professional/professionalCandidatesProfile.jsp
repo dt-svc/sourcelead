@@ -89,7 +89,14 @@ function editCandidate(candidateId){
 				} else if (result.response === "SUCCESS") {
 					var json = result.object;
               		if(json != null ){  
-            			 	var lastName = '';
+              			
+              			var loginUserRole  = '${SourceLeadWeb_loginUserRole}'
+            			 var readonly = '';	
+	              			if(loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'){
+	              				readonly = 'readonly';
+	              			}
+              			
+              			var lastName = '';
             			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefined'){
             			 		lastName = json.lastName;            			 		
             			 	}
@@ -294,7 +301,7 @@ function editCandidate(candidateId){
 							result = result + '</div>';
 							
 							result = result + '<div class="col-md-6">';
-							result = result + '<input type="text" class="form-control input-sm" name="designation"  value="'+designation+'" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true" placeholder="Designation">';
+							result = result + '<input type="text" class="form-control input-sm" name="designation"  '+readonly+' value="'+designation+'" field-name="Designation"  data-validation="validate_Space validate_Name validate_length length2-250" data-validation-optional="true" placeholder="Designation">';
 							result = result + '</div>';
 							
 							result = result + '</div>';

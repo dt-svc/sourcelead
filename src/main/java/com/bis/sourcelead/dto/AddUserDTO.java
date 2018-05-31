@@ -35,7 +35,15 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String status;
 		
+		private String isGlobalAccess;
+		
+		private String grade;
+		
+		@Required(desc = "reportingManager")
 		private String reportingManager;
+		
+		@Required(desc = "resourceManager")
+		private String resourceManager;
 		
 		private String isMailSent;
 		
@@ -137,6 +145,8 @@ import com.bis.sourcelead.entity.UserRole;
 		private String extensionNumber;
 		
 		private String assignReportingManagers;
+		
+		private String assignResourceManagers;
 		
 		private String managerUsers;
 		
@@ -722,7 +732,6 @@ import com.bis.sourcelead.entity.UserRole;
 			this.customFormData = customFormData;
 		}
 
-
 		public String getMiddleName() {
 			return middleName;
 		}
@@ -753,6 +762,39 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setMaritalStatus(String maritalStatus) {
 			this.maritalStatus = maritalStatus;
+		}
+
+
+		public String getIsGlobalAccess() {
+			return isGlobalAccess;
+		}
+
+		public void setIsGlobalAccess(String isGlobalAccess) {
+			this.isGlobalAccess = isGlobalAccess;
+		}
+
+		public String getResourceManager() {
+			return resourceManager;
+		}
+
+		public void setResourceManager(String resourceManager) {
+			this.resourceManager = resourceManager;
+		}
+
+		public String getAssignResourceManagers() {
+			return assignResourceManagers;
+		}
+
+		public void setAssignResourceManagers(String assignResourceManagers) {
+			this.assignResourceManagers = assignResourceManagers;
+		}
+
+		public String getGrade() {
+			return grade;
+		}
+
+		public void setGrade(String grade) {
+			this.grade = grade;
 		}
 
 		
