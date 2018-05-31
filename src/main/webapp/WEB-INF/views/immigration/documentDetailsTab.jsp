@@ -288,6 +288,22 @@
 	<div class="comMask"></div>
 	
 	<script type="text/javascript">
+		var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
+		
+		for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+			})
+			
 function removeImmigDocumrntDynamic(id){
 	$("#uploadDocSaveDiv"+id).show();
 	$("#uploadDocEditDiv"+id).hide();

@@ -119,12 +119,14 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Select Education</label>
               	<div class="col-md-8 padding_right" id="nameIdDiv">
+					
 					<select class="chosen-select form-control" name="name" id= "eduName" field-name="Education" data-validation="required" onchange="validateEduname();" onkeyup = "validateEduname();">
 					<option value="" selected>--Select Education--</option>
 					  <c:forEach var="edu" items="${educationsDropList}">
 											<option value="${edu.name}">${edu.name}</option>
 										</c:forEach>
 					</select>
+					
 				</div>
 			</div>
           <div class="col-sm-12 noPad mt clearfix">
@@ -276,7 +278,15 @@
 	    }
 	});
 	
-		</script>
+	
+	for (var selector in config) {
+		  $(selector).chosen(config[selector]);
+		}
+		$('.chosen-select').each(function() {
+			var $this = $(this);
+			$this.next().css({'width': '100%'});
+			})
+</script>
 		
 <script type="text/javascript">
 $(function() {
