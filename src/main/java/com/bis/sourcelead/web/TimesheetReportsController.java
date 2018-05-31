@@ -28,6 +28,7 @@ public class TimesheetReportsController {
 	public ModelAndView dailyTimeSheetReports(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		 model.setViewName("timesheet/dailyTimesheetReports");
+		 return model;
 	}
 	
 	@RequestMapping(value = "/daywiseTimeSheetReports")

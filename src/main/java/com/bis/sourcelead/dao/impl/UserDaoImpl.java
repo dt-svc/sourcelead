@@ -1495,7 +1495,6 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional
-
 	public List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception {
 		// TODO Auto-generated method stub
 		
@@ -1514,6 +1513,8 @@ public class UserDaoImpl implements UserDao {
         return userDTOList;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
 	public List<User> getGlobalUsersByOrgId(Long roleId, Long orgId, Long tabId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String subQuery = "";
@@ -1677,11 +1678,4 @@ public class UserDaoImpl implements UserDao {
         
 
 	}
-}
-}
-}
-}
-}
-}
-}
 }

@@ -317,24 +317,13 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 				case "projectTasks":
 					dataMigrationCommonUtil.dataValidationForProjectTasks(errorSet, dataMigrationDTOJsonCopy, user,
-							orgLocation);
+							orgLocation,isGlobalAccess);
 					break;
 
 				case "immigrationUpload":
 					dataMigrationCommonUtil.dataValidationForImmigration(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
 					break;
-
-				
-				switch(dataMigrationDTO.getUploadType()){  
-			    case "jobUpload": dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;  
-			    case "timesheetUpload": 
-			    	String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
-			    	dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy, objFormulaEvaluator, objDefaultFormat, user, orgLocation,timeFrequency);break;  
-			    case "assetUpload": dataMigrationCommonUtil.dataValidationForAssets(errorSet, dataMigrationDTOJsonCopy, user, orgLocation);break;
-			    
-			    case "projectTasks": dataMigrationCommonUtil.dataValidationForProjectTasks(errorSet, dataMigrationDTOJsonCopy, user, orgLocation,isGlobalAccess);break;
-
 
 				}
 
