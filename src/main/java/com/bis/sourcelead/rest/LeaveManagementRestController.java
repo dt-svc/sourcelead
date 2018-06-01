@@ -2327,40 +2327,72 @@ public class LeaveManagementRestController {
 		Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 
 		UserRole selectedUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocations.getId());
-
+		List<User> approversList = new ArrayList<>();
 		// User loginUser = (User)
 		// SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (userId != null) {
 			List<User> appUser = new ArrayList<>();
-			List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId,
-					selectedUserRole.getRoles().getId(), orgLocations.getId());
-			if (approversList != null) {
-				for (User user : approversList) {
-					boolean flag = false;
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),
-							orgLocations.getId());
-					if (userRole != null) {
-						String roles = userRole.getRoles().getActionId();
-						String[] sa = roles.split(",");
-						for (String s : sa) {
-							if ("238".equalsIgnoreCase(s)) {
-								flag = true;
-								break;
+			
+			if(selectedUserRole.getReportingManager() != null){
+				approversList.add(selectedUserRole.getReportingManager());
+				if (approversList != null) {
+					for (User user : approversList) {
+						boolean flag = false;
+						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),
+								orgLocations.getId());
+						if (userRole != null) {
+							String roles = userRole.getRoles().getActionId();
+//							String[] sa = roles.contains("238");
+//							for (String s : sa) {
+								if (roles.contains("238")) {
+									flag = true;
+								}
+//							}
+							StringBuilder sb = new StringBuilder();
+							if (StringUtils.isNotBlank(user.getLastName())) {
+								sb.append(user.getFirstName()).append(" ").append(user.getLastName());
+							} else {
+								sb.append(user.getFirstName());
 							}
+							user.setFullName(user.getFullName().toString());
+							user.setUserType(userRole.getUserType());
+							if (flag)
+								appUser.add(user);
 						}
-						StringBuilder sb = new StringBuilder();
-						if (StringUtils.isNotBlank(user.getLastName())) {
-							sb.append(user.getFirstName()).append(" ").append(user.getLastName());
-						} else {
-							sb.append(user.getFirstName());
+					}
+				}
+			}else{
+				approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId,
+						selectedUserRole.getRoles().getId(), orgLocations.getId());
+				if (approversList != null) {
+					for (User user : approversList) {
+						boolean flag = false;
+						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),
+								orgLocations.getId());
+						if (userRole != null) {
+							String roles = userRole.getRoles().getActionId();
+//							String[] sa = roles.contains("238");
+//							for (String s : sa) {
+								if (roles.contains("238")) {
+									flag = true;
+								}
+//							}
+							StringBuilder sb = new StringBuilder();
+							if (StringUtils.isNotBlank(user.getLastName())) {
+								sb.append(user.getFirstName()).append(" ").append(user.getLastName());
+							} else {
+								sb.append(user.getFirstName());
+							}
+							user.setFullName(user.getFullName().toString());
+							user.setUserType(userRole.getUserType());
+							if (flag)
+								appUser.add(user);
 						}
-						user.setFullName(user.getFullName().toString());
-						user.setUserType(userRole.getUserType());
-						if (flag)
-							appUser.add(user);
 					}
 				}
 			}
+			
+			
 			return appUser;
 		} else
 			return null;
