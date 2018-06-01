@@ -114,7 +114,7 @@ public class ExpensesEntriesServiceImpl implements ExpensesEntriesService{
 						}
 						if(StringUtils.isNotBlank(entryCategory.getCategoryAmount()) && StringUtils.isNotBlank(entryCategory.getCategoryAmountType())){
 							Countries country = countriesService.getCountriesByCountryName(orgLocation.getCountry());
-							if(!country.getCurrency().equalsIgnoreCase(entryCategory.getCategoryAmountType())){
+							if(country!= null &&  country.getCurrency()!= null && !country.getCurrency().equalsIgnoreCase(entryCategory.getCategoryAmountType())){
 							 Float amount = conversionUtil.convert(entryCategory.getCategoryAmountType(),country.getCurrency(),Float.valueOf(entryCategory.getCategoryAmount()));
 							 entries.setCurrencyType(country.getCurrency());
 							 entries.setAmount(amount);

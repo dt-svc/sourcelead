@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
+import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
@@ -27,6 +28,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -83,6 +85,9 @@ public class UserController {
 	@Autowired
 	OrgLocationService orgLocationService;
 	
+	@Autowired
+	AssociateGradesService associateGradesService;
+	
 
 	
 	/**
@@ -111,6 +116,9 @@ public class UserController {
 		    
 		    List<Roles> rolesList = rolesService.getUserRolesListByModuleAndLoginUserRoleHierarchy(org,orgLocations.getId(),roleHierarchyId);
 		    model.addObject("rolesList", rolesList);
+		    
+		    List<AssociateGrades> gradesList = associateGradesService.getAssociateGradesListByOrgLocationId(orgLocations.getId());
+		    model.addObject("gradesList", gradesList);
 		    
 		     SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_ASSOCIATE);
 		     model.addObject("actionId",action.getId());

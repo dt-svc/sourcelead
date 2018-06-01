@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -164,8 +165,8 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 			}
 		
 		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
-			query = "from  ProjectPlanningResourceRequest resourceRequest  where  resourceRequest.projectPlanningRequestId.approverUser.id = :approverUserId "
-					+ "and resourceRequest.projectPlanningRequestId.orgLocationId.id = :orgLocationId  and resourceRequest.status = '1' "
+			query = "from  ProjectPlanningResourceRequest resourceRequest  where  resourceRequest.approverUser.id = :approverUserId "
+					+ "and resourceRequest.candidateId.orgLocationId.id = :orgLocationId  and resourceRequest.status = '1' "
 					+ "and resourceRequest.resourceStatus = :resourceStatus and resourceRequest.projectPlanningRequestId.requestType = 'Associate Request' ";
 			
 			if(query1.toString() != null && !query1.toString().isEmpty()){
@@ -186,7 +187,7 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 			
 		}else {
 			
-			query = "from  ProjectPlanningResourceRequest resourceRequest  where  resourceRequest.projectPlanningRequestId.orgLocationId.id = :orgLocationId "
+			query = "from  ProjectPlanningResourceRequest resourceRequest  where  resourceRequest.candidateId.orgLocationId.id = :orgLocationId "
 					+ " and resourceRequest.status = '1' and resourceRequest.resourceStatus = :resourceStatus and resourceRequest.projectPlanningRequestId.requestType = 'Associate Request' ";
 			
 			if(query1.toString() != null && !query1.toString().isEmpty()){
@@ -228,7 +229,11 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
   				requestDTO.setProjectPlanningRequestId(resourceRequest.getProjectPlanningRequestId().getRequestId());
   				requestDTO.setProjectName(resourceRequest.getProjectPlanningRequestId().getProjectName());
   				requestDTO.setRequestedUser(resourceRequest.getProjectPlanningRequestId().getRequestedUser());
-  				requestDTO.setApproverName(resourceRequest.getProjectPlanningRequestId().getApproverName());
+  				if(resourceRequest.getApproverUser() != null) {
+  					requestDTO.setApproverName(resourceRequest.getApproverName());
+  				}else {
+  					requestDTO.setApproverName(resourceRequest.getProjectPlanningRequestId().getApproverName());
+  				}
   				requestDTO.setCandidateName(resourceRequest.getCandidateName());
   				requestDTO.setConsultingType(resourceRequest.getConsultingType());
   				requestDTO.setResourceStatus(resourceRequest.getResourceStatus());
@@ -239,8 +244,9 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
   				ProjectClients pc = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(resourceRequest.getProjectPlanningRequestId().getProjectId().getId(), orgLocationId);
   				if(pc != null) {
   					requestDTO.setProjectClientUUID(pc.getUuid());
-  					requestDTO.setProjectUUID(resourceRequest.getProjectPlanningRequestId().getProjectId().getProjectUUID());
   				}
+  				requestDTO.setProjectUUID(resourceRequest.getProjectPlanningRequestId().getProjectId().getProjectUUID());
+  				requestDTO.setRequestedOrgLocationId(resourceRequest.getOrgLocationId().getId());
   				
   				Candidate candidate = candidateDao.getCandidateByCandidateId(resourceRequest.getCandidateId().getId());
   				if(candidate != null) {
@@ -267,13 +273,13 @@ private static final Logger logger = LoggerFactory.getLogger(ProjectPlanningReso
 		List<ProjectPlanningResourceRequest> projectPlanningResourceRequestList = null;
 		if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")) {
 			String query = "from ProjectPlanningResourceRequest resourceRequest  "
-					+ " where resourceRequest.projectPlanningRequestId.approverUser.id = :approverUserId and resourceRequest.projectPlanningRequestId.orgLocationId.id = :orgLocationId "
+					+ " where resourceRequest.approverUser.id = :approverUserId and  resourceRequest.candidateId.orgLocationId.id = :orgLocationId "
 					+ " and resourceRequest.status = '1' and resourceRequest.projectPlanningRequestId.requestType = 'Associate Request' ";
 			projectPlanningResourceRequestList =  session.createQuery(query.toString()).setLong("approverUserId", approverUserId).setLong("orgLocationId", orgLocationId).list();
 			
 		}else {
 			String query = "from ProjectPlanningResourceRequest resourceRequest  "
-					+ " where  resourceRequest.projectPlanningRequestId.orgLocationId.id = :orgLocationId "
+					+ " where  resourceRequest.candidateId.orgLocationId.id = :orgLocationId "
 					+ " and resourceRequest.status = '1' and resourceRequest.projectPlanningRequestId.requestType = 'Associate Request' ";
 			projectPlanningResourceRequestList =  session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
 			
