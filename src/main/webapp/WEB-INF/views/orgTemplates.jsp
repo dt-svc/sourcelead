@@ -195,7 +195,7 @@
 
 		</span>
 		</div>
-	</div>
+	</div> 
 	</c:if>
 	<div class="clearfix"></div>
 </section>

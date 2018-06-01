@@ -178,7 +178,7 @@ public class TimesheetController {
 		    User superUser = userService.getUserById(userId);
 		    ProjectMembers projectMembers = projectMembersService.getProjectMemberById(projectMemberId);
 		     OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-
+		     String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		   // SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		    ModelAndView model = new ModelAndView();
 		    
@@ -187,7 +187,7 @@ public class TimesheetController {
 		  	 String weekEndDateTimeSheet = frequencyDate[1].trim();
 		  	 Date startDateTimeSheet = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekStartDateTimeSheet.replaceAll("/", "-"));
 			 Date endDateTimeSheet = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),weekEndDateTimeSheet.replaceAll("/", "-"));
-			SubmissionApproverHierarchy subApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(userId, projectMembers.getProjects().getId(),projectMembers.getMasterCandidateId().getId(),orgLocations.getId(),startDateTimeSheet, endDateTimeSheet);
+			SubmissionApproverHierarchy subApproverHierarchy = submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(userId, projectMembers.getProjects().getId(),projectMembers.getMasterCandidateId().getId(),orgLocations.getId(),startDateTimeSheet, endDateTimeSheet,isGlobalAccess);
 			String approvalStatus = subApproverHierarchy.getSubmissionApprovalStatus().getValue();
 		    	//DateFormat format = simpleDateFormat;
 			if(approvalStatus.equalsIgnoreCase("new") || subApproverHierarchy.getReopenRejectedReason() != null){
