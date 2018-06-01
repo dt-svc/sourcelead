@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,6 +66,8 @@ import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.JobAlert;
 import com.bis.sourcelead.entity.Leave;
@@ -83,6 +86,8 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
+import com.bis.sourcelead.immigration.service.ImmigrationTemplateService;
 import com.bis.sourcelead.service.CampaignService;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
@@ -282,6 +287,12 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	EmailScenarioConfigurationService emailScenarioconService;
+	
+	@Autowired
+	private ImmigrationCommonService immigrationCommonService;
+	
+	@Autowired
+	private ImmigrationTemplateService immigrationTemplateService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -2674,6 +2685,296 @@ public class EMailJobScheduler {
 		// emailScenerioUtil.sendNotification(actionLink,receiver,owner,
 		// contracts.getOrgLocationId(), notificationScenario,new
 		// HashMap<String,String>());
+	}
+	
+	
+	/**
+	  * cron runs every day at 9 AM to send notifications email  about immigration template tasks selected users
+	  * @throws Exception
+	  */
+	@Scheduled(cron = "0 * * * * *")
+	//@Scheduled(cron = "0 0 9 1/1 * ?")
+	@Async
+	public void immigrationTemplateTaskReminder() throws Exception {
+		List<Org> orgList = orgService.getOrgs();
+		for (Org org : orgList) {
+				List<OrgLocations> orgLocations = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
+				for (OrgLocations ol : orgLocations) {
+					List<Immigration> immigrations = immigrationCommonService.getImmigrationsByOrgId(ol.getId());
+					if(!immigrations.isEmpty()) {
+						for(Immigration immigration : immigrations) {
+							List<ImmigrationTemplateTasks> templateTasks = immigrationTemplateService.getImmigrationTemplateTasksByTempId(immigration.getImmigrationTemplateId().getId());
+							if(!templateTasks.isEmpty()) {
+								for(ImmigrationTemplateTasks tasks : templateTasks) {
+									if(tasks.getTaskReminder() != null) {
+										String[] tasksReminders = tasks.getTaskReminder().split(",");
+								        if(tasksReminders.length != 0) {
+								        	Calendar cal = Calendar.getInstance();
+									        cal.setTime(tasks.getDueAfterDate());
+									        for(String taskReminder: tasksReminders) {
+									        	if(taskReminder.equalsIgnoreCase("1-days")) {
+									        		cal.add(Calendar.DATE, 1);
+									        		Date dueAfterDateInTimezone = getDateByTimeZone(cal.getTime(),ol);
+									        		cal.setTime(new Date());
+									        		Date currentDateInTimezone = getDateByTimeZone(cal.getTime(),ol);
+									        		if(dueAfterDateInTimezone.equals(currentDateInTimezone)) {
+									        			if(tasks.getAssignToUsers() != null) {
+									        				String[] users = tasks.getAssignToUsers().split(",");
+									        				for(String user: users) {
+									        					User toUserObj = userService.getUserById(Long.parseLong(user));
+									        					User fromUserObj = immigration.getCreatedBy();
+									        					sendEmailToTaskReminderUser(toUserObj, fromUserObj, immigration, ol);
+									        					sendNotificationToTaskReminderUser(toUserObj,immigration, ol);
+									        				}
+									        			}else if(tasks.getAssignToCandidate().equals("Y")) {
+									        				Candidate toCandidateObj = immigration.getCandidate();
+									        				User fromUserObj = immigration.getCreatedBy();
+								        					sendEmailToTaskReminderCandidate(toCandidateObj, fromUserObj, immigration, ol);
+								        					sendNotificationToTaskReminderCandidate(toCandidateObj,immigration, ol);
+									        			}
+									        		}
+									        		
+									        	}else if(taskReminder.equalsIgnoreCase("1-Week")) {
+									        		cal.add(Calendar.DATE, 7);
+									        		Date dueAfterDateInTimezone = getDateByTimeZone(cal.getTime(),ol);
+									        		cal.setTime(new Date());
+									        		Date currentDateInTimezone = getDateByTimeZone(cal.getTime(),ol);
+									        		if(dueAfterDateInTimezone.equals(currentDateInTimezone)) {
+									        			if(tasks.getAssignToUsers() != null) {
+									        				String[] users = tasks.getAssignToUsers().split(",");
+									        				for(String user: users) {
+									        					User toUserObj = userService.getUserById(Long.parseLong(user));
+									        					User fromUserObj = immigration.getCreatedBy();
+									        					sendEmailToTaskReminderUser(toUserObj, fromUserObj, immigration, ol);
+									        					sendNotificationToTaskReminderUser(toUserObj,immigration, ol);
+									        				}
+									        			}else if(tasks.getAssignToCandidate().equals("Y")) {
+									        				Candidate toCandidateObj = immigration.getCandidate();
+									        				User fromUserObj = immigration.getCreatedBy();
+								        					sendEmailToTaskReminderCandidate(toCandidateObj, fromUserObj, immigration, ol);
+								        					sendNotificationToTaskReminderCandidate(toCandidateObj,immigration, ol);
+									        			}
+									        		}
+									        	}else if(taskReminder.equalsIgnoreCase("15-days")) {
+									        		cal.add(Calendar.DATE, 15);
+									        		Date dueAfterDateInTimezone = getDateByTimeZone(cal.getTime(),ol);
+									        		cal.setTime(new Date());
+									        		Date currentDateInTimezone = getDateByTimeZone(cal.getTime(),ol);
+									        		if(dueAfterDateInTimezone.equals(currentDateInTimezone)) {
+									        			if(tasks.getAssignToUsers() != null) {
+									        				String[] users = tasks.getAssignToUsers().split(",");
+									        				for(String user: users) {
+									        					User toUserObj = userService.getUserById(Long.parseLong(user));
+									        					User fromUserObj = immigration.getCreatedBy();
+									        					sendEmailToTaskReminderUser(toUserObj, fromUserObj, immigration, ol);
+									        					sendNotificationToTaskReminderUser(toUserObj,immigration, ol);
+									        				}
+									        			}else if(tasks.getAssignToCandidate().equals("Y")) {
+									        				Candidate toCandidateObj = immigration.getCandidate();
+									        				User fromUserObj = immigration.getCreatedBy();
+								        					sendEmailToTaskReminderCandidate(toCandidateObj, fromUserObj, immigration, ol);
+								        					sendNotificationToTaskReminderCandidate(toCandidateObj,immigration, ol);
+									        			}
+									        		}
+									        	}else if(taskReminder.equalsIgnoreCase("1-Month")) {
+									        		cal.add(Calendar.MONTH, 1);
+									        		Date dueAfterDateInTimezone = getDateByTimeZone(cal.getTime(),ol);
+									        		cal.setTime(new Date());
+									        		Date currentDateInTimezone = getDateByTimeZone(cal.getTime(),ol);
+									        		if(dueAfterDateInTimezone.equals(currentDateInTimezone)) {
+									        			if(tasks.getAssignToUsers() != null) {
+									        				String[] users = tasks.getAssignToUsers().split(",");
+									        				for(String user: users) {
+									        					User toUserObj = userService.getUserById(Long.parseLong(user));
+									        					User fromUserObj = immigration.getCreatedBy();
+									        					sendEmailToTaskReminderUser(toUserObj, fromUserObj, immigration, ol);
+									        					sendNotificationToTaskReminderUser(toUserObj,immigration, ol);
+									        				}
+									        			}else if(tasks.getAssignToCandidate().equals("Y")) {
+									        				Candidate toCandidateObj = immigration.getCandidate();
+									        				User fromUserObj = immigration.getCreatedBy();
+								        					sendEmailToTaskReminderCandidate(toCandidateObj, fromUserObj, immigration, ol);
+								        					sendNotificationToTaskReminderCandidate(toCandidateObj,immigration, ol);
+									        			}
+									        		}
+									        	}else if(taskReminder.equalsIgnoreCase("90-days")) {
+									        		cal.add(Calendar.DATE, 90);
+									        		Date dueAfterDateInTimezone = getDateByTimeZone(cal.getTime(),ol);
+									        		cal.setTime(new Date());
+									        		Date currentDateInTimezone = getDateByTimeZone(cal.getTime(),ol);
+									        		if(dueAfterDateInTimezone.equals(currentDateInTimezone)) {
+									        			if(tasks.getAssignToUsers() != null) {
+									        				String[] users = tasks.getAssignToUsers().split(",");
+									        				for(String user: users) {
+									        					User toUserObj = userService.getUserById(Long.parseLong(user));
+									        					User fromUserObj = immigration.getCreatedBy();
+									        					sendEmailToTaskReminderUser(toUserObj, fromUserObj, immigration, ol);
+									        					sendNotificationToTaskReminderUser(toUserObj,immigration, ol);
+									        				}
+									        			}else if(tasks.getAssignToCandidate().equals("Y")) {
+									        				Candidate toCandidateObj = immigration.getCandidate();
+									        				User fromUserObj = immigration.getCreatedBy();
+								        					sendEmailToTaskReminderCandidate(toCandidateObj, fromUserObj, immigration, ol);
+								        					sendNotificationToTaskReminderCandidate(toCandidateObj,immigration, ol);
+									        			}
+									        		}
+									        	}else if(taskReminder.equalsIgnoreCase("180-days")) {
+									        		cal.add(Calendar.DATE, 180);
+									        		Date dueAfterDateInTimezone = getDateByTimeZone(cal.getTime(),ol);
+									        		cal.setTime(new Date());
+									        		Date currentDateInTimezone = getDateByTimeZone(cal.getTime(),ol);
+									        		if(dueAfterDateInTimezone.equals(currentDateInTimezone)) {
+									        			if(tasks.getAssignToUsers() != null) {
+									        				String[] users = tasks.getAssignToUsers().split(",");
+									        				for(String user: users) {
+									        					User toUserObj = userService.getUserById(Long.parseLong(user));
+									        					User fromUserObj = immigration.getCreatedBy();
+									        					sendEmailToTaskReminderUser(toUserObj, fromUserObj, immigration, ol);
+									        					sendNotificationToTaskReminderUser(toUserObj,immigration, ol);
+									        				}
+									        			}else if(tasks.getAssignToCandidate().equals("Y")) {
+									        				Candidate toCandidateObj = immigration.getCandidate();
+									        				User fromUserObj = immigration.getCreatedBy();
+								        					sendEmailToTaskReminderCandidate(toCandidateObj, fromUserObj, immigration, ol);
+								        					sendNotificationToTaskReminderCandidate(toCandidateObj,immigration, ol);
+									        			}
+									        		}
+									        	}
+									        }
+								        }
+									}
+								}
+							}
+						}
+					}
+				}
+		}
+		
+	}
+
+	private void sendNotificationToTaskReminderCandidate(Candidate toCandidateObj, Immigration immigration,
+			OrgLocations ol) throws Exception {
+
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (immigration.getGeneratedId() != null && !"".equalsIgnoreCase(immigration.getGeneratedId())) {
+			globalVarsMap.put("immigrationId", immigration.getGeneratedId());
+		}
+		if (immigration.getPetitionType().getName() != null
+				&& !"".equalsIgnoreCase(immigration.getPetitionType().getName())) {
+			globalVarsMap.put("petitionType", immigration.getPetitionType().getName());
+		}
+		
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+				Constants.IMMIGRATION_NOTIFICATION_TO_BENEFICIARY, Constants.ENTITY_TYPE_NOTIFICATION);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("immigration/viewImmigration?immigrationUUID="+immigration.getImmigrationUuid()+"&candidateUUID="+immigration.getCandidate().getCandidateUUID()+"&immiTemplateUUID="+immigration.getImmigrationTemplateId().getUuid()+"&myImmigrationPage=Y").toString();
+		emailScenerioUtil.sendNotification(actionLink, ol.getOrg().getUser(), toCandidateObj.getConsultantUser(), ol,notificationScenario,new HashMap<String,String>());
+	}
+
+	private void sendEmailToTaskReminderCandidate(Candidate toCandidateObj, User fromUserObj, Immigration immigration,
+			OrgLocations ol) {
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(toCandidateObj.getFirstName());
+		emailMessage.setLastName(toCandidateObj.getLastName());
+		emailMessage.setToEmail(toCandidateObj.getEmail());
+		emailMessage.setFromEmail(fromUserObj.getEmail());
+		emailMessage.setCreatedBy(fromUserObj.getUserCode());
+		
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (immigration.getGeneratedId() != null && !"".equalsIgnoreCase(immigration.getGeneratedId())) {
+			globalVarsMap.put("immigrationId", immigration.getGeneratedId());
+		}
+		if (immigration.getPetitionType().getName() != null
+				&& !"".equalsIgnoreCase(immigration.getPetitionType().getName())) {
+			globalVarsMap.put("petitionType", immigration.getPetitionType().getName());
+		}
+		if (fromUserObj.getFullName() != null && !"".equalsIgnoreCase(fromUserObj.getFullName())) {
+			globalVarsMap.put("immigrationManagerName", fromUserObj.getFullName());
+		}
+		if (fromUserObj.getEmail() != null && !"".equalsIgnoreCase(fromUserObj.getEmail())) {
+			globalVarsMap.put("immigrationManagerEmail", fromUserObj.getEmail());
+		}
+		if (toCandidateObj.getFullName() != null
+				&& !"".equalsIgnoreCase(toCandidateObj.getFullName())) {
+			globalVarsMap.put("beneficiaryName", toCandidateObj.getFullName());
+		}
+		StringBuilder loginBuilder = new StringBuilder();
+		globalVarsMap.put("immigrationLoginUrl", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+				.toString());
+
+		// calling the sendEmail method of emailScenerioUtil
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, ol.getOrg(), ol,
+				Constants.EMAIL_TO_IMMIGRATION_BENEFICIARY, new ArrayList<EmailAttachment>());
+		
+	}
+
+	private void sendNotificationToTaskReminderUser(User toUserObj, Immigration immigration, OrgLocations orgLocations) throws Exception {
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (immigration.getGeneratedId() != null && !"".equalsIgnoreCase(immigration.getGeneratedId())) {
+			globalVarsMap.put("immigrationId", immigration.getGeneratedId());
+		}
+		if (immigration.getPetitionType().getName() != null
+				&& !"".equalsIgnoreCase(immigration.getPetitionType().getName())) {
+			globalVarsMap.put("petitionType", immigration.getPetitionType().getName());
+		}
+		
+		EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+				Constants.IMMIGRATION_NOTIFICATION_TO_BENEFICIARY, Constants.ENTITY_TYPE_NOTIFICATION);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("immigration/viewImmigration?immigrationUUID="+immigration.getImmigrationUuid()+"&candidateUUID="+immigration.getCandidate().getCandidateUUID()+"&immiTemplateUUID="+immigration.getImmigrationTemplateId().getUuid()+"&myImmigrationPage=N").toString();
+		emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), toUserObj, orgLocations,notificationScenario,new HashMap<String,String>());
+		
+	}
+
+	private Date getDateByTimeZone(Date time, OrgLocations ol) throws ParseException {
+		String startTimeStr = Constants.TZ_DF.format(time);
+		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String date = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, ol.getTimezone().getTimeZoneId(), startTimeStr);
+		Date convertedDate = TZ_DF_TS.parse(date);
+		Date dateInTimezone = commonUtil.getOrgLocationCurrentDate(ol.getDateFormat(),convertedDate);
+		return dateInTimezone;
+	}
+
+	private void sendEmailToTaskReminderUser(User toUserObj, User fromUserObj, Immigration immigration, OrgLocations orgLocations) {
+
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(toUserObj.getFirstName());
+		emailMessage.setLastName(toUserObj.getLastName());
+		emailMessage.setToEmail(toUserObj.getEmail());
+		emailMessage.setFromEmail(fromUserObj.getEmail());
+		emailMessage.setCreatedBy(fromUserObj.getUserCode());
+		
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (immigration.getGeneratedId() != null && !"".equalsIgnoreCase(immigration.getGeneratedId())) {
+			globalVarsMap.put("immigrationId", immigration.getGeneratedId());
+		}
+		if (immigration.getPetitionType().getName() != null
+				&& !"".equalsIgnoreCase(immigration.getPetitionType().getName())) {
+			globalVarsMap.put("petitionType", immigration.getPetitionType().getName());
+		}
+		if (fromUserObj.getFullName() != null && !"".equalsIgnoreCase(fromUserObj.getFullName())) {
+			globalVarsMap.put("immigrationManagerName", fromUserObj.getFullName());
+		}
+		if (fromUserObj.getEmail() != null && !"".equalsIgnoreCase(fromUserObj.getEmail())) {
+			globalVarsMap.put("immigrationManagerEmail", fromUserObj.getEmail());
+		}
+		if (toUserObj.getFullName() != null
+				&& !"".equalsIgnoreCase(toUserObj.getFullName())) {
+			globalVarsMap.put("beneficiaryName", toUserObj.getFullName());
+		}
+		StringBuilder loginBuilder = new StringBuilder();
+		globalVarsMap.put("immigrationLoginUrl", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
+				"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+				.toString());
+
+		// calling the sendEmail method of emailScenerioUtil
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations,
+				Constants.EMAIL_TO_IMMIGRATION_BENEFICIARY, new ArrayList<EmailAttachment>());
 	}
 	
 }

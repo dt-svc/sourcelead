@@ -180,7 +180,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               <div class="col-md-8 padding_right">
-				<input class="form-control positionRelative" id="addressEdu" name="address" onclick="initLocationAuto('addressEdu');" placeholder="Address"  type="text"></input>
+				<input class="form-control positionRelative" id="addressEdu" name="address" onclick="initLocationAuto('addressEdu');" placeholder="Address"  type="text" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('addressEdu');"></i>
          						</div> 
 			</div>	

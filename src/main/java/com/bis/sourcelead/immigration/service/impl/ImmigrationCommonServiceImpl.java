@@ -1972,4 +1972,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return immigrationCommonDao.getTemplateDetailsByNameAndOrgLoacationId(name, orgLocations);
 	}
 
+	@Override
+	public List<Immigration> getImmigrationsByOrgId(Long id) {
+		return immigrationCommonDao.getImmigrationsByOrgId(id);
+	}
+
 }

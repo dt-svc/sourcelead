@@ -1338,7 +1338,7 @@ function  removeValidationAttorneyContact() {
 </script>
 <script>
 	 function selectedAttorney(){
-		 var vid =  $('#attorneys').val();
+		 var vid =  $('#attorneyId').val();
 		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>
