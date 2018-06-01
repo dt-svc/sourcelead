@@ -1,0 +1,2 @@
+INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES
+('Notification To Immigration Beneficiary', 'Notification', 'notificationToImmigrationBeneficiary', '[Immigration_Id] - [Petition_Type] Immigration process initiated', '[Immigration_Id] - [Petition_Type] Immigration process initiated', 'sourcelead', '', '[Immigration_Id] - [Petition_Type] Immigration process initiated','N','SLADMIN', 'slead', 'sleadIN');
