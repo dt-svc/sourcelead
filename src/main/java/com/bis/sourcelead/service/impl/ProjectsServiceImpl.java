@@ -1020,8 +1020,39 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 
+		 String fromEmail = null;
+		 EmailConfigurationFromMail confFromMail=null;
+		 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
+		 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
+			 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+				 if( fromMail.getEmailModules() != null){
+					String[] jobIds = fromMail.getEmailModules().split(",");
+						for(int j=0; j<jobIds.length; j++) {
+							if(Long.valueOf(jobIds[j]) == 5L ){
+								confFromMail=fromMail;
+							}
+						}
+				 }
+			 } 
+			 
+			 if(confFromMail == null){
+				 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
+				 if(confFromMail != null){
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }else{
+				 fromEmail = confFromMail.getEmail();
+			 }
+		 }
+		 
+		 if(StringUtils.isNotBlank(fromEmail)){
+			 emailMessage.setFromEmail(fromEmail);
+		 }
+		 
+		 
 		 StringBuilder fromNameSB = new StringBuilder();
-		 emailMessage.setFromName(Constants.SOURCELEAD_ADMIN_UNIQUE);
+		 emailMessage.setFromName(orgLocations.getOrgName());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
