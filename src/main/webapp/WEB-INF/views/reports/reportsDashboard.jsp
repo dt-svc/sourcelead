@@ -112,7 +112,7 @@
 				<span class="dropdown-toggle btn btn-sm btn-default" type="button" id="menu3" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 
-				<li><a href="${appPath}/dailyTimeSheetReports">Daily Timesheet Report</a></li>
+				<%-- <li><a href="${appPath}/dailyTimeSheetReports">Daily Timesheet Report</a></li> --%>
 
 				<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
 
