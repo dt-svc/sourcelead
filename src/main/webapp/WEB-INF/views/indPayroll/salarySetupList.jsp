@@ -156,7 +156,7 @@ function salarySetupListPagination(url,sourceleadUrl){
             	  }else{
             		  pMethod = "--";
             	  }
-            	  result = result +"<td><div><span>"+pMethod+"</span></div></td>";
+            	  result = result +"<td><div><span id='methodSpan"+opt.uuid+"'>"+pMethod+"</span></div></td>";
 	              return result;
               	 	
               }
@@ -171,7 +171,7 @@ function salarySetupListPagination(url,sourceleadUrl){
 	            	  }else{
 	            		  pFormula = "--";
 	            	  }
-	            	  result = result +"<td><div><span>"+pFormula+"</span></div></td>";
+	            	  result = result +"<td><div><span id='formulaSpan"+opt.uuid+"'>"+pFormula+"</span></div></td>";
 	            	  return result;
 	              }
 		     },{

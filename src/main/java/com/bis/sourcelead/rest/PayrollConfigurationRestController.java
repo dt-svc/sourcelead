@@ -621,6 +621,8 @@ public class PayrollConfigurationRestController {
 									if(payrollPayhead != null) {
 										if(!payrollPayheadDTO.getMethod().equalsIgnoreCase(payrollPayhead.getMethod()) || !payrollPayheadDTO.getFormula().equalsIgnoreCase(payrollPayhead.getFormula())) {
 											
+											payrollPayheadDTO.getFormula();
+											
 											if(StringUtils.isNotBlank(payrollPayhead.getName())) {
 												payrollPayheadDTO.setName(payrollPayhead.getName());
 											}else {
@@ -736,7 +738,7 @@ public class PayrollConfigurationRestController {
 											payrollPayhead = payrollPayheadService.savePayrollPayhead(payrollPayheadDTO, user, orgLocations);
 										}
 									}
-									if (payrollPayheadDTO.getSalarySetup() != null && payrollPayheadDTO.getSalarySetup().size() > 0) {
+									/*if (payrollPayheadDTO.getSalarySetup() != null && payrollPayheadDTO.getSalarySetup().size() > 0) {
 										for (PayrollPayheadSalarySetupDTO ppss : payrollPayheadDTO.getSalarySetup()) {
 											
 											if(StringUtils.isNotBlank(ppss.getUuid())) {
@@ -769,7 +771,7 @@ public class PayrollConfigurationRestController {
 											
 											payrollPayheadSalarySetup = payrollPayheadService.savePayrollPayheadSalarySetup(payrollPayheadSalarySetup);
 										}
-									}
+									}*/
 									response.setResponse(Result.SUCCESS.name());
 									response.setResponseMessage(Result.SUCCESS.getValue());
 								} else{

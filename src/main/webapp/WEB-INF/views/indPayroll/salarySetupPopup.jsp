@@ -18,8 +18,8 @@
 			    <div class="form-group">
 					<label class="clearfix">Payhead Title</label>
 					<div class="clearfix">
-						<%-- <input type="hidden" name="id"  value="${payrollPayhead.id}"> --%>
-						<input type="text" class="form-control"  readonly placeholder="Enter" value="${payrollPayhead.name } (${payrollPayhead.shortCode})">
+						<input type="hidden" name="id"  value="${payrollPayhead.id}">
+						<input type="text" class="form-control" readonly placeholder="Enter" value="${payrollPayhead.name} (${payrollPayhead.shortCode})">
 					</div>
 				</div>
 				<div class="form-group">
@@ -29,82 +29,88 @@
 							<!-- <option value="">--Select method--</option> -->
 							<option ${payrollPayhead.method == 'Flat' ? 'selected' : ''}>Flat</option>
 							<option ${payrollPayhead.method == '% of CTC' ? 'selected' : ''}>% of CTC</option>
-							<option ${payrollPayhead.method == '% of Gross' ? 'selected' : ''}>% of Gross</option>
+							<option ${payrollPayhead.method == '% of Gross pay' ? 'selected' : ''}>% of Gross pay</option>
 							<option ${payrollPayhead.method == '% of Payheads' ? 'selected' : ''}>% of Payheads</option>
-							<option ${payrollPayhead.method == 'Formula' ? 'selected' : ''}>Formula</option>
+							<%-- <option ${payrollPayhead.method == 'Formula' ? 'selected' : ''}>Formula</option> --%>
 						</select>
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="clearfix" id="formulaLabel">${payrollPayhead.method == '% of Payheads' || payrollPayhead.method == 'Formula' ? 'Formula' : payrollPayhead.method == '% of CTC' || payrollPayhead.method == '% of Gross' ? 'Percentage' :'Amount'}</label>
+				
+				<div class="form-group" id="formulaInputDiv" ${empty payrollPayhead || empty payrollPayhead.method || payrollPayhead.method == '% of CTC' || payrollPayhead.method == '% of Gross pay' || payrollPayhead.method == 'Flat' ? '' : 'hidden'}>
+					<label class="clearfix" id="formulaLabel">${payrollPayhead.method == '% of Payheads' || payrollPayhead.method == 'Formula' ? 'Formula' : payrollPayhead.method == '% of CTC' || payrollPayhead.method == '% of Gross pay' ? 'Percentage' :'Amount'}</label>
 					<div class="clearfix">
-						<input type="text" class="form-control" id="formula" name="formula" placeholder="Enter amount" data-validation="validate_Space validate_length length1-15 validate_int" value="${payrollPayhead.formula}">
+						<input type="text" class="form-control" id="formula" ${payrollPayhead.method == '% of CTC' || payrollPayhead.method == '% of Gross pay' || payrollPayhead.method == 'Flat' || empty payrollPayhead.method ? 'name="formula"' : ''} placeholder="Enter amount" data-validation-optional="true" value="${payrollPayhead.formula}">
 					</div>
 				</div>
-				<div class="form-group" id="payheadsFormulaGroup" ${payrollPayhead.method == '% of Payheads' ? '' : 'hidden'}>
-					<c:set var="rowIndex" value="0" scope="page" />
-					<label class="clearfix">Payheads</label>
-					<div class="row">
-						<c:if test="${empty salarySetupList}">
-							<div class="duplicateDiv form-group clearfix">
-								<div class="col-md-5">
-									<input type="text" class="form-control" id="formulaPercentage0" name="salarySetup[0].formulaPercentage" placeholder="Enter percentage" 
-										data-validation-optional="true" data-validation="validate_Space validate_length length1-2">
-								</div>
-								<div class="col-md-6">
-									<select class="sel" id="formulaPayhead0" name="salarySetup[0].formulaPayhead">
-										<option value="">--Select payhead--</option>
-				                			<c:forEach var="list" items="${payheadList}">
-					                			<c:if test="${payrollPayhead.id != list.id}">
-					                				<option value="${list.id}">${list.name} (${list.shortCode})</option>
-					                			</c:if>
-											</c:forEach>
-									</select>
-								</div>
-								<div class="col-md-1">
-									<a href="javascript:void(0)" class="cloneDiv" ><i class="fa fa-plus mt10"></i></a> 			
-								</div>
-							</div>
-						</c:if>
-						<c:if test="${!empty salarySetupList}">
-							<c:forEach var="ppssList" items="${salarySetupList}" varStatus="loop">
-							<c:set var="rowIndex" value="${loop.index}" scope="page" />
-								<div class="duplicateDiv form-group clearfix">
-									<div class="col-md-5">
-										<input type="text" class="form-control" id="formulaPercentage${loop.index}" name="salarySetup[${loop.index}].formulaPercentage" placeholder="Enter percentage" 
-											data-validation-optional="true" data-validation="validate_Space validate_length length1-2 validate_int" value="${ppssList.formulaPercentage}">
-									</div>
-									<input type="hidden" id="uuid${loop.index}" name="salarySetup[${loop.index}].uuid" value="${ppssList.uuid}">
-									<div class="col-md-6">
-										<select class="sel" id="formulaPayhead${loop.index}" name="salarySetup[${loop.index}].formulaPayhead">
-											<option value="">--Select payhead--</option>
-					                			<c:forEach var="list" items="${payheadList}">
-						                			<c:if test="${payrollPayhead.id != list.id}">
-						                				<option value="${list.id}" ${ppssList.formulaPayhead == list.id ? 'selected' : ''}>${list.name} (${list.shortCode})</option>
-						                			</c:if>
-												</c:forEach>
-										</select>
-									</div>
-									<div class="col-md-1">
-										<c:if test="${loop.index == 0}">
-											<a href="javascript:void(0)" class="cloneDiv" ><i class="fa fa-plus mt10"></i></a>
-										</c:if>
-										<c:if test="${loop.index > 0}">
-											<a href="javascript:void(0)" class="cloneDiv" ><i class="fa fa-trash mt10" onclick="deleteRowCurrent(this)"></i></a>
-										</c:if>
-									</div>
-								</div>
-							</c:forEach>
-						</c:if>
-						<div id="duplicateDiv"></div>
-					</div>
-				</div>
+				
+				
+				<div class="row" id="payheadsFormulaGroup" ${payrollPayhead.method == '% of Payheads' || payrollPayhead.method == 'Formula' ? '' : 'hidden'}>
+					<div id="payheadsFormulaGroupOpt" ${payrollPayhead.method == 'Formula' ? 'hidden' : ''}>
+					<div class="col-md-3">
+		              <label>Percentage (%)</label>
+		              <div class="clearfix">
+							<select class="form-control chosen-select" id="formulaPercentage" name="formulaPercentage">
+								<option value="">Select</option>
+		                			<c:forEach begin="1" end="100" varStatus="percent">
+											<option >${percent.index}%</option>
+									</c:forEach>
+							</select>
+		              </div>
+		            </div>
+		            <div class="col-md-5">
+		              <label>Payhead</label>
+		              <div class="clearfix">
+							<select class="form-control chosen-select" id="formulaPayhead" name="formulaPayhead">
+								<option value="">Select</option>
+		                			<c:forEach var="list" items="${payheadList}">
+			                			<c:if test="${payrollPayhead.id != list.id}">
+			                				<option value="${list.shortCode}">${list.name} (${list.shortCode})</option>
+			                			</c:if>
+									</c:forEach>
+							</select>
+		              </div>
+		            </div>
+		            <div class="col-md-2">
+		              <label>Operator</label>
+		              <div class="clearfix">
+		                <select class="form-control chosen-select" id="formulaOperator" name="formulaOperator">
+		                  <option value="">Select</option>
+		                  <option>&#43;</option>
+		                  <option>&#42;</option>
+		                  <option>&#47;</option>
+		                  <option>&#45;</option>
+		                  <option>&#61;</option>
+		                  <option>&#37;</option>
+		                  <option>&#40;</option>
+		                  <option>&#41;</option>
+		                  <option>&#91;</option>
+		                  <option>&#93;</option>
+		                  <option>&#123;</option>
+		                  <option>&#125;</option>
+		                </select>
+		              </div>
+		            </div>
+		            <div class="col-md-2">
+		              <label>Action</label>
+		              <button type="button" class="btn btn-success btnSuccess btn-block" onclick="insertAtCursor('formulaTextareaId');return false;">Add</button>
+		            </div>
+	            </div>
+		            <div class="clearfix"></div>
+		            <div class="clearfix mt  col-md-12" id="formulaTextareaDiv">
+		              <textarea id="formulaTextareaId" ${payrollPayhead.method == '% of Payheads' || payrollPayhead.method == 'Formula' ? 'name="formula"' : ''}  class="form-control" rows="2">${payrollPayhead.formula}</textarea>
+		              <div class="pull-right mt5" id="payheadsFormulaValidateBtn" ${payrollPayhead.method == 'Formula' ? 'hidden' : ''}>
+		                <button type="button" class="btn btn-success btnSuccess" onClick="validateFormula();">Validate</button>
+		              </div>
+		              <!-- <p class="text-success mt5">Valid expression</p>
+		              <p class="text-danger mt5">Invalid expression</p> -->
+		            </div>
+	          </div>
 			</div>
 			
 			<div class="modal-footer">
 				<div class="pull-right">
 					<input type="button" id="saveSalarySetupBtn" class="btn btn-success btnSuccess" value="Save" title="Save">
-					<input type="button" class="btn btn-default mr" value="Cancel" title="Cancel" onClick="closesalarySetup();">
+					<input type="button" class="btn btn-default" value="Cancel" title="Cancel" onClick="closesalarySetup();">
 				</div>
 			</div>
 		</form:form>
@@ -118,22 +124,6 @@
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
             };
-        
-     // Clone Div
-     /* var rowIndex = 0; */
-     	var rowIndex = '${rowIndex}';
-    	$(".cloneDiv").click(function(){
-    		rowIndex++;
-    		$(this).parents(".duplicateDiv").clone().appendTo("#duplicateDiv").find("#formulaPercentage0").attr('name', 'salarySetup['+rowIndex+'].formulaPercentage').attr('id', 'formulaPercentage'+rowIndex).parents(".duplicateDiv").find("#formulaPayhead0").attr('name', 'salarySetup['+rowIndex+'].formulaPayhead').attr('id', 'formulaPayhead'+rowIndex).parents(".duplicateDiv").find(".fa-plus").removeClass("fa-plus").addClass("fa-trash").attr("onclick","deleteRowCurrent(this)");
-    		$("#formulaPercentage"+rowIndex).val("");
-    		$("#formulaPayhead"+rowIndex).val("");
-    		/* $('#formulaPayhead'+rowIndex).chosen();
-    		$('#formulaPayhead'+rowIndex).trigger("chosen:updated"); */
-    	});
-     
-    	function deleteRowCurrent(event){
-    		$(event).parent().parent().parent().remove();
-    	}
 </script>
 
 <script>
@@ -141,24 +131,50 @@
 </script>
 <script>
 $('#method').on('change', function() {
+	  $("#formulaTextareaId").val("");
+	  $("#formula").val("");
+	  $('#formulaPercentage').trigger("chosen:updated");
+	  $('#formulaPayhead').trigger("chosen:updated");
+	  $('#formulaOperator').trigger("chosen:updated");
+	  $("#formulaInputDiv").show();
+	  $("#payheadsFormulaValidateBtn").hide();
+      $('#formula').removeAttr("data-validation");
+      $('#formulaTextareaId').removeAttr("data-validation");
+      
 	  if($('#method :selected').text() == 'Flat'){
 		  $("#formula").attr("placeholder", "Enter amount");
 		  $("#formulaLabel").text("Amount");
+		  $("#formula").attr("name", "formula");
 		  $("#payheadsFormulaGroup").hide();
-	  }else if($('#method :selected').text() == '% of CTC' || $('#method :selected').text() == '% of Gross'){
+		  $("#formulaTextareaId").removeAttr("name");
+		  $('#formula').attr("data-validation", "validate_Space validate_length length1-10 validate_int");
+		  
+	  }else if($('#method :selected').text() == '% of CTC' || $('#method :selected').text() == '% of Gross pay'){
 		  $("#formula").attr("placeholder", "Enter percentage");
 		  $("#formulaLabel").text("Percentage");
+		  $("#formula").attr("name", "formula");
 		  $("#payheadsFormulaGroup").hide();
+		  $("#formulaTextareaId").removeAttr("name");
+		  $('#formula').attr("data-validation", "validate_Space validate_length length1-3 validate_int");
+		  
 	  }else if($('#method :selected').text() == '% of Payheads'){
-		  $("#formula").attr("placeholder", "Enter formula");
-		  $("#formulaLabel").text("Formula");
-		  /* $('#formulaPayhead1').chosen();
-  		  $('#formulaPayhead1').trigger("chosen:updated"); */
+		  $("#formula").removeAttr("name");
+		  $("#formulaInputDiv").hide();
 		  $("#payheadsFormulaGroup").show();
+		  $("#formulaTextareaId").attr("name", "formula");
+		  $("#payheadsFormulaGroupOpt").show();
+		  $("#payheadsFormulaValidateBtn").show();
+	      $('#formulaTextareaId').attr("data-validation", "validate_Space validate_length length1-200");
+		  
 	  }else if($('#method :selected').text() == 'Formula'){
-		  $("#formula").attr("placeholder", "Enter formula");
-		  $("#formulaLabel").text("Formula");
-		  $("#payheadsFormulaGroup").hide();
+		  $("#formula").removeAttr("name");
+		  $("#formulaInputDiv").hide();
+		  $("#payheadsFormulaGroup").show();
+		  $("#formulaInputDiv").hide();
+		  $("#formulaTextareaId").attr("name", "formula");
+		  $("#payheadsFormulaGroupOpt").hide();
+	      $('#formulaTextareaId').attr("data-validation", "validate_Space validate_length length1-200");
+		  
 	  }
 })
 </script>
@@ -186,7 +202,12 @@ $('#method').on('change', function() {
 			                } else if (result.response === "AWKWARD") {
 			                    location.href = "/errorPage";
 			                } else if (result.response === "SUCCESS") {
-			                	
+			                	if($("#formula").val() != null && $("#formula").val() != ''){
+			                		$("#formulaSpan"+uuid).text($.trim($("#formula").val()));
+			                	}else{
+			                		$("#formulaSpan"+uuid).text($.trim($("textarea#formula").val()));
+			                	}
+			                	$("#methodSpan"+uuid).text($("#method").val());
 			                	
 			                	closesalarySetup();
 			                    
@@ -208,5 +229,55 @@ $('#method').on('change', function() {
 		$("#salarySetup_form").showHelpOnFocus();
 		$("#salarySetup_form").validateOnBlur(false, validationSettings);
 	});
+	
+	
+	function insertAtCursor(areaId) {
+		var percentage = $("#formulaPercentage").val();
+		var payhead = $("#formulaPayhead").val();
+		var operator = $("#formulaOperator").val();
+		
+		var text = percentage+payhead+operator;
+		  var txtarea = document.getElementById(areaId);
+		  if (!txtarea) {
+		    return;
+		  }
+
+		  var scrollPos = txtarea.scrollTop;
+		  var strPos = 0;
+		  var br = ((txtarea.selectionStart || txtarea.selectionStart == '0') ?
+		    "ff" : (document.selection ? "ie" : false));
+		  if (br == "ie") {
+		    txtarea.focus();
+		    var range = document.selection.createRange();
+		    range.moveStart('character', -txtarea.value.length);
+		    strPos = range.text.length;
+		  } else if (br == "ff") {
+		    strPos = txtarea.selectionStart;
+		  }
+
+		  var front = (txtarea.value).substring(0, strPos);
+		  var back = (txtarea.value).substring(strPos, txtarea.value.length);
+		  txtarea.value = front + text + back;
+		  strPos = strPos + text.length;
+		  if (br == "ie") {
+		    txtarea.focus();
+		    var ieRange = document.selection.createRange();
+		    ieRange.moveStart('character', -txtarea.value.length);
+		    ieRange.moveStart('character', strPos);
+		    ieRange.moveEnd('character', 0);
+		    ieRange.select();
+		  } else if (br == "ff") {
+		    txtarea.selectionStart = strPos;
+		    txtarea.selectionEnd = strPos;
+		    txtarea.focus();
+		  }
+
+		  txtarea.scrollTop = scrollPos;
+		}
+	
+	function validateFormula(){
+		var formula = $("#formulaTextareaId").text();
+		
+	}
 	
 </script>
