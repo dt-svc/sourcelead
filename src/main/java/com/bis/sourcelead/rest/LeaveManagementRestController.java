@@ -2328,6 +2328,7 @@ public class LeaveManagementRestController {
 
 		UserRole selectedUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocations.getId());
 		List<User> approversList = new ArrayList<>();
+		boolean flag = false;
 		// User loginUser = (User)
 		// SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (userId != null) {
@@ -2337,7 +2338,6 @@ public class LeaveManagementRestController {
 				approversList.add(selectedUserRole.getReportingManager());
 				if (approversList != null) {
 					for (User user : approversList) {
-						boolean flag = false;
 						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),
 								orgLocations.getId());
 						if (userRole != null) {
@@ -2361,12 +2361,11 @@ public class LeaveManagementRestController {
 						}
 					}
 				}
-			}else{
+			}else if(!flag){
 				approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId,
 						selectedUserRole.getRoles().getId(), orgLocations.getId());
 				if (approversList != null) {
 					for (User user : approversList) {
-						boolean flag = false;
 						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),
 								orgLocations.getId());
 						if (userRole != null) {
