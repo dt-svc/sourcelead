@@ -944,6 +944,9 @@ public class CandidateListRestController {
 				candidateDTO.setIsAssociate(can.getIsAssociate());
 				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
+				if(can.getConsultantUser() != null) {
+					candidateDTO.setUserId(can.getConsultantUser().getId());
+				}
 				candidateDTO.setCandidateId(String.valueOf(can.getId()));
 				SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
 				if (action != null && action.getId() != null) {
