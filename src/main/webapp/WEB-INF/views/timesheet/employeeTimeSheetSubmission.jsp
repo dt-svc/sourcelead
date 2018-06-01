@@ -80,7 +80,7 @@
 											        <td id="${entryCount.index+1}projectTd">
 														<div class="timeAdd">
 														    <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
-														        <select id="${entryCount.index+1}projectMember1Id" name="${entryCount.index+1}projectMember1Id" onchange="enableOrDisableHours('${entryIndex}','${entryCount.index+1}projectMember1Id');flushtasks('${entryCount.index+1}task1Id');" data-validation="required" field-name="Project">
+														        <select id="${entryCount.index+1}projectMember1Id" class='existedProjectMembers' name="${entryCount.index+1}projectMember1Id" onchange="enableOrDisableHours('${entryIndex}','${entryCount.index+1}projectMember1Id');flushtasks('${entryCount.index+1}task1Id');" data-validation="required" field-name="Project">
 																	<option value=''>--select project--</option> 
 															        <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
 															               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == pm.id}">
@@ -99,7 +99,7 @@
 															         <c:set var="projectCheck"/>
 															         <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.submittedProjectMembersList}">
 															               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == pm.id}">
-															                  <input type="hidden" id="${entryCount.index+1}projectMember1Id" name="${entryCount.index+1}projectMember1Id" value="${pm.id}"/>
+															                  <input type="hidden" class='existedProjectMembers' id="${entryCount.index+1}projectMember1Id" name="${entryCount.index+1}projectMember1Id" value="${pm.id}"/>
 															                   <p>${pm.projectName}</p> 
 															                   <c:set var="projectCheck" value="1"/>
 															               </c:if>
@@ -325,17 +325,93 @@
 						            </div>
 						            </div>
 									    <div class="timesheet_bot">
-							            <%-- <div class="commentFile">
-											<h2>Attachmets & Comments <i class="fa fa-plus Cursor" onclick="addTimeSheetCommentRow()"></i> </h2>
+							            <div class="commentFile">
+											<h2>Attachmets & Comments 
+											 <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+											   <i class="fa fa-plus Cursor" onclick="addTimeSheetCommentRow()"></i> 
+											 </c:if>
+											 </h2>
 											<div class="">
-											   <input type='hidden' name='maxAttRowNumber' id='maxAttRowNumber'  value='1' />
+											   <input type='hidden' name='maxAttRowNumber' id='maxAttRowNumber'  value='${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments ? fn:length(employeeTimesheetEntryDetailsDTO.timsheetAttachments) : 1}' />
 												<table id="attTimesheet">
-													<tr id="timesheetAttRow0">
+												<c:if test="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
+												   <c:forEach var="attachment" items="${employeeTimesheetEntryDetailsDTO.timsheetAttachments}" varStatus="attCount">
+												     <tr id="timesheetAttRow${attCount.index}">
 													   <td>
 													       <div class="timeAdd">
-														        <select id="attProjMemberId" name="timsheetAttachments[0].projectMemberId"  class="form-control input-sm" field-name="Project">
+													              <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+	                                                                    <select id="${attCount.index}attProjMemberId" class='existedAttProjectMembers form-control input-sm' onclick="prepareAttachmentProjectMembers(${attCount.index},${attachment.projectMemberId});" name="timsheetAttachments[${attCount.index}].projectMemberId"  field-name="Project">  
+		                                                                  <option value=''>--select Project--</option>
+															               <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}">
+															                      <c:if test="${pm.id == attachment.projectMemberId}">
+															                            <option value='${pm.id}' selected>${pm.projectName} </option> 
+															                       </c:if>
+															                       <c:if test="${pm.id != attachment.projectMemberId}">
+															                           <option value='${pm.id}'>${pm.projectName} </option>
+															                       </c:if>
+																            </c:forEach>
+															            </select>
+														         </c:if>
+														         <c:if test="${!employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+															          <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}">
+															             <c:if test="${pm.id == attachment.projectMemberId}">
+															                  <p>${pm.projectName}</p> 
+															                  <input type="hidden" class='existedAttProjectMembers' name="timsheetAttachments[${attCount.index}].projectMemberId" value="${attachment.projectMemberId}" />
+															             </c:if>
+																	 </c:forEach>
+														         </c:if>
+														    </div> 
+														</td>
+														<td>
+	                                                         <div id="attachmentInnerDiv${attCount.index}Id">
+	                                                               <input type='hidden' name='${attCount.index}maxAttDivRowNumber' id='${attCount.index}maxAttDivRowNumber'  value='1' />
+			                                                        <c:set var="attNumber" value="0"/>
+			                                                        <c:if test="${!empty attachment.fileInfo}">
+			                                                         <c:forEach var="finfo" items="${attachment.fileInfo}">
+			                                                           <c:set var="attNumber" value="${attNumber+1}"/>
+																		<div id='${finfo.fileDbId}document' class="timeAtt">
+			                                                                <a  href='${finfo.fileURL}' download><div class="attFile"><i class="fa fa-download"></i>${finfo.fileName}</div></a>
+										                                    <div class="timeAttBtn">
+										                                        <i class="fa fa-eye" onClick="viewFile('${finfo.fileURL}','${finfo.fileName}','${finfo.contentType}');"></i>
+										                                       <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+										                                            <i class="fa fa-trash" onClick='deleteSubmissionDocument("${finfo.fileDbId}");'></i>
+										                                       </c:if>
+										                                    </div>
+			                                                            </div>
+										                              </c:forEach>
+										                              </c:if>
+										                              <c:if test="${empty attachment.fileInfo}">
+										                                  <p> No Attachments Found</p>
+										                              </c:if>
+			                                                          <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+				                                                             <div id="attachmentInnerDiv0Id">
+					                                                                  <input type='hidden' name='0maxAttDivRowNumber' id='0maxAttDivRowNumber'  value='1' />
+							                                                          <div id="0AttchmentDiv0Id" class="addRowBtn">
+																						  <div class="input-group col-md-12" style="margin:0 auto">
+																							<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+																							  <input style="display: none;" id="0docFile0" multiple  onchange="validateUploadFile('0','0',this);" class="upload" type="file">
+																							  </span></label>
+																							<input class="form-control input-sm" id="0uploadFile0"   placeholder="Attachment" type="text">
+																						  </div>
+																						  <input type="button" value="" onclick="addAttachmentRow('0');" class="addRowIcon"/>
+																					</div>
+																			</div>
+			                                                          </c:if>
+															 </div>
+														</td>
+														<td>
+															<input type="text" name="timsheetAttachments[${attCount.index}].weekComment" readonly="readonly" class="form-control  input-sm" value="${attachment.weekComment}" placeholder="Comment" />
+														</td>
+													    </tr>
+												   </c:forEach>
+												</c:if>
+												<c:if test="${empty employeeTimesheetEntryDetailsDTO.timsheetAttachments && employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+												      <tr id="timesheetAttRow0">
+													   <td>
+													       <div class="timeAdd">
+														        <select id="0attProjMemberId"  name="timsheetAttachments[0].projectMemberId"  class='existedAttProjectMembers form-control input-sm' onclick="prepareAttachmentProjectMembers(0,'');"  field-name="Project">
 																	<option value=''>--select project--</option> 
-															        <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
+															        <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}">
 																	     <option value='${pm.id}'>${pm.projectName} </option> 
 																	 </c:forEach>
 															    </select>
@@ -343,31 +419,26 @@
 														</td>
 														<td>
 	                                                         <div id="attachmentInnerDiv0Id">
-	                                                          <input type='hidden' name='0maxAttDivRowNumber' id='0maxAttDivRowNumber'  value='1' />
-	                                                               <!--  <div class="timeAtt">
-			                                                               <div class="attFile"><i class="fa fa-download"></i>filename.jpg</div>
-										                                    <div class="timeAttBtn">
-										                                        <i class="fa fa-eye"></i><i class="fa fa-trash"></i>
-										                                    </div>
-			                                                         </div>   --> 
-																	<div id="0AttchmentDiv0Id" class="addRowBtn">
-																	  <div class="input-group col-md-12" style="margin:0 auto">
-																		<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
-																		  <input style="display: none;" id="0docFile0" multiple  onchange="validateUploadFile('0','0',this);" class="upload" type="file">
-																		  </span></label>
-																		<input class="form-control input-sm" id="0uploadFile0"   placeholder="Attachment" type="text">
-																	  </div>
-																	  <input type="button" value="" onclick="addAttachmentRow('0');" class="addRowIcon"/>
+	                                                                  <input type='hidden' name='0maxAttDivRowNumber' id='0maxAttDivRowNumber'  value='1' />
+			                                                          <div id="0AttchmentDiv0Id" class="addRowBtn">
+																		  <div class="input-group col-md-12" style="margin:0 auto">
+																			<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+																			  <input style="display: none;" id="0docFile0" multiple  onchange="validateUploadFile('0','0',this);" class="upload" type="file">
+																			  </span></label>
+																			<input class="form-control input-sm" id="0uploadFile0"   placeholder="Attachment" type="text">
+																		  </div>
+																		  <input type="button" value="" onclick="addAttachmentRow('0');" class="addRowIcon"/>
 																	</div>
 															</div>
 														</td>
 														<td>
 															<input type="text" name="timsheetAttachments[0].weekComment" class="form-control  input-sm" placeholder="Comment" />
 														</td>
-													</tr>						
+													</tr>	
+												 </c:if>
 												</table>
 											</div>
-							            </div>  --%>  
+							            </div>  
 							    	   <div class="timesheet_week_comm">
 							            <div class="totalWrap">
 							                 <ul>
@@ -401,7 +472,7 @@
 	        <!-- AddRow Divs  ####-->
 	        <div id="divadttTd0" style="display:none;">   
 	             <div class="timeAdd"> 
-	              <select id="REPLACEROWIDprojectMember1Id"  name="REPLACEROWIDprojectMember1Id" onchange="flushtasks('REPLACEROWIDtask1Id');enableOrDisableHours('ENTRYINDEX','REPLACEROWIDprojectMember1Id');"  field-name="Project">  
+	              <select id="REPLACEROWIDprojectMember1Id"  name="REPLACEROWIDprojectMember1Id"  class='existedProjectMembers' onchange="flushtasks('REPLACEROWIDtask1Id');enableOrDisableHours('ENTRYINDEX','REPLACEROWIDprojectMember1Id');"  field-name="Project">  
 	              <option value=''>--select Project--</option>
 	               <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
 		                   <option value='${pMember.id}'>${pMember.projectName} </option> 
@@ -531,11 +602,8 @@
 	    	  <!--  Add Attachments Divs  ####-->
             <div id="divComentTd0" style="display:none;">  
                       <div class="timeAdd">
-                       <select id="REPLACEROWIDattProjMemberId"  class="form-control input-sm" disabled name="timsheetAttachments[REPLACEROWID].projectMemberId"  field-name="Project">  
+                       <select id="REPLACEROWIDattProjMemberId"  class="EXISTEDATTCLASS form-control input-sm" onclick="prepareAttachmentProjectMembers(REPLACEROWID,'');" disabled name="timsheetAttachments[REPLACEROWID].projectMemberId"  field-name="Project">  
 			               <option value=''>--select Project--</option>
-			               <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
-				                   <option value='${pMember.id}'>${pMember.projectName} </option> 
-				            </c:forEach>
 		                </select>
                         <input type="button" value="" onClick="removeTimeSheetCommentRow('REPLACEROWID')" class="timeRemoveBtn"/>
                       </div> 
@@ -1181,6 +1249,7 @@ function withdrawMyTimesheet(){
 		var cell0 = row.insertCell(0);
 		var divadcmTd0Str = document.getElementById("divComentTd0").innerHTML;
 		divadcmTd0Str = divadcmTd0Str.replace(/REPLACEROWID/g, (maxRowNum));
+		divadcmTd0Str = divadcmTd0Str.replace(/EXISTEDATTCLASS/g,'existedAttProjectMembers');
 		divadcmTd0Str = divadcmTd0Str.replace(/disabled/g, ''); 
 		cell0.innerHTML = divadcmTd0Str;
 		
@@ -1451,8 +1520,6 @@ function addTimeSheetRow() {
 		                </c:forEach>
 		     }
        }
-        
-        		
 	   //get project tasks 
 	   function getProjectTasks(projectTaskId,pmId){
 		   $("#"+projectTaskId).next('i').remove();
@@ -1516,7 +1583,59 @@ function addTimeSheetRow() {
 		   }
 	   }
 </script>
-
+<script >
+    function prepareAttachmentProjectMembers(rowId,existedPmId){
+		   var existedProjectMembersMap = {};
+		   $('.existedProjectMembers').each(function() {
+			   var pmId = this.value;
+			   <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.allProjectMembersList}">
+			       if(pmId != null &&  pmId !='undefined' && pmId != '' && pmId == '${pm.id}'){
+			    	   existedProjectMembersMap[pmId] = '${pm.projectName}';
+			       }
+			   </c:forEach>
+		   }); 
+		   var avilableAttProjectMembers = [];
+		   $('.existedAttProjectMembers').each(function() {
+				 var localId = this.value;
+				 avilableAttProjectMembers.push(localId);
+		   }); 
+		   $('.existedAttProjectMembers').each(function() {
+  				 var localId = this.id;
+  				 var localValue = this.value;
+  				 var currentId = $("#"+rowId+"attProjMemberId").attr('id');
+  				 var result = ""; 
+  				/*  if(currentId == localId){ */
+  					 /* $("#"+localId).empty();
+	   		   		 result = result + "<option value=''>--select Project--</option>"; */
+  					var result = ""; 
+		   		    if(localValue != null && localValue != '' && localValue!= 'undefined'){
+		   			    $('option', this).not(':eq(0), :selected').remove();
+		   		     }else{ 
+		   		    	 $("#"+localId).empty();
+		   		   		 result = result + "<option value=''>--select project--</option>";
+		   		     }
+	   		   		 
+		   		   	 for(key in existedProjectMembersMap){
+			   		      var pmId = key;
+			   			  var pmName = existedProjectMembersMap[key];
+			   			  if(avilableAttProjectMembers == null  || avilableAttProjectMembers == '' || avilableAttProjectMembers == 'undefined' ||
+			   			      (avilableAttProjectMembers != null && avilableAttProjectMembers != '' && avilableAttProjectMembers != 'undefined' && !avilableAttProjectMembers.includes(pmId)))
+			   			  {
+			   				result = result + "<option value='"+pmId+"' >"+pmName+"</option>";
+			   			  }
+		   		    }
+		    	 	$("#"+localId).append(result);
+		    	 	$("#"+localId).next('i').remove();
+	   		     /* if(localValue != null && localValue != '' && localValue!= 'undefined'){
+	   			    $('option', this).not(':eq(0), :selected').remove();
+	   		     }else{ 
+	   		    	 $("#"+localId).empty();
+	   		   		 result = result + "<option value=''>--select Project--</option>";
+	   		     } */
+	   		    
+  	       }); 
+    }
+</script>
 <!-- this script is for remove timesheet -->
 <script type="text/javascript">	
 function removeTimeSheetRow(rowId) { 
@@ -1855,20 +1974,11 @@ function cancel(){
 <script type="text/javascript">
 function deleteSubmissionDocument(submissionDocumentId){  
 	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-    var projectExistingValue = $("#dbIsTimesheetAttachmentRequired").val();
-    
-    var strongTagCount = document.getElementById('timesheetDocumentsId').getElementsByTagName('strong').length;
-    /*  var startdate; */
-	var navigation;
     $.ajax({
           type : "POST",
       	  url: sourceleadUrl+"/deleteSubmissionDocument?${_csrf.parameterName}=${_csrf.token}&submissionDocumentId="+submissionDocumentId,		
 	      success :function(result) {
 	    	  $("#"+submissionDocumentId+"document").remove();
-	    	  if(projectExistingValue != null && projectExistingValue != "" && projectExistingValue !="undefined" && projectExistingValue == "1"
-	    			  && strongTagCount != null && strongTagCount != "" && strongTagCount !="undefined" && strongTagCount == 1){
-	    		  $("#isTimesheetAttachmentRequired").val('Y');
-	    	  }
 	      }
       	  
     }); 

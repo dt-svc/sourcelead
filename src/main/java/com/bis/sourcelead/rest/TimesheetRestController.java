@@ -50,6 +50,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.EmployeeTimeSheetSubmissionStatusDTO;
 import com.bis.sourcelead.dto.EmployeeTimesheetEntryDetailsDTO;
+import com.bis.sourcelead.dto.EmployeeTimesheetFileInfoDTO;
 import com.bis.sourcelead.dto.EmployeeTimesheetSubmissionDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
@@ -243,13 +244,15 @@ public class TimesheetRestController {
 		}
 		try {
 			EmployeeTimesheetEntryDetailsDTO tedDTO = getEmployeeTimesheetEntryDetails(eedDTO, request);
-			List<ProjectMembersDTO> freshProjectMembersList = new LinkedList<>();
-			List<ProjectMembersDTO> submittedProjectMembersList = new LinkedList<>();
 			if(tedDTO.getProjectMembersList() == null || tedDTO.getProjectMembersList().isEmpty()) {
 				model.addObject("NORECORDSFOUND", true);
 				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
 				model.setViewName("timesheet/employeeTImesheetInvoiceList");
 			}else {
+				List<ProjectMembersDTO> freshProjectMembersList = new LinkedList<>();
+				List<ProjectMembersDTO>  allProjectMembersList = new LinkedList<>();
+				List<ProjectMembersDTO> submittedProjectMembersList = new LinkedList<>();
+				List<ProjectMembersDTO>  attProjectMemberIdsList = new LinkedList<>();
 				Boolean isRejected = false;
 				Boolean isSUBMITTED = false;
 				Boolean isNEW = false;
@@ -318,8 +321,15 @@ public class TimesheetRestController {
 					if(tedDTO.getStatusMap().get(pmDTO.getId()) == null || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("REJECTED") 
 							|| tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("DRAFT") || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW") ) {
 						freshProjectMembersList.add(pmDTO);
+						allProjectMembersList.add(pmDTO);
+						if(!tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
+							attProjectMemberIdsList.add(pmDTO);
+						}
+						
 					}else{
 						submittedProjectMembersList.add(pmDTO);
+						allProjectMembersList.add(pmDTO);
+						attProjectMemberIdsList.add(pmDTO);
 					}
 					
 				}
@@ -329,6 +339,8 @@ public class TimesheetRestController {
 				tedDTO.getProjectMembersList().clear();
 				tedDTO.setProjectMembersList(freshProjectMembersList);
 				tedDTO.setSubmittedProjectMembersList(submittedProjectMembersList);
+				tedDTO.setAllProjectMembersList(allProjectMembersList);
+				tedDTO.setAttProjectMembersList(attProjectMemberIdsList);
 				if(StringUtils.isNotEmpty(combinedStatus) && (combinedStatus.equalsIgnoreCase("SUBMITTED") || combinedStatus.equalsIgnoreCase("APPROVED"))){
 					tedDTO.setSubmitButtonVisible(false);
 				}else {
@@ -646,6 +658,7 @@ public class TimesheetRestController {
 				currentSubFrequencyEndDate.replaceAll("/", "-"));
 		LinkedList<EmployeeTimesheetSubmissionDTO> etsDTOList = new LinkedList<>();
 		Map<Long,EmployeeTimeSheetSubmissionStatusDTO> ettsDTOMap = new LinkedHashMap<>();
+		List<EmployeeTimesheetFileInfoDTO> timesheetAttachments = new ArrayList<>();
 		int editableCount = 1;
 		if(projectMembersList != null && !projectMembersList.isEmpty()) {
 			if (projectMembersList != null && !projectMembersList.isEmpty()) {
@@ -658,7 +671,8 @@ public class TimesheetRestController {
 					if (pmhDateList.isEmpty() || pmhDateList == null)
 						continue;	
 					pmDTOList.add(ProjectMemberDTOConverter.getProjectMembersDTOFromProjectMembers(pm));
-					Map<Long,LinkedList<TimesheetEntriesDTO>> entryMap = getEmployeeTimesheetSubmissionByProjectMemberId(new LinkedList(etd.getWeekDays()),pm,request, orgLocations, actualStartDate, actualEndDate, etd);
+					TimesheetSubmissions ts = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate, actualEndDate,pm.getProjects().getId(), pm.getMasterCandidateId().getId());
+					Map<Long,LinkedList<TimesheetEntriesDTO>> entryMap = getEmployeeTimesheetSubmissionDetailsByProjectMemberId(ts,new LinkedList(etd.getWeekDays()),pm,request, orgLocations, actualStartDate, actualEndDate, etd);
 					Long entrySizeCheck = 0l;
 					for(Long key : entryMap.keySet()) {
 						entrySizeCheck = key;
@@ -677,6 +691,30 @@ public class TimesheetRestController {
 					ettsDTOMap.put(pm.getId(), etssDTO);
 					if(entrySizeCheck == 0)
 						continue;
+					if (ts != null) {
+						List<TimesheetSubmissionsDocuments> timesheetSubmissionsDocumentsList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentsBySubmissionId(ts.getId());
+						 List<FileInfo> fileInfoList = new ArrayList<>();
+						if (timesheetSubmissionsDocumentsList != null && !timesheetSubmissionsDocumentsList.isEmpty()) {
+							 for (TimesheetSubmissionsDocuments tsd : timesheetSubmissionsDocumentsList) {
+								FileInfo fileInfo = new FileInfo();
+								fileInfo.setFileDbId(tsd.getId().toString());
+								fileInfo.setFileName(tsd.getFileName());
+								fileInfo.setFileURL(tsd.getFileUrl());
+								fileInfo.setStatus(tsd.getStatus());
+								fileInfo.setContentType(tsd.getFileContentType());
+								fileInfoList.add(fileInfo);
+							}
+						 }
+						 if((fileInfoList != null && !fileInfoList.isEmpty()) || StringUtils.isNotEmpty(ts.getWeekcomments())) {
+							 EmployeeTimesheetFileInfoDTO etfinfo = new EmployeeTimesheetFileInfoDTO();
+							 etfinfo.setProjectMemberId(pm.getId());
+							 etfinfo.setFileInfo(fileInfoList);
+							 etfinfo.setWeekComment(ts.getWeekcomments());
+							 timesheetAttachments.add(etfinfo);
+						 }
+						
+					}
+					
 					List<ProjectTasks> projectsTasks = projectTasksService.getAllTasksByProjectId(pm.getProjects().getId());
 					if(entryMap != null && !entryMap.isEmpty()) {
 					    for(Map.Entry<Long,LinkedList<TimesheetEntriesDTO>> entry : entryMap.entrySet()) {
@@ -705,12 +743,9 @@ public class TimesheetRestController {
 							etsDTOList.add(etsDTO);
 						}
 					}
-					
-					
-					
-					
 				}
 				etd.setStatusMap(ettsDTOMap);
+				etd.setTimsheetAttachments(timesheetAttachments);
 			}
 		}
 		
@@ -1188,10 +1223,10 @@ public class TimesheetRestController {
 		
 		return tsDTOList;
 	}
-	private Map<Long,LinkedList<TimesheetEntriesDTO>> getEmployeeTimesheetSubmissionByProjectMemberId(LinkedList<WeekDaysDTO> weekDaysDTOs, ProjectMembers projectMember,HttpServletRequest request, OrgLocations orgLocations, Date actualStartDate,Date actualEndDate,EmployeeTimesheetEntryDetailsDTO etd) throws Exception {
+	private Map<Long,LinkedList<TimesheetEntriesDTO>> getEmployeeTimesheetSubmissionDetailsByProjectMemberId(TimesheetSubmissions ts,LinkedList<WeekDaysDTO> weekDaysDTOs, ProjectMembers projectMember,HttpServletRequest request, OrgLocations orgLocations, Date actualStartDate,Date actualEndDate,EmployeeTimesheetEntryDetailsDTO etd) throws Exception {
 		Map<Long,LinkedList<TimesheetEntriesDTO>> entriesMap = new LinkedHashMap<>();
 		LinkedList<TimesheetEntriesDTO> entriesList = new LinkedList<>();
-		TimesheetSubmissions ts = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(actualStartDate, actualEndDate,projectMember.getProjects().getId(), projectMember.getMasterCandidateId().getId());
+		
 		if (ts != null) {
 			String dateFormat = orgLocations.getDateFormat();
 			String monDayDate = commonUtil.dateStrFromOrgDateFormatter(dateFormat, actualStartDate);
@@ -1689,13 +1724,15 @@ public class TimesheetRestController {
 				"orgLocations");
 		try {
 				tedDTO = saveEmployeeTimesheetEntries(tedDTO, request);
-				List<ProjectMembersDTO> freshProjectMembersList = new LinkedList<>();
-				List<ProjectMembersDTO> submittedProjectMembersList = new LinkedList<>();
 				if(tedDTO.getProjectMembersList() == null || tedDTO.getProjectMembersList().isEmpty()) {
 					model.addObject("NORECORDSFOUND", true);
 					model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
 					model.setViewName("timesheet/employeeTImesheetInvoiceList");
 				}else {
+					List<ProjectMembersDTO> freshProjectMembersList = new LinkedList<>();
+					List<ProjectMembersDTO>  allProjectMembersList = new LinkedList<>();
+					List<ProjectMembersDTO> submittedProjectMembersList = new LinkedList<>();
+					List<ProjectMembersDTO>  attProjectMemberIdsList = new LinkedList<>();
 					Boolean isRejected = false;
 					Boolean isSUBMITTED = false;
 					Boolean isNEW = false;
@@ -1707,7 +1744,6 @@ public class TimesheetRestController {
 					boolean combinedFriEditable =  false;
 					boolean combinedSatEditable =  false;
 					boolean combinedSunEditable =  false;
-							
 					for(ProjectMembersDTO pmDTO :tedDTO.getProjectMembersList()) {
 						boolean monEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getMonEditable();
 						boolean tueEditable = tedDTO.getStatusMap().get(pmDTO.getId()).getTueEditable();
@@ -1760,22 +1796,32 @@ public class TimesheetRestController {
 							combinedStatus = "APPROVED";
 							
 						}
+						
+						
 						if(tedDTO.getStatusMap().get(pmDTO.getId()) == null || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("REJECTED") 
 								|| tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("DRAFT") || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW") ) {
 							freshProjectMembersList.add(pmDTO);
+							allProjectMembersList.add(pmDTO);
+							if(!tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
+								attProjectMemberIdsList.add(pmDTO);
+							}
 						}else{
 							submittedProjectMembersList.add(pmDTO);
+							allProjectMembersList.add(pmDTO);
+							attProjectMemberIdsList.add(pmDTO);
 						}
+						
 					}
 					tedDTO.getProjectMembersList().clear();
 					tedDTO.setProjectMembersList(freshProjectMembersList);
 					tedDTO.setSubmittedProjectMembersList(submittedProjectMembersList);
+					tedDTO.setAllProjectMembersList(allProjectMembersList);
+					tedDTO.setAttProjectMembersList(attProjectMemberIdsList);
 					if(StringUtils.isNotEmpty(combinedStatus) && (combinedStatus.equalsIgnoreCase("SUBMITTED") || combinedStatus.equalsIgnoreCase("APPROVED"))){
 						tedDTO.setSubmitButtonVisible(false);
 					}else {
 						tedDTO.setSubmitButtonVisible(true);
 					}
-					
 					int workingDaysPerWeek = 0;
 					if(StringUtils.isNotEmpty(orgLocations.getWeekOffDays())) {
 						 String[] strArray = orgLocations.getWeekOffDays().split(",");
@@ -1811,9 +1857,7 @@ public class TimesheetRestController {
 					}
 					Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
 					model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
-	                
 				}
-				
 				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
 				model.setViewName("timesheet/employeeTImesheetInvoiceList");
 						
@@ -1824,7 +1868,7 @@ public class TimesheetRestController {
 		return model;
 	}
 	
-	private void saveEmployeeTimesheetEntriesPerProjectMemberId(Long projectMemberId,LinkedList<TimesheetEntriesDTO> entriesDTOList,Map<String,String> timeSubFrequencies, String currentTimeFrequency,String currentTimeSubFrequency,String status,OrgLocations loginOrgLocation,User loginUser,Candidate candidate) throws Exception{
+	private void saveEmployeeTimesheetEntriesPerProjectMemberId(Long projectMemberId,String weekComment,List<FileInfo> fileInfoList,LinkedList<TimesheetEntriesDTO> entriesDTOList,Map<String,String> timeSubFrequencies, String currentTimeFrequency,String currentTimeSubFrequency,String status,OrgLocations loginOrgLocation,User loginUser,Candidate candidate) throws Exception{
 		ProjectMembers projectMember = null;
 		String savingType = "user";
 		if (projectMemberId != null) {
@@ -1939,6 +1983,7 @@ public class TimesheetRestController {
 					/*if (tsDTO != null) {
 						timesheetSubmissions.setWeekcomments(tsDTO.getWeekComment());
 					}*/
+                    timesheetSubmissions.setWeekcomments(weekComment);
 					timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
 					timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
 					timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
@@ -1987,10 +2032,8 @@ public class TimesheetRestController {
 				timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 			}
 			// save mutliple attachment in timesheet submissison attachment.
-			/*LinkedList<FileInfo> fileInfoList = new LinkedList<>();
-			if (tsDTO.getFileInfo() != null) {
-				for (FileInfo file : tsDTO.getFileInfo()) {
-					FileInfo freshFile = file;
+			if (fileInfoList != null && !fileInfoList.isEmpty()) {
+				for (FileInfo file : fileInfoList) {
 					if (StringUtils.isEmpty(file.getFileDbId())) {
 						FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
 						TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
@@ -2003,13 +2046,10 @@ public class TimesheetRestController {
 						tsd.setCreatedBy(loginUser.getUserCode());
 						tsd.setUpdatedDate(CommonUtil.currentDate());
 						tsd.setUpdatedBy(loginUser.getUserCode());
-						tsd = timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
-						freshFile.setFileDbId(tsd.getId().toString());
+					    timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
 					}
-					fileInfoList.add(freshFile);
 				}
 			}
-			tsDTO.setFileInfo(fileInfoList);*/
 
 			List<Long> oldDbIdList = timesheetDayEntriesDao
 					.getAllTimeSheetDayEntryIdsBySubmissionId(timesheetSubmissions.getId());
@@ -2215,6 +2255,7 @@ public class TimesheetRestController {
 				status = "Draft";
 			}
 	
+			List<EmployeeTimesheetFileInfoDTO> timesheetAttachments = tedDTO.getTimsheetAttachments();
 			Map<Long,LinkedList<TimesheetEntriesDTO>> timesheetEntriesMap = new LinkedHashMap<>();
 			if(tsDTO.getTimesheetEntries() != null && !tsDTO.getTimesheetEntries().isEmpty()) {
 				for(TimesheetEntriesDTO teDTO :tsDTO.getTimesheetEntries()) {
@@ -2235,7 +2276,19 @@ public class TimesheetRestController {
 				  for (Map.Entry<Long,LinkedList<TimesheetEntriesDTO>> entry : timesheetEntriesMap.entrySet()) {
 					     Long  projectMemberId= entry.getKey();
 				   		 LinkedList<TimesheetEntriesDTO> entriesList = entry.getValue();
-				   		saveEmployeeTimesheetEntriesPerProjectMemberId(projectMemberId, entriesList, tedDTO.getTimeSubFrequencies(), tedDTO.getCurrentTimeFrequency(), tedDTO.getCurrentTimeSubFrequency(), status, loginOrgLocation, loginUser, candidate);
+				   		 List<FileInfo> fileInfoList = new ArrayList<>();
+				   		 String weekComment = "";
+				   		 if(timesheetAttachments != null && !timesheetAttachments.isEmpty()) {
+				   			 for(EmployeeTimesheetFileInfoDTO etf :timesheetAttachments) {
+				   				 if(etf.getProjectMemberId() != null && etf.getProjectMemberId().equals(projectMemberId)) {
+				   					fileInfoList.clear();
+				   					if(etf.getFileInfo() != null)
+				   					fileInfoList.addAll(etf.getFileInfo());
+				   					weekComment = etf.getWeekComment();
+				   				 }
+				   			 }
+				   		 }
+				   		saveEmployeeTimesheetEntriesPerProjectMemberId(projectMemberId,weekComment,fileInfoList,entriesList, tedDTO.getTimeSubFrequencies(), tedDTO.getCurrentTimeFrequency(), tedDTO.getCurrentTimeSubFrequency(), status, loginOrgLocation, loginUser, candidate);
 					}
 			}
 		
