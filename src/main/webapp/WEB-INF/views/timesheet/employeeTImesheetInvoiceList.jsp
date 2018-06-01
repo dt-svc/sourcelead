@@ -6,7 +6,7 @@
 <div class="timesheetNewHead">
        <div id="timesheetFrequencyDiv" class="timeNewSe">
        <!-- onchange="timesheetEmployeeDetils('frequency');" -->
-		<select id="invoiceFrequency" class="form-control chosen-select" onchange="timesheetEntriesDivByInvoiceFrequency()">
+		<select id="invoiceFrequency" name="invoiceFrequency" class="form-control chosen-select" onchange="timesheetEntriesDivByInvoiceFrequency()">
 			<c:forEach var="invoiceFrequency" items="${employeeTimesheetEntryDetailsDTO.invoiceFrequencyList}">
 				<option data-icon="fa fa-calendar" value="${invoiceFrequency}"  ${invoiceFrequency == employeeTimesheetEntryDetailsDTO.invoiceFrequency ? 'selected' : ''}>${invoiceFrequency}</option>
 			</c:forEach>
