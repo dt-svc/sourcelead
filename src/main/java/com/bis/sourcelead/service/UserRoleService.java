@@ -161,4 +161,9 @@ public interface UserRoleService {
 	
 	public List<UserRole> getUserAccountsListByUserId(List<Long> userId) throws Exception;
 
+	List<Long> getAllAssignedUsersIdsByResourceManagerId(Long resourceManagerId,Long orgLocationId);
+	
+	List<UserRole> getAllAssignedUsersByResourceManagerId(Long resourceManagerId,Long orgLocationId);
+
+
 }

@@ -30,7 +30,7 @@ $(document).ready(function(){
                   </div>
                   <div class="col-xs-12 col-sm-3">
                     <div class="info-box"> <span class="info-box-icon bg-red"> <i class="fa fa-check-square" aria-hidden="true"></i> </span>
-                      <div class="info-box-content text-center" style='cursor:pointer' title="Submission" id="subDiv">
+                      <div class="info-box-content text-center" style='cursor:pointer' title="Submissions" id="subDiv">
                         <p class="info-box-number"><span id="submissionsCount" onclick="loadRequirementSubmissions();">${submissionsCount}</span></p>
                         <p class="info-box-text">Submissions</p>
                       </div>

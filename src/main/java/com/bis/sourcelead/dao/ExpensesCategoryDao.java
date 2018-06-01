@@ -12,7 +12,7 @@ public interface ExpensesCategoryDao {
 	
 	public List<ExpensesCategory> getAllExpensesCategoryByLocationId(Long orgLocationId);
 	
-	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status);
+	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status,String isGlobalUser);
 	
 	public ExpensesCategory storeExpenseCategory(ExpensesCategory expensesCategory) throws Exception;
 	

@@ -805,6 +805,11 @@ function discordApplicant(){
 		 $("#needApplicantPermit").val('N');
 	 }
 	 
+	 if(candidateType != "N"){
+		 $("input[name=FirstName]").attr('readonly', false);
+		 $("input[name=LastName]").attr('readonly', false);
+		 $("input[name=PhoneNumber]").attr('readonly', false);
+	 }
 	 $('#candidateId').removeAttr('data-validation-optional');
 	 $("#candidateId").attr("data-validation", "required");
 	 
@@ -862,7 +867,6 @@ function discordApplicant(){
 				        	$("#candidateId").empty();
 					        $("#candidateId").append(output);
 					        $('#candidateId').trigger("chosen:updated");
-					        
 					        getCandidateResumes();
 			        	} else if (response.indexOf('Sign In') !== -1) {
 			        		location.replace(sourceleadUrl);

@@ -97,6 +97,8 @@ public class AddElkCandidate{
 					
 					candidateIndex.setGeneratedId(rs.getString("GENERATED_ID"));
 					
+					candidateIndex.setCreatedByUserCode(rs.getString("CREATED_BY"));
+					
 					if(!isNullOrEmpty(rs.getLong("MASTER_CANDIDATE_ID"))){
 						candidateIndex.setMasterCandidateId(rs.getLong("MASTER_CANDIDATE_ID"));
 					}

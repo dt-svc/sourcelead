@@ -47,10 +47,11 @@
     
  </section>
  
+ <jsp:include page="projectPopupDetails.jsp"></jsp:include>	 
+ 
  <script>
  function getProjectResourceReqestsListCount(){
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 alert
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getProjectResourceRequestsCounts?${_csrf.parameterName}=${_csrf.token}", 
@@ -147,7 +148,6 @@ function requestAssociatesDataTableList(requestType){
 }
 </script>
 
-
 <script>
 function resourceRequestPagination(url,requestType,sourceleadUrl){
 	var colIndex = 0;
@@ -184,7 +184,13 @@ function resourceRequestPagination(url,requestType,sourceleadUrl){
 	    	  	"data": "projectName",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		  var result = "";
-	    	  		  result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
+	    	  		  if(opt.projectClientUUID != null && opt.projectClientUUID != '' && opt.projectClientUUID != 'undefined'){
+	    	  			result = result + '<td><div  class="tbldata-dotdot-sm"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'&tabType=resources" title="'+opt.projectName+'">'+opt.projectName+'</a></div></td>';
+	    	  		  }else{
+	    	  			result = result + '<td><div  class="tbldata-dotdot-sm"><a href="javascript:void(0)" onclick="#">'+opt.projectName+'</a></div></td>';
+	    	  			/* result = result + '<td><div  class="tbldata-dotdot-sm"><a href="javascript:void(0)" onclick="openProjectDetailsPopup(\''+opt.projectUUID+'\','+opt.requestedOrgLocationId+');">'+opt.projectName+'</a></div></td>'; */
+	    	  		  }
+	    	  		  
 		             return result;
 	    	  	}
 	      },{
