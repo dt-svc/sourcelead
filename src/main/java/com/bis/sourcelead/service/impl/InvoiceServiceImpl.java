@@ -2555,11 +2555,13 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					invoiceDTO.getInvoiceDate());
 			invoice.setInvoiceDate(invoiceDate);
 		}
+		
+		Date dueDate =null;
 		if (StringUtils.isNotBlank(invoiceDTO.getDueDate())) {
-			Date dueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), invoiceDTO.getDueDate());
+			 dueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), invoiceDTO.getDueDate());
 			invoice.setDueDate(dueDate);
 		}
-
+		
 		if (StringUtils.isNotBlank(invoiceDTO.getPaymentFrequency())) {
 			invoice.setPaymentFrequency(invoiceDTO.getPaymentFrequency());
 		} else {
@@ -2601,7 +2603,13 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		if (StringUtils.isNotBlank(invoiceDTO.getAfterDiscountTotal())) {
 			invoice.setAfterDiscountValue(invoiceDTO.getAfterDiscountTotal());
 		}
-		invoice.setPaymentStatus(Constants.INVOICE_STATUS_UNPAID);
+		
+		if(commonUtil.currentDate().after(dueDate)){
+			invoice.setPaymentStatus(Constants.OVER_DUE);
+		}else {
+			invoice.setPaymentStatus(Constants.INVOICE_STATUS_UNPAID);
+		}
+		
 		if (StringUtils.isNotBlank(invoiceDTO.getProjectId())) {
 			Projects projects = projectsService.getProjectById(Long.parseLong(invoiceDTO.getProjectId()));
 			invoice.setProjectID(projects);
