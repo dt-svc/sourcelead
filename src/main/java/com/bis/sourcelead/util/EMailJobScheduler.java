@@ -2692,8 +2692,7 @@ public class EMailJobScheduler {
 	  * cron runs every day at 9 AM to send notifications email  about immigration template tasks selected users
 	  * @throws Exception
 	  */
-	@Scheduled(cron = "0 * * * * *")
-	//@Scheduled(cron = "0 0 9 1/1 * ?")
+	@Scheduled(cron = "0 0 9 1/1 * ?")
 	@Async
 	public void immigrationTemplateTaskReminder() throws Exception {
 		List<Org> orgList = orgService.getOrgs();
