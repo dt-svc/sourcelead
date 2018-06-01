@@ -6,7 +6,7 @@
 <script src="/resources/js/jquery.maskedinput-1.3.min.js"></script>
 <div class="time_pop" id="timeSheetErrorMsg"></div>
 
-<c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+<c:if test="${employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 	<div id="timesheetSubmissionStatusDiv" class="timeNewSe timBtnWidth">
 					<b class="proj_new Cursor" onClick='addTimeSheetRow();'>Add Row</b>
 	</div>
@@ -18,6 +18,9 @@
 		<ul class="project-tabs-menu">
 		   <c:forEach var="tsf" items="${employeeTimesheetEntryDetailsDTO.timeSubFrequencies}">
 		       <input type='hidden' name='tabDates'  id='tabDates' value='${tsf.key}' >
+		       <c:if test="${tsf.key ==  employeeTimesheetEntryDetailsDTO.currentTimeSubFrequency}">
+		          <input type='hidden' name='currentTimeSubFrequency'  id='currentTimeSubFrequency' value='${tsf.key}' >
+		       </c:if>
 			   <li class="${tsf.key ==  employeeTimesheetEntryDetailsDTO.currentTimeSubFrequency ? 'current' : ''}">
 					<a href="#" onclick="timesheetEntriesDivByTimeSubFrequency('${tsf.key}');">${tsf.value}</a>
 				</li>
@@ -326,10 +329,13 @@
 						            </div>
 									    <div class="timesheet_bot">
 							            <div class="commentFile">
-											<h2>Attachmets & Comments 
-											 <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
-											   <i class="fa fa-plus Cursor" onclick="addTimeSheetCommentRow()"></i> 
-											 </c:if>
+							                  <h2>
+							                  <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible || !empty employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
+											    Attachmets & Comments 
+											     <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+											         <i class="fa fa-plus Cursor" onclick="addTimeSheetCommentRow()"></i> 
+											      </c:if>
+											  </c:if>
 											 </h2>
 											<div class="">
 											   <input type='hidden' name='maxAttRowNumber' id='maxAttRowNumber'  value='${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments ? fn:length(employeeTimesheetEntryDetailsDTO.timsheetAttachments) : 1}' />
@@ -455,9 +461,11 @@
 							            </div>
 							            <div class="clearfix"></div>
 							    	    <div class="timesheet_button clearfix">
-							    	    <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+							    	    <c:if test="${employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 							    	        <input onclick="newSaveTimesheet('Draft');" value="Save" class="time_btn time_dra" type="button">
-									         <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
+							    	         <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+									           <input onclick="newSaveTimesheet('Submitted');" value="Submit" class="time_btn" type="button">
+									         </c:if>
 							    	    </c:if>
 							         </div>              
 							        </div>

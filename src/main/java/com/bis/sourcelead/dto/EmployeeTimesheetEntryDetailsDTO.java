@@ -67,6 +67,8 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 	private Integer maxRowCount;
 	
 	private boolean submitButtonVisible;
+	
+	private boolean saveButtonVisible;
 
 	public LinkedHashSet<String> getInvoiceFrequencyList() {
 		return invoiceFrequencyList;
@@ -294,7 +296,12 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 		this.attProjectMembersList = attProjectMembersList;
 	}
 
+	public boolean isSaveButtonVisible() {
+		return saveButtonVisible;
+	}
 
-	
+	public void setSaveButtonVisible(boolean saveButtonVisible) {
+		this.saveButtonVisible = saveButtonVisible;
+	}
      
 }
