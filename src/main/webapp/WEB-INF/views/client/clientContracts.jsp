@@ -715,12 +715,12 @@ function PopUp(contractUUID){
 			result = result +	'	</div>';
 			}
 			
-			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
+			/*if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Job Title</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
 				result = result +	'	</div>';
-			}
+			}*/
 			
 			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
