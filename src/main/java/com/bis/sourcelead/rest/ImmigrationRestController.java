@@ -262,7 +262,7 @@ public class ImmigrationRestController {
 		ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
 		logger.debug("inisde controller  getAllImmigartionList  --> ");
 		try {
-			String[] tableColumns = { "currUscisStatus", "generatedId", "petitionType", "country", "firstName", "email",
+			String[] tableColumns = { "currUscisStatus", "generatedId", "country", "petitionType", "firstName", "email",
 					"phone", "openDate", "orgName", "lcaStartDate", "lcaEndDate" };// should be
 			// entity names
 			int sortColumnIndex = -1; // by default sorting using updated date
