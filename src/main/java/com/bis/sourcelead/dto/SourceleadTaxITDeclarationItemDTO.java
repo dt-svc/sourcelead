@@ -2,7 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
-public class SourceleadTaxSectionItemDTO implements Serializable {
+public class SourceleadTaxITDeclarationItemDTO implements Serializable {
 
 	/**
 	 * @author Mahaveer Manoj
@@ -12,6 +12,7 @@ public class SourceleadTaxSectionItemDTO implements Serializable {
 	private long id;
 	private String name;
 	private String maxLimit;
+	private String amount;
 	private String description;
 	private boolean active;
 	private long taxSectionId;
@@ -75,6 +76,14 @@ public class SourceleadTaxSectionItemDTO implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getAmount() {
+		return amount;
+	}
+
+	public void setAmount(String amount) {
+		this.amount = amount;
 	}
 
 }

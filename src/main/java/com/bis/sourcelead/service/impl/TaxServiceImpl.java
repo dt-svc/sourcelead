@@ -13,8 +13,8 @@ import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.ProfessionalTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
-import com.bis.sourcelead.dto.SourceleadTaxSectionDTO;
-import com.bis.sourcelead.dto.SourceleadTaxSectionItemDTO;
+import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
+import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.TdsDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
@@ -22,8 +22,8 @@ import com.bis.sourcelead.entity.CentralTax;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
-import com.bis.sourcelead.entity.SourceleadTaxSection;
-import com.bis.sourcelead.entity.SourceleadTaxSectionItem;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -372,7 +372,7 @@ public class TaxServiceImpl implements TaxService {
 		try {
 			List<SourceleadTaxForm> stList = taxDao.getTaxFormTypeList(true);
 			for (SourceleadTaxForm stForm : stList) {
-				sourceleadTaxFormList.add(getTaxFormType(stForm, includeAll));
+				sourceleadTaxFormList.add(getTaxFormType(stForm, includeAll, false));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -381,13 +381,13 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public long addITDeclarationSection(SourceleadTaxSectionDTO sectionDTO) {
+	public long addITDeclarationSection(SourceleadTaxITDeclarationDTO sectionDTO) {
 		try {
-			SourceleadTaxSection section = null;
+			SourceleadTaxITDeclaration section = null;
 			if (sectionDTO.getId() > 0) {
 				section = taxDao.getTaxSection(sectionDTO.getId());
 			} else {
-				section = new SourceleadTaxSection();
+				section = new SourceleadTaxITDeclaration();
 				section.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
 			}
 			if (section != null) {
@@ -405,11 +405,11 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public SourceleadTaxFormDTO getTaxFormType(long taxFormId) {
+	public SourceleadTaxFormDTO getTaxFormType(long taxFormId, boolean includeAll, boolean isAdminFlag) {
 		try {
 			SourceleadTaxForm sourceleadTaxForm = taxDao.getTaxFormType(taxFormId);
 			if (sourceleadTaxForm != null) {
-				return getTaxFormType(sourceleadTaxForm, true);
+				return getTaxFormType(sourceleadTaxForm, includeAll, isAdminFlag);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -418,11 +418,11 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public SourceleadTaxFormDTO getTaxFormType(String uuid) {
+	public SourceleadTaxFormDTO getTaxFormType(String uuid, boolean includeAll, boolean includeInactive) {
 		try {
 			SourceleadTaxForm sourceleadTaxForm = taxDao.getTaxFormType(uuid);
 			if (sourceleadTaxForm != null) {
-				return getTaxFormType(sourceleadTaxForm, true);
+				return getTaxFormType(sourceleadTaxForm, includeAll, includeInactive);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -430,8 +430,8 @@ public class TaxServiceImpl implements TaxService {
 		return null;
 	}
 
-	@Override
-	public SourceleadTaxFormDTO getTaxFormType(SourceleadTaxForm sourceleadTaxForm, boolean includeAll) {
+	// @Override
+	public SourceleadTaxFormDTO getTaxFormType(SourceleadTaxForm sourceleadTaxForm, boolean includeAll, boolean includeInactive) {
 		SourceleadTaxFormDTO sourceleadTaxFormDTO = new SourceleadTaxFormDTO();
 		try {
 			if (sourceleadTaxForm != null) {
@@ -442,39 +442,44 @@ public class TaxServiceImpl implements TaxService {
 
 				if (includeAll) {
 					// Iterating over all TaxSections for the current TaxForm
-					List<SourceleadTaxSectionDTO> taxSectionDTOList = new LinkedList<>();
-					List<SourceleadTaxSection> taxSectionList = sourceleadTaxForm.getSourceleadTaxSectionList();
+					List<SourceleadTaxITDeclarationDTO> taxSectionDTOList = new LinkedList<>();
+					List<SourceleadTaxITDeclaration> taxSectionList = sourceleadTaxForm.getSourceleadTaxSectionList();
 					if (taxSectionList != null && !taxSectionList.isEmpty()) {
-						for (SourceleadTaxSection taxSection : taxSectionList) {
-							SourceleadTaxSectionDTO taxSectionDTO = new SourceleadTaxSectionDTO();
-							taxSectionDTO.setId(taxSection.getId());
-							taxSectionDTO.setName(taxSection.getName());
-							taxSectionDTO.setDescription(taxSection.getDescription());
-							taxSectionDTO.setActive(taxSection.isActive());
-							if (taxSection.getSourceleadTaxForm() != null) {
-								taxSectionDTO.setTaxFormId(taxSection.getSourceleadTaxForm().getId());
-								taxSectionDTO.setTaxFormName(taxSection.getSourceleadTaxForm().getName());
-							}
-							// Iterating over all TaxSectionItems for the current TaxSection
-							List<SourceleadTaxSectionItemDTO> taxSectionItemDTOList = new LinkedList<>();
-							List<SourceleadTaxSectionItem> taxSectionItemList = taxSection.getSourceleadTaxSectionItemsList();
-							if (taxSectionItemList != null && !taxSectionItemList.isEmpty()) {
-								for (SourceleadTaxSectionItem taxSectionItem : taxSectionItemList) {
-									SourceleadTaxSectionItemDTO taxSectionItemDTO = new SourceleadTaxSectionItemDTO();
-									taxSectionItemDTO.setId(taxSectionItem.getId());
-									taxSectionItemDTO.setName(taxSectionItem.getName());
-									taxSectionItemDTO.setDescription(taxSectionItem.getDescription());
-									taxSectionItemDTO.setMaxLimit(CommonUtil.toFixed2(taxSectionItem.getMaxLimit()));
-									taxSectionItemDTO.setActive(taxSectionItem.isActive());
-									if (taxSectionItem.getSourceleadTaxSection() != null) {
-										taxSectionItemDTO.setTaxSectionId(taxSectionItem.getSourceleadTaxSection().getId());
-										taxSectionItemDTO.setTaxSectionName(taxSectionItem.getSourceleadTaxSection().getName());
-									}
-									taxSectionItemDTOList.add(taxSectionItemDTO);
+						for (SourceleadTaxITDeclaration taxSection : taxSectionList) {
+							if (includeInactive || (!includeInactive && taxSection.isActive())) {
+								SourceleadTaxITDeclarationDTO taxSectionDTO = new SourceleadTaxITDeclarationDTO();
+								taxSectionDTO.setId(taxSection.getId());
+								taxSectionDTO.setName(taxSection.getName());
+								taxSectionDTO.setDescription(taxSection.getDescription());
+								taxSectionDTO.setActive(taxSection.isActive());
+								if (taxSection.getSourceleadTaxForm() != null) {
+									taxSectionDTO.setTaxFormId(taxSection.getSourceleadTaxForm().getId());
+									taxSectionDTO.setTaxFormName(taxSection.getSourceleadTaxForm().getName());
 								}
+								// Iterating over all TaxSectionItems for the current TaxSection
+								List<SourceleadTaxITDeclarationItemDTO> taxSectionItemDTOList = new LinkedList<>();
+								List<SourceleadTaxITDeclarationItem> taxSectionItemList = taxSection.getSourceleadTaxITDeclarationList();
+								if (taxSectionItemList != null && !taxSectionItemList.isEmpty()) {
+									for (SourceleadTaxITDeclarationItem taxSectionItem : taxSectionItemList) {
+										if (includeInactive || (!includeInactive && taxSectionItem.isActive())) {
+											SourceleadTaxITDeclarationItemDTO taxSectionItemDTO = new SourceleadTaxITDeclarationItemDTO();
+											taxSectionItemDTO.setId(taxSectionItem.getId());
+											taxSectionItemDTO.setName(taxSectionItem.getName());
+											taxSectionItemDTO.setDescription(taxSectionItem.getDescription());
+											taxSectionItemDTO.setMaxLimit(CommonUtil.toFixed2(taxSectionItem.getMaxLimit()));
+											taxSectionItemDTO.setActive(taxSectionItem.isActive());
+											if (taxSectionItem.getSourceleadTaxITDeclaration() != null) {
+												taxSectionItemDTO.setTaxSectionId(taxSectionItem.getSourceleadTaxITDeclaration().getId());
+												taxSectionItemDTO
+														.setTaxSectionName(taxSectionItem.getSourceleadTaxITDeclaration().getName());
+											}
+											taxSectionItemDTOList.add(taxSectionItemDTO);
+										}
+									}
+								}
+								taxSectionDTO.setSourceleadTaxSectionItemList(taxSectionItemDTOList);
+								taxSectionDTOList.add(taxSectionDTO);
 							}
-							taxSectionDTO.setSourceleadTaxSectionItemList(taxSectionItemDTOList);
-							taxSectionDTOList.add(taxSectionDTO);
 						}
 					}
 					sourceleadTaxFormDTO.setSourceleadTaxSectionList(taxSectionDTOList);
@@ -487,20 +492,20 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
-	public long addITDeclarationSectionItem(SourceleadTaxSectionItemDTO sectionItemDTO) {
+	public long addITDeclarationSectionItem(SourceleadTaxITDeclarationItemDTO sectionItemDTO) {
 		try {
-			SourceleadTaxSectionItem sectionItem = null;
+			SourceleadTaxITDeclarationItem sectionItem = null;
 			if (sectionItemDTO.getId() > 0) {
 				sectionItem = taxDao.getTaxSectionItem(sectionItemDTO.getId());
 			} else {
-				sectionItem = new SourceleadTaxSectionItem();
+				sectionItem = new SourceleadTaxITDeclarationItem();
 			}
 			if (sectionItem != null) {
 				sectionItem.setName(sectionItemDTO.getName());
 				sectionItem.setDescription(sectionItemDTO.getDescription());
 				sectionItem.setMaxLimit(Double.parseDouble(sectionItemDTO.getMaxLimit()));
 				sectionItem.setActive(true);
-				sectionItem.setSourceleadTaxSection(taxDao.getTaxSection(sectionItemDTO.getTaxSectionId()));
+				sectionItem.setSourceleadTaxITDeclaration(taxDao.getTaxSection(sectionItemDTO.getTaxSectionId()));
 				return taxDao.addITDeclarationSectionItem(sectionItem);
 			} else
 				return -1;

@@ -18,8 +18,8 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "SOURCELEAD_TAX_SECTION")
-public class SourceleadTaxSection implements Serializable {
+@Table(name = "SOURCELEAD_TAX_IT_DECLARATION")
+public class SourceleadTaxITDeclaration implements Serializable {
 	/**
 	 * @author Mahaveer Manoj
 	 */
@@ -55,12 +55,12 @@ public class SourceleadTaxSection implements Serializable {
 		this.description = description;
 	}
 
-	public List<SourceleadTaxSectionItem> getSourceleadTaxSectionItemsList() {
-		return sourceleadTaxSectionItemsList;
+	public List<SourceleadTaxITDeclarationItem> getSourceleadTaxITDeclarationList() {
+		return sourceleadTaxITDeclarationList;
 	}
 
-	public void setSourceleadTaxSectionItemsList(List<SourceleadTaxSectionItem> sourceleadTaxSectionItemsList) {
-		this.sourceleadTaxSectionItemsList = sourceleadTaxSectionItemsList;
+	public void setSourceleadTaxITDeclarationList(List<SourceleadTaxITDeclarationItem> sourceleadTaxSectionItemsList) {
+		this.sourceleadTaxITDeclarationList = sourceleadTaxSectionItemsList;
 	}
 
 	@Column(name = "ACTIVE")
@@ -71,8 +71,8 @@ public class SourceleadTaxSection implements Serializable {
 	@JoinColumn(name = "SOURCELEAD_TAX_FORM_ID", nullable = false)
 	private SourceleadTaxForm sourceleadTaxForm;
 
-	@OneToMany(mappedBy = "sourceleadTaxSection", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<SourceleadTaxSectionItem> sourceleadTaxSectionItemsList;
+	@OneToMany(mappedBy = "sourceleadTaxITDeclaration", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<SourceleadTaxITDeclarationItem> sourceleadTaxITDeclarationList;
 
 	public long getId() {
 		return id;

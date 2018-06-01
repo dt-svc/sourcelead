@@ -3,7 +3,7 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
-public class SourceleadTaxSectionDTO implements Serializable {
+public class SourceleadTaxITDeclarationDTO implements Serializable {
 
 	/**
 	 * @author Mahaveer Manoj
@@ -17,7 +17,9 @@ public class SourceleadTaxSectionDTO implements Serializable {
 	private String uuid;
 	private long taxFormId;
 	private String taxFormName;
-	private List<SourceleadTaxSectionItemDTO> sourceleadTaxSectionItemList;
+	private String financialYear;
+	private long userId;
+	private List<SourceleadTaxITDeclarationItemDTO> sourceleadTaxSectionItemList;
 
 	public long getId() {
 		return id;
@@ -71,11 +73,11 @@ public class SourceleadTaxSectionDTO implements Serializable {
 		this.description = desctiption;
 	}
 
-	public List<SourceleadTaxSectionItemDTO> getSourceleadTaxSectionItemList() {
+	public List<SourceleadTaxITDeclarationItemDTO> getSourceleadTaxSectionItemList() {
 		return sourceleadTaxSectionItemList;
 	}
 
-	public void setSourceleadTaxSectionItemList(List<SourceleadTaxSectionItemDTO> sourceleadTaxSectionItemList) {
+	public void setSourceleadTaxSectionItemList(List<SourceleadTaxITDeclarationItemDTO> sourceleadTaxSectionItemList) {
 		this.sourceleadTaxSectionItemList = sourceleadTaxSectionItemList;
 	}
 
@@ -85,5 +87,21 @@ public class SourceleadTaxSectionDTO implements Serializable {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public String getFinancialYear() {
+		return financialYear;
+	}
+
+	public void setFinancialYear(String financialYear) {
+		this.financialYear = financialYear;
+	}
+
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
 }

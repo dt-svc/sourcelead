@@ -45,7 +45,7 @@ public class SourceleadTaxForm implements Serializable {
 	}
 
 	@OneToMany(mappedBy = "sourceleadTaxForm", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<SourceleadTaxSection> sourceleadTaxSectionList;
+	private List<SourceleadTaxITDeclaration> sourceleadTaxSectionList;
 
 	public long getId() {
 		return id;
@@ -75,11 +75,11 @@ public class SourceleadTaxForm implements Serializable {
 		return serialVersionUID;
 	}
 
-	public List<SourceleadTaxSection> getSourceleadTaxSectionList() {
+	public List<SourceleadTaxITDeclaration> getSourceleadTaxSectionList() {
 		return sourceleadTaxSectionList;
 	}
 
-	public void setSourceleadTaxSectionList(List<SourceleadTaxSection> sourceleadTaxSectionList) {
+	public void setSourceleadTaxSectionList(List<SourceleadTaxITDeclaration> sourceleadTaxSectionList) {
 		this.sourceleadTaxSectionList = sourceleadTaxSectionList;
 	}
 

@@ -52,21 +52,31 @@ $(document).ready(function() {
 		if($('#addStateTaxForm').validate(false, validationSettings)) {
 			var flag = true;
 			var rowData = [];
+			var fromAmountToAmountData = [];
 			var monthData = [];
 			$("div[data-name='ptRow']").each(function() {
 				var amountFrom = parseFloat($(this).find("input[data-name='amountFrom']").val());
 				var amountTo = parseFloat($(this).find("input[data-name='amountTo']").val());
 				var amount = parseFloat($(this).find("input[data-name='amount']").val());
 				var monthApplicable = $(this).find("select[data-name='monthApplicable']").val();
-				var result = amountFrom + "<>" + amountTo + "<>" + amount + "<>" + monthApplicable;
-				if(!rowData.includes(result)) {
-					rowData.push(result);
+				var rowResult = amountFrom + "<>" + amountTo + "<>" + amount + "<>" + monthApplicable;
+				var fromAmountToAmountResult = amountFrom + "<>" + amountTo + "<>" + monthApplicable;
+				if(!rowData.includes(rowResult)) {
+					rowData.push(rowResult);
 				} else {
 					$(this).append("<p class='jquery_form_error_message'>Same tax row already exists....</p>");
 					flag = false;
 					return;
 				}
-				if(!monthData.includes(monthApplicable)) {
+				if(!fromAmountToAmountData.includes(fromAmountToAmountResult)){
+					fromAmountToAmountData.push(fromAmountToAmountResult);
+				} else {
+					$(this).find("input[data-name='amountFrom']").parent().append("<p class='jquery_form_error_message'>From amount already exists for the selected Month (" + monthApplicable + ")....</p>");
+					$(this).find("input[data-name='amountTo']").parent().append("<p class='jquery_form_error_message'>To amount already exists for the selected Month (" + monthApplicable + ")....</p>");
+					flag = false;
+					return;
+				}
+				if(flag) {
 					monthData.push(monthApplicable);
 				} else {
 					$(this).find("select[data-name='monthApplicable']").parent().append("<p class='jquery_form_error_message'>Month already exists....</p>");

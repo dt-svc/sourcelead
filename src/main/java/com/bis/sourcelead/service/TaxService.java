@@ -6,8 +6,8 @@ import com.bis.sourcelead.dto.CentralTaxDTO;
 
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
-import com.bis.sourcelead.dto.SourceleadTaxSectionDTO;
-import com.bis.sourcelead.dto.SourceleadTaxSectionItemDTO;
+import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
+import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
 
 import com.bis.sourcelead.entity.OrgLocations;
@@ -44,15 +44,15 @@ public interface TaxService {
 
 	List<SourceleadTaxFormDTO> getTaxFormTypeList(boolean includeAll);
 
-	long addITDeclarationSection(SourceleadTaxSectionDTO sectionDTO);
+	long addITDeclarationSection(SourceleadTaxITDeclarationDTO sectionDTO);
 
-	public SourceleadTaxFormDTO getTaxFormType(long taxFormId);
+	public SourceleadTaxFormDTO getTaxFormType(long taxFormId, boolean includeAll, boolean includeInactive);
 
-	public SourceleadTaxFormDTO getTaxFormType(String uuid);
+	public SourceleadTaxFormDTO getTaxFormType(String uuid, boolean includeAll, boolean includeInactive);
 
-	public SourceleadTaxFormDTO getTaxFormType(SourceleadTaxForm sourceleadTaxForm, boolean includeAll);
+//	public SourceleadTaxFormDTO getTaxFormType(SourceleadTaxForm sourceleadTaxForm, boolean includeAll);
 
-	long addITDeclarationSectionItem(SourceleadTaxSectionItemDTO sectionItemDTO);
+	long addITDeclarationSectionItem(SourceleadTaxITDeclarationItemDTO sectionItemDTO);
 
 	Response<String> changeTaxFormStatus(long id);
 

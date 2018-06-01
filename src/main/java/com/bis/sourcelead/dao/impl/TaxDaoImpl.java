@@ -17,8 +17,8 @@ import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.CentralTax;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
-import com.bis.sourcelead.entity.SourceleadTaxSection;
-import com.bis.sourcelead.entity.SourceleadTaxSectionItem;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -283,10 +283,10 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
-	public SourceleadTaxSection getTaxSection(long taxSectionId) {
+	public SourceleadTaxITDeclaration getTaxSection(long taxSectionId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			return session.get(SourceleadTaxSection.class, taxSectionId);
+			return session.get(SourceleadTaxITDeclaration.class, taxSectionId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -295,7 +295,7 @@ public class TaxDaoImpl implements TaxDao {
 
 	@Override
 	@Transactional
-	public long addITDeclarationSection(SourceleadTaxSection taxSection) {
+	public long addITDeclarationSection(SourceleadTaxITDeclaration taxSection) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.saveOrUpdate(taxSection);
@@ -307,10 +307,10 @@ public class TaxDaoImpl implements TaxDao {
 	}
 
 	@Override
-	public SourceleadTaxSectionItem getTaxSectionItem(long taxSectionItemId) {
+	public SourceleadTaxITDeclarationItem getTaxSectionItem(long taxSectionItemId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			return session.get(SourceleadTaxSectionItem.class, taxSectionItemId);
+			return session.get(SourceleadTaxITDeclarationItem.class, taxSectionItemId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -319,7 +319,7 @@ public class TaxDaoImpl implements TaxDao {
 
 	@Override
 	@Transactional
-	public long addITDeclarationSectionItem(SourceleadTaxSectionItem taxSectionItem) {
+	public long addITDeclarationSectionItem(SourceleadTaxITDeclarationItem taxSectionItem) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.saveOrUpdate(taxSectionItem);
@@ -367,7 +367,7 @@ public class TaxDaoImpl implements TaxDao {
 	public long changeITDeclarationSectionStatus(long id) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			SourceleadTaxSection sourceleadTaxSection = session.get(SourceleadTaxSection.class, id);
+			SourceleadTaxITDeclaration sourceleadTaxSection = session.get(SourceleadTaxITDeclaration.class, id);
 			if (sourceleadTaxSection != null) {
 				sourceleadTaxSection.setActive(!sourceleadTaxSection.isActive());
 				return sourceleadTaxSection.getId();
@@ -383,7 +383,7 @@ public class TaxDaoImpl implements TaxDao {
 	public long changeITDeclarationSectionItemStatus(long id) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			SourceleadTaxSectionItem sourceleadTaxSectionItem = session.get(SourceleadTaxSectionItem.class, id);
+			SourceleadTaxITDeclarationItem sourceleadTaxSectionItem = session.get(SourceleadTaxITDeclarationItem.class, id);
 			if (sourceleadTaxSectionItem != null) {
 				sourceleadTaxSectionItem.setActive(!sourceleadTaxSectionItem.isActive());
 				return sourceleadTaxSectionItem.getId();

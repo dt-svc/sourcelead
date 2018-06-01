@@ -15,8 +15,8 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "SOURCELEAD_TAX_SECTION_ITEM")
-public class SourceleadTaxSectionItem implements Serializable {
+@Table(name = "SOURCELEAD_TAX_IT_DECLARATION_ITEM")
+public class SourceleadTaxITDeclarationItem implements Serializable {
 
 	/**
 	 * @author Mahaveer Manoj
@@ -42,8 +42,8 @@ public class SourceleadTaxSectionItem implements Serializable {
 
 	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SOURCELEAD_TAX_SECTION_ID", nullable = false)
-	private SourceleadTaxSection sourceleadTaxSection;
+	@JoinColumn(name = "SOURCELEAD_TAX_IT_DECLARATION_ID", nullable = false)
+	private SourceleadTaxITDeclaration sourceleadTaxITDeclaration;
 
 	public long getId() {
 		return id;
@@ -85,12 +85,12 @@ public class SourceleadTaxSectionItem implements Serializable {
 		this.active = active;
 	}
 
-	public SourceleadTaxSection getSourceleadTaxSection() {
-		return sourceleadTaxSection;
+	public SourceleadTaxITDeclaration getSourceleadTaxITDeclaration() {
+		return sourceleadTaxITDeclaration;
 	}
 
-	public void setSourceleadTaxSection(SourceleadTaxSection sourceleadTaxSection) {
-		this.sourceleadTaxSection = sourceleadTaxSection;
+	public void setSourceleadTaxITDeclaration(SourceleadTaxITDeclaration sourceleadTaxSection) {
+		this.sourceleadTaxITDeclaration = sourceleadTaxSection;
 	}
 
 	public static long getSerialversionuid() {

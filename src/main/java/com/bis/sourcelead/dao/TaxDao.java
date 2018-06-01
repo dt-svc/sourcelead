@@ -8,8 +8,8 @@ import com.bis.sourcelead.dto.helper.Paginator;
 
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
-import com.bis.sourcelead.entity.SourceleadTaxSection;
-import com.bis.sourcelead.entity.SourceleadTaxSectionItem;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -46,13 +46,13 @@ public interface TaxDao {
 
 	public SourceleadTaxForm getTaxFormType(String uuid);
 
-	public long addITDeclarationSection(SourceleadTaxSection taxSection);
+	public long addITDeclarationSection(SourceleadTaxITDeclaration taxSection);
 
-	public SourceleadTaxSection getTaxSection(long taxSectionId);
+	public SourceleadTaxITDeclaration getTaxSection(long taxSectionId);
 
-	public SourceleadTaxSectionItem getTaxSectionItem(long id);
+	public SourceleadTaxITDeclarationItem getTaxSectionItem(long id);
 
-	public long addITDeclarationSectionItem(SourceleadTaxSectionItem taxSectionItem);
+	public long addITDeclarationSectionItem(SourceleadTaxITDeclarationItem taxSectionItem);
 
 	public long changeTaxFormStatus(long id);
 

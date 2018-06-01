@@ -17,7 +17,7 @@
 </c:if>
 <c:if test="${!isEditable}">
 	<div class="col-md-12 text-center">
-		<a href="create?formId=${form.id}" title="Edit Form"
+		<a href="create?uuid=${form.uuid}" title="Edit Form"
 			class="pull-right btn btn-success btnSuccess mb"> <i
 			class="fa fa-plus"></i> Edit
 		</a>
@@ -46,7 +46,7 @@
 															onclick="tax.showChangeStatusPopup(${section.id}, 3, 1)"></a>
 													</c:when>
 													<c:otherwise>
-														<a class="fa fa-edit text-danger" title="Delete Section"
+														<a class="fa fa-edit text-danger" title="Activate Section"
 															onclick="tax.showChangeStatusPopup(${section.id}, 3, 0)"></a>
 													</c:otherwise>
 												</c:choose>
@@ -142,11 +142,10 @@
 								</td>
 								<td>
 									<div class="tbldata-dotdot-big" style="margin: 0px;">
-										<div class="editElementDiv">${sectionItem.description !=null ? sectionItem.description : "----"}</div>
+										<div class="editElementDiv">${sectionItem.description != null && sectionItem.description != "" ? sectionItem.description : "--NA--"}</div>
 										<div class="saveElementDiv">
 											<form id="sectionItem_${sectionItem.id}_description_form">
 												<textarea class="form-control" rows="1" name="description"
-													field-name="Description" data-validation="required"
 													data-old_value="${sectionItem.description}"
 													placeholder="Short Description">${sectionItem.description}</textarea>
 											</form>
