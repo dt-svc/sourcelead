@@ -2869,7 +2869,7 @@ public class EMailJobScheduler {
 		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("immigration/viewImmigration?immigrationUUID="+immigration.getImmigrationUuid()+"&candidateUUID="+immigration.getCandidate().getCandidateUUID()+"&immiTemplateUUID="+immigration.getImmigrationTemplateId().getUuid()).toString();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("immigration/viewImmigration?immigrationUUID="+immigration.getImmigrationUuid()+"&candidateUUID="+immigration.getCandidate().getCandidateUUID()+"&immiTemplateUUID="+immigration.getImmigrationTemplateId().getUuid()+"&myImmigrationPage=Y").toString();
 		emailScenerioUtil.sendNotification(actionLink, ol.getOrg().getUser(), toCandidateObj.getConsultantUser(), ol,notificationScenario,new HashMap<String,String>());
 	}
 
@@ -2926,7 +2926,7 @@ public class EMailJobScheduler {
 		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 		notificationScenario.setBody(notificationBody);
 		StringBuilder actionLinkBuilder = new StringBuilder();
-		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("immigration/viewImmigration?immigrationUUID="+immigration.getImmigrationUuid()+"&candidateUUID="+immigration.getCandidate().getCandidateUUID()+"&immiTemplateUUID="+immigration.getImmigrationTemplateId().getUuid()).toString();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("immigration/viewImmigration?immigrationUUID="+immigration.getImmigrationUuid()+"&candidateUUID="+immigration.getCandidate().getCandidateUUID()+"&immiTemplateUUID="+immigration.getImmigrationTemplateId().getUuid()+"&myImmigrationPage=N").toString();
 		emailScenerioUtil.sendNotification(actionLink, orgLocations.getOrg().getUser(), toUserObj, orgLocations,notificationScenario,new HashMap<String,String>());
 		
 	}
