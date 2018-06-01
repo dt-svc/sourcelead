@@ -95,5 +95,11 @@ public class ProjectMembersHistoryServiceImpl implements ProjectMembersHistorySe
 		return projectMembersHistoryDao.getAssignDateandEndDateByProjectMemberId(projectMemberId);
 	}
 
+	@Override
+	public ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgId(Long projectMemberId, Long orgId)
+			throws Exception {
+		return projectMembersHistoryDao.getProjectMembersHistoryByProjectMemberIdAndOrgId(projectMemberId,orgId);
+	}
+
 	
 }

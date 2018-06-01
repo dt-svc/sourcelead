@@ -10,6 +10,7 @@ public class DashBoardSocketCountDTO {
 	private String candidateId;
 	private String countFor;
 	private String expenseType;
+	private String isGlobalAccess;
 	public Session getSession() {
 		return session;
 	}
@@ -51,6 +52,12 @@ public class DashBoardSocketCountDTO {
 	}
 	public void setExpenseType(String expenseType) {
 		this.expenseType = expenseType;
+	}
+	public String getIsGlobalAccess() {
+		return isGlobalAccess;
+	}
+	public void setIsGlobalAccess(String isGlobalAccess) {
+		this.isGlobalAccess = isGlobalAccess;
 	}
 	
 	

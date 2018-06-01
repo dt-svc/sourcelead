@@ -155,11 +155,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 	
 	@Override
-	public Expenses getExpenseByExpenseUniqueId(String expenseId, Long orgLocationId) throws Exception {
-		return expensesDao.getExpenseByExpenseUniqueId(expenseId,orgLocationId);
+	public Expenses getExpenseByExpenseUniqueId(String expenseId, Long orgLocationId,String isGlobalUser) throws Exception {
+		return expensesDao.getExpenseByExpenseUniqueId(expenseId,orgLocationId,isGlobalUser);
 	}
 	@Override
-	public File exportMyExpensesToPdf(Expenses expenses, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
+	public File exportMyExpensesToPdf(Expenses expenses, OrgLocations orgLoc, User loginUser,String approverType,String isGlobalUser) throws Exception {
 		
 		SimpleDateFormat dateFormatter=orgLoc.getLocFullFormDateFormatter();
 		String[] myExpensesHeaders = null;
@@ -220,7 +220,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			        List<String[]> expensespdfArrayList = new ArrayList<>();
 			        List<ExpensesEntries> expenseEntries = getExpensesEntries(expenses.getId().toString());
 			        for(ExpensesEntries expEntries :expenseEntries){
-			        	expensespdfArrayList.add(prepareMyExpensesStringArray(expEntries,myExpensesHeaders,orgLoc,loginUser,approverType));
+			        	expensespdfArrayList.add(prepareMyExpensesStringArray(expEntries,myExpensesHeaders,orgLoc,loginUser,approverType,isGlobalUser));
 			        }
 			        	
 			        for (String[] expensesArray: expensespdfArrayList) {
@@ -245,7 +245,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		            StringBuilder purposeStringBuilder =new StringBuilder();
 		            StringBuilder totalStringBuilder =new StringBuilder();
 		            StringBuilder statusStringBuilder = new StringBuilder();
-		            ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId());
+		            ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
 		            
 			        orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenses.getExpenseId()).toString()));
 			        orderedList.add(new ListItem(locBuilder.append("Project :").append(pm.getProjects().getProjectName()).toString()));
@@ -300,7 +300,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			            StringBuilder totalStringBuilder =new StringBuilder();
 			            orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenses.getExpenseId()).toString()));
 			            if(expenses.getProjects() != null && expenses.getMasterCandidateId() != null){
-			            	ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId());
+			            	ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
 			            	
 			            	if(pm.getProjectMemberCandidteId()!= null){
 			            			if(pm.getProjectMemberCandidteId().getLastName()!= null){
@@ -392,7 +392,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			return file;
 	}
 
-	private String[] prepareMyExpensesStringArray(ExpensesEntries expEntries, String[] myExpensesHeaders, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
+	private String[] prepareMyExpensesStringArray(ExpensesEntries expEntries, String[] myExpensesHeaders, OrgLocations orgLoc, User loginUser,String approverType,String isGlobalUser) throws Exception {
 		String userArray[] = new String[myExpensesHeaders.length];
 		SimpleDateFormat dateFormat=orgLoc.getLocFullFormDateFormatter();
 				if(null != expEntries.getExpensesCategoryId()){
@@ -454,7 +454,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			 
 			 if(approverType.equalsIgnoreCase("APPROVER")){
 				 if(expEntries.getExpensesId() != null){	
-					 ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expEntries.getExpensesId().getId(),orgLoc.getId());
+					 ExpensesApproverHierarchy  eah = expensesApprovalService.getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expEntries.getExpensesId().getId(),orgLoc.getId(),isGlobalUser);
 					   userArray[7] = eah.getExpenseStatus().getValue().toUpperCase();
 				   }else{
 					   userArray[7] = "--";
@@ -464,13 +464,13 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 
 	@Override
-	public File exportMyExpensesToExcel(Expenses expenseDetails, OrgLocations orgLoc, User loginUser,String approverType) throws Exception {
+	public File exportMyExpensesToExcel(Expenses expenseDetails, OrgLocations orgLoc, User loginUser,String approverType,String isGlobalUser) throws Exception {
 		File file = null;
 		Workbook createExcelworkbook = new XSSFWorkbook();
 		DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 		Sheet createExcelsheet = createExcelworkbook.createSheet(orgLoc.getOrgLocationName() + "_" + dateFormat.format(new Date()));
 		Row writeRow = null;
-		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,expenseDetails,approverType,orgLoc);
+		createExcelsheet = getExcelSheetWithHeader(createExcelsheet, writeRow, createExcelworkbook,expenseDetails,approverType,orgLoc,isGlobalUser);
 		int column = 0;
 		
 		List<ExpensesEntries> expenseEntries = getExpensesEntries(expenseDetails.getId().toString());
@@ -481,7 +481,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 			}else if(approverType.equalsIgnoreCase("USER")){
 				writeRow = createExcelsheet.createRow(column + 9);
 			}
-			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesEntries,approverType,orgLoc);
+			createExcelsheet = createXlsSheet(createExcelsheet, writeRow, expensesEntries,approverType,orgLoc,isGlobalUser);
 			column++;
 		}
 
@@ -499,7 +499,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 	
 	
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesEntries expEntries, String approverType,OrgLocations orgLocations) {
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesEntries expEntries, String approverType,OrgLocations orgLocations,String isGlobalUser) {
 		if(null != expEntries.getExpensesCategoryId()){
 			if(expEntries.getExpensesCategoryId().getExpensesName() != null && !"".equalsIgnoreCase(expEntries.getExpensesCategoryId().getExpensesName())){	
 				writeRow.createCell(0).setCellValue(expEntries.getExpensesCategoryId().getExpensesName());
@@ -561,19 +561,19 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 	
 
-	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, Expenses exp, String approverType,OrgLocations orgLocations) throws Exception {
+	private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, Expenses exp, String approverType,OrgLocations orgLocations,String isGlobalUser) throws Exception {
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
 		writeRow = createExcelsheet.createRow(0);
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 			if(approverType.equalsIgnoreCase("APPROVER")){
-			prepareHeadderDataForApprover(writeRow,exp,createExcelsheet,style,orgLocations);
+			prepareHeadderDataForApprover(writeRow,exp,createExcelsheet,style,orgLocations,isGlobalUser);
 			}else if(approverType.equalsIgnoreCase("USER")){
 			
 		 StringBuilder projectName = new StringBuilder();	
 		 StringBuilder clientName = new StringBuilder();
 		 if(exp.getProjects() != null && exp.getMasterCandidateId() != null){
-	      ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(exp.getMasterCandidateId().getId(),exp.getProjects().getId(),orgLocations.getId());
+	      ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(exp.getMasterCandidateId().getId(),exp.getProjects().getId(),orgLocations.getId(),isGlobalUser);
 	      	  if(pm.getProjects().getProjectName()!= null){    
 	      		  projectName.append(pm.getProjects().getProjectName());
 	      	  }else{
@@ -693,7 +693,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 		return createExcelsheet;
 	}
 	
-	private void prepareHeadderDataForApprover(Row writeRow, Expenses expenseDetails, Sheet createExcelsheet, CellStyle style,OrgLocations orgLocations) throws Exception {
+	private void prepareHeadderDataForApprover(Row writeRow, Expenses expenseDetails, Sheet createExcelsheet, CellStyle style,OrgLocations orgLocations,String isGlobalUser) throws Exception {
 		StringBuilder employeeId=new StringBuilder();
 		StringBuilder nameBuilder=new StringBuilder();
 	   	StringBuilder emailBuilder=new StringBuilder();
@@ -710,7 +710,7 @@ public class ExpensesServiceImpl implements ExpensesService{
         employeeId.append(expenseDetails.getExpenseId());
         }
         if(expenseDetails.getProjects() != null && expenseDetails.getMasterCandidateId() != null){
-        	ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenseDetails.getMasterCandidateId().getId(),expenseDetails.getProjects().getId(),orgLocations.getId());
+        	ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenseDetails.getMasterCandidateId().getId(),expenseDetails.getProjects().getId(),orgLocations.getId(),isGlobalUser);
         	if(pm.getProjectMemberCandidteId()!= null){
         			if(pm.getProjectMemberCandidteId().getLastName()!= null){
         				nameBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).
@@ -949,7 +949,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	
 	@Override
-	public File exportAllMyExpensesToPdf(List<Expenses> expenseList, OrgLocations orgLoc, User loginUser) throws Exception {
+	public File exportAllMyExpensesToPdf(List<Expenses> expenseList, OrgLocations orgLoc, User loginUser,String isGlobalUser) throws Exception {
 		String[] headers = Constants.ALL_MY_EXPENSES_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -1093,7 +1093,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	}
 
 	@Override
-	public File exportAllMyExpensesToExcel(List<Expenses> expenseList,OrgLocations orgLoc) throws IOException {
+	public File exportAllMyExpensesToExcel(List<Expenses> expenseList,OrgLocations orgLoc,String isGlobalUser) throws IOException {
 		
 		File file = null;
 		Workbook createExcelworkbook = new XSSFWorkbook();

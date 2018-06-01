@@ -261,7 +261,6 @@ function deleteFromMail(emailId){
 }
 
 function cancelDeleteMail(){
-	 alert("hello")
 		$("#deleteFromMailDiv").empty();
 		 $(".project_inn_mask").fadeOut(200);
 	}
@@ -584,7 +583,7 @@ function editConfiguredMail() {
 		    
 		    result = result  +'<div class="pull-right mb">';
 		    result = result  +'<button type="button" class="btn btn-success btnSuccess mr" onClick="updateEmailNotification();">Save</button>';
-		    result = result  +' <button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="configuredMail();">Cancel</button>';
+		    result = result  +' <button type="button" class="btn btn-primary btnsStyles mr" data-dismiss="modal" onClick="configuredMail();">Cancel</button>';
 			
 		    result = result  +'</div>';
 		    

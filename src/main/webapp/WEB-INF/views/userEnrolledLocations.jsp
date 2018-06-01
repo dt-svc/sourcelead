@@ -34,13 +34,13 @@
 				<p><i class="fa fa-map-marker"></i> ${!empty userRole.orgLocations.city ? userRole.orgLocations.city : ""} ${userRole.orgLocations.country}</p>
 				<c:choose>
 				<c:when test="${userRole.roles.displayName == 'Professional'}">
-				<p><i class="fa fa-user"></i>Job Seeker</p>
+				<p><i class="fa fa-user"></i>${!empty userRole.designation ? userRole.designation : 'Job Seeker'}</p>
 				</c:when>
 				<c:when test="${userRole.roles.displayName == 'Independent Recruiter'}">
-				<p><i class="fa fa-user"></i>Freelance Recruiter</p>
+				<p><i class="fa fa-user"></i>${!empty userRole.designation ? userRole.designation : 'Freelance Recruiter'}</p>
 				</c:when>
 				<c:otherwise>
-                <p><i class="fa fa-user"></i> ${userRole.roles.displayName}</p>
+                <p><i class="fa fa-user"></i> ${!empty userRole.designation ? userRole.designation : userRole.roles.displayName}</p>
                 </c:otherwise>
                 </c:choose>
 				

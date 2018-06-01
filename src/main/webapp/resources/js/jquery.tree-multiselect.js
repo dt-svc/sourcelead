@@ -107,7 +107,7 @@ Tree.prototype.initialize = function (roleName) {
   }
 
   if (this.options.enableSelectAll) {
-    this.createSelectAllButtons();
+    this.createSelectAllButtons(roleName);
   }
 
   this.armRemoveSelectedOnClick();
@@ -323,15 +323,16 @@ Tree.prototype.addCollapsibility = function () {
   });
 };
 
-Tree.prototype.createSelectAllButtons = function () {
+Tree.prototype.createSelectAllButtons = function (roleName) {
   var $selectAll = $("<span class='select-all'></span>");
   $selectAll.text(this.options.selectAllText);
-  var $unselectAll = $("<span class='unselect-all'></span>");
-  $unselectAll.text(this.options.unselectAllText);
-
+  
   var $selectAllContainer = $("<div class='select-all-container'></div>");
-
-  $selectAllContainer.prepend($unselectAll);
+  if(roleName != 'ROLE_ADMIN'){
+	  var $unselectAll = $("<span class='unselect-all'></span>");
+	  $unselectAll.text(this.options.unselectAllText);
+	  $selectAllContainer.prepend($unselectAll);
+  }
   $selectAllContainer.prepend($selectAll);
 
   this.$selectionContainer.prepend($selectAllContainer);
