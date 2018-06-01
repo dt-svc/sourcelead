@@ -262,7 +262,7 @@
 											  <c:set var="taskId" value=""/>
 											  <c:set var="taskName" value=""/>
 											  <c:if test="${timesheetSubmissionDTO.submitButtonVisible ||  timesheetSubmissionDTO.saveButtonVisible}">
-												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId} timSelWid"  onchange='getProjectTasks("${entryCount.index+1}task1Id","${timesheetEntryDetailsDTO.projectId}");prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
+												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId} timSelWid"  onchange='prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
 														<option value=''>--select task--</option>
 														 <c:if test="${!empty timesheetSubmissionDTO.timesheetTaskList}">
 														   <c:forEach var="pt" items="${timesheetSubmissionDTO.timesheetTaskList}">
@@ -272,14 +272,14 @@
 														           </c:forEach>
 														          <c:set var="taskId" value="${pt.id}" />
 														          <c:set var="taskName" value="${pt.taskName}" />
-														         <option value='${pt.id}' selected>${pt.taskName}</option>
+														         <option value='${pt.id},${!empty taskType ? taskType : pt.taskType},${pt.taskName}' selected>${pt.taskName}</option>
 														       </c:if>
 														       <c:if test="${pt.id != entry.key}">
 															       <c:if test="${not empty pt.generatedId}" >
-															       		<option value='${pt.id},${taskType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
+															       		<option value='${pt.id},${pt.taskType},${pt.taskName}'> ${pt.generatedId} - ${pt.taskName} </option>
 															       </c:if>
 															        <c:if test="${empty pt.generatedId}" >
-															       		<option value='${pt.id},${taskType},${pt.taskName}'>${pt.taskName} </option>
+															       		<option value='${pt.id},${pt.taskType},${pt.taskName}'>${pt.taskName} </option>
 															       </c:if>
 														       </c:if>
 														   </c:forEach>

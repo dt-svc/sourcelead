@@ -54,6 +54,7 @@ import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
@@ -73,6 +74,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.MasterCandidateService;
@@ -189,6 +191,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private UserCustomFieldDataService userCustomFieldDataService;
+	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioConfigurationService;
 	
 	@Override
 	public User findByUserName(String username) {
@@ -1464,12 +1469,15 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 
+		 EmailConfigurationFromMail confFromMail = emailScenarioConfigurationService.getConfFromMailByStatus(orgLocations.getId());
+		 if(confFromMail != null) {
+			 emailMessage.setFromEmail(confFromMail.getEmail());
+		 }else {
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 }
+		 
 		 emailMessage.setCreatedBy(user.getUserCode());
-		// StringBuilder msgBuild = new StringBuilder();
-		// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 StringBuffer userNameStringBuffer =  new StringBuffer();
 		 if (user.getLastName() != null && !"".equalsIgnoreCase(user.getLastName()) ) {

@@ -64,7 +64,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.projectId = projectId;
 	}
 
-	public boolean isModifyButtonVisible() {
+	public boolean getModifyButtonVisible() {
 		return modifyButtonVisible;
 	}
 
@@ -72,7 +72,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.modifyButtonVisible = modifyButtonVisible;
 	}
 
-	public boolean isSubmitButtonVisible() {
+	public boolean getSubmitButtonVisible() {
 		return submitButtonVisible;
 	}
 
@@ -96,7 +96,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.timesheetStatus = timesheetStatus;
 	}
 
-	public boolean isReopenButtonVisible() {
+	public boolean getReopenButtonVisible() {
 		return reopenButtonVisible;
 	}
 
@@ -104,7 +104,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.reopenButtonVisible = reopenButtonVisible;
 	}
 
-	public boolean isReopenRequestSent() {
+	public boolean getReopenRequestSent() {
 		return reopenRequestSent;
 	}
 
@@ -112,7 +112,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.reopenRequestSent = reopenRequestSent;
 	}
 
-	public boolean isCancelButtonVisible() {
+	public boolean getCancelButtonVisible() {
 		return cancelButtonVisible;
 	}
 
@@ -120,7 +120,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.cancelButtonVisible = cancelButtonVisible;
 	}
 
-	public boolean isWeekCommentVisible() {
+	public boolean getWeekCommentVisible() {
 		return weekCommentVisible;
 	}
 
