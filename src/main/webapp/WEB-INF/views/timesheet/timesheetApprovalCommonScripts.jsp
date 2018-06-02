@@ -80,7 +80,6 @@ function timesheetApprovalPopUpByProjectMemberId(currentTimeFrequency,projectId,
 				     $("body").css('overflow-y', 'hidden');
 				     $("html").trigger('click');
 		    	  	 $("#tab-1").show();
-		    	     editMe(this);
 				     setTotals();
 			    	 $(".project-tabs-menu a").click(function(event) {
 			    	        event.preventDefault();
