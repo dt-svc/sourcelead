@@ -33,6 +33,10 @@ public class SourceleadTaxChallanItem implements Serializable {
 	@Column(name = "LABEL_NAME")
 	private String labelName;
 	
+	@Column(name = "DISCRIPTION")
+	private String discription;
+	
+	
 	@Column(name = "IS_FIELD_REQUIRED")
 	private int isFieldRequired;
 	
@@ -198,6 +202,14 @@ public class SourceleadTaxChallanItem implements Serializable {
 
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public String getDiscription() {
+		return discription;
+	}
+
+	public void setDiscription(String discription) {
+		this.discription = discription;
 	}
 
 	public static long getSerialversionuid() {
