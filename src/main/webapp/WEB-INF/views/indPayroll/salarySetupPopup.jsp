@@ -273,6 +273,10 @@ $('#method').on('change', function() {
 		  }
 
 		  txtarea.scrollTop = scrollPos;
+		  
+		  $('#formulaPercentage').val('').trigger("chosen:updated");
+		  $('#formulaPayhead').val('').trigger("chosen:updated");
+		  $('#formulaOperator').val('').trigger("chosen:updated");
 		}
 	
 	function validateFormula(){

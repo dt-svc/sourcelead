@@ -224,21 +224,37 @@ function jpagination(url,sourceleadUrl){
 		         "data": "requirementUUID",
 		         "render": function ( data, type, opt, meta ) {
 		         		   var result = "";
+		         		   var trashActive = "";
 		         		  result = result +" <td><div class=' widthIcon widthIcon-four'>";
 		         		
-		         		 if((opt.isRequirementReleased != 'Y') && ('${SourceLeadWeb_loginUserRole}' ==  'ROLE_ADMIN' || '${SourceLeadWeb_loginUserRole}' == 'ROLE_SOURCELEAD_ADMIN')){
-		         		 		result = result +'<div class="text-center"><a href="javascript:void(0)" title="Select for Delete Job" class="add-applicant"><i class="fa fa-trash trashIcon" id="'+opt.requirementUUID+'" onclick="selectDeleteJob(this);" ></i></a></div>';
+		         		 '<sec:authorize access="hasAnyRole(\'ROLE_CREATE_REQUIREMENT\',\'ROLE_VIEW_REQUIREMENT\',\'ROLE_VIEW_EDIT_REQUIREMENT\')">';
+		         		 if((opt.isRequirementReleased != 'Y' && !opt.totalApplicants > 0) && ('${SourceLeadWeb_loginUserRole}' ==  'ROLE_ADMIN' || '${SourceLeadWeb_loginUserRole}' == 'ROLE_SOURCELEAD_ADMIN')){
+		         			if(jQuery.inArray(opt.requirementUUID, reqUUIDArr) !== -1){
+		         				trashActive = "trashActive";
+		         			}
+		         		 		result = result +'<div class="text-center"><a href="javascript:void(0)" title="Select for Delete Job" class="add-applicant"><i class="fa fa-trash trashIcon '+trashActive+'" id="'+opt.requirementUUID+'" onclick="selectDeleteJob(this);" ></i></a></div>';
 		         		 }else{
-		         				result = result +'<div class="text-center"><i class="fa fa-trash disableTrashIcon"></i></div>';
+		         				result = result +'<div class="text-center"><i class="fa fa-trash permissionDenied"></i></div>';
 		         		 }
+		         		'</sec:authorize>';
+		         		
+		         		
 		         		  '<sec:authorize access="hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
 		      		        if(opt.requirementSubmissionStatus == 'APPROVED' || opt.requirementSubmissionStatus == 'OPEN' || opt.requirementSubmissionStatus == 'NEW'){
 		      		        	result = result +'<div class="text-center"><a href="javascript:void(0)" title="Add Applicant" onclick="getAddApplicant('+opt.id+',\''+opt.reqCoolingOffPeriod+'\');" class="add-applicant"><i class="fa fa-user-plus"></i></a></div>';		        
+		      		        }else{
+		      		        	result = result +'<div class="text-center"><i class="fa fa-user-plus permissionDenied"></i></div>';
 		      		        }
+		      	        '</sec:authorize>';
+			      	      '<sec:authorize access="!hasAnyRole(\'ROLE_ADD_APPLICANT\')">';
+			      	    		result = result +'<div class="text-center"><i class="fa fa-user-plus permissionDenied"></i></div>';
 		      	        '</sec:authorize>';
 		      	        
 		      	      	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">';
 	         				result = result +'<div class="text-center"><a href="javascript:void(0)" title="Assign To" data-toggle="modal" data-target="#myModal" onclick="getAssignedMembersDiv('+opt.id+');"><i class="fa fa-address-book '+(opt.assignedMembersCount == 0 ? "anchorBlack" : "")+' "></i></a></div>';
+	         		 	'</sec:authorize>';
+	         		 	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT\')">';
+	         				result = result +'<div class="text-center"><i class="fa fa-address-book permissionDenied"></i></div>';
 	         		 	'</sec:authorize>';
 		      	        
 		      	        '<sec:authorize access="hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
@@ -262,9 +278,12 @@ function jpagination(url,sourceleadUrl){
 		      						   	 }
 		      			       }
 		      				   else{
-		      			          result = result +"<div>--</div>";
+		      					 result = result +'<div><i class="fa fa-bullhorn permissionDenied"></i></div>';
 		      				   } 
-		                   '</sec:authorize>';    
+		                   '</sec:authorize>'; 
+		                   '<sec:authorize access="!hasAnyRole(\'ROLE_RELEASE_REQUIREMENT\')">';
+		                   		result = result +'<div><i class="fa fa-bullhorn permissionDenied"></i></div>';
+		                   '</sec:authorize>';
 		      		       result = result +"</div></td>";
 			              return result;
 		          }
@@ -743,6 +762,8 @@ function selectDeleteJob(event) {
 }
 
 function confirmForceDeleteBtn(){
+	$("#requirementList").empty();
+	$("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 		type: "POST",
 	    url: sourceleadUrl+"/forceDeleteForSelectedJobs?"+tokenParamName+"="+tokenValue+"&reqUUIDArr="+reqUUIDArr, 
@@ -755,8 +776,7 @@ function confirmForceDeleteBtn(){
                 } else if (result.response === "AWKWARD") {
                     location.href = "/errorPage";
                 } else if (result.response === "SUCCESS") {
-				  	
-                	
+                	location.reload();
                 } else if (result.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
 				} else {
