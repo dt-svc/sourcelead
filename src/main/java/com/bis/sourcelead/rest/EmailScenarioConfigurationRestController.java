@@ -148,7 +148,7 @@ public class EmailScenarioConfigurationRestController {
 			 if(emailConfigurationFromMailDTO.getEmailModules() != null){
 				 emailConfigFromMail.setEmailModules(emailConfigurationFromMailDTO.getEmailModules());
 			 }
-			 emailConfigFromMail.setStatus(false);
+			 emailConfigFromMail.setStatus(0);
 			 emailConfigFromMail.setOrgLocationId(orgLocation);
 			 emailConfigFromMail.setCreatedBy(user.getFirstName());
 			 emailConfigFromMail.setCreatedDate(new Date());
