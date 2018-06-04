@@ -107,9 +107,6 @@ public class LoginSessionController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
-	@Value("${sourceleadSocketUrl}")
-	private String sourceleadSocketUrl;
-	
 	@Value("${GoogleMaps_Location_API_KEY}")
 	private String googleMapsLocationApiKey;
 	
@@ -365,7 +362,21 @@ public class LoginSessionController {
 					SourceLeadSessionManager.setSessionAttribute(request, "prodSupportOrgLocationId", userRole.getRoles().getOrgLocations().getId());
 				}
 			}else{
-				List<UserRole> userSpocRolesList = userRoleService.getUserSpocsListByUserId(userRole.getUser().getId());
+				List<Long> accountUserList = new ArrayList<>();
+				List<Long> userIdsList = userService.getUserIdsListByLinkedUserId(userRole.getUser().getId());
+				if(userIdsList != null && !userIdsList.isEmpty()) {
+					for(Long userId : userIdsList) {
+						List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(userId);
+						accountUserList.addAll(linkedUserIdsList);
+					}
+				}
+				userIdsList.addAll(accountUserList);
+				userIdsList.add(userRole.getUser().getId());
+				if(userRole.getUser().getLinkUserId() != null) {
+					userIdsList.add(userRole.getUser().getLinkUserId().getId());
+				}
+				
+				List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
 				if(userSpocRolesList.size() > 1){
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
 					SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", userSpocRolesList.size());
@@ -385,7 +396,6 @@ public class LoginSessionController {
 				SourceLeadSessionManager.removeSessionAttribute(request, "resetPwdMsg");
 			}
 			model.addObject("sourceleadUrl", sourceleadUrl);
-			model.addObject("sourceleadSocketUrl", sourceleadSocketUrl);
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String currentDate = sdf.format(new Date());

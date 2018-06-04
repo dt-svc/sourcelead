@@ -149,7 +149,8 @@
 		  <c:if test="${not empty dataMapList}">
 		        <c:forEach var="dataMap" items="${dataMapList}">
 			        <c:if test="${customForm.id eq dataMap.key}">
-				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
+				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
+				         </label>
 				    	 <div class="col-md-9 radioIput">
 				    	 <div class="mr">
 				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
@@ -174,8 +175,8 @@
 		    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		     	 	<c:forEach var="optionValue" items="${customForm.optionData}">
 			     	 			<span class="mr">
-			     	 			<input type="radio" value="${optionValue.option}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" field-name="${customForm.labelName}">${optionValue.option}
-			     	 			</span>
+			     	 			<input type="radio" value="${optionValue.option}" checked="checked" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" field-name="${customForm.labelName}">${optionValue.option}
+			     	 			</span> 
 			     	</c:forEach>
 		    	</div>
 	    	</c:if>
@@ -186,14 +187,14 @@
  			 <c:if test="${not empty dataMapList}">
 	 			 <c:forEach var="dataMap" items="${dataMapList}">
 	 			 	<c:if test="${customForm.id eq dataMap.key}">
-		 			 <div class="form-group">
+		 			 <div class="form-group" id="errorDate${customForm.id}">
 		                     <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
-		                      <c:if test="${not empty customForm.labelinfo}">
+		                     <c:if test="${not empty customForm.labelinfo}">
 				         		<i class="fa fa-info-circle" title="${customForm.labelinfo}"></i>
-	                          </c:if>
-		                      </label>
+				             </c:if>
+		                     </label>
 		                        <div class="col-md-9">
-		                          <div class="input-group">
+		                          <div class="input-group errorInptgroup">
 		                             <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		                             <input type="text"  id = "date${customForm.id}" readonly value="${dataMap.value[1]}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" class="form-control calendar customDate" onclick="dateScriptsCustomDate('${customForm.id}');" id="${customForm.fieldName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''}>
 		                             <span class="input-group-addon" onClick="clearDate(${customForm.id});"><i class="colorRed fa fa-times cursorPointer"></i></span>
@@ -204,14 +205,10 @@
 	 			 </c:forEach>
  			 </c:if>
  			 <c:if test="${empty dataMapList}">
-  			<div class="form-group">
-                     <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
-                      <c:if test="${not empty customForm.labelinfo}">
-				         		<i class="fa fa-info-circle" title="${customForm.labelinfo}"></i>
-				      </c:if>
-                     </label>
+  			<div class="form-group" id="errorDate${customForm.id}">
+                     <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
                         <div class="col-md-9">
-                          <div class="input-group">
+                          <div class="input-group errorInptgroup">
                              <input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
                              <input type="text" id ="date${customForm.id}" readonly value="" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldData" placeholder="${customForm.placeHolder}" field-name="${customForm.labelName}" class="form-control calendar customDate" onclick="dateScriptsCustomDate('${customForm.id}');" id="${customForm.fieldName}" ${customForm.isRequired == 1 ? 'data-validation="required"':''}>
                              <span class="input-group-addon" onClick="clearDate(${customForm.id});"><i class="colorRed fa fa-times cursorPointer"></i></span>
@@ -227,11 +224,7 @@
 		  <c:if test="${not empty dataMapList}">
 		        <c:forEach var="dataMap" items="${dataMapList}">
 			        <c:if test="${customForm.id eq dataMap.key}">
-				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
-				          <c:if test="${not empty customForm.labelinfo}">
-				         		<i class="fa fa-info-circle" title="${customForm.labelinfo}"></i>
-				          </c:if>
-				         </label>
+				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 				    	 <div class="col-md-9">
 				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 				    		<input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
@@ -251,11 +244,7 @@
 		        </c:forEach>
 	        </c:if>
 	       <c:if test="${empty dataMapList}">
-		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
-		         <c:if test="${not empty customForm.labelinfo}">
-				         		<i class="fa fa-info-circle" title="${customForm.labelinfo}"></i>
-				 </c:if>
-		        </label>
+		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 		    	 <div class="col-md-9">
 		    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 				     	 	<c:choose>
@@ -279,11 +268,7 @@
 		  <c:if test="${not empty dataMapList}">
 		        <c:forEach var="dataMap" items="${dataMapList}">
 			        <c:if test="${customForm.id eq dataMap.key}">
-				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
-				          <c:if test="${not empty customForm.labelinfo}">
-				         		<i class="fa fa-info-circle" title="${customForm.labelinfo}"></i>
-			              </c:if>
-				         </label>
+				         <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 				    	 <div class="col-md-9 emailDiv">
 				    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 				    		<input type="hidden" value="${dataMap.value[2]}" name="customFormData[${currentIndex+customFormIndex.index}].entityId">
@@ -301,11 +286,7 @@
 		        </c:forEach>
 	        </c:if>
 	       <c:if test="${empty dataMapList}">
-		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span>
-		         <c:if test="${not empty customForm.labelinfo}">
-				         		<i class="fa fa-info-circle" title="${customForm.labelinfo}"></i>
-				</c:if>
-		        </label>
+		        <label class="col-md-3">${customForm.labelName}<span class="text-danger">${customForm.isRequired == 1 ? '*':''}</span></label>
 		    	 <div class="col-md-9 emailDiv">
 		    		<input type="hidden" value="${customForm.id}" name="customFormData[${currentIndex+customFormIndex.index}].customFormFieldId">
 		     	 			<c:choose>
@@ -344,16 +325,22 @@ $('.email').blur(function() {
 
 <script>
 	function dateScriptsCustomDate(customDateId) {
-		 $('#date'+customDateId).datepicker('destroy');
+// 		 $('#date'+customDateId).datepicker('destroy');
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}';
 		 var finalDateFormat= getJSDateFormat(locationDate);
 		 $('#date'+customDateId).datepicker({
 		 dateFormat: finalDateFormat,
 		 changeMonth: true,
 		 changeYear: true, 
+		 onSelect : function(selected) {
+			 removeErrorMsgDate(customDateId);
+		 }
 		 });
 		 $('#date'+customDateId).datepicker("show");
 	 }
+function removeErrorMsgDate(customDateId){
+	$('#errorDate'+customDateId).find('p.jquery_form_error_message').remove(); 
+}
 </script>
 
 <script type="text/javascript">
@@ -375,7 +362,7 @@ $(function(){
 
  <script>
 function clearDate(customId){
-	$('#date'+customDateId).val('');
+	$('#date'+customId).val('');
 }
 
 function validateCheck(custId){

@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.text.ParseException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 
 public interface UserDao {
 
@@ -156,8 +158,15 @@ public interface UserDao {
 	
 	public ResponseList<UserDTO> getUsersDTOListByOrglocationId(Long orgLocationId,UserDTO userDTO) throws Exception;
 
-	ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO, OrgLocations orgLocation) throws Exception;
+	ResponseList<UserRole> getUsersResponseListByOrglocationId(UserDTO userDTO, OrgLocations orgLocation,Date[] searchDates) throws Exception;
 	
+
+	List<UserDTO> getLinkedUserListByUserId(Long id) throws Exception;
+	
+	public List<Long> getUserIdsListByLinkedUserId(Long userId) throws Exception;
+
+	List<User> getUsersListForSignatoryByOrglocationId(Long locationId);
+
 	List<User> getGlobalUsersByOrgId(Long roleId,Long orgId,Long tabId) throws Exception;
 	
 	public List<User> getTabAccessGlobalOwnersByOrgIdAndTabId(Long orgId,Long tabId) throws Exception;
@@ -165,5 +174,6 @@ public interface UserDao {
 	public List<User> getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId, Long orgId,Long tabId)throws Exception;
 	
 	List<User> getResourceManagersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
+
 
 }

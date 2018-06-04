@@ -191,6 +191,10 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	private String hireDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String dateofBirthStr;
 
 	@Transient
 	@JsonProperty
@@ -957,6 +961,14 @@ public class UserRole implements Serializable {
 		this.userCustomFieldlabelNameAndValue = userCustomFieldlabelNameAndValue;
 	}
 
+
+	public String getDateofBirthStr() {
+		return dateofBirthStr;
+	}
+
+	public void setDateofBirthStr(String dateofBirthStr) {
+		this.dateofBirthStr = dateofBirthStr;
+	}
 	public String getOrgName()
 	{
 		return orgName;
@@ -965,6 +977,7 @@ public class UserRole implements Serializable {
 	public void setOrgName(String orgName)
 	{
 		this.orgName = orgName;
+
 	}
 
 	public String getIsGlobal() {

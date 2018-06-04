@@ -57,6 +57,7 @@ import com.bis.sourcelead.elk.index.helper.ProjectsIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
@@ -89,6 +90,7 @@ import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
@@ -256,6 +258,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	@Autowired
 	private LeaveTypeService leaveTypeService;
+	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioconService;
 	
 	 
 /*	 @Override
@@ -1015,8 +1020,39 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 
+		 String fromEmail = null;
+		 EmailConfigurationFromMail confFromMail=null;
+		 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
+		 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
+			 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+				 if( fromMail.getEmailModules() != null){
+					String[] jobIds = fromMail.getEmailModules().split(",");
+						for(int j=0; j<jobIds.length; j++) {
+							if(Long.valueOf(jobIds[j]) == 5L ){
+								confFromMail=fromMail;
+							}
+						}
+				 }
+			 } 
+			 
+			 if(confFromMail == null){
+				 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
+				 if(confFromMail != null){
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }else{
+				 fromEmail = confFromMail.getEmail();
+			 }
+		 }
+		 
+		 if(StringUtils.isNotBlank(fromEmail)){
+			 emailMessage.setFromEmail(fromEmail);
+		 }
+		 
+		 
 		 StringBuilder fromNameSB = new StringBuilder();
-		 emailMessage.setFromName(Constants.SOURCELEAD_ADMIN_UNIQUE);
+		 emailMessage.setFromName(orgLocations.getOrgName());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1069,7 +1105,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			  if(emailScenario == null){
 					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TIMESHEET_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_EMAIL);
 			   }
-				 //covert subject,body and signature
+			  //covert subject,body and signature
 				 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
 				 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
 				 String signature = null;
@@ -1082,6 +1118,13 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 		 emailMessage.setSubject(subject);
 		 emailMessage.setMessageBody(emailTemplate);
+		 
+		//configured Email
+			
+		 String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+		 if(StringUtils.isNotBlank(fromMail)){
+			 emailMessage.setFromEmail(fromMail);
+		 } 
 		 
 		 //calling the sendEmail method of emailScenerioUtil
 		 emailScenerioUtil.sendEmail(emailMessage,locationsId,iAdressArray,new ArrayList<EmailAttachment>());
@@ -1108,7 +1151,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 			    Map<String, String> globalVarsMap = new HashMap<String, String>();
 			    globalVarsMap.put("firstName", user.getFirstName());
 			    globalVarsMap.put("lastName",user.getLastName());
-				String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+			    String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
 				emailScenario.setBody(body);
 				emailScenario.setOrgCode(emp.getOrgLocations().getOrg().getOrgCode());
 				String actionLink = "";
@@ -1142,7 +1185,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 					    Map<String, String> globalVarsMap = new HashMap<String, String>();
 					    globalVarsMap.put("firstName", user.getFirstName());
 					    globalVarsMap.put("lastName",user.getLastName());
-						String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+					    String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
 						emailScenario.setBody(body);
 						emailScenario.setOrgCode(emp.getOrgLocations().getOrg().getOrgCode());
 						String actionLink = "";
@@ -2406,6 +2449,11 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
 			 emailMessage.setSubject(subject);
 			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+			 if(StringUtils.isNotBlank(fromMail)){
+				 emailMessage.setFromEmail(fromMail);
+			 } 
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());

@@ -130,7 +130,9 @@ public class CandidateUploadFileServiceImpl implements CandidateUploadFileServic
 							else {
 								candidateImport.setLastName(row.getCell(1).toString());
 							}
+							
 							candidateImport.setEmailId(row.getCell(2).toString().trim());
+							
 							if (row.getCell(3) != null) {
 								String mobileNumber = getCellValueAsString(row.getCell(3), fileName);
 								candidateImport.setMobileNumber(mobileNumber);

@@ -18,6 +18,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddCandidateToProjectMembers {
 	private ComboPooledDataSource comboPooledDataSource;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
 /**
  * @author Venkat I
@@ -34,7 +36,7 @@ public void dumpCandidateIdToProjectMembers() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM sourcelead.PROJECT_MEMBERS";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".PROJECT_MEMBERS";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -44,7 +46,7 @@ public void dumpCandidateIdToProjectMembers() throws IOException, SQLException {
 				 Long  employeeId = rs1.getLong("EMPLOYEE_ID");
 				 Long projectMemberId = rs1.getLong("ID");
 				 
-				 String query = "SELECT * from sourcelead.EMPLOYEE where ID = '"+employeeId+"' ";
+				 String query = "SELECT * from "+dbconfig.getSchema()+".EMPLOYEE where ID = '"+employeeId+"' ";
 				 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); 
 				 ResultSet rs2 = pstmt.executeQuery();
 				
@@ -52,7 +54,7 @@ public void dumpCandidateIdToProjectMembers() throws IOException, SQLException {
 			 	if (rs2.next()) {
 			 		Long  userId = rs2.getLong("USER_ID");
 			 		Long  orgLocationId = rs2.getLong("ORG_LOCATIONS_ID");
-			 		String query1 = "SELECT * from sourcelead.CANDIDATE where CONSULTANT_USER_ID = ? and ORG_LOCATION_ID = ? ";
+			 		String query1 = "SELECT * from "+dbconfig.getSchema()+".CANDIDATE where CONSULTANT_USER_ID = ? and ORG_LOCATION_ID = ? ";
 			    	java.sql.PreparedStatement pstmt2 = conn.prepareStatement(query1); 
 			    	pstmt2.setLong(1, userId);
 			    	pstmt2.setLong(2, orgLocationId);
@@ -63,7 +65,7 @@ public void dumpCandidateIdToProjectMembers() throws IOException, SQLException {
 			    		Long  masterCandidateId = rs3.getLong("MASTER_CANDIDATE_ID");
 			    		if(candidateId == 0 || masterCandidateId ==0)
 			    			continue;
-			    		String query2 = " update sourcelead.PROJECT_MEMBERS set MASTER_CANDIDATE_ID = ?, CANDIDATE_ID = ? where ID = ? ";
+			    		String query2 = " update "+dbconfig.getSchema()+".PROJECT_MEMBERS set MASTER_CANDIDATE_ID = ?, CANDIDATE_ID = ? where ID = ? ";
 			    		java.sql.PreparedStatement pstmt3 = conn.prepareStatement(query2); 
 			    		pstmt3.setLong(1, masterCandidateId);
 			    		pstmt3.setLong(2, candidateId);

@@ -234,11 +234,14 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 		if (null != emails) {
 			iAdressArray = InternetAddress.parse(tomaillBuilder.append(emails).toString());
 		}
-		emailMessage.setCreatedBy(user.getUserCode());
-		emailMessage.setToEmail(projectsDocumentsDTO.getSendTo());
-		emailMessage.setFromEmail(user.getEmail());
+		
 		emailMessage.setFromName(user.getFullName());
 		emailMessage.setFirstName(user.getFullName());
+		emailMessage.setToEmail(projectsDocumentsDTO.getSendTo());
+		emailMessage.setFromEmail(user.getEmail());
+		emailMessage.setCreatedBy(user.getUserCode());
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL); 
+		
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		globalVarsMap.put("body", projectsDocumentsDTO.getMessage());
 		globalVarsMap.put("subject", projectsDocumentsDTO.getSubject());

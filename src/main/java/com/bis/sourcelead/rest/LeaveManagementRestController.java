@@ -1651,7 +1651,7 @@ public class LeaveManagementRestController {
 				if (employees != null) {
 					leaveDto.setEmpid(employees.getEmployeeId());
 				}
-				UserRole userRole = userRoleService.getUserRoleByUserId(leave.getUser().getId());
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(leave.getUser().getId(),orgLocations.getId());
 				leaveDto.setEmpType(userRole.getUserType());
 			}
 			durationSb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()))
@@ -1663,6 +1663,7 @@ public class LeaveManagementRestController {
 			leaveDto.setLeaveType(leave.getLeaveType().getLeaveType());
 			leaveDto.setLeaveTypeId(leave.getLeaveType().getId());
 			leaveDto.setStatus(leave.getStatus());
+			leaveDto.setLeaveName(leave.getLeaveType().getName());
 			try {
 				int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(leave.getFromDate(), leave.getToDate());
 				leaveDto.setNoOfDays(numberOfdays);
@@ -2326,40 +2327,71 @@ public class LeaveManagementRestController {
 		Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 
 		UserRole selectedUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocations.getId());
-
+		List<User> approversList = new ArrayList<>();
+		boolean flag = false;
 		// User loginUser = (User)
 		// SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (userId != null) {
 			List<User> appUser = new ArrayList<>();
-			List<User> approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId,
-					selectedUserRole.getRoles().getId(), orgLocations.getId());
-			if (approversList != null) {
-				for (User user : approversList) {
-					boolean flag = false;
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),
-							orgLocations.getId());
-					if (userRole != null) {
-						String roles = userRole.getRoles().getActionId();
-						String[] sa = roles.split(",");
-						for (String s : sa) {
-							if ("238".equalsIgnoreCase(s)) {
-								flag = true;
-								break;
+			
+			if(selectedUserRole.getReportingManager() != null){
+				approversList.add(selectedUserRole.getReportingManager());
+				if (approversList != null) {
+					for (User user : approversList) {
+						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),
+								orgLocations.getId());
+						if (userRole != null) {
+							String roles = userRole.getRoles().getActionId();
+//							String[] sa = roles.contains("238");
+//							for (String s : sa) {
+								if (roles.contains("238")) {
+									flag = true;
+								}
+//							}
+							StringBuilder sb = new StringBuilder();
+							if (StringUtils.isNotBlank(user.getLastName())) {
+								sb.append(user.getFirstName()).append(" ").append(user.getLastName());
+							} else {
+								sb.append(user.getFirstName());
 							}
+							user.setFullName(user.getFullName().toString());
+							user.setUserType(userRole.getUserType());
+							if (flag)
+								appUser.add(user);
 						}
-						StringBuilder sb = new StringBuilder();
-						if (StringUtils.isNotBlank(user.getLastName())) {
-							sb.append(user.getFirstName()).append(" ").append(user.getLastName());
-						} else {
-							sb.append(user.getFirstName());
+					}
+				}
+			}else if(!flag){
+				approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId,
+						selectedUserRole.getRoles().getId(), orgLocations.getId());
+				if (approversList != null) {
+					for (User user : approversList) {
+						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),
+								orgLocations.getId());
+						if (userRole != null) {
+							String roles = userRole.getRoles().getActionId();
+//							String[] sa = roles.contains("238");
+//							for (String s : sa) {
+								if (roles.contains("238")) {
+									flag = true;
+								}
+//							}
+							StringBuilder sb = new StringBuilder();
+							if (StringUtils.isNotBlank(user.getLastName())) {
+								sb.append(user.getFirstName()).append(" ").append(user.getLastName());
+							} else {
+								sb.append(user.getFirstName());
+							}
+							user.setFullName(user.getFullName().toString());
+							user.setUserType(userRole.getUserType());
+							if (flag)
+								appUser.add(user);
 						}
-						user.setFullName(user.getFullName().toString());
-						user.setUserType(userRole.getUserType());
-						if (flag)
-							appUser.add(user);
 					}
 				}
 			}
+			
+			
 			return appUser;
 		} else
 			return null;

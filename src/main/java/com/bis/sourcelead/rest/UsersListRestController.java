@@ -316,8 +316,8 @@ public class UsersListRestController {
 					if(!isNullOrEmpty(role.getUser().getLastName())){
 						userName = userName.append(role.getUser().getFirstName()).append(" ").append(role.getUser().getLastName());
 						userRoleDTO.setUserName(userName.toString());
-						
-					}else{
+					}
+					else{
 						userRoleDTO.setUserName(role.getUser().getFirstName());
 					}
 					userRoleDTO.setUserEmail(role.getUser().getEmail());
@@ -786,6 +786,7 @@ public class UsersListRestController {
 					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 					user.setUserType(primaryRole.getUserType());
 				}
+				
 		  }
 		 userRole.setAllReportingManagers(reportingManagersList);
 		 
@@ -804,8 +805,16 @@ public class UsersListRestController {
 			 userRole.setCurrencyConversionWithCountry(countries.getCurrency());
 		 }
 		 
+
+		 if (userRole.getUser().getDateOfBirth() != null) {
+				userRole.setDateofBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),userRole.getUser().getDateOfBirth()));
+			} else {
+				userRole.setDateofBirthStr("");
+			}
+
 		 
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_ASSOCIATE);
+
 		 List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 		 List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
 		 if(sections != null && !sections.isEmpty()) {
@@ -1964,7 +1973,7 @@ public class UsersListRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-
+		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		User user = userService.getUserById(userId);
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(), orgLocations.getId());
 
@@ -1977,6 +1986,9 @@ public class UsersListRestController {
 		if (user != null) {
 			user.setFirstName(addUserDTO.getFirstName());
 			user.setLastName(addUserDTO.getLastName());
+			user.setMiddelName(addUserDTO.getMiddleName());
+			user.setGender(addUserDTO.getGender());
+			user.setMaritalStatus(addUserDTO.getMaritalStatus());
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
 			user.setExtensionNumber(addUserDTO.getExtensionNumber());
 			if (StringUtils.isNotBlank(addUserDTO.getReportingManager())) {
@@ -1986,6 +1998,18 @@ public class UsersListRestController {
 			} else {
 				userRole.setReportingManager(null);
 			}
+
+			if(StringUtils.isNotBlank(addUserDTO.getDateofBirth())){
+				try {
+					user.setDateOfBirth(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofBirth()));
+					  
+					} catch (Exception e) {
+					  e.printStackTrace();
+					}
+			}else{
+				user.setDateOfBirth(null);
+			}
+
 			
 			if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
 				userRole.setDesignation(addUserDTO.getDesignation());
@@ -1996,6 +2020,7 @@ public class UsersListRestController {
 				resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
 				userRole.setResourceManager(resourceManager);
 			}
+
 
 			isUserActive = userRoleService.isUserActive(user.getId());
 			if (isUserActive == false && !emailId.equalsIgnoreCase(addUserDTO.getEmail())) {
@@ -2140,10 +2165,11 @@ public class UsersListRestController {
 			}
 			
 			candidate.setFirstName(addUserDTO.getFirstName());
-			if(StringUtils.isNotBlank(addUserDTO.getLastName())){
-				candidate.setLastName(addUserDTO.getLastName());
-			}
-			
+			candidate.setLastName(addUserDTO.getLastName());
+			candidate.setMiddelName(addUserDTO.getMiddleName());
+			candidate.setGender(addUserDTO.getGender());
+			candidate.setMobilePhone(addUserDTO.getPhoneNumber());
+			candidate.setMaritalStatus(addUserDTO.getMaritalStatus());
 			
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);

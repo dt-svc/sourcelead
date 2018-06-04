@@ -49,6 +49,7 @@ function resetPassword(){
     $('#updatepassword').hide();
     $('#configure').hide();
     $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
     $("#save_button").removeAttr("disabled");
     
 }
@@ -58,6 +59,7 @@ function resetProfile(){
     $('#updatepassword').show();
     $('#configure').hide();
     $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
 	document.getElementById("profileSettings_form").reset();
 	
 	$('#firstNameDiv').find('p.jquery_form_error_message').remove();
@@ -77,6 +79,7 @@ function getConfiguredList(){
     $('#updatepassword').hide();
     $('#configure').show();
     $('#unsubscribe').hide();
+    $('#mylinkaccounts').hide();
 }
 
 function getUnsubscribeList(){
@@ -84,6 +87,15 @@ function getUnsubscribeList(){
     $('#updatepassword').hide();
     $('#configure').hide();
     $('#unsubscribe').show();
+    $('#mylinkaccounts').hide();
+}
+
+function getLinkAccounts(){
+	$('#profile').hide();
+    $('#updatepassword').hide();
+    $('#configure').hide();
+    $('#unsubscribe').hide();
+    $('#mylinkaccounts').show();
 }
 </script>
 
@@ -123,6 +135,7 @@ function getUnsubscribeList(){
 			<li onclick="resetProfile();"><a data-toggle="tab" href="#updatepassword">Password</a></li>
 			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
 			<li onclick="getUnsubscribeList();"><a data-toggle="tab" href="#unsubscribe">Unsubscribe</a></li>
+			<li onclick="getLinkAccounts();"><a data-toggle="tab" href="#myLinkaccounts">Accounts</a></li>
 		  </ul>
 
 		  <div class="tab-content panel-body">
@@ -442,6 +455,8 @@ function getUnsubscribeList(){
 					</div>
 				</div>
 		   </div>
+		   
+		  <jsp:include page="userAccounts.jsp" />
 		   
 		</div>
 			<!-- Tab for Profile setting-area ends -->

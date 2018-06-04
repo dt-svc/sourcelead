@@ -44,7 +44,7 @@ public class EmployeeVerificationTemplate {
 	@Column(name = "TEMPLATE_STYLE")
 	private String templateStyle;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "LETTER_HEAD_ID")
 	private LetterHead letterHead;
 	

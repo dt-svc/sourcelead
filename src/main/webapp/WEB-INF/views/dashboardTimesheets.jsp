@@ -237,8 +237,11 @@ var userId = '${SourceLeadWeb_user.id}';
 var orgLocationCode = '${SourceLeadWeb_locationCode}';
 var candiadteId = '${SourceLeadWeb_candidateId}';
 var timesheetType;
-var sourceleadWebSocketUrl ='${sourceleadSocketUrl}';
+
+var sourceleadUrl ='${sourceleadUrl}';
+var sourceleadWebSocketUrl = sourceleadUrl.replace("http","ws");
 var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
+
 
 
   function timeSheetSubmissionStatusCount(type) { 

@@ -8,7 +8,7 @@
   <div class="accountsettings-tab">
 	<div class="tab-content panel-body">
 		<div class="clearfix">
-			<a href="javascript:void(0)" class="btn btn-primary pull-right" onclick="addSignatoryDiv()"><i class="fa fa-plus paddingRight"></i> Signatory</a>
+			<a href="javascript:void(0)" class="btn btn-primary pull-right" onclick="addOrgLocationSignatoryDiv()"><i class="fa fa-plus paddingRight"></i> Signatory</a>
 		</div>
 		
 		<!--  Table starts -->
@@ -256,7 +256,7 @@ function loadLeagelSignerForm(){
 	result = result +"<div class='form-group clearfix' id='firstNameDiv'>";
 	result = result +"<label class='col-md-4'>Authorised Amount</label>";
 	result = result +"<div class='col-md-8'>";
-	result = result +"<input class='form-control' type='text' name='authorizedAmount' id='signatoryAuthorisedAmount' field-name='Authorised Amount'  maxlength='10' data-validation-optional='true' data-validation='validate_Space validate_int validate_length length1-10'>";
+	result = result +"<input class='form-control' type='text' name='authorizedAmount' id='signatoryAuthorisedAmount' field-name='Authorised Amount'  maxlength='10' data-validation-optional='true' data-validation=' validate_int validate_length length1-10'>";
 	result = result +"</div>";
 	result = result +"</div>";
 	result = result +"</div>";
@@ -285,7 +285,7 @@ function loadLeagelSignerForm(){
 function getAssociatesForSignatory(){
 	$.get( sourceleadUrl+ "/getAssociatesForSignatory?${_csrf.parameterName}=${_csrf.token}", function(data) {
         var output = "";
-		output = output + "<option value=''>-- Select Associate --</option>";
+		output = output + "<option  value=''>-- Select Associate --</option>";
      	   for(var i=0; i<data.length;i++){
      		  var opt = data[i];
      		  if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
@@ -297,7 +297,8 @@ function getAssociatesForSignatory(){
      	   }
      	   $("#signatoryAssociate").empty();
      	  $("#signatoryAssociate").append(output);
-     	 $("#signatoryAssociate").trigger("chosen:updated");
+     	  $("#signatoryAssociate").trigger("chosen:updated");
+     	
      }); 
 }
 
@@ -524,7 +525,7 @@ function saveSignatory(){
   
   <script>
   //addSignatoryDiv
-  function addSignatoryDiv(){
+  function addOrgLocationSignatoryDiv(){
 	  $(".signatoryFormDiv").fadeIn();
 	  $(".sideMask").fadeIn();
 	  loadLeagelSignerForm();
@@ -540,7 +541,7 @@ function saveSignatory(){
   
   <script>
   function editSignatory(signatoryUUID){
-	  addSignatoryDiv();
+	  addOrgLocationSignatoryDiv();
 	  var sourceleadUrl = '${sourceleadUrl}';
 	  $.get( sourceleadUrl+ "/getSignatoriesByUUID?${_csrf.parameterName}=${_csrf.token}&uuid="+signatoryUUID, function(data) {
 		  if(data != null){

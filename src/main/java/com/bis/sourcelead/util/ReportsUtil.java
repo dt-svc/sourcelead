@@ -1,12 +1,10 @@
 package com.bis.sourcelead.util;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,14 +49,12 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -89,13 +85,13 @@ public class ReportsUtil {
 	private String staticPath;
 	
 	@Autowired
-	EmployeesService employeesService;
+	private EmployeesService employeesService;
 	
 	@Autowired
-	UserRoleService userRoleService;
+	private UserRoleService userRoleService;
 	
 	@Autowired
-	ConversionUtil conversionUtil;
+	private ConversionUtil conversionUtil;
 	
 	
      public List<RequirementDTO> getAllRequirementsByOrgLocationId(Long orgLocationId,User user,String userRole,HttpServletRequest request){
@@ -211,14 +207,16 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 		DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd");
+		String startDate = outputFormatter.print(zoned);
+		Date startDateUTC = TZ_DF_TS.parse(startDate);
 		
-		DateTime yesterdayDayZoned = zoned.minusDays(1);
-		String yesterdayDaysDate = outputFormatter.print(yesterdayDayZoned);
-		Date yesterdayDateUTC = TZ_DF_TS.parse(yesterdayDaysDate);
+		DateTime oneDayZoned = zoned.minusDays(1);
+		String oneDaysDate = outputFormatter.print(oneDayZoned);
+		Date oneDateUTC = TZ_DF_TS.parse(oneDaysDate);
 		
 		Date[] dates = new Date[2];
-		dates[0] = yesterdayDateUTC;
-		dates[1] = yesterdayDateUTC;
+		dates[0] = oneDateUTC;
+		dates[1] = startDateUTC;
 		return dates;
 	}
 	

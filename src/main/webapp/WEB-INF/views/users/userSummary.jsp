@@ -60,6 +60,17 @@ $(document).ready(function(){
 			 dateFormat: finalDateFormat,
 			 changeMonth: true,
 			 changeYear: true, 
+		  	  maxDate:0
+			});
+	 });
+	 
+	 $('body').on('focus', '#dateofBirth', function() {
+		 $('#dateofBirth').datepicker({
+			 dateFormat: finalDateFormat,
+			 changeMonth: true,
+			 changeYear: true, 
+			 yearRange: "-100:+0",
+		  	  maxDate:0
 			});
 	 });
 	 
@@ -200,12 +211,13 @@ $(document).ready(function(){
 			    }
 			    
 			    var userName = '';
-			    if(json.user.lastName != null && json.user.lastName != '' && json.user.lastName != 'undefined'){
-			    	userName = json.user.firstName+" "+json.user.lastName;
+			    if(json.user.lastName != null && json.user.lastName != '' && json.user.lastName != 'undefined' && json.user.middelName != null && json.user.middelName != '' && json.user.middelName != 'undefined'){
+			    	userName = json.user.firstName+" "+json.user.middelName+" "+json.user.lastName;
+			    }else if(json.user.lastName != null && json.user.lastName != '' && json.user.lastName != 'undefined'){
+			    	userName = json.user.firstName +" "+json.user.lastName
 			    }else{
-			    	userName = json.user.firstName
+			    	userName = json.user.firstName;
 			    }
-			   
 			    
 				result = result + '<div class="project_tabs_inn_table">';
 				
@@ -277,7 +289,7 @@ $(document).ready(function(){
 				result = result + '	</div>';
 				result = result + '		 </div>';
 				
-				result = result + '	     <div class="user_details_cta">';
+				result = result + '	     <div class="user_details_cta user_detailscta_custom">';
 				result = result + '	     <div id="viewUserDiv">';
 				if(json.employeeId != null && json.employeeId != "" && json.employeeId != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
@@ -290,7 +302,11 @@ $(document).ready(function(){
 				result = result + '				 <strong>First Name:</strong><span class="fix" title="'+json.user.firstName+'">'+json.user.firstName+'</span><div class="clearfix"></div>';
 				result = result + ' 		</div>';
 				
-					
+				if(json.user.middelName != null && json.user.middelName != "" && json.user.middelName != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				 <strong>Middle Name:</strong><span class="fix" title="'+json.user.middelName+'">'+json.user.middelName+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}	
 				
 				
 				if(json.user.lastName != null && json.user.lastName != "" && json.user.lastName != 'undefined'){
@@ -311,6 +327,17 @@ $(document).ready(function(){
 					result = result + ' 		</div>';
 				}
 				
+				if(json.user.gender != null && json.user.gender != "" && json.user.gender != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				 <strong>Gender:</strong><span class="fix" title="'+json.user.gender+'">'+json.user.gender+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
+				
+				if(json.user.maritalStatus != null && json.user.maritalStatus != "" && json.user.maritalStatus != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				 <strong>Marital Status:</strong><span class="fix" title="'+json.user.maritalStatus+'">'+json.user.maritalStatus+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+				}
 				
 				if(json.user.extensionNumber != null && json.user.extensionNumber !='' && json.user.extensionNumber !='undefined'){
 					
@@ -393,6 +420,12 @@ $(document).ready(function(){
 				if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				<strong>Date of joining:</strong><span class="fix">'+json.hireDateStr+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+				}
+				
+				if(json.dateofBirthStr != null && json.dateofBirthStr != "" && json.dateofBirthStr != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Date of Birth:</strong><span class="fix">'+json.dateofBirthStr+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
 				}
 				
@@ -1368,6 +1401,7 @@ $("#editRoleDetailsList").empty();
 				
 				var employeeId = "";
 			    var lastName = "";
+			    var middleName = "";
 			    var rate = "";
 			    var mobilePhone = "";
 			    var extensionNumber="";
@@ -1402,6 +1436,10 @@ $("#editRoleDetailsList").empty();
 					lastName = json.user.lastName;
 				}
 				
+				if(json.user.middelName != null && json.user.middelName != "" && json.user.middelName != 'undefined'){
+					middleName = json.user.middelName;
+				}
+				
 				if(json.rate != null && json.rate != "" && json.rate != 'undefined'){
 					rate = json.rate;
 				}
@@ -1430,6 +1468,11 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Middle name</label>';
+					result = result + ' <input type="text" value="'+middleName+'" name="middleName" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">';
+					result = result + ' </div>';
+					
+					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Last name</label>';
 					result = result + ' <input type="text" value="'+lastName+'" name="LastName" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">';
 					result = result + ' </div>';
@@ -1440,8 +1483,10 @@ $("#editRoleDetailsList").empty();
 					result = result + '<input type="text" value="'+json.roles.displayName+'" name="roleType" readonly="readonly" id="role" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" >';
 					result = result + '<input type = "hidden" id = "role" name = "roleType" value = "'+json.roles.id+'">';
 					result = result + ' </div>'; 
+
 					result = result + ' </div>';
 					result = result + ' <div class="clearfix"></div>';
+
 					result = result + ' <div class="user_summary_edit_cta" id="EmployeeIdDiv">';
 					result = result + ' <label>Employee Id</label>';
 					result = result + ' <input type="text" value="'+employeeId+'" name="EmployeeId" id="EmployeeId" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" onKeyUp="validateEmployeeId('+json.id+','+json.user.id+');">';
@@ -1463,12 +1508,92 @@ $("#editRoleDetailsList").empty();
 					
 					result = result + ' </div>';
 					
+
+/* 					if(json.userState == "NOT_LOGGEDIN"){
+						
+						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
+						result = result + ' <label>Email Id<span class="text-danger">&nbsp; *</span></label>';
+						result = result + ' <input type="text" value="'+json.user.email+'"  id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100 validate_email"/>';
+						result = result + ' </div>';
+					
+					}
+					else{
+						result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
+						result = result + ' <label>Emaild Id<span class="text-danger">&nbsp; *</span></label>';
+						result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
+						result = result + ' </div>';
+					} */
+
 					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 					result = result + ' <label>Email Id<span class="text-danger">&nbsp;*</span></label>';
 					result = result + ' <input type="text" value="'+json.user.email+'" readonly="readonly" id="EmailId" name="email" field-name="EmailId" data-validation="required validate_Space validate_length length2-100"/>';
 					result = result + ' </div>';
 					
+					result = result+'		<div class="col-md-4">';
+					result = result+'		<label>Gender</label>  ';
+					result = result+'		<div class="clearfix">    ';
+					if(json.user.gender == "Male"){
+					result = result+'		<label class="paddingLeft"><input type="radio"  checked value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+					result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+					result = result+'		<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+					}
+					else if(json.user.gender == "Female"){
+						result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+						result = result+'		<label class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+						result = result+'		<label class="paddingRight"><input type="radio"  value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+						}
+					else if(json.user.gender == "Transgender"){
+						result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
+						result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</label>   ';
+						result = result+'		<label class="paddingRight"><input type="radio"  checked value="Transgender" name="gender"><span class="mr5"></span>Transgender</label>     ';
+						}
+					else{
+						result = result+'		<label class="paddingLeft"><input type="radio"   value="Male" name="gender" onblur="genderCheckValidation(this)" ><span class="mr5"></span>Male</label>                   ';
+						result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Female</label>   ';
+						result = result+'		<label class="paddingRight"><input type="radio" value="Transgender" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Transgender</label>     ';
+						result = result+' <input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		';
+
+					}
+					result = result+'		</div>    ';
+					result = result+'		</div>    ';
 					
+					result = result+'		<div class="col-md-4">';
+					result = result+'		<label>Marital Status</label>  ';
+					result = result+'		<div class="clearfix">    ';
+					if(json.user.maritalStatus == "Single"){
+						result = result+'		<label class="paddingRight"><input type="radio"  value="Single" checked name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+						result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+						result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+						result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+						}
+						else if(json.user.maritalStatus == "Married"){
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+							result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  checked value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+							result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+							}
+						else if(json.user.maritalStatus == "Divorsed"){
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+							result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" checked name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+							result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+							}
+						else if(json.user.maritalStatus == "Separated"){
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+							result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+							result = result+' 		<label class="paddingRight"><input type="radio"  checked value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+							}
+						else{
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>                  ';
+							result = result+'		<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>   ';
+							result = result+'		<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>     ';
+							result = result+' 		<label class="paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>';
+							}
+					result = result+'		</div>    ';
+					result = result+'		</div>    ';
+					
+					result = result+'		<div class="clearfix"></div>';
 					if(json.allReportingManagers != null && json.allReportingManagers != "" && json.allReportingManagers != 'undefined' && json.allReportingManagers.length > 0){
 						result = result + ' <div class="user_summary_edit_cta">';
 						result = result + ' <label>Reporting Manager<span class="text-danger">&nbsp;*</span></label>';
@@ -1560,6 +1685,10 @@ $("#editRoleDetailsList").empty();
 						
 						result = result + ' </select>';
 						result = result + '</div>';
+
+						//result = result + '<div class="clearfix"></div>';
+
+
 						result = result + '<div class="user_summary_edit_cta select-field" id="designationTypeDiv" style="display:none">';
 						result = result + ' <label>Employment Other Type </label>';
 						result = result + '<input type="text" class="form-control" name="designationOtherType"  id="designationOtherType" value="'+designationOtherType+'" placeholder="Employment Other Type" field-name="Employment Other Type" data-validation="validate_Space validate_length length2-50" data-validation-optional="true">';
@@ -1632,6 +1761,20 @@ $("#editRoleDetailsList").empty();
 
 					}
 					result = result + ' </div></div>';	
+					
+					result = result + ' <div class="user_summary_edit_cta">';
+					result = result + ' <label>Date of Birth</label>';
+					result = result + '<div class="input-group">';
+					if(json.hireDateStr != null && json.dateofBirthStr != "" && json.dateofBirthStr != "undefined"){
+						result = result + ' <input type="text" value="'+json.dateofBirthStr+'" name="dateofBirth" id="dateofBirth" readonly="readonly" class="calendar">';
+						result = result + '   <span class="input-group-addon" onClick="clearDateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
+
+					}else{
+						result = result + ' <input type="text" value="'+json.dateofBirthStr+'" name="dateofBirth" id="dateofBirth" readonly="readonly" class="calendar">';
+						result = result + '   <span class="input-group-addon" onClick="clearDateofBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
+
+					}
+					result = result + ' </div></div>';
 					
 					result = result + ' <div class="user_summary_edit_cta" id="DayHoursDiv">';
 					result = result + ' <label>Day hours</label>';
@@ -2877,6 +3020,9 @@ function clearhiredate(){
 function clearhiredate1(){
 	$("#DateofJoin").val("");
 	};
+function clearDateofBirth(){
+	$("#dateofBirth").val("");
+	};
 	
 </script>
 
@@ -2934,6 +3080,12 @@ function profileDetails(candidateId){
          			 		lastName = json.lastName;
          			 	}else{
          			 		lastName = "";
+         			 	}
+         			 	
+         			 	if(json.middelName != null && json.middelName !='' && json.middelName != 'undefined'){
+         			 		middleName = json.middelName;
+         			 	}else{
+         			 		middleName = "";
          			 	}
 
          			 	
@@ -3062,7 +3214,7 @@ function profileDetails(candidateId){
 						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
 						 */ 
 						 result = result+' </div>';
-						 
+
 						 result = result+'<div class="socialnetwork-details">';
 			             result = result+'<ul class="list-inline list-unstyled">';
 			             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
@@ -3078,8 +3230,10 @@ function profileDetails(candidateId){
 				             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
 				             }
 			             result = result+'</ul>';
+
 			             result = result+' </div>';
 			             
+
 						 result = result+' </div>';
 						
 						 result = result+'</form>';
@@ -3092,7 +3246,7 @@ function profileDetails(candidateId){
 			             result = result+'                     </div>'; */
 			             result = result+'                     <div class="media-body candidate-details candidateDetails padding_left">';
 			             
-			             result = result+'                       <h4 class="media-heading" title = "'+json.firstName+' '+lastName+'">'+json.firstName+' '+lastName+'</h4>';
+			             result = result+'                       <h4 class="media-heading" title = "'+json.firstName+' '+middleName+' '+lastName+'">'+json.firstName+' '+middleName+' '+lastName+'</h4>';
 			            
 			             result = result+'                       <ul class="list-unstyled">';
 			             
@@ -3107,8 +3261,15 @@ function profileDetails(candidateId){
 						 
 						 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">'+designationType+'</span></li>';
 						 
-						 
-						 
+						 if(json.gender !=null && json.gender != '' && json.gender != 'undefined'){
+						 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Gender</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title= '+json.gender+'> '+json.gender+'</span></li>';
+						 }else{
+	                   	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Gender</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
+ 
+						 }
+						 if(json.maritalStatus !=null && json.maritalStatus != '' && json.maritalStatus != 'undefined'){
+							 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Marital Status</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title= '+json.maritalStatus+'> '+json.maritalStatus+'</span></li>';
+						 }
 	         			 if(json.vendorName != null && json.vendorName != '' && json.vendorName != 'undefined'){
 
 						 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Vendor</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title='+json.vendorName+'>'+json.vendorName+'</span></li>';
@@ -3154,7 +3315,9 @@ function profileDetails(candidateId){
 			             }else{
 			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Primary Skill</span><span class="col-md-7 padding_left padding_right">---</span</li>';  
 			             }
-			             
+			             if(json.dateofBirthString != null && json.dateofBirthString != '' && json.dateofBirthString != 'undefined'){
+			            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Date Of Birth</span><span class="padding_left padding_right">'+json.dateofBirthString+'</span></li>';
+			             }
 			             result = result+'</ul>';
 			             
 			             result = result+'</div>';
@@ -3724,6 +3887,21 @@ function savedCommentAndCount(candidateId){
 			},
       });
 }
+</script>
+
+<script type="text/javascript">
+	function genderCheckValidation(id){
+		 var gendersList = [];
+ 		 $("input[name='gender']:checked").each( function (i) {
+ 			gendersList[i] = $(this).val();
+ 		});
+ 		 
+		if (gendersList.length > 0) { 
+		document.getElementById("genderValue").value = id.value;
+		}else{
+			$('#genderValue').val(''); 
+		}
+	} 
 </script>
 
 <jsp:include page="candidatesProfile.jsp"></jsp:include>

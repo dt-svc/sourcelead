@@ -158,14 +158,30 @@ function getRequestedAssociatesList(){
 					 	result = result +'<div class="tbldata-dotdot_80" title="'+opt.estimatedBudget+'">'+opt.estimatedBudget+'</div>';
 						result = result +'</td>';
 						
+						
 						result = result +'<td>';
+						if(opt.rejectedReason==null){
+						result = result +'<div class="tbldata-dotdot-vsm paTp">';
+			     		result = result +'<p class="text-success" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</p>';
+						result = result +'</div>';
+						}
+						if(opt.rejectedReason!=null){
+						result = result +'<div class="tbldata-dotdot-vsm paTp">';
+			     		result = result +"<i class='glyphicon glyphicon-comment edit-reason colB'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>";
+	    				result = result +'<p class="holdPro" title="'+opt.resourceStatus+'" >'+opt.resourceStatus+'</p>';
+						result = result +'</div>';
+						}
+						result = result +'</td>';
+						
+						
+						/* result = result +'<td>';
 						if(opt.resourceStatus == null){
 							result = result +'<div class="tbldata-dotdot_vsm text-warning">Sent For Approval</div>';
 						}else{
 							result = result +'<div class="tbldata-dotdot_80" title="'+opt.resourceStatus+'"><strong>'+opt.resourceStatus+'<strong></div>';
 						}
 					 	
-						result = result +'</td>';
+						result = result +'</td>'; */
 						
 					 result = result +'</tr>';
 				 }

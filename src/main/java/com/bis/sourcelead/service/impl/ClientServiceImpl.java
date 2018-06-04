@@ -190,6 +190,9 @@ public class ClientServiceImpl implements ClientService {
 	ReferContactsDao referContactsDao;
 	
 	@Autowired
+	private TabsService tabService;
+	
+	@Autowired
 	UserDao userDao;
 	
 	@Value("${SourceLead.100}")
@@ -353,6 +356,16 @@ public class ClientServiceImpl implements ClientService {
 			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
 				org.setWebSite(convertWebsite(clientDTO.getWebSite()));
 			}
+			if(StringUtils.isNotBlank(clientDTO.getIsLawFirm()) && clientDTO.getIsLawFirm().equalsIgnoreCase("Y")){
+				clientOrgLocations.setIsLawFirm(Constants.YES);	
+			}else{
+				clientOrgLocations.setIsLawFirm(Constants.NO);	
+			}
+			if(StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")){
+					clientOrgLocations.setIsAccountingFirm(Constants.YES);	
+				}else{
+					clientOrgLocations.setIsAccountingFirm(Constants.NO);	
+				}
 			clientOrgLocations.setLoginSecurity(Constants.NO);
 			clientOrgLocations.setIsPrimary(Constants.YES);
 			clientOrgLocations.setIsCompanyOnboarded(Constants.NO);
@@ -1155,7 +1168,7 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgLocations.setCity("");
 			}
-			if (clientDTO.getWebSite()!=null) {
+			if (StringUtils.isNotBlank(clientDTO.getWebSite())) {
 				orgLocations.setWebsite(clientDTO.getWebSite());
 			}
 			if (StringUtils.isNotBlank(clientDTO.getState())) {
@@ -1274,6 +1287,16 @@ public class ClientServiceImpl implements ClientService {
 					orgRelation.setResponderLevel(clientDTO.getLevel());
 				}
 			}
+			if (StringUtils.isNotBlank(clientDTO.getIsLawFirm()) && clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
+					orgRelation.setIsLawFirm(Constants.YES);
+			} else {
+				orgRelation.setIsLawFirm(Constants.NO);
+			}
+			if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
+					orgRelation.setIsAccountingFirm(Constants.YES);
+			} else {
+				orgRelation.setIsAccountingFirm(Constants.NO);
+			}
 			
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
 				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
@@ -1306,9 +1329,7 @@ public class ClientServiceImpl implements ClientService {
 			}
 			if (StringUtils.isNotBlank(clientDTO.getCompanyWebsite())) {
 				orgLocations.setWebsite(clientDTO.getCompanyWebsite());
-			} else {
-				orgLocations.setWebsite("");
-			}
+			} 
 			if (StringUtils.isNotBlank(clientDTO.getCity())) {
 				orgLocations.setCity(clientDTO.getCity());
 			} else {
@@ -1344,8 +1365,22 @@ public class ClientServiceImpl implements ClientService {
 			 }else{
 				 orgLocations.setBillingAddress("");
 			 }
-			
-
+			 
+			if (StringUtils.isNotBlank(clientDTO.getIsLawFirm())) {
+				if (clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
+					orgLocations.setIsLawFirm(Constants.YES);
+				}
+			} else {
+				orgLocations.setIsLawFirm(Constants.NO);
+			}
+			if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm())) {
+				if (clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
+					orgLocations.setIsAccountingFirm(Constants.YES);
+				}
+			} else {
+				orgLocations.setIsAccountingFirm(Constants.NO);
+			}
+			 
 			/*
 			 * if(jsonObj.getString(emailId) !=null &&
 			 * !jsonObj.getString(emailId).isEmpty()){
@@ -1377,6 +1412,48 @@ public class ClientServiceImpl implements ClientService {
 				}	
 			}
 			
+			if(StringUtils.isNotBlank(orgRelation.getIsLawFirm()) && orgRelation.getIsLawFirm().equalsIgnoreCase(Constants.YES)){
+				OrgLicenseSubscription subscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(orgLocations.getOrg().getId(), orgLocations.getCountry());
+				String[] subscriptionTabs = subscription.getSubscriptionTabs().split(",");
+				List<Long> subscriptionTabIdsList = new ArrayList<>();
+				for(int i=0; i<subscriptionTabs.length;i ++){
+					subscriptionTabIdsList.add(Long.valueOf(subscriptionTabs[i]));
+				}
+				
+				if(!subscriptionTabIdsList.contains(Long.valueOf(Constants.TAB_IMMIGRATION))){
+					List<Long> tabsIds = new ArrayList<>();
+					List<Tabs> childTabsList = tabService.getClildTabsListByTabId(Long.valueOf(Constants.TAB_IMMIGRATION));
+					if(childTabsList.size() > 0) {
+						for(Tabs childTabs : childTabsList) {
+							tabsIds.add(childTabs.getId());
+						}
+					}
+					
+					List<Long> sourceLeadActionsIdsList =  sourceleadActionsService.getAllSourceleadActionsIdsByTabsList(tabsIds);
+					StringBuilder immigrationTabIds  = new StringBuilder();
+					for(Long tabId : sourceLeadActionsIdsList){
+						immigrationTabIds.append(tabId).append(",");
+					}
+					
+					String tabIds = immigrationTabIds.toString();
+					tabIds = tabIds.substring(0, tabIds.length()-1);
+					
+					Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+					String adminIds = adminrole.getActionId()+","+tabIds;
+					adminrole.setActionId(adminIds);
+					rolesService.storeRoles(adminrole);
+					
+					Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
+					String managerIds = managerrole.getActionId()+","+tabIds;
+					managerrole.setActionId(managerIds);
+					rolesService.storeRoles(managerrole);
+					
+					String subscriptionRegisteredTabs = subscription.getSubscriptionTabs();
+					subscriptionRegisteredTabs = subscriptionRegisteredTabs+","+Constants.TAB_IMMIGRATION;
+					subscription.setSubscriptionTabs(subscriptionRegisteredTabs);
+					orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
+				}
+			}
 			
 		} else {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "ORG RELATIONS"));
@@ -1819,6 +1896,11 @@ public class ClientServiceImpl implements ClientService {
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 		emailMessage.setOrgLocationId(orgLocations.getId());
+		
+		String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+		 if(StringUtils.isNotBlank(fromMail)){
+			 emailMessage.setFromEmail(fromMail);
+		 } 
 
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
@@ -1914,6 +1996,11 @@ public class ClientServiceImpl implements ClientService {
 		emailMessage.setSubject(subject);
 		emailMessage.setMessageBody(emailTemplate);
 		emailMessage.setOrgLocationId(orgLocations.getId());
+		
+		String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+		 if(StringUtils.isNotBlank(fromMail)){
+			 emailMessage.setFromEmail(fromMail);
+		 } 
 
 		// calling the sendEmail method of emailScenerioUtil
 		emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());

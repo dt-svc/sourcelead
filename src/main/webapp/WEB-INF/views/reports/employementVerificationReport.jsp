@@ -34,7 +34,7 @@ $(document).ready(function(){
                       <input value="" id="toDate" name="toDate" placeholder="To" class="form-control calendar input-sm margin-top0" type="text">
                     	<p id="toDateDiv" class="ReError"></p>
                     </div>
-                    <button type="button" class="btn btn-primary btn-sm margin-top0"><i class="fa fa-search" onclick="searchThroughDates();";></i></button>
+                    <button type="button" class="btn btn-primary btn-sm margin-top0"><i class="fa fa-search" onclick="searchThroughDates();"></i></button>
                   </div>
                 </div>
               </li>
@@ -70,7 +70,7 @@ $(document).ready(function(){
 			<div class="form-group">
 				<label>Choose Template <span class="text-danger paddingRight">*</span></label>
 				<div class="clearfix">
-					<select class="chosen-select form-control chose-all-template" data-live-search="true">
+					<select class="chosen-select form-control chose-all-template" data-live-search="true" id="empTemplateId">
 					</select>
 				</div>
 			</div>
@@ -83,19 +83,19 @@ $(document).ready(function(){
 		</div>
 		<div class="modal-footer">
 			<div class="clearfix">
-				<button type="button" class="btn btn-primary mr" onClick="printPage();">Print</button>
+				<button type="button" class="btn btn-primary mr" onClick="viewCompleteTemplate('print');">Print</button>
 				<button type="button" class="btn btn-default" onClick="closePOP()">Cancel</button>
 			</div>
 		</div>
 		</div>
 	</div>
 </div>
-<script>
+<!-- <script>
 function printPage()
   {
   viewCompleteTemplate('print');
   }
-</script>
+</script> -->
 <div class="modal viewEVR" style="display: none">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -200,7 +200,7 @@ function printPage()
 		</div>
 		<div class="modal-footer">
 			<div class="clearfix">
-				<button type="button" class="btn btn-primary mr">Download</button>
+				<button type="button" class="btn btn-primary mr" onClick="downloadReport()">Download</button>
 				<button type="button" class="btn btn-default" onClick="closePOP()">Cancel</button>
 			</div>
 		</div>
@@ -211,11 +211,53 @@ function printPage()
 
 <script>
  $( function() {
-    $("#fromDate").datepicker(
+   /*  $("#fromDate").datepicker(
 		{changeMonth: true});
 	 $("#toDate").datepicker(
-	 {changeMonth: true});
+	 {changeMonth: true}); */
+	 
+	 
+	 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	 var finalDateFormatEndDate = '';
+	 if(locationDate.match("yyyy-MM-dd")){
+	     finalDateFormatEndDate = 'yy-mm-dd';
+	 }if(locationDate.match("dd-MM-yyyy")){
+	     finalDateFormatEndDate = 'dd-mm-yy'; 
+	 }if(locationDate.match("MM-dd-yyyy")){
+	     finalDateFormatEndDate = 'mm-dd-yy'; 
+	 }if(locationDate.match("yyyy-dd-MM")){
+	     finalDateFormatEndDate = 'yy-dd-mm'; 
+	 }
+	 
+	 $( "#fromDate" ).datepicker({
+	     dateFormat : finalDateFormatEndDate,
+	      changeMonth: true,
+	      changeYear: true,
+// 	      minDate: new Date() ,
+	      onSelect : function(selected) {
+	      var dt = $(this).datepicker('getDate', '+1d');
+	      dt.setDate(dt.getDate());
+	      $("#toDate").datepicker("option", "minDate", dt);
+	       removeStartValid();
+	      } 
+
+	});
+	 
+	 
+	 $( "#toDate" ).datepicker({
+	     dateFormat : finalDateFormatEndDate,
+	      changeMonth: true,
+	      changeYear: true,
+// 	    maxDate: new Date() ,
+		onSelect : function(selected) {
+	      var dt = $(this).datepicker('getDate', '+1d');
+	      dt.setDate(dt.getDate());
+	      $("#fromDate").datepicker("option", "maxDate", dt);
+	       removeEndValid();
+	      }});
+	 
   });
+ 
 </script> 
 <script>
 //Print, download and share links script
@@ -290,18 +332,28 @@ function printPage()
 			$("#toDateDiv").append("End Date is Required") ; 
 		}
 		
-// 		getAllEmployeesList();
-		
+		if(fromDate != null && fromDate != '' && fromDate != 'undefined' && toDate != null && toDate != '' && toDate != 'undefined'){
+			getAllEmployeesList(fromDate,toDate);
+		}
+	}
+	
+	
+	function removeStartValid(){
+		$('#fromDateDiv').empty();
+	}
+	function removeEndValid(){
+		$('#toDateDiv').empty(); 
 	}
 
 </script>
 	
 <script>
-function getAllEmployeesList(){
-	
+function getAllEmployeesList(fromDate,toDate){
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
 	var searchValue = $("#employeeDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
-	var url = sourceleadUrl+"/getAllEmployeesList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue;
+	var url = sourceleadUrl+"/getAllEmployeesList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&toDate="+toDate;
 	prepareAllEmployeesList(url);
 }
 </script>	
@@ -375,8 +427,8 @@ function emplyoeesListPagination(url){
 		          "render": function ( data, type, user, meta ) {
 		        	  var result = '';
 		          if(user.userName !=null && user.userName !='' && user.userName !='undefined'){
-						result = result + ' <td><div class="tbldata-dotdot" title = "'+user.userName+'">'+user.userName+'</div></td>';
-					}else{
+						 result = result +" <a href='<c:url value='/app/userSummary/"+user.userCode+"'/>'' title = '"+user.userName+"' class='UserTextLeft'>"+user.userName+"</a>";
+		          }else{
 						result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
 					}
 		              return result;
@@ -399,8 +451,8 @@ function emplyoeesListPagination(url){
 		          "data": "mobilePhone",
 		          "render": function ( data, type, user, meta ) {
 		        	  var result = '';
-		        	  if(user.phoneNumber !=null && user.phoneNumber !='' && user.phoneNumber !='undefined'){
-							result = result + ' <td><div class="tblminwidth-100" title = "'+user.phoneNumber+'">'+user.phoneNumber+'</div></td>';
+		        	  if(user.mobilePhone !=null && user.mobilePhone !='' && user.mobilePhone !='undefined'){
+							result = result + ' <td><div class="tblminwidth-100" title = "'+user.mobilePhone+'">'+user.mobilePhone+'</div></td>';
 						}else{
 							result = result + ' <td><div class="tblminwidth-100">--</div></td>';
 						}

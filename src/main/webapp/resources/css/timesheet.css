@@ -187,7 +187,7 @@ a { cursor:pointer;}
     }      
 .inline_field {
     width:50px !important; padding:2px 2px; font-size:12px; overflow: hidden; background-color:transparent;
-    font-weight:500; color:#454545; border:1px solid #fff !important;
+    font-weight:500; color:#454545; border:1px solid #fff  !important;
     }
 .inline_field:focus {
     width:50px !important; padding:2px 2px; font-size:12px; border:1px solid #dedede; overflow: hidden; background-color:#fff;
@@ -8213,7 +8213,6 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 }
 .closePop {
 	width: 30px; height: 30px; display: block; background: url("../images/svg/arrows.svg"); background-repeat: no-repeat;
-
 	background-position: -19px -55px; background-size: 249px; cursor: pointer; margin: 10px 0px 0px 0px;
 	}
 .popupMid {
@@ -8222,7 +8221,6 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 .popupFoot {
 	height: 60px; border-top: 1px solid #ededed; padding: 14px 10px 0px 0px;
 }
-
 .slBtn {
 	width: 75px; height: 30px; border: 1px solid #C2C5C8; border-radius: 4px; background-color: #fff; color: #6C7686;
 	line-height: 29px; font-size: 12px; text-align: center; margin: 0px 10px 0px 0px;
@@ -8243,7 +8241,7 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 	min-height: 75px;	
 }
 .popTabl {
-	
+	width: 100%;
 }
 .popTabl table {
 	width: 100%;
@@ -8267,31 +8265,36 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 /*  New Css File  */
 
 .commentTime textarea{
-    width: 100%; font-size: 13px; font-weight: 500; color: #333; padding: 5px 10px; resize: none; border-radius: 3px; background-color: #fff;
-    border: 1px solid #a2d1fc; display: inline-block; float: left; margin: 0px 10px 0px 0px; height: 60px;
+    width: 100%; font-size: 13px; font-weight: 500; color: #333; padding: 5px 10px; resize: none; border-radius: 3px;
+    border: 1px solid #a2d1fc; display: inline-block; float: left; margin: 0px 10px 0px 0px; height: 60px; background-color: #fff;
     }
 .timSelWid {
-   width: 140px !important;
+   	width: 140px !important;
    } 
-.noBorder {
-	border:None !important;
+.tabField {
+	border:none !important; padding: 0px !important;
 }
+.noBorder {
+	border:none !important;
+}	
+
 .timeAtt {
-     padding:2px 45px 2px 0px !important; position: relative;
+	 padding:2px 45px 2px 0px !important; position: relative;
 }
 .attFile {
-    text-align: left; background-color: #3081cb; width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-    font-size: 13px; color: #fff; padding: 6px 10px; border-radius: 2px; max-width: 180px;
+	text-align: left; background-color: #3081cb; width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+	font-size: 13px; color: #fff; padding: 6px 10px; border-radius: 2px; max-width: 180px;
 }
 .attFile i {
-    display: inline-block; padding: 0px 8px 0px 0px;
+	display: inline-block; padding: 0px 8px 0px 0px;
 }
 .timeAttBtn {
-    position: absolute; right: 0px; top: 6px;
+	position: absolute; right: 0px; top: 6px;
 }
 .timeAttBtn i {
-    display: inline-block; cursor: pointer; font-size: 14px; padding: 3px; color: #0084bf; margin: 0px 2px 0px 0px;
+	display: inline-block; cursor: pointer; font-size: 14px; padding: 3px; color: #0084bf; margin: 0px 2px 0px 0px;
 }
 .timeAttBtn i.fa-trash {
-    color: #CB3E41;
+	color: #CB3E41;
 }
+

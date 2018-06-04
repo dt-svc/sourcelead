@@ -705,6 +705,7 @@ public class InvoiceRestController {
 					inviceLine.setSowName(inviceLine.getContract().getContractTitle());
 				}
 				inviceLine.setRate(inviceLine.getRate());
+				inviceLine.setInlineDescription(inviceLine.getInlineDescription());
 				// inviceLine.setEmployeeId(inviceLine.getEmployeeId());
 				inviceLine.setTotalHours(inviceLine.getTotalHours());
 				inviceLine.setAmount(inviceLine.getAmount());
@@ -1141,7 +1142,14 @@ public class InvoiceRestController {
 		String createdDate = (dateFormat.format(invoice.getCreatedDate()));
 		String dueDate = (dateFormat.format(invoice.getDueDate()));
 		StringBuilder stringBuildername = new StringBuilder();
-		globalVarsMap.put("clientorVendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+		
+		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
+			globalVarsMap.put("vendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+
+		}else{
+			globalVarsMap.put("clientName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+
+		}
 		globalVarsMap.put("invoiceID", invoice.getInvoiceId());
 		globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
 		globalVarsMap.put("date", createdDate);
@@ -1534,11 +1542,14 @@ public class InvoiceRestController {
 	{
 		Response<InvoiceDTO> response = new Response<>();
 		InvoiceDTO invoiceDTO = new InvoiceDTO();
+		
 //		String resultJson = "";
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String loginOrgCurrencyCode = (String) SourceLeadSessionManager.getSessionAttribute(request, "currencyCode");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Integer savedInvoiceCount = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user, contractType);
+		Integer savedInvoiceCount = invoiceService.getAutomaticInvoice(orgLocation, loginOrgCurrencyCode, invoiceType, user, contractType,isGlobalAccess);
 //		resultJson = commonUtil.toJSON(savedInvoiceCount);
 		invoiceDTO.setCount(String.valueOf(savedInvoiceCount));
 		response.setObject(invoiceDTO);

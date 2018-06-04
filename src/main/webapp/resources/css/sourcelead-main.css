@@ -8442,7 +8442,9 @@ ul.horizentalTabStyles li a {
 .tableStyles-new table tr td div, .styleTables table tr td div {
     position:relative;
     }
-.styleTables.tableStyles-textLeft table thead th, .styleTables.tableStyles-textLeft table tbody tr td {
+.styleTables.tableStyles-textLeft table thead th, .styleTables.tableStyles-textLeft table tbody tr td,
+.styleTables.tableStyles-textLeft table tfoot tr td
+{
 	text-align: left;
 }
 .styleTables.tableStyles-textLeft table thead th {
@@ -8482,9 +8484,9 @@ ul.horizentalTabStyles li a {
 }
 .tabsMenu li.current {
 	border: none;
-	-webkit-box-shadow: inset 0 -15px 0px -6px #5ACC95;
-	-moz-box-shadow: inset 0 -15px 0px -6px #5ACC95;
-	box-shadow: inset 0 -15px 0px -6px #5ACC95;
+	-webkit-box-shadow: inset 0 -15px 0px -6px #0084bf;
+	-moz-box-shadow: inset 0 -15px 0px -6px #0084bf;
+	box-shadow: inset 0 -15px 0px -6px #0084bf;
 }
 .tablelist-wrap {
 	width: 100%; border: 1px solid rgba(151,151,151, 0.2);
@@ -8528,7 +8530,7 @@ ul.horizentalTabStyles li a {
 }
 .contentareaInner-styles .form-control, .contentareaInner-styles .chosen-container-single .chosen-single
 {
-	border: 1px solid #A8B7C7 !important; border-radius: 3px; box-shadow: none; background-color:transparent;
+	border: 1px solid #A8B7C7; border-radius: 3px; box-shadow: none; background-color:transparent;
 }
 .content-wraper.contentWraper .content-header  {
 	/*border-bottom: 1px solid #A8B7C7 !important; margin-bottom: 15px; */color: #5D6388 !important;
@@ -8537,10 +8539,16 @@ ul.horizentalTabStyles li a {
 	color: #5D6388 !important; font-weight: 400;
 }
 .btnSuccess {
-background: #3EC9A7; border: 1px solid #3EC9A7; border-radius: 3px;
+ background-color: #0084bf; border: 1px solid #0084bf; border-radius: 4px;
 }
 .btnSuccess:hover {
-	background: #3ABE9E; border: 1px solid #3EC9A7;
+	background-color: #007bb2;border: 1px solid #007bb2;
+}
+.btn-success.active, .btn-success:active, .open > .dropdown-toggle.btn-success {
+	background-color: #0084bf; border: 1px solid #0084bf;
+}
+.btn-success.focus, .btn-success:focus {
+	background-color: #0084bf; border: 1px solid #0084bf;
 }
 .footerstyelsNew {
 	padding: 10px 0; border-top: 1px solid #EBEBEB; margin-top: 15px;
@@ -8549,7 +8557,7 @@ background: #3EC9A7; border: 1px solid #3EC9A7; border-radius: 3px;
 	min-height: 75px;	
 }
 .contentWraper .selectUser .btn-default, .contentWraper .er .btn-default, .contentWraper .bg-blue {
-	background-color: #42CDAD !important; border-color: #42CDAD !important; border-radius: 3px;
+	background-color: #0084bf !important; border-color: transparent !important; border-radius: 3px;
 }
 .top2 {
 position: relative; top:2px;
@@ -8924,9 +8932,9 @@ ul.jobsboard-list > li:hover {
 	width: 1024px;
 }
 .downloadInput input {
-	width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    background: transparent; border: none; font-weight: 400; margin-left: 0; padding-left: 5px !important;
-}
+width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+background: transparent; border: none; font-weight: 400; margin-left: 0; padding-left: 5px !important;
+} 
 /* forms edit element styles */
 @media (max-width: 320px) {
 .uasrch-selectpicker {

@@ -920,6 +920,10 @@ public class CandidateListRestController {
 				candidateDTO.setState(can.getState());
 				candidateDTO.setFirstName(can.getFirstName());
 				candidateDTO.setLastName(can.getLastName());
+				candidateDTO.setMiddleName(can.getMiddelName());
+				candidateDTO.setGender(can.getGender());
+				candidateDTO.setMaritalStatus(can.getMaritalStatus());
+				candidateDTO.setDateofBirth(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), can.getDateOfBirth()));
 				candidateDTO.setLocation(can.getLocation());
 				candidateDTO.setSummary(can.getSummary());
 				candidateDTO.setFileUrl(can.getFileUrl());
@@ -981,6 +985,7 @@ public class CandidateListRestController {
 						}
 					}
 				}
+
 				response.setObject(candidateDTO);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1341,6 +1346,7 @@ public class CandidateListRestController {
 	 *
 	 * @throws NullPointerException
 	 */
+
 	@RequestMapping(value = { "/updateCandidate", "/rest/updateCandidate" }, method = RequestMethod.POST)
 	public Response<String> updateCandidate(CandidateDTO candidateDto, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
@@ -1365,6 +1371,7 @@ public class CandidateListRestController {
 			response.setResponse(Result.AWKWARD.name());
 			response.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
+
 		}
 		return response;
 	}

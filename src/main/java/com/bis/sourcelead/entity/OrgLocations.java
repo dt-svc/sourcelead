@@ -228,7 +228,13 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name = "REGISTRATION_STATUS")
 	private String registrationStatus;
+
+	@Column(name = "IS_LAW_FIRM")
+	private String isLawFirm;
 	
+	@Column(name = "IS_ACCOUNTING_FIRM")
+	private String isAccountingFirm;
+
 	@Column(name = "WORKING_DAYS_PER_WEEK")
 	private Integer workingDaysPerWeek;
 	
@@ -970,6 +976,25 @@ public class OrgLocations implements Serializable{
 		this.registrationStatus = registrationStatus;
 	}
 
+
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
+	}
+	
+	
+
 	public Integer getWorkingDaysPerWeek() {
 		return workingDaysPerWeek;
 	}
@@ -985,4 +1010,5 @@ public class OrgLocations implements Serializable{
 	public void setWeekOffDays(String weekOffDays) {
 		this.weekOffDays = weekOffDays;
 	}
+
 }

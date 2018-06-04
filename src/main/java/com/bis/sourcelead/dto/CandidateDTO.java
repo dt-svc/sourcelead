@@ -36,6 +36,14 @@ public class CandidateDTO extends SearchDTO{
 	private String firstName;
 
 	private String lastName;
+	
+	private String maritalStatus;
+	
+	private String gender;
+	
+	private String middleName;
+	
+	private String dateofBirth;
 
 	@Required(desc = "email")
 	@Email
@@ -1057,6 +1065,40 @@ public class CandidateDTO extends SearchDTO{
 		this.teams = teams;
 	}
 
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getDateofBirth() {
+		return dateofBirth;
+	}
+
+	public void setDateofBirth(String dateofBirth) {
+		this.dateofBirth = dateofBirth;
+	}
+
+
 	public Long getUserId() {
 		return userId;
 	}
@@ -1064,5 +1106,6 @@ public class CandidateDTO extends SearchDTO{
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
+
 	
 }
