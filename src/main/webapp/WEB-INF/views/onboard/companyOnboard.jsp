@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
@@ -342,6 +343,21 @@ right: 15px;
 			
 			</div>
 			
+		</div>
+		
+		<div class="col-md-6 clearfix mb">
+		<label class="col-md-3 noPad">Week Off Days</label>
+			<div class="col-md-9 padding_right">
+			 <select multiple class="chosen-select form-control" id="weekOffDays" name="weekOffDays" data-validation-optional="true" field-name="Week Off Days">
+					 <option  value='Sun' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sun') ? 'selected' : ''}>Sunday</option>
+					 <option  value='Mon' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Mon') ? 'selected' : ''}>Monday</option>
+					 <option  value='Tue' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Tue') ? 'selected' : ''}>Tuesday</option>
+					 <option  value='Wed' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Wed') ? 'selected' : ''}>Wednesday</option>
+					 <option  value='Thu' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Thu') ? 'selected' : ''}>Thursday</option>
+					 <option  value='Fri' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Fri') ? 'selected' : ''}>Friday</option>
+					 <option  value='Sat' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sat') ? 'selected' : ''}>Saturday</option>
+			 </select>
+			</div>
 		</div>
 		
 		<div class="col-md-6 clearfix mb" id="averageWorkingHoursDiv">
@@ -782,7 +798,7 @@ var validationSettings = {
         		    e.preventDefault(); 
 	          		var sourceleadUrl ='${sourceleadUrl}';
 	          		
-	           		var formData = getFormData("orgSettings_form");
+	           		var formData = $($('#orgSettings_form')[0]).serialize();
 	           		var uploadedImage = document.getElementById('uploadedImage').value;
              		var imageExtension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
              		if(imageExtension == 'gif' || imageExtension == 'png' || imageExtension == 'svg'){

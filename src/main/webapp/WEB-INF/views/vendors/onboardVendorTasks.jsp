@@ -34,7 +34,7 @@ function getVendorOnboardTasksList(){
 	        				 priority = "--";
 	        			 }
 	        			 result = result +'<ul id="task'+opt.id+'">';
-		        		 result = result +'<li>Subject : '+opt.subject+'</li>';
+		        		 result = result +'<li>Subject : <span title="'+opt.subject+'">'+opt.subject+'</span></li>';
 		        		 result = result +'<li><i class="fa fa-star-o"></i>Priority : '+priority+'</li>';
 		        		 result = result +'<li><i class="fa fa-clock-o"></i>Task Date : '+opt.vendorTaskDateStr+'</li>';
 		        		 

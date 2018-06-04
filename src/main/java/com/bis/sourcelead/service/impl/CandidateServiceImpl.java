@@ -369,6 +369,24 @@ public class CandidateServiceImpl implements CandidateService {
 		candidate.setLastName(candidateDto.getLastName());
 		}
 		
+		if(candidateDto.getMiddleName() != null){
+			candidate.setMiddelName(candidateDto.getMiddleName());
+		}
+		
+		if(candidateDto.getGender() != null){
+			candidate.setGender(candidateDto.getGender());
+		}
+		
+		if(candidateDto.getMaritalStatus() != null){
+			candidate.setMaritalStatus(candidateDto.getMaritalStatus());
+		}
+		
+		if(StringUtils.isNotBlank(candidateDto.getDateofBirth())){
+			candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), candidateDto.getDateofBirth()));
+		}else{
+			candidate.setDateOfBirth(null);
+		}
+		
 		if(candidateDto.getCountry() != null){
 			if(candidate.getCountry() != null && candidate.getCountry() != "" && !candidateDto.getCountry().equalsIgnoreCase(candidate.getCountry())){
 				activitySummary.append("Country").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getCountry()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDto.getCountry()).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -838,8 +856,8 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @throws Exception
     */
 	@Override
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter) throws Exception {
-		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate,candidateFilterSkills,availability,candidateTypeFilter);
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter,String createdByFilter,User user) throws Exception {
+		List<Candidate> candidateList = candidateDao.getCandidatesListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,user);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		for(Candidate can :candidateList){
@@ -1287,6 +1305,30 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setDesignation(null);
 			}
 			
+			if(StringUtils.isNotBlank(candidateDTO.getMiddleName())){
+				candidate.setMiddelName(candidateDTO.getMiddleName());
+			}else{
+				candidate.setMiddelName(null);
+			}
+			
+			if(StringUtils.isNotBlank(candidateDTO.getGender())){
+				candidate.setGender(candidateDTO.getGender());
+			}else{
+				candidate.setGender(null);
+			}
+			
+			if(StringUtils.isNotBlank(candidateDTO.getMaritalStatus())){
+				candidate.setMaritalStatus(candidateDTO.getMaritalStatus());
+			}else{
+				candidate.setMaritalStatus(null);
+			}
+			
+			if(StringUtils.isNotBlank(candidateDTO.getDateofBirth())){
+				candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), candidateDTO.getDateofBirth()));
+			}else{
+				candidate.setDateOfBirth(null);
+			}
+			
 			if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
 				candidate.setDesignationOtherType(candidateDTO.getDesignationOtherType());
 			}else{
@@ -1397,6 +1439,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
 			candidate.setCandidateResumes(candidateResumesList);
 			}*/
+			
 			if(candidateDTO.getFileInfo() != null && !candidateDTO.getFileInfo().isEmpty()){
 				FileInfo fileInfo = candidateDTO.getFileInfo().get(0);
 				HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
@@ -1412,6 +1455,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setStatus(Constants.CANDIDATE_ACTIVE);
 			candidate.setIsFavourite(0);
 			Candidate savedCandidate = candidateDao.storeCandidate(candidate);
+			
+			/*
+			 * Saving Candidate DB data as ElasticSearch Documents
+			 */
+			saveOrUpdateCandidateElkDocument(savedCandidate);
 			return savedCandidate;
 	}
 
@@ -1647,6 +1695,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			candidate.setCandidateType(Constants.CANDIDATE);
 			candidate.setFirstName(candidateUser.getFirstName());
 			candidate.setLastName(candidateUser.getLastName());
+			candidate.setMiddelName(candidateUser.getMiddelName());
+			candidate.setGender(candidateUser.getGender());
 			candidate.setCountry(orgLocations.getCountry());
 			candidate.setIsAssociate(Constants.YES);
 			candidate.setEmail(candidateUser.getEmail());
@@ -1718,6 +1768,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}else{
 			candidate.setConsultantUser(candidateUser);
 			candidate.setMasterCandidateId(masterCandidate);
+		}
+		if(candidateUser.getDateOfBirth() != null){
+			candidate.setDateOfBirth(commonUtil.orgLocationCommonDate(candidateUser.getDateOfBirth(),orgLocations));
+			}
+		if(StringUtils.isNotBlank(candidateUser.getMaritalStatus())) {
+			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
 		}
 		candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(candidate);

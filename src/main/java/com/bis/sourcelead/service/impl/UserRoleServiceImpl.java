@@ -649,9 +649,9 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	@Override
-	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId, Long locationId)
+	public HashSet<ProjectMembers> getAllProjectMembersByProjectIdForMissingTSReports(Long projectId, Long locationId,Long userId)
 			throws Exception {
-		return userRoleDao.getAllProjectMembersByProjectIdForMissingTSReports(projectId, locationId);
+		return userRoleDao.getAllProjectMembersByProjectIdForMissingTSReports(projectId, locationId,userId);
 	}
 
 	@Override
@@ -794,6 +794,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 		
 		return user;
 	}
+	
     @Override
 	public List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllProjectManagersAssignedToProjects(orgLocationId);
@@ -803,7 +804,24 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public List<UserRole> getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllUsersBasedOrgLocationIdAndActiveAndNotLogin(orgLocationId);
+	}
+
+	@Override
+	public List<UserRole> getUserAccountsListByUserId(List<Long> userId) throws Exception {
+		return userRoleDao.getUserAccountsListByUserId(userId);
+	}
+
+	
+	@Override
+	public List<Long> getAllAssignedUsersIdsByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersIdsByResourceManagerId(resourceManagerId, orgLocationId);
+	}
+
+	@Override
+	public List<UserRole> getAllAssignedUsersByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersByResourceManagerId(resourceManagerId, orgLocationId);
 	} 
     
+
 
 }

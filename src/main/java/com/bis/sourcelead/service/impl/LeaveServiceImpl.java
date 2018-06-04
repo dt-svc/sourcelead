@@ -39,6 +39,7 @@ import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
@@ -56,6 +57,7 @@ import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.rest.TimesheetRestController;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveManagementHistoryService;
@@ -142,6 +144,9 @@ public class LeaveServiceImpl implements LeaveService{
     
     @Autowired
     private TimesheetRestController timesheetRestController;
+    
+    @Autowired
+	EmailScenarioConfigurationService emailScenarioconService;
     
     private static final Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
     
@@ -282,7 +287,20 @@ public class LeaveServiceImpl implements LeaveService{
 				stringBuildforLink.append("<a href='").append(sourceleadLoginUrl)
 						.append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
 						.toString());
-
+		
+		EmailScenario  emailScenario = null;
+		 if(orgLocations != null)
+		 emailScenario =  emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.ON_BEHALF_EMAIL,Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+		  if(emailScenario == null){
+				emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ON_BEHALF_EMAIL,Constants.ENTITY_TYPE_EMAIL);
+		   }
+		
+		//configured Email
+		String fromMail=commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+		 if(StringUtils.isNotBlank(fromMail)){
+			 emailMessage.setFromEmail(fromMail);
+		 } 
+		 
 		// setting the Recipient information
 		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		EmailScenario notificationScenario = null;
@@ -379,6 +397,10 @@ public class LeaveServiceImpl implements LeaveService{
 				StringBuilder durationSb = new StringBuilder();
 				leaveDto.setId(laph.getLeaveid().getId());
 				Map<String,Float> nuberOfLeavestaken = null;
+				Calendar cal = Calendar.getInstance();
+		        cal.set(Calendar.DAY_OF_YEAR, 1);
+		        Date yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(cal.getTime()));
+		        Date fromDate = commonUtil.getDateFormat(Constants.DMY.format(leave.getFromDate()));
 				float leavesTaken = 0;
 				if (leave.getUser() != null) {
 					try {
@@ -422,7 +444,14 @@ public class LeaveServiceImpl implements LeaveService{
 				
 				float appliedLeavesCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
 				leaveDto.setAppliedNoOfDays(appliedLeavesCount);
-				
+				List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leave.getLeaveType().getId(), orgLocations.getId(),leave.getUser().getId(),yearStartDate,fromDate);
+				float carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType(),leave);
+				float extraLeaves = appliedLeavesCount - carryForwardLeaves;
+				if(extraLeaves > 0)
+					leaveDto.setExtraLeavesTaken(extraLeaves);
+				else
+					leaveDto.setExtraLeavesTaken(0);
+			
 				if(StringUtils.isNotBlank(leave.getDeleteReason())) {
 					leaveDto.setCancelReason(leave.getDeleteReason());
 				}

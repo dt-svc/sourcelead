@@ -169,21 +169,21 @@ public class DocumentSignController {
 		String url = signDocumentService.addSignaturetoPdf(coordinatesInfo, result);
 		if(contractId != null) {
 			contracts  = contractsTemplateService.getContractById(contractId);
-			Contracts childContarct  = contractsTemplateService.getChildContractById(contracts.getId());
-    		if(null != childContarct.getParentContractId()){
+			Contracts parentContract  = contracts.getParentContractId();
+    		if(null != parentContract.getId()){
     			String parentFromStage = contracts.getTemplateSubmissionStatus();
-    			String childFromStage = childContarct.getTemplateSubmissionStatus();
+    			String childFromStage = parentContract.getTemplateSubmissionStatus();
 //				childContarct.setId(childContarct.getId());
-				childContarct.setTemplateSubmissionStatus(Constants.SEND_FOR_VERIFICATION);
+    			contracts.setTemplateSubmissionStatus(Constants.SEND_FOR_VERIFICATION);
 //				contracts.setId(contracts.getId());
 				if(url.contains(result)) {
 					url = url.replace(result, "");
 				}
+				parentContract.setTemplateFileURL(url);
 				contracts.setTemplateFileURL(url);
-				childContarct.setTemplateFileURL(url);
-				contracts.setTemplateSubmissionStatus(Constants.WAITING_TO_BE_VERIFY);
+				parentContract.setTemplateSubmissionStatus(Constants.WAITING_TO_BE_VERIFY);
 				contractsTemplateService.saveNewContract(contracts);
-				contractsTemplateService.saveNewContract(childContarct);
+				contractsTemplateService.saveNewContract(parentContract);
 				eMailJobScheduler.contractSignedByReceiver(contracts);
 				
 				ContractsHistory parentContractsHistory = new ContractsHistory();
@@ -196,8 +196,8 @@ public class DocumentSignController {
 				
 				ContractsHistory childContractsHistory = new ContractsHistory();
     			childContractsHistory.setFromStage(childFromStage);
-				childContractsHistory.setContractsId(childContarct);
-				childContractsHistory.setToStage(childContarct.getTemplateSubmissionStatus());
+				childContractsHistory.setContractsId(parentContract);
+				childContractsHistory.setToStage(parentContract.getTemplateSubmissionStatus());
 				childContractsHistory.setCreatedDate(new Date());
 				childContractsHistory.setUpdatedDate(new Date());
 				contractsTemplateDao.saveContractsHistory(childContractsHistory);

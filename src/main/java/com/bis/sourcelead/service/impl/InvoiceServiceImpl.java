@@ -826,7 +826,13 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
 		 globalVarsMap.put("LoginUser",user.getFirstName());
-		 globalVarsMap.put("clientorVendorName",invoice.getContactUser().getFirstName());
+		 if(invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
+             globalVarsMap.put("vendorName",invoice.getContactUser().getFirstName());
+
+         }else{
+             globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
+
+         }
 		 globalVarsMap.put("totalAmouprojectMembersListnt",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
 		 globalVarsMap.put("date",invoiceDate); 
@@ -840,10 +846,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 	     globalVarsMap.put("rejectLink",rejectBuilder.append("<a href='").append(sourceleadUrl).append("/").append("rejectInvoice?invoiceId=").append(invoice.getId()).append("'style='text-decoration:none;float:left;margin-left:55px;'><div style=' width:220px; border-radius:30px; background-color:#e74c51; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Reject</div></a>").toString());
    */
 		 
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 
 		//send mail logic
-			List<EmailAttachment> attachmentList2 = new ArrayList<>();
 		     
 			 ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
 			 ArrayList<EmailAttachment> documentList = new ArrayList<EmailAttachment>();
@@ -877,11 +880,11 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 
 			//send notification logic
 			EmailScenario notificationScenario = null;
-			if(invoiceType.equalsIgnoreCase("payable")){
-				   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList2);
+			if(invoiceType.equalsIgnoreCase("payables")){
+				   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList);
 				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 			 }else{
-				   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations, Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,attachmentList2);
+				   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations, Constants.INVOICE_ACCEPT_MAIL_CLIENT_EMAIL,attachmentList);
 				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_RECEIVABLE_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 			 }
 			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
@@ -1449,7 +1452,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 }
 
 	@Override
-	public Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType,User user,String contractType) throws Exception
+	public Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType,User user,String contractType,String globalUser) throws Exception
 	{
 		int count =0;
 		List<OrgRelations> clientVendorList = null;
@@ -1504,7 +1507,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
   	  					if(Constants.RECEIVABLE.equalsIgnoreCase(invoiceType)){
   	  						 projectMembersList = getClientProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
   	  					}else{
-  	  						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice);
+  	  						 projectMembersList = getVendorProjectAssinedMembersAutoInvoice(frequency,orgLocation,project.getId(),client.getId(),contractType,invoice,globalUser);
   	  					}
   	  					if(null != projectMembersList && projectMembersList.size() >0){
   	  						populateClientDetails(vendorOrgLocation,invoice,orgRelation);
@@ -1808,7 +1811,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 	 * @return
 	 * @throws Exception
 	 */
-	private List<ProjectMembers> getVendorProjectAssinedMembersAutoInvoice(String frequency, OrgLocations orgLocation, Long projectId, Long orgRelationId, String contractType, Invoice invoice) throws Exception
+	private List<ProjectMembers> getVendorProjectAssinedMembersAutoInvoice(String frequency, OrgLocations orgLocation, Long projectId, Long orgRelationId, String contractType, Invoice invoice,String globalUser) throws Exception
 	{
 		String frequencyArray[] = frequency.split("/");
 		String startDateStr = frequencyArray[0];
@@ -1829,7 +1832,14 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 				projectMember.setSubmissionInvoiceId(sah.getSubmissionId().getId());
 //				Employees employee = employeesService.getEmployeByUserIdAndOrgRelationId(projectMember.getProjectMemberCandidteId(),orgRelationId);
 //				Candidate candidate = candidateService.getCandidateByConsultantUserIdOrgRelationId(projectMember.getEmployee().getUser().getId(), orgLocation.getId(), orgRelationId);
-				if (null != projectMember.getProjectMemberCandidteId()) {
+				
+				ProjectMembers pm = projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(projectMember.getMasterCandidateId().getId(), projectId, orgLocation.getId(),globalUser);
+				
+				Candidate candidate = pm.getProjectMemberCandidteId();
+				if (candidate != null && ("C2C".equalsIgnoreCase(candidate.getDesignationType()) || "C2C-1099".equalsIgnoreCase(candidate.getDesignationType()))) {
+				
+//				if (null != projectMember.getProjectMemberCandidteId()) {
+					
 					StringBuilder empName = new StringBuilder();
 					if (null != projectMember.getProjectMemberCandidteId().getFirstName() && null != projectMember.getProjectMemberCandidteId().getLastName()) {
 						empName.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName());
@@ -1865,7 +1875,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 						sb.append("0");
 					}
 					projectMember.setTotalHours(sb.toString());
-					Candidate candidate = projectMember.getProjectMemberCandidteId();
+//					Candidate candidate = projectMember.getProjectMemberCandidteId();
 					if (null != candidate) {
 						projectMember.setCandidateId(candidate.getId());
 						List<Contracts> contractList = getSowContract(candidate.getId(), orgLocation, orgRelationId, contractType);
@@ -1875,7 +1885,8 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					}
 				
 					filteredMembersList.add(projectMember);
-				}
+//				}
+			}
 			}
 		}
 		return filteredMembersList;
@@ -2355,7 +2366,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
 		 globalVarsMap.put("LoginUser",user.getFirstName());
-		 globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
+		 if(invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
+		        globalVarsMap.put("vendorName",invoice.getContactUser().getFirstName()); 
+		         }else{
+		         globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
+		         }
 		 globalVarsMap.put("grandTotal",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
 		 globalVarsMap.put("orgName",orgLocation.getOrgLocationName());
@@ -2400,7 +2415,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			 }
 			 
 			 EmailScenario notificationScenario = null;
-				if(invoiceType.equalsIgnoreCase("payable")){
+				if(invoiceType.equalsIgnoreCase("payables")){
 					commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(), orgLocation, Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL,attachmentList1);
 				    notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 				 }else{
@@ -2550,11 +2565,13 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 					invoiceDTO.getInvoiceDate());
 			invoice.setInvoiceDate(invoiceDate);
 		}
+		
+		Date dueDate =null;
 		if (StringUtils.isNotBlank(invoiceDTO.getDueDate())) {
-			Date dueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), invoiceDTO.getDueDate());
+			 dueDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), invoiceDTO.getDueDate());
 			invoice.setDueDate(dueDate);
 		}
-
+		
 		if (StringUtils.isNotBlank(invoiceDTO.getPaymentFrequency())) {
 			invoice.setPaymentFrequency(invoiceDTO.getPaymentFrequency());
 		} else {
@@ -2596,7 +2613,13 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		if (StringUtils.isNotBlank(invoiceDTO.getAfterDiscountTotal())) {
 			invoice.setAfterDiscountValue(invoiceDTO.getAfterDiscountTotal());
 		}
-		invoice.setPaymentStatus(Constants.INVOICE_STATUS_UNPAID);
+		
+		if(commonUtil.currentDate().after(dueDate)){
+			invoice.setPaymentStatus(Constants.OVER_DUE);
+		}else {
+			invoice.setPaymentStatus(Constants.INVOICE_STATUS_UNPAID);
+		}
+		
 		if (StringUtils.isNotBlank(invoiceDTO.getProjectId())) {
 			Projects projects = projectsService.getProjectById(Long.parseLong(invoiceDTO.getProjectId()));
 			invoice.setProjectID(projects);
@@ -2783,7 +2806,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 
 			if (null != invoice.getId()) {
 				updatedInvoiceLineItems.retainAll(invoiceLineItemsIdsList);
-				invoiceLineItemsIdsList.removeAll(updatedInvoiceLineItems);
+//				invoiceLineItemsIdsList.removeAll(updatedInvoiceLineItems);
 			}
 		}
 

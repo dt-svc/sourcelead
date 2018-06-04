@@ -28,7 +28,10 @@
       <div class="pull-left">
         <h2>Users Usage Report List</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Reports Dashboard</div>
+      
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports	Dashboard</a> &raquo; Users Usage Report List</div>
+
+      
 <!--       <div class="pull-right brud-crum">Home &raquo; Users Usage Report List</div> -->
     </section>
       <!-- Tabs html -->
@@ -191,11 +194,13 @@
      
   </div>
   <div class="require_wrap_table datatable_filter">
- 
   <div id="activeDiv"></div>
-  <div id="multipleIpsDiv"></div>
  
- 
+  </div>
+  
+  <div class="require_wrap_table overflow_inherint">
+    <div id="multipleIpsDiv"></div>
+  
   </div>
  
   </div>
@@ -549,6 +554,7 @@ function activePagination(url, userType){
 //             $("#notloginList").hide();
             $("#multipleIpsDiv").hide();
 //             $("#totalList").hide();
+			$("#mypop").show();
             $("#activeLi").addClass("usageGrid");
             $("#inactiveLi").removeClass("usageGrid");
             $("#notloginLi").removeClass("usageGrid");
@@ -562,6 +568,7 @@ function activePagination(url, userType){
             $("#multipleIpsDiv").hide();
 //             $("#totalList").hide();
             $("#activeLi").removeClass("usageGrid");
+            $("#mypop").show();
             $("#inactiveLi").addClass("usageGrid");
             $("#notloginLi").removeClass("usageGrid");
             $("#multipleLi").removeClass("usageGrid");
@@ -573,7 +580,7 @@ function activePagination(url, userType){
 //                $("#notloginList").show();
                $("#multipleIpsDiv").hide();
 //             $("#totalList").hide();
-
+			$("#mypop").show();
             $("#activeLi").removeClass("usageGrid");
             $("#inactiveLi").removeClass("usageGrid");
             $("#notloginLi").addClass("usageGrid");
@@ -587,7 +594,7 @@ function activePagination(url, userType){
             $("#notloginList").hide();
             $("#multipleIpsDiv").show();
             $("#totalList").hide();
-
+            $("#mypop").hide();
             $("#activeLi").removeClass("usageGrid");
             $("#inactiveLi").removeClass("usageGrid");
             $("#notloginLi").removeClass("usageGrid");
@@ -634,7 +641,7 @@ function activePagination(url, userType){
             $("#multipleIpsDiv").empty();
             $("#multipleIpsDiv").append(result);
             multipleIpsPagination(url);
-           $("#listNamediv").html("Ip List");
+           $("#listNamediv").html("Ip List").css({"position":"relative","top":"-12px"});
         }
         
         function multipleIpsPagination(url){
@@ -643,6 +650,8 @@ function activePagination(url, userType){
                     "processing": true,
                 "serverSide": true,
                 "searching": false,
+                "dom": 'Bfrtip',
+            	"buttons": [ 'pageLength', 'excel', 'pdf'	], 
                 "ajax": $.fn.dataTable.pipeline( {
                     url: url,
                     method: 'POST',
@@ -720,6 +729,10 @@ function activePagination(url, userType){
                         "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
                }
           } );
+            
+//             $("#multipleIpsDiv").find('a.buttons-excel').prop("title", "Export to Excel");
+//         	$("#multipleIpsDiv").find('a.buttons-pdf').prop("title", "Export to PDF");
+        	
           $("#multipleIpsPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
           $("input[type=search]").hide();
           $("#dataaTableSearch").keyup(function(e) {

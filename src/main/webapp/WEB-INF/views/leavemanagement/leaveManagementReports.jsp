@@ -26,6 +26,13 @@
 			});
 </script>
 
+<style type="text/css">
+.timeBalance-scroll .col-md-2 {
+border: 1px solid #ccc; padding-top:15px; margin:0 15px 15px; text-transform:capitalize;
+background-color: #fcfcfc;
+}
+</style>
+
 
 <input type="hidden" id="leaveEmptyMessage" name="leaveEmptyMessage" />
 <div id="popUp"></div>
@@ -63,9 +70,9 @@
                 <div class="row">
                   <div class="clearfix"></div>
                   <div class="col-md-12">
-                    <h4 class="leaves-heading">My Time off balance</h4>
+                    <h4 class="leaves-heading">Leave Balance</h4>
                     <div class="time-balance">
-                    <div id="pichartLeaveTypeIdDiv" class="timeBalance-scroll clearfix"></div>
+                    <div id="pichartLeaveTypeIdDiv" class="timeBalance-scroll clearfix row"></div>
                     </div>
                   </div>
                   <div class="clearfix"></div>
@@ -669,10 +676,10 @@ function getPieChartBasedOnUser(){
       		 		 }
       		 		result = result +'  <div class="col-md-2 mb">';
       	            result = result +'   <h4 class="text-center tbldata-dotdot-vsm" title="'+opt.name+'">'+opt.name+'</h4>';
-      	            result = result +'   <div id="vacationDonut'+opt.leaveTypeId+'" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>';
+      	            //result = result +'   <div id="vacationDonut'+opt.leaveTypeId+'" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>';
       	            result = result +'   <div class="text-center">';
       	            result = result +'     <h2>';
-      	            result = result +'       <label class="small text-muted">Remaining:</label>';
+      	            //result = result +'       <label class="small text-muted">Remaining:</label>';
       	            result = result +'       <label class="clearfix width100percnt mt5">'+numberOfDaysCount+' / '+opt.noOfLeavesPerYear+'</label>';
       	            result = result +'     </h2>';
       	            result = result +'   </div>';

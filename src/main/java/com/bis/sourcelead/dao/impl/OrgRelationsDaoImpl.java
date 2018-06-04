@@ -755,7 +755,29 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			type = "Vendor";
 		}
 		    Session session = this.sessionFactory.getCurrentSession();
-			Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type )");
+			Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type )");
+			List<OrgRelations> relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setString("type", type).list();
+			return relationsList;
+	}
+	
+	@Override
+	@Transactional
+	public List<OrgRelations> getClientOrVendorListByOrgLocationIdForImmigration(Long orgLocationId, String type) {
+		
+		if(type.equalsIgnoreCase("Vendor")){
+			type = "Client";
+		}else{
+			type = "Vendor";
+		}
+		Query vendorsListQuery = null;
+		if(type.equalsIgnoreCase("Client")){
+		    Session session = this.sessionFactory.getCurrentSession();
+		 vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type and orgrelation.isLawFirm ='Y') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type )");
+		}else{
+			 Session session = this.sessionFactory.getCurrentSession();
+			 vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :type) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :type )");
+				
+		}
 			List<OrgRelations> relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setString("type", type).list();
 			return relationsList;
 	}
@@ -1027,9 +1049,14 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 
+	    		 /*Remove/filter null & empty string objects from array-lambda stream*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
 	        		 roleActionsList.add(Long.parseLong(s));
 	        	 }
+	    		 /*for (String s : roles.getActionId().split(",")){
+	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
 	        	 if(roleActionsList.size() > 0){

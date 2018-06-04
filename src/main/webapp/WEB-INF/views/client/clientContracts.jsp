@@ -102,6 +102,11 @@ function clientContracts(orgRelationId){
 	    result = result + '</li>';
 	    
 	    result = result + '<li>';
+	    result = result + '<input type="checkbox" value="WAITING_TO_SEND" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
+	    result = result + '<label class="paddingLeft" for="onboard1">Waiting To Send <b class="badge" id="WTOSCount">0</b></label>';
+	    result = result + '</li>';
+	    
+	    result = result + '<li>';
 	    result = result + '<input type="checkbox" value="WAITING_TO_BE_SIGNED" name="contractStatus" id="contractStatus" onclick="clientContractsList('+orgRelationId+');" >';
 	    result = result + '<label class="paddingLeft" for="onboard1">Waiting to be Signed <b class="badge" id="WTSCount">0</b></label>';
 	    result = result + '</li>';
@@ -710,12 +715,12 @@ function PopUp(contractUUID){
 			result = result +	'	</div>';
 			}
 			
-			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
+			/*if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';
 				result = result +	'		<div class="col-md-4 col-sm-4">Job Title</div>';
 				result = result +	'		<div class="col-md-8 col-sm-8">: '+json.requirementName+'</div>';
 				result = result +	'	</div>';
-			}
+			}*/
 			
 			if(null != json.typeOfContract && (json.contractType.includes("SOW") || json.contractType =="Full time offer")){
 				result = result +	'	<div class="col-md-6 col-sm-6 noPad clearfix mb">';

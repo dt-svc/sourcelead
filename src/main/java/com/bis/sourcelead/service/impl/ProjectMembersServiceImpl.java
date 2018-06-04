@@ -28,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectMembersDao;
 import com.bis.sourcelead.dao.ProjectMembersHistoryDao;
 import com.bis.sourcelead.dao.impl.ProjectsDaoImpl;
+import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -604,6 +605,11 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndCandidateId(locationsId, candidateId);
 	}
 	
+	@Override
+	public List<ProjectMembers> getProjectMembersListByOrgIdAndMasterCandidateId(Long orgId, Long masterCandidateId) {
+		return projectMembersDao.getProjectMembersListByOrgIdAndMasterCandidateId(orgId, masterCandidateId);
+	}
+	
 	
 	@Override
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(
@@ -621,8 +627,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
 			String timesheetFrequency, Date startDate, Date endDate, Long clientId, String status, Long locationsId,
-			Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor) {
-		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,projectName,start,length,timesheetFor);
+			Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor,String isGlobalUser) {
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,projectName,start,length,timesheetFor,isGlobalUser);
 	}
 	
 	@Override
@@ -689,10 +695,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 
 	@Override
-	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation,String roleIds,String teamIds)
+	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId, String status,OrgLocations loginOrgLocation,String roleIds,String teamIds,String isGlobalAccess)
 			throws Exception {
-		
-		ProjectClients projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
+		ProjectClients projectClients = null;
+		if(StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES)) {
+			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgId(projectId, loginOrgLocation.getOrg().getId());
+		}else {
+			projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, loginOrgLocation.getId());
+		}
 		List<ProjectMembers> projectMembersList = null;
 		List<ProjectMembers> projectMembList = new ArrayList<>();
 		if(projectClients != null){
@@ -834,9 +844,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId,
-			Long orgRelationId) throws Exception {
+			Long orgRelationId,String isGlobalUser) throws Exception {
 
-		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLocationId);
+		Collection<ProjectMembers> projectMemberList = projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId,orgLocationId,isGlobalUser);
 
 		List<ProjectMembers> projectMemberfilteredList = projectMemberList.stream()
 						.filter(predicate -> predicate.getProjectMemberCandidteId().getOrgRelationId() !=null && predicate.getProjectMemberCandidteId().getOrgRelationId().getId().longValue() == orgRelationId)
@@ -1044,6 +1054,20 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 						}
 					}
 				  
+					List<ProjectApproverHierarchy> approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectId(projects.getId());
+					   StringBuilder managers = new StringBuilder();
+					  
+					   for (ProjectApproverHierarchy projectApproverHierarchy : approverHierarchy) {
+						 StringBuilder fullname=new StringBuilder();
+						 if(projectApproverHierarchy.getApproverUserId().getLastName()!=null && projectApproverHierarchy.getApproverUserId().getLastName()!="")
+						   managers=managers.append(fullname.append(projectApproverHierarchy.getApproverUserId().getFirstName()).append(" ").append(projectApproverHierarchy.getApproverUserId().getLastName())).append(" & ");
+						 else
+							 managers=managers.append(projectApproverHierarchy.getApproverUserId().getFirstName()).append(" & ");
+					}
+					  String projectManagers=managers.toString();
+					  String projectmanagerss= managers.substring(0, projectManagers.length()-2);
+				 
+					  sendEmailToTeamMembersInProjectSummary(projects, projectMembers, user, projectmanagerss, orgLocations, orgLocations.getOrg().getOrgCode());
 				}
 			}
 		}
@@ -1263,8 +1287,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	}
 	
 	@Override
-	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long projectId,Long locationId) throws Exception {
-		return projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId, locationId);
+	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long projectId,Long locationId,String isGlobalUser) throws Exception {
+		return projectMembersDao.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projectId, locationId,isGlobalUser);
 	}
 	
 
@@ -1578,8 +1602,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,
-			Long locationId) throws Exception {
-		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId);
+			Long locationId,String isGlobalUser) throws Exception {
+		return projectMembersDao.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId,isGlobalUser);
 	}
 
 	@Override
@@ -1687,6 +1711,68 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 			flag = true;
 		}
 		return flag;
+	}
+	
+	private void sendEmailToTeamMembersInProjectSummary(Projects projects, ProjectMembers projectMembers, User loginUser, String managers, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
+	  	 StringBuilder fromNameBuilder=new StringBuilder();
+	     EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(projectMembers.getProjectMemberCandidteId().getFirstName());
+		 emailMessage.setLastName(projectMembers.getProjectMemberCandidteId().getLastName());
+		 emailMessage.setToEmail(projectMembers.getProjectMemberCandidteId().getEmail());
+		 emailMessage.setFromEmail(loginUser.getEmail());
+		 emailMessage.setCreatedBy(loginUser.getUserCode());
+		 emailMessage.setFromName(fromNameBuilder.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 //setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 StringBuilder sb=new StringBuilder();
+		 String name="";
+		 if(loginUser.getLastName()!=null)
+		 {
+		 name=sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString();
+		 }
+		 else
+		 {
+		name= sb.append(loginUser.getFirstName()).toString();
+		 }
+		 globalVarsMap.put("LoginUserFirstName",name);
+//	 globalVarsMap.put("loginUserLastName",loginUser.getLastName());
+		 globalVarsMap.put("managersName",managers.toString());
+//		globalVarsMap.put("managerLastName",projectManager.getLastName());
+		 globalVarsMap.put("EmployeeFirstName",emailMessage.getFirstName());
+//		 globalVarsMap.put("employeeLastName",emailMessage.getLastName());
+		 globalVarsMap.put("ProjectName", projects.getProjectName());
+		 globalVarsMap.put("OrgName",loginOrgLocation.getOrgLocationName());
+		 globalVarsMap.put("userStartDate",projectMembers.getStartDateStr());
+		 globalVarsMap.put("projectEndDate",projectMembers.getEndDateStr());
+		 StringBuilder loginURLBuilder=new StringBuilder();
+		 globalVarsMap.put("loginURL",loginURLBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 if(null != projects.getOrgLocationsId())
+		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MEMBERS,new ArrayList<EmailAttachment>());
+		 
+		//calling the sendNotification method of emailScenerioUtil
+		EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MEMBERS,Constants.ENTITY_TYPE_NOTIFICATION);
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		notificationScenario.setOrgCode(loginOrgCode);
+		//String url = null;
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("projectSummary?projectUUID="+projects.getProjectUUID()+"&projectClientUUID="+projectMembers.getProjectClientUUID()).toString();
+	
+		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());
+	}
+	
+
+	@Override
+	public List<ProjectMembers> getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) throws Exception {
+		return projectMembersDao.getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
+	}
+
+	@Override
+	public ProjectMembers getProjectMemberByUserIdAndLoginOrglocationId(Long userId, Long orgLocationId)throws Exception {
+		return projectMembersDao.getProjectMemberByUserIdAndLoginOrglocationId(userId, orgLocationId);
 	}
 
 }

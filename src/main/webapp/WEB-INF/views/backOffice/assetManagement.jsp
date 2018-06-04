@@ -276,7 +276,7 @@ function openAssetFilterPop(){
 					   
 					   <div class="col-md-4 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
-								<input type="text" id="myShiftInput" onkeyup="myShiftFunction()" placeholder="Shift" title="Type in a clients">
+								<input type="text" id="myShiftInput" onkeyup="myShiftFunction()" placeholder="Availability" title="Type in a clients">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
 							 <div class="clearfix filterSearch-ul">
@@ -557,7 +557,7 @@ function deleteAsset(assetId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure delete Asset?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement("+assetId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
@@ -980,7 +980,7 @@ function deleteDocument(assetId,url){
 	document.getElementById("dbUploadFile").style.display="none";
 	 $.ajax({
    	  type: "POST",
-      url: sourceleadUrl+"/deleteDoc?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&url="+url, 	   
+      url: sourceleadUrl+"/deleteAssetDocument?"+tokenParamName+"="+tokenValue+"&assetId="+assetId+"&url="+url, 	   
  	  success: function(data) {  },
 	   });	
 	}

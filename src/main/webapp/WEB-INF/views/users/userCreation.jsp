@@ -18,6 +18,7 @@
 		window.onload = function () {
 			getDesignationType();
 			getDepartmentsList();
+			getResourceManagers();
 			maskme();
 			editMe(this);
 		 };
@@ -93,11 +94,11 @@
                     </div>
                 </div>
                 <div class="form-group">
-                      <label class="col-md-3">Date of Join</label>
+                      <label class="col-md-3">Date of Joining</label>
                          <div class="col-md-9">
-                           <div class="input-group">
+                           <div class="input-group errorInptgroup">
                               <input type="text" value="" name="dateofJoin" class="form-control calendar" id="DateofJoin" readonly="readonly">
-                              <span class="input-group-addon" onClick="clearDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                              <span class="input-group-addon" onClick="clearDateofJoin();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                            </div>
                         </div>
                   </div>
@@ -123,6 +124,13 @@
                 </div>
                 
                 <div class="form-group">
+                  <label class="col-md-3">Middle Name</label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" id="middleName" name="middleName" pattern="[A-Za-z\s]*"   field-name="Middle Name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
+                  </div>
+                </div>
+                
+                <div class="form-group">
                   <label class="col-md-3">Last Name</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="lastName" name="lastName" pattern="[A-Za-z\s]*"   field-name="Last Name" data-validation="validate_Space validate_Alphanumeric validate_length length1-100" data-validation-optional="true">
@@ -135,7 +143,7 @@
                    <div class="col-md-9">
                    <div class="row">
                     <div class="col-md-6 paddingRight">
-                    <input type="text" class="form-control" id="phone" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
+                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
                     <span class="hidden">Phone Number</span>
                      <input type="hidden" name="country" id="CountryAutocomplete" value ="${SourceLeadWeb_country}" />
                     </div>
@@ -149,7 +157,36 @@
                      </div>
                   </div>
                 </div> 
-                
+                <div class="form-group">
+						<label class="col-md-3">Gender<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-9" id= "errorGenderMsg">
+						<label class="paddingRight"><input type="radio"  value="Male"  name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Male</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Female</label>
+						<label class="paddingRight"><input type="radio"  value="Transgender" name="gender" onblur="genderCheckValidationAssociate(this)"><span class="mr5"></span>Transgender</label>
+						<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/> 		
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-md-3">Marital Status</label>
+						<div class="col-md-9">
+						<label class="paddingRight"><input type="radio"  value="Single" name="maritalStatus"><span class="mr5"></span>Single</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Married" name="maritalStatus"><span class="mr5"></span>Married</label>
+						<label class="paddingRight"><input type="radio"  value="Divorsed" name="maritalStatus"><span class="mr5"></span>Divorsed</label>
+						<label class="paddingLeft paddingRight"><input type="radio"  value="Separated" name="maritalStatus"><span class="mr5"></span>Separated</label>
+						</div>
+					</div>
+					
+					<div class="form-group">
+                      <label class="col-md-3">Date of Birth</label>
+                         <div class="col-md-9">
+                           <div class="input-group">
+                              <input type="text" value="" name="dateofBirth" class="form-control calendar" id="dateofBirth" readonly="readonly">
+                              <span class="input-group-addon" onClick="clearDateOfBirth();"><i class="colorRed fa fa-times cursorPointer"></i></span>
+                           </div>
+                        </div>
+                  </div>
+                  
                <div class="form-group">
                   <label class="col-md-3">Department </label>
                   <div class="col-md-9 chooRadius" id="chosen-role">
@@ -184,7 +221,7 @@
                   <label class="col-md-3">Role<span class="text-danger">&nbsp;*</span></label>
                   <div class="col-md-9 chooRadius chooErrorMessage" id="chosen-role">
                    <div class="input-group col-md-10 pull-left">
-                         <select class="form-control select-bg selectField" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
+                         <select class="form-control chosen-select" id="role" name="roleType" field-name="Role" onchange="getReportingManager()" data-validation="required" >
 		                        <option value="">-Select Role-</option>
 		                        <c:forEach var="option" items="${rolesList}">
 									<option value="${option.id}">${option.displayName}</option>
@@ -197,8 +234,34 @@
 			           </sec:authorize>
                 </div>
                 </div> 
-               
-               <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
+                
+                <div class="form-group">
+                  <label class="col-md-3">Designation<span class="text-danger">&nbsp;*</span></label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" id="designation" name="designation"  field-name="Desgination" data-validation="required validate_Space validate_Name validate_length length2-250" >
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label class="col-md-3">Grade </label>
+                  <div class="col-md-9 chooRadius" id="chosen-role">
+                   <div class="input-group col-md-10 pull-left">
+                         <select class="form-control chosen-select" id="grade" name="grade" field-name="Grade"  data-validation-optional="true" >
+		                        <option value="">-Select Grade-</option>
+		                        <c:forEach var="option" items="${gradesList}">
+									<option value="${option.id}">${option.gradeName}</option>
+								</c:forEach>
+			              </select>
+			               <span class="input-group-addon cursorPointer bg-blue" onclick="refreshGradesList();"><i class="fa fa-refresh "></i></span>
+                  </div>
+		             <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+					<a href="<c:url value="/app/addGrade " />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+					</sec:authorize>
+                </div> 
+                 </div> 
+                
+                
+           <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
             <label class="col-md-3">Employment Other Type</label>
             <div class="col-md-9">
               <input type="text" class="form-control" id="designationOtherType" name="designationOtherType"   field-name="Job Type" value="">
@@ -240,18 +303,33 @@
 		</span>
                
               <div class="form-group">
-                  <label class="col-md-3">Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the reporting manager for a associate in organisation'></i></label>
+                  <label class="col-md-3">Reporting Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the reporting manager for a associate in organisation'></i></label>
                   <div class="col-md-9">
-                      <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Manager" data-validation="required">
+                      <select class="form-control chosen-select" name="reportingManager" id="reportingManager" field-name="Reporting Manager" data-validation="required">
                         <option value="">-Select Manager-</option>
-                        <%-- <c:forEach var="option" items="${reportingManagersList}">
-								<option value="${option.id}">${option.firstName} ${option.lastName} (${option.userType})</option>
-						</c:forEach> --%>
+                      </select>
+                  </div>
+            </div>
+            
+            <div class="form-group">
+                  <label class="col-md-3">Resource Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the resource manager for a associate in organisation'></i></label>
+                  <div class="col-md-9">
+                      <select class="form-control chosen-select" name="resourceManager" id="resourceManager" field-name="Resource Manager" data-validation="required">
+                        <option value="">-Select Manager-</option>
                       </select>
                   </div>
             </div>
             		
-            
+            <div class="form-group">
+		             <label class="col-md-3"></label>
+		              <div class="col-md-9">
+		                <div class="checkbox checkBox">
+		                  <label>
+		                    <input type="checkbox" value="Y" name="isGlobalAccess">
+		                    Is Global Manager</label>
+		                </div>
+		                 </div>
+               </div> 
                 
                  <div class="form-group">
                      <label class="col-md-3">Rate</label>
@@ -667,11 +745,11 @@ function getEmployeementType(designationType){
 		        		}
 		        		
 		        		if(json.mobilePhone != null && json.mobilePhone != ''){
-		        			$("#phone").val(json.mobilePhone);
-				        	$("#phone").attr("readonly", "readonly");
+		        			$("#phoneNumber").val(json.mobilePhone);
+				        	$("#phoneNumber").attr("readonly", "readonly");
 		        		}else{
-		        			 $("#phone").removeAttr("readonly", "readonly");
-		        			 //$("#phone").val('');
+		        			 $("#phoneNumber").removeAttr("readonly", "readonly");
+		        			 //$("#phoneNumber").val('');
 		        		}
 		        		$("#loading").removeAttr('style');
 		        		
@@ -686,8 +764,8 @@ function getEmployeementType(designationType){
 		 $("#lastName").attr("disabled", false);
 		 $("#lastName").val('');
 		 
-		 $("#phone").attr("disabled", false);
-		 $("#phone").val('');
+		 $("#phoneNumber").attr("disabled", false);
+		 $("#phoneNumber").val('');
 		 
 		
 		 $("#role").val('');
@@ -696,6 +774,9 @@ function getEmployeementType(designationType){
 		  
 		 $("#reportingManager").val('');
 		 $("#reportingManager").trigger("chosen:updated");
+		 
+		 $("#resourceManager").val('');
+		 $("#resourceManager").trigger("chosen:updated");
 		 
 		 $("#employeementType").val('');
 	     $('#employeementType').trigger("chosen:updated");
@@ -728,11 +809,12 @@ function getAssociateUserDetails(){
 	        success: function(data) {
 	        	if(data != null && data != ''){
 	        		var json = JSON.parse(data);
+
 	        		  $("#associateId").val(json['id']);
 	        		  $("#FirstName").val(json['firstName']);
 	        		  $("#lastName").val(json['lastName']);
 	        		  $("#EmailId").val(json['email']);
-	        		  $("#phone").val(json['mobilePhone']);
+	        		  $("#phoneNumber").val(json['mobilePhone']);
 	        		  $("#designationType").val(json['designationType']);
 	        		  if(json['currentRate'] != null && json['currentRate'] !='undefined' && json['currentRate'] !=''){
 	        		  $("#Rate").val(json['currentRate']);
@@ -947,6 +1029,7 @@ function getAssociateUserDetails(){
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
+	  	  maxDate:0
 	      //minDate: 0  this line for to restrict selection of previous dates
 	  });
 	  
@@ -962,9 +1045,8 @@ function getAssociateUserDetails(){
 	 if(role != null && role != "" && role != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getReportingManager?"+tokenParamName+"="+tokenValue+"&role="+role, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        url: sourceleadUrl+"/getAssociateReportingManager?"+tokenParamName+"="+tokenValue+"&role="+role, 
+		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Manager --</option>"; 
 		        	for (var i=0; i<json.length; i++)
@@ -992,6 +1074,32 @@ function getAssociateUserDetails(){
 	
  }
 </script>
+
+
+
+<script type="text/javascript">
+ function getResourceManagers() {
+	 $('#chosen-role').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "POST",
+		        url: sourceleadUrl+"/getAssociateResourceManager?"+tokenParamName+"="+tokenValue, 
+		        success: function(json) {
+		        	var output = "";
+		        	output = output + "<option value=''>-- Select Manager --</option>"; 
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.fullName+"&nbsp;("+opt.userType+")</option>";
+			        		
+					}
+		        	$("#resourceManager").empty();
+			        $("#resourceManager").append(output);
+			        $('#resourceManager').trigger("chosen:updated");
+		        },
+		    });
+ }
+</script>
+
 
 <script>
 function maskme(){
@@ -1067,7 +1175,8 @@ function editMe(local){
 		 $('#vendorcontact').trigger("chosen:updated");
 	 }
 	 </script>
-	 <script>
+
+<script>
 function refreshRoleList(){
 		 $.ajax({
 	      type : "POST",
@@ -1088,6 +1197,30 @@ function refreshRoleList(){
 	
 }
 </script>
+
+<script>
+function refreshGradesList(){
+	 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshGradesList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>-Select Grade-</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	       			output = output + "<option value='"+opt.id+"'>"+opt.gradeName+"</option>";
+				}
+	        	$("#grade").empty();
+		        $("#grade").append(output);
+		        $('#grade').trigger("chosen:updated");
+	        }
+		 });
+}
+</script>
+
+
+
 <script>
 	 function managerListEmpty(){
 		 $('#reportingManager').empty();
@@ -1105,9 +1238,44 @@ function refreshRoleList(){
 	 }
 	 </script>
 	
-
+<script type="text/javascript">
+	function genderCheckValidationAssociate(id){
+		 var gendersList = [];
+ 		 $("input[name='gender']:checked").each( function (i) {
+ 			gendersList[i] = $(this).val();
+ 		});
+ 		 
+		if (gendersList.length > 0) { 
+		document.getElementById("genderValue").value = id.value;
+		}else{
+			$('#genderValue').val(''); 
+		}
+	} 
+</script>
 <script>
-function clearDate(){
+  $( function() {
+	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  // written common method in slead-common.js for date formats start
+	  var finalDateFormat = getJSDateFormat(locationDate);
+	  //end
+	  $('#dateofBirth').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  yearRange: "-100:+0",
+	  	  maxDate:0
+	      //minDate: 0  this line for to restrict selection of previous dates
+	  });
+	  
+  } );
+  
+  function clearDateOfBirth(){
+		$("#dateofBirth").val("");
+		};
+		
+</script>
+<script>
+function clearDateofJoin(){
 	$("#DateofJoin").val("");
 	};
 </script>

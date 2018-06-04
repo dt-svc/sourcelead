@@ -55,7 +55,7 @@ public interface InvoiceService {
 
 	File getExportBillingFile(ResponseList<Invoice> invoiceList, String orgName, String exportType,InvoiceAmount totalStagesAmount,String exportStartDate,String exportEndDate, String invoiceType,OrgLocations orgLocations) throws Exception;
 
-	Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user, String contractType)throws Exception;
+	Integer getAutomaticInvoice(OrgLocations orgLocation, String loginOrgCurrencyCode, String invoiceType, User user, String contractType,String globalUser)throws Exception;
 
 	List<Invoice> getInvoiceByOrgLocationId(Long idorgLocationId, Date startDateUTC, Date endDateUTC, String invoiceTYpe)throws Exception;
 

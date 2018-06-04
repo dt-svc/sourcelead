@@ -1047,7 +1047,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 		 result = result +'    <input type="hidden" id="invoicePopupId" value="'+invoiceUUID+'"> ';
 		 if((invoiceParentId == 'undefined' || invoiceParentId == 'null') && invoiceStatus != 'DRAFT' && paymentStatus != 'Paid'){
 			 '<sec:authorize access="hasAnyRole(\'ROLE_SEND_BILL_REMINDER\')">';
-			 result = result +'<li onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</li> ';
+			 result = result +'<a onclick="sendReminder(\''+invoiceUUID+'\');"><i class="fa fa-bullhorn paddingRight" title="Send reminder"></i>Send reminder</a> ';
 			 '</sec:authorize>'
 		 }
 		 '<sec:authorize access="hasAnyRole(\'ROLE_PRINT_BILL\')">';
@@ -1061,7 +1061,7 @@ function showPopUp(invoiceUUID,invoiceStatus,invoiceParentId,totalAmount,fileUrl
 	     '</sec:authorize>'
 	     if(invoiceStatus != 'DRAFT')
 	     {
-	     result = result +'      <li onclick="linkPayableInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-download paddingLeft paddingRight" title="Link Bill"></i>Link Bill</li>';
+	     result = result +'      <a onclick="linkPayableInvoice(\''+invoiceUUID+'\',\''+totalAmount+'\');"><i class="fa fa-link paddingLeft paddingRight" title="Link Bill"></i>Link Bill</a>';
 	     }
 	     result = result +'    </ul>';
     	 $("#popupDiv"+invoiceUUID+"").append(result);
@@ -1098,7 +1098,8 @@ function sendReminder(invoiceUUID){
 	          		} else if (result.response === "AWKWARD") {
 	          		    location.href = "/errorPage";
 	          		} else if (result.response === "SUCCESS") {
-	          			
+	          			$("#msgDiv").html("Successfully you have sent a reminder Mail..");
+	          			msgFadein();
 	          		} else if (result.indexOf('Sign In') !== -1) {
 	          			location.replace(sourceleadUrl);
 	          		} else {

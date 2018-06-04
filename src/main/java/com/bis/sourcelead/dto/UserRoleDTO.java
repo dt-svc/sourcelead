@@ -29,6 +29,8 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	private String orgManagers;
 	private String orgTeams;
 	private String orgDepartments;
+	private String isGlobalUser;
+	private Long orgId;
 	
 	
 	public Long getId() {
@@ -184,6 +186,18 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	}
 	public void setOrgDepartments(String orgDepartments) {
 		this.orgDepartments = orgDepartments;
+	}
+	public String getIsGlobalUser() {
+		return isGlobalUser;
+	}
+	public void setIsGlobalUser(String isGlobalUser) {
+		this.isGlobalUser = isGlobalUser;
+	}
+	public Long getOrgId() {
+		return orgId;
+	}
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
 	}
 
 }
