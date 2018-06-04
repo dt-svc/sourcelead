@@ -1603,5 +1603,22 @@ public class UserServiceImpl implements UserService {
 		return userDao.getResourceManagersByOrgLocationIdAndTabId(orgLocationsId, tabId);
 
 	}
+
+	@Override
+	public List<User> getReportingManagersByUserRolesAndOrgLocationId(Long roleId, Long orgLocationsId)
+			throws Exception {
+		return userDao.getReportingManagersByUserRolesAndOrgLocationId(roleId, orgLocationsId);
+	}
+
+	@Override
+	public List<User> getGlobalReportingManagersUsersByOrgId(Long roleId, Long orgId) throws Exception {
+		return userDao.getGlobalReportingManagersUsersByOrgId(roleId, orgId);
+	}
+
+	@Override
+	public List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId,
+			Long orgLocationsId) throws Exception {
+		return userDao.getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userId, roleId, orgLocationsId);
+	}
 	
 }
