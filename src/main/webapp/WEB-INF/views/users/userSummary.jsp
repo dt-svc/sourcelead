@@ -1695,7 +1695,7 @@ $("#editRoleDetailsList").empty();
 					if(json.allReportingManagers != null && json.allReportingManagers != "" && json.allReportingManagers != 'undefined' && json.allReportingManagers.length > 0){
 						result = result + ' <div class="user_summary_edit_cta">';
 						result = result + ' <label>Reporting Manager<span class="text-danger">&nbsp;*</span></label>';
-						result = result + '  <select id="reportingManager" name="reportingManager" field-name="Manager" data-validation="required">'+
+						result = result + '  <select class="form-control chosen-select"  id="reportingManager" name="reportingManager" field-name="Manager" data-validation="required">'+
 			 	     	"<option value=''>-Select Manager-</option>";    
 			 	     	 for (var i=0; i<json.allReportingManagers.length; i++)
 	    					{
@@ -1715,7 +1715,7 @@ $("#editRoleDetailsList").empty();
 					if(json.allResourceManagers != null && json.allResourceManagers != "" && json.allResourceManagers != 'undefined' && json.allResourceManagers.length > 0){
 						result = result + ' <div class="user_summary_edit_cta">';
 						result = result + ' <label>Resource Manager<span class="text-danger">&nbsp;*</span></label>';
-						result = result + '  <select id="resourceManager" name="resourceManager" field-name="Manager" data-validation="required">'+
+						result = result + '  <select class="form-control chosen-select"  id="resourceManager" name="resourceManager" field-name="Manager" data-validation="required">'+
 			 	     	"<option value=''>-Select Manager-</option>";    
 			 	     	 for (var i=0; i<json.allResourceManagers.length; i++)
 	    					{

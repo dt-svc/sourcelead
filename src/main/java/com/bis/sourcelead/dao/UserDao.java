@@ -178,6 +178,8 @@ public interface UserDao {
 	List<User> getReportingManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId) throws Exception;
 	
 	public List<User> getGlobalReportingManagersUsersByOrgId(Long roleId, Long orgId) throws Exception;
+	
+	List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId) throws Exception;
 
 
 }
