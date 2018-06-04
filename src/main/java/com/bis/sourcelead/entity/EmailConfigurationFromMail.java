@@ -50,7 +50,7 @@ public class EmailConfigurationFromMail implements Serializable{
 	private String updatedBy;
 	
 	@Column(name="STATUS")
-	private boolean status;
+	private Integer status;
 
 	public Long getId() {
 		return id;
@@ -124,11 +124,11 @@ public class EmailConfigurationFromMail implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 
-	public boolean isStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 

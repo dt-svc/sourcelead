@@ -11,7 +11,7 @@
 		<div class="modal-content clearfix">
 			<div class="modal-header">
 				<a href="javascript:void(0)" class="close" onClick="closeEmailNotifications()">&times;</a>
-				<h4 class="modal-title">Add from Email</h4>
+				<h4 class="modal-title">Add From Email</h4>
 			</div>
 			<div class="modal-body">
 			
@@ -30,8 +30,8 @@
 			
 			
             <div class="col-md-12 minHeight">
-             <label>Module Names<span class="text-danger">&nbsp;*</span></label>
-           <select multiple class="form-control" name="emailModules" data-placeholder="Select Module Options" id="emailModules" field-name="Module name" data-validation="required">
+             <label>Module Names</label>
+           <select multiple class="form-control" name="emailModules" data-placeholder="Select Module Options" id="emailModules" field-name="Module name" data-validation-optional="true">
                 
 			<c:forEach var="education" items="${modulesList}">
                		<c:set var = "NUM" value = "${0}"/>

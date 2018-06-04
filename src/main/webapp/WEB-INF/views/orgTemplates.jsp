@@ -149,7 +149,6 @@
 		</div>
 	</div>
 	
-	<c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
 	<div class="landTempCta nomr">
 	<div class="pull-left mr10">
            <i class="fa fa-file fa-2x text-success"></i>
@@ -196,7 +195,6 @@
 		</span>
 		</div>
 	</div> 
-	</c:if>
 	<div class="clearfix"></div>
 </section>
     
