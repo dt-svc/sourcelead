@@ -12,6 +12,7 @@ import com.bis.sourcelead.dto.ImmigrationTemplateFormDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateTaskDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.ImmigrationTemplateTasks;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -59,5 +60,7 @@ public interface ImmigrationTemplateService {
 	List<LookUpData> getLookupDataByTypeAndLocation(String petitionType, String locationVal);
 
 	Long getTemplateIdByUUID(String immiTemplateUUID);
+
+	List<ImmigrationTemplateTasks> getImmigrationTemplateTasksByTempId(Long templateId);
 
 }

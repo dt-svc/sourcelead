@@ -36,8 +36,8 @@
 				      <div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
 				  		<div class="col-md-3">
 					  
-						<select class="form-control chosen-select" 
-										name="immigrationDocList[0].documentType"  onchange="updateUIforOthers(0);" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0">
+						<select class="form-control selectpicker" 
+										name="immigrationDocList[0].documentType"  onchange="updateUIforOthers(0);" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0" data-live-search="true">
 							<option value="" selected>--Select Document--</option>
 							<c:forEach var="edu" items="${educationsList}">
 											<option value="${edu.id}">${edu.name}</option>
@@ -92,8 +92,8 @@
 					  <div class="col-md-3">
 					  <input type="hidden" name="immigrationDocList[${rows.count-1}].id" value="${items.id}" id="templateId${rows.count-1}"/>
 					  
-						<select class="form-control chosen-select" 
-								onchange="updateUIforOthers(${rows.count-1});"		name="immigrationDocList[${rows.count-1}].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation${rows.count-1}">
+						<select class="form-control selectpicker" 
+								onchange="updateUIforOthers(${rows.count-1});"		name="immigrationDocList[${rows.count-1}].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation${rows.count-1}" data-live-search="true">
 							<option value="" selected>--Select Document--</option>
 							<c:forEach var="edu" items="${educationsList}">
 											<option ${edu.id == items.documentType? 'selected': ''} value="${items.documentType}">${edu.name}</option>
@@ -187,7 +187,7 @@
 	   var templateDocDetails = "";
 		templateDocDetails = templateDocDetails+ "<div id='dynamicRow"+rowId+"' class='col-md-12 clearfix noPad mt'>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-3'>";
-		templateDocDetails = templateDocDetails+ "<select class='form-control chosen-select' title='Document Type' onchange='updateUIforOthers("+rowId+")' field-name='Select Document' data-validation='required' name='immigrationDocList["+rowId+"].documentType' id='candidateEducation"+rowId+"' data-validation='validate_Space'>";
+		templateDocDetails = templateDocDetails+ "<select class='form-control selectpicker' title='Document Type' onchange='updateUIforOthers("+rowId+")' field-name='Select Document' data-validation='required' name='immigrationDocList["+rowId+"].documentType' id='candidateEducation"+rowId+"' data-validation='validate_Space' data-live-search='true'>";
 		templateDocDetails = templateDocDetails+ "<option value='' selected>--Select Document--</option>";
 		<c:forEach var='edu' items='${educationsList}'>
 		templateDocDetails = templateDocDetails+ "<option value='${edu.id}'>${edu.name}</option>";
@@ -223,6 +223,8 @@
    function appendTempDocDiv(){
 	   console.log("added rowId --->"+rowId)
 	   $("#templateDocDivStatic").append(appendTemplateDocDetails(rowId++)); 
+// 	   $('.selectpicker_oncreate').selectpicker('refresh');
+	   $('.selectpicker').selectpicker('refresh');
    }
    var deletedDocListIds = new Array();
    function removeTempDocDiv(id){
@@ -233,6 +235,8 @@
 	   $("#dynamicRow"+id).remove();
 	   //rowId--;// decrement rowid when deleted in UI.
    }
+		
+		$('.selectpicker').selectpicker('refresh');
    	</script>
 	<script type="text/javascript">
 	function tempDocReq(id){
@@ -243,6 +247,8 @@
 			$("#requiredCheck"+id).val("N");
 		}
 	}
+	
+	 
 	</script>
 	
 	<script type="text/javascript">
@@ -275,4 +281,6 @@
 	$(document).ready(function(){
 		$("#templateId").val(immTemplId);
 	});
+	
+	
 	</script>
