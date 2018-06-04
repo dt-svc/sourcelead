@@ -1,5 +1,7 @@
 package com.bis.sourcelead.web;
 
+import static org.mockito.Matchers.isNotNull;
+
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
+import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -44,24 +47,34 @@ public class TaxSubmissionController {
 
 	// forms tab org/user
 
+	private void setYears(ModelAndView modelAndView, int selectedYear) {
+		Map<String, Boolean> yearList = new LinkedHashMap<>();
+		Calendar c = Calendar.getInstance();
+		c.roll(Calendar.YEAR, -2);
+		for (int i = 0; i < 4; i++) {
+			Calendar c1 = Calendar.getInstance();
+			boolean isCurrent = selectedYear > 0 ? selectedYear == c.get(Calendar.YEAR) : c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
+			yearList.put(c.get(Calendar.YEAR) + "", isCurrent);
+			c.roll(Calendar.YEAR, 1);
+		}
+		modelAndView.addObject("yearList", yearList);
+	}
+
 	@RequestMapping(value = "/forms/list")
-	public ModelAndView getForms(HttpServletRequest request) {
+	public ModelAndView getForms(HttpServletRequest request, @RequestParam(defaultValue = "0") int year,
+			@RequestParam(defaultValue = "") String uuid) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
-			Map<String, Boolean> yearList = new LinkedHashMap<>();
-			Calendar c = Calendar.getInstance();
-			c.roll(Calendar.YEAR, -2);
-			for (int i = 0; i < 4; i++) {
-				Calendar c1 = Calendar.getInstance();
-				boolean isCurrent = c1.get(Calendar.YEAR) == c.get(Calendar.YEAR);
-				yearList.put(c.get(Calendar.YEAR) + "", isCurrent);
-				c.roll(Calendar.YEAR, 1);
+			if (!uuid.isEmpty()) {
+				modelAndView.addObject("uuid", uuid);
+				modelAndView.addObject("formList", taxService.getITDeclarationSubmissionList(uuid, year));
+				modelAndView.setViewName("tax/org/form_list_by_formType");
+			} else {
+				setYears(modelAndView, year);
+				modelAndView.addObject("formList",
+						taxService.getTaxFormTypeListForSubmission(year > 0 ? year : Calendar.getInstance().get(Calendar.YEAR)));
+				modelAndView.setViewName("tax/org/forms_list");
 			}
-			modelAndView.addObject("yearList", yearList);
-
-			// modelAndView.addObject("formList", taxService.getTaxFormTypeList(false));
-
-			modelAndView.setViewName("tax/org/forms_list");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -91,21 +104,33 @@ public class TaxSubmissionController {
 		return "";
 	}
 
-	@RequestMapping(value = "/itDeclaration/getForm")
-	public ModelAndView getDynamicTaxForm(HttpServletRequest request, @RequestParam String uuid) {
+	@RequestMapping(value = { "/forms/getForm", "/forms/editForm", "/forms/viewForm" })
+	public ModelAndView getDynamicTaxForm(HttpServletRequest request, @RequestParam String uuid,
+			@RequestParam(defaultValue = "") String formUUID) {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, true, false);
-			modelAndView.addObject("form", sourceleadTaxFormDTO);
-			modelAndView.addObject("formList", taxService.getTaxFormTypeList(false));
-			modelAndView.addObject("activeFormTabUUID", uuid);
-
-			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-			List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
-
-			modelAndView.addObject("userRoleList", userRoleList);
-			modelAndView.setViewName("tax/org/" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
+			if (sourceleadTaxFormDTO != null) {
+				setYears(modelAndView, 0);
+				if (!formUUID.isEmpty()) {
+					boolean isEditable = request.getRequestURL().toString().contains("editForm");
+					modelAndView.addObject("isEditable", isEditable);
+					modelAndView.addObject("uuid", uuid);
+					SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO = taxService.getITDeclarationSubmission(uuid,
+							formUUID);
+					modelAndView.addObject("form", itDeclarationSubmissionDTO);
+					modelAndView.setViewName("tax/org/edit_" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
+				} else {
+					// modelAndView.addObject("activeFormTabUUID", uuid);
+					// setYears(modelAndView, 0);
+					modelAndView.addObject("form", sourceleadTaxFormDTO);
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
+					modelAndView.addObject("userRoleList", userRoleList);
+					modelAndView.setViewName("tax/org/add_" + sourceleadTaxFormDTO.getName().toLowerCase().replaceAll(" ", "_") + "_form");
+				}
+			} else
+				modelAndView.setViewName("errorPage");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -114,14 +139,13 @@ public class TaxSubmissionController {
 
 	@RequestMapping(value = "/itDeclaration/save")
 	@ResponseBody
-	public Response<String> saveITDeclarationForm(HttpServletRequest request, SourceleadTaxITDeclarationDTO itDeclarationDTO) {
+	public Response<String> saveITDeclarationForm(HttpServletRequest request,
+			SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO) {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
+				response = taxService.submitITDeclaration(itDeclarationSubmissionDTO, user);
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

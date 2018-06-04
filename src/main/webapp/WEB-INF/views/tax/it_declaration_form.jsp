@@ -25,7 +25,7 @@
 </c:if>
 <div class="col-md-12">
 	<div class="clearfix"></div>
-	<c:forEach items="${form.sourceleadTaxSectionList}" var="section">
+	<c:forEach items="${form.itDeclarationSectionList}" var="section">
 		<table class="table table-itdeclaration table-bordered">
 			<thead>
 				<tr>
@@ -77,7 +77,7 @@
 								</div>
 							</div>
 							<c:if test="${isEditable}">
-								<div class="col-md-2 col-md-offset-6">
+								<div class="col-md-2 col-md-offset-6 ${section.active ? '' :'disableBtn'}">
 									<a href="javascript:void(0)" class="anchor-black"
 										title="Add Custom Item"
 										onClick="addSectionItem(${section.id},'${section.name}');"><i
@@ -88,8 +88,8 @@
 
 					</th>
 				</tr>
-				<c:if test="${section.sourceleadTaxSectionItemList.size() > 0}">
-					<tr>
+				<c:if test="${section.sectionItemList.size() > 0}">
+					<tr ${section.active ? '' : "class='disableBtn'"}>
 						<th>Items</th>
 						<th>Max Limit</th>
 						<th>Description</th>
@@ -99,10 +99,10 @@
 					</tr>
 				</c:if>
 			</thead>
-			<tbody>
+			<tbody ${section.active ? '' : "class='disableBtn'"}>
 				<c:choose>
-					<c:when test="${section.sourceleadTaxSectionItemList.size() > 0}">
-						<c:forEach items="${section.sourceleadTaxSectionItemList}"
+					<c:when test="${section.sectionItemList.size() > 0}">
+						<c:forEach items="${section.sectionItemList}"
 							var="sectionItem">
 							<tr>
 								<td>

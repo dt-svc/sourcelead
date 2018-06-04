@@ -2,7 +2,9 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,48 +13,36 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "SOURCELEAD_TAX_IT_DECLARATION_ITEM_SUBMISSION")
-public class SourceleadTaxITDeclarationItemSubmission implements Serializable {
+@Table(name = "SOURCELEAD_TAX_IT_DECLARATION_SUBMISSION")
+public class SourceleadTaxITDeclarationSubmission implements Serializable {
 
 	/**
 	 * @author Mahaveer Manoj
 	 */
 	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	@Column(name = "NAME")
-	private String name;
-
-	@Column(name = "MAX_LIMIT")
-	private double maxLimit;
-
-	@Column(name = "AMOUNT")
-	private double amount;
-
-	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
-	private String description;
+	@Column(name = "UUID")
+	private String uuid;
 
 	@Column(name = "FINANCIAL_YEAR")
 	private String financialYear;
 
-	@Column(name = "STATUS")
-	private int status;
-
-	@JsonBackReference
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SOURCELEAD_TAX_IT_DECLARATION_ID", nullable = false)
-	private SourceleadTaxITDeclaration sourceleadTaxITDeclaration;
-
 	@JoinColumn(name = "USER_ID", referencedColumnName = "ID")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
+
+	@Column(name = "STATUS")
+	private int status;
 
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -68,6 +58,14 @@ public class SourceleadTaxITDeclarationItemSubmission implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User updatedBy;
 
+	@JsonBackReference
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SOURCELEAD_TAX_FORM_ID", nullable = false)
+	private SourceleadTaxForm sourceleadTaxForm;
+
+	@OneToMany(mappedBy = "sourceleadTaxITDeclarationSubmission", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<SourceleadTaxITDeclarationSubmissionItem> submissionItemList;
+
 	public long getId() {
 		return id;
 	}
@@ -76,36 +74,28 @@ public class SourceleadTaxITDeclarationItemSubmission implements Serializable {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getUuid() {
+		return uuid;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
-	public double getMaxLimit() {
-		return maxLimit;
+	public String getFinancialYear() {
+		return financialYear;
 	}
 
-	public void setMaxLimit(double maxLimit) {
-		this.maxLimit = maxLimit;
+	public void setFinancialYear(String financialYear) {
+		this.financialYear = financialYear;
 	}
 
-	public double getAmount() {
-		return amount;
+	public User getUser() {
+		return user;
 	}
 
-	public void setAmount(double amount) {
-		this.amount = amount;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public int getStatus() {
@@ -114,14 +104,6 @@ public class SourceleadTaxITDeclarationItemSubmission implements Serializable {
 
 	public void setStatus(int status) {
 		this.status = status;
-	}
-
-	public SourceleadTaxITDeclaration getSourceleadTaxITDeclaration() {
-		return sourceleadTaxITDeclaration;
-	}
-
-	public void setSourceleadTaxITDeclaration(SourceleadTaxITDeclaration sourceleadTaxITDeclaration) {
-		this.sourceleadTaxITDeclaration = sourceleadTaxITDeclaration;
 	}
 
 	public Date getCreatedDate() {
@@ -160,20 +142,20 @@ public class SourceleadTaxITDeclarationItemSubmission implements Serializable {
 		return serialVersionUID;
 	}
 
-	public User getUser() {
-		return user;
+	public List<SourceleadTaxITDeclarationSubmissionItem> getSubmissionItemList() {
+		return submissionItemList;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setSubmissionItemList(List<SourceleadTaxITDeclarationSubmissionItem> submissionItemList) {
+		this.submissionItemList = submissionItemList;
 	}
 
-	public String getFinancialYear() {
-		return financialYear;
+	public SourceleadTaxForm getSourceleadTaxForm() {
+		return sourceleadTaxForm;
 	}
 
-	public void setFinancialYear(String financialYear) {
-		this.financialYear = financialYear;
+	public void setSourceleadTaxForm(SourceleadTaxForm sourceleadTaxForm) {
+		this.sourceleadTaxForm = sourceleadTaxForm;
 	}
 
 }

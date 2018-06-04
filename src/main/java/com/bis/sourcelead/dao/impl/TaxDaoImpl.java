@@ -19,6 +19,8 @@ import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmissionItem;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -411,6 +413,90 @@ public class TaxDaoImpl implements TaxDao {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			return session.get(Tds.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public long submitITDeclaration(SourceleadTaxITDeclarationSubmission itDeclarationSubmission) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(itDeclarationSubmission);
+			return itDeclarationSubmission.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public int getITDeclarationFormsCountByYear(int year, String tableName) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from SourceleadTax" + tableName + "Submission it where it.financialYear=:year";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("year", year + "");
+			List<Object> submissionList = queryObj.list();
+			if (submissionList != null && !submissionList.isEmpty())
+				return submissionList.size();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid, int year) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from SourceleadTaxITDeclarationSubmission it where it.sourceleadTaxForm.uuid=:uuid and it.financialYear=:year";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("uuid", uuid);
+			queryObj.setString("year", year + "");
+			return queryObj.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(String taxFormUUID, String formUUID) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from SourceleadTaxITDeclarationSubmission it where it.sourceleadTaxForm.uuid = :taxFormUUID and it.uuid = :formUUID";
+			Query queryObj = session.createQuery(query);
+			queryObj.setString("taxFormUUID", taxFormUUID);
+			queryObj.setString("formUUID", formUUID);
+			List<SourceleadTaxITDeclarationSubmission> itDeclarationSubmissionList = queryObj.list();
+			if (itDeclarationSubmissionList != null && !itDeclarationSubmissionList.isEmpty()) {
+				return itDeclarationSubmissionList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(SourceleadTaxITDeclarationSubmission.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public SourceleadTaxITDeclarationSubmissionItem getITDeclarationSubmissionItem(long id) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(SourceleadTaxITDeclarationSubmissionItem.class, id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

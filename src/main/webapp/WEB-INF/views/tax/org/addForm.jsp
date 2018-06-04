@@ -36,7 +36,7 @@
 <script type="text/javascript">
 	$("#formType").change(
 			function() {
-				location.href = sourceleadUrl + "/itDeclaration/getForm?uuid="
+				location.href = sourceleadUrl + "/forms/getForm?uuid="
 						+ $(this).val();
 			});
 </script>

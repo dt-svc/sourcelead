@@ -11,6 +11,7 @@
 	</section>
 	<jsp:include page="../org/formHeader.jsp"></jsp:include>
 	<form action="" id="itDeclarationForm">
+		<input type="hidden" name="taxFormId" value="${form.id}">
 		<div class="contentareaInner-styles clearfix">
 			<div class="clearfix form-horizontal minHeight_225 minHeightcol5">
 				<div class="row min">
@@ -18,8 +19,7 @@
 						<div class="clearfix dropdown-select">
 							<select class="selectpicker width100percnt" id="employeeSelect"
 								data-live-search="true" title="Select Employee"
-								field-name="Employee" data-validation="required"
-								name="userId">
+								field-name="Employee" data-validation="required" name="userId">
 								<c:forEach items="${userRoleList}" var="userRole">
 									<option value="${userRole.user.id}"
 										data-id="${userRole.user.id}"
@@ -58,20 +58,18 @@
 							<select class="selectpicker width100percnt"
 								data-live-search="true" title="Select Year" field-name="Year"
 								data-validation="required" name="financialYear">
-								<option>2015-16</option>
-								<option>2016-17</option>
-								<option>2017-18</option>
-								<option>2018-19</option>
-								<option>2019-20</option>
-								<option>2021-22</option>
+								<c:forEach items="${yearList}" var="year">
+									<option ${year.value==true?"selected=selected":""}
+										value="${year.key}">${year.key}</option>
+								</c:forEach>
 							</select>
 						</div>
 					</div>
 					<div class="clearfix"></div>
 					<div class="col-md-10">
-					<c:set var="sectionCount" value="0"></c:set>
-						<c:forEach items="${form.sourceleadTaxSectionList}" var="section">
-							<c:if test="${section.sourceleadTaxSectionItemList.size() > 0}">
+						<c:set var="submissionItemCount" value="0"></c:set>
+						<c:forEach items="${form.itDeclarationSectionList}" var="section">
+							<c:if test="${section.sectionItemList.size() > 0}">
 								<table class="table table-itdeclaration table-bordered">
 									<thead>
 										<tr>
@@ -85,29 +83,38 @@
 										</tr>
 									</thead>
 									<tbody>
-										<c:set var="sectionItemCount" value="0"></c:set>
-										<c:forEach items="${section.sourceleadTaxSectionItemList}"
+										<%-- <c:set var="submissionItemCount" value="0"></c:set> --%>
+										<c:forEach items="${section.sectionItemList}"
 											var="sectionItem">
-											<input type="hidden" name="sourceleadTaxSectionItemList[${sectionItemCount}].name" value="${sectionItem.name}">
-											<input type="hidden" name="sourceleadTaxSectionItemList[${sectionItemCount}].maxLimit" value="${sectionItem.maxLimit}">
-											<input type="hidden" name="sourceleadTaxSectionItemList[${sectionItemCount}].description" value="${sectionItem.description}">
+											<input type="hidden"
+												name="submissionItemList[${submissionItemCount}].taxSectionId"
+												value="${sectionItem.taxSectionId}">
+											<input type="hidden"
+												name="submissionItemList[${submissionItemCount}].name"
+												value="${sectionItem.name}">
+											<input type="hidden"
+												name="submissionItemList[${submissionItemCount}].maxLimit"
+												value="${sectionItem.maxLimit}">
+											<input type="hidden"
+												name="submissionItemList[${submissionItemCount}].description"
+												value="${sectionItem.description}">
 											<tr>
 												<td>${sectionItem.name}</td>
 												<td>${sectionItem.maxLimit}</td>
 												<td>${sectionItem.description != null && sectionItem.description != "" ? sectionItem.description : "--NA--"}</td>
-												<td>
-													<input type="text" class="form-control input-sm" name="sourceleadTaxSectionItemList[${sectionItemCount}].amount"
-													placeholder='Enter Amount' field-name='Amount' value="${sectionItemCount}"
-													data-validation='required validate_float'>
-												</td>
+												<td><input type="text" class="form-control input-sm"
+													name="submissionItemList[${submissionItemCount}].amount"
+													placeholder='Enter Amount' field-name='Amount'
+													value="${sectionItem.amount}"
+													data-validation='required validate_float'></td>
 											</tr>
-											<c:set var="sectionItemCount" value="${sectionItemCount + 1}"></c:set>
+											<c:set var="submissionItemCount"
+												value="${submissionItemCount + 1}"></c:set>
 										</c:forEach>
 									</tbody>
 								</table>
 								<div class="clearfix"></div>
 							</c:if>
-							<c:set var="sectionCount" value="${sectionCount + 1}"></c:set>
 						</c:forEach>
 
 						<table class="table table-itdeclaration table-bordered">

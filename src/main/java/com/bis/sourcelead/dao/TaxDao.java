@@ -3,13 +3,15 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.entity.CentralTax;
-
+import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
 
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmissionItem;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -65,5 +67,17 @@ public interface TaxDao {
 	public boolean removeTDSTax(Tds tds);
 
 	public Tds getTDSById(long id);
+
+	public long submitITDeclaration(SourceleadTaxITDeclarationSubmission itDeclarationSubmission);
+
+	public int getITDeclarationFormsCountByYear(int year, String tableName);
+
+	public List<SourceleadTaxITDeclarationSubmission> getITDeclarationSubmissionList(String uuid, int year);
+
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(String taxFormUUID, String formUUID);
+	
+	public SourceleadTaxITDeclarationSubmission getITDeclarationSubmission(long id);
+
+	public SourceleadTaxITDeclarationSubmissionItem getITDeclarationSubmissionItem(long id);
 
 }

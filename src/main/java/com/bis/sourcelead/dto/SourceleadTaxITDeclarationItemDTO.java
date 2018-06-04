@@ -17,6 +17,8 @@ public class SourceleadTaxITDeclarationItemDTO implements Serializable {
 	private boolean active;
 	private long taxSectionId;
 	private String taxSectionName;
+	private long taxFormId;
+	private String taxFormName;
 
 	public long getId() {
 		return id;
@@ -84,6 +86,22 @@ public class SourceleadTaxITDeclarationItemDTO implements Serializable {
 
 	public void setAmount(String amount) {
 		this.amount = amount;
+	}
+
+	public long getTaxFormId() {
+		return taxFormId;
+	}
+
+	public void setTaxFormId(long taxFormId) {
+		this.taxFormId = taxFormId;
+	}
+
+	public String getTaxFormName() {
+		return taxFormName;
+	}
+
+	public void setTaxFormName(String taxFormName) {
+		this.taxFormName = taxFormName;
 	}
 
 }

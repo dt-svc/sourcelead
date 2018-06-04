@@ -1,9 +1,11 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,9 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
+import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionDTO;
+import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionItemDTO;
+import com.bis.sourcelead.dto.SourceleadTaxITDeclarationSubmissionSectionDTO;
 import com.bis.sourcelead.dto.StateTaxDTO;
 import com.bis.sourcelead.dto.TdsDTO;
 import com.bis.sourcelead.dto.helper.Paginator;
@@ -24,6 +29,8 @@ import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmission;
+import com.bis.sourcelead.entity.SourceleadTaxITDeclarationSubmissionItem;
 import com.bis.sourcelead.entity.SourceleadTaxType;
 import com.bis.sourcelead.entity.StateTax;
 import com.bis.sourcelead.entity.Tds;
@@ -31,6 +38,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.StatesService;
 import com.bis.sourcelead.service.TaxService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -42,6 +50,9 @@ public class TaxServiceImpl implements TaxService {
 
 	@Autowired
 	private StatesService statesService;
+
+	@Autowired
+	private UserService userService;
 
 	@Override
 	public List<SourceleadTaxType> getAllTaxesByType(long type, boolean includeInactive) {
@@ -381,6 +392,31 @@ public class TaxServiceImpl implements TaxService {
 	}
 
 	@Override
+	public List<SourceleadTaxFormDTO> getTaxFormTypeListForSubmission(int year) {
+		List<SourceleadTaxFormDTO> sourceleadTaxFormList = new LinkedList<>();
+		try {
+			List<SourceleadTaxForm> stList = taxDao.getTaxFormTypeList(false);
+			for (SourceleadTaxForm sourceleadTaxForm : stList) {
+				if (sourceleadTaxForm.isActive()) {
+					SourceleadTaxFormDTO sourceleadTaxFormDTO = new SourceleadTaxFormDTO();
+					sourceleadTaxFormDTO.setId(sourceleadTaxForm.getId());
+					sourceleadTaxFormDTO.setName(sourceleadTaxForm.getName());
+					sourceleadTaxFormDTO.setUuid(sourceleadTaxForm.getUuid());
+					sourceleadTaxFormDTO.setActive(sourceleadTaxForm.isActive());
+					sourceleadTaxFormDTO.setFinancialYear(year + "");
+					int count = taxDao.getITDeclarationFormsCountByYear(year, sourceleadTaxForm.getName().replaceAll(" ", ""));
+					sourceleadTaxFormDTO.setTotalFormsCount(count);
+					if (count > 0)
+						sourceleadTaxFormList.add(sourceleadTaxFormDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return sourceleadTaxFormList;
+	}
+
+	@Override
 	public long addITDeclarationSection(SourceleadTaxITDeclarationDTO sectionDTO) {
 		try {
 			SourceleadTaxITDeclaration section = null;
@@ -472,17 +508,23 @@ public class TaxServiceImpl implements TaxService {
 												taxSectionItemDTO.setTaxSectionId(taxSectionItem.getSourceleadTaxITDeclaration().getId());
 												taxSectionItemDTO
 														.setTaxSectionName(taxSectionItem.getSourceleadTaxITDeclaration().getName());
+												if (taxSectionItem.getSourceleadTaxITDeclaration().getSourceleadTaxForm() != null) {
+													taxSectionItemDTO.setTaxFormId(
+															taxSectionItem.getSourceleadTaxITDeclaration().getSourceleadTaxForm().getId());
+													taxSectionItemDTO.setTaxFormName(taxSectionItem.getSourceleadTaxITDeclaration()
+															.getSourceleadTaxForm().getName());
+												}
 											}
 											taxSectionItemDTOList.add(taxSectionItemDTO);
 										}
 									}
 								}
-								taxSectionDTO.setSourceleadTaxSectionItemList(taxSectionItemDTOList);
+								taxSectionDTO.setSectionItemList(taxSectionItemDTOList);
 								taxSectionDTOList.add(taxSectionDTO);
 							}
 						}
 					}
-					sourceleadTaxFormDTO.setSourceleadTaxSectionList(taxSectionDTOList);
+					sourceleadTaxFormDTO.setItDeclarationSectionList(taxSectionDTOList);
 				}
 			}
 		} catch (Exception e) {
@@ -576,6 +618,141 @@ public class TaxServiceImpl implements TaxService {
 			e.printStackTrace();
 		}
 		return response;
+	}
+
+	@Override
+	public Response<String> submitITDeclaration(SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO, User loggedInUser) {
+		Response<String> response = new Response<>();
+		try {
+			SourceleadTaxITDeclarationSubmission itDeclarationSubmission = null;
+			if (itDeclarationSubmissionDTO.getId() > 0) {
+				itDeclarationSubmission = taxDao.getITDeclarationSubmission(itDeclarationSubmissionDTO.getId());
+				itDeclarationSubmission.setUpdatedBy(loggedInUser);
+				itDeclarationSubmission.setUpdatedDate(new Date());
+			} else {
+				itDeclarationSubmission = new SourceleadTaxITDeclarationSubmission();
+				itDeclarationSubmission.setCreatedBy(loggedInUser);
+				itDeclarationSubmission.setCreatedDate(new Date());
+				itDeclarationSubmission.setUuid(SourceLeadRandomCodeHelper.generateRandomTaxId());
+			}
+			itDeclarationSubmission.setFinancialYear(itDeclarationSubmissionDTO.getFinancialYear());
+			itDeclarationSubmission.setUser(userService.getUserById(itDeclarationSubmissionDTO.getUserId()));
+			itDeclarationSubmission.setStatus(itDeclarationSubmissionDTO.getStatus());
+			itDeclarationSubmission.setSourceleadTaxForm(taxDao.getTaxFormType(itDeclarationSubmissionDTO.getTaxFormId()));
+			List<SourceleadTaxITDeclarationSubmissionItem> submissionItemList = new LinkedList<>();
+			for (SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO : itDeclarationSubmissionDTO.getSubmissionItemList()) {
+				SourceleadTaxITDeclarationSubmissionItem submissionItem;
+				if (submissionItemDTO.getId() > 0)
+					submissionItem = taxDao.getITDeclarationSubmissionItem(submissionItemDTO.getId());
+				else
+					submissionItem = new SourceleadTaxITDeclarationSubmissionItem();
+				submissionItem.setName(submissionItemDTO.getName());
+				submissionItem.setMaxLimit(submissionItemDTO.getMaxLimit());
+				submissionItem.setAmount(submissionItemDTO.getAmount());
+				submissionItem.setDescription(submissionItemDTO.getDescription());
+				submissionItem.setSourceleadTaxITDeclarationSubmission(itDeclarationSubmission);
+				submissionItem.setSourceleadTaxITDeclaration(taxDao.getTaxSection(submissionItemDTO.getTaxSectionId()));
+				submissionItemList.add(submissionItem);
+			}
+			itDeclarationSubmission.setSubmissionItemList(submissionItemList);
+			long result = taxDao.submitITDeclaration(itDeclarationSubmission);
+			if (result > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (result == -2) {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
+
+	@Override
+	public List<SourceleadTaxITDeclarationSubmissionDTO> getITDeclarationSubmissionList(String uuid, int year) {
+		List<SourceleadTaxITDeclarationSubmissionDTO> itDeclarationSubmissionList = new LinkedList<>();
+		try {
+			List<SourceleadTaxITDeclarationSubmission> itList = taxDao.getITDeclarationSubmissionList(uuid, year);
+			if (itList != null && !itList.isEmpty()) {
+				for (SourceleadTaxITDeclarationSubmission itSubmission : itList) {
+					SourceleadTaxITDeclarationSubmissionDTO itSubmissionDTO = new SourceleadTaxITDeclarationSubmissionDTO();
+					itSubmissionDTO.setId(itSubmission.getId());
+					itSubmissionDTO.setUuid(itSubmission.getUuid());
+					itSubmissionDTO.setFinancialYear(itSubmission.getFinancialYear());
+					itSubmissionDTO.setStatus(itSubmission.getStatus());
+					itSubmissionDTO.setUserId(itSubmission.getUser().getId());
+					itSubmissionDTO.setUserName(itSubmission.getUser().getFullName());
+					itSubmissionDTO.setTaxFormId(itSubmission.getSourceleadTaxForm().getId());
+
+					itDeclarationSubmissionList.add(itSubmissionDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return itDeclarationSubmissionList;
+	}
+
+	@Override
+	public SourceleadTaxITDeclarationSubmissionDTO getITDeclarationSubmission(String taxFormUUID, String formUUID) {
+		try {
+			SourceleadTaxITDeclarationSubmission itDeclarationSubmission = taxDao.getITDeclarationSubmission(taxFormUUID, formUUID);
+			if (itDeclarationSubmission != null) {
+				SourceleadTaxITDeclarationSubmissionDTO itDeclarationSubmissionDTO = new SourceleadTaxITDeclarationSubmissionDTO();
+				itDeclarationSubmissionDTO.setId(itDeclarationSubmission.getId());
+				itDeclarationSubmissionDTO.setUuid(itDeclarationSubmission.getUuid());
+				itDeclarationSubmissionDTO.setTaxFormId(itDeclarationSubmission.getSourceleadTaxForm().getId());
+				itDeclarationSubmissionDTO.setStatus(itDeclarationSubmission.getStatus());
+				itDeclarationSubmissionDTO.setFinancialYear(itDeclarationSubmission.getFinancialYear());
+				if (itDeclarationSubmission.getUser() != null) {
+					itDeclarationSubmissionDTO.setUserId(itDeclarationSubmission.getUser().getId());
+					itDeclarationSubmissionDTO.setUserName(itDeclarationSubmission.getUser().getFullName());
+				}
+
+				Set<SourceleadTaxITDeclaration> sectionList = new LinkedHashSet<>();
+				for (SourceleadTaxITDeclarationSubmissionItem submissionItem : itDeclarationSubmission.getSubmissionItemList()) {
+					sectionList.add(submissionItem.getSourceleadTaxITDeclaration());
+				}
+
+				List<SourceleadTaxITDeclarationSubmissionSectionDTO> submittedSectionList = new LinkedList<>();
+
+				for (SourceleadTaxITDeclaration section : sectionList) {
+					SourceleadTaxITDeclarationSubmissionSectionDTO submittedSectionDTO = new SourceleadTaxITDeclarationSubmissionSectionDTO();
+					submittedSectionDTO.setId(section.getId());
+					submittedSectionDTO.setName(section.getName());
+					submittedSectionDTO.setDescription(section.getDescription());
+					submittedSectionDTO.setActive(section.isActive());
+					List<SourceleadTaxITDeclarationSubmissionItemDTO> submissionItemList = new LinkedList<>();
+
+					for (SourceleadTaxITDeclarationSubmissionItem submissionItem : itDeclarationSubmission.getSubmissionItemList()) {
+						if (submissionItem.getSourceleadTaxITDeclaration().getId() == section.getId()) {
+							SourceleadTaxITDeclarationSubmissionItemDTO submissionItemDTO = new SourceleadTaxITDeclarationSubmissionItemDTO();
+							submissionItemDTO.setId(submissionItem.getId());
+							submissionItemDTO.setName(submissionItem.getName());
+							submissionItemDTO.setAmount(submissionItem.getAmount());
+							submissionItemDTO.setMaxLimit(submissionItem.getMaxLimit());
+							submissionItemDTO.setDescription(submissionItem.getDescription());
+							submissionItemDTO.setTaxSectionId(submissionItem.getSourceleadTaxITDeclaration().getId());
+							submissionItemDTO.setSourceleadTaxITDeclarationSubmissionId(
+									submissionItem.getSourceleadTaxITDeclarationSubmission().getId());
+							submissionItemList.add(submissionItemDTO);
+						}
+					}
+					submittedSectionDTO.setSubmissionItemList(submissionItemList);
+					submittedSectionList.add(submittedSectionDTO);
+				}
+				itDeclarationSubmissionDTO.setSubmittedSectionList(submittedSectionList);
+
+				return itDeclarationSubmissionDTO;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
