@@ -313,8 +313,7 @@ margin-top: -50px;
             <div class="form-group">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
-                 <label> <input type="checkbox" value="Y"
-							name="isMailSent" checked="checked"> Send Invitation
+                 <label> <input type="checkbox" value="Y" name="isMailSent"> Send Invitation
 				</label>
               </div>
             </div>

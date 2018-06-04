@@ -389,4 +389,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		return immigrationTemplateDao.getTemplateIdByUUID(immiTemplateUUID);
 	}
 
+	@Override
+	public List<ImmigrationTemplateTasks> getImmigrationTemplateTasksByTempId(Long templateId) {
+		return immigrationTemplateDao.getImmigratonTemplateTasksByTemplateId(templateId);
+	}
+
 }

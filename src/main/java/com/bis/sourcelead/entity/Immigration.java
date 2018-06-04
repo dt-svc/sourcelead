@@ -18,6 +18,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "IMMIGRATION", schema = "SOURCELEAD")
 public class Immigration implements Serializable {
@@ -31,6 +33,7 @@ public class Immigration implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "PETITION_TYPE")
+	@JsonBackReference
 	private LookUpData petitionType;
 	
 	@Column(name = "RECEIPT_NO ")
@@ -41,6 +44,7 @@ public class Immigration implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "CURRENT_USCIS_STATUS")
+	@JsonBackReference
 	private LookUpData currUscisStauts;
 
 	@Column(name = "OPEN_DATE")
@@ -57,6 +61,7 @@ public class Immigration implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "IMMIGRATION_TEMPLATE_ID")
+	@JsonBackReference
 	private ImmigrationTemplate immigrationTemplateId;
 	
 	@ManyToOne
@@ -65,32 +70,39 @@ public class Immigration implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "ATTORNEY_LOCATION_ID")
+	@JsonBackReference
 	private OrgLocations attorneyOrgLocationId;
 	
 	@ManyToOne
 	@JoinColumn(name = "SPOC_USER_ID")
+	@JsonBackReference
 	private User spocUserId;
 	
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
+	@JsonBackReference
 	private Candidate candidate;
 	
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_USER_ID")
+	@JsonBackReference
 	private User candidateUserId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "JOB_ID")
+	@JsonBackReference
 	private Requirement job;
 
 
 	@ManyToOne
 	@JoinColumn(name = "ORG_REL_ID") // used for attorney name
+	@JsonBackReference
     private OrgRelations orgRelations;
 	
 	
 	@ManyToOne
 	@JoinColumn(name= "ORG_SPOC_ID") // used for attorney contact
+	@JsonBackReference
 	private OrgSpoc orgSpoc;
 	
 	
@@ -112,6 +124,7 @@ public class Immigration implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "CREATED_BY")
+	@JsonBackReference
 	private User createdBy;
 
 	@Column(name = "UPDATED_DATE")
@@ -119,6 +132,7 @@ public class Immigration implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "UPDATED_BY")
+	@JsonBackReference
 	private User updatedBy;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigrationId",orphanRemoval=true)

@@ -349,7 +349,8 @@ function printPage()
 	
 <script>
 function getAllEmployeesList(fromDate,toDate){
-	
+	var fromDate = $("#fromDate").val();
+	var toDate = $("#toDate").val();
 	var searchValue = $("#employeeDataTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	var url = sourceleadUrl+"/getAllEmployeesList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&fromDate="+fromDate+"&toDate="+toDate;

@@ -342,7 +342,8 @@ public class ProjectsRestController {
 		public  List<ProjectMembers> getProjectAssignedMembesListByProjectId(@RequestParam(value="projectId", required=true) Long projectId,HttpServletRequest request) throws Exception {
     	   
     	   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,"Active",orgLocations,"","");
+    	   String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request,"isGlobalAccess");
+    	   List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectIdAndStatus(projectId,"Active",orgLocations,"","",isGlobalAccess);
 		   return projectMembersList;
 	    }
        
@@ -1013,6 +1014,29 @@ public class ProjectsRestController {
 			file.delete();
 		}
 	}
+	
+	
+	
+	 @RequestMapping(value = "/getProjectPopDetails", method = RequestMethod.POST)
+		public  ProjectsDTO getProjectPopDetails(@RequestParam(value="projectUUID", required=true) String projectUUID,
+				@RequestParam(value="orgLocationId", required=true) Long orgLocationId,HttpServletRequest request) throws Exception {
+		    ProjectsDTO projectDTO = null;
+	    	Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
+	    	if(projects != null) {
+	    		projectDTO = new ProjectsDTO();
+	    		projectDTO.setProjectName(projects.getProjectName());
+	    		projectDTO.setDateFormat(projects.getOrgLocationsId().getDateFormat());
+	    		projectDTO.setStartDate(commonUtil.dateStrFromOrgDateFormatter(projects.getOrgLocationsId().getDateFormat(), projects.getStartDate()));
+	    		if(projects.getEndDate() != null) {
+	    			projectDTO.setEndDate(commonUtil.dateStrFromOrgDateFormatter(projects.getOrgLocationsId().getDateFormat(), projects.getEndDate()));
+	    		}
+	    		projectDTO.setTimeSheetFrequency(projects.getTimesheetFrequency());
+	    	}
+	    	
+	    	return projectDTO;
+	    	
+	    }
+	
 	
 	
 }

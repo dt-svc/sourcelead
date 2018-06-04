@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -978,51 +979,60 @@ public class ReportRestController {
 		@RequestMapping(value = "/getAllEmployeesList", method = RequestMethod.GET)
 		public @ResponseBody  ResponseList<UserDTO> getAllEmployeesList(UserDTO userDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 		{
-			
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
 			List<UserDTO> userDtoList =  new ArrayList<>();
 			ResponseList<UserDTO> employeeResponseList =  new ResponseList<>();
-			ResponseList<User> employeesList = userService.getUsersResponseListByOrglocationId(userDTO,orgLocation);
-			employeesList.getData().forEach(emp->{
-				
-				Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(emp.getId(), orgLocation.getId());
-				UserRole userRole = null;
-				try {
-					 userRole = userRoleService.getUserDetailsByUserIdAndLocationId(emp.getId(), orgLocation.getId());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-				UserDTO user = new UserDTO();
-				user.setEmployeeId(emp.getId().toString());
-				if(emp.getLastName() != null) {
+			Date[] searchDates = null;
+			if(StringUtils.isNotBlank(userDTO.getFromDate()) && StringUtils.isNotBlank(userDTO.getToDate())) {
+				Date fromDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), userDTO.getFromDate());
+	    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), userDTO.getToDate());
+	    	    Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+	    	    DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    	    DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+	    	    DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+	    	    String customStartTimeStr = TZ_DF_CSD.format(fromDate);
+	    	    String customEndTimeStr = TZ_DF_CED.format(toDate);
+	    	    String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+	    	    String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+	    	    fromDate = TZ_DF_TS.parse(startDateString);
+	    	    toDate = TZ_DF_TS.parse(endDateString);
+	    	    searchDates = new Date[2];
+	    	    searchDates[0] = fromDate;
+	    	    searchDates[1] = toDate;
+			}
+			
+    	    
+			ResponseList<UserRole> userRoleList = userService.getUsersResponseListByOrglocationId(userDTO,orgLocation,searchDates);
+			userRoleList.getData().forEach(userRole->{
+				Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(), orgLocation.getId());
+				UserDTO userDto = new UserDTO();
+				userDto.setEmployeeId(userRole.getId().toString());
+				if(userRole.getUser().getLastName() != null) {
 					StringBuilder sb = new StringBuilder();
-					user.setUserName(sb.append(emp.getFirstName()).append(" ").append(emp.getLastName()).toString());
+					userDto.setUserName(sb.append(userRole.getUser().getFirstName()).append(" ").append(userRole.getUser().getLastName()).toString());
 				}else {
-					user.setUserName(emp.getFirstName());
+					userDto.setUserName(userRole.getUser().getFirstName());
 				}
-				user.setEmail(emp.getEmail());
-				user.setMobilePhone(emp.getMobilePhone());
+				userDto.setEmail(userRole.getUser().getEmail());
+				userDto.setMobilePhone(userRole.getUser().getMobilePhone());
 				
 				if(employee.getHireDate() != null)
-				user.setDateofJoin(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),employee.getHireDate()));
+				userDto.setDateofJoin(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),employee.getHireDate()));
 				
 				if(Constants.INACTIVE.equalsIgnoreCase(userRole.getUserState().toString())) {
-					user.setDateOfTermination(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getUpdatedDate()));
+					userDto.setDateOfTermination(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getUpdatedDate()));
 				}else {
-					user.setDateOfTermination("Till Date");
+					userDto.setDateOfTermination("Till Date");
 				}
-				
 				if(employee.getUserEmploymentType() != null)
-				user.setEmploymentType(employee.getUserEmploymentType());
+				userDto.setEmploymentType(employee.getUserEmploymentType());
 				
-				if(emp.getUserCode() != null)
-				user.setUserCode(emp.getUserCode());
-				
+				if(userRole.getUser().getUserCode() != null)
+				userDto.setUserCode(userRole.getUser().getUserCode());
+
 				if(userRole.getDesignation() != null)
-				user.setDesignation(userRole.getDesignation());
-				userDtoList.add(user);
+				userDto.setDesignation(userRole.getDesignation());
+				userDtoList.add(userDto);
 			});
 			employeeResponseList.setData(userDtoList);
 			employeeResponseList.setRecordsFiltered(userDtoList.size());
