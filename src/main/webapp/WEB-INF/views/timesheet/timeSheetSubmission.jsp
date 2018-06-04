@@ -322,8 +322,8 @@
 									      <td> <!-- rowspan="2" -->
 									        <div>
 									          <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-									               <span id="${entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span>
-									               <input type="hidden" id="${entryCount.index+1}task1IdBillableTypeId" name="${entryCount.index+1}task1IdBillableTypeId"/>
+									               <span>${!empty taskType ? taskType : '--'}</span>
+									               <input type="hidden" id="${entryCount.index+1}task1IdBillableTypeId" name="${entryCount.index+1}task1IdBillableTypeId" value="${taskType}"/>
 									          </c:if>
 									         <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
 			                                      <select id="${entryCount.index+1}task1IdBillableTypeId" name="${entryCount.index+1}task1IdBillableTypeId"  field-name="Billble Type" onchange="prepareBillableDetails('${entryIndex}','${entryCount.index+1}task1IdBillableTypeId')">  
@@ -628,6 +628,7 @@ function setTotals(){
 				     bsum = parseFloat(bsum) + parseInt(finalmin);
 				     
 				     var billableType = $("#"+j+"task1IdBillableTypeId").val();
+				     alert(billableType);
 				     if (billableType !== undefined && billableType !=='####' && billableType !=='' && billableType == 'Billable') {
 				    	 var billableHours = btemp;
 				    	 var billableSplit = billableHours.split(':');
