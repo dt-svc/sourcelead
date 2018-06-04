@@ -1090,12 +1090,10 @@ public class EMailJobScheduler {
 		else{
 			 emailMessage.setLastName("");
 		}
-		 StringBuilder interviewStringBuilder=new StringBuilder();
 		 emailMessage.setToEmail(user.getEmail());
-		// emailMessage.setFromEmail("info@sourcelead.com");
 		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("");
-		 emailMessage.setFromName("Sourcelead Team");
+		 emailMessage.setFromName(orgLocations.getOrgName());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
 		//setting the class filed values
@@ -1109,7 +1107,7 @@ public class EMailJobScheduler {
 			String fromEmail = null;
 			 EmailConfigurationFromMail confFromMail=null;
 			 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
-			 if(emailConfigMailList != null){
+			 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
 				 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
 					 if( fromMail.getEmailModules() != null){
 						String[] jobIds = fromMail.getEmailModules().split(",");
@@ -1589,7 +1587,40 @@ public class EMailJobScheduler {
 			 emailMessage.setToEmail(owner.getEmail());
 			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 			 emailMessage.setCreatedBy("sladmin");
-			 emailMessage.setFromName("SourceLead Admin"); 
+			 emailMessage.setFromName(orgLocations.getOrgName()); 
+			 
+			 
+			 String fromEmail = null;
+			 EmailConfigurationFromMail confFromMail=null;
+			 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
+			 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
+				 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+					 if( fromMail.getEmailModules() != null){
+						String[] jobIds = fromMail.getEmailModules().split(",");
+							for(int j=0; j<jobIds.length; j++) {
+								if(Long.valueOf(jobIds[j]) == 16L ){
+									confFromMail=fromMail;
+								}
+							}
+					 }
+				 } 
+				 
+				 if(confFromMail == null){
+					 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
+					 if(confFromMail != null){
+						 fromEmail = confFromMail.getEmail();
+					 }
+				 }else{
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }
+			 
+			 if(StringUtils.isNotBlank(fromEmail)){
+				 emailMessage.setFromEmail(fromEmail);
+			 }
+	         
+			 
+			 
 			 
 			 String endDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getEndDate());
 			 String startDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),contracts.getStartDate());
@@ -2082,7 +2113,38 @@ public class EMailJobScheduler {
 	         emailMessage.setFirstName(toUser.getFirstName());
 	         emailMessage.setLastName(toUser.getLastName());
 	         emailMessage.setToEmail(toUser.getEmail());
-	         emailMessage.setFromEmail("donotreply@sourcelead.com");
+	         emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+	         
+	         String fromEmail = null;
+			 EmailConfigurationFromMail confFromMail=null;
+			 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
+			 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
+				 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+					 if( fromMail.getEmailModules() != null){
+						String[] jobIds = fromMail.getEmailModules().split(",");
+							for(int j=0; j<jobIds.length; j++) {
+								if(Long.valueOf(jobIds[j]) == 19L ){
+									confFromMail=fromMail;
+								}
+							}
+					 }
+				 } 
+				 
+				 if(confFromMail == null){
+					 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
+					 if(confFromMail != null){
+						 fromEmail = confFromMail.getEmail();
+					 }
+				 }else{
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }
+			 
+			 if(StringUtils.isNotBlank(fromEmail)){
+				 emailMessage.setFromEmail(fromEmail);
+			 }
+	         
+	         
 	         emailMessage.setCreatedBy(toUser.getUserCode());
 	         StringBuilder msgBuild = new StringBuilder();
 	        // emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -2188,7 +2250,37 @@ public class EMailJobScheduler {
 					if (StringUtils.isNotBlank(user.getLastName()))
 						emailMessage.setLastName(user.getLastName());
 					emailMessage.setToEmail(user.getEmail());
-					emailMessage.setFromEmail("info@sourcelead.com");
+					emailMessage.setFromEmail("defaultFromEmailAddressForProd");
+					
+					String fromEmail = null;
+					 EmailConfigurationFromMail confFromMail=null;
+					 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
+					 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
+						 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+							 if( fromMail.getEmailModules() != null){
+								String[] jobIds = fromMail.getEmailModules().split(",");
+									for(int j=0; j<jobIds.length; j++) {
+										if(Long.valueOf(jobIds[j]) == 31L ){
+											confFromMail=fromMail;
+										}
+									}
+							 }
+						 } 
+						 
+						 if(confFromMail == null){
+							 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
+							 if(confFromMail != null){
+								 fromEmail = confFromMail.getEmail();
+							 }
+						 }else{
+							 fromEmail = confFromMail.getEmail();
+						 }
+					 }
+					 
+					 if(StringUtils.isNotBlank(fromEmail)){
+						 emailMessage.setFromEmail(fromEmail);
+					 }
+					
 					StringBuilder msgBuild = new StringBuilder();
 					emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 					// setting the class filed values
@@ -2398,6 +2490,36 @@ public class EMailJobScheduler {
 		}
 		emailMessage.setToEmail(owner.getEmail());
 		emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+         
+         String fromEmail = null;
+		 EmailConfigurationFromMail confFromMail=null;
+		 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orglocations.getId());
+		 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
+			 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+				 if( fromMail.getEmailModules() != null){
+					String[] jobIds = fromMail.getEmailModules().split(",");
+						for(int j=0; j<jobIds.length; j++) {
+							if(Long.valueOf(jobIds[j]) == 16L ){
+								confFromMail=fromMail;
+							}
+						}
+				 }
+			 } 
+			 
+			 if(confFromMail == null){
+				 confFromMail = emailScenarioconService.getConfFromMailByStatus(orglocations.getId());
+				 if(confFromMail != null){
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }else{
+				 fromEmail = confFromMail.getEmail();
+			 }
+		 }
+		 
+		 if(StringUtils.isNotBlank(fromEmail)){
+			 emailMessage.setFromEmail(fromEmail);
+		 }
+		 
 		emailMessage.setCreatedBy("sladmin");
 		
 		// setting the class filed values
@@ -2567,6 +2689,36 @@ public class EMailJobScheduler {
 		}
 		emailMessage.setToEmail(owner.getEmail());
 		emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		
+		   String fromEmail = null;
+			 EmailConfigurationFromMail confFromMail=null;
+			 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orglocations.getId());
+			 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
+				 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+					 if( fromMail.getEmailModules() != null){
+						String[] jobIds = fromMail.getEmailModules().split(",");
+							for(int j=0; j<jobIds.length; j++) {
+								if(Long.valueOf(jobIds[j]) == 16L ){
+									confFromMail=fromMail;
+								}
+							}
+					 }
+				 } 
+				 
+				 if(confFromMail == null){
+					 confFromMail = emailScenarioconService.getConfFromMailByStatus(orglocations.getId());
+					 if(confFromMail != null){
+						 fromEmail = confFromMail.getEmail();
+					 }
+				 }else{
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }
+			 
+			 if(StringUtils.isNotBlank(fromEmail)){
+				 emailMessage.setFromEmail(fromEmail);
+			 }
+			 
 		emailMessage.setCreatedBy("sladmin");
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();

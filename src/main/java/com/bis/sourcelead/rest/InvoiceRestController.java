@@ -1142,7 +1142,14 @@ public class InvoiceRestController {
 		String createdDate = (dateFormat.format(invoice.getCreatedDate()));
 		String dueDate = (dateFormat.format(invoice.getDueDate()));
 		StringBuilder stringBuildername = new StringBuilder();
-		globalVarsMap.put("clientorVendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+		
+		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
+			globalVarsMap.put("vendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+
+		}else{
+			globalVarsMap.put("clientName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+
+		}
 		globalVarsMap.put("invoiceID", invoice.getInvoiceId());
 		globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
 		globalVarsMap.put("date", createdDate);

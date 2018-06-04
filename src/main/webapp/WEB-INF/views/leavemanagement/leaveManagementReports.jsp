@@ -26,6 +26,13 @@
 			});
 </script>
 
+<style type="text/css">
+.timeBalance-scroll .col-md-2 {
+border: 1px solid #ccc; padding-top:15px; margin:0 15px 15px; text-transform:capitalize;
+background-color: #fcfcfc;
+}
+</style>
+
 
 <input type="hidden" id="leaveEmptyMessage" name="leaveEmptyMessage" />
 <div id="popUp"></div>
