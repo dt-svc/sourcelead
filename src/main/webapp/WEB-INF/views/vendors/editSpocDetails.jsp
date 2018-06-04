@@ -12,13 +12,13 @@
 	}
 </script> 
 <script type="text/javascript">
-	function vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId)
+	function vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId,spocLocationId,orgRelationId)
 	{
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Vendor",
-					success : function(data) {
-						var json = JSON.parse(data);
+					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&spocLocationId="+spocLocationId+"&orgRelationId="+orgRelationId+"&type=Vendor",
+					success : function(json) {
+// 						var json = JSON.parse(data);
 						getVendorDashboardName(json.spocName);
 						var result = "";
 						result  = result + '<div class="success_pop" id="vendorEditMsgDiv" style="display: none;">';
@@ -35,7 +35,7 @@
 						
 						 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_EDIT_VENDOR_CONTACT\")">';
 							result = result + ' <div class="useredit useredit_a">';
-								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+','+orgRelationId+','+spocLocationId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 							result = result + ' </div>'; 
 						'</sec:authorize>';
 							
@@ -138,12 +138,11 @@
 
 
 <script type="text/javascript">
-	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
+	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId,orgRelationId,spocLocationId) {
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Vendor",
-						success : function(data) {
-						var json = JSON.parse(data);
+						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&spocLocationId="+spocLocationId+"&orgRelationId="+orgRelationId+"&type=Vendor",
+						success : function(json) {
 						var result = "";
 						var selected1 = '';
 						var selected2 = '';
@@ -194,6 +193,13 @@
 						if(json.spocStatus == 'Contracted'){
 							selected5 = 'selected';
 						} 
+						
+						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+						if('${sectionOrder.index == 1}'){
+							var sectionId = '${section.id}';
+							preapareVendorContactCustomFieldDetails(spocLocationId,orgRelationId,sectionId);
+						}
+						</c:forEach> 
 						result = result + ' <form id="editVendorContact_form"  name="editVendorContact_form" method="post">';
 						if(json.userState == 'ACTIVE' || json.userState == 'INACTIVE'){
 							result = result + '<div class="user_summary_edit_cta" id="vendorContactFirstNameDiv">';
@@ -211,9 +217,9 @@
 						
 							result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 							result = result + ' <div class="row">';
-							result = result + ' <div class="col-md-7">';
+							result = result + ' <div class="col-md-7 phoneValid">';
 							result = result + '<label>Phone No:</label>';
-							result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true"  >';
+							result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" data-validation="validate_Space validate_phone validate_length length9-20" field-name="Mobile Phone" data-validation-optional="true"  >';
 							result = result + '</div>';
 							
 							result = result + ' <div class="col-md-5 errBotVal">';
@@ -294,9 +300,9 @@
 						result = result + '</div>'; */
 						
 						
-				 		result = result  +'	 <div class="clearfix mb10">';
-						result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
-						result = result  +'	 <div class="col-md-12">';
+				 		result = result  +'	 <div class="user_summary_edit_cta mb10">';
+						result = result  +'	 <label class="width100Percnt">Owner<span class="text-danger">&nbsp;*</span></label>';
+						result = result  +'	 <div class="width100Percnt">';
 						result = result  +'	   <select class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 						
 					    //alert("json.userList.length"+json.userList.length);
@@ -313,10 +319,12 @@
 						result = result  +'	  </select>';
 					    result = result  +'	 </div>';
 					    result = result  +'	 </div>'; 
-						
+					    
+                        result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth errorInptgroup"  id="customFieldDataId"></div>';
+
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"/>';
+						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+','+spocLocationId+','+orgRelationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' </form>'; 
@@ -380,17 +388,17 @@
             };
 </script>
  <script type="text/javascript">
-	function storeVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
+	function storeVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId,spocLocationId,orgRelationId) {
          if ($('#editVendorContact_form').validate(false, validationSettings)){
 	      	 var formData = getFormData("editVendorContact_form");
 		 $.post(sourceleadUrl+"/vendorContactDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Vendor", formData, function(data) {
 			 var newOwner = data;
 		    	$("#spocDetailsId").removeAttr("onClick")
-		    	$("#spocDetailsId").attr("onclick","vendorDetailsbySpocId('"+spocId+"', '"+newOwner+"', '"+spocUserId+"', '"+ownerId+"')");
+		    	$("#spocDetailsId").attr("onclick","vendorDetailsbySpocId('"+spocId+"', '"+newOwner+"', '"+spocUserId+"', '"+ownerId+"','"+spocLocationId+"','"+orgRelationId+"')");
 		 		$("#vendorEditMsgDiv").removeAttr("style");
 	 			$("#vendorEditMsgDiv").css({ display: "block" });
 	 			$("#vendorEditMsg").html("Contact Details Updated");
-		    	vendorDetailsbySpocId(spocId,newOwner,spocUserId,ownerId); 
+		    	vendorDetailsbySpocId(spocId,newOwner,spocUserId,ownerId,spocLocationId,orgRelationId); 
 		    	//getVendorContactLists();
 		    	getVendorContactList();
 		    	vendorEditMsgFadein();
@@ -415,3 +423,15 @@
 	}
 </script> 
 <!-- End -->
+<script type="text/javascript">
+function preapareVendorContactCustomFieldDetails(clientLocationId,orgRelationID,sectionId){
+	$.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&clientLocationId="+clientLocationId+"&orgRelationID="+orgRelationID+"&requestFrom=clientAndVendor"+"&sectionId="+sectionId,        
+         success :function(data) {
+        	 //$('#customFieldDataId').empty();
+        	 $('#customFieldDataId').append(data);
+           },
+     }); 
+}
+</script>
