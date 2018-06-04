@@ -44,9 +44,15 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 	
 	private boolean sunEditable;
 	
+	private boolean ticketNumberRequired;
+	
+	private boolean taskCommentsRequired;
+	
 	private String rejectedReason;
 	
 	private Map<String,Boolean> editableMap;
+	
+	
 
 	public Long getProjectMemberId() {
 		return projectMemberId;
@@ -198,6 +204,22 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 
 	public void setEditableMap(Map<String, Boolean> editableMap) {
 		this.editableMap = editableMap;
+	}
+
+	public boolean isTicketNumberRequired() {
+		return ticketNumberRequired;
+	}
+
+	public void setTicketNumberRequired(boolean ticketNumberRequired) {
+		this.ticketNumberRequired = ticketNumberRequired;
+	}
+
+	public boolean isTaskCommentsRequired() {
+		return taskCommentsRequired;
+	}
+
+	public void setTaskCommentsRequired(boolean taskCommentsRequired) {
+		this.taskCommentsRequired = taskCommentsRequired;
 	}
 	
 }
