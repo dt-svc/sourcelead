@@ -7,7 +7,7 @@
 
 <script> 
 	$(document).ready(function(){
-		getPayRollSalarySetupList()
+		getPayRollSalarySetupList();
 	});
 </script>
 
@@ -22,13 +22,6 @@
  
   <div class="tablelist-wrap">
    
-    <!-- <div class="timesheet_head minHeight40">
-      <div class="clearfix"></div>
-      <div class="remove_search">
-        <input type="text" placeholder="Search" />
-      </div>
-    </div> -->
-    
     <div class="timesheet_head minHeight40">
       <div class="clearfix"></div>
       <div class="remove_search">
@@ -41,106 +34,33 @@
 		<div id="choicepopUp"></div>
 		<div id="payrollSalarySetupList" class="datatable_filter"></div>
 	</div>
-    
-    
-    
   </div>
-
-
-  </section>
+</section>
   
   
  <div class="comMask"></div>
- <div class="modal salarySetup" id="salarySetup">
- 	<div class="modal-dialog">
- 		<div class="modal-content">
- 			<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" onClick="closesalarySetup();">&times;</button>
-					<h4 class="modal-title">Salary Setup</h4>
- 			</div>
- 			<div class="modal-body">
- 			   
- 			    <div class="form-group">
- 					<label class="clearfix">Payhead Title</label>
- 					<div class="clearfix">
- 						<input type="text" class="form-control" placeholder="Enter">
- 					</div>
- 				</div>
- 				<div class="form-group">
- 					<label class="clearfix">Method</label>
- 					<div class="clearfix">
- 						<select class="sel">
- 							<option selected>Select</option>
- 							<option>Flat</option>
- 							<option>% of CTC</option>
- 							<option>% of Payheads</option>
- 							<option>Formula</option>
- 						</select>
- 					</div>
- 				</div>
- 				<div class="form-group">
- 					<label class="clearfix">Formula</label>
- 					<div class="clearfix">
- 						<input type="text" class="form-control" placeholder="Enter">
- 					</div>
- 				</div>
- 				<div class="form-group">
- 					<label class="clearfix">Method</label>
- 					<div class="row">
- 					<div class="duplicateDiv form-group clearfix">
- 					<div class="col-md-5">
- 						<input type="text" class="form-control" placeholder="Enter">
- 					</div>
- 					<div class="col-md-6">
- 						<select class="sel">
- 							<option selected>Select</option>
- 							<option>Flat</option>
- 							<option>% of CTC</option>
- 							<option>% of Payheads</option>
- 							<option>Formula</option>
- 						</select>
- 					</div>
- 					<div class="col-md-1">
- 						<a href="javascript:void(0)" class="cloneDiv" title="Add"><i class="fa fa-plus mt10"></i></a> 			
- 					</div>
- 					</div>
- 					
- 					<div id="duplicateDiv">
-					</div>
- 					
- 					</div>
- 				</div>
- 			</div>
- 			
- 			<div class="modal-footer">
- 				<div class="pull-right">
- 					<input type="button" class="btn btn-default mr" value="Cancel" title="Cancel" onClick="closesalarySetup();">
- 					<input type="button" class="btn btn-success btnSuccess" value="Save" title="Save">
- 				</div>
- 			</div>
- 		</div>
- 	</div>
- </div>
+ <div class="modal salarySetup" id="salarySetup"></div>
 
 <script>	
-	$("#aa").click(function() {
+	/* $("#aa").click(function() {
 	  $(".subMenuView").slideToggle(100);
-	});
+	}); */
 //Salary setup popup
-function salarySetup() {
+function salarySetup(event) {
 	$(".salarySetup, .comMask").fadeIn();
+	var uuid = $(event).attr('id');
+    $.ajax({
+			type: "POST",
+		    url: sourceleadUrl+"/getSalarySetupForPayhead?"+tokenParamName+"="+tokenValue+"&uuid="+uuid, 
+		    success: function(data) {
+		    	$('#salarySetup').empty();
+		    	$('#salarySetup').append(data);
+		    },
+		});
 }
 function closesalarySetup() {
 	$(".salarySetup, .comMask").fadeOut();
 }
-// Clone Div
-	$(".cloneDiv").click(function(){
-		$(this).parents(".duplicateDiv").clone().appendTo("#duplicateDiv");
-		var m = $(this).find(".fa-plus");
-		if(m.length = 1){
-			$(this).find(".fa-plus").removeClass("fa-plus").addClass("fa-trash");
-		}
-	});
 </script>
 
 
@@ -221,7 +141,8 @@ function salarySetupListPagination(url,sourceleadUrl){
 	    	  	"data": "payhead",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		 result = result +"<td><a href='<c:url value='/app/payrollPayheadSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	    	  		 var pname = opt.name+" ("+opt.shortCode+")";
+	    	  		 result = result +"<td><a href='<c:url value='/app/payrollPayheadSummary?uuid="+opt.uuid+"'/>'><div class='proj_show tbldata-dotdot_140'><span title='"+pname+"'>"+pname+"</span><i class='fa fa-binoculars'></i></div></a></td>";
 		             return result;
 	    	  	}
 	      },{
@@ -235,7 +156,7 @@ function salarySetupListPagination(url,sourceleadUrl){
             	  }else{
             		  pMethod = "--";
             	  }
-            	  result = result +"<td><div><span>"+pMethod+"</span></div></td>";
+            	  result = result +"<td><div><span id='methodSpan"+opt.uuid+"'>"+pMethod+"</span></div></td>";
 	              return result;
               	 	
               }
@@ -250,7 +171,7 @@ function salarySetupListPagination(url,sourceleadUrl){
 	            	  }else{
 	            		  pFormula = "--";
 	            	  }
-	            	  result = result +"<td><div><span>"+pFormula+"</span></div></td>";
+	            	  result = result +"<td><div><span id='formulaSpan"+opt.uuid+"'>"+pFormula+"</span></div></td>";
 	            	  return result;
 	              }
 		     },{
@@ -261,7 +182,7 @@ function salarySetupListPagination(url,sourceleadUrl){
 	            	    var result = "";
 	            	    result = result +"<td>";
 	            	    result = result +"<div class='tbldata-dotdot_50'>";
-	            	    result = result +"<a href='javascript:void(0)' title='Set' onClick='salarySetup();'>Set</a>";
+	            	    result = result +"<a href='javascript:void(0)' title='Set' id="+opt.uuid+" onClick='salarySetup(this); '>Set</a>";
 	            	    result = result +"</div>";
 	            	    result = result +"</td>";
 	            		return result;

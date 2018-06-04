@@ -1,9 +1,11 @@
 package com.bis.sourcelead.dao;
 
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.PayrollPayheadSalarySetupDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPayhead;
+import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 
 
 public interface PayrollPayheadDao {
@@ -17,4 +19,10 @@ public interface PayrollPayheadDao {
 	PayrollPayhead getPayrollPayheadByUUID(String uuid) throws Exception;
 	
 	Boolean findPayrollPayheadByNameAndLocationId(PayrollPayheadDTO payrollPayheadDTO) throws Exception;
+	
+	PayrollPayheadSalarySetup savePayrollPayheadSalarySetup(PayrollPayheadSalarySetup payrollPayheadSalarySetup) throws Exception;
+	
+	PayrollPayheadSalarySetup getPayrollPayheadSalarySetupByUUID(String uuid) throws Exception;
+	
+	ResponseList<PayrollPayheadSalarySetupDTO> getPayrollPayheadSalarySetupListByPayheadUuidAndLocationId(String uuid, OrgLocations orgLocations) throws Exception;
 }

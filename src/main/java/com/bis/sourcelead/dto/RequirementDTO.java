@@ -300,6 +300,8 @@ public class RequirementDTO extends CommonDTO {
 	private String[] teamAssignUserId;
 
 	private String requirementUUID;
+	
+	private String[] reqUUIDArr;
 
 	private String requirementAppliedDate;
 
@@ -923,6 +925,14 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setRequirementUUID(String requirementUUID) {
 		this.requirementUUID = requirementUUID;
+	}
+
+	public String[] getReqUUIDArr() {
+		return reqUUIDArr;
+	}
+
+	public void setReqUUIDArr(String[] reqUUIDArr) {
+		this.reqUUIDArr = reqUUIDArr;
 	}
 
 	public String getRequirementAppliedDate() {

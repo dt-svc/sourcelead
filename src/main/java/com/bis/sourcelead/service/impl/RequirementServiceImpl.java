@@ -3814,6 +3814,11 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getAllManagerRequirementForJobSharing(searchDates, managerUserId,orgLocationId);
 	}
         
-        
+	@Override
+	public Boolean forceDeleteForSelectedJobs(String[] uuids) throws Exception
+	{
+		Boolean flag = requirementDao.forceDeleteForSelectedJobs(uuids);
+		return flag;
+	}  
 	
 }

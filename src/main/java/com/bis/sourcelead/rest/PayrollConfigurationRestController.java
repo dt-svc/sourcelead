@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,16 +10,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.PayrollBonusDTO;
 import com.bis.sourcelead.dto.PayrollLoanAndAdvancesDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
+import com.bis.sourcelead.dto.PayrollPayheadSalarySetupDTO;
 import com.bis.sourcelead.dto.PayrollPaytypeDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -26,6 +30,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollBonus;
 import com.bis.sourcelead.entity.PayrollLoanAndAdvances;
 import com.bis.sourcelead.entity.PayrollPayhead;
+import com.bis.sourcelead.entity.PayrollPayheadSalarySetup;
 import com.bis.sourcelead.entity.PayrollPaytype;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
@@ -34,6 +39,7 @@ import com.bis.sourcelead.service.PayrollBonusService;
 import com.bis.sourcelead.service.PayrollLoanAndAdvancesService;
 import com.bis.sourcelead.service.PayrollPayheadService;
 import com.bis.sourcelead.service.PayrollPaytypeService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -44,6 +50,11 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 public class PayrollConfigurationRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PayrollConfigurationRestController.class);
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	@Autowired
+	TimeZoneService timeZoneService;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -360,147 +371,7 @@ public class PayrollConfigurationRestController {
 				if (user != null) {
 					if (Validator.validate(payrollPayheadDTO)) {
 						try {
-							PayrollPayhead payrollPayhead = null;
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getUuid())) {
-								payrollPayhead = payrollPayheadService.getPayrollPayheadByUUID(payrollPayheadDTO.getUuid());
-								String shortCode = payrollPayhead.getShortCode();
-								if(payrollPayhead.getOrgLocationId().getId() == 1l) {
-									PayrollPayhead parentPayrollPayhead = new PayrollPayhead();
-									parentPayrollPayhead.setId(payrollPayhead.getId());
-									payrollPayhead = new PayrollPayhead();
-									payrollPayhead.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-									payrollPayhead.setParentPayhead(parentPayrollPayhead);
-									payrollPayhead.setShortCode(shortCode.toUpperCase());
-									payrollPayhead.setCreatedDate(new Date());
-									payrollPayhead.setCreatedBy(user);
-								}else {
-									payrollPayhead.setUpdatedDate(new Date());
-									payrollPayhead.setUpdatedBy(user);
-								}
-							}else {
-								payrollPayhead = new PayrollPayhead();
-								payrollPayhead.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-								payrollPayhead.setCreatedDate(new Date());
-								payrollPayhead.setCreatedBy(user);
-								
-								if(StringUtils.isNotBlank(payrollPayheadDTO.getShortCode())) {
-									payrollPayhead.setShortCode(payrollPayheadDTO.getShortCode().toUpperCase());
-								}else {
-									payrollPayhead.setShortCode(null);
-								}
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getName())) {
-								payrollPayhead.setName(payrollPayheadDTO.getName());
-							}else {
-								payrollPayhead.setName(null);
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getEffectiveDate())) {
-								Date paymentDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), payrollPayheadDTO.getEffectiveDate());
-								payrollPayhead.setEffectiveDate(paymentDate);
-							}else {
-								payrollPayhead.setEffectiveDate(null);
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getType())) {
-								payrollPayhead.setType(payrollPayheadDTO.getType());
-							}else {
-								payrollPayhead.setType(null);
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getPayType())) {
-								PayrollPaytype payrollPaytype = new PayrollPaytype();
-								payrollPaytype.setId(Long.parseLong(payrollPayheadDTO.getPayType()));
-								payrollPayhead.setPayType(payrollPaytype);
-							}else {
-								payrollPayhead.setPayType(null);
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getForm16())) {
-								payrollPayhead.setForm16(payrollPayheadDTO.getForm16());
-							}else {
-								payrollPayhead.setForm16(null);
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getTax())) {
-								payrollPayhead.setTax(payrollPayheadDTO.getTax());
-							}else {
-								payrollPayhead.setTax(null);
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getApplicableFor())) {
-								payrollPayhead.setApplicableFor(payrollPayheadDTO.getApplicableFor());
-								if(payrollPayheadDTO.getApplicableFor().equalsIgnoreCase("Experienced")) {
-									if(StringUtils.isNotBlank(payrollPayheadDTO.getExperienceYears())) {
-										payrollPayhead.setExperienceYears(payrollPayheadDTO.getExperienceYears());
-									}else {
-										payrollPayhead.setExperienceYears(null);
-									}
-									if(StringUtils.isNotBlank(payrollPayheadDTO.getExperienceMonths())) {
-										payrollPayhead.setExperienceMonths(payrollPayheadDTO.getExperienceMonths());
-									}else {
-										payrollPayhead.setExperienceMonths(null);
-									}
-								}
-							}else {
-								payrollPayhead.setApplicableFor(null);
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getComponent())) {
-								payrollPayhead.setComponent(payrollPayheadDTO.getComponent());
-							}else {
-								payrollPayhead.setComponent(null);
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getPaidComponent())) {
-								payrollPayhead.setPaidComponent(payrollPayheadDTO.getPaidComponent());
-							}else {
-								payrollPayhead.setPaidComponent("N");
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getPartOfGratitutiy())) {
-								payrollPayhead.setPartOfGratitutiy(payrollPayheadDTO.getPartOfGratitutiy());
-							}else {
-								payrollPayhead.setPartOfGratitutiy("N");
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getFbpComponent())) {
-								payrollPayhead.setFbpComponent(payrollPayheadDTO.getFbpComponent());
-							}else {
-								payrollPayhead.setFbpComponent("N");
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getLeaveDependent())) {
-								payrollPayhead.setLeaveDependent(payrollPayheadDTO.getLeaveDependent());
-							}else {
-								payrollPayhead.setLeaveDependent("N");
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getShowInPayslip())) {
-								payrollPayhead.setShowInPayslip(payrollPayheadDTO.getShowInPayslip());
-							}else {
-								payrollPayhead.setShowInPayslip("N");
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getPfApplicable())) {
-								payrollPayhead.setPfApplicable(payrollPayheadDTO.getPfApplicable());
-							}else {
-								payrollPayhead.setPfApplicable("N");
-							}
-							
-							if(StringUtils.isNotBlank(payrollPayheadDTO.getEsiApplicable())) {
-								payrollPayhead.setEsiApplicable(payrollPayheadDTO.getEsiApplicable());
-							}else {
-								payrollPayhead.setEsiApplicable("N");
-							}
-							
-							payrollPayhead.setOrgLocationId(orgLocations);
-							//payrollPayhead.setCreatedDate(new Date());
-							//payrollPayhead.setCreatedBy(user);
-							payrollPayhead.setStatus(Constants.RECORD_ACTIVE);
-							payrollPayhead = payrollPayheadService.savePayrollPayhead(payrollPayhead);
+							PayrollPayhead payrollPayhead = payrollPayheadService.savePayrollPayhead(payrollPayheadDTO, user, orgLocations);
 							response.setResponse(Result.SUCCESS.name());
 							response.setResponseMessage(Result.SUCCESS.getValue());
 						} catch (Exception e) {
@@ -706,6 +577,216 @@ public class PayrollConfigurationRestController {
 						response.setResponse(Result.AWKWARD.name());
 						response.setResponseMessage(Result.AWKWARD.getValue());
 						logger.error(ExceptionUtils.getFullStackTrace(e));
+					}
+					return response;
+				}
+			 
+			 
+			 @RequestMapping(value = "/getSalarySetupForPayhead", method = RequestMethod.POST)
+				public ModelAndView getSalarySetupForPayhead(PayrollPayheadDTO payrollPayheadDTO, HttpServletRequest request) throws Exception
+				{
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+					ModelAndView model = new ModelAndView();
+					PayrollPayhead payrollPayhead = payrollPayheadService.getPayrollPayheadByUUID(payrollPayheadDTO.getUuid());
+					
+					model.addObject("payrollPayhead", payrollPayhead);
+					
+					ResponseList<PayrollPayheadSalarySetupDTO> ppssList = payrollPayheadService.getPayrollPayheadSalarySetupListByPayheadUuidAndLocationId(payrollPayhead.getUuid(), orgLocations);
+					model.addObject("salarySetupList",ppssList.getData());
+					
+					ResponseList<PayrollPayheadDTO> responsePayheadList;
+					try {
+						responsePayheadList = payrollPayheadService.getPayrollPayheadList(orgLocations);
+						model.addObject("payheadList",responsePayheadList.getData());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					model.addObject("uuid", payrollPayheadDTO.getUuid());
+					model.setViewName("indPayroll/salarySetupPopup");
+					model.addObject("sourceleadUrl", sourceleadUrl);
+					return model;
+				}
+			 
+			 @RequestMapping(value = "/storePayheadWithSalarySetup" , method = RequestMethod.POST)
+				public Response<PayrollPayheadDTO> storePayheadWithSalarySetup(PayrollPayheadDTO payrollPayheadDTO, HttpServletRequest request) throws Exception
+				{
+					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+					Response<PayrollPayheadDTO> response = new Response<>();
+					if (user != null) {
+							try {
+								if(StringUtils.isNotBlank(payrollPayheadDTO.getUuid())) {
+									PayrollPayheadSalarySetup payrollPayheadSalarySetup = null;
+									PayrollPayhead payrollPayhead = payrollPayheadService.getPayrollPayheadByUUID(payrollPayheadDTO.getUuid());
+									if(payrollPayhead != null) {
+										if(!payrollPayheadDTO.getMethod().equalsIgnoreCase(payrollPayhead.getMethod()) || !payrollPayheadDTO.getFormula().equalsIgnoreCase(payrollPayhead.getFormula())) {
+											
+											payrollPayheadDTO.getFormula();
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getName())) {
+												payrollPayheadDTO.setName(payrollPayhead.getName());
+											}else {
+												payrollPayheadDTO.setName(null);
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getShortCode())) {
+												payrollPayheadDTO.setShortCode(payrollPayhead.getShortCode().toUpperCase());
+											}else {
+												payrollPayheadDTO.setShortCode(null);
+											}
+											
+											if(payrollPayhead.getEffectiveDate() != null) {
+												payrollPayheadDTO.setEffectiveDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),payrollPayhead.getEffectiveDate()));
+											}else {
+												payrollPayheadDTO.setEffectiveDate(null);
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getType())) {
+												payrollPayheadDTO.setType(payrollPayhead.getType());
+											}else {
+												payrollPayheadDTO.setType(null);
+											}
+											
+											if(payrollPayhead.getPayType() != null) {
+												payrollPayheadDTO.setPayType(payrollPayhead.getPayType().getId().toString());
+											}else {
+												payrollPayheadDTO.setPayType(null);
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getForm16())) {
+												payrollPayheadDTO.setForm16(payrollPayhead.getForm16());
+											}else {
+												payrollPayheadDTO.setForm16(null);
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getTax())) {
+												payrollPayheadDTO.setTax(payrollPayhead.getTax());
+											}else {
+												payrollPayheadDTO.setTax(null);
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getApplicableFor())) {
+												payrollPayheadDTO.setApplicableFor(payrollPayhead.getApplicableFor());
+												if(payrollPayhead.getApplicableFor().equalsIgnoreCase("Experienced")) {
+													if(StringUtils.isNotBlank(payrollPayhead.getExperienceYears())) {
+														payrollPayheadDTO.setExperienceYears(payrollPayhead.getExperienceYears());
+													}else {
+														payrollPayheadDTO.setExperienceYears(null);
+													}
+													if(StringUtils.isNotBlank(payrollPayhead.getExperienceMonths())) {
+														payrollPayheadDTO.setExperienceMonths(payrollPayhead.getExperienceMonths());
+													}else {
+														payrollPayheadDTO.setExperienceMonths(null);
+													}
+												}
+											}else {
+												payrollPayheadDTO.setApplicableFor(null);
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getComponent())) {
+												payrollPayheadDTO.setComponent(payrollPayhead.getComponent());
+											}else {
+												payrollPayheadDTO.setComponent(null);
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getPaidComponent())) {
+												payrollPayheadDTO.setPaidComponent(payrollPayhead.getPaidComponent());
+											}else {
+												payrollPayheadDTO.setPaidComponent("N");
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getPartOfGratitutiy())) {
+												payrollPayheadDTO.setPartOfGratitutiy(payrollPayhead.getPartOfGratitutiy());
+											}else {
+												payrollPayheadDTO.setPartOfGratitutiy("N");
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getFbpComponent())) {
+												payrollPayheadDTO.setFbpComponent(payrollPayhead.getFbpComponent());
+											}else {
+												payrollPayheadDTO.setFbpComponent("N");
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getLeaveDependent())) {
+												payrollPayheadDTO.setLeaveDependent(payrollPayhead.getLeaveDependent());
+											}else {
+												payrollPayheadDTO.setLeaveDependent("N");
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getShowInPayslip())) {
+												payrollPayheadDTO.setShowInPayslip(payrollPayhead.getShowInPayslip());
+											}else {
+												payrollPayheadDTO.setShowInPayslip("N");
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getPfApplicable())) {
+												payrollPayheadDTO.setPfApplicable(payrollPayhead.getPfApplicable());
+											}else {
+												payrollPayheadDTO.setPfApplicable("N");
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getEsiApplicable())) {
+												payrollPayheadDTO.setEsiApplicable(payrollPayhead.getEsiApplicable());
+											}else {
+												payrollPayheadDTO.setEsiApplicable("N");
+											}
+											
+											if(StringUtils.isNotBlank(payrollPayhead.getUuid())) {
+												payrollPayheadDTO.setUuid(payrollPayhead.getUuid());
+											}
+											
+											payrollPayhead = payrollPayheadService.savePayrollPayhead(payrollPayheadDTO, user, orgLocations);
+										}
+									}
+									/*if (payrollPayheadDTO.getSalarySetup() != null && payrollPayheadDTO.getSalarySetup().size() > 0) {
+										for (PayrollPayheadSalarySetupDTO ppss : payrollPayheadDTO.getSalarySetup()) {
+											
+											if(StringUtils.isNotBlank(ppss.getUuid())) {
+												payrollPayheadSalarySetup = payrollPayheadService.getPayrollPayheadSalarySetupByUUID(ppss.getUuid());
+												payrollPayheadSalarySetup.setUpdatedDate(new Date());
+												payrollPayheadSalarySetup.setUpdatedBy(user);
+											}else {
+												payrollPayheadSalarySetup = new PayrollPayheadSalarySetup();
+												payrollPayheadSalarySetup.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+												payrollPayheadSalarySetup.setCreatedDate(new Date());
+												payrollPayheadSalarySetup.setCreatedBy(user);
+											}
+											
+											payrollPayheadSalarySetup.setPayhead(payrollPayhead);
+											payrollPayheadSalarySetup.setStatus(Constants.RECORD_ACTIVE);
+											
+											if(ppss.getFormulaPercentage() != null) {
+												payrollPayheadSalarySetup.setFormulaPercentage(ppss.getFormulaPercentage());
+											}else {
+												payrollPayheadSalarySetup.setFormulaPercentage(null);
+											}
+											
+											if(ppss.getFormulaPayhead() != null) {
+												PayrollPayhead pph = new PayrollPayhead();
+												pph.setId(ppss.getFormulaPayhead());
+												payrollPayheadSalarySetup.setFormulaPayhead(pph);
+											}else {
+												payrollPayheadSalarySetup.setFormulaPayhead(null);
+											}
+											
+											payrollPayheadSalarySetup = payrollPayheadService.savePayrollPayheadSalarySetup(payrollPayheadSalarySetup);
+										}
+									}*/
+									response.setResponse(Result.SUCCESS.name());
+									response.setResponseMessage(Result.SUCCESS.getValue());
+								} else{
+									response.setResponse(Result.AWKWARD.name());
+									response.setResponseMessage(Result.AWKWARD.getValue());
+									logger.error("<<<<<< Error: Payhead UUID missing >>>>>>");
+								}
+							} catch (Exception e) {
+								response.setResponse(Result.AWKWARD.name());
+								response.setResponseMessage(Result.AWKWARD.getValue());
+								logger.error(ExceptionUtils.getFullStackTrace(e));
+							}
+					}else {
+						response.setResponse(Result.SESSION_TIMEDOUT.name());
+						response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
 					}
 					return response;
 				}

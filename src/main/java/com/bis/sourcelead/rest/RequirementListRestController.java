@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementAssignToDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
@@ -2403,5 +2404,37 @@ public class RequirementListRestController {
 				emailScenerioUtil.sendNotification(actionLink, loginUser, vendorContact, releasedRequirement.getSpocId().getVendorLocationId(), notificationScenario,new HashMap<String,String>());
 			}
 		}
+	}
+	
+	
+	@RequestMapping(value = "/forceDeleteForSelectedJobs", method = RequestMethod.POST)
+	public Response<String> forceDeleteForSelectedJobs(RequirementDTO requirementDTO, HttpServletRequest request) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Response<String> response = new Response<>();
+		try {
+			if (user != null) {
+				if(requirementDTO.getReqUUIDArr().length > 0) {
+					 Boolean flag =  requirementService.forceDeleteForSelectedJobs(requirementDTO.getReqUUIDArr());
+
+					 response.setResponse(Result.SUCCESS.name());
+					 response.setResponseMessage(Result.SUCCESS.getValue());
+				}
+			}
+			else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		
+		
+		
+		
+		return response;
 	}
 }

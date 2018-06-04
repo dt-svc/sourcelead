@@ -186,5 +186,7 @@ public interface RequirementService {
     public ResponseList<RequirementDTO> getRequirementList(Long id, String search, Long location, String employmentType, int pageNo, int pageSize);
     
     public List<RequirementDTO> getAllManagerRequirementForJobSharing(Date[] searchDates,Long managerUserId,Long orgLocationId) throws Exception;
+    
+    Boolean forceDeleteForSelectedJobs(String[] uuids) throws Exception;
 
 }

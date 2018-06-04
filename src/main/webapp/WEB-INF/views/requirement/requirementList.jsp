@@ -213,6 +213,8 @@ function statusvalidating(id){
 				<a href="javascript:void(0)" onClick="filterPop();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
 			</div>
 			
+			<button type="button" class="btn btn-danger ml pull-left btn-sm" onclick="jobForceDelete();" id="forceDeleteBtn" style="display:none">Delete</button>
+			
 			</div>
 			<form:form id="requirement_form" name="requirement_form"
 				enctype='multipart/form-data'>
