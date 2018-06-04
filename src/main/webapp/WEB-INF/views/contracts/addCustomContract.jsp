@@ -833,7 +833,10 @@ function removeDocument(id){
 			$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+				})	
+				$("#parallelOwner_chosen").on('change', function (e) {
+					changeSaveButton();
+			       });
 				$(document).ready(function(){
 					$("#cd").click(function(){
 						$(".clientDetails").toggleClass('hidden', 500);
