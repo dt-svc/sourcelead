@@ -8297,4 +8297,9 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 .timeAttBtn i.fa-trash {
 	color: #CB3E41;
 }
-
+.maxWid {
+	max-width: 60% !important;
+}
+.maxWid .attFile {
+	max-width: 100% !important;
+}
