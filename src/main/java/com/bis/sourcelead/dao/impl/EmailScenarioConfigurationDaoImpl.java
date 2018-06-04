@@ -179,7 +179,7 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
             Session session = this.sessionFactory.getCurrentSession();
             EmailConfigurationFromMail emailFromMail = session.get(EmailConfigurationFromMail.class, id);
             if (Objects.equals(emailFromMail.getOrgLocationId().getId(), orgId)) {
-            	emailFromMail.setStatus(defaultAccount);
+            	emailFromMail.setStatus(1);
                 if(defaultAccount) {
                     String query = "from EmailConfigurationFromMail p where p.orgLocationId.id = :orgId";
                     query += " and p.id != :pid";
@@ -188,7 +188,7 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
                     queryObj.setLong("pid", emailFromMail.getId());
                     List<EmailConfigurationFromMail> list = queryObj.list();
                     for (EmailConfigurationFromMail p : list) {
-                        p.setStatus(false);
+                        p.setStatus(0);
                         session.saveOrUpdate(p);
                     }
                 }
@@ -208,7 +208,7 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 	public EmailConfigurationFromMail getConfFromMailByStatus(Long orgLocId) throws Exception {
 		logger.debug("In EmailScenarioConfigurationDaoImpl class getFromMailById method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailConfigurationFromMail es where  es.orgLocationId.id = :orgLocId and es.status=true ";
+		String query = "from EmailConfigurationFromMail es where  es.orgLocationId.id = :orgLocId and es.status='1' ";
 		List<EmailConfigurationFromMail> emailScenariosList =  session.createQuery(query.toString()) .setLong("orgLocId", orgLocId).list();
 		EmailConfigurationFromMail emailScenario = null;
 		if(emailScenariosList != null && !emailScenariosList.isEmpty())
