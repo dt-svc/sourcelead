@@ -452,7 +452,7 @@ public class UserServiceImpl implements UserService {
 			 */
 			
 			if(isUserActive == false && Constants.YES.equalsIgnoreCase(addUserDTO.getIsMailSent()))
-				registrationService.sendActivationEmail(user1);
+				registrationService.sendActivationEmail(user1,orgLocations);
 			
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
 			user1.setTempPwd(password);
