@@ -584,7 +584,14 @@ public class ProjectsServiceImpl implements ProjectsService{
 		}else {
 			projects.setNotifyBudgetAt(null);
 		}
-		projects.setProjectShortCode(projectsDTO.getProjectShortCode());
+		
+		
+		if(!isNullOrEmpty(projectsDTO.getProjectShortCode())){
+			projects.setProjectShortCode(projectsDTO.getProjectShortCode());
+		}else {
+			projects.setProjectShortCode(null);
+		}
+		
     	projects.setCreatedDate(commonUtil.currentDate());
     	projects.setUpdatedDate(commonUtil.currentDate());
     	if(user.getUserCode() != null){
@@ -713,11 +720,17 @@ public class ProjectsServiceImpl implements ProjectsService{
 	
 	private String generatebudgetRequestId(Projects projects, ProjectsDTO projectsDTO) {
 		String companyShortCode = null;
+		String resultString = null;
        	Long number = 1L;
    		String candidateId = null;
    		Integer generatedIdcount = 0;
    		StringBuilder sbuilder = new StringBuilder();
-   		sbuilder.append(projectsDTO.getProjectShortCode()).append("BR");
+   		if(projectsDTO.getProjectShortCode() != null && !projectsDTO.getProjectShortCode().isEmpty()) {
+   			sbuilder.append(projectsDTO.getProjectShortCode()).append("BR");
+   		}else {
+   			sbuilder.append("BR");
+   		}
+   		
    		String generatedUsreId = sbuilder.toString();
    		for(int i=0;i< generatedUsreId.length();i++){
    			char ch = generatedUsreId.charAt(i);
@@ -743,8 +756,12 @@ public class ProjectsServiceImpl implements ProjectsService{
            StringBuffer sb = new StringBuffer();
            if(projectsDTO.getProjectShortCode() != null && !"".equalsIgnoreCase(projectsDTO.getProjectShortCode())){
            	 companyShortCode = projectsDTO.getProjectShortCode();
+           	 resultString = sb.append(companyShortCode).append("BR").append(convetredCandidateId).toString();
+           }else {
+        	   resultString = sb.append("BR").append(convetredCandidateId).toString();
            }
-   		return sb.append(companyShortCode).append("BR").append(convetredCandidateId).toString();
+              
+   		return resultString;
 	}
 
 	/*@Override
@@ -810,7 +827,9 @@ public class ProjectsServiceImpl implements ProjectsService{
 			projectTasks.setTaskStatus(taskStatusLookUpData);
 			projectTasks.setStatus(String.valueOf(Constants.CANDIDATE_ACTIVE));
 			projectTasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			projectTasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects, generatedId));
+			if(projects.getProjectShortCode() != null && !projects.getProjectShortCode().isEmpty()) {
+				projectTasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects, generatedId));
+			}
 			projectTasks.setCreatedDate(new Date());
 			projectTasks.setUpdatedDate(new Date());
 			projectTasks.setPercentage(0);
@@ -1020,8 +1039,39 @@ public class ProjectsServiceImpl implements ProjectsService{
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 
+		 String fromEmail = null;
+		 EmailConfigurationFromMail confFromMail=null;
+		 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(orgLocations.getId());
+		 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
+			 for(EmailConfigurationFromMail fromMail:emailConfigMailList){
+				 if( fromMail.getEmailModules() != null){
+					String[] jobIds = fromMail.getEmailModules().split(",");
+						for(int j=0; j<jobIds.length; j++) {
+							if(Long.valueOf(jobIds[j]) == 5L ){
+								confFromMail=fromMail;
+							}
+						}
+				 }
+			 } 
+			 
+			 if(confFromMail == null){
+				 confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
+				 if(confFromMail != null){
+					 fromEmail = confFromMail.getEmail();
+				 }
+			 }else{
+				 fromEmail = confFromMail.getEmail();
+			 }
+		 }
+		 
+		 if(StringUtils.isNotBlank(fromEmail)){
+			 emailMessage.setFromEmail(fromEmail);
+		 }
+		 
+		 
 		 StringBuilder fromNameSB = new StringBuilder();
-		 emailMessage.setFromName(Constants.SOURCELEAD_ADMIN_UNIQUE);
+		 emailMessage.setFromName(orgLocations.getOrgName());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1535,6 +1585,12 @@ public class ProjectsServiceImpl implements ProjectsService{
 		    	}else {
 		    		projects.setIsReportingManagerAsApprover(Constants.NO);
 		    	}
+		    	
+		    	if(StringUtils.isNotBlank(projectDTO.getProjectShortCode())){
+					projects.setProjectShortCode(projectDTO.getProjectShortCode());
+				}else {
+					projects.setProjectShortCode(null);
+				}
 		    	
 		    	if(StringUtils.isNotBlank(projectDTO.getIsTicketNumberRequired())){
 		    		projects.setIsTicketNumberRequired(Constants.YES);
