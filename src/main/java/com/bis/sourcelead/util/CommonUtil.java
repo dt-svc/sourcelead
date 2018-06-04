@@ -1351,6 +1351,7 @@ public class CommonUtil {
 			float wthHours = hours2;
 			float wthHoursValue = (int) wthHours;
 			float wthMinutesValue = wthHours - wthHoursValue;
+			wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
 			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
 
 			float totalMinutes = totalCthMinutes+totalWthMinutes;
