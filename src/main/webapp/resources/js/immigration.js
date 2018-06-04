@@ -385,10 +385,21 @@ function Immigration() {
 		                    	if (idType == 'Passport') {
 									$('#popPassView').hide();
 									$('.popMask').fadeOut();
+									if($('#candidatePassportId').val().trim() != ''){
+										showSuccessMsg("Successfully Updated Passport Details.");
+			                    	}else{
+			                    		showSuccessMsg("Successfully New Passport Details Added.");
+			                    	}
+										
 									immigration.displayPassportDetails(candidateId, 'Passport');
 								} else if (idType == 'Visa') {
 									$("#popUpVisa").hide();
 									$(".popMask").fadeOut(200); // close the popup code															// popup code
+									if($('#candidateVisaId').val().trim() != ''){
+										showSuccessMsg("Successfully Updated Visa Details.");
+			                    	}else{
+			                    		showSuccessMsg("Successfully New Visa Details Added.");
+			                    	}
 									immigration.displayVisaDetails(candidateId,'Visa');
 								}
 		                    }else{
