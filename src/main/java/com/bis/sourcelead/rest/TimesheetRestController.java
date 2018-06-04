@@ -268,7 +268,6 @@ public class TimesheetRestController {
 				List<ProjectMembersDTO>  attProjectMemberIdsList = new LinkedList<>();
 				Boolean isRejected = false;
 				Boolean isSUBMITTED = false;
-				Boolean isNEW = false;
 				String combinedStatus = "";
 				boolean combinedMonEditable =  false;
 				boolean combinedTueEditable =  false;
@@ -316,19 +315,14 @@ public class TimesheetRestController {
 						isRejected = true;
 						combinedStatus = "REJECTED";
 					}
-					else if (!isRejected
-							&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
-						
-						isNEW = true;
-						combinedStatus = "NEW";
-					}
-					else if (!isRejected && !isNEW
-							&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("SUBMITTED")) {
+					else if (!isRejected 
+							&& (tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("SUBMITTED") 
+							|| tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW"))) {
 						isSUBMITTED = true;
 						combinedStatus = "SUBMITTED";
 						
 					}
-					else if (!isRejected && !isNEW && !isSUBMITTED
+					else if (!isRejected && !isSUBMITTED
 							&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("APPROVED")) {
 						combinedStatus = "APPROVED";
 						
@@ -1800,7 +1794,6 @@ public class TimesheetRestController {
 					List<ProjectMembersDTO>  attProjectMemberIdsList = new LinkedList<>();
 					Boolean isRejected = false;
 					Boolean isSUBMITTED = false;
-					Boolean isNEW = false;
 					String combinedStatus = "";
 					boolean combinedMonEditable =  false;
 					boolean combinedTueEditable =  false;
@@ -1848,18 +1841,12 @@ public class TimesheetRestController {
 							combinedStatus = "REJECTED";
 						}
 						else if (!isRejected
-								&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
-							
-							isNEW = true;
-							combinedStatus = "NEW";
-						}
-						else if (!isRejected && !isNEW
-								&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("SUBMITTED")) {
+								&& (tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("SUBMITTED") || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW"))) {
 							isSUBMITTED = true;
 							combinedStatus = "SUBMITTED";
 							
 						}
-						else if (!isRejected && !isNEW && !isSUBMITTED
+						else if (!isRejected  && !isSUBMITTED
 								&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("APPROVED")) {
 							combinedStatus = "APPROVED";
 							
