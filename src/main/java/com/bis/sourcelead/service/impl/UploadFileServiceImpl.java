@@ -655,7 +655,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			employeesService.addEmployee(employee);
 			if(isMailChecked !=null){
 				userService.sendEmail(user, loginUser, password,orgLocations.getId());
-				registrationService.sendActivationEmail(user);
+				registrationService.sendActivationEmail(user,orgLocations);
 			}
 			userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
 			
