@@ -389,17 +389,11 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		        BaseColor myColor = WebColors.getRGBColor("#000000");
 		        boldFont.setColor(myColor);
 		        StringBuilder userStyle = new StringBuilder();
-		        userStyle.append(orgloc.getOrgLocationName()).append(" ").append("----");
+		        userStyle.append(orgloc.getOrgLocationName()).append(" ");
 	          
-
-		        StringBuilder orgNameSB = new StringBuilder();
-	            Paragraph para = new Paragraph(orgNameSB.append("--$$-- : ").append(orgloc.getOrgLocationName()).toString());
-	            para.setAlignment(Element.ALIGN_CENTER);
-	            document.add(para);
-		        
 	            com.itextpdf.text.List orderedList = new com.itextpdf.text.List(com.itextpdf.text.List.ORDERED);
-		        orderedList.add(new ListItem("From Date:"));
-		        orderedList.add(new ListItem("To Date:"));
+	            orderedList.add(new ListItem("From Date:"+dayWiseTimesheetReoprtsDto.getStartDate()));
+		        orderedList.add(new ListItem("To Date:"+dayWiseTimesheetReoprtsDto.getEndDate()));
 		        document.add(orderedList);
 		        // Create an instance of PdfPTable. After that we transform the header and
 		        PdfPTable table = new PdfPTable(headers.length);
@@ -408,7 +402,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		        cell1.setColspan(11);
 		        headerCellStyle(cell1);
 		        table.setWidthPercentage(100);
-	            table.setWidths(new int[]{3, 5, 3,5, 5, 5,5,5,5,3,5});
+	            table.setWidths(new int[]{5, 3, 3,5, 5, 5,5,5,5,3,5});
 	            table.addCell(cell1);
 		        for (int i = 0; i < headers.length; i++) {
 		            String header = headers[i];
@@ -568,17 +562,11 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		        BaseColor myColor = WebColors.getRGBColor("#000000");
 		        boldFont.setColor(myColor);
 		        StringBuilder userStyle = new StringBuilder();
-		        userStyle.append(orgloc.getOrgLocationName()).append(" ").append("----");
-	          
+		        userStyle.append(orgloc.getOrgLocationName());
 
-		        StringBuilder orgNameSB = new StringBuilder();
-	            Paragraph para = new Paragraph(orgNameSB.append("--$$-- : ").append(orgloc.getOrgLocationName()).toString());
-	            para.setAlignment(Element.ALIGN_CENTER);
-	            document.add(para);
-		        
 	            com.itextpdf.text.List orderedList = new com.itextpdf.text.List(com.itextpdf.text.List.ORDERED);
-		        orderedList.add(new ListItem("From Date:"));
-		        orderedList.add(new ListItem("To Date:"));
+		        orderedList.add(new ListItem("From Date:"+dayWiseTimesheetReoprtsDto.getStartDate()));
+		        orderedList.add(new ListItem("To Date:"+dayWiseTimesheetReoprtsDto.getEndDate()));
 		        document.add(orderedList);
 		        // Create an instance of PdfPTable. After that we transform the header and
 		        PdfPTable table = new PdfPTable(headers.length);
