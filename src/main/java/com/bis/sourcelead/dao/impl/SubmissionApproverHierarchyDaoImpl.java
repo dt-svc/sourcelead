@@ -1100,7 +1100,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		
 		String globalUserQuery = "";
 		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
-		    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+		    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
 		    }else {
 		    	globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId";
 		    }
@@ -1155,10 +1155,11 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * logged in user as approver in project_approver_hierarchy
 				 * (Either Admins/project_managers/team leads ...etc)
 				 */
-				+ "  (" + "    sah.hierarchyId.approverUserId.id = :userId and " + "      ("
+				+ "  (" + "    sah.hierarchyId.approverUserId.id = :userId  " + "     )"
+				/*+ "  (" + "    sah.hierarchyId.approverUserId.id = :userId and " + "      ("
 				+ "        ( sah.hierarchyId.level = '2' and  sah.hierarchyId.status = '1'  and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.level = '2')) "
 				+ "        OR (sah.hierarchyId.level = '1'  and  sah.hierarchyId.status = '1'  and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id) ) "
-				+ "     ) " + "   ) "
+				+ "     ) " + "   ) "*/
 				/*
 				 * logged in user as admin but not in
 				 * project_approver_hierarchy(hint:logged in user is admin but
@@ -1175,10 +1176,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * logged in user as approver in project_approver_hierarchy
 				 * (Either Admins/project_managers/team leads ...etc)
 				 */
-				+ "  (" + "    sah.hierarchyId.approverUserId.id = :userId and " + "      ("
+				
+				+ "  (" + "    sah.hierarchyId.approverUserId.id = :userId  " + "   )  "
+				
+			/*	+ "  (" + "    sah.hierarchyId.approverUserId.id = :userId and " + "      ("
 				+ "        ( sah.hierarchyId.level = '2'   and  sah.hierarchyId.status = '1'  and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.level = '2')) "
 				+ "        OR (sah.hierarchyId.level = '1'  and  sah.hierarchyId.status = '1'  and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id) ) "
-				+ "     ) " + "   ) "
+				+ "     ) " + "   ) "*/
 				/*
 				 * logged in user as admin but not in
 				 * project_approver_hierarchy(hint:logged in user is admin but
@@ -1235,10 +1239,12 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * logged in user as approver in project_approver_hierarchy
 				 * (Either Admins/project_managers/team leads ...etc)
 				 */
-				+ "  (" + "    hierarchy.approverUserId.id = :userId and " + "      ("
+				 + "  (" + "   hierarchy.approverUserId.id = :userId  " + "   )  "
+				 
+				/*+ "  (" + "    hierarchy.approverUserId.id = :userId and " + "      ("
 				+ "        ( hierarchy.level = '2' and emp.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = pclient.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.level = '2')) "
 				+ "        OR (hierarchy.level = '1' and emp.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = pclient.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id) ) "
-				+ "     ) " + "   ) "
+				+ "     ) " + "   ) "*/
 				/*
 				 * logged in user as admin but not in
 				 * project_approver_hierarchy(hint:logged in user is admin but
@@ -1281,10 +1287,11 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 * logged in user as approver in project_approver_hierarchy
 				 * (Either Admins/project_managers/team leads ...etc)
 				 */
-				+ "  (" + "    sah.hierarchyId.approverUserId.id = :userId and " + "      ("
+				 + "  (" + "    sah.hierarchyId.approverUserId.id = :userId  " + "     )"
+				/*+ "  (" + "    sah.hierarchyId.approverUserId.id = :userId and " + "      ("
 				+ "        ( sah.hierarchyId.level = '2' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id and subsah.hierarchyId.level = '2')) "
 				+ "        OR (sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.employee.user.id NOT IN(select subsah.hierarchyId.approverUserId.id from SubmissionApproverHierarchy subsah where subsah.hierarchyId.projectClientsId.orgLocationsId.id = sah.hierarchyId.projectClientsId.orgLocationsId.id and subsah.submissionId.id = sah.submissionId.id) ) "
-				+ "     ) " + "   ) "
+				+ "     ) " + "   ) "*/
 				/*
 				 * logged in user as admin but not in
 				 * project_approver_hierarchy(hint:logged in user is admin but
