@@ -430,7 +430,9 @@ function Immigration() {
         			$('#validFrom').val(data.validFromDateStr);
         			$('#idNum').val(data.id);
         			$('#validTo').val(data.validToDateStr);
+        			
         			$('#countryName').val(data.country);
+        			$('#countryName').selectpicker('refresh');
         			$('#candidatePassportId').val(data.id);	
 	        		}
                     else if(idType=='Visa'){
@@ -439,7 +441,9 @@ function Immigration() {
         			$("#addVisa").trigger('click');
         			immigration.udpatePopupFormdata(formObj,childPopNames,data);
         			$('#visaType').val(data.visaType);
+        			$('#visaType').selectpicker('refresh');
         			$('#visaCountry').val(data.country);
+        			$('#visaCountry').selectpicker('refresh');
         			$('#visaValidFrom').val(data.validFromDateStr);
         			$('#visaValidTo').val(data.validToDateStr);
         			$('#candidateVisaId').val(data.id);	
@@ -1266,6 +1270,7 @@ function editDocumentDetailsByRowId(id){
      			formObj = $('#candidate_Immigration_document_form')[0]; // load the child form
      			$("#addDocu").trigger('click');
      			$('#documentType').val(data.documentType.id);
+     			$('#documentType').selectpicker('refresh');
      			if(data.documentOtherType){
      			document.getElementById("documentOtherTypeDiv").style.display="block";
      			$('#documentOtherType').val(data.documentOtherType);
