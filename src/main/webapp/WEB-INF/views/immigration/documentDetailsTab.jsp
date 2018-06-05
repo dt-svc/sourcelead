@@ -148,7 +148,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Document Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="sel chosen-select form-control" name = "documentType" field-name="Document Type" data-validation="required" id="documentType" onchange="getDocumentTypeDiv(this);">
+					<select class="form-control selectpicker" name = "documentType" field-name="Document Type" data-validation="required" data-live-search="true" id="documentType" onchange="getDocumentTypeDiv(this);">
 					  <option value = "">Select Document Type</option>
 					   <c:forEach var="docs" items="${documentsList}">
 											<option value="${docs.id}">${docs.name}</option>
