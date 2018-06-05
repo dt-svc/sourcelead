@@ -417,18 +417,31 @@ $(document).ready(function(){
 	   		<!-- Radio buttons for Sequential or Parallel function -->
 	   		 <div  class="clearfix"></div>
                 <div  class="ml pull-left apprverReq" >
-                <label class="rad" id="parallel">
-                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" checked="checked" onclick="getParallelApprovers();">
-                <i class="fa fa-align-center apprverReq-active" title="Parallel"></i>
-                </label>
-                <label class="rad" id="sequential">
-                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" ${'SEQUENTIAL'  == contract.ownersType ? 'checked' : ''} onclick="getSequentialApprovers();">
-                <i class="fa fa-retweet" title="Sequential"></i>
-                </label>
+                	<c:if test="${!empty contract.ownersType}">
+		                <label class="rad" id="parallel">
+		                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" ${'Parallel'  == contract.ownersType ? 'checked' : ''} onclick="getParallelApprovers();">
+		                <i class="fa fa-align-center apprverReq-active" title="Parallel"></i>
+		                </label>
+		                <label class="rad" id="sequential">
+		                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" ${'Sequential'  == contract.ownersType ? 'checked' : ''} onclick="getSequentialApprovers();">
+		                <i class="fa fa-retweet" title="Sequential"></i>
+		                </label>
+                	</c:if>
+                	<c:if test="${empty contract.ownersType}">
+		                <label class="rad" id="parallel">
+		                <input type="radio" name="ownersType" id="parallelapprovers" value="Parallel" checked onclick="getParallelApprovers();">
+		                <i class="fa fa-align-center apprverReq-active" title="Parallel"></i>
+		                </label>
+		                <label class="rad" id="sequential">
+		                <input type="radio" name="ownersType" id="seqentialApprovers" value="Sequential" onclick="getSequentialApprovers();">
+		                <i class="fa fa-retweet" title="Sequential"></i>
+		                </label>
+                	</c:if>
+                
                  
                   <div id="navbar" class="glyphicon glyphicon-info-sign text-info ml"></div>
                 </div>
-                <!-- Radio buttons for Sequential or Parallel function -->
+                        <!-- Radio buttons for Sequential or Parallel function -->
            
              <div  class="clearfix"></div>
           <div class="form-group row" id="parallelAppDiv" style="display:block">
@@ -819,6 +832,51 @@ function removeDocument(id){
  });  
 	}
 </script>
+
+    <script>
+    $("#uasrch").selectpicker('refresh');
+    </script>
+<script>
+function getParallelApprovers(){
+	$("#parallel i").addClass("apprverReq-active");
+	$("#sequential i").removeClass("apprverReq-active");
+	$("#parallelAppDiv").show();
+	$("#sequentialAppDiv").hide();
+	$("#sequentialOwner1").val('');
+	$("#sequentialOwner2").val('');
+// 	$("#parallelOwner").val('');
+	$('#sequentialOwner1').trigger("chosen:updated");
+	$('#sequentialOwner2').trigger("chosen:updated");
+// 	$('#parallelOwner').trigger("chosen:updated");
+	
+	$('#parallelOwner').removeAttr('data-validation');
+	$('#parallelOwner').attr('data-validation',"required");
+	$('#sequentialOwner2').removeAttr('data-validation');
+	$('#sequentialOwner2').attr('data-validation-optional',"true");
+	$('#sequentialOwner1').removeAttr('data-validation');
+	$('#sequentialOwner1').attr('data-validation-optional',"true");
+}
+
+function getSequentialApprovers(){
+		$("#parallel i").removeClass("apprverReq-active");
+		$("#sequential i").addClass("apprverReq-active");
+		$("#sequentialAppDiv").show();
+		$("#parallelAppDiv").hide();
+//	 	$("#sequentialOwner1").val('');
+//	 	$("#sequentialOwner2").val('');
+		$("#parallelOwner").val('');
+		
+//	 	$('#sequentialOwner1').trigger("chosen:updated");
+//	 	$('#sequentialOwner2').trigger("chosen:updated");
+		$('#parallelOwner').trigger("chosen:updated");
+		$('#sequentialOwner1').removeAttr('data-validation');
+		$('#sequentialOwner1').attr('data-validation',"required");
+		$('#sequentialOwner2').removeAttr('data-validation');
+		$('#sequentialOwner2').attr('data-validation',"required");
+		$('#parallelOwner').removeAttr('data-validation');
+		$('#parallelOwner').attr('data-validation-optional',"true");
+}
+</script>
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
@@ -833,7 +891,10 @@ function removeDocument(id){
 			$('.chosen-select').each(function() {
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
-				})
+				})	
+				$("#parallelOwner_chosen").on('change', function (e) {
+					changeSaveButton();
+			       });
 				$(document).ready(function(){
 					$("#cd").click(function(){
 						$(".clientDetails").toggleClass('hidden', 500);
@@ -841,11 +902,6 @@ function removeDocument(id){
 	
 	});
  		</script>
-    <script>
-    $("#uasrch").selectpicker('refresh');
-    </script>
-
-
 <script>
 	$(function() {
 		  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -2068,6 +2124,9 @@ function getTaxPercentageValue(){
 function changeSaveButton(){
 	var userId = '${SourceLeadWeb_userId}';
 	 var approverId = $("#approver").val();
+	 var seqOwner1 = $("#sequentialOwner1").val();  
+		var seqOwner2 = $("#sequentialOwner2").val();
+	 var parallelOwner = $("#parallelOwner").val();
 	if(approverId !='' && approverId != null){
 		if(approverId == userId){
 			document.getElementById("save_approver_template").value="Approve";

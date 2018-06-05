@@ -98,8 +98,8 @@
 
 <section class="content-wraper">
 		  <section class="content-header clearfix">
-		       <div class="pull-left"><h2>Timesheet approval</h2></div>
-		            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » Timesheet approval</div>
+		       <div class="pull-left"><h2>Timesheets approval</h2></div>
+		            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » Timesheets approval</div>
 		       <div class="clearfix"></div>
 		   </section>
 		    <div  id="loadTimeHead"></div>
