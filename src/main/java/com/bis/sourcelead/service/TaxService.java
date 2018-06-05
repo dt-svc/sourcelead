@@ -5,6 +5,8 @@ import java.util.List;
 import com.bis.sourcelead.dto.CentralTaxDTO;
 
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.SourceleadTaxChallanDTO;
+import com.bis.sourcelead.dto.SourceleadTaxChallanItemDTO;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
@@ -63,5 +65,9 @@ public interface TaxService {
 	Response<String> changeCentralTaxStatus(long centralTaxId);
 
 	Tds getTDSById(long id);
+
+	public long addITChallanSectionItem(SourceleadTaxChallanItemDTO sectionItemDTO);
+
+	long addItChallanSection(SourceleadTaxChallanDTO sourceleadTaxSectionDTO);
 
 }

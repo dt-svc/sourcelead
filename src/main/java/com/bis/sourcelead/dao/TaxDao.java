@@ -7,6 +7,8 @@ import com.bis.sourcelead.entity.CentralTax;
 import com.bis.sourcelead.dto.helper.Paginator;
 
 import com.bis.sourcelead.entity.ProfessionalTax;
+import com.bis.sourcelead.entity.SourceleadTaxChallan;
+import com.bis.sourcelead.entity.SourceleadTaxChallanItem;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
@@ -65,5 +67,9 @@ public interface TaxDao {
 	public boolean removeTDSTax(Tds tds);
 
 	public Tds getTDSById(long id);
+
+   public long addITChallanSectionItem(SourceleadTaxChallanItem sectionItem);
+
+   public long addItChallanSection(SourceleadTaxChallan section);
 
 }

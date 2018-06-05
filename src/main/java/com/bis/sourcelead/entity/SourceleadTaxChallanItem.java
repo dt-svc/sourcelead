@@ -38,7 +38,7 @@ public class SourceleadTaxChallanItem implements Serializable {
 	
 	
 	@Column(name = "IS_FIELD_REQUIRED")
-	private int isFieldRequired;
+	private boolean isFieldRequired;
 	
 	@Column(name = "PLACEHOLDER")
 	private String placeHolder;
@@ -50,10 +50,10 @@ public class SourceleadTaxChallanItem implements Serializable {
 	private int maxLength;
 	
 	@Column(name = "MIN_DATE")
-	private String minDate;
+	private Date minDate;
 	
 	@Column(name = "MAX_DATE")
-	private String maxDate;
+	private Date maxDate;
 	
 	@Column(name = "MIN_NUMBER")
 	private int minNumber;
@@ -68,7 +68,7 @@ public class SourceleadTaxChallanItem implements Serializable {
 	private String dataValidationRange;
 	
 	@Column(name = "STATUS")
-	private int status;
+	private boolean status;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -100,11 +100,13 @@ public class SourceleadTaxChallanItem implements Serializable {
 		this.labelName = labelName;
 	}
 
-	public int getIsFieldRequired() {
+
+
+	public boolean isFieldRequired() {
 		return isFieldRequired;
 	}
 
-	public void setIsFieldRequired(int isFieldRequired) {
+	public void setFieldRequired(boolean isFieldRequired) {
 		this.isFieldRequired = isFieldRequired;
 	}
 
@@ -132,19 +134,21 @@ public class SourceleadTaxChallanItem implements Serializable {
 		this.maxLength = maxLength;
 	}
 
-	public String getMinDate() {
+	
+
+	public Date getMinDate() {
 		return minDate;
 	}
 
-	public void setMinDate(String minDate) {
+	public void setMinDate(Date minDate) {
 		this.minDate = minDate;
 	}
 
-	public String getMaxDate() {
+	public Date getMaxDate() {
 		return maxDate;
 	}
 
-	public void setMaxDate(String maxDate) {
+	public void setMaxDate(Date maxDate) {
 		this.maxDate = maxDate;
 	}
 
@@ -180,11 +184,13 @@ public class SourceleadTaxChallanItem implements Serializable {
 		this.dataValidationRange = dataValidationRange;
 	}
 
-	public int getStatus() {
+
+
+	public boolean isStatus() {
 		return status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatus(boolean status) {
 		this.status = status;
 	}
 

@@ -35,8 +35,8 @@ public class SourceleadTaxChallanItemSubFormField implements Serializable {
 	@Column(name = "FIELD_DESC", columnDefinition = "TEXT default NULL")
 	private String fieldDesc;
 
-	@Column(name = "STATUS")
-	private int status;
+	@Column(name = "ACTIVE")
+	private boolean active;
 
 	public Long getId() {
 		return id;
@@ -78,12 +78,13 @@ public class SourceleadTaxChallanItemSubFormField implements Serializable {
 		this.fieldDesc = fieldDesc;
 	}
 
-	public int getStatus() {
-		return status;
+
+	public boolean isActive() {
+		return active;
 	}
 
-	public void setStatus(int status) {
-		this.status = status;
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	public static long getSerialversionuid() {

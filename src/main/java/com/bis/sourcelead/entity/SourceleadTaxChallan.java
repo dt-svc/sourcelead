@@ -22,7 +22,7 @@ public class SourceleadTaxChallan implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private long id;
 
-	@Column(name = "NAME")
+	@Column(name = "LABEL_NAME")
 	private String name;
 
 	@Column(name = "DESCRIPTION")
@@ -30,6 +30,10 @@ public class SourceleadTaxChallan implements Serializable {
 
 	@Column(name = "UUID")
 	private String uuid;
+	
+	@Column(name = "ACTIVE")
+	private boolean active;
+	
 
 	public long getId() {
 		return id;
@@ -65,6 +69,14 @@ public class SourceleadTaxChallan implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 	
     

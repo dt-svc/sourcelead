@@ -16,6 +16,8 @@ import com.bis.sourcelead.dao.TaxDao;
 import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.CentralTax;
 import com.bis.sourcelead.entity.ProfessionalTax;
+import com.bis.sourcelead.entity.SourceleadTaxChallan;
+import com.bis.sourcelead.entity.SourceleadTaxChallanItem;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
@@ -416,5 +418,34 @@ public class TaxDaoImpl implements TaxDao {
 		}
 		return null;
 	}
+
+
+
+		@Override
+		public long addITChallanSectionItem(SourceleadTaxChallanItem sectionItem) {
+			try {
+				Session session = this.sessionFactory.getCurrentSession();
+				session.saveOrUpdate(sectionItem);
+				return sectionItem.getId();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return 0;
+		}
+
+		
+
+			@Override
+			@Transactional
+			public long addItChallanSection(SourceleadTaxChallan section) {
+				try {
+					Session session = this.sessionFactory.getCurrentSession();
+					session.saveOrUpdate(section);
+					return section.getId();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return 0;
+			}
 
 }
