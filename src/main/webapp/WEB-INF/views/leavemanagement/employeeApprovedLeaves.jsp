@@ -36,6 +36,40 @@ $(document).ready(function(){
                     </select>
             </div>
         </li>
+        <li title="Import" class="positionRelartive">
+        	<!-- <a onclick="leaveImport();"><i class="glyphicon glyphicon-import expIcon mt5"></i>&nbsp;</a> -->
+        	<div class="dowload_pop">
+        			<div class="modal-content">
+        			<div class=modal-header>
+	        			 <button type="button" class="close" data-dismiss="modal" onClick="closeImportFile();">&times;</button>
+          <h4 class="modal-title">Leave Import</h4>
+        			</div>
+        			<div class="modalBody">
+        				<div class="row">
+        					<div class="col-md-12 mb5 clearfix">
+        					<a href="<c:url value='${appPath}/downloadLeaveTemplate'/>" class="text-primary">
+        						Download Template :
+								<i class="ml fa fa-download"></i>
+								</a>
+        					</div>
+        					<div class="clearfix"></div>
+        					<div class="col-md-12">
+        					<div class="uploadTempalte">
+        					<input type="file" class="margin-top0" id="leaveInputFileId">
+        					</div>
+        					</div>
+        				</div>
+        				
+        			</div>
+        			<div class="clearfix modalFooter">
+        				<div class="pull-right">
+        						<button type="button" class="btn btn-success btnSuccess btn-sm mr" onclick="importLeaves();">Import</button>
+        						<button type="button" class="btn btn-default btn-sm mr" onclick="resetUpload();">Reset</button>
+        				</div>
+        			</div>
+        			</div>
+        	</div>
+        </li>
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
@@ -71,7 +105,59 @@ $(document).ready(function(){
 
   </section>
   <!-- Content Area Ends--> 
-  
+
+<script>
+function importLeaves(){
+	var file = $("#leaveInputFileId").val();
+	if(file != null && file != '' && file != 'undefined'){
+		$.ajax({
+	   	type: "POST",
+	    contentType : 'application/json; charset=utf-8',
+	    enctype: 'multipart/form-data',
+        processData: false,
+        contentType:false,
+	    dataType : 'json',
+	    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client&isMailCheck="+isMailCheck, 	   
+		    success : function(json) {
+		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		    	
+		    	var statusCode = "";
+				if(json != null){
+					statusCode = json.statusCode;
+				}
+				if(json != null && json != ''){
+					if(statusCode == "success"){
+						$("#selector").removeClass("remove_pop");
+				 		$("#selector").addClass("success_pop");
+				 		$("#selector").removeAttr("style");
+						$("#selector").css({ display: "block" });
+				 		$("#msgDiv").html("Processed successfully");
+				 		msgFadein();
+				 		prepareExcelDataDiv(json);
+					}else if(statusCode == "invalid"){
+						$("#selector").removeAttr("style");
+						$("#selector").css({ display: "block" });
+						$("#msgDiv").html("Please fill mandatory fields");
+						msgFadein();
+					}
+				}else if(statusCode == ""){
+					$("#selector").removeAttr("style");
+					$("#selector").css({ display: "block" });
+					$("#msgDiv").html("Please import valid Template or fill mandatory fields");
+					msgFadein();
+				}
+	 		    },
+	 		   error: function(e){
+		        }
+		 });
+	}
+}
+
+function resetUpload(){
+	$("#leaveInputFileId").val("");
+}
+</script>
+
 <script>
 function redirectlocation(location){
 	window.location.href = sourceleadUrl + location;
@@ -523,22 +609,19 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
 }
 </script>
   
-<!-- <script>
-function approvedLeavesTable(){ 
-    $('#approvedLeavesTable').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-            "sSearch": "",
-            "sZeroRecords": "", "sEmptyTable": ""
-       }
-    });
-    $("#approvedLeavesTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+<script>
+function leaveImport(){
+	$(".dowload_pop").toggle();
 }
-</script> -->
+function closeImportFile(){
+	$(".dowload_pop").hide();
+}
+function leaveImpPopClose(){
+	$(".side_mask").fadeOut(200);
+	$(".DocAccPopup").fadeOut(100);	
+}
+</script>
+
 
   
 <jsp:include page="../masterFooter.jsp" />
