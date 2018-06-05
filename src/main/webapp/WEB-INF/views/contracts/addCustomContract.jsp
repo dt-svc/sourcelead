@@ -2124,7 +2124,7 @@ function getTaxPercentageValue(){
 function changeSaveButton(){
 	var userId = '${SourceLeadWeb_userId}';
 	 var approverId = $("#approver").val();
-	 var seqOwner1 = $("#sequentialOwner1").val();
+	 var seqOwner1 = $("#sequentialOwner1").val();  
 		var seqOwner2 = $("#sequentialOwner2").val();
 	 var parallelOwner = $("#parallelOwner").val();
 	if(approverId !='' && approverId != null){

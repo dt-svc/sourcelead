@@ -523,7 +523,7 @@ public class ContractController {
 			
 			if(null != contract){
 				
-				// To get Signing Authority Owners
+				// To get Signing Authority Owners  
 				List<Long> parallelOwnerIds = new ArrayList<>();
     			for (ContractOwnerHierarchy coh : contract.getOwnerHierarchyList()) {
     				if(Constants.PARALLEL.equalsIgnoreCase(coh.getHierarchyType().getValue())){
