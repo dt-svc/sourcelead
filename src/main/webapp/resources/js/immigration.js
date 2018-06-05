@@ -462,6 +462,8 @@ function Immigration() {
 	        			if(data.isRequired == 'Y'){
 	        				//$('#isRequired').prop("checked",true);	
 	        				$('#formSave_Form input[name="isRequired"]').prop('checked', true);
+	        			}else{
+	        				$('#formSave_Form input[name="isRequired"]').prop('checked', false);	
 	        			}
 	        			$('#immigrationCandidateFormId').val(data.id);
 	        	

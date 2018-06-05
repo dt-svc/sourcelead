@@ -39,10 +39,12 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ImportTimesheetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LookUpData;
@@ -169,6 +171,9 @@ public class DataMigrationCommonUtil {
 	
 	@Autowired
 	ImmigrationCommonService immigrationCommonService;
+	
+	@Autowired
+	private CandidateDao candidateDao;
 	
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
@@ -1862,11 +1867,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				String email = dataMigrationDTOJsonCopy.getString("beneficiaryEmail").trim();
 				boolean emailVaild = isValidEmailAddress(email);
 				if (emailVaild) {
-				User userByEmail = userService.findByEmailAndOrgLocationsId(email, orgLocation.getId());
-				if (userByEmail == null) {
+				Candidate candidateByEmail = candidateDao.getAllActiveCandidatesByLocationEmail(email, orgLocation.getId());
+				if (candidateByEmail == null) {
 				errorSet.put("beneficiaryEmail", "Beneficiary Email is not found");
 				} else {
-				dataMigrationDTOJsonCopy.put("candidateId", userByEmail.getId());
+				dataMigrationDTOJsonCopy.put("candidateId", candidateByEmail.getId());
 				// System.out.println("candidateId
 				// INSIDE---->>>>>"+dataMigrationDTOJsonCopy.getString("candidateId"));
 				}
