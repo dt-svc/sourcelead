@@ -93,6 +93,9 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 	@Autowired
 	VendorOnboardTasksDao vendorOnboardTasksDao;
 	
+	@Value("${defaultFromEmailAddressForProd}")
+	private String defaultFromEmailAddressForProd;
+	
 	@Autowired
 	CommonUtil commonUtil;
 	
@@ -374,7 +377,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setToEmail(user.getEmail());
 		 emailMessage.setFromName("Sourcelead Admin");
-		 emailMessage.setFromEmail("Info@sourcelead.com");
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);

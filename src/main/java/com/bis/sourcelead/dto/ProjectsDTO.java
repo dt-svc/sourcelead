@@ -94,7 +94,6 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String budgetStatus;
 	
-	@Required(desc="projectShortCode")
 	private String projectShortCode;
 	
 	private String projectStatusId;
