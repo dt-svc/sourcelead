@@ -1380,7 +1380,7 @@ public class RegistrationRestController {
 			user.setUrlSentTime(new Date());
 			user.setIsVerified(Constants.NO);
 			userService.addUser(user);
-			registrationService.sendActivationEmail(user);
+			registrationService.sendActivationEmail(user,null);
 			return "success";
 		}
 		else {

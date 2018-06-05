@@ -201,12 +201,28 @@
 		            $("#visaValidFrom").datepicker("option", "maxDate", dt);
 		        }
 		  });
+		 
+		  var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
 		  $("#searchValueVisa").keyup(function (e) {
 			    if (e.which === 13) {
 			    	searchVisaValue();
 			    }
 			});
+		 
 		  
+		  for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+			})
 		</script>
 <script>
   var visaListCount = '<c:out value ="${visaListCount}"/>';

@@ -129,4 +129,6 @@ public interface CandidateDao {
 	public Candidate getCandidateByEmail(String email) throws Exception;
 
 	public CandidateIdendities getCandidateIdentitiesNumberByCandidateId(Long id, String status);
+
+	Candidate getAllActiveCandidatesByLocationEmail(String email, Long orgLocationId);
 }

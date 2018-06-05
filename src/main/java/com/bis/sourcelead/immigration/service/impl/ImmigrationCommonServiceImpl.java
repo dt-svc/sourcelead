@@ -626,7 +626,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				immigration.setOrgLocationId(orgLocations);
 			}
 		}
+		immigration.setProcessType(immigrationDTO.getProcessType());
 		immigration.setReceiptNo(immigrationDTO.getReceiptNo());
+		
 		if (StringUtils.isEmpty(immigrationDTO.getImmigrationId())) {
 			immigration.setGeneratedId(getImmigrationIdForGeneratedId(orgLocations));
 		}
@@ -645,6 +647,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			Immigration immigration = immigrationCommonDao.getImmigrationDetails(immigrationId);
 			dto.setImmigrationUUID(immigration.getImmigrationUuid());
 			dto.setPetitionType(immigration.getPetitionType().getName());
+			dto.setProcessType(immigration.getProcessType());
 			dto.setGeneratedId(immigration.getGeneratedId());
 			dto.setOpenDate(
 					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), immigration.getOpenDate()));
@@ -1337,6 +1340,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			// immigrationDTO.setTemplateId(immigration.getImmigrationTemplateId().getId().toString());
 			immigrationDTO.setAttorneyId(immigration.getOrgRelations().getId().toString());
 			immigrationDTO.setAttorneyContact(immigration.getOrgSpoc().getId().toString());
+			immigrationDTO.setProcessType(immigration.getProcessType());
 			immigrationDTO.setReceiptNo(immigration.getReceiptNo());
 			immigrationDTO.setOrgloationId(immigration.getOrgLocationId().getId().toString());
 
@@ -1966,6 +1970,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Override
 	public Long getTemplateDetailsByNameAndOrgLoacationId(String name, OrgLocations orgLocations) {
 		return immigrationCommonDao.getTemplateDetailsByNameAndOrgLoacationId(name, orgLocations);
+	}
+
+	@Override
+	public List<Immigration> getImmigrationsByOrgId(Long id) {
+		return immigrationCommonDao.getImmigrationsByOrgId(id);
 	}
 
 }

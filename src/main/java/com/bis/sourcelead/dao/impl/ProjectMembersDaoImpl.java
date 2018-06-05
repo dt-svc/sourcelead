@@ -500,6 +500,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					+ "       OR "+Constants.loginUserAsAdminForProjects+""
 					 
 					+ "       OR  (pm.projects.isReportingManagerAsApprover = 'Y'  and pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id))"
+					+ "       OR  (pm.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = pm.projectMemberCandidteId.consultantUser.id))"
 					+ "     ) ";
 	     
 	     
