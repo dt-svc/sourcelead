@@ -32,9 +32,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.AssociateGradesDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Org;
@@ -1777,5 +1779,33 @@ public class UserDaoImpl implements UserDao {
         return userRoleList;
         
 	
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobarUser,UserDTO userDTO)
+			throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<UserDTO> response = new ResponseList<>();
+		Query queryObj = null;
+		List<User> usersList = null;
+		List<UserDTO> usersDTOList = new ArrayList<UserDTO>();
+		StringBuilder query1 = new StringBuilder("");
+		
+		
+		if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
+			query1.append(" user.firstName like '%" + userDTO.getSearchValue() + "%' ")
+			.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ")
+			.append("OR user.fullName like '%" + userDTO.getSearchValue() + "%' ");
+						
+			}
+		
+		
+		return null;
 	}
 }

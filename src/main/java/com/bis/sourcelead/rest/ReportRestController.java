@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -45,6 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.AssociateGradesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
@@ -61,7 +61,6 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
@@ -198,12 +197,15 @@ public class ReportRestController {
 	 * @return
 	 */
 
-	@RequestMapping(value = "/getAllUsersByOrgLocationsId")
-	public @ResponseBody String getAllUsersByOrgLocationsId(@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
-			HttpServletRequest request) throws Exception {
+	/*@RequestMapping(value = "/getAllUsersByOrgLocationsId")
+	public @ResponseBody ResponseList<UserDTO> getAllUsersByOrgLocationsId(@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
+			UserDTO userDTO,HttpServletRequest request) throws Exception {
 
 	    String resultJson;
-	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	      String isGlobarUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 	    
 		 Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
 		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
@@ -261,6 +263,21 @@ public class ReportRestController {
 				}
 			}
 
+			
+			
+			String[] tableColumns = { "firstName", "jobs", "candidates", "applicants", "shortlisted", "submitted", "Interviewed", "offered", "rejected", "backout" };
+			int sortColumnIndex = 1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default descending order
+			if (userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(userDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = userDTO.getOrder().get(0).get("dir");
+			}
+			userDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			userDTO.setSortOrder(sortColumnOrder);
+			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobarUser);
+			return userDTOList;
+			
+			
 			List<User> usersList = userService.getUsersListByOrglocationId(orgLocations.getId());
 			List<User> orgUsersList = new ArrayList<User>(); 
 			StringBuilder userName = new StringBuilder();
@@ -310,7 +327,7 @@ public class ReportRestController {
 			}
 		    resultJson = commonUtil.toJSON(orgUsersList);
 			return resultJson;
-		}
+		}*/
 
 	
 
