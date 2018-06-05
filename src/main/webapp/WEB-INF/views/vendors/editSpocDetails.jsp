@@ -12,8 +12,7 @@
 	}
 </script> 
 <script type="text/javascript">
-	function vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId,spocLocationId,orgRelationId)
-	{
+	function vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId,spocLocationId,orgRelationId){
 		$.ajax({
 					type : "POST",
 					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&spocLocationId="+spocLocationId+"&orgRelationId="+orgRelationId+"&type=Vendor",
@@ -108,12 +107,24 @@
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
 							
+							<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+							if('${sectionOrder.index == 1}'!='false'){
+								result = result + '<div id="customVendorContactDiv${section.id}" class="customClinetContactDet"></div>';
+							}
+							</c:forEach>
 							
 							result = result + '<div class="clearfix"></div>';
 							result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editVendorContactDetailsDiv"></div>';
 							result = result + '</div>';
 						result = result + '</div>';
 						result = result + '</div>';
+						
+						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+						  var sectionId = '${section.id}';
+						  if('${sectionOrder.index == 1}' != 'false'){
+						  	getCustomDependentFieldVedorContact(spocLocationId,orgRelationId,sectionId);
+						  }
+						 </c:forEach>
 						
 						$("#tab-1").empty();
 						$("#tab-1").append(result);
@@ -433,5 +444,18 @@ function preapareVendorContactCustomFieldDetails(clientLocationId,orgRelationID,
         	 $('#customFieldDataId').append(data);
            },
      }); 
+}
+</script>
+<script>
+function getCustomDependentFieldVedorContact(clientLocationId,orgRelationID,sectionId){
+	var type= 'view';
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?&clientLocationId="+clientLocationId+"&orgRelationID="+orgRelationID+"&requestFrom=clientAndVendor"+"&sectionId="+sectionId+"&requestType="+type,
+				 success: function(data) {
+ 		        	$('#customVendorContactDiv'+sectionId).empty();
+		        	$('#customVendorContactDiv'+sectionId).append(data);
+				 }
+		  });
 }
 </script>

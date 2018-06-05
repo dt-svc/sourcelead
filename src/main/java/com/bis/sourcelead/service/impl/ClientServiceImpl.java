@@ -1486,12 +1486,12 @@ public class ClientServiceImpl implements ClientService {
 
 		OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
 
-		String vendorContactFirstName = "vendorContactFirstName";
+		/*String vendorContactFirstName = "vendorContactFirstName";
 		String vendorContactLastName = "vendorContactLastName";
 		String mobilePhone = "mobilePhone";
 		String spocStatus = "spocStatus";
 		String emailId = "email";
-		String owner = "owner";
+		String owner = "owner";*/
 
 		if (null != orgSpoc) {
 			User editUser = null;
@@ -1600,24 +1600,6 @@ public class ClientServiceImpl implements ClientService {
 					orgSpoc.setOwnerUser(spocUser);
 				OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
 				
-				if(clientDTO.getCustomFormData() !=null) {
-					for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
-						if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-							ClientCustomFieldData vendorUpdateCustomFields = null;
-							if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
-								vendorUpdateCustomFields = clientCustomFieldDataService.getClientCustomFieldDataById(customFields.getEntityId());
-							}else {
-								vendorUpdateCustomFields = new ClientCustomFieldData();
-							}
-						vendorUpdateCustomFields.setOrg(null);
-						OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-						vendorUpdateCustomFields.setOrglocationsFormFields(orgFormField);
-						vendorUpdateCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-						clientCustomFieldDataService.saveClientCustomFieldData(vendorUpdateCustomFields);
-						}
-						
-					}	
-				}
 
 				if (null != orgSpoc.getTempOwnerId()
 						&& orgSpoc.getTempOwnerId().longValue() != orgSpoc.getClientUser().getId().longValue()) {
@@ -1631,32 +1613,36 @@ public class ClientServiceImpl implements ClientService {
 			throw new SourceLeadObjectNotFoundException(message.toString());
 		}
 		
+		if(clientDTO.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					ClientCustomFieldData vendorUpdateCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						vendorUpdateCustomFields = clientCustomFieldDataService.getClientCustomFieldDataById(customFields.getEntityId());
+					}else {
+						vendorUpdateCustomFields = new ClientCustomFieldData();
+					}
+					if(orgSpoc.getOrgRelations().getResponderLocationId().getId().longValue() != orgLocation.getId().longValue()) {
+						vendorUpdateCustomFields.setOrg(orgSpoc.getOrgRelations().getResponderLocationId().getOrg());
+
+		 			}else if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocation.getId().longValue()) {
+						vendorUpdateCustomFields.setOrg(orgSpoc.getOrgRelations().getLocationId().getOrg());
+		 			}
+					
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				vendorUpdateCustomFields.setOrglocationsFormFields(orgFormField);
+				vendorUpdateCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				clientCustomFieldDataService.saveClientCustomFieldData(vendorUpdateCustomFields);
+				}
+				
+			}	
+		}
 		for(String owners : clientDTO.getOwner()){
 		User changedUser = userService.getUserById(Long.parseLong(owners));
 		if (!loginUser.getId().equals(changedUser.getId())) {
 			sendupdatedownerMailTopocUser(loginUser, spocId, owners, orgLocation, type);
 		}
 		}
-		
-		/*if(clientDTO.getCustomFormData() !=null) {
-			for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
-				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
-					ClientCustomFieldData clientUpdateCustomFields = null;
-					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
-						clientUpdateCustomFields = clientCustomFieldDataService.getClientCustomFieldDataById(customFields.getEntityId());
-					}else {
-						clientUpdateCustomFields = new ClientCustomFieldData();
-					}
-				clientUpdateCustomFields.setOrg(orgSpoc.getOrgRelations().getLocationId().getOrg());
-				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
-				clientUpdateCustomFields.setOrglocationsFormFields(orgFormField);
-				clientUpdateCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
-				clientCustomFieldDataService.saveUserCustomFieldData(clientUpdateCustomFields);
-				}
-				
-			}	
-		}
-		*/
 		return orgSpoc;
 
 	}
