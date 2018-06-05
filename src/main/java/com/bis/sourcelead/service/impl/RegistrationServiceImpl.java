@@ -47,6 +47,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
@@ -80,6 +81,7 @@ import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpensesCategoryService;
@@ -239,6 +241,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 	@Value("${static.path}")
     private String staticPath;
 	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioConfigurationService;
+	
 	protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 	}
@@ -324,7 +329,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		try {
 			userService.addUser(user);
 			if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
-				sendActivationEmail(user);
+				sendActivationEmail(user,null);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
@@ -1152,7 +1157,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		userService.saveOrUpdateUserElkDocument(userRole,employees,orgUser.getUserCode());
 		
 		if("Newly Registered".equalsIgnoreCase(orgUser.getRegistrationType()))
-	    	sendActivationEmail(orgUser);
+	    	sendActivationEmail(orgUser,orgLocations);
 		sendEmail(orgUser,user,password,orgLocations.getId(),addUserDTO.getRegistredOrgId());
 	}
 	
@@ -1366,7 +1371,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		}
 		
 		if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
-			sendActivationEmail(user);
+			sendActivationEmail(user,orgLocations);
 		else
 			sendEmailToProfessional(user);
 		
@@ -1374,7 +1379,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 	
 	
-	public void sendActivationEmail(User user) throws Exception
+	public void sendActivationEmail(User user,OrgLocations orgLocations) throws Exception
 	{
 		StringBuilder sb = new StringBuilder();
 		 EmailMessage emailMessage = new EmailMessage();
@@ -1387,8 +1392,20 @@ public class RegistrationServiceImpl implements RegistrationService{
 		 }
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromName("Sourcelead Admin");
-		 emailMessage.setFromEmail("Info@sourcelead.com");
+		 if(orgLocations != null) {
+			 emailMessage.setFromName(orgLocations.getOrgName());
+			 EmailConfigurationFromMail confFromMail = emailScenarioConfigurationService.getConfFromMailByStatus(orgLocations.getId());
+			 if(confFromMail != null) {
+				 emailMessage.setFromEmail(confFromMail.getEmail());
+			 }else {
+				 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+			 }
+		 }else {
+			 emailMessage.setFromName("Sourcelead Admin");
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 }
+	
+		 
 		 emailMessage.setCreatedBy("sladmin");
 		 
 		 //emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
@@ -1614,7 +1631,7 @@ public class RegistrationServiceImpl implements RegistrationService{
 		candidateService.saveOrUpdateCandidateElkDocument(candidate);
 		
 		if("Newly Registered".equalsIgnoreCase(user.getRegistrationType()))
-			sendActivationEmail(user);
+			sendActivationEmail(user,orgLocations);
 		else
 			sendEmailToIndividualRecruiter(user);
 		

@@ -221,6 +221,12 @@ public interface UserService  {
 	List<User> getResourceManagersByOrgLocationIdAndTabId(Long orgLocationsId,Long tabId) throws Exception;
 
 	List<User> getUsersListForSignatoryByOrglocationId(Long id);
+	
+	List<User> getReportingManagersByUserRolesAndOrgLocationId(Long roleId , Long orgLocationsId) throws Exception;
+	
+	List<User> getGlobalReportingManagersUsersByOrgId(Long roleId,Long orgId) throws Exception;
+	
+	List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId) throws Exception;
 }	
 		
 	

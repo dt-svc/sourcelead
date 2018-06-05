@@ -37,6 +37,9 @@ public class ImmigrationDTO extends SearchDTO {
 	@Required(desc = "petition type")
 	private String petitionType;
 	
+	@Required(desc = "process type")
+	private String processType;
+	
 	private String receiptNo;
 
 	private String currUscisStatus;
@@ -919,6 +922,14 @@ public class ImmigrationDTO extends SearchDTO {
 
 	public void setImmigrationUUID(String immigrationUUID) {
 		this.immigrationUUID = immigrationUUID;
+	}
+
+	public String getProcessType() {
+		return processType;
+	}
+
+	public void setProcessType(String processType) {
+		this.processType = processType;
 	}
 	
 }
