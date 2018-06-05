@@ -18,4 +18,6 @@ public interface AssociateGradesDao {
 	
 	AssociateGrades getAssociateGradesByGradeNameAndOrgLocationId(String gradeName,Long orgLocationId) throws Exception;
 
+	AssociateGrades getAssociateGradeById(Long id);
+
 }

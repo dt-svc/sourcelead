@@ -141,7 +141,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectTasks> getAllTasksByProjectId(Long projectId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectTasks pt where pt.projectId.id = :projectId " ;
+		String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.status = '1' " ;
 		List<ProjectTasks> projectTasksList =session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()) 
 			    .list(); 
 		return projectTasksList;  
@@ -155,12 +155,12 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		if(avilableProjectTaskIds != null  && !avilableProjectTaskIds.isEmpty()){
-			String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.id NOT IN (:avilableProjectTaskIds) ";
+			String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.status = '1' and pt.id NOT IN (:avilableProjectTaskIds) ";
 			List<ProjectTasks> projectTasksList = session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).setParameterList("avilableProjectTaskIds", avilableProjectTaskIds).list();
 			return projectTasksList;
 			
 		}else{
-			String query = "from ProjectTasks pt where pt.projectId.id = :projectId";
+			String query = "from ProjectTasks pt where pt.projectId.id = :projectId and pt.status = '1'";
 			List<ProjectTasks> projectTasksList = session.createQuery(query.toString()).setInteger("projectId", projectId.intValue()).list();
 			return projectTasksList;
 			
