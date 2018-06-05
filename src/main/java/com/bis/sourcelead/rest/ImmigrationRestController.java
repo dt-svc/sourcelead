@@ -510,6 +510,11 @@ public class ImmigrationRestController {
 				 * ); model.addObject("templateDTO", );
 				 */
 				model.addObject("educationsList", educationsList);
+				List<LookUpData> attorneyDocsList = lookUpDataService.getLookUpDataByCategory(Constants.ATTORNEY_CATEGORY);
+				model.addObject("attorneyDocsList", attorneyDocsList);
+				
+				List<LookUpData> petitionerDocsList = lookUpDataService.getLookUpDataByCategory(Constants.PETITIONER_CATEGORY);
+				model.addObject("petitionerDocsList", petitionerDocsList);
 				model.setViewName("/immigration/petitionTemplateDocDetails");
 			} else if (status.equalsIgnoreCase("formDetails")) {
 				model.setViewName("/immigration/petitionTemplateFormDetails");

@@ -34,6 +34,18 @@
     			   <c:when  test="${empty docsLst}"> <!--  when list is empty loads default row -->
 				      
 				      <div id="templateDocDivDynamic" class="col-md-12 clearfix noPad mt">
+				      
+				      <div class="col-md-2">
+						<select class="form-control" 
+										name="immigrationDocList[0].documentCat"   title='Document Type' field-name="Select Document" data-validation="required">
+									<option value="" selected>--Select Document Type--</option>
+									<option value="Petitioner" >Petitioner</option>
+									<option value="Beneficiary" >Beneficiary</option>
+									<option value="Attorney" >Attorney</option>
+									
+						</select>
+					   </div>
+				      
 				  		<div class="col-md-3">
 					  
 						<select class="form-control selectpicker" 
@@ -44,7 +56,7 @@
 										</c:forEach>
 						</select>
 					   </div>
-					   <div class="col-md-7 noPad">
+					   <div class="col-md-4 noPad">
 					   <div id="customOther-defaults0">
 					  
 							<input type="text" name="immigrationDocList[0].description" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
@@ -54,7 +66,7 @@
 						   	<div class="col-md-5">
 						   	<input type="text" id="otherType0" name="immigrationDocList[0].otherType" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200" data-validation-optional="true"/>
 						   	</div>
-						   	 <div class="col-md-7">
+						   	 <div class="col-md-4">
 						   	<input type="text" name="immigrationDocList[0].descriptionOther" id="description0" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
 						   	</div> 
 					   </div>
@@ -89,6 +101,19 @@
 					  <c:if test="${rows.count > 1}"><!--when rowIndex is 1 default(first) row is loaded with add button-->
 					    <div id="dynamicRow${rows.count-1}" class="col-md-12 clearfix noPad mt"><!--when rowIndex is 1, 2 row onwards loaded with close button-->
 					  </c:if>
+					  
+					  <div class="col-md-2">
+					  
+						<select class="form-control" 
+									name="immigrationDocList[${rows.count-1}].documentCat" title='Document Type' field-name="Select Document" data-validation="required" onchange="getDocmentCategory(docType);">
+							<option value="" selected>--Select Document Type--</option>
+									<option value="Petitioner" >Petitioner</option>
+									<option value="Beneficiary" >Beneficiary</option>
+									<option value="Attorney" >Attorney</option>
+						</select>
+					  </div>
+					  
+					  
 					  <div class="col-md-3">
 					  <input type="hidden" name="immigrationDocList[${rows.count-1}].id" value="${items.id}" id="templateId${rows.count-1}"/>
 					  
@@ -101,7 +126,7 @@
 						</select>
 					  </div>
 					
-					<div class="col-md-7 noPad" id="currentRow${rows.count-1}">
+					<div class="col-md-4 noPad" id="currentRow${rows.count-1}">
 					<c:choose>
     			   <c:when  test="${empty items.otherType}">
 					   <div id="customOther-defaults${rows.count-1}">
@@ -113,7 +138,7 @@
 						   	<div class="col-md-5">
 						   	<input type="text" id="otherType${rows.count-1}"    name="immigrationDocList[${rows.count-1}].otherType"  value ="" title='Name' class="form-control" placeholder="Name"  field-name="Name" />
 						   	</div>
-						   	 <div class="col-md-7">
+						   	 <div class="col-md-4">
 						   <input type="text" name="immigrationDocList[${rows.count-1}].descriptionOther"   id="description${rows.count-1}" value ="" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
 						   	</div> 
 					   </div>
@@ -128,7 +153,7 @@
 						   	<div class="col-md-5">
 						   	<input type="text" id="otherType${rows.count-1}" name="immigrationDocList[${rows.count-1}].otherType"  value ="${items.otherType}" title='Name' class="form-control" placeholder="Name"  field-name="Name"  data-validation="validate_length length2-200"  data-validation-optional="true"/>
 						   	</div>
-						   	 <div class="col-md-7">
+						   	 <div class="col-md-4">
 						   <input type="text" name="immigrationDocList[${rows.count-1}].descriptionOther" id="description${rows.count-1}"    value ="${items.descriptionOther}" title='Description' class="form-control" placeholder="Description" data-validation="validate_length length2-500" data-validation-optional="true"/>
 						   	</div> 
 					   </div>
@@ -186,6 +211,16 @@
    function appendTemplateDocDetails(rowId){
 	   var templateDocDetails = "";
 		templateDocDetails = templateDocDetails+ "<div id='dynamicRow"+rowId+"' class='col-md-12 clearfix noPad mt'>";
+		
+		templateDocDetails = templateDocDetails+ "<div class='col-md-2'>";
+		templateDocDetails = templateDocDetails+ "<select class='form-control' title='Document Type'  field-name='Select Document' data-validation='required' name='immigrationDocList["+rowId+"].documentType'  data-validation='validate_Space'>";
+		templateDocDetails = templateDocDetails+ "<option value='' selected>--Select Document Type--</option>";
+		
+		templateDocDetails = templateDocDetails+ "<option value='Petitioner'>Petitioner</option>";
+		templateDocDetails = templateDocDetails+ "<option value='Beneficiary'>Beneficiary</option>";
+		templateDocDetails = templateDocDetails+ "<option value='Attorney'>Attorney</option>";
+		templateDocDetails = templateDocDetails+ "</select></div>";
+		
 		templateDocDetails = templateDocDetails+ "<div class='col-md-3'>";
 		templateDocDetails = templateDocDetails+ "<select class='form-control selectpicker' title='Document Type' onchange='updateUIforOthers("+rowId+")' field-name='Select Document' data-validation='required' name='immigrationDocList["+rowId+"].documentType' id='candidateEducation"+rowId+"' data-validation='validate_Space' data-live-search='true'>";
 		templateDocDetails = templateDocDetails+ "<option value='' selected>--Select Document--</option>";
@@ -193,7 +228,7 @@
 		templateDocDetails = templateDocDetails+ "<option value='${edu.id}'>${edu.name}</option>";
 		</c:forEach>
 		templateDocDetails = templateDocDetails+ "</select></div>";
-		templateDocDetails = templateDocDetails+ "<div class='col-md-7 noPad' id='currentRow"+rowId+"'>";
+		templateDocDetails = templateDocDetails+ "<div class='col-md-4 noPad' id='currentRow"+rowId+"'>";
 		templateDocDetails = templateDocDetails+ "	<div id='customOther-defaults"+rowId+"'>";
 		templateDocDetails = templateDocDetails+ "<input type='text' title='Description' name='immigrationDocList["+rowId+"].description' id='description"+rowId+"' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/>";	
 		templateDocDetails = templateDocDetails+ "	</div>";
@@ -201,14 +236,14 @@
 		templateDocDetails = templateDocDetails+ "<div class='col-md-5'>";
 		templateDocDetails = templateDocDetails+ "<input type='text' id='otherType"+rowId+"' name='immigrationDocList["+rowId+"].otherType' title='Name' class='form-control' placeholder='Name' field-name='Name' data-validation='validate_length length2-200'/>";
 		templateDocDetails = templateDocDetails+ "</div>";
-		templateDocDetails = templateDocDetails+ "<div class='col-md-7'>";
+		templateDocDetails = templateDocDetails+ "<div class='col-md-4'>";
 		templateDocDetails = templateDocDetails+ "<input type='text' name='immigrationDocList["+rowId+"].descriptionOther' id='description"+rowId+"' title='Description' class='form-control' placeholder='Description' data-validation='validate_length length2-500' data-validation-optional='true'/>";
 		templateDocDetails = templateDocDetails+ "	</div>";
 		templateDocDetails = templateDocDetails+ "	</div>";
 		templateDocDetails = templateDocDetails+ "	</div>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-2 clearfix'>";
 		templateDocDetails = templateDocDetails+ "<div class='col-md-4 noPad'>";
-		templateDocDetails = templateDocDetails+ "<label class='switch mt5 text-center'>";
+		templateDocDetails = templateDocDetails+ "<label class='switch mt5 text-right'>";
 		templateDocDetails = templateDocDetails+ "<input checked title='Is Required' value = 'Y' onclick = 'tempDocReq("+rowId+");' id='requiredCheck"+rowId+"' name='immigrationDocList["+rowId+"].isRequired' type='checkbox'>";
 		templateDocDetails = templateDocDetails+ "<div class='slider round'></div></label>";
 		templateDocDetails = templateDocDetails+ "</div><div class='col-md-4'><div class='mt5 ml5 clearfix'>";
@@ -282,5 +317,9 @@
 		$("#templateId").val(immTemplId);
 	});
 	
-	
 	</script>
+<script type="text/javascript">
+	function getDocmentCategory(docType){
+		
+	}
+</script>
