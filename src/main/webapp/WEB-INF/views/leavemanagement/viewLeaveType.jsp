@@ -363,14 +363,26 @@ function openLeaveTypeSummary(leaveTypeUUID){
 			result +='                  </div>';
 			result +='              </div>';
 			result +='              <div class="col-md-12 mb">';
-			result +='                  <label class="col-md-2 control-label"><b>Period:</b></label>';
+			result +='                  <label class="col-md-2 control-label"><b>Calculation Period:</b></label>';
 	 		if(report.period != null && report.period != '' && report.period != 'undefined'){
 	 			result +='                  <div class="col-md-8">';
 	 			result +='                      <span>'+report.period+'</span>';
 	 			result +='                  </div>';
 	 		}
-			
 			result +='              </div>';
+			
+			if(report.noOfDays != null && report.noOfDays != '' && report.noOfDays != 'undefined'){
+				result +='              <div class="col-md-12 mb">';
+				result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>No Of Days Annualy:</b></label>';
+		 		
+		 			result +='                  <div class="col-md-8">';
+		 			result +='                      <span>'+report.noOfDays+'</span>';
+		 			result +='                  </div>';
+		 		
+				
+				result +='              </div>';
+				}
+			
 			result +='              <div class="col-md-12 mb">';
 			result +='                  <label class="col-md-2 control-label"><b style="color:#101010;">Leave Effective:</b></label>';
 	 		if(report.leaveEffective != null && report.leaveEffective != '' && report.leaveEffective != 'undefined'){
@@ -380,18 +392,6 @@ function openLeaveTypeSummary(leaveTypeUUID){
 	 		}
 			
 			result +='              </div>';
-			
-			if(report.noOfDays != null && report.noOfDays != '' && report.noOfDays != 'undefined'){
-			result +='              <div class="col-md-12 mb">';
-			result +='                  <label class="col-md-2 control-label"><b style="color:#808080;"><i class="fa fa-level-up paddingRight"></i>No Of Days:</b></label>';
-	 		
-	 			result +='                  <div class="col-md-8">';
-	 			result +='                      <span>'+report.noOfDays+'</span>';
-	 			result +='                  </div>';
-	 		
-			
-			result +='              </div>';
-			}
 			
 			if(report.newJoinee != null && report.newJoinee != '' && report.newJoinee != 'undefined'){
 			result +='              <div class="col-md-12 mb">';
@@ -418,6 +418,40 @@ function openLeaveTypeSummary(leaveTypeUUID){
 			result +='              </div>';
 			}
 			
+			
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Auto Approve:</b></label>';
+	 		if(report.autoApprove != null && report.autoApprove != '' && report.autoApprove != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			if(report.autoApprove == 'Y'){
+	 				result +='                      <span>Yes</span>';
+	 			}else{
+	 				result +='                      <span>No</span>';
+	 			}
+	 			result +='                  </div>';
+	 		}
+			result +='              </div>';
+			
+			if(report.autoApprove == 'Y'){
+				result +='              <div class="col-md-12 mb">';
+				result +='                  <label class="col-md-2 control-label"><b>Auto Approve Type:</b></label>';
+		 		if(report.autoApproveType != null && report.autoApproveType != '' && report.autoApproveType != 'undefined'){
+		 			result +='                  <div class="col-md-8">';
+	 				result +='                      <span>By '+report.autoApproveType+'</span>';
+		 			result +='                  </div>';
+		 		}
+				result +='              </div>';
+				
+				result +='              <div class="col-md-12 mb">';
+				result +='                  <label class="col-md-2 control-label"><i class="fa fa-level-up paddingRight"></i></label>';
+		 		if(report.autoApproveTypeListNames != null && report.autoApproveTypeListNames != '' && report.autoApproveTypeListNames != 'undefined'){
+		 			result +='                  <div class="col-md-8">';
+	 				result +='                      <span>'+report.autoApproveTypeListNames+'</span>';
+		 			result +='                  </div>';
+		 		}
+				result +='              </div>';
+			}
+			
 			result +='              <div class="col-md-12 mb">';
 			result +='                  <label class="col-md-2 control-label"><b>Reason Required:</b></label>';
 	 		if(report.reasonRequired != null && report.reasonRequired != '' && report.reasonRequired != 'undefined'){
@@ -429,8 +463,17 @@ function openLeaveTypeSummary(leaveTypeUUID){
 	 			}
 	 			result +='                  </div>';
 	 		}
-			
 			result +='              </div>';
+			
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>Effective Gender:</b></label>';
+	 		if(report.effectiveGender != null && report.effectiveGender != '' && report.effectiveGender != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+ 				result +='                      <span>'+report.effectiveGender+'</span>';
+	 			result +='                  </div>';
+	 		}
+			result +='              </div>';
+			
 			result +='              <div class="col-md-12 mb">';
 			result +='                  <label class="col-md-2 control-label"><b>Attachment Required:</b></label>';
 	 		if(report.attachmentRequired != null && report.attachmentRequired != '' && report.attachmentRequired != 'undefined'){
@@ -444,6 +487,21 @@ function openLeaveTypeSummary(leaveTypeUUID){
 	 		}
 			
 			result +='              </div>';
+			
+			
+			result +='              <div class="col-md-12 mb">';
+			result +='                  <label class="col-md-2 control-label"><b>TimeSheet Autofill:</b></label>';
+	 		if(report.timeSheetAutofill != null && report.timeSheetAutofill != '' && report.timeSheetAutofill != 'undefined'){
+	 			result +='                  <div class="col-md-8">';
+	 			if(report.timeSheetAutofill == 'Y'){
+	 				result +='                      <span>Yes</span>';
+	 			}else{
+	 				result +='                      <span>No</span>';
+	 			}
+	 			result +='                  </div>';
+	 		}
+			result +='              </div>';
+			
 			result +='              <div class="col-md-12 mb">';
 			result +='                  <label class="col-md-2 control-label"><b>Overdraw Leaves:</b></label>';
 	 		if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined'){
