@@ -109,7 +109,7 @@ $( document ).ready(function() {
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" onclick="runExport();">
+            <input value="Run" class="btn btn-success btnSuccess" onclick="validateDayEntriesReport();">
             <input value="Reset" class="btn btn-default ml10" type="button" onclick="resetValues();">
           </div>
         </div>
@@ -298,16 +298,14 @@ function getAllUserListBasedOnOrgLocationId(){
 	$.ajax({
         url: sourceleadUrl + "/getAllUserListBasedOnOrgLocationId",
         type: "POST",
-        success: function (result) {
-        	var obj = jQuery.parseJSON(result);
+        success: function (obj) {
         	var output = "";
         	output = output + "<option value=''>--select Associate--</option>";
         	if(obj != null && obj !='' && obj !='undefined'){
         		$.each(obj, function(i, item) {
-        			if(item.firstName != null && item.firstName !='' && item.firstName !='undefined'){
-        				output = output + "<option value='" +item.id+ "'>"+item.firstName+" "+item.lastName+"</option>";
-        			}else{
-        				output = output + "<option value='" +item.id+ "'>"+item.firstName+"</option>";
+        			console.log(item.candidateName);
+        			if(item.candidateName != null && item.candidateName !='' && item.candidateName !='undefined'){
+        				output = output + "<option value='" +item.id+ "'>"+item.candidateName+"</option>";
         			}
             		
         		});

@@ -8,6 +8,7 @@
 				  <h2>Petition detail</h2>
 				  <ul>
 					  <li class="clearfix"><span>Petition type</span><p>: ${immigration.petitionType}</p></li>
+					   <li class="clearfix"><span>Process type</span><p>: ${immigration.processType}</p></li>
 					  <li class="clearfix"><span>Open date</span><p>: ${immigration.openDate}</p></li>
 					  <li class="clearfix"><span>Current USCIS Status</span><p>: ${immigration.currUscisStatus}</p></li>
 					  <li class="clearfix"><span>Date of arrival</span><p>: ${immigration.arrivalDate}</p></li>

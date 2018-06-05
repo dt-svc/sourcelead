@@ -139,7 +139,7 @@
 				<div class="row">
 				<label class="col-md-4">Address</label>
               	<div class="col-md-8">
-              	<input class="form-control positionRelative" id="address" name="address" onclick="initLocationAuto('address');" placeholder="Address"  type="text"></input>
+              	<input class="form-control positionRelative" id="address" name="address" onclick="initLocationAuto('address');" placeholder="Address"  type="text" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('address');"></i>
 				</div>
 				</div>
