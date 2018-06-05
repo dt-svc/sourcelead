@@ -770,8 +770,8 @@ public class UsersListRestController {
 		userRole.setGradesList(gradesList);
 		
 		List<User> reportingManagersList = new ArrayList<>();
-		List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userRole.getUser().getId(), userRole.getRoles().getId(), orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
-		List<User> globalUserList = userService.getGlobalUsersByOrgId(userRole.getRoles().getId(), org.getId(), Long.valueOf(Constants.TAB_USER)); 
+		List<User> userList = userService.getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userRole.getUser().getId(), userRole.getRoles().getId(), orgLocations.getId());
+		List<User> globalUserList = userService.getGlobalReportingManagersUsersByOrgId(userRole.getRoles().getId(), org.getId()); 
 		if(userList != null && !userList.isEmpty()) {
 			reportingManagersList.addAll(userList);
 		}

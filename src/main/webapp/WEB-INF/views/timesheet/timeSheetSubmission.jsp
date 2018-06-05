@@ -322,8 +322,8 @@
 									      <td> <!-- rowspan="2" -->
 									        <div>
 									          <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
-									               <span id="${entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span>
-									               <input type="hidden" id="${entryCount.index+1}task1IdBillableTypeId" name="${entryCount.index+1}task1IdBillableTypeId"/>
+									               <span>${!empty taskType ? taskType : '--'}</span>
+									               <input type="hidden" id="${entryCount.index+1}task1IdBillableTypeId" name="${entryCount.index+1}task1IdBillableTypeId" value="${taskType}"/>
 									          </c:if>
 									         <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
 			                                      <select id="${entryCount.index+1}task1IdBillableTypeId" name="${entryCount.index+1}task1IdBillableTypeId"  field-name="Billble Type" onchange="prepareBillableDetails('${entryIndex}','${entryCount.index+1}task1IdBillableTypeId')">  
@@ -494,16 +494,13 @@
 										   </c:if>
 										   <c:forEach var="finfo" items="${timesheetSubmissionDTO.fileInfo}">
 										         <strong id='${finfo.fileDbId}document'>
-												     <a class='downicon downloadInput mb5' href='${finfo.fileURL}' download>
-												        <i class='glyphicon glyphicon-save'></i>
-												        <input type='button' class='padIcon' value='${finfo.fileName}' title="${finfo.fileName}">
+												     <a class='downicon downloadInput mb maxWid mr' href='${finfo.fileURL}' download>
+												        <div class="attFile"><i class="fa fa-download"></i>${finfo.fileName}</div>
 												      </a>
 												       <c:if test="${timesheetSubmissionDTO.submitButtonVisible}">
-												          <%-- <input class='dele' type='button' onClick='deleteSubmissionDocument("${finfo.fileDbId}");' > --%>
 												          <i title="Delete" class="fa fa-trash cursorPointer text-danger mr" onClick='deleteSubmissionDocument("${finfo.fileDbId}");'></i>
 												       </c:if>
 												       <i title="View" class="fa fa-eye cursorPointer text-primary" onClick="viewFile('${finfo.fileURL}','${finfo.fileName}','${finfo.contentType}');"></i>
-												       <%-- <input class='deleApp' type='button' onClick="viewFile('${finfo.fileURL}','${finfo.fileName}','${finfo.contentType}');"> --%>
 												 </strong>
 										   </c:forEach>
 									</div>
