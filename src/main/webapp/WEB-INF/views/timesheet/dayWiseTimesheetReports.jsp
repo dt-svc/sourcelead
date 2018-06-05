@@ -70,7 +70,7 @@ $( document ).ready(function() {
               <label class="clearfix">Emp Type</label>
               <div class="clearfix">
                 <select class="form-control chosen-select" id="designationType" name="employmentType" data-placeholder="Select Emp Type" multiple field-name="Employment type" onchange="getProjectMemberFromProjectId();">
-	                 <option value="">--Select Employment type--</option>
+	                 <option >--Select Employment type--</option>
 	                 <option value="C2C">C2C</option>
 	                 <option value="C2C-1099">C2C-1099</option>
 	                 <option value="W-2">W-2</option>
@@ -198,7 +198,8 @@ function resetValues(){
 	$('#designationType').val('');
 	$('#projectList').val('');
 	$('#projectList').trigger("chosen:updated");
-	 $('#projectMemberList').trigger("chosen:updated");
+	$('#projectMemberList').trigger("chosen:updated");
+	$('#designationType').trigger("chosen:updated");
 }
 </script>
 
@@ -254,7 +255,7 @@ function getProjectMemberFromProjectId(){
         type: "POST",
         success: function (result) {
         	var output = "";
-        	output = output + "<option value=''>--select Associate--</option>";
+        	output = output + "<option>--select Associate--</option>";
         	if(result != null && result !='' && result !='undefined'){
         		$.each(result, function(i, item) {
             		output = output + "<option value='" +item.id+ "'>"+item.candidateName+"</option>";
@@ -301,10 +302,9 @@ function getAllUserListBasedOnOrgLocationId(){
         type: "POST",
         success: function (obj) {
         	var output = "";
-        	output = output + "<option value=''>--select Associate--</option>";
+        	output = output + "<option>--select Associate--</option>";
         	if(obj != null && obj !='' && obj !='undefined'){
         		$.each(obj, function(i, item) {
-        			console.log(item.candidateName);
         			if(item.candidateName != null && item.candidateName !='' && item.candidateName !='undefined'){
         				output = output + "<option value='" +item.id+ "'>"+item.candidateName+"</option>";
         			}
