@@ -268,9 +268,11 @@ public class OrgSettingsController {
 		 }
 		 
 		 modulesList.add(dashobardTab);
-		 for(Tabs tabs : tabsList) {
-			 modulesList.add(tabs);
-			 modulesNamesList.add(tabs.getTabName());
+		 if(tabsList != null){
+			 for(Tabs tabs : tabsList) {
+				 modulesList.add(tabs);
+				 modulesNamesList.add(tabs.getTabName());
+			 }
 		 }
 		 
 		 model.addObject("modulesList", modulesList);
@@ -500,6 +502,18 @@ public class OrgSettingsController {
 		else {
 			model.setViewName("registration/persmissionDenied");
 		}
+		return model;
+	}
+	
+	
+	@RequestMapping(value = "/addGrade")
+	public ModelAndView addGrade(HttpServletRequest request) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		
+		model.setViewName("addGrade");
+		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
 	

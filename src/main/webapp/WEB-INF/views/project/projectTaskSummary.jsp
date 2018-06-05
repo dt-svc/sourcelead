@@ -675,7 +675,7 @@ function inlineEditDescription(taskId){
 			  success : function(data) {
 				   $("#jobAlert2").removeAttr("style");
 	    			$("#jobAlert2").css({ display: "block" });
-					$("#editJobAlertMsgDiv").html("Successfully Update Description");
+					$("#editJobAlertMsgDiv").html("Description Updated Successfully!!");
 						editAlertMsgFadeinFunction();
 						getTaskActivities(); 
 			}, 

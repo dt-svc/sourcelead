@@ -124,6 +124,40 @@ public class TimeSheetDayEntriesDaoImpl implements TimeSheetDayEntriesDao{
 		return timesheetEntriesList;
 	}
 	
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(Long projectId, Date timesheetDate,Long projectMemberId) throws Exception {
+		java.sql.Date sqlTimesheetDate = null;
+		if(timesheetDate != null){
+			sqlTimesheetDate = new java.sql.Date(timesheetDate.getTime());
+		}
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt left join fetch pt.projectId proj left join fetch tde.timesheetSubmissions sub left join fetch sub.projectMembers proMember  where proj.id =:projectId and tde.timesheetDate=:timesheetDate and proMember.id=:projectMemberId and tde.status = '1' ";
+		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setLong("projectId", projectId).setParameter("timesheetDate", sqlTimesheetDate).setLong("projectMemberId", projectMemberId).list();	
+		return timesheetEntriesList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(Long projectId, Date startDate,Date endDate,Long projectMemberId) throws Exception {
+		java.sql.Date sqlTimesheetStartDate = null;
+		java.sql.Date sqlTimesheetEndDate = null;
+		if(startDate != null){
+			sqlTimesheetStartDate = new java.sql.Date(startDate.getTime());
+		}
+		if(endDate != null){
+			sqlTimesheetEndDate = new java.sql.Date(endDate.getTime());
+		}
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from TimeSheetDayEntries tde left join fetch tde.projectTask pt left join fetch pt.projectId proj left join fetch tde.timesheetSubmissions sub left join fetch sub.projectMembers proMember  where proj.id =:projectId and proMember.id=:projectMemberId and tde.status = '1' and tde.timesheetDate between :sqlTimesheetStartDate AND :sqlTimesheetEndDate ";
+		List<TimeSheetDayEntries> timesheetEntriesList = session.createQuery(query).setLong("projectId", projectId).setParameter("sqlTimesheetStartDate", sqlTimesheetStartDate).setParameter("sqlTimesheetEndDate", sqlTimesheetEndDate).setLong("projectMemberId", projectMemberId).list();	
+		return timesheetEntriesList;
+	}
+	
 	private TimeSheetDayEntriesHistory  getHistoryRecordFromTimeSheetDayEntries(TimeSheetDayEntries timeSheetDayEntries){
 		TimeSheetDayEntriesHistory timeSheetDayEntriesHistory = null;
 		if(timeSheetDayEntries != null){

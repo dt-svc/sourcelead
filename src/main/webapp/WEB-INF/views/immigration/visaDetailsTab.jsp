@@ -114,7 +114,7 @@
           <div class="col-sm-12 noPad mt clearfix" id="idNumberVisaDiv">
 				<label class="col-md-4 padding_left">Visa Id<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control" data-validation = "required validate_length length8-12 validate_int" onkeyup = "validateCandidatePassportVisa('Visa');"/>
+              		<input type="text" name = "idNumber" id = "idNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control" data-validation = "required validate_length length8-12 validate_AlphaNumber" onkeyup = "validateCandidatePassportVisa('Visa');"/>
 				</div>
 			</div>				          
           	<div class="col-sm-12 noPad mt clearfix">
@@ -201,12 +201,28 @@
 		            $("#visaValidFrom").datepicker("option", "maxDate", dt);
 		        }
 		  });
+		 
+		  var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
 		  $("#searchValueVisa").keyup(function (e) {
 			    if (e.which === 13) {
 			    	searchVisaValue();
 			    }
 			});
+		 
 		  
+		  for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+			})
 		</script>
 <script>
   var visaListCount = '<c:out value ="${visaListCount}"/>';

@@ -39,7 +39,16 @@
                   </select>
               </div>
           </div> 
-
+			<div class="form-group">
+              <label class="col-md-4">Process type<span class="text-danger paddingLeft">*</span></label>
+              <div class="col-md-8 dropdown-select">
+                  <select id="processType" name="processType" class="form-control	" field-name="Process type" data-validation="required">
+                  <option selected value="">--Select Type --</option>
+                  <option ${immigrationDTO.processType == 'Normal' ? 'selected': ''} value='Normal' >Normal (Regular)</option>
+                  <option ${immigrationDTO.processType == 'Premium' ? 'selected': ''} value='Premium' >Premium</option>
+                  </select>
+              </div>
+          	</div> 
             <div class="form-group">
               <label class="col-md-4">Open date<span class="text-danger paddingLeft">*</span></label>
               <div class="col-md-8">
@@ -1265,28 +1274,14 @@ $("#experienceValue").change(function () {
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
-		      onSelect: function (selected) {
-		            //var dt = new Date(selected);
-		            var dt = $(this).datepicker('getDate', '+1d');
-		            console.log("dt");
-			           console.log(dt);
-			           console.log("dt.getDate()");
-			           console.log(dt.getDate());
-		            dt.setDate(dt.getDate() + 1);
-		            $("#lcaEndDate").datepicker("option", "minDate", dt);
-		        }
+		  	  maxDate:0  
 		  });
 		  
 		  $('#lcaEndDate').datepicker({
 		      dateFormat: finalDateFormatPetitionSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
-		        onSelect: function (selected) {
-		            //var dt = new Date(selected);
-		            var dt = $(this).datepicker('getDate', '-1d');
-		            dt.setDate(dt.getDate() - 1);
-		            $("#lcaStartDate").datepicker("option", "maxDate", dt);
-		        }
+		  	   minDate:1 
 		  });
 		  ///
 		  
@@ -1343,7 +1338,7 @@ function  removeValidationAttorneyContact() {
 </script>
 <script>
 	 function selectedAttorney(){
-		 var vid =  $('#attorneys').val();
+		 var vid =  $('#attorneyId').val();
 		 window.open(sourceleadUrl+"/addVendorContact?vid="+vid,'_blank');
 	 }
 	 </script>

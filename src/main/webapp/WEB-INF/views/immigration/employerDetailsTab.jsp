@@ -114,7 +114,7 @@
 		<input type = "hidden" id="candidateEmpId"  name="candidateEmployeeId">
 		
 		<div class="popupHead">
-			<h2>Add Employer</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
+			<h2>Add Employer</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFunEmployer();"></a>
 		</div>
 		
 		<div class="popupMid clearfix overflow_inherint">
@@ -139,7 +139,7 @@
 				<div class="row">
 				<label class="col-md-4">Address</label>
               	<div class="col-md-8">
-              	<input class="form-control positionRelative" id="address" name="address" onclick="initLocationAuto('address');" placeholder="Address"  type="text"></input>
+              	<input class="form-control positionRelative" id="address" name="address" onclick="initLocationAuto('address');" placeholder="Address"  type="text" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('address');"></i>
 				</div>
 				</div>
@@ -235,7 +235,7 @@
 		<div class="clearfix"></div>
 		<div class="immiPopFoot mt clearfix">
             <input value="Save"class="" type="button" id="employerSave_Buton" onclick="saveEmployerDetails('save');"> 
-            <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFun();">
+            <input value="Cancel" id = "cancel_button" class="popCan" type="button" onClick="popFunEmployer();">
           </div>		
 	</div><!-- popup code end -->
 	<div class="immFoot clearfix">
@@ -270,7 +270,7 @@
 		$("#emploView").fadeIn(100);
 	});
 
-	function popFun() {
+	function popFunEmployer() {
 		$(".popMask").fadeOut(200);
 		$("#emploView").fadeOut(200);
 		$("#employerDetails_form")[0].reset();
@@ -280,10 +280,9 @@
 		$('#endDateDivId').find('p.jquery_form_error_message').remove();
 		$("#startYearValidation").find('p.jquery_form_error_message').remove();
 		$("#endYearValidation").find('p.jquery_form_error_message').remove();
+		$("#endYearValidation").empty();
 		$("#endMonth").find('p.jquery_form_error_message').remove();
 		$('#startYearValidation').removeAttr('style'); 
-		$('#endYearValidation').removeAttr('style'); 
-		$("#employerSave_Buton").removeAttr("disabled");
 	}
 	
 	$("#employersDataSearch").keyup(function (e) {

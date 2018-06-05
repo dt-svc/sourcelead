@@ -570,7 +570,7 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
         Session session = null;
         try {
             session = this.sessionFactory.openSession();
-            String query = "from ImmigrationTemplate iTemplate where iTemplate.name= :name";
+            String query = "from ImmigrationTemplate iTemplate where iTemplate.name= :name and iTemplate.status = 1";
             if (templateId > 0) {
                 query += " and iTemplate.id not in(" + templateId + ")";
             }

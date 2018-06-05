@@ -615,6 +615,7 @@ public class CandidateRestController {
 			List<RequirementSubmission> requirementSubmission = requirementSubmissionService
 					.getRequirementHistoryListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
 			for (RequirementSubmission req : requirementSubmission) {
+				if(req.getRequirement() != null) {
 				req.setPositionType(req.getRequirement().getJobTitle());
 				req.setCountry(req.getRequirement().getCountry());
 				req.setState(req.getRequirement().getState());
@@ -646,7 +647,7 @@ public class CandidateRestController {
 						req.setClientName(req.getRequirement().getSpocId().getClientUser().getFirstName());
 					}
 				}
-
+			}
 			}
 			responseList.setData(requirementSubmission);
 			responseList.setResponse(Result.SUCCESS.name());

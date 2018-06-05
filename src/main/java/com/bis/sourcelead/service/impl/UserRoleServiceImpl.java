@@ -794,6 +794,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 		
 		return user;
 	}
+	
     @Override
 	public List<User> getAllProjectManagersAssignedToProjects(Long orgLocationId) throws Exception {
 		return userRoleDao.getAllProjectManagersAssignedToProjects(orgLocationId);
@@ -811,5 +812,16 @@ public class UserRoleServiceImpl implements UserRoleService{
 	}
 
 	
+	@Override
+	public List<Long> getAllAssignedUsersIdsByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersIdsByResourceManagerId(resourceManagerId, orgLocationId);
+	}
+
+	@Override
+	public List<UserRole> getAllAssignedUsersByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
+		return userRoleDao.getAllAssignedUsersByResourceManagerId(resourceManagerId, orgLocationId);
+	} 
+    
+
 
 }

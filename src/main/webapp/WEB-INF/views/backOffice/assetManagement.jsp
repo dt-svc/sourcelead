@@ -276,7 +276,7 @@ function openAssetFilterPop(){
 					   
 					   <div class="col-md-4 mb positionRelative">
 							<div class="clearfix dynamic_search filterDynamicsearch">
-								<input type="text" id="myShiftInput" onkeyup="myShiftFunction()" placeholder="Shift" title="Type in a clients">
+								<input type="text" id="myShiftInput" onkeyup="myShiftFunction()" placeholder="Availability" title="Type in a clients">
 								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 							</div>
 							 <div class="clearfix filterSearch-ul">

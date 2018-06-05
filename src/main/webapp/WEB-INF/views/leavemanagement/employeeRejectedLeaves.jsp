@@ -166,7 +166,7 @@ function redirectlocation(location){
 	              "data": "noOfDays",
 	              "render": function ( data, type, opt, meta ) {
 	            	   var result = "";
-	            	   result = result + '     <div title="'+opt.noOfDays+'" class="tblminwidth-75">'+opt.noOfDays+'</div>';		 
+	            	   result = result + '     <div title="'+opt.appliedNoOfDays+'" class="tblminwidth-75">'+opt.appliedNoOfDays+'</div>';		 
 	            	    return result; 
 	              }
 	            },/* {

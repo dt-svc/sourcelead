@@ -1,9 +1,14 @@
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+		  
 		  <div class="immigraDetailsOut">
 		  	<div class="immigraDetailsWrap">
 			  <div class="immigraDetailsCta">
 				  <h2>Petition detail</h2>
 				  <ul>
 					  <li class="clearfix"><span>Petition type</span><p>: ${immigration.petitionType}</p></li>
+					   <li class="clearfix"><span>Process type</span><p>: ${immigration.processType}</p></li>
 					  <li class="clearfix"><span>Open date</span><p>: ${immigration.openDate}</p></li>
 					  <li class="clearfix"><span>Current USCIS Status</span><p>: ${immigration.currUscisStatus}</p></li>
 					  <li class="clearfix"><span>Date of arrival</span><p>: ${immigration.arrivalDate}</p></li>
@@ -12,15 +17,31 @@
 				  </ul>
 			  </div>
 			  <div class="immigraDetailsCta">
-				  <h2>Attorney Details</h2>
-				  <ul>
-					  <li class="clearfix"><span>Attorney Name</span><p>: ${immigration.attorneyName}</p></li>
-					  <li class="clearfix"><span>Contact name</span><p>: ${immigration.attorneyContact}</p></li>
-					  <li class="clearfix"><span>Email</span><p>: ${immigration.attorneyEmail} </p></li>
-					  <li class="clearfix"><span>Phone</span><p>: ${immigration.attorneyPhone}</p></li>
-					  <li class="clearfix"><span>Fax</span><p>: ${immigration.attorneyFax}</p></li>
-					  
-				  </ul>
+			  	<c:choose>
+					<c:when test="${SourceLeadWeb_orgLocations.isLawFirm == 'Y'}">
+						 <h2>Company Details</h2>
+						  <ul>
+							  <li class="clearfix"><span>Company Name</span><p>: ${immigration.attorneyName}</p></li>
+							  <li class="clearfix"><span>Comapny Contact name</span><p>: ${immigration.attorneyContact}</p></li>
+							  <li class="clearfix"><span>Email</span><p>: ${immigration.attorneyEmail} </p></li>
+							  <li class="clearfix"><span>Phone</span><p>: ${immigration.attorneyPhone}</p></li>
+							  <li class="clearfix"><span>Fax</span><p>: ${immigration.attorneyFax}</p></li>
+							  
+						  </ul>
+					</c:when>
+					<c:otherwise>
+						 <h2>Attorney Details</h2>
+						  <ul>
+							  <li class="clearfix"><span>Attorney Name</span><p>: ${immigration.attorneyName}</p></li>
+							  <li class="clearfix"><span>Attorney Contact name</span><p>: ${immigration.attorneyContact}</p></li>
+							  <li class="clearfix"><span>Email</span><p>: ${immigration.attorneyEmail} </p></li>
+							  <li class="clearfix"><span>Phone</span><p>: ${immigration.attorneyPhone}</p></li>
+							  <li class="clearfix"><span>Fax</span><p>: ${immigration.attorneyFax}</p></li>
+							  
+						  </ul>
+					</c:otherwise>
+				</c:choose>
+				  
 			  </div>
 			  <div class="immigraDetailsCta">
 				  <h2>Job Details</h2>

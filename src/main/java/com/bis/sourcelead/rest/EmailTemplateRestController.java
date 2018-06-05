@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,7 +41,7 @@ public class EmailTemplateRestController {
 	
 		 
 	 @RequestMapping(value = "/getEmailTemplatesList" , method = RequestMethod.GET)
-		public @ResponseBody List<EmailScenario> getEmailTemplatesList(HttpServletRequest request)
+		public @ResponseBody List<EmailScenario> getEmailTemplatesList(HttpServletRequest request,@RequestParam(value="tabIds", required=false) String tabIds,@RequestParam(value="specification", required=false) String specification)
 				throws Exception {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -48,10 +49,29 @@ public class EmailTemplateRestController {
 		 List<EmailScenario> emailScenarioList=new ArrayList<>();
 		 List<EmailScenario> emailScenarioDefList=null;
 		 List<EmailScenario> emailScenarioOrgList=null;
+		 
+		 List<Long> tabList = new ArrayList<>();
+		 
+		 if(tabIds != null && !tabIds.isEmpty()) {
+				String[] entyties = tabIds.split(",");
+				for(int i=0; i < entyties.length; i++) {
+					tabList.add(Long.parseLong(entyties[i]));
+				}
+			}
+		 
+		 List<String> specList = new ArrayList<>();
+		 
+		 if(specification != null && !specification.isEmpty()) {
+				String[] specifi = specification.split(",");
+				for(int i=0; i < specifi.length; i++) {
+					specList.add(specifi[i]);
+				}
+			}
+		 
 		 if(org.getOrgCode().equalsIgnoreCase("slead")){
-			 emailScenarioList= emailScenarioService.getEmailScenarioList("sourcelead");
+			 emailScenarioList= emailScenarioService.getEmailScenarioList("sourcelead",tabList,specList);
 		 }else{
-			 emailScenarioDefList=emailScenarioService.getEmailScenarioList("org");
+			 emailScenarioDefList=emailScenarioService.getEmailScenarioList("org",tabList,specList);
 			 Map<String,EmailScenario> emailScenarioDef=new HashMap<>();
 			 Map<String,EmailScenario> emailScenarioOrg=new HashMap<>();
 			 for(EmailScenario emailScenario:emailScenarioDefList){
@@ -113,9 +133,9 @@ public class EmailTemplateRestController {
 			 newEmailScenario.setEntityType(emailScenario.getEntityType());
 			 newEmailScenario.setUniqueScenarioName(emailScenario.getUniqueScenarioName());
 			 newEmailScenario.setDescription(emailScenario.getDescription());
-			 newEmailScenario.setSubject(emailScenario.getSubject());
+			 newEmailScenario.setSubject(emailScenarioDTO.getSubject());
 			 newEmailScenario.setTemplateType(emailScenario.getTemplateType());
-			 newEmailScenario.setSignature(emailScenario.getSignature());
+			 newEmailScenario.setSignature(emailScenarioDTO.getSignature());
 			 newEmailScenario.setDefaultTemplate("N");
 			 newEmailScenario.setOrgLocationId(orgLocation);
 			 newEmailScenario.setEmailUUID(SourceLeadRandomCodeHelper.generateRandomUUID());

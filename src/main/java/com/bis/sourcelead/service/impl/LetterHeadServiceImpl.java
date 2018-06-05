@@ -274,6 +274,15 @@ public class LetterHeadServiceImpl implements LetterHeadService{
 	    	cell.addElement(img1);
 		    return cell;
 	}
-	
+
+	@Override
+	public Boolean validateLetterHeadName(String letterHeadName, OrgLocations orgLocation) {
+		return letterHeadDao.validateLetterHeadName(letterHeadName,orgLocation);
+	}
+
+	@Override
+	public LetterHead validateNameInEdit(String letterHeadName, Long letterHeadId, Long orgLocationId) {
+		return letterHeadDao.validateNameInEdit(letterHeadName,letterHeadId,orgLocationId);
+	}
 
 }

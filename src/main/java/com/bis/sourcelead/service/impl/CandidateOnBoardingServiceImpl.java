@@ -399,7 +399,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			onboardingUser = getUserDetails(candidateOnBoarding,password,loginUser);
 		    userDao.addUser(onboardingUser);
 		    if("Newly Registered".equalsIgnoreCase(onboardingUser.getRegistrationType()))
-		    	registrationService.sendActivationEmail(onboardingUser);
+		    	registrationService.sendActivationEmail(onboardingUser,orgLocations);
 		}
 		
 		

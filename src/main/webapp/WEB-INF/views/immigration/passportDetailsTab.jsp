@@ -190,11 +190,29 @@
 		            $("#validFrom").datepicker("option", "maxDate", dt);
 		        }
 		  });
-		  $("#searchValuePassport").keyup(function (e) {
-			    if (e.which === 13) {
-			    	searchPassportValue();
-			    }
-			});
+		  
+			  var config = {
+					  '.chosen-select'           : {},
+					  '.chosen-select-deselect'  : {allow_single_deselect:true},
+					  '.chosen-select-no-single' : {disable_search_threshold:10},
+					  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+					  '.chosen-select-width'     : {width:"95%"}
+					}
+			
+			  $("#searchValuePassport").keyup(function (e) {
+				    if (e.which === 13) {
+				    	searchPassportValue();
+				    }
+				});
+			  
+			  for (var selector in config) {
+				  $(selector).chosen(config[selector]);
+				}
+				$('.chosen-select').each(function() {
+					var $this = $(this);
+					$this.next().css({'width': '100%'});
+				})
+			  
 		</script>
 
 <script>

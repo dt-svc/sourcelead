@@ -140,4 +140,9 @@ public interface UserRoleDao {
 	
 	public List<UserRole> getUserAccountsListByUserId(List<Long> userId) throws Exception;
 
+	List<Long> getAllAssignedUsersIdsByResourceManagerId(Long resourceManagerId,Long orgLocationId);
+	
+	public List<UserRole> getAllAssignedUsersByResourceManagerId(Long resourceManagerId, Long orgLocationId);
+
+
 }

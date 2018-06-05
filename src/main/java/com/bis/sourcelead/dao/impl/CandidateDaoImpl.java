@@ -199,7 +199,7 @@ public class CandidateDaoImpl implements CandidateDao {
     */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter) throws Exception {
+	public List<Candidate> getCandidatesListByOrgLocationID(Long orgLocationId,Long orgId, Integer candidateState, String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter,String createdByFilter,User user) throws Exception {
 
 		
 		String subQuery = null;
@@ -233,6 +233,12 @@ public class CandidateDaoImpl implements CandidateDao {
 				candidateTypeSubQuery = " and (cnadidate.isFavourite = '1') ";
 				
 			}
+			
+	   String createdBySubQuery = "";
+	   if(createdByFilter != null && !createdByFilter.isEmpty() && createdByFilter.equalsIgnoreCase("myCandidates")){
+		   createdBySubQuery = " and cnadidate.createdBy = '"+user.getUserCode()+"' ";
+	   }
+	   
 			
 			List<String> skillsList = new ArrayList<>();
 			if(StringUtils.isNotBlank(candidateFilterSkills)) {
@@ -290,7 +296,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	         java.sql.Date endDate = new java.sql.Date(parsed.getTime());
 	         
 			
-   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" "+avaliabilitySubQuery+" "+candidateTypeFilterSubQuery+" and ( cnadidate.updatedDate >= :endDate) ORDER BY cnadidate.id DESC ";  
+   	    	 String query = "from Candidate cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" "+avaliabilitySubQuery+" "+candidateTypeFilterSubQuery+" "+createdBySubQuery+" and ( cnadidate.updatedDate >= :endDate) ORDER BY cnadidate.id DESC ";  
 		     candidateList = session.createQuery(query)
 				                    .setDate("endDate", endDate)
 				                    .setLong("orgLocationId", orgLocationId).setString("varZero", "0").setParameterList("skillsList", skillsList).setParameterList("avalibilityList", avalibilityList)
@@ -299,7 +305,7 @@ public class CandidateDaoImpl implements CandidateDao {
 				                    .list();
 		}else{
 			
-			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" "+avaliabilitySubQuery+" "+candidateTypeFilterSubQuery+" ORDER BY cnadidate.id DESC";  
+			String query = "from Candidate cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "+subQuery+" "+candidateTypeSubQuery+" "+candidateSkillsSubQuery+" "+avaliabilitySubQuery+" "+candidateTypeFilterSubQuery+" "+createdBySubQuery+" ORDER BY cnadidate.id DESC";  
 		    candidateList = session.createQuery(query)
 					               .setLong("orgLocationId", orgLocationId)
 					               .setLong("orgId", orgId).setString("varZero", "0").setParameterList("skillsList", skillsList).setParameterList("avalibilityList", avalibilityList).list();
@@ -1595,8 +1601,14 @@ public class CandidateDaoImpl implements CandidateDao {
 		} else {
 			return null;
 		}
-   	
-
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getAllActiveCandidatesByLocationEmail(String email, Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.status ='1' and cnadidate.consultantUser !=null and cnadidate.email = :email ORDER BY cnadidate.id DESC";  
+        return  (Candidate) session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("email", email).uniqueResult();
 	}
 
 }

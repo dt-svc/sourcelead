@@ -407,7 +407,17 @@ public class CommonUtil {
 	    }
 		return date;
 	}
-	
+
+	public static boolean isValidDate(String inDate) {
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	  //  dateFormat.setLenient(false);
+	    try {
+	      dateFormat.parse(inDate.trim());
+	    } catch (ParseException pe) {
+	      return false;
+	    }
+	    return true;
+	  }
 	/**
 	 *  returns current date based on orglocation date format
 	 * @param orgDateFormat
@@ -1313,11 +1323,13 @@ public class CommonUtil {
 			float cthHours = hours1;
 			float cthHoursValue = (int) cthHours;
 			float cthMinutesValue = cthHours - cthHoursValue;
+			cthMinutesValue = (float) Math.round(cthMinutesValue * 100) / 100;
 			float totalCthMinutes = (cthHoursValue* 60)+(cthMinutesValue*100);
 
 			float wthHours = hours2;
 			float wthHoursValue = (int) wthHours;
 			float wthMinutesValue = wthHours - wthHoursValue;
+			wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
 			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
 
 			float totalMinutes = totalCthMinutes+totalWthMinutes;
@@ -1339,6 +1351,7 @@ public class CommonUtil {
 			float wthHours = hours2;
 			float wthHoursValue = (int) wthHours;
 			float wthMinutesValue = wthHours - wthHoursValue;
+			wthMinutesValue = (float) Math.round(wthMinutesValue * 100) / 100;
 			float totalWthMinutes = (wthHoursValue* 60)+(wthMinutesValue*100);
 
 			float totalMinutes = totalCthMinutes+totalWthMinutes;
@@ -2048,12 +2061,12 @@ public void storeVendorOnboardDefaultTemplate(User user,OrgLocations orgLocation
 		return usersDTOList;
 	}
 	
-	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole,Long candidateId) {
+	public boolean isProjectAccessableToUser(String projectUUID,String projectClientUUID,User loginUser,OrgLocations orgLocations,String loginUserRole,Long candidateId,String isGlobalAccess) {
 		boolean flag = false;
 		try {
 			ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
 			if(projectClients != null) {
-				if(projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+				if((projectClients.getOrgLocationsId().getId().equals(orgLocations.getId())) || (StringUtils.isNotBlank(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase(Constants.YES))) {
 					if(StringUtils.isNotBlank(loginUserRole) && (!loginUserRole.equalsIgnoreCase("ROLE_ADMIN") && !loginUserRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN"))) {
 						ProjectApproverHierarchy approverHierarchy = projectApproverHierarchyService.getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(loginUser.getId(), projectClients.getId());
 						ProjectMembers pm = projectMembersService.getProjectMembersByCandidateIdAndProjectClientId(candidateId, projectClients.getId());

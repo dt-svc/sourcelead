@@ -186,7 +186,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					candidateResume, lcaSummaryLst, residenceList);
 			// Copy IMMIGRATION_TEMPLATE_DOCUMENTS data to IMMIGRATION_CANDIDATE_DOCS table
 			// based on templateId
-			copyImmigrationConfiguredDocsToCandidate(immigrationObj, user, orgLocations);
+			
 			StringBuilder actionDesc = new StringBuilder();
 			if (StringUtils.isNotBlank(immigrationDTO.getImmigrationId())) {
 				actionDesc.append("Immigration Details Edited").toString();
@@ -198,10 +198,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 
 			// Copy IMMIGRATION_TEMPLATE_FORMS data to IMMIGRATION_CANDIDATE_FORMS table
 			// based on templateId
-			copyImmigrationConfiguredFormsToCandidate(immigrationObj, user, orgLocations);
+			
 
 			if (StringUtils.isEmpty(immigrationDTO.getImmigrationId())) {
 				copyImmigrationTemplateTaskToImmigrationTaskAndTask(immigrationObj, user, orgLocations);
+				copyImmigrationConfiguredFormsToCandidate(immigrationObj, user, orgLocations);
+				copyImmigrationConfiguredDocsToCandidate(immigrationObj, user, orgLocations);
 			}
 
 		} catch (Exception e) {
@@ -593,7 +595,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		LookUpData uscisStatus = lookUpDataService.getLookUpDataByIdAndCategory(ImmigrationConstants.PETITION_STATUS,
 				Long.parseLong(immigrationDTO.getCurrUscisStatus()));
 		immigration.setCurrUscisStauts(uscisStatus);
-		if (immigrationDTO.getArrivalDate() != null && !immigrationDTO.getArrivalDate().equals("null")) {
+		if (StringUtils.isNotBlank(immigrationDTO.getArrivalDate()) && !immigrationDTO.getArrivalDate().equals("null")) {
 			immigration.setDateOfArrival(
 					commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), immigrationDTO.getArrivalDate()));
 		}
@@ -624,7 +626,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				immigration.setOrgLocationId(orgLocations);
 			}
 		}
+		immigration.setProcessType(immigrationDTO.getProcessType());
 		immigration.setReceiptNo(immigrationDTO.getReceiptNo());
+		
 		if (StringUtils.isEmpty(immigrationDTO.getImmigrationId())) {
 			immigration.setGeneratedId(getImmigrationIdForGeneratedId(orgLocations));
 		}
@@ -643,6 +647,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			Immigration immigration = immigrationCommonDao.getImmigrationDetails(immigrationId);
 			dto.setImmigrationUUID(immigration.getImmigrationUuid());
 			dto.setPetitionType(immigration.getPetitionType().getName());
+			dto.setProcessType(immigration.getProcessType());
 			dto.setGeneratedId(immigration.getGeneratedId());
 			dto.setOpenDate(
 					commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), immigration.getOpenDate()));
@@ -1335,6 +1340,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			// immigrationDTO.setTemplateId(immigration.getImmigrationTemplateId().getId().toString());
 			immigrationDTO.setAttorneyId(immigration.getOrgRelations().getId().toString());
 			immigrationDTO.setAttorneyContact(immigration.getOrgSpoc().getId().toString());
+			immigrationDTO.setProcessType(immigration.getProcessType());
 			immigrationDTO.setReceiptNo(immigration.getReceiptNo());
 			immigrationDTO.setOrgloationId(immigration.getOrgLocationId().getId().toString());
 
@@ -1710,12 +1716,12 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		String totalExperience = null;
 		String experienceMonths = null;
 		String experienceYears = null;
-		if(!exportView.getExperienceYears().isEmpty() && exportView.getExperienceYears() != null){
+		if(StringUtils.isNotBlank(exportView.getExperienceYears())){
 			experienceYears = exportView.getExperienceYears() +" years ";
 		}else {
 			experienceYears = " 0 years ";
 		}
-		if(!exportView.getExperienceMonths().isEmpty() && exportView.getExperienceMonths() !=null){
+		if(StringUtils.isNotBlank(exportView.getExperienceMonths())){
 			experienceMonths = exportView.getExperienceMonths() +" months";
 		}else {
 			experienceMonths = " 0 months";
@@ -1801,25 +1807,28 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		if(exportView.getEmployerLocation() !=null){
 			 writeRow.createCell(28).setCellValue(exportView.getEmployerLocation()); 
 		}
-		if(exportView.getLcaTitle() !=null){
-			 writeRow.createCell(29).setCellValue(exportView.getLcaTitle()); 
+		if(exportView.getJobName() !=null){
+			 writeRow.createCell(30).setCellValue(exportView.getJobName()); 
+		}
+		if(exportView.getJobId() !=null){
+			 writeRow.createCell(31).setCellValue(exportView.getJobId()); 
 		}
 		if(exportView.getPreviousLcaStartDate() !=null){
-			 writeRow.createCell(30).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(32).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getPreviousLcaStartDate())); 
 		}
 		if(exportView.getPreviousLcaEndDate() !=null){
-			 writeRow.createCell(31).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+			 writeRow.createCell(33).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 					 exportView.getPreviousLcaEndDate())); 
 		}
 		if(exportView.getPreviousLcaNumber() !=null){
-			 writeRow.createCell(32).setCellValue(exportView.getPreviousLcaNumber()); 
+			 writeRow.createCell(34).setCellValue(exportView.getPreviousLcaNumber()); 
 		}
 		if(exportView.getPreviousLcaRate() !=null){
-			 writeRow.createCell(33).setCellValue(exportView.getPreviousLcaRate()); 
+			 writeRow.createCell(35).setCellValue(exportView.getPreviousLcaRate()); 
 		}
 		if(exportView.getPreviousEmployerLocation() !=null){
-			 writeRow.createCell(35).setCellValue(exportView.getPreviousEmployerLocation()); 
+			 writeRow.createCell(37).setCellValue(exportView.getPreviousEmployerLocation()); 
 		}
 		return createExcelsheet;
 	}
@@ -1961,6 +1970,11 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Override
 	public Long getTemplateDetailsByNameAndOrgLoacationId(String name, OrgLocations orgLocations) {
 		return immigrationCommonDao.getTemplateDetailsByNameAndOrgLoacationId(name, orgLocations);
+	}
+
+	@Override
+	public List<Immigration> getImmigrationsByOrgId(Long id) {
+		return immigrationCommonDao.getImmigrationsByOrgId(id);
 	}
 
 }

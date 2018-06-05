@@ -1,7 +1,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <jsp:include page="../masterHeader.jsp" />
@@ -21,6 +20,7 @@
 background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 }
 </style>
+<c:set var ="myImmigrationPage" value = "${myImmigrationPage}" scope="session"/>
 <c:set var ="passOnLoadCount" value = "${tabRecordCountMap['Passport']}" scope="request"/>
 <c:set var ="visaOnLoadCount" value = "${tabRecordCountMap['Visa']}" scope="request"/>
 <c:set var ="empOnLoadCount" value  =  "${tabRecordCountMap['Employers']}" scope="request"/>
@@ -69,15 +69,6 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 	  					</div>
 				    </c:when>
 				    <c:otherwise>
-				        <c:choose>
-						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
-						        <div class="col-md-4">
-					  				<p id='editImmigrationView' class="cursorPointer"><a href=/app/immigration/editImmigrationDetails?immigrationUUID=${immigration.immigrationUUID}>Edit</a></p>
-					  			</div>
-						    </c:when>
-						    <c:otherwise>
-						    </c:otherwise>
-						</c:choose>
 				    </c:otherwise>
 			</c:choose>
   			<div class="col-md-2 clearfix mt10">

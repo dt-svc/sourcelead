@@ -262,7 +262,7 @@ public class ImmigrationRestController {
 		ResponseList<ImmigrationListViewDTO> immigrationListDTOList = null;
 		logger.debug("inisde controller  getAllImmigartionList  --> ");
 		try {
-			String[] tableColumns = { "currUscisStatus", "generatedId", "petitionType", "country", "firstName", "email",
+			String[] tableColumns = { "currUscisStatus", "generatedId", "country", "petitionType", "firstName", "email",
 					"phone", "openDate", "orgName", "lcaStartDate", "lcaEndDate" };// should be
 			// entity names
 			int sortColumnIndex = -1; // by default sorting using updated date
@@ -386,7 +386,9 @@ public class ImmigrationRestController {
 	public ModelAndView viewImmigration(HttpServletRequest request,
 			@RequestParam(value = "immiTemplateUUID", required = false) String immiTemplateUUID,
 			@RequestParam(value = "candidateUUID", required = false) String candidateUUID,
-			@RequestParam(value = "immigrationUUID", required = false) String immigrationUUID) throws Exception {
+			@RequestParam(value = "immigrationUUID", required = false) String immigrationUUID,
+			@RequestParam(value = "myImmigrationPage", required = false) String myImmigrationPage
+			) throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
@@ -412,6 +414,7 @@ public class ImmigrationRestController {
 			model.addObject("tabRecordCountMap", tabRecordCountMap);
 			model.addObject("uscisStatusList", uscisStatusList);
 			model.addObject("immigration", immigrationDTO);
+			model.addObject("myImmigrationPage", myImmigrationPage);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("/immigration/immigrationView");
 		}
@@ -1506,8 +1509,7 @@ public class ImmigrationRestController {
 				"orgLocations");
 		model.setViewName("/immigration/employerDetailsTab");
 		List<CandidateEmployers> candidatesEmployersList = candidateEmployersService
-				.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId),
-						orgLocations.getId(), searchVal);
+				.getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long.valueOf(candidateId), searchVal);
 		model.addObject("candidatesEmployersList", candidatesEmployersList);
 		return model;
 	}
@@ -1994,9 +1996,11 @@ public class ImmigrationRestController {
 		// below code for adding candidate resume to downloading package.
 		CandidateResumes candidateResume = candidateResumesService
 				.getCandidateLatesResumes(immigration.getCandidate().getId(), Constants.CANDIDATE_ACTIVE);
-		if (StringUtils.isNotBlank(candidateResume.getFileURL())) {
-			// logger.debug("cadidateResume path "+candidateResume.getFileURL());
-			docsListMap.put("cadidateResume", candidateResume);
+		if(candidateResume != null) {
+			if (StringUtils.isNotBlank(candidateResume.getFileURL())) {
+				// logger.debug("cadidateResume path "+candidateResume.getFileURL());
+				docsListMap.put("cadidateResume", candidateResume);
+			}
 		}
 
 		docsListMap.put("immDocs", immigrationCanididateDocHistoryList);

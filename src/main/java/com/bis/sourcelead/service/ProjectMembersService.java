@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 
+import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.ProjectAssignedMembersDTO;
 import com.bis.sourcelead.dto.ProjectMembersDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -40,7 +41,7 @@ public interface ProjectMembersService {
 	
 	public List<ProjectMembers> getAllProjectMembersByProjectId(Long id) throws Exception;
 	
-	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long id,Long locationsId) throws Exception;
+	public List<ProjectMembers> getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(Long id,Long locationsId,String isGlobalUser) throws Exception;
 	
 	public List<Long> getAllProjectMembersIdsByProjectId(Long projectId) throws Exception;
 	
@@ -87,7 +88,7 @@ public interface ProjectMembersService {
     
     public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Long locationsId, Long approverUserId);
 	
-	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor);
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor,String isGlobalUser);
     
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Date startDate,Date endDate,Long locationsId, Long approverUserId);
 	
@@ -95,7 +96,7 @@ public interface ProjectMembersService {
     
 	public List<ProjectMembers> getAllProjectMembersByProjectIdsList(List<Long> projectIds);
 	
-	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation,String roleIds,String teamIds) throws Exception;
+	public List<ProjectMembers> getAllProjectMembersByProjectIdAndStatus(Long projectId,String status,OrgLocations loginOrgLocation,String roleIds,String teamIds,String isGlobalAccess) throws Exception;
 	
 	List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndProjectId(Date startDate,Date endDate,Long locationsId, Long projectId) throws Exception;
 
@@ -108,7 +109,7 @@ public interface ProjectMembersService {
 
 	public List<ProjectMembers> getProjectsAssignedMembersForExpenses(Long projectId)throws Exception;
 
-	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId, Long orgRelationId)throws Exception;
+	public List<ProjectMembers> getVendorAssignedMembersForProjects(Long projectId, Long orgLocationId, Long orgRelationId,String isGlobalUser)throws Exception;
 	
 	public void saveAssignedProjectMembers(ProjectAssignedMembersDTO projectAssignedMembersDTO,String projectUUID,User user,OrgLocations orgLocations) throws Exception;
 	
@@ -120,7 +121,7 @@ public interface ProjectMembersService {
 	
 	ProjectMembers getProjectMembersByCandidateIdAndProjectId(Long candidateId,Long projectId) throws Exception;
 	
-	ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId,Long projectId,Long locationId) throws Exception;
+	ProjectMembers getProjectMembersByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId,Long projectId,Long locationId,String isGlobalUser) throws Exception;
 	
 	public ProjectMembers getClientProjectMemberByProjectMemberId(Long projectMemberId) throws Exception;
 	
@@ -135,4 +136,10 @@ public interface ProjectMembersService {
 	public ProjectMembers getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId, Long projectId,Long locationId) throws Exception;
 	
 	public Boolean getPayRateOrBillRateChanges(ProjectMembers projectMembers,ProjectMembersDTO projectMembersDTO) throws Exception;
+	
+	public List<ProjectMembers> getProjectMembersListByOrgIdAndMasterCandidateId(Long orgId, Long masterCandidateId);
+
+	public List<ProjectMembers> getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) throws Exception;
+	
+	public ProjectMembers getProjectMemberByUserIdAndLoginOrglocationId(Long userId, Long orgLocationId) throws Exception;
 }
