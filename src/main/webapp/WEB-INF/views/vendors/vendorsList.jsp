@@ -55,6 +55,14 @@ position: absolute !important;
  <!-- Advanced Search -->
   <div class="clearfix">
   <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
+        <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" id="resetVendor" style="display: inline-block;" onclick="resetVendor();" title="Refresh">
+		    <span class="fa fa-refresh"></span>
+		</button>
+		
+		<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" id="resetVendorContact" style="display: none;" onclick="resetVendorContact();" title="Refresh">
+		    <span class="fa fa-refresh"></span>
+		</button>
+		
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
           </div>
           <div class="cand-advsrch-popup advancedsearch-popup">
@@ -2013,6 +2021,9 @@ function listChange(sel){
 		 document.getElementById("advanceSearchDiv").style.display="block";
 		 $("#dataTableSearch").val("");
 // 		 getVendorListsElk();
+
+         document.getElementById("resetVendor").style.display="inline-block";
+		 document.getElementById("resetVendorContact").style.display="none";
 		 getVendorList();
 	 }
 	 if(sel.value=="listbyContact"){
@@ -2036,9 +2047,13 @@ function listChange(sel){
 		 document.getElementById("filter4ApprovePop").style.display="block";
 		 //getVendorContactLists();
 // 		 getVendorContactListsELK();
-document.getElementById("advanceSearchDiv").style.display="block";
+        document.getElementById("advanceSearchDiv").style.display="block";
 		$("#dataTableSearch").val("");
+		
+		document.getElementById("resetVendor").style.display="none";
+		 document.getElementById("resetVendorContact").style.display="inline-block";
 		loadVendorContactDataTable("${universalVendorList}");
+		
 	 }
 	 
 }
@@ -2627,5 +2642,18 @@ function vendorListCheck(searchValue,universalvendorSearchList,searchType,respon
 		}
   }
     
+  }
+  </script>
+  
+  <script>
+  function resetVendor(){
+	  $("#contactLevel  li input:checkbox").prop("checked",false);
+	  getVendorList();
+  }
+  function resetVendorContact(){
+	  $("#filter3ApprovePop  li input:checkbox").prop("checked",false);
+	  $("#filter4ApprovePop  li input:checkbox").prop("checked",false);
+	  loadVendorContactDataTable("${universalVendorList}");
+
   }
   </script>

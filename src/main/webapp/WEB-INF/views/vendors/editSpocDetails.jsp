@@ -106,9 +106,10 @@
 							}
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
-							
 							<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-							if('${sectionOrder.index == 1}'!='false'){
+							var sectionId = '${section.id}';
+							getCustomDependentFieldVedorContact(spocLocationId,orgRelationId,sectionId);
+							if(${sectionOrder.index == 1}){
 								result = result + '<div id="customVendorContactDiv${section.id}" class="customClinetContactDet"></div>';
 							}
 							</c:forEach>
@@ -118,13 +119,6 @@
 							result = result + '</div>';
 						result = result + '</div>';
 						result = result + '</div>';
-						
-						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-						  var sectionId = '${section.id}';
-						  if('${sectionOrder.index == 1}' != 'false'){
-						  	getCustomDependentFieldVedorContact(spocLocationId,orgRelationId,sectionId);
-						  }
-						 </c:forEach>
 						
 						$("#tab-1").empty();
 						$("#tab-1").append(result);
@@ -146,6 +140,20 @@
 	}
 </script>
 
+<script>
+function getCustomDependentFieldVedorContact(clientLocationId,orgRelationID,sectionId){
+	var type= 'view';
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?&clientLocationId="+clientLocationId+"&orgRelationID="+orgRelationID+"&requestFrom=clientAndVendor"+"&sectionId="+sectionId+"&requestType="+type,
+				 success: function(data) {
+ 		        	$('#customVendorContactDiv'+sectionId).empty();
+		        	$('#customVendorContactDiv'+sectionId).append(data);
+				 }
+		  });
+	 return;
+}
+</script>
 
 
 <script type="text/javascript">
@@ -206,7 +214,7 @@
 						} 
 						
 						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-						if('${sectionOrder.index == 1}'){
+						if(${sectionOrder.index == 1}){
 							var sectionId = '${section.id}';
 							preapareVendorContactCustomFieldDetails(spocLocationId,orgRelationId,sectionId);
 						}
@@ -444,18 +452,5 @@ function preapareVendorContactCustomFieldDetails(clientLocationId,orgRelationID,
         	 $('#customFieldDataId').append(data);
            },
      }); 
-}
-</script>
-<script>
-function getCustomDependentFieldVedorContact(clientLocationId,orgRelationID,sectionId){
-	var type= 'view';
-	 $.ajax({
-			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?&clientLocationId="+clientLocationId+"&orgRelationID="+orgRelationID+"&requestFrom=clientAndVendor"+"&sectionId="+sectionId+"&requestType="+type,
-				 success: function(data) {
- 		        	$('#customVendorContactDiv'+sectionId).empty();
-		        	$('#customVendorContactDiv'+sectionId).append(data);
-				 }
-		  });
 }
 </script>

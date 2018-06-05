@@ -184,7 +184,7 @@
 						} 
 						
 						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
-						if('${sectionOrder.index == 1}'){
+						if(${sectionOrder.index == 1}){
 							var sectionId = '${section.id}';
 							  preapareClientContactCustomFieldDetails(spocLocationId,orgRelationId,sectionId);
 						}

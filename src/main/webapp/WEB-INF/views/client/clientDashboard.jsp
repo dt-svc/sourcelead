@@ -66,6 +66,14 @@ z-index: 1;
 			<!-- Advanced Search -->
   <div class="timesheet_out">
   <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
+        <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" id="resetClient" style="display: inline-block;" onclick="resetClient();" title="Refresh">
+		    <span class="fa fa-refresh"></span>
+		</button>
+		
+		<button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" id="resetClientContact" style="display: none;" onclick="resetClientContact();" title="Refresh">
+		    <span class="fa fa-refresh"></span>
+		</button>
+		
             <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();"> Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
             </div>
             </div>
@@ -782,10 +790,7 @@ function clearSearch(){
 			 document.getElementById("vendorListAdvanced").style.display="none";
 			 document.getElementById("enableClientContactAdvancedSearch").style.display="block";
 			 document.getElementById("enableClientAdvancedSearch").style.display="none";
-			 
-			 
 		}else if(selectedList == "listbyVendor" ){
-			
 			 document.getElementById("vendorListAdvanced").style.display="block";
 			 document.getElementById("vendorContactListAdvanced").style.display="none";
 			 document.getElementById("enableClientAdvancedSearch").style.display="block";
@@ -1640,6 +1645,8 @@ function listChange(sel){
 		 /* getClientDetailsELK(); */
 		 document.getElementById("advanceSearchDiv").style.display="block";
 		 $("#dataTableSearch").val("");
+		 document.getElementById("resetClient").style.display="inline-block";
+		 document.getElementById("resetClientContact").style.display="none";
 		 getClientList();
 	 }
 	 if(sel.value=="listbyContact"){
@@ -1665,6 +1672,8 @@ function listChange(sel){
 		/*  getVendorContactLists(); */
 // 		 getVendorContactListsELK();
 		$("#dataTableSearch").val("");
+		 document.getElementById("resetClient").style.display="none";
+		 document.getElementById("resetClientContact").style.display="inline-block";
 		loadClientContactDataTable("${clientSearchResult}");
 	 }
 	 
@@ -2469,5 +2478,18 @@ function flushCheckBoxVal(){
 	$("input[type=checkbox]").each(function() { this.checked=false; });
 	
 }
+ </script>
+ 
+ <script>
+ function resetClient(){
+     $("#contactLevel  li input:checkbox").prop("checked",false);
+	 getClientList();
+	 
+ }
+ function resetClientContact(){
+	 $("#filter3ApprovePop  li input:checkbox").prop("checked",false);
+	 $("#filter4ApprovePop  li input:checkbox").prop("checked",false);
+	 loadClientContactDataTable("${clientSearchResult}");
+ }
  </script>
 <jsp:include page="../masterFooter.jsp" />	

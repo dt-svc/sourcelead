@@ -220,7 +220,7 @@ public class CustomFormRestController {
 		 		 	     break;
 		 		 	case "clientAndVendor":
 		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getOrgRelationID()!= null && customFieldsRequestTypeDTO.getClientLocationId() != null){
-		 		 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId( customFieldsRequestTypeDTO.getClientLocationId(), customFieldsRequestTypeDTO.getOrgRelationID(),loginOrgLocations.getId());
+		 		 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById( customFieldsRequestTypeDTO.getClientLocationId(), customFieldsRequestTypeDTO.getOrgRelationID());
 		 		 			if(orgRelation.getResponderLocationId().getId().longValue() != loginOrgLocations.getId().longValue()) {
 		 		 				getcustomFieldData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getResponderLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
 		 		 			}else if(orgRelation.getLocationId().getId().longValue() != loginOrgLocations.getId().longValue()) {

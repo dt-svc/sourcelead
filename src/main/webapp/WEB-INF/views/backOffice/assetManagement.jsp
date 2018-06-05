@@ -38,7 +38,7 @@ $(document).ready(function(){
 </section>
 <div class="timesheet_out">
   <div class="vendor_wrap">
-    <div class="timesheet_head">
+    <div class="timesheet_head timesheetHead-search">
     <div class="pull-left cand-advsrch advsrch_chosen">
 	     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetAssetFilter();" title="Refresh">
 		    <span class="fa fa-refresh"></span>
@@ -62,6 +62,13 @@ $(document).ready(function(){
         <a href="<c:url value='${appPath}/assetCategory'/>" class=""><i class="fa fa-plus"></i>Categories</a>
         </li>
         </sec:authorize>
+        
+        <li class="positionRelative">
+		  <div class="dynamic_search">
+   			<input type='text' placeholder='Search' id='assetDataTableSearch'/>
+   			<span class="cursorPointer faSearch" title="Search"><i class="fa fa-search" onClick="getDynamicAssetList();"></i></span>
+		  </div>
+	  </li>
         
         <div class="clearfix"></div>
       </ul>
@@ -369,9 +376,7 @@ function getDynamicAssetList(){
 }
 function prepareDynamicAssetList(url){
 	var result = "";
-    result = result	+ '<div class="remove_search">';
-    result = result +" <input type='text' placeholder='Search' id='assetDataTableSearch'/>";
-	result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
+    result = result	+ '<div class="">';
 	result = result	+ '<div id="tasksLoadingImg"></div>';
 	result = result + '<table id="assetPagination" class="display" cellspacing="0" width="100%">';
 	result = result + '<thead>';
