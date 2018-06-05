@@ -468,8 +468,9 @@ function columHide(){
 		      hideColumns.push($(this).attr('data-column')); // used for hiding the columns when user searched the data.
 		  }
     });
-   
+	$(".colPop").hide();
 }
+
 function checkAllColumns(obj){
 	var id = obj.id;
 	if(id =='columnsPickerCheckAll'){
