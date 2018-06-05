@@ -3416,10 +3416,10 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC,
-			Date endDateUTC) throws Exception {
+	public Integer getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC,
+			Date endDateUTC,String isGlobalUser) throws Exception {
 		return requirementDao.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC,
-				endDateUTC);
+				endDateUTC,isGlobalUser);
 	}
 
 	@Override

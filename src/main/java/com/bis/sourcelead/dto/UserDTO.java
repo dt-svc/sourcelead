@@ -3,6 +3,8 @@ package com.bis.sourcelead.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Transient;
+
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.UserRole;
 
@@ -56,6 +58,24 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String linkedUserName;
 	
 	private String linkedUserPwd;
+	
+    private Integer userRequirementsCount;
+	
+    private Integer userApplicantsCount;
+	
+    private Integer userCandidatesCount;
+	
+    private Integer userShortlisteApplicantsCount;
+	
+    private Integer userSubmittedApplicantsCount;
+	
+    private Integer userInterviewedApplicantsCount;
+	
+    private Integer userOfferedApplicantsCount;
+	
+    private Integer userRejectedApplicantsCount;
+	
+    private Integer userApplicantsBackOutCount;
 
 
 	
@@ -466,6 +486,78 @@ public class UserDTO extends SearchDTO implements Serializable {
 
 	public void setLinkedUserPwd(String linkedUserPwd) {
 		this.linkedUserPwd = linkedUserPwd;
+	}
+
+	public Integer getUserRequirementsCount() {
+		return userRequirementsCount;
+	}
+
+	public void setUserRequirementsCount(Integer userRequirementsCount) {
+		this.userRequirementsCount = userRequirementsCount;
+	}
+
+	public Integer getUserApplicantsCount() {
+		return userApplicantsCount;
+	}
+
+	public void setUserApplicantsCount(Integer userApplicantsCount) {
+		this.userApplicantsCount = userApplicantsCount;
+	}
+
+	public Integer getUserCandidatesCount() {
+		return userCandidatesCount;
+	}
+
+	public void setUserCandidatesCount(Integer userCandidatesCount) {
+		this.userCandidatesCount = userCandidatesCount;
+	}
+
+	public Integer getUserShortlisteApplicantsCount() {
+		return userShortlisteApplicantsCount;
+	}
+
+	public void setUserShortlisteApplicantsCount(Integer userShortlisteApplicantsCount) {
+		this.userShortlisteApplicantsCount = userShortlisteApplicantsCount;
+	}
+
+	public Integer getUserSubmittedApplicantsCount() {
+		return userSubmittedApplicantsCount;
+	}
+
+	public void setUserSubmittedApplicantsCount(Integer userSubmittedApplicantsCount) {
+		this.userSubmittedApplicantsCount = userSubmittedApplicantsCount;
+	}
+
+	public Integer getUserInterviewedApplicantsCount() {
+		return userInterviewedApplicantsCount;
+	}
+
+	public void setUserInterviewedApplicantsCount(Integer userInterviewedApplicantsCount) {
+		this.userInterviewedApplicantsCount = userInterviewedApplicantsCount;
+	}
+
+	public Integer getUserOfferedApplicantsCount() {
+		return userOfferedApplicantsCount;
+	}
+
+	public void setUserOfferedApplicantsCount(Integer userOfferedApplicantsCount) {
+		this.userOfferedApplicantsCount = userOfferedApplicantsCount;
+	}
+
+	public Integer getUserRejectedApplicantsCount() {
+		return userRejectedApplicantsCount;
+	}
+
+	public void setUserRejectedApplicantsCount(Integer userRejectedApplicantsCount) {
+		this.userRejectedApplicantsCount = userRejectedApplicantsCount;
+	}
+
+	public Integer getUserApplicantsBackOutCount() {
+		return userApplicantsBackOutCount;
+	}
+
+	public void setUserApplicantsBackOutCount(Integer userApplicantsBackOutCount) {
+		this.userApplicantsBackOutCount = userApplicantsBackOutCount;
 	}
 	
 	

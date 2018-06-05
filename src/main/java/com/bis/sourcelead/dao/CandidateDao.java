@@ -80,7 +80,7 @@ public interface CandidateDao {
 	
 	public Candidate getCandidateById(Long candidateId) throws Exception;
 	
-	Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception;
+	Integer getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC,String isGlobalUser) throws Exception;
 	
 	Candidate getCandidateByUUID(String candidateUUID) throws Exception;
 	

@@ -156,10 +156,10 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	}
 
 	@Override
-	public Long getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
-			String submissionStage, Date startDateUTC, Date endDateUTC) throws Exception {
+	public Integer getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			String submissionStage, Date startDateUTC, Date endDateUTC,String isGlobalUser) throws Exception {
 		
-		return requirementSubmissionHistoryDao.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, submissionStage, startDateUTC, endDateUTC);
+		return requirementSubmissionHistoryDao.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, submissionStage, startDateUTC, endDateUTC,isGlobalUser);
 	}
 
 	@Override

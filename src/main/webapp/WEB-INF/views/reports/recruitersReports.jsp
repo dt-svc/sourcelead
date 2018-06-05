@@ -51,14 +51,13 @@ function getDayWiseReports(){
 <h4 class="pull-left">apostrophe</h4>
 		  <div class="reportBtn reportBtn_custom_btn select-field  pull-left ml">
 			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custDates();">
-<!-- 			 <option value="">select</option> -->
 			  <option value="today">Today</option>
 			  <option value="yesterday">Yesterday</option>
-			  <option value="week">1 Week ago</option>
-			  <option value="twoweeks">2 Weeks ago</option>
-			  <option value="month">1 Month ago</option>
-			  <option value="twomonths">2 Months ago</option>
-			   <option value="custom">Custom</option> 
+			  <option value="1_week">1 Week ago</option>
+			  <option value="2_weeks">2 Weeks ago</option>
+			  <option value="1_month">1 Month ago</option>
+			  <option value="2_months">2 Months ago</option>
+			  <option value="custom">Custom</option> 
 			</select>
 		 </div>	
 		 <span class="dashboard-datepkr cusShow">
@@ -74,7 +73,7 @@ function getDayWiseReports(){
   </div>
      </div> 
       
-      <div class="candidate_wrap_table recruiterReports_table minHeight positionRelative">
+      <div class="candidate_wrap_table recruiterReports_table minHeight positionRelative datatable_filter">
       <div class="positionRelative table_head section-action-btns section-action-btns-associates clearfix">
       <div id="usersListLoader"></div>
       <ul class="pull-right list-unstyled list-inline">
@@ -200,9 +199,9 @@ function custDates(){
 		result = result + '</thead>	';
 	    result = result +"</table>";
 	    $("#noRecruiters").val('');
+	    $("#usersList").empty();
         $("#usersList").append(result); 
         $("#usersList").removeAttr('style');
-        $("#usersListLoader").empty();
         $("#usersListLoader").removeAttr('style');
 	    
 	    userDataTableList();
@@ -212,12 +211,12 @@ function custDates(){
 <script>
 function userDataTableList(){
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 var searchValue = $("#gradesDataTableSearch").val();
+	 var searchValue = $("#usersDataTableSearch").val();
 	 var timePeriod = $('#reportTypeId').val();
 	 var startDate = $("#ReportStartDate").val();
 	 var endDate = $("#ReportEndDate").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?searchValue="+searchValue+"&customStartDate="+startDate+"&customEndDate="+endDate;
+	 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate;
 	 usersListPagination(url,sourceleadUrl);
 	 $("#usersListLoader").removeAttr("style");
 }
@@ -227,6 +226,147 @@ function userDataTableList(){
 <script>
 function usersListPagination(url,sourceleadUrl){
 	
+	var colIndex = 0;
+    $('#usersListTable').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'POST',
+          pages: 1
+        }),
+        "columns": [
+            { "data": "firstName" },
+            { "data": "jobs"},
+            { "data": "candidates"},
+            { "data": "applicants" },
+            { "data": "shortlisted" },
+            { "data": "Interviewed"},
+            { "data": "offered"},
+            { "data": "rejected"},
+            { "data": "backout"}
+        ],
+        "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "firstName",
+	    	  	"render": function(data, type, opt, meta) {
+	    	  		  var result = "";
+	    	  	   	 result = result +"<td>";
+                	 result = result +"<div class='width300px'>";
+                	 result = result +"<div class='tbldata-dotdot-me'><span title='"+opt.fullName+"'>"+opt.fullName+"</span></a></div>";
+                	 result = result +"<div>";
+                	 result = result +"</td>";
+		             return result;
+	    	  	}
+	      },{
+	    	  "targets": colIndex++,
+              "data": "jobs",
+              "sortable": false,
+              "render": function ( data, type, opt, meta ) {
+            	  var result = "";
+            	  result = result +"<td><div class='small'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span></div></td>";
+	             return result;
+              		
+              }
+	      
+	          },{
+		    	  "targets": colIndex++,
+	              "data": "candidates",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  result = result +"<td><div class='small'> <span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></div></td>";
+	            	  return result;
+	              }
+		     },{
+		    	  "targets": colIndex++,
+	              "data": "applicants",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	     result = result +"<td><div class='small'> <span title='"+opt.userApplicantsCount+"'>"+opt.userApplicantsCount+"</span></div></td>";
+	            		 return result;
+	              }
+		     }, {
+		    	  "targets": colIndex++,
+	              "data": "shortlisted",
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    result = result +"<td><div class='small'> <span title='"+opt.userShortlisteApplicantsCount+"'>"+opt.userShortlisteApplicantsCount+"</span></div></td>";
+	            		return result;
+	              }
+		     }, {
+		    	  "targets": colIndex++,
+	              "data": "submitted",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    result = result +"<td><div class='small'> <span title='"+opt.userSubmittedApplicantsCount+"'>"+opt.userSubmittedApplicantsCount+"</span></div></td>";
+	            	    return result;
+	              }
+		     }, {
+		    	  "targets": colIndex++,
+	              "data": "Interviewed",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    result = result +"<td><div class='small'> <span title='"+opt.userInterviewedApplicantsCount+"'>"+opt.userInterviewedApplicantsCount+"</span></div></td>";
+	            	    return result;
+	              }
+		     }, {
+		    	  "targets": colIndex++,
+	              "data": "offered",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    result = result +"<td><div class='small'> <span title='"+opt.userOfferedApplicantsCount+"'>"+opt.userOfferedApplicantsCount+"</span></div></td>";
+	            	    return result;
+	              }
+		     }, {
+		    	  "targets": colIndex++,
+	              "data": "rejected",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    result = result +"<td><div class='small'> <span title='"+opt.userRejectedApplicantsCount+"'>"+opt.userRejectedApplicantsCount+"</span></div></td>";
+	            	    return result;
+	              }
+		     }, {
+		    	  "targets": colIndex++,
+	              "data": "backout",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    result = result +"<td><div class='small'> <span title='"+opt.userApplicantsBackOutCount+"'>"+opt.userApplicantsBackOutCount+"</span></div></td>";
+	            	    return result;
+	              }
+		     }],
+		     
+	    	"scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"bLengthChange": true,
+	    	"bDestroy": true,
+	    	"ordering": true,
+	    	"oLanguage": {
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     }
+    } );
+    $("#usersListTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
+    $("#usersDataTableSearch").keyup(function(e) {
+    	   if(e.which === 13) {
+   		    $('#usersDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+   	    	var searchData = $('#usersDataTableSearch').val();
+   	    	var regex =  new RegExp(/[\\-]/g);
+   	    	if(regex.test(searchData) == false){
+   	    		userDataTableList();
+   	    	}else{
+   	    		$("#usersDataTableSearch").after("<p class='jquery_form_error_message'><span><font color='red'>Enter valid Search Data</font></span>");
+   	    	}
+   	    	$('#usersDataTableSearch').val(searchData);
+    	   }
+    	});
 }
 </script>
 

@@ -47,7 +47,10 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -60,6 +63,15 @@ public class UserDaoImpl implements UserDao {
 	
 	@Autowired
     OrgLocationService orgLocationService;
+	
+	@Autowired
+	RequirementService requirementService;
+	
+	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -1783,7 +1795,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	@Transactional
-	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobarUser,UserDTO userDTO)
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates)
 			throws Exception {
 		
 		
@@ -1794,18 +1806,133 @@ public class UserDaoImpl implements UserDao {
 		ResponseList<UserDTO> response = new ResponseList<>();
 		Query queryObj = null;
 		List<User> usersList = null;
-		List<UserDTO> usersDTOList = new ArrayList<UserDTO>();
 		StringBuilder query1 = new StringBuilder("");
+		String globalAccessQuery = "";
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			globalAccessQuery = " and userRole.orgLocations.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+		}else {
+			globalAccessQuery = " and userRole.orgLocations.id = :orgLocationId";
+		}
 		
 		
 		if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
 			query1.append(" user.firstName like '%" + userDTO.getSearchValue() + "%' ")
-			.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ")
-			.append("OR user.fullName like '%" + userDTO.getSearchValue() + "%' ");
+			.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ");
 						
 			}
 		
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
+				sortingQry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
+		}
 		
-		return null;
+		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
+			query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where  userRole.userState = 'ACTIVE' "+globalAccessQuery+" )";
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
+			}else{
+				 queryObj = session.createQuery(query + query1.toString()+" "+sortingQry+" ");
+			}
+			
+			queryObj.setLong("orgLocationId", orgLocationId).list();
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationId", orgLocationId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}else {
+				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}
+			
+		}else {
+			query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where (userRole.reportingManager.id = :userId OR userRole.resourceManager.id = :userId) and userRole.userState = 'ACTIVE' "+globalAccessQuery+" ) "
+					+ " OR user.id IN (select tm.memberUserId.id from TeamMembers tm where tm.teamId.ownerUserId = :userId and tm.status = '1'  and tm.teamId.orgLocationsId = :orgLocationId))";
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
+			}else{
+				 queryObj = session.createQuery(query + query1.toString()+" "+sortingQry+" ");
+			}
+			
+			queryObj.setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+			
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}else {
+				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}
+		}
+		
+		queryObj.setFirstResult(userDTO.getStart());
+		queryObj.setMaxResults(userDTO.getLength());
+		usersList = queryObj.list();
+		
+		int totalCount = 0;
+
+		
+		if (userDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		response.setData(getUserListForRecruiterReport(usersList,orgLocationId,searchDates,isGlobalUser));
+		return response;
+	}
+	
+	private List<UserDTO> getUserListForRecruiterReport(List<User> usersList,Long orgLocationId,Date[] searchDates,String isGlobalUser){
+		List<UserDTO> usersDTOList = new ArrayList<>();
+		
+		if(usersList != null && !usersList.isEmpty()) {
+			for(User user : usersList) {
+				UserDTO userDTO = new UserDTO();
+				userDTO.setFullName(user.getFullName());
+				try {
+					
+					Integer totalRequirements = requirementService.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, searchDates[0], searchDates[1],isGlobalUser);
+					userDTO.setUserRequirementsCount(totalRequirements);
+					
+					Integer totalCandidates = candidateService.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, searchDates[0], searchDates[1],isGlobalUser);
+					userDTO.setUserCandidatesCount(totalCandidates);
+					
+					Integer totalApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user,"SUBMISSION", searchDates[0], searchDates[1],isGlobalUser);
+					userDTO.setUserApplicantsCount(totalApplicants);
+					
+					Integer totalShortlistedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user,"SHORTLIST", searchDates[0], searchDates[1],isGlobalUser);
+					userDTO.setUserShortlisteApplicantsCount(totalShortlistedApplicants);
+					
+					Integer totalSubmittedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user,"SUBMIT_TO_CLIENT", searchDates[0], searchDates[1],isGlobalUser);
+					userDTO.setUserSubmittedApplicantsCount(totalSubmittedApplicants);
+					
+					Integer totalInterviewedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, "INTERVIEW", searchDates[0], searchDates[1],isGlobalUser);
+					userDTO.setUserInterviewedApplicantsCount(totalInterviewedApplicants);
+					
+					Integer totalOfferedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, "OFFERMADE", searchDates[0], searchDates[1],isGlobalUser);
+					userDTO.setUserOfferedApplicantsCount(totalOfferedApplicants);
+					
+					Integer totalRejectedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, "rejected", searchDates[0], searchDates[1],isGlobalUser);
+					userDTO.setUserRejectedApplicantsCount(totalRejectedApplicants);
+					
+					Integer userApplicantsBackOutCount = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, "BACKOUT", searchDates[0], searchDates[1],isGlobalUser);
+					userDTO.setUserApplicantsBackOutCount(userApplicantsBackOutCount);
+					
+					usersDTOList.add(userDTO);
+					
+				}catch (Exception e) {
+				}
+				
+			}
+		}
+		return usersDTOList;
 	}
 }
