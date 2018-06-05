@@ -6,6 +6,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <style type="text/css">
 .selectChosen .chosen-container {
@@ -183,14 +184,6 @@ function cancelOrgImg(){
         <li><a data-toggle="tab" href="#informationDetails">Information</a></li>
         </c:if>
          
-         <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
-          <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
-         </c:if>
-         
-         <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-          <li><a data-toggle="tab" href="#indiabankingDetails">Banking Details</a></li>
-         </c:if>
-       
         <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments">Documents</a></li>
         <li><a data-toggle="tab" href="#orglocationSignatory" onclick="getAllSignatory();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
@@ -348,12 +341,6 @@ function cancelOrgImg(){
 							</div>
 						</div>
 						
-						<div class="form-group mt">
-							<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>
-							<div class="col-md-9">
-							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
-							</div>
-						</div>
 							
 							<input type="hidden" id="existingCity" value="${SourceLeadWeb_orgLocations.city}" >
 				   </div>
@@ -389,6 +376,30 @@ function cancelOrgImg(){
 							
 							</div>
 							</div>
+							
+							
+						<div class="form-group">
+							<label class="col-md-3">Week Off Days</label>
+							<div class="col-md-9">
+							 <select multiple class="chosen-select form-control" id="weekOffDays" name="weekOffDays" data-validation-optional="true" field-name="Week Off Days">
+								 <option  value='Sun' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sun') ? 'selected' : ''}>Sunday</option>
+								 <option  value='Mon' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Mon') ? 'selected' : ''}>Monday</option>
+								 <option  value='Tue' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Tue') ? 'selected' : ''}>Tuesday</option>
+								 <option  value='Wed' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Wed') ? 'selected' : ''}>Wednesday</option>
+								 <option  value='Thu' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Thu') ? 'selected' : ''}>Thursday</option>
+								 <option  value='Fri' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Fri') ? 'selected' : ''}>Friday</option>
+								 <option  value='Sat' ${fn:contains(SourceLeadWeb_weekOffDaysList, 'Sat') ? 'selected' : ''}>Saturday</option>
+							 </select>
+							</div>
+						</div>
+							
+						
+						<div class="form-group mt">
+							<label class="col-md-3">Working Hours<span class="text-danger">&nbsp;*</span></label>
+							<div class="col-md-9">
+							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
+							</div>
+						</div>
 							
 						<div class="form-group mt">
 							<label class="col-md-3">Phone</label>
@@ -895,12 +906,12 @@ function cancelOrgImg(){
         			</div>
    			 <jsp:include page="federalAndStateTaxes.jsp" />
    			 <jsp:include page="locationInformationDetails.jsp" />
-     		 <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
+     		 <%-- <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
      		 <jsp:include page="orglocationBankingDetails.jsp" />
      		 </c:if>
      		 <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
      		 <jsp:include page="orglocationIndiaBankingDetails.jsp" />
-     		 </c:if>
+     		 </c:if> --%>
      		 <jsp:include page="orglocationDocuments.jsp" />
      		 <jsp:include page="orglocationSignatory.jsp" />
      		 <jsp:include page="googleApiLocation.jsp" />
@@ -1641,7 +1652,7 @@ var validationSettings = {
         		    e.preventDefault(); 
 	          		
 	          		var sourceleadUrl ='${sourceleadUrl}';
-	           		var formData = getFormData("orgSettings_form");
+	           		var formData = $($('#orgSettings_form')[0]).serialize();
 	           		var uploadedImage = document.getElementById('uploadedImage').value;
              		var imageExtension = uploadedImage.substring(uploadedImage.lastIndexOf(".")+1);
              		if(imageExtension == 'gif' || imageExtension == 'png' || imageExtension == 'svg'){

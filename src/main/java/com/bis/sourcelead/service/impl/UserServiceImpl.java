@@ -50,9 +50,11 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
@@ -72,6 +74,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.MasterCandidateService;
@@ -189,6 +192,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserCustomFieldDataService userCustomFieldDataService;
 	
+	@Autowired
+	EmailScenarioConfigurationService emailScenarioConfigurationService;
+	
 	@Override
 	public User findByUserName(String username) {
 		logger.debug("In UserService class...");
@@ -276,6 +282,11 @@ public class UserServiceImpl implements UserService {
 	   userRole = userRoleService.getUserDetailsByEmailAndLocationId(addUserDTO.getEmail(),orgLocations.getId());
 	   if(userRole == null){
 		   userRole = getUserRoleDetails(addUserDTO,user,loginuser.getUserCode(),orgLocations.getId());
+		   
+		   if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				 userRole.setDesignation(addUserDTO.getDesignation());
+		    }
+		   
 		   if(null == user.getId()){
 				userRole.setIsPrimary(1);
 				 if(sourceType.equalsIgnoreCase("PROJECTS")){
@@ -294,9 +305,24 @@ public class UserServiceImpl implements UserService {
 			if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())) {
 				userRole.setExtensionNumber(addUserDTO.getExtensionNumber());
 			}
+			
+		 if(StringUtils.isNotBlank(addUserDTO.getDesignation())){
+				 userRole.setDesignation(addUserDTO.getDesignation());
+		    }
 	   }
 		
 		HashSet<UserRole> userRoleList = new HashSet<UserRole>();
+		if(StringUtils.isNotBlank(addUserDTO.getIsGlobalAccess())) {
+			userRole.setIsGlobal(Constants.YES);
+		}else {
+			userRole.setIsGlobal(Constants.NO);	
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getGrade())) {
+			AssociateGrades grades = new AssociateGrades();
+			grades.setId(Long.valueOf(addUserDTO.getGrade()));
+			userRole.setGradeId(grades);
+		}
 		userRoleList.add(userRole);
 		user.setUserRole(userRoleList);
 		
@@ -426,7 +452,7 @@ public class UserServiceImpl implements UserService {
 			 */
 			
 			if(isUserActive == false && Constants.YES.equalsIgnoreCase(addUserDTO.getIsMailSent()))
-				registrationService.sendActivationEmail(user1);
+				registrationService.sendActivationEmail(user1,orgLocations);
 			
 			saveOrUpdateUserElkDocument(userRole,employee,loginuser.getUserCode());
 			user1.setTempPwd(password);
@@ -564,6 +590,12 @@ public class UserServiceImpl implements UserService {
 			userRole.setReportingManager(reportingManager);
 		}else {
 			userRole.setReportingManager(user);
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getResourceManager())){
+			User resourceManager = new User();
+			resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
+			userRole.setResourceManager(resourceManager);
 		}
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
@@ -1437,12 +1469,15 @@ public class UserServiceImpl implements UserService {
 		 emailMessage.setFirstName(user.getFirstName());
 		 emailMessage.setLastName(user.getLastName());
 		 emailMessage.setToEmail(user.getEmail());
-		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 
+		 EmailConfigurationFromMail confFromMail = emailScenarioConfigurationService.getConfFromMailByStatus(orgLocations.getId());
+		 if(confFromMail != null) {
+			 emailMessage.setFromEmail(confFromMail.getEmail());
+		 }else {
+			 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 }
+		 
 		 emailMessage.setCreatedBy(user.getUserCode());
-		// StringBuilder msgBuild = new StringBuilder();
-		// emailMessage.setFromName(msgBuild.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 StringBuffer userNameStringBuffer =  new StringBuffer();
 		 if (user.getLastName() != null && !"".equalsIgnoreCase(user.getLastName()) ) {
@@ -1515,8 +1550,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ResponseList<User> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation) throws Exception {
-		return userDao.getUsersResponseListByOrglocationId(userDTO,orgLocation);
+	public ResponseList<UserRole> getUsersResponseListByOrglocationId(UserDTO userDTO,OrgLocations orgLocation,Date[] searchDates) throws Exception {
+		return userDao.getUsersResponseListByOrglocationId(userDTO,orgLocation,searchDates);
 	}
 
 	@Override
@@ -1532,6 +1567,58 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> getUsersListForSignatoryByOrglocationId(Long locationId) {
 		return userDao.getUsersListForSignatoryByOrglocationId(locationId);
+	}
+	
+	public List<User> getGlobalUsersByOrgId(Long roleId, Long orgId, Long tabId) throws Exception {
+		return userDao.getGlobalUsersByOrgId(roleId, orgId, tabId);
+	}
+
+	@Override
+	public List<User> getTabAccessGlobalOwnersByOrgIdAndTabId(Long orgLocationId,Long orgId, Long tabId) throws Exception {
+		
+		List<User> userList = null;
+		userList = userDao.getTabAccessGlobalOwnersByOrgIdAndTabId(orgId, tabId);
+		if(null != userList && !userList.isEmpty()){
+			for (User user : userList) {
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),orgLocationId);
+				if(null != userRole){
+					user.setUserType(userRole.getUserType());
+				}else {
+					UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+					user.setUserType(primaryRole.getUserType());
+				}
+			}
+		}
+		return userList;
+	}
+
+	@Override
+	public List<User> getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long currentApproverId,
+			Long orgId, Long tabId) throws Exception {
+		return userDao.getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(currentApproverId, orgId, tabId);
+	}
+
+	@Override
+	public List<User> getResourceManagersByOrgLocationIdAndTabId(Long orgLocationsId, Long tabId) throws Exception {
+		return userDao.getResourceManagersByOrgLocationIdAndTabId(orgLocationsId, tabId);
+
+	}
+
+	@Override
+	public List<User> getReportingManagersByUserRolesAndOrgLocationId(Long roleId, Long orgLocationsId)
+			throws Exception {
+		return userDao.getReportingManagersByUserRolesAndOrgLocationId(roleId, orgLocationsId);
+	}
+
+	@Override
+	public List<User> getGlobalReportingManagersUsersByOrgId(Long roleId, Long orgId) throws Exception {
+		return userDao.getGlobalReportingManagersUsersByOrgId(roleId, orgId);
+	}
+
+	@Override
+	public List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId,
+			Long orgLocationsId) throws Exception {
+		return userDao.getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userId, roleId, orgLocationsId);
 	}
 	
 }

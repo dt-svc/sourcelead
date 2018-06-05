@@ -389,6 +389,13 @@ function filterStatus() {
 		        			projectEndDateStr = "-----";
 		        		}
 		        		
+		        		var projectStartDateStr = "";
+		        		if(opt.projectAssignedDateStr != null && opt.projectAssignedDateStr != ''){
+		        			projectStartDateStr = opt.projectAssignedDateStr;
+		        		}else{
+		        			projectStartDateStr = "-----";
+		        		}
+		        		
 		        		
 		        		if(opt.currentBillRate != null && opt.currentBillRate != 'undefined'){
 		        			billRate = opt.billRateCurrency+" "+opt.currentBillRate+" /"+opt.rateType
@@ -426,7 +433,7 @@ function filterStatus() {
 		                result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.candidateName+'"><span title="'+opt.candidateName+'">'+opt.candidateName+'</span></div></td>';
 		              /*   result = result + '	 	<td><div class="tbldata-dotdot" title="'+opt.empEmail+'"><span title="'+opt.empEmail+'">'+opt.empEmail+'</span></div></td>'; */
 		                result = result + '	 	<td><div class="tbldata-dotdot_80" title="'+role+'"><span title="'+role+'">'+role+'</span></div></td>';
-		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+opt.projectAssignedDateStr+'">'+opt.projectAssignedDateStr+'</span></div></td>';
+		                result = result + '	     <td><div class="tbldata-dotdot_80"><span title="'+projectStartDateStr+'">'+projectStartDateStr+'</span></div></td>';
 		                if(status == 'COMPLETED'){
 		                	result = result + '<td><div>'+projectEndDateStr+'</div></td>';
 		                }else{

@@ -184,7 +184,7 @@ function getAddApplicant(requirementId){
 	result = result + '	<div class="col-md-6 upresume mb">';
 	result = result + '<label class="col-md-4">&nbsp;</label>';
 	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span><br>';
-	result = result + '<input type="checkbox" checked="checked" name="notifyToApplicant" value="Y" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
+	result = result + '<input type="checkbox" name="notifyToApplicant" value="Y" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
 	result = result + '</div>';
 	result = result + '</div>';
 	
@@ -805,6 +805,11 @@ function discordApplicant(){
 		 $("#needApplicantPermit").val('N');
 	 }
 	 
+	 if(candidateType != "N"){
+		 $("input[name=FirstName]").attr('readonly', false);
+		 $("input[name=LastName]").attr('readonly', false);
+		 $("input[name=PhoneNumber]").attr('readonly', false);
+	 }
 	 $('#candidateId').removeAttr('data-validation-optional');
 	 $("#candidateId").attr("data-validation", "required");
 	 
@@ -862,7 +867,6 @@ function discordApplicant(){
 				        	$("#candidateId").empty();
 					        $("#candidateId").append(output);
 					        $('#candidateId').trigger("chosen:updated");
-					        
 					        getCandidateResumes();
 			        	} else if (response.indexOf('Sign In') !== -1) {
 			        		location.replace(sourceleadUrl);

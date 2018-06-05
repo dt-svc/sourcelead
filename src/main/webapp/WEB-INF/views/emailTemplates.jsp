@@ -57,7 +57,7 @@ position: relative !important; top:0 !important;
 	        	result = result +'<thead>';
 	        	result = result +'<tr>';
 	        	result = result + '<th>Template Name</th>';
-	            /* result = result + '<th>Entity Type</th>'; */
+	             result = result + '<th>Entity Type</th>'; 
 	            result = result + '<th>Action</th>';
 	        	result = result +'</tr>';
 	        	result = result +'</thead>';
@@ -68,7 +68,8 @@ position: relative !important; top:0 !important;
 	        		var opt = json[i];
 	        		result = result + '<tr>';
 	                result = result + '<td><div title="'+opt.scenarioName+'">'+opt.scenarioName+'</div></td>';
-	               /*  result = result + '<td><div class="tbldata-dotdot" title="'+opt.entityType+'"><span class="mid-span">'+opt.entityType+'</span></div></td>'; */
+	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.entityType+'"><span class="mid-span">'+opt.entityType+'</span></div></td>'; 
+	                
 	                result = result + '<td><div>';
 	                    result = result + '<a class="fa fa-eye text-blue ml" title="summary" onclick="viewEmailTemplate('+opt.id+',\''+opt.uniqueScenarioName+'\')"></a>';
 	                    result = result + '&nbsp;<a href="'+sourceleadUrl+'/editEmailTemplate?templateUUID='+opt.emailUUID+'" title="Edit"><i class="fa fa-edit"></i></a>';
@@ -129,7 +130,7 @@ function templatepagination(){
   <div class="clients_wrap vendor_wrap_shadownone minHeight_225">
   <div class="clearfix"></div>
   <div class="datatbl-filters minHeight40 clearfix">
-   <div class="pull-left cand-advsrch advsrch_chosen">
+   <div class="pull-left cand-advsrch advsrch_chosen" id="filterPops" style="display:block">
 		<!-- <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onClick="resetFilter();" title="Refresh">
 			    <span class="fa fa-refresh"></span>
 			</button> -->
@@ -164,6 +165,7 @@ function templatepagination(){
 							 </div> 
 							 </div>
 							 
+							 <c:if test="${SourceLeadWeb_org.id == '1'}">
 							 <div class="col-md-4 mb">
 							<label><strong>Specification</strong></label>
 							 <div class="clearfix">
@@ -173,6 +175,7 @@ function templatepagination(){
 		                        </ul>
 							 </div>
 							 </div> 
+							 </c:if>
 							 
 							  </div>
 							 </div> 
@@ -285,6 +288,7 @@ function viewEmailTemplate(id,uniqueScenarioName){
 			$("#emailTemplateList").append(result); 
 			 document.getElementById("emailtemplate").style.display="none";
 			 document.getElementById("emailSummary").style.display="block";
+			  document.getElementById("filterPops").style.display="none";
 			 document.getElementById("emailTemplates").style.display="none";
 			 document.getElementById("emailSumm").style.display="block";
 			

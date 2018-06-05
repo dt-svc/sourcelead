@@ -18,15 +18,14 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -73,12 +72,12 @@ import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
-import com.bis.sourcelead.entity.ProjectCustomFieldData;
 import com.bis.sourcelead.entity.ProjectDocumentFolder;
 import com.bis.sourcelead.entity.ProjectDocumentPermission;
 import com.bis.sourcelead.entity.ProjectDocuments;
@@ -263,8 +262,11 @@ public class ProjectsDashboardRestController {
 			    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
-
+				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+				projectsDTO.setIsGlobalAccess(isGlobalAccess);
+				projectsDTO.setOrgId(org.getId());
 				String[] tableColumns = {"projectSequeneNumber", "projectName", "projectManagers", "invoiceFrequency", "budget", "startDate", "client","status"};
 			    int sortColumnIndex = 1; //by default sorting using updated date
 				String sortColumnOrder = "desc"; //by default descending order
@@ -293,6 +295,8 @@ public class ProjectsDashboardRestController {
 	 public @ResponseBody ProjectsDTO getClientProjectApprovers(@RequestParam(value="projectClientUUID", required=false) String projectClientUUID,HttpServletRequest request) throws Exception{
 		 
 		 OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		 
 		 ProjectsDTO projectsDTO = new ProjectsDTO();
 		 ProjectClients projectClients = projectClientService.getProjectClientsByUUID(projectClientUUID);
 		 if(projectClients != null) {
@@ -320,29 +324,60 @@ public class ProjectsDashboardRestController {
 			    }
 			    
 			    List<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			    List<User> globalUserList = userService.getTabAccessGlobalOwnersByOrgIdAndTabId(loginOrgLocations.getId(),org.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+				List<User> level1ApproversList = new ArrayList<>();
+				if(userList != null && !userList.isEmpty()) {
+					level1ApproversList.addAll(userList);
+				}
+				if(globalUserList != null && !globalUserList.isEmpty()) {
+					level1ApproversList.addAll(globalUserList);
+				}
+				
 			    List<UserDTO> userDTOList = new ArrayList<>();
-			    if(userList != null && userList.size() > 0) {
-			    	for(User mrguser : userList) {
-			    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser.getId(),loginOrgLocations.getId());
+			    if(level1ApproversList != null && !level1ApproversList.isEmpty()) {
+			    	for(User mrguser : level1ApproversList) {
 			    		UserDTO userDTO = new UserDTO();
 			    		userDTO.setId(mrguser.getId());
-			    		userDTO.setUserType(roleType.getUserType());
 			    		userDTO.setName(mrguser.getFullName());
 			    		userDTOList.add(userDTO);
+			    		
+			    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser.getId(),loginOrgLocations.getId());
+			    		if(roleType != null) {
+			    			userDTO.setUserType(roleType.getUserType());
+			    		}else {
+			    			UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(mrguser.getId());
+			    			userDTO.setUserType(primaryRole.getUserType());
+			    		}
+			    		
 			    	}
 			    }
 			    projectsDTO.setManagersList(userDTOList);
 			    
 			    if(projectsDTO.getManager1() != 0){
 			    	  List<User> userListwithoutmaneger1 = userService.getTabAccessOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long.valueOf(projectsDTO.getManager1()),loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
-					  List<UserDTO> mrguserDTOList = new ArrayList<>();
-					    if(userList != null && userList.size() > 0) {
-					    	for(User mrguser2 : userListwithoutmaneger1) {
-					    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser2.getId(),loginOrgLocations.getId());
+			    	  List<User> globalUserListwithoutmaneger1 = userService.getTabAccessGlobalOwnersByOrgLocationIdAndTabIdAndNoCurrentUser(Long.valueOf(projectsDTO.getManager1()),org.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
+			    	  List<UserDTO> mrguserDTOList = new ArrayList<>();
+			    	  List<User> managersListwithoutmaneger1 = new ArrayList<>();
+			    	  if(userListwithoutmaneger1 != null && !userListwithoutmaneger1.isEmpty()) {
+			    		  managersListwithoutmaneger1.addAll(userListwithoutmaneger1);
+			    	  }
+			    	  
+			    	  if(globalUserListwithoutmaneger1 != null && !globalUserListwithoutmaneger1.isEmpty()) {
+			    		  managersListwithoutmaneger1.addAll(globalUserListwithoutmaneger1);
+			    	  }
+					    if(managersListwithoutmaneger1 != null && managersListwithoutmaneger1.size() > 0) {
+					    	for(User mrguser2 : managersListwithoutmaneger1) {
 					    		UserDTO userDTO = new UserDTO();
 					    		userDTO.setId(mrguser2.getId());
-					    		userDTO.setUserType(roleType.getUserType());
 					    		userDTO.setName(mrguser2.getFullName());
+					    		UserRole roleType = userRoleService.getUserRoleByUserIdAndLocationId(mrguser2.getId(),loginOrgLocations.getId());
+					    		if(roleType != null) {
+					    			userDTO.setUserType(roleType.getUserType());
+					    		}else {
+					    			UserRole primaryRole = userRoleService.getLoginUserPrimaryRole(mrguser2.getId());
+					    			userDTO.setUserType(primaryRole.getUserType());
+					    		}
+					    		
 					    		mrguserDTOList.add(userDTO);
 					    	}
 					    }
@@ -363,7 +398,8 @@ public class ProjectsDashboardRestController {
 	 public @ResponseBody ProjectsDTO getProjectById(@RequestParam(value="ProjectId", required=false) Long projectId,HttpServletRequest request) throws Exception{ 
 		   String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		   User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		   ProjectsDTO ProjectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation);
+		   String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		   ProjectsDTO ProjectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, loginOrgLocation,isGlobalAccess);
 		   OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		   List<ClientOrgRelationsDTO> clientsDTOList = new ArrayList<>();
 		   
@@ -501,7 +537,8 @@ public class ProjectsDashboardRestController {
 			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception{ 
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		     OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-		     ProjectsDTO projectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, orgLocations.getLocationCode());
+		     String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		     ProjectsDTO projectDetails = projectsService.getProjectDetailsByProjectIdAndLoginOrgId(projectId, user, orgLocations.getLocationCode(),isGlobalAccess);
 			 return projectDetails;
 	  }
 	 
@@ -609,7 +646,8 @@ public class ProjectsDashboardRestController {
 	 public @ResponseBody List<ProjectMembers>  getProjectEmployeeListById(@RequestParam(value="status", required=false) String status,@RequestParam(value="projectId", required=false) Long projectId,
 			 @RequestParam(value="roleIds", required=false) String roleIds,@RequestParam(value="teamIds", required=false) String teamIds, HttpServletRequest request) throws Exception{ 
 		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 List<ProjectMembers> employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,loginOrgLocation,roleIds,teamIds);
+		 String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		 List<ProjectMembers> employeeList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,loginOrgLocation,roleIds,teamIds,isGlobalAccess);
 		 return employeeList;
 	  }
 	 

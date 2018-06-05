@@ -431,7 +431,7 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	 <div class="clearfix mb10">';
 	result = result  +'	   <div class="col-md-12 checkbox">';
 	result = result  +'	     <label>';
-	result = result  +'	      <input type="checkbox" value="Y" name="isMailSent" checked="checked">Send Invitation</label>';
+	result = result  +'	      <input type="checkbox" value="Y" name="isMailSent">Send Invitation</label>';
 	result = result  +'	   </div>';
 	result = result  +'	 </div>';
 	

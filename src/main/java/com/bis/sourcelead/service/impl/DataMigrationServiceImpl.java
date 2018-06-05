@@ -171,6 +171,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		String importStatus = null;
 		String finalImportStatus = null;
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
@@ -298,6 +299,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					}
 				}
 
+
 				switch (dataMigrationDTO.getUploadType()) {
 				case "jobUpload":
 					dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user,
@@ -315,7 +317,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 				case "projectTasks":
 					dataMigrationCommonUtil.dataValidationForProjectTasks(errorSet, dataMigrationDTOJsonCopy, user,
-							orgLocation);
+							orgLocation,isGlobalAccess);
 					break;
 
 				case "immigrationUpload":

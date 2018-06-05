@@ -10,18 +10,13 @@ font-size: 1.5em;
 }
 </style>
 
-<section class="content-wraper">
-    <section class="content-header clearfix">
-      <div class="pull-left">
-        <h2>Department List</h2>
-      </div>
-      <div class="pull-right brud-crum"><a href="${appPath}/orgRolesList">Roles List</a> &raquo;  Department List </div>
-    </section>
+
 <script type="text/javascript">
 $(document).ready(function(){
 	getDepartmentList();
 });
 </script>
+
 <script>
 $(document).ready(function() {
 	$("#filter2ApprovePop").click(function(){
@@ -39,6 +34,15 @@ $(document).ready(function() {
 	
 }); 
 </script>
+
+<section class="content-wraper">
+    <section class="content-header clearfix">
+      <div class="pull-left">
+        <h2>Department List</h2>
+      </div>
+      <div class="pull-right brud-crum"><a href="${appPath}/orgRolesList">Roles List</a> &raquo;  Department List </div>
+    </section>
+
 
 <div class="timesheet_out">
       <div class="vendor_wrap">

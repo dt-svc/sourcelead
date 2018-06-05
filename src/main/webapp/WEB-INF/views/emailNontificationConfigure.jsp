@@ -219,9 +219,15 @@ function getEmailList(){
 		    	result  = result + '<tbody>									';
 		    	 for (var i = 0; i < response.data.length; i++) { 
 					 var report = response.data[i];
+					 var emailModules = "";
+					 if(report.emailModules != null && report.emailModules != '' && report.emailModules != 'undefined'){
+						 emailModules = report.emailModules;
+					 }else{
+						 emailModules = "--";
+					 }
 				result  = result + '	 <tr>                                                                                                ';
      			result  = result + '	<td><div class="tbldata-dotdot">'+report.email+'</div></td>                                ';
-     			result  = result + '	<td><div class="tbldata-dotdot">'+report.emailModules+'</div></td>                                ';
+     			result  = result + '	<td><div class="tbldata-dotdot">'+emailModules+'</div></td>                                ';
      			result  = result + '	<td>                                                                                                 ';
      			result  = result + '	<div class="tblminwidth-100">                                                                        ';
      			result  = result + '	<ul class="list-unstyled list-inline">                                                               ';
@@ -261,7 +267,6 @@ function deleteFromMail(emailId){
 }
 
 function cancelDeleteMail(){
-	 alert("hello")
 		$("#deleteFromMailDiv").empty();
 		 $(".project_inn_mask").fadeOut(200);
 	}
@@ -584,7 +589,7 @@ function editConfiguredMail() {
 		    
 		    result = result  +'<div class="pull-right mb">';
 		    result = result  +'<button type="button" class="btn btn-success btnSuccess mr" onClick="updateEmailNotification();">Save</button>';
-		    result = result  +' <button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="configuredMail();">Cancel</button>';
+		    result = result  +' <button type="button" class="btn btn-primary btnsStyles mr" data-dismiss="modal" onClick="configuredMail();">Cancel</button>';
 			
 		    result = result  +'</div>';
 		    
