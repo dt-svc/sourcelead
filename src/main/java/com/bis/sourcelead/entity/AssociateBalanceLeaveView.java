@@ -28,10 +28,10 @@ public class AssociateBalanceLeaveView {
 	private Integer status;
 	
 	@Column(name = "CREATED_DATE")
-	private Date CREATED_DATE;
+	private Date createdDate;
 	
 	@Column(name = "UPDATED_DATE")
-	private Date UPDATED_DATE;
+	private Date updatedDate;
 	
 	@Column(name = "LEAVE_TYPE_NAME")
 	private String leaveTypeName;
@@ -59,15 +59,7 @@ public class AssociateBalanceLeaveView {
 		return status;
 	}
 
-	public Date getCREATED_DATE()
-	{
-		return CREATED_DATE;
-	}
 
-	public Date getUPDATED_DATE()
-	{
-		return UPDATED_DATE;
-	}
 
 	public String getLeaveTypeName()
 	{
@@ -121,14 +113,24 @@ public class AssociateBalanceLeaveView {
 		this.status = status;
 	}
 
-	public void setCREATED_DATE(Date cREATED_DATE)
+	public Date getCreatedDate()
 	{
-		CREATED_DATE = cREATED_DATE;
+		return createdDate;
 	}
 
-	public void setUPDATED_DATE(Date uPDATED_DATE)
+	public Date getUpdatedDate()
 	{
-		UPDATED_DATE = uPDATED_DATE;
+		return updatedDate;
+	}
+
+	public void setCreatedDate(Date createdDate)
+	{
+		this.createdDate = createdDate;
+	}
+
+	public void setUpdatedDate(Date updatedDate)
+	{
+		this.updatedDate = updatedDate;
 	}
 
 	public void setLeaveTypeName(String leaveTypeName)

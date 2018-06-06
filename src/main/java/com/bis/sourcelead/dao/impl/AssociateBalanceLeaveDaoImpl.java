@@ -24,6 +24,7 @@ import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Repository
@@ -80,8 +81,11 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 	public ResponseList<AssociateBalanceLeaveView> getAssociateBalanceLeavesByUserId(Long userId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
+		Date[] yearDates = ConversionUtil.getCurrentYearStartAndEndDate();
+		java.sql.Date yearStartDate = new java.sql.Date(yearDates[0].getTime());
+		java.sql.Date yearEndDate = new java.sql.Date(yearDates[1].getTime());
 		ResponseList<AssociateBalanceLeaveView> res = new ResponseList<>();
-		List<AssociateBalanceLeaveView> assoBalLeave = session.createQuery("from AssociateBalanceLeaveView balLeaveView where balLeaveView.userId =:userId" ).setLong( "userId", userId ).list();
+		List<AssociateBalanceLeaveView> assoBalLeave = session.createQuery("from AssociateBalanceLeaveView balLeaveView where balLeaveView.userId =:userId and balLeaveView.createdDate BETWEEN :yearStartDate AND :yearEndDate" ).setLong( "userId", userId ).setDate("yearStartDate", yearStartDate).setDate("yearEndDate", yearEndDate).list();
 		res.setData(assoBalLeave);
 		return res;
 		
