@@ -195,7 +195,19 @@ public class LeaveServiceImpl implements LeaveService{
 			leave.setFileUrl(fileinfo.getFileURL());
 			FileUploadUtil.moveFile(leaveDTO.getStaticPath(), fileinfo, "leaveDocuments");
 		}
-		if(leaveDTO.getIsSuperUser()){
+		
+		UserRole urole = userRoleService.getUserRoleByUserIdAndLocationId(leave.getUser().getId(), orgLocations.getId());
+		if(StringUtils.isNotBlank(leaveType.getAutoApprove())){
+			if("Grade".equalsIgnoreCase(leaveType.getAutoApproveType())){
+				if(leaveType.getAutoApproveTypeListNames().contains(urole.getGradeId().getGradeName())){
+					leave.setStatus(Constants.LEAVE_APPROVED);
+				}
+			}else if("Role".equalsIgnoreCase(leaveType.getAutoApproveType())){
+				if(leaveType.getAutoApproveTypeListNames().contains(urole.getRoles().getDisplayName())){
+					leave.setStatus(Constants.LEAVE_APPROVED);
+				}
+			}
+		}else if(leaveDTO.getIsSuperUser()){
 			leave.setStatus(Constants.LEAVE_APPROVED);
 		}else{
 			leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
