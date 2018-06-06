@@ -19,7 +19,14 @@ window.onload = function() {
    if($("#checkbox-3").is(':checked')){
 	   $("#checkbox-3").prop('checked', false);
 	}
-	}
+   
+   var isSuperUser = '${SourceLeadWeb_isSuperUser}';
+   if(isSuperUser){
+	   $("#approvalDiv").hide();
+   }else{
+	   $("#approvalDiv").show();
+   }
+}
 </script>
 
 <!-- Side Nav Bar --> 
@@ -128,7 +135,7 @@ window.onload = function() {
               </div>
             </div>
             
-            <c:if test="${SourceLeadWeb_isSuperUser != true}">
+<%--             <c:if test="${SourceLeadWeb_isSuperUser != true}"> --%>
             	<div class="form-group" id="approvalDiv">
 	              <label class="col-md-3">Approval By<span class="text-danger paddingLeft">*</span></label>
 	              <div class="col-md-9 dropdown-select" id="approverUserDiv">
@@ -136,7 +143,7 @@ window.onload = function() {
 	                  </select>
 	              </div>
             	</div>
-            </c:if>
+<%--             </c:if> --%>
               
           </div>
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -506,6 +513,12 @@ function onbehalf() {
 	    $("#user").removeAttr('data-validation');
 	    $("#fromDate").val('');
 	    $("#toDate").val('');
+	    var isSuperUser = '${SourceLeadWeb_isSuperUser}';
+	    if(isSuperUser){
+	 	   $("#approvalDiv").hide();
+	    }else{
+	 	   $("#approvalDiv").show();
+	    }
 	}
     
 }
@@ -600,7 +613,7 @@ function getLeaveDetails(finalDateFormatEndDate){
 	if(policy != null && policy != '' && policy !='undefined'){
 		skipPolicy = true;
 	}
-	
+	var isSuperUser = '${SourceLeadWeb_isSuperUser}';
 	var behalf = $("#checkbox-1");
 	var userId = "";
 	if(behalf.is(':checked')){
@@ -620,6 +633,7 @@ function getLeaveDetails(finalDateFormatEndDate){
           		    location.href = "/errorPage";
           		} else if (result.response === "SUCCESS") {
           			var report = result.object;
+          			
           			if(report.duration == "Half Day"){
     		    		$("#fromHalfDayDiv").hide();
     		    		$("#toHalfDayDiv").hide();
@@ -648,14 +662,18 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    		$("#uploadBtn").removeAttr('data-validation');
     		    	}
     		    	
-    		    	if(report.userGender != "Allows"){
+    		    	if(report.userGender == "Not Allow"){
     		    		errorMessage += "Selected LeaveType is not allowed to apply for your Gender";
     		    	}
     		    	
     		    	if(report.autoApprove == "Y"){
     		    		$("#approvalDiv").hide();
     		    	}else{
-    		    		$("#approvalDiv").show();
+    		    		if(isSuperUser == true){
+   	   		    		   $("#approvalDiv").hide();
+   	   		    	   }else{
+   	   		    		   $("#approvalDiv").show();
+   	   		    	   }
     		    	}
     		    	
     		    	
@@ -866,25 +884,14 @@ function getApproversList(){
    if(userId != null && userId !='' && userId !='undefined'){
 	$.get(sourceleadUrl+"/getApproversForLeave?&userId="+userId, function(data) {
 		if(data !=null){
-		var result = "";
-		if(data.length > 1){
-			for(var i=0;i<data.length;i++){
-				var opt = data[i];
-				if(behalf.is(':checked')){
-					result += "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+") </option> ";
-				}else{
-					if(userId != opt.id){
-						result += "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+") </option> ";
-					}
-				}
-			}
-		}else{
+			var result = "";
 			var opt = data[0];
-			result += '<input type="text" class="form-control" name="approverUser" id="approverUser" readOnly value="'+opt.firstName+' '+opt.lastName+' ('+opt.userType+')"/>';
-		}
-		$("#approverUserDiv").empty();
-		$("#approverUserDiv").append(result);
-// 		$('#approverUser').trigger("chosen:updated");
+			result += '<input type="text" class="form-control" id="approverUser" readOnly value="'+opt.firstName+' '+opt.lastName+' ('+opt.userType+')"/>';
+			result += '<input type="text" class="form-control" name="approverUser" readOnly value="'+opt.id+'"/>';
+			$("#approvalDiv").show();
+			$("#approverUserDiv").empty();
+			$("#approverUserDiv").append(result);
+	// 		$('#approverUser').trigger("chosen:updated");
 		}
 		});
    }

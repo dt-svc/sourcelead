@@ -38,7 +38,14 @@
 	</div>
 </div>
 </c:if>
-
+<div class="timeNewSe timeNewSe_month">
+	<select id="project"	onchange="timesheetApprovalDetils('project');" class="form-control chosen-select" style="display: block;">
+	     <option data-icon="fa fa-calendar" value="">Select Project</option>
+		<c:forEach var="projects" items="${timesheetApprovalDTO.projectList}">
+			<option data-icon="fa fa-calendar" ${projects.key == timesheetApprovalDTO.project ? 'selected' : ''} value="${projects.key}">${projects.value}</option>
+		</c:forEach>
+	</select>
+</div>
 <div class="timeNewSe timeNewSe_client">
 	<select id="client"	onchange="timesheetApprovalDetils('client');" class="form-control chosen-select" style="display: block;">
 		<option data-icon="fa fa-calendar" value="">Select Client</option>
@@ -54,10 +61,11 @@
 		</c:forEach>
 	</select>
 </div>
+
 <c:if test="${!empty timesheetApprovalDTO.timesheetSubmission}">
 <div class="export dropexport" onclick="dropDown();" id="exportHideId">
 	<p data-toggle="tooltip" title="Export">
-		<i class="glyphicon glyphicon-export"></i>
+		<i class="glyphicon glyphicon-export padding_left"></i>
 	</p>
 	<ul id="exporrt">
 	<li onclick="exportTimeSheetToPdfOrExcel('pdf');"title="PDF"><i class="fa fa-file-pdf-o text-danger"></i>&nbsp;PDF</li>
