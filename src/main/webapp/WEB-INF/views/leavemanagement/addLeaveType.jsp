@@ -247,7 +247,7 @@
 								</div>
 							</div>
 							<div class="form-group" id="rolesDiv">
-								<label class="col-md-4">Select Roles<span
+								<label class="col-md-4">Select Employement Type<span
 								class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-6 dropdown-select" id="roleErrMsg">
 									<select multiple data-placeholder="Select Roles"

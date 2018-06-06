@@ -1220,7 +1220,12 @@ public class LeaveManagementRestController {
 		Response<String> response = new Response<>();
 		try {
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
-			boolean isSuperUser = orgLocationService.isLoginUserIsSuperUser(Long.parseLong(leaveDTO.getUser()),orgLocations.getId());
+			boolean isSuperUser = false;
+			if(StringUtils.isNotBlank(leaveDTO.getUser())){
+				isSuperUser = orgLocationService.isLoginUserIsSuperUser(Long.parseLong(leaveDTO.getUser()),orgLocations.getId());
+			}else{
+				isSuperUser = orgLocationService.isLoginUserIsSuperUser(Long.parseLong(leaveDTO.getUserId()),orgLocations.getId());
+			}
 			User user = userService.getUserById(Long.parseLong(leaveDTO.getUserId()));
 			if (user != null && Validator.validate(leaveDTO)) {
 				leaveDTO.setStaticPath(staticPath);
