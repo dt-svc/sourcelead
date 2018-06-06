@@ -3,11 +3,7 @@ package com.bis.sourcelead.dao.impl;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,20 +28,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.AssociateGradesDTO;
-import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
-import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -1901,7 +1892,8 @@ public class UserDaoImpl implements UserDao {
 			for(User user : usersList) {
 				
 				try {
-					UserDTO userDTO = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, null, fromDate, toDate,isGlobalUser, orgId);
+					UserDTO userDTO = new UserDTO();
+					userDTO.setFullName(user.getFullName());
 					
 					Integer totalRequirements = requirementService.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, searchDates[0], searchDates[1],isGlobalUser);
 					userDTO.setUserRequirementsCount(totalRequirements);
@@ -1909,7 +1901,15 @@ public class UserDaoImpl implements UserDao {
 					Integer totalCandidates = candidateService.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, searchDates[0], searchDates[1],isGlobalUser);
 					userDTO.setUserCandidatesCount(totalCandidates);
 					
-					userDTO.setFullName(user.getFullName());
+					RecruiterReportView recuiterReportView = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, null, fromDate, toDate,isGlobalUser, orgId);
+					if(recuiterReportView != null) {
+						userDTO.setUserApplicantsCount(recuiterReportView.getApplicantSubmissionCount());
+						userDTO.setUserShortlistedApplicantsCount(recuiterReportView.getApplicantShortlistedCount());
+						userDTO.setUserSubmittedApplicantsCount(recuiterReportView.getApplicantSubmittedClientCount());
+						userDTO.setUserOfferedApplicantsCount(recuiterReportView.getApplicantOfferMadeCount());
+						userDTO.setUserRejectedApplicantsCount(recuiterReportView.getApplicantRejectedCount());
+						userDTO.setUserApplicantsBackOutCount(recuiterReportView.getApplicantBackOutCount());
+					}
 					
 					usersDTOList.add(userDTO);
 					

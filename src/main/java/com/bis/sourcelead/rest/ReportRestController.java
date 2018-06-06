@@ -213,23 +213,21 @@ public class ReportRestController {
 				if(!"custom".equalsIgnoreCase(timePeriod)){
 					searchDates = reportsUtil.getJobFilterDate(timePeriod,orgLocations);
 				}else if("custom".equalsIgnoreCase(timePeriod) && !"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
-					Date fromDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), customStartDate);
-		    	    Date toDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), customEndDate);
-		    	   
-		    	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		    	    DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		    	    DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-		    	    DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-		    	    String customStartTimeStr = TZ_DF_CSD.format(fromDate);
-		    	    String customEndTimeStr = TZ_DF_CED.format(toDate);
-		    	    String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-		    	    String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
-		    	    fromDate = TZ_DF_TS.parse(startDateString);
-		    	    toDate = TZ_DF_TS.parse(endDateString);
 		    	    
+		    	    DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+					DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+					DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+					
+					Date startTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customStartDate);
+					Date endTime =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),customEndDate);
+					String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+					String customEndTimeStr = TZ_DF_CED.format(endTime);  
+					Date startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+					Date endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+		    	   
 		    	    searchDates = new Date[2];
-		    	    searchDates[0] = fromDate;
-		    	    searchDates[1] = toDate;
+		    	    searchDates[0] = startDateUTC;
+		    	    searchDates[1] = endDateUTC;
 				}
 
 			

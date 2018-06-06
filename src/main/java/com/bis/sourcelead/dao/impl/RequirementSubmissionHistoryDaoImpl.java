@@ -1,18 +1,13 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
-import com.bis.sourcelead.dto.ConnectionsDTO;
-import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.CommonUtil;
@@ -180,93 +174,24 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 
 	@Override
 	@Transactional
-	public UserDTO getSubmissionCountsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
+	public RecruiterReportView getSubmissionCountsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
 			String submissionStage, String startDateUTC, String endDateUTC, String isGlobalUser,Long orgId) throws Exception {
-		
-		
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
-		List<Long> requirementsCount = null;
 		String globalAccessQuery = "";
+		RecruiterReportView recuiterReportView = null;
 		
 		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
-			globalAccessQuery = " AND OL.ORG_ID = O.ID AND OL.ORG_ID = :orgId";
-		}else {
-			globalAccessQuery = "  AND RS.ORG_LOCATION_ID = OL.ID AND RS.ORG_LOCATION_ID = :orgLocationId";
+			query = "from RecruiterReportView rv where rv.userCode = :userCode and rv.createdDate BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"' and  rv.orgId = :orgId ";
+			recuiterReportView = (RecruiterReportView) session.createQuery(query).setString("userCode", user.getUserCode()).setLong("orgId", orgId).uniqueResult();
+		}
+		else {
+			query = "from RecruiterReportView rv where rv.userCode = :userCode and rv.createdDate BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"' and rv.orgLocationId = :orgLocationId  ";
+			recuiterReportView = (RecruiterReportView) session.createQuery(query).setString("userCode", user.getUserCode()).setLong("orgLocationId", orgLocationId).uniqueResult();
 		}
 		
-
-
-		query ="SELECT "
-   
-				+ " SUM(CASE"
-        + " WHEN UPPER(RSH.TO_STAGE) = 'SUBMISSION' THEN 1"
-        + " ELSE 0"
-   + "  END) AS userApplicantsCount,"
-    + " SUM(CASE"
-        + " WHEN UPPER(RSH.TO_STAGE) = 'SHORTLIST' THEN 1"
-        + " ELSE 0"
-    + " END) AS userShortlistedApplicantsCount,"
-    + " SUM(CASE"
-        + " WHEN UPPER(RSH.TO_STAGE) = 'SUBMIT_TO_CLIENT' THEN 1"
-        + " ELSE 0"
-   + "  END) AS userSubmittedApplicantsCount,"
-    + " SUM(CASE"
-        + " WHEN UPPER(RSH.TO_STAGE) = 'INTERVIEW' THEN 1"
-        + " ELSE 0"
-    + " END) AS userInterviewedApplicantsCount,"
-    + " SUM(CASE"
-        + " WHEN UPPER(RSH.TO_STAGE) = 'OFFERMADE' THEN 1"
-        + " ELSE 0"
-    + " END) AS userOfferedApplicantsCount,"
-    + " SUM(CASE"
-        + " WHEN UPPER(RSH.TO_STAGE) = 'REJECTED' THEN 1"
-       + "  ELSE 0"
-    + " END) AS userRejectedApplicantsCount,"
-    + " SUM(CASE"
-        + " WHEN UPPER(RSH.TO_STAGE) = 'BACKOUT' THEN 1"
-        + " ELSE 0"
-    + " END) AS userApplicantsBackOutCount"
-+ " FROM"
-    + " REQUIREMENT_SUBMISSION_HISTORY RSH,"
-    + " REQUIREMENT_SUBMISSION RS,"
-    + " ORG_LOCATIONS OL,"
-    + " ORG O"
-+ " WHERE"
-   + "  RSH.CREATED_BY = :userCode"
-        + " AND RSH.REQUIREMENT_SUBMISSION_ID = RS.ID AND  "
-   +"(RSH.CREATED_DATE BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"')"
-   +globalAccessQuery;
-		
-		Query queryString = session.createSQLQuery(query);
-		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
-			queryString.setParameter("userCode", user.getUserCode()).setParameter("orgId", orgId);
-		}else {
-			queryString.setParameter("userCode", user.getUserCode()).setParameter("orgLocationId", orgLocationId);
-		}
-		
-		queryString.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
-		UserDTO userDTO = (UserDTO) queryString.uniqueResult();
-		return userDTO;
-    
-
-		
-
-		
-	
-		
-/*		query ="select count(*) from RequirementSubmissionHistory rsh where rsh.createdBy =:userCode and rsh.toStage = :toStage "+globalAccessQuery+" "
-				+ " and date(rsh.createdDate) BETWEEN :startDate and :endDate";
-		
-		requirementsCount =  session.createQuery(query.toString()).setString("userCode", user.getUserCode()).setString("toStage", submissionStage).setLong("orgLocationId", orgLocationId).setParameter("startDate", startDateUTC).setParameter("endDate", endDateUTC).list();
-		Integer count= 0;
-		if(requirementsCount != null && !requirementsCount.isEmpty()){
-				count = requirementsCount.get(0).intValue();
-		}
-		return count;*/
-		
-	
+		return  recuiterReportView;
 		
 	}
 

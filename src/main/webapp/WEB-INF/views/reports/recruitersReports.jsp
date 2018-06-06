@@ -273,6 +273,7 @@ function usersListPagination(url,sourceleadUrl){
 	          },{
 		    	  "targets": colIndex++,
 	              "data": "candidates",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  result = result +"<td><div class='small'> <span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></div></td>";
@@ -281,6 +282,7 @@ function usersListPagination(url,sourceleadUrl){
 		     },{
 		    	  "targets": colIndex++,
 	              "data": "applicants",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userApplicantsCount !=null && opt.userApplicantsCount !='' && opt.userApplicantsCount !='undefined'){
@@ -294,6 +296,7 @@ function usersListPagination(url,sourceleadUrl){
 		     }, {
 		    	  "targets": colIndex++,
 	              "data": "shortlisted",
+	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    if(opt.userShortlistedApplicantsCount !=null && opt.userShortlistedApplicantsCount !='' && opt.userShortlistedApplicantsCount !='undefined'){
