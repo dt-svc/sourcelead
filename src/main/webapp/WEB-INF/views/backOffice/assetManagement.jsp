@@ -53,16 +53,13 @@ $(document).ready(function(){
         <sec:authorize access="hasRole('ROLE_ADD_ASSET')"> 
         <a href="javascript:void(0)" class="addcon-pop"  onClick="addAssetManagementPopup();"><i class="fa fa-plus"></i>Add Asset</a> 
         </sec:authorize>
-          
-         <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-         <!-- Add Asset Popup -->
         </li>
         <sec:authorize access="hasRole('ROLE_ADD_ASSET_CATEGORY')"> 
         <li>
-        <a href="<c:url value='${appPath}/assetCategory'/>" class=""><i class="fa fa-plus"></i>Categories</a>
+        <a href="<c:url value='${appPath}/assetCategory'/>" class=""><i class="fa fa-list mr10"></i>Categories</a>
         </li>
         </sec:authorize>
-        
+        <li title="Import"><a href="<c:url value='${appPath}/uploadassetManagement'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
         <li class="positionRelative">
 		  <div class="dynamic_search">
    			<input type='text' placeholder='Search' id='assetDataTableSearch'/>
@@ -245,7 +242,7 @@ function openAssetFilterPop(){
 }
 
 </script>
-<div class="advancedsearch-mask"></div>
+     <div class="advancedsearch-mask"></div>
           <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-small" id="assetFilterId">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeAssetFilterPop()"><i

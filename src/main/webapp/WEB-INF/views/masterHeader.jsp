@@ -271,7 +271,19 @@ function getNotificationsByuserId(){
 				}
 				result = result + ' </span> </div>';
 				result = result + '<div class="msg-content">';
+				
+// 				if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID == null || report.spocUUID == "" || report.spocUUID == "undefined")){
+// 					result = result +'<a href="'+report.actionLink+'" title="'+report.body+'">'+report.body+'</a>';
+// 				}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && (report.orgRelationUUID != null && report.orgRelationUUID != "" && report.orgRelationUUID != "undefined") && report.responderType == "vendor"){
+// 					result = result +'<a href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.body+'">'+report.body+'</a>';
+// 				}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && (report.orgRelationUUID != null && report.orgRelationUUID != "" && report.orgRelationUUID != "undefined")&& report.responderType == "client"){
+// 					result = result +'<a href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.body+'">'+report.body+'</a>';
+// 				}else{
+// 					result = result +'<a href="#" title="'+report.body+'">'+report.body+'</a>';
+// 				}
+				
 				result = result + ' <a href="<c:url value="/app/notificationsList"/>"><p>'+opt.body+'</p>';
+				
 				/* result = result + ' <c:out value='+userId+' />'; */
 				result = result + ' <span>'+opt.calDays+'</span></a> ';
 				result = result + '</div>';
