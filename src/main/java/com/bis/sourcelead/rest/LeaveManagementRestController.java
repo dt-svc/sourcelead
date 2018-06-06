@@ -1521,24 +1521,33 @@ public class LeaveManagementRestController {
 				LeaveType leaveType = new LeaveType();
 				leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
 				if (leaveType != null) {
-					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(Long.parseLong(leaveTypeDTO.getLoginUserId()), loginOrgLocation.getId());
-					if(StringUtils.isNotBlank(userRole.getUser().getGender())){
-						if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender())){
-							leaveType.setUserGender("Allows");
-						}
-					}
-					if(StringUtils.isNotBlank(leaveType.getAutoApprove())){
-						if("Grade".equalsIgnoreCase(leaveType.getAutoApproveType())){
-							if(leaveType.getAutoApproveTypeListNames().contains(userRole.getGradeId().getGradeName())){
-								leaveType.setAutoApprove(Constants.YES);
-							}
-						}else if("Role".equalsIgnoreCase(leaveType.getAutoApproveType())){
-							if(leaveType.getAutoApproveTypeListNames().contains(userRole.getRoles().getDisplayName())){
-								leaveType.setAutoApprove(Constants.YES);
+					if(StringUtils.isNotBlank(leaveTypeDTO.getLoginUserId())){
+						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(Long.parseLong(leaveTypeDTO.getLoginUserId()), loginOrgLocation.getId());
+						if(StringUtils.isNotBlank(userRole.getUser().getGender())){
+							if("All".equalsIgnoreCase(leaveType.getEffectiveGender()) || leaveType.getEffectiveGender() == null){
+								leaveType.setUserGender("Allow");
+							}else{
+								if(userRole.getUser().getGender().equalsIgnoreCase(leaveType.getEffectiveGender())){
+									leaveType.setUserGender("Allow");
+								}else{
+									leaveType.setUserGender("Not Allow");
+								}
 							}
 						}
+						
+						if(StringUtils.isNotBlank(leaveType.getAutoApprove())){
+							if("Grade".equalsIgnoreCase(leaveType.getAutoApproveType())){
+								if(userRole.getGradeId() != null)
+									if(leaveType.getAutoApproveTypeListNames().contains(userRole.getGradeId().getGradeName())){
+										leaveType.setAutoApprove(Constants.YES);
+									}
+							}else if("Role".equalsIgnoreCase(leaveType.getAutoApproveType())){
+								if(leaveType.getAutoApproveTypeListNames().contains(userRole.getRoles().getDisplayName())){
+									leaveType.setAutoApprove(Constants.YES);
+								}
+							}
+						}
 					}
-					
 					response.setObject(leaveType);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
@@ -2395,67 +2404,46 @@ public class LeaveManagementRestController {
 		UserRole selectedUserRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId, orgLocations.getId());
 		List<User> approversList = new ArrayList<>();
 		boolean flag = false;
-		// User loginUser = (User)
-		// SourceLeadSessionManager.getSessionAttribute(request, "user");
-		if (userId != null) {
 			List<User> appUser = new ArrayList<>();
 			
 			if(selectedUserRole.getReportingManager() != null){
-				approversList.add(selectedUserRole.getReportingManager());
-				if (approversList != null) {
-					for (User user : approversList) {
-						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),
-								orgLocations.getId());
-						if (userRole != null) {
-							String roles = userRole.getRoles().getActionId();
-//							String[] sa = roles.contains("238");
-//							for (String s : sa) {
-								if (roles.contains("238")) {
-									flag = true;
-								}
-//							}
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(selectedUserRole.getReportingManager().getId(),orgLocations.getId());
+				if (userRole != null) {
+					String roles = userRole.getRoles().getActionId();
+						if (roles.contains("238")) {
+							flag = true;
+						}
+						User user = userRole.getUser();
+						StringBuilder sb = new StringBuilder();
+						if (StringUtils.isNotBlank(user.getLastName())) {
+						sb.append(user.getFirstName()).append(" ").append(user.getLastName());
+						} else {
+						sb.append(user.getFirstName());
+						}
+						user.setFullName(user.getFullName().toString());
+						user.setUserType(userRole.getUserType());
+						appUser.add(userRole.getUser());
+					}
+				
+				if(!flag){
+					userRole = userRoleService.getUserRoleByUserIdAndLocationId(orgLocations.getUser().getId(),orgLocations.getId());
+					if (userRole != null) {
+						String roles = userRole.getRoles().getActionId();
+							if (roles.contains("238")) {
+								flag = true;
+							}
+							User user = userRole.getUser();
 							StringBuilder sb = new StringBuilder();
 							if (StringUtils.isNotBlank(user.getLastName())) {
-								sb.append(user.getFirstName()).append(" ").append(user.getLastName());
+							sb.append(user.getFirstName()).append(" ").append(user.getLastName());
 							} else {
-								sb.append(user.getFirstName());
+							sb.append(user.getFirstName());
 							}
 							user.setFullName(user.getFullName().toString());
 							user.setUserType(userRole.getUserType());
-							if (flag)
-								appUser.add(user);
+							appUser.add(userRole.getUser());
 						}
-					}
 				}
-			}else if(!flag){
-				approversList = leaveService.getApproversListBasedonHierarchyExceptLoginUser(userId,
-						selectedUserRole.getRoles().getId(), orgLocations.getId());
-				if (approversList != null) {
-					for (User user : approversList) {
-						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(user.getId(),
-								orgLocations.getId());
-						if (userRole != null) {
-							String roles = userRole.getRoles().getActionId();
-//							String[] sa = roles.contains("238");
-//							for (String s : sa) {
-								if (roles.contains("238")) {
-									flag = true;
-								}
-//							}
-							StringBuilder sb = new StringBuilder();
-							if (StringUtils.isNotBlank(user.getLastName())) {
-								sb.append(user.getFirstName()).append(" ").append(user.getLastName());
-							} else {
-								sb.append(user.getFirstName());
-							}
-							user.setFullName(user.getFullName().toString());
-							user.setUserType(userRole.getUserType());
-							if (flag)
-								appUser.add(user);
-						}
-					}
-				}
-			}
 			
 			
 			return appUser;
@@ -2463,8 +2451,7 @@ public class LeaveManagementRestController {
 			return null;
 	}
 
-	@RequestMapping(value = { "/validateCarryForwardLeaves",
-			"/rest/validateCarryForwardLeaves" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/validateCarryForwardLeaves", "/rest/validateCarryForwardLeaves" }, method = RequestMethod.GET)
 	public @ResponseBody boolean validateCarryForwardLeaves(
 			@RequestParam(value = "leaveTypeId", required = false) Long leaveTypeId,
 			@RequestParam(value = "fromDate", required = false) String fromDate,
