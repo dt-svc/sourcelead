@@ -1127,7 +1127,8 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	public List<Projects> getAllProjectsByOrgLocationIdAndStatus(Long orgLocationsId) throws Exception
 	{
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId) and  ps.projectStatus <> 'ONHOLD' and (ps.orgLocationsId = :orgLocationsId OR ps.projectMode = 'Finished') "; 
+		//String query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId) and  ps.projectStatus <> 'ONHOLD' and (ps.orgLocationsId = :orgLocationsId OR ps.projectMode = 'Finished') "; 
+		String query = "from Projects p where  p.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgRelationId.id = :orgRelationId and (pc.orgRelationId.locationId.id = :orgLocationsId  OR pc.orgRelationId.responderLocationId.id = :orgLocationsId ))  and p.projectStatus <> 'ONHOLD'";
 		List<Projects> projectsList =  session.createQuery(query.toString()).setLong("orgLocationsId", orgLocationsId).list();
 		return projectsList;
 	}

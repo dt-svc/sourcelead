@@ -1299,9 +1299,8 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	 if(role != null && role != "" && role != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getReportingManager?${_csrf.parameterName}=${_csrf.token}&role="+role, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        url: sourceleadUrl+"/getAssociateReportingManager?${_csrf.parameterName}=${_csrf.token}&role="+role, 
+		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Manager --</option>"; 
 		        	for (var i=0; i<json.length; i++)

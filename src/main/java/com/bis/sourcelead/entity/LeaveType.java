@@ -161,6 +161,28 @@ public class LeaveType {
 	@Column(name = "NO_OF_DAYS")
 	private Integer noOfDays;
 	
+	@Column(name = "NO_OF_DAYS_PER_PERIOD")
+	private Float noOfDaysPerPeriod;
+	
+	@Column(name = "AUTO_APPROVE")
+	private String autoApprove;
+	
+	@Column(name = "AUTO_APPROVE_TYPE")
+	private String autoApproveType;
+	
+	@Column(name = "AUTO_APPROVE_TYPE_LIST")
+	private String autoApproveTypeList;
+	
+	@Column(name = "TIMESHEET_AUTOFILL")
+	private String timeSheetAutofill;
+	
+	@Column(name = "EFFECTIVE_GENDER")
+	private String effectiveGender;
+	
+	@Transient
+	@JsonProperty
+	private String autoApproveTypeListNames;
+	
 	@Transient
 	@JsonProperty
 	private String createdUser;
@@ -196,6 +218,10 @@ public class LeaveType {
 	@Transient
 	@JsonProperty
 	private float takenLeaves;
+	
+	@Transient
+	@JsonProperty
+	private String userGender;
 
 	public Long getId()
 	{
@@ -705,6 +731,86 @@ public class LeaveType {
 	public void setTakenLeaves(float takenLeaves)
 	{
 		this.takenLeaves = takenLeaves;
+	}
+
+	public Float getNoOfDaysPerPeriod()
+	{
+		return noOfDaysPerPeriod;
+	}
+
+	public void setNoOfDaysPerPeriod(Float noOfDaysPerPeriod)
+	{
+		this.noOfDaysPerPeriod = noOfDaysPerPeriod;
+	}
+
+	public String getAutoApprove()
+	{
+		return autoApprove;
+	}
+
+	public void setAutoApprove(String autoApprove)
+	{
+		this.autoApprove = autoApprove;
+	}
+
+	public String getAutoApproveType()
+	{
+		return autoApproveType;
+	}
+
+	public void setAutoApproveType(String autoApproveType)
+	{
+		this.autoApproveType = autoApproveType;
+	}
+
+	public String getAutoApproveTypeList()
+	{
+		return autoApproveTypeList;
+	}
+
+	public void setAutoApproveTypeList(String autoApproveTypeList)
+	{
+		this.autoApproveTypeList = autoApproveTypeList;
+	}
+
+	public String getTimeSheetAutofill()
+	{
+		return timeSheetAutofill;
+	}
+
+	public void setTimeSheetAutofill(String timeSheetAutofill)
+	{
+		this.timeSheetAutofill = timeSheetAutofill;
+	}
+
+	public String getAutoApproveTypeListNames()
+	{
+		return autoApproveTypeListNames;
+	}
+
+	public void setAutoApproveTypeListNames(String autoApproveTypeListNames)
+	{
+		this.autoApproveTypeListNames = autoApproveTypeListNames;
+	}
+
+	public String getEffectiveGender()
+	{
+		return effectiveGender;
+	}
+
+	public void setEffectiveGender(String effectiveGender)
+	{
+		this.effectiveGender = effectiveGender;
+	}
+
+	public String getUserGender()
+	{
+		return userGender;
+	}
+
+	public void setUserGender(String userGender)
+	{
+		this.userGender = userGender;
 	}
 	
 }

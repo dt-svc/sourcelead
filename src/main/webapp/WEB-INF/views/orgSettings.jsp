@@ -184,14 +184,6 @@ function cancelOrgImg(){
         <li><a data-toggle="tab" href="#informationDetails">Information</a></li>
         </c:if>
          
-         <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
-          <li><a data-toggle="tab" href="#bankingDetails">Banking Details</a></li>
-         </c:if>
-         
-         <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
-          <li><a data-toggle="tab" href="#indiabankingDetails">Banking Details</a></li>
-         </c:if>
-       
         <li><a data-toggle="tab" id="documentsClick" href="#orglocationDocuments">Documents</a></li>
         <li><a data-toggle="tab" href="#orglocationSignatory" onclick="getAllSignatory();">Signatory</a></li>
         <li><a data-toggle="tab" href="#emailSign" onclick="loadSignature();">Email Signature</a></li>
@@ -914,12 +906,12 @@ function cancelOrgImg(){
         			</div>
    			 <jsp:include page="federalAndStateTaxes.jsp" />
    			 <jsp:include page="locationInformationDetails.jsp" />
-     		 <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
+     		 <%-- <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
      		 <jsp:include page="orglocationBankingDetails.jsp" />
      		 </c:if>
      		 <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
      		 <jsp:include page="orglocationIndiaBankingDetails.jsp" />
-     		 </c:if>
+     		 </c:if> --%>
      		 <jsp:include page="orglocationDocuments.jsp" />
      		 <jsp:include page="orglocationSignatory.jsp" />
      		 <jsp:include page="googleApiLocation.jsp" />

@@ -1340,8 +1340,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 			List<User> reportingManagersList = new ArrayList<>();
 			
-			List<User> userList = userService.getManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
-			List<User> globalUserList = userService.getGlobalUsersByOrgId(roleId, org.getId(), Long.valueOf(Constants.TAB_USER));
+			List<User> userList = userService.getReportingManagersByUserRolesAndOrgLocationId(roleId, orgLocations.getId());
+			List<User> globalUserList = userService.getGlobalReportingManagersUsersByOrgId(roleId, org.getId());
 			if(userList != null && !userList.isEmpty()) {
 				reportingManagersList.addAll(userList);
 			}

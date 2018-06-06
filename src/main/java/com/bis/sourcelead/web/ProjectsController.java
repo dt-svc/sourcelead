@@ -348,9 +348,9 @@ public class ProjectsController {
 							}
 						}
 						
-						if(!projects.getOrgLocationsId().getId().equals(orgLocations.getId())) {
+						/*if(!projects.getOrgLocationsId().getId().equals(orgLocations.getId())) {
 							isClientOrgActive = Constants.YES;
-						}
+						}*/
 						
 						model.addObject("isClientOrgActive", isClientOrgActive);
 					}
