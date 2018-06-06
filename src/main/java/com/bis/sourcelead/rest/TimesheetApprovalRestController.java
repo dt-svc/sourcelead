@@ -345,9 +345,10 @@ public class TimesheetApprovalRestController {
 	                	    
 								
 	               }
-	               String status = "INPROGRESS";
-	               String clients = "";		
-	                List<Projects> projectsList =projectsDao.getProjectsBasedOnClientsAndStatusSelectionInFilters(user.getId(), clients, status, orgLocations.getId());
+	                Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+					String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+					 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	                List<Projects> projectsList =projectsDao.getProjectsListByUserIdAndOrgLocationIdAndStatus(user.getId(), orgLocations.getId(), orgLocations.getOrg().getId(), candidateId, userRole, isGlobalAccess);
 	               LinkedHashMap<Long,String> projectMap = new LinkedHashMap<>();
 	   	 		   projectMap.put(null, "All");
 	                if(projectsList != null && !projectsList.isEmpty()){
