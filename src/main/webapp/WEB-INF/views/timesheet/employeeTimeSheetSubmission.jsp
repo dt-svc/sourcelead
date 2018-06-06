@@ -11,7 +11,15 @@
 					<b class="proj_new Cursor" onClick='addTimeSheetRow();'>Add Row</b>
 	</div>
 </c:if>
+ <style>
+ .commentValidation p{
+    padding: 0px 0px 0px 0px !important;
+    font-size: 10px;
+    line-height: 10px;
+    margin-left: -14px;
+ }
  
+ </style>
 <div class="clearfix"></div>
 <div id="timesheetNewTabs" class="timesheetNewTabs">
 	<div class="project_side_wrap_inn_tabs">
@@ -55,6 +63,8 @@
 								                <c:set var="isFriEditable"/>
 								                <c:set var="isSatEditable"/>
 								                <c:set var="isSunEditable"/> 
+								                <c:set var="isTaskCommentsRequired"/> 
+								                <c:set var="isTicketNumberRequired"/> 
 							                    <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
 									               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == statusEntry.key}">
 									                     <c:set var="timeSheetSubmissionStatus" value="${statusEntry.value.timesheetStatus}"/>
@@ -65,6 +75,8 @@
 									                     <c:set var="isFriEditable" value="${statusEntry.value.friEditable == true ? 'Y' : 'N'}"/>
 									                     <c:set var="isSatEditable" value="${statusEntry.value.satEditable == true ? 'Y' : 'N'}"/>
 									                     <c:set var="isSunEditable" value="${statusEntry.value.sunEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isTaskCommentsRequired" value="${statusEntry.value.taskCommentsRequired == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isTicketNumberRequired" value="${statusEntry.value.ticketNumberRequired == true ? 'Y' : 'N'}"/>
 									               </c:if>
 									            </c:forEach>
 									            
@@ -77,13 +89,15 @@
 									                     <c:set var="isFriEditable" value="${employeeTimesheetEntryDetailsDTO.friEditable == true ? 'Y' : 'N'}"/>
 									                     <c:set var="isSatEditable" value="${employeeTimesheetEntryDetailsDTO.satEditable == true ? 'Y' : 'N'}"/>
 									                     <c:set var="isSunEditable" value="${employeeTimesheetEntryDetailsDTO.sunEditable == true ? 'Y' : 'N'}"/>
+									                     <c:set var="isTaskCommentsRequired" value="N"/>
+									                     <c:set var="isTicketNumberRequired" value="N"/>
 									               </c:if>
 												            
 											    <tr id="timesheetRow${entryCount.index+1}">
 											        <td id="${entryCount.index+1}projectTd">
 														<div class="timeAdd">
 														    <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
-														        <select id="${entryCount.index+1}projectMember1Id" class='existedProjectMembers' name="${entryCount.index+1}projectMember1Id" onchange="enableOrDisableHours('${entryIndex}','${entryCount.index+1}projectMember1Id');flushtasks('${entryCount.index+1}task1Id');" data-validation="required" field-name="Project">
+														        <select id="${entryCount.index+1}projectMember1Id" class='existedProjectMembers' name="${entryCount.index+1}projectMember1Id" onchange="enableOrDisableHours('${entryIndex}','${entryCount.index+1}projectMember1Id','${entryCount.index+1}ticketNumber1Id');flushtasks('${entryCount.index+1}task1Id','${entryCount.index+1}');" data-validation="required" field-name="Project">
 																	<option value=''>--select project--</option> 
 															        <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
 															               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == pm.id}">
@@ -176,7 +190,7 @@
 												      </td>
 										              <td>
 										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED'}">
-													         <div><input type="text" id="${entryCount.index+1}ticketNumber1Id" name="${entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" onblur='setTaskNumber("${entryIndex}","${entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
+													         <div><input type="text" ${!empty isTicketNumberRequired && isTicketNumberRequired == 'Y' ? 'data-validation="required"' : ''}  id="${entryCount.index+1}ticketNumber1Id" name="${entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" field-name=" " onblur='setTicketNumber("${entryIndex}","${entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
 													      </c:if>
 													      <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED'}">
 													         <c:if test="${!empty entry.ticketNumber}">
@@ -224,16 +238,19 @@
 													                      <c:set var="isEditable" value="N"/>
 													                  </c:if>
 						                                             
-													               <input onblur="editMe(this);" ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'} 
+													               <input onblur="editMe(this);" ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'}  ${isTaskCommentsRequired == 'Y' ? 'data-validation-comment="required"':''}
 													                id="${entryCount.index+1}timeSheetDay${teStatus.index+1}Id" name="timesheetSubmission.timesheetEntries[${entryIndex}].hours" class="inline_field" value="${te.hours}" placeholder="HH:MM" type="text">
 													                   <c:if test="${!empty te.comments || (empty te.comments && (!empty isEditable && isEditable == 'Y'))}">
                                                                          <div class="timesheet_comm" id="commentDiv${entryIndex}">                
-													                       <i class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment${teStatus.index+1}Id");'></i>
+													                       <i id="commentI${entryIndex}" class='glyphicon glyphicon-comment ${!empty te.comments ? "com_active":""}' onclick='timesheetComment("${entryCount.index+1}comment${teStatus.index+1}Id");'></i>
 													                       <span class='teskcomment' id='${entryCount.index+1}comment${teStatus.index+1}Id'>
-													                             <textarea  ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'}  name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
+													                             <textarea  ${(!empty isEditable && isEditable == 'Y') ? '' : 'disabled="disabled"'} onblur="makeActive(this,'commentI${entryIndex}','${entryCount.index+1}CommentValidation${teStatus.index+1}Id');" name='timesheetSubmission.timesheetEntries[${entryIndex}].comments' >${te.comments}</textarea>
 			                                                               </span>
 			                                                             </div>
 													                   </c:if>
+													                   <div class="commentValidation">
+														                     <input type="hidden" field-name="Comment" ${!empty te.hours && te.hours != 'HH:MM' && te.hours != '00:00' && isTaskCommentsRequired == 'Y' ? 'data-validation="required"':''} id="${entryCount.index+1}CommentValidation${teStatus.index+1}Id" value="${te.comments}"/>
+														              </div>
 													               </div>
 													              <c:set var="entryIndex" value="${entryIndex+1}"/>
 													      </td>
@@ -480,7 +497,7 @@
 	        <!-- AddRow Divs  ####-->
 	        <div id="divadttTd0" style="display:none;">   
 	             <div class="timeAdd"> 
-	              <select id="REPLACEROWIDprojectMember1Id"  name="REPLACEROWIDprojectMember1Id"  class='existedProjectMembers' onchange="flushtasks('REPLACEROWIDtask1Id');enableOrDisableHours('ENTRYINDEX','REPLACEROWIDprojectMember1Id');"  field-name="Project">  
+	              <select id="REPLACEROWIDprojectMember1Id"  name="REPLACEROWIDprojectMember1Id"  class='existedProjectMembers' onchange="flushtasks('REPLACEROWIDtask1Id');enableOrDisableHours('ENTRYINDEX','REPLACEROWIDprojectMember1Id','REPLACEROWIDticketNumber1Id','REPLACEROWID');"  field-name="Project">  
 	              <option value=''>--select Project--</option>
 	               <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.projectMembersList}">
 		                   <option value='${pMember.id}'>${pMember.projectName} </option> 
@@ -500,7 +517,7 @@
 		    	   <span id="REPLACEROWIDtask1IdBillableTypeId" name="REPLACEROWIDtask1IdBillableTypeId" ></span>	
 	   		</div>
 	   		 <div id="divadttTd10" style="display:none;">
-		    	  <div><input type="text" id="REPLACEROWIDticketNumber1Id" name="REPLACEROWIDticketNumber1Id" onblur="setTaskNumber('ENTRYINDEX','REPLACEROWIDticketNumber1Id');" class="timeTick"></div>	
+		    	  <div><input type="text" id="REPLACEROWIDticketNumber1Id" name="REPLACEROWIDticketNumber1Id" onblur="setTicketNumber('ENTRYINDEX','REPLACEROWIDticketNumber1Id');" class="timeTick" field-name=" "></div>	
 	   		</div>
 	   		<div id="divadttTd11" style="display:none;">
 		    	  <div><b>New</b></div>	
@@ -518,9 +535,12 @@
 	               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].date" value="DATEVALUE"/>
 		    	   <input type="text" disabled onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay1Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
 	               <div class="timesheet_comm" id="commentDivENTRYINDEX">
-	                <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment1Id');"></i>
-	                <span class="teskcomment" id="REPLACEROWIDcomment1Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea1Id" ></textarea></span>
+	                <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment1Id');"></i>
+	                <span class="teskcomment" id="REPLACEROWIDcomment1Id" ><textarea disabled  onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation1Id');" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea1Id" ></textarea></span>
 	               </div>
+	                <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation1Id" field-name='Comment'/>
+	                </div>
 	   		</div>
 	        <div id="divadttTd4" style="display:none;">
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
@@ -533,8 +553,11 @@
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 					  <input type="text" disabled onblur='editMe(this);'   id="REPLACEROWIDtimeSheetDay2Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
 	                  <div class="timesheet_comm" id="commentDivENTRYINDEX">
-	                      <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment2Id');"></i>
-	                  <span class="teskcomment" id="REPLACEROWIDcomment2Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea2Id" ></textarea></span></div>
+	                      <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment2Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDcomment2Id" ><textarea onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation2Id');" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea2Id" ></textarea></span></div>
+	                   <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation2Id" field-name='Comment'/>
+	                  </div>
 	        </div>
 	        <div id="divadttTd5" style="display:none;">
 	                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
@@ -547,8 +570,11 @@
 	                   <input type="hidden"  disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 					  <input type="text" onblur='editMe(this);' disabled  id="REPLACEROWIDtimeSheetDay3Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
 	                  <div class="timesheet_comm" id="commentDivENTRYINDEX">
-	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment3Id');"></i>
-	                  <span class="teskcomment" id="REPLACEROWIDcomment3Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea3Id"></textarea></span></div>
+	                  <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment3Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDcomment3Id" ><textarea onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation3Id');" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea3Id"></textarea></span></div>
+	                  <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation3Id" field-name='Comment'/>
+	                  </div>
 	        </div>
 	        <div id="divadttTd6" style="display:none;">
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
@@ -561,8 +587,11 @@
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 					  <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay4Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
 	                  <div class="timesheet_comm" id="commentDivENTRYINDEX">
-	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment4Id');"></i>
-	                  <span class="teskcomment" id="REPLACEROWIDcomment4Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea4Id"></textarea></span></div>           
+	                  <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment4Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDcomment4Id" ><textarea onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation4Id');" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea4Id"></textarea></span></div>           
+	                   <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation4Id" field-name='Comment'/>
+	                  </div>
 	        </div>
 	        <div id="divadttTd7" style="display:none;">
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
@@ -575,8 +604,11 @@
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 					  <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay5Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
 	                  <div class="timesheet_comm" id="commentDivENTRYINDEX">
-	                  <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment5Id');"></i>
-	                  <span class="teskcomment" id="REPLACEROWIDcomment5Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea5Id"></textarea></span></div>  
+	                  <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment5Id');"></i>
+	                  <span class="teskcomment" id="REPLACEROWIDcomment5Id" ><textarea  onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation5Id');" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea5Id"></textarea></span></div>  
+	    	          <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation5Id" field-name='Comment'/>
+	                  </div>
 	    	 </div>
 	         <div id="divadttTd8" style="display:none;">
 	                   <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
@@ -589,8 +621,11 @@
 		               <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 				     <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay6Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
 	                 <div class="timesheet_comm" id="commentDivENTRYINDEX">
-	                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment6Id');"></i>
-	                 <span class="teskcomment" id="REPLACEROWIDcomment6Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea6Id"></textarea></span></div>
+	                 <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment6Id');"></i>
+	                 <span class="teskcomment" id="REPLACEROWIDcomment6Id" ><textarea onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation6Id');" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea6Id"></textarea></span></div>
+	                 <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation6Id" field-name='Comment'/>
+	                  </div>
 	         </div>
 	         <div id="divadttTd9" style="display:none;">
 	                 <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].timesheetTaskDTO.id" />
@@ -603,8 +638,11 @@
 		             <input type="hidden" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].ticketNumber"/> 
 				     <input type="text" onblur='editMe(this);' disabled id="REPLACEROWIDtimeSheetDay7Id" name="timesheetSubmission.timesheetEntries[ENTRYINDEX].hours" class="inline_field" placeholder="HH:MM" />	
 	                 <div class="timesheet_comm" id="commentDivENTRYINDEX">
-	                 <i class="glyphicon glyphicon-comment" onclick="timesheetComment('REPLACEROWIDcomment7Id');"></i>
-	                 <span class="teskcomment" id="REPLACEROWIDcomment7Id" ><textarea disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea7Id"></textarea></span></div>            
+	                 <i class="glyphicon glyphicon-comment" id="commentIENTRYINDEX" onclick="timesheetComment('REPLACEROWIDcomment7Id');"></i>
+	                 <span class="teskcomment" id="REPLACEROWIDcomment7Id" ><textarea onblur="makeActive(this,'commentIENTRYINDEX','REPLACEROWIDCommentValidation7Id');" disabled name="timesheetSubmission.timesheetEntries[ENTRYINDEX].comments" id="REPLACEROWIDtextArea7Id"></textarea></span></div>            
+	    	          <div class="commentValidation">
+	                     <input type="hidden" id="REPLACEROWIDCommentValidation7Id" field-name='Comment'/>
+	                  </div>
 	    	 </div>
 	    	 
 	    	  <!--  Add Attachments Divs  ####-->
@@ -1188,6 +1226,19 @@ function timesheetComment(local){
 </script>	
 
 <script type="text/javascript">
+function makeActive(local,commentI,commentValidationId){ 
+	var comment = local.value;
+	 $("#"+commentI).removeClass('com_active');
+	if(comment != null && comment != 'undefined' && comment != ''){
+		 $("#"+commentValidationId).val(comment);
+		 $("#"+commentValidationId).next('p').remove();
+		 $("#"+commentValidationId).removeClass('error');
+		 $("#"+commentI).addClass('com_active');
+	}
+} 
+</script>
+
+<script type="text/javascript">
 		function bodyClick(){
 		    $(".teskcomment").slideUp(200);   
 		    $("html .timesheet_comm").click(function(event){
@@ -1450,7 +1501,7 @@ function addTimeSheetRow() {
         	 }
         }
         
-        function setTaskNumber(entryIndex,taskNumberId){
+        function setTicketNumber(entryIndex,taskNumberId){
         	if($("#" + taskNumberId).val() != null && $("#" + taskNumberId).val() != "" && $("#" + taskNumberId).val() !="undefined"){
         		   var end = parseInt(entryIndex)+7;
 	          	  for (i = entryIndex; i < end; i++) {
@@ -1466,7 +1517,7 @@ function addTimeSheetRow() {
         	 $("#"+projectTaskId).append("<option value=''>--select task--</option>");
         }
         
-       function enableOrDisableHours(entryIndex,pmId){
+       function enableOrDisableHours(entryIndex,pmId,ticketNumberId,rowId){
     	   var projectMemberId = $("#"+pmId).val();
 		     if(projectMemberId != null && projectMemberId != '' && projectMemberId != 'undefined'){
                     <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
@@ -1478,13 +1529,28 @@ function addTimeSheetRow() {
 	      	                   var friEditable = '${statusEntry.value.friEditable}';
 	      	                   var satEditable = '${statusEntry.value.satEditable}';
 	      	                   var sunEditable = '${statusEntry.value.sunEditable}';
+	      	                   var taskCommentsRequired = '${statusEntry.value.taskCommentsRequired}';
+	      	                   var ticketNumberRequired = '${statusEntry.value.ticketNumberRequired}';
                         	  var end = parseInt(entryIndex)+7;
+                        	  $("#"+ticketNumberId).removeAttr("data-validation");
+                        	  if(ticketNumberRequired != null && ticketNumberRequired != '' && ticketNumberRequired != 'undefined' && ticketNumberRequired == "true"){
+                        		  $("#"+ticketNumberId).attr("data-validation","required");
+                        	  }
                         	  var count = 1;
             	          	  for (i = entryIndex; i < end; i++) {
             	          		  $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").removeAttr("disabled");
             	          		  $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").val("");
             	          		  $("#commentDiv"+i).find('i').removeAttr('class');
             	          		  $("#commentDiv"+i).find('i').attr('class','glyphicon glyphicon-comment');
+            	          		  
+            	          		  $("#"+rowId+"CommentValidation"+i+"Id").removeAttr("data-validation");
+            	          		  $("#"+rowId+"CommentValidation"+i+"Id").next('p').remove();
+            	          		  $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").removeAttr("data-validation-comment");
+            	          		  if(taskCommentsRequired != null && taskCommentsRequired != '' && taskCommentsRequired != 'undefined' && taskCommentsRequired == "true"){
+            	          			$("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("data-validation-comment","required");
+            	          			$("#"+rowId+"CommentValidation"+i+"Id").attr("data-validation","required");
+                          	      }
+            	          		
             	          		  if(count == 1 && monEditable != "true"){
             	          			 $("#commentDiv"+i).find('i').removeAttr('class');
             	          			 $("#commentDiv"+i).find('i').attr('class','glyphicon');
@@ -1668,6 +1734,7 @@ function clearTimesheet(){
 </script>
 <script>
 function editMe(local){
+	
 	     var id = local.id;
 	     var inputValue =  $("#"+id).val();
 		 var split = inputValue.split(':');
@@ -1732,6 +1799,16 @@ function editMe(local){
 		     checkHours(); 
 		 }
 		 
+		 var localValue = $("#"+id).val();
+		 var commentId = id.replace("timeSheetDay","CommentValidation");
+	     $("#"+commentId).next('p').remove();
+		 $("#"+commentId).removeAttr("data-validation");
+		 if(localValue != null && localValue != 'undefined' && localValue != '' && localValue != 'HH:MM' && localValue != '00:00'){
+			 var attr = $("#"+id).attr("data-validation-comment");
+			 if (typeof attr !== typeof undefined && attr !== false && attr == "required") {
+				$("#"+commentId).attr("data-validation","required")
+			 }	
+		 }
 		 /* else{
 			  $("#"+id).val("00"+":"+"00");
 			 setTotals();
@@ -2288,8 +2365,8 @@ function timesheetDivAfterSaving(){
 		    	  $("#timesheetDivByFrequency").empty();
 		    	  $("#timesheetDivByFrequency").append(data);
 		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
-		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
-            	      $("#timeSubFrequency").val(currentTimeSubFrequency)
+		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency);
+            	      $("#timeSubFrequency").val(currentTimeSubFrequency);
 		    	  }
 		    	  $("#loadTime").removeAttr('style');
 		      }

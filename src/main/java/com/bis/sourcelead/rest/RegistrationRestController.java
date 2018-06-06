@@ -1379,8 +1379,9 @@ public class RegistrationRestController {
 			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
 			user.setUrlSentTime(new Date());
 			user.setIsVerified(Constants.NO);
+			UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 			userService.addUser(user);
-			registrationService.sendActivationEmail(user);
+			registrationService.sendActivationEmail(user,userRole.getOrgLocations());
 			return "success";
 		}
 		else {

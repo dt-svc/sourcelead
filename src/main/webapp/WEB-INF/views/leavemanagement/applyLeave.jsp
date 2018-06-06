@@ -128,15 +128,15 @@ window.onload = function() {
               </div>
             </div>
             
-            <div class="form-group">
-              <label class="col-md-3">Approval By<span class="text-danger paddingLeft">*</span></label>
-              <div class="col-md-9 dropdown-select">
-                  <select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverUser" name="approverUser" field-name="Approver" data-validation="required">
-
-                  </select>
-              </div>
-            </div>
-              
+            <c:if test="${SourceLeadWeb_isSuperUser != true}">
+            	<div class="form-group" id="approvalDiv">
+	              <label class="col-md-3">Approval By<span class="text-danger paddingLeft">*</span></label>
+	              <div class="col-md-9 dropdown-select" id="approverUserDiv">
+	                  <select  multiple data-placeholder="Select Approver" class="chosen-select form-control" id="approverUser" name="approverUser" field-name="Approver" data-validation="required">
+	                  </select>
+	              </div>
+            	</div>
+            </c:if>
               
           </div>
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -600,10 +600,19 @@ function getLeaveDetails(finalDateFormatEndDate){
 	if(policy != null && policy != '' && policy !='undefined'){
 		skipPolicy = true;
 	}
+	
+	var behalf = $("#checkbox-1");
+	var userId = "";
+	if(behalf.is(':checked')){
+		userId = $("#user").val();
+	}else{
+		userId = '${SourceLeadWeb_userId}';
+	}
+	
 	if(leaveTypeUUID !=null && leaveTypeUUID != '' && leaveTypeUUID !='undefined'){
 		$.ajax({
 		   	type: "POST",
-		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID,	 
+		   	url: sourceleadUrl+"/leaveTypeSummary?&leaveTypeUUID="+leaveTypeUUID+"&loginUserId="+userId,	 
 		    success: function(result) {
 		    	if (result && result.response === "INVALID_DATA") {
           		    showError(result.responseMessage);
@@ -637,6 +646,16 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    		document.getElementById("attachmentY").style.display = 'none';
     		    		document.getElementById("attachmentN").style.display = 'block';
     		    		$("#uploadBtn").removeAttr('data-validation');
+    		    	}
+    		    	
+    		    	if(report.userGender != "Allows"){
+    		    		errorMessage += "Selected LeaveType is not allowed to apply for your Gender";
+    		    	}
+    		    	
+    		    	if(report.autoApprove == "Y"){
+    		    		$("#approvalDiv").hide();
+    		    	}else{
+    		    		$("#approvalDiv").show();
     		    	}
     		    	
     		    	
@@ -848,19 +867,24 @@ function getApproversList(){
 	$.get(sourceleadUrl+"/getApproversForLeave?&userId="+userId, function(data) {
 		if(data !=null){
 		var result = "";
-		for(var i=0;i<data.length;i++){
-		var opt = data[i];
-		if(behalf.is(':checked')){
-		result += "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+") </option> ";
+		if(data.length > 1){
+			for(var i=0;i<data.length;i++){
+				var opt = data[i];
+				if(behalf.is(':checked')){
+					result += "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+") </option> ";
+				}else{
+					if(userId != opt.id){
+						result += "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+") </option> ";
+					}
+				}
+			}
 		}else{
-		if(userId != opt.id){
-		result += "<option value='"+opt.id+"'> "+opt.firstName+" "+opt.lastName+" ("+opt.userType+") </option> ";
+			var opt = data[0];
+			result += '<input type="text" class="form-control" name="approverUser" id="approverUser" readOnly value="'+opt.firstName+' '+opt.lastName+' ('+opt.userType+')"/>';
 		}
-		}
-		}
-		$("#approverUser").empty();
-		$("#approverUser").append(result);
-		$('#approverUser').trigger("chosen:updated");
+		$("#approverUserDiv").empty();
+		$("#approverUserDiv").append(result);
+// 		$('#approverUser').trigger("chosen:updated");
 		}
 		});
    }

@@ -35,6 +35,8 @@ public class TimesheetExpenseEntryDetailsUtilDTO extends SearchDTO implements Se
 	private String invoiceFrequency;
 	
 	private String weekFrequency;
+	
+	private String isGlobalUser;
 
 	public Long getUserId() {
 		return userId;
@@ -160,7 +162,13 @@ public class TimesheetExpenseEntryDetailsUtilDTO extends SearchDTO implements Se
 		this.weekFrequency = weekFrequency;
 	}
 
+	public String getIsGlobalUser() {
+		return isGlobalUser;
+	}
 
+	public void setIsGlobalUser(String isGlobalUser) {
+		this.isGlobalUser = isGlobalUser;
+	}
 	
 
 }

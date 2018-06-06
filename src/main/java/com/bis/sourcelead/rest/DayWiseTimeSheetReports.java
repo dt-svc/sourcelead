@@ -140,10 +140,10 @@ public void exportDaywiseTimesheetReport(DayWiseTimesheetReoprtsDTO dayWiseTimes
 
 
 @RequestMapping(value="/getAllUserListBasedOnOrgLocationId", method= RequestMethod.POST)
-public String getAllUserListBasedOnOrgLocationId(HttpServletRequest request) throws Exception {
+public List<ProjectMembers> getAllUserListBasedOnOrgLocationId(HttpServletRequest request) throws Exception {
 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-	List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
-	return commonUtil.toJSON(userList);
+	List<ProjectMembers> projectMemberList = projectMemberService.getAllProjectsByOrgLocationId(orgLocations.getId());
+	return projectMemberList;
 }
 
 

@@ -268,7 +268,7 @@ public class TimesheetRestController {
 				List<ProjectMembersDTO>  attProjectMemberIdsList = new LinkedList<>();
 				Boolean isRejected = false;
 				Boolean isSUBMITTED = false;
-				Boolean isNEW = false;
+				Boolean isAPPROVED = false;
 				String combinedStatus = "";
 				boolean combinedMonEditable =  false;
 				boolean combinedTueEditable =  false;
@@ -316,22 +316,18 @@ public class TimesheetRestController {
 						isRejected = true;
 						combinedStatus = "REJECTED";
 					}
-					else if (!isRejected
-							&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
-						
-						isNEW = true;
-						combinedStatus = "NEW";
-					}
-					else if (!isRejected && !isNEW
+					else if (!isRejected 
 							&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("SUBMITTED")) {
 						isSUBMITTED = true;
 						combinedStatus = "SUBMITTED";
 						
 					}
-					else if (!isRejected && !isNEW && !isSUBMITTED
+					else if (!isRejected && !isSUBMITTED
 							&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("APPROVED")) {
+						isAPPROVED = true;
 						combinedStatus = "APPROVED";
-						
+					} else if(!isRejected && !isSUBMITTED && !isAPPROVED && tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
+						combinedStatus = "NEW";
 					}
 					
 					
@@ -394,7 +390,7 @@ public class TimesheetRestController {
 				}
                 
                 Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-				if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+				if(avgWorkingHoursPerDay == null) {
 					avgWorkingHoursPerDay = 8; 
 				}
 				Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
@@ -1224,6 +1220,18 @@ public class TimesheetRestController {
 		statusDTO.setSatEditable(isSatEditable);
 		statusDTO.setSunEditable(isSunEditable);
 		
+		if(projectMember != null && projectMember.getProjects() != null && StringUtils.isNotEmpty(projectMember.getProjects().getIsTicketNumberRequired()) && projectMember.getProjects().getIsTicketNumberRequired().equalsIgnoreCase("Y")) {
+			statusDTO.setTicketNumberRequired(true);
+		}else {
+			statusDTO.setTicketNumberRequired(false);
+		}
+		
+		if(projectMember != null && projectMember.getProjects() != null && StringUtils.isNotEmpty(projectMember.getProjects().getIsTaskCommentsRequired()) && projectMember.getProjects().getIsTaskCommentsRequired().equalsIgnoreCase("Y")) {
+			statusDTO.setTaskCommentsRequired(true);
+		}else {
+			statusDTO.setTaskCommentsRequired(false);
+		}
+		
 		statusDTO.setTimesheetStatus(statusMap.get("STATUS"));
 		statusDTO.setModifyButtonVisible(new Boolean(statusMap.get("IS_MODIFY_BUTTON_VISIBLE")));
 		statusDTO.setReopenButtonVisible(new Boolean(statusMap.get("IS_REOPEN_BUTTON_VISIBLE")));
@@ -1800,7 +1808,7 @@ public class TimesheetRestController {
 					List<ProjectMembersDTO>  attProjectMemberIdsList = new LinkedList<>();
 					Boolean isRejected = false;
 					Boolean isSUBMITTED = false;
-					Boolean isNEW = false;
+					Boolean isAPPROVED = false;
 					String combinedStatus = "";
 					boolean combinedMonEditable =  false;
 					boolean combinedTueEditable =  false;
@@ -1848,21 +1856,18 @@ public class TimesheetRestController {
 							combinedStatus = "REJECTED";
 						}
 						else if (!isRejected
-								&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
-							
-							isNEW = true;
-							combinedStatus = "NEW";
-						}
-						else if (!isRejected && !isNEW
-								&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("SUBMITTED")) {
+								&& (tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("SUBMITTED") || tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW"))) {
 							isSUBMITTED = true;
 							combinedStatus = "SUBMITTED";
 							
 						}
-						else if (!isRejected && !isNEW && !isSUBMITTED
+						else if (!isRejected  && !isSUBMITTED
 								&& tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("APPROVED")) {
+							isAPPROVED = true;
 							combinedStatus = "APPROVED";
 							
+						}else if(!isRejected && !isSUBMITTED && !isAPPROVED && tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
+							combinedStatus = "NEW";
 						}
 						
 						
@@ -1921,7 +1926,7 @@ public class TimesheetRestController {
 					}
 	                
 	                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-					if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+					if(avgWorkingHoursPerDay == null) {
 						avgWorkingHoursPerDay = 8; 
 					}
 					Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;

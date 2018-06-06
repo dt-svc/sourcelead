@@ -16,9 +16,9 @@ public interface DayEntryReportsService {
 	
 	File exportDayEntryReportsWithProjectExcel(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto, OrgLocations orgLocations, User loginUser) throws Exception;
 
-	File exportDayEntryReportsWithoutProjectPdf(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgLocations, User loginUser) throws IOException;
+	File exportDayEntryReportsWithoutProjectPdf(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgLocations, User loginUser) throws IOException, Exception;
 
-	File exportDayEntryReportsWithProjectPdf(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,	OrgLocations orgLocations, User loginUser)throws IOException;
+	File exportDayEntryReportsWithProjectPdf(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,	OrgLocations orgLocations, User loginUser)throws IOException, Exception;
 
 	Map<List<DayWiseTimesheetReoprtsListDTO>, String[]> getDayEntriesList(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgLocations, User loginUser) throws Exception;
 

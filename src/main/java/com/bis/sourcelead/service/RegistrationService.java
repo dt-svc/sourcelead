@@ -8,6 +8,7 @@ import com.bis.sourcelead.dto.CompanyRegistrationDTO;
 import com.bis.sourcelead.dto.CrowdSourcingUserRegistrationDTO;
 import com.bis.sourcelead.dto.EmployerRegistrationDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PasswordResets;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -45,7 +46,7 @@ public interface RegistrationService {
 	
 	public void sendEmailToProfessional(User user) throws Exception;
 
-	public void sendActivationEmail(User user) throws Exception;
+	public void sendActivationEmail(User user,OrgLocations orgLocations) throws Exception;
 	
 	public void sendEmailToIndividualRecruiter(User user) throws Exception;
 
