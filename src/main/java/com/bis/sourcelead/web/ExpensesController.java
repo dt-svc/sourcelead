@@ -94,6 +94,7 @@ public class ExpensesController {
 		}catch(Exception e){
 			  model.addObject("AWKWARD", true);
 			  model.setViewName("expenses/myExpensesList");
+			  e.printStackTrace();
 		}
 		return model;
 	}
@@ -151,7 +152,7 @@ public class ExpensesController {
 		eedDTO.setUserId(loginUser.getId());
 		eedDTO.setLocationCode(orgLoc.getLocationCode());
 		eedDTO.setExpenseId(expenseId);
-		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO,isGlobalAccess);
+		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
 		expEntryDTO.setLoginCurrencyCode(currencyCode);
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -159,6 +160,7 @@ public class ExpensesController {
 	  }catch(Exception e){
 			 model.addObject("AWKWARD", true);
 			  model.setViewName("expenses/addExpense");
+			  e.printStackTrace();
 		 }
 		return model;
 		
@@ -182,6 +184,7 @@ public class ExpensesController {
 		}catch(Exception e){
 			 model.addObject("AWKWARD", true);
 			  model.setViewName("expenses/expenses");
+			  e.printStackTrace();
 		}
 		return model;
 	}
@@ -258,12 +261,13 @@ public class ExpensesController {
 		eedDTO.setExpenseId(expenseId);
 		eedDTO.setExpenseFrom("approver");
 		
-		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO,isGlobalAccess);
+		ExpenseEntryDetailsDTO expEntryDTO =  expensesRestController.getExpenseEntryDetails(eedDTO);
 		expEntryDTO.setLoginCurrencyCode(currencyCode);
 		model.addObject("expEntry", expEntryDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("expenses/addApprovalExpense");
 		}catch(Exception e){
+			  e.printStackTrace();
 			  model.addObject("AWKWARD", true);
 			  model.setViewName("expenses/addApprovalExpense");
 		}

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
+import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
@@ -23,6 +25,7 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.DepartmentService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
@@ -68,6 +71,9 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	AssociateGradesService associateGradesService;
 	
 	@Override
 	public LeaveType addLeaveType(LeaveTypeDTO leaveTypeDTO) throws Exception
@@ -154,6 +160,11 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 				leaveType.setExperiencedApplicableDays(0);
 			}
 		}
+		
+		if(leaveTypeDTO.getEffectiveGender() != null){
+			leaveType.setEffectiveGender(leaveTypeDTO.getEffectiveGender());
+		}
+		
 		if(leaveTypeDTO.getReasonRequired() != null){
 			leaveType.setReasonRequired(leaveTypeDTO.getReasonRequired());
 		}else{
@@ -209,6 +220,33 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		   }else{
 				leaveType.setMinDays(0);
 			}
+		
+		if(leaveTypeDTO.getNoOfDaysPerPeriod() != null)
+			leaveType.setNoOfDaysPerPeriod(leaveTypeDTO.getNoOfDaysPerPeriod());
+		
+		if(leaveTypeDTO.getAutoApprove() !=null && !"".equalsIgnoreCase(leaveTypeDTO.getAutoApprove())){
+			leaveType.setAutoApprove(leaveTypeDTO.getAutoApprove());
+		}else{
+			leaveType.setAutoApprove(Constants.NO);
+		}
+		
+		if(leaveTypeDTO.getAutoApproveType() !=null && !"".equalsIgnoreCase(leaveTypeDTO.getAutoApproveType())){
+			leaveType.setAutoApproveType(leaveTypeDTO.getAutoApproveType());
+		}else{
+			leaveType.setAutoApproveType("");
+		}
+		
+		if(leaveTypeDTO.getAutoApproveTypeList() !=null && leaveTypeDTO.getAutoApproveTypeList().size() > 0){
+			leaveType.setAutoApproveTypeList(leaveTypeDTO.getAutoApproveTypeList().stream().collect(Collectors.joining(","))); 
+		}else{
+			leaveType.setAutoApproveType("");
+		}
+		
+		if(leaveTypeDTO.getTimeSheetAutofill() !=null && !"".equalsIgnoreCase(leaveTypeDTO.getTimeSheetAutofill())){
+			leaveType.setTimeSheetAutofill(leaveTypeDTO.getTimeSheetAutofill());
+		}else{
+			leaveType.setTimeSheetAutofill(Constants.NO);
+		}
          
 		leaveType.setColorCode(leaveTypeDTO.getColorCode());
 		
@@ -352,9 +390,26 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			else
 				type.setUpdatedUser(updatedUser.getFirstName());
 		}
+		
+		if(StringUtils.isNotBlank(type.getAutoApproveTypeList())){
+			StringBuilder sb = new StringBuilder();
+			if("Grade".equalsIgnoreCase(type.getAutoApproveType())){
+				String[] appr = type.getAutoApproveTypeList().split(",");
+				for(int i=0; i<appr.length; i++){
+					AssociateGrades grade = associateGradesService.getAssociateGradeById(Long.parseLong(appr[i]));
+					sb.append(grade.getGradeName()).append(",");
+				}
+			}else if("Role".equalsIgnoreCase(type.getAutoApproveType())){
+				String[] roleList = type.getAutoApproveTypeList().split(",");
+				for(int i=0; i<roleList.length; i++){
+					Roles role = rolesService.getRolesById(Long.parseLong(roleList[i]));
+					sb.append(role.getRoleName()).append(",");
+				}
+			}
+			type.setAutoApproveTypeListNames(sb.toString().replaceAll("\\s*,\\s*$", ""));
+		}
+		
 		return type;
-		
-		
 		
 	}
 

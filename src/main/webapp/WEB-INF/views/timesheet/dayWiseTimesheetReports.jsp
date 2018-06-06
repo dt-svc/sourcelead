@@ -17,9 +17,9 @@ $( document ).ready(function() {
 	<section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Daily Timehseet</h2>
+        <h2>Daywise Timesheet Report</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Daily Timehseet</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » Daywise Timesheet Report</div>
     </section>
     <form id="timesheetExportForm" name="timesheetExportForm" action="/app/dayEntriesReportList" method="post">
     <div class="contentareaInner-styles clearfix">
@@ -70,7 +70,7 @@ $( document ).ready(function() {
               <label class="clearfix">Emp Type</label>
               <div class="clearfix">
                 <select class="form-control chosen-select" id="designationType" name="employmentType" data-placeholder="Select Emp Type" multiple field-name="Employment type" onchange="getProjectMemberFromProjectId();">
-	                 <option value="">--Select Employment type--</option>
+	                 <option >--Select Employment type--</option>
 	                 <option value="C2C">C2C</option>
 	                 <option value="C2C-1099">C2C-1099</option>
 	                 <option value="W-2">W-2</option>
@@ -91,15 +91,15 @@ $( document ).ready(function() {
               
               </div>
             </div>
-             <div class="col-md-5">
+             <!-- <div class="col-md-5">
               <label class="clearfix">Export to</label>
               <div class="clearfix">
                 <select class="form-contro sel" id="exportType">
-                 <!--  <option value="pdf">PDF</option> -->
+                  <option value="pdf">PDF</option>
                   <option value="excel">Excel</option>
                 </select>
               </div>
-            </div>
+            </div> -->
         <div class="clearfix"></div>
 												
       </div>
@@ -109,7 +109,7 @@ $( document ).ready(function() {
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" onclick="validateDayEntriesReport();">
+            <input value="Run" id="runDiv" class="btn btn-success btnSuccess" onclick="validateDayEntriesReport();">
             <input value="Reset" class="btn btn-default ml10" type="button" onclick="resetValues();">
           </div>
         </div>
@@ -140,6 +140,7 @@ function validateDayEntriesReport(){
 	}
 	  if ($('#timesheetExportForm').validate(false, validationSettings)){
 		 $('#timesheetExportForm').submit();
+		 $('#runDiv').attr('disabled','disabled');
 		 return true;
 	 }else{ 
 			return false;
@@ -197,7 +198,8 @@ function resetValues(){
 	$('#designationType').val('');
 	$('#projectList').val('');
 	$('#projectList').trigger("chosen:updated");
-	 $('#projectMemberList').trigger("chosen:updated");
+	$('#projectMemberList').trigger("chosen:updated");
+	$('#designationType').trigger("chosen:updated");
 }
 </script>
 
@@ -253,7 +255,7 @@ function getProjectMemberFromProjectId(){
         type: "POST",
         success: function (result) {
         	var output = "";
-        	output = output + "<option value=''>--select Associate--</option>";
+        	output = output + "<option>--select Associate--</option>";
         	if(result != null && result !='' && result !='undefined'){
         		$.each(result, function(i, item) {
             		output = output + "<option value='" +item.id+ "'>"+item.candidateName+"</option>";
@@ -300,10 +302,9 @@ function getAllUserListBasedOnOrgLocationId(){
         type: "POST",
         success: function (obj) {
         	var output = "";
-        	output = output + "<option value=''>--select Associate--</option>";
+        	output = output + "<option>--select Associate--</option>";
         	if(obj != null && obj !='' && obj !='undefined'){
         		$.each(obj, function(i, item) {
-        			console.log(item.candidateName);
         			if(item.candidateName != null && item.candidateName !='' && item.candidateName !='undefined'){
         				output = output + "<option value='" +item.id+ "'>"+item.candidateName+"</option>";
         			}
