@@ -54,7 +54,8 @@
 						                        <th class="timeTabFix">Status</th>              
 						                    </tr>  
 							                <c:set var="entryIndex" value="0"/>
-							                <c:set var="timeSheetSubmissionStatus"/>  
+							                <c:set var="timeSheetSubmissionStatus"/> 
+							                <c:set var="modifyButtonVisible"/>   
 										    <c:forEach var="entry" items="${employeeTimesheetEntryDetailsDTO.submissionList}" varStatus="entryCount">
 									            <c:set var="isMonEditable"/>
 								                <c:set var="isTueEditable"/>     
@@ -68,6 +69,7 @@
 							                    <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
 									               <c:if test="${!empty entry.projectMemberId && entry.projectMemberId == statusEntry.key}">
 									                     <c:set var="timeSheetSubmissionStatus" value="${statusEntry.value.timesheetStatus}"/>
+									                     <c:set var="modifyButtonVisible" value="${statusEntry.value.modifyButtonVisible == true ? 'Y' : 'N'}"/>
 									                     <c:set var="isMonEditable" value="${statusEntry.value.monEditable == true ? 'Y' : 'N'}"/>
 									                     <c:set var="isTueEditable" value="${statusEntry.value.tueEditable == true ? 'Y' : 'N'}"/>
 									                     <c:set var="isWedEditable" value="${statusEntry.value.wedEditable == true ? 'Y' : 'N'}"/>
@@ -82,6 +84,7 @@
 									            
 									            <c:if test="${empty entry.projectMemberId}">
 									                     <c:set var="timeSheetSubmissionStatus" value="New"/>
+									                     <c:set var="modifyButtonVisible" value="N"/>
 									                     <c:set var="isMonEditable" value="${employeeTimesheetEntryDetailsDTO.monEditable == true ? 'Y' : 'N'}"/>
 									                     <c:set var="isTueEditable" value="${employeeTimesheetEntryDetailsDTO.tueEditable == true ? 'Y' : 'N'}"/>
 									                     <c:set var="isWedEditable" value="${employeeTimesheetEntryDetailsDTO.wedEditable == true ? 'Y' : 'N'}"/>
@@ -203,7 +206,7 @@
 													      </c:if>
 												     </td>
 												     <c:forEach var="te" items="${entry.timesheetEntries}" varStatus="teStatus">
-													      <td> 
+													      <td class="${modifyButtonVisible == 'Y' ? 'timeModifyBtn':''}"> 
 													           <div class="timeEntry">
 													               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
 																   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
@@ -255,7 +258,7 @@
 													              <c:set var="entryIndex" value="${entryIndex+1}"/>
 													      </td>
 											         </c:forEach>
-												     <td class="timeTabFix"> 
+												     <td class="timeTabFix "> 
 												        <c:if test="${!empty entry.projectMemberId}">
 												             <div>
 													             <c:if test="${timeSheetSubmissionStatus == 'NEW'}">
@@ -273,6 +276,9 @@
 													             <c:if test="${timeSheetSubmissionStatus == 'APPROVED'}">
 													                <b class='projActive'>${timeSheetSubmissionStatus}</b>
 													             </c:if>
+													             <c:if test="${modifyButtonVisible == 'Y'}">
+													                <b class="proj_withdraw Cursor"  onClick="withdrawMyTimesheet('${entry.projectMemberId}');">MODIFY</b>
+													              </c:if>
 												             </div>
 												        </c:if>
 												        <c:if test="${empty entry.projectMemberId}">
@@ -347,7 +353,7 @@
 									    <div class="timesheet_bot">
 							            <div class="commentFile">
 							                  <h2>
-							                  <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible || !empty employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
+							                  <c:if test="${employeeTimesheetEntryDetailsDTO.saveButtonVisible || !empty employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
 											    Attachmets & Comments 
 											     <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
 											         <i class="fa fa-plus Cursor" onclick="addTimeSheetCommentRow()"></i> 
@@ -362,7 +368,7 @@
 												     <tr id="timesheetAttRow${attCount.index}">
 													   <td>
 													       <div class="timeAdd">
-													              <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+													              <c:if test="${employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 	                                                                    <select id="${attCount.index}attProjMemberId" class='existedAttProjectMembers form-control input-sm' onclick="prepareAttachmentProjectMembers(${attCount.index},${attachment.projectMemberId});" name="timsheetAttachments[${attCount.index}].projectMemberId"  field-name="Project">  
 		                                                                  <option value=''>--select Project--</option>
 															               <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}">
@@ -375,7 +381,7 @@
 																            </c:forEach>
 															            </select>
 														         </c:if>
-														         <c:if test="${!employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+														         <c:if test="${!employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 															          <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}">
 															             <c:if test="${pm.id == attachment.projectMemberId}">
 															                  <p>${pm.projectName}</p> 
@@ -396,17 +402,17 @@
 			                                                                <a  href='${finfo.fileURL}' download><div class="attFile"><i class="fa fa-download"></i>${finfo.fileName}</div></a>
 										                                    <div class="timeAttBtn">
 										                                        <i class="fa fa-eye" onClick="viewFile('${finfo.fileURL}','${finfo.fileName}','${finfo.contentType}');"></i>
-										                                       <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+										                                       <c:if test="${employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 										                                            <i class="fa fa-trash" onClick='deleteSubmissionDocument("${finfo.fileDbId}");'></i>
 										                                       </c:if>
 										                                    </div>
 			                                                            </div>
 										                              </c:forEach>
 										                              </c:if>
-										                              <c:if test="${empty attachment.fileInfo}">
+										                              <c:if test="${empty attachment.fileInfo && !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 										                                  <p> No Attachments Found</p>
 										                              </c:if>
-			                                                          <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+			                                                         <c:if test="${employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 				                                                             <div id="attachmentInnerDiv0Id">
 					                                                                  <input type='hidden' name='0maxAttDivRowNumber' id='0maxAttDivRowNumber'  value='1' />
 							                                                          <div id="0AttchmentDiv0Id" class="addRowBtn">
@@ -428,7 +434,7 @@
 													    </tr>
 												   </c:forEach>
 												</c:if>
-												<c:if test="${empty employeeTimesheetEntryDetailsDTO.timsheetAttachments && employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+												<c:if test="${empty employeeTimesheetEntryDetailsDTO.timsheetAttachments && employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 												      <tr id="timesheetAttRow0">
 													   <td>
 													       <div class="timeAdd">
@@ -1234,6 +1240,10 @@ function makeActive(local,commentI,commentValidationId){
 		 $("#"+commentValidationId).next('p').remove();
 		 $("#"+commentValidationId).removeClass('error');
 		 $("#"+commentI).addClass('com_active');
+	}else{
+		 $("#"+commentValidationId).val('');
+		 $("#"+commentValidationId).next('p').remove();
+		 $("#"+commentValidationId).removeClass('error');
 	}
 } 
 </script>
@@ -1247,10 +1257,8 @@ function makeActive(local,commentI,commentValidationId){
 		 }
 </script>	
 <script type="text/javascript">
-function withdrawMyTimesheet(){ 
-	/* var frm = $('#timesheet_form').serializeFormJSON(); */
+function withdrawMyTimesheet(projectMemberId){ 
 	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-	 var projectMemberId = $("#projectMemberId").val();
 	 var timesheetFrequency  = $("#currentTimeFrequency").val();
 	var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 	  $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
@@ -1259,7 +1267,7 @@ function withdrawMyTimesheet(){
      	  url: sourceleadUrl+"/withDrawTimesheet?${_csrf.parameterName}=${_csrf.token}&projectMemberId="+projectMemberId+"&timesheetFrequency="+timesheetFrequency+"&dateFormat="+dateFormat,		
 	      success :function(result) {
 	    	  $("#loadTime").removeAttr("style"); 
-	    	  timesheetDivByFrequency();
+	    	  timesheetEntriesDivByTimeFrequency();
 	    	  $("html").trigger('click');
 	    	  maskme();
 	      }
