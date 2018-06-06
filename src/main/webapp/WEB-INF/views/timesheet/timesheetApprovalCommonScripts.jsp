@@ -130,6 +130,7 @@ function approveSubmissionByProjectMemberId(projectMemberId,startDate,endDate,td
     $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat; '); 
     var rejectedReason = '';
     var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+    $('#hedderAcceptRejectButton').hide();
      $.ajax({
     type: "POST",
     url: sourceleadUrl+"/saveSubmissionApprovalStatusByProjectMemberId?&projectMemberId="+projectMemberId+"&startDate="+startDate+"&endDate="+endDate+"&approvalStatus=APPROVED&rejectedReason="+rejectedReason,        
@@ -179,6 +180,7 @@ function saveRejectSubmissionByProjectMemberId(projectMemberId,startDate,endDate
 		 }
 		 $("#row"+projectMemberId).empty();
 		 $("#row"+projectMemberId).html("<td colspan='"+tdSpanSize+"'  id='loading"+projectMemberId+"'></td>");
+		 $('#hedderAcceptRejectButton').hide();
 	     $("#loading"+projectMemberId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;'); 
 	    $.ajax({
 	    type: "POST",
@@ -288,7 +290,6 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 
 <script>
 function rejectTimeSheetSubmissionBySubmissionId(tableFor){
-	
 	$("#rejectReasonDiv").empty();
     $("#rejectmessage").val(''); 
     var result = "";
@@ -296,11 +297,13 @@ function rejectTimeSheetSubmissionBySubmissionId(tableFor){
 	result = result +'<textarea placeholder="Enter comment here" id="rejectmessage"></textarea>';
 	result = result +'<div id="rejectReasonDiv"/>';
 	result = result +'<a href="#" onClick="saveRejectSubmissionByProjectMemberIdDashboard(\''+tableFor+'\');" >Submit</a><a class="close_color" href="#" onClick="closepopUpRejectReason();">Cancel</a>';
+	
 	result = result +'</div>';
 	result = result +'</div>';
 	$("#rejectedPopup").append(result);
     $(".mask_time").fadeIn(200); 
 	$("#rejectpanel").show();
+	
 	
 }
 
