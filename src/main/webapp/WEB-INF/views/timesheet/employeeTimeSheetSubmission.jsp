@@ -1240,6 +1240,10 @@ function makeActive(local,commentI,commentValidationId){
 		 $("#"+commentValidationId).next('p').remove();
 		 $("#"+commentValidationId).removeClass('error');
 		 $("#"+commentI).addClass('com_active');
+	}else{
+		 $("#"+commentValidationId).val('');
+		 $("#"+commentValidationId).next('p').remove();
+		 $("#"+commentValidationId).removeClass('error');
 	}
 } 
 </script>
