@@ -448,7 +448,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
 			String status, Long orgLocationsId) throws Exception {
-
+		
 		Collection<Projects> plist = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		String[] tokens = status.split(",");

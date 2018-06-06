@@ -87,6 +87,7 @@ function exportTimeSheetToPdfOrExcel(exportType){
 		var timesheetFrequency = $('#timesheetFrequency').val();
 		var stage = $('#stage').val();
 		var client = $('#client').val();
+		var project = $('#project').val();
 		var weekFrequency = $('#weekFrequency').val();
 		if(weekFrequency != null && weekFrequency !='undefined'){
 		var date = weekFrequency.split("To");
@@ -95,7 +96,7 @@ function exportTimeSheetToPdfOrExcel(exportType){
 		}
 		window.location.href = sourceleadUrl
 				+ "/getExportTimeSheetForApprovalMechanizm?&startDate="
-				+ startDate + "&endDate=" + endDate + "&client=" + client
+				+ startDate + "&endDate=" + endDate + "&client=" + client+ "&project=" + project
 				+ "&stage=" + stage + "&timesheetFrequency="
 				+ timesheetFrequency +"&frequencyMonth="+frequencyMonth+"&weekFrequency="+weekFrequency+"&exportType=" + exportType;
 	}
@@ -159,7 +160,7 @@ function displayAcceptRejectButtonOnHedder() {
           var start = parseInt(pageNo*pageSize)-parseInt(pageSize);
           var frequencyStartDate = '${timesheetApprovalDTO.frequencyStartDate}';
           var frequencyEndDate = '${timesheetApprovalDTO.frequencyEndDate}';
-          $("#loadTime").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+          $("#loadTime1").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		  $.ajax({
           	          type : "POST",
           	        url: sourceleadUrl+"/timesheetEmployeeSubmissionDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&stage="+stage+"&frequencyStartDate="+frequencyStartDate+"&frequencyEndDate="+frequencyEndDate+"&locationCode="+locationCode+"&userId="+userId+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,		
@@ -181,7 +182,7 @@ function displayAcceptRejectButtonOnHedder() {
 		             	    	selectedRecords[$(this).val()] = $(this).is(":checked");
 		             	    });
         		    	  var totalRows =  $('#totalRows').val();
-        		    		  $("#loadTime").removeAttr('style');
+        		    		  $("#loadTime1").removeAttr('style');
             		    	  preparePagination(pageNo);
         		    	 
         		      }

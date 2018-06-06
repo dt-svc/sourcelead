@@ -370,6 +370,15 @@ right: 15px;
 		</div>
 		
 		<div class="col-md-6 clearfix mb">
+				<label class="col-md-3 noPad"></label>
+				<div class="col-md-9">
+					<div class="checkBox">
+						<label><input type="checkbox" value="Y" ${SourceLeadWeb_orgLocations.isTimesheetAvgHoursRequired == 'Y' ? 'checked' : ''} name="isTimesheetAvgHoursRequired" id="isTimesheetAvgHoursRequired"> Average Hours Validation Is Required</label> 
+					</div>
+				</div>
+	    </div>
+		
+		<div class="col-md-6 clearfix mb">
 		<label class="col-md-3 noPad">Business type<span class="text-danger">&nbsp;*</span></label>
 			<div class="col-md-9 padding_right">
 			<select class="chosen-select" id="businessType" name="businessType" data-validation="required" onchange="getBusinessTypeValue();"  field-Name="Business Type">
