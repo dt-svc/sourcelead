@@ -710,10 +710,9 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 					 if(dateList != null && !dateList.isEmpty()) {
 							List<TimeSheetDayEntries> dayEntryList = timeSheetDayEntriesService.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(projectMembers.getProjects().getId(),startDate,endDate,projectMembers.getId());
 							 if(dayEntryList != null && !dayEntryList.isEmpty()) {
-								 DayWiseTimesheetReoprtsListDTO	listDto = new DayWiseTimesheetReoprtsListDTO();
 								 //dayEntriesListDto = dataForDayEntriesListDTO(dayEntryList,orgloc,projectMember,totalNonbillable,totalBillable,dayEntriesListDto, value);
 								 for(TimeSheetDayEntries dayEntries:dayEntryList) {
-									   										
+									    DayWiseTimesheetReoprtsListDTO	listDto = new DayWiseTimesheetReoprtsListDTO();										
 									 	listDto.setTimesheetDate(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getTimesheetDate()));		
 									 	if(projectMember.getProjectMemberCandidteId().getLastName()!=null) {
 											StringBuilder sb = new StringBuilder();
@@ -783,9 +782,8 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 									List<TimeSheetDayEntries> dayEntryList = timeSheetDayEntriesService.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(projectId,startDate,endDate,projectMembers);	 
 									if(dayEntryList != null && !dayEntryList.isEmpty()) {
 									 	//dayEntriesListDto = dataForDayEntriesListDTO(dayEntryList,orgloc,projectMember,totalNonbillable,totalBillable,dayEntriesListDto,value);
-										 DayWiseTimesheetReoprtsListDTO	listDto = new DayWiseTimesheetReoprtsListDTO();	 
 										for(TimeSheetDayEntries dayEntries:dayEntryList) {
-											   									
+												DayWiseTimesheetReoprtsListDTO	listDto = new DayWiseTimesheetReoprtsListDTO();	 
 											 	listDto.setTimesheetDate(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getTimesheetDate()));		
 											 	if(projectMember.getProjectMemberCandidteId().getLastName()!=null) {
 													StringBuilder sb = new StringBuilder();

@@ -378,7 +378,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		
 		ResponseList<ProjectMembers> response = new ResponseList<>();
-		Session session = this.sessionFactory.getCurrentSession();
+ 		Session session = this.sessionFactory.getCurrentSession();
 		
 		
 		java.sql.Date sqlStartDate = null;
@@ -400,6 +400,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					.append("OR pm.projectMemberCandidteId.mobilePhone like '%" + searchValue + "%' ")
 					.append("OR pm.projectMemberCandidteId.designationType like '%" + searchValue + "%' ")
 					.append("OR pm.projects.projectName like '%" + searchValue + "%' ")
+					.append("OR pm.projectClientsId.orgRelationId.responderLocationId.org.orgName like '%" + searchValue + "%' ")
 					.append("OR pm.id IN")
 					.append( " (select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus  like '%"+ searchValue +"') ")
 					.append( " )");
@@ -431,6 +432,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					.append("OR candidate.mobilePhone like '%" + searchValue + "%' ")
 					.append("OR candidate.designationType like '%" + searchValue + "%' ")
 					.append("OR projects.projectName like '%" + searchValue + "%' ")
+					.append("OR pclient.orgRelationId.responderLocationId.org.orgName like '%" + searchValue + "%' ")
 					.append("OR pm.id IN")
 					.append( " (select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus  like '%"+ searchValue +"%') ")
 					.append( " )");
