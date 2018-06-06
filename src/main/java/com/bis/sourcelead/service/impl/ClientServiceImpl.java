@@ -66,6 +66,7 @@ import com.bis.sourcelead.entity.SourceleadRoles;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.VendorOnboarding;
 import com.bis.sourcelead.enums.Project_Status;
@@ -92,6 +93,7 @@ import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadRolesService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.service.UserCustomFieldDataService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.VendorOnboardService;
@@ -124,10 +126,10 @@ public class ClientServiceImpl implements ClientService {
 	private OrgRelationsService orgRelationsService;
 
 	@Autowired
-	ProjectApproverHierarchyService projectApproverHierarchyService;
+	private ProjectApproverHierarchyService projectApproverHierarchyService;
 
 	@Autowired
-	ProjectMembersService projectMembersService;
+	private ProjectMembersService projectMembersService;
 
 	@Autowired
 	private CommonUtil commonUtil;
@@ -136,25 +138,25 @@ public class ClientServiceImpl implements ClientService {
 	private UserService userService;
 
 	@Autowired
-	OrgSpocService orgSpocService;
+	private OrgSpocService orgSpocService;
 
 	@Autowired
-	EmailScenarioService emailScenarioService;
+	private EmailScenarioService emailScenarioService;
 
 	@Autowired
-	EmailScenerioUtil emailScenerioUtil;
+	private EmailScenerioUtil emailScenerioUtil;
 
 	@Autowired
-	SubmissionTemplateService submissionTemplateService;
+	private SubmissionTemplateService submissionTemplateService;
 
 	@Autowired
-	RolesService rolesService;
+	private RolesService rolesService;
 
 	@Autowired
-	RoleHierarchyService roleHierarchyService;
+	private RoleHierarchyService roleHierarchyService;
 
 	@Autowired
-	SourceleadActionsService sourceleadActionsService;
+	private SourceleadActionsService sourceleadActionsService;
 
 	@Autowired
 	private SourceleadRolesService sourceleadRolesService;
@@ -166,7 +168,7 @@ public class ClientServiceImpl implements ClientService {
 	private EmployeesService employeesService;
 
 	@Autowired
-	ClientVendorIndexHelper clientVendorIndexHelper;
+	private ClientVendorIndexHelper clientVendorIndexHelper;
 
 	@Autowired
 	private SourceleadELKBaseIndexer<ClientVendorIndex> sourceleadELKBaseIndexer;
@@ -193,7 +195,7 @@ public class ClientServiceImpl implements ClientService {
 	private TabsService tabService;
 	
 	@Autowired
-	UserDao userDao;
+	private UserDao userDao;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -213,29 +215,32 @@ public class ClientServiceImpl implements ClientService {
 	private String sourceleadLoginUrl;
 	
 	@Autowired
-	ProjectsService projectsService;
+	private ProjectsService projectsService;
 	
 	@Autowired
-	CountriesService countriesService;
+	private CountriesService countriesService;
 	
 	@Autowired
-	ExpensesCategoryDao expensesCategoryDao;
+	private ExpensesCategoryDao expensesCategoryDao;
 	
 	@Autowired
-	LookUpDataDao lookUpDataDao;
+	private LookUpDataDao lookUpDataDao;
 	
 	@Autowired
-	OrgLicenseSubscriptionService orgLicenseSubscriptionService;
+	private OrgLicenseSubscriptionService orgLicenseSubscriptionService;
 	
 	@Autowired
-	TabsService tabsService;
+	private TabsService tabsService;
 
 	@Autowired
-	VendorOnboardService vendorOnboardService;
+	private VendorOnboardService vendorOnboardService;
 	
 	@Value("${static.path}")
     private String staticPath;
-
+	
+	@Autowired
+	private UserCustomFieldDataService userCustomFieldDataService;
+	
 
 	/**
 	 * @author VenkatKesav
@@ -392,7 +397,7 @@ public class ClientServiceImpl implements ClientService {
 					}else {
 						clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
 					}
-					clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					clientCustomFieldDataService.saveClientCustomFieldData(clientCustomFields);
 					}
 					
 				}	
@@ -466,7 +471,7 @@ public class ClientServiceImpl implements ClientService {
 					}else {
 						clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
 					}
-					clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					clientCustomFieldDataService.saveClientCustomFieldData(clientCustomFields);
 					}
 					
 				}	
@@ -1224,7 +1229,7 @@ public class ClientServiceImpl implements ClientService {
 					}else {
 						clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
 					}
-					clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					clientCustomFieldDataService.saveClientCustomFieldData(clientCustomFields);
 					}
 					
 				}	
@@ -1406,7 +1411,7 @@ public class ClientServiceImpl implements ClientService {
 					}else {
 						clientCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
 					}
-					clientCustomFieldDataService.saveUserCustomFieldData(clientCustomFields);
+					clientCustomFieldDataService.saveClientCustomFieldData(clientCustomFields);
 					}
 					
 				}	
@@ -1481,12 +1486,12 @@ public class ClientServiceImpl implements ClientService {
 
 		OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
 
-		String vendorContactFirstName = "vendorContactFirstName";
+		/*String vendorContactFirstName = "vendorContactFirstName";
 		String vendorContactLastName = "vendorContactLastName";
 		String mobilePhone = "mobilePhone";
 		String spocStatus = "spocStatus";
 		String emailId = "email";
-		String owner = "owner";
+		String owner = "owner";*/
 
 		if (null != orgSpoc) {
 			User editUser = null;
@@ -1537,6 +1542,7 @@ public class ClientServiceImpl implements ClientService {
 					existingUser.setEmail("");
 				}
 				editUser = userService.addUser(existingUser);
+				
 				
 				
 				if(candidate != null) {
@@ -1593,6 +1599,7 @@ public class ClientServiceImpl implements ClientService {
 					// new owner filed updated when owner updated
 					orgSpoc.setOwnerUser(spocUser);
 				OrgSpoc orSpocElk = orgSpocService.addOrgSpoc(orgSpoc);
+				
 
 				if (null != orgSpoc.getTempOwnerId()
 						&& orgSpoc.getTempOwnerId().longValue() != orgSpoc.getClientUser().getId().longValue()) {
@@ -1606,6 +1613,30 @@ public class ClientServiceImpl implements ClientService {
 			throw new SourceLeadObjectNotFoundException(message.toString());
 		}
 		
+		if(clientDTO.getCustomFormData() !=null) {
+			for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
+				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
+					ClientCustomFieldData vendorUpdateCustomFields = null;
+					if(customFields.getEntityId()!= null && customFields.getEntityId() > 0) {
+						vendorUpdateCustomFields = clientCustomFieldDataService.getClientCustomFieldDataById(customFields.getEntityId());
+					}else {
+						vendorUpdateCustomFields = new ClientCustomFieldData();
+					}
+					if(orgSpoc.getOrgRelations().getResponderLocationId().getId().longValue() != orgLocation.getId().longValue()) {
+						vendorUpdateCustomFields.setOrg(orgSpoc.getOrgRelations().getResponderLocationId().getOrg());
+
+		 			}else if(orgSpoc.getOrgRelations().getLocationId().getId().longValue() != orgLocation.getId().longValue()) {
+						vendorUpdateCustomFields.setOrg(orgSpoc.getOrgRelations().getLocationId().getOrg());
+		 			}
+					
+				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
+				vendorUpdateCustomFields.setOrglocationsFormFields(orgFormField);
+				vendorUpdateCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
+				clientCustomFieldDataService.saveClientCustomFieldData(vendorUpdateCustomFields);
+				}
+				
+			}	
+		}
 		for(String owners : clientDTO.getOwner()){
 		User changedUser = userService.getUserById(Long.parseLong(owners));
 		if (!loginUser.getId().equals(changedUser.getId())) {

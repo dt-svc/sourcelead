@@ -149,6 +149,7 @@ function getNotificationtLists(){
 					}					
 					result = result +'		</div>';					
 					result = result +'		</div></td>';
+					
 				    result = result +'   <td>';
 					result = result +'			<div class="mailbox-subject tbldata-dotdot-big">';
 					if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID == null || report.spocUUID == "" || report.spocUUID == "undefined")){
