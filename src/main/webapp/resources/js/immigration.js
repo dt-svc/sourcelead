@@ -292,8 +292,8 @@ function Immigration() {
         }else if(status == 'save'){
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
         		$("#saveAsDraftButton").prop("disabled",true);
-            	$("#savePageOneContinue").prop("disabled",true);
-            	$("#sendRequestButton").prop("disabled",true);
+            	//$("#savePageOneContinue").prop("disabled",true);
+            	//$("#sendRequestButton").prop("disabled",true);
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
                     url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
@@ -305,6 +305,7 @@ function Immigration() {
                           }else if (result.response === "AWKWARD") {
                               location.href = "/errorPage";
                           }else if(result.response === 'SUCCESS') {
+                        	  window.location.href = sourceleadUrl + immiModulePath + "/viewImmigrationList";
                         	  immigrationId = result.data[0];
                           	candidateId = result.data[1];
                           	templateId= result.data[2];
