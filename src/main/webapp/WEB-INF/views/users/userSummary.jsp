@@ -104,7 +104,8 @@ $(document).ready(function(){
 		 result = result + '<li class="current"><a href="#tab-18" onClick="userDetails('+userId+');" >Details</a></li>';
 		 result = result + '<li><a href="#tab-19" onClick="userAssignedProjects('+userId+')" >Projects</a></li>';
 		 result = result + '<li><a href="#tab-20" onClick="userAssetManagement('+userId+')" >Assets</a></li>';
-		 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
+		 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');">Profile</a></li>';
+		 result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
 		
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';
@@ -124,6 +125,10 @@ $(document).ready(function(){
 		 result = result + '<div id="candidateSideDiv">';
 		 result = result + '</div>';
 		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-29" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative">';
+		 result = result + '</div>';
+		 
 	  	 result = result + '</div>';
 	  	 result = result + '</div>';
 	  	 result = result + '</div>'; 
@@ -485,7 +490,7 @@ $(document).ready(function(){
 				$("#tab-19").empty();
 				$("#tab-17").empty();
 				$("#tab-18").empty(); 
-			 
+				 $("#tab-29").empty();  
 			    $("#tab-18").append(result);  
 			    
 			    var config = {
@@ -3912,6 +3917,7 @@ function savedCommentAndCount(candidateId){
 <jsp:include page="candidateDocuments.jsp"></jsp:include>
 <jsp:include page="candidateReferences.jsp"></jsp:include>
 <jsp:include page="requirementHistory.jsp"></jsp:include> 
+<jsp:include page="assoBalanceLeaveSummary.jsp"></jsp:include> 
 <%--  <sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> --%>
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  <%-- </sec:authorize>  --%>
