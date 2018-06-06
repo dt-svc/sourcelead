@@ -1548,7 +1548,6 @@ function addTimeSheetRow() {
             	          		  $("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").removeAttr("data-validation-comment");
             	          		  if(taskCommentsRequired != null && taskCommentsRequired != '' && taskCommentsRequired != 'undefined' && taskCommentsRequired == "true"){
             	          			$("[name='timesheetSubmission.timesheetEntries["+i+"].hours']").attr("data-validation-comment","required");
-            	          			$("#"+rowId+"CommentValidation"+i+"Id").attr("data-validation","required");
                           	      }
             	          		
             	          		  if(count == 1 && monEditable != "true"){
@@ -1799,7 +1798,7 @@ function editMe(local){
 		     checkHours(); 
 		 }
 		 
-		 var localValue = $("#"+id).val();
+		var localValue = $("#"+id).val();
 		 var commentId = id.replace("timeSheetDay","CommentValidation");
 	     $("#"+commentId).next('p').remove();
 		 $("#"+commentId).removeAttr("data-validation");
@@ -1808,7 +1807,7 @@ function editMe(local){
 			 if (typeof attr !== typeof undefined && attr !== false && attr == "required") {
 				$("#"+commentId).attr("data-validation","required")
 			 }	
-		 }
+		 } 
 		 /* else{
 			  $("#"+id).val("00"+":"+"00");
 			 setTotals();
