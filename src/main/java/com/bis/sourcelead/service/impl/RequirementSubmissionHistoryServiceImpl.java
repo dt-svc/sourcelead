@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -172,6 +173,12 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	public RequirementSubmissionHistory addRequirementHistory(RequirementSubmissionHistory requirementSubmissionHistory)
 			throws Exception {
 		return requirementSubmissionHistoryDao.addRequirementHistory(requirementSubmissionHistory);
+	}
+
+	@Override
+	public UserDTO getSubmissionCountsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			String submissionStage, String startDateUTC, String endDateUTC, String isGlobalUser,Long orgId) throws Exception {
+		return requirementSubmissionHistoryDao.getSubmissionCountsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, submissionStage, startDateUTC, endDateUTC, isGlobalUser,orgId);
 	}
 
 }

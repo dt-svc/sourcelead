@@ -48,7 +48,7 @@ function getDayWiseReports(){
 <div class="vendor_wrap">
 <div class="timesheet_head clearfix">
 <div class="pull-left reportBtns reportBtns_custom mt5">
-<h4 class="pull-left">apostrophe</h4>
+<h4 class="pull-left"></h4>
 		  <div class="reportBtn reportBtn_custom_btn select-field  pull-left ml">
 			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custDates();">
 			  <option value="today">Today</option>
@@ -283,7 +283,12 @@ function usersListPagination(url,sourceleadUrl){
 	              "data": "applicants",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	     result = result +"<td><div class='small'> <span title='"+opt.userApplicantsCount+"'>"+opt.userApplicantsCount+"</span></div></td>";
+	            	    if(opt.userApplicantsCount !=null && opt.userApplicantsCount !='' && opt.userApplicantsCount !='undefined'){
+	            	    	 result = result +"<td><div class='small'> <span title='"+opt.userApplicantsCount+"'>"+opt.userApplicantsCount+"</span></div></td>";
+	            	    }else{
+	            	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    }
+	            	    
 	            		 return result;
 	              }
 		     }, {
@@ -291,7 +296,12 @@ function usersListPagination(url,sourceleadUrl){
 	              "data": "shortlisted",
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result +"<td><div class='small'> <span title='"+opt.userShortlisteApplicantsCount+"'>"+opt.userShortlisteApplicantsCount+"</span></div></td>";
+	            	    if(opt.userShortlistedApplicantsCount !=null && opt.userShortlistedApplicantsCount !='' && opt.userShortlistedApplicantsCount !='undefined'){
+	            	    	result = result +"<td><div class='small'> <span title='"+opt.userShortlistedApplicantsCount+"'>"+opt.userShortlistedApplicantsCount+"</span></div></td>";
+	            	    }else{
+	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    }
+	            	    
 	            		return result;
 	              }
 		     }, {
@@ -300,7 +310,12 @@ function usersListPagination(url,sourceleadUrl){
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result +"<td><div class='small'> <span title='"+opt.userSubmittedApplicantsCount+"'>"+opt.userSubmittedApplicantsCount+"</span></div></td>";
+	            	    if(opt.userSubmittedApplicantsCount !=null && opt.userSubmittedApplicantsCount !='' && opt.userSubmittedApplicantsCount !='undefined'){
+	            	    	 result = result +"<td><div class='small'> <span title='"+opt.userSubmittedApplicantsCount+"'>"+opt.userSubmittedApplicantsCount+"</span></div></td>";
+	            	    }else{
+	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    }
+	            	   
 	            	    return result;
 	              }
 		     }, {
@@ -309,7 +324,12 @@ function usersListPagination(url,sourceleadUrl){
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result +"<td><div class='small'> <span title='"+opt.userInterviewedApplicantsCount+"'>"+opt.userInterviewedApplicantsCount+"</span></div></td>";
+	            	    if(opt.userInterviewedApplicantsCount !=null && opt.userInterviewedApplicantsCount !='' && opt.userInterviewedApplicantsCount !='undefined'){
+	            	    	result = result +"<td><div class='small'> <span title='"+opt.userInterviewedApplicantsCount+"'>"+opt.userInterviewedApplicantsCount+"</span></div></td>";
+	            	    }else{
+	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    }
+	            	    
 	            	    return result;
 	              }
 		     }, {
@@ -318,7 +338,12 @@ function usersListPagination(url,sourceleadUrl){
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result +"<td><div class='small'> <span title='"+opt.userOfferedApplicantsCount+"'>"+opt.userOfferedApplicantsCount+"</span></div></td>";
+	            	    if(opt.userOfferedApplicantsCount !=null && opt.userOfferedApplicantsCount !='' && opt.userOfferedApplicantsCount !='undefined'){
+	            	    	 result = result +"<td><div class='small'> <span title='"+opt.userOfferedApplicantsCount+"'>"+opt.userOfferedApplicantsCount+"</span></div></td>";
+	            	    }else{
+	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    }
+	            	   
 	            	    return result;
 	              }
 		     }, {
@@ -327,7 +352,12 @@ function usersListPagination(url,sourceleadUrl){
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result +"<td><div class='small'> <span title='"+opt.userRejectedApplicantsCount+"'>"+opt.userRejectedApplicantsCount+"</span></div></td>";
+	            	    if(opt.userRejectedApplicantsCount !=null && opt.userRejectedApplicantsCount !='' && opt.userRejectedApplicantsCount !='undefined'){
+	            	    	result = result +"<td><div class='small'> <span title='"+opt.userRejectedApplicantsCount+"'>"+opt.userRejectedApplicantsCount+"</span></div></td>";
+	            	    }else{
+	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    }
+	            	    
 	            	    return result;
 	              }
 		     }, {
@@ -336,7 +366,12 @@ function usersListPagination(url,sourceleadUrl){
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
-	            	    result = result +"<td><div class='small'> <span title='"+opt.userApplicantsBackOutCount+"'>"+opt.userApplicantsBackOutCount+"</span></div></td>";
+	            	    if(opt.userApplicantsBackOutCount !=null && opt.userApplicantsBackOutCount !='' && opt.userApplicantsBackOutCount !='undefined'){
+	            	    	 result = result +"<td><div class='small'> <span title='"+opt.userApplicantsBackOutCount+"'>"+opt.userApplicantsBackOutCount+"</span></div></td>";
+	            	    }else{
+	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    }
+	            	   
 	            	    return result;
 	              }
 		     }],

@@ -1886,18 +1886,22 @@ public class UserDaoImpl implements UserDao {
 			response.setRecordsFiltered(totalCount);
 		}
 		
-		response.setData(getUserListForRecruiterReport(usersList,orgLocationId,searchDates,isGlobalUser));
+		response.setData(getUserListForRecruiterReport(usersList,orgLocationId,searchDates,isGlobalUser,orgId));
 		return response;
 	}
 	
-	private List<UserDTO> getUserListForRecruiterReport(List<User> usersList,Long orgLocationId,Date[] searchDates,String isGlobalUser){
+	private List<UserDTO> getUserListForRecruiterReport(List<User> usersList,Long orgLocationId,Date[] searchDates,String isGlobalUser,Long orgId){
 		List<UserDTO> usersDTOList = new ArrayList<>();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String fromDate = sdf.format(searchDates[0]);
+		String toDate = sdf.format(searchDates[1]);
 		
 		if(usersList != null && !usersList.isEmpty()) {
 			for(User user : usersList) {
-				UserDTO userDTO = new UserDTO();
-				userDTO.setFullName(user.getFullName());
+				
 				try {
+					UserDTO userDTO = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, null, fromDate, toDate,isGlobalUser, orgId);
 					
 					Integer totalRequirements = requirementService.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, searchDates[0], searchDates[1],isGlobalUser);
 					userDTO.setUserRequirementsCount(totalRequirements);
@@ -1905,26 +1909,7 @@ public class UserDaoImpl implements UserDao {
 					Integer totalCandidates = candidateService.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, searchDates[0], searchDates[1],isGlobalUser);
 					userDTO.setUserCandidatesCount(totalCandidates);
 					
-					Integer totalApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user,"SUBMISSION", searchDates[0], searchDates[1],isGlobalUser);
-					userDTO.setUserApplicantsCount(totalApplicants);
-					
-					Integer totalShortlistedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user,"SHORTLIST", searchDates[0], searchDates[1],isGlobalUser);
-					userDTO.setUserShortlisteApplicantsCount(totalShortlistedApplicants);
-					
-					Integer totalSubmittedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user,"SUBMIT_TO_CLIENT", searchDates[0], searchDates[1],isGlobalUser);
-					userDTO.setUserSubmittedApplicantsCount(totalSubmittedApplicants);
-					
-					Integer totalInterviewedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, "INTERVIEW", searchDates[0], searchDates[1],isGlobalUser);
-					userDTO.setUserInterviewedApplicantsCount(totalInterviewedApplicants);
-					
-					Integer totalOfferedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, "OFFERMADE", searchDates[0], searchDates[1],isGlobalUser);
-					userDTO.setUserOfferedApplicantsCount(totalOfferedApplicants);
-					
-					Integer totalRejectedApplicants = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, "rejected", searchDates[0], searchDates[1],isGlobalUser);
-					userDTO.setUserRejectedApplicantsCount(totalRejectedApplicants);
-					
-					Integer userApplicantsBackOutCount = requirementSubmissionHistoryService.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, "BACKOUT", searchDates[0], searchDates[1],isGlobalUser);
-					userDTO.setUserApplicantsBackOutCount(userApplicantsBackOutCount);
+					userDTO.setFullName(user.getFullName());
 					
 					usersDTOList.add(userDTO);
 					

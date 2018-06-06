@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Transient;
@@ -61,21 +62,21 @@ public class UserDTO extends SearchDTO implements Serializable {
 	
     private Integer userRequirementsCount;
 	
-    private Integer userApplicantsCount;
+    private BigDecimal userApplicantsCount;
 	
     private Integer userCandidatesCount;
 	
-    private Integer userShortlisteApplicantsCount;
+    private BigDecimal userShortlistedApplicantsCount;
 	
-    private Integer userSubmittedApplicantsCount;
+    private BigDecimal userSubmittedApplicantsCount;
 	
-    private Integer userInterviewedApplicantsCount;
+    private BigDecimal userInterviewedApplicantsCount;
 	
-    private Integer userOfferedApplicantsCount;
+    private BigDecimal userOfferedApplicantsCount;
 	
-    private Integer userRejectedApplicantsCount;
+    private BigDecimal userRejectedApplicantsCount;
 	
-    private Integer userApplicantsBackOutCount;
+    private BigDecimal userApplicantsBackOutCount;
 
 
 	
@@ -496,11 +497,13 @@ public class UserDTO extends SearchDTO implements Serializable {
 		this.userRequirementsCount = userRequirementsCount;
 	}
 
-	public Integer getUserApplicantsCount() {
+	
+
+	public BigDecimal getUserApplicantsCount() {
 		return userApplicantsCount;
 	}
 
-	public void setUserApplicantsCount(Integer userApplicantsCount) {
+	public void setUserApplicantsCount(BigDecimal userApplicantsCount) {
 		this.userApplicantsCount = userApplicantsCount;
 	}
 
@@ -512,53 +515,55 @@ public class UserDTO extends SearchDTO implements Serializable {
 		this.userCandidatesCount = userCandidatesCount;
 	}
 
-	public Integer getUserShortlisteApplicantsCount() {
-		return userShortlisteApplicantsCount;
+	public BigDecimal getUserShortlistedApplicantsCount() {
+		return userShortlistedApplicantsCount;
 	}
 
-	public void setUserShortlisteApplicantsCount(Integer userShortlisteApplicantsCount) {
-		this.userShortlisteApplicantsCount = userShortlisteApplicantsCount;
+	public void setUserShortlistedApplicantsCount(BigDecimal userShortlistedApplicantsCount) {
+		this.userShortlistedApplicantsCount = userShortlistedApplicantsCount;
 	}
 
-	public Integer getUserSubmittedApplicantsCount() {
+	public BigDecimal getUserSubmittedApplicantsCount() {
 		return userSubmittedApplicantsCount;
 	}
 
-	public void setUserSubmittedApplicantsCount(Integer userSubmittedApplicantsCount) {
+	public void setUserSubmittedApplicantsCount(BigDecimal userSubmittedApplicantsCount) {
 		this.userSubmittedApplicantsCount = userSubmittedApplicantsCount;
 	}
 
-	public Integer getUserInterviewedApplicantsCount() {
+	public BigDecimal getUserInterviewedApplicantsCount() {
 		return userInterviewedApplicantsCount;
 	}
 
-	public void setUserInterviewedApplicantsCount(Integer userInterviewedApplicantsCount) {
+	public void setUserInterviewedApplicantsCount(BigDecimal userInterviewedApplicantsCount) {
 		this.userInterviewedApplicantsCount = userInterviewedApplicantsCount;
 	}
 
-	public Integer getUserOfferedApplicantsCount() {
+	public BigDecimal getUserOfferedApplicantsCount() {
 		return userOfferedApplicantsCount;
 	}
 
-	public void setUserOfferedApplicantsCount(Integer userOfferedApplicantsCount) {
+	public void setUserOfferedApplicantsCount(BigDecimal userOfferedApplicantsCount) {
 		this.userOfferedApplicantsCount = userOfferedApplicantsCount;
 	}
 
-	public Integer getUserRejectedApplicantsCount() {
+	public BigDecimal getUserRejectedApplicantsCount() {
 		return userRejectedApplicantsCount;
 	}
 
-	public void setUserRejectedApplicantsCount(Integer userRejectedApplicantsCount) {
+	public void setUserRejectedApplicantsCount(BigDecimal userRejectedApplicantsCount) {
 		this.userRejectedApplicantsCount = userRejectedApplicantsCount;
 	}
 
-	public Integer getUserApplicantsBackOutCount() {
+	public BigDecimal getUserApplicantsBackOutCount() {
 		return userApplicantsBackOutCount;
 	}
 
-	public void setUserApplicantsBackOutCount(Integer userApplicantsBackOutCount) {
+	public void setUserApplicantsBackOutCount(BigDecimal userApplicantsBackOutCount) {
 		this.userApplicantsBackOutCount = userApplicantsBackOutCount;
 	}
+
+
 	
 	
 
