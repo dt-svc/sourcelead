@@ -1,14 +1,12 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.persistence.TemporalType;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -18,13 +16,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementReportDao;
-import com.bis.sourcelead.entity.CandidateResumes;
+import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementStagesCount;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 @Repository
@@ -167,15 +165,38 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getRequirementStagesCountsForReports(Long orgLocId, String requirementStatus) {
-		int totalCount = 0;
+	public RequirementStagesCount getRequirementStagesCountsForReports(Long orgLocId) {
+		RequirementStagesCount dashboardObj = new RequirementStagesCount();
+		
+		List<RequirementStagesCount> reqStagesList= new ArrayList<RequirementStagesCount>();
+		dashboardObj.setApprovedRequirementsCount(BigDecimal.ZERO); // set default values as zero.
+		dashboardObj.setCancelRequirementsCount(BigDecimal.ZERO);
+		dashboardObj.setClosedRequirementsCount(BigDecimal.ZERO);
+		dashboardObj.setDraftRequirementsCount(BigDecimal.ZERO);
+		dashboardObj.setFilledclosedRequirementsCount(BigDecimal.ZERO);
+		dashboardObj.setNewRequirementsCount(BigDecimal.ZERO);
+		dashboardObj.setOnholdRequirementsCount(BigDecimal.ZERO);
+		dashboardObj.setOpenRequirementsCount(BigDecimal.ZERO);
+		dashboardObj.setRejectedRequirementsCount(BigDecimal.ZERO);
+		dashboardObj.setSubmittedRequirementsCount(BigDecimal.ZERO);
+		dashboardObj.setUnfilledclosedRequirementsCount(BigDecimal.ZERO);
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Requirement req where req.orgLocationId =:orgLocId and req.requirementSubmissionStatus =:requirementStatus";
-		List<Requirement> reqList = session.createQuery(query).setLong("orgLocId",orgLocId).setString("requirementStatus", requirementStatus).list();
-		if(!reqList.isEmpty() && reqList.size() > 0){
-			totalCount = reqList.size();
+		String query = "from RequirementStagesCount req where req.orgLocationId =:orgLocId";
+		reqStagesList = session.createQuery(query).setLong("orgLocId",orgLocId).list();
+		for(RequirementStagesCount obj: reqStagesList){
+			dashboardObj.setApprovedRequirementsCount(dashboardObj.getApprovedRequirementsCount().add(obj.getApprovedRequirementsCount())); // set default values as zero.
+			dashboardObj.setCancelRequirementsCount(dashboardObj.getCancelRequirementsCount().add(obj.getCancelRequirementsCount()));
+			dashboardObj.setClosedRequirementsCount(dashboardObj.getCancelRequirementsCount().add(obj.getCancelRequirementsCount()));
+			dashboardObj.setDraftRequirementsCount(dashboardObj.getDraftRequirementsCount().add(obj.getDraftRequirementsCount()));
+			dashboardObj.setFilledclosedRequirementsCount(dashboardObj.getFilledclosedRequirementsCount().add(obj.getFilledclosedRequirementsCount()));
+			dashboardObj.setNewRequirementsCount(dashboardObj.getNewRequirementsCount().add(obj.getNewRequirementsCount()));
+			dashboardObj.setOnholdRequirementsCount(dashboardObj.getOnholdRequirementsCount().add(obj.getOnholdRequirementsCount()));
+			dashboardObj.setOpenRequirementsCount(dashboardObj.getOpenRequirementsCount().add(obj.getOpenRequirementsCount()));
+			dashboardObj.setRejectedRequirementsCount(dashboardObj.getRejectedRequirementsCount().add(obj.getRejectedRequirementsCount()));
+			dashboardObj.setSubmittedRequirementsCount(dashboardObj.getSubmittedRequirementsCount().add(obj.getSubmittedRequirementsCount()));
+			dashboardObj.setUnfilledclosedRequirementsCount(dashboardObj.getUnfilledclosedRequirementsCount().add(obj.getUnfilledclosedRequirementsCount()));	
 		}
-		return totalCount;
+		return dashboardObj;
 	}
 
 

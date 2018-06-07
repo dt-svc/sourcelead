@@ -5,7 +5,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +28,7 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
+import com.bis.sourcelead.entity.RequirementStagesCount;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
@@ -44,7 +44,6 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class RequirementReportServiceImpl implements RequirementReportService {
@@ -204,9 +203,9 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	}
 	
 	@Override
-	public Integer getRequirementStagesCountsForReports(Long orgLocId, String requirementStatus) throws Exception
+	public RequirementStagesCount getRequirementStagesCountsForReports(Long orgLocId) throws Exception
 	{
-		return requirementReportDao.getRequirementStagesCountsForReports(orgLocId, requirementStatus);
+		return requirementReportDao.getRequirementStagesCountsForReports(orgLocId);
 	}
 	
 	@Override

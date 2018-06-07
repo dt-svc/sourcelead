@@ -1,22 +1,10 @@
 package com.bis.sourcelead.rest;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,14 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.beans.ApplicantReport;
 import com.bis.sourcelead.beans.AssignedRequirementReports;
 import com.bis.sourcelead.beans.RequirementStagesReport;
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
+import com.bis.sourcelead.entity.RequirementStagesCount;
 import com.bis.sourcelead.entity.RequirementSubmission;
-import com.bis.sourcelead.entity.RequirementSubmissionHistory;
-import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementAssignToService;
@@ -273,8 +257,8 @@ public class RequirementReportRestController {
 		RequirementStagesReport requirementStagesReport = new RequirementStagesReport();
 		String reqStageReport = "";
 		if (null == status) {
-			int newCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "NEW");
-			int draftCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "DRAFT");
+			RequirementStagesCount count = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId());
+			/*int draftCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "DRAFT");
 			int submittedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "SUBMITTED");
 			int approvedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "APPROVED");
 			int rejectedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "REJECTED");
@@ -283,18 +267,18 @@ public class RequirementReportRestController {
 			int filledclosedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "FILLEDCLOSED");
 			int cancelCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "CANCEL");
 			int unfilledclosedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "UNFILLEDCLOSED");
-			int closedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "CLOSED");
-			requirementStagesReport.setCancelRequirementsCount(cancelCount);
-			requirementStagesReport.setDraftRequirementsCount(draftCount);
-			requirementStagesReport.setFilledclosedRequirementsCount(filledclosedCount);
-			requirementStagesReport.setNewRequirementsCount(newCount);
-			requirementStagesReport.setOnholdRequirementsCount(onholdCount);
-			requirementStagesReport.setOpenRequirementsCount(openCount);
-			requirementStagesReport.setSubmittedRequirementsCount(submittedCount);
-			requirementStagesReport.setUnfilledclosedRequirementsCount(unfilledclosedCount);
-			requirementStagesReport.setApprovedRequirementsCount(approvedCount);
-			requirementStagesReport.setRejectedRequirementsCount(rejectedCount);
-			requirementStagesReport.setClosedRequirementsCount(closedCount);
+			int closedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "CLOSED");*/
+			requirementStagesReport.setCancelRequirementsCount(count.getCancelRequirementsCount());
+			requirementStagesReport.setDraftRequirementsCount(count.getDraftRequirementsCount());
+			requirementStagesReport.setFilledclosedRequirementsCount(count.getFilledclosedRequirementsCount());
+			requirementStagesReport.setNewRequirementsCount(count.getNewRequirementsCount());
+			requirementStagesReport.setOnholdRequirementsCount(count.getOnholdRequirementsCount());
+			requirementStagesReport.setOpenRequirementsCount(count.getOpenRequirementsCount());
+			requirementStagesReport.setSubmittedRequirementsCount(count.getSubmittedRequirementsCount());
+			requirementStagesReport.setUnfilledclosedRequirementsCount(count.getUnfilledclosedRequirementsCount());
+			requirementStagesReport.setApprovedRequirementsCount(count.getApprovedRequirementsCount());
+			requirementStagesReport.setRejectedRequirementsCount(count.getRejectedRequirementsCount());
+			requirementStagesReport.setClosedRequirementsCount(count.getClosedRequirementsCount());
 			reqStageReport = commonUtil.toJSON(requirementStagesReport);
 		}
 		else {

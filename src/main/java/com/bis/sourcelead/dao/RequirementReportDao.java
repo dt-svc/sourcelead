@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementStagesCount;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
@@ -24,7 +25,7 @@ public interface RequirementReportDao {
 
 	List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId);
 
-	Integer getRequirementStagesCountsForReports(Long orgLocId, String requirementStatus);
+	RequirementStagesCount getRequirementStagesCountsForReports(Long orgLocId);
 
 	List<Requirement> getRequirementStageReports(OrgLocations orgLocation, String status) throws Exception;
 
