@@ -302,7 +302,7 @@ public class TimesheetReportsRestController {
 		     }else{
 		    	 details.setRate("--");	 
 		     }
-		     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate);
+		     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate,isGlobalAccess);
 	    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
 		     float monthTotalHours            = 0f;
 			 float monthBillableTotalHours    = 0f;

@@ -115,6 +115,8 @@ $(document).ready(function(){
 			 result = result + '<li><a href="#tab-17" onClick="profileDetails('+candidateId+');" >Profile</a></li>';
 		 '</sec:authorize>';
 		 
+		 result = result + '<li><a href="#tab-29" onClick="assocBalanceLeaveSummary('+userId+');">Balance Leaves</a></li>';
+		 
 		 result = result + '<div class="clearfix"></div>';
 		 result = result + '   </ul>';
 		 
@@ -133,6 +135,10 @@ $(document).ready(function(){
 		 result = result + '<div id="candidateSideDiv">';
 		 result = result + '</div>';
 		 result = result + '</div>';
+		 
+		 result = result + '<div id="tab-29" class="require_wrap_table table-wrap project_tabs_inn datatable_filter dataTablesFilter-relative">';
+		 result = result + '</div>';
+		 
 	  	 result = result + '</div>';
 	  	 result = result + '</div>';
 	  	 result = result + '</div>'; 
@@ -186,6 +192,7 @@ $(document).ready(function(){
 			    var roles = "";
 			    var isGlobalUser = "";
 			    
+			    
 			    if(json.isGlobal == 'Y'){
 			    	isGlobalUser = 'Yes';
 			    }else{
@@ -235,7 +242,7 @@ $(document).ready(function(){
 				if('${SourceLeadWeb_userId}' != json.user.id){
 				if(json.userState != null && json.userState != "" && json.userState != 'INACTIVE'){
 				    result = result + ' <div class="useredit">';
-				    if(json.reportingManager.id == '${SourceLeadWeb_userId}'){
+				    if(json.reportingManager != null && json.reportingManager.id == '${SourceLeadWeb_userId}'){
 				    	 result = result + ' <a id="edit-userRole" onclick="getRoles('+json.roles.id+');removeErrorMsg();" href="javascript:editUserRole();"><i class="fa fa-edit"></i>Edit Role</a>';
 				    }else{
 				    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
@@ -243,8 +250,9 @@ $(document).ready(function(){
 					    '</sec:authorize>';
 					    
 				    }
+				    
 				   
-				    if(json.reportingManager.id == '${SourceLeadWeb_userId}'){
+				    if(json.reportingManager != null && json.reportingManager.id == '${SourceLeadWeb_userId}'){
 				    	 result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit Associate</a>';
 				    }
 				    else{
@@ -253,7 +261,7 @@ $(document).ready(function(){
 				    '</sec:authorize>';
 				    }
 				    
-				    if(json.reportingManager.id == '${SourceLeadWeb_userId}'){
+				    if(json.reportingManager != null && json.reportingManager.id == '${SourceLeadWeb_userId}'){
 						result = result + ' <a id="remove-user" href="javascript:removeUser('+userId+');"><i class="glyphicon glyphicon-trash"></i>Terminate</a>';
 						result = result + ' <form id="deleteUser_form"  name="deleteUser_form" method="post">';	
 						result = result + ' <div id="remove_user_id" class="remove_user_pop terminate-popup" >';
@@ -371,7 +379,7 @@ $(document).ready(function(){
 					result = result + '<div class="clearfix"></div>';
 				}
 				
-		if(json.reportingManager.id == '${SourceLeadWeb_userId}'){
+		if(json.reportingManager != null && json.reportingManager.id == '${SourceLeadWeb_userId}'){
 			
 			if(json.dateofBirthStr != null && json.dateofBirthStr != "" && json.dateofBirthStr != 'undefined'){
 				result = result + '			<div class="project_details_cta">';
@@ -671,7 +679,7 @@ $(document).ready(function(){
 				$("#tab-19").empty();
 				$("#tab-17").empty();
 				$("#tab-18").empty(); 
-			 
+				 $("#tab-29").empty();  
 			    $("#tab-18").append(result);  
 			    
 			    var config = {
@@ -4084,6 +4092,7 @@ function savedCommentAndCount(candidateId){
 <jsp:include page="candidateDocuments.jsp"></jsp:include>
 <jsp:include page="candidateReferences.jsp"></jsp:include>
 <jsp:include page="requirementHistory.jsp"></jsp:include> 
+<jsp:include page="assoBalanceLeaveSummary.jsp"></jsp:include> 
 <%--  <sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> --%>
 <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
  <%-- </sec:authorize>  --%>

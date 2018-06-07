@@ -1,23 +1,24 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.aspectj.org.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -32,20 +33,20 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -58,6 +59,15 @@ public class UserDaoImpl implements UserDao {
 	
 	@Autowired
     OrgLocationService orgLocationService;
+	
+	@Autowired
+	RequirementService requirementService;
+	
+	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -1780,5 +1790,153 @@ public class UserDaoImpl implements UserDao {
         return userRoleList;
         
 	
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates)
+			throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<UserDTO> response = new ResponseList<>();
+		Query queryObj = null;
+		List<User> usersList = null;
+		StringBuilder query1 = new StringBuilder("");
+		String globalAccessQuery = "";
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			globalAccessQuery = " and userRole.orgLocations.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+		}else {
+			globalAccessQuery = " and userRole.orgLocations.id = :orgLocationId";
+		}
+		
+		
+		if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
+			query1.append(" user.firstName like '%" + userDTO.getSearchValue() + "%' ")
+			.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ");
+						
+			}
+		
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
+				sortingQry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
+		}
+		
+		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
+			query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where  userRole.userState = 'ACTIVE' "+globalAccessQuery+" )";
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
+			}else{
+				 queryObj = session.createQuery(query + query1.toString()+" "+sortingQry+" ");
+			}
+			
+			queryObj.setLong("orgLocationId", orgLocationId).list();
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationId", orgLocationId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}else {
+				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}
+			
+		}else {
+			query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where (userRole.reportingManager.id = :userId OR userRole.resourceManager.id = :userId) and userRole.userState = 'ACTIVE' "+globalAccessQuery+" ) "
+					+ " OR user.id IN (select tm.memberUserId.id from TeamMembers tm where tm.teamId.ownerUserId = :userId and tm.status = '1'  and tm.teamId.orgLocationsId = :orgLocationId))";
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
+			}else{
+				 queryObj = session.createQuery(query + query1.toString()+" "+sortingQry+" ");
+			}
+			
+			queryObj.setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+			
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}else {
+				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}
+		}
+		
+		queryObj.setFirstResult(userDTO.getStart());
+		queryObj.setMaxResults(userDTO.getLength());
+		usersList = queryObj.list();
+		
+		int totalCount = 0;
+
+		
+		if (userDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		response.setData(getUserListForRecruiterReport(usersList,orgLocationId,searchDates,isGlobalUser,orgId));
+		return response;
+	}
+	
+	private List<UserDTO> getUserListForRecruiterReport(List<User> usersList,Long orgLocationId,Date[] searchDates,String isGlobalUser,Long orgId){
+		List<UserDTO> usersDTOList = new ArrayList<>();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String fromDate = sdf.format(searchDates[0]);
+		String toDate = sdf.format(searchDates[1]);
+		Map<String, UserDTO> UserListMap = new HashMap<String, UserDTO>();
+		List<String> userCodeList = new ArrayList<>();
+		if(usersList != null && !usersList.isEmpty()) {
+			for(User user : usersList) {
+				
+				try {
+					UserDTO userDTO = new UserDTO();
+					userDTO.setFullName(user.getFullName());
+					
+					BigInteger totalRequirements = requirementService.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, fromDate, toDate,isGlobalUser,orgId);
+					userDTO.setUserRequirementsCount(totalRequirements);
+					
+					BigInteger totalCandidates = candidateService.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, fromDate, toDate,isGlobalUser,orgId);
+					userDTO.setUserCandidatesCount(totalCandidates);
+					UserListMap.put(user.getUserCode(), userDTO);
+					userCodeList.add(user.getUserCode());
+					usersDTOList.add(userDTO);
+					
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+			
+			try {
+				List<RecruiterReportView> recruiterReportViewList = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, fromDate, toDate,isGlobalUser, orgId);
+				if(recruiterReportViewList != null && !recruiterReportViewList.isEmpty()) {
+					for(RecruiterReportView recuiterReportView : recruiterReportViewList) {
+						UserDTO userDTO = UserListMap.get(recuiterReportView.getUserCode());
+						userDTO.setUserApplicantsCount(recuiterReportView.getApplicantSubmissionCount());
+						userDTO.setUserShortlistedApplicantsCount(recuiterReportView.getApplicantShortlistedCount());
+						userDTO.setUserSubmittedApplicantsCount(recuiterReportView.getApplicantSubmittedClientCount());
+						userDTO.setUserOfferedApplicantsCount(recuiterReportView.getApplicantOfferMadeCount());
+						userDTO.setUserRejectedApplicantsCount(recuiterReportView.getApplicantRejectedCount());
+						userDTO.setUserApplicantsBackOutCount(recuiterReportView.getApplicantBackOutCount());
+					}
+					
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return usersDTOList;
 	}
 }

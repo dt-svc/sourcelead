@@ -2184,7 +2184,8 @@ function newSaveTimesheet(status){
 	}  -->
 <script>
 function validateTimesheetHours(status){
-	 if(status != null && status != 'undefined' && status != '' && status == 'Submitted'){
+	 var timesheetAvgHoursValidation ='${timesheetAvgHoursValidation}'; 
+	 if(status != null && status != 'undefined' && status != '' && status == 'Submitted' && timesheetAvgHoursValidation == 'Y'){
 		 var total = $("#grandTotal").val();
 		 var wokingHoursPerWk ='${minimumWorkingHoursPerWeek}'; 
 		 if(total != "" && total != null && total != 'undefined'){

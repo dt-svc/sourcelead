@@ -273,8 +273,8 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 
 	@Override
 	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(
-			Long approverUserId,Long locationsId, Long projectMemberId, Date startDate, Date endDate) throws Exception {
-		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(approverUserId,locationsId, projectMemberId, startDate, endDate);
+			Long approverUserId,Long locationsId, Long projectMemberId, Date startDate, Date endDate,String isGlobalUser) throws Exception {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(approverUserId,locationsId, projectMemberId, startDate, endDate,isGlobalUser);
 	}
 
 	@Override

@@ -42,12 +42,14 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
+import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SingnatoryDTO;
+import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
@@ -77,6 +79,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -196,6 +199,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	AssetService assetService;
 	private Org org;
 	
+	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	
 	/**
 	 * To get All Approvers
 	 * @param request
@@ -292,21 +300,25 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 */
 	 @PreAuthorize("hasRole('ROLE_CREATE_ASSOCIATE')")
 	 @RequestMapping(value = "/createUser" , method = RequestMethod.POST)
-	public String createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO, HttpServletRequest request)
+	public Response<AddUserDTO> createUser(AddUserDTO addUserDTO, CandidateDTO candidateDTO, HttpServletRequest request)
 			throws Exception {
-		if(Validator.validate(addUserDTO) || Validator.validate(candidateDTO)){
+		 Response<AddUserDTO> resObj = new Response<>();
+		 if(Validator.validate(addUserDTO) || Validator.validate(candidateDTO)){
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		addUserDTO.setDateFormat(orgLocations.getDateFormat());
 		candidateDTO.setDateFormat(orgLocations.getDateFormat());
 		commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate,orgLocations);
-		userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
+		User savedUser = userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
 		SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");
-		return "usersList";
+		addUserDTO.setUserId(String.valueOf(savedUser.getId()));
+		resObj.setObject(addUserDTO);
+		return resObj;
 	}
 	 else{
-		 return "DataMissing";
+		 resObj.setResponse("DataMissing");
+		 return resObj; //"DataMissing";
 	 }
 }
 	 
@@ -1651,8 +1663,62 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	 
 	 
 	 
+	 /**
+	  * Save Associate Balance Leaves 
+	  * @param associateBalanceLeaveDTO
+	  * @param request
+	  * @return Response<AssociateBalanceLeaveDTO>
+	  * @throws Exception
+	  */
 	 
+	 @RequestMapping(value = "/addAssociateLeave" , method = RequestMethod.POST)
+	 public Response<AssociateBalanceLeaveDTO> addAssociateLeave(AssociateBalanceLeaveDTO associateBalanceLeaveDTO, HttpServletRequest request)throws Exception {
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+           User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+           Response<AssociateBalanceLeaveDTO> resObj = associateBalanceLeaveService.addAssociateLeave(associateBalanceLeaveDTO, loginUser, orgLocations); 
+           return resObj;
 	 
+	 }
 	 
-	 
+	/**
+	 * Get Assciate Balance Leaves By user Id
+	 * 
+	 * @param userId
+	 * @param request
+	 * @return ResponseList<AssociateBalanceLeaveDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getAssociateBalanceLeavesByUserId", method = RequestMethod.GET)
+	public ResponseList<AssociateBalanceLeaveDTO> getAssociateBalanceLeavesByUserId(@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		ResponseList<AssociateBalanceLeaveDTO> response = new ResponseList();
+		try {
+			List<AssociateBalanceLeaveDTO> list = associateBalanceLeaveService.getAssociateBalanceLeavesByUserId(userId,orgLocations,loginUser);
+			response.setData(list);
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+
+	
+	
+	/**
+	 * To Update Balance Leaves By user Id
+	 * 
+	 * @param userId
+	 * @param request
+	 * @return ResponseList<AssociateBalanceLeaveDTO>
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/editAssBalLeave", method = RequestMethod.PUT)
+	public boolean editAssBalLeave(@RequestParam(value = "assoBalLeaveUUID", required = false) String assoBalLeaveUUID, 
+								   @RequestParam(value = "totalLeaves", required = false) String totalLeaves,HttpServletRequest request) throws Exception
+	{
+		boolean isUpdated = associateBalanceLeaveService.getAssociateBalanceByUUID(assoBalLeaveUUID,totalLeaves);
+		return isUpdated;
+	}
 }
