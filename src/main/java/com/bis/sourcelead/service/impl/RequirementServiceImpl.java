@@ -393,7 +393,7 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setNoticePeriod(null);
 		}
 		
-		requirement.setWalkIn(requirementDTO.isWalkIn());
+		requirement.setWalkIn(requirementDTO.isWalkIn() && requirementDTO.getWalkInDays() != null && !requirementDTO.getWalkInDays().isEmpty());
 		requirement.setWalkInDays(requirementDTO.isWalkIn() ? requirementDTO.getWalkInDays() : "");
 		
 		if (StringUtils.isNotBlank(requirementDTO.getTravelAllowance())) {
