@@ -110,7 +110,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				 associateBalanceLeaveDTO.setLeaveTypeName(l.getLeaveTypeName());
 				 associateBalanceLeaveDTO.setNoofLeaves(l.getTotalLeaves());
 				 associateBalanceLeaveDTO.setLeaveTypeId(l.getLeaveTypeId());
-				 if(l.getCreatedByFirstName() != null && !"".equalsIgnoreCase(l.getCreatedByFirstName())) {
+				 if(l.getCreatedByFirstName() != null && !"".equalsIgnoreCase(l.getCreatedByFirstName())) {associateBalanceLeave
 					 associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName()+" "+l.getCreatedByLastName());
 				 }else {
 					 associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName());
@@ -162,10 +162,18 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	public int getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId)
 	{
 		int totalLeaves = 0;
-		AssociateBalanceLeave associateBalanceLeave = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveTypeId,userId);
-		if(associateBalanceLeave != null) {
-			totalLeaves = Integer.parseInt(associateBalanceLeave.getTotalLeaves());
+		try {
+			AssociateBalanceLeave associateBalanceLeave = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveTypeId,userId);
+			if(associateBalanceLeave != null) {
+				totalLeaves = Integer.parseInt(associateBalanceLeave.getTotalLeaves());
+			}else {
+				LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
+				totalLeaves = leaveType.getNoOfDays();
+			}
+		}catch (Exception e) {
+			logger.info("getTotalLeavesByUserIdAndLeaveTypeId failed due to : "+e.getMessage());
 		}
+		
 		return totalLeaves;
 	}
 	
