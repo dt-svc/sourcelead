@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -50,7 +51,11 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 					connection.setAutoCommit(false);
 					CallableStatement stmt = connection.prepareCall("{call associateBalanceLeave(?,?,?,?,?,?,?,?,?,?)}");
 					for (TotalLeaveDTO leave : associateBalanceLeaveDTO.getTotalLeavesDto()) {
-						stmt.setLong(1, Long.parseLong(associateBalanceLeaveDTO.getUserId()));
+						if(StringUtils.isNotBlank(leave.getUserId())) {
+							stmt.setLong(1, Long.parseLong(leave.getUserId()));
+						}else {
+							stmt.setLong(1, Long.parseLong(associateBalanceLeaveDTO.getUserId()));
+						}
 						stmt.setLong(2, orgLocations.getId());
 						stmt.setLong(3, Long.parseLong(leave.getLeaveTypeId()));
 						stmt.setString(4, leave.getNoOfLeaves());
@@ -79,14 +84,15 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 
 	@Override
 	@Transactional
-	public ResponseList<AssociateBalanceLeaveView> getAssociateBalanceLeavesByUserId(Long userId)
+	public ResponseList<AssociateBalanceLeaveView> getAssociateBalanceLeavesByUserId(Long userId,Long orgLocationId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		Date[] yearDates = ConversionUtil.getCurrentYearStartAndEndDate();
 		java.sql.Date yearStartDate = new java.sql.Date(yearDates[0].getTime());
 		java.sql.Date yearEndDate = new java.sql.Date(yearDates[1].getTime());
 		ResponseList<AssociateBalanceLeaveView> res = new ResponseList<>();
-		List<AssociateBalanceLeaveView> assoBalLeave = session.createQuery("from AssociateBalanceLeaveView balLeaveView where balLeaveView.userId =:userId and balLeaveView.createdDate BETWEEN :yearStartDate AND :yearEndDate" ).setLong( "userId", userId ).setDate("yearStartDate", yearStartDate).setDate("yearEndDate", yearEndDate).list();
+		List<AssociateBalanceLeaveView> assoBalLeave = session.createQuery("from AssociateBalanceLeaveView balLeaveView where balLeaveView.userId =:userId and balLeaveView.orgLocationId = :orgLocationId and balLeaveView.createdDate BETWEEN :yearStartDate AND :yearEndDate" ).setLong( "userId", userId ).setLong("orgLocationId", orgLocationId).setDate("yearStartDate", yearStartDate).setDate("yearEndDate", yearEndDate).list();
+		
 		res.setData(assoBalLeave);
 		return res;
 		
@@ -122,11 +128,11 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 
 	@Override
 	@Transactional
-	public AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId)
+	public AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId,Long orgLocationId)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateBalanceLeave associateBalanceLeave = null;
-		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.leaveTypeId = :leaveTypeId").setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).list();
+		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.leaveTypeId = :leaveTypeId and balLeave.orgLocationId.id = :orgLocationId").setLong("userId", userId).setLong("orgLocationId", orgLocationId).setLong("leaveTypeId", leaveTypeId).list();
 		if (assoBalLeave != null && assoBalLeave.size() > 0) {
 			associateBalanceLeave = assoBalLeave.get(0);
 		}
