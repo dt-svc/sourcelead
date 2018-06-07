@@ -105,7 +105,7 @@ public class ClientController {
 			sessionData.setNav(Constants.Clients);
 			request.getSession().setAttribute("sessionData",sessionData);
 			
-			SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
+			 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
 		     model.addObject("actionId",action.getId());
 		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
 			 model.addObject("sourceleadSectionList",sections);
@@ -287,6 +287,11 @@ public class ClientController {
 					model.addObject("loginOrgLocId", orgLocations.getId());
 					model.addObject("clientContactList", vandorsListByOrgLocationId);
 					
+					 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CLIENT);
+				     model.addObject("actionId",action.getId());
+				     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+					 model.addObject("sourceleadSectionList",sections);
+					 
 					SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 					if(sessionData == null)
 					{

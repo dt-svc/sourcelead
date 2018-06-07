@@ -99,12 +99,12 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 								 Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 								 Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
 								 List<Date> dateList = CalendarUtil.getListOfDaysBetweenTwoDates(startDate,endDate);
-								 List<ProjectMembers> projectMemberList = projectMemberService.getProjectMembersListByOrgIdAndMasterCandidateId(orgloc.getOrg().getId(),projectMember.getMasterCandidateId().getId());
-								 if(projectMemberList!= null && !projectMemberList.isEmpty()) {
-								 for(ProjectMembers projectMembers:projectMemberList) {
+								 //List<ProjectMembers> projectMemberList = projectMemberService.getProjectMembersListByOrgIdAndMasterCandidateId(orgloc.getOrg().getId(),projectMember.getMasterCandidateId().getId());
+								// if(projectMemberList!= null && !projectMemberList.isEmpty()) {
+								// for(ProjectMembers projectMembers:projectMemberList) {
 								 if(dateList != null && !dateList.isEmpty()) {
 									for(Date timesheetDate:dateList) {
-										dayEntryList = timeSheetDayEntriesService.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(projectMembers.getProjects().getId(),timesheetDate,projectMembers.getId());
+										dayEntryList = timeSheetDayEntriesService.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(projectMember.getProjects().getId(),timesheetDate,projectMember.getId());
 										 Map<Date,List<TimeSheetDayEntries>> mapDataList = new HashMap<Date, List<TimeSheetDayEntries>>();
 										 if(dayEntryList != null && !dayEntryList.isEmpty()) {
 												    writeRow = createExcelsheet.createRow(rowCount + 6);
@@ -180,9 +180,9 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 									}
 								}
 								
-							}
+							//}
 								 fixedCount = fixedCount + rowCount;
-						}
+						//}
 					}
 				}
 			}
@@ -425,11 +425,10 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 					List<TimeSheetDayEntries> dayEntryList = null;
 					if(dayWiseTimesheetReoprtsDto.getProjectIds() != null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
 						 List<Long> newProjectmemberList = new ArrayList<>();
+						 Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
+						 Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
+
 						for(Long projectId:dayWiseTimesheetReoprtsDto.getProjectIds()) {
-							Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
-							Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
-							List<Date> dateList = CalendarUtil.getListOfDaysBetweenTwoDates(startDate,endDate);
-							
 							if(flag== true) {
 								if(dayWiseTimesheetReoprtsDto.getProjectMemberListId().isEmpty() && projectId!= null) {
 									 List<ProjectMembers> projectMember = projectMemberService.getAllProjectMembersByProjectId(projectId);
@@ -444,7 +443,6 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 							if(dayWiseTimesheetReoprtsDto.getProjectMemberListId()!= null && !dayWiseTimesheetReoprtsDto.getProjectMemberListId().isEmpty()) {
 								for(Long projectMembers:dayWiseTimesheetReoprtsDto.getProjectMemberListId()) {
 									ProjectMembers projectMember = projectMemberService.getProjectMemberById(projectMembers);
-									if(dateList != null && !dateList.isEmpty()) {
 											/*dayEntryList = timeSheetDayEntriesService.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(projectId,timesheetDate,projectMembers);*/
 											 dayEntryList = timeSheetDayEntriesService.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(projectId,startDate,endDate,projectMembers);
 											 if(dayEntryList != null && !dayEntryList.isEmpty()) {
@@ -501,13 +499,14 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 													dayList.add(dayArray);
 												}
 											}
+										}
+											if(flag== true) {
+												dayWiseTimesheetReoprtsDto.setProjectMemberListId(new ArrayList<>());
+											}
 									}
-	
 								}
 							}
 						}
-					}
-				}
 		        
 		        
 		        for (String[] datTimeArray: dayList) {
@@ -699,7 +698,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 			 
 			Map<List<DayWiseTimesheetReoprtsListDTO>,String[]> timeEntryDataMap = new HashMap<List<DayWiseTimesheetReoprtsListDTO>,String[]>();
 			List<DayWiseTimesheetReoprtsListDTO> dayEntriesListDto = new ArrayList<DayWiseTimesheetReoprtsListDTO>();
-			if(dayWiseTimesheetReoprtsDto.getProjectMemberListId()!= null && !dayWiseTimesheetReoprtsDto.getProjectMemberListId().isEmpty()) {
+			if(dayWiseTimesheetReoprtsDto.getProjectMemberListId()!= null && !dayWiseTimesheetReoprtsDto.getProjectMemberListId().isEmpty() && dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
 			for(Long userId:dayWiseTimesheetReoprtsDto.getProjectMemberListId()) {
 				 ProjectMembers projectMember = projectMemberService.getProjectMemberById(userId);
 				 if(projectMember!=null) {
@@ -832,57 +831,13 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 					}
 				}
 			}
+			value[0] = (convertMinuteToHours(totalBillable, null));
+			value[1] = (convertMinuteToHours(totalNonbillable, null));
 			timeEntryDataMap.put(dayEntriesListDto, value);
 		return timeEntryDataMap;
 	}
 
 
-	/*private List<DayWiseTimesheetReoprtsListDTO> dataForDayEntriesListDTO(List<TimeSheetDayEntries> dayEntryList, OrgLocations orgloc, ProjectMembers projectMember, Long totalNonbillable, Long totalBillable, List<DayWiseTimesheetReoprtsListDTO> dayEntriesListDto, String[] value) throws Exception {
-		 for(TimeSheetDayEntries dayEntries:dayEntryList) {
-			    DayWiseTimesheetReoprtsListDTO	listDto = new DayWiseTimesheetReoprtsListDTO();										
-			 	listDto.setTimesheetDate(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getTimesheetDate()));		
-			 	if(projectMember.getProjectMemberCandidteId().getLastName()!=null) {
-					StringBuilder sb = new StringBuilder();
-					listDto.setEmployeeName(sb.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName()).toString());
-				}else {
-					listDto.setEmployeeName(projectMember.getProjectMemberCandidteId().getFirstName());
-				}
-			 	if (projectMember != null && projectMember.getProjects() != null) {
-			 		listDto.setEmployeeEmail(projectMember.getProjectMemberCandidteId().getEmail());
-				}
-			 	
-			 	if (dayEntries!= null) {
-			 		listDto.setTicketNo(dayEntries.getTicketNumber());
-				}
-				
-			 	if (dayEntries.getTimesheetSubmissions() != null && dayEntries.getTimesheetSubmissions().getProjects() != null) {
-			 		listDto.setProjectName(dayEntries.getTimesheetSubmissions().getProjects().getProjectName());
-				}
-			 	
-				if (dayEntries.getProjectTask() != null && dayEntries.getProjectTask().getId() != null) {
-					ProjectTasks projectTask = projecttasksservice.getTasksId(dayEntries.getProjectTask().getId().toString());
-					listDto.setTask(projectTask.getTaskName());
-				}
-				if (dayEntries.getBillableHours() != null) {
-					listDto.setBillableHrs(dayEntries.getBillableHours());
-					totalBillable = getTotalHoursFormDayHours(dayEntries.getBillableHours(), totalBillable);
-					
-				}
-				if (dayEntries.getNonBillableHours() != null) {
-					listDto.setNonBillableHrs(dayEntries.getNonBillableHours());
-					totalNonbillable = getTotalHoursFormDayHours(dayEntries.getNonBillableHours(), totalNonbillable);
-				}
-				  SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeBySubmissionId(dayEntries.getTimesheetSubmissions().getId(), projectMember.getMasterCandidateId().getId());
-				if (sah != null) {
-					listDto.setStatus(sah.getSubmissionApprovalStatus().toString());
-				}
-					dayEntriesListDto.add(listDto);
-				}
-		value[0] = (convertMinuteToHours(totalBillable, null));
-		value[1] = (convertMinuteToHours(totalNonbillable, null));
-		return dayEntriesListDto;
-			
-		}*/
 
 	private String convertMinuteToHours(Long totalHours, String actualTimeString) {
 		int actualHours = (int) (totalHours / 60);

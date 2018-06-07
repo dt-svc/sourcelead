@@ -669,7 +669,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	if(report.autoApprove == "Y"){
     		    		$("#approvalDiv").hide();
     		    	}else{
-    		    		if(isSuperUser){
+    		    		if(isSuperUser == true){
    	   		    		   $("#approvalDiv").hide();
    	   		    	   }else{
    	   		    		   $("#approvalDiv").show();
@@ -886,7 +886,8 @@ function getApproversList(){
 		if(data !=null){
 			var result = "";
 			var opt = data[0];
-			result += '<input type="text" class="form-control" name="approverUser" id="approverUser" readOnly value="'+opt.firstName+' '+opt.lastName+' ('+opt.userType+')"/>';
+			result += '<input type="text" class="form-control" id="approverUser" readOnly value="'+opt.firstName+' '+opt.lastName+' ('+opt.userType+')"/>';
+			result += '<input type="text" class="form-control" name="approverUser" readOnly value="'+opt.id+'"/>';
 			$("#approvalDiv").show();
 			$("#approverUserDiv").empty();
 			$("#approverUserDiv").append(result);
