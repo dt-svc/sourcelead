@@ -10,12 +10,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.aspectj.org.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -1892,7 +1895,8 @@ public class UserDaoImpl implements UserDao {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String fromDate = sdf.format(searchDates[0]);
 		String toDate = sdf.format(searchDates[1]);
-		
+		Map<String, UserDTO> UserListMap = new HashMap<String, UserDTO>();
+		List<String> userCodeList = new ArrayList<>();
 		if(usersList != null && !usersList.isEmpty()) {
 			for(User user : usersList) {
 				
@@ -1905,9 +1909,20 @@ public class UserDaoImpl implements UserDao {
 					
 					Integer totalCandidates = candidateService.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, searchDates[0], searchDates[1],isGlobalUser);
 					userDTO.setUserCandidatesCount(totalCandidates);
+					UserListMap.put(user.getUserCode(), userDTO);
+					userCodeList.add(user.getUserCode());
+					usersDTOList.add(userDTO);
 					
-					RecruiterReportView recuiterReportView = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, null, fromDate, toDate,isGlobalUser, orgId);
-					if(recuiterReportView != null) {
+				}catch (Exception e) {
+				}
+				
+			}
+			
+			try {
+				List<RecruiterReportView> recruiterReportViewList = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, null, fromDate, toDate,isGlobalUser, orgId);
+				if(recruiterReportViewList != null && !recruiterReportViewList.isEmpty()) {
+					for(RecruiterReportView recuiterReportView : recruiterReportViewList) {
+						UserDTO userDTO = UserListMap.get(recuiterReportView.getUserCode());
 						userDTO.setUserApplicantsCount(recuiterReportView.getApplicantSubmissionCount());
 						userDTO.setUserShortlistedApplicantsCount(recuiterReportView.getApplicantShortlistedCount());
 						userDTO.setUserSubmittedApplicantsCount(recuiterReportView.getApplicantSubmittedClientCount());
@@ -1916,11 +1931,9 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserApplicantsBackOutCount(recuiterReportView.getApplicantBackOutCount());
 					}
 					
-					usersDTOList.add(userDTO);
-					
-				}catch (Exception e) {
 				}
-				
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		return usersDTOList;

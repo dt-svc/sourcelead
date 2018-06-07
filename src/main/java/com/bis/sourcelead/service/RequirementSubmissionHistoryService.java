@@ -39,5 +39,7 @@ public interface RequirementSubmissionHistoryService {
 	RequirementSubmissionHistory addRequirementHistory(RequirementSubmissionHistory requirementSubmissionHistory)throws Exception;
 	
 	RecruiterReportView getSubmissionCountsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user, String submissionStage ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
+	
+	List<RecruiterReportView> getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(Long orgLocationId, List<String> userCodeList, String submissionStage ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
 
 }

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -192,6 +193,34 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		}
 		
 		return  recuiterReportView;
+		
+	}
+
+	@Override
+	@Transactional
+	public List<RecruiterReportView> getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(Long orgLocationId,
+			List<String> userCodeList, String submissionStage, String startDateUTC, String endDateUTC,
+			String isGlobalUser, Long orgId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<RecruiterReportView> recuiterReportViewList = null;
+		try {
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			query = "from RecruiterReportView rv where rv.userCode IN (:userCodeList) and rv.createdDate BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"' and  rv.orgId = :orgId ";
+			recuiterReportViewList =  session.createQuery(query).setParameterList("userCodeList", userCodeList).setLong("orgId", orgId).list();
+		}
+		else {
+			query = "from RecruiterReportView rv where rv.userCode IN (:userCodeList) and rv.createdDate BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"' and rv.orgLocationId = :orgLocationId  ";
+			recuiterReportViewList =  session.createQuery(query).setParameterList("userCodeList", userCodeList).setLong("orgLocationId", orgLocationId).list();
+		}
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		
+		return  recuiterReportViewList;
 		
 	}
 
