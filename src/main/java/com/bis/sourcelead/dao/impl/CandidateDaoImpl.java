@@ -900,47 +900,55 @@ public class CandidateDaoImpl implements CandidateDao {
    	}
 
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC)
+	@Transactional
+	public BigInteger getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId)
 			throws Exception {
 		
-			Map<String, Object> params = new HashMap<String,Object>();
-			String subQueryDateRange = "";
 			
-			if(null != startDateUTC && null != endDateUTC){
-				  subQueryDateRange = "and (candidate.createdDate >= :startDateUTC and candidate.createdDate <= :endDateUTC)";
-				  params.put("startDateUTC",startDateUTC);
-				  params.put("endDateUTC",endDateUTC);
-			}
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		BigInteger count = null;
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
 			
-			String queryString ="select count(*)from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.createdBy =:userCode "+subQueryDateRange+" ";
-			Session session = this.sessionFactory.getCurrentSession();
-		    params.put("orgLocationId",orgLocationId);
-		    params.put("userCode",user.getUserCode());
+			query ="SELECT"
+					+ " COUNT(CAND.ID) AS CAND_COUNT"
+					+ " FROM"
+					    + " CANDIDATE CAND,"
+					    + " ORG_LOCATIONS OL"
+					    
+						+ " WHERE  OL.ID = CAND.ORG_LOCATION_ID AND "
+					    + " CAND.CREATED_BY = :userCode"
+					    + " AND DATE_FORMAT(CAND.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					    + " AND  OL.ORG_ID = :orgId"
+					    + " GROUP BY CAND.CREATED_BY, OL.ORG_ID, CAND.ORG_LOCATION_ID";
+				 
+			        
+					Query queryString = session.createSQLQuery(query);
+					queryString.setParameter("userCode", user.getUserCode()).setParameter("orgId", orgId);
+					count  = (BigInteger) queryString.uniqueResult();
+					
+		}else {
 			
-		    /*String query ="select count(*)from Candidate candidate where candidate.orgLocationId.id =:orgLocationId and candidate.createdBy =:userCode";
-			Session session = this.sessionFactory.getCurrentSession();
-		    long count = ((Long)session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).intValue();*/
-		    
-		    Query query = session.createQuery(queryString);
-		    for (String str : query.getNamedParameters())
-	        {
-				if(str.equalsIgnoreCase("startDateUTC")){
-					query.setParameter( str, (Date) params.get(str) );
-				}
-				if(str.equalsIgnoreCase("endDateUTC")){
-					query.setParameter( str, (Date) params.get(str) );
-				}
-				
-				if(str.equalsIgnoreCase("orgLocationId")){
-					query.setParameter(str, (long) params.get(str));
-				}
-				
-				if(str.equalsIgnoreCase("userCode")){
-					query.setParameter(str, params.get(str));
-				}
-	        }
-		    return (Long)query.uniqueResult();
+			query ="SELECT"
+					+ " COUNT(CAND.ID) AS CAND_COUNT"
+					+ " FROM"
+					    + " CANDIDATE CAND "
+						+ " WHERE"
+					    + " CAND.CREATED_BY = :userCode"
+					    + " AND DATE_FORMAT(CAND.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					    + " AND CAND.ORG_LOCATION_ID = :orgLocationId"
+					    + " GROUP BY CAND.CREATED_BY, CAND.ORG_LOCATION_ID";
+			
+
+					Query queryString = session.createSQLQuery(query);
+					queryString.setParameter("userCode", user.getUserCode()).setParameter("orgLocationId", orgLocationId);
+					count  = (BigInteger) queryString.uniqueResult();
+			
+			
+		}
+		
+		return count;
 	}
 
 	@Override
