@@ -101,5 +101,7 @@ public interface ProjectsDao {
 	public List<Projects> getAllProjectsBasedOnProjectType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto);
 	
 	List<Projects> getAllClientProjectsByOrgLocationId(Long locationId) throws Exception;
+	
+	public List<Projects> getProjectsListByUserIdAndOrgLocationIdAndStatus(Long userId,Long orgLocationsId,Long orgId,Long candidateId,String userRole,String globalAccess) throws Exception;
 
 }
