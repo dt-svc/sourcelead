@@ -32,6 +32,10 @@ private static final long serialVersionUID = 1L;
 	@JoinColumn(name = "USER_ID")
 	private User user;
 	
+	@ManyToOne
+	@JoinColumn(name = "ORG_LOCATION_ID")
+	private OrgLocations orgLocationId;
+	
 	@Column (name = "LEAVE_TYPE_ID")
 	private Long leaveTypeId;
 	
@@ -158,6 +162,16 @@ private static final long serialVersionUID = 1L;
 	public void setUpdatedBy(Long updatedBy)
 	{
 		this.updatedBy = updatedBy;
+	}
+
+	public OrgLocations getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
 	}
 	
 	

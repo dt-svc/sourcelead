@@ -34,21 +34,7 @@
 		var leaveEffective = '${leaveType.leaveEffective}';
 		if (leaveEffective == 'All Employees' || leaveEffective == '') {
 			hideExperienced();
-		/* 	$('#newJoineeDiv').find('p.jquery_form_error_message').remove();
-			$('#experiencedDiv').find('p.jquery_form_error_message').remove();
-			$('#newJoinee').removeAttr('data-validation');
-			$('#newJoinee').attr('data-validation-optional', "true");
-			$('#experiencedType').removeAttr('data-validation');
-			$('#experiencedType').attr('data-validation-optional', "true");
-			$('#experiencedDuration').removeAttr('data-validation');
-			$('#experiencedDuration').attr('data-validation-optional', "true");
-			$('#experiencedApplicableDays').removeAttr('data-validation');
-			$('#experiencedApplicableDays').attr('data-validation-optional', "true");
-			$("#experiencedGroup").hide();
-			$("#noOfDaysDiv").show();
-			$('#noOfDays').removeAttr('data-validation-optional');
-			$('#noOfDays').attr('data-validation', "required");
- */		}else{
+			}else{
 			showExperienced();
 		}
 		var priorLeave = '${leaveType.priorLeaveApplying}';
@@ -776,23 +762,7 @@ function validateDuration(){
 	    }
 }
 
-/*function setTemplateValues(){
-	var requirementId = document.getElementById('template').value;
-	getEditRequirementDetails(requirementId);
-	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
-		
-// 		getRequirementAndLookUpSkills(requirementId);
-	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/getRequirementById?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
-		    success: function(json) {
-		    	if(json != null && json != 'undefined' && json !='' ){ 
-		    		if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
-		    			$("#templateId").val(json.id);
-		    		}
-		    		$("#minDays").val(json.minDays);
-			    	$("#maxDays").val(json.maxDays);
-			    	*/
+
 	function validateName() {
 	
 		var locationId = '${SourceLeadWeb_orgLocationId}';

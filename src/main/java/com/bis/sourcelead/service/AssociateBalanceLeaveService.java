@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -15,5 +16,7 @@ public interface AssociateBalanceLeaveService {
 
 	boolean getAssociateBalanceByUUID(String assoBalLeaveUUID, String totalLeaves);
 
-	int getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId);
+	int getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId, Long orgLocationId);
+
+	int addLeaveTypeToAssociate(List<User> userList, OrgLocations orgLocation, LeaveType leaveType, User loginUser);
 }
