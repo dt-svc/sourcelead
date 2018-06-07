@@ -2736,9 +2736,9 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(
-			Long orgLocationId, String userType, Long userId, String userCode) throws Exception {
+			Long orgLocationId, String userType, Long userId, String userCode, boolean isDriveJob) throws Exception {
 		return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId,
-				userType, userId, userCode);
+				userType, userId, userCode, isDriveJob);
 	}
 
 	@Override

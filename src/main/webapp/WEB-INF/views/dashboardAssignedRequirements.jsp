@@ -21,9 +21,8 @@
         <div class="project_side_wrap_inn_tabs">
       	    <div id="resourceRequestsDivLoading"></div>
 		    <ul class="project-tabs-menu">
-		        <li class="current" id="assigned"><a data-toggle="tab" href="javascript:void(0)" onclick="">Assigned</a></li>
-		        <li id="drive"><a data-toggle="tab" href="javascript:void(0)"  onclick="">Drive</a></li>
-		        <div class="clearfix"></div>
+		        <li class="current" id="assigned"><a data-toggle="tab" href="javascript:void(0)" onclick="requirementList();">Assigned</a></li>
+		        <li id="drive"><a data-toggle="tab" href="javascript:void(0)"  onclick="requirementList(true);">Drive</a></li>
 		    </ul>
 			<div id="resourceRequestList1">
 				<div class="pull-right" id="viewmoresDiv" style="display: none;">
@@ -69,15 +68,16 @@ width: 100% !important;
 </style>
 
 <script>
-function requirementList(){  
+function requirementList(isDrive){  
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  var orgATS = '${SourceLeadWeb_ats}';
 	  var orgVMS = '${SourceLeadWeb_vms}';
+	  $("#requirementList").empty();
 	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
-           url: sourceleadUrl+"/getAssignedRequirementListByOrgLocationIDAndUserId?${_csrf.parameterName}=${_csrf.token}",    
+           url: sourceleadUrl+"/getAssignedRequirementListByOrgLocationIDAndUserId?${_csrf.parameterName}=${_csrf.token}"+ (isDrive ? "&isDrive="+isDrive : ""),    
             success :function(data) {
             	if (data.response === "FAILED") {
 		    		showError(data.responseMessage);
@@ -95,6 +95,9 @@ function requirementList(){
 	                     result = result +"    <th>Actions</th>";
 	                     result = result +"    <th>Generated ID</th>"; 
 	                     result = result +"    <th>Title</th>";
+	                     if(isDrive) {
+	                    	 result = result +"    <th>Drive Day(s)</th>";
+	                     }
 	                     if(orgATS == 'Y'){
 	                     result = result +"    <th>Client</th>";
 	                     }
@@ -170,6 +173,9 @@ function requirementList(){
 	                    	 }else{
 		                    	 result = result +"<td><div class='tbldata-dotdot-sm'> <a href='"+sourceleadUrl+"/requirementSummary?requirementUUID="+opt.requirementUUID+"'><span title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></a></div></td>";
 		                     }
+	                    	 if(isDrive) {
+	                    		 result = result +"<td><div class=''><span title='"+opt.driveDays+"'>"+opt.driveDays+"</span></a></div></td>";
+	                    	 }
 		                     if(orgATS == 'Y'){
 			                     if(opt.clientName != null && opt.clientName != '' && opt.clientName != 'undefined'){
 			                    	
@@ -240,8 +246,15 @@ function requirementList(){
 								$("body").css('overflow-y', 'auto');
 						 });	
 	                     pagination(); 
+	                     if(isDrive) {
+	            	    	 $("#assigned").removeClass("current");
+	            	    	 $("#drive").addClass("current"); 
+	                     } else {
+	            	    	 $("#assigned").addClass("current");
+	            	    	 $("#drive").removeClass("current");
+	                     }
                  	}
-		    	}else if (data.indexOf('Sign In') !== -1) {
+		    	} else if (data.indexOf('Sign In') !== -1) {
 		    		location.replace(sourceleadUrl);
 		    	} else {
 		    		showError("Operation failed, please try again");
