@@ -66,7 +66,7 @@ public class UserDTO extends SearchDTO implements Serializable {
 	
     private BigDecimal userApplicantsCount;
 	
-    private Integer userCandidatesCount;
+    private BigInteger userCandidatesCount;
 	
     private BigDecimal userShortlistedApplicantsCount;
 	
@@ -509,11 +509,11 @@ public class UserDTO extends SearchDTO implements Serializable {
 		this.userApplicantsCount = userApplicantsCount;
 	}
 
-	public Integer getUserCandidatesCount() {
+	public BigInteger getUserCandidatesCount() {
 		return userCandidatesCount;
 	}
 
-	public void setUserCandidatesCount(Integer userCandidatesCount) {
+	public void setUserCandidatesCount(BigInteger userCandidatesCount) {
 		this.userCandidatesCount = userCandidatesCount;
 	}
 

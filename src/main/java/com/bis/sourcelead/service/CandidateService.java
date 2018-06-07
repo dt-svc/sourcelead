@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -154,7 +155,7 @@ public interface CandidateService {
 
 	List<Candidate> getAllActiveCandidatesCountForCampaignByLocationAndStatus(Long orgLocationId)throws Exception;
 	
-	Integer getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC,String isGlobalUser) throws Exception ;
+	BigInteger getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
 	
 	Candidate getCandidateByUUID(String candidateUUID) throws Exception ;
 

@@ -1907,19 +1907,20 @@ public class UserDaoImpl implements UserDao {
 					BigInteger totalRequirements = requirementService.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, fromDate, toDate,isGlobalUser,orgId);
 					userDTO.setUserRequirementsCount(totalRequirements);
 					
-					Integer totalCandidates = candidateService.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, searchDates[0], searchDates[1],isGlobalUser);
+					BigInteger totalCandidates = candidateService.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, fromDate, toDate,isGlobalUser,orgId);
 					userDTO.setUserCandidatesCount(totalCandidates);
 					UserListMap.put(user.getUserCode(), userDTO);
 					userCodeList.add(user.getUserCode());
 					usersDTOList.add(userDTO);
 					
 				}catch (Exception e) {
+					e.printStackTrace();
 				}
 				
 			}
 			
 			try {
-				List<RecruiterReportView> recruiterReportViewList = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, null, fromDate, toDate,isGlobalUser, orgId);
+				List<RecruiterReportView> recruiterReportViewList = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, fromDate, toDate,isGlobalUser, orgId);
 				if(recruiterReportViewList != null && !recruiterReportViewList.isEmpty()) {
 					for(RecruiterReportView recuiterReportView : recruiterReportViewList) {
 						UserDTO userDTO = UserListMap.get(recuiterReportView.getUserCode());

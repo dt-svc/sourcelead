@@ -901,29 +901,53 @@ public class CandidateDaoImpl implements CandidateDao {
 
 	@Override
 	@Transactional
-	public Integer getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC,String isGlobalUser)
+	public BigInteger getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId)
 			throws Exception {
 		
 			
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
-		List<Long> candidatesCount = null;
-		String globalAccessQuery = "";
+		BigInteger count = null;
 		
 		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
-			globalAccessQuery = " and candidate.orgLocationId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+			
+			query ="SELECT"
+					+ " COUNT(CAND.ID) AS CAND_COUNT"
+					+ " FROM"
+					    + " CANDIDATE CAND,"
+					    + " ORG_LOCATIONS OL"
+					    
+						+ " WHERE  OL.ID = CAND.ORG_LOCATION_ID AND "
+					    + " CAND.CREATED_BY = :userCode"
+					    + " AND DATE_FORMAT(CAND.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					    + " AND  OL.ORG_ID = :orgId"
+					    + " GROUP BY CAND.CREATED_BY, OL.ORG_ID, CAND.ORG_LOCATION_ID";
+				 
+			        
+					Query queryString = session.createSQLQuery(query);
+					queryString.setParameter("userCode", user.getUserCode()).setParameter("orgId", orgId);
+					count  = (BigInteger) queryString.uniqueResult();
+					
 		}else {
-			globalAccessQuery = " and candidate.orgLocationId.id = :orgLocationId";
+			
+			query ="SELECT"
+					+ " COUNT(CAND.ID) AS CAND_COUNT"
+					+ " FROM"
+					    + " CANDIDATE CAND "
+						+ " WHERE"
+					    + " CAND.CREATED_BY = :userCode"
+					    + " AND DATE_FORMAT(CAND.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					    + " AND CAND.ORG_LOCATION_ID = :orgLocationId"
+					    + " GROUP BY CAND.CREATED_BY, CAND.ORG_LOCATION_ID";
+			
+
+					Query queryString = session.createSQLQuery(query);
+					queryString.setParameter("userCode", user.getUserCode()).setParameter("orgLocationId", orgLocationId);
+					count  = (BigInteger) queryString.uniqueResult();
+			
+			
 		}
 		
-		query ="select count(*)from Candidate candidate where  candidate.createdBy =:userCode "+globalAccessQuery+" "
-				+ " and   date(candidate.createdDate) BETWEEN :startDate and :endDate";
-		
-		candidatesCount =  session.createQuery(query.toString()).setString("userCode", user.getUserCode()).setLong("orgLocationId", orgLocationId).setParameter("startDate", startDateUTC).setParameter("endDate", endDateUTC).list();
-		Integer count= 0;
-		if(candidatesCount != null && !candidatesCount.isEmpty()){
-				count = candidatesCount.get(0).intValue();
-		}
 		return count;
 	}
 

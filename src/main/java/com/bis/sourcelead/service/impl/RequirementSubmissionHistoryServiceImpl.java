@@ -182,9 +182,9 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 
 	@Override
 	public List<RecruiterReportView> getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(Long orgLocationId,
-			List<String> userCodeList, String submissionStage, String startDateUTC, String endDateUTC,
+			List<String> userCodeList, String startDateUTC, String endDateUTC,
 			String isGlobalUser, Long orgId) throws Exception {
-		return requirementSubmissionHistoryDao.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, submissionStage, startDateUTC, endDateUTC, isGlobalUser, orgId);
+		return requirementSubmissionHistoryDao.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, startDateUTC, endDateUTC, isGlobalUser, orgId);
 	}
 
 }

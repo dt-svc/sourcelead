@@ -199,7 +199,7 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 	@Override
 	@Transactional
 	public List<RecruiterReportView> getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(Long orgLocationId,
-			List<String> userCodeList, String submissionStage, String startDateUTC, String endDateUTC,
+			List<String> userCodeList, String startDateUTC, String endDateUTC,
 			String isGlobalUser, Long orgId) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();

@@ -1095,7 +1095,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
 		BigInteger count = null;
-		
+		try {
 		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
 			query ="SELECT"
 					+ " COUNT(REQ.ID) AS REQ_COUNT"
@@ -1104,37 +1104,34 @@ public class RequirementDaoImpl implements RequirementDao {
 					    + " ORG_LOCATIONS OL"
 					    
 						+ " WHERE  OL.ID = REQ.ORG_LOCATION_ID AND "
-					    + " REQ.CREATED_BY = '"+user.getId()+"'"
+					    + " REQ.CREATED_BY = :userCode"
 					    + " AND DATE_FORMAT(REQ.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
-					    + " AND  OL.ORG_ID = '"+orgId+"'"
+					    + " AND  OL.ORG_ID = :orgId"
 					    + " GROUP BY REQ.CREATED_BY, OL.ORG_ID, REQ.ORG_LOCATION_ID";
 				 
 			        
 					Query queryString = session.createSQLQuery(query);
-					/*List<BigInteger> countList = queryString.list();
-					count = countList.iterator().next();*/
+					queryString.setParameter("userCode", user.getUserCode()).setParameter("orgId", orgId);
 					count  = (BigInteger) queryString.uniqueResult();
 		}else {
 			query ="SELECT"
 					+ " COUNT(REQ.ID) AS REQ_COUNT"
 					+ " FROM"
-					    + " REQUIREMENT REQ,"
-					    + " ORG_LOCATIONS OL"
-					    
-						+ " WHERE  OL.ID = REQ.ORG_LOCATION_ID AND "
+					    + " REQUIREMENT REQ "
+						+ " WHERE"
 					    + " REQ.CREATED_BY = :userId"
 					    + " AND DATE_FORMAT(REQ.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
-					    + " AND  REQ.ORG_LOCATION_ID = :orgLocationId"
-					    + " GROUP BY REQ.CREATED_BY, OL.ORG_ID, REQ.ORG_LOCATION_ID";
+					    + " AND REQ.ORG_LOCATION_ID = :orgLocationId"
+					    + " GROUP BY REQ.CREATED_BY, REQ.ORG_LOCATION_ID";
 			
 
 					Query queryString = session.createSQLQuery(query);
 					queryString.setParameter("userId", user.getId()).setParameter("orgLocationId", orgLocationId);
-					/*List<BigInteger> countList = queryString.list();
-					count = countList.iterator().next();*/
 					count  = (BigInteger) queryString.uniqueResult();
 		}
-		
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		return count;
 
