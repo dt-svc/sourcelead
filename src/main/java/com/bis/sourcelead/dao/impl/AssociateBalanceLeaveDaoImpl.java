@@ -48,17 +48,18 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 				public void execute(java.sql.Connection connection) throws SQLException {
 					boolean initialAutocommitSetting = connection.getAutoCommit();
 					connection.setAutoCommit(false);
-					CallableStatement stmt = connection.prepareCall("{call associateBalanceLeave(?,?,?,?,?,?,?,?,?)}");
+					CallableStatement stmt = connection.prepareCall("{call associateBalanceLeave(?,?,?,?,?,?,?,?,?,?)}");
 					for (TotalLeaveDTO leave : associateBalanceLeaveDTO.getTotalLeavesDto()) {
 						stmt.setLong(1, Long.parseLong(associateBalanceLeaveDTO.getUserId()));
-						stmt.setLong(2, Long.parseLong(leave.getLeaveTypeId()));
-						stmt.setString(3, leave.getNoOfLeaves());
-						stmt.setString(4, SourceLeadRandomCodeHelper.generateRandomUUID());
-						stmt.setInt(5, 1);
-						stmt.setLong(6, loginUser.getId());
-						stmt.setDate(7, new java.sql.Date(new Date().getTime()));
-						stmt.setLong(8, loginUser.getId());
-						stmt.setDate(9, new java.sql.Date(new Date().getTime()));
+						stmt.setLong(2, orgLocations.getId());
+						stmt.setLong(3, Long.parseLong(leave.getLeaveTypeId()));
+						stmt.setString(4, leave.getNoOfLeaves());
+						stmt.setString(5, SourceLeadRandomCodeHelper.generateRandomUUID());
+						stmt.setInt(6, 1);
+						stmt.setLong(7, loginUser.getId());
+						stmt.setDate(8, new java.sql.Date(new Date().getTime()));
+						stmt.setLong(9, loginUser.getId());
+						stmt.setDate(10, new java.sql.Date(new Date().getTime()));
 						
 						stmt.addBatch();
 					}

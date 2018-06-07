@@ -983,6 +983,7 @@ public class LeaveManagementRestController {
 				if (leaveType != null) {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
+//					List<User> 
 				}
 			} else if (user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
