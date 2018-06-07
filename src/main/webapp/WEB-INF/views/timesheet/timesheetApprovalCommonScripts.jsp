@@ -26,6 +26,7 @@ $(document).ready(function() {
 	</div>
 </div>	
 <div id="loadTime"></div>
+<div id="loadTime1"></div>
 <div id='rejectedPopup'></div>
 <div id='reOpenPopup'></div>
 <div id='reOpenRejectedPopup'></div>

@@ -104,8 +104,7 @@ function getNotificationtLists(){
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getNotificationtLists?${_csrf.parameterName}=${_csrf.token}", 
-        success: function(data) {
-        	var json = JSON.parse(data);
+        success: function(json) {
         	var result = "";
         	result = result +'<table id="notificationList" class="display table table-borderd table-hover table-striped"  cellspacing="0" width="100%">';
         	result = result +'<thead>';
@@ -130,8 +129,8 @@ function getNotificationtLists(){
 					result = result +'			</label>';
 					result = result +'	  </td>';
 					
-					result = result +'		<td><div class="notificationUser clearfix">';
-					result = result +'		<div class="notifi-image">';
+					result = result +'		<td><div class="tblminwidth-175 clearfix">';
+					result = result +'		<div class="notifi-image mr">';
 					
 					if(report.notificationImage != null && report.notificationImage !='' && report.notificationImage !="undefined"){
 						result = result +'			<img data-id= "userProfileImage" class="img-responsive img-circle" title="'+report.notificationFirstName+' '+report.notificationLastName+'" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);"  src="'+report.notificationImage+'">';
@@ -140,7 +139,7 @@ function getNotificationtLists(){
 	
 					}
 					result = result +'		</div>';					
-					result = result +'		<div class="mailbox-name">';
+					result = result +'		<div class="tbldata-dotdot inlineBlock pull-left text-left mt5">';
 					if(report.notificationLastName != null && report.notificationLastName != '' && report.notificationLastName != 'undefined'){
 					result = result +'		'+report.notificationFirstName+' '+report.notificationLastName+' 					';
 					}
@@ -149,16 +148,33 @@ function getNotificationtLists(){
 					}					
 					result = result +'		</div>';					
 					result = result +'		</div></td>';
+					
 				    result = result +'   <td>';
-					result = result +'			<div class="mailbox-subject tbldata-dotdot-big">';
+					result = result +'			<div class="mailbox-subject tbldata-dotdot-big500 pull-left text-left">';
 					if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID == null || report.spocUUID == "" || report.spocUUID == "undefined")){
-						result = result +'<span><a href="'+report.actionLink+'" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+						if(report.mode == "read"){
+							result = result +'<span><a class="visitedAnchor" href="'+report.actionLink+'" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');"><b>'+report.body+'</b></a></span>';
+						}else{
+							result = result +'<span><a href="'+report.actionLink+'" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');"><b>'+report.body+'</b></a></span>';
+						}
 					}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && (report.orgRelationUUID != null && report.orgRelationUUID != "" && report.orgRelationUUID != "undefined") && report.responderType == "vendor"){
-						result = result +'<span><a href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+						if(report.mode == "read"){
+							result = result +'<span><a  class="visitedAnchor" href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+						}else{
+							result = result +'<span><a href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+						}
 					}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && (report.orgRelationUUID != null && report.orgRelationUUID != "" && report.orgRelationUUID != "undefined")&& report.responderType == "client"){
-						result = result +'<span><a href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+						if(report.mode == "read"){
+							  result = result +'<span><a class="visitedAnchor"  href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+						}else{
+						  result = result +'<span><a href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" onclick="linkReadAndUnread(\''+report.uuId+'\');" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+						}
 					}else{
-						result = result +'<span><a href="#" title="'+report.body+'"><b>'+report.body+'</b></a></span>';
+						if(report.mode == "read"){
+							result = result +'<span><a class="visitedAnchor" href="#" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');"><b>'+report.body+'</b></a></span>';
+						}else{
+							result = result +'<span><a href="#" title="'+report.body+'" onclick="linkReadAndUnread(\''+report.uuId+'\');"><b>'+report.body+'</b></a></span>';
+						}
 					}
 					result = result +'			</div>';
 				    result = result +'   </td>';
@@ -319,7 +335,15 @@ function loadingDiv(){
 	$("#loadAcceptDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 }
 </script>
-
- <!-- Delete Notification end  -->
+<script>
+function linkReadAndUnread(uuId){
+	 $.ajax({
+	      type: "POST",
+	  	  url: sourceleadUrl+"/notificationStatusRead?${_csrf.parameterName}=${_csrf.token}&uuId="+uuId,
+	  			  success :function(data) {
+     			 }							     
+	}); 
+}
+</script>
  
  <jsp:include page="../masterFooter.jsp" />

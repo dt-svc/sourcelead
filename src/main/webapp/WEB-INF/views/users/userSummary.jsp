@@ -192,6 +192,7 @@ $(document).ready(function(){
 			    var roles = "";
 			    var isGlobalUser = "";
 			    
+			    
 			    if(json.isGlobal == 'Y'){
 			    	isGlobalUser = 'Yes';
 			    }else{
@@ -241,7 +242,7 @@ $(document).ready(function(){
 				if('${SourceLeadWeb_userId}' != json.user.id){
 				if(json.userState != null && json.userState != "" && json.userState != 'INACTIVE'){
 				    result = result + ' <div class="useredit">';
-				    if(json.reportingManager.id == '${SourceLeadWeb_userId}'){
+				    if(json.reportingManager != null && json.reportingManager.id == '${SourceLeadWeb_userId}'){
 				    	 result = result + ' <a id="edit-userRole" onclick="getRoles('+json.roles.id+');removeErrorMsg();" href="javascript:editUserRole();"><i class="fa fa-edit"></i>Edit Role</a>';
 				    }else{
 				    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">'
@@ -249,8 +250,9 @@ $(document).ready(function(){
 					    '</sec:authorize>';
 					    
 				    }
+				    
 				   
-				    if(json.reportingManager.id == '${SourceLeadWeb_userId}'){
+				    if(json.reportingManager != null && json.reportingManager.id == '${SourceLeadWeb_userId}'){
 				    	 result = result + ' <a id="edit-user" href="javascript:editUserDetails('+userId+');"><i class="glyphicon glyphicon-pencil"></i>Edit Associate</a>';
 				    }
 				    else{
@@ -259,7 +261,7 @@ $(document).ready(function(){
 				    '</sec:authorize>';
 				    }
 				    
-				    if(json.reportingManager.id == '${SourceLeadWeb_userId}'){
+				    if(json.reportingManager != null && json.reportingManager.id == '${SourceLeadWeb_userId}'){
 						result = result + ' <a id="remove-user" href="javascript:removeUser('+userId+');"><i class="glyphicon glyphicon-trash"></i>Terminate</a>';
 						result = result + ' <form id="deleteUser_form"  name="deleteUser_form" method="post">';	
 						result = result + ' <div id="remove_user_id" class="remove_user_pop terminate-popup" >';
@@ -332,48 +334,41 @@ $(document).ready(function(){
 					result = result + ' 		<div class="project_details_cta">';
 					result = result + '				 <strong>Employee Id:</strong><span class="fix" title="'+json.employeeId+'">'+json.employeeId+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
 				
 				result = result + '			<div class="project_details_cta">';
 				result = result + '				 <strong>First Name:</strong><span class="fix" title="'+json.user.firstName+'">'+json.user.firstName+'</span><div class="clearfix"></div>';
 				result = result + ' 		</div>';
+				result = result + '<div class="clearfix"></div>';
 				
 				if(json.user.middelName != null && json.user.middelName != "" && json.user.middelName != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
 					result = result + '				 <strong>Middle Name:</strong><span class="fix" title="'+json.user.middelName+'">'+json.user.middelName+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
-				}	
+				}	result = result + '<div class="clearfix"></div>';
 				
 				
 				if(json.user.lastName != null && json.user.lastName != "" && json.user.lastName != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
 					result = result + '				 <strong>Last Name:</strong><span class="fix" title="'+json.user.lastName+'">'+json.user.lastName+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
 				if(json.user.email != null && json.user.email != "" && json.user.email != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Email Id:</strong><span class="fix" title="'+json.user.email+'">'+json.user.email+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
 				if(json.user.mobilePhone != null && json.user.mobilePhone != "" && json.user.mobilePhone != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Phone Number:</strong><span class="fix">'+json.user.mobilePhone+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
-				}
-				
-				if(json.user.gender != null && json.user.gender != "" && json.user.gender != 'undefined'){
-					result = result + ' 		<div class="project_details_cta">';
-					result = result + '				 <strong>Gender:</strong><span class="fix" title="'+json.user.gender+'">'+json.user.gender+'</span><div class="clearfix"></div>';
-					result = result + ' 		</div>';
-				}
-				
-				if(json.user.maritalStatus != null && json.user.maritalStatus != "" && json.user.maritalStatus != 'undefined'){
-					result = result + ' 		<div class="project_details_cta">';
-					result = result + '				 <strong>Marital Status:</strong><span class="fix" title="'+json.user.maritalStatus+'">'+json.user.maritalStatus+'</span><div class="clearfix"></div>';
-					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
 				if(json.user.extensionNumber != null && json.user.extensionNumber !='' && json.user.extensionNumber !='undefined'){
@@ -381,59 +376,100 @@ $(document).ready(function(){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Extension:</strong><span class="fix">'+json.user.extensionNumber+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
-		if(json.reportingManager.id == '${SourceLeadWeb_userId}'){
+		if(json.reportingManager != null && json.reportingManager.id == '${SourceLeadWeb_userId}'){
+			
+			if(json.dateofBirthStr != null && json.dateofBirthStr != "" && json.dateofBirthStr != 'undefined'){
+				result = result + '			<div class="project_details_cta">';
+				result = result + '				<strong>Date of Birth:</strong><span class="fix">'+json.dateofBirthStr+'</span><div class="clearfix"></div>';
+				result = result + '			</div>';
+				result = result + ' 		<div class="clearfix"></div>';
+				result = result + '<div class="clearfix"></div>';
+			}
+			
+			if(json.user.gender != null && json.user.gender != "" && json.user.gender != 'undefined'){
+				result = result + ' 		<div class="project_details_cta">';
+				result = result + '				 <strong>Gender:</strong><span class="fix" title="'+json.user.gender+'">'+json.user.gender+'</span><div class="clearfix"></div>';
+				result = result + ' 		</div>';
+				result = result + '<div class="clearfix"></div>';
+			}
+			
+			if(json.user.maritalStatus != null && json.user.maritalStatus != "" && json.user.maritalStatus != 'undefined'){
+				result = result + ' 		<div class="project_details_cta">';
+				result = result + '				 <strong>Marital Status:</strong><span class="fix" title="'+json.user.maritalStatus+'">'+json.user.maritalStatus+'</span><div class="clearfix"></div>';
+				result = result + ' 		</div>';
+				result = result + '<div class="clearfix"></div>';
+			}
+			
+			
 			if(json.userEmploymentType != null && json.userEmploymentType != "" && json.userEmploymentType != 'undefined'){
 				result = result + '			<div class="project_details_cta">';
 				result = result + '				<strong>Employment type:</strong><span class="fix">'+json.userEmploymentType+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
+				result = result + '<div class="clearfix"></div>';
 			} 
+			
+			if(json.dailyHours != null && json.dailyHours != "" && json.dailyHours != 'undefined'){
+				result = result + '			<div class="project_details_cta">';
+				result = result + '				<strong>Day hours:</strong><span class="fix">'+json.dailyHours+'</span><div class="clearfix"></div>';
+				result = result + '			</div>';
+				result = result + '<div class="clearfix"></div>';
+			}
 			 
 			 if(json.vendorName != null && json.vendorName != "" && json.vendorName != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				<strong>Vendor:</strong><span class="fix">'+json.vendorName+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
+					result = result + '<div class="clearfix"></div>';
 				} 
 			 
 			 if(json.designationOtherType != null && json.designationOtherType != "" && json.designationOtherType != 'undefined'){
 				 result = result + '			<div class="project_details_cta">';
 					result = result + '				<strong>Employment Other Type:</strong><span class="fix">'+json.designationOtherType+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
+					result = result + '<div class="clearfix"></div>';
 			 }
 			 
 			 if(json.vendorContactName != null && json.vendorContactName != "" && json.vendorContactName != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				<strong>Vendor Contact:</strong><span class="fix">'+json.vendorContactName+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
+					result = result + '<div class="clearfix"></div>';
 				} 
 			
 			 if(json.currentCurrency != null && json.currentCurrency != "" && json.currentCurrency != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Currency:</strong><span class="fix" title="'+json.currentCurrency+'">'+json.currentCurrency+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 			 
 			if(json.rate != null && json.rate != "" && json.rate != 'undefined'){
 				result = result + '			<div class="project_details_cta">';
 				result = result + '				 <strong>Rate:</strong><span class="fix" title="'+json.rate+'">'+json.rate+'</span><div class="clearfix"></div>';
 				result = result + ' 		</div>';
+				result = result + '<div class="clearfix"></div>';
 			}
 			
 			if(json.ratePer != null && json.ratePer != "" && json.ratePer != 'undefined'){
 				result = result + ' 		<div class="project_details_cta">';
 				result = result + '				 <strong>Rate Per:</strong><span class="fix">'+json.ratePer+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
+				result = result + '<div class="clearfix"></div>';
 			}
 			
 			result = result + '			<div class="project_details_cta">';
 			result = result + '					<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span><div class="clearfix"></div>';
 			result = result + '			</div>';
+			result = result + '<div class="clearfix"></div>';
 			
 			if(json.gradeId != null && json.gradeId != "" && json.gradeId != 'undefined' ){
 				result = result + '			<div class="project_details_cta">';
 				result = result + '				 <strong>Grade:</strong><span class="fix">'+json.gradeId.gradeName+'</span><div class="clearfix"></div>';
 				result = result + ' 		</div>';
+				result = result + '<div class="clearfix"></div>';
 			}
 			
 			
@@ -441,79 +477,122 @@ $(document).ready(function(){
 				result = result + '			<div class="project_details_cta">';
 				result = result + '				 <strong>Resource Manager:</strong><span class="fix">'+json.resourceManager.fullName+'</span><div class="clearfix"></div>';
 				result = result + ' 		</div>';
+				result = result + '<div class="clearfix"></div>';
 			}
 			
 			if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != 'undefined'){
 				result = result + '			<div class="project_details_cta">';
 				result = result + '				<strong>Date of joining:</strong><span class="fix">'+json.hireDateStr+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
+				result = result + '<div class="clearfix"></div>';
 			}
 			
 			result = result + '			<div class="project_details_cta">';
 			result = result + '				<strong>Is Global Manager:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
 			result = result + '			</div>';
+			result = result + '<div class="clearfix"></div>';
 			
 			
 			if(json.roleChangeReason != null && json.roleChangeReason != "" && json.roleChangeReason != 'undefined'){
 				result = result + ' 		<div class="project_details_cta">';
 				result = result + '				<strong>Role Change Reason:</strong><span class="fix" title="'+json.roleChangeReason+'">'+json.roleChangeReason+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
+				result = result + '<div class="clearfix"></div>';
 			}
 			
 		}else{	
 		 
-			'<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 	
+			'<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'; 
+			
+				if(json.dateofBirthStr != null && json.dateofBirthStr != "" && json.dateofBirthStr != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Date of Birth:</strong><span class="fix">'+json.dateofBirthStr+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+					result = result + ' 		<div class="clearfix"></div>';
+					result = result + '<div class="clearfix"></div>';
+				}
+				
+				if(json.user.gender != null && json.user.gender != "" && json.user.gender != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				 <strong>Gender:</strong><span class="fix" title="'+json.user.gender+'">'+json.user.gender+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
+				}
+				
+				if(json.user.maritalStatus != null && json.user.maritalStatus != "" && json.user.maritalStatus != 'undefined'){
+					result = result + ' 		<div class="project_details_cta">';
+					result = result + '				 <strong>Marital Status:</strong><span class="fix" title="'+json.user.maritalStatus+'">'+json.user.maritalStatus+'</span><div class="clearfix"></div>';
+					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
+				}
+			
 				
 				if(json.userEmploymentType != null && json.userEmploymentType != "" && json.userEmploymentType != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				<strong>Employment type:</strong><span class="fix">'+json.userEmploymentType+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
+					result = result + '<div class="clearfix"></div>';
 				} 
+				
+				if(json.dailyHours != null && json.dailyHours != "" && json.dailyHours != 'undefined'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Day hours:</strong><span class="fix">'+json.dailyHours+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+					result = result + '<div class="clearfix"></div>';
+				}
 				 
 				 if(json.vendorName != null && json.vendorName != "" && json.vendorName != 'undefined'){
 						result = result + '			<div class="project_details_cta">';
 						result = result + '				<strong>Vendor:</strong><span class="fix">'+json.vendorName+'</span><div class="clearfix"></div>';
 						result = result + '			</div>';
+						result = result + '<div class="clearfix"></div>';
 					} 
 				 
 				 if(json.designationOtherType != null && json.designationOtherType != "" && json.designationOtherType != 'undefined'){
 					 result = result + '			<div class="project_details_cta">';
 						result = result + '				<strong>Employment Other Type:</strong><span class="fix">'+json.designationOtherType+'</span><div class="clearfix"></div>';
 						result = result + '			</div>';
+						result = result + '<div class="clearfix"></div>';
 				 }
 				 
 				 if(json.vendorContactName != null && json.vendorContactName != "" && json.vendorContactName != 'undefined'){
 						result = result + '			<div class="project_details_cta">';
 						result = result + '				<strong>Vendor Contact:</strong><span class="fix">'+json.vendorContactName+'</span><div class="clearfix"></div>';
 						result = result + '			</div>';
+						result = result + '<div class="clearfix"></div>';
 					} 
 				
 				 if(json.currentCurrency != null && json.currentCurrency != "" && json.currentCurrency != 'undefined'){
 						result = result + '			<div class="project_details_cta">';
 						result = result + '				 <strong>Currency:</strong><span class="fix" title="'+json.currentCurrency+'">'+json.currentCurrency+'</span><div class="clearfix"></div>';
 						result = result + ' 		</div>';
+						result = result + '<div class="clearfix"></div>';
 					}
 				 
 				if(json.rate != null && json.rate != "" && json.rate != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Rate:</strong><span class="fix" title="'+json.rate+'">'+json.rate+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
 				if(json.ratePer != null && json.ratePer != "" && json.ratePer != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
 					result = result + '				 <strong>Rate Per:</strong><span class="fix">'+json.ratePer+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
 				result = result + '			<div class="project_details_cta">';
 				result = result + '					<strong>Role:</strong><span class="fix">'+json.roles.displayName+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
+				result = result + '<div class="clearfix"></div>';
 				
 				if(json.gradeId != null && json.gradeId != "" && json.gradeId != 'undefined' ){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Grade:</strong><span class="fix">'+json.gradeId.gradeName+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
 				
@@ -521,23 +600,27 @@ $(document).ready(function(){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Resource Manager:</strong><span class="fix">'+json.resourceManager.fullName+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
 				if(json.hireDateStr != null && json.hireDateStr != "" && json.hireDateStr != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				<strong>Date of joining:</strong><span class="fix">'+json.hireDateStr+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
 				result = result + '			<div class="project_details_cta">';
 				result = result + '				<strong>Is Global Manager:</strong><span class="fix">'+isGlobalUser+'</span><div class="clearfix"></div>';
 				result = result + '			</div>';
+				result = result + '<div class="clearfix"></div>';
 				
 				
 				if(json.roleChangeReason != null && json.roleChangeReason != "" && json.roleChangeReason != 'undefined'){
 					result = result + ' 		<div class="project_details_cta">';
 					result = result + '				<strong>Role Change Reason:</strong><span class="fix" title="'+json.roleChangeReason+'">'+json.roleChangeReason+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
 		'</sec:authorize>'; 		
@@ -547,19 +630,8 @@ $(document).ready(function(){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Reporting Manager:</strong><span class="fix">'+json.reportingManager.firstName+' '+json.reportingManager.lastName+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
-				}
-				
-				
-				if(json.dateofBirthStr != null && json.dateofBirthStr != "" && json.dateofBirthStr != 'undefined'){
-					result = result + '			<div class="project_details_cta">';
-					result = result + '				<strong>Date of Birth:</strong><span class="fix">'+json.dateofBirthStr+'</span><div class="clearfix"></div>';
-					result = result + '			</div>';
-				}
-				
-				if(json.dailyHours != null && json.dailyHours != "" && json.dailyHours != 'undefined'){
-					result = result + '			<div class="project_details_cta">';
-					result = result + '				<strong>Day hours:</strong><span class="fix">'+json.dailyHours+'</span><div class="clearfix"></div>';
-					result = result + '			</div>';
+					result = result + ' 		<div class="clearfix"></div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
 				
@@ -567,6 +639,7 @@ $(document).ready(function(){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				<strong>Designation:</strong><span class="fix">'+json.designation+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
 				
@@ -574,12 +647,14 @@ $(document).ready(function(){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				<strong>Reason:</strong><span class="fix" title = "'+json.terminateReason+'">'+json.terminateReason+'</span><div class="clearfix"></div>';
 					result = result + '			</div>';
+					result = result + '<div class="clearfix"></div>';
 				}
 				
 				 if(json.departmentName != null && json.departmentName != "" && json.departmentName != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Department Name:</strong><span class="fix" title="'+json.departmentName+'">'+json.departmentName+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
+					result = result + '<div class="clearfix"></div>';
 				} 
 				 
 				 if(json.userCustomFieldlabelNameAndValue != null && json.userCustomFieldlabelNameAndValue != "" && json.userCustomFieldlabelNameAndValue != 'undefined'){
@@ -588,6 +663,7 @@ $(document).ready(function(){
 		            	  result = result + '	<div class="project_details_cta">';
 		            	  result = result + '	<strong>'+labelNameAndlabelData[0]+':</strong><span class="fix">'+labelNameAndlabelData[1]+'</span><div class="clearfix"></div>';
 		            	  result = result + '	</div>';
+		            	  result = result + '<div class="clearfix"></div>';
 		              });
 	              }
 				 

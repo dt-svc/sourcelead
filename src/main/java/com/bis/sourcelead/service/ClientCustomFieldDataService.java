@@ -8,7 +8,7 @@ import com.bis.sourcelead.entity.ClientCustomFieldData;
 
 public interface ClientCustomFieldDataService {
 
-	public ClientCustomFieldData saveUserCustomFieldData(ClientCustomFieldData clientCustomFields) throws Exception;
+	public ClientCustomFieldData saveClientCustomFieldData(ClientCustomFieldData clientCustomFields) throws Exception;
 
 	public List<ClientCustomFieldData> getClientCustomFieldDataByUserId(Long orgLocationId,List<CustomFormFieldDTO> formFieldId);
 

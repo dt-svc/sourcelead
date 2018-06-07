@@ -53,6 +53,8 @@ public class OrgSettings {
     private String workingDaysPerWeek;
     
     private String weekOffDays;
+    
+    private String isTimesheetAvgHoursRequired;
 	
 
 	public Integer getId() {
@@ -251,6 +253,14 @@ public class OrgSettings {
 
 	public void setWeekOffDays(String weekOffDays) {
 		this.weekOffDays = weekOffDays;
+	}
+
+	public String getIsTimesheetAvgHoursRequired() {
+		return isTimesheetAvgHoursRequired;
+	}
+
+	public void setIsTimesheetAvgHoursRequired(String isTimesheetAvgHoursRequired) {
+		this.isTimesheetAvgHoursRequired = isTimesheetAvgHoursRequired;
 	}
 
 }
