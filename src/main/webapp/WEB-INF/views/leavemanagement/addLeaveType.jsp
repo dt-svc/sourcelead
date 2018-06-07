@@ -69,6 +69,22 @@
 			$('#minimumDaysDiv').find('p.jquery_form_error_message').remove();
 			$('#maximumDaysDiv').find('p.jquery_form_error_message').remove();
 		}
+		
+		var autoAppr = "${leaveType.autoApprove}";
+		if(autoAppr == 'Y'){
+			if("${leaveType.autoApproveType}" == "Grade"){
+				$("#chosenRole").hide();
+				$("#chosenGrade").show();
+			}
+			if("${leaveType.autoApproveType}" == "Role"){
+				 $("#chosenGrade").hide();
+				 $("#chosenRole").show();
+			}
+			$('#autoApproveDiv').show();
+		}else{
+			$('#autoApproveDiv').hide();
+		}
+		
 	});
 </script>
     
@@ -231,7 +247,7 @@
 								</div>
 							</div>
 							<div class="form-group" id="rolesDiv">
-								<label class="col-md-4">Select Roles<span
+								<label class="col-md-4">Select Employement Type<span
 								class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-6 dropdown-select" id="roleErrMsg">
 									<select multiple data-placeholder="Select Roles"
@@ -290,20 +306,36 @@
 							</div>
 
 						</div>
+						
+						<div class="form-group" id="noOfDaysDiv">
+							<label class="col-md-4">No Of Days Annualy<span class="text-danger paddingLeft" >*</span></label>
+							<div class="col-md-3">
+								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" placeholder="Enter no of Days" onblur="getNoOfDaysPerPeriod();" class="form-control" value="${leaveType.noOfDays}">
+							</div>
+						</div>
+						
 						<div class="form-group">
-							<label class="col-md-4">Period<span
+							<label class="col-md-4">Calculation Period<span
 								class="text-danger paddingLeft">*</span></label>
 							<div class="col-md-6 dropdown-select">
-								<select class="form-control" name="period" onchange="getPeriod();">
+								<select class="form-control" name="period" id="period" onchange="getNoOfDaysPerPeriod();">
 								<option ${leaveType.period == 'Annually' ? 'selected' : ''}>Annually</option>
 								<option ${leaveType.period == 'HalfYearly' ? 'selected' : ''}>HalfYearly</option>
 								<option ${leaveType.period == 'Quarterly' ? 'selected' : ''}>Quarterly</option>
 								<option ${leaveType.period == 'Monthly' ? 'selected' : ''}>Monthly</option>
-								<option ${leaveType.period == 'SemiMonthly' ? 'selected' : ''}>SemiMonthly</option>
-								<option ${leaveType.period == 'BiWeekly' ? 'selected' : ''}>BiWeekly</option>
+<%-- 								<option ${leaveType.period == 'SemiMonthly' ? 'selected' : ''}>SemiMonthly</option> --%>
+<%-- 								<option ${leaveType.period == 'BiWeekly' ? 'selected' : ''}>BiWeekly</option> --%>
 								</select>
 							</div>
 						</div>
+						
+						<div class="form-group" id="calculatedNoOfDaysDiv">
+							<label class="col-md-4">No Of Days per Period<span class="text-danger paddingLeft" ></span></label>
+							<div class="col-md-3">
+								<input type="text" id="noOfDaysPerPeriod" name="noOfDaysPerPeriod" field-name="No Of Days" readonly placeholder="Enter no of Days" class="form-control" value="${leaveType.noOfDaysPerPeriod}">
+							</div>
+						</div>
+						
 
 						<div class="form-group">
 						 <label class="col-md-4">Leave Effective<span
@@ -342,13 +374,6 @@
 							</div>
 						</div>
 						
-						<div class="form-group" id="noOfDaysDiv">
-							<label class="col-md-4">No Of Days<span class="text-danger paddingLeft" >*</span></label>
-							<div class="col-md-3">
-								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" placeholder="Enter no of Days" class="form-control" value="${leaveType.noOfDays}">
-							</div>
-						</div>
-				
 				<!-- experiencedGroup -->
 					<div id="experiencedGroup" style="display:none">
 						<div class="form-group" id="newJoineeDiv">
@@ -400,88 +425,187 @@
 								</div>
 							</div>
 						</div>
-										<div class="form-group">
-											<label class="col-md-4">Description</label>
-											<div class="col-md-6">
-												<textarea class="form-control" rows="2" name="description"
-													data-validation="validate_length length1-500"
-													data-validation-optional="true">${leaveType.description}</textarea>
-											</div>
+						
+						<div class="form-group">
+							<label class="col-md-4">Effective Gender<span
+								class="text-danger">&nbsp;* </span></label>
+							<div class="col-md-6 dropdown-select">
+								<select class="form-control" name="effectiveGender" field-name="Effective Gender" data-validation="required">
+									<option ${leaveType.effectiveGender == 'All' ? 'selected' : ''}>All</option>
+									<option ${leaveType.effectiveGender == 'Male' ? 'selected' : ''}>Male</option>
+									<option ${leaveType.effectiveGender == 'Female' ? 'selected' : ''}>Female</option>
+									<option ${leaveType.effectiveGender == 'Transgender' ? 'selected' : ''}>Transgender</option>
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-md-4">Description</label>
+							<div class="col-md-6">
+								<textarea class="form-control" rows="2" name="description"
+									data-validation="validate_length length1-500"
+									data-validation-optional="true">${leaveType.description}</textarea>
+							</div>
+						</div>
+										
+										
+						<div class="form-group">
+							<label class="col-md-4 checkBox">
+								<c:if test="${leaveType.autoApprove == 'Y'}">
+									<input type="checkbox" name="autoApprove" value="Y" checked id="autoApproveChekBox">Auto approve
+								</c:if>
+								<c:if test="${leaveType.autoApprove == 'N' || empty leaveType.autoApprove}">
+									<input type="checkbox" name="autoApprove" value="Y" id="autoApproveChekBox">Auto approve
+								</c:if>
+							</label>
+							<div class="col-md-6">
+								<div class="clearfix" id="autoApproveDiv">
+									<label class="radioIput">
+										<c:if test="${leaveType.autoApproveType == 'Grade'}">
+											<input type="radio" name="autoApproveType" id="grade" checked value="Grade">Grade
+										</c:if>
+										<c:if test="${leaveType.autoApproveType != 'Grade'}">
+											<input type="radio" name="autoApproveType" id="grade" value="Grade">Grade
+										</c:if>
+									</label>
+									<label class="radioIput ml">
+										<c:if test="${leaveType.autoApproveType == 'Role'}">
+											<input type="radio" name="autoApproveType" id="role" value="Role">Role
+										</c:if>
+										<c:if test="${leaveType.autoApproveType != 'Role'}">
+											<input type="radio" name="autoApproveType" id="role" value="Role">Role
+										</c:if>
+									</label>
+									
+									<div class="clearfix"></div>
+									<div class="row mt10">
+										<div class="col-md-12" id="chosenGrade" style="display:none;">
+											<select class="chosen-select" multiple id="gradeListId" data-placeholder="Select Grade" name="autoApproveTypeList">
+												<c:forEach var="grade" items="${gradelist}">
+													<c:set var="NUM" value="${0}" />
+													<c:forEach var="existedGrade" items="${existGrade}">
+														<c:if test="${existedGrade.id eq grade.id}">
+															<c:set var="NUM" value="${1}" />
+															<option selected value="${existedGrade.id}">${existedGrade.gradeName}</option>
+														</c:if>
+													</c:forEach>
+													<c:if test="${NUM == 0}">
+														<option value="${grade.id}">${grade.gradeName}</option>
+													</c:if>
+												</c:forEach>
+											</select>
 										</div>
+										<div class="col-md-12" id="chosenRole" style="display:none;">
+											<select class="chosen-select" multiple id="roleListId" data-placeholder="Select Role" name="autoApproveTypeList">
+												<c:forEach var="role" items="${rolesList}">
+													<c:set var="NUM" value="${0}" />
+													<c:forEach var="existedRoles" items="${autoApproveRole}">
+														<c:if test="${existedRoles.id eq role.id}">
+															<c:set var="NUM" value="${1}" />
+															<option selected value="${role.id}">${existedRoles.displayName}</option>
+														</c:if>
+													</c:forEach>
+													<c:if test="${NUM == 0}">
+														<option value="${role.id}">${role.displayName}</option>
+													</c:if>
+												</c:forEach>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 										
 										
-										<div class="form-group">
-											<div class="col-md-12">
-											<div class="row clearfix">
-											<span class="checkBox col-md-4">
-											<c:if test="${leaveType.reasonRequired == 'Y'}">
-												<input type="checkbox" checked="true" name="reasonRequired" id="reasonRequired" 
-												value="Y"> Reason Required
-											</c:if>
-											     <c:if test="${leaveType.reasonRequired == 'N'}">
-											      <input type="checkbox" name="reasonRequired" id="reasonRequired"
-												   value="Y"> Reason Required 
-			                                </c:if>
-			                                <c:if test="${empty leaveType.reasonRequired}">
-											      <input type="checkbox" name="reasonRequired" id="reasonRequired"
-												   value="Y"> Reason Required 
-			                                </c:if>
+										
+							<div class="form-group">
+								<div class="col-md-12">
+								<div class="row clearfix">
+								<span class="checkBox col-md-4">
+								<c:if test="${leaveType.reasonRequired == 'Y'}">
+									<input type="checkbox" checked="true" name="reasonRequired" id="reasonRequired" 
+									value="Y"> Reason Required
+								</c:if>
+								     <c:if test="${leaveType.reasonRequired == 'N'}">
+								      <input type="checkbox" name="reasonRequired" id="reasonRequired"
+									   value="Y"> Reason Required 
+                                </c:if>
+                                <c:if test="${empty leaveType.reasonRequired}">
+								      <input type="checkbox" name="reasonRequired" id="reasonRequired"
+									   value="Y"> Reason Required 
+                                </c:if>
 <!-- 												<input type="checkbox" checked="true" name="reasonRequired" value="Y"> Reason Required -->
-											</span>
-											<span class="checkBox col-md-4 padding_left padding_right"> 
-											<c:if test="${leaveType.attachmentRequired == 'Y'}">
-												<input type="checkbox" checked="true" name="attachmentRequired" id="attachmentRequired" 
-												value="Y"> Attachment Required
-											</c:if>
-											     <c:if test="${leaveType.attachmentRequired == 'N'}">
-											      <input type="checkbox" name="attachmentRequired" id="attachmentRequired"
-												   value="Y"> Attachment Required 
-			                                </c:if>
-			                                <c:if test="${empty leaveType.attachmentRequired}">
-											      <input type="checkbox" name="attachmentRequired" id="attachmentRequired"
-												   value="Y"> Attachment Required 
-			                                </c:if>
+								</span>
+								<span class="checkBox col-md-4 padding_left padding_right"> 
+								<c:if test="${leaveType.attachmentRequired == 'Y'}">
+									<input type="checkbox" checked="true" name="attachmentRequired" id="attachmentRequired" 
+									value="Y"> Attachment Required
+								</c:if>
+								     <c:if test="${leaveType.attachmentRequired == 'N'}">
+								      <input type="checkbox" name="attachmentRequired" id="attachmentRequired"
+									   value="Y"> Attachment Required 
+                                </c:if>
+                                <c:if test="${empty leaveType.attachmentRequired}">
+								      <input type="checkbox" name="attachmentRequired" id="attachmentRequired"
+									   value="Y"> Attachment Required 
+                                </c:if>
 <!-- 												<input type="checkbox" checked="true" name="attachmentRequired" value="Y"> Attachment Required -->
-											</span>
-											<span class="checkBox col-md-4">
-											<c:if test="${leaveType.overdrawLeaves == 'Y'}">
-												<input type="checkbox" checked="true" name="overdrawLeaves" id="overdrawLeaves" 
-												value="Y"> Overdraw Leaves
-											</c:if>
-											     <c:if test="${leaveType.overdrawLeaves == 'N'}">
-											      <input type="checkbox" name="overdrawLeaves" id="overdrawLeaves"
-												   value="Y"> Overdraw Leaves 
-			                                </c:if>
-			                                <c:if test="${empty leaveType.overdrawLeaves}">
-											      <input type="checkbox" name="overdrawLeaves" id="overdrawLeaves"
-												   value="Y"> Overdraw Leaves 
-			                                </c:if>
+								</span>
+								<span class="checkBox col-md-4">
+								<c:if test="${leaveType.overdrawLeaves == 'Y'}">
+									<input type="checkbox" checked="true" name="overdrawLeaves" id="overdrawLeaves" 
+									value="Y"> Overdraw Leaves
+								</c:if>
+								     <c:if test="${leaveType.overdrawLeaves == 'N'}">
+								      <input type="checkbox" name="overdrawLeaves" id="overdrawLeaves"
+									   value="Y"> Overdraw Leaves 
+                                </c:if>
+                                <c:if test="${empty leaveType.overdrawLeaves}">
+								      <input type="checkbox" name="overdrawLeaves" id="overdrawLeaves"
+									   value="Y"> Overdraw Leaves 
+                                </c:if>
 <!-- 												<input type="checkbox" checked="true" name="overdrawLeaves" value="Y"> Overdraw Leaves -->
-											</span>
-											<div class="clearfix mb"></div>
-											<span class="checkBox col-md-4">
-											<c:if test="${leaveType.donateLeave == 'Y'}">
-												<input type="checkbox" checked="true" name="donateLeave" id="donateLeave"
-												 value="Y"> Donate Leave
-											</c:if>
-											     <c:if test="${leaveType.donateLeave == 'N'}">
-											      <input type="checkbox" name="donateLeave" id="donateLeave"
-												   value="Y"> Donate Leave 
-			                                </c:if>
-			                                <c:if test="${empty leaveType.donateLeave}">
-											      <input type="checkbox" name="donateLeave" id="donateLeave"
-												   value="Y"> Donate Leave 
-			                                </c:if>
-												</span>
-											
-											<span class="checkBox col-md-4 padding_left padding_right">
-											
-											<div class="checkBox" onClick="showPriorDaysDiv();">
-										<c:if test="${leaveType.priorLeaveApplying == 'Y'}">
-											<input type="checkbox" checked="true" name="priorLeaveApplying"
-												id="priorLeaveApplying" value="Y">Prior Leave Intimation
+								</span>
+								<div class="clearfix mb"></div>
+								<span class="checkBox col-md-4">
+								<c:if test="${leaveType.donateLeave == 'Y'}">
+									<input type="checkbox" checked="true" name="donateLeave" id="donateLeave"
+									 value="Y"> Donate Leave
+								</c:if>
+								     <c:if test="${leaveType.donateLeave == 'N'}">
+								      <input type="checkbox" name="donateLeave" id="donateLeave"
+									   value="Y"> Donate Leave 
+                                </c:if>
+                                <c:if test="${empty leaveType.donateLeave}">
+								      <input type="checkbox" name="donateLeave" id="donateLeave"
+									   value="Y"> Donate Leave 
+                                </c:if>
+								</span>
+								
+								<span class="checkBox col-md-4 padding_left">
+								<c:if test="${leaveType.timeSheetAutofill == 'Y'}">
+									<input type="checkbox" checked="true" name="timeSheetAutofill" id="timeSheetAutoFill" 
+									value="Y"> TimeSheet AutoFill
+								</c:if>
+								     <c:if test="${leaveType.timeSheetAutofill == 'N'}">
+								      <input type="checkbox" name="timeSheetAutofill" id="timeSheetAutoFill"
+									   value="Y"> TimeSheet AutoFill
+                                </c:if>
+                                <c:if test="${empty leaveType.timeSheetAutofill}">
+								      <input type="checkbox" name="timeSheetAutofill" id="timeSheetAutoFill"
+									   value="Y"> TimeSheet AutoFill
+                                </c:if>
+								</span>
+								
+								
+								<span class="checkBox col-md-4 padding_right">
+								
+								<div class="checkBox" onClick="showPriorDaysDiv();">
+									<c:if test="${leaveType.priorLeaveApplying == 'Y'}">
+										<input type="checkbox" checked="true" name="priorLeaveApplying"
+											id="priorLeaveApplying" value="Y">Prior Leave Intimation
 			                        </c:if>
-										<c:if test="${leaveType.priorLeaveApplying == 'N'}">
+									<c:if test="${leaveType.priorLeaveApplying == 'N'}">
 											<input type="checkbox" name="priorLeaveApplying" id="priorLeaveApplying"
 												value="Y">Prior Leave Intimation
 			                        </c:if>
@@ -489,30 +613,30 @@
 											<input type="checkbox" name="priorLeaveApplying" id="priorLeaveApplying"
 												value="Y">Prior Leave Intimation
 			                        </c:if>
-									</div>
-											</span>
-											
-											
-											<span class="checkBox col-md-4">
-											<div class="checkBox" onClick="showLeaveDurationDiv();">
-										<c:if test="${leaveType.leaveDuration == 'Y'}">
-											<input type="checkbox" checked="true" name="leaveDuration"
-												id="leaveDuration" value="Y">Leave Duration
-			                            </c:if>
-										<c:if test="${leaveType.leaveDuration == 'N'}">
-											<input type="checkbox" name="leaveDuration" id="leaveDuration"
-												value="Y">Leave Duration 
-			                            </c:if>
-			                            <c:if test="${empty leaveType.leaveDuration}">
-											<input type="checkbox" name="leaveDuration" id="leaveDuration"
-												value="Y">Leave Duration 
-			                            </c:if>
-									  </div>
-
-									</span>
 								</div>
-							</div>
-						</div>
+								</span>
+								
+								<div class="clearfix"></div>
+								<span class="checkBox col-md-4 mt">
+								<div class="checkBox" onClick="showLeaveDurationDiv();">
+							<c:if test="${leaveType.leaveDuration == 'Y'}">
+								<input type="checkbox" checked="true" name="leaveDuration"
+									id="leaveDuration" value="Y">Leave Duration
+                            </c:if>
+							<c:if test="${leaveType.leaveDuration == 'N'}">
+								<input type="checkbox" name="leaveDuration" id="leaveDuration"
+									value="Y">Leave Duration 
+                            </c:if>
+                            <c:if test="${empty leaveType.leaveDuration}">
+								<input type="checkbox" name="leaveDuration" id="leaveDuration"
+									value="Y">Leave Duration 
+                            </c:if>
+						  </div>
+
+						</span>
+					</div>
+				</div>
+			</div>
 										
 				<div class="form-group">
 				
@@ -558,7 +682,8 @@
 				 </div>
 			 </div>
 		</div>
-										
+					
+					
 										
 						<div class="clearfix"></div>
 						<div class="form-group mt10">
@@ -895,4 +1020,39 @@ function validateDuration(){
 		$("#txtEditor").find(".Editor-editor").data-validation('validate_length length2-5000');
 		$("#txtEditor").find(".Editor-editor").data-validation-optional('rule-required',true);
 	});
+ </script>
+ 
+ <script>
+ $("#autoApproveChekBox").click(function() {
+	 $("#autoApproveDiv").toggle();
+ });
+ $("#grade").click(function() {
+	 $("#chosenRole").hide();
+	 $("#roleListId").val("");
+	 $('#roleListId').trigger("chosen:updated");
+	 $("#chosenGrade").show();
+ });
+ $("#role").click(function() {
+	 $("#chosenGrade").hide();
+	 $("#gradeListId").val("");
+	 $('#gradeListId').trigger("chosen:updated");
+	 $("#chosenRole").show();
+ });
+ 
+function getNoOfDaysPerPeriod(){
+	 var period = $("#period").val();
+	 var noOfDays = $("#noOfDays").val();
+	 var calculatedDays = "";
+	 if(period == "Annually"){
+		 calculatedDays = noOfDays;
+	 }else if(period == "HalfYearly"){
+		 calculatedDays = noOfDays / 2 ;
+	 }else if(period == "Quarterly"){
+		 calculatedDays = noOfDays / 4 ;
+	 }else if(period == "Monthly"){
+		 calculatedDays = noOfDays / 12 ;
+	 }
+	 $("#noOfDaysPerPeriod").val(calculatedDays);
+ }
+ 
  </script>

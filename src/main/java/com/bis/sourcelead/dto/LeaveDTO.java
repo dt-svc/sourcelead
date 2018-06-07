@@ -91,6 +91,7 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String exportType;
 	private float leaveNoDays;
 	private String leaveName;
+	private boolean isSuperUser;
 	
 	public String getLeavesTaken() {
 		return leavesTaken;
@@ -642,6 +643,14 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	}
 	public void setLeaveName(String leaveName) {
 		this.leaveName = leaveName;
+	}
+	public boolean getIsSuperUser()
+	{
+		return isSuperUser;
+	}
+	public void setIsSuperUser(boolean isSuperUser)
+	{
+		this.isSuperUser = isSuperUser;
 	}
 
 }
