@@ -652,7 +652,6 @@ function getEmployeementType(designationType){
 						$("#loading").removeAttr('style');
 					} 
 					else {
-						alert(result.object.userId);
 						$("#associateId").val(result.object.userId);
 						var associateLeaveType = document.getElementById("associateLeaveType");
 						document.getElementById("associateLeaveType").removeAttribute("class"); 

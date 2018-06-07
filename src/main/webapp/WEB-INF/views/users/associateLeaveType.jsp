@@ -62,7 +62,6 @@
           
  <script>
  function getAllLeaveType(){
-	alert("Hi");
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 var userId = $("#associateId").val();   
 	 $.ajax({
