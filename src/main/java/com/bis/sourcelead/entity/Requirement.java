@@ -317,6 +317,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @JoinColumn(name="EXPERIENCE_LEVEL", nullable=true) 
 	private LookUpData experienceLevel;
 	
+	@Column(name = "IS_DRIVE_JOB")
+	private boolean isDriveJob;
+	
+	@Column(name = "DRIVE_DAYS", columnDefinition = "TEXT default NULL")
+	private String driveDays;
 	 
 	@Transient
 	private String closedDateStringFormat;
@@ -1983,6 +1988,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setOrgImageUrl(String orgImageUrl)
 	{
 		this.orgImageUrl = orgImageUrl;
+	}
+
+	public boolean isDriveJob() {
+		return isDriveJob;
+	}
+
+	public void setDriveJob(boolean isDriveJob) {
+		this.isDriveJob = isDriveJob;
+	}
+
+	public String getDriveDays() {
+		return driveDays;
+	}
+
+	public void setDriveDays(String driveDays) {
+		this.driveDays = driveDays;
 	}
 
 	

@@ -10,21 +10,35 @@
 
 <jsp:include page="../views/requirement/requirementAssignedTo.jsp"/>
 
-<div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;"> 
+<div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;">
+  
       <!-- Assigned Requirements -->
       <div class="clearfix dashboard-widget mb col-md-12" >
-        <h4 class="clearfix">
-        Assigned Jobs
+        <h4 class="clearfix">Jobs</h4>
         &nbsp;&nbsp;<!-- <span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
         </span> -->
-        <div class="pull-right" id="viewmoresDiv" style="display: none;"> 
-      <a href="/app/jobs" class="btn btn-sm btn-primary pull-right" title="View more"> View More</a>
-        </div>
-        </h4>
-      <!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-        <div class="clearfix require_wrap_table dashboard-data filter_position"> 
-        		 <div id="requirementList"></div>
-        </div>
+        
+        <div class="project_side_wrap_inn_tabs">
+      	    <div id="resourceRequestsDivLoading"></div>
+		    <ul class="project-tabs-menu">
+		        <li class="current" id="assigned"><a data-toggle="tab" href="javascript:void(0)" onclick="">Assigned</a></li>
+		        <li id="drive"><a data-toggle="tab" href="javascript:void(0)"  onclick="">Drive</a></li>
+		        <div class="clearfix"></div>
+		    </ul>
+			<div id="resourceRequestList1">
+				<div class="pull-right" id="viewmoresDiv" style="display: none;">
+					<a href="/app/jobs" class="btn btn-sm btn-primary pull-right"
+						title="View more"> View More</a>
+				</div>
+
+				<!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
+				<div
+					class="clearfix require_wrap_table dashboard-data filter_position">
+					<div id="requirementList"></div>
+				</div>
+			</div>
+			<div class="vendor_wrap_mask"></div>
+           </div>
         
       </div>
     </div>

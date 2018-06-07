@@ -932,8 +932,43 @@ $(document).ready(function () {
 					</label>
 				</div>
 			</div>
-        
-         <c:if test="${!empty sourceleadSectionList}">
+			
+			<div class="form-group">
+				<div class="ml">
+					<input type="checkbox" name="driveJob" id="isDrive" ${requirement.driveJob ? "checked='checked'" : ""}>
+						<label for="isDrive">&nbsp;&nbsp;<strong>Is Drive Job</strong> &nbsp;&nbsp;
+						</label>
+				</div>
+				<div id="selectDriveDiv" ${requirement.driveJob ? "" : "style='display: none;'"}>
+					<label class="col-md-3">Select Drive Day(s)</label>
+					<div class="col-md-6">
+						<select multiple class="chosen-select form-control"
+							name="driveDays" data-placeholder="Select Drive Days"
+							id="driveDays" data-validation-optional="true">
+							<c:forEach items="Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday" var="day">
+								<c:set var="selected" value="false"></c:set>
+								<c:if test="${requirement.driveDays!=null && requierment.driveDays != ''}">
+									<c:forEach items="${requirement.driveDays.split(',')}" var="selectedDay">
+										<c:if test="${selectedDay eq day}">
+											<c:set var="selected" value="true"></c:set>
+										</c:if>
+									</c:forEach>
+								</c:if>
+								<option value="${day}" ${selected?"selected='selected'":""}>${day}</option>	
+							</c:forEach>
+							<%-- <option ${requirement.driveDays == 'MON' ? "selected='selected'" : ''} value="MON">MONDAY</option>
+							<option ${requirement.driveDays == 'TUE' ? "selected='selected'" : ''} value="TUE">TUESDAY</option>
+							<option ${requirement.driveDays == 'WED' ? "selected='selected'" : ''} value="WED">WEDNESDAY</option>
+							<option ${requirement.driveDays == 'THU' ? "selected='selected'" : ''} value="THU">THURSDAY</option>
+							<option ${requirement.driveDays == 'FRI' ? "selected='selected'" : ''} value="FRI">FRIDAY</option>
+							<option ${requirement.driveDays == 'SAT' ? "selected='selected'" : ''} value="SAT">SATURDAY</option>
+							<option ${requirement.driveDays == 'SUN' ? "selected='selected'" : ''} value="SUN">SUNDAY</option> --%>
+						</select>
+					</div>
+				</div>
+			</div>
+
+								<c:if test="${!empty sourceleadSectionList}">
 	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	               <c:if test="${sectionOrder.index == 0}">
 	                  <div id="customDiv${section.id}"></div>
@@ -1535,6 +1570,16 @@ $(document).ready(function () {
 <div id="divLocTd2" style="display: none; float: left;">
    <i class="fa fa-times" onclick="removeLocationRow(REPLACEROWID);"></i> 
 </div> 
+
+<script type="text/javascript">
+	$("#isDrive").change(function(){
+		if($(this).is(":checked")) {
+			$("#selectDriveDiv").show();
+		} else {
+			$("#selectDriveDiv").hide();
+		}
+	});
+</script>
 
 <script>
 function changeValidationType() {

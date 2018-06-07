@@ -392,6 +392,10 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			requirement.setNoticePeriod(null);
 		}
+		
+		requirement.setDriveJob(requirementDTO.isDriveJob());
+		requirement.setDriveDays(requirementDTO.isDriveJob() ? requirementDTO.getDriveDays() : "");
+		
 		if (StringUtils.isNotBlank(requirementDTO.getTravelAllowance())) {
 			requirement.setTravelAllowance(requirementDTO.getTravelAllowance());
 		}
@@ -472,6 +476,7 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setClientId(orgRelations);
 			client = requirementDTO.getSelectClient().split(",")[0];
 		}
+		
 		if (StringUtils.isNotBlank(requirementDTO.getSelectContact())) {
 			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(requirementDTO.getSelectContact()));
 			requirement.setSpocId(orgSpoc);

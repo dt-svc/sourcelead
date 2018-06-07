@@ -454,9 +454,14 @@
 						               </c:if>
 						            </c:forEach>
 					</c:if>
-                    
-			        <div class="clearfix"></div>
-			        			            
+					<c:if test="${requirement.driveJob}">
+                    	<div class="clearfix"></div>
+                    	<div class="require_wrap_details_cta">
+                    		<b>Drive Days :</b><span>${requirement.driveDays}</span>
+	                    	<div class="clearfix"></div>
+                    	</div>
+                    	<div class="clearfix"></div> 
+                    </c:if>
                 </div> 							            
            
                    <div class="clearfix"></div> 
