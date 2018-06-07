@@ -239,9 +239,7 @@ var candiadteId = '${SourceLeadWeb_candidateId}';
 var timesheetType;
 
 var sourceleadUrl ='${sourceleadUrl}';
-var sourceleadSocketUrl = sourceleadUrl.replace("http","ws");
-
-var sourceleadWebSocketUrl ='${sourceleadSocketUrl}';
+var sourceleadWebSocketUrl = sourceleadUrl.replace("http","ws");
 var isGlobalAccess = '${SourceLeadWeb_isGlobalAccess}';
 
 

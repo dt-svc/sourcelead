@@ -219,9 +219,15 @@ function getEmailList(){
 		    	result  = result + '<tbody>									';
 		    	 for (var i = 0; i < response.data.length; i++) { 
 					 var report = response.data[i];
+					 var emailModules = "";
+					 if(report.emailModules != null && report.emailModules != '' && report.emailModules != 'undefined'){
+						 emailModules = report.emailModules;
+					 }else{
+						 emailModules = "--";
+					 }
 				result  = result + '	 <tr>                                                                                                ';
      			result  = result + '	<td><div class="tbldata-dotdot">'+report.email+'</div></td>                                ';
-     			result  = result + '	<td><div class="tbldata-dotdot">'+report.emailModules+'</div></td>                                ';
+     			result  = result + '	<td><div class="tbldata-dotdot">'+emailModules+'</div></td>                                ';
      			result  = result + '	<td>                                                                                                 ';
      			result  = result + '	<div class="tblminwidth-100">                                                                        ';
      			result  = result + '	<ul class="list-unstyled list-inline">                                                               ';

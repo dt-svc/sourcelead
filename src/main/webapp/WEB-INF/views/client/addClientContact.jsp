@@ -296,7 +296,7 @@ function getOrgDetails()
                 <label class="col-md-3">&nbsp;</label>
                   <div class="col-md-9 checkBox">
                       <label><input type="checkbox" value="Y"
-							name="isMailSent" checked="checked">Send Invitation</label>
+							name="isMailSent">Send Invitation</label>
                   </div>
                 </div>
                 

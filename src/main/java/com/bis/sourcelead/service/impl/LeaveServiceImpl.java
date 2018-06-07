@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
@@ -37,21 +37,21 @@ import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
-import com.bis.sourcelead.entity.EmailConfigurationFromMail;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
-import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.MonthlyLeaves;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
@@ -71,24 +71,21 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
-import com.bis.sourcelead.util.InvoicePdfHelper;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.draw.VerticalPositionMark;
 
 @Service
 public class LeaveServiceImpl implements LeaveService{
@@ -183,7 +180,6 @@ public class LeaveServiceImpl implements LeaveService{
 		}
 
 		
-		leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 		leave.setLeaveType(leaveType);
 		leave.setReason(leaveDTO.getReason());
 		if(StringUtils.isNotBlank(leaveDTO.getFromHalfDay())) {
@@ -199,7 +195,25 @@ public class LeaveServiceImpl implements LeaveService{
 			leave.setFileUrl(fileinfo.getFileURL());
 			FileUploadUtil.moveFile(leaveDTO.getStaticPath(), fileinfo, "leaveDocuments");
 		}
-		leave.setStatus(Constants.LEAVE_PENDING);
+		
+		UserRole urole = userRoleService.getUserRoleByUserIdAndLocationId(leave.getUser().getId(), orgLocations.getId());
+		if(StringUtils.isNotBlank(leaveType.getAutoApprove())){
+			if("Grade".equalsIgnoreCase(leaveType.getAutoApproveType())){
+				if(leaveType.getAutoApproveTypeListNames().contains(urole.getGradeId().getGradeName())){
+					leave.setStatus(Constants.LEAVE_APPROVED);
+				}
+			}else if("Role".equalsIgnoreCase(leaveType.getAutoApproveType())){
+				if(leaveType.getAutoApproveTypeListNames().contains(urole.getRoles().getDisplayName())){
+					leave.setStatus(Constants.LEAVE_APPROVED);
+				}
+			}
+		}else if(leaveDTO.getIsSuperUser()){
+			leave.setStatus(Constants.LEAVE_APPROVED);
+		}else{
+			leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
+			leave.setStatus(Constants.LEAVE_PENDING);
+		}
+		
 		leave.setCreatedBy(user.getUserCode());
 		leave.setUpdatedBy(user.getUserCode());
 		leave.setCreatedDate(new Date());
@@ -216,11 +230,13 @@ public class LeaveServiceImpl implements LeaveService{
 		
 		if(savedLeave !=null) {
 			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user);
-			for(String approverUserId :leaveDTO.getApproverUser()){
-				leaveDTO.setLeaveUUID(savedLeave.getLeaveUUID());
-			User approverUser = userService.getUserById(Long.parseLong(approverUserId));
-			if(user.getId().longValue() != approverUser.getId().longValue())
-			sendLeaveEmailToApprovers(user, leaveDTO, orgLocations,approverUser);
+			if(leaveDTO.getApproverUser() != null){
+				for(String approverUserId :leaveDTO.getApproverUser()){
+					leaveDTO.setLeaveUUID(savedLeave.getLeaveUUID());
+					User approverUser = userService.getUserById(Long.parseLong(approverUserId));
+					if(user.getId().longValue() != approverUser.getId().longValue())
+					sendLeaveEmailToApprovers(user, leaveDTO, orgLocations,approverUser);
+				}
 			}
 			
 			 if(null != leaveDTO.getUser() && !"".equalsIgnoreCase(leaveDTO.getUser())){
@@ -1825,6 +1841,15 @@ public class LeaveServiceImpl implements LeaveService{
 	@Override
 	public List<Leave> getLeaveByUserIdOrglocationIdandStatus(User consultantUser, Long orglocationId, String approved) {
 		return leaveDao.getLeaveByUserIdOrglocationIdandStatus(consultantUser.getId(),orglocationId,approved);
+	}
+
+	@Override
+	public Response<LeaveDTO> saveBulkApprovedLeaves(MultipartFile multipartFile, OrgLocations orgLocation, User user, Org org)
+	{
+		Response<LeaveDTO> res = new Response<>();
+		
+		
+		return res;
 	}
 
 }

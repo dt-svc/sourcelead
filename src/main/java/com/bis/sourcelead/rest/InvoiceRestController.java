@@ -1142,7 +1142,14 @@ public class InvoiceRestController {
 		String createdDate = (dateFormat.format(invoice.getCreatedDate()));
 		String dueDate = (dateFormat.format(invoice.getDueDate()));
 		StringBuilder stringBuildername = new StringBuilder();
-		globalVarsMap.put("clientorVendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+		
+		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
+			globalVarsMap.put("vendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+
+		}else{
+			globalVarsMap.put("clientName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+
+		}
 		globalVarsMap.put("invoiceID", invoice.getInvoiceId());
 		globalVarsMap.put("totalAmouprojectMembersListnt", invoice.getTotal());
 		globalVarsMap.put("date", createdDate);
@@ -1246,7 +1253,13 @@ public class InvoiceRestController {
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		StringBuilder stringBuildername = new StringBuilder();
-		globalVarsMap.put("clientorVendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+		if(invoice.getInvoiceType().equalsIgnoreCase(Constants.PAYABLES)){
+			globalVarsMap.put("vendorName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+
+		}
+		else{
+		globalVarsMap.put("clientName", stringBuildername.append(invoice.getContactUser().getFirstName()).append(" ").append(invoice.getContactUser().getLastName()).toString());
+		}
 		globalVarsMap.put("invoiceID", invoice.getInvoiceId());
 		globalVarsMap.put("totalAmount", invoice.getTotal());
 		globalVarsMap.put("reason", invoice.getRejectReason());
@@ -1259,14 +1272,15 @@ public class InvoiceRestController {
 		
 			    //send mail logic
 		        List<EmailAttachment> attachmentList = new ArrayList<>();
-			    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL,attachmentList);
 		
 		        //send notification logic
 				EmailScenario notificationScenario = null;
 				if (invoiceType.equalsIgnoreCase("Payables")) {
+				    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL,attachmentList);
 					notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_VENDOR_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 				}
 				else {
+				    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL,attachmentList);
 					notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_REJECT_MAIL_CLIENT_EMAIL, Constants.ENTITY_TYPE_NOTIFICATION);
 				}
 				String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);

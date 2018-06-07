@@ -1412,6 +1412,9 @@ public class UserDaoImpl implements UserDao {
 				if(null != userRole.getOrgLocations().getUser() && user.getId().equals(userRole.getOrgLocations().getUser().getId())){
 					userDTO.setIsPrimaryAdmin("Y");
 				}
+				if(null != userRole.getOrgLocations().getOrg().getUser() && user.getId().equals(userRole.getOrgLocations().getOrg().getUser().getId())){
+					userDTO.setIsSuperAdmin("Y");
+				}
 				
 				userDTOList.add(userDTO);
 			}
@@ -1664,16 +1667,17 @@ public class UserDaoImpl implements UserDao {
 		String subQuery = "";
 		
 		
-		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
+/*		 String actionsQuery = "select sa.id from SourceleadActions sa where sa.tabs.id = :tabId  ";
 	     List<Long> tabActionsIds = session.createQuery(actionsQuery.toString()).setLong( "tabId", tabId).list();
-	     
+*/	     
 	     String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
 	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).list();
 	     List<Long> ownerRolesList = new ArrayList<Long>();
 	     
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
-	    		 List<Long> roleActionsList = new ArrayList<Long>();
+	    		 ownerRolesList.add(roles.getId());
+	    		 /*List<Long> roleActionsList = new ArrayList<Long>();
 		    	 for (String s : roles.getActionId().split(",")){
 		    		 roleActionsList.add(Long.parseLong(s));
 		    	 }
@@ -1681,7 +1685,7 @@ public class UserDaoImpl implements UserDao {
 		    	 roleActionsList.retainAll(tabActionsIds);
 		    	 if(roleActionsList.size() > 0){
 		    		 ownerRolesList.add(roles.getId());
-		    	 }
+		    	 }*/
 	    	 }
 	     }
 	     
@@ -1693,5 +1697,88 @@ public class UserDaoImpl implements UserDao {
         return userRoleList;
         
 
+	}
+
+	@Override
+	@Transactional
+	public List<User> getReportingManagersByUserRolesAndOrgLocationId(Long roleId, Long orgLocationsId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		
+		
+	     String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
+	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).list();
+	     List<Long> ownerRolesList = new ArrayList<Long>();
+	     
+	     for(Roles roles : rolesList){
+	    	 if(null != roles.getActionId()){
+	    		 ownerRolesList.add(roles.getId());
+	    	 }
+	     }
+	     
+		
+		subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.hierarchyLevel <= (select r.roleHierarchy.hierarchyLevel from Roles r where r.id = :roleId)) and (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE' and (userRole.isGlobal = 'N' OR userRole.isGlobal = NULL) and userRole.roles.id IN (:ownerRolesList)";
+		
+		String query = "from User user where user.id IN (select "+subQuery+" )  ";
+	    List<User> userRoleList = session.createQuery(query).setLong("roleId", roleId).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgLocationsId", orgLocationsId).list();
+        return userRoleList;
+        
+	}
+
+	@Override
+	@Transactional
+	public List<User> getGlobalReportingManagersUsersByOrgId(Long roleId, Long orgId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		
+		
+	     
+	     String rolesQuery = "from Roles roles where roles.org.id = :orgId ";
+	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgId", orgId).list();
+	     List<Long> ownerRolesList = new ArrayList<Long>();
+	     
+	     for(Roles roles : rolesList){
+	    	 if(null != roles.getActionId()){
+	    		 ownerRolesList.add(roles.getId());
+	    	 }
+	     }
+		
+		subQuery = "userRole.user.id from UserRole userRole where (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations.org.id = :orgId and userRole.userState != 'INACTIVE' and userRole.isGlobal = 'Y' and userRole.roles.id IN (:ownerRolesList)";
+		
+		String query = "from User user where user.id IN (select "+subQuery+" )  ";
+	    List<User> userRoleList = session.createQuery(query).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgId", orgId).list();
+        return userRoleList;
+
+        
+	}
+
+	@Override
+	@Transactional
+	public List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId,
+			Long orgLocationsId) throws Exception {
+		
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+	     
+	     String rolesQuery = "from Roles roles where roles.orgLocations.id = :orgLocationsId ";
+	     List<Roles> rolesList = session.createQuery(rolesQuery.toString()).setLong( "orgLocationsId", orgLocationsId).list();
+	     List<Long> ownerRolesList = new ArrayList<Long>();
+	     
+	     for(Roles roles : rolesList){
+	    	 if(null != roles.getActionId()){
+	    		 ownerRolesList.add(roles.getId());
+	    	 }
+	     }
+	     
+		
+		subQuery = "userRole.user.id from UserRole userRole where  (userRole.roles.roleHierarchy.hierarchyLevel <= (select r.roleHierarchy.hierarchyLevel from Roles r where r.id = :roleId)) and (userRole.roles.actionId IS NOT NULL) and userRole.orgLocations = :orgLocationsId and userRole.userState != 'INACTIVE' and userRole.roles.id IN (:ownerRolesList) and userRole.user.id <> :userId";
+		
+		String query = "from User user where user.id IN (select "+subQuery+" )  ";
+	    List<User> userRoleList = session.createQuery(query).setLong("roleId", roleId).setLong( "userId", userId).setParameterList("ownerRolesList", ownerRolesList).setLong( "orgLocationsId", orgLocationsId).list();
+        return userRoleList;
+        
+	
 	}
 }

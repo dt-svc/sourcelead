@@ -18,6 +18,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "IMMIGRATION", schema = "SOURCELEAD")
 public class Immigration implements Serializable {
@@ -35,6 +37,9 @@ public class Immigration implements Serializable {
 	
 	@Column(name = "RECEIPT_NO ")
 	private String receiptNo;
+	
+	@Column(name = "PROCESS_TYPE")
+	private String processType;
 
 	@ManyToOne
 	@JoinColumn(name = "CURRENT_USCIS_STATUS")
@@ -393,6 +398,14 @@ public class Immigration implements Serializable {
 
 	public void setImmigrationTasks(List<ImmigrationTasks> immigrationTasks) {
 		this.immigrationTasks = immigrationTasks;
+	}
+
+	public String getProcessType() {
+		return processType;
+	}
+
+	public void setProcessType(String processType) {
+		this.processType = processType;
 	}
 
 }

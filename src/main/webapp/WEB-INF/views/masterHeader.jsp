@@ -486,14 +486,14 @@ function preventTabkey(e){
               <div class="user-media-body">
                 <p><span>${SourceLeadWeb_userName}</span></p>
                  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-                 	<p><i class="fa fa-user"></i>&nbsp;${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : 'Job Seeker'}</p>
+                 	<p>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : 'Job Seeker'}</p>
                  </c:if>
                  
                  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-                 	<p><i class="fa fa-user"></i>&nbsp;${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : 'Freelance Recruiter'}</p>
+                 	<p>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : 'Freelance Recruiter'}</p>
                  </c:if>
                  
-                 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+                 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
                     <p>${!empty SourceLeadWeb_designation ? SourceLeadWeb_designation : SourceLeadWeb_displayName}</p>
                  </c:if>
               </div>
@@ -883,6 +883,7 @@ function preventTabkey(e){
   <!-- Task related code Start -->
   
   <!-- Add Task Div -->
+	  <sec:authorize access="hasRole('ROLE_TASK_MANAGEMENT')"> 
 		 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
 		 <div class="addTask"> <span class="icon-addTask" title="Add Task"> <i class="fa fa-gears"></i> </span>
 		    <div class="clearfix col-xs-12 col-md-12 addTask-widget">
@@ -1026,9 +1027,10 @@ function preventTabkey(e){
 		  </c:if>
 
 <div class="addtAsk_popmask"></div>
-
+</sec:authorize>
 
 <!--  Theme Switcher div -->
+  <sec:authorize access="hasRole('ROLE_COLOUR_THEME')"> 
   <div class="theme-color">
       <span class="icon-theme theme-styels" title="click here">
           <figure class="rotate">
@@ -1044,13 +1046,16 @@ function preventTabkey(e){
       <li class="hidden"><a href="#" class="" id="btn6"><span class="hdr-grey"></span><span class="sidenav-red"></span></a></li>
     </ul>
   </div>
+  </sec:authorize>
 <!--  Theme Swithcer div ends  -->
 
 <!--  Support div -->
+ <sec:authorize access="hasRole('ROLE_SUPPORT')"> 
   <div id="mySidenav" class="sidenav">
 	<a href="/app/sourceleadTicketList" title="Report Issue"><span class="fa fa-ticket"></span></a>
 <!--   <a href="add-ticket.html">Support</a> -->
 </div>
+</sec:authorize>
 <!--  Support div ends  -->
 
 

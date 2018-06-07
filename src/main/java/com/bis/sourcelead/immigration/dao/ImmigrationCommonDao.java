@@ -147,5 +147,7 @@ public interface ImmigrationCommonDao {
 	List<ImmigrationListExportView> getImmigrationListExportDetails(OrgLocations orgLocations);
 
 	Long getTemplateDetailsByNameAndOrgLoacationId(String name, OrgLocations orgLocations);
+
+	List<Immigration> getImmigrationsByOrgId(Long id);
 	
 }

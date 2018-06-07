@@ -655,7 +655,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			employeesService.addEmployee(employee);
 			if(isMailChecked !=null){
 				userService.sendEmail(user, loginUser, password,orgLocations.getId());
-				registrationService.sendActivationEmail(user);
+				registrationService.sendActivationEmail(user,orgLocations);
 			}
 			userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
 			
@@ -1750,7 +1750,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			 DVConstraint gradeConstraint = DVConstraint.createFormulaListConstraint("gradehidden");
 			 CellRangeAddressList gradeAddressList = new CellRangeAddressList(1, 1000, 15, 15);
 			 HSSFDataValidation gradeValidation = new HSSFDataValidation(gradeAddressList, gradeConstraint);
-			 wb.setSheetHidden(1, true);
+			 wb.setSheetHidden(4, true);
 			 sheet.addValidationData(gradeValidation);
 			 
 		 

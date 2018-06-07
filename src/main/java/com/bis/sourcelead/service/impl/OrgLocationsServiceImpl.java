@@ -113,6 +113,11 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
         orgLocations.setOrgLocationAddress(orgSettings.getAddress());
         orgLocations.setWebsite(convertWebsite(orgSettings.getWebsite()));
         orgLocations.setOrgDescription(orgSettings.getAboutCompany());
+        if(StringUtils.isNotBlank(orgSettings.getIsTimesheetAvgHoursRequired()) && orgSettings.getIsTimesheetAvgHoursRequired().equalsIgnoreCase(Constants.YES)) {
+        	orgLocations.setIsTimesheetAvgHoursRequired(Constants.YES);
+        }else {
+        	orgLocations.setIsTimesheetAvgHoursRequired(Constants.NO);
+        }
         
         
         if(StringUtils.isNotBlank(orgSettings.getBusinessType()) && !orgSettings.getBusinessType().equalsIgnoreCase("Other")){

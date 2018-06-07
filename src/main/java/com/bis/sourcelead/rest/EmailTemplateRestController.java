@@ -133,9 +133,9 @@ public class EmailTemplateRestController {
 			 newEmailScenario.setEntityType(emailScenario.getEntityType());
 			 newEmailScenario.setUniqueScenarioName(emailScenario.getUniqueScenarioName());
 			 newEmailScenario.setDescription(emailScenario.getDescription());
-			 newEmailScenario.setSubject(emailScenario.getSubject());
+			 newEmailScenario.setSubject(emailScenarioDTO.getSubject());
 			 newEmailScenario.setTemplateType(emailScenario.getTemplateType());
-			 newEmailScenario.setSignature(emailScenario.getSignature());
+			 newEmailScenario.setSignature(emailScenarioDTO.getSignature());
 			 newEmailScenario.setDefaultTemplate("N");
 			 newEmailScenario.setOrgLocationId(orgLocation);
 			 newEmailScenario.setEmailUUID(SourceLeadRandomCodeHelper.generateRandomUUID());

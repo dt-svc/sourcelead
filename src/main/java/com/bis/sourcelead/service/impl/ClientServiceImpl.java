@@ -1799,8 +1799,8 @@ public class ClientServiceImpl implements ClientService {
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
 		String UUID = SourceLeadRandomCodeHelper.generateUUID();
 		if (Constants.CLIENT.equals(orgSpoc.getOrgRelations().getResponderType())) {
-			globalVarsMap.put("firstName", emailMessage.getFirstName());
-			globalVarsMap.put("lastName", emailMessage.getLastName());
+			globalVarsMap.put("FirstName", emailMessage.getFirstName());
+			globalVarsMap.put("LastName", emailMessage.getLastName());
 			globalVarsMap.put("vendorFirstName", orgSpoc.getClientUser().getFirstName());
 			globalVarsMap.put("vendorLastName", orgSpoc.getClientUser().getLastName());
 			globalVarsMap.put("vendorOrgName", orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
@@ -1967,8 +1967,8 @@ public class ClientServiceImpl implements ClientService {
 				emailMessage.setFromName(
 						orgSpocUser.append(orgSpoc.getVendorUser().getFirstName()).toString());
 			}
-			globalVarsMap.put("firstName", emailMessage.getFirstName());
-			globalVarsMap.put("lastName", emailMessage.getLastName());
+			globalVarsMap.put("FirstName", emailMessage.getFirstName());
+			globalVarsMap.put("LastName", emailMessage.getLastName());
 			globalVarsMap.put("vendorFirstName", orgSpoc.getClientUser().getFirstName());
 			globalVarsMap.put("vendorLastName", orgSpoc.getClientUser().getLastName());
 			globalVarsMap.put("vendorOrgName", orgSpoc.getOrgRelations().getResponderLocationId().getOrgLocationName());
