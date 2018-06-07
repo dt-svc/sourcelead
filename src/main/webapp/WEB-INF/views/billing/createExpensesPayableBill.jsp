@@ -311,21 +311,17 @@ function checkBox(){
   </script>
     
 <!-- Diplays client contacts details when clien selected -->
-
-
-
 <script>
 function getProjectsList(projectName){
 	var orgRelationId = $("#vendorOrgRelationId").val();
 	$.ajax({
 	type : "GET",
-	url: sourceleadUrl+"/getAllProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"",
+	url: sourceleadUrl+"/getClientProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId,
 	success :function(json) {
-// 	var json = JSON.parse(data);
+	//var json = JSON.parse(data);
 	var output = "";
-	output = output + "<option value=''>Select Project</option>";
-	for (var i=0; i<json.data.length; i++)
-	{
+	output = output + "<option value=''>--Select Project--</option>";
+	for (var i=0; i<json.data.length; i++){
 	var opt = json.data[i];
 	/* output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>"; */
 	var selected = "";
@@ -340,8 +336,38 @@ function getProjectsList(projectName){
 	},
 	});
 
-	}
+}
 </script>
+
+
+ <script> 
+ /* function getProjectsList(projectName){
+ 	var orgRelationId = $("#vendorOrgRelationId").val();
+ 	$.ajax({
+ 	type : "GET",
+ 	url: sourceleadUrl+"/getAllProjectsByOrgRelationId?"+tokenParamName+"="+tokenValue+"",
+ 	success :function(json) {
+ // 	var json = JSON.parse(data);
+ 	var output = "";
+ 	output = output + "<option value=''>Select Project</option>";
+ 	for (var i=0; i<json.data.length; i++)
+   {
+ 	var opt = json.data[i];
+ 	/* output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>"; */
+ 	var selected = "";
+ 	if(projectName != null && projectName != "" && projectName !="undefined" && projectName == opt.projectName){
+ 		selected = 'selected';
+ 	}
+ 	output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.projectName+"</option>";
+ 	}
+ 	$("#projectId").empty();
+ 	$("#projectId").append(output);
+ 	$('#projectId').trigger("chosen:updated");
+ 	},
+ 	});
+
+ 	}*/
+ </script>
 
 
 <!-- Get all assigned members for the project based on project id -->

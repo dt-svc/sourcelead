@@ -34,7 +34,7 @@
 		<div class="pull-right brud-crum">
 			<a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>
 			&raquo;<a href="<c:url value='${appPath}/projectDashboard'/>"> Projects List</a>
-			&raquo; Client Project
+			&raquo; Create Client Project
 	</section>
 	
 	<div class="content-area clearfix noPad">

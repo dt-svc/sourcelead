@@ -1212,7 +1212,7 @@ function cancel(candidateId){
 			  <span class="fa fa-envelope cursorPointer" title="Compose Email"></span></div>
 			</div> -->
       <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
-      <div class="timesheet_head customtimesheet-head topfilters topfilters2 pull-right hdrFilter">
+      <div class="timesheet_head customtimesheet-head topfilters topfilters2 pull-right hdrFilter timesheetHead-search">
         <ul>
             
           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
@@ -1236,13 +1236,16 @@ function cancel(candidateId){
           </li>
           </sec:authorize>
           
+          <li class="positionRelative">
+		     <div class="dynamic_search">
+   			     <input type='text' placeholder='Search' id='dataTableSearch'/>
+        		<span class="cursorPointer faSearch" title="Search"><i class="fa fa-search" onClick="candidateList();"></i></span>
+			  </div>
+		  </li>
+		  
           <div class="clearfix"></div>
         </ul>
-	       
-        <div class="clearfix"></div>
-        <div class='remove_search'>
-        		<input type='text' placeholder='search' id='dataTableSearch'/>
-        </div>
+        
       </div>
       <div id="emptyPopup"></div>
       <div class="candidate_wrap_table datatable_filter">

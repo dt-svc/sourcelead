@@ -6,13 +6,13 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script type="text/javascript">
-	function clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId) {
+	function clientDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId,orgRelationId,spocLocationId) {
+		
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Client",
-					success : function(data) {
-						
-						var json = JSON.parse(data);
+					url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&orgRelationId="+orgRelationId+"&spocLocationId="+spocLocationId+"&type=Client",
+					success : function(json) {
+						/* var json = JSON.parse(data); */
 						getClientSpocname(json.spocName);
 						var result = "";
 						result  = result + '<div class="success_pop" id="clientEditMsgDiv" style="display: none;">';
@@ -28,7 +28,7 @@
 						result = result + '<div class="project_details">';
 						'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CLIENT_CONTACT\')">';
 							result = result + ' <div class="useredit useredit_a">';
-								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+								result = result + '<a id="edit-client" href="javascript:editVendorContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+','+orgRelationId+','+spocLocationId+')"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 							result = result + ' </div>'; 
 						'</sec:authorize>';
 							
@@ -88,6 +88,15 @@
 							result = result + '<div class="clearfix"></div>';
 							result = result + '</div>';
 							
+							<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+							var sectionId = '${section.id}';
+							getCustomDependentFieldClientContact(spocLocationId,orgRelationId,sectionId);
+							if(${sectionOrder.index == 1}){
+								result = result + '<div id="customContactDiv${section.id}" class="customClinetContactDet"></div>';
+
+							}
+							</c:forEach>
+							
 							
 							result = result + '<div class="clearfix"></div>';
 							result = result + ' <div class="user_summary_edit user_summary_edit_a" id="editVendorContactDetailsDiv"></div>';
@@ -125,12 +134,12 @@
 	}
 </script> 
 <script type="text/javascript">
-	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
+	function editVendorContactDetails(spocId,ownerId,spocUserId,tempOwnerId,orgRelationId,spocLocationId) {
 		      $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&type=Client",
-						success : function(data) {
-						var json = JSON.parse(data);
+						url : sourceleadUrl+"/getSpocAndOwnerDetailsById?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&tempOwnerId="+tempOwnerId+"&spocLocationId="+spocLocationId+"&orgRelationId="+orgRelationId+"&type=Client",
+						success : function(json) {
+						/* var json = JSON.parse(data); */
 						var result = "";
 						var selected1 = '';
 						var selected2 = '';
@@ -173,6 +182,14 @@
 						if(json.spocStatus == 'Contracted'){
 							selected5 = 'selected';
 						} 
+						
+						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+						if(${sectionOrder.index == 1}){
+							var sectionId = '${section.id}';
+							  preapareClientContactCustomFieldDetails(spocLocationId,orgRelationId,sectionId);
+						}
+						</c:forEach> 
+						
 						result = result + ' <form id="editVendorContact_form"  name="editVendorContact_form" method="post">';
 						/* readonly="readonly" */
 				     	if(json.userState == 'ACTIVE' || json.userState == 'INACTIVE'){
@@ -191,9 +208,9 @@
 							
 							result = result + '<div class="user_summary_edit_cta" id="mobilePhone">';
 							result = result + ' <div class="row">';
-							result = result + ' <div class="col-md-7">';
+							result = result + ' <div class="col-md-7 phoneValid">';
 							result = result + '<label>Phone No:</label>';
-							result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" field-name="Mobile Phone" data-validation-optional="true" readonly="readonly" >';
+							result = result + '<input type="text"  id="mobilePhone" name="phoneNumber" value="'+spocMobilePhone+'" placeholder="Mobile Phone" data-validation="validate_Space validate_phone validate_length length9-20" field-name="Mobile Phone" data-validation-optional="true">';
 							result = result + '</div>';
 							
 							result = result + ' <div class="col-md-5 errBotVal">';
@@ -288,9 +305,12 @@
 					    result = result  +'	 </div>';
 					    result = result  +'	 </div>'; 
 						
+                        result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth errorInptgroup"  id="customFieldDataId"></div>';
+
+                        
 						result = result + '<div class="clearfix"></div>';
 						result = result + '<div class="user_summary_edit_cta">';
-						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeClientContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+')"/>';
+						result = result + '<input class="us-btn" id="save_vendor" type="button" value="Save" onclick="storeClientContactDetails('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+','+orgRelationId+','+spocLocationId+')"/> <input class="us-btn us-btn_a" type="button" value="Cancel" onclick="clientDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+','+orgRelationId+','+spocLocationId+')"/>';
 						result = result + '</div>';		
 						result = result + '<div class="clearfix"></div>';
 						result = result + ' </form>'; 
@@ -356,21 +376,20 @@
             };
 </script>
  <script type="text/javascript">
-	function storeClientContactDetails(spocId,ownerId,spocUserId,tempOwnerId) {
+	function storeClientContactDetails(spocId,ownerId,spocUserId,tempOwnerId,orgRelationId,spocLocationId) {
          if ($('#editVendorContact_form').validate(false, validationSettings)){
              var formData = getFormData("editVendorContact_form");
 		 $.post(sourceleadUrl+"/vendorContactDetailsUpdateUsingId?"+tokenParamName+"="+tokenValue+"&spocId="+spocId+"&ownerId="+ownerId+"&spocUserId="+spocUserId+"&type=Client", formData, function(data) {
 			 var ownerId = data;
 		    	
 		    	$("#spocDetailsId").removeAttr("onClick")
-		    	$("#spocDetailsId").attr("onclick","clientDetailsbySpocId('"+spocId+"', '"+ownerId+"', '"+spocUserId+"', '"+ownerId+"')");
+		    	$("#spocDetailsId").attr("onclick","clientDetailsbySpocId('"+spocId+"', '"+ownerId+"', '"+spocUserId+"', '"+ownerId+"','"+orgRelationId+"','"+spocLocationId+"')");
 		    	$("#clientEditMsgDiv").removeAttr("style");
 	 			$("#clientEditMsgDiv").css({ display: "block" });
 	 			$("#clientEditMsg").html("Contact Details Updated");
-		    	clientDetailsbySpocId(spocId,ownerId,spocUserId,ownerId);
+		    	clientDetailsbySpocId(spocId,ownerId,spocUserId,ownerId,orgRelationId,spocLocationId);
 		    	clientEditMsgFadein();
 		    	/* getVendorContactLists();  */
-		    	getVendorContactListsELK();
 			});
 		 
 	     	return true;
@@ -394,3 +413,29 @@
 </script> 
 <!-- End -->
 
+<script type="text/javascript">
+function preapareClientContactCustomFieldDetails(clientLocationId,orgRelationID,sectionId){
+	$.ajax({
+        type : "POST",
+         url: sourceleadUrl+"/getAllASectionCustomFields?&clientLocationId="+clientLocationId+"&orgRelationID="+orgRelationID+"&requestFrom=clientAndVendor"+"&sectionId="+sectionId,        
+         success :function(data) {
+        	 $('#customFieldDataId').empty();
+        	 $('#customFieldDataId').append(data);
+           },
+     }); 
+}
+</script>
+
+<script>
+function getCustomDependentFieldClientContact(clientLocationId,orgRelationID,sectionId){
+	var type= 'view';
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?&clientLocationId="+clientLocationId+"&orgRelationID="+orgRelationID+"&requestFrom=clientAndVendor"+"&sectionId="+sectionId+"&requestType="+type,
+				 success: function(data) {
+		        	$('#customContactDiv'+sectionId).empty();
+		        	$('#customContactDiv'+sectionId).append(data);
+				 }
+		  });
+}
+</script>
