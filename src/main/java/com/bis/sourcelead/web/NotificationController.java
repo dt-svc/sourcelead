@@ -97,9 +97,8 @@ public class NotificationController {
 	}
 	
 	@RequestMapping(value = "/getNotificationtLists")
-	public @ResponseBody String getNotificationtLists(HttpServletRequest request) throws Exception {
+	public @ResponseBody List<Notifications> getNotificationtLists(HttpServletRequest request) throws Exception {
 
-	    String resultJson;
 	    Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request,"userId");
 	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	    Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
@@ -112,6 +111,7 @@ public class NotificationController {
 				nl.setNotificationLastName(nl.getNotificationFrom().getLastName());
 				nl.setNotificationFormId(nl.getNotificationFrom().getId().toString());
 				nl.setNotificationImage(nl.getNotificationFrom().getFileUrl());
+				nl.setUuId(nl.getUuId());
 				if(StringUtils.isNotBlank(nl.getSpocUUID())){
 					OrgSpoc orgSpoc = orgSpocService.getOrgSpocByUUID(nl.getSpocUUID());
 					nl.setSpocInvitationStatus(orgSpoc.getInvitationStatus());
@@ -125,8 +125,7 @@ public class NotificationController {
 				}
 			}
 		}
-		resultJson = commonUtil.toJSON(notificationsList);
-		return resultJson;
+		return notificationsList;
 	}
 	
 	

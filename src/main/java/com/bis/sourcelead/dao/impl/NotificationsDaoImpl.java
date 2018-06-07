@@ -172,7 +172,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Notifications> notifications = new ArrayList<Notifications>();
 		logger.debug("getNotificationsById start");
-		notifications = session.createQuery("from Notifications ns where ns.UUID=:UUID and ns.userNotificationStatus <> 'Accepted' " ).setString( "UUID", UUID ).list();
+		notifications = session.createQuery("from Notifications ns where ns.uuId=:UUID and ns.userNotificationStatus <> 'Accepted' " ).setString( "UUID", UUID ).list();
 		logger.debug("getNotificationsById end");
 		if (notifications.size() > 0) {
 			return notifications.get(0);
@@ -203,7 +203,7 @@ public class NotificationsDaoImpl implements NotificationsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Notifications> notifications = new ArrayList<Notifications>();
 		logger.debug("getNotificationsById start");
-		notifications = session.createQuery("from Notifications ns where ns.UUID=:UUID " ).setString( "UUID", UUID ).list();
+		notifications = session.createQuery("from Notifications ns where ns.uuId=:UUID " ).setString( "UUID", UUID ).list();
 		logger.debug("getNotificationsById end");
 		if (notifications.size() > 0) {
 			return notifications.get(0);

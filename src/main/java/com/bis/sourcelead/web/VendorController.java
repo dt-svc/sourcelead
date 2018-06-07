@@ -317,6 +317,12 @@ public class VendorController {
 			{
 				sessionData = new SessionMaintainanceData();
 			}
+			
+			SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_VENDOR);
+		     model.addObject("actionId",action.getId());
+		     List<SourceleadSectionDTO> sections  = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),orgLocations.getId());
+			 model.addObject("sourceleadSectionList",sections);
+			 
 			sessionData.setNav(Constants.Vendors);
 			request.getSession().setAttribute("sessionData",sessionData);
 			

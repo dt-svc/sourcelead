@@ -163,80 +163,39 @@ $(document).ready(function(){
               <div class="timesheet_out mt">
                 <div class="clearfix">
                   <div class="timesheet_head">
+                  <div class="pull-left cand-advsrch advsrch_chosen">
+				     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetInvoiceFilter();" title="Refresh">
+					    <span class="fa fa-refresh"></span>
+					</button>
+					<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filter Search" onclick="openInvoiceFilterPop();"><i class="fa fa-filter faFilter padding_right" style="color: #909090!important"></i>
+					</a>
+			      </div>
+			    
                     <ul>
-                    
-                      		<li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
-					        	<div id="exportPop" class="ExpPop">
-					              <ul>
-					                <li onclick="exportToReceivablePdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
-					                <li onclick="exportToReceivableExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
-					              </ul>
-					            </div>
-					          </li>                    
-                    	
-                      <li id="invoiceID1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
-                        <div class="approved_pop" id="invoiceTabOne">
-                          <ul>
-                            <li>
-                              <input type="checkbox" value="DRAFT" name="invoiceStatus" id="" onclick="getInvoiceList();" >
-                              <label for="onboard1">Draft</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="SENT" name="invoiceStatus" onclick="getInvoiceList();">
-                              <label for="onboard2">Sent</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" value="RECEIVED" name="invoiceStatus" id="" onclick="getInvoiceList();" >
-                              <label for="onboard1">Received</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="ACCEPTED" name="invoiceStatus" onclick="getInvoiceList();">
-                              <label for="onboard2">Accepted</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="REJECTED" name="invoiceStatus" onclick="getInvoiceList();">
-                              <label for="onboard2">Rejected</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="LINKED" name="invoiceStatus" onclick="getInvoiceList();">
-                              <label for="onboard2">Linked</label>
-                            </li>
-                          </ul>
-                        </div>
-                      </li>
-                      
-                      <li id="paymentID1"><i class="fa fa-filter"></i><span>Payment</span><i class="glyphicon glyphicon-play"></i>|
-                        <div class="approved_pop" id="paymentTabOne">
-                          <ul>
-                            <li>
-                              <input type="checkbox" id="" value="Paid" name="paymentStatus" onclick="getInvoiceList();">
-                              <label for="onboard3">Paid</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="Partial Paid" name="paymentStatus" onclick="getInvoiceList();">
-                              <label for="onboard2">Partially Paid</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" id="" value="Overdue" name="paymentStatus" onclick="getInvoiceList();">
-                              <label for="onboard4">Overdue</label>
-                            </li>
-                            <li>
-                              <input type="checkbox" value="Unpaid" name="paymentStatus" id="" onclick="getInvoiceList();">
-                              <label for="onboard1">Unpaid</label>
-                            </li>
-                          </ul>
-                        </div>
-                      </li>     
-                       <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')">                  
-                      <li><a href="javascript:void(0)" class="anchorTag" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
-                     </sec:authorize>
-                      <li><a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-plus paddingRight"></i>Generate Automatic Invoice</a>&nbsp;&nbsp;&nbsp;|</li>
-                      <div class="clearfix"></div>
+                    <li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
+			        	<div id="exportPop" class="ExpPop">
+			              <ul>
+			                <li onclick="exportToReceivablePdf();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+			                <li onclick="exportToReceivableExcel();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+			              </ul>
+			            </div>
+			          </li>
+			          
+			          <li>
+						<a class="action" onclick="getActions();" href="javascript:void(0)"><i class="fa fa-user-plus"></i>&nbsp;Add<i class="fa fa-caret-down"></i></a>
+						<div class="action-pop">	
+							<span style="width:225px;">
+							 <sec:authorize access="hasAnyRole('ROLE_ADD_INVOICE')">                  
+			                      <a href="javascript:void(0)" class="anchorTag" title="Create invoice"  onclick="createBill();"> <i class="fa fa-plus paddingRight"></i>Create Invoice</a>
+			                  </sec:authorize>
+			                   <a href="javascript:void(0)" class="" title="Generate Automatic Invoice" onclick="generateAutomaticInvoice();"> <i class="fa fa-gears paddingRight"></i>Generate Automatic Invoice</a>
+							<div class="clearfix"></div>
+							</span>
+						</div>
+					  </li>
                     </ul>
                     <div class="clearfix"></div>
-                     
                   </div>
-                  
                   
                   <div class="candidate_wrap_table datatable_filter">
 	                  <div id="invoiceList"></div>
@@ -1720,7 +1679,89 @@ function cancelExport(){
 <script>
   $("#selector").fadeIn(200);
   $('#selector').delay(2000).fadeOut('slow');
-	
 	 
 </script> 
+<!-- ========================== Filter popup Written By Laxman ===============================  -->
+<script>
+function closeInvoiceFilterPop(){
+	$("#invoiceFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function openInvoiceFilterPop(){
+	 $("#invoiceFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+function resetInvoiceFilter(){
+	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	getInvoiceList();
+	
+}
+</script>
+
+
+     <div class="advancedsearch-mask"></div>
+          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="invoiceFilterId">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeInvoiceFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+					  <div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Payment</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="paymnetFilter">
+									<li class="checkBox positionRelative" ><input type="checkbox"  value="Paid" name="paymentStatus"><label for="onboard3">Paid</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="Partial Paid" name="paymentStatus"><label for="onboard2">Partially Paid</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="Overdue" name="paymentStatus"><label for="onboard4">Overdue</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="Unpaid" name="paymentStatus"><label for="onboard1">Unpaid</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+						
+						<div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="statusFilter">
+									<li class="checkBox positionRelative" ><input type="checkbox" value="DRAFT" name="invoiceStatus"><label for="onboard1">Draft</label></li>
+                                    <li class="checkBox positionRelative" ><input type="checkbox" value="SENT" name="invoiceStatus"><label for="onboard2">Sent</label></li>
+                                    <li class="checkBox positionRelative" ><input type="checkbox" value="RECEIVED" name="invoiceStatus"><label for="onboard1">Received</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox"  value="ACCEPTED" name="invoiceStatus"><label for="onboard2">Accepted</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="REJECTED" name="invoiceStatus"><label for="onboard2">Rejected</label></li>
+	                                <li class="checkBox positionRelative" ><input type="checkbox" value="LINKED" name="invoiceStatus"><label for="onboard2">Linked</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+					  </div>
+					  
+					  
+					  
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeInvoiceFilterPop();getInvoiceList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetInvoiceFilter();closeInvoiceFilterPop();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+}	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+</script>	
  <jsp:include page="../masterFooter.jsp" />	
