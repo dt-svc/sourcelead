@@ -93,13 +93,14 @@ public class RequirementReportRestController {
 	  * @throws Exception
 	  */
 	@RequestMapping(value = "/getRequirementReports")
-	public String getRequirementReports(@RequestParam(value = "status", required = false) String status,
+	public String getRequirementReports(@RequestParam(value = "reportType", required = false) String reportType, @RequestParam(value = "startDate", required = false) String customStartDate,
+			@RequestParam(value = "endDate", required = false) String customEndDate,@RequestParam(value = "status", required = false) String status,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName, orgLocation, user, status);
+		List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName, orgLocation, user, reportType,customStartDate,customEndDate,status);
 		String reportsList;
 		if (null != requirementList) {
 			reportsList = commonUtil.toJSON(requirementList);
@@ -297,50 +298,6 @@ public class RequirementReportRestController {
 		 
 	 }
 	 
-	 @RequestMapping(value = "/getRequirementListBasedOnStatus")
-	 public String getRequirementListBasedOnStatus(@RequestParam(value="status", required=false) String status, HttpServletRequest request,HttpServletResponse response) throws Exception{
-		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
-		 List<Requirement> reqList = requirementReportService.getRequirementStageReports(orgLocation,status);
-		 
-		 for(Requirement requirement: reqList){
-			//String postedDate = getDateStr(requirement.getCreatedDate(), timezone);
-			requirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirement.getCreatedDate()));
-			 List<String> requirementLocationsList = new ArrayList<>();
-	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
-	    	    if(locationsList != null && !locationsList.isEmpty()) {
-	    	    	for(RequirementLocations locations : locationsList) {
-	    	    		requirementLocationsList.add(locations.getLocation());
-	    	    	}
-	    	    }
-	    	    requirement.setLocationsList(requirementLocationsList);
-			
-			if(requirement.getClientId() != null){
-				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
-					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
-				}
-				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
-					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
-				}
-			}
-			if(requirement.getManagerUserId() != null){
-				String managerFirstName = "";
-				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
-					managerFirstName = requirement.getManagerUserId().getFirstName();
-				}
-				String managerLastName = "";
-				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
-					managerLastName = requirement.getManagerUserId().getLastName();
-				}
-				 StringBuilder managerSB = new StringBuilder();
-				requirement.setManager(managerSB.append(managerFirstName).append(" ").append(managerLastName).toString());
-			}
-		}
-		 
-		 
-		 
-		 return commonUtil.toJSON(reqList);
-	 }
-
 	/**
 	 * get applicants reports based on day wise
 	 * 

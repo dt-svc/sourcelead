@@ -34,13 +34,12 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String status) {
+	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate,Date startDateUTC, Date endDateUTC,String status) {
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		Map<String, Object> params = new HashMap<String,Object>();
 		String filterQuery = "";
-		
-		
+		String dateSubQuery = "";
 		String[] reqStatus = null;
 		if(null != status && !"".equals(status)){	
 			reqStatus = status.split(",");
@@ -72,6 +71,11 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		    }
 	    }
 		
+	    if(null != startDateUTC && null != endDateUTC){
+			 dateSubQuery = " and requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC";
+			params.put("startDateUTC",startDateUTC);
+			params.put("endDateUTC",endDateUTC);
+		}
 	    
 	    if(!list.isEmpty() && null != list){
 	    	filterQuery = "and requirement.requirementSubmissionStatus IN (:statusList)";
@@ -113,7 +117,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		}
 		
 		
-		String whereCondition = subQuery +filterQuery;
+		String whereCondition = subQuery +dateSubQuery+filterQuery;
 		
 		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
 		for (String str : query.getNamedParameters())
@@ -136,6 +140,10 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 				query.setString(str, user.getUserCode());
 			}else if (str.equalsIgnoreCase("statusList")) {
 				query.setParameterList(str, list);
+			}else if (str.equalsIgnoreCase("startDateUTC")) {
+				query.setDate(str,startDateUTC);
+			}else if (str.equalsIgnoreCase("endDateUTC")) {
+				query.setDate(str, endDateUTC);
 			}
 
 		}

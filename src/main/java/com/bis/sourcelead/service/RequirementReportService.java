@@ -17,7 +17,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface RequirementReportService {
 
-	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String status) throws Exception;
+	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate, String startDateUTC, String endDateUTC,String status) throws Exception;
 
 	List<RequirementSubmissionHistory> getApplicantsCountsPerReq(Long requirementId)throws Exception;
 
