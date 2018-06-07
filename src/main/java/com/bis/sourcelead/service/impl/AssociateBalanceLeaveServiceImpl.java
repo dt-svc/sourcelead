@@ -110,7 +110,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				 associateBalanceLeaveDTO.setLeaveTypeName(l.getLeaveTypeName());
 				 associateBalanceLeaveDTO.setNoofLeaves(l.getTotalLeaves());
 				 associateBalanceLeaveDTO.setLeaveTypeId(l.getLeaveTypeId());
-				 if(l.getCreatedByFirstName() != null && !"".equalsIgnoreCase(l.getCreatedByFirstName())) {associateBalanceLeave
+				 if(l.getCreatedByFirstName() != null && !"".equalsIgnoreCase(l.getCreatedByFirstName())) {
 					 associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName()+" "+l.getCreatedByLastName());
 				 }else {
 					 associateBalanceLeaveDTO.setCreatedBy(l.getCreatedByFirstName());
@@ -171,7 +171,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				totalLeaves = leaveType.getNoOfDays();
 			}
 		}catch (Exception e) {
-			logger.info("getTotalLeavesByUserIdAndLeaveTypeId failed due to : "+e.getMessage());
+			logger.error("getTotalLeavesByUserIdAndLeaveTypeId "+e.getMessage());
 		}
 		
 		return totalLeaves;
