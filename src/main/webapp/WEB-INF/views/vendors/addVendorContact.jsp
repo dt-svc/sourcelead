@@ -52,6 +52,7 @@
 			                  </select>
 			              </div>
                       </div>
+                      
                     </div>
                  </div>
               </div>
@@ -219,6 +220,12 @@
 	              </div>
 	            </div>
 	            
+				 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+	               <c:if test="${sectionOrder.index == 1}">
+	                  <div id="customDiv${section.id}"></div>
+	               </c:if>
+	            </c:forEach>
+		            
                 <div class="form-group">
                 <label class="col-md-3"></label>
                   <div class="col-md-9 checkBox">
@@ -340,6 +347,10 @@ function getOrgDetails()
 		document.getElementById("firstName").value="";
 		document.getElementById("lastName").value="";
 		document.getElementById("phoneNumber").value="";
+		<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
+		  var sectionId = '${section.id}';
+		  getCustomVendorContactDependentField(sectionId);
+		</c:forEach>
 		
 	});
 </script>
@@ -814,5 +825,16 @@ function getRolesList(){
 		        }
 		 });
  }
+ 
+ function getCustomVendorContactDependentField(sectionId){
+	 $.ajax({
+			type : "POST" , 
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 success: function(data) {
+		        	$('#customDiv'+sectionId).empty();
+		        	$('#customDiv'+sectionId).append(data);
+				 }
+		  });
+}
  </script>
 

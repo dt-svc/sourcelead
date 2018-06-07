@@ -441,7 +441,7 @@ public class RegistrationController {
 		    String resultJson;
 		    OrgLocations orgLocations = orgLocationService.getOrgLocations(registeredOrgLocationId);
 		    
-		    String[] tableColumns = {"firstName", "email", "mobilePhone", "displayName", "status", "actions"};
+		    String[] tableColumns = {"firstName", "email", "mobilePhone", "displayName", "status", "primaryAdmin", "superAdmin"};
 		    int sortColumnIndex = 1; //by default sorting using updated date
 			String sortColumnOrder = "desc"; //by default descending order
 			if(userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {

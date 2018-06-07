@@ -1392,7 +1392,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@SuppressWarnings("unchecked")   
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(Long approverUserId, Long locationsId, Long projectMemberId, Date startDate, Date endDate) throws Exception
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(Long approverUserId, Long locationsId, Long projectMemberId, Date startDate, Date endDate,String isGlobalUser) throws Exception
 	{
 		ProjectMembers projectMembers = projectMembersDao.getProjectMemberById(projectMemberId);
 		Projects projects = projectsDao.getProjectById(projectMembers.getProjects().getId());
@@ -1405,6 +1405,13 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		if (endDate != null) {
 			sqlEndDate = new java.sql.Date(endDate.getTime());
 		}
+		
+		String globalUserQuery = "";
+	    if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+	    	globalUserQuery = " and pclient.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :locationsId)";
+	    }else {
+	    	globalUserQuery = " and pclient.orgLocationsId.id = :locationsId";
+	    }
 		String fillingOptionQuery = " and (sah.submissionApprovalStatus <> '"
 				+ Submission_ApprovalStatus.NEW + "' OR (sah.submissionApprovalStatus = '"
 				+ Submission_ApprovalStatus.NEW
@@ -1413,12 +1420,16 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				+ "') and pc.projectId.id = sah.submissionId.projectMembers.projects.id)))";
 		String query = "from  SubmissionApproverHierarchy sah left join fetch sah.hierarchyId hierarchy left join fetch hierarchy.projectClientsId pclient left join fetch hierarchy.approverUserId left join fetch sah.submissionId ts left join fetch ts.masterCandidateId mc  left join fetch ts.projectMembers pm left join fetch pm.projects project left join fetch project.orgLocationsId left join fetch pm.employee  emp  left join fetch emp.user "
 				+ " where  pclient.orgLocationsId.id = :locationsId and project.id = :projectId and mc.id = :masterCandidateId and (sah.frequencyStartDate = :startDate OR sah.frequencyEndDate = :endDate OR sah.frequencyStartDate BETWEEN :startDate and :endDate OR sah.frequencyEndDate BETWEEN :startDate and :endDate) and sah.submissionId.status = '1'"
+				+ globalUserQuery
 				+ fillingOptionQuery + "  and ( "
 				/*
 				 * logged in user as approver in project_approver_hierarchy
 				 * (Either Admins/project_managers/team leads ...etc)
 				 */
 				+ "  hierarchy.approverUserId.id = :userId "
+				
+				+ "       OR  (sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id) and  sah.hierarchyId.level IN(select MIN(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0'))"
+				+ "       OR  (sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.resourceManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id) and  sah.hierarchyId.level IN(select MIN(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0'))"
 				/*
 				 * logged in user as admin but not in
 				 * project_approver_hierarchy(hint:logged in user is admin but

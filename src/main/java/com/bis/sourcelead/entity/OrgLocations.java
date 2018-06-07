@@ -242,7 +242,7 @@ public class OrgLocations implements Serializable{
 	private String weekOffDays;
 	
 	@Column(name = "IS_TIMESHEET_AVG_HOURS_REQUIRED")
-	private String isTimesheetAvgHoursRequired;
+    private String isTimesheetAvgHoursRequired;
     
     @Transient
     private String orgName;

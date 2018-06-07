@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -80,7 +81,7 @@ public interface CandidateDao {
 	
 	public Candidate getCandidateById(Long candidateId) throws Exception;
 	
-	Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception;
+	BigInteger getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception;
 	
 	Candidate getCandidateByUUID(String candidateUUID) throws Exception;
 	

@@ -92,5 +92,10 @@ public class NotificationsServiceImpl implements NotificationsService{
 		return notificationDao.getNotificationBySpocUUID(spocUUID);
 	}
 
+	@Override
+	public Notifications getNotificationDetailsByUUID(String UUID) throws Exception {
+		return notificationDao.getNotificationDetailsByUUID(UUID);
+	}
+
 
 }

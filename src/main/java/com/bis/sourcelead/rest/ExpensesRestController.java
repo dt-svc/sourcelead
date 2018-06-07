@@ -249,7 +249,8 @@ public class ExpensesRestController {
 					projectDTO.setExpenseId(eedDTO.getExpenseId());
 				}
 				else{
-					String expenseId = addExpensesService.getExpenseId(pc.getProjectId().getOrgLocationsId());
+					//String expenseId = addExpensesService.getExpenseId(pc.getProjectId().getOrgLocationsId().getId());/*OLD CODE*/
+					String expenseId = addExpensesService.getExpenseId(orgLocations);
 					projectDTO.setExpenseId(expenseId);
 				}
 				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
@@ -310,7 +311,8 @@ public class ExpensesRestController {
 						pmDTO.setExpenseId(eedDTO.getExpenseId());
 					}
 					else{
-						String expenseId = addExpensesService.getExpenseId(pm.getProjects().getOrgLocationsId());
+						//String expenseId = addExpensesService.getExpenseId(pm.getProjects().getOrgLocationsId());
+						String expenseId = addExpensesService.getExpenseId(orgLocations);
 						pmDTO.setExpenseId(expenseId);
 					}
 					 if(pm.getProjectClientsId() != null &&  pm.getProjectClientsId().getOrgRelationId() != null){
