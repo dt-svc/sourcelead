@@ -1,10 +1,12 @@
 package com.bis.sourcelead.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +23,13 @@ import com.bis.sourcelead.beans.AssignedRequirementReports;
 import com.bis.sourcelead.beans.RequirementStagesReport;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementStagesCount;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementAssignToService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementRateSubmissionNegotiationService;
 import com.bis.sourcelead.service.RequirementReportService;
 import com.bis.sourcelead.service.RequirementService;
@@ -73,6 +77,9 @@ public class RequirementReportRestController {
 	 
 	 @Autowired
 	 RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	 
+	 @Autowired
+	private RequirementLocationsService requirementLocationsService;
 	
 	
 	 /**
@@ -86,12 +93,13 @@ public class RequirementReportRestController {
 	  * @throws Exception
 	  */
 	@RequestMapping(value = "/getRequirementReports")
-	public String getRequirementReports(@RequestParam(value = "reportType", required = false) String reportType, @RequestParam(value = "startDate", required = false) String customStartDate, @RequestParam(value = "endDate", required = false) String customEndDate, HttpServletRequest request, HttpServletResponse response) throws Exception
+	public String getRequirementReports(@RequestParam(value = "status", required = false) String status,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		String userRoleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName, orgLocation, user, reportType, customStartDate, customEndDate);
+		List<Requirement> requirementList = requirementReportService.getRequirementReports(userRoleName, orgLocation, user, status);
 		String reportsList;
 		if (null != requirementList) {
 			reportsList = commonUtil.toJSON(requirementList);
@@ -293,6 +301,43 @@ public class RequirementReportRestController {
 	 public String getRequirementListBasedOnStatus(@RequestParam(value="status", required=false) String status, HttpServletRequest request,HttpServletResponse response) throws Exception{
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
 		 List<Requirement> reqList = requirementReportService.getRequirementStageReports(orgLocation,status);
+		 
+		 for(Requirement requirement: reqList){
+			//String postedDate = getDateStr(requirement.getCreatedDate(), timezone);
+			requirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirement.getCreatedDate()));
+			 List<String> requirementLocationsList = new ArrayList<>();
+	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+	    	    if(locationsList != null && !locationsList.isEmpty()) {
+	    	    	for(RequirementLocations locations : locationsList) {
+	    	    		requirementLocationsList.add(locations.getLocation());
+	    	    	}
+	    	    }
+	    	    requirement.setLocationsList(requirementLocationsList);
+			
+			if(requirement.getClientId() != null){
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
+					requirement.setClientName(requirement.getClientId().getResponderLocationId().getOrgLocationName());
+				}
+				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Vendor")){
+					requirement.setClientName(requirement.getClientId().getLocationId().getOrgLocationName());
+				}
+			}
+			if(requirement.getManagerUserId() != null){
+				String managerFirstName = "";
+				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getFirstName())){
+					managerFirstName = requirement.getManagerUserId().getFirstName();
+				}
+				String managerLastName = "";
+				if(StringUtils.isNotEmpty(requirement.getManagerUserId().getLastName())){
+					managerLastName = requirement.getManagerUserId().getLastName();
+				}
+				 StringBuilder managerSB = new StringBuilder();
+				requirement.setManager(managerSB.append(managerFirstName).append(" ").append(managerLastName).toString());
+			}
+		}
+		 
+		 
+		 
 		 return commonUtil.toJSON(reqList);
 	 }
 

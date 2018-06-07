@@ -27,12 +27,15 @@ window.onload = function() {
 
 <script>
 function getRequirementList(){
-	    var status = "";
-	    var clients = "";
+	    var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() 
+	    {
+			status.push($(this).val());
+	    });
 		$("#reqStagesLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	    $.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients,    
+	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status,    
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	         },
@@ -242,25 +245,6 @@ function getRequirementStageCounts(){
 </script>
 
 <script>
-function getRequirementStageList(){
-		var status = [];
-		$('input:checkbox[name=requirementStatus]:checked').each(function() 
-	    {
-			status.push($(this).val());
-	    });
-		$.ajax({
-	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementListBasedOnStatus?"+tokenParamName+"="+tokenValue+"&status="+status,    
-	          success :function(data) {
-	        	  prepareReportDataDiv(data);
-	          },
-	          
-	     }); 
-}
-</script>
-
-
-<script>
 	$(function() {
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
@@ -342,16 +326,16 @@ function getRequirementStageList(){
         	<b id="filter2ApprovePop"><i class="fa fa-filter paddingRight"></i>Status<span class="padFil"></span> <i class="glyphicon glyphicon-play" id="status-pop"></i></b>
         	<div id="filter2ApprovedPop" class="approved_pop">
 		              <ul>
-                		    <li><input type="checkbox" name="requirementStatus"  value ="NEW"  onclick="getRequirementStageList();">New</li>
-							<li><input type="checkbox" name="requirementStatus"  value ="DRAFT"  onclick="getRequirementStageList();">Draft</li>
-							<li><input type="checkbox" name="requirementStatus"  value ="SUBMITTED"  onclick="getRequirementStageList();">Submitted</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="OPEN"  onclick="getRequirementStageList();">Open</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="ONHOLD"  onclick="getRequirementStageList();">On Hold</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="CANCEL"  onclick="getRequirementStageList();">Cancel</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="FILLEDCLOSED"  onclick="getRequirementStageList();">Filled Closed</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="UNFILLEDCLOSED"  onclick="getRequirementStageList();">Unfilled Closed</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="REJECTED"  onclick="getRequirementStageList();">Rejected</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="CLOSED"  onclick="getRequirementStageList();">Closed</li>
+                		    <li><input type="checkbox" name="requirementStatus"  value ="NEW"  onclick="getRequirementList();">New</li>
+							<li><input type="checkbox" name="requirementStatus"  value ="DRAFT"  onclick="getRequirementList();">Draft</li>
+							<li><input type="checkbox" name="requirementStatus"  value ="SUBMITTED"  onclick="getRequirementList();">Submitted</li>
+               				<li><input type="checkbox" name="requirementStatus"  value ="OPEN"  onclick="getRequirementList();">Open</li>
+               				<li><input type="checkbox" name="requirementStatus"  value ="ONHOLD"  onclick="getRequirementList();">On Hold</li>
+               				<li><input type="checkbox" name="requirementStatus"  value ="CANCEL"  onclick="getRequirementList();">Cancel</li>
+               				<li><input type="checkbox" name="requirementStatus"  value ="FILLEDCLOSED"  onclick="getRequirementList();">Filled Closed</li>
+               				<li><input type="checkbox" name="requirementStatus"  value ="UNFILLEDCLOSED"  onclick="getRequirementList();">Unfilled Closed</li>
+               				<li><input type="checkbox" name="requirementStatus"  value ="REJECTED"  onclick="getRequirementList();">Rejected</li>
+               				<li><input type="checkbox" name="requirementStatus"  value ="CLOSED"  onclick="getRequirementList();">Closed</li>
                				
 		              </ul>
 		    </div>
@@ -621,27 +605,7 @@ $(".reminder").click(function(){
 		$.datepicker._clearDate('#ExportEndDate');
 	}
 	</script>
-<script>
-function getDayWiseReports(){
-	$('#reportStartDate').empty();
-	$('#reportEndDate').empty(); 
-	var reportType = $("#reportTypeId").val();
-	var startDate = $("#ExportStartDate").val();
-	var endDate = $("#ExportEndDate").val();
-	if(reportType!="custom"){
-	$.ajax({
-         type : "POST",
-         url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
-          success :function(data) {
-        	 prepareReportDataDiv(data);
-         },
-          
-     });  
-	}
-	
-}
 
-</script>
 <script>
 function custDates(){
 	var reportType = $("#reportTypeId").val();
@@ -654,30 +618,6 @@ function custDates(){
 }
 </script>
 
-<script>
-function getCustomReports(){
-	var reportType = $("#reportTypeId").val();
-	var startDate = $("#ExportStartDate").val();
-	var endDate = $("#ExportEndDate").val();
-	if(startDate == null || startDate == '' || startDate == 'undefined'){
-		$("#reportStartDate").empty().append("Start Date is Required") ; 
-	}
-	if(endDate == null || endDate == '' || endDate == 'undefined'){
-		$("#reportEndDate").empty().append("End Date is Required") ; 
-	}
-	else{
-		$.ajax({
-	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
-	          success :function(data) {
-	        	 prepareReportDataDiv(data);
-	         },
-	          
-	     }); 
-	}
-	 
-}
-</script>
 <script type="text/javascript"> 
 	function addValidClass(){
 		 var StartDate = document.getElementById("ExportStartDate").value;

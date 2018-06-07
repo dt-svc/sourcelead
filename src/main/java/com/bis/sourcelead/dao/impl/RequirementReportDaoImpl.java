@@ -34,18 +34,50 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate,Date startDateUTC, Date endDateUTC) {
+	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String status) {
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		Map<String, Object> params = new HashMap<String,Object>();
-		String dateSubQuery = "";
-		if(null != startDateUTC && null != endDateUTC){
-			 dateSubQuery = " and requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC";
-			params.put("startDateUTC",startDateUTC);
-			params.put("endDateUTC",endDateUTC);
+		String filterQuery = "";
+		
+		
+		String[] reqStatus = null;
+		if(null != status && !"".equals(status)){	
+			reqStatus = status.split(",");
 		}
+	    List<REQUIREMENT_SUBMISSION_STATUS> list = new ArrayList<>();
+	    if(reqStatus != null){
+	    	for(int i=0; i < reqStatus.length; i++){
+		    	if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.NEW.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.NEW);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.DRAFT);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.OPEN.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.OPEN);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.ONHOLD.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.ONHOLD);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.CANCEL.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.CANCEL);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.REJECTED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.REJECTED);
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.CLOSED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.CLOSED);
+		    	}
+		    }
+	    }
 		
-		
+	    
+	    if(!list.isEmpty() && null != list){
+	    	filterQuery = "and requirement.requirementSubmissionStatus IN (:statusList)";
+	    	params.put("statusList",list);
+	    }
+	    
 		String from = "from Requirement requirement  left join fetch requirement.parentRequirement  left join fetch requirement.clientId left join fetch requirement.spocId left join fetch requirement.submissionTemplateId left join fetch requirement.clientSubmissionTemplateId left join fetch requirement.parentRequirement"; 
 		String subQuery = "";
 		
@@ -81,7 +113,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		}
 		
 		
-		String whereCondition = subQuery +dateSubQuery;
+		String whereCondition = subQuery +filterQuery;
 		
 		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
 		for (String str : query.getNamedParameters())
@@ -102,10 +134,8 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 				query.setInteger(str, 2);
 			} else if (str.equalsIgnoreCase("loginUserCode")) {
 				query.setString(str, user.getUserCode());
-			}else if (str.equalsIgnoreCase("startDateUTC")) {
-				query.setDate(str,startDateUTC);
-			}else if (str.equalsIgnoreCase("endDateUTC")) {
-				query.setDate(str, endDateUTC);
+			}else if (str.equalsIgnoreCase("statusList")) {
+				query.setParameterList(str, list);
 			}
 
 		}

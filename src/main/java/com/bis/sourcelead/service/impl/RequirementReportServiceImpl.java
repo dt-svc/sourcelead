@@ -73,67 +73,10 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	private RequirementLocationsService requirementLocationsService;
 	
 	@Override
-	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user, String reportType, String customStartDate, String customEndDate) throws Exception
+	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String status) throws Exception
 	{
-		//SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
-		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
-		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
-		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date endDateUTC = null;
-		String filterDate = null;
-		Date startDateUTC = null;
-		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
-			String endDate = outputFormatter1.print(zoned);
-			endDateUTC = TZ_DF_TS.parse(endDate);
-		}
-		if (null != reportType && !"".equals(reportType)) {
-			if (Constants.TO_DAY.equals(reportType)) {
-				String startDate = outputFormatter.print(zoned);
-				filterDate = startDate;
-				startDateUTC = TZ_DF_TS.parse(startDate);
-			}
-			else if (Constants.YESTER_DAY.equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(1);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-			}
-			else if (Constants.ONE_WEEK.equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(7);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-			}
-			else if (Constants.TWO_WEEKS.equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(14);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-			}
-			else if (Constants.ONE_MONTH.equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(30);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-			}
-			else if (Constants.TWO_MONTHS.equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(60);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-			}
-			else {
-				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
-					
-					DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
-					DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
-					Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
-					Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
-					String customStartTimeStr = TZ_DF_CSD.format(startTime);  
-					String customEndTimeStr = TZ_DF_CED.format(endTime);  
-					startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
-					endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
-				}
-			}
-		}
-		List<Requirement> requirementList = requirementReportDao.getRequirementReports(userRoleName, orgLocation, user, filterDate, startDateUTC, endDateUTC);
+		
+		List<Requirement> requirementList = requirementReportDao.getRequirementReports(userRoleName, orgLocation, user,status);
 		for (Requirement requirement : requirementList) {
 			//String postedDate = getDateStr(requirement.getCreatedDate(), timezone);
 			requirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirement.getCreatedDate()));
