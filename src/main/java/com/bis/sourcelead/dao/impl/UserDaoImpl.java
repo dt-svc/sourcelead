@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -1895,7 +1897,7 @@ public class UserDaoImpl implements UserDao {
 					UserDTO userDTO = new UserDTO();
 					userDTO.setFullName(user.getFullName());
 					
-					Integer totalRequirements = requirementService.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, searchDates[0], searchDates[1],isGlobalUser);
+					BigInteger totalRequirements = requirementService.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, fromDate, toDate,isGlobalUser,orgId);
 					userDTO.setUserRequirementsCount(totalRequirements);
 					
 					Integer totalCandidates = candidateService.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, searchDates[0], searchDates[1],isGlobalUser);

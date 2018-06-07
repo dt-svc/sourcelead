@@ -2,6 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.persistence.Transient;
@@ -60,7 +61,7 @@ public class UserDTO extends SearchDTO implements Serializable {
 	
 	private String linkedUserPwd;
 	
-    private Integer userRequirementsCount;
+    private BigInteger userRequirementsCount;
 	
     private BigDecimal userApplicantsCount;
 	
@@ -489,11 +490,11 @@ public class UserDTO extends SearchDTO implements Serializable {
 		this.linkedUserPwd = linkedUserPwd;
 	}
 
-	public Integer getUserRequirementsCount() {
+	public BigInteger getUserRequirementsCount() {
 		return userRequirementsCount;
 	}
 
-	public void setUserRequirementsCount(Integer userRequirementsCount) {
+	public void setUserRequirementsCount(BigInteger userRequirementsCount) {
 		this.userRequirementsCount = userRequirementsCount;
 	}
 

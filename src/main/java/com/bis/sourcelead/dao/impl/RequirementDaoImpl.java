@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -1087,31 +1088,53 @@ public class RequirementDaoImpl implements RequirementDao {
 	}
 
 	@Override
-	@Transactional
-	public Integer getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC,
-			Date endDateUTC,String isGlobalUser) throws Exception {
+	@Transactional(rollbackFor = { Exception.class })
+	public BigInteger getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC,
+			String endDateUTC,String isGlobalUser,Long orgId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
-		List<Long> requirementsCount = null;
-		String globalAccessQuery = "";
+		BigInteger count = null;
 		
 		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
-			globalAccessQuery = " and requirement.orgLocationId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+			query ="SELECT"
+					+ " COUNT(REQ.ID) AS REQ_COUNT"
+					+ " FROM"
+					    + " REQUIREMENT REQ,"
+					    + " ORG_LOCATIONS OL"
+					    
+						+ " WHERE  OL.ID = REQ.ORG_LOCATION_ID AND "
+					    + " REQ.CREATED_BY = '"+user.getId()+"'"
+					    + " AND DATE_FORMAT(REQ.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					    + " AND  OL.ORG_ID = '"+orgId+"'"
+					    + " GROUP BY REQ.CREATED_BY, OL.ORG_ID, REQ.ORG_LOCATION_ID";
+				 
+			        
+					Query queryString = session.createSQLQuery(query);
+					List<BigInteger> countList = queryString.list();
+					count = countList.iterator().next();
 		}else {
-			globalAccessQuery = " and requirement.orgLocationId.id = :orgLocationId";
+			query ="SELECT"
+					+ " COUNT(REQ.ID) AS REQ_COUNT"
+					+ " FROM"
+					    + " REQUIREMENT REQ,"
+					    + " ORG_LOCATIONS OL"
+					    
+						+ " WHERE  OL.ID = REQ.ORG_LOCATION_ID AND "
+					    + " REQ.CREATED_BY = :userId"
+					    + " AND DATE_FORMAT(REQ.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					    + " AND  REQ.ORG_LOCATION_ID = :orgLocationId"
+					    + " GROUP BY REQ.CREATED_BY, OL.ORG_ID, REQ.ORG_LOCATION_ID";
+			
+
+					Query queryString = session.createSQLQuery(query);
+					queryString.setParameter("userId", user.getId()).setParameter("orgLocationId", orgLocationId);
+					List<BigInteger> countList = queryString.list();
+					count = countList.iterator().next();
 		}
 		
-		query ="select count(*)from Requirement requirement where  requirement.createdBy.id =:userId "+globalAccessQuery+" "
-				+ " and   date(requirement.createdDate) BETWEEN :startDate and :endDate";
 		
-		requirementsCount =  session.createQuery(query.toString()).setLong("userId", user.getId()).setLong("orgLocationId", orgLocationId).setParameter("startDate", startDateUTC).setParameter("endDate", endDateUTC).list();
-		Integer count= 0;
-		if(requirementsCount != null && !requirementsCount.isEmpty()){
-				count = requirementsCount.get(0).intValue();
-		}
 		return count;
-		 
 
 	}
 
