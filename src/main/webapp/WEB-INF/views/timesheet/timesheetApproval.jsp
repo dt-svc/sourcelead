@@ -32,6 +32,7 @@
 	               var projectName = '';
 	               var stage = $('#stage').val();
 	               var client = $('#client').val();
+	               var project = $('#project').val();
 	               if(filter != null && filter != '' && filter != 'undefined' &&  filter == 'notifyLink'){
 	            	   frequencyMonth = '${frequencyMonth}';
 	            	   timesheetFrequency = '${timesheetFrequency}';
@@ -57,6 +58,9 @@
 		          
 		           if(client == null || client == '' || client == 'undefined')
 		        	   client = '';
+		           
+		           if(project == null || project == '' || project == 'undefined')
+		        	   project = '';
 		           var searchvalue = '';
 	  	           if(searchData != null && searchData !='' && searchData!='undefined'){
 	  	        	 searchValue = searchData;
@@ -70,6 +74,7 @@
 	               formData.append("timesheetFrequency", timesheetFrequency);
 	               formData.append("weekFrequency", weekFrequency);
 	               formData.append("client", client);
+	               formData.append("project", project);
 	               formData.append("stage", stage);
 	               formData.append("locationCode", locationCode);
 	               formData.append("userId", userId);

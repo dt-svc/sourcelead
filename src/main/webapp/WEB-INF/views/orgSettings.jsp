@@ -400,6 +400,14 @@ function cancelOrgImg(){
 							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
 							</div>
 						</div>
+						
+						<div class="form-group mt">
+								<div class="col-md-11">
+									<div class="checkBox">
+										<label><input type="checkbox" value="Y" ${SourceLeadWeb_orgLocations.isTimesheetAvgHoursRequired == 'Y' ? 'checked' : ''} name="isTimesheetAvgHoursRequired" id="isTimesheetAvgHoursRequired"> Average Hours Validation Is Required</label> 
+									</div>
+								</div>
+					    </div>
 							
 						<div class="form-group mt">
 							<label class="col-md-3">Phone</label>
@@ -450,8 +458,8 @@ function cancelOrgImg(){
 							</div>
 						</div>
 						
-						
-						<div class="form-group comp-textarea mt">
+					    
+					    <div class="form-group comp-textarea mt">
 						  <label class="col-md-3">About</label>
 							<div class="col-md-9">
 							   <textarea rows="6" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
