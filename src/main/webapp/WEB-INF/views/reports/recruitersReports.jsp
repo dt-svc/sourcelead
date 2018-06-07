@@ -265,7 +265,12 @@ function usersListPagination(url,sourceleadUrl){
               "sortable": false,
               "render": function ( data, type, opt, meta ) {
             	  var result = "";
-            	  result = result +"<td><div class='small'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span></div></td>";
+            	  if(opt.userRequirementsCount !=null && opt.userRequirementsCount !='' && opt.userRequirementsCount !='undefined'){
+            		  result = result +"<td><div class='small'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span></div></td>";
+            	  }else{
+         	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+          	      }
+            	  
 	             return result;
               		
               }
@@ -276,7 +281,11 @@ function usersListPagination(url,sourceleadUrl){
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
-	            	  result = result +"<td><div class='small'> <span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></div></td>";
+	            	  if(opt.userRequirementsCount !=null && opt.userRequirementsCount !='' && opt.userRequirementsCount !='undefined'){
+	            		  result = result +"<td><div class='small'> <span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></div></td>";
+	            	  }else{
+	          	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	          	      }
 	            	  return result;
 	              }
 		     },{

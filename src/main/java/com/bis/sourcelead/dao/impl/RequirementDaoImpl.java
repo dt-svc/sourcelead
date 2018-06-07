@@ -1111,8 +1111,9 @@ public class RequirementDaoImpl implements RequirementDao {
 				 
 			        
 					Query queryString = session.createSQLQuery(query);
-					List<BigInteger> countList = queryString.list();
-					count = countList.iterator().next();
+					/*List<BigInteger> countList = queryString.list();
+					count = countList.iterator().next();*/
+					count  = (BigInteger) queryString.uniqueResult();
 		}else {
 			query ="SELECT"
 					+ " COUNT(REQ.ID) AS REQ_COUNT"
@@ -1129,8 +1130,9 @@ public class RequirementDaoImpl implements RequirementDao {
 
 					Query queryString = session.createSQLQuery(query);
 					queryString.setParameter("userId", user.getId()).setParameter("orgLocationId", orgLocationId);
-					List<BigInteger> countList = queryString.list();
-					count = countList.iterator().next();
+					/*List<BigInteger> countList = queryString.list();
+					count = countList.iterator().next();*/
+					count  = (BigInteger) queryString.uniqueResult();
 		}
 		
 		
