@@ -147,13 +147,13 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	Notifications notification = new Notifications();
 	
 	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
-		notification.setUUID(emailScenario.getUUID());
+		notification.setUuId(emailScenario.getUUID());
 	}
 	else {
-		notification.setUUID(SourceLeadRandomCodeHelper.generateNotificationUUID());
+		notification.setUuId(SourceLeadRandomCodeHelper.generateNotificationUUID());
 	}
 	if(StringUtils.isNotEmpty(actionLink) && actionLink.contains(Constants.PLACE_UUID)) {
-		actionLink = actionLink.replace(Constants.PLACE_UUID, notification.getUUID());
+		actionLink = actionLink.replace(Constants.PLACE_UUID, notification.getUuId());
 	}
 	notification.setActionLink(actionLink);
 	notification.setBody(emailScenario.getBody());
@@ -197,7 +197,7 @@ public void sendNotificationToClientOrVendor(String actionLink,String rejectActi
 	notification.setUserNotificationStatus("Sent");
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
 	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
-		notification.setUUID(emailScenario.getUUID());
+		notification.setUuId(emailScenario.getUUID());
 	}
 	
 	Notifications notification1 = notificationsService.saveNotification(notification);
@@ -224,7 +224,7 @@ public void sendNotificationToClientOrVendorWhenOwnerChange(String actionLink,St
 	notification.setUserNotificationStatus("Sent");
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
 	if(null != emailScenario.getUUID()  && !emailScenario.getUUID().isEmpty()){
-		notification.setUUID(emailScenario.getUUID());
+		notification.setUuId(emailScenario.getUUID());
 	}
 	
 	Notifications clientVendorNotification = notificationsService.saveNotification(notification);
