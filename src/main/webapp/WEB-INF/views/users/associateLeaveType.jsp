@@ -45,7 +45,7 @@
             
             <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
-                 <a href="javascript:void(0)" class="anchorBlack">Skip</a>
+                 <a class="anchorBlack" onclick="saveAssociateleave();">Skip & Finish</a>
 			     </div>
                   <div class="col-md-6">
                    <div class="pull-right">

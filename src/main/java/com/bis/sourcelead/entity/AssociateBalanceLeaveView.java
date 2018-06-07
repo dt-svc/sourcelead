@@ -15,6 +15,9 @@ public class AssociateBalanceLeaveView {
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
+	@Column (name = "LEAVE_TYPE_ID")
+	private Long leaveTypeId;
+	
 	@Column(name = "USER_ID")
 	private Long userId;
 	
@@ -146,6 +149,16 @@ public class AssociateBalanceLeaveView {
 	public void setCreatedByLastName(String createdByLastName)
 	{
 		this.createdByLastName = createdByLastName;
+	}
+
+	public Long getLeaveTypeId()
+	{
+		return leaveTypeId;
+	}
+
+	public void setLeaveTypeId(Long leaveTypeId)
+	{
+		this.leaveTypeId = leaveTypeId;
 	}
 	
 	

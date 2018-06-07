@@ -118,4 +118,18 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
         return result;
 	}
 
+
+	@Override
+	@Transactional
+	public AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		AssociateBalanceLeave associateBalanceLeave = null;
+		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.leaveTypeId = :leaveTypeId").setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).list();
+		if (assoBalLeave != null && assoBalLeave.size() > 0) {
+			associateBalanceLeave = assoBalLeave.get(0);
+		}
+		return associateBalanceLeave;
+	}
+
 }

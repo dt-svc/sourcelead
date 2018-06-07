@@ -343,7 +343,7 @@ public class LeaveDaoImpl implements LeaveDao{
 	public Map<String, Float> getNumberOfLeavesTakenByUser(Long userId,Long leaveTypeId) throws Exception {
 		Map<String, Float> leavesMap = new HashMap<>();
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Leave leave where leave.user.id = :userId  and leave.leaveType.id = :leaveTypeId and leave.status = 'APPROVED'";
+		String query = "from Leave leave where leave.user.id = :userId  and leave.leaveType.id = :leaveTypeId and (leave.status = 'APPROVED' OR leave.status = 'PENDING')";
 		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).list();
 		float numberOfLeavsTaken = leavesList.stream().mapToInt(l->l.getNumberOfDays()).sum();
 		leavesMap.put("numberOfLeavsTaken", numberOfLeavsTaken);
@@ -373,7 +373,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		Date endDate = c.getTime();
 		java.sql.Date currentMonthEndDate = new java.sql.Date(endDate.getTime());
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Leave leave where leave.user.id = :userId and leave.leaveType.id = :leaveTypeId and leave.status = 'APPROVED' and leave.createdDate BETWEEN :currentMonthStartDate AND :currentMonthEndDate";
+		String query = "from Leave leave where leave.user.id = :userId and leave.leaveType.id = :leaveTypeId and (leave.status = 'APPROVED' OR leave.status = 'PENDING') and leave.createdDate BETWEEN :currentMonthStartDate AND :currentMonthEndDate";
 		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).setParameter("currentMonthStartDate", currentMonthStartDate).setParameter("currentMonthEndDate", currentMonthEndDate)
 				.list();
 		int numberOfLeavsTaken = leavesList.stream().mapToInt(l->l.getNumberOfDays()).sum();
@@ -418,8 +418,8 @@ public class LeaveDaoImpl implements LeaveDao{
 		}
 		List<Leave> leaveList = null;
 		ResponseList<Leave> response = new ResponseList<>();
-		String query = "from Leave leave where leave.orgLocations.id =:orgLocationId and leave.status = 'APPROVED'"+subQuery;
-		String countQuery = "from Leave leave where leave.orgLocations.id =:orgLocationId and leave.status = 'APPROVED'"+subQuery;
+		String query = "from Leave leave where leave.orgLocations.id =:orgLocationId and (leave.status = 'APPROVED' OR leave.status = 'PENDING' )"+subQuery;
+		String countQuery = "from Leave leave where leave.orgLocations.id =:orgLocationId and (leave.status = 'APPROVED' OR leave.status = 'PENDING')"+subQuery;
 
 		Query queryObj = session.createQuery(query);
 		if (leaveDTO != null && leaveDTO.getLength() > 0) {
@@ -499,9 +499,8 @@ public class LeaveDaoImpl implements LeaveDao{
 			java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
 			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
 		}
-		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and leave.status = 'APPROVED'"+subQuery;
-		List<Leave> leavesList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId())
-				.list();
+		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and (leave.status = 'APPROVED' OR leave.status = 'PENDING' )"+subQuery;
+		List<Leave> leavesList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).list();
 		return leavesList;
 	}
 

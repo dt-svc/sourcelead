@@ -16,4 +16,6 @@ public interface AssociateBalanceLeaveDao {
 	AssociateBalanceLeave getAssociateBalanceByUUID(String assoBalLeaveUUID);
 
 	int updateAssociateBalLeave(String assoBalLeaveUUID, String totalLeaves);
+
+	AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId);
 }

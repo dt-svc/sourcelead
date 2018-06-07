@@ -14,10 +14,12 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
+import com.bis.sourcelead.service.LeaveService;
 
 @Service
 public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveService {
@@ -27,13 +29,13 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	@Autowired
 	AssociateBalanceLeaveDao associateBalanceLeaveDao;
 	
+	
 	@Override
 	public Response<AssociateBalanceLeaveDTO> addAssociateLeave(AssociateBalanceLeaveDTO associateBalanceLeaveDTO, User loginUser, OrgLocations orgLocations)
 	{
 		Response<AssociateBalanceLeaveDTO>  resObj = new Response<>();
 		try {
 			if(associateBalanceLeaveDTO.getTotalLeavesDto() != null && associateBalanceLeaveDTO.getTotalLeavesDto().size() > 0) {
-				
 				int count = associateBalanceLeaveDao.addAssociateLeave(associateBalanceLeaveDTO,loginUser,orgLocations);
 					
 					if (count == 1) {
@@ -89,6 +91,17 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 			isUpdated = true;	
 		}
 		return isUpdated;
+	}
+
+	@Override
+	public int getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId)
+	{
+		int totalLeaves = 0;
+		AssociateBalanceLeave associateBalanceLeave = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveTypeId,userId);
+		if(associateBalanceLeave != null) {
+			totalLeaves = Integer.parseInt(associateBalanceLeave.getTotalLeaves());
+		}
+		return totalLeaves;
 	}
 	
 }
