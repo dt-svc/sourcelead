@@ -240,9 +240,6 @@ public class OrgLocations implements Serializable{
 	
 	@Column(name = "WEEK_OFF_DAYS")
 	private String weekOffDays;
-	
-	@Column(name = "IS_TIMESHEET_AVG_HOURS_REQUIRED")
-	private String isTimesheetAvgHoursRequired;
     
     @Transient
     private String orgName;
@@ -1012,14 +1009,6 @@ public class OrgLocations implements Serializable{
 
 	public void setWeekOffDays(String weekOffDays) {
 		this.weekOffDays = weekOffDays;
-	}
-
-	public String getIsTimesheetAvgHoursRequired() {
-		return isTimesheetAvgHoursRequired;
-	}
-
-	public void setIsTimesheetAvgHoursRequired(String isTimesheetAvgHoursRequired) {
-		this.isTimesheetAvgHoursRequired = isTimesheetAvgHoursRequired;
 	}
 
 }

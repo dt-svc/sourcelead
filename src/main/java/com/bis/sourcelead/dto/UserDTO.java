@@ -42,6 +42,7 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String fromDate;
 	private String toDate;
 	private String isPrimaryAdmin;
+	private String isSuperAdmin;
 	private String role;
 	private String subscribedOrgLocationRoles;
 	private String userloggedInStatus;
@@ -466,6 +467,14 @@ public class UserDTO extends SearchDTO implements Serializable {
 
 	public void setLinkedUserPwd(String linkedUserPwd) {
 		this.linkedUserPwd = linkedUserPwd;
+	}
+
+	public String getIsSuperAdmin() {
+		return isSuperAdmin;
+	}
+
+	public void setIsSuperAdmin(String isSuperAdmin) {
+		this.isSuperAdmin = isSuperAdmin;
 	}
 	
 	

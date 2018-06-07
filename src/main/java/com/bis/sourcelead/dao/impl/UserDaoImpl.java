@@ -1412,6 +1412,9 @@ public class UserDaoImpl implements UserDao {
 				if(null != userRole.getOrgLocations().getUser() && user.getId().equals(userRole.getOrgLocations().getUser().getId())){
 					userDTO.setIsPrimaryAdmin("Y");
 				}
+				if(null != userRole.getOrgLocations().getOrg().getUser() && user.getId().equals(userRole.getOrgLocations().getOrg().getUser().getId())){
+					userDTO.setIsSuperAdmin("Y");
+				}
 				
 				userDTOList.add(userDTO);
 			}
