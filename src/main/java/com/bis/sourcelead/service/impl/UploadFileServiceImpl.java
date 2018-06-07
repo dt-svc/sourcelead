@@ -1750,7 +1750,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			 DVConstraint gradeConstraint = DVConstraint.createFormulaListConstraint("gradehidden");
 			 CellRangeAddressList gradeAddressList = new CellRangeAddressList(1, 1000, 15, 15);
 			 HSSFDataValidation gradeValidation = new HSSFDataValidation(gradeAddressList, gradeConstraint);
-			 wb.setSheetHidden(1, true);
+			 wb.setSheetHidden(4, true);
 			 sheet.addValidationData(gradeValidation);
 			 
 		 

@@ -368,7 +368,7 @@
 												     <tr id="timesheetAttRow${attCount.index}">
 													   <td>
 													       <div class="timeAdd">
-													              <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+													              <c:if test="${employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 	                                                                    <select id="${attCount.index}attProjMemberId" class='existedAttProjectMembers form-control input-sm' onclick="prepareAttachmentProjectMembers(${attCount.index},${attachment.projectMemberId});" name="timsheetAttachments[${attCount.index}].projectMemberId"  field-name="Project">  
 		                                                                  <option value=''>--select Project--</option>
 															               <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}">
@@ -381,7 +381,7 @@
 																            </c:forEach>
 															            </select>
 														         </c:if>
-														         <c:if test="${!employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+														         <c:if test="${!employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 															          <c:forEach var="pm" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}">
 															             <c:if test="${pm.id == attachment.projectMemberId}">
 															                  <p>${pm.projectName}</p> 
@@ -402,17 +402,17 @@
 			                                                                <a  href='${finfo.fileURL}' download><div class="attFile"><i class="fa fa-download"></i>${finfo.fileName}</div></a>
 										                                    <div class="timeAttBtn">
 										                                        <i class="fa fa-eye" onClick="viewFile('${finfo.fileURL}','${finfo.fileName}','${finfo.contentType}');"></i>
-										                                       <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+										                                       <c:if test="${employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 										                                            <i class="fa fa-trash" onClick='deleteSubmissionDocument("${finfo.fileDbId}");'></i>
 										                                       </c:if>
 										                                    </div>
 			                                                            </div>
 										                              </c:forEach>
 										                              </c:if>
-										                              <c:if test="${empty attachment.fileInfo}">
+										                              <c:if test="${empty attachment.fileInfo && !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 										                                  <p> No Attachments Found</p>
 										                              </c:if>
-			                                                          <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+			                                                         <c:if test="${employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 				                                                             <div id="attachmentInnerDiv0Id">
 					                                                                  <input type='hidden' name='0maxAttDivRowNumber' id='0maxAttDivRowNumber'  value='1' />
 							                                                          <div id="0AttchmentDiv0Id" class="addRowBtn">
@@ -2184,7 +2184,8 @@ function newSaveTimesheet(status){
 	}  -->
 <script>
 function validateTimesheetHours(status){
-	 if(status != null && status != 'undefined' && status != '' && status == 'Submitted'){
+	 var timesheetAvgHoursValidation ='${timesheetAvgHoursValidation}'; 
+	 if(status != null && status != 'undefined' && status != '' && status == 'Submitted' && timesheetAvgHoursValidation == 'Y'){
 		 var total = $("#grandTotal").val();
 		 var wokingHoursPerWk ='${minimumWorkingHoursPerWeek}'; 
 		 if(total != "" && total != null && total != 'undefined'){

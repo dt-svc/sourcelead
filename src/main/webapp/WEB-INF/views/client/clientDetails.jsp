@@ -275,7 +275,7 @@ margin-bottom: 15px;
 						
 						<c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 						  var sectionId = '${section.id}';
-						  preapareCustomFieldDetails(clientLocationId,orgRelationID,sectionId);
+						  preapareClientCustomFieldDetails(clientLocationId,orgRelationID,sectionId);
 						</c:forEach> 
 						
 						
@@ -553,7 +553,7 @@ margin-bottom: 15px;
 
 
 <script type="text/javascript">
-function preapareCustomFieldDetails(clientLocationId,orgRelationID,sectionId){
+function preapareClientCustomFieldDetails(clientLocationId,orgRelationID,sectionId){
 	$.ajax({
         type : "POST",
          url: sourceleadUrl+"/getAllASectionCustomFields?&clientLocationId="+clientLocationId+"&orgRelationID="+orgRelationID+"&requestFrom=clientAndVendor"+"&sectionId="+sectionId,        

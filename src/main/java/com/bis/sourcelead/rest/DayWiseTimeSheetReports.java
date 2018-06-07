@@ -114,7 +114,7 @@ public void exportDaywiseTimesheetReport(DayWiseTimesheetReoprtsDTO dayWiseTimes
 			file = dayEntryReportsService.exportDayEntryReportsWithProjectExcel(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
 		}
 	} else if("pdf".equalsIgnoreCase(dayWiseTimesheetReoprtsDto.getExportType())){
-		if(!dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
+		if(dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
 			file = dayEntryReportsService.exportDayEntryReportsWithoutProjectPdf(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
 		}else {
 			file = dayEntryReportsService.exportDayEntryReportsWithProjectPdf(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
