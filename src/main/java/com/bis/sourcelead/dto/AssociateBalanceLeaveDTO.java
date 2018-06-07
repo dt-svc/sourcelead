@@ -18,6 +18,8 @@ public class AssociateBalanceLeaveDTO {
 	
 	private String userId;
 	
+	private Long leaveTypeId;
+	
 	
 	private List<TotalLeaveDTO> totalLeavesDto;
 
@@ -99,6 +101,16 @@ public class AssociateBalanceLeaveDTO {
 	public void setUserId(String userId)
 	{
 		this.userId = userId;
+	}
+
+	public Long getLeaveTypeId()
+	{
+		return leaveTypeId;
+	}
+
+	public void setLeaveTypeId(Long leaveTypeId)
+	{
+		this.leaveTypeId = leaveTypeId;
 	}
 	
 	

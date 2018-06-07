@@ -1691,9 +1691,11 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	@RequestMapping(value = "/getAssociateBalanceLeavesByUserId", method = RequestMethod.GET)
 	public ResponseList<AssociateBalanceLeaveDTO> getAssociateBalanceLeavesByUserId(@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request) throws Exception
 	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ResponseList<AssociateBalanceLeaveDTO> response = new ResponseList();
 		try {
-			List<AssociateBalanceLeaveDTO> list = associateBalanceLeaveService.getAssociateBalanceLeavesByUserId(userId);
+			List<AssociateBalanceLeaveDTO> list = associateBalanceLeaveService.getAssociateBalanceLeavesByUserId(userId,orgLocations,loginUser);
 			response.setData(list);
 		} catch (Exception e) {
 			response.setResponse(Result.AWKWARD.name());

@@ -11,7 +11,7 @@ public interface AssociateBalanceLeaveService {
 
 	Response<AssociateBalanceLeaveDTO> addAssociateLeave(AssociateBalanceLeaveDTO associateBalanceLeaveDTO, User loginUser, OrgLocations orgLocations);
 
-	List<AssociateBalanceLeaveDTO> getAssociateBalanceLeavesByUserId(Long userId);
+	List<AssociateBalanceLeaveDTO> getAssociateBalanceLeavesByUserId(Long userId, OrgLocations orgLocations, User loginUser);
 
 	boolean getAssociateBalanceByUUID(String assoBalLeaveUUID, String totalLeaves);
 

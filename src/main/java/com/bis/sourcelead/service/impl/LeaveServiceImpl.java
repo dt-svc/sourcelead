@@ -632,7 +632,7 @@ public class LeaveServiceImpl implements LeaveService{
 		Calendar sDate = Calendar.getInstance();
         Calendar eDate = Calendar.getInstance();
         sDate.setTime(fromDate);
-        eDate.setTime(yearStartDate);
+        eDate.setTime(yearStartDate); // 
         int difInMonths = eDate.get(Calendar.MONTH) - sDate.get(Calendar.MONTH) + 1;
         int fromMonth = sDate.get(Calendar.MONTH);
 		
@@ -1865,14 +1865,15 @@ public class LeaveServiceImpl implements LeaveService{
 	{
 
 		boolean isApproved = false;
-		Employees emp = null;
+//		Employees emp = null;
 		Leave updaetedLeave = null;
 //		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory();
 		Leave leave = leaveDao.getLeaveByLeaveUUId(leaveUUID);
 		
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_YEAR, 1);
-        Date yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(cal.getTime()));
+        Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(),orgLocations.getId());
+        Date yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(leave.getUser().getCreatedDate())); // Need to Pass employee created date
         Date fromDate = commonUtil.getDateFormat(Constants.DMY.format(leave.getFromDate()));
         
 		List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),leave.getUser().getId(),yearStartDate,fromDate);
