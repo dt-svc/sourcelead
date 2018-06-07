@@ -454,10 +454,10 @@
 						               </c:if>
 						            </c:forEach>
 					</c:if>
-					<c:if test="${requirement.driveJob}">
+					<c:if test="${requirement.walkIn}">
                     	<div class="clearfix"></div>
                     	<div class="require_wrap_details_cta">
-                    		<b>Drive Days :</b><span>${requirement.driveDays}</span>
+                    		<b>WalkIn Day(s) :</b><span>${requirement.walkInDays}</span>
 	                    	<div class="clearfix"></div>
                     	</div>
                     	<div class="clearfix"></div> 

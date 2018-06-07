@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -82,6 +83,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ReportsUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.DashboardController;
+import com.ibm.icu.util.Calendar;
 
 /**
  * This class is used for...
@@ -455,7 +457,7 @@ public class DashboardRestController {
 	 
 	 @PreAuthorize("hasRole('ROLE_VIEW_REQUIREMENT')")
 	 @RequestMapping(value = "/getAssignedRequirementListByOrgLocationIDAndUserId")
-	 public ResponseList<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,@RequestParam(defaultValue="false") boolean isDrive,HttpServletRequest request) throws Exception {
+	 public ResponseList<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(@RequestParam(value="status", required=false) String status,@RequestParam(value="clients", required=false) String clients,@RequestParam(defaultValue="false") boolean isWalkIn, @RequestParam(defaultValue="-1") int walkInDay, HttpServletRequest request) throws Exception {
 		ResponseList<Requirement> response = new ResponseList<>();
 		User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if(user != null) {
@@ -466,14 +468,27 @@ public class DashboardRestController {
 				String userCode = user.getUserCode();
 				String userType = null;
 				List<Requirement>   requirementList = null;
-				
+				String dayString = "";
+				String selectedDayString = "";
+				int selectedDay = walkInDay;
+				if(isWalkIn) {
+					Calendar c = Calendar.getInstance();
+					if(walkInDay >= 0) {
+						selectedDay = walkInDay;
+						c.set(Calendar.DAY_OF_WEEK, walkInDay);
+					} else {
+						selectedDay = c.get(Calendar.DAY_OF_WEEK);
+					}
+					dayString = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(c.getTime());
+					selectedDayString = new SimpleDateFormat("EEEE (dd/MM/yyyy)", Locale.ENGLISH).format(c.getTime());
+				}
 				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 					userType = Constants.ADMIN;
 					//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
-					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isDrive);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
 				}else{
 					//requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
-					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isDrive);
+					requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(loginOrgLocation.getId(), userType, user.getId(), userCode, isWalkIn, dayString);
 				}
 				
 				//List<Requirement>   requirementList = requirementService.getAssignedRequirementListByOrgLocationIDAndUserId(loginOrgLocation.getId(), userType, user.getId(), userCode);
@@ -528,7 +543,10 @@ public class DashboardRestController {
 				}
 				response.setData(requirementList);
 			    response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
+			    if(isWalkIn)
+			    	response.setResponseMessage(Result.SUCCESS.getValue() + ":" + selectedDay +":"+selectedDayString);
+			    else
+			    	response.setResponseMessage(Result.SUCCESS.getValue());
 			}catch (Exception e) {
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());

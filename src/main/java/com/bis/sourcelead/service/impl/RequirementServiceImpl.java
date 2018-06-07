@@ -393,8 +393,8 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setNoticePeriod(null);
 		}
 		
-		requirement.setDriveJob(requirementDTO.isDriveJob());
-		requirement.setDriveDays(requirementDTO.isDriveJob() ? requirementDTO.getDriveDays() : "");
+		requirement.setWalkIn(requirementDTO.isWalkIn());
+		requirement.setWalkInDays(requirementDTO.isWalkIn() ? requirementDTO.getWalkInDays() : "");
 		
 		if (StringUtils.isNotBlank(requirementDTO.getTravelAllowance())) {
 			requirement.setTravelAllowance(requirementDTO.getTravelAllowance());
@@ -2736,9 +2736,9 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(
-			Long orgLocationId, String userType, Long userId, String userCode, boolean isDriveJob) throws Exception {
+			Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception {
 		return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId,
-				userType, userId, userCode, isDriveJob);
+				userType, userId, userCode, isWalkIn, walkinDay);
 	}
 
 	@Override

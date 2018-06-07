@@ -935,20 +935,20 @@ $(document).ready(function () {
 			
 			<div class="form-group">
 				<div class="ml">
-					<input type="checkbox" name="driveJob" id="isDrive" ${requirement.driveJob ? "checked='checked'" : ""}>
-						<label for="isDrive">&nbsp;&nbsp;<strong>Is Drive Job</strong> &nbsp;&nbsp;
+					<input type="checkbox" name="walkIn" id="isWalkIn" ${requirement.walkIn ? "checked='checked'" : ""}>
+						<label for="isWalkIn">&nbsp;&nbsp;<strong>Is WalkIn Job</strong> &nbsp;&nbsp;
 						</label>
 				</div>
-				<div id="selectDriveDiv" ${requirement.driveJob ? "" : "style='display: none;'"}>
-					<label class="col-md-3">Select Drive Day(s)</label>
+				<div id="selectWalkInDiv" ${requirement.walkIn ? "" : "style='display: none;'"}>
+					<label class="col-md-3">Select WalkIn Day(s)</label>
 					<div class="col-md-6">
 						<select multiple class="chosen-select form-control"
-							name="driveDays" data-placeholder="Select Drive Days"
-							id="driveDays" data-validation-optional="true">
+							name="walkInDays" data-placeholder="Select WalkIn Day(s)"
+							id="walkInDays" data-validation-optional="true">
 							<c:forEach items="Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday" var="day">
 								<c:set var="selected" value="false"></c:set>
-								<c:if test="${requirement.driveDays!=null && requierment.driveDays != ''}">
-									<c:forEach items="${requirement.driveDays.split(',')}" var="selectedDay">
+								<c:if test="${requirement.walkInDays!=null && requierment.walkInDays != ''}">
+									<c:forEach items="${requirement.walkInDays.split(',')}" var="selectedDay">
 										<c:if test="${selectedDay eq day}">
 											<c:set var="selected" value="true"></c:set>
 										</c:if>
@@ -956,13 +956,6 @@ $(document).ready(function () {
 								</c:if>
 								<option value="${day}" ${selected?"selected='selected'":""}>${day}</option>	
 							</c:forEach>
-							<%-- <option ${requirement.driveDays == 'MON' ? "selected='selected'" : ''} value="MON">MONDAY</option>
-							<option ${requirement.driveDays == 'TUE' ? "selected='selected'" : ''} value="TUE">TUESDAY</option>
-							<option ${requirement.driveDays == 'WED' ? "selected='selected'" : ''} value="WED">WEDNESDAY</option>
-							<option ${requirement.driveDays == 'THU' ? "selected='selected'" : ''} value="THU">THURSDAY</option>
-							<option ${requirement.driveDays == 'FRI' ? "selected='selected'" : ''} value="FRI">FRIDAY</option>
-							<option ${requirement.driveDays == 'SAT' ? "selected='selected'" : ''} value="SAT">SATURDAY</option>
-							<option ${requirement.driveDays == 'SUN' ? "selected='selected'" : ''} value="SUN">SUNDAY</option> --%>
 						</select>
 					</div>
 				</div>
@@ -1572,11 +1565,11 @@ $(document).ready(function () {
 </div> 
 
 <script type="text/javascript">
-	$("#isDrive").change(function(){
+	$("#isWalkIn").change(function(){
 		if($(this).is(":checked")) {
-			$("#selectDriveDiv").show();
+			$("#selectWalkInDiv").show();
 		} else {
-			$("#selectDriveDiv").hide();
+			$("#selectWalkInDiv").hide();
 		}
 	});
 </script>
