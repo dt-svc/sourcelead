@@ -374,11 +374,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor,String isGlobalUser){
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,Long projectId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor,String isGlobalUser){
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		
 		ResponseList<ProjectMembers> response = new ResponseList<>();
-		Session session = this.sessionFactory.getCurrentSession();
+ 		Session session = this.sessionFactory.getCurrentSession();
 		
 		
 		java.sql.Date sqlStartDate = null;
@@ -400,6 +400,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					.append("OR pm.projectMemberCandidteId.mobilePhone like '%" + searchValue + "%' ")
 					.append("OR pm.projectMemberCandidteId.designationType like '%" + searchValue + "%' ")
 					.append("OR pm.projects.projectName like '%" + searchValue + "%' ")
+					.append("OR pm.projectClientsId.orgRelationId.responderLocationId.org.orgName like '%" + searchValue + "%' ")
 					.append("OR pm.id IN")
 					.append( " (select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus  like '%"+ searchValue +"') ")
 					.append( " )");
@@ -411,6 +412,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String dateQuery = "";
 		String userQuery = "";
 		String clientQuery = "";
+		String projectQuery = "";
 		String statusQuery = "";
 		String fillingOptionQuery = "";
 		String sortingOrder = "";
@@ -421,6 +423,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String dateCountQuery = "";
 		String userCountQuery = "";
 		String clientCountQuery = "";
+		String projectCountQuery = "";
 		String statusCountQuery = "";
 		
 		StringBuilder searchQuery = new StringBuilder();
@@ -431,6 +434,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					.append("OR candidate.mobilePhone like '%" + searchValue + "%' ")
 					.append("OR candidate.designationType like '%" + searchValue + "%' ")
 					.append("OR projects.projectName like '%" + searchValue + "%' ")
+					.append("OR pclient.orgRelationId.responderLocationId.org.orgName like '%" + searchValue + "%' ")
 					.append("OR pm.id IN")
 					.append( " (select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus  like '%"+ searchValue +"%') ")
 					.append( " )");
@@ -456,10 +460,12 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	     }
 		if(clientId != null){
 			clientQuery = " and pclient.orgRelationId.id = :clientId ";
+			clientCountQuery = " and pm.projectClientsId.orgRelationId.id = :clientId ";
 		}
 		
-		if(clientId != null){
-			clientCountQuery = " and pm.projectClientsId.orgRelationId.id = :clientId ";
+		if(projectId != null){
+			projectQuery = " and pm.projects.id = :projectId ";
+			projectCountQuery = " and pm.projects.id = :projectId ";
 		}
 	  
 	     if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
@@ -530,6 +536,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				    +fillingOptionQuery
 				    + statusQuery
 				    +clientQuery
+				    +projectQuery
 				    + dateQuery
 					+ userQuery
 					+biweeklyDateFilter
@@ -544,6 +551,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				+fillingOptionCountQuery
 				+ statusCountQuery
 				+ clientCountQuery
+				+projectCountQuery
 				+ dateCountQuery
 				+ userCountQuery
 				+biweeklyDateFilter
@@ -560,6 +568,10 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			query.setParameter("clientId", clientId);
 		}
 		
+		if(projectId != null){
+			query.setParameter("projectId", projectId);
+		}
+		
 		@SuppressWarnings("unchecked")
 		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId).setFirstResult(start).setMaxResults(length).list();
 		response.setData(projectMemberList);
@@ -570,6 +582,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		if(clientId != null){
 			countQ.setParameter("clientId", clientId);
+		}
+		if(projectId != null){
+			countQ.setParameter("projectId", projectId);
 		}
 		if(StringUtils.isNotEmpty(timesheetFrequency)){
 			countQ.setString("timesheetFrequency", timesheetFrequency);

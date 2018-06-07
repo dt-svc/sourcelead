@@ -448,7 +448,7 @@ public class ProjectsDaoImpl implements ProjectsDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Projects> getProjectsBasedOnClientsAndStatusSelectionInFilters(Long userId, String clients,
 			String status, Long orgLocationsId) throws Exception {
-
+		
 		Collection<Projects> plist = null;
 		Session session = this.sessionFactory.getCurrentSession();
 		String[] tokens = status.split(",");
@@ -785,6 +785,49 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		
 		response.setData(getProjectClientAndManagerDetails(projectsList,orgLocationsId,userRole,projectsDTO));
 		return response;
+	}
+	
+	
+	
+	@Override
+	@Transactional
+	public List<Projects> getProjectsListByUserIdAndOrgLocationIdAndStatus(Long userId,Long orgLocationsId,Long orgId,Long candidateId,String userRole,String globalAccess) throws Exception {
+			Session session = this.sessionFactory.getCurrentSession();
+			String approverQuery = "";
+			String query = null;
+			Query queryObj = null;
+		    StringBuilder query1 = new StringBuilder("");
+			if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
+				approverQuery = " and (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+") OR pc.createdBy.id = "+userId+" "
+						+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.id = "+candidateId+" and pm.status = '1') ) ";
+			}
+			String projectModeQuery = "";
+			if(StringUtils.isNotBlank(globalAccess) && globalAccess.equalsIgnoreCase(Constants.YES)) {
+				projectModeQuery = " and (ps.orgLocationsId.org.id = :orgId OR ps.projectMode = 'Finished')";
+			}else {
+				projectModeQuery = " and (ps.orgLocationsId = :orgLocationsId  OR ps.projectMode = 'Finished')";
+			}
+			if(StringUtils.isNotBlank(globalAccess) && globalAccess.equalsIgnoreCase(Constants.YES)) {
+				query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.org.id = :orgId  "+approverQuery+" ) "+projectModeQuery+"  ";
+			}else {
+				query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId  "+approverQuery+" ) "+projectModeQuery+" ";
+			}
+		
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")");
+			}else{
+				 queryObj = session.createQuery(query + query1.toString());
+			}
+			
+		if(StringUtils.isNotBlank(globalAccess) && globalAccess.equalsIgnoreCase(Constants.YES)) {
+			queryObj.setLong("orgId", orgId).list();
+		}else {
+			queryObj.setLong("orgLocationsId", orgLocationsId).list();
+		}
+		
+		List<Projects> projectsList = queryObj.list();
+		 return projectsList;
+		
 	}
 
 

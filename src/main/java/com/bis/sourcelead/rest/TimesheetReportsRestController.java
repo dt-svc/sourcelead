@@ -237,7 +237,7 @@ public class TimesheetReportsRestController {
 		  Date endDate = dateList.get("ENDDATE");
 			String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 
-		ResponseList<ProjectMembers> projRespList = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(),timesheetReportsDTO.getSearchValue(),null,start,length,"reports",isGlobalAccess);
+		ResponseList<ProjectMembers> projRespList = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null,null, orgLocations.getId(), loginUser.getId(),timesheetReportsDTO.getSearchValue(),null,start,length,"reports",isGlobalAccess);
 		if(projRespList.getData() != null){
 			
 		List<ProjectMembers> projectMembers = projRespList.getData();
