@@ -198,63 +198,63 @@ public class CustomFormRestController {
     }
 
 	private Map<Long, String[]> getDataByEntityIdActionIdandType(CustomFieldsRequestTypeDTO customFieldsRequestTypeDTO,Long actionId, OrgLocations loginOrgLocations) throws Exception {
-		Map<Long, String[]> jobData = null;
+		Map<Long, String[]> getcustomFieldData = null;
 		 		 List<CustomFormFieldDTO> formFieldId = getSectionDataDetailsByActionId(actionId,loginOrgLocations);
 		 		 OrgLocations orgLoc = orgLocationService.getOrgLocations(loginOrgLocations.getId());
 		 		 if(customFieldsRequestTypeDTO != null && StringUtils.isNotEmpty(customFieldsRequestTypeDTO.getRequestFrom())) {
 		 		 switch (customFieldsRequestTypeDTO.getRequestFrom()) {
 		 		 	case "requirement":
 			 			if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getRequirementId()!= null) {
-							 jobData = jobCustomFieldDataService.getJobCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,customFieldsRequestTypeDTO.getRequirementId());
+							 getcustomFieldData = jobCustomFieldDataService.getJobCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,customFieldsRequestTypeDTO.getRequirementId());
 						 }
 			 			break;
 		 		 	case "candidate":
 		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getCandidateId() != null) {
-							 jobData = candidateCustomFieldDataService.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,customFieldsRequestTypeDTO.getCandidateId());
+							 getcustomFieldData = candidateCustomFieldDataService.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(),formFieldId,customFieldsRequestTypeDTO.getCandidateId());
 						 }
 			 			break;
 		 		 	case "user" :
 		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getUserId() != null){
-		 		 			jobData = userCustomFieldDataService.getUserCustomFieldDataByUserId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getUserId());
+		 		 			getcustomFieldData = userCustomFieldDataService.getUserCustomFieldDataByUserId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getUserId());
 		 		 		}
 		 		 	     break;
 		 		 	case "clientAndVendor":
 		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getOrgRelationID()!= null && customFieldsRequestTypeDTO.getClientLocationId() != null){
-		 		 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId( customFieldsRequestTypeDTO.getClientLocationId(), customFieldsRequestTypeDTO.getOrgRelationID(),loginOrgLocations.getId());
+		 		 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById( customFieldsRequestTypeDTO.getClientLocationId(), customFieldsRequestTypeDTO.getOrgRelationID());
 		 		 			if(orgRelation.getResponderLocationId().getId().longValue() != loginOrgLocations.getId().longValue()) {
-		 		 				jobData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getResponderLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
+		 		 				getcustomFieldData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getResponderLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
 		 		 			}else if(orgRelation.getLocationId().getId().longValue() != loginOrgLocations.getId().longValue()) {
-		 		 				jobData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
+		 		 				getcustomFieldData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
 		 		 			}
 		 		 			
 		 		 		}
 		 		 		break;
 		 		 	case "project" :
 		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getProjectId() != null){
-		 		 			jobData =  projectCustomFieldDataService.getProjectCustomFieldDataByProjectId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getProjectId());
+		 		 			getcustomFieldData =  projectCustomFieldDataService.getProjectCustomFieldDataByProjectId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getProjectId());
 		 		 		}
 		 		 		
 		 		 		break;
 		 		 	case "contract" :
 		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getContractId() != null){
-		 		 			jobData =  newContractCustomFieldDataService.getNewContractCustomFieldDataByContractId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getContractId());
+		 		 			getcustomFieldData =  newContractCustomFieldDataService.getNewContractCustomFieldDataByContractId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getContractId());
 		 		 	}
 		 		 		
 		 		 		break;
 		 		 	case "asset" :
 		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getAssetId() != null){
-		 		 			jobData =  assetCustomFieldService.getAssetCustomFieldDataByAssetId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getAssetId());
+		 		 			getcustomFieldData =  assetCustomFieldService.getAssetCustomFieldDataByAssetId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getAssetId());
 		 		 	}
 		 		 		
 		 		 		break;
 		 		 	case "projectTask" :
 		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getProjectTask() != null){
-		 		 			jobData =  projectTaskCustomFieldDataService.getProjectTaskCustomFieldDataByUserId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getProjectTask());
+		 		 			getcustomFieldData =  projectTaskCustomFieldDataService.getProjectTaskCustomFieldDataByUserId(orgLoc.getOrg().getId(),formFieldId, customFieldsRequestTypeDTO.getProjectTask());
 		 		 	}
 		 		 	break;	
 		 		 		
 		 		 }
 		 		 }
-		  return jobData;
+		  return getcustomFieldData;
 		 }
 	}

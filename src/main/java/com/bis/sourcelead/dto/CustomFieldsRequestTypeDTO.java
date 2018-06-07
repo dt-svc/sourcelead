@@ -13,6 +13,7 @@ public class CustomFieldsRequestTypeDTO {
 	private Long assetId;
 	private Long projectTask;
 	private String requestType;
+	private String clientVendorContactType;
 	public Long getSectionId() {
 		return sectionId;
 	}
@@ -84,6 +85,12 @@ public class CustomFieldsRequestTypeDTO {
 	}
 	public void setRequestType(String requestType) {
 		this.requestType = requestType;
+	}
+	public String getClientVendorContactType() {
+		return clientVendorContactType;
+	}
+	public void setClientVendorContactType(String clientVendorContactType) {
+		this.clientVendorContactType = clientVendorContactType;
 	}
 	
 }

@@ -345,7 +345,7 @@ public class UserServiceImpl implements UserService {
 			e1.printStackTrace();
 		}
 
-		if(addUserDTO.getCustomFormData() !=null) {
+		if(addUserDTO.getCustomFormData() !=null && !responderType.equalsIgnoreCase("vendor") && !responderType.equalsIgnoreCase("client")) {
 			for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
 				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
 					UserCustomFieldData userCustomFields = null;
