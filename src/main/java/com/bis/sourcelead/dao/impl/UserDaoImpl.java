@@ -23,6 +23,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Employees;
@@ -1807,27 +1809,142 @@ public class UserDaoImpl implements UserDao {
 		List<User> usersList = null;
 		StringBuilder query1 = new StringBuilder("");
 		String globalAccessQuery = "";
-		
-		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
-			globalAccessQuery = " and userRole.orgLocations.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
-		}else {
-			globalAccessQuery = " and userRole.orgLocations.id = :orgLocationId";
-		}
-		
-		
-		if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
-			query1.append(" user.firstName like '%" + userDTO.getSearchValue() + "%' ")
-			.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ");
-						
-			}
-		
+		String searchQuery = "";
+		int totalCount = 0;
 		String sortingQry = "";
-		if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
-				sortingQry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
-		}
 		
 		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
-			query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where  userRole.userState = 'ACTIVE' "+globalAccessQuery+" )";
+			
+			if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
+				searchQuery = " AND U.FIRST_NAME LIKE '%" + userDTO.getSearchValue() + "%' OR U.LAST_NAME LIKE '%" + userDTO.getSearchValue() + "%'";
+			}
+			if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
+				sortingQry = " ORDER BY U.FIRST_NAME"+" "+userDTO.getSortOrder();
+			}
+			
+			if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+				
+				try {
+				query ="SELECT "
+						+" CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS fullName, "
+						+" U.ID AS userId,"
+						+" U.USER_CODE AS userCode"
+						+ " FROM "
+					    + " USER U,"
+					    + " USER_ROLE UR,"
+					    + " ORG_LOCATIONS OL"
+						+ " WHERE OL.ID = UR.ORG_LOCATIONS_ID AND "
+						+ " UR.USER_ID = U.ID AND "
+					    + " UR.USER_STATE = 'ACTIVE' "
+						+searchQuery
+						+ " AND  OL.ORG_ID = :orgId"
+					    + " GROUP BY UR.USER_ID"
+					    +sortingQry;
+				
+				
+				queryObj = session.createSQLQuery(query);
+				queryObj.setParameter("orgId", orgId);
+				queryObj.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
+				queryObj.setFirstResult(userDTO.getStart());
+				queryObj.setMaxResults(userDTO.getLength());
+			List<UserDTO> userDTOList = queryObj.list();
+			if(userDTOList != null && !userDTOList.isEmpty()) {
+				usersList = new ArrayList<>();
+				for(UserDTO uDTO :userDTOList) {
+					User user = new User();
+					user.setId(uDTO.getUserId().longValue());
+					user.setFullName(uDTO.getFullName());
+					user.setUserCode(uDTO.getUserCode());
+					usersList.add(user);
+				}
+			}
+			
+			
+			String countQuery ="SELECT"
+					+ " COUNT(DISTINCT UR.USER_ID) AS USER_COUNT"
+					+ " FROM"
+					    + " USER U,"
+					    + " USER_ROLE UR,"
+					    + " ORG_LOCATIONS OL"
+						+ " WHERE UR.USER_ID = U.ID AND "
+					    + " OL.ID = UR.ORG_LOCATIONS_ID AND"
+					    + " UR.USER_STATE = 'ACTIVE' "
+						+searchQuery
+						+ " AND  OL.ORG_ID = :orgId"
+					    +sortingQry;
+			
+			Query countqueryString = session.createSQLQuery(countQuery);
+			countqueryString.setParameter("orgId", orgId);
+			BigInteger filterCount1 =  (BigInteger) countqueryString.uniqueResult();
+			filterCount = filterCount1.intValue();
+			totalCount = filterCount1.intValue();
+			
+				
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}else {
+				
+				try {
+				
+					query ="SELECT "
+							+" CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS fullName, "
+							+" U.ID AS userId,"
+							+" U.USER_CODE AS userCode"
+							+ " FROM"
+						    + " USER U,"
+						    + " USER_ROLE UR"
+							+ " WHERE"
+							+ " UR.USER_ID = U.ID AND "
+						    + " UR.USER_STATE = 'ACTIVE' "
+							+searchQuery
+						    + " AND  UR.ORG_LOCATIONS_ID = :orgLocationId"
+						    + " GROUP BY UR.USER_ID"
+						    +sortingQry;
+				
+					queryObj = session.createSQLQuery(query);
+					queryObj.setParameter("orgLocationId", orgLocationId);
+					queryObj.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
+					queryObj.setFirstResult(userDTO.getStart());
+					queryObj.setMaxResults(userDTO.getLength());
+				List<UserDTO> userDTOList = queryObj.list();
+				if(userDTOList != null && !userDTOList.isEmpty()) {
+					usersList = new ArrayList<>();
+					for(UserDTO uDTO :userDTOList) {
+						User user = new User();
+						user.setId(uDTO.getUserId().longValue());
+						user.setFullName(uDTO.getFullName());
+						user.setUserCode(uDTO.getUserCode());
+						usersList.add(user);
+					}
+				}
+				
+				String countQuery ="SELECT"
+						+ " COUNT(DISTINCT UR.USER_ID) AS USER_COUNT"
+						+ " FROM"
+						    + " USER U,"
+						    + " USER_ROLE UR"
+							+ " WHERE UR.USER_ID = U.ID AND "
+						    + " UR.USER_STATE = 'ACTIVE' "
+							+searchQuery
+						    + " AND  UR.ORG_LOCATIONS_ID = :orgLocationId"
+						    +sortingQry;
+				
+				Query countqueryString = session.createSQLQuery(countQuery);
+				countqueryString.setParameter("orgLocationId", orgLocationId);
+				BigInteger filterCount1 =  (BigInteger) countqueryString.uniqueResult();
+				filterCount = filterCount1.intValue();
+				totalCount = filterCount1.intValue();
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+			
+			
+			
+/*			query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where  userRole.userState = 'ACTIVE' "+globalAccessQuery+" )";
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
 			}else{
@@ -1842,9 +1959,28 @@ public class UserDaoImpl implements UserDao {
 			}else {
 				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).list();
 				filterCount = countlist.iterator().next().intValue();
-			}
+			}*/
 			
 		}else {
+			
+			if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+				globalAccessQuery = " and userRole.orgLocations.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+			}else {
+				globalAccessQuery = " and userRole.orgLocations.id = :orgLocationId";
+			}
+			
+			
+			if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
+				query1.append(" user.firstName like '%" + userDTO.getSearchValue() + "%' ")
+				.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ");
+							
+				}
+			
+			
+			if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
+					sortingQry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
+			}
+			
 			query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where (userRole.reportingManager.id = :userId OR userRole.resourceManager.id = :userId) and userRole.userState = 'ACTIVE' "+globalAccessQuery+" ) "
 					+ " OR user.id IN (select tm.memberUserId.id from TeamMembers tm where tm.teamId.ownerUserId = :userId and tm.status = '1'  and tm.teamId.orgLocationsId = :orgLocationId))";
 			if(query1.toString() != null && !query1.toString().isEmpty()){
@@ -1863,14 +1999,14 @@ public class UserDaoImpl implements UserDao {
 				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
 				filterCount = countlist.iterator().next().intValue();
 			}
+			queryObj.setFirstResult(userDTO.getStart());
+			queryObj.setMaxResults(userDTO.getLength());
+			usersList = queryObj.list();
 		}
 		
-		queryObj.setFirstResult(userDTO.getStart());
-		queryObj.setMaxResults(userDTO.getLength());
-		usersList = queryObj.list();
 		
-		int totalCount = 0;
-
+		
+		
 		
 		if (userDTO != null) {
 			if(countlist != null && !countlist.isEmpty()) {

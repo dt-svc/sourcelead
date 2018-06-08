@@ -26,8 +26,10 @@ function assocBalanceLeaveSummary(userId){
          		result = result + '<label  class="col-md-3"><th>'+opt.leaveTypeName+'</th></label>';
          		result = result + '<div class="col-md-2">';
          		result = result + '<input type="text" value='+opt.noofLeaves+' id="'+i+'noofLeaves" name="'+i+'noofLeaves" class="form-control" onblur="editAssBalLeave(\''+opt.assoBalLeaveUUID+'\','+i+','+userId+')">';
+         		
+         		result = result + '<div id="'+i+'errorDiv" style="color:red;"></div>';
          		result = result + '</div>';
-         		result = result + '<div class="col-md-1">';
+         		result = result + '<div class="col-md-1 paddingLeft">';
          		result = result + '<i class="fa fa-pencil cursorPointer mt5"></i>';
          		result = result + '</div>';
          		result = result + '</div>';
@@ -54,13 +56,21 @@ function assocBalanceLeaveSummary(userId){
 <script>
 function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
 	var totalLeaves = $("#"+rowId+"noofLeaves").val();
- 	$.ajax({
-        type : "PUT",
-         url: sourceleadUrl+"/editAssBalLeave?"+tokenParamName+"="+tokenValue+"&assoBalLeaveUUID="+assoBalLeaveUUID+"&totalLeaves="+totalLeaves,        
-         success :function(json) {  
-        	 assocBalanceLeaveSummary(userId)
-                 },
-              });  
+	alert("totalLeaves : "+totalLeaves);
+	if(totalLeaves != '' && totalLeaves != 'undefined' && totalLeaves != null){
+		$("#"+rowId+"errorDiv").text("");
+		$.ajax({
+	        type : "PUT",
+	         url: sourceleadUrl+"/editAssBalLeave?"+tokenParamName+"="+tokenValue+"&assoBalLeaveUUID="+assoBalLeaveUUID+"&totalLeaves="+totalLeaves,        
+	         success :function(json) {  
+	        	 assocBalanceLeaveSummary(userId)
+	                 },
+	              }); 
+	}else{
+		alert("else");
+		$("#"+rowId+"errorDiv").text("Total Leave Required");
+	}
+ 	 
 }
 
 </script>

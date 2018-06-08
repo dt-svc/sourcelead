@@ -1936,4 +1936,10 @@ public class LeaveServiceImpl implements LeaveService{
 	
 	}
 
+	@Override
+	public List<LeaveApproveHierarchy> getAllLeaveApproversList(Long locationId)
+	{
+		return leaveDao.getAllLeaveApproversList(locationId);
+	}
+
 }
