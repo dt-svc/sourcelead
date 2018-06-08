@@ -982,7 +982,23 @@ public class LeaveManagementRestController {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 					List<User> userList = userService.getUsersListByOrglocationId(orgLocation.getId());
-					int result = associateBalanceLeaveService.addLeaveTypeToAssociate(userList,orgLocation,leaveType,user);
+					if(leaveTypeDTO.getLeaveTypeId() == 0) {
+						int result = associateBalanceLeaveService.addLeaveTypeToAssociate(userList,orgLocation,leaveType,user);
+					}else {
+						int previousNoOfDays = Integer.parseInt(leaveTypeDTO.getPreviousNoOfdays());
+						int currentNofDays = leaveType.getNoOfDays();
+						int diffLeaves = 0;
+						String actionType = "";
+						if(previousNoOfDays < currentNofDays) {
+							diffLeaves = currentNofDays - previousNoOfDays;
+							actionType = "ADD";
+						}if(previousNoOfDays > currentNofDays) {
+							 diffLeaves = previousNoOfDays - currentNofDays;
+							 actionType = "SUB";
+						}
+						int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(userList, orgLocation.getId(), leaveType, 1,diffLeaves,actionType);
+					}
+					
 				}
 			} else if (user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
