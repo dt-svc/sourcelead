@@ -82,7 +82,6 @@ function getNotificationsByuserId(){
 </script>
 <script>
 function linkReadAndUnread(uuId){
-	alert("hello")
 	 $.ajax({
 	      type: "POST",
 	  	  url: sourceleadUrl+"/notificationStatusRead?${_csrf.parameterName}=${_csrf.token}&uuId="+uuId,

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -19,6 +20,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +34,12 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
+import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementLocations;
@@ -1088,52 +1093,51 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC,
-			Date endDateUTC) throws Exception {
-
-		Map<String, Object> params = new HashMap<String, Object>();
-		String subQueryDateRange = "";
-
-		if (null != startDateUTC && null != endDateUTC) {
-			subQueryDateRange = "and (requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC)";
-			params.put("startDateUTC", startDateUTC);
-			params.put("endDateUTC", endDateUTC);
-		}
-
-		String queryString = "select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy.id =:userCode "
-				+ subQueryDateRange + " ";
+	public BigInteger getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC,
+			String endDateUTC,String isGlobalUser,Long orgId) throws Exception {
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		params.put("orgLocationId", orgLocationId);
-		params.put("userCode", user.getId());
+		String query = null;
+		BigInteger count = null;
+		try {
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			query ="SELECT"
+					+ " COUNT(REQ.ID) AS REQ_COUNT"
+					+ " FROM"
+					    + " REQUIREMENT REQ,"
+					    + " ORG_LOCATIONS OL"
+					    
+						+ " WHERE  OL.ID = REQ.ORG_LOCATION_ID AND "
+					    + " REQ.CREATED_BY = :userId"
+					    + " AND DATE_FORMAT(REQ.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					    + " AND  OL.ORG_ID = :orgId"
+					    + " GROUP BY REQ.CREATED_BY, OL.ORG_ID, REQ.ORG_LOCATION_ID";
+				 
+			        
+					Query queryString = session.createSQLQuery(query);
+					queryString.setParameter("userId", user.getId()).setParameter("orgId", orgId);
+					count  = (BigInteger) queryString.uniqueResult();
+		}else {
+			query ="SELECT"
+					+ " COUNT(REQ.ID) AS REQ_COUNT"
+					+ " FROM"
+					    + " REQUIREMENT REQ "
+						+ " WHERE"
+					    + " REQ.CREATED_BY = :userId"
+					    + " AND DATE_FORMAT(REQ.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					    + " AND REQ.ORG_LOCATION_ID = :orgLocationId"
+					    + " GROUP BY REQ.CREATED_BY, REQ.ORG_LOCATION_ID";
+			
 
-		/*
-		 * String query
-		 * ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode"
-		 * ; Session session = this.sessionFactory.getCurrentSession(); long count =
-		 * ((Long)session.createQuery(query.toString()).setLong("orgLocationId",
-		 * orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).
-		 * intValue();
-		 */
-
-		Query query = session.createQuery(queryString);
-		for (String str : query.getNamedParameters()) {
-			if (str.equalsIgnoreCase("startDateUTC")) {
-				query.setParameter(str, (Date) params.get(str));
-			}
-			if (str.equalsIgnoreCase("endDateUTC")) {
-				query.setParameter(str, (Date) params.get(str));
-			}
-
-			if (str.equalsIgnoreCase("orgLocationId")) {
-				query.setParameter(str, (long) params.get(str));
-			}
-
-			if (str.equalsIgnoreCase("userCode")) {
-				query.setParameter(str, params.get(str));
-			}
-
+					Query queryString = session.createSQLQuery(query);
+					queryString.setParameter("userId", user.getId()).setParameter("orgLocationId", orgLocationId);
+					count  = (BigInteger) queryString.uniqueResult();
 		}
-		return (Long) query.uniqueResult();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return count;
 
 	}
 
@@ -2199,6 +2203,61 @@ public class RequirementDaoImpl implements RequirementDao {
 				.setLong("orgLocationId", orgLocationId).uniqueResult();
 
 		return requirement;
+	}
+
+	@Override
+	@Transactional
+	public List<RecruiterReportAssociateCountView> getAssociateCountsCreatedUserList(Long orgLocationId,
+			List<Long> userIdsList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
+			throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<RecruiterReportAssociateCountView> associatesViewList = null;
+		try {
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			
+			 query ="SELECT "
+						+" USER_ID AS associateUserId,SUM(REQ_COUNT) AS jobCount"
+						+" FROM"
+						+" RECRUITER_REPORT_ASSOCIATE_COUNT_VIEW"
+						+" WHERE"
+						+" ORG_ID = :orgId AND USER_ID IN (:userIdsList)"
+						+" AND CREATED_DATE BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+						+" GROUP BY USER_ID";
+			        
+			
+	            Query queryObj = session.createSQLQuery(query);
+				queryObj.setParameterList("userIdsList", userIdsList).setParameter("orgId", orgId);
+				queryObj.setResultTransformer(Transformers.aliasToBean(RecruiterReportAssociateCountView.class));
+				associatesViewList = queryObj.list();
+				
+		}
+		else {
+			         query ="SELECT "
+					+" USER_ID AS associateUserId,SUM(REQ_COUNT) AS jobCount"
+					+" FROM"
+					+" RECRUITER_REPORT_ASSOCIATE_COUNT_VIEW"
+					+" WHERE"
+					+" ORG_LOCATION_ID = :orgLocationId AND USER_ID IN (:userIdsList)"
+					+" AND CREATED_DATE BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					+" GROUP BY USER_ID";
+		
+			
+		
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setParameterList("userIdsList", userIdsList).setParameter("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(RecruiterReportAssociateCountView.class));
+			associatesViewList = queryObj.list();
+		
+		}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return  associatesViewList;
+		
 	}
 
 }

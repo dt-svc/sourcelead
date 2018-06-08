@@ -39,6 +39,7 @@
 							<div class="pull-left select-fild">
 								<select onchange="redirectlocation(this.value);">
 									<option value="/pendingLeaves">Pending Leaves</option>
+									<option value="/withdrawLeaves">Withdraw Leaves</option>
 									<option value="/approvedLeaves">Approved Leaves</option>
 									<option value="/rejectedLeaves">Rejected Leaves</option>
 									<option value="/cancelLeaves" selected>Cancelled Leaves</option>

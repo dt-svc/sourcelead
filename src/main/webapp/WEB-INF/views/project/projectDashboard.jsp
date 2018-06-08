@@ -164,7 +164,7 @@ overflow-x: auto;
 							 
 							 
 					 	<div class="col-md-12 mb">
-							<label><strong>Invoice Frequency</strong></label>
+							<label><strong>Timesheet Frequency</strong></label>
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="frequencyFilter">
 		                    	    <li class="checkBox positionRelative" ><input  name="invoiceFrequency" type="checkbox" value ="Weekly"><label for="c7">Weekly</label></li>
@@ -389,7 +389,7 @@ function filter(){
 		result = result +'	<th>Project Id</th>';
     	result = result +'    <th>Name</th>'; 
     	result = result +'     <th>Manager</th>';
-    	result = result +'     <th>Invoice Frequency</th>';
+    	result = result +'     <th>Timesheet Frequency</th>';
     	result = result +'     <th>Budget</th>';
     	result = result +'     <th>Date<br>(<small class="custom-small">'+projectListDate+'</small>)</th>';
     	result = result +'      <th>Client</th>';

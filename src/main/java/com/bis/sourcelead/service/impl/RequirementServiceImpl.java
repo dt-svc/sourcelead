@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -48,7 +49,6 @@ import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.VendorsDocumentsDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Candidate;
@@ -65,6 +65,7 @@ import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
+import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -3416,10 +3417,10 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC,
-			Date endDateUTC) throws Exception {
+	public BigInteger getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC,
+			String endDateUTC,String isGlobalUser,Long orgId) throws Exception {
 		return requirementDao.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC,
-				endDateUTC);
+				endDateUTC,isGlobalUser,orgId);
 	}
 
 	@Override
@@ -3748,6 +3749,13 @@ public class RequirementServiceImpl implements RequirementService {
 	public Requirement getRequirementByGeneratedIdAndLocationId(String generatedId, Long orgLocationId)
 			throws Exception {
 		return requirementDao.getRequirementByGeneratedIdAndLocationId(generatedId, orgLocationId);
+	}
+
+	@Override
+	public List<RecruiterReportAssociateCountView> getAssociateCountsCreatedUserList(Long orgLocationId,
+			List<Long> userIdsList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
+			throws Exception {
+		return requirementDao.getAssociateCountsCreatedUserList(orgLocationId, userIdsList, startDateUTC, endDateUTC, isGlobalUser, orgId);
 	}
 
 }

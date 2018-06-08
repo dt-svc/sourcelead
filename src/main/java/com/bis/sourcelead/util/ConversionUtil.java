@@ -483,8 +483,22 @@ public class ConversionUtil {
 		return formatter.format(date);
 	}
 	
-	
-	
-	
+	/**'
+	 * Get Year Start Date and End Date Using Current Date
+	 * @return Date[]
+	 */
+	public static Date[] getCurrentYearStartAndEndDate()
+	{
+		Date[] yearDates = new Date[2];
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_YEAR, 1);
+		Date startDate = cal.getTime();
+		yearDates[0] = startDate;
+		cal.set(Calendar.MONTH, 11); // 11 = december
+		cal.set(Calendar.DAY_OF_MONTH, 31); // new years eve
+		Date endDate = cal.getTime();
+		yearDates[1] = endDate;
+		return yearDates;
+	}
 	
 }
