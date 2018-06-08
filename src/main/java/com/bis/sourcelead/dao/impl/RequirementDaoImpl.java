@@ -1104,14 +1104,14 @@ public class RequirementDaoImpl implements RequirementDao {
 					    + " ORG_LOCATIONS OL"
 					    
 						+ " WHERE  OL.ID = REQ.ORG_LOCATION_ID AND "
-					    + " REQ.CREATED_BY = :userCode"
+					    + " REQ.CREATED_BY = :userId"
 					    + " AND DATE_FORMAT(REQ.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
 					    + " AND  OL.ORG_ID = :orgId"
 					    + " GROUP BY REQ.CREATED_BY, OL.ORG_ID, REQ.ORG_LOCATION_ID";
 				 
 			        
 					Query queryString = session.createSQLQuery(query);
-					queryString.setParameter("userCode", user.getUserCode()).setParameter("orgId", orgId);
+					queryString.setParameter("userId", user.getId()).setParameter("orgId", orgId);
 					count  = (BigInteger) queryString.uniqueResult();
 		}else {
 			query ="SELECT"

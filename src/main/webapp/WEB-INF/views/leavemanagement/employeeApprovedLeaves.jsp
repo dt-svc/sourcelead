@@ -38,7 +38,7 @@ $(document).ready(function(){
         </li>
         <li title="Import" class="positionRelartive">
         	<!-- <a onclick="leaveImport();"><i class="glyphicon glyphicon-import expIcon mt5"></i>&nbsp;</a> -->
-        	<div class="dowload_pop">
+        	<%-- <div class="dowload_pop">
         			<div class="modal-content">
         			<div class=modal-header>
 	        			 <button type="button" class="close" data-dismiss="modal" onClick="closeImportFile();">&times;</button>
@@ -68,7 +68,7 @@ $(document).ready(function(){
         				</div>
         			</div>
         			</div>
-        	</div>
+        	</div> --%>
         </li>
         <div class="clearfix"></div>
       </ul>
