@@ -435,7 +435,7 @@ public class TimesheetRestController {
 		/**
 		 * Getting List Of Projects For LoginUser
 		 */
-		
+		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
 		LinkedHashSet<String> timesheetFrequencyList = new LinkedHashSet<>();
 		timesheetFrequencyList.add("Weekly");
 		timesheetFrequencyList.add("Bi-Weekly");
@@ -447,12 +447,12 @@ public class TimesheetRestController {
        }else {
        	employeeTimesheetEntryDetailsDTO.setInvoiceFrequency(eedDTO.getInvoiceFrequency());
        }
-		employeeTimesheetEntryDetailsDTO =  getEmployeeWeekFrequncyDropDown(employeeTimesheetEntryDetailsDTO,eedDTO,request);
+		employeeTimesheetEntryDetailsDTO =  getEmployeeWeekFrequncyDropDown(projectMembersList,employeeTimesheetEntryDetailsDTO,eedDTO,request);
 		return employeeTimesheetEntryDetailsDTO;
 
 	}
 	
-	private EmployeeTimesheetEntryDetailsDTO  getEmployeeWeekFrequncyDropDown(EmployeeTimesheetEntryDetailsDTO etd,TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception{
+	private EmployeeTimesheetEntryDetailsDTO  getEmployeeWeekFrequncyDropDown(List<ProjectMembers> projectMembersList,EmployeeTimesheetEntryDetailsDTO etd,TimesheetExpenseEntryDetailsUtilDTO eedDTO,HttpServletRequest request) throws Exception{
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (loginUser == null && eedDTO.getUserId() != null) {
 				loginUser = userService.getUserById(eedDTO.getUserId());
@@ -533,7 +533,7 @@ public class TimesheetRestController {
 	        eedDTO.setCurrentTimeFrequency(currentTimesheetFrequency);
 	        etd =  getEmployeeTimesheetSubFrequencyListByCurrentFrequency(eedDTO, etd, orgLocations,candidate, request);
 	        etd = getWeekDaysByWeekStartDateAndEndDate(etd, etd.getCurrentTimeSubFrequency(), orgLocations);
-	        etd = getProjectMembersList(request,etd, candidate, etd.getCurrentTimeFrequency(),etd.getCurrentTimeSubFrequency(), orgLocations,loginUser);
+	        etd = getProjectMembersList(projectMembersList,request,etd, candidate, etd.getCurrentTimeFrequency(),etd.getCurrentTimeSubFrequency(), orgLocations,loginUser);
 		  return etd;
 	}
 	
@@ -625,7 +625,12 @@ public class TimesheetRestController {
 			cal.setLenient(false);
 			cal.setTime(actualStartDate);
 			Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
-			weekStartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), startMonday.getTime());
+			if(startMonday.getTime().before(actualStartDate)) {
+				weekStartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), startMonday.getTime());
+			}else {
+				startMonday = CalendarUtil.getPreviousWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
+				weekStartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), startMonday.getTime());
+			}
 		}
 		String tuesDayDate = CalendarUtil.getNextDate(weekStartDate, orgLocations.getDateFormat());
 		String WednesDayDate = CalendarUtil.getNextDate(tuesDayDate, orgLocations.getDateFormat());
@@ -676,9 +681,7 @@ public class TimesheetRestController {
 		return employeeTimesheetEntryDetailsDTO;
 	}
 	
-	private EmployeeTimesheetEntryDetailsDTO getProjectMembersList(HttpServletRequest request,EmployeeTimesheetEntryDetailsDTO etd,Candidate candidate,String currentTimeFrequency,String currentTimeSubFrequency,OrgLocations orgLocations,User loginUser) throws Exception {
-		List<ProjectMembers> projectMembersList = projectMembersService
-				.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
+	private EmployeeTimesheetEntryDetailsDTO getProjectMembersList(List<ProjectMembers> projectMembersList,HttpServletRequest request,EmployeeTimesheetEntryDetailsDTO etd,Candidate candidate,String currentTimeFrequency,String currentTimeSubFrequency,OrgLocations orgLocations,User loginUser) throws Exception {
 		ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
 		String[] currentSubFrequency = currentTimeSubFrequency.split("To");
 		String currentSubFrequencyStartDate = currentSubFrequency[0].trim();
@@ -709,6 +712,9 @@ public class TimesheetRestController {
 						entrySizeCheck = key;
 					}
 					EmployeeTimeSheetSubmissionStatusDTO etssDTO = getEmployeeTimesheetSubmissionStatus(pm.getId(), currentTimeFrequency, currentTimeSubFrequency, orgLocations, loginUser,editableCount);
+					if(etssDTO != null && StringUtils.isNotEmpty(etssDTO.getTimesheetStatus()) && !etssDTO.getTimesheetStatus().equalsIgnoreCase("NEW")) {
+						entrySizeCheck = 1l;
+					}
 					if(editableCount == 1) {
 						etd.setMonEditable(etssDTO.getEditableMap().get("Mon"));
 						etd.setTueEditable(etssDTO.getEditableMap().get("Tue"));
@@ -756,6 +762,8 @@ public class TimesheetRestController {
 							for(TimesheetEntriesDTO teDTO :entry.getValue()) {
 								if(teDTO.getProjectMemberId() != null) {
 									pmId = teDTO.getProjectMemberId();
+								}else {
+									pmId = pm.getId();
 								}
 								if(teDTO != null && teDTO.getTimesheetTaskDTO() != null && StringUtils.isNotEmpty(teDTO.getTimesheetTaskDTO().getTaskType())) {
 									taskType = teDTO.getTimesheetTaskDTO().getTaskType();
@@ -1319,6 +1327,21 @@ public class TimesheetRestController {
 		
 		if (ts != null) {
 			String dateFormat = orgLocations.getDateFormat();
+			
+			SimpleDateFormat sf = new SimpleDateFormat("E");
+			if (!sf.format(actualStartDate).equalsIgnoreCase("Mon")) {
+				Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+				cal.setLenient(false);
+				cal.setTime(actualStartDate);
+				Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
+				if(startMonday.getTime().before(actualStartDate)) {
+					actualStartDate = startMonday.getTime();
+				}else {
+					startMonday = CalendarUtil.getPreviousWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
+					actualStartDate = startMonday.getTime();
+				}
+			}
+			
 			String monDayDate = commonUtil.dateStrFromOrgDateFormatter(dateFormat, actualStartDate);
 			String tuesDayDate = CalendarUtil.getNextDate(monDayDate, dateFormat);
 			String WednesDayDate = CalendarUtil.getNextDate(tuesDayDate, dateFormat);
@@ -5627,7 +5650,7 @@ public class TimesheetRestController {
 						for (FileInfo file : tsDTO.getFileInfo()) {
 							FileInfo freshFile = file;
 							if (StringUtils.isEmpty(file.getFileDbId())) {
-								//FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
+								FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
 								TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
 								tsd.setTimesheetSubmissions(timesheetSubmissions);
 								tsd.setFileUrl(file.getFileURL());

@@ -631,7 +631,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 								  /**
 								   * checking whether previousmoth start date is greaterthan employee month startdate or not
 							       */
-								   if(empMonthStartDate.before(previousMonthStartDate)){
+								   if(empMonthStartDate.after(previousMonthStartDate)){
 									   empMonthStartDate = previousMonthStartDate;
 								   }
 								   
@@ -702,7 +702,7 @@ public  class TimesheetFrequencyGeneratorUtil {
 							    /**
 							     * checking whether prior 6th week monday date is greaterthan employee startdate or not
 						         */
-							     if(empBiweeklyStartDate.before(previousMondayDate)){
+							     if(empBiweeklyStartDate.after(previousMondayDate)){
 							    	 empBiweeklyStartDate = previousMondayDate;
 							     }
 								   

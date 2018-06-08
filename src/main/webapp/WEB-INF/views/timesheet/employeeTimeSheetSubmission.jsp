@@ -351,13 +351,12 @@
 						            </div>
 						            </div>
 									    <div class="timesheet_bot">
+									     <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
 							            <div class="commentFile">
 							                  <h2>
 							                  <c:if test="${employeeTimesheetEntryDetailsDTO.saveButtonVisible || !empty employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
 											    Attachmets & Comments 
-											     <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
 											         <i class="fa fa-plus Cursor" onclick="addTimeSheetCommentRow()"></i> 
-											      </c:if>
 											  </c:if>
 											 </h2>
 											<div class="">
@@ -468,6 +467,7 @@
 												</table>
 											</div>
 							            </div>  
+							           </c:if>
 							    	   <div class="timesheet_week_comm">
 							            <div class="totalWrap">
 							                 <ul>
