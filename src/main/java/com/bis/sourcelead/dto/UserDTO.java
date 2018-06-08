@@ -80,6 +80,7 @@ public class UserDTO extends SearchDTO implements Serializable {
 	
     private BigDecimal userApplicantsBackOutCount;
 
+    private BigInteger userId;
 
 	
 	public String getUnSubscribeTabIds()
@@ -572,6 +573,14 @@ public class UserDTO extends SearchDTO implements Serializable {
 
 	public void setIsSuperAdmin(String isSuperAdmin) {
 		this.isSuperAdmin = isSuperAdmin;
+	}
+
+	public BigInteger getUserId() {
+		return userId;
+	}
+
+	public void setUserId(BigInteger userId) {
+		this.userId = userId;
 	}
 
 	
