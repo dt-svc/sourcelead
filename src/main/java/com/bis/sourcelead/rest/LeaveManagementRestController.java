@@ -1773,6 +1773,9 @@ public class LeaveManagementRestController {
 			if (leave.getDeleteReason() != null) {
 				leaveDto.setDeleteReason(leave.getDeleteReason());
 			}
+			if (leave.getWithdrawReason() != null) {
+				leaveDto.setWithdrawReason(leave.getWithdrawReason());
+			}
 
 			StringBuilder sbu = new StringBuilder();
 			if (leave.getApprovedBy() != null) {
@@ -2604,6 +2607,26 @@ public class LeaveManagementRestController {
 			return response;
 		}
 		return null;
+	}
+	
+	/**
+	 * returns Withdraw leaves jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/withdrawLeaves")
+	public ModelAndView withdrawLeavesJsp(@RequestParam(value = "orgLocationId", required = false) String orgLocationId,
+			@RequestParam(value = "status", required = false) String status, HttpServletRequest request,
+			HttpServletResponse response) {
+		
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("orgLocationId", orgLocationId);
+			model.addObject("status", status);
+			model.setViewName("leavemanagement/withdrawLeaves");
+			return model;
 	}
 
 }

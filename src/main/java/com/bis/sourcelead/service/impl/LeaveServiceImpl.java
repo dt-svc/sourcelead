@@ -868,6 +868,8 @@ public class LeaveServiceImpl implements LeaveService{
 			leaveDto.setFromDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate()));
 			leaveDto.setToDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate()));
 			leaveDto.setCreatedDate(ConversionUtil.getDateAsString(leave.getCreatedDate()));
+			if(leave.getUpdatedDate() != null)
+			leaveDto.setUpdatedDate(ConversionUtil.getDateAsString(leave.getUpdatedDate()));
 			leaveDto.setLeaveUUID(leave.getLeaveUUID());
 			if(leave.getApprovedBy() != null){
 				StringBuilder sb = new StringBuilder();
