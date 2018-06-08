@@ -104,6 +104,14 @@
           <div class="clearfix"></div>
         </nav> -->
       </div>
+      <div style="display: none;">
+      	<input type="hidden" value="${exportDto.projectIds}" id="projectIdsDto">
+      	<input type="hidden" value="${exportDto.employmentType}" id="employmentTypeDto">
+      	<input type="hidden" value="${exportDto.projectMemberListId}" id="projectMemberListIdDto">
+      	<input type="hidden" value="${exportDto.startDate}" id="startDateDto">
+      	<input type="hidden" value="${exportDto.endDate}" id="endDateDto">
+      </div>
+      
   </section>
   <!-- Content Area Ends--> 
   <jsp:include page="../masterFooter.jsp" />
@@ -123,25 +131,27 @@ $(document).ready(function() {
 
   <script>
   function runExport(type){
-	  if('${exportDto.projectIds}' != null && '${exportDto.projectIds}' !='' && '${exportDto.projectIds}' !='undefined'){
-		  var projectIds  = ${exportDto.projectIds};
-	  }else{
-		  var projectIds  = '';  
+	  var projectIds  = ''
+	  var employmentType  = '';
+	  var projectMemberList  = '';
+	  var projectIdDto = $('#projectIdsDto').val();
+	  var employmentTypeDto = $('#employmentTypeDto').val();
+	  var projectMemberListIdDto = $('#projectMemberListIdDto').val();
+	  var startDateDto = $('#startDateDto').val();
+	  var endDateDto = $('#endDateDto').val();
+	  
+	  if(projectIdDto != null && projectIdDto !='' && projectIdDto !='undefined'){
+		  projectIds  =  JSON.parse(projectIdDto);  ;
 	  }
-	  if('${exportDto.employmentType}' != null && '${exportDto.employmentType}' !='' && '${exportDto.employmentType}'	!='undefined'){
-		  var employmentType  = '${exportDto.employmentType}';
-	  }else{
-		  var employmentType  = '';  
+	  if(employmentTypeDto != null && employmentTypeDto !='' && employmentTypeDto	!='undefined'){
+		   employmentType  = employmentTypeDto;
 	  }
-	  if('${exportDto.projectMemberListId}' != null && '${exportDto.projectMemberListId}' !='' && '${exportDto.projectMemberListId}'	!='undefined'){
-		  var projectMemberList  = ${exportDto.projectMemberListId};
-	  }else{
-		  var projectMemberList  = '';  
+	  if(projectMemberListIdDto != null && projectMemberListIdDto !='' && projectMemberListIdDto !='undefined' &&  projectMemberListIdDto!='[]'){
+		  projectMemberList  = JSON.parse(projectMemberListIdDto);
 	  }
-		var templateType = "";
-		var startDate = '${exportDto.startDate}'.toString();
-		var endDate = '${exportDto.endDate}'.toString();
-		var exportType = type;
+	  var startDate = startDateDto;
+	  var endDate = endDateDto;
+	  var exportType = type;
 		
 		if(startDate != null && startDate !='' && startDate !='undefined' && endDate != null && endDate !='' && endDate !='undefined'){
 			window.location.href = sourceleadUrl+"/exportDaywiseTimesheetReport?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&exportType="+exportType+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList;

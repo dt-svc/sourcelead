@@ -411,7 +411,7 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		 query1.append("and (pt.taskName like '%" + projectTasksDTO.getSearchValue() + "%' ")
 		       .append("OR (pt.generatedId like '%" + projectTasksDTO.getSearchValue() + "%' )")
 		       .append("OR (concat(pt.generatedId,pt.taskName) like '%" + projectTasksDTO.getSearchValue().replace("-", "").replaceAll("[\\s]+", "").trim() + "%' )")
-		       .append("OR (pt.priority IS NOT NULL and pt.priority.name like '%" + projectTasksDTO.getSearchValue() + "%' )")
+		       .append("OR (pt.priority IS NOT NULL and pt.priority.id IN(Select ld.id from LookUpData ld where ld.name like '%" + projectTasksDTO.getSearchValue() + "%' ))")
 			   .append("OR pt.taskType.name = '%" + projectTasksDTO.getSearchValue() + "%' ")
 			   .append("OR pt.taskStatus.name like '%" + projectTasksDTO.getSearchValue() + "%' )");
 					
@@ -446,18 +446,16 @@ public class ProjectTasksDaoImpl implements ProjectTasksDao {
 		}
 		
 		 Query query = session.createQuery(queryStr+subQueryStr+query1+sortingQry);
+		 Query countQuery = session.createQuery(queryStrForCount+subQueryStr+query1+sortingQry);
 		 List<ProjectTasks> projectTasksList = null;
 		 if(StringUtils.isNotEmpty(projectTasksDTO.getTeams())) {
 			 projectTasksList =query.setLong("projectId", projectId).setParameterList("teamsIdsList", teamsIdsList).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
-		 
-			 Query countQuery = session.createQuery(queryStrForCount+subQueryStr);
 			 countlist = countQuery.setLong("projectId", projectId).setParameterList("teamsIdsList", teamsIdsList).list();
-			 
+			 filterCount = countlist.iterator().next().intValue();
 		 }else {
 			 projectTasksList =query.setLong("projectId", projectId).setFirstResult(projectTasksDTO.getStart()).setMaxResults(projectTasksDTO.getLength()).list();
-			 Query countQuery = session.createQuery(queryStrForCount+subQueryStr);
 			 countlist = countQuery.setLong("projectId", projectId).list();
-			 
+			 filterCount = countlist.iterator().next().intValue();
 		 }
 		 
 		
