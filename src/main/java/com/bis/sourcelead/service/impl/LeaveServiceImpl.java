@@ -621,7 +621,7 @@ public class LeaveServiceImpl implements LeaveService{
 		leaveManagementHistory.setUpdatedDate(new Date());
 		leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 		sendApprovedAndRejectedLeaveMailToEmployee(orgLocations, user, leaveManagementHistory);
-		if(isApproved = true && updaetedLeave.getLeaveType().getTimeSheetAutofill().equalsIgnoreCase(Constants.YES)) {
+		if(isApproved == true && updaetedLeave.getLeaveType().getTimeSheetAutofill().equalsIgnoreCase(Constants.YES)) {
 			timesheetRestController.linkLeaveTypeWithTimeSheet(user, orgLocations, leaveTypeId, updaetedLeave,Constants.APPROVED);
 		}
 		return isApproved;
@@ -1930,6 +1930,12 @@ public class LeaveServiceImpl implements LeaveService{
 //		}
 		return isApproved;
 	
+	}
+
+	@Override
+	public List<LeaveApproveHierarchy> getAllLeaveApproversList(Long locationId)
+	{
+		return leaveDao.getAllLeaveApproversList(locationId);
 	}
 
 }

@@ -456,7 +456,7 @@
 									</label>
 									<label class="radioIput ml">
 										<c:if test="${leaveType.autoApproveType == 'Role'}">
-											<input type="radio" name="autoApproveType" id="role" value="Role">Role
+											<input type="radio" name="autoApproveType" id="role" checked value="Role">Role
 										</c:if>
 										<c:if test="${leaveType.autoApproveType != 'Role'}">
 											<input type="radio" name="autoApproveType" id="role" value="Role">Role
