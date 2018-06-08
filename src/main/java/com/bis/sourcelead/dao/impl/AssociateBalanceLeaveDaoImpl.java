@@ -143,7 +143,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 
 	@Override
 	@Transactional
-	public int updateAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType,int status)
+	public int updateAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType,int status,int diffLeaves,String actionType)
 	{
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -155,7 +155,19 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 					CallableStatement stmt = connection.prepareCall("{call deleteAssociateBalLeave(?,?,?,?,?)}");
 					for (User user : userList) {
 						stmt.setLong(1, status);
-						stmt.setString(2, String.valueOf(leaveType.getNoOfDays()));
+						if(!"NONE".equalsIgnoreCase(actionType)) {
+							AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId);
+							int assoBalLeaves = Integer.parseInt(associateBalanceLeave.getTotalLeaves());
+							int additionLeaves = 0;
+							if("ADD".equalsIgnoreCase(actionType)) {
+								 additionLeaves = assoBalLeaves + diffLeaves;
+							}else {
+								additionLeaves = assoBalLeaves - diffLeaves;
+							}
+							stmt.setString(2, String.valueOf(additionLeaves));
+						}else {
+							stmt.setString(2, String.valueOf(leaveType.getNoOfDays()));
+						}
 						stmt.setLong(3, orgLocationId);
 						stmt.setLong(4, user.getId());
 						stmt.setLong(5, leaveType.getId());

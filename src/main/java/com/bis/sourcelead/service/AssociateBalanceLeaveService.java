@@ -21,4 +21,6 @@ public interface AssociateBalanceLeaveService {
 	int addLeaveTypeToAssociate(List<User> userList, OrgLocations orgLocation, LeaveType leaveType, User loginUser);
 
 	int updateAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType,int satus);
+
+	int addOrSubAssociateBalanceLeaveType(List<User> userList, Long locationId, LeaveType leaveType, int status, int diffLeaves, String actionType);
 }

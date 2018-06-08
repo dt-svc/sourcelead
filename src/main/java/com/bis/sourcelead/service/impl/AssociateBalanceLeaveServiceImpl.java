@@ -129,6 +129,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	@Override
 	public int addLeaveTypeToAssociate(List<User> userList, OrgLocations orgLocation,LeaveType leaveType,User loginUser)
 	{
+		int isAdded = 0;
 		if(userList != null && userList.size() >0) {
 			AssociateBalanceLeaveDTO associateBalanceLeaveDTO = new AssociateBalanceLeaveDTO();
 			List<TotalLeaveDTO> list = new ArrayList<>();
@@ -140,15 +141,27 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				list.add(totalLeaveDTO);
 			}
 			associateBalanceLeaveDTO.setTotalLeavesDto(list);
-			associateBalanceLeaveDao.addAssociateLeave(associateBalanceLeaveDTO, loginUser, orgLocation);
+			isAdded = associateBalanceLeaveDao.addAssociateLeave(associateBalanceLeaveDTO, loginUser, orgLocation);
 		}
-		return 0;
+		return isAdded;
 	}
 
 	@Override
 	public int updateAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType,int status)
 	{
-		return associateBalanceLeaveDao.updateAssociateBalanceLeaveType(userList,orgLocationId,leaveType,status);
+		return associateBalanceLeaveDao.updateAssociateBalanceLeaveType(userList,orgLocationId,leaveType,status,0,"NONE");
+		
+	}
+
+	@Override
+	public int addOrSubAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType, int status, int diffLeaves, String actionType)
+	{
+		
+		return associateBalanceLeaveDao.updateAssociateBalanceLeaveType(userList,orgLocationId,leaveType,status,diffLeaves,actionType);
+//		for(User user : userList) {
+//			associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId);
+//		}
+//		return 0;
 	}
 	
 }
