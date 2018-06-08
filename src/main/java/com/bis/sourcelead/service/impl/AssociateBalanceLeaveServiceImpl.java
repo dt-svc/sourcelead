@@ -72,6 +72,36 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	public List<AssociateBalanceLeaveDTO> getAssociateBalanceLeavesByUserId(Long userId,OrgLocations orgLocations,User loginUser)
 	{
 		
+		
+        List<LeaveType> leaveTypeList = getOrgLevelLeaves(orgLocations,userId);
+      ResponseList<AssociateBalanceLeaveView> resObj = associateBalanceLeaveDao.getAssociateBalanceLeavesByUserId(userId,orgLocations.getId());
+      if(resObj.getData() != null && resObj.getData().size() >0) {
+           for (LeaveType leaveType : leaveTypeList) {
+                  boolean found=false;
+                  for (AssociateBalanceLeaveView tgtEmp : resObj.getData()) {
+                      if ((leaveType.getId().longValue() == tgtEmp.getLeaveTypeId().longValue())) {
+                          found=true;
+                          break;
+                      }
+                  }
+                  if(!found){
+                      AssociateBalanceLeaveDTO associateBalanceLeaveDTO = new AssociateBalanceLeaveDTO();
+                      associateBalanceLeaveDTO.setUserId(String.valueOf(userId));
+                      List<TotalLeaveDTO> leaveList = new ArrayList<>();
+                      TotalLeaveDTO totalLeaveDTO = new TotalLeaveDTO();
+                      totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDays()));
+                      totalLeaveDTO.setLeaveTypeId(String.valueOf(leaveType.getId()));
+                      leaveList.add(totalLeaveDTO);
+                      associateBalanceLeaveDTO.setTotalLeavesDto(leaveList);
+                      int result = associateBalanceLeaveDao.addAssociateLeave(associateBalanceLeaveDTO, loginUser, orgLocations);
+                  }
+              }
+      }
+      
+     
+		
+		
+		
 		ResponseList<AssociateBalanceLeaveView> finalResObj = associateBalanceLeaveDao.getAssociateBalanceLeavesByUserId(userId,orgLocations.getId());
 		ArrayList<AssociateBalanceLeaveDTO> list = new ArrayList<>();
 		 
@@ -162,6 +192,30 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 //			associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId);
 //		}
 //		return 0;
+	}
+	
+	private List<LeaveType> getOrgLevelLeaves(OrgLocations orgLocation, Long userId)
+	{
+		List<LeaveType> roleLeaveType = new ArrayList<>();
+		try {
+			UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocation.getId());
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
+				for (LeaveType leaveType : leaveTypeList) {
+					Set<Long> roleIds = new HashSet<>();
+					for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
+						roleIds.add(leaveRole.getRoleId().getId());
+					}
+					if (roleIds.contains(userRole.getRoles().getId())
+							|| "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+						roleLeaveType.add(leaveType);
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.info("Get Leave Types Failed Due To : " + e.getMessage());
+		}
+		return roleLeaveType;
 	}
 	
 }
