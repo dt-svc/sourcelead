@@ -40,6 +40,8 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
+import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
@@ -1941,25 +1943,7 @@ public class UserDaoImpl implements UserDao {
 				}
 				
 			}
-			
-			
-			
-/*			query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where  userRole.userState = 'ACTIVE' "+globalAccessQuery+" )";
-			if(query1.toString() != null && !query1.toString().isEmpty()){
-				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
-			}else{
-				 queryObj = session.createQuery(query + query1.toString()+" "+sortingQry+" ");
-			}
-			
-			queryObj.setLong("orgLocationId", orgLocationId).list();
-			
-			if(query1.toString() != null && !query1.toString().isEmpty()){
-				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationId", orgLocationId).list();
-				filterCount = countlist.iterator().next().intValue();
-			}else {
-				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).list();
-				filterCount = countlist.iterator().next().intValue();
-			}*/
+
 			
 		}else {
 			
@@ -2031,22 +2015,20 @@ public class UserDaoImpl implements UserDao {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String fromDate = sdf.format(searchDates[0]);
 		String toDate = sdf.format(searchDates[1]);
-		Map<String, UserDTO> UserListMap = new HashMap<String, UserDTO>();
+		Map<String, UserDTO> userListMap = new HashMap<String, UserDTO>();
+		Map<BigInteger, UserDTO> associatesListMap = new HashMap<BigInteger, UserDTO>();
 		List<String> userCodeList = new ArrayList<>();
+		List<Long> userIdsList = new ArrayList<>();
 		if(usersList != null && !usersList.isEmpty()) {
 			for(User user : usersList) {
 				
 				try {
 					UserDTO userDTO = new UserDTO();
 					userDTO.setFullName(user.getFullName());
-					
-					BigInteger totalRequirements = requirementService.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, fromDate, toDate,isGlobalUser,orgId);
-					userDTO.setUserRequirementsCount(totalRequirements);
-					
-					BigInteger totalCandidates = candidateService.getCountOfAllCandidatesByCreatedUserAndOrglocationId(orgLocationId, user, fromDate, toDate,isGlobalUser,orgId);
-					userDTO.setUserCandidatesCount(totalCandidates);
-					UserListMap.put(user.getUserCode(), userDTO);
+					userListMap.put(user.getUserCode(), userDTO);
+					associatesListMap.put(BigInteger.valueOf(user.getId()), userDTO);
 					userCodeList.add(user.getUserCode());
+					userIdsList.add(user.getId());
 					usersDTOList.add(userDTO);
 					
 				}catch (Exception e) {
@@ -2056,10 +2038,34 @@ public class UserDaoImpl implements UserDao {
 			}
 			
 			try {
+				
+				
+				List<RecruiterReportCandidateCountView> RecruiterReportCandidatesList = candidateService.getCandidateCountsCreatedUserList(orgLocationId, userCodeList, fromDate, toDate,isGlobalUser, orgId);
+				if(RecruiterReportCandidatesList != null && !RecruiterReportCandidatesList.isEmpty()) {
+					for(RecruiterReportCandidateCountView candidateReportView : RecruiterReportCandidatesList) {
+						UserDTO userDTO = userListMap.get(candidateReportView.getAssociateUserCode());
+						if(candidateReportView.getCandCount() != null) {
+							userDTO.setUserCandidatesCount(candidateReportView.getCandCount());
+						}
+						
+					}
+				}
+				
+				List<RecruiterReportAssociateCountView> RecruiterReportAssociateList = requirementService.getAssociateCountsCreatedUserList(orgLocationId, userIdsList, fromDate, toDate,isGlobalUser, orgId);
+				if(RecruiterReportAssociateList != null && !RecruiterReportAssociateList.isEmpty()) {
+					for(RecruiterReportAssociateCountView associateReportView : RecruiterReportAssociateList) {
+						UserDTO userDTO = associatesListMap.get(associateReportView.getAssociateUserId());
+						if(associateReportView.getJobCount() != null) {
+							userDTO.setUserRequirementsCount(associateReportView.getJobCount());
+						}
+						
+					}
+				}
+				
 				List<RecruiterReportView> recruiterReportViewList = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, fromDate, toDate,isGlobalUser, orgId);
 				if(recruiterReportViewList != null && !recruiterReportViewList.isEmpty()) {
 					for(RecruiterReportView recuiterReportView : recruiterReportViewList) {
-						UserDTO userDTO = UserListMap.get(recuiterReportView.getUserCode());
+						UserDTO userDTO = userListMap.get(recuiterReportView.getUserCode());
 						userDTO.setUserApplicantsCount(recuiterReportView.getApplicantSubmissionCount());
 						userDTO.setUserShortlistedApplicantsCount(recuiterReportView.getApplicantShortlistedCount());
 						userDTO.setUserSubmittedApplicantsCount(recuiterReportView.getApplicantSubmittedClientCount());
