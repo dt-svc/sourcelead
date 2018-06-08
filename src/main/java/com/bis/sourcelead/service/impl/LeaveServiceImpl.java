@@ -621,7 +621,7 @@ public class LeaveServiceImpl implements LeaveService{
 		leaveManagementHistory.setUpdatedDate(new Date());
 		leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
 		sendApprovedAndRejectedLeaveMailToEmployee(orgLocations, user, leaveManagementHistory);
-		if(isApproved = true) {
+		if(isApproved = true && updaetedLeave.getLeaveType().getTimeSheetAutofill().equalsIgnoreCase(Constants.YES)) {
 			timesheetRestController.linkLeaveTypeWithTimeSheet(user, orgLocations, leaveTypeId, updaetedLeave,Constants.APPROVED);
 		}
 		return isApproved;
