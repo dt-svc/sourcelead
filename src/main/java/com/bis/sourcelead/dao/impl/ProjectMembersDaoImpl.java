@@ -1583,13 +1583,13 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String employmentTypeQuery = "";
 		String query= "";
 		if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()){
-			String empType = dayWiseTimesheetReoprtsDto.getEmploymentType().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
-			employmentTypeQuery = " and can.designation IN (:empType)";
+			//String empType = dayWiseTimesheetReoprtsDto.getEmploymentType().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
+			employmentTypeQuery = " and can.designationType IN (:empType)";
 		}
 	
 		String projectQuery = "";
 		if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()){
-			String projectIds = dayWiseTimesheetReoprtsDto.getProjectIds().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
+			//String projectIds = dayWiseTimesheetReoprtsDto.getProjectIds().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
 			projectQuery = " and projects.id  IN (:projectIds)";
 		}
 		
