@@ -56,7 +56,6 @@ function assocBalanceLeaveSummary(userId){
 <script>
 function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
 	var totalLeaves = $("#"+rowId+"noofLeaves").val();
-	alert("totalLeaves : "+totalLeaves);
 	if(totalLeaves != '' && totalLeaves != 'undefined' && totalLeaves != null){
 		$("#"+rowId+"errorDiv").text("");
 		$.ajax({
@@ -67,7 +66,6 @@ function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
 	                 },
 	              }); 
 	}else{
-		alert("else");
 		$("#"+rowId+"errorDiv").text("Total Leave Required");
 	}
  	 

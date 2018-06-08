@@ -1554,14 +1554,17 @@ public class LeaveManagementRestController {
 						
 						if(Constants.YES.equalsIgnoreCase(leaveType.getAutoApprove())){
 							if("Grade".equalsIgnoreCase(leaveType.getAutoApproveType())){
-								if(userRole.getGradeId() != null)
+								if(userRole.getGradeId() != null){
 									if(leaveType.getAutoApproveTypeListNames().contains(userRole.getGradeId().getGradeName())){
 										leaveType.setAutoApprove(Constants.YES);
 									}else{
 										leaveType.setAutoApprove(Constants.NO);
 									}
+								}else{
+									leaveType.setAutoApprove(Constants.NO);
+								}
 							}else if("Role".equalsIgnoreCase(leaveType.getAutoApproveType())){
-								if(leaveType.getAutoApproveTypeListNames().contains(userRole.getRoles().getDisplayName())){
+								if(leaveType.getAutoApproveTypeListNames().contains(userRole.getRoles().getRoleName())){
 									leaveType.setAutoApprove(Constants.YES);
 								}else{
 									leaveType.setAutoApprove(Constants.NO);
