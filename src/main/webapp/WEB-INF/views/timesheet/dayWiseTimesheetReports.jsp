@@ -125,16 +125,16 @@ $( document ).ready(function() {
 <script>
 function validateDayEntriesReport(){
 	var projectIds  = $('#projectList').val();
+	var projectMemberList = $('#projectMemberList').val();
 	var templateType = "";
 	
-	if(projectIds == null || projectIds =='' || projectIds=='undefined'){
+	if((projectIds == null || projectIds =='' || projectIds=='undefined') && (projectMemberList == null || projectMemberList =='' || projectMemberList=='undefined')){
 		projectIds = $("#projectList option[name='all']").val();
 		$('#projectList').val(projectIds);
 	}
 	var startDate = $('#fromDate').val();
 	var endDate = $('#toDate').val();
 	var exportType = $('#exportType').val();
-	var projectMemberList = $('#projectMemberList').val();
 	if(projectMemberList == null || projectMemberList =='' || projectMemberList=='undefined'){
 		projectMemberList = '';
 	}
@@ -273,16 +273,17 @@ function getProjectMemberFromProjectId(){
 <script>
 function runExport(){
 	var projectIds  = $('#projectList').val();
+	var projectMemberList = $('#projectMemberList').val();
 	var templateType = "";
 	
-	if(projectIds == null || projectIds =='' || projectIds=='undefined'){
+	if((projectIds == null || projectIds =='' || projectIds=='undefined')&& (projectMemberList == null || projectMemberList =='' || projectMemberList=='undefined')){
 		projectIds = $("#projectList option[name='all']").val();
 		templateType = "proJectMembersExport";
 	}
 	var startDate = $('#fromDate').val();
 	var endDate = $('#toDate').val();
 	var exportType = $('#exportType').val();
-	var projectMemberList = $('#projectMemberList').val();
+	
 	if(projectMemberList == null || projectMemberList =='' || projectMemberList=='undefined'){
 		projectMemberList = '';
 	}

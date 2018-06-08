@@ -1225,7 +1225,6 @@ public class LeaveManagementRestController {
 		Response<String> response = new Response<>();
 		try {
 			OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(leaveDTO.getOrgLocationId()));
-
 			boolean isSuperUser = false;
 			if(StringUtils.isNotBlank(leaveDTO.getUser())){
 				isSuperUser = orgLocationService.isLoginUserIsSuperUser(Long.parseLong(leaveDTO.getUser()),orgLocations.getId());
