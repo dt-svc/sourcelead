@@ -409,16 +409,13 @@ public class LeaveManagementRestController {
 						pendingLeaveCounts = pendingLeaveCounts + Integer.valueOf(leave.getNumberOfDays());
 					}
 					if (Constants.APPROVED.equalsIgnoreCase(leave.getStatus()) || Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
-						totalbalanceLeaveCounts = totalbalanceLeaveCounts
-								- (appliedLeaveCount - leave.getExtraLeavesTaken());
+						totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
 
 						takenLeaveCounts = takenLeaveCounts + appliedLeaveCount;
 					}
 				}
-				if ("Monthly".equalsIgnoreCase(type.getPeriod())
-						&& Constants.NO.equalsIgnoreCase(type.getLeavesCarryforward())) {
-					calculatedTotalNonCarryforwardLeaves = leaveManagementUtil
-							.getTotalBalanceLeavesForNonCarryforwardLeaveType(type, totalbalanceLeaveCounts, emp);
+				if ("Monthly".equalsIgnoreCase(type.getPeriod()) && Constants.NO.equalsIgnoreCase(type.getLeavesCarryforward())) {
+					calculatedTotalNonCarryforwardLeaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type, totalbalanceLeaveCounts, emp);
 					totalbalanceLeaveCounts = calculatedTotalNonCarryforwardLeaves;
 					balanceLeaveCounts += totalbalanceLeaveCounts;
 				} else {
@@ -1374,9 +1371,15 @@ public class LeaveManagementRestController {
 	                     leaveType.setUpdatedBy(user.getUserCode());
 	                 }
 	                 leaveType.setUpdatedDate(new Date());
-	                 leaveTypeDao.addLeaveType(leaveType);
-	                 response.setResponse(Result.SUCCESS.name());
-	                 response.setResponseMessage(Result.SUCCESS.getValue());
+	                 LeaveType saveleaveType = leaveTypeDao.addLeaveType(leaveType);
+	                 if(saveleaveType != null) {
+	                	 response.setResponse(Result.SUCCESS.name());
+		                 response.setResponseMessage(Result.SUCCESS.getValue());
+		                 List<User> userList = userService.getUsersListByOrglocationId(orgLocations.getId());
+		                 int result = associateBalanceLeaveService.updateAssociateBalanceLeaveType(userList,orgLocations.getId(),saveleaveType,0);
+	                 }
+	                 
+	                 
 	            }
 	        }else {
 	            response.setResponse(Result.SESSION_TIMEDOUT.name());
