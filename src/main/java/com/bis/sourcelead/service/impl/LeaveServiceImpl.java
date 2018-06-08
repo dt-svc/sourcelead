@@ -1202,6 +1202,8 @@ public class LeaveServiceImpl implements LeaveService{
 			if (leaveDto == null) {
 				leaveDto = new LeaveDTO();
 				totalLeaves = 0;
+			}else {
+				totalLeaves = Integer.valueOf(leaveDto.getTotalLeaves());
 			}
 			leaveDto.setLeaveType(leave.getLeaveType().getName());
 			totalLeaves = totalLeaves + leave.getNumberOfDays();
