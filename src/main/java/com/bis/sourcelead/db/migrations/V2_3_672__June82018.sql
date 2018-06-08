@@ -85,3 +85,6 @@ CREATE TABLE `ORG_JOB_BOARD_ACCOUNT_USER` (
     REFERENCES `TEAM` (`ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
+
+
+INSERT INTO `JOB_BOARD` VALUES (1,'Dice','/resources/images/dice-logo.png',NULL,NULL,NULL,NULL),(2,'Monster','/resources/images/monster-logo.png',NULL,NULL,NULL,NULL),(3,'Naukri','https://static.naukimg.com/s/4/100/i/naukri_Logo.png',NULL,NULL,NULL,NULL);
