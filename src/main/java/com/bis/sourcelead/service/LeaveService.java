@@ -34,7 +34,7 @@ public interface LeaveService {
 
 	List<LeaveReportsDTO> getEmployeeLeavesByApproverIdAndStatus(OrgLocations orgLocations, String userId, String status, String department, String leaveDate) throws Exception;
 	
-	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(Long leaveTypeId, Long orgLocationId, Long userId);
+	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId, Long orgLocationId, Long userId);
 
 	ResponseList<Leave> getTopLeavetakers(OrgLocations orgLocation, LeaveDTO leaveDTO) throws Exception;
 
