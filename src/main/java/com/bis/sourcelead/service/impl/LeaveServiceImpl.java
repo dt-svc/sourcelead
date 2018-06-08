@@ -205,10 +205,16 @@ public class LeaveServiceImpl implements LeaveService{
 			if("Grade".equalsIgnoreCase(leaveType.getAutoApproveType())){
 				if(leaveType.getAutoApproveTypeListNames().contains(urole.getGradeId().getGradeName())){
 					leave.setStatus(Constants.LEAVE_APPROVED);
+				}else{
+					leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
+					leave.setStatus(Constants.LEAVE_PENDING);
 				}
 			}else if("Role".equalsIgnoreCase(leaveType.getAutoApproveType())){
 				if(leaveType.getAutoApproveTypeListNames().contains(urole.getRoles().getDisplayName())){
 					leave.setStatus(Constants.LEAVE_APPROVED);
+				}else{
+					leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
+					leave.setStatus(Constants.LEAVE_PENDING);
 				}
 			}else {
 				leave.setStatus(Constants.LEAVE_APPROVED);
@@ -903,7 +909,7 @@ public class LeaveServiceImpl implements LeaveService{
 
 
 	@Override
-	public List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(Long leaveTypeId,Long orgLocationId, Long userId) {
+	public List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId,Long orgLocationId, Long userId) {
 		return leaveDao.getLeavesListByTypeIdAndLocationIdAndUserId(leaveTypeId,orgLocationId,userId);
 	}
 	
@@ -1159,7 +1165,7 @@ public class LeaveServiceImpl implements LeaveService{
 				 totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocationId);
 				float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type, totalLeaves,emp);
 				float totalbalanceLeaveCounts = leaves;
-				List<Leave> totalleavesTaken = getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),orgLocations.getId(), user.getId());
+				List<Leave> totalleavesTaken = getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),orgLocations.getId(), user.getId());
 				for (Leave leave : totalleavesTaken) {
 					 float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
 						   
