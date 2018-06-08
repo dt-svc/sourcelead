@@ -44,6 +44,9 @@ public class AssociateBalanceLeaveView {
 	
 	@Column(name = "CREATED_BY_LAST_NAME")
 	private String createdByLastName;
+	
+	@Column(name = "ORG_LOCATION_ID")
+	private Long orgLocationId;
 
 	public Long getId()
 	{
@@ -159,6 +162,16 @@ public class AssociateBalanceLeaveView {
 	public void setLeaveTypeId(Long leaveTypeId)
 	{
 		this.leaveTypeId = leaveTypeId;
+	}
+
+	public Long getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
 	}
 	
 	
