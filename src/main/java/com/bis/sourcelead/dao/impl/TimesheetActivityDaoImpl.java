@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.TimesheetActivityDao;
 import com.bis.sourcelead.entity.TimesheetActivities;
-import com.bis.sourcelead.entity.UserCustomFieldData;
 
 @Repository
 public class TimesheetActivityDaoImpl  implements TimesheetActivityDao {
