@@ -702,7 +702,9 @@ function preventTabkey(e){
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
 						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configuration</a></li>
 						  </sec:authorize>
-						  
+						  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+                                                    <li><a href="<c:url value="/app/job-boards" />"><i class="fa fa-key" aria-hidden="true"></i>Job Board Configuration</a></li>
+                                                 </sec:authorize>
 					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
 					  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
 					  	</sec:authorize>
