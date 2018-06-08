@@ -984,6 +984,19 @@ public class LeaveManagementRestController {
 					List<User> userList = userService.getUsersListByOrglocationId(orgLocation.getId());
 					if(leaveTypeDTO.getLeaveTypeId() == 0) {
 						int result = associateBalanceLeaveService.addLeaveTypeToAssociate(userList,orgLocation,leaveType,user);
+					}else {
+						int previousNoOfDays = Integer.parseInt(leaveTypeDTO.getPreviousNoOfdays());
+						int currentNofDays = leaveType.getNoOfDays();
+						int diffLeaves = 0;
+						String actionType = "";
+						if(previousNoOfDays < currentNofDays) {
+							diffLeaves = currentNofDays - previousNoOfDays;
+							actionType = "ADD";
+						}if(previousNoOfDays > currentNofDays) {
+							 diffLeaves = previousNoOfDays - currentNofDays;
+							 actionType = "SUB";
+						}
+						int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(userList, orgLocation.getId(), leaveType, 1,diffLeaves,actionType);
 					}
 					
 				}
