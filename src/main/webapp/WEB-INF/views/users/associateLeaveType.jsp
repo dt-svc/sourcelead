@@ -49,22 +49,26 @@
                 type: "GET",
                 url: sourceleadUrl+"/getPieChartForLeaveStatus?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
                 success: function(json) {
-                	var result = "";
-                	 for (var i = 0; i < json.length; i++) { 
-               		  var opt = json[i];
-               		result = result + '<div class="mb row">';
-               		result = result + '<input type = "hidden" value='+opt.id+' id="'+i+'leaveTypeId" name="totalLeavesDto['+i+'].leaveTypeId" />';
-               		result = result + '<label  class="col-md-3"><th>'+opt.name+'</th></label>';
-               		result = result + '<div class="col-md-2">';
-               		result = result + '<input type="text" value='+opt.noOfDays+' class="form-control" id="'+i+'noOfLeaves" name="totalLeavesDto['+i+'].noOfLeaves" data-validation="required validate_float" field-name="Total Leaves">';
-               		result = result + '</div>';
-               		result = result + '<div class="col-md-1">';
-               		result = result + '<i class="fa fa-pencil cursorPointer mt5"></i>';
-               		result = result + '</div>';
-               		result = result + '</div>';
-               	  }
-                	$("#leaveDiv").empty();
-                	$("#leaveDiv").append(result);
+                	if(json.length >0 && json !=null && json !='' && json != 'undefined'){
+                		var result = "";
+                   	 for (var i = 0; i < json.length; i++) { 
+                  		  var opt = json[i];
+                  		result = result + '<div class="mb row">';
+                  		result = result + '<input type = "hidden" value='+opt.id+' id="'+i+'leaveTypeId" name="totalLeavesDto['+i+'].leaveTypeId" />';
+                  		result = result + '<label  class="col-md-3"><th>'+opt.name+'</th></label>';
+                  		result = result + '<div class="col-md-2">';
+                  		result = result + '<input type="text" value='+opt.noOfDays+' class="form-control" id="'+i+'noOfLeaves" name="totalLeavesDto['+i+'].noOfLeaves" data-validation="required validate_float" field-name="Total Leaves">';
+                  		result = result + '</div>';
+                  		result = result + '<div class="col-md-1">';
+                  		result = result + '<i class="fa fa-pencil cursorPointer mt5"></i>';
+                  		result = result + '</div>';
+                  		result = result + '</div>';
+                  	  }
+                   	$("#leaveDiv").empty();
+                   	$("#leaveDiv").append(result);
+                	}else{
+                		location.replace(sourceleadUrl+"/usersList");
+                	}
                 },
             });
  }
