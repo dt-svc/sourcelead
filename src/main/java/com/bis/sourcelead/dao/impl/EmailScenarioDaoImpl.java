@@ -100,7 +100,7 @@ logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCo
 	public EmailScenario getEmailScenarioByUniqueName(String uniqueScenarioName, String entityType) throws Exception{
 		logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueName method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailScenario es left join fetch es.parentId where es.uniqueScenarioName = :uniqueScenarioName and es.entityType = :entityType";
+		String query = "from EmailScenario es left join fetch es.parentId where es.uniqueScenarioName = :uniqueScenarioName and es.entityType = :entityType and es.defaultTemplate = 'Y' ";
 		List<EmailScenario> emailScenariosList =  session.createQuery(query.toString())
 				                                         .setString("uniqueScenarioName", uniqueScenarioName)
 				                                         .setString("entityType", entityType).list();

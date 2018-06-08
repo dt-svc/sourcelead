@@ -345,7 +345,7 @@ public class UserServiceImpl implements UserService {
 			e1.printStackTrace();
 		}
 
-		if(addUserDTO.getCustomFormData() !=null) {
+		if(addUserDTO.getCustomFormData() !=null && !responderType.equalsIgnoreCase("vendor") && !responderType.equalsIgnoreCase("client")) {
 			for( CustomFormFieldDTO customFields:addUserDTO.getCustomFormData()) {
 				if(customFields.getCustomFormFieldId() > 0 &&StringUtils.isNotEmpty(customFields.getCustomFormFieldData())) {
 					UserCustomFieldData userCustomFields = null;
@@ -1096,8 +1096,8 @@ public class UserServiceImpl implements UserService {
 			 
 			 
 		 }else if("Vendor".equals(responderType)){
-			 globalVarsMap.put("firstName", emailMessage.getFirstName());
-			 globalVarsMap.put("lastName",emailMessage.getLastName());
+			 globalVarsMap.put("FirstName", emailMessage.getFirstName());
+			 globalVarsMap.put("LastName",emailMessage.getLastName());
 			 globalVarsMap.put("vendorFirstName", user.getFirstName());
 			 globalVarsMap.put("vendorLastName",user.getLastName());
 			 globalVarsMap.put("clientFirstName", ownerUser.getFirstName());
@@ -1619,6 +1619,12 @@ public class UserServiceImpl implements UserService {
 	public List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId,
 			Long orgLocationsId) throws Exception {
 		return userDao.getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userId, roleId, orgLocationsId);
+	}
+
+	@Override
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates)
+			throws Exception {
+		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates);
 	}
 	
 }

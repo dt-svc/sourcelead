@@ -208,11 +208,11 @@ function getSelectedFieldDetails(){
 		 $('#selectFieldDiv').show();
 		 $('#textBoxDiv').hide();
 		 if(field == 'selectBox'){
-			 $("#selectFieldDiv p:contains('Choices')").html("Options");
+			 $("#selectFieldDiv p:contains('Choices')").html("Options").append("<span class='text-danger paddingLeft'>*</span>");
 			 $("#addOptionDiv p:contains('Add Choice')").html("Add Option");
 			 $('#placeHolderDiv').show();
 		 }else if(field == 'CheckBox' || field == 'radioButton'){
-			 $("#selectFieldDiv p:contains('Options')").html("Choices");
+			 $("#selectFieldDiv p:contains('Options')").html("Choices").append("<span class='text-danger paddingLeft'>*</span>");
 			 $("#addOptionDiv p:contains('Add Option')").html("Add Choice");
 			 $('#placeHolderDiv').hide();
 		 }

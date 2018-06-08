@@ -390,11 +390,18 @@ public class TimesheetRestController {
 				}
                 
                 Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-				if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+				if(avgWorkingHoursPerDay == null) {
 					avgWorkingHoursPerDay = 8; 
 				}
 				Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
 				model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
+				
+				String isTimesheetAvgHoursRequired = orgLocations.getIsTimesheetAvgHoursRequired();
+                String timesheetAvgHoursValidation = "N";
+                if(StringUtils.isNotEmpty(isTimesheetAvgHoursRequired) && isTimesheetAvgHoursRequired.equalsIgnoreCase("Y")) {
+                	timesheetAvgHoursValidation = "Y";
+                }
+				model.addObject("timesheetAvgHoursValidation", timesheetAvgHoursValidation);
 				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
 				model.setViewName("timesheet/employeeTImesheetInvoiceList");
 			}
@@ -608,8 +615,18 @@ public class TimesheetRestController {
 		String[] currentSubFrequency = currentTimeSubFrequency.split("To");
 		String currentSubFrequencyStartDate = currentSubFrequency[0].trim();
 		String currentSubFrequencyEndDate = currentSubFrequency[1].trim();
+		Date actualStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),currentSubFrequencyStartDate.replaceAll("/", "-"));
+				
 
 		String weekStartDate = currentSubFrequencyStartDate;
+		SimpleDateFormat sf = new SimpleDateFormat("E");
+		if (!sf.format(actualStartDate).equalsIgnoreCase("Mon")) {
+			Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+			cal.setLenient(false);
+			cal.setTime(actualStartDate);
+			Calendar startMonday = CalendarUtil.getCurrentWeekDayByCalendar(cal, "MON",orgLocations.getDateFormat());
+			weekStartDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), startMonday.getTime());
+		}
 		String tuesDayDate = CalendarUtil.getNextDate(weekStartDate, orgLocations.getDateFormat());
 		String WednesDayDate = CalendarUtil.getNextDate(tuesDayDate, orgLocations.getDateFormat());
 		String ThursDayDate = CalendarUtil.getNextDate(WednesDayDate, orgLocations.getDateFormat());
@@ -1926,11 +1943,18 @@ public class TimesheetRestController {
 					}
 	                
 	                Integer avgWorkingHoursPerDay = orgLocations.getAverageWorkingHours();
-					if(avgWorkingHoursPerDay == null || avgWorkingHoursPerDay == 0) {
+					if(avgWorkingHoursPerDay == null) {
 						avgWorkingHoursPerDay = 8; 
 					}
 					Integer minimumWorkingHoursPerWeek = workingDaysPerWeek * avgWorkingHoursPerDay;
 					model.addObject("minimumWorkingHoursPerWeek", minimumWorkingHoursPerWeek);
+					
+					String isTimesheetAvgHoursRequired = orgLocations.getIsTimesheetAvgHoursRequired();
+	                String timesheetAvgHoursValidation = "N";
+	                if(StringUtils.isNotEmpty(isTimesheetAvgHoursRequired) && isTimesheetAvgHoursRequired.equalsIgnoreCase("Y")) {
+	                	timesheetAvgHoursValidation = "Y";
+	                }
+					model.addObject("timesheetAvgHoursValidation", timesheetAvgHoursValidation);
 				}
 				model.addObject("employeeTimesheetEntryDetailsDTO", tedDTO);
 				model.setViewName("timesheet/employeeTImesheetInvoiceList");
@@ -4012,10 +4036,11 @@ public class TimesheetRestController {
 				Date monthEndDate = CalendarUtil.getMonthEndDateByGivenDate(actualEndDate, Constants.CURRENT_MONTH)
 						.get("ENDDATE");
 				if (projectMember != null && projectMember.getId() != null) {
+					
 					SubmissionApproverHierarchy sah = submissionApproverHierarchyService
 							.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(
 									loginUser.getId(), orgLocations.getId(), projectMember.getId(), monthStartDate,
-									monthEndDate);
+									monthEndDate,isGlobalAccess);
 					if (sah != null) {
 						tsDTO.setProjectToDateTotalHours(sah.getProjectToDateTotalHours());
 						tsDTO.setProjectToDateBillableHours(sah.getProjectToDateBillableHours());
@@ -6270,6 +6295,7 @@ public class TimesheetRestController {
 			@RequestParam(value = "endDate", required = false) String endDate,
 			@RequestParam(value = "exportType", required = false) String exportType,
 			@RequestParam(value = "client", required = false) String client,
+			@RequestParam(value = "project", required = false) String project,
 			@RequestParam(value = "stage", required = false) String stage,
 			@RequestParam(value = "timesheetFrequency", required = false) String timesheetFrequency,
 			@RequestParam(value = "frequencyMonth", required = false) String frequencyMonth,
@@ -6300,10 +6326,10 @@ public class TimesheetRestController {
 		}
 		if ("pdf".equalsIgnoreCase(exportType)) {
 			file = exportTimesheetEntries.timeSheetApprovelExport(user, orgLocations, stDate, edDate,
-					timesheetFrequency, client, stage, frequencyMonth, weekFrequency,isGlobalAccess);
+					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess);
 		} else {
 			file = exportTimesheetEntries.timeSheetApprovelExportExcel(user, orgLocations, stDate, edDate,
-					timesheetFrequency, client, stage, frequencyMonth, weekFrequency,isGlobalAccess);
+					timesheetFrequency, client,project, stage, frequencyMonth, weekFrequency,isGlobalAccess);
 		}
 
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());

@@ -633,20 +633,25 @@ public class RegistrationRestController {
 		 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		 User user = new User();
 		 user.setId(userId);
-		 
 		 orgLocations.setUser(user);
-		 
-		 Org org = orgLocations.getOrg();
-		 org.setUser(user);
-		 
 		 orgLocationService.updateOrgLocations(orgLocations);
-		 orgService.addOrganization(org);
-		 	
 		 return "success";
 	   }
 	 
 	 
-	 
+	 @PreAuthorize("hasRole('ROLE_ENROLL_ORG')")
+	 @RequestMapping(value = "/app/changeSuperAdmin" , method = RequestMethod.POST)
+	 public  String changeSuperAdmin(@RequestParam(value="userId", required=false) Long userId,
+			 @RequestParam(value="orgLocationId", required=false) Long orgLocationId,HttpServletRequest request) throws Exception {
+		 	
+		 OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+		 User user = new User();
+		 user.setId(userId);
+		 Org org = orgLocations.getOrg();
+		 org.setUser(user);
+		 orgService.addOrganization(org);
+		 return "success";
+	   }
 	 
 	 @PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG','ROLE_VIEW_EDIT_ORG_SETTINGS')")
 	 @RequestMapping(value = "/app/editOrgPrimaryUser" , method = RequestMethod.POST)
@@ -1379,8 +1384,9 @@ public class RegistrationRestController {
 			user.setVerificationUUID(RandomStringUtils.randomAlphanumeric(16));
 			user.setUrlSentTime(new Date());
 			user.setIsVerified(Constants.NO);
+			UserRole userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 			userService.addUser(user);
-			registrationService.sendActivationEmail(user,null);
+			registrationService.sendActivationEmail(user,userRole.getOrgLocations());
 			return "success";
 		}
 		else {

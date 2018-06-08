@@ -216,7 +216,7 @@ public Date[] yesterdayDates(OrgLocations orgLocations) throws Exception {
 		
 		Date[] dates = new Date[2];
 		dates[0] = oneDateUTC;
-		dates[1] = startDateUTC;
+		dates[1] = oneDateUTC;
 		return dates;
 	}
 	

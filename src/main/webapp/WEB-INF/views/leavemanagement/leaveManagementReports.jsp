@@ -98,11 +98,11 @@ background-color: #fcfcfc;
               </div>
             </div>
             <div id="tab-2"  class="project_tabs_inn" style="display: none">
+            	<div class="mask_time"></div> 
                 <div class="row clearfix">
                     <div class="clearfix mb5">
                         <div class="col-md-6">
                             <h4 class="leaves-heading"><span class="pull-left">Employee Leaves</span></h4>
-
                         </div>
                         <div class="clearfix col-md-6 pull-right">
                         
@@ -275,7 +275,6 @@ background-color: #fcfcfc;
                     </div>
               
               </div>
-              
           </div>
         </div>
       </div>
@@ -1314,6 +1313,5 @@ function leaveExcelExport(){
 	}
 }
 </script>
-
 
 <jsp:include page="../masterFooter.jsp" />

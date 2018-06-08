@@ -93,6 +93,8 @@ public class OrgSettingsDTO extends CommonDTO{
 	private List<FileInfo> fileInfo;
 	
 	private String subscriptionDate;
+	
+	private String isTimesheetAvgHoursRequired;
 
 	public Integer getId() {
 		return id;
@@ -406,6 +408,14 @@ public class OrgSettingsDTO extends CommonDTO{
 
 	public void setWeekOffDays(String weekOffDays) {
 		this.weekOffDays = weekOffDays;
+	}
+
+	public String getIsTimesheetAvgHoursRequired() {
+		return isTimesheetAvgHoursRequired;
+	}
+
+	public void setIsTimesheetAvgHoursRequired(String isTimesheetAvgHoursRequired) {
+		this.isTimesheetAvgHoursRequired = isTimesheetAvgHoursRequired;
 	}
 
 	

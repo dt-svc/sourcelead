@@ -9,9 +9,9 @@
   <section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Project</h2>
+        <h2>Daywise Timesheet Report</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Project</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » <a href="<c:url value='${appPath}/daywiseTimeSheetReports'/>">Daywise Timesheet Report</a> » Daywise Timesheet Report List</div>
     </section>
     
     <div class="clearfix"></div>
@@ -44,7 +44,7 @@
           <div class="pull-right mt10">
             <ul class="list-unstyled list-inline">
               <li class="hidden"><i class="fa fa-download"></i> </li>
-              <!-- <li><a href="javascript:void(0)" class="text-danger" title="Download PDF" onclick="runExport('pdf');"><i class="fa fa-file-pdf-o"></i></a></li> -->
+              <li><a href="javascript:void(0)" class="text-danger" title="Download PDF" onclick="runExport('pdf');"><i class="fa fa-file-pdf-o"></i></a></li>
               <li><a href="javascript:void(0)" class="text-success" title="Download Excel" onclick="runExport('excel');"><i class="fa fa-file-excel-o"></i></a></li>
               <li>
                 <div class="dynamic_search mr10">
@@ -77,14 +77,14 @@
             <c:forEach var="entryList" items="${dayWiseTimesheetReoprtsList}">
 	            <tr>
 	                <td><div class="tblminwidth-75">${entryList.timesheetDate}</div></td>
-	                <td><div class="tbldata-dotdot-vsm" title="Srinivas Lankalapalli">${entryList.employeeName}</div></td>
-	                <td><div class="tbldata-dotdot-vsm" title="srininivas.l@businessintelli.com">${entryList.employeeEmail}</div></td>
+	                <td><div class="tbldata-dotdot-vsm" title="${entryList.employeeName}">${entryList.employeeName}</div></td>
+	                <td><div class="tbldata-dotdot-vsm" title="${entryList.employeeEmail}">${entryList.employeeEmail}</div></td>
 	                <td><div class="tblminwidth-75">${entryList.ticketNo}</div></td>
-	                <td><div class="tbldata-dotdot-100" title="Srinivas Lankalapalli">${entryList.projectName}</div></td>
-	                <td><div class="tbldata-dotdot-100" title="Srinivas Lankalapalli">${entryList.task}</div></td>
+	                <td><div class="tbldata-dotdot-100" title="${entryList.projectName}">${entryList.projectName}</div></td>
+	                <td><div class="tbldata-dotdot-100" title="${entryList.task}">${entryList.task}</div></td>
 	                <td><div class="tblminwidth-50">${entryList.billableHrs}</div></td>
 	                <td><div class="tblminwidth-50">${entryList.nonBillableHrs}</div></td>
-	                <td><div class="tblminwidth-50">${entryList.status}</div></td>
+	                <td><div class="tblminwidth-50" title="${entryList.status}">${entryList.status}</div></td>
 	              </tr>
             </c:forEach>
               
@@ -104,6 +104,14 @@
           <div class="clearfix"></div>
         </nav> -->
       </div>
+      <div style="display: none;">
+      	<input type="hidden" value="${exportDto.projectIds}" id="projectIdsDto">
+      	<input type="hidden" value="${exportDto.employmentType}" id="employmentTypeDto">
+      	<input type="hidden" value="${exportDto.projectMemberListId}" id="projectMemberListIdDto">
+      	<input type="hidden" value="${exportDto.startDate}" id="startDateDto">
+      	<input type="hidden" value="${exportDto.endDate}" id="endDateDto">
+      </div>
+      
   </section>
   <!-- Content Area Ends--> 
   <jsp:include page="../masterFooter.jsp" />
@@ -123,25 +131,27 @@ $(document).ready(function() {
 
   <script>
   function runExport(type){
-	  if('${exportDto.projectIds}' != null && '${exportDto.projectIds}' !='' && '${exportDto.projectIds}' !='undefined'){
-		  var projectIds  = ${exportDto.projectIds};
-	  }else{
-		  var projectIds  = '';  
+	  var projectIds  = ''
+	  var employmentType  = '';
+	  var projectMemberList  = '';
+	  var projectIdDto = $('#projectIdsDto').val();
+	  var employmentTypeDto = $('#employmentTypeDto').val();
+	  var projectMemberListIdDto = $('#projectMemberListIdDto').val();
+	  var startDateDto = $('#startDateDto').val();
+	  var endDateDto = $('#endDateDto').val();
+	  
+	  if(projectIdDto != null && projectIdDto !='' && projectIdDto !='undefined'){
+		  projectIds  =  JSON.parse(projectIdDto);  ;
 	  }
-	  if('${exportDto.employmentType}' != null && '${exportDto.employmentType}' !='' && '${exportDto.employmentType}'	!='undefined'){
-		  var employmentType  = '${exportDto.employmentType}';
-	  }else{
-		  var employmentType  = '';  
+	  if(employmentTypeDto != null && employmentTypeDto !='' && employmentTypeDto	!='undefined'){
+		   employmentType  = employmentTypeDto;
 	  }
-	  if('${exportDto.projectMemberListId}' != null && '${exportDto.projectMemberListId}' !='' && '${exportDto.projectMemberListId}'	!='undefined'){
-		  var projectMemberList  = ${exportDto.projectMemberListId};
-	  }else{
-		  var projectMemberList  = '';  
+	  if(projectMemberListIdDto != null && projectMemberListIdDto !='' && projectMemberListIdDto !='undefined' &&  projectMemberListIdDto!='[]'){
+		  projectMemberList  = JSON.parse(projectMemberListIdDto);
 	  }
-		var templateType = "";
-		var startDate = '${exportDto.startDate}'.toString();
-		var endDate = '${exportDto.endDate}'.toString();
-		var exportType = type;
+	  var startDate = startDateDto;
+	  var endDate = endDateDto;
+	  var exportType = type;
 		
 		if(startDate != null && startDate !='' && startDate !='undefined' && endDate != null && endDate !='' && endDate !='undefined'){
 			window.location.href = sourceleadUrl+"/exportDaywiseTimesheetReport?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&exportType="+exportType+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList;

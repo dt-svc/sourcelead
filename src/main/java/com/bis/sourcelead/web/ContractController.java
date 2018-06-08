@@ -520,7 +520,26 @@ public class ContractController {
 				endDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),endconverteDate);
 				contract.setEndDateStr(endDateInTimezone);
 			}
+			
 			if(null != contract){
+				
+				// To get Signing Authority Owners  
+				List<Long> parallelOwnerIds = new ArrayList<>();
+    			for (ContractOwnerHierarchy coh : contract.getOwnerHierarchyList()) {
+    				if(Constants.PARALLEL.equalsIgnoreCase(coh.getHierarchyType().getValue())){
+    					contract.setOwnersType(coh.getHierarchyType().getValue());
+    					parallelOwnerIds.add(coh.getOwnerUserId().getId());
+    				}else{
+    					contract.setOwnersType(coh.getHierarchyType().getValue());
+    					if(coh.getLevel() == 1)
+    						contract.setSequentialOwner1(coh.getOwnerUserId().getId());
+    					else if(coh.getLevel() == 2)
+    						contract.setSequentialOwner2(coh.getOwnerUserId().getId());
+    				}
+    			}
+    			contract.setParallelOwnerId(parallelOwnerIds);
+    			
+				
 				List<ContractsTemplate> contractsTemplateList = contractsTemplateService.getAllContractsTemplatesByContractTypeLandLocationId(orgLocation.getId(),contract.getContractType());
 				model.addObject("contractsTemplateList", contractsTemplateList);
 				
