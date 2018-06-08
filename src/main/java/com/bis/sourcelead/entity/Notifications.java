@@ -113,26 +113,32 @@ public class Notifications implements Serializable{
 	private String notificationFirstName;
 	
 	@Transient
+	@JsonProperty
 	private String notificationLastName;
 	
 	@Transient
+	@JsonProperty
 	private String notificationImage;
 	
 	@Transient
+	@JsonProperty
 	private String spocInvitationStatus;
 	
 	@Transient
+	@JsonProperty
 	private String orgRelationUUID;
 	
 	@Transient
+	@JsonProperty
 	private String responderType;
 	
 	
 	@Transient
-	
+	@JsonProperty
 	private String notificationUserType;
 	
 	@Transient
+	@JsonProperty
 	private String notificationFormId;
 	
 	

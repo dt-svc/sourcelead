@@ -6,6 +6,8 @@ public class TotalLeaveDTO {
 
 	private String noOfLeaves;
 	
+	private String userId;
+	
 	public String getNoOfLeaves()
 	{
 		return noOfLeaves;
@@ -24,6 +26,16 @@ public class TotalLeaveDTO {
 	public void setLeaveTypeId(String leaveTypeId)
 	{
 		this.leaveTypeId = leaveTypeId;
+	}
+
+	public String getUserId()
+	{
+		return userId;
+	}
+
+	public void setUserId(String userId)
+	{
+		this.userId = userId;
 	}
 	
 	

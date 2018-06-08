@@ -11,11 +11,11 @@ public interface AssociateBalanceLeaveDao {
 
 	int addAssociateLeave(AssociateBalanceLeaveDTO associateBalanceLeaveDTO, User loginUser, OrgLocations orgLocations);
 
-	ResponseList<AssociateBalanceLeaveView> getAssociateBalanceLeavesByUserId(Long userId);
+	ResponseList<AssociateBalanceLeaveView> getAssociateBalanceLeavesByUserId(Long userId, Long orgLocationId);
 
 	AssociateBalanceLeave getAssociateBalanceByUUID(String assoBalLeaveUUID);
 
 	int updateAssociateBalLeave(String assoBalLeaveUUID, String totalLeaves);
 
-	AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId);
+	AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId, Long orgLocationId);
 }
