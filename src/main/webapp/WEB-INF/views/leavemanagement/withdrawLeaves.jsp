@@ -171,18 +171,6 @@ function getWithdrawLeaveSummary(leaveUUID,orgLocationId,status){
 			$("body").css('overflow-y', 'hidden');
 			var data = response.object;
 			 var result = "";	
-			 result = result +' <div class="viewgrid-header pull-right zIndex positionRelative">';
-			 result = result +' <span class="btn btn-warning btn-sm mr10" title="'+status+'">'+status+'</span>';
-			 /* result = result +' <span class="btn btn-info btn-sm" onClick="withDrawLeave(\''+leaveId+'\','+orgLocationId+');">Withdraw</span>'; */
-			 result = result +'<div class="clearfix"></div>';
-			 result = result +'<div class="cancel-reason" id="cancelReason">';
-			 result = result +'<div class="clearfix">';
-			 result = result +' <textarea rows="1" class="form-control" placeholder="Cancel Reason..." id="textarea"></textarea>';
-			 result = result +'</div>';
-			 result = result +'<div class="clearfix mt5">';
-			 result = result +'</div>';
-			 result = result +'</div>';
-			 result = result +' </div> ';
 			 result = result +' <div class="row">';
 			 result = result +'<div class="col-md-12 mb">';
 			 result = result +'<label class="col-md-2 control-label"><b>Leave Type:</b></label>';
