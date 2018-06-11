@@ -1861,6 +1861,9 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		
 		public void dataValidationForImmigration(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy,
 				User user, OrgLocations orgLocation) throws Exception {
+			
+			    boolean orgFound = false;
+			
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
 				errorSet.put("beneficiaryEmail", "Beneficiary Email is missing"); // need to validate email address.
 				} else {
@@ -2049,7 +2052,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				errorSet.put("company", "Company is missing"); /// dropdown value.
 				} else {
 				List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
-				boolean orgFound = false;
+				
 				for (OrgRelations rel : vendorsList) {
 				if (StringUtils.isNotBlank(orgLocation.getIsLawFirm())
 				&& orgLocation.getIsLawFirm().equalsIgnoreCase("Y")) {
@@ -2077,7 +2080,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("companyContactEmail"))) {
 				errorSet.put("companyContactEmail", "Attorney/Contact email is missing"); /// dropdown value.
 
-				} else {
+				} else if(orgFound){
 				String email = dataMigrationDTOJsonCopy.getString("companyContactEmail");
 				String venodorId = dataMigrationDTOJsonCopy.getString("company");
 				boolean isSpocFound = false;
