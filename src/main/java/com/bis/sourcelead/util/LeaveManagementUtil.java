@@ -385,10 +385,10 @@ public class LeaveManagementUtil {
                 
                 totalbalanceLeaveCounts = totalbalanceLeaveCounts - totalLeaveCount;
             }else{
-                for(int i=0; i<currentMonth;i++){
-                    totalLeaveCount += leaveType.getNoOfDays();
-                }
-                totalbalanceLeaveCounts = totalbalanceLeaveCounts - totalLeaveCount;
+//                for(int i=0; i<currentMonth;i++){
+                    totalLeaveCount = leaveType.getNoOfDays();
+//                }
+//                totalbalanceLeaveCounts = totalbalanceLeaveCounts - totalLeaveCount;
             }
         }
         

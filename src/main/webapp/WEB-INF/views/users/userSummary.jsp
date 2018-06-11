@@ -1710,7 +1710,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' </div>';
 					
 					result = result+'		<div class="col-md-4">';
-					result = result+'		<label>Gender</label>  ';
+					result = result+'		<label>Gender&nbsp;*</label>  ';
 					result = result+'		<div class="clearfix">    ';
 					if(json.user.gender == "Male"){
 					result = result+'		<label class="paddingLeft"><input type="radio"  checked value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
@@ -1936,7 +1936,7 @@ $("#editRoleDetailsList").empty();
 						result = result + '   <span class="input-group-addon" onClick="clearhiredate();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 					}else{
-						result = result + ' <input type="text" value="'+json.hireDateStr+'" name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
+						result = result + ' <input type="text"  name="DateofJoin" id="DateofJoin" readonly="readonly" class="calendar">';
 						result = result + '   <span class="input-group-addon" onClick="clearhiredate1();"><i class="colorRed fa fa-times cursorPointer"></i></span> ';
 
 					}

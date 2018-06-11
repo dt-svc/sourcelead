@@ -888,7 +888,6 @@ function getApproversList(){
 			var opt = data[0];
 			result += '<input type="text" class="form-control" id="approverUser" readOnly value="'+opt.firstName+' '+opt.lastName+' ('+opt.userType+')"/>';
 			result += '<input type="hidden" class="form-control" name="approverUser" readOnly value="'+opt.id+'"/>';
-			
 			$("#approvalDiv").show();
 			$("#approverUserDiv").empty();
 			$("#approverUserDiv").append(result);

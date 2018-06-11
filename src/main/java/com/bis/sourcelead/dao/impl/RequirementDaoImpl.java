@@ -20,6 +20,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +34,12 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
+import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementLocations;
@@ -472,7 +476,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(
-			Long orgLocationId, String userType, Long userId, String userCode) throws Exception {
+			Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		User user = userDao.getUserById(userId);
@@ -510,7 +514,13 @@ public class RequirementDaoImpl implements RequirementDao {
 				params.put("orgLocationId", orgLocationId);
 			}
 		}
-
+		
+		subQuery += " and requirement.walkIn=:isWalkIn";
+		params.put("isWalkIn", isWalkIn);
+		if(isWalkIn) {
+			subQuery += " and requirement.walkInDays like '%" + walkinDay + "%'";
+		}
+		
 		String whereCondition = subQuery;
 		Query query = session.createQuery(from + " " + whereCondition + " ORDER BY requirement.id DESC");
 		query.setMaxResults(10);
@@ -1104,14 +1114,14 @@ public class RequirementDaoImpl implements RequirementDao {
 					    + " ORG_LOCATIONS OL"
 					    
 						+ " WHERE  OL.ID = REQ.ORG_LOCATION_ID AND "
-					    + " REQ.CREATED_BY = :userCode"
+					    + " REQ.CREATED_BY = :userId"
 					    + " AND DATE_FORMAT(REQ.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
 					    + " AND  OL.ORG_ID = :orgId"
 					    + " GROUP BY REQ.CREATED_BY, OL.ORG_ID, REQ.ORG_LOCATION_ID";
 				 
 			        
 					Query queryString = session.createSQLQuery(query);
-					queryString.setParameter("userCode", user.getUserCode()).setParameter("orgId", orgId);
+					queryString.setParameter("userId", user.getId()).setParameter("orgId", orgId);
 					count  = (BigInteger) queryString.uniqueResult();
 		}else {
 			query ="SELECT"
@@ -2199,6 +2209,61 @@ public class RequirementDaoImpl implements RequirementDao {
 				.setLong("orgLocationId", orgLocationId).uniqueResult();
 
 		return requirement;
+	}
+
+	@Override
+	@Transactional
+	public List<RecruiterReportAssociateCountView> getAssociateCountsCreatedUserList(Long orgLocationId,
+			List<Long> userIdsList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
+			throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<RecruiterReportAssociateCountView> associatesViewList = null;
+		try {
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			
+			 query ="SELECT "
+						+" USER_ID AS associateUserId,SUM(REQ_COUNT) AS jobCount"
+						+" FROM"
+						+" RECRUITER_REPORT_ASSOCIATE_COUNT_VIEW"
+						+" WHERE"
+						+" ORG_ID = :orgId AND USER_ID IN (:userIdsList)"
+						+" AND CREATED_DATE BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+						+" GROUP BY USER_ID";
+			        
+			
+	            Query queryObj = session.createSQLQuery(query);
+				queryObj.setParameterList("userIdsList", userIdsList).setParameter("orgId", orgId);
+				queryObj.setResultTransformer(Transformers.aliasToBean(RecruiterReportAssociateCountView.class));
+				associatesViewList = queryObj.list();
+				
+		}
+		else {
+			         query ="SELECT "
+					+" USER_ID AS associateUserId,SUM(REQ_COUNT) AS jobCount"
+					+" FROM"
+					+" RECRUITER_REPORT_ASSOCIATE_COUNT_VIEW"
+					+" WHERE"
+					+" ORG_LOCATION_ID = :orgLocationId AND USER_ID IN (:userIdsList)"
+					+" AND CREATED_DATE BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					+" GROUP BY USER_ID";
+		
+			
+		
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setParameterList("userIdsList", userIdsList).setParameter("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(RecruiterReportAssociateCountView.class));
+			associatesViewList = queryObj.list();
+		
+		}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return  associatesViewList;
+		
 	}
 
 }
