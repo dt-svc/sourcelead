@@ -93,6 +93,8 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	private String leaveName;
 	private boolean isSuperUser;
 	
+	private String withdrawReason;
+	
 	public String getLeavesTaken() {
 		return leavesTaken;
 	}
@@ -652,5 +654,10 @@ public class LeaveDTO extends SearchDTO implements Serializable{
 	{
 		this.isSuperUser = isSuperUser;
 	}
-
+	public String getWithdrawReason() {
+		return withdrawReason;
+	}
+	public void setWithdrawReason(String withdrawReason) {
+		this.withdrawReason = withdrawReason;
+	}
 }

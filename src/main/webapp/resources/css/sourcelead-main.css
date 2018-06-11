@@ -7156,7 +7156,7 @@ font-size: 16px;
 padding-left: 0 !important;
 }
 /* Advanced Search new Styels */
-.cand-advsrch-popup.advancedsearch-popup {
+.cand-advsrch-popup.advancedsearch-popup, .filter-popup {
 position: fixed; top:1%; left: 20%; border-radius: 0 0 2px 2px; width: 850px; z-index: 99999; max-height: 100%;
 background-color: #f5f5f5; padding: 0; overflow: visible; box-shadow: 1px 1px 2px #333;
 }
@@ -9385,3 +9385,32 @@ z-index: -800;
     width:310px;
 	}
 
+
+
+
+.dowload_pop:after {
+border-bottom: 10px solid #ccc; border-left: 10px solid transparent; border-right: 10px solid transparent;
+clear: both; content: ""; height: 0; position: absolute; right: 30px; top: -10px; width: 0;
+}
+.dowload_pop {
+	position:absolute; min-width: 350px; min-height: 150px; background-color: #fff; border: 1px solid #ededed;
+	top: 100%; right: 0; z-index: 9; padding:0px; display: none;
+}
+.dowload_pop a:hover {
+	color:#3f94dd !important;
+}
+.dowload_pop .fa-download  {
+	font-size: 18px;
+}
+.dowload_pop .modalFooter {
+	border-top: 1px solid #ededed; padding:10px 0;
+}
+.dowload_pop .modalBody {
+	padding: 15px 10px; position:relative;
+}
+.dowload_pop .uploadTempalte {
+	background-color: #f5f5f5; padding: 10px; margin-top: 10px;
+}
+.dowload_pop .modal-header {
+	padding: 10px; background-color: #f9f9f9;
+}
