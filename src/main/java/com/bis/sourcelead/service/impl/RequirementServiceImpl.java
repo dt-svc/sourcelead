@@ -65,6 +65,7 @@ import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
+import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
@@ -3748,6 +3749,13 @@ public class RequirementServiceImpl implements RequirementService {
 	public Requirement getRequirementByGeneratedIdAndLocationId(String generatedId, Long orgLocationId)
 			throws Exception {
 		return requirementDao.getRequirementByGeneratedIdAndLocationId(generatedId, orgLocationId);
+	}
+
+	@Override
+	public List<RecruiterReportAssociateCountView> getAssociateCountsCreatedUserList(Long orgLocationId,
+			List<Long> userIdsList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
+			throws Exception {
+		return requirementDao.getAssociateCountsCreatedUserList(orgLocationId, userIdsList, startDateUTC, endDateUTC, isGlobalUser, orgId);
 	}
 
 }

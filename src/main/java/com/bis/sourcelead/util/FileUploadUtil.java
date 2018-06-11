@@ -85,7 +85,10 @@ public class FileUploadUtil {
 	public String uploadFile(String staticPath, long orgId, long locationId, String fileType,
 			File inFile) {
 		String fileName = inFile.getName().replace("&", "").replace("%", "").replace("?", "");;
-		String extenstion = fileName.substring(fileName.lastIndexOf("."));
+		String extenstion = "";
+		if(fileName.lastIndexOf(".") != -1)
+		extenstion = fileName.substring(fileName.lastIndexOf("."));
+		if(fileName.lastIndexOf(".") != -1)
 		fileName = fileName.substring(0, fileName.lastIndexOf("."));
 		long time = new Date().getTime();
 		String url = staticPath.substring(staticPath.lastIndexOf("/")) + "/" + orgId + "/" + locationId + "/" + fileType
