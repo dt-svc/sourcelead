@@ -2546,6 +2546,7 @@ function removeUser(userId){
 		  			dateFormat : finalDateFormatProjectSave,
 		  			changeMonth: true,
 		  			changeYear: true, 
+		  			maxDate:0,
 		  			onSelect : function(selected) {
 						removeErrMsg();
 					}
