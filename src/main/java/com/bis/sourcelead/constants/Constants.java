@@ -1140,8 +1140,9 @@ public class Constants {
 	
 
 	public static final String EMAIL_SUCCESS = "success";
-	
-
+	public static final String UPDATE = "UPD";
+	public static final String DELETE = "DEL";
+	public static final String NONE = "NONE";
 
 
 }
