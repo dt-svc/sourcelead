@@ -45,6 +45,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AssociateBalanceLeaveDao;
 import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
@@ -66,6 +67,7 @@ import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
 import com.bis.sourcelead.entity.AssetAssign;
+import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.BulkClientDetails;
 import com.bis.sourcelead.entity.CandidateCertifications;
@@ -222,6 +224,12 @@ public class LeaveManagementRestController {
 	
 	@Autowired
 	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
+	AssociateBalanceLeaveDao associateBalanceLeaveDao;
+	
+	
+	
 	/**
 	 * returns Pending leaves jsp
 	 * 
@@ -984,9 +992,20 @@ public class LeaveManagementRestController {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 					List<User> userList = userService.getUsersListByOrglocationId(orgLocation.getId());
-					if(leaveTypeDTO.getLeaveTypeId() == 0) {
-						int result = associateBalanceLeaveService.addLeaveTypeToAssociate(userList,orgLocation,leaveType,user);
-					}else {
+					List<User> updatedUserList = new ArrayList<>();
+					List<User> insertUserList = new ArrayList<>();
+					for(User usr : userList) {
+						AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), usr.getId(), orgLocation.getId());
+					    if(associa != null) {
+					    	updatedUserList.add(usr);
+					    }else {
+					    	insertUserList.add(usr);
+					    }
+					}
+					if(!insertUserList.isEmpty() && insertUserList.size() >0) {
+						int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user);
+					}
+					if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
 						int previousNoOfDays = Integer.parseInt(leaveTypeDTO.getPreviousNoOfdays());
 						int currentNofDays = leaveType.getNoOfDays();
 						int diffLeaves = 0;
@@ -998,7 +1017,7 @@ public class LeaveManagementRestController {
 							 diffLeaves = previousNoOfDays - currentNofDays;
 							 actionType = "SUB";
 						}
-						int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(userList, orgLocation.getId(), leaveType, 1,diffLeaves,actionType);
+						int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(updatedUserList, orgLocation.getId(), leaveType, 1,diffLeaves,actionType,Constants.UPDATE);
 					}
 					
 				}
