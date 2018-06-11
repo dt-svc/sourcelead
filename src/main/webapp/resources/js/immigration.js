@@ -78,7 +78,12 @@ function Immigration() {
                    }else if(result.response === 'SUCCESS') {
 	                	$('#popEduView').hide();
 	                   	$('.popMask').fadeOut();
-	                   	getCandidateEducationList(candidateId);
+	                   	if($('#candidateEducationId').val().trim()!= ''){
+							showSuccessMsg("Successfully updated Education Details.");
+		                	}else{
+		                		showSuccessMsg("Successfully added New Education Details.");
+			                }
+		                getCandidateEducationList(candidateId);
                    }else{
                    	 showError("Operation failed, please try again");
                    }
@@ -581,6 +586,11 @@ this.deletePassportVisaDetailsById=function(id,idType){
                    }else if(result.response === 'SUCCESS') {
                 	   $(".popMask").fadeOut(200); // close the popup code
        				$("#spousePopView").fadeOut(100);// close the popup code
+       				if($('#familyMemberId').val()!= ''){
+						showSuccessMsg("Successfully Updated Family Details.");
+                	}else{
+                		showSuccessMsg("Successfully New Family Details Added.");
+                	}
        				immigration.displayFamilyDetails(candidateId); 
        				}else{
                    	 showError("Operation failed, please try again");
@@ -617,6 +627,11 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	                if (data == 'success') {
 	                	$('#viewFormpop').hide();
 	                	$('.popMask').fadeOut();
+	                	if($('#immigrationCandidateFormId').val()!= ''){
+							showSuccessMsg("Successfully Updated Form Details.");
+	                	}else{
+	                		showSuccessMsg("Successfully New Form Details Added.");
+	                	}
 	                	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'');
 	                }
 	                $("#canFormSave_Button").removeAttr("disabled");
@@ -779,6 +794,12 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	                if (data == 'success') {
 	                	$('#docuView').hide();
 	                	$('.popMask').fadeOut();
+	                	if($('#immigrationCandidateDocId').val()!= ''){
+	    					
+		                	showSuccessMsg("Successfully Updated Document Details.");
+	                	}else{
+	                		showSuccessMsg("Successfully New Document Details Added.");
+	                	}
 	                	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
 	                }
 	                $("#canDocSave_Button1").removeAttr("disabled");
@@ -1068,6 +1089,11 @@ function saveEmployerDetails(status) {
                 }else if(result.response === 'SUCCESS') {
                 	$('#emploView').hide();
                 	$('.popMask').fadeOut();
+                	if($('#candidateEmpId').val()!= ''){
+                		showSuccessMsg("Successfully updated Employee Details.");
+                    }else{
+                    	showSuccessMsg("Successfully new Employees Details.");
+                    	}
                 	getCandidateEmployerList(candidateId);
                 }else{
                 	 showError("Operation failed, please try again");
@@ -1160,6 +1186,12 @@ function saveResidenceDetails(status) {
                }else if(result.response === 'SUCCESS') {
             	   $('#popResiView').hide();
                	  $('.popMask').fadeOut();
+               	if($('#residenceId').val()!= ''){
+					showSuccessMsg("Successfully updated Residence Details.");
+                	}else{
+                		showSuccessMsg("Successfully added New Residence Details.");
+	                }
+               	
                	  getCandidateResidenceList(candidateId);
                }else{
                	 showError("Operation failed, please try again");
@@ -1251,6 +1283,7 @@ function uploadRequestDoc(){
         	if(result=='success'){
         		$('#uploadCanDocPop').hide();
             	$('.popMask').fadeOut();
+            	showSuccessMsg("Successfully Uploaded File.");
             	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
         	     
         	}
@@ -1323,6 +1356,7 @@ function uploadRequestForm(){
         	if(result=='success'){
         		$('#uploadFormPop').hide();
             	$('.popMask').fadeOut();
+            	showSuccessMsg("Successfully Uploaded File.");
             	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,''); 
         	}
         }
@@ -1375,6 +1409,7 @@ function saveNotesDatails(status) {
             	if (data === 'success') {
             		$(".popMask").fadeOut(200);
     				$("#popNoteView").hide(100);
+    				showSuccessMsg("Successfully New Notes Added.");
                 	getNotesListByImmigration(candidateId);
                 }
             	$("#notesSave_Button").removeAttr("disabled");
