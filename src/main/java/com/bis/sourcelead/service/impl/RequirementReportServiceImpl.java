@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,6 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
-import com.bis.sourcelead.entity.RequirementStagesCount;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
@@ -132,8 +132,15 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 							endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
 						}
 					}
+		
 				}
+				Calendar cal = Calendar.getInstance();
+			    Date date=cal.getTime();
+		System.out.println("-----before list time----"+date);
 		List<Requirement> requirementList = requirementReportDao.getRequirementReports(userRoleName, orgLocation, user,filterDate, startDateUTC, endDateUTC,status);
+		Calendar cal1 = Calendar.getInstance();
+	    Date date1=cal1.getTime();
+		System.out.println("----after list time-----"+date1);
 		for (Requirement requirement : requirementList) {
 			//String postedDate = getDateStr(requirement.getCreatedDate(), timezone);
 			requirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirement.getCreatedDate()));
@@ -169,6 +176,9 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				requirement.setManager(managerSB.append(managerFirstName).append(" ").append(managerLastName).toString());
 			}
 		}
+		Calendar cal2 = Calendar.getInstance();
+	    Date date2=cal2.getTime();
+		System.out.println("---- list time-----"+date2);
 		return requirementList;
 	}
 	
@@ -202,11 +212,6 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		return requirementReportDao.getApplicantsCountForChart(orgLocationId);
 	}
 	
-	@Override
-	public RequirementStagesCount getRequirementStagesCountsForReports(Long orgLocId) throws Exception
-	{
-		return requirementReportDao.getRequirementStagesCountsForReports(orgLocId);
-	}
 	
 	@Override
 	public List<Requirement> getRequirementStageReports(OrgLocations orgLocation, String Status) throws Exception{

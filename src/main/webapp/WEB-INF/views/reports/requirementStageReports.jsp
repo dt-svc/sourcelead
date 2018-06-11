@@ -21,7 +21,6 @@ color: #333;
 <script type="text/javascript">
 window.onload = function() { 
 	getRequirementList();
-	getRequirementStageCounts();
 	}
 </script>
 
@@ -60,8 +59,48 @@ function prepareReportDataDiv(data){
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
 	var json = JSON.parse(data);
+	var draftCount = 0;
+	var submittedCount = 0;
+	var rejectedCount = 0;
+	var openCount = 0;
+	var onHoldCount = 0;
+	var filledClosedCount = 0;
+	var cancelCount = 0;
+	var unfilledClosedCount = 0;
+	var closedCount = 0;
+	var newCount = 0;
     for (var i = 0; i < json.length; i++) {
     	var report= json[i];
+    	if(report.requirementSubmissionStatus=='DRAFT'){
+    		draftCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='SUBMITTED'){
+    		submittedCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='REJECTED'){
+    		rejectedCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='OPEN'){
+    		openCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='ONHOLD'){
+    		onHoldCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='FILLEDCLOSED'){
+    		filledClosedCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='CANCEL'){
+    		cancelCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='UNFILLEDCLOSED'){
+    		unfilledClosedCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='CLOSED'){
+    		closedCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='NEW'){
+    		newCount++;
+    	}
     	result = result + '<tr>';
         result = result + '<td>';
         result = result + '<div class="tbldata-dotdot-sm"><span title="'+report.jobTitle+'">'+report.jobTitle+'</span></div> ';
@@ -127,6 +166,19 @@ function prepareReportDataDiv(data){
     }
 	result = result + '	</tbody>';
 	result = result + '</table>';
+	var countObj = {
+			"draftCount" : draftCount,
+			"submittedCount" : submittedCount,
+			"rejectedCount" : rejectedCount,
+			"openCount" : openCount,
+			"onHoldCount" : onHoldCount,
+			"filledClosedCount" : filledClosedCount,
+			"cancelCount" : cancelCount,
+			"unfilledClosedCount" : unfilledClosedCount,
+			"closedCount": closedCount,
+			"newCount" : newCount
+	}
+	getRequirementStageCounts(countObj);
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
     $("#reqStagesLoderDiv").empty();
@@ -166,26 +218,24 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 </script>
 
 <script>
-function getRequirementStageCounts(){
-		$.ajax({
+function getRequirementStageCounts(countObj){
+		/* $.ajax({
 	         type : "POST",
 	          url: sourceleadUrl+"/getRequirementCountBasedOnStatus?"+tokenParamName+"="+tokenValue+"",    
 	          success :function(data) {
 	          
-	        	  var json = JSON.parse(data);
-		        	
-		        	var  newRequirementCount = json.newRequirementsCount;
-		        	var  draftRequirementCount = json.draftRequirementsCount;
-		        	var  submittedRequirementCount = json.submittedRequirementsCount;
-		        	var  openRequirementCount = json.openRequirementsCount; 
-		        	var  onHoldRequirementCount = json.onholdRequirementsCount;
-		        	var  cancelRequirementCount = json.cancelRequirementsCount;
+	        	  var json = JSON.parse(data);*/
+		        	var  newRequirementCount = countObj.newCount;
+		        	var  draftRequirementCount = countObj.draftCount;
+		        	var  submittedRequirementCount = countObj.submittedCount;
+		        	var  openRequirementCount = countObj.openCount; 
+		        	var  onHoldRequirementCount = countObj.onHoldCount;
+		        	var  cancelRequirementCount = countObj.cancelCount;
 // 		        	var  approvedRequirementCount = json.approvedRequirementsCount;
-		        	var  filledclosedRequirementsCount = json.filledclosedRequirementsCount;
-		        	var  unfilledclosedRequirementsCount = json.unfilledclosedRequirementsCount;
-		        	var  rejectedRequirementsCount = json.rejectedRequirementsCount;
-		        	var  closedRequirementsCount = json.closedRequirementsCount;
-		        	
+		        	var  filledclosedRequirementsCount = countObj.filledClosedCount;
+		        	var  unfilledclosedRequirementsCount = countObj.unfilledClosedCount;
+		        	var  rejectedRequirementsCount = countObj.rejectedCount;
+		        	var  closedRequirementsCount = countObj.closedCount; 
 		        	
 		        	if(newRequirementCount>0){
 	                      $("#newRequirementCount").text(("("+newRequirementCount+")"));
@@ -238,9 +288,9 @@ function getRequirementStageCounts(){
 	                  }
 	        	  
 		        	getrequirementStagePieChat(newRequirementCount,draftRequirementCount,submittedRequirementCount,openRequirementCount,onHoldRequirementCount,cancelRequirementCount,filledclosedRequirementsCount,unfilledclosedRequirementsCount,rejectedRequirementsCount,closedRequirementsCount);
-	          },
+	         /*  },
 	          
-	     }); 
+	     }); */ 
 }
 </script>
 

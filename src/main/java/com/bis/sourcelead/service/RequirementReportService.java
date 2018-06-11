@@ -10,7 +10,6 @@ import com.bis.sourcelead.beans.ApplicantReport;
 import com.bis.sourcelead.beans.AssignedRequirementReports;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementStagesCount;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
@@ -29,7 +28,6 @@ public interface RequirementReportService {
 
 	List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId);
 	
-	RequirementStagesCount getRequirementStagesCountsForReports(Long orgLocId)throws Exception;
 	
 	List<Requirement> getRequirementStageReports(OrgLocations orgLocation,String Status) throws Exception;
 

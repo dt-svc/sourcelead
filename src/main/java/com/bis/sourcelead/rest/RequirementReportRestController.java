@@ -1,12 +1,10 @@
 package com.bis.sourcelead.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.beans.ApplicantReport;
 import com.bis.sourcelead.beans.AssignedRequirementReports;
-import com.bis.sourcelead.beans.RequirementStagesReport;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementLocations;
-import com.bis.sourcelead.entity.RequirementStagesCount;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -249,54 +244,6 @@ public class RequirementReportRestController {
 		return reportsList;
 	}
 		
-	/**
-	 * get Requirement count based on status
-	 * 
-	 * @param status
-	 * @param request
-	 * @param response
-	 * @return json
-	 * @throws Exception
-	 */
-	@RequestMapping(value = "/getRequirementCountBasedOnStatus")
-	public String getRequirementCountBasedOnStatus(@RequestParam(value = "status", required = false) String status, HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		RequirementStagesReport requirementStagesReport = new RequirementStagesReport();
-		String reqStageReport = "";
-		if (null == status) {
-			RequirementStagesCount count = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId());
-			/*int draftCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "DRAFT");
-			int submittedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "SUBMITTED");
-			int approvedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "APPROVED");
-			int rejectedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "REJECTED");
-			int openCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "OPEN");
-			int onholdCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "ONHOLD");
-			int filledclosedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "FILLEDCLOSED");
-			int cancelCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "CANCEL");
-			int unfilledclosedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "UNFILLEDCLOSED");
-			int closedCount = requirementReportService.getRequirementStagesCountsForReports(orgLocation.getId(), "CLOSED");*/
-			requirementStagesReport.setCancelRequirementsCount(count.getCancelRequirementsCount());
-			requirementStagesReport.setDraftRequirementsCount(count.getDraftRequirementsCount());
-			requirementStagesReport.setFilledclosedRequirementsCount(count.getFilledclosedRequirementsCount());
-			requirementStagesReport.setNewRequirementsCount(count.getNewRequirementsCount());
-			requirementStagesReport.setOnholdRequirementsCount(count.getOnholdRequirementsCount());
-			requirementStagesReport.setOpenRequirementsCount(count.getOpenRequirementsCount());
-			requirementStagesReport.setSubmittedRequirementsCount(count.getSubmittedRequirementsCount());
-			requirementStagesReport.setUnfilledclosedRequirementsCount(count.getUnfilledclosedRequirementsCount());
-			requirementStagesReport.setApprovedRequirementsCount(count.getApprovedRequirementsCount());
-			requirementStagesReport.setRejectedRequirementsCount(count.getRejectedRequirementsCount());
-			requirementStagesReport.setClosedRequirementsCount(count.getClosedRequirementsCount());
-			reqStageReport = commonUtil.toJSON(requirementStagesReport);
-		}
-		else {
-			List<Requirement> reqList = requirementReportService.getRequirementStageReports(orgLocation, status);
-			reqStageReport = commonUtil.toJSON(reqList);
-		}
-		return reqStageReport;
-		 
-	 }
 	 
 	/**
 	 * get applicants reports based on day wise

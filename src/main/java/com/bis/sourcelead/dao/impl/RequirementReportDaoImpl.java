@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,10 +15,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementReportDao;
-import com.bis.sourcelead.entity.ImmigrationDashboardView;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementStagesCount;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
@@ -81,8 +78,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	    	filterQuery = "and requirement.requirementSubmissionStatus IN (:statusList)";
 	    	params.put("statusList",list);
 	    }
-	    
-		String from = "from Requirement requirement  left join fetch requirement.parentRequirement  left join fetch requirement.clientId left join fetch requirement.spocId left join fetch requirement.submissionTemplateId left join fetch requirement.clientSubmissionTemplateId left join fetch requirement.parentRequirement"; 
+		String from = "from Requirement requirement  left join fetch requirement.parentRequirement  left join fetch requirement.clientId left join fetch requirement.spocId left join fetch requirement.submissionTemplateId left join fetch requirement.clientSubmissionTemplateId"; 
 		String subQuery = "";
 		
 		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
@@ -96,7 +92,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 			params.put("userId",user.getId());
 			params.put("level",1);
 			
-			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2  and  requirement.requirementSubmissionStatus <> 'DRAFT' and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED'))  or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) )  )";
+			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2  and  requirement.requirementSubmissionStatus <> 'DRAFT' and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED'))  or (requirement.id IN ( select rat.requirementId from RequirementAssignTo rat where rat.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) )  )";
 			params.put("approverUserId",user.getId());
 			params.put("level1",1);
 			params.put("level2",2);
@@ -111,15 +107,16 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 			params.put("userId",user.getId());
 			
 			if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "" || subQuery6 != "" ){
-				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") OR ("+subQuery5+") OR ("+subQuery6+") )";
+				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery4+") OR ("+subQuery5+") OR ("+subQuery6+") )";
 				params.put("orgLocationId",orgLocation.getId());
 			}
+			
 		}
 		
-		
 		String whereCondition = subQuery +dateSubQuery+filterQuery;
+		String listQuery = from+" "+whereCondition+" ORDER BY requirement.id DESC";
 		
-		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
+		Query query = session.createQuery(listQuery);
 		for (String str : query.getNamedParameters())
 		{
 			if (str.equalsIgnoreCase("orgLocationId")) {
@@ -137,7 +134,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 			} else if (str.equalsIgnoreCase("level2")) {
 				query.setInteger(str, 2);
 			} else if (str.equalsIgnoreCase("loginUserCode")) {
-				query.setString(str, user.getUserCode());
+				query.setLong(str, user.getId());
 			}else if (str.equalsIgnoreCase("statusList")) {
 				query.setParameterList(str, list);
 			}else if (str.equalsIgnoreCase("startDateUTC")) {
@@ -147,7 +144,6 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 			}
 
 		}
-		
 		return query.list();
 	}
 
@@ -199,44 +195,6 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	List<RequirementSubmissionHistory> rshList = session.createQuery(query).setLong("orgLocationsId",orgLocationId).list();
 	return rshList;
 	}
-
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public RequirementStagesCount getRequirementStagesCountsForReports(Long orgLocId) {
-		RequirementStagesCount dashboardObj = new RequirementStagesCount();
-		
-		List<RequirementStagesCount> reqStagesList= new ArrayList<RequirementStagesCount>();
-		dashboardObj.setApprovedRequirementsCount(BigDecimal.ZERO); // set default values as zero.
-		dashboardObj.setCancelRequirementsCount(BigDecimal.ZERO);
-		dashboardObj.setClosedRequirementsCount(BigDecimal.ZERO);
-		dashboardObj.setDraftRequirementsCount(BigDecimal.ZERO);
-		dashboardObj.setFilledclosedRequirementsCount(BigDecimal.ZERO);
-		dashboardObj.setNewRequirementsCount(BigDecimal.ZERO);
-		dashboardObj.setOnholdRequirementsCount(BigDecimal.ZERO);
-		dashboardObj.setOpenRequirementsCount(BigDecimal.ZERO);
-		dashboardObj.setRejectedRequirementsCount(BigDecimal.ZERO);
-		dashboardObj.setSubmittedRequirementsCount(BigDecimal.ZERO);
-		dashboardObj.setUnfilledclosedRequirementsCount(BigDecimal.ZERO);
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from RequirementStagesCount req where req.orgLocationId =:orgLocId";
-		reqStagesList = session.createQuery(query).setLong("orgLocId",orgLocId).list();
-		for(RequirementStagesCount obj: reqStagesList){
-			dashboardObj.setApprovedRequirementsCount(dashboardObj.getApprovedRequirementsCount().add(obj.getApprovedRequirementsCount())); // set default values as zero.
-			dashboardObj.setCancelRequirementsCount(dashboardObj.getCancelRequirementsCount().add(obj.getCancelRequirementsCount()));
-			dashboardObj.setClosedRequirementsCount(dashboardObj.getCancelRequirementsCount().add(obj.getCancelRequirementsCount()));
-			dashboardObj.setDraftRequirementsCount(dashboardObj.getDraftRequirementsCount().add(obj.getDraftRequirementsCount()));
-			dashboardObj.setFilledclosedRequirementsCount(dashboardObj.getFilledclosedRequirementsCount().add(obj.getFilledclosedRequirementsCount()));
-			dashboardObj.setNewRequirementsCount(dashboardObj.getNewRequirementsCount().add(obj.getNewRequirementsCount()));
-			dashboardObj.setOnholdRequirementsCount(dashboardObj.getOnholdRequirementsCount().add(obj.getOnholdRequirementsCount()));
-			dashboardObj.setOpenRequirementsCount(dashboardObj.getOpenRequirementsCount().add(obj.getOpenRequirementsCount()));
-			dashboardObj.setRejectedRequirementsCount(dashboardObj.getRejectedRequirementsCount().add(obj.getRejectedRequirementsCount()));
-			dashboardObj.setSubmittedRequirementsCount(dashboardObj.getSubmittedRequirementsCount().add(obj.getSubmittedRequirementsCount()));
-			dashboardObj.setUnfilledclosedRequirementsCount(dashboardObj.getUnfilledclosedRequirementsCount().add(obj.getUnfilledclosedRequirementsCount()));	
-		}
-		return dashboardObj;
-	}
-
 
 	@SuppressWarnings({ "unchecked", "null" })
 	@Override
