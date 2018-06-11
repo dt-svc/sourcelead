@@ -1073,7 +1073,7 @@ function getPieChartBasedOnUser(){
 		result = result + "  <tr>";
 		result = result + "    <th>Employee Name</th>";
 		result = result + "    <th>Number Of Days</th>";
-		result = result + "    <th>Status</th>";
+// 		result = result + "    <th>Status</th>";
 		result = result + "  </tr>";
 		result = result + "</thead>";
 		result = result + "<tbody>";
@@ -1100,8 +1100,8 @@ function topLeaveTakersPagination(url){
 	        }),
 	        "columns": [
 	            { "data": "empName" },
-	            { "data": "noOfDays"},
-	            { "data": "status" }
+	            { "data": "noOfDays"}
+// 	            { "data": "status" }
 	        ],
 	        "columnDefs": [ {
 		    	  	"targets": colIndex++,
@@ -1127,13 +1127,13 @@ function topLeaveTakersPagination(url){
 		              return result;
 	            }
 	          }, {
-	              "targets": colIndex++,
+	              /* "targets": colIndex++,
 	              "data": "status",
 	              "render": function ( data, type, report, meta ) {
 	            	   var result = "";
 	            	   result = result + '<td><div class="tblminwidth-75">'+report.status+'</div></td>';
 	  	              return result; 
-	              }
+	              } */
 	            }],
 		    	"scrollCollapse": false,
 		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
@@ -1231,8 +1231,8 @@ function topLeaveTakersPagination(url){
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate());
-			$("#toDate").datepicker("option", "minDate", dt);
-			removeStartValid();
+			$("#barChartToDate").datepicker("option", "minDate", dt);
+// 			removeStartDateValidation();
 			}
 		});
 		
@@ -1243,8 +1243,8 @@ function topLeaveTakersPagination(url){
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate());
-			$("#fromdate").datepicker("option", "maxDate", dt);
-			removeEndValid();
+			$("#barChartFromDate").datepicker("option", "maxDate", dt);
+// 			removeEndDateValidation();
 			}
 		});
 	  

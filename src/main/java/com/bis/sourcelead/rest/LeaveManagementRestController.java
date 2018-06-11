@@ -399,7 +399,7 @@ public class LeaveManagementRestController {
 				// totalLeaves,emp);
 				float totalbalanceLeaveCounts = totalLeaves;
 				float calculatedTotalNonCarryforwardLeaves = 0;
-				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),
+				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),
 						orgLocations.getId(), loginUser.getId());
 
 				for (Leave leave : totalleavesTaken) {
@@ -891,7 +891,9 @@ public class LeaveManagementRestController {
 					for (Projects projects : projectsList) {
 						ProjectTasks tasks = new ProjectTasks();
 						LookUpData taskType = lookUpDataService.getTasksTypeByUniqueKey(Constants.GENERAL);
-						tasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects));
+						if(projects.getProjectShortCode() != null) {
+							tasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects));
+						}
 						tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 						tasks.setTaskName(holidayDTO.getHolidayName());
 						tasks.setDescription(holidayDTO.getHolidayName());
@@ -1583,13 +1585,20 @@ public class LeaveManagementRestController {
 						
 						if(Constants.YES.equalsIgnoreCase(leaveType.getAutoApprove())){
 							if("Grade".equalsIgnoreCase(leaveType.getAutoApproveType())){
-								if(userRole.getGradeId() != null)
+								if(userRole.getGradeId() != null){
 									if(leaveType.getAutoApproveTypeListNames().contains(userRole.getGradeId().getGradeName())){
 										leaveType.setAutoApprove(Constants.YES);
+									}else{
+										leaveType.setAutoApprove(Constants.NO);
 									}
+								}else{
+									leaveType.setAutoApprove(Constants.NO);
+								}
 							}else if("Role".equalsIgnoreCase(leaveType.getAutoApproveType())){
-								if(leaveType.getAutoApproveTypeListNames().contains(userRole.getRoles().getDisplayName())){
+								if(leaveType.getAutoApproveTypeListNames().contains(userRole.getRoles().getRoleName())){
 									leaveType.setAutoApprove(Constants.YES);
+								}else{
+									leaveType.setAutoApprove(Constants.NO);
 								}
 							}
 						}else {
@@ -1801,6 +1810,9 @@ public class LeaveManagementRestController {
 			}
 			if (leave.getDeleteReason() != null) {
 				leaveDto.setDeleteReason(leave.getDeleteReason());
+			}
+			if (leave.getWithdrawReason() != null) {
+				leaveDto.setWithdrawReason(leave.getWithdrawReason());
 			}
 
 			StringBuilder sbu = new StringBuilder();
@@ -2256,7 +2268,7 @@ public class LeaveManagementRestController {
 				float cancelCounts = 0;
 				float noOfDays = 0;
 				LeaveTypeDTO leaveTypeDto = new LeaveTypeDTO();
-				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getId(),
+				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(type.getLeaveTypeUUID(),
 						orgLocations.getId(), user.getId());
 				
 				int totalLeavesperYear  = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocations.getId());
@@ -2393,7 +2405,7 @@ public class LeaveManagementRestController {
 
 	@RequestMapping(value = { "/validateMaxLeave", "/rest/validateMaxLeave" }, method = RequestMethod.GET)
 	public @ResponseBody boolean validateMaxLeave(
-			@RequestParam(value = "leaveTypeId", required = false) Long leaveTypeId,
+			@RequestParam(value = "leaveTypeId", required = false) String leaveTypeId,
 			@RequestParam(value = "fromDate", required = false) String fromDate,
 			@RequestParam(value = "toDate", required = false) String toDate,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
@@ -2632,7 +2644,6 @@ public class LeaveManagementRestController {
 		return null;
 	}
 	
-	
 
 	@RequestMapping(value = "/ws/dumpAllLeavesToAssociates", method = RequestMethod.GET)
 	public boolean getRestActionHistoryList(HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -2659,6 +2670,26 @@ public class LeaveManagementRestController {
 			}
 		}
 		return isInserted;
+	}
+
+	/**
+	 * returns Withdraw leaves jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/withdrawLeaves")
+	public ModelAndView withdrawLeavesJsp(@RequestParam(value = "orgLocationId", required = false) String orgLocationId,
+			@RequestParam(value = "status", required = false) String status, HttpServletRequest request,
+			HttpServletResponse response) {
+		
+			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("orgLocationId", orgLocationId);
+			model.addObject("status", status);
+			model.setViewName("leavemanagement/withdrawLeaves");
+			return model;
 	}
 
 }
