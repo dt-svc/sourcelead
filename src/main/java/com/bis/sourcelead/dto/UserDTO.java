@@ -62,11 +62,11 @@ public class UserDTO extends SearchDTO implements Serializable {
 	
 	private String linkedUserPwd;
 	
-    private BigInteger userRequirementsCount;
+    private BigDecimal userRequirementsCount;
 	
     private BigDecimal userApplicantsCount;
 	
-    private BigInteger userCandidatesCount;
+    private BigDecimal userCandidatesCount;
 	
     private BigDecimal userShortlistedApplicantsCount;
 	
@@ -492,11 +492,11 @@ public class UserDTO extends SearchDTO implements Serializable {
 		this.linkedUserPwd = linkedUserPwd;
 	}
 
-	public BigInteger getUserRequirementsCount() {
+	public BigDecimal getUserRequirementsCount() {
 		return userRequirementsCount;
 	}
 
-	public void setUserRequirementsCount(BigInteger userRequirementsCount) {
+	public void setUserRequirementsCount(BigDecimal userRequirementsCount) {
 		this.userRequirementsCount = userRequirementsCount;
 	}
 
@@ -510,11 +510,11 @@ public class UserDTO extends SearchDTO implements Serializable {
 		this.userApplicantsCount = userApplicantsCount;
 	}
 
-	public BigInteger getUserCandidatesCount() {
+	public BigDecimal getUserCandidatesCount() {
 		return userCandidatesCount;
 	}
 
-	public void setUserCandidatesCount(BigInteger userCandidatesCount) {
+	public void setUserCandidatesCount(BigDecimal userCandidatesCount) {
 		this.userCandidatesCount = userCandidatesCount;
 	}
 
