@@ -182,6 +182,10 @@ public class RequirementDTO extends CommonDTO {
 	private List<RequirementLocationsDTO> savedLocationInfo;
 
 	private List<String> locationsList;
+	
+	private boolean walkIn;
+	
+	private String walkInDays;
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
@@ -190,6 +194,22 @@ public class RequirementDTO extends CommonDTO {
 
 	public String getNoOfOfferedApplicants() {
 		return noOfOfferedApplicants;
+	}
+
+	public boolean isWalkIn() {
+		return walkIn;
+	}
+
+	public void setWalkIn(boolean isDriveJob) {
+		this.walkIn = isDriveJob;
+	}
+
+	public String getWalkInDays() {
+		return walkInDays;
+	}
+
+	public void setWalkInDays(String driveDays) {
+		this.walkInDays = driveDays;
 	}
 
 	public void setNoOfOfferedApplicants(String noOfOfferedApplicants) {
