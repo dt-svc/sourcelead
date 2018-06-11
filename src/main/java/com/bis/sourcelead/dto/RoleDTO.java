@@ -9,6 +9,7 @@ public class RoleDTO implements Serializable {
 	private Long hierarchyId;
 	private String hierarchyName;
 	private Long roleId;
+	private String uuid;
 
 	public Long getId() {
 		return id;
@@ -56,6 +57,14 @@ public class RoleDTO implements Serializable {
 
 	public void setRoleId(Long roleId) {
 		this.roleId = roleId;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 }
