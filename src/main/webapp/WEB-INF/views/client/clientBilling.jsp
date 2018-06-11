@@ -1390,7 +1390,7 @@ function resetInvoiceFilter(orgRelationId,clientLocationId){
 </script>
 
 <div class="comMask" style="z-index:99999"></div>
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="invoiceFilterId">
+          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="invoiceFilterId" style="display:none;">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeInvoiceFilterPop()"><i
 						class="fa fa-close"></i></a>
