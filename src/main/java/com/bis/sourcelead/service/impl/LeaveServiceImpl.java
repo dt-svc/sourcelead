@@ -203,14 +203,19 @@ public class LeaveServiceImpl implements LeaveService{
 		UserRole urole = userRoleService.getUserRoleByUserIdAndLocationId(leave.getUser().getId(), orgLocations.getId());
 		if(Constants.YES.equalsIgnoreCase(leaveType.getAutoApprove())){
 			if("Grade".equalsIgnoreCase(leaveType.getAutoApproveType())){
-				if(leaveType.getAutoApproveTypeListNames().contains(urole.getGradeId().getGradeName())){
-					leave.setStatus(Constants.LEAVE_APPROVED);
+				if(urole.getGradeId() != null){
+					if(leaveType.getAutoApproveTypeListNames().contains(urole.getGradeId().getGradeName())){
+						leave.setStatus(Constants.LEAVE_APPROVED);
+					}else{
+						leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
+						leave.setStatus(Constants.LEAVE_PENDING);
+					}
 				}else{
 					leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));
 					leave.setStatus(Constants.LEAVE_PENDING);
 				}
 			}else if("Role".equalsIgnoreCase(leaveType.getAutoApproveType())){
-				if(leaveType.getAutoApproveTypeListNames().contains(urole.getRoles().getDisplayName())){
+				if(leaveType.getAutoApproveTypeListNames().contains(urole.getRoles().getRoleName())){
 					leave.setStatus(Constants.LEAVE_APPROVED);
 				}else{
 					leave.setApproverHierarchyList(getApproverList(leaveDTO,leave,user));

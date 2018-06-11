@@ -296,6 +296,7 @@
 						<div class="form-group" id="noOfDaysDiv">
 							<label class="col-md-4">No Of Days Annualy<span class="text-danger paddingLeft" >*</span></label>
 							<div class="col-md-3">
+							   <input type="hidden" name="previousNoOfdays" id="previousNoOfdays" value="${leaveType.noOfDays}"/>
 								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" placeholder="Enter no of Days" onblur="getNoOfDaysPerPeriod();" class="form-control" value="${leaveType.noOfDays}">
 							</div>
 						</div>

@@ -5,7 +5,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 
@@ -132,7 +132,9 @@ var sourceleadUrl = '${sourceleadUrl}';
 	          <div class="col-md-11 paddingRight paddingLeft edit-field edit-inputfield">
 		          
 		          <div class="showTaskname" id="taskedit-parent" onclick="editFun();">
-		          <span class="taskgeneratedid text-muted paddingRight bg-green" title="Task Generated ID">${projectTask.generatedId}</span>
+		          <c:if test="${not fn:contains(projectTask.generatedId, 'null') && !empty projectTask.generatedId}">
+		             <span class="taskgeneratedid text-muted paddingRight bg-green" title="Task Generated ID">${projectTask.generatedId}</span>
+		          </c:if>
 		          <span class="paddingLeft" id="projectTaskName">${projectTask.taskName}</span>
 		          <span class="editicon">
 		          	<i class="fa fa-pencil fa-2x"></i>
