@@ -51,6 +51,7 @@ background-color: #fcfcfc;
         
          <sec:authorize access="hasRole('ROLE_APPLY_LEAVE')"> 
              <div class="pull-right">
+              <form:form id="upload_leave_excel_form" name="upload_leave_excel_form" enctype="multipart/form-data">
                  <div title="Import" class="positionRelartive pull-left zIndex mr">
 					        	<a onclick="leaveImport();"><i class="glyphicon glyphicon-import expIcon mt5"></i>&nbsp;</a> 
 						        	<div class="dowload_pop">
@@ -84,6 +85,7 @@ background-color: #fcfcfc;
 					        			</div>
 						        	</div>
 						        </div>
+						        </form:form>
 			        <div class="pull-left">
 		                 <a href="<c:url value='${appPath}/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
 		            </div>
@@ -1362,22 +1364,36 @@ function leaveImpPopClose(){
 }
 </script>
 
+
+
 <script>
 function importLeaves(){
+	alert("Hi");
 	var file = $("#leaveInputFileId").val();
 	if(file != null && file != '' && file != 'undefined'){
+		
+
+		var frm = $('#upload_leave_excel_form').serializeFormJSON();
+		var con = JSON.stringify(frm);
+		con = con.replace(/[{}]/g, "");
+		
+		//It will escape all the special characters
+		var jsonData = encodeURIComponent(con);
+		var form = $('#upload_leave_excel_form')[0];
+		var formData = new FormData(form); 
 		$.ajax({
-	   	type: "POST",
-	    contentType : 'application/json; charset=utf-8',
-	    enctype: 'multipart/form-data',
-        processData: false,
-        contentType:false,
-	    dataType : 'json',
-	    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client&isMailCheck="+isMailCheck, 	   
+		  	type: "POST",
+		   	data: formData,
+    	    contentType : 'application/json; charset=utf-8',
+    	    enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false,
+    	    dataType : 'json',
+	    url : sourceleadUrl+"/uploadLeaveType?"+tokenParamName+"="+tokenValue+"", 	   
 		    success : function(json) {
-		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		    	/*	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		    	
-		    	var statusCode = "";
+		     	var statusCode = "";
 				if(json != null){
 					statusCode = json.statusCode;
 				}
@@ -1401,7 +1417,7 @@ function importLeaves(){
 					$("#selector").css({ display: "block" });
 					$("#msgDiv").html("Please import valid Template or fill mandatory fields");
 					msgFadein();
-				}
+				} */
 	 		    },
 	 		   error: function(e){
 		        }
@@ -1409,6 +1425,32 @@ function importLeaves(){
 	}
 }
 
+
+</script>
+
+
+<script type="text/javascript">
+	(function($) {
+		$.fn.serializeFormJSON = function() {
+
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name]) {
+					if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	})(jQuery);
+</script>
+
+<script>
 function resetUpload(){
 	$("#leaveInputFileId").val("");
 }

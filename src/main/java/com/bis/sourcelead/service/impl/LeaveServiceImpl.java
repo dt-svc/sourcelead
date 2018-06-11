@@ -18,10 +18,19 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.hssf.usermodel.DVConstraint;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1936,4 +1945,56 @@ public class LeaveServiceImpl implements LeaveService{
 		return leaveDao.getAllLeaveApproversList(locationId);
 	}
 
+	@Override
+	public File getLeaveTypeImportTemplate(Long orgLocationId)
+	{
+		Workbook wb = (Workbook) new HSSFWorkbook();
+		Sheet sheet = wb.createSheet("Leave Type Import Template");
+		sheet = setTemplateHeaders(sheet);
+		List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocationId));
+		HSSFSheet rolehidden = (HSSFSheet) wb.createSheet("leaveTypehidden");
+		HSSFRow roleRow = rolehidden.createRow(0);
+		int i = 0;
+		for (LeaveType leaveType : leaveTypeList) {
+			try {
+				HSSFCell cell = roleRow.createCell(i);
+				cell.setCellValue(leaveType.getName());
+			} catch (Exception e) {
+			}
+			i++;
+		}
+		Name namedRoleCel = wb.createName();
+		namedRoleCel.setNameName("leaveTypehidden");
+		namedRoleCel.setRefersToFormula("leaveTypehidden!$A$1:$DZ$1" + leaveTypeList.size());
+		DVConstraint rolConstraint = DVConstraint.createFormulaListConstraint("leaveTypehidden");
+		CellRangeAddressList roleAddressList = new CellRangeAddressList(1, 1000, 2, 2);
+		HSSFDataValidation roleValidation = new HSSFDataValidation(roleAddressList, rolConstraint);
+		wb.setSheetHidden(1, true);
+		sheet.addValidationData(roleValidation);
+		File file = new File("Leave_Type_Import_Template.xls");
+		try {
+			FileOutputStream fos = new FileOutputStream(file);
+			wb.write(fos);
+			fos.close();
+		} catch (IOException e) {
+			logger.error("template download failed due to " + e.getMessage());
+		}
+		return file;
+	}
+
+	/**
+	 * Prepare Excel Sheet Header for Leave Type Import
+	 * 
+	 * @param sheet
+	 * @return Sheet
+	 */
+	private Sheet setTemplateHeaders(Sheet sheet)
+	{
+		Row excelHeader = sheet.createRow(0);
+		excelHeader.createCell(0).setCellValue("Associate Name");
+		excelHeader.createCell(1).setCellValue("Email id*");
+		excelHeader.createCell(2).setCellValue("Leave Type*");
+		excelHeader.createCell(3).setCellValue("Balance Leaves");
+		return sheet;
+	}
 }

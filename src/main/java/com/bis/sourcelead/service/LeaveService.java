@@ -88,4 +88,6 @@ public interface LeaveService {
 	boolean reduceLeaveCount(OrgLocations orgLocations, User user, String leaveUUID, Long leaveTypeId, String status, int numberOfDays) throws Exception;
 
 	List<LeaveApproveHierarchy> getAllLeaveApproversList(Long locationId);
+
+	File getLeaveTypeImportTemplate(Long orgLocationId);
 }
