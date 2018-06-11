@@ -650,6 +650,13 @@ $(document).ready(function(){
 					result = result + '<div class="clearfix"></div>';
 				}
 				
+				if(json.userState != null && json.userState != "" && json.userState == 'INACTIVE'){
+					result = result + '			<div class="project_details_cta">';
+					result = result + '				<strong>Terminte Date:</strong><span class="fix" >'+json.terminateDateStr+'</span><div class="clearfix"></div>';
+					result = result + '			</div>';
+					result = result + '<div class="clearfix"></div>';
+				}
+				
 				 if(json.departmentName != null && json.departmentName != "" && json.departmentName != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Department Name:</strong><span class="fix" title="'+json.departmentName+'">'+json.departmentName+'</span><div class="clearfix"></div>';
@@ -2496,6 +2503,18 @@ function removeUser(userId){
 							  }
 							
 							
+						result = result + '<div class="clearfix mb10">';
+						result = result + '<div class="col-md-6">';
+						    result = result + '<div class="user_badg">';
+							    result = result + '<p>Terminate Date<strong class="label label-info"></strong></p>';
+									result = result + '</div>';
+					            result = result + '</div>';
+							result = result + '<div class="col-md-6 inputOverright" id="errMsgDate">';
+							  result = result + '<input type="text" class="form-control calendar" name="terminateDate" id="terminateDate" data-validation="required" field-name="Terminate Date" readonly/>';
+
+							result = result + '</div>';
+							result = result + '</div>';	
+							
 							
 					result = result + '<div class="clearfix mb10 mt">';
 					  result = result + '<div class="col-md-12" id="reasonDiv">';
@@ -2508,9 +2527,30 @@ function removeUser(userId){
 								result = result + '&nbsp;<input class="us-btn" onclick="cancelUser();" type="button" value="Cancel"/>';
 								result = result + '</div>';
 	        	
+				$("#removeUserList").empty();
 	    	    $("#removeUserList").append(result);  
 	    	    $("#deleteLoading").removeAttr("style"); 
 	    	    
+	    	     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  		  var finalDateFormatProjectSave = '';
+		  		  if(locationDate.match("yyyy-MM-dd")){
+		  			  finalDateFormatProjectSave = 'yy-mm-dd';
+		  		  }if(locationDate.match("dd-MM-yyyy")){
+		  			  finalDateFormatProjectSave = 'dd-mm-yy'; 
+		  		  }if(locationDate.match("MM-dd-yyyy")){
+		  			  finalDateFormatProjectSave = 'mm-dd-yy'; 
+		  		  }if(locationDate.match("yyyy-dd-MM")){
+		  			  finalDateFormatProjectSave = 'yy-dd-mm'; 
+		  		  }
+		  		$('#terminateDate').datepicker({
+		  			dateFormat : finalDateFormatProjectSave,
+		  			changeMonth: true,
+		  			changeYear: true, 
+		  			onSelect : function(selected) {
+						removeErrMsg();
+					}
+		  		});
+		  		
 	    	    var config = {
 				  		  '.chosen-select'           : {},
 				  		  '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -2534,6 +2574,9 @@ function removeUser(userId){
 	
 	
 	
+}
+function removeErrMsg(){
+	$('#errMsgDate').find('p.jquery_form_error_message').remove(); 
 }
 </script>
 
