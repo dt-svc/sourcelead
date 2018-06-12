@@ -7,6 +7,7 @@ import com.bis.sourcelead.dto.CentralTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.SourceleadTaxChallanDTO;
 import com.bis.sourcelead.dto.SourceleadTaxChallanItemDTO;
+import com.bis.sourcelead.dto.SourceleadTaxChallanItemSubFormFieldDTO;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
@@ -69,5 +70,8 @@ public interface TaxService {
 	public long addITChallanSectionItem(SourceleadTaxChallanItemDTO sectionItemDTO);
 
 	long addItChallanSection(SourceleadTaxChallanDTO sourceleadTaxSectionDTO);
+
+	public long addSourceleadTaxChallanItemSubFormField(SourceleadTaxChallanItemSubFormFieldDTO optionData, long addChallanSectionItemId);
+	
 
 }

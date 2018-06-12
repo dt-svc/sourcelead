@@ -2,6 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class SourceleadTaxChallanItemDTO implements Serializable {
 
@@ -28,6 +29,7 @@ public class SourceleadTaxChallanItemDTO implements Serializable {
 	private boolean status;
 	private Date createdDate;
 	private Date updatedDate;
+	private List< SourceleadTaxChallanItemSubFormFieldDTO > optionData;
 	public Long getId() {
 		return id;
 	}
@@ -133,8 +135,10 @@ public class SourceleadTaxChallanItemDTO implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
-	
-	
-	
+	public List<SourceleadTaxChallanItemSubFormFieldDTO> getOptionData() {
+		return optionData;
+	}
+	public void setOptionData(List<SourceleadTaxChallanItemSubFormFieldDTO> optionData) {
+		this.optionData = optionData;
+	}
 }

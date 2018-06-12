@@ -9,6 +9,7 @@ import com.bis.sourcelead.dto.helper.Paginator;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxChallan;
 import com.bis.sourcelead.entity.SourceleadTaxChallanItem;
+import com.bis.sourcelead.entity.SourceleadTaxChallanItemSubFormField;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
@@ -71,5 +72,9 @@ public interface TaxDao {
    public long addITChallanSectionItem(SourceleadTaxChallanItem sectionItem);
 
    public long addItChallanSection(SourceleadTaxChallan section);
+
+    public SourceleadTaxChallanItem getSourceleadTaxChallanItemById(long addChallanSectionItemId);
+
+	public long addSourceleadTaxChallanItemSubFormField(SourceleadTaxChallanItemSubFormField sourceleadTaxChallanItem);
 
 }

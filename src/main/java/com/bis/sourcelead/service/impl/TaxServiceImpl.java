@@ -14,6 +14,7 @@ import com.bis.sourcelead.dto.ProfessionalTaxDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.SourceleadTaxChallanDTO;
 import com.bis.sourcelead.dto.SourceleadTaxChallanItemDTO;
+import com.bis.sourcelead.dto.SourceleadTaxChallanItemSubFormFieldDTO;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
@@ -25,6 +26,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProfessionalTax;
 import com.bis.sourcelead.entity.SourceleadTaxChallan;
 import com.bis.sourcelead.entity.SourceleadTaxChallanItem;
+import com.bis.sourcelead.entity.SourceleadTaxChallanItemSubFormField;
 import com.bis.sourcelead.entity.SourceleadTaxForm;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclaration;
 import com.bis.sourcelead.entity.SourceleadTaxITDeclarationItem;
@@ -586,7 +588,7 @@ public class TaxServiceImpl implements TaxService {
 	public long addITChallanSectionItem(SourceleadTaxChallanItemDTO sectionItemDTO) {
 			try {
 				SourceleadTaxChallanItem sectionItem = null;
-				if (sectionItemDTO.getId() > 0) {
+				if (sectionItemDTO.getId() != null && sectionItemDTO.getId() > 0) {
 					//sectionItem = taxDao.getTaxSectionItem(sectionItemDTO.getId());
 				} else {
 					sectionItem = new SourceleadTaxChallanItem();
@@ -647,5 +649,25 @@ public class TaxServiceImpl implements TaxService {
 				e.printStackTrace();
 			}
 			return 0;
+		}
+
+		@Override
+		public long addSourceleadTaxChallanItemSubFormField(SourceleadTaxChallanItemSubFormFieldDTO optionData,long addChallanSectionItemId) {
+			SourceleadTaxChallanItemSubFormField challanSubField = new SourceleadTaxChallanItemSubFormField();
+			if(optionData.getActive()!=null){
+				challanSubField.setActive(optionData.getActive());
+			}
+			challanSubField.setFieldDesc(optionData.getFieldDesc());
+			challanSubField.setFieldName(optionData.getFieldName());
+			challanSubField.setId(optionData.getId());
+			challanSubField.setLabelName(optionData.getLabelName());
+			challanSubField.setSourceleadTaxChallanItem(optionData.getSourceleadTaxChallanItemId());
+			SourceleadTaxChallanItem sourceleadTaxChallanItem = taxDao.getSourceleadTaxChallanItemById(addChallanSectionItemId);
+			if(sourceleadTaxChallanItem != null){
+				challanSubField.setSourceleadTaxChallanItem(sourceleadTaxChallanItem);
+			}
+			
+			return taxDao.addSourceleadTaxChallanItemSubFormField(challanSubField);
+			// TODO Auto-generated method stub
 		}
 }

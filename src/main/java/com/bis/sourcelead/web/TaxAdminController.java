@@ -25,6 +25,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadTaxChallanDTO;
 import com.bis.sourcelead.dto.SourceleadTaxChallanItemDTO;
+import com.bis.sourcelead.dto.SourceleadTaxChallanItemSubFormFieldDTO;
 import com.bis.sourcelead.dto.SourceleadTaxFormDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationDTO;
 import com.bis.sourcelead.dto.SourceleadTaxITDeclarationItemDTO;
@@ -518,18 +519,23 @@ public class TaxAdminController {
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				long result = taxService.addITChallanSectionItem(sectionItemDTO);
-				if (result > 0) {
+				long addChallanSectionItemId = taxService.addITChallanSectionItem(sectionItemDTO);
+				for(SourceleadTaxChallanItemSubFormFieldDTO optionData:sectionItemDTO.getOptionData()){
+					taxService.addSourceleadTaxChallanItemSubFormField(optionData,addChallanSectionItemId);
+				}
+							
+				
+				if (addChallanSectionItemId > 0) {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
-				} else if (result == -1) {
+				} else if (addChallanSectionItemId == -1) {
 					response.setResponse(Result.INVALID_DATA.name());
 					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				} else {
 					response.setResponse(Result.FAILED.name());
 					response.setResponseMessage(Result.FAILED.getValue());
 				}
-				response.setObject(result);
+				response.setObject(addChallanSectionItemId);
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
