@@ -749,20 +749,20 @@
 function validateDuration(){
 	 var maxDays = ($('#maxDays').val());
 	    var minDays = ($('#minDays').val());
-	    
-	    if (parseFloat(maxDays) <= parseFloat(minDays)){
+	    var days=($('#noOfDays').val());
+	  if((parseFloat(maxDays)>parseFloat(days))||(parseFloat(maxDays) <= parseFloat(minDays))){
 	        $('#expId').find('p.jquery_form_error_message').remove(); 
 			$('input#expValidation').attr('class','error signin_fild');
-			$("input#expValidation").after("<p class='jquery_form_error_message'>Max Days should be greater than Min Days</p>");
+			$("input#expValidation").after("<p class='jquery_form_error_message'>Max Days should be greater than Min Days and also max days should be less than no Of Days Per Period  </p>");
 			$('input#expValidation').attr('record-exist','yes');
-			$('input#expValidation').attr('record-exist-errorMsg','Max Days should be greater than Min Days'); 
+			$('input#expValidation').attr('record-exist-errorMsg','Max Days should be greater than Min Days');
 	    }  else{
 	    	$('#expId').find('p.jquery_form_error_message').remove(); 
 	    	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
 			$('#expId').find('p.jquery_form_error_message').remove();
 	    }
-}
 
+}
 
 	function validateName() {
 	
