@@ -60,6 +60,7 @@ background-color: #fcfcfc;
              <div class="pull-right">
               <form:form id="upload_leave_excel_form" name="upload_leave_excel_form" enctype="multipart/form-data">
                  <div title="Import" class="positionRelartive pull-left zIndex mr">
+                 <div id="loadinggif"></div>
 					        	<a onclick="leaveImport();"><i class="glyphicon glyphicon-import expIcon mt5"></i>&nbsp;</a> 
 						        	<div class="dowload_pop">
 					        			<div class="modal-content">
@@ -1376,7 +1377,6 @@ function leaveImpPopClose(){
 
 <script type="text/javascript">
 function importLeaves(){
-	alert("Hi");
 	var validationSettings = {
             errorMessagePosition : 'element',
             borderColorOnError : '',
@@ -1405,7 +1405,9 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
     	    dataType : 'json',
 		    url : sourceleadUrl+"/uploadLeaveType?"+tokenParamName+"="+tokenValue+"", 	   
  		    success : function(json) {
- 		    	
+ 		    	    if(json.updateCount != null && json.updateCount != '')
+ 		    	    	$("#loadinggif").removeAttr('style');
+ 		    	    	closeImportFile();
 		 		    },
 		 		   error: function(e){
 			        }
@@ -1414,69 +1416,6 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
 		}
 }
 </script>
-
-<!-- <script>
-function importLeaves(){
-	alert("Hi");
-	var file = $("#leaveInputFileId").val();
-	if(file != null && file != '' && file != 'undefined'){
-		var frm = $('#upload_leave_excel_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		
-		//It will escape all the special characters
-		var jsonData = encodeURIComponent(con);
-		var form = $('#upload_leave_excel_form')[0];
-		var formData = new FormData(form); 
-
-		$.ajax({
-	   	type: "POST",
-		data: formData,
-	    contentType : 'application/json; charset=utf-8',
-	    enctype: 'multipart/form-data',
-	    processData: false,
-        contentType:false,
-	    dataType : 'json',
-	    url : sourceleadUrl+"/uploadLeaveType?"+tokenParamName+"="+tokenValue+"", 	   
-		    success : function(json) {
-		    	/*	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		    	
-		     	var statusCode = "";
-				if(json != null){
-					statusCode = json.statusCode;
-				}
-				if(json != null && json != ''){
-					if(statusCode == "success"){
-						$("#selector").removeClass("remove_pop");
-				 		$("#selector").addClass("success_pop");
-				 		$("#selector").removeAttr("style");
-						$("#selector").css({ display: "block" });
-				 		$("#msgDiv").html("Processed successfully");
-				 		msgFadein();
-				 		prepareExcelDataDiv(json);
-					}else if(statusCode == "invalid"){
-						$("#selector").removeAttr("style");
-						$("#selector").css({ display: "block" });
-						$("#msgDiv").html("Please fill mandatory fields");
-						msgFadein();
-					}
-				}else if(statusCode == ""){
-					$("#selector").removeAttr("style");
-					$("#selector").css({ display: "block" });
-					$("#msgDiv").html("Please import valid Template or fill mandatory fields");
-					msgFadein();
-				} */
-	 		    },
-	 		   error: function(e){
-		        }
-		 });
-	}
-}
-
-function resetUpload(){
-	$("#leaveInputFileId").val("");
-}
-</script> -->
 
 <script>
 function resetUpload(){

@@ -184,8 +184,10 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 							int additionLeaves = 0;
 							if("ADD".equalsIgnoreCase(actionType)) {
 								 additionLeaves = assoBalLeaves + diffLeaves;
-							}else {
+							}if("SUB".equalsIgnoreCase(actionType)) {
 								additionLeaves = assoBalLeaves - diffLeaves;
+							}if("IMPORT".equalsIgnoreCase(actionType)) {
+								additionLeaves = diffLeaves;
 							}
 							stmt.setString(2, String.valueOf(additionLeaves));
 						}else {
