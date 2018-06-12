@@ -62,4 +62,9 @@ public class SourceLeadRandomCodeHelper {
 		String UUID = RandomStringUtils.randomNumeric(8);
 		return UUID;
 	}
+	
+	public static String generateRandomBulkSubmissionId() {
+		String UUID = RandomStringUtils.randomNumeric(5);
+		return UUID;
+	}
 }

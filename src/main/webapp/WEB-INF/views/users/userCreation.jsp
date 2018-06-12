@@ -655,6 +655,7 @@ function getEmployeementType(designationType){
 						var associateLeaveType = document.getElementById("associateLeaveType");
 						document.getElementById("associateLeaveType").removeAttribute("class"); 
 						associateLeaveType.href="#tab-2"; 
+						$("#tab-1").removeAttr("href");
 						$("#associateLeaveType").click();
 						getAllLeaveType();
 						/* location.replace(sourceleadUrl+"/usersList"); */
