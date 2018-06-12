@@ -2585,12 +2585,9 @@ public class LeaveManagementRestController {
 	@RequestMapping(value = "/downloadLeaveTemplate")
 	public void downloadLeaveTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		File file = null;
-		String fn;
-		fn = "/templates/Leave_Import.xlsx";
-		URL url = getClass().getResource(fn);
-		file = new File(url.toURI());
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		File file = leaveService.getLeaveTypeImportTemplate(orgLocation.getId());
+		
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";
@@ -2606,9 +2603,9 @@ public class LeaveManagementRestController {
 		response.getOutputStream().flush();
 	}
 	
-	@RequestMapping(value = "/leaveUpload", method = RequestMethod.POST)
+	@RequestMapping(value = "/uploadLeaveType", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<LeaveDTO> leaveUpload(MultipartHttpServletRequest request) throws Exception
+	public Response<LeaveTypeDTO> leaveUpload(MultipartHttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -2618,12 +2615,12 @@ public class LeaveManagementRestController {
 		if (itrator.hasNext()) {
 			multipartFile = request.getFile(itrator.next());
 		}
-		Response<LeaveDTO> response = new Response<>();
+		Response<LeaveTypeDTO> response = new Response<>();
 		/*if (multipartFile != null) {
 //			fileList = clientImportsService.clientExcelDataSave(multipartFile, user, orgLocation, org, isMailCheck, responderType);
 		}*/
 		if (multipartFile != null) {
-			response = leaveService.saveBulkApprovedLeaves(multipartFile, orgLocation, user, org);
+			response = leaveService.saveBulkLeaveTypes(multipartFile, orgLocation, user, org);
 			/*if (response != null) {
 				if (response.getData().isEmpty() && response.getData().size() == 0) {
 					response.setStatusCode("success");
@@ -2649,34 +2646,29 @@ public class LeaveManagementRestController {
 	
 
 	@RequestMapping(value = "/ws/dumpAllLeavesToAssociates", method = RequestMethod.GET)
-	public boolean getRestActionHistoryList(HttpServletRequest request,HttpServletResponse response) throws Exception {
-	
-	    boolean isInserted = false;
-//		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-//		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	public boolean getRestActionHistoryList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		boolean isInserted = false;
 		List<OrgLocations> locationsList = orgLocationService.getAllOrgLocations();
-		for(OrgLocations orgLocation : locationsList) {
+		for (OrgLocations orgLocation : locationsList) {
 			List<User> userList = userService.getUsersListByOrglocationId(orgLocation.getId());
-			
 			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
-			for(LeaveType leaveType : leaveTypeList) {
+			for (LeaveType leaveType : leaveTypeList) {
 				List<User> insertUserList = new ArrayList<>();
-				for(User usr : userList) {
+				for (User usr : userList) {
 					AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), usr.getId(), orgLocation.getId());
-				    if(associa == null) {
-				    	insertUserList.add(usr);
-				    }
+					if (associa == null) {
+						insertUserList.add(usr);
+					}
 				}
-				if(!insertUserList.isEmpty() && insertUserList.size() >0) {
-					int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,orgLocation.getUser());
-					if(result > 0) {
+				if (!insertUserList.isEmpty() && insertUserList.size() > 0) {
+					int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList, orgLocation, leaveType, orgLocation.getUser());
+					if (result > 0) {
 						isInserted = true;
 					}
 				}
 			}
 		}
-	
-		
 		return isInserted;
 	}
 
