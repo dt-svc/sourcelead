@@ -15,6 +15,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,8 @@ import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
+import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -1617,6 +1620,70 @@ public class CandidateDaoImpl implements CandidateDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.status ='1' and cnadidate.consultantUser !=null and cnadidate.email = :email ORDER BY cnadidate.id DESC";  
         return  (Candidate) session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("email", email).uniqueResult();
+	}
+
+	@Override
+	@Transactional
+	public List<RecruiterReportCandidateCountView> getCandidateCountsCreatedUserList(Long orgLocationId,
+			List<String> userCodesList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
+			throws Exception {
+		
+		
+		
+
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<RecruiterReportCandidateCountView> candidatesViewList = null;
+		try {
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			
+			 query ="SELECT "
+						+" USER_CODE AS associateUserCode,SUM(CAND_COUNT) AS candCount"
+						+" FROM"
+						+" RECRUITER_REPORT_CANDIDATE_COUNT_VIEW"
+						+" WHERE"
+						+" ORG_ID = :orgId AND USER_CODE IN (:userCodesList)"
+						+" AND CREATED_DATE BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+						+" GROUP BY USER_CODE";
+			        
+			
+	            Query queryObj = session.createSQLQuery(query);
+				queryObj.setParameterList("userCodesList", userCodesList).setParameter("orgId", orgId);
+				queryObj.setResultTransformer(Transformers.aliasToBean(RecruiterReportCandidateCountView.class));
+				candidatesViewList = queryObj.list();
+				
+		}
+		else {
+			         query ="SELECT "
+					+" USER_CODE AS associateUserCode,SUM(CAND_COUNT) AS candCount"
+					+" FROM"
+					+" RECRUITER_REPORT_CANDIDATE_COUNT_VIEW"
+					+" WHERE"
+					+" ORG_LOCATION_ID = :orgLocationId AND USER_CODE IN (:userCodesList)"
+					+" AND CREATED_DATE BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					+" GROUP BY USER_CODE";
+		
+			
+		
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setParameterList("userCodesList", userCodesList).setParameter("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(RecruiterReportCandidateCountView.class));
+			candidatesViewList = queryObj.list();
+		
+		}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return  candidatesViewList;
+		
+	
+		
+		
+		
+		
 	}
 
 }

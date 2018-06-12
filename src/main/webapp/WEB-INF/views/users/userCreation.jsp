@@ -54,7 +54,7 @@
         <!--  Tabe Menu Starts -->
         <div class="tabsMenu">
         <ul class="list-unstyled">
-          <li class="current"><a href="#tab-1">Associates</a></li>
+          <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
             <li class=""><a href="#tab-2" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
           <div class="clearfix"></div>
         </ul>
@@ -655,6 +655,7 @@ function getEmployeementType(designationType){
 						var associateLeaveType = document.getElementById("associateLeaveType");
 						document.getElementById("associateLeaveType").removeAttribute("class"); 
 						associateLeaveType.href="#tab-2"; 
+						$("#tab-1").removeAttr("href");
 						$("#associateLeaveType").click();
 						getAllLeaveType();
 						/* location.replace(sourceleadUrl+"/usersList"); */

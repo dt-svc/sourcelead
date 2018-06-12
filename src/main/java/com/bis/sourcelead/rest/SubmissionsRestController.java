@@ -774,7 +774,10 @@ public class SubmissionsRestController {
 		submission.setFacebookUrl(submission.getCandidate().getFacebookUrl());
 		submission.setLinkedInUrl(submission.getCandidate().getLinkedUrl());
 		submission.setTwitterUrl(submission.getCandidate().getTwitterUrl());
-		submission.setResumeId(submission.getCandidateResumes().getId());
+		if(submission.getCandidateResumes() != null) {
+			submission.setResumeId(submission.getCandidateResumes().getId());
+		}
+		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		int percentage = candidateService.getCandidatePercentage(submission.getCandidate(),orgLocations);

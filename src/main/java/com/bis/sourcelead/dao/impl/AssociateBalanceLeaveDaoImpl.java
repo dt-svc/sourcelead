@@ -4,7 +4,9 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -17,14 +19,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateBalanceLeaveDao;
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
+import com.bis.sourcelead.entity.LeaveRole;
+import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -36,6 +44,11 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	LeaveTypeService leaveTypeService;
 	
 	@Override
 	@Transactional
@@ -91,7 +104,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 		java.sql.Date yearStartDate = new java.sql.Date(yearDates[0].getTime());
 		java.sql.Date yearEndDate = new java.sql.Date(yearDates[1].getTime());
 		ResponseList<AssociateBalanceLeaveView> res = new ResponseList<>();
-		List<AssociateBalanceLeaveView> assoBalLeave = session.createQuery("from AssociateBalanceLeaveView balLeaveView where balLeaveView.userId =:userId and balLeaveView.orgLocationId = :orgLocationId and balLeaveView.createdDate BETWEEN :yearStartDate AND :yearEndDate" ).setLong( "userId", userId ).setLong("orgLocationId", orgLocationId).setDate("yearStartDate", yearStartDate).setDate("yearEndDate", yearEndDate).list();
+		List<AssociateBalanceLeaveView> assoBalLeave = session.createQuery("from AssociateBalanceLeaveView balLeaveView where balLeaveView.userId =:userId and balLeaveView.orgLocationId = :orgLocationId and balLeaveView.status =1 and balLeaveView.createdDate BETWEEN :yearStartDate AND :yearEndDate" ).setLong( "userId", userId ).setLong("orgLocationId", orgLocationId).setDate("yearStartDate", yearStartDate).setDate("yearEndDate", yearEndDate).list();
 		
 		res.setData(assoBalLeave);
 		return res;
@@ -132,11 +145,99 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateBalanceLeave associateBalanceLeave = null;
-		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.leaveTypeId = :leaveTypeId and balLeave.orgLocationId.id = :orgLocationId").setLong("userId", userId).setLong("orgLocationId", orgLocationId).setLong("leaveTypeId", leaveTypeId).list();
+		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.leaveTypeId = :leaveTypeId and balLeave.orgLocationId.id = :orgLocationId and balLeave.status= 1").setLong("userId", userId).setLong("orgLocationId", orgLocationId).setLong("leaveTypeId", leaveTypeId).list();
 		if (assoBalLeave != null && assoBalLeave.size() > 0) {
 			associateBalanceLeave = assoBalLeave.get(0);
 		}
 		return associateBalanceLeave;
+	}
+
+
+	@Override
+	@Transactional
+	public int updateAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType,int status,int diffLeaves,String actionType,String methodType)
+	{
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.doWork(new Work() {
+				@Override
+				public void execute(java.sql.Connection connection) throws SQLException {
+					boolean initialAutocommitSetting = connection.getAutoCommit();
+					connection.setAutoCommit(false);
+					CallableStatement stmt = connection.prepareCall("{call deleteAssociateBalLeave(?,?,?,?,?)}");
+					for (User user : userList) {
+						if(Constants.UPDATE.equalsIgnoreCase(methodType)) {
+							OrgLocations orgLocations = new OrgLocations();
+							orgLocations.setId(orgLocationId);
+							boolean b = getOrgLevelLeaves(orgLocations, user.getId(), leaveType);
+							if(!b) {
+								stmt.setLong(1, 0);
+							}else{
+								stmt.setLong(1, status);
+							}
+						}else {
+							stmt.setLong(1, status);
+						}
+						if(!"NONE".equalsIgnoreCase(actionType)) {
+							AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId);
+							int assoBalLeaves = Integer.parseInt(associateBalanceLeave.getTotalLeaves());
+							int additionLeaves = 0;
+							if("ADD".equalsIgnoreCase(actionType)) {
+								 additionLeaves = assoBalLeaves + diffLeaves;
+							}else {
+								additionLeaves = assoBalLeaves - diffLeaves;
+							}
+							stmt.setString(2, String.valueOf(additionLeaves));
+						}else {
+							stmt.setString(2, String.valueOf(leaveType.getNoOfDays()));
+						}
+						stmt.setLong(3, orgLocationId);
+						stmt.setLong(4, user.getId());
+						stmt.setLong(5, leaveType.getId());
+						stmt.addBatch();
+					}
+					int[] updateCount = stmt.executeBatch();
+					connection.commit();
+					connection.setAutoCommit(initialAutocommitSetting);
+				}
+			});
+			return 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	
+	private boolean getOrgLevelLeaves(OrgLocations orgLocation, Long userId, LeaveType leaveType)
+	{
+		boolean isLeaveApplicable = false;
+//		List<LeaveType> roleLeaveType = new ArrayList<>();
+		try {
+			UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocation.getId());
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+//			if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
+//				for (LeaveType leaveType : leaveTypeList) {
+					Set<Long> roleIds = new HashSet<>();
+					if(leaveType.getLeaveTypeRolesSet() != null) {
+						for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
+							roleIds.add(leaveRole.getRoleId().getId());
+						}
+						if (roleIds.contains(userRole.getRoles().getId()) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+							isLeaveApplicable = true;
+						}	
+					}else {
+						if("Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+							isLeaveApplicable = true;
+						}
+					}
+				
+//				}
+//			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return isLeaveApplicable;
 	}
 
 }

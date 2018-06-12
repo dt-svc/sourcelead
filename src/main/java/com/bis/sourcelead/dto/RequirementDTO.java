@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -362,6 +363,11 @@ public class RequirementDTO extends CommonDTO {
 	private String releasedBy;
 
 	private String currentRateCurrency;
+	
+	private BigInteger reqId;
+	
+	private BigInteger requirementCreatedUserId;
+	
 
 	public String getRequirementStatus() {
 		return requirementStatus;
@@ -1377,5 +1383,19 @@ public class RequirementDTO extends CommonDTO {
 		this.primaryRecruiterUserId = primaryRecruiterUserId;
 	}
 	
-	
+	public BigInteger getReqId() {
+		return reqId;
+	}
+
+	public void setReqId(BigInteger reqId) {
+		this.reqId = reqId;
+	}
+
+	public BigInteger getRequirementCreatedUserId() {
+		return requirementCreatedUserId;
+	}
+
+	public void setRequirementCreatedUserId(BigInteger requirementCreatedUserId) {
+		this.requirementCreatedUserId = requirementCreatedUserId;
+	}
 }

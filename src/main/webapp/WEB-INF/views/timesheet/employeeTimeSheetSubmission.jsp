@@ -351,14 +351,13 @@
 						            </div>
 						            </div>
 									    <div class="timesheet_bot">
+									   <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible || !empty employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
 							            <div class="commentFile">
 							                  <h2>
-							                  <c:if test="${employeeTimesheetEntryDetailsDTO.saveButtonVisible || !empty employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
 											    Attachmets & Comments 
-											     <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
+											    <c:if test="${employeeTimesheetEntryDetailsDTO.submitButtonVisible}">
 											         <i class="fa fa-plus Cursor" onclick="addTimeSheetCommentRow()"></i> 
-											      </c:if>
-											  </c:if>
+											    </c:if>
 											 </h2>
 											<div class="">
 											   <input type='hidden' name='maxAttRowNumber' id='maxAttRowNumber'  value='${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments ? fn:length(employeeTimesheetEntryDetailsDTO.timsheetAttachments) : 1}' />
@@ -468,6 +467,7 @@
 												</table>
 											</div>
 							            </div>  
+							          </c:if> 
 							    	   <div class="timesheet_week_comm">
 							            <div class="totalWrap">
 							                 <ul>
@@ -2487,8 +2487,8 @@ function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
 	        		    	  setTotals();
 	        		    	  maskme();
 	        		    	  if(currentTimeSubFrequency != null && currentTimeSubFrequency != '' && currentTimeSubFrequency != 'undefined'){
-	        		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency)
-		   	            	      $("#timeSubFrequency").val(currentTimeSubFrequency)
+	        		    		  $("#currentTimeSubFrequency").val(currentTimeSubFrequency);
+		   	            	      $("#timeSubFrequency").val(currentTimeSubFrequency);
 	        		    	  }
 	        		    	  $("#loadTime").removeAttr('style');
 	        		      }

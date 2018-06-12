@@ -538,11 +538,11 @@ function preventTabkey(e){
 					<a title="Contacts" href="<c:url value='${sourceleadUrl}/referRequirementList'/>"><i class="fa fa-address-book-o"></i></a>
 	        </li>
             
-            <sec:authorize access="hasAnyRole('ROLE_DASHBOARD_REPORTS','ROLE_ENROLL_ORG')"> 
+            <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
 	            <li class="reportsH">
 					<a title="Reports" href="<c:url value='${sourceleadUrl}/reportsDashboard'/>"><i class="fa fa-pie-chart"></i></a>
 	            </li>
-             </sec:authorize> 
+             </c:if>
             
             <%-- <sec:authorize access="hasRole('ROLE_ENROLL_ORG')">
 	            <li class="reportsH">
@@ -702,7 +702,9 @@ function preventTabkey(e){
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
 						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configuration</a></li>
 						  </sec:authorize>
-						  
+						  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+                                                    <li><a href="<c:url value="/app/job-boards" />"><i class="fa fa-key" aria-hidden="true"></i>Job Board Configuration</a></li>
+                                                 </sec:authorize>
 					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
 					  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
 					  	</sec:authorize>
