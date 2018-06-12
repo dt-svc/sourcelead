@@ -273,6 +273,10 @@ public class LoginSessionController {
 					if(tabs.getTabName().equalsIgnoreCase("Blog") || tabs.getTabName().equalsIgnoreCase("User Manuals")){
 						resourcesTabCount = resourcesTabCount+1;
 					}
+					
+					if(tabs.getTabName().equalsIgnoreCase("Reports")){
+						SourceLeadSessionManager.setSessionAttribute(request, "reportsTabConfigured", "Y");
+					}
 				}
 				
 			}
