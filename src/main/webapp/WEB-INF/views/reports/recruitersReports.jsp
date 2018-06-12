@@ -36,47 +36,56 @@ function getDayWiseReports(){
 </script>
 
 
-<section class="content-wraper">
-
-<section class="content-header clearfix">
-			<div class="pull-left">
-				<h2>Recruiters Report </h2>
-			</div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; » Recruiters Reports  </div>
-</section>
-
-<div class="vendor_wrap">
-<div class="timesheet_head clearfix">
-<div class="pull-left reportBtns reportBtns_custom mt5">
-<h4 class="pull-left"></h4>
-		  <div class="reportBtn reportBtn_custom_btn select-field  pull-left ml">
-			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custDates();">
+ 
+ <section class="content-wraper">
+    <section class="content-header clearfix">
+      <div class="pull-left">
+        <h2>Recruiters Report</h2>
+      </div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; » Recruiters Reports  </div>
+    </section>
+    <div class="clearfix">
+    <div class="clearfix"></div>
+    	<div class="ReqRepHead clearfix">
+        <div class="col-md-2">
+        <a href="#" title="List View" id="listView" class="btn btn-default"><i class="fa fa-list"></i></a>
+        </div>
+        
+        <div class="col-md-3 dropdown-select positionRelative">
+          <select class="form-control" id="reportTypeId" onChange="flushCustom(); custDates();">
 			  <option value="today">Today</option>
 			  <option value="yesterday">Yesterday</option>
-			  <option value="1_week">1 Week ago</option>
-			  <option value="2_weeks">2 Weeks ago</option>
-			  <option value="1_month">1 Month ago</option>
-			  <option value="2_months">2 Months ago</option>
+			  <option value="1_week">Last 7 days</option>
+			  <option value="Last_15_days">Last 15 days</option>
+			  <option value="1_month">Last 1 month</option>
+			  <option value="2_months">Last 2 months</option>
 			  <option value="custom">Custom</option> 
 			</select>
-		 </div>	
-		 <span class="dashboard-datepkr cusShow">
-		 <input type="text" class="form-control" value="" id="ReportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-		 <p id="reportsStartDate" class="ReError" style="display: none"></p>
-		 </span>
-		<span class="dashboard-datepkr cusShow">
-		<input type="text"  class="form-control" value="" id="ReportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-		<p id="reportsEndDate" class="ReError" style="display: none"></p>
-		</span>
-		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="userDataTableList();" /></span>
-		<div class="clearfix"></div>
-  </div>
-     </div> 
-      
-      <div class="candidate_wrap_table recruiterReports_table minHeight positionRelative datatable_filter">
-      <div class="positionRelative table_head section-action-btns section-action-btns-associates clearfix">
-      <div id="usersListLoader"></div>
-      <ul class="pull-right list-unstyled list-inline">
+          
+          
+          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
+            <div class="pull-left">
+              <div class="pull-left mr5" style="width: 140px">
+                <input type="text" class="form-control calendar" value="" id="ReportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date *">
+				  <p id="reportsStartDate" style="display: none; font-size: 12px;"><font color="red">Start Date Required</font></p>
+              </div>
+              
+              <div class="pull-left mr5" style="width: 140px">
+               <input type="text"  class="form-control calendar" value="" id="ReportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date *">
+				 <p id="reportsEndDate" style="display: none; font-size: 12px;"><font color="red">End Date Required</font></p>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" onclick="userDataTableList();"><i class="fa fa-search"></i></button>
+            </div>
+          </div>
+          
+        </div>
+        
+      <div class="col-md-2">
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="userDataTableList();">Run</button>
+		</div>   
+        
+       <ul class="pull-right list-unstyled list-inline mr10 mb0">
+       <div class="mt5"></div>
 		  <li class="positionRelative">
 			  <div class="dynamic_search">
 	   			<input type='text' placeholder='Search' id='usersDataTableSearch'/>
@@ -84,23 +93,28 @@ function getDayWiseReports(){
 			  </div>
 		  </li>
         </ul>
+         
       </div>
+    	<div class="clearfix"></div>
+    	 	<div class="candidate_wrap_table recruiterReports_table minHeight positionRelative datatable_filter dashboard-widget clearfix mt">
               <div id="usersList" class="filter_position positionRelative"></div> 
-          </div>  
- </div>
- </section>
+          </div> 
+    	<div class="clearfix"></div>
+    </div>
+  </section>
+ 
  
  <script type="text/javascript"> 
 	function addValidClass(){
 		 var StartDate = document.getElementById("ReportStartDate").value;
 		 if(StartDate){
-			 $('#reportsStartDate').empty() 
+			 document.getElementById("reportsStartDate").style.display="block";
 		 }
 		 
 		 var EndDate = document.getElementById("ReportEndDate").value;
 		
 		 if(EndDate){
-			 $('#reportsEndDate').empty(); 
+			 document.getElementById("reportsEndDate").style.display="block";
 		 }
 }
 </script>
@@ -150,10 +164,12 @@ function getDayWiseReports(){
 function custDates(){
 	var reportType = $("#reportTypeId").val();
 	if(reportType=="custom"){
-	    $(".cusShow").show();
+		 document.getElementById("customSearch").style.display="block";
 	}
-	if(reportType!="custom"){
-	    $(".cusShow").hide();
+	if(reportType != "custom"){
+	    document.getElementById("customSearch").style.display="none";
+	    document.getElementById("reportsStartDate").style.display="none";
+		document.getElementById("reportsEndDate").style.display="none";
 	}
 }
 </script>
@@ -174,11 +190,8 @@ function custDates(){
 	    var timePeriod = $('#reportTypeId').val();
 		$("#reportsStartDate").empty();
 		$("#reportsEndDate").empty();
-		document.getElementById("reportsStartDate").style.display="none";
-		document.getElementById("reportsEndDate").style.display="none";
 	 
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#usersListLoader").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  
 	    var result = "";
 	 	
@@ -201,7 +214,6 @@ function custDates(){
 	    $("#noRecruiters").val('');
 	    $("#usersList").empty();
         $("#usersList").append(result); 
-        $("#usersListLoader").removeAttr('style');
 	    
 	    userDataTableList();
  }
@@ -212,12 +224,33 @@ function userDataTableList(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#usersDataTableSearch").val();
 	 var timePeriod = $('#reportTypeId').val();
-	 var startDate = $("#ReportStartDate").val();
-	 var endDate = $("#ReportEndDate").val();
-	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate;
-	 usersListPagination(url,sourceleadUrl);
-	 $("#usersListLoader").removeAttr("style");
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	
+	 if(flag){
+		 searchValue = searchValue ? searchValue : "";
+		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate;
+		 usersListPagination(url,sourceleadUrl);
+	 }
+	
 }
 </script>
 

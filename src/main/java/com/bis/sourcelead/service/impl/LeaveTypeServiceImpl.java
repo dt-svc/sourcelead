@@ -419,4 +419,16 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	public List<ProjectTasks> getProjectTaskByorgLocationIdAndLeaveTypeId(Long orgLocationId, Long leaveTypeId) {
 		return leaveTypeDao.getProjectTaskByorgLocationIdAndLeaveTypeId(orgLocationId,leaveTypeId);		
 	}
+
+	@Override
+	public List<LeaveType> getLeaveTypesByTypeList(List<String> typeList, OrgLocations orgLocation)
+	{
+		return leaveTypeDao.getLeaveTypesByTypeList(typeList,orgLocation);
+	}
+
+	@Override
+	public LeaveType getLeaveTypeByLeaveTypeName(String leaveTypeName,OrgLocations orgLocation)
+	{
+		return leaveTypeDao.getLeaveTypeByLeaveTypeName(leaveTypeName,orgLocation);
+	}
 }

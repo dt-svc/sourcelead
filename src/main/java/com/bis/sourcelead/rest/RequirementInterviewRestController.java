@@ -27,6 +27,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProposeTime;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewHistory;
 import com.bis.sourcelead.entity.RequirementInterviewer;
@@ -42,6 +43,7 @@ import com.bis.sourcelead.service.ProposeTimeService;
 import com.bis.sourcelead.service.RequirementInterviewHistoryService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementInterviewerService;
+import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
@@ -98,6 +100,9 @@ public class RequirementInterviewRestController {
 	 
 	 @Autowired
 	 RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+	 
+	@Autowired
+	private RequirementService requirementService;
 	
 	@RequestMapping(value = "/app/getAllInterviewers")
 	public @ResponseBody ResponseList<User> getAllApprovers(HttpServletRequest request) throws Exception {
@@ -126,6 +131,10 @@ public class RequirementInterviewRestController {
 			                                              HttpServletRequest request) throws Exception {
 		ResponseList<RequirementSubmission> response = new ResponseList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
+		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		if (requirement != null && requirement.getPrimaryRecruiterUserId() != null) {
+			user = requirement.getManagerUserId();
+		}
 		if(user != null) {
 			try {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
