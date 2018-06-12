@@ -2081,4 +2081,10 @@ public class UserDaoImpl implements UserDao {
 		}
 		return usersDTOList;
 	}
+
+	@Override
+	public List<User> getUsersByEmailList(List<String> userEmail)
+	{
+		return null;
+	}
 }
