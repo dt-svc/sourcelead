@@ -662,7 +662,7 @@ public class LeaveServiceImpl implements LeaveService{
 		float octLeaves = 0;
 		float novLeaves = 0;
 		float decLeaves = 0;
-		int monthlyAllowedLeaves = 0;
+		float monthlyAllowedLeaves = 0;
 		if("Experienced".equalsIgnoreCase(leaveType.getLeaveEffective())){
 			Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(currentLeave.getUser().getId(), currentLeave.getOrgLocations().getId());
 			if(emp.getHireDate() != null){
@@ -686,91 +686,128 @@ public class LeaveServiceImpl implements LeaveService{
             	monthlyAllowedLeaves = leaveType.getExperiencedApplicableDays(); 
             }
 		}else{
-			monthlyAllowedLeaves = leaveType.getNoOfDays();
-        }
-		if("Monthly".equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
-			for(Leave userLeave : leaveList){
-//				if("Mothly".equalsIgnoreCase(userLeave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(userLeave.getLeaveType().getLeavesCarryforward())){
-					MonthlyLeaves monthlyLeaves = getMonthlyLeavesByLeaveId(userLeave.getId());
-					int monthlyTotalLeaves = difInMonths * userLeave.getLeaveType().getNoOfDays();
-					janLeaves += monthlyLeaves.getJanuaryLeaves();
-					febLeaves += monthlyLeaves.getFebruaryLeaves();
-					marLeaves += monthlyLeaves.getMarchLeaves();
-					aprLeaves += monthlyLeaves.getAprilLeaves();
-					mayLeaves += monthlyLeaves.getMayLeaves();
-					junLeaves += monthlyLeaves.getJuneLeaves();
-					julLeaves += monthlyLeaves.getJulyLeaves();
-					augLeaves += monthlyLeaves.getAugustLeaves();
-					sepLeaves += monthlyLeaves.getSeptLeaves();
-					octLeaves += monthlyLeaves.getOctoberLeaves();
-					novLeaves += monthlyLeaves.getNovLeaves();
-					decLeaves += monthlyLeaves.getDecLeaves();
-//				}
-			}
-			
-			for(int i=0;i<= fromMonth; i++){
-				switch (i) {
-					case 0:
-						if(janLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += (monthlyAllowedLeaves - janLeaves);
-						}
-						break;
-					case 1:
-						if(febLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += (monthlyAllowedLeaves - febLeaves);
-						}
-						break;
-					case 2:
-						if(marLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += (monthlyAllowedLeaves - marLeaves);
-						}
-						break;
-					case 3:
-						if(aprLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += (monthlyAllowedLeaves - aprLeaves);
-						}
-						break;
-					case 4:
-						if(mayLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += (monthlyAllowedLeaves - mayLeaves);
-						}
-						break;
-					case 5:
-						if(junLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += (monthlyAllowedLeaves - junLeaves);
-						}
-						break;
-					case 6:
-						if(julLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += (monthlyAllowedLeaves - julLeaves);
-						}
-						break;
-					case 7:
-						if(augLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += (monthlyAllowedLeaves - augLeaves);
-						}
-						break;
-					case 8:
-						if(sepLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += (monthlyAllowedLeaves - sepLeaves);
-						}
-						break;
-					case 9:
-						if(octLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += (monthlyAllowedLeaves - octLeaves);
-						}
-						break;
-					case 10:
-						if(novLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += (monthlyAllowedLeaves - novLeaves);
-						}
-						break;
-					case 11:
-						if(decLeaves < monthlyAllowedLeaves){
-							carryForwardLeaves += (monthlyAllowedLeaves - decLeaves);
-						}
-						break;
+			if(leaveType.getNoOfDaysPerPeriod() != null){
+				monthlyAllowedLeaves = leaveType.getNoOfDaysPerPeriod();
+			}else{
+				if("Monthly".equalsIgnoreCase(leaveType.getPeriod())){
+					monthlyAllowedLeaves = leaveType.getNoOfDays()/12;
+				}else{
+					monthlyAllowedLeaves = 0f;
 				}
+				
+			}
+        }
+		if(Constants.YES.equalsIgnoreCase(leaveType.getLeavesCarryforward())){
+			if("Monthly".equalsIgnoreCase(leaveType.getPeriod())){
+				for(Leave userLeave : leaveList){
+//					if("Mothly".equalsIgnoreCase(userLeave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(userLeave.getLeaveType().getLeavesCarryforward())){
+						MonthlyLeaves monthlyLeaves = getMonthlyLeavesByLeaveId(userLeave.getId());
+//						float monthlyTotalLeaves = difInMonths * monthlyAllowedLeaves;
+						janLeaves += monthlyLeaves.getJanuaryLeaves();
+						febLeaves += monthlyLeaves.getFebruaryLeaves();
+						marLeaves += monthlyLeaves.getMarchLeaves();
+						aprLeaves += monthlyLeaves.getAprilLeaves();
+						mayLeaves += monthlyLeaves.getMayLeaves();
+						junLeaves += monthlyLeaves.getJuneLeaves();
+						julLeaves += monthlyLeaves.getJulyLeaves();
+						augLeaves += monthlyLeaves.getAugustLeaves();
+						sepLeaves += monthlyLeaves.getSeptLeaves();
+						octLeaves += monthlyLeaves.getOctoberLeaves();
+						novLeaves += monthlyLeaves.getNovLeaves();
+						decLeaves += monthlyLeaves.getDecLeaves();
+//					}
+				}
+				
+				for(int i=0;i<= fromMonth; i++){
+					switch (i) {
+						case 0:
+							if(janLeaves < monthlyAllowedLeaves){
+								carryForwardLeaves += (monthlyAllowedLeaves - janLeaves);
+							}else{
+								carryForwardLeaves += monthlyAllowedLeaves;
+							}
+							break;
+						case 1:
+							if(febLeaves < monthlyAllowedLeaves){
+								carryForwardLeaves += (monthlyAllowedLeaves - febLeaves);
+							}else{
+								carryForwardLeaves += monthlyAllowedLeaves;
+							}
+							break;
+						case 2:
+							if(marLeaves < monthlyAllowedLeaves){
+								carryForwardLeaves += (monthlyAllowedLeaves - marLeaves);
+							}else{
+								carryForwardLeaves += monthlyAllowedLeaves;
+							}
+							break;
+						case 3:
+							if(aprLeaves < monthlyAllowedLeaves){
+								carryForwardLeaves += (monthlyAllowedLeaves - aprLeaves);
+							}else{
+								carryForwardLeaves += monthlyAllowedLeaves;
+							}
+							break;
+						case 4:
+							if(mayLeaves < monthlyAllowedLeaves){
+								carryForwardLeaves += (monthlyAllowedLeaves - mayLeaves);
+							}else{
+								carryForwardLeaves += monthlyAllowedLeaves;
+							}
+							break;
+						case 5:
+							if(junLeaves < monthlyAllowedLeaves){
+								carryForwardLeaves += (monthlyAllowedLeaves - junLeaves);
+							}else{
+								carryForwardLeaves += monthlyAllowedLeaves;
+							}
+							break;
+						case 6:
+							if(julLeaves < monthlyAllowedLeaves){
+								carryForwardLeaves += (monthlyAllowedLeaves - julLeaves);
+							}else{
+								carryForwardLeaves += monthlyAllowedLeaves;
+							}
+							break;
+						case 7:
+							if(augLeaves < monthlyAllowedLeaves){
+								carryForwardLeaves += (monthlyAllowedLeaves - augLeaves);
+							}else{
+								carryForwardLeaves += monthlyAllowedLeaves;
+							}
+							break;
+						case 8:
+							if(sepLeaves < monthlyAllowedLeaves){
+								carryForwardLeaves += (monthlyAllowedLeaves - sepLeaves);
+							}else{
+								carryForwardLeaves += monthlyAllowedLeaves;
+							}
+							break;
+						case 9:
+							if(octLeaves < monthlyAllowedLeaves){
+								carryForwardLeaves += (monthlyAllowedLeaves - octLeaves);
+							}else{
+								carryForwardLeaves += monthlyAllowedLeaves;
+							}
+							break;
+						case 10:
+							if(novLeaves < monthlyAllowedLeaves){
+								carryForwardLeaves += (monthlyAllowedLeaves - novLeaves);
+							}else{
+								carryForwardLeaves += monthlyAllowedLeaves;
+							}
+							break;
+						case 11:
+							if(decLeaves < monthlyAllowedLeaves){
+								carryForwardLeaves += (monthlyAllowedLeaves - decLeaves);
+							}else{
+								carryForwardLeaves += monthlyAllowedLeaves;
+							}
+							break;
+					}
+				}
+			}else if("Annually".equalsIgnoreCase(leaveType.getPeriod())){
+				carryForwardLeaves += leaveType.getNoOfDays();
 			}
 		}
 		
@@ -1890,7 +1927,12 @@ public class LeaveServiceImpl implements LeaveService{
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_YEAR, 1);
         Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(),orgLocations.getId());
-        Date yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(leave.getUser().getCreatedDate())); // Need to Pass employee created date
+        Date yearStartDate = null;
+        if(leave.getUser().getCreatedDate().before(cal.getTime()) && leave.getUser().getCreatedDate().equals(cal.getTime())){
+        	yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(leave.getUser().getCreatedDate()));
+        }else{
+        	yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(cal.getTime()));
+        }
         Date fromDate = commonUtil.getDateFormat(Constants.DMY.format(leave.getFromDate()));
         
 		List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),leave.getUser().getId(),yearStartDate,fromDate);
