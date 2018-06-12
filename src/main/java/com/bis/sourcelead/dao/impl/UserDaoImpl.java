@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,7 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.aspectj.org.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -34,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Employees;
@@ -2080,5 +2077,15 @@ public class UserDaoImpl implements UserDao {
 			}
 		}
 		return usersDTOList;
+	}
+
+	@Override
+	@Transactional
+	public List<User> getUsersByEmailList(List<String> userEmail,OrgLocations orgLocation)
+	{
+		 Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationId and userRole.user.email IN (:emailList)) ORDER BY user.id DESC";
+	     List<User> usersList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).setParameterList("emailList", userEmail).list();
+	     return usersList;
 	}
 }

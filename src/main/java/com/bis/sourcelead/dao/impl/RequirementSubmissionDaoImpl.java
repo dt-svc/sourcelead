@@ -835,7 +835,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                     // This Condition is if The Requirement is Released by the login User
                 }else{
                     //This is for Requirement Manger
-                    String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
+                    String subQuery1 = "(reqSub.requirement.managerUserId.id  =:userId or reqSub.requirement.primaryRecruiterUserId.id = :userId) ";
                     params.put("userId",user.getId());
                     
                     // This is if the user is  created by
@@ -2904,7 +2904,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						// This Condition is if The Requirement is Released by the login User
 					}else{
 						//This is for Requirement Manger 
-						String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
+						String subQuery1 = "(reqSub.requirement.managerUserId.id  =:userId or reqSub.requirement.primaryRecruiterUserId.id  =:userId) ";
 						params.put("userId",requirementSubmissionsDTO.getUserId());
 						
 						//This is for Requirement Created by
@@ -3062,7 +3062,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							// This Condition is if The Requirement is Released by the login User
 						}else{
 							//This is for Requirement Manger 
-							String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
+							String subQuery1 = "(reqSub.requirement.managerUserId.id  =:userId or reqSub.requirement.primaryRecruiterUserId.id  =:userId) ";
 							params.put("userId",requirementSubmissionsDTO.getUserId());
 							//This is for Requirement Created by
 							String subQuery6 = "reqSub.requirement.createdBy =:requirementUsercode ";

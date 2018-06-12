@@ -26,6 +26,13 @@
 			});
 </script>
 
+<script type="text/javascript">
+//script for upload file
+document.getElementById("uploadBtn").onchange = function () {
+	document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+}
+</script>
+
 <style type="text/css">
 .timeBalance-scroll .col-md-2 {
 border: 1px solid #ccc; padding-top:15px; margin:0 15px 15px; text-transform:capitalize;
@@ -51,6 +58,8 @@ background-color: #fcfcfc;
         
          <sec:authorize access="hasRole('ROLE_APPLY_LEAVE')"> 
              <div class="pull-right">
+             <div class="success_pop" id="msgDiv" style="display: none;"></div>
+              <form:form id="upload_leave_excel_form" name="upload_leave_excel_form" enctype="multipart/form-data">
                  <div title="Import" class="positionRelartive pull-left zIndex mr">
 					        	<a onclick="leaveImport();"><i class="glyphicon glyphicon-import expIcon mt5"></i>&nbsp;</a> 
 						        	<div class="dowload_pop">
@@ -68,9 +77,11 @@ background-color: #fcfcfc;
 														</a>
 						        					</div>
 						        					<div class="clearfix"></div>
+						        					
+						        					
 						        					<div class="col-md-12">
 						        					<div class="uploadTempalte">
-						        					<input type="file" class="margin-top0" id="leaveInputFileId">
+						        					<input type="file" class="margin-top0" id="leaveInputFileId" name="file" data-validation="required validate_importFile" field-name="File">
 						        					</div>
 						        					</div>
 						        				</div>
@@ -84,6 +95,7 @@ background-color: #fcfcfc;
 					        			</div>
 						        	</div>
 						        </div>
+						        </form:form>
 			        <div class="pull-left">
 		                 <a href="<c:url value='${appPath}/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
 		            </div>
@@ -1071,7 +1083,7 @@ function getPieChartBasedOnUser(){
 		result = result + "  <tr>";
 		result = result + "    <th>Employee Name</th>";
 		result = result + "    <th>Number Of Days</th>";
-// 		result = result + "    <th>Status</th>";
+		result = result + "    <th>Status</th>";
 		result = result + "  </tr>";
 		result = result + "</thead>";
 		result = result + "<tbody>";
@@ -1098,8 +1110,8 @@ function topLeaveTakersPagination(url){
 	        }),
 	        "columns": [
 	            { "data": "empName" },
-	            { "data": "noOfDays"}
-// 	            { "data": "status" }
+	            { "data": "noOfDays"},
+	            { "data": "status" }
 	        ],
 	        "columnDefs": [ {
 		    	  	"targets": colIndex++,
@@ -1125,13 +1137,13 @@ function topLeaveTakersPagination(url){
 		              return result;
 	            }
 	          }, {
-	              /* "targets": colIndex++,
+	              "targets": colIndex++,
 	              "data": "status",
 	              "render": function ( data, type, report, meta ) {
 	            	   var result = "";
 	            	   result = result + '<td><div class="tblminwidth-75">'+report.status+'</div></td>';
 	  	              return result; 
-	              } */
+	              }
 	            }],
 		    	"scrollCollapse": false,
 		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
@@ -1229,8 +1241,8 @@ function topLeaveTakersPagination(url){
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '+1d');
 			dt.setDate(dt.getDate());
-			$("#barChartToDate").datepicker("option", "minDate", dt);
-// 			removeStartDateValidation();
+			$("#toDate").datepicker("option", "minDate", dt);
+			removeStartValid();
 			}
 		});
 		
@@ -1241,8 +1253,8 @@ function topLeaveTakersPagination(url){
 			onSelect : function(selected) {
 			var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate());
-			$("#barChartFromDate").datepicker("option", "maxDate", dt);
-// 			removeEndDateValidation();
+			$("#fromdate").datepicker("option", "maxDate", dt);
+			removeEndValid();
 			}
 		});
 	  
@@ -1362,56 +1374,63 @@ function leaveImpPopClose(){
 }
 </script>
 
-<script>
-function importLeaves(){
-	var file = $("#leaveInputFileId").val();
-	if(file != null && file != '' && file != 'undefined'){
-		$.ajax({
-	   	type: "POST",
-	    contentType : 'application/json; charset=utf-8',
-	    enctype: 'multipart/form-data',
-        processData: false,
-        contentType:false,
-	    dataType : 'json',
-	    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client&isMailCheck="+isMailCheck, 	   
-		    success : function(json) {
-		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		    	
-		    	var statusCode = "";
-				if(json != null){
-					statusCode = json.statusCode;
-				}
-				if(json != null && json != ''){
-					if(statusCode == "success"){
-						$("#selector").removeClass("remove_pop");
-				 		$("#selector").addClass("success_pop");
-				 		$("#selector").removeAttr("style");
-						$("#selector").css({ display: "block" });
-				 		$("#msgDiv").html("Processed successfully");
-				 		msgFadein();
-				 		prepareExcelDataDiv(json);
-					}else if(statusCode == "invalid"){
-						$("#selector").removeAttr("style");
-						$("#selector").css({ display: "block" });
-						$("#msgDiv").html("Please fill mandatory fields");
-						msgFadein();
-					}
-				}else if(statusCode == ""){
-					$("#selector").removeAttr("style");
-					$("#selector").css({ display: "block" });
-					$("#msgDiv").html("Please import valid Template or fill mandatory fields");
-					msgFadein();
-				}
-	 		    },
-	 		   error: function(e){
-		        }
-		 });
-	}
-}
 
+<script type="text/javascript">
+function importLeaves(){
+	var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+if ($('#upload_leave_excel_form').validate(false, validationSettings)){
+	var frm = $('#upload_leave_excel_form').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, "");
+	
+	
+	//It will escape all the special characters
+	var jsonData = encodeURIComponent(con);
+	var form = $('#upload_leave_excel_form')[0];
+	var formData = new FormData(form); 
+	
+	 $.ajax({
+		   	type: "POST",
+		   	data: formData,
+    	    contentType : 'application/json; charset=utf-8',
+    	    enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false,
+    	    dataType : 'json',
+		    url : sourceleadUrl+"/uploadLeaveType?"+tokenParamName+"="+tokenValue+"", 	   
+ 		    success : function(json) {
+ 		    	    if(json.updateCount != null && json.updateCount != '')
+ 		    	    $("#msgDiv").removeAttr("style");
+ 		 			$("#msgDiv").css({ display: "block" });
+ 		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
+ 			    	msgFadein();
+ 		    	    closeImportFile();
+		 		    },
+		 		   error: function(e){
+			        }
+			 });
+			 
+		}
+}
+</script>
+
+<script>
 function resetUpload(){
 	$("#leaveInputFileId").val("");
 }
 </script>
+
+
+<script>
+	function msgFadein() {
+		$("#msgDiv").fadeIn(200);
+        $('#msgDiv').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <jsp:include page="../masterFooter.jsp" />

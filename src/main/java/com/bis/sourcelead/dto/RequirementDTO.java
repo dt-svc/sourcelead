@@ -349,6 +349,8 @@ public class RequirementDTO extends CommonDTO {
 	private String reqLevel2ApproverStatus;
 
 	private String managerUserId;
+	
+	private long primaryRecruiterUserId;
 
 	private String client;
 
@@ -1373,6 +1375,14 @@ public class RequirementDTO extends CommonDTO {
 		this.locationsList = locationsList;
 	}
 
+	public long getPrimaryRecruiterUserId() {
+		return primaryRecruiterUserId;
+	}
+
+	public void setPrimaryRecruiterUserId(long primaryRecruiterUserId) {
+		this.primaryRecruiterUserId = primaryRecruiterUserId;
+	}
+	
 	public BigInteger getReqId() {
 		return reqId;
 	}

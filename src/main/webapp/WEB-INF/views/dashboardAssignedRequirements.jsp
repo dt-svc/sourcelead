@@ -15,14 +15,14 @@
       <!-- Assigned Requirements -->
       <div class="clearfix dashboard-widget mb col-md-12" >
         <h4 class="clearfix">Jobs</h4>
-        &nbsp;&nbsp;<!-- <span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
+        <!-- <span title="Calendar"><i aria-hidden="true" class="fa fa-calendar" id="datepicker"></i>
         </span> -->
         
         <div class="project_side_wrap_inn_tabs">
       	    <div id="resourceRequestsDivLoading"></div>
 		    <ul class="project-tabs-menu">
 		        <li class="current" id="assigned"><a data-toggle="tab" href="javascript:void(0)" onclick="requirementList(false, -1);">Assigned</a></li>
-		        <li id="drive"><a data-toggle="tab" href="javascript:void(0)"  onclick="requirementList(true, -1);">Walk-In</a></li>
+		        <li id="drive"><a data-toggle="tab" href="javascript:void(0)"  onclick="requirementList(true, -1);">Daily Drives</a></li>
 		    </ul>
 			<div id="requirementListTabHead">
 				<div id="requirementListActions">
@@ -98,7 +98,7 @@ function requirementList(isWalkIn, walkInDay){
 	                     result = result +"    <th>Generated ID</th>"; 
 	                     result = result +"    <th>Title</th>";
 	                     if(isWalkIn) {
-	                    	 result = result +"    <th>WalkIn Day(s)</th>";
+	                    	 result = result +"    <th>Drive Day(s)</th>";
 	                     }
 	                     if(orgATS == 'Y'){
 	                     result = result +"    <th>Client</th>";

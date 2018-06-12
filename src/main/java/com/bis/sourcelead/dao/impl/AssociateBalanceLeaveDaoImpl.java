@@ -166,7 +166,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 					connection.setAutoCommit(false);
 					CallableStatement stmt = connection.prepareCall("{call deleteAssociateBalLeave(?,?,?,?,?)}");
 					for (User user : userList) {
-						if(!Constants.UPDATE.equalsIgnoreCase(methodType)) {
+						if(Constants.UPDATE.equalsIgnoreCase(methodType)) {
 							OrgLocations orgLocations = new OrgLocations();
 							orgLocations.setId(orgLocationId);
 							boolean b = getOrgLevelLeaves(orgLocations, user.getId(), leaveType);
@@ -184,8 +184,10 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 							int additionLeaves = 0;
 							if("ADD".equalsIgnoreCase(actionType)) {
 								 additionLeaves = assoBalLeaves + diffLeaves;
-							}else {
+							}if("SUB".equalsIgnoreCase(actionType)) {
 								additionLeaves = assoBalLeaves - diffLeaves;
+							}if("IMPORT".equalsIgnoreCase(actionType)) {
+								additionLeaves = diffLeaves;
 							}
 							stmt.setString(2, String.valueOf(additionLeaves));
 						}else {
