@@ -433,6 +433,62 @@
 													    </tr>
 												    </c:forEach>
 												 </c:if>
+												  <c:forEach var="pMember" items="${employeeTimesheetEntryDetailsDTO.attProjectMembersList}" varStatus="attCount">
+												      <c:set var="attCount" value="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments ? fn:length(employeeTimesheetEntryDetailsDTO.timsheetAttachments) : 0}"/>
+												      <c:set var="projAttAvailable" value="0"/>
+												      <c:if test="${!empty employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
+													      <c:forEach var="attachment" items="${employeeTimesheetEntryDetailsDTO.timsheetAttachments}">
+													            <c:if test="${pMember.id == attachment.projectMemberId}">
+													               <c:set var="projAttAvailable" value="1"/>
+													            </c:if>
+													      </c:forEach>
+													  </c:if>
+												      <c:if test="${projAttAvailable == 0}">
+												      <c:set var="timeSheetSubmissionStatus" value="NEW"/>
+									                  <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
+                                                           <c:if test="${statusEntry.key == pMember.id && (statusEntry.value.timesheetStatus != 'SUBMITTED' && statusEntry.value.timesheetStatus != 'APRROVED' )}">
+															     <tr id="timesheetAttRow${attCount}">
+																    <td>
+																       <div class="timeAdd">
+															                  <p>${pMember.projectName}</p> 
+															                  <input type="hidden" data-rowId="${attCount}"  class="existedAttProjectMembers" id='existedAttProjectMember${pMember.id}' name="timsheetAttachments[${attCount}].projectMemberId" value="${pMember.id}" />
+																		            
+																	    </div> 
+																	</td>
+																	<td>
+	                                                                   <div id="attachmentDiv${attCount}Id">
+	                                                                        <c:set var="timeSheetSubmissionStatus" value="${statusEntry.value.timesheetStatus}"/>
+			                                                                       <input  id="dbIsTimesheetAttachmentRequired${attCount}" value="${statusEntry.value.timesheetDocumentRequired == true  ? 1 : 0}" type="hidden">
+			                                                                  <c:if test="${!statusEntry.value.timesheetDocumentRequired}">
+																	              <input class="timesheetAttValidation" data-rowId="${attCount}" name="isTimesheetAttachmentRequired${attCount}" id="isTimesheetAttachmentRequired${attCount}" value="N" type="hidden">
+																		     </c:if>
+																		     <c:if test="${statusEntry.value.timesheetDocumentRequired}"> 
+																		         <input class="timesheetAttValidation" data-rowId="${attCount}" name="isTimesheetAttachmentRequired${attCount}" id="isTimesheetAttachmentRequired${attCount}" value="Y" type="hidden">
+																		     </c:if> 
+																		      <input type='hidden' name='${attCount}maxAttDivRowNumber' id='${attCount}maxAttDivRowNumber'  value='1' />
+														                      <div id="attachmentInnerDiv${attCount}Id">
+							                                                          <div id="${attCount}AttchmentDiv0Id" class="addRowBtn">
+																						  <div class="input-group col-md-12" style="margin:0 auto">
+																							<label class="input-group-btn"> <span class="btn btn-primary input-sm"><i class="fa fa-folder-open-o"></i>
+																							  <input style="display: none;"  id="${attCount}docFile0" multiple  onchange="validateUploadFile('${attCount}','0',this);" class="upload" type="file">
+																							  </span></label>
+																							<input class="form-control input-sm" id="${attCount}uploadFile0"   placeholder="Attachment" type="text">
+																						  </div>
+																						  <input type="button" value="" onclick="addAttachmentRow('${attCount}');" class="addRowIcon"/>
+																						  <input type="hidden" id="timesheetAttValidationInput${attCount}" field-name="Attachment"/>
+																					 </div>
+																			</div>
+																		</div>
+														             </td>
+														             <td>
+															             <input type="text" name="timsheetAttachments[${attCount}].weekComment"   class="form-control  input-sm" value="" placeholder="Comment" />
+																    </td>
+															    </tr>
+															     <c:set var="attCount" value="${attCount+1}"/>
+                                                           </c:if> 
+                                                       </c:forEach>
+                                                      </c:if>
+												  </c:forEach>
 												</table>
 											</div>
 							            </div>  
