@@ -2605,7 +2605,7 @@ public class LeaveManagementRestController {
 	
 	@RequestMapping(value = "/uploadLeaveType", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<LeaveDTO> leaveUpload(MultipartHttpServletRequest request) throws Exception
+	public Response<LeaveTypeDTO> leaveUpload(MultipartHttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -2615,12 +2615,12 @@ public class LeaveManagementRestController {
 		if (itrator.hasNext()) {
 			multipartFile = request.getFile(itrator.next());
 		}
-		Response<LeaveDTO> response = new Response<>();
+		Response<LeaveTypeDTO> response = new Response<>();
 		/*if (multipartFile != null) {
 //			fileList = clientImportsService.clientExcelDataSave(multipartFile, user, orgLocation, org, isMailCheck, responderType);
 		}*/
 		if (multipartFile != null) {
-			response = leaveService.saveBulkApprovedLeaves(multipartFile, orgLocation, user, org);
+			response = leaveService.saveBulkLeaveTypes(multipartFile, orgLocation, user, org);
 			/*if (response != null) {
 				if (response.getData().isEmpty() && response.getData().size() == 0) {
 					response.setStatusCode("success");

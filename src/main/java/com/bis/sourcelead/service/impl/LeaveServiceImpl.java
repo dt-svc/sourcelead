@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,27 +11,34 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +54,8 @@ import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
+import com.bis.sourcelead.dto.LeaveTypeDTO;
+import com.bis.sourcelead.dto.LeaveTypeImportDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -62,9 +72,13 @@ import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.MonthlyLeaves;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.RestrictDay;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.entity.UsersImport;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.rest.TimesheetRestController;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
@@ -2012,4 +2026,131 @@ public class LeaveServiceImpl implements LeaveService{
 		excelHeader.createCell(3).setCellValue("Balance Leaves");
 		return sheet;
 	}
+
+	@Override
+	public Response<LeaveTypeDTO> saveBulkLeaveTypes(MultipartFile multipartFile, OrgLocations orgLocation, User user, Org org)
+	{
+		String fileName = multipartFile.getOriginalFilename();
+	
+		List<LeaveTypeImportDTO> list = new ArrayList<>();
+		try {
+			File file = new File(multipartFile.getOriginalFilename());
+			multipartFile.transferTo(file);
+			FileInputStream fis = new FileInputStream(file);
+			Workbook workbook;
+			logger.debug("FIle Extension is: " + multipartFile.getOriginalFilename());
+			boolean isValidated = false;
+			workbook = WorkbookFactory.create(fis);
+			int numberOfSheets = workbook.getNumberOfSheets();
+			for (int i = 0; i < numberOfSheets; i++) {
+				Sheet sheet = workbook.getSheetAt(i);
+				Iterator<Row> rowIterator = sheet.iterator();
+				while (rowIterator.hasNext()) {
+					LeaveTypeImportDTO importDTO = new LeaveTypeImportDTO();
+					Row row = rowIterator.next();
+					if (row.getRowNum() > 0) {
+						isValidated = validateExeclData(row, importDTO, fileName, orgLocation);
+					}
+					if (isValidated) {
+						if (row.getRowNum() > 0) { // Excluding column names
+							if (row.getCell(0) != null) {
+								String assoName = getCellValueAsString(row.getCell(0), fileName);
+								importDTO.setAssociateName(assoName);
+								System.out.println(" Associate Name : " + assoName);
+							}
+							importDTO.setAssociateEmail(getCellValueAsString(row.getCell(1), fileName));
+							System.out.println(" Associate Email : "
+									+ getCellValueAsString(row.getCell(1), fileName));
+							importDTO.setLeaveTypeName(getCellValueAsString(row.getCell(2), fileName));
+							System.out.println(" Leave Type  : "
+									+ getCellValueAsString(row.getCell(2), fileName));
+							if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
+								String noOfLeaves = getCellValueAsString(row.getCell(1), fileName);
+								importDTO.setNumberOfLeaves(noOfLeaves);
+								System.out.println(" Associate Name : " + noOfLeaves);
+							}
+							list.add(importDTO);
+						}
+					}
+				}
+			}
+			fis.close();
+		} catch (IOException e) {
+			logger.error("Exception cause is : " + ExceptionUtils.getFullStackTrace(e));
+		} catch (EncryptedDocumentException e) {
+			e.printStackTrace();
+		} catch (InvalidFormatException e) {
+			e.printStackTrace();
+		}
+		
+		int insertCount = addAssociateBalanceLeaveType(list,orgLocation,user);
+		return null;
+	}
+	
+	private int addAssociateBalanceLeaveType(List<LeaveTypeImportDTO> implist, OrgLocations orgLocation, User user)
+	{
+		if(implist != null && implist.size() >0) {
+			List<String> userEmail = implist.stream().map(LeaveTypeImportDTO::getAssociateEmail).collect(Collectors.toList());
+			List<String> leaveType = implist.stream().map(LeaveTypeImportDTO::getLeaveTypeName).collect(Collectors.toList());
+			List<User> userList = userService.getUsersByEmailList(userEmail);
+		}
+		
+		return 0;
+	}
+
+	/**
+	 * Validate Excel Data
+	 * @param row
+	 * @param importDTO
+	 * @param fileName
+	 * @param orgLocation
+	 * @return
+	 */
+	private boolean validateExeclData(Row row, LeaveTypeImportDTO importDTO, String fileName, OrgLocations orgLocation)
+	{
+		boolean isValidated = false;
+		if (row.getRowNum() > 0) { // Excluding column names
+			if (row.getCell(1) == null && "".equalsIgnoreCase(row.getCell(1).toString())) {
+				return isValidated;
+			}
+			if (row.getCell(2) == null || "".equalsIgnoreCase(row.getCell(2).toString())) {
+				return isValidated;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Read cell value as String
+	 * @param cell
+	 * @param fileName
+	 * @return String
+	 */
+	private String getCellValueAsString(Cell cell, String fileName) {
+		String cellValue = "";
+		if(fileName.toLowerCase().endsWith("xls")){
+				HSSFCell hssfCell = (HSSFCell) cell;
+				if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+					hssfCell.setCellType(Cell.CELL_TYPE_STRING);
+					String hssfCellValue = hssfCell.getStringCellValue();
+					if (hssfCellValue != null || !"".equalsIgnoreCase(hssfCellValue)) {
+						cellValue = hssfCellValue;
+					} 
+				}else{
+					cellValue = cell.getStringCellValue();
+				}
+			}else{
+				XSSFCell xssfCell = (XSSFCell) cell;
+				if (xssfCell.getCellType() == XSSFCell.CELL_TYPE_NUMERIC) {
+					xssfCell.setCellType(Cell.CELL_TYPE_STRING);
+					String xssfCellValue = xssfCell.getStringCellValue();
+					if (xssfCellValue != null || !"".equalsIgnoreCase(xssfCellValue)) {
+						cellValue = xssfCellValue;
+					} 
+				}else{
+					cellValue = cell.getStringCellValue();
+				}
+			}
+			return cellValue;
+		}
 }
