@@ -10,7 +10,6 @@ import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
-import com.bis.sourcelead.dto.AssociateGradesDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -231,7 +230,7 @@ public interface UserService  {
 	
 	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates) throws Exception;
 
-	List<User> getUsersByEmailList(List<String> userEmail);
+	List<User> getUsersByEmailList(List<String> userEmail, OrgLocations orgLocation);
 }	
 		
 	

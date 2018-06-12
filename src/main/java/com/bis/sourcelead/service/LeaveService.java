@@ -92,5 +92,5 @@ public interface LeaveService {
 
 	File getLeaveTypeImportTemplate(Long orgLocationId);
 
-	Response<LeaveTypeDTO> saveBulkLeaveTypes(MultipartFile multipartFile, OrgLocations orgLocation, User user, Org org);
+	LeaveTypeDTO saveBulkLeaveTypes(MultipartFile multipartFile, OrgLocations orgLocation, User user, Org org);
 }
