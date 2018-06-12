@@ -51,11 +51,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementAssignToDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
@@ -2410,4 +2412,36 @@ public class RequirementListRestController {
 			}
 		}
 	}
+	
+	
+	
+	
+	
+	
+	@RequestMapping(value = "/getRequirementListForCandidateBulkSubmission")
+	public @ResponseBody ResponseList<RequirementDTO> getRequirementListForCandidateBulkSubmission(RequirementDTO requirementDTO,HttpServletRequest request) throws Exception {
+
+	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+	      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	      String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+	      String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	    
+			
+			String[] tableColumns = { "action","generatedId", "jobTitle", "createdDate", "location"};
+			int sortColumnIndex = 1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default descending order
+			if (requirementDTO.getOrder() != null && !requirementDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(requirementDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = requirementDTO.getOrder().get(0).get("dir");
+			}
+			requirementDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			requirementDTO.setSortOrder(sortColumnOrder);
+			ResponseList<RequirementDTO> requirementDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates);
+			return requirementDTOList;
+			
+		}
+	
+	
+	
 }

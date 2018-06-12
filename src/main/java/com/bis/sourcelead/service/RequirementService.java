@@ -193,5 +193,7 @@ public interface RequirementService {
     public List<RequirementDTO> getAllManagerRequirementForJobSharing(Date[] searchDates,Long managerUserId,Long orgLocationId) throws Exception;
     
     List<RecruiterReportAssociateCountView> getAssociateCountsCreatedUserList(Long orgLocationId, List<Long> userIdsList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
+    
+    public ResponseList<RequirementDTO> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,Long userId,Long orgLocationId) throws Exception;
 
 }

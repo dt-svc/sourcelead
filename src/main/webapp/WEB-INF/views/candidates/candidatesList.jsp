@@ -49,6 +49,19 @@
  </sec:authorize>
  <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  <jsp:include page="candidatesTimelineActivity.jsp"></jsp:include>
+ <jsp:include page="requirementListForSubmission.jsp"></jsp:include>
+ 
+ <div class="new_side_wrap">
+	<div class="new_side_wrap_inn">
+		<div class="new_side_wrap_cta">
+		 <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
+			<div id="addApplicantDiv"></div>
+			</div>
+		</div>
+	</div>
+</div>
+	
+ <div id="addApplicantDiv"></div>
  
 	<script>
 	var isAssociate = 'N';
@@ -1197,26 +1210,24 @@ function cancel(candidateId){
       <div class="pull-left pull-left ml mt10 mr5">
 				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openCandidateFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
 				</a>
-	</div>
+	   </div>
       <div class="dropdown pull-left ml mt">
 			  <div class="dropdown-toggle" data-toggle="dropdown">
 			  <span class="fa fa-share-alt cursorPointer" title="Share" href="#" onclick="shareJob();"></span></div>
-			  <!-- <ul class="dropdown-menu dropdown-morecustom">
-			    <li><a title="Share"  data-toggle="modal" data-target="#myModal">Share Job</a></li>
-			    <li><a href="#">Compose Email</a></li>
-			  </ul> -->
-			</div>
-			
-			<!-- <div class="dropdown pull-left ml mt">
+			 
+	  </div>
+	  
+	   <div class="dropdown pull-left ml mt mr">
 			  <div class="dropdown-toggle" data-toggle="dropdown">
-			  <span class="fa fa-envelope cursorPointer" title="Compose Email"></span></div>
-			</div> -->
-      <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
+			  <span class="fa fa-user-plus cursorPointer" title="Share" href="#" onclick="submitCandidatesToJob();"></span></div>
+			 
+	  </div>
+			
       <div class="timesheet_head customtimesheet-head topfilters topfilters2 pull-right hdrFilter timesheetHead-search">
         <ul>
             
           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
-          <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate"><i class="fa fa-user-plus" style="font-size:17px;"></i></b>
+          <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate"><i class="fa fa-user" style="font-size:17px;"></i></b>
           <div id="addmorepop" class="approved_pop">
            
            </div>
@@ -1310,6 +1321,10 @@ function cancel(candidateId){
 		$("#candTimelineView").removeClass("active");
 		$("#timelineview").removeClass("active in");
 		$(".location-alert").fadeOut();
+		
+		$(".new_side_wrap").removeClass("new_side_wrap_active");
+		$(".req_side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
 	}
 </script>
 

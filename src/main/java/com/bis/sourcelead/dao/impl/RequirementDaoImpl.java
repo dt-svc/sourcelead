@@ -2260,4 +2260,12 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 	}
 
+	@Override
+	@Transactional
+	public ResponseList<RequirementDTO> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,
+			Long userId, Long orgLocationId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

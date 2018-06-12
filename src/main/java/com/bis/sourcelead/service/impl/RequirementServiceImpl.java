@@ -3758,4 +3758,10 @@ public class RequirementServiceImpl implements RequirementService {
 		return requirementDao.getAssociateCountsCreatedUserList(orgLocationId, userIdsList, startDateUTC, endDateUTC, isGlobalUser, orgId);
 	}
 
+	@Override
+	public ResponseList<RequirementDTO> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,
+			Long userId, Long orgLocationId) throws Exception {
+		return requirementDao.getAllRequirementsForCandidateSubmission(requirementDTO, userId, orgLocationId);
+	}
+
 }
