@@ -1987,6 +1987,12 @@ public class RequirementListRestController {
 					reqManagerUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
 					assignedBoolQueryBuilder.should(reqManagerUserIdQueryBuilder);
 					
+					//For Requirement Primary Recruiter
+					BoolQueryBuilder reqPrimaryManagerUserIdQueryBuilder = QueryBuilders.boolQuery();
+					reqPrimaryManagerUserIdQueryBuilder.must(QueryBuilders.termQuery("primaryRecruiterUserId",user.getId().toString()));
+					reqPrimaryManagerUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+					assignedBoolQueryBuilder.should(reqPrimaryManagerUserIdQueryBuilder);
+					
 					//For Team Owner
 					BoolQueryBuilder teamOwnerQueryBuilder = QueryBuilders.boolQuery();
 					teamOwnerQueryBuilder.must(QueryBuilders.termQuery("teamOwnerUserId", user.getId().toString()));
@@ -2192,6 +2198,7 @@ public class RequirementListRestController {
       		requirement.setTotalApplicants(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
       	}
       	requirement.setManager(requirementIndex.getManager());
+      	requirement.setPrimaryRecruiter(requirementIndex.getPrimaryRecruiterUserId());
       	if(StringUtils.isNotEmpty(requirementIndex.getRequirementStatus())){
           	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
       	}
