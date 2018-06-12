@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RoleHierarchyDao;
 import com.bis.sourcelead.dao.RolesDao;
@@ -23,6 +24,7 @@ import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Repository
 public class RolesDaoImpl implements RolesDao{
@@ -158,6 +160,9 @@ public class RolesDaoImpl implements RolesDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (roles != null) {
+				if(roles.getId() == null) {
+					roles.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				}
 				session.saveOrUpdate(roles);
 			}
 			logger.debug("Roles Added Successfully");
@@ -391,6 +396,36 @@ public class RolesDaoImpl implements RolesDao{
 		String query = "from Roles roles where roles.orgLocations.id IN (:orgLocationIdsList) ";
 		List<Roles> rolesList = session.createQuery(query.toString()).setParameterList("orgLocationIdsList", orgLocationIdsList).list();
 		return rolesList;
+	}
+
+	@Override
+	@Transactional
+	public Roles getRolesByUUIDAndOrgLocationId(String uuid, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Roles> roles = new ArrayList<Roles>();
+		logger.debug("Roles start");
+		roles = session.createQuery("from Roles role where role.uuid = :uuid and role.orgLocations.id = :orgLocationId" ).setString( "uuid", uuid ).setLong("orgLocationId", orgLocationId).list();
+		logger.debug("Roles end");
+		if (roles.size() > 0) {
+			return roles.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	@Transactional
+	public Roles getRolesByUUID(String uuid) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Roles> roles = new ArrayList<Roles>();
+		logger.debug("Roles start");
+		roles = session.createQuery("from Roles role where role.uuid = :uuid " ).setString( "uuid", uuid ).list();
+		logger.debug("Roles end");
+		if (roles.size() > 0) {
+			return roles.get(0);
+		} else {
+			return null;
+		}
 	}
 
 

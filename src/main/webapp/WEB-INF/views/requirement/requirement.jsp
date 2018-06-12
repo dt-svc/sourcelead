@@ -932,8 +932,36 @@ $(document).ready(function () {
 					</label>
 				</div>
 			</div>
-        
-         <c:if test="${!empty sourceleadSectionList}">
+			
+			<div class="form-group">
+				<div class="ml">
+					<input type="checkbox" name="walkIn" id="isWalkIn" ${requirement.walkIn ? "checked='checked'" : ""}>
+						<label for="isWalkIn">&nbsp;&nbsp;<strong>Is WalkIn Job</strong> &nbsp;&nbsp;
+						</label>
+				</div>
+				<div id="selectWalkInDiv" ${requirement.walkIn ? "" : "style='display: none;'"}>
+					<label class="col-md-3">Select WalkIn Day(s)</label>
+					<div class="col-md-6">
+						<select multiple class="chosen-select form-control"
+							name="walkInDays" data-placeholder="Select WalkIn Day(s)"
+							id="walkInDays" data-validation-optional="true">
+							<c:forEach items="Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday" var="day">
+								<c:set var="selected" value="false"></c:set>
+								<c:if test="${requirement.walkInDays!=null && requierment.walkInDays != ''}">
+									<c:forEach items="${requirement.walkInDays.split(',')}" var="selectedDay">
+										<c:if test="${selectedDay eq day}">
+											<c:set var="selected" value="true"></c:set>
+										</c:if>
+									</c:forEach>
+								</c:if>
+								<option value="${day}" ${selected?"selected='selected'":""}>${day}</option>	
+							</c:forEach>
+						</select>
+					</div>
+				</div>
+			</div>
+
+								<c:if test="${!empty sourceleadSectionList}">
 	            <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 	               <c:if test="${sectionOrder.index == 0}">
 	                  <div id="customDiv${section.id}"></div>
@@ -1535,6 +1563,16 @@ $(document).ready(function () {
 <div id="divLocTd2" style="display: none; float: left;">
    <i class="fa fa-times" onclick="removeLocationRow(REPLACEROWID);"></i> 
 </div> 
+
+<script type="text/javascript">
+	$("#isWalkIn").change(function(){
+		if($(this).is(":checked")) {
+			$("#selectWalkInDiv").show();
+		} else {
+			$("#selectWalkInDiv").hide();
+		}
+	});
+</script>
 
 <script>
 function changeValidationType() {

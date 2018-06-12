@@ -36,47 +36,56 @@ function getDayWiseReports(){
 </script>
 
 
-<section class="content-wraper">
-
-<section class="content-header clearfix">
-			<div class="pull-left">
-				<h2>Recruiters Report </h2>
-			</div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; » Recruiters Reports  </div>
-</section>
-
-<div class="vendor_wrap">
-<div class="timesheet_head clearfix">
-<div class="pull-left reportBtns reportBtns_custom mt5">
-<h4 class="pull-left"></h4>
-		  <div class="reportBtn reportBtn_custom_btn select-field  pull-left ml">
-			<select class="form-control" id="reportTypeId" onChange="flushCustom(); getDayWiseReports(); custDates();">
+ 
+ <section class="content-wraper">
+    <section class="content-header clearfix">
+      <div class="pull-left">
+        <h2>Recruiters Report</h2>
+      </div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; » Recruiters Reports  </div>
+    </section>
+    <div class="clearfix">
+    <div class="clearfix"></div>
+    	<div class="ReqRepHead clearfix">
+        <div class="col-md-2">
+        <a href="#" title="List View" id="listView" class="btn btn-default"><i class="fa fa-list"></i></a>
+        </div>
+        
+        <div class="col-md-3 dropdown-select positionRelative">
+          <select class="form-control" id="reportTypeId" onChange="flushCustom(); custDates();">
 			  <option value="today">Today</option>
 			  <option value="yesterday">Yesterday</option>
-			  <option value="1_week">1 Week ago</option>
-			  <option value="2_weeks">2 Weeks ago</option>
-			  <option value="1_month">1 Month ago</option>
-			  <option value="2_months">2 Months ago</option>
+			  <option value="1_week">Last 7 days</option>
+			  <option value="Last_15_days">Last 15 days</option>
+			  <option value="1_month">Last 1 month</option>
+			  <option value="2_months">Last 2 months</option>
 			  <option value="custom">Custom</option> 
 			</select>
-		 </div>	
-		 <span class="dashboard-datepkr cusShow">
-		 <input type="text" class="form-control" value="" id="ReportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-		 <p id="reportsStartDate" class="ReError" style="display: none"></p>
-		 </span>
-		<span class="dashboard-datepkr cusShow">
-		<input type="text"  class="form-control" value="" id="ReportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-		<p id="reportsEndDate" class="ReError" style="display: none"></p>
-		</span>
-		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="userDataTableList();" /></span>
-		<div class="clearfix"></div>
-  </div>
-     </div> 
-      
-      <div class="candidate_wrap_table recruiterReports_table minHeight positionRelative datatable_filter">
-      <div class="positionRelative table_head section-action-btns section-action-btns-associates clearfix">
-      <div id="usersListLoader"></div>
-      <ul class="pull-right list-unstyled list-inline">
+          
+          
+          <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
+            <div class="pull-left">
+              <div class="pull-left mr5" style="width: 140px">
+                <input type="text" class="form-control calendar" value="" id="ReportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date *">
+				  <p id="reportsStartDate" style="display: none; font-size: 12px;"><font color="red">Start Date Required</font></p>
+              </div>
+              
+              <div class="pull-left mr5" style="width: 140px">
+               <input type="text"  class="form-control calendar" value="" id="ReportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date *">
+				 <p id="reportsEndDate" style="display: none; font-size: 12px;"><font color="red">End Date Required</font></p>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" onclick="userDataTableList();"><i class="fa fa-search"></i></button>
+            </div>
+          </div>
+          
+        </div>
+        
+      <div class="col-md-2">
+        <button type="button" class="btn btn-primary btn-sm	mt2" id="customize_btn" onclick="userDataTableList();">Run</button>
+		</div>   
+        
+       <ul class="pull-right list-unstyled list-inline mr10 mb0">
+       <div class="mt5"></div>
 		  <li class="positionRelative">
 			  <div class="dynamic_search">
 	   			<input type='text' placeholder='Search' id='usersDataTableSearch'/>
@@ -84,23 +93,28 @@ function getDayWiseReports(){
 			  </div>
 		  </li>
         </ul>
+         
       </div>
+    	<div class="clearfix"></div>
+    	 	<div class="candidate_wrap_table recruiterReports_table minHeight positionRelative datatable_filter dashboard-widget clearfix mt">
               <div id="usersList" class="filter_position positionRelative"></div> 
-          </div>  
- </div>
- </section>
+          </div> 
+    	<div class="clearfix"></div>
+    </div>
+  </section>
+ 
  
  <script type="text/javascript"> 
 	function addValidClass(){
 		 var StartDate = document.getElementById("ReportStartDate").value;
 		 if(StartDate){
-			 $('#reportsStartDate').empty() 
+			 document.getElementById("reportsStartDate").style.display="block";
 		 }
 		 
 		 var EndDate = document.getElementById("ReportEndDate").value;
 		
 		 if(EndDate){
-			 $('#reportsEndDate').empty(); 
+			 document.getElementById("reportsEndDate").style.display="block";
 		 }
 }
 </script>
@@ -150,10 +164,12 @@ function getDayWiseReports(){
 function custDates(){
 	var reportType = $("#reportTypeId").val();
 	if(reportType=="custom"){
-	    $(".cusShow").show();
+		 document.getElementById("customSearch").style.display="block";
 	}
-	if(reportType!="custom"){
-	    $(".cusShow").hide();
+	if(reportType != "custom"){
+	    document.getElementById("customSearch").style.display="none";
+	    document.getElementById("reportsStartDate").style.display="none";
+		document.getElementById("reportsEndDate").style.display="none";
 	}
 }
 </script>
@@ -174,11 +190,8 @@ function custDates(){
 	    var timePeriod = $('#reportTypeId').val();
 		$("#reportsStartDate").empty();
 		$("#reportsEndDate").empty();
-		document.getElementById("reportsStartDate").style.display="none";
-		document.getElementById("reportsEndDate").style.display="none";
 	 
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  $("#usersListLoader").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  
 	    var result = "";
 	 	
@@ -201,8 +214,6 @@ function custDates(){
 	    $("#noRecruiters").val('');
 	    $("#usersList").empty();
         $("#usersList").append(result); 
-        $("#usersList").removeAttr('style');
-        $("#usersListLoader").removeAttr('style');
 	    
 	    userDataTableList();
  }
@@ -213,12 +224,33 @@ function userDataTableList(){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#usersDataTableSearch").val();
 	 var timePeriod = $('#reportTypeId').val();
-	 var startDate = $("#ReportStartDate").val();
-	 var endDate = $("#ReportEndDate").val();
-	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate;
-	 usersListPagination(url,sourceleadUrl);
-	 $("#usersListLoader").removeAttr("style");
+	 var flag = true;
+	 var startDate = '';
+	 var endDate = '';
+	 if(timePeriod == 'custom'){
+		  startDate = $("#ReportStartDate").val();
+		  endDate = $("#ReportEndDate").val();
+		  if(startDate == null || startDate == '' || endDate == null || endDate == ''){
+			  if(startDate == null || startDate == ''){
+				  document.getElementById("reportsStartDate").style.display="block";
+			  }
+			  
+			  if(endDate == null || endDate == ''){
+				  document.getElementById("reportsEndDate").style.display="block";
+			  }
+			  flag = false;
+		  }
+	 }else{
+		 document.getElementById("reportsStartDate").style.display="none";
+		 document.getElementById("reportsEndDate").style.display="none";
+	 }
+	
+	 if(flag){
+		 searchValue = searchValue ? searchValue : "";
+		 var url = sourceleadUrl+"/getAllUsersByOrgLocationsId?searchValue="+searchValue+"&timePeriod="+timePeriod+"&customStartDate="+startDate+"&customEndDate="+endDate;
+		 usersListPagination(url,sourceleadUrl);
+	 }
+	
 }
 </script>
 
@@ -281,7 +313,7 @@ function usersListPagination(url,sourceleadUrl){
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
-	            	  if(opt.userRequirementsCount !=null && opt.userRequirementsCount !='' && opt.userRequirementsCount !='undefined'){
+	            	  if(opt.userCandidatesCount !=null && opt.userCandidatesCount !='' && opt.userCandidatesCount !='undefined'){
 	            		  result = result +"<td><div class='small'> <span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></div></td>";
 	            	  }else{
 	          	    	 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
@@ -417,145 +449,7 @@ function usersListPagination(url,sourceleadUrl){
 }
 </script>
 
-<script>
-function userDataTableList1(){ 
-	var timePeriod = $('#reportTypeId').val();
-	$("#reportsStartDate").empty();
-	$("#reportsEndDate").empty();
-	document.getElementById("reportsStartDate").style.display="none";
-	document.getElementById("reportsEndDate").style.display="none";
-	$("#usersListLoader").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-	  $.ajax({
-           type : "POST",
-           url: sourceleadUrl+"/getAllUsersByOrgLocationsId?"+tokenParamName+"="+tokenValue+"&timePeriod="+timePeriod,    
-            success :function(data) {
-                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	                	
-                	     $("#usersList").empty();
-                	     
-	                	 var result = "";
-	                	 result = result +"<table id='reportPagination' class='display' cellspacing='0' width='99.9%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result = result +"<th><i class='fa fa-address-book-o fa-2x'></i> <div class='small'>Name</div></th>";
-	                     result = result +"<th><i class='fa fa-briefcase fa-2x'></i><div class='small'>Jobs</div></th>";
-	                     result = result +"<th><i class='fa fa-user-circle fa-2x'></i><div class='small'>Candidates</div></th>";
-	                     result = result +"<th><i class='fa fa-users fa-2x'></i><div class='small'>Applicants</div></th>"; 
-	                     result = result +"<th><i class='fa fa-list-ul fa-2x'></i><div class='small'>Shortlisted</div></th>"; 
-	                     result = result +"<th><i class='fa fa-send fa-2x'></i><div class='small'>Submitted</div></th>"; 
-	                     result = result +"<th><i class='fa fa-handshake-o fa-2x'></i><div class='small'>Interviewed</div></th>"; 
-	                     result = result +"<th><i class='fa fa-envelope-open-o fa-2x'></i><div class='small'>Offered</div></th>"; 
-	                     result = result +"<th><i class='fa fa-ban fa-2x'></i><div class='small'>Rejected</div></th>";
-	                     result = result +"<th><i class='fa fa-arrow-circle-left fa-2x'></i> <div class='small'>Back-Out</div></th>";
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     
-	                     result = result + '<div class="new_side_wrap">';
-	                 	 result = result + '<div class="new_side_wrap_inn">';
-	                 	 result = result + '<div class="new_side_wrap_cta">';
-	                 	 result = result +'<div id="addApplicantDiv"></div>';
-	                 	 result = result +'</div>';
-	                 	 result = result +'</div>';
-	                 	 result = result +'</div>';
-	                 	 
-	                 	var json = JSON.parse(data);
-	                 	
-	                 	
-	                 	var checkSize = json.length;
-	                    
-	                     for (var i = 0; i < checkSize; i++) { 
-	                    	 var opt = json[i]; 
-	                    	 
-	                    	 if(opt.lastName != null && opt.lastName !='' && opt.lastName != 'undefined'){
-	          			 		lastName = opt.lastName;
-		          			 	}else{
-		          			 		lastName = "";
-		          			 	}
-	                    	 result = result +"<tr>";
-	                    	 
-	                    	 if(opt.firstName !=null && opt.firstName !='' && opt.firstName !='undefined'){
-	                    		 result = result +"<td><div class='tbldata-dotdot-me'><span title='"+opt.firstName+"'>"+opt.firstName+" "+lastName+"</span></a></div></td>";
-	                    	 }else{
-	                    		 result = result +"<td><div> <span>----</span></div></td>"; 
-	                    	 }
-	                    	 
-	                    	 if(opt.userRequirementsCount !=null && opt.userRequirementsCount !='' && opt.userRequirementsCount !='undefined'){
-	                    		  result = result +"<td><div class='small'><span title='"+opt.userRequirementsCount+"'>"+opt.userRequirementsCount+"</span></div></td>";
-	                    	 }else{
-	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
-	                    	 }
-		                    
-	                    	 if(opt.userCandidatesCount !=null && opt.userCandidatesCount !='' && opt.userCandidatesCount !='undefined'){
-	                    		  result = result +"<td><div class='small'> <span title='"+opt.userCandidatesCount+"'>"+opt.userCandidatesCount+"</span></div></td>";
-	                    	 }else{
-	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
-	                    	 }
-	                    	 
-	                    	 if(opt.userApplicantsCount !=null && opt.userApplicantsCount !='' && opt.userApplicantsCount !='undefined'){
-	                    		  result = result +"<td><div class='small'> <span title='"+opt.userApplicantsCount+"'>"+opt.userApplicantsCount+"</span></div></td>";
-	                    	 }else{
-	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
-	                    	 }
-	                    	 
-	                    	 
-	                    	 if(opt.userShortlisteApplicantsCount !=null && opt.userShortlisteApplicantsCount !='' && opt.userShortlisteApplicantsCount !='undefined'){
-	                    		  result = result +"<td><div class='small'> <span title='"+opt.userShortlisteApplicantsCount+"'>"+opt.userShortlisteApplicantsCount+"</span></div></td>";
-	                    	 }else{
-	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
-	                    	 }
-	                    	 
-	                    	 if(opt.userSubmittedApplicantsCount !=null && opt.userSubmittedApplicantsCount !='' && opt.userSubmittedApplicantsCount !='undefined'){
-	                    		  result = result +"<td><div class='small'> <span title='"+opt.userSubmittedApplicantsCount+"'>"+opt.userSubmittedApplicantsCount+"</span></div></td>";
-	                    	 }else{
-	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
-	                    	 }
-	                    	 
-	                    	 if(opt.userInterviewedApplicantsCount !=null && opt.userInterviewedApplicantsCount !='' && opt.userInterviewedApplicantsCount !='undefined'){
-	                    		  result = result +"<td><div class='small'> <span title='"+opt.userInterviewedApplicantsCount+"'>"+opt.userInterviewedApplicantsCount+"</span></div></td>";
-	                    	 }else{
-	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
-	                    	 }
-	                    	 
-	                    	 if(opt.userOfferedApplicantsCount !=null && opt.userOfferedApplicantsCount !='' && opt.userOfferedApplicantsCount !='undefined'){
-	                    		  result = result +"<td><div class='small'> <span title='"+opt.userOfferedApplicantsCount+"'>"+opt.userOfferedApplicantsCount+"</span></div></td>";
-	                    	 }else{
-	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
-	                    	 }
-	                    	 
-	                    	 if(opt.userRejectedApplicantsCount !=null && opt.userRejectedApplicantsCount !='' && opt.userRejectedApplicantsCount !='undefined'){
-	                    		  result = result +"<td><div class='small'> <span title='"+opt.userRejectedApplicantsCount+"'>"+opt.userRejectedApplicantsCount+"</span></div></td>";
-	                    	 }else{
-	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
-	                    	 }
-	                    	 
-	                    	 if(opt.userApplicantsBackOutCount !=null && opt.userApplicantsBackOutCount !='' && opt.userApplicantsBackOutCount !='undefined'){
-	                    		  result = result +"<td><div class='small'> <span title='"+opt.userApplicantsBackOutCount+"'>"+opt.userApplicantsBackOutCount+"</span></div></td>";
-	                    	 }else{
-	                    		 result = result +"<td><div class='small'> <span>0</span></div></td>"; 
-	                    	 }
-	                    	 
-	                    	 
-		                    
-		                     result = result +"</tr>";
-	                     }
-	                     result = result +" </tbody>";
-	                     result = result +"</table>"; 
-	                     $("#noRecruiters").val('');
-	                     $("#usersList").append(result); 
-	                     $("#usersList").removeAttr('style');
-	                     $("#usersListLoader").empty();
-	                     $("#usersListLoader").removeAttr('style');
-	                     
-	                     reportpagination();
-			 			 
-	                	
-                 }
-          },
-            
-       }); 
-  } 
-</script>   
+  
 
 
 <script>

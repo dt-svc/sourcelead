@@ -454,9 +454,14 @@
 						               </c:if>
 						            </c:forEach>
 					</c:if>
-                    
-			        <div class="clearfix"></div>
-			        			            
+					<c:if test="${requirement.walkIn}">
+                    	<div class="clearfix"></div>
+                    	<div class="require_wrap_details_cta">
+                    		<b>WalkIn Day(s) :</b><span>${requirement.walkInDays}</span>
+	                    	<div class="clearfix"></div>
+                    	</div>
+                    	<div class="clearfix"></div> 
+                    </c:if>
                 </div> 							            
            
                    <div class="clearfix"></div> 
