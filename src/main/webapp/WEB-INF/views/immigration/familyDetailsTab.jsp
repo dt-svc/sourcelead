@@ -173,7 +173,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              	<input class="form-control positionRelative" id="currentAddress" name="currentAddress" onclick="initLocationAuto('currentAddress');" placeholder="Address"  type="text"></input>
+              	<input class="form-control positionRelative" id="currentAddress" name="currentAddress" onclick="initLocationAuto('currentAddress');" placeholder="Address"  type="text" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('currentAddress');"></i>
 				</div>
 			</div>																		
@@ -229,7 +229,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              	<input class="form-control positionRelative" id="currentAddressChild" name="currentAddress" onclick="initLocationAuto('currentAddressChild');" placeholder="Address"  type="text"></input>
+              	<input class="form-control positionRelative" id="currentAddressChild" name="currentAddress" onclick="initLocationAuto('currentAddressChild');" placeholder="Address"  type="text" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('currentAddressChild');"></i>
 				
 				</div>
@@ -286,7 +286,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              	<input class="form-control positionRelative" id="currentAddressFather" name="currentAddress" onclick="initLocationAuto('currentAddressFather');" placeholder="Address"  type="text"></input>
+              	<input class="form-control positionRelative" id="currentAddressFather" name="currentAddress" onclick="initLocationAuto('currentAddressFather');" placeholder="Address"  type="text" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('currentAddressFather');"></i>
 				
 				</div>
@@ -343,7 +343,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Address</label>
               	<div class="col-md-8 padding_right">
-              	<input class="form-control positionRelative" id="currentAddressMother" name="currentAddress" onclick="initLocationAuto('currentAddressMother');" placeholder="Address"  type="text"></input>
+              	<input class="form-control positionRelative" id="currentAddressMother" name="currentAddress" onclick="initLocationAuto('currentAddressMother');" placeholder="Address"  type="text" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true"></input>
           				<i class="fa fa-refresh btn btn-primary refresh-icon" title="Refresh" onClick="refreshGoogleApiLocation('currentAddressMother');"></i>
 				
 				</div>

@@ -92,6 +92,9 @@ public class UserRole implements Serializable {
 
 	@Column(name = "TERMINATE_REASON", columnDefinition = "TEXT default NULL")
 	private String terminateReason;
+	
+	@Column(name = "TERMINATE_DATE")
+	private Date terminateDate;
 
 	@Column(name = "DESIGNATION")
 	private String designation;
@@ -191,6 +194,10 @@ public class UserRole implements Serializable {
 	@Transient
 	@JsonProperty
 	private String hireDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String terminateDateStr;
 	
 	@Transient
 	@JsonProperty
@@ -1044,5 +1051,19 @@ public class UserRole implements Serializable {
 		this.gradesList = gradesList;
 	}
 
-	
+	public Date getTerminateDate() {
+		return terminateDate;
+	}
+
+	public void setTerminateDate(Date terminateDate) {
+		this.terminateDate = terminateDate;
+	}
+
+	public String getTerminateDateStr() {
+		return terminateDateStr;
+	}
+
+	public void setTerminateDateStr(String terminateDateStr) {
+		this.terminateDateStr = terminateDateStr;
+	}
 }

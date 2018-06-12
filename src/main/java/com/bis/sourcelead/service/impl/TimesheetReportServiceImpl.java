@@ -351,7 +351,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 				     }else{
 				    	 timesheetApprovalDiv.append("<td><div class='sm'><i title='").append("--").append("'>").append("--").append("</i></div></td>");	 
 				     }
-				     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate);
+				     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate,"");
 			    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
 				     float monthTotalHours            = 0f;
 					 float monthBillableTotalHours    = 0f;
@@ -647,7 +647,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	            table.addCell(cell);
 	        }
             table.completeRow();
-            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports",globalUser);
+            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports",globalUser);
             
             java.util.List<String[]> reportList = new ArrayList<>();
             for(ProjectMembers promembers:projectMembers.getData()){
@@ -749,7 +749,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 float  monthBillableTotalHours = 0f;
 			 float monthNonBillableTotalHours = 0f;
 			 Submission_ApprovalStatus combinedApprovalStatus = null; 
-			 sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),locationId,projectMember.getId(),startDate,endDate);
+			 sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),locationId,projectMember.getId(),startDate,endDate,"");
 			if(displayWeeksList != null && !displayWeeksList.isEmpty()){
 	    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
 	    	    	 //String approvalClass = "class='draft'";
@@ -913,7 +913,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		
 		
 		int column = 0;
-		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports",globalUser);
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports",globalUser);
 		 for(ProjectMembers promembers:projectMembers.getData()){
 			 writeRow = createExcelsheet.createRow(column + 1);
 			 createExcelsheet = prepareTimesheetReportDataExcel(promembers,displayWeeksList,loginUser,createExcelsheet,writeRow,startDate,endDate,orgLocations);
@@ -1032,7 +1032,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		 float  monthBillableTotalHours = 0f;
 		 float monthNonBillableTotalHours = 0f;
 		 Submission_ApprovalStatus combinedApprovalStatus = null;
-    	sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate);
+    	sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate,"");
 		if(displayWeeksList != null && !displayWeeksList.isEmpty()){
     	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
     	     float weekTotalHours = 0f;

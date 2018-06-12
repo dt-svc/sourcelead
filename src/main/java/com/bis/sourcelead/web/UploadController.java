@@ -120,38 +120,33 @@ public class UploadController {
 			response.getOutputStream().close();
 			response.getOutputStream().flush();	
 	}
-/**
- * Handles Temaplate download
- * @param response
- * @throws Exception 
- */
+	
+	/**
+	 * Handles Temaplate download
+	 * 
+	 * @param response
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/downloadCreateUserTemplate", method = RequestMethod.GET)
-	public void downloadCreateUserTemplate(HttpServletRequest request,HttpServletResponse response) throws Exception{
-		
+	public void downloadCreateUserTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");	
-		
-		File file = uploadFileService.getUserTemplate(org,orgLocations.getId(),roleHierarchyId);
-		
-//		    String fn = "/templates/Create users.xls";
-//			URL url = getClass().getResource(fn);
-//			File file = new File(url.toURI());
-
-			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-			if (mimeType == null) {
-				mimeType = "application/octet-stream";
-			}
-			response.setContentType(mimeType);
-			StringBuilder fileNameSB = new StringBuilder();
-			response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
-			response.setContentLength((int) file.length());
-			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-			FileCopyUtils.copy(inputStream, response.getOutputStream());
-			inputStream.close();
-			response.getOutputStream().close();
-			response.getOutputStream().flush();
-		
+		Long roleHierarchyId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "roleHierarchyId");
+		File file = uploadFileService.getUserTemplate(org, orgLocations.getId(), roleHierarchyId);
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
 	}
 	
 }

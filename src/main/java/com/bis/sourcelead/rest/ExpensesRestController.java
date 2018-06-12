@@ -216,27 +216,27 @@ public class ExpensesRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/rest/getExpenseEntryDetails")
-	public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO,@RequestBody String isGlobalUser) throws Exception
+	public ExpenseEntryDetailsDTO getExpenseEntryDetails(@RequestBody TimesheetExpenseEntryDetailsUtilDTO eedDTO) throws Exception
 	{
 		
 		ExpenseEntryDetailsDTO expenseEntryDetailsDTO = new ExpenseEntryDetailsDTO();
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getLocationCode());
 		User loginUser = userService.getUserById(eedDTO.getUserId());
 		if(StringUtils.isNotEmpty(eedDTO.getExpenseFrom()) && eedDTO.getExpenseFrom().equalsIgnoreCase("approver")){
-			List<ProjectClients> projectClientsList = projectClientService.getAllProjectClientsByApproverUserAndOrgLocationId(loginUser.getId(),orgLocations.getId(),isGlobalUser);
+			List<ProjectClients> projectClientsList = projectClientService.getAllProjectClientsByApproverUserAndOrgLocationId(loginUser.getId(),orgLocations.getId(),eedDTO.getIsGlobalUser());
 			ArrayList<ProjectsDTO> projectsList = new ArrayList<>();
 			for(ProjectClients pc : projectClientsList){
 				Projects projects = pc.getProjectId();
 				if(projects.getOrgLocationsId()== null)
 				continue;
-				List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projects.getId(),orgLocations.getId(),isGlobalUser);
+				List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projects.getId(),orgLocations.getId(),eedDTO.getIsGlobalUser());
 				//Long expenseCategoryLocationId = null;
 				/*if(projects.getOrgLocationsId() != null && projects.getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(projects.getOrgLocationsId().getOrg().getOrgType()) && !projects.getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
 					expenseCategoryLocationId = projects.getOrgLocationsId().getId();
 				}else {
 					expenseCategoryLocationId = orgLocations.getId();
 				}*/
-				List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(projects.getOrgLocationsId().getId(), Constants.MEMBER_ACTIVE,isGlobalUser);
+				List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(projects.getOrgLocationsId().getId(), Constants.MEMBER_ACTIVE,eedDTO.getIsGlobalUser());
 				ProjectsDTO projectDTO =ProjectDTOConverter.getProjectsDTOFromProjects(projects);
 				if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
 					ArrayList<ExpensesCategoryListDTO> ecDTOList = new ArrayList<>();
@@ -249,7 +249,8 @@ public class ExpensesRestController {
 					projectDTO.setExpenseId(eedDTO.getExpenseId());
 				}
 				else{
-					String expenseId = addExpensesService.getExpenseId(pc.getProjectId().getOrgLocationsId());
+					//String expenseId = addExpensesService.getExpenseId(pc.getProjectId().getOrgLocationsId().getId());/*OLD CODE*/
+					String expenseId = addExpensesService.getExpenseId(orgLocations);
 					projectDTO.setExpenseId(expenseId);
 				}
 				ArrayList<ProjectMembersDTO> pmDTOList = new ArrayList<>();
@@ -297,7 +298,7 @@ public class ExpensesRestController {
 							pmDTO.setProjectEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pm.getProjects().getEndDate()));
 						}
 					}
-					List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(pm.getProjects().getOrgLocationsId().getId(), "1",isGlobalUser);
+					List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(pm.getProjects().getOrgLocationsId().getId(), "1",eedDTO.getIsGlobalUser());
 					if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
 						ArrayList<ExpensesCategoryListDTO> ecDTOList = new ArrayList<>();
 						for (ExpensesCategory ec : expensesCategoryList) {
@@ -310,7 +311,8 @@ public class ExpensesRestController {
 						pmDTO.setExpenseId(eedDTO.getExpenseId());
 					}
 					else{
-						String expenseId = addExpensesService.getExpenseId(pm.getProjects().getOrgLocationsId());
+						//String expenseId = addExpensesService.getExpenseId(pm.getProjects().getOrgLocationsId());
+						String expenseId = addExpensesService.getExpenseId(orgLocations);
 						pmDTO.setExpenseId(expenseId);
 					}
 					 if(pm.getProjectClientsId() != null &&  pm.getProjectClientsId().getOrgRelationId() != null){

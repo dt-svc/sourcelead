@@ -36,6 +36,7 @@ $(document).ready(function(){
                     </select>
             </div>
         </li>
+        
         <div class="clearfix"></div>
       </ul>
       <div class="clearfix"></div>
@@ -71,7 +72,7 @@ $(document).ready(function(){
 
   </section>
   <!-- Content Area Ends--> 
-  
+
 <script>
 function redirectlocation(location){
 	window.location.href = sourceleadUrl + location;
@@ -522,23 +523,5 @@ function getRequestedAproveSummary(leaveUUID,orgLocationId){
 	});  
 }
 </script>
-  
-<!-- <script>
-function approvedLeavesTable(){ 
-    $('#approvedLeavesTable').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-            "sSearch": "",
-            "sZeroRecords": "", "sEmptyTable": ""
-       }
-    });
-    $("#approvedLeavesTable").wrap("<div class='overflow_Auto width100percnt'></div>")
-}
-</script> -->
-
   
 <jsp:include page="../masterFooter.jsp" />

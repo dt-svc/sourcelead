@@ -24,5 +24,6 @@
 	  $("#addNewPetitionTemplateDiv").load("/app/immigration/addPetitionTemplate?forwardTo=tempDetails");
 	  /* $("#newPetitonPageTwoDiv").hide(); */
 	});
+     
   </script>
   <jsp:include page="../masterFooter.jsp" />

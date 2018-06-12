@@ -148,7 +148,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Document Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="sel chosen-select form-control" name = "documentType" field-name="Document Type" data-validation="required" id="documentType" onchange="getDocumentTypeDiv(this);">
+					<select class="form-control selectpicker" name = "documentType" field-name="Document Type" data-validation="required" data-live-search="true" id="documentType" onchange="getDocumentTypeDiv(this);">
 					  <option value = "">Select Document Type</option>
 					   <c:forEach var="docs" items="${documentsList}">
 											<option value="${docs.id}">${docs.name}</option>
@@ -288,6 +288,22 @@
 	<div class="comMask"></div>
 	
 	<script type="text/javascript">
+		var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
+		
+		for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+			})
+			
 function removeImmigDocumrntDynamic(id){
 	$("#uploadDocSaveDiv"+id).show();
 	$("#uploadDocEditDiv"+id).hide();

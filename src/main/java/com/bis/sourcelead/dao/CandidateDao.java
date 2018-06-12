@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dao;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.User;
 
 public interface CandidateDao {
@@ -80,7 +82,7 @@ public interface CandidateDao {
 	
 	public Candidate getCandidateById(Long candidateId) throws Exception;
 	
-	Long getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC, Date endDateUTC) throws Exception;
+	BigInteger getCountOfAllCandidatesByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception;
 	
 	Candidate getCandidateByUUID(String candidateUUID) throws Exception;
 	
@@ -129,4 +131,8 @@ public interface CandidateDao {
 	public Candidate getCandidateByEmail(String email) throws Exception;
 
 	public CandidateIdendities getCandidateIdentitiesNumberByCandidateId(Long id, String status);
+
+	Candidate getAllActiveCandidatesByLocationEmail(String email, Long orgLocationId);
+	
+	List<RecruiterReportCandidateCountView> getCandidateCountsCreatedUserList(Long orgLocationId, List<String> userCodesList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
 }

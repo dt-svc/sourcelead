@@ -11,8 +11,9 @@
 <div id="loadingId"></div>
 <table id='example'>                     
 	<thead>                                                                                
-		<tr>                                                                                   
-			<th>Employee</th>                                                                      
+		<tr>        
+			<th>Employee</th>  
+			<th>Expense Id</th>                                                                    
 			<th>Emp Type</th>                                                                
 			<th>Project</th>                                                                       
 			<th>Purpose</th> 

@@ -292,8 +292,8 @@ function Immigration() {
         }else if(status == 'save'){
         	if ($("#petitionDetailsForm").validate(false, validationSettings)) {
         		$("#saveAsDraftButton").prop("disabled",true);
-            	$("#savePageOneContinue").prop("disabled",true);
-            	$("#sendRequestButton").prop("disabled",true);
+            	//$("#savePageOneContinue").prop("disabled",true);
+            	//$("#sendRequestButton").prop("disabled",true);
                 var formData = getFormData("petitionDetailsForm");
                 $.ajax({
                     url: sourceleadUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
@@ -305,6 +305,7 @@ function Immigration() {
                           }else if (result.response === "AWKWARD") {
                               location.href = "/errorPage";
                           }else if(result.response === 'SUCCESS') {
+                        	  window.location.href = sourceleadUrl + immiModulePath + "/viewImmigrationList";
                         	  immigrationId = result.data[0];
                           	candidateId = result.data[1];
                           	templateId= result.data[2];
@@ -385,10 +386,21 @@ function Immigration() {
 		                    	if (idType == 'Passport') {
 									$('#popPassView').hide();
 									$('.popMask').fadeOut();
+									if($('#candidatePassportId').val().trim() != ''){
+										showSuccessMsg("Successfully Updated Passport Details.");
+			                    	}else{
+			                    		showSuccessMsg("Successfully New Passport Details Added.");
+			                    	}
+										
 									immigration.displayPassportDetails(candidateId, 'Passport');
 								} else if (idType == 'Visa') {
 									$("#popUpVisa").hide();
 									$(".popMask").fadeOut(200); // close the popup code															// popup code
+									if($('#candidateVisaId').val().trim() != ''){
+										showSuccessMsg("Successfully Updated Visa Details.");
+			                    	}else{
+			                    		showSuccessMsg("Successfully New Visa Details Added.");
+			                    	}
 									immigration.displayVisaDetails(candidateId,'Visa');
 								}
 		                    }else{
@@ -419,7 +431,9 @@ function Immigration() {
         			$('#validFrom').val(data.validFromDateStr);
         			$('#idNum').val(data.id);
         			$('#validTo').val(data.validToDateStr);
+        			
         			$('#countryName').val(data.country);
+        			$('#countryName').selectpicker('refresh');
         			$('#candidatePassportId').val(data.id);	
 	        		}
                     else if(idType=='Visa'){
@@ -428,7 +442,9 @@ function Immigration() {
         			$("#addVisa").trigger('click');
         			immigration.udpatePopupFormdata(formObj,childPopNames,data);
         			$('#visaType').val(data.visaType);
+        			$('#visaType').selectpicker('refresh');
         			$('#visaCountry').val(data.country);
+        			$('#visaCountry').selectpicker('refresh');
         			$('#visaValidFrom').val(data.validFromDateStr);
         			$('#visaValidTo').val(data.validToDateStr);
         			$('#candidateVisaId').val(data.id);	
@@ -462,6 +478,8 @@ function Immigration() {
 	        			if(data.isRequired == 'Y'){
 	        				//$('#isRequired').prop("checked",true);	
 	        				$('#formSave_Form input[name="isRequired"]').prop('checked', true);
+	        			}else{
+	        				$('#formSave_Form input[name="isRequired"]').prop('checked', false);	
 	        			}
 	        			$('#immigrationCandidateFormId').val(data.id);
 	        	
@@ -1253,6 +1271,7 @@ function editDocumentDetailsByRowId(id){
      			formObj = $('#candidate_Immigration_document_form')[0]; // load the child form
      			$("#addDocu").trigger('click');
      			$('#documentType').val(data.documentType.id);
+     			$('#documentType').selectpicker('refresh');
      			if(data.documentOtherType){
      			document.getElementById("documentOtherTypeDiv").style.display="block";
      			$('#documentOtherType').val(data.documentOtherType);

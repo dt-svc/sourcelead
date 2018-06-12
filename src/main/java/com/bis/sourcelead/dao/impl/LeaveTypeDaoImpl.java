@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -109,6 +110,33 @@ public class LeaveTypeDaoImpl implements LeaveTypeDao {
 		String query="from ProjectTasks proTask left join fetch proTask.leaveType leavetype left join fetch leavetype.orgLocations orgLoc  where leavetype.id = :leaveTypeId and orgLoc.id = :orgLocationId";
 		List<ProjectTasks> projectTasks = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("leaveTypeId", leaveTypeId).list();
 		return projectTasks;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<LeaveType> getLeaveTypesByTypeList(List<String> typeList, OrgLocations orgLocation)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		List<LeaveType> leaveTypeList = null;
+		leaveTypeList = session.createQuery("from LeaveType lt where lt.orgLocations.id =:orgLocationId and lt.status = '1' and lt.name IN (:typeList)" ).setLong("orgLocationId", orgLocation.getId()).setParameterList("typeList", typeList).list();
+		return leaveTypeList;
+	}
+
+	@Override
+	@Transactional
+	public LeaveType getLeaveTypeByLeaveTypeName(String leaveTypeName, OrgLocations orgLocation)
+	{
+		LeaveType leaveType = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<LeaveType> leaveTypeList = session.createQuery("from LeaveType lt where lt.orgLocations.id =:orgLocationId and lt.status = '1' and lt.name = :leaveTypeName").setLong("orgLocationId", orgLocation.getId()).setString("leaveTypeName", leaveTypeName).list();
+			if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
+				leaveType = leaveTypeList.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return leaveType;
 	}
 
 

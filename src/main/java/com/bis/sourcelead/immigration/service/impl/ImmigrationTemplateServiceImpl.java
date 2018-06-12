@@ -68,7 +68,7 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
         	immigrationTemplate = new ImmigrationTemplate();
         	immigrationTemplate.setCreatedDate(latestDate);
             immigrationTemplate.setCreatedBy(user);
-        	immigrationTemplate.setStatus(Constants.RECORD_INACTIVE);
+        	immigrationTemplate.setStatus(Constants.RECORD_DRAFT); // Changed to in active state to Draft State.
         }
         
         immigrationTemplate.setOrgLocations(orgLocations);
@@ -387,6 +387,11 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 	@Override
 	public Long getTemplateIdByUUID(String immiTemplateUUID) {
 		return immigrationTemplateDao.getTemplateIdByUUID(immiTemplateUUID);
+	}
+
+	@Override
+	public List<ImmigrationTemplateTasks> getImmigrationTemplateTasksByTempId(Long templateId) {
+		return immigrationTemplateDao.getImmigratonTemplateTasksByTemplateId(templateId);
 	}
 
 }
