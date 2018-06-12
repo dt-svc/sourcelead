@@ -57,7 +57,7 @@ background-color: #fcfcfc;
         <div class="project_side_wrap_inn_tabs" id="new-id">
         
          <sec:authorize access="hasRole('ROLE_APPLY_LEAVE')"> 
-             <div class="pull-right">
+             <div class="pull-right tblminwidth-125">
              <div class="success_pop" id="msgDiv" style="display: none;"></div>
               <form:form id="upload_leave_excel_form" name="upload_leave_excel_form" enctype="multipart/form-data">
                  <div title="Import" class="positionRelartive pull-left zIndex mr">
@@ -1363,6 +1363,7 @@ function leaveExcelExport(){
 
 <script>
 function leaveImport(){
+	resetUpload();
 	$(".dowload_pop").toggle();
 }
 function closeImportFile(){
