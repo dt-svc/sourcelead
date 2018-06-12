@@ -1010,6 +1010,8 @@ public class LeaveManagementRestController {
 						}if(previousNoOfDays > currentNofDays) {
 							 diffLeaves = previousNoOfDays - currentNofDays;
 							 actionType = "SUB";
+						}if(previousNoOfDays == currentNofDays) {
+							 actionType = "NONE";
 						}
 						int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(updatedUserList, orgLocation.getId(), leaveType, 1,diffLeaves,actionType,Constants.UPDATE);
 					}
