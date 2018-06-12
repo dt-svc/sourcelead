@@ -84,6 +84,7 @@ public class LeaveTypeDTO {
 	private String timeSheetAutofill;
 	private String effectiveGender;
 	private String previousNoOfdays;
+	private String updateCount;
 	
 	
 	public String getLeaveTypeUUID()
@@ -553,6 +554,14 @@ public class LeaveTypeDTO {
 	public void setPreviousNoOfdays(String previousNoOfdays)
 	{
 		this.previousNoOfdays = previousNoOfdays;
+	}
+	public String getUpdateCount()
+	{
+		return updateCount;
+	}
+	public void setUpdateCount(String updateCount)
+	{
+		this.updateCount = updateCount;
 	}
 	
 }

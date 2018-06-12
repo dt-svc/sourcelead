@@ -1651,5 +1651,11 @@ public class UserServiceImpl implements UserService {
 			throws Exception {
 		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates);
 	}
+
+	@Override
+	public List<User> getUsersByEmailList(List<String> userEmail,OrgLocations orgLocation)
+	{
+		return userDao.getUsersByEmailList(userEmail,orgLocation);
+	}
 	
 }

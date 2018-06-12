@@ -1,6 +1,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
  <c:set var = "dropDownSelFlag" value="false"/>
+ <style type="text/css">
+ #ui-datepicker-div {
+ z-index: 999999 !important;
+ }
+ </style>
  <script>
  var dropdownSelectedUserIds = []; 
  </script>

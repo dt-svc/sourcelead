@@ -462,6 +462,14 @@
                     	</div>
                     	<div class="clearfix"></div> 
                     </c:if>
+                    <c:if test="${requirement.primaryRecruiterUserId!=null}">
+                    	<div class="clearfix"></div>
+                    	<div class="require_wrap_details_cta">
+                    		<b>Primary Recruiter :</b><span>${requirement.primaryRecruiterUserId.fullName}</span>
+	                    	<div class="clearfix"></div>
+                    	</div>
+                    	<div class="clearfix"></div> 
+                    </c:if>
                 </div> 							            
            
                    <div class="clearfix"></div> 
