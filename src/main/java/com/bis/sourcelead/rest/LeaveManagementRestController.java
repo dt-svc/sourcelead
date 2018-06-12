@@ -2603,9 +2603,15 @@ public class LeaveManagementRestController {
 		response.getOutputStream().flush();
 	}
 	
+	/**
+	 * Import Associate Balance Leave Type Count
+	 * @param request
+	 * @return LeaveTypeDTO
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/uploadLeaveType", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<LeaveTypeDTO> leaveUpload(MultipartHttpServletRequest request) throws Exception
+	public LeaveTypeDTO leaveUpload(MultipartHttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -2615,33 +2621,12 @@ public class LeaveManagementRestController {
 		if (itrator.hasNext()) {
 			multipartFile = request.getFile(itrator.next());
 		}
-		Response<LeaveTypeDTO> response = new Response<>();
-		/*if (multipartFile != null) {
-//			fileList = clientImportsService.clientExcelDataSave(multipartFile, user, orgLocation, org, isMailCheck, responderType);
-		}*/
+		LeaveTypeDTO response = new LeaveTypeDTO();
 		if (multipartFile != null) {
 			response = leaveService.saveBulkLeaveTypes(multipartFile, orgLocation, user, org);
-			/*if (response != null) {
-				if (response.getData().isEmpty() && response.getData().size() == 0) {
-					response.setStatusCode("success");
-				}
-				else if (!response.getData().isEmpty() && response.getData().size() > 0) {
-					List<BulkClientDetails> filteredBulkClientDetailsList = response.getData();
-					response.setData(filteredBulkClientDetailsList);
-					if (response.getData() != null) {
-						response.setStatusCode("success");
-					}
-					else if (filteredBulkClientDetailsList != null) {
-						response.setStatusCode("invalid");
-					}
-					else {
-						response.setStatusCode("invalid");
-					}
-				}
-			}*/
 			return response;
 		}
-		return null;
+		return response;
 	}
 	
 

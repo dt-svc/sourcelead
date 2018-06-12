@@ -48,6 +48,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AssociateBalanceLeaveDao;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
 import com.bis.sourcelead.dao.LeaveTypeDao;
@@ -58,6 +59,7 @@ import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.LeaveTypeImportDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -171,6 +173,10 @@ public class LeaveServiceImpl implements LeaveService{
     
     @Autowired
     AssociateBalanceLeaveService associateBalanceLeaveService;
+    
+    @Autowired
+    AssociateBalanceLeaveDao associateBalanceLeaveDao;
+    
     
     private static final Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
     
@@ -2070,10 +2076,10 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public Response<LeaveTypeDTO> saveBulkLeaveTypes(MultipartFile multipartFile, OrgLocations orgLocation, User user, Org org)
+	public LeaveTypeDTO saveBulkLeaveTypes(MultipartFile multipartFile, OrgLocations orgLocation, User user, Org org)
 	{
 		String fileName = multipartFile.getOriginalFilename();
-	
+		LeaveTypeDTO leaveTypeDTO = new LeaveTypeDTO();
 		List<LeaveTypeImportDTO> list = new ArrayList<>();
 		try {
 			File file = new File(multipartFile.getOriginalFilename());
@@ -2098,18 +2104,12 @@ public class LeaveServiceImpl implements LeaveService{
 							if (row.getCell(0) != null) {
 								String assoName = getCellValueAsString(row.getCell(0), fileName);
 								importDTO.setAssociateName(assoName);
-								System.out.println(" Associate Name : " + assoName);
 							}
 							importDTO.setAssociateEmail(getCellValueAsString(row.getCell(1), fileName));
-							System.out.println(" Associate Email : "
-									+ getCellValueAsString(row.getCell(1), fileName));
 							importDTO.setLeaveTypeName(getCellValueAsString(row.getCell(2), fileName));
-							System.out.println(" Leave Type  : "
-									+ getCellValueAsString(row.getCell(2), fileName));
 							if (row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString())) {
-								String noOfLeaves = getCellValueAsString(row.getCell(1), fileName);
+								String noOfLeaves = getCellValueAsString(row.getCell(3), fileName);
 								importDTO.setNumberOfLeaves(noOfLeaves);
-								System.out.println(" Associate Name : " + noOfLeaves);
 							}
 							list.add(importDTO);
 						}
@@ -2126,18 +2126,41 @@ public class LeaveServiceImpl implements LeaveService{
 		}
 		
 		int insertCount = addAssociateBalanceLeaveType(list,orgLocation,user);
-		return null;
+		leaveTypeDTO.setUpdateCount(String.valueOf(insertCount));
+		return leaveTypeDTO;
 	}
 	
 	private int addAssociateBalanceLeaveType(List<LeaveTypeImportDTO> implist, OrgLocations orgLocation, User user)
 	{
+		int i =0;
 		if(implist != null && implist.size() >0) {
-			List<String> userEmail = implist.stream().map(LeaveTypeImportDTO::getAssociateEmail).collect(Collectors.toList());
-			List<String> leaveType = implist.stream().map(LeaveTypeImportDTO::getLeaveTypeName).collect(Collectors.toList());
-			List<User> userList = userService.getUsersByEmailList(userEmail);
+			try {
+				for(LeaveTypeImportDTO ltdto : implist) {//implist.forEach(ltdto->{
+					LeaveType leaveType = leaveTypeService.getLeaveTypeByLeaveTypeName(ltdto.getLeaveTypeName(),orgLocation);
+					UserRole userRole = null;
+					try {
+						userRole = userRoleService.getUserDetailsByEmailAndLocationId(ltdto.getAssociateEmail(),orgLocation.getId());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					if(userRole != null && leaveType != null) {
+						List<User> userList = new ArrayList<>();
+						userList.add(userRole.getUser());
+						AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), userRole.getUser().getId(), orgLocation.getId());
+						if(associa != null) {
+							int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(userList, orgLocation.getId(), leaveType, 1,Integer.parseInt(ltdto.getNumberOfLeaves()),"IMPORT",Constants.UPDATE);
+						}else {
+							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(userList,orgLocation,leaveType,user);
+						}
+					}
+					i++;
+				}
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
-		return 0;
+		return i;
 	}
 
 	/**
