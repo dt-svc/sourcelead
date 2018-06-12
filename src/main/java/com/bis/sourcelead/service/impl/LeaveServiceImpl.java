@@ -2139,7 +2139,7 @@ public class LeaveServiceImpl implements LeaveService{
 					LeaveType leaveType = leaveTypeService.getLeaveTypeByLeaveTypeName(ltdto.getLeaveTypeName(),orgLocation);
 					UserRole userRole = null;
 					try {
-						userRole = userRoleService.getUserDetailsByEmailAndLocationId(ltdto.getAssociateEmail(),orgLocation.getId());
+						userRole = userRoleService.getUserDetailsByEmailAndLocationId(ltdto.getAssociateEmail().trim(),orgLocation.getId());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
