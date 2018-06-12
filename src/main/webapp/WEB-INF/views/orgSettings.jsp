@@ -998,14 +998,14 @@ function cancelOrgImg(){
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
               <label class="clearfix">BSR Number <span class="text-danger">&nbsp;*</span></label>
 	           <div class="clearfix">
-	                <input type="text" id="paymentBSRNumber" data-min='9' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control"/>
+	                <input type="text" id="paymentBSRNumber" data-min='9' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control" data-required="required"/>
 	           </div>
            </div>
            
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
               <label class="clearfix">MICR Code <span class="text-danger">&nbsp;*</span></label>
 	           <div class="clearfix">
-	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control"/>
+	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control" data-required="required"/>
 	           </div>
            </div>
            </c:if>
@@ -1296,11 +1296,11 @@ function saveWhiteListIps(){
             } else {
                 if(validate('paymentAccountBankName', "Bank Name")
                         && validate('paymentAccountNumber', "Account Number")
+                        && validate('paymentBSRNumber', "BSR Number")
+                        && validate('paymentMICRCode', "MICR Code")
                         && validate('paymentAccountRoutingNumber', "Routing Number")
                         && validate('paymentAccountFirstName', "First Name")
                         && validate('paymentAccountLastName', "Last Name")
-                        && validate('paymentMICRCode', "MICR Code")
-                        && validate('paymentBSRNumber', "BSR Number")
                         && validateSelect("paymentAccountLocation", 'Location')) {
                 	data["micrCode"] = $("#paymentMICRCode").val().trim();
                 	data["bsrNumber"] = $("#paymentBSRNumber").val().trim();
@@ -1478,6 +1478,7 @@ function showPaymentAccountPopup() {
     $(".modal.paymentaccount-modal").fadeIn();
     $(".comMask").fadeIn();
     $("input[id*=paymentAccount]").val("");
+    $('#paymentaccount_form')[0].reset();
 }
 function showOrHidePaymentFormFields(type) {
     $("#paymentAccountLocation").val('0');

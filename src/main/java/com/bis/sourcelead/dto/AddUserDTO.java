@@ -168,6 +168,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String reason;
 		
+		private String terminateDate;
+		
 		private String registeredOrgLocationId;
 		
 		private String registredOrgId;
@@ -412,6 +414,14 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public String getTerminateReason() {
 			return terminateReason;
+		}
+
+		public String getTerminateDate() {
+			return terminateDate;
+		}
+
+		public void setTerminateDate(String terminateDate) {
+			this.terminateDate = terminateDate;
 		}
 
 		public void setTerminateReason(String terminateReason) {
