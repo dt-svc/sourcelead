@@ -1410,6 +1410,7 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
  		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
  			    	msgFadein();
  		    	    closeImportFile();
+ 		    	   resetUpload();
 		 		    },
 		 		   error: function(e){
 			        }

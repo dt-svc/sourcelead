@@ -501,7 +501,7 @@ public class LeaveServiceImpl implements LeaveService{
 				int totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),leave.getUser().getId(),orgLocations.getId());
 				float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(leave.getLeaveType(), totalLeaves,emp);
 				
-				float balLeaves = leaves - (leavesTaken + nuberOfLeavestaken.get("numberOfExtraLeaves"));
+				float balLeaves = leaves - (leavesTaken - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 				
 				leaveDto.setTotalBalLeaves(balLeaves);
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
@@ -1249,9 +1249,9 @@ public class LeaveServiceImpl implements LeaveService{
 							totalbalanceLeaveCounts = totalbalanceLeaveCounts - (appliedLeaveCount - leave.getExtraLeavesTaken());
 						}
 				}
-				if("Monthly".equalsIgnoreCase(type.getPeriod()) && Constants.NO.equalsIgnoreCase(type.getLeavesCarryforward())){
+				/*if("Monthly".equalsIgnoreCase(type.getPeriod()) && Constants.NO.equalsIgnoreCase(type.getLeavesCarryforward())){
 					totalbalanceLeaveCounts = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,totalbalanceLeaveCounts,emp);
-				}
+				}*/
 				balanceLeaveCounts += totalbalanceLeaveCounts;
 //				type.setBalanceLeaveCounts(balanceLeaveCounts);
 //				type.setPendingLeaveCounts(pendingLeaveCounts);
@@ -1983,7 +1983,7 @@ public class LeaveServiceImpl implements LeaveService{
 						else
 							leave.setExtraLeavesTaken(0);
 					}else if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						leave.setExtraLeavesTaken(leave.getLeaveType().getNoOfDaysPerPeriod() - appliedLeaves);
+						leave.setExtraLeavesTaken(Math.abs(leave.getLeaveType().getNoOfDaysPerPeriod() - appliedLeaves));
 					}else{
 						leave.setExtraLeavesTaken(0);
 					}
@@ -2152,8 +2152,9 @@ public class LeaveServiceImpl implements LeaveService{
 						}else {
 							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(userList,orgLocation,leaveType,user);
 						}
+						i++;
 					}
-					i++;
+				
 				}
 			}catch (Exception e) {
 				e.printStackTrace();
