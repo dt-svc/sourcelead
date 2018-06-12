@@ -58,9 +58,9 @@ background-color: #fcfcfc;
         
          <sec:authorize access="hasRole('ROLE_APPLY_LEAVE')"> 
              <div class="pull-right">
+             <div class="success_pop" id="msgDiv" style="display: none;"></div>
               <form:form id="upload_leave_excel_form" name="upload_leave_excel_form" enctype="multipart/form-data">
                  <div title="Import" class="positionRelartive pull-left zIndex mr">
-                 <div id="loadinggif"></div>
 					        	<a onclick="leaveImport();"><i class="glyphicon glyphicon-import expIcon mt5"></i>&nbsp;</a> 
 						        	<div class="dowload_pop">
 					        			<div class="modal-content">
@@ -1394,7 +1394,6 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
 	var form = $('#upload_leave_excel_form')[0];
 	var formData = new FormData(form); 
 	
-	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 		   	type: "POST",
 		   	data: formData,
@@ -1406,8 +1405,11 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
 		    url : sourceleadUrl+"/uploadLeaveType?"+tokenParamName+"="+tokenValue+"", 	   
  		    success : function(json) {
  		    	    if(json.updateCount != null && json.updateCount != '')
- 		    	    	$("#loadinggif").removeAttr('style');
- 		    	    	closeImportFile();
+ 		    	    $("#msgDiv").removeAttr("style");
+ 		 			$("#msgDiv").css({ display: "block" });
+ 		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
+ 			    	msgFadein();
+ 		    	    closeImportFile();
 		 		    },
 		 		   error: function(e){
 			        }
@@ -1422,5 +1424,13 @@ function resetUpload(){
 	$("#leaveInputFileId").val("");
 }
 </script>
+
+
+<script>
+	function msgFadein() {
+		$("#msgDiv").fadeIn(200);
+        $('#msgDiv').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <jsp:include page="../masterFooter.jsp" />
