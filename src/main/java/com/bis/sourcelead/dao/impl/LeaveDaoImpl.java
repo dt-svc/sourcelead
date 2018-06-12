@@ -26,6 +26,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.install.ApproverHierarchyToRequirement;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
@@ -330,11 +331,11 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(Long leaveTypeId,Long orgLocationId, Long userId) {
+	public List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId,Long orgLocationId, Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Leave> leaveList = null;
-		String query = "from Leave leave left join fetch leave.leaveType lType left join fetch leave.user where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and lType.id = :leaveTypeId";
-		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).list();
+		String query = "from Leave leave left join fetch leave.leaveType lType left join fetch leave.user where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and lType.leaveTypeUUID = :leaveTypeId";
+		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("leaveTypeId", leaveTypeId).list();
 		return leaveList;
 	}
 	
@@ -343,7 +344,7 @@ public class LeaveDaoImpl implements LeaveDao{
 	public Map<String, Float> getNumberOfLeavesTakenByUser(Long userId,Long leaveTypeId) throws Exception {
 		Map<String, Float> leavesMap = new HashMap<>();
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Leave leave where leave.user.id = :userId  and leave.leaveType.id = :leaveTypeId and leave.status = 'APPROVED'";
+		String query = "from Leave leave where leave.user.id = :userId  and leave.leaveType.id = :leaveTypeId and (leave.status = 'APPROVED' OR leave.status = 'PENDING')";
 		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).list();
 		float numberOfLeavsTaken = leavesList.stream().mapToInt(l->l.getNumberOfDays()).sum();
 		leavesMap.put("numberOfLeavsTaken", numberOfLeavsTaken);
@@ -373,7 +374,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		Date endDate = c.getTime();
 		java.sql.Date currentMonthEndDate = new java.sql.Date(endDate.getTime());
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Leave leave where leave.user.id = :userId and leave.leaveType.id = :leaveTypeId and leave.status = 'APPROVED' and leave.createdDate BETWEEN :currentMonthStartDate AND :currentMonthEndDate";
+		String query = "from Leave leave where leave.user.id = :userId and leave.leaveType.id = :leaveTypeId and (leave.status = 'APPROVED' OR leave.status = 'PENDING') and leave.createdDate BETWEEN :currentMonthStartDate AND :currentMonthEndDate";
 		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).setParameter("currentMonthStartDate", currentMonthStartDate).setParameter("currentMonthEndDate", currentMonthEndDate)
 				.list();
 		int numberOfLeavsTaken = leavesList.stream().mapToInt(l->l.getNumberOfDays()).sum();
@@ -418,8 +419,8 @@ public class LeaveDaoImpl implements LeaveDao{
 		}
 		List<Leave> leaveList = null;
 		ResponseList<Leave> response = new ResponseList<>();
-		String query = "from Leave leave where leave.orgLocations.id =:orgLocationId and leave.status = 'APPROVED'"+subQuery;
-		String countQuery = "from Leave leave where leave.orgLocations.id =:orgLocationId and leave.status = 'APPROVED'"+subQuery;
+		String query = "from Leave leave where leave.orgLocations.id =:orgLocationId and (leave.status = 'APPROVED' OR leave.status = 'PENDING' )"+subQuery;
+		String countQuery = "from Leave leave where leave.orgLocations.id =:orgLocationId and (leave.status = 'APPROVED' OR leave.status = 'PENDING')"+subQuery;
 
 		Query queryObj = session.createQuery(query);
 		if (leaveDTO != null && leaveDTO.getLength() > 0) {
@@ -499,9 +500,8 @@ public class LeaveDaoImpl implements LeaveDao{
 			java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
 			subQuery = " and leave.createdDate >= '"+satrtDate+"' AND leave.createdDate <= '"+endDate+"'";
 		}
-		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and leave.status = 'APPROVED'"+subQuery;
-		List<Leave> leavesList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId())
-				.list();
+		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and (leave.status = 'APPROVED' OR leave.status = 'PENDING' )"+subQuery;
+		List<Leave> leavesList = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).list();
 		return leavesList;
 	}
 
@@ -770,6 +770,17 @@ public class LeaveDaoImpl implements LeaveDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from Leave leave left join fetch leave.user user left join fetch leave.orgLocations orgLoc where user.id =:userId and orgLoc.id =:orglocationId and leave.status =:approvedStatus";
 		List<Leave> leaveList = session.createQuery(query).setLong("userId", userId).setLong("orglocationId", orglocationId).setString("approvedStatus", approvedStatus).setCacheable(false).list();
+		return leaveList;
+	}
+
+
+	@Override
+	@Transactional
+	public List<LeaveApproveHierarchy> getAllLeaveApproversList(Long locationId)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LeaveApproveHierarchy lah left join fetch lah.leaveid leave left join fetch leave.user user left join fetch leave.orgLocations orgLoc where orgLoc.id =:orglocationId";
+		List<LeaveApproveHierarchy> leaveList = session.createQuery(query).setLong("orglocationId", locationId).setCacheable(false).list();
 		return leaveList;
 	}
 }

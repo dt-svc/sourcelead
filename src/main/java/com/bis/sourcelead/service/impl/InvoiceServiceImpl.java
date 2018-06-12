@@ -516,6 +516,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		parentInvoice.setPaymentFrequency(invoice.getPaymentFrequency());
 		parentInvoice.setDiscountType(invoice.getDiscountType());
 		parentInvoice.setInvoiceStatus(Constants.INVOICE_RECEIVED);
+		parentInvoice.setInvoiceCategory(invoice.getInvoiceCategory());
 		parentInvoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
 		parentInvoice.setDueDate(invoice.getDueDate());

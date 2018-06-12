@@ -66,7 +66,7 @@ textarea {
 	margin-bottom: 15px;
 }
 .mb0 {
-	margin-bottom: 0;
+	margin-bottom: 0px !important;
 }
 .mt10 {
 	margin-top: 10px !important;
@@ -1194,6 +1194,7 @@ z-index: 100; border-radius: 3px; color: #fff; text-align: center;
 }
 .ui-widget-header {
 	background: #1E88E5 !important; border: 1px solid #ddd !important; color: #fff; font-weight: bold;
+	border-radius: 0;
 }
 .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
 	background: #F4511E !important; border: 1px solid #F4511E !important; color: #fff !important;
@@ -1239,7 +1240,9 @@ background-color: #ddd !important; color: #909090 !important;
 	background: #0277BD !important; color: #fff !important;
 }
 .ui-widget.ui-widget-content {
-	border: 1px solid #01579B; box-shadow: 0 1px 2px 0 #cecece; z-index: 4000000 !important;
+	border: 1px solid #ededed; box-shadow: none; background-color: #fff;
+	font-style: normal !important; font-family:'Roboto', sans-serif  !important;
+	border-radius: 0;
 }
 .db-widget-sm .fa {
 	/* text-shadow: 1px 1px 1px #101010; */
@@ -1320,9 +1323,7 @@ color: #303030; display: block; font-size: 18px; line-height: 30px; margin: 30px
 	padding: 6px 10px;
 }
 .move-btn .fa-angle-double-right {
-	-webkit-transition: all 0.3s ease-in-out;
-	-moz-transition: all 0.3s ease-in-out;
-	-o-transition: all 0.3s ease-in-out;
+	-webkit-transition: all 0.3s ease-in-out; -moz-transition: all 0.3s ease-in-out; -o-transition: all 0.3s ease-in-out;
 	-ms-transition: all 0.3s ease-in-out;
 }
 .move-btn:hover .fa-angle-double-right {
@@ -6865,6 +6866,7 @@ background: #f1f1f1;
 }
 .timeBalance-scroll .col-md-2 {
 border: 1px solid #ccc; padding-top:15px; margin:0 15px 15px;
+text-transform:capitalize; background-color: #fcfcfc;
 }
 
 /* venkat subbaiah */
@@ -7154,7 +7156,7 @@ font-size: 16px;
 padding-left: 0 !important;
 }
 /* Advanced Search new Styels */
-.cand-advsrch-popup.advancedsearch-popup {
+.cand-advsrch-popup.advancedsearch-popup, .filter-popup {
 position: fixed; top:1%; left: 20%; border-radius: 0 0 2px 2px; width: 850px; z-index: 99999; max-height: 100%;
 background-color: #f5f5f5; padding: 0; overflow: visible; box-shadow: 1px 1px 2px #333;
 }
@@ -8285,6 +8287,9 @@ top: 2%; left: 12.5%; width: 1024px; border-radius:3px;
 .advancedsearch-popup.filterDynamic-Search-small {
 top: 10%; left: 25%; width: 650px; border-radius:3px;
 }
+.advancedsearch-popup.filterDynamic-Search-medium {
+top: 10%; left: 33.5%; width: 450px; border-radius:3px;
+}
 .fa-filter.faFilter {
 color: #909090 !important;
 }
@@ -8910,20 +8915,11 @@ ul.jobsboard-list > li:hover {
 .trashIcon:hover, .trashIcon.trashActive {
 	color:red;
 }
+.permissionDenied {
+color:#ededed !important; cursor: default !important;
+}
 .widthIcon.widthIcon-four {
 	width: 100px;
-}
-.customEvents-Calendar .ui-widget-content {
-	background: transparent;
-}
-.customEvents-Calendar .ui-state-default, .customEvents-Calendar .ui-widget-content .ui-state-default, .customEvents-Calendar .ui-widget-header .ui-state-default {
-	background: transparent;
-}
-.customEvents-Calendar table.ui-datepicker-calendar thead th {
-	background-color: #fff;
-}
-.customEvents-Calendar table.ui-datepicker-calendar tbody tr td {
-	background-color: #ededed;
 }
 .blankForm {
     border: 1px solid #ededed; min-height: 200px; margin: 15px; text-align: center; font-size: 20px;
@@ -8934,7 +8930,34 @@ ul.jobsboard-list > li:hover {
 .downloadInput input {
 width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 background: transparent; border: none; font-weight: 400; margin-left: 0; padding-left: 5px !important;
-} 
+}
+.customfieldfor-colmn5 .form-group label {
+width:100%; padding-left: 15px
+}
+.customClinetContactDet .require_wrap_details_cta b {
+padding-right: 0px; font-weight: 500 !important; width: 115px; text-align: right; 
+}
+.customClinetContactDet .require_wrap_details_cta span {
+margin-left: 20px;
+}
+.timesheet_head.timesheetHead-search > ul {
+padding-right:0px !important;
+}
+.timesheet_head.timesheetHead-search > ul > li span.faSearch {
+padding-right:0px !important;
+}
+.tbldata-dotdot-big500 {
+overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 500px; display: block; margin: 0 auto;
+}
+.mailbox-subject a, .msg-content a p {
+color:#4285f4 !important; font-weight: normal;
+}
+.mailbox-subject a:hover, .msg-content a p:hover {
+color:#609 !important;
+}
+.mailbox-subject a.visitedAnchor, .msg-content a.visitedAnchor p {
+color:#909090 !important; font-weight: normal;
+}
 /* forms edit element styles */
 @media (max-width: 320px) {
 .uasrch-selectpicker {
@@ -9362,3 +9385,32 @@ z-index: -800;
     width:310px;
 	}
 
+
+
+
+.dowload_pop:after {
+border-bottom: 10px solid #ccc; border-left: 10px solid transparent; border-right: 10px solid transparent;
+clear: both; content: ""; height: 0; position: absolute; right: 30px; top: -10px; width: 0;
+}
+.dowload_pop {
+	position:absolute; min-width: 350px; min-height: 150px; background-color: #fff; border: 1px solid #ededed;
+	top: 100%; right: 0; z-index: 9; padding:0px; display: none;
+}
+.dowload_pop a:hover {
+	color:#3f94dd !important;
+}
+.dowload_pop .fa-download  {
+	font-size: 18px;
+}
+.dowload_pop .modalFooter {
+	border-top: 1px solid #ededed; padding:10px 0;
+}
+.dowload_pop .modalBody {
+	padding: 15px 10px; position:relative;
+}
+.dowload_pop .uploadTempalte {
+	background-color: #f5f5f5; padding: 10px; margin-top: 10px;
+}
+.dowload_pop .modal-header {
+	padding: 10px; background-color: #f9f9f9;
+}

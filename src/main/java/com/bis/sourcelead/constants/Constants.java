@@ -73,6 +73,7 @@ public class Constants {
 	public static final String TASK_NON_BILLABLE = "Non-Billable";
 	public static final Integer RECORD_ACTIVE = 1;
 	public static final Integer RECORD_INACTIVE = 0;
+	public static final Integer RECORD_DRAFT = 2;
 	public static final Integer LEVEL1 = 1;
 	public static final Integer LEVEL2 = 2;
 	public static final DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
@@ -272,6 +273,8 @@ public class Constants {
 	
 	public static final String USERTERMINATEDEMAIL="UserTerminatedEmail";
 	public static final String USERTERMINATEDNOTIFICATIONEMAIL="UserTerminatedNotificationEmail";
+	
+	public static final String APPLY_LEAVE_REMAINDER="ApplyLeaveRemainder";
 	
 	public static final String HOLIDAY_REMAINDER="HolidayRemainder";
 	public static final String HOLIDAY_REMAINDER_NOTIFICATION="HolidayRemainderNotification";
@@ -1138,8 +1141,10 @@ public class Constants {
 	
 
 	public static final String EMAIL_SUCCESS = "success";
-	
-
+	public static final String UPDATE = "UPD";
+	public static final String DELETE = "DEL";
+	public static final String NONE = "NONE";
+	public static final String ADDITION = "ADD";
 
 
 }

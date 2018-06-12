@@ -31,7 +31,7 @@ public interface LeaveDao {
 
 	List<LeaveApproveHierarchy> getEmployeeRequestedLeavesBylocationIdAndDuration(Long locationId, String userId, String status, Date currentWeekStarDate, Date currentWeekEndDate, String department, Date leaveDate) throws Exception;
 
-	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(Long leaveTypeId, Long orgLocationId, Long userId);
+	List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeId, Long orgLocationId, Long userId);
 	
 	Map<String, Float> getNumberOfLeavesTakenByUser(Long userId, Long leaveTypeId) throws Exception;
 
@@ -76,5 +76,7 @@ public interface LeaveDao {
 	List<Leave> getAllLeave();
 
 	List<Leave> getLeaveByUserIdOrglocationIdandStatus(Long id, Long orglocationId, String approved);
+
+	List<LeaveApproveHierarchy> getAllLeaveApproversList(Long locationId);
 
 }

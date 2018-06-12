@@ -3,12 +3,10 @@ package com.bis.sourcelead.dao.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -17,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
+import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.CommonUtil;
@@ -122,14 +122,31 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Long getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
-			String submissionStage, Date startDateUTC, Date endDateUTC) throws Exception {
+	@Transactional
+	public Integer getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			String submissionStage, Date startDateUTC, Date endDateUTC,String isGlobalUser) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<RequirementSubmissionHistory> rhl = new ArrayList<RequirementSubmissionHistory>();
-		 String queryString ="from RequirementSubmissionHistory rsh left join fetch rsh.submissionId rs left join fetch rsh.interviewerId  where rs.orgLocations.id =:orgLocationID and rsh.toStage =:toStage and rsh.createdBy =:userCode and (rsh.createdDate >= :startDateUTC and rsh.createdDate <= :endDateUTC)";
-		 rhl = session.createQuery(queryString).setString("userCode", user.getUserCode()).setLong("orgLocationID", orgLocationId).setString("toStage", submissionStage).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
-       return (long) rhl.size();
+		String query = null;
+		List<Long> requirementsCount = null;
+		String globalAccessQuery = "";
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			globalAccessQuery = " and rsh.submissionId.orgLocations.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+		}else {
+			globalAccessQuery = " and rsh.submissionId.orgLocations.id = :orgLocationId";
+		}
+		
+		
+		query ="select count(*) from RequirementSubmissionHistory rsh where rsh.createdBy =:userCode and rsh.toStage = :toStage "+globalAccessQuery+" "
+				+ " and date(rsh.createdDate) BETWEEN :startDate and :endDate";
+		
+		requirementsCount =  session.createQuery(query.toString()).setString("userCode", user.getUserCode()).setString("toStage", submissionStage).setLong("orgLocationId", orgLocationId).setParameter("startDate", startDateUTC).setParameter("endDate", endDateUTC).list();
+		Integer count= 0;
+		if(requirementsCount != null && !requirementsCount.isEmpty()){
+				count = requirementsCount.get(0).intValue();
+		}
+		return count;
+		
 	}
 
 	@Override
@@ -154,6 +171,57 @@ public class RequirementSubmissionHistoryDaoImpl implements RequirementSubmissio
 		}
 		logger.info("updated requirement history..!!");
 		return requirementSubmissionHistory;
+	}
+
+	@Override
+	@Transactional
+	public RecruiterReportView getSubmissionCountsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			String submissionStage, String startDateUTC, String endDateUTC, String isGlobalUser,Long orgId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		String globalAccessQuery = "";
+		RecruiterReportView recuiterReportView = null;
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			query = "from RecruiterReportView rv where rv.userCode = :userCode and rv.createdDate BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"' and  rv.orgId = :orgId ";
+			recuiterReportView = (RecruiterReportView) session.createQuery(query).setString("userCode", user.getUserCode()).setLong("orgId", orgId).uniqueResult();
+		}
+		else {
+			query = "from RecruiterReportView rv where rv.userCode = :userCode and rv.createdDate BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"' and rv.orgLocationId = :orgLocationId  ";
+			recuiterReportView = (RecruiterReportView) session.createQuery(query).setString("userCode", user.getUserCode()).setLong("orgLocationId", orgLocationId).uniqueResult();
+		}
+		
+		return  recuiterReportView;
+		
+	}
+
+	@Override
+	@Transactional
+	public List<RecruiterReportView> getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(Long orgLocationId,
+			List<String> userCodeList, String startDateUTC, String endDateUTC,
+			String isGlobalUser, Long orgId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<RecruiterReportView> recuiterReportViewList = null;
+		try {
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			query = "from RecruiterReportView rv where rv.userCode IN (:userCodeList) and rv.createdDate BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"' and  rv.orgId = :orgId ";
+			recuiterReportViewList =  session.createQuery(query).setParameterList("userCodeList", userCodeList).setLong("orgId", orgId).list();
+		}
+		else {
+			query = "from RecruiterReportView rv where rv.userCode IN (:userCodeList) and rv.createdDate BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"' and rv.orgLocationId = :orgLocationId  ";
+			recuiterReportViewList =  session.createQuery(query).setParameterList("userCodeList", userCodeList).setLong("orgLocationId", orgLocationId).list();
+		}
+		}catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		
+		return  recuiterReportViewList;
+		
 	}
 
 }
