@@ -128,7 +128,7 @@ display: none;
           </div>
         </div>
         <div class="clearfix">
-          <div class="col-md-6">
+          <!-- <div class="col-md-6">
             <label class="col-md-4 control-label text-info small">Salutation</label>
             <div class="col-md-3 saluation field-border">
               <select id="saluation" name="saluation">
@@ -137,7 +137,7 @@ display: none;
               </select>
             </div>
           </div>
-        </div>
+        </div> -->
         
         <!-- Text Area -->
         <div class="col-md-12 clearfix mb10 mt10">
