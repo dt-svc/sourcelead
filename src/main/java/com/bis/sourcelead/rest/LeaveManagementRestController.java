@@ -1892,10 +1892,36 @@ public class LeaveManagementRestController {
 			leaveDto.setThisMonthLeavesTaken(thisMonthLeaves);
 
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
-			// int balLeaves = totalLeavesperYear -
-			// nuberOfLeavestaken.get("numberOfLeavsTaken") +
-			// nuberOfLeavestaken.get("numberOfExtraLeaves");
-			float balLeaves = totalLeavesperYear - leavesTaken;
+			float balLeaves = 0f;
+			 float balLeaves1 = totalLeavesperYear - nuberOfLeavestaken.get("numberOfLeavsTaken") + nuberOfLeavestaken.get("numberOfExtraLeaves");
+			 
+			 float tot = 0f;
+			 float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
+			 if(!(Constants.LEAVE_CANCELLED.equalsIgnoreCase(leave.getStatus()) || Constants.LEAVE_REJECTED.equalsIgnoreCase(leave.getStatus()))){
+				 if ("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())) {
+						try {
+							tot = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(leave.getLeaveType(), totalLeavesperYear, null);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						balLeaves = tot - (appliedLeaveCount - leave.getExtraLeavesTaken());
+					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+						balLeaves = totalLeavesperYear - (appliedLeaveCount - leave.getExtraLeavesTaken());
+					}
+			 }else{
+				 if ("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())) {
+						try {
+							tot = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(leave.getLeaveType(), totalLeavesperYear, null);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						balLeaves = tot - (leavesTaken - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+						balLeaves = totalLeavesperYear - (leavesTaken - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+					}
+			 }
+			
+//			float balLeaves = totalLeavesperYear - leavesTaken;
 			leaveDto.setTotalBalLeaves(balLeaves);
 			response.setObject(leaveDto);
 			response.setResponse(Result.SUCCESS.name());
@@ -2286,7 +2312,7 @@ public class LeaveManagementRestController {
 						if (Constants.APPROVED.equalsIgnoreCase(leave.getStatus()) || Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
 							approvedCounts = approvedCounts + (appliedLeaveCount - leave.getExtraLeavesTaken());
 
-							noOfDays = noOfDays + (appliedLeaveCount - leave.getExtraLeavesTaken());
+							noOfDays = noOfDays + (appliedLeaveCount);
 							if (noOfDays > totalLeavesperYear) {
 								float totalLeaves = totalLeavesperYear - noOfDays;
 								leaveTypeDto.setTotalNoOfDays(totalLeaves);

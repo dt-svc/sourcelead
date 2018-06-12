@@ -406,21 +406,19 @@ function editClientProjectDetails(projectId){
 		type : "POST",
 		url : sourceleadUrl	+ "/getClientProjectApprovers?${_csrf.parameterName}=${_csrf.token}&projectClientUUID="+ projectClientUUID,
 		success : function(json) {
-			
 			var result = "";
 			result = result	+ '<div id="projectEditDetailsLoading"></div>';
 			result = result	+ ' <form id="editClientProject_form"  name="editClientProject_form" method="post">';
 			result = result	+ '<div  id="ProjectIdDiv">';
-			
 			result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta">';
 			result = result + '	<label>Manager 1 <span class="text-danger">*</span></label>';
 			result = result + '<div class="row">';
 			 if ((json.manager2 != null && json.manager2 != "" && json.manager2 != "undefined") ||
 					 (json.managerLevel1UserType != null && json.mamanagerLevel1UserTypenager2 != "" && json.managerLevel1UserType != "undefined" 
 					 &&  json.managerLevel1UserType == "Admin")) {  
-				result = result + '<div class="col-md-12" id="levelone-select">';
+				result = result + '<div class="col-md-12" id="levelone-select-manager">';
 			 }else{
-				result = result + '<div class="col-md-8 paddingRight" id="levelone-select">';	
+				result = result + '<div class="col-md-8 paddingRight" id="levelone-select-manager">';	
 			} 
 			result = result	+ '<select onchange="getLevel2Approvers('+json.manager2+ ');" id="level1Manager" name="level1Manager" >';
 			for (var j = 0; j < json.managersList.length; j++) {
@@ -486,7 +484,6 @@ function editClientProjectDetails(projectId){
 				}
 				result = result + '</select>';
 				result = result + '</div>';
-				
 		    result = result + '<div class="clearfix"></div>';
 			
 			result = result + '<div class="user_summary_edit_cta projectdetails_edit_cta pull-right">';

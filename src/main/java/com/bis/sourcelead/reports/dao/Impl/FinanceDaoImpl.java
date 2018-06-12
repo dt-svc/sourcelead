@@ -79,9 +79,9 @@ public class FinanceDaoImpl implements FinanceDao{
 				for (String relationId : ids) {
 					idsList.add(Long.parseLong(relationId));
 				}
-				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and invoice.orgRelationID.id IN (:orgIds)";
+				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'DRAFT' and invoice.orgRelationID.id IN (:orgIds)";
 			} else {
-				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' ";
+				query = "from Invoice invoice  left join fetch invoice.orgRelationID left join fetch invoice.responderLocationId left join fetch invoice.orgLocation where invoice.orgLocation.id = :orglocationId and invoice.invoiceType = :invoiceType and invoice.status = '1' and (invoice.paymentStatus = 'Unpaid' OR invoice.paymentStatus = 'Partial Paid') and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'DRAFT' ";
 			}
 
 			Session session = this.sessionFactory.getCurrentSession();
