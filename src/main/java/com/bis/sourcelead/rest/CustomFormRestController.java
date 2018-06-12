@@ -221,12 +221,13 @@ public class CustomFormRestController {
 		 		 	case "clientAndVendor":
 		 		 		if(formFieldId != null && !formFieldId.isEmpty() && loginOrgLocations != null && customFieldsRequestTypeDTO.getOrgRelationID()!= null && customFieldsRequestTypeDTO.getClientLocationId() != null){
 		 		 			OrgRelations orgRelation = orgRelationsService.getClientAndVendorOrgDeatilsById( customFieldsRequestTypeDTO.getClientLocationId(), customFieldsRequestTypeDTO.getOrgRelationID());
-		 		 			if(orgRelation.getResponderLocationId().getId().longValue() != loginOrgLocations.getId().longValue()) {
-		 		 				getcustomFieldData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getResponderLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
-		 		 			}else if(orgRelation.getLocationId().getId().longValue() != loginOrgLocations.getId().longValue()) {
-		 		 				getcustomFieldData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
+		 		 			if(orgRelation != null) {
+		 		 				if(orgRelation.getResponderLocationId()!= null && orgRelation.getResponderLocationId().getId().longValue() != loginOrgLocations.getId().longValue()) {
+			 		 				getcustomFieldData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getResponderLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
+			 		 			}else if(orgRelation.getLocationId()!= null && orgRelation.getLocationId().getId().longValue() != loginOrgLocations.getId().longValue()) {
+			 		 				getcustomFieldData = clientCustomFieldDataService.getClientAndVendorCustomFieldDataByClientOrgIdAndClientLocId(orgRelation.getLocationId().getOrg().getId(),formFieldId,orgLoc.getOrg().getId());
+			 		 			}
 		 		 			}
-		 		 			
 		 		 		}
 		 		 		break;
 		 		 	case "project" :
