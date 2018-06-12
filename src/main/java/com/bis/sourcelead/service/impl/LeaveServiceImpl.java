@@ -501,7 +501,7 @@ public class LeaveServiceImpl implements LeaveService{
 				int totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),leave.getUser().getId(),orgLocations.getId());
 				float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(leave.getLeaveType(), totalLeaves,emp);
 				
-				float balLeaves = leaves - leavesTaken + nuberOfLeavestaken.get("numberOfExtraLeaves");
+				float balLeaves = leaves - (leavesTaken + nuberOfLeavestaken.get("numberOfExtraLeaves"));
 				
 				leaveDto.setTotalBalLeaves(balLeaves);
 				leaveDto.setOrgLocationId(String.valueOf(leave.getOrgLocations().getId()));
@@ -509,13 +509,13 @@ public class LeaveServiceImpl implements LeaveService{
 				
 				float appliedLeavesCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
 				leaveDto.setAppliedNoOfDays(appliedLeavesCount);
-				List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leave.getLeaveType().getId(), orgLocations.getId(),leave.getUser().getId(),yearStartDate,fromDate);
-				float carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType(),leave);
-				float extraLeaves = appliedLeavesCount - carryForwardLeaves;
-				if(extraLeaves > 0)
-					leaveDto.setExtraLeavesTaken(extraLeaves);
-				else
-					leaveDto.setExtraLeavesTaken(0);
+//				List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leave.getLeaveType().getId(), orgLocations.getId(),leave.getUser().getId(),yearStartDate,fromDate);
+//				float carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType(),leave);
+//				float extraLeaves = appliedLeavesCount - carryForwardLeaves;
+//				if(extraLeaves > 0)
+					leaveDto.setExtraLeavesTaken(leave.getExtraLeavesTaken());
+//				else
+//					leaveDto.setExtraLeavesTaken(0);
 			
 				if(StringUtils.isNotBlank(leave.getDeleteReason())) {
 					leaveDto.setCancelReason(leave.getDeleteReason());
@@ -1983,7 +1983,7 @@ public class LeaveServiceImpl implements LeaveService{
 						else
 							leave.setExtraLeavesTaken(0);
 					}else if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						leave.setExtraLeavesTaken(leave.getLeaveType().getNoOfDays() - appliedLeaves);
+						leave.setExtraLeavesTaken(leave.getLeaveType().getNoOfDaysPerPeriod() - appliedLeaves);
 					}else{
 						leave.setExtraLeavesTaken(0);
 					}
