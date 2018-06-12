@@ -393,6 +393,10 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			requirement.setNoticePeriod(null);
 		}
+		
+		requirement.setWalkIn(requirementDTO.isWalkIn() && requirementDTO.getWalkInDays() != null && !requirementDTO.getWalkInDays().isEmpty());
+		requirement.setWalkInDays(requirementDTO.isWalkIn() ? requirementDTO.getWalkInDays() : "");
+		
 		if (StringUtils.isNotBlank(requirementDTO.getTravelAllowance())) {
 			requirement.setTravelAllowance(requirementDTO.getTravelAllowance());
 		}
@@ -473,6 +477,7 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setClientId(orgRelations);
 			client = requirementDTO.getSelectClient().split(",")[0];
 		}
+		
 		if (StringUtils.isNotBlank(requirementDTO.getSelectContact())) {
 			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(requirementDTO.getSelectContact()));
 			requirement.setSpocId(orgSpoc);
@@ -2732,9 +2737,9 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(
-			Long orgLocationId, String userType, Long userId, String userCode) throws Exception {
+			Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception {
 		return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId,
-				userType, userId, userCode);
+				userType, userId, userCode, isWalkIn, walkinDay);
 	}
 
 	@Override

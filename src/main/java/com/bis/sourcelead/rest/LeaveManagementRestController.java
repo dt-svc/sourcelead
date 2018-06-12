@@ -20,8 +20,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +43,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.AssociateBalanceLeaveDao;
 import com.bis.sourcelead.dao.HolidayDAO;
 import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
@@ -53,8 +52,6 @@ import com.bis.sourcelead.dao.OptionsDao;
 import com.bis.sourcelead.dao.ProjectTasksDao;
 import com.bis.sourcelead.dao.RestrictDayDao;
 import com.bis.sourcelead.dao.ShiftDao;
-import com.bis.sourcelead.dto.CandidateCertificationDTO;
-import com.bis.sourcelead.dto.ClientVendorUploadDTO;
 import com.bis.sourcelead.dto.HolidayDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.LeaveReportsDTO;
@@ -66,9 +63,8 @@ import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
 import com.bis.sourcelead.entity.AssetAssign;
+import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateGrades;
-import com.bis.sourcelead.entity.BulkClientDetails;
-import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
@@ -222,6 +218,12 @@ public class LeaveManagementRestController {
 	
 	@Autowired
 	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
+	AssociateBalanceLeaveDao associateBalanceLeaveDao;
+	
+	
+	
 	/**
 	 * returns Pending leaves jsp
 	 * 
@@ -984,9 +986,20 @@ public class LeaveManagementRestController {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 					List<User> userList = userService.getUsersListByOrglocationId(orgLocation.getId());
-					if(leaveTypeDTO.getLeaveTypeId() == 0) {
-						int result = associateBalanceLeaveService.addLeaveTypeToAssociate(userList,orgLocation,leaveType,user);
-					}else {
+					List<User> updatedUserList = new ArrayList<>();
+					List<User> insertUserList = new ArrayList<>();
+					for(User usr : userList) {
+						AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), usr.getId(), orgLocation.getId());
+					    if(associa != null) {
+					    	updatedUserList.add(usr);
+					    }else {
+					    	insertUserList.add(usr);
+					    }
+					}
+					if(!insertUserList.isEmpty() && insertUserList.size() >0) {
+						int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user);
+					}
+					if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
 						int previousNoOfDays = Integer.parseInt(leaveTypeDTO.getPreviousNoOfdays());
 						int currentNofDays = leaveType.getNoOfDays();
 						int diffLeaves = 0;
@@ -998,7 +1011,7 @@ public class LeaveManagementRestController {
 							 diffLeaves = previousNoOfDays - currentNofDays;
 							 actionType = "SUB";
 						}
-						int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(userList, orgLocation.getId(), leaveType, 1,diffLeaves,actionType);
+						int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(updatedUserList, orgLocation.getId(), leaveType, 1,diffLeaves,actionType,Constants.UPDATE);
 					}
 					
 				}
@@ -2572,12 +2585,9 @@ public class LeaveManagementRestController {
 	@RequestMapping(value = "/downloadLeaveTemplate")
 	public void downloadLeaveTemplate(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		File file = null;
-		String fn;
-		fn = "/templates/Leave_Import.xlsx";
-		URL url = getClass().getResource(fn);
-		file = new File(url.toURI());
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		File file = leaveService.getLeaveTypeImportTemplate(orgLocation.getId());
+		
 		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 		if (mimeType == null) {
 			mimeType = "application/octet-stream";
@@ -2593,9 +2603,9 @@ public class LeaveManagementRestController {
 		response.getOutputStream().flush();
 	}
 	
-	@RequestMapping(value = "/leaveUpload", method = RequestMethod.POST)
+	@RequestMapping(value = "/uploadLeaveType", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<LeaveDTO> leaveUpload(MultipartHttpServletRequest request) throws Exception
+	public Response<LeaveTypeDTO> leaveUpload(MultipartHttpServletRequest request) throws Exception
 	{
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -2605,12 +2615,12 @@ public class LeaveManagementRestController {
 		if (itrator.hasNext()) {
 			multipartFile = request.getFile(itrator.next());
 		}
-		Response<LeaveDTO> response = new Response<>();
+		Response<LeaveTypeDTO> response = new Response<>();
 		/*if (multipartFile != null) {
 //			fileList = clientImportsService.clientExcelDataSave(multipartFile, user, orgLocation, org, isMailCheck, responderType);
 		}*/
 		if (multipartFile != null) {
-			response = leaveService.saveBulkApprovedLeaves(multipartFile, orgLocation, user, org);
+			response = leaveService.saveBulkLeaveTypes(multipartFile, orgLocation, user, org);
 			/*if (response != null) {
 				if (response.getData().isEmpty() && response.getData().size() == 0) {
 					response.setStatusCode("success");
@@ -2634,6 +2644,34 @@ public class LeaveManagementRestController {
 		return null;
 	}
 	
+
+	@RequestMapping(value = "/ws/dumpAllLeavesToAssociates", method = RequestMethod.GET)
+	public boolean getRestActionHistoryList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		boolean isInserted = false;
+		List<OrgLocations> locationsList = orgLocationService.getAllOrgLocations();
+		for (OrgLocations orgLocation : locationsList) {
+			List<User> userList = userService.getUsersListByOrglocationId(orgLocation.getId());
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for (LeaveType leaveType : leaveTypeList) {
+				List<User> insertUserList = new ArrayList<>();
+				for (User usr : userList) {
+					AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), usr.getId(), orgLocation.getId());
+					if (associa == null) {
+						insertUserList.add(usr);
+					}
+				}
+				if (!insertUserList.isEmpty() && insertUserList.size() > 0) {
+					int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList, orgLocation, leaveType, orgLocation.getUser());
+					if (result > 0) {
+						isInserted = true;
+					}
+				}
+			}
+		}
+		return isInserted;
+	}
+
 	/**
 	 * returns Withdraw leaves jsp
 	 * 

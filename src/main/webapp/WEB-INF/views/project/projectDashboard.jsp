@@ -113,7 +113,8 @@ overflow-x: auto;
 							<div class="action-pop">
 								<span> 
 								<a href="<c:url value='${appPath}/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
-								<a href="<c:url value='${appPath}/clientProject'/>"><i class="fa fa-plus"></i>Client Project</a>
+								 <a href="<c:url value='${appPath}/clientProject'/>"><i class="fa fa-plus"></i>Client Project</a> 
+								<!-- <a href="#" onclick='getClientProjectPop();'><i class="fa fa-plus"></i>Client Project</a> -->
 								</span>
 							</div>
 						</sec:authorize></li>
@@ -241,7 +242,57 @@ overflow-x: auto;
 		   </div>		
 	   </section>
 	   <div id="popUp"></div>
+	   
+	   
+<%-- 	   <div class="addcandidate-popup">
+				  <div class="row">
+                      <div class="col-md-offset-1 col-md-10">
+				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeClientProject()"><i class="fa fa-close"></i></a>
+                          <div class="col-md-4 mt">
+                        <div class="small-widget bg-purple">
+                            <a href="<c:url value='${appPath}/candidate'/>"  title="Import Candidate">
+                                <div class="clearfix mb10">
+                                <i class="fa fa-bar-chart fa-4x"></i>
+                                </div>
+                                <strong class="clearfix">Client Shared Project</strong>
+                                </a>
+                        </div>
+					  </div>
+					  <div class="col-md-4 mt">
+                          <div class="small-widget bg-yellow">
+                              <a href="<c:url value='${appPath}/clientProject'/>" title="Client Project">
+                                  <div class="clearfix mb10">
+                                      <i class="fa fa-bar-chart fa-4x"></i>
+                                  </div>
+                                  <strong class="clearfix">Client Project</strong>
+                                </a>
+                                
+                          </div>
+					  </div>
+					  
+                      </div>
+                          
+				  </div>
+			  </div>
+      <div class="pop_mask"></div>
+     --%>
+	   
+	   
 <!--   Popup's   -->
+
+
+<script>
+function getClientProjectPop(){
+	 $('.addcandidate-popup').fadeIn(200);
+     $('.pop_mask').fadeIn(200);
+     $('#addmorepop').slideUp(200);
+}
+
+function closeClientProject(){
+    $('.addcandidate-popup').fadeOut(200);
+    $('.pop_mask').fadeOut(200);
+   }
+</script>
                
 <script>
 function resetProjectFilter(){
