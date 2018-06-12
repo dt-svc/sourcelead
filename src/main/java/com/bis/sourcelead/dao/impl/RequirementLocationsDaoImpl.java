@@ -76,6 +76,19 @@ public class RequirementLocationsDaoImpl implements RequirementLocationsDao{
 		 
 	}
 
+	
+
+	@Override
+	@Transactional
+	public List<Object[]> getRequirementLocationsListByRequirementIdMap(List<Long> reqIdsList) throws Exception {
+
+		logger.debug("In getRequirementLocationsListByRequirementId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT RL.REQUIREMENT_ID, RL.LOCATION  FROM REQUIREMENT_LOCATIONS RL, REQUIREMENT R  WHERE RL.REQUIREMENT_ID  = R.ID AND  RL.REQUIREMENT_ID IN(:idsList)";
+		List<Object[]> requirementLocationsList =  (List<Object[]>)session.createSQLQuery(query).setParameterList("idsList", reqIdsList).setCacheable(true).list();
+		return requirementLocationsList;
+
+	}
 	@Override
 	@Transactional
 	public List<String> getRequirementLocationsUUIDByRequirementId(Long requirementId) throws Exception{

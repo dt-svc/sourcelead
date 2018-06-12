@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +36,7 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		Map<String, Object> params = new HashMap<String,Object>();
+		List<Requirement> mainList = null;
 		String filterQuery = "";
 		String dateSubQuery = "";
 		String[] reqStatus = null;
@@ -112,7 +114,9 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 			}
 			
 		}
-		
+		Calendar cal = Calendar.getInstance(); 
+		Date wop = cal.getTime();
+		System.out.println("===== time1======="+wop);
 		String whereCondition = subQuery +dateSubQuery+filterQuery;
 		String listQuery = from+" "+whereCondition+" ORDER BY requirement.id DESC";
 		
@@ -144,7 +148,16 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 			}
 
 		}
-		return query.list();
+		Calendar cal1 = Calendar.getInstance(); 
+		Date wop1 = cal1.getTime();
+		System.out.println("===== time last ======="+wop1);
+		mainList = query.setCacheable(true).list();
+		Calendar cal3 = Calendar.getInstance(); 
+		Date wop3 = cal3.getTime();
+		System.out.println("===== Final time ======="+wop3);
+		return mainList;
+		
+		
 	}
 
 	

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -136,24 +139,15 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				}
 				Calendar cal = Calendar.getInstance();
 			    Date date=cal.getTime();
-		System.out.println("-----before list time----"+date);
+	 System.out.println("======== first time======="+date);
 		List<Requirement> requirementList = requirementReportDao.getRequirementReports(userRoleName, orgLocation, user,filterDate, startDateUTC, endDateUTC,status);
 		Calendar cal1 = Calendar.getInstance();
 	    Date date1=cal1.getTime();
-		System.out.println("----after list time-----"+date1);
+	    
+		Map<Long,Requirement> requirementMap = new HashMap<Long,Requirement>();
+		List<Long> reqIdsList = new ArrayList<Long>();
 		for (Requirement requirement : requirementList) {
-			//String postedDate = getDateStr(requirement.getCreatedDate(), timezone);
 			requirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirement.getCreatedDate()));
-			 List<String> requirementLocationsList = new ArrayList<>();
-	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
-	    	    if(locationsList != null && !locationsList.isEmpty()) {
-	    	    	for(RequirementLocations locations : locationsList) {
-	    	    		requirementLocationsList.add(locations.getLocation());
-	    	    	}
-	    	    }
-	    	    requirement.setLocationsList(requirementLocationsList);
-	    	    
-			
 			
 			if(requirement.getClientId() != null){
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -175,10 +169,31 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				 StringBuilder managerSB = new StringBuilder();
 				requirement.setManager(managerSB.append(managerFirstName).append(" ").append(managerLastName).toString());
 			}
+			// adding required id map  below
+			requirementMap.put(requirement.getId(), requirement);
+			reqIdsList.add(requirement.getId());
+			
 		}
-		Calendar cal2 = Calendar.getInstance();
-	    Date date2=cal2.getTime();
-		System.out.println("---- list time-----"+date2);
+		
+			//get the requirement locations list
+			
+	    	    List<Object[]> locationList = requirementLocationsService.getRequirementLocationsListByRequirementIdMap(reqIdsList);
+	    	    
+	    	 //   List<String> requirementLocationsList =  new ArrayList<String>();
+	    	    Long currId= null;
+	    	    for( Object[] objArr : locationList){
+	    	    	currId= ((BigInteger) objArr[0]).longValue();
+	    	    		Requirement requirement = (Requirement) requirementMap.get(currId);
+	    	    		if(requirement.getLocationsList() == null){
+	    	    			 List<String> requirementLocationsList =  new ArrayList<String>();
+	    	    			requirement.setLocationsList(requirementLocationsList);
+	    	    		}
+	    	    		requirement.getLocationsList().add((String)objArr[1]);
+	    	    	
+	    	    }
+	    	   
+	    	    // requirement.setLocationsList(requirementLocationsList); 
+	    	   
 		return requirementList;
 	}
 	
