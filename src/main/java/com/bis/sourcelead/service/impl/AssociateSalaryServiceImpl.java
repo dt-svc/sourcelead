@@ -50,10 +50,18 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 		
 		Response<AssociateSalaryDTO> resObj = new Response<>();
 		try {
+			Date createdDate = null;
+			Date updatedDate = null;
+			Long createdBy = null;
+			Long updatedBy = null;
 			if (Validator.validate(associateSalaryDTO)) {
 				AssociateSalary associateSalary = null;
 				if(StringUtils.isNotBlank(associateSalaryDTO.getId())) {
 					associateSalary = associateSalaryDao.findAssociateSalaryById(associateSalaryDTO.getId());
+					createdDate = associateSalary.getCreatedDate();
+					updatedDate = associateSalary.getUpdatedDate();
+					createdBy = associateSalary.getCreatedBy();
+					updatedBy = associateSalary.getUpdatedBy();
 				}else {
 					associateSalary  = new AssociateSalary();
 					User user = userService.getUserById(Long.parseLong(associateSalaryDTO.getUserId()));
@@ -71,14 +79,14 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 				associateSalary.setOrgLocations(orgLocation);
 				associateSalary.setCreatedDate(new Date());
 				associateSalary.setUpdatedDate(new Date());
-				associateSalary.setCreatedBy(loginUser.getUserCode());
-				associateSalary.setUpdatedBy(loginUser.getUserCode());
+				associateSalary.setCreatedBy(loginUser.getId());
+				associateSalary.setUpdatedBy(loginUser.getId());
 				associateSalary.setStatus(1);
 				associateSalary.setAssociateSalaryUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				if(associateSalaryDTO.getIncreasePer() != null) {
 					associateSalary.setIncrementPercentage(associateSalaryDTO.getIncreasePer());
 				}
-				if(associateSalaryDTO.getEffectiveDate() != null) {
+				if(associateSalaryDTO.getEffectiveDate() != null && !"".equalsIgnoreCase(associateSalaryDTO.getEffectiveDate())) {
 					associateSalary.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), associateSalaryDTO.getEffectiveDate()));
 				}
 				if(associateSalaryDTO.getChangeReason() != null) {
@@ -91,7 +99,7 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 				AssociateSalary saveAssociateSalary = associateSalaryDao.addAssociateSal(associateSalary);
 				if (saveAssociateSalary != null) {
 					if(StringUtils.isNotBlank(associateSalaryDTO.getId())) {
-						updateAssociateSalHistory(saveAssociateSalary,associateSalaryDTO,loginUser,orgLocation);
+						updateAssociateSalHistory(saveAssociateSalary,associateSalaryDTO,loginUser,orgLocation,createdBy,updatedBy,createdDate,updatedDate);
 					}
 					resObj.setResponse(Result.SUCCESS.name());
 					resObj.setResponseMessage(Result.SUCCESS.getValue());
@@ -111,7 +119,7 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 		return resObj;
 	}
 
-	private void updateAssociateSalHistory(AssociateSalary associateSalary, AssociateSalaryDTO associateSalaryDTO, User loginUser, OrgLocations orgLocation)
+	private void updateAssociateSalHistory(AssociateSalary associateSalary, AssociateSalaryDTO associateSalaryDTO, User loginUser, OrgLocations orgLocation, Long preCreatedBy, Long preUpdatedBy, Date preCreatedDate, Date preUpdatedDate)
 	{
 		AssociateSalaryHistory associateSalHis = new AssociateSalaryHistory();
 		associateSalHis.setAssociateSalary(associateSalary);
@@ -127,7 +135,6 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 		associateSalHis.setPreviousAnnualSalary(new BigDecimal(associateSalaryDTO.getPreviousAnnualSal()));
 		associateSalHis.setPreviousGrossSalary(new BigDecimal(associateSalaryDTO.getPreviousPerPaySal()));
 		associateSalHis.setPreviousHourlyRate(new BigDecimal(associateSalaryDTO.getPreviousHourlyRate()));
-		associateSalHis.setPreviousGrossSalary(new BigDecimal(associateSalaryDTO.getPreviousHourlyRate()));
 		associateSalHis.setAssociateSalHistoryUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		associateSalHis.setStatus(1);
 		if(associateSalaryDTO.getIncreasePer() != null) {
@@ -146,6 +153,10 @@ public class AssociateSalaryServiceImpl implements AssociateSalaryService{
 		associateSalHis.setUpdatedDate(new Date());
 		associateSalHis.setCreatedBy(loginUser.getId());
 		associateSalHis.setUpdatedBy(loginUser.getId());
+		associateSalHis.setPreviousCreatedBy(preCreatedBy);
+		associateSalHis.setPreviousUpdatedBy(preUpdatedBy);
+		associateSalHis.setPreviousCreatedDate(preCreatedDate);
+		associateSalHis.setPreviousUpdatedDate(preUpdatedDate);
 		
 		
 		AssociateSalaryHistory associateSalaryHistory = associateSalaryDao.updaetAssociateSalHis(associateSalHis);

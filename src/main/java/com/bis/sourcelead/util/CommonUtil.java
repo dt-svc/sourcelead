@@ -2408,4 +2408,15 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 	}
 	  
   }
+/**
+ * Conert Date to OrgLocation format with HH:MM:SS 
+ * @param dateFormat
+ * @param date
+ * @return String
+ */
+public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
+{
+	DateFormat sdf = new SimpleDateFormat(dateFormat+" HH:mm:ss");
+	return sdf.format(date);
+}
 }

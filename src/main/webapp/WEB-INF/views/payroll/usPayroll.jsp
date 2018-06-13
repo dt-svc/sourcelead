@@ -98,7 +98,7 @@ function getGroupFrequency(){
 	var groupUUID = $("#groupId").val();
 	 $.ajax({
 	    	type: "GET",
-	        url: sourceleadUrl+"/getUsersVGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID                  , 
+	        url: sourceleadUrl+"/getGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID                  , 
 	        success: function(json) {
 	        var output = "";
 			for (var i=0; i<json.length; i++)

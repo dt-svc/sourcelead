@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.bis.sourcelead.payroll.entity.PayItem;
 
@@ -78,17 +80,19 @@ public class AssociateSalary {
 	@Column(name = "STATUS")
 	private Integer status;
 	
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
 	@Column(name = "CREATED_BY")
-	private String createdBy;
+	private Long createdBy;
 	
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
 	
 	@Column(name = "UPDATED_BY")
-	private String updatedBy;
+	private Long updatedBy;
+	
 	
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "associateSalary")
@@ -226,15 +230,6 @@ public class AssociateSalary {
 		this.createdDate = createdDate;
 	}
 
-	public String getCreatedBy()
-	{
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy)
-	{
-		this.createdBy = createdBy;
-	}
 
 	public Date getUpdatedDate()
 	{
@@ -246,15 +241,6 @@ public class AssociateSalary {
 		this.updatedDate = updatedDate;
 	}
 
-	public String getUpdatedBy()
-	{
-		return updatedBy;
-	}
-
-	public void setUpdatedBy(String updatedBy)
-	{
-		this.updatedBy = updatedBy;
-	}
 
 	public Set<AssociatePayItem> getAssociatePayItem()
 	{
@@ -305,6 +291,27 @@ public class AssociateSalary {
 	{
 		this.salaryType = salaryType;
 	}
+
+	public Long getCreatedBy()
+	{
+		return createdBy;
+	}
+
+	public Long getUpdatedBy()
+	{
+		return updatedBy;
+	}
+
+	public void setCreatedBy(Long createdBy)
+	{
+		this.createdBy = createdBy;
+	}
+
+	public void setUpdatedBy(Long updatedBy)
+	{
+		this.updatedBy = updatedBy;
+	}
+
 
 	
 }

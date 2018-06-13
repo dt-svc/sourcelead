@@ -98,6 +98,20 @@ public class AssociateSalaryHistory {
 		@Column( name = "UPDATED_BY")
 		private Long updatedBy;
 
+		
+		@Column(name = "PREVIOUS_CREATED_DATE")
+		private Date previousCreatedDate;
+		
+		@Column(name = "PREVIOUS_CREATED_BY")
+		private Long previousCreatedBy;
+		
+		@Column(name = "PREVIOUS_UPDATED_DATE")
+		private Date previousUpdatedDate;
+		
+		@Column(name = "PREVIOUS_UPDATED_BY")
+		private Long previousUpdatedBy;
+		
+		
 		public Long getId()
 		{
 			return id;
@@ -341,6 +355,49 @@ public class AssociateSalaryHistory {
 		{
 			this.salaryType = salaryType;
 		}
+
+		public Date getPreviousCreatedDate()
+		{
+			return previousCreatedDate;
+		}
+
+		public Long getPreviousCreatedBy()
+		{
+			return previousCreatedBy;
+		}
+
+		public Date getPreviousUpdatedDate()
+		{
+			return previousUpdatedDate;
+		}
+
+		
+		public void setPreviousCreatedDate(Date previousCreatedDate)
+		{
+			this.previousCreatedDate = previousCreatedDate;
+		}
+
+		public void setPreviousCreatedBy(Long previousCreatedBy)
+		{
+			this.previousCreatedBy = previousCreatedBy;
+		}
+
+		public void setPreviousUpdatedDate(Date previousUpdatedDate)
+		{
+			this.previousUpdatedDate = previousUpdatedDate;
+		}
+
+		public Long getPreviousUpdatedBy()
+		{
+			return previousUpdatedBy;
+		}
+
+		public void setPreviousUpdatedBy(Long previousUpdatedBy)
+		{
+			this.previousUpdatedBy = previousUpdatedBy;
+		}
+
+		
 		
 		
 }

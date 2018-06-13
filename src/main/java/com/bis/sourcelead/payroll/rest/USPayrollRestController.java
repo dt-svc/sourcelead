@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.AssociateSalaryDTO;
+import com.bis.sourcelead.dto.AssociateSalaryHistoryDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserGroupDTO;
+import com.bis.sourcelead.entity.AssociateSalaryHistory;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserGroup;
@@ -53,6 +55,7 @@ import com.bis.sourcelead.payroll.service.PayItemService;
 import com.bis.sourcelead.payroll.service.PayrollContributionService;
 import com.bis.sourcelead.payroll.service.PayrollDeductionService;
 import com.bis.sourcelead.payroll.service.USPayrollService;
+import com.bis.sourcelead.service.AssociateSalaryHistoryService;
 import com.bis.sourcelead.service.AssociateSalaryService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserGroupService;
@@ -109,6 +112,9 @@ public class USPayrollRestController {
 	
 	@Autowired
 	AssociateSalaryService associateSalaryService;
+	
+	@Autowired
+	AssociateSalaryHistoryService associateSalaryHistoryService;
 	
 	/**
 	 * find all deduction types from lookup_data table 
@@ -669,7 +675,7 @@ public class USPayrollRestController {
 		 * @return List<String>
 		 * @throws Exception
 		 */
-	@RequestMapping(value = { "/getUsersVGroupPayPeriod","/rest/getUsersVGroupPayPeriod" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/getGroupPayPeriod","/rest/getUsersVGroupPayPeriod" }, method = RequestMethod.GET)
 	public List<String> getUsersVGroupPayPeriod(@RequestParam(value = "groupUUID", required = false) String groupUUID, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		List<String> listDates = null;
@@ -779,6 +785,14 @@ public class USPayrollRestController {
 		return resObj;
 	}
 	
+	/**
+	 * Find Associate Salary
+	 * @param userId
+	 * @param request
+	 * @param response
+	 * @return AssociateSalaryDTO
+	 * @throws Exception
+	 */
 	@RequestMapping(value = { "/findAssociateSalary","/rest/findAssociateSalary" }, method = RequestMethod.GET)
 	@ResponseBody
 	public AssociateSalaryDTO findAssociateSalary(@RequestParam(value = "userId",required = false) Long userId, HttpServletRequest request, HttpServletResponse response) throws Exception
@@ -787,4 +801,22 @@ public class USPayrollRestController {
 		AssociateSalaryDTO  associateSalaryDTO = associateSalaryService.findAssociateSalaryByUserId(userId,orgLocation);
 		return associateSalaryDTO;
 	}
+	
+	/**
+	 * Find Assoviate Salary History
+	 * @param associateSalid
+	 * @param request
+	 * @param response
+	 * @return AssociateSalaryDTO
+	 * @throws Exception
+	 */
+	@RequestMapping(value = { "/findAssociateSalHistory","/rest/findAssociateSalHistory" }, method = RequestMethod.GET)
+	@ResponseBody
+	public List<AssociateSalaryHistoryDTO> findAssociateSalHistory(@RequestParam(value = "associateSalid",required = false) Long associateSalid, HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<AssociateSalaryHistoryDTO>  associateSalaryHisDTO = associateSalaryHistoryService.findAssociateSalHistory(associateSalid,orgLocation);
+		return associateSalaryHisDTO;
+	}
+	
 }

@@ -15,7 +15,7 @@ function associateSalSummary(userId){
             	result = result + '		<div class="col-md-3 col-md-offset-9">';
             	result = result + '	<ul class="list-inline list-unstyled pull-right mb0">';
             	result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\');">Add New</a></li>';
-            	result = result + '		<li><a href="javascript:void(0)" class="btn btn-warning btn-block" onClick="salaryHistory();">History</a></li>';
+            	result = result + '		<li><a href="javascript:void(0)" class="btn btn-warning btn-block" onClick="salaryHistory(\''+json.id+'\');">History</a></li>';
             	result = result + '		<li><a href="us-associates.html" class="btn btn-default btn-block">Edit</a></li>';
             	result = result + '		</ul>';
             	result = result + '	</div>';
@@ -314,7 +314,25 @@ function esiFunction() {
     }
 }
 //Salary history popup
-function salaryHistory() {
+function salaryHistory(id) {
+		 $.ajax({
+		    	type: "GET",
+		        url: sourceleadUrl+"/findAssociateSalHistory?"+tokenParamName+"="+tokenValue+"&associateSalid="+id                  , 
+		        success: function(json) {
+		       /*  var output = "";
+				for (var i=0; i<json.length; i++)
+				{
+					var date = json[i].replace(",", " to ");
+					output = output + "<option value='" +json[i]+ "'>"+date+"</option>";
+				}
+				$("#payPeriod").empty();
+				$("#payPeriod").append(output);
+				$('#payPeriod').trigger("chosen:updated");  */
+		        },
+		    });
+	
+	
+	
 	$(".salaryHistory, .comMask").fadeIn();
 }
 function closeSalaryHistory() {
@@ -561,3 +579,75 @@ function calaculateIncDecPer(){
   
  
 </script>
+
+
+<!-- Salary History Popup -->
+<div class="comMask"></div>
+ <div class="modal salaryHistory" id="salaryHistory">
+  <div class="modal-dialog modal-lg salaryHistory_modalLg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button data-dismiss="modal" class="close" type="button" onClick="closeSalaryHistory();">&times;</button>
+        <h4 class="modal-title">History</h4>
+      </div>
+      <div class="modal-body clearfix">
+        
+        <div class="clearfix col-md-12 styleTables tableStyles-textLeft">
+                 <div class="row">
+                 	<table>
+                 		<thead>
+                 			<tr>
+                 				<th>Pay Group</th>
+                 				<th>Pay Type</th>
+                 				<th>Pay Frequency</th>
+                 				<th>Normal Hours</th>
+                 				<th>Annual Salary</th>
+                 				<th>Per Pay Salary</th>
+                 				<th>Hours</th>
+                 				<th>Effective</th>
+                 				<th>% Increase</th>
+                 			</tr>
+                 		</thead>
+                 		<tbody>
+                 			<tr>
+                 				<td>Monthly</td>
+                 				<td>Hourly</td>
+                 				<td>Annually</td>
+                 				<td>800</td>
+                 				<td>1200000.00</td>
+                 				<td>1k</td>
+                 				<td>100</td>
+                 				<td>01/04/2018</td>
+                 				<td>10%</td>
+                 			</tr>
+                 			<tr>
+                 				<td>Weekly</td>
+                 				<td>Salary</td>
+                 				<td>Quarterly</td>
+                 				<td>800</td>
+                 				<td>1200000.00</td>
+                 				<td>1k</td>
+                 				<td>100</td>
+                 				<td>01/04/2018</td>
+                 				<td>10%</td>
+                 			</tr>
+                 			<tr>
+                 				<td>Semi-</td>
+                 				<td>Salary</td>
+                 				<td>Quarterly</td>
+                 				<td>800</td>
+                 				<td>1200000.00</td>
+                 				<td>1k</td>
+                 				<td>100</td>
+                 				<td>01/04/2018</td>
+                 				<td>10%</td>
+                 			</tr>
+                 		</tbody>
+                 	</table>
+                 </div>
+                 </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Salary History Popup -->

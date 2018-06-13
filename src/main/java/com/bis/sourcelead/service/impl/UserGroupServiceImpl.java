@@ -156,7 +156,7 @@ public class UserGroupServiceImpl implements UserGroupService{
 				ugDto.setDepartment(ug.getDepartmentId());
 				ugDto.setUserId(ug.getUserId());
 				ugDto.setDescription(ug.getDescription());
-				
+				res.setObject(ugDto);
 				res.setResponse(Result.SUCCESS.name());
 				res.setResponseMessage(Result.SUCCESS.getValue());
 			}else{
