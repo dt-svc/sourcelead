@@ -254,13 +254,6 @@ function submitCandidatesToJob(){
 
 <script>
 function getRequirementTableList(){
-/* 	var generatedId = $("#generatedId").val();
-	var requirementTitle = $("#requirementTitle").val();
-	var noticePeriod = $("#noticePeriod").val();
-	var client = $("#client").val();
-	var updatedOn = $("#updatedOn").val();
-	var requirementSkills = $("#requirementSkills").val();
-	var city = $("#city").val(); */
 	 $("#addApplicantDivLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#reqDataTableSearch").val();
