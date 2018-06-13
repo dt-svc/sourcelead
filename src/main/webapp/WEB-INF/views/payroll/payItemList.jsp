@@ -38,6 +38,11 @@ $(document).ready(function(){
 </ul>
 </div>
 </div>
+
+<div class="success_pop" id="payItemMsgDiv" style="display: none;">
+	<i class="fa fa-check-circle"></i><span id="payItemMsg"></span>
+</div>
+
 <div id="loading"></div>
 <div class="styleTables datatable_filter" >
 <div id="payItemDiv"></div>
@@ -98,9 +103,8 @@ $(document).ready(function(){
 			        		 result = result + '  </td>';
 			        		 result = result + '<td>';
 			        		 result = result + '<ul class="list-unstyled list-inline mb0">';
-			        		 result = result + '<li class="hidden"><a href="javascript:void()" title="View" class="anchor-black"><i class="fa fa-eye-slash"></i></a></li>';
-			        		 result = result + '<li><a href="javascript:void()" title="Edit" class="anchor-black"><i class="fa fa-pencil"></i></a></li>';
-			        		 result = result + '<li><a href="javascript:void()" title="Delete" class="text-danger"><i class="fa fa-trash"></i></a></li>';
+			        		 result = result + '<li><a onclick="redirectPayItem(\''+opt.payItemUUID+'\');" title="Edit" class="anchor-black"><i class="fa fa-pencil"></i></a></li>';
+			        		 result = result + '<li><a onclick="deletePayItem(\''+opt.payItemUUID+'\');" title="Delete" class="text-danger"><i class="fa fa-trash"></i></a></li>';
 			        		 result = result + '</ul>';
 			        		 result = result + '</td>';
 			        		 result = result + '  </tr>';
@@ -136,6 +140,30 @@ function viewPayItemPagination(){
        }
     });
     $("#viewOptionsTable").wrap("<div class='overflow_Auto width100percnt'></div>")
+}
+
+function redirectPayItem(payItemUUID){
+	var sourceleadUrl = '${sourceleadUrl}';
+	window.location.href = sourceleadUrl + "/editPayItem?&payItemUUID="+payItemUUID;
+}
+
+function deletePayItem(payItemUUID){
+	var sourceleadUrl = '${sourceleadUrl}';
+	$.get(sourceleadUrl+"/deletePayItem?"+tokenParamName+"="+tokenValue+"&payItemUUID="+payItemUUID,  function(result) {
+		 if (result.response === "AWKWARD") {
+            location.href = "/errorPage";
+        } else if (result.response === "SUCCESS") {
+        	getPayItemList();
+        	$("#payItemMsgDiv").removeAttr("style");
+ 			$("#payItemMsgDiv").css({ display: "block" });
+ 			$("#payItemMsg").html("Payitem deleted Successfully..!!");
+ 			payItemMsgFadein();
+        }
+	});
+}
+function payItemMsgFadein() {
+	$("#payItemMsgDiv").fadeIn(200);
+    $('#payItemMsgDiv').delay(2000).fadeOut('slow');
 }
 </script>
 <jsp:include page="../masterFooter.jsp" />

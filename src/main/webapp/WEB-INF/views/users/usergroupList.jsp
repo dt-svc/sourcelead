@@ -166,9 +166,6 @@ function confirmDeleteUserGroup(groupUUID){
          } else if (result.response === "SUCCESS") {
         	 $("#remove_user_pop, .project_inn_mask").fadeOut();
         	 hub();
-         }  else {
-				$('#groupIdDiv').find('p.jquery_form_error_message').remove();
-			  	$("#groupId").after("<p class='jquery_form_error_message'>"+groupId+" already exists..!!</span>");
          }
 	});
 }

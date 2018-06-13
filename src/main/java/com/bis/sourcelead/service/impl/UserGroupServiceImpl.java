@@ -51,6 +51,7 @@ public class UserGroupServiceImpl implements UserGroupService{
 					userGroup = new UserGroup();
 					userGroup.setCreatedDate(new Date());
 					userGroup.setCreatedBy(user.getUserCode());
+					userGroup.setGroupUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				}
 				userGroup.setGroupId(userGroupDTO.getGroupId());
 				userGroup.setGroupName(userGroupDTO.getGroupName());
@@ -59,7 +60,6 @@ public class UserGroupServiceImpl implements UserGroupService{
 				userGroup.setDescription(userGroupDTO.getDescription());
 				userGroup.setPayFrequency(userGroupDTO.getPayFrequency());
 				userGroup.setOrgLocationId(orgLocations);
-				userGroup.setGroupUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 				userGroup.setStatus(1);
 				UserGroup savedUserGroup = userGroupDao.saveUserGroup(userGroup);
 				if(savedUserGroup != null) {
