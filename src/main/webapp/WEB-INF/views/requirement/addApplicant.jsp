@@ -383,7 +383,7 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 	
 	
 	result = result + '<div class="row">';
-	result = result + '	<div class="col-md-6 upresume mb">';
+	result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
 	result = result + '<label class="col-md-4">Add Resume</label>';
 	result = result + '		<div class="col-md-8">';
 	result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
