@@ -106,7 +106,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
 	  		prepareCandidateList(url);
 	  		// advanced search pop up close 
-	  		closePop();
+//	  		closePop();
 			return true;
 		 }else{ 
 				return false;

@@ -405,11 +405,11 @@ function savePaymentAccount() {
         } else {
             if(validate('paymentAccountBankName', "Bank Name")
                     && validate('paymentAccountNumber', "Account Number")
-                    && validate('paymentAccountRoutingNumber', "Routing Number")
-                    && validate('paymentAccountFirstName', "First Name")
-                    && validate('paymentAccountLastName', "Last Name")
+                    && validate('paymentBSRNumber', "BSR Number")
                     && validate('paymentMICRCode', "MICR Code")
-                    && validate('paymentBSRNumber', "BSR Number")) {
+                    && validate('paymentAccountRoutingNumber', "IFSC Code	")
+                    && validate('paymentAccountFirstName', "First Name")
+                    && validate('paymentAccountLastName', "Last Name")) {
             	data["micrCode"] = $("#paymentMICRCode").val().trim();
             	data["bsrNumber"] = $("#paymentBSRNumber").val().trim();
                 data["accountNumber"] = $("#paymentAccountNumber").val().trim();

@@ -2595,6 +2595,7 @@ function vendorFileterPopUp(){
 function resetVendorFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
 	getVendorList();
+	 $(".advancedsearch-mask").fadeIn();
 	
 }
 
@@ -2612,6 +2613,7 @@ function resetVendorContactFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
 	getVendorContactList();
+	 $(".advancedsearch-mask").fadeIn();
 	
 }
 </script>
@@ -2644,7 +2646,7 @@ function resetVendorContactFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="closeVendorFilterPop();getVendorList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetVendorFilter();closeVendorFilterPop();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetVendorFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>
@@ -2692,7 +2694,7 @@ function resetVendorContactFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="vendorClientContactFilterPop();getVendorContactList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetVendorContactFilter();vendorClientContactFilterPop();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetVendorContactFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>

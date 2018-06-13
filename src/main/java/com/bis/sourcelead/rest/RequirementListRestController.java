@@ -705,7 +705,7 @@ public class RequirementListRestController {
 					requirementSubmissionsDTO.setSortColumn(tableColumns[sortColumnIndex]);
 					requirementSubmissionsDTO.setSortOrder(sortColumnOrder);
 					
-					list = requirementSubmissionService.loadSubmissionsListByRequirementId(requirementSubmissionsDTO);
+					list = requirementSubmissionService.loadSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation);
 					
 					if (list.getData() != null && list.getData().size() > 0) {
 						for (RequirementSubmission requirementSubmission : list.getData()) {
