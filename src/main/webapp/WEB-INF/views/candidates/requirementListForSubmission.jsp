@@ -412,7 +412,6 @@ function submitCandidtesToJob(){
 				    		location.href = "/errorPage";
 				    	} else if (data.response === "SUCCESS") {
 				    		$("#requirementsListLoading").removeAttr("style");
-			       			$("#successMsgDiv").html("Great ! you have successfully submitted to this job");
 			       			getRequirementTableList();
 				    	}else if (data.indexOf('Sign In') !== -1) {
 				    		location.replace(sourceleadUrl);
