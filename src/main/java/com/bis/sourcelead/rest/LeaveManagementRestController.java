@@ -2659,33 +2659,7 @@ public class LeaveManagementRestController {
 	}
 	
 
-	@RequestMapping(value = "/ws/dumpAllLeavesToAssociates", method = RequestMethod.GET)
-	public boolean getRestActionHistoryList(HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		boolean isInserted = false;
-		List<OrgLocations> locationsList = orgLocationService.getAllOrgLocations();
-		for (OrgLocations orgLocation : locationsList) {
-			List<User> userList = userService.getUsersListByOrglocationId(orgLocation.getId());
-			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
-			for (LeaveType leaveType : leaveTypeList) {
-				List<User> insertUserList = new ArrayList<>();
-				for (User usr : userList) {
-					AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), usr.getId(), orgLocation.getId());
-					if (associa == null) {
-						insertUserList.add(usr);
-					}
-				}
-				if (!insertUserList.isEmpty() && insertUserList.size() > 0) {
-					int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList, orgLocation, leaveType, orgLocation.getUser());
-					if (result > 0) {
-						isInserted = true;
-					}
-				}
-			}
-		}
-		return isInserted;
-	}
-
+	
 	/**
 	 * returns Withdraw leaves jsp
 	 * 
