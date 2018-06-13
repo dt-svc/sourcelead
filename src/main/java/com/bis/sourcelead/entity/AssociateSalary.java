@@ -179,25 +179,14 @@ public class AssociateSalary {
 		this.grossSalary = grossSalary;
 	}
 
-
-	public BigDecimal getHourlyRate()
+	public BigDecimal getHourly()
 	{
-		return hourlyRate;
+		return hourly;
 	}
 
-	public void setHourlyRate(BigDecimal hourlyRate)
+	public void setHourly(BigDecimal hourly)
 	{
-		this.hourlyRate = hourlyRate;
-	}
-
-	public String getAllowOverTimePay()
-	{
-		return allowOverTimePay;
-	}
-
-	public void setAllowOverTimePay(String allowOverTimePay)
-	{
-		this.allowOverTimePay = allowOverTimePay;
+		this.hourly = hourly;
 	}
 
 	public String getAssociateSalaryUuid()

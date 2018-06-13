@@ -4,13 +4,13 @@
  <script type="text/javascript">
     $(document).ready(function(){
     	$(".add-row").click(function(){
-            var i = $("#index").val(); 
+            var i = $("#index").val();
         	var deductionType = $("#dedType").val();
         	var deductionTypeValue = $('#dedType :selected').text();
         	var amount = $("#amt").val();
         	if(deductionType != null && deductionType != '' && deductionType != 'undefined' && amount != null && amount != '' && amount != 'undefined'){
                   var method = $("#mthd").val();
-                  var markup = "<tr><td><input type='checkbox' name='record'></td><td><input type='hidden' id='deductionType' name='deductionDTOList["+i+"].deductionType' value='"+deductionType+"'/>" + deductionTypeValue + "</td><td><input type='hidden' id='method' name='deductionDTOList["+i+"].method' value='"+method+"' />" + method + "</td><td><input type='hidden' id='amount' name='deductionDTOList["+i+"].amount' value='"+amount+"'/>" + amount + "</td></tr>";
+                  var markup = "<tr><td><input type='checkbox' name='record'></td><td><input type='hidden' id='deductionType' name='deductionDTOList["+i+"].deductionType' value='"+deductionType+"'/>" + deductionTypeValue + "</td><td><input type='hidden' id='method' name='deductionDTOList["+i+"].method' value='"+method+"' />" + method + "</td><td><input type='hidden' id='amount' name='deductionDTOList["+i+"].amount' value='"+amount+"'/>" + amount + "</td><td><a onclick='deleteRow();'><i class='fa fa-remove text-danger'></i></a></td></tr>";
                   $("#deductionTrAdd").append(markup);
                   i++;
                   $("#index").val(i);	
@@ -19,14 +19,30 @@
         });
         
         // Find and remove selected table rows
-        $(".delete-row").click(function(){
+      /*   $(".delete-row").click(function(){
             $("#deductionTrAdd").find('input[name="record"]').each(function(){
             	if($(this).is(":checked")){
                     $(this).parents("tr").remove();
                 }
             });
-        });
+        }); */
+        
     });    
+</script>
+
+<script>
+
+function deleteRow(){
+	var i = $("#index").val();
+	 $("#deductionTrAdd").find('input[name="record"]').each(function(){
+     	if($(this).is(":checked")){
+             $(this).parents("tr").remove();
+             i--;
+             $("#index").val(i);
+         }
+     });
+}
+
 </script>
 
 <script>
@@ -95,16 +111,17 @@ getDeductionType();
                   
                   <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
-                 <a href="javascript:void(0)" class="anchorBlack" onclick="skipAssociateDeductionJsp();">Skip</a>
+                 <input type="button" value="Previous" onclick="shiftToTaxTab();" class="btn btn-default">
 			     </div>
                   <div class="col-md-6">
                    <div class="pull-right">
+                   <input value="Skip" class="btn btn-default mr10" onclick="skipAssociateDeductionJsp();" type="button">
                     <input value="Save & Continue" class="btn btn-success btnSuccess" type="button" id="associate_deduction_save_button" onclick="saveAssociateDeduction();">
                     <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
                     </div>
                   </div>
                 </div>
-                 <button type="button" class="delete-row">Delete Row</button>
+<!--                  <button type="button" class="delete-row">Delete Row</button> -->
                  </form:form>
             </div>
           	
@@ -149,7 +166,7 @@ $('body').on('blur', '#associate_deduction_form', function() {
 	                	/* $("#associateId").val(result.object.userId); */
 						var associateContribution = document.getElementById("associateContribution");
 						document.getElementById("associateContribution").removeAttribute("class"); 
-						associateDeduction.href="#tab-5"; 
+						associateContribution.href="#tab-5"; 
 						$("#associateContribution").click();
 	                } else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
@@ -168,7 +185,7 @@ $('body').on('blur', '#associate_deduction_form', function() {
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Please add atleast one deduction type to save</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b><input class='u_can_color' type='button'  value='Ok' onClick='deductionPopup();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input class='u_can_color' type='button'  value='Ok' onClick='deductionPopup();' style='width:100%'></b>";
 		result = result +"	</div>";
 		$("#deductionPopup").append(result);
 		$("#remove_user_pop").slideDown(200);
@@ -178,6 +195,19 @@ $('body').on('blur', '#associate_deduction_form', function() {
    
  }
  </script>
+ 
+ 
+ <script>
+function shiftToTaxTab(){
+	var associates = document.getElementById("associateTax");
+	document.getElementById("associateTax").removeAttribute("class"); 
+	associates.href="#tab-3"; 
+	$("#loading").removeAttr('style');
+	$("#associate_tax_button" ).addClass('button').val('Save & Continue');
+    $("#associate_tax_button").removeAttr("disabled");
+    $("#associateTax").click();
+}
+</script>
  
  
 <script type="text/javascript">
@@ -233,7 +263,7 @@ function deductionPopup(){
  function skipAssociateDeductionJsp(){
 	    var associateContribution = document.getElementById("associateContribution");
 		document.getElementById("associateContribution").removeAttribute("class"); 
-		associateDeduction.href="#tab-5"; 
+		associateContribution.href="#tab-5"; 
 		$("#associateContribution").click();
  }
  </script>
