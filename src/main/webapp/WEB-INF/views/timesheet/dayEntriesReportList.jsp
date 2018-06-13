@@ -65,12 +65,11 @@
                 <th>Ticket No</th>
                 <th>Project Name</th>
                 <th>Task</th>
-                <th>Billable<br>
-                  Hrs</th>
-                <th>Non<br>
-                  Billable<br>
-                  Hrs</th>
+                <th>Billable<br>Hrs</th>
+                <th>Non<br>Billable<br>Hrs</th>
                 <th>Status</th>
+                <!-- <th>Submitted On</th>
+                <th>Approved On</th> -->
               </tr>
             </thead>
             <tbody>
@@ -85,6 +84,8 @@
 	                <td><div class="tblminwidth-50">${entryList.billableHrs}</div></td>
 	                <td><div class="tblminwidth-50">${entryList.nonBillableHrs}</div></td>
 	                <td><div class="tblminwidth-50" title="${entryList.status}">${entryList.status}</div></td>
+	               <%--  <td><div class="tblminwidth-50" title="${entryList.submittedOn}">${entryList.submittedOn}</div></td>
+	                <td><div class="tblminwidth-50" title="${entryList.approvedOn}">${entryList.approvedOn}</div></td> --%>
 	              </tr>
             </c:forEach>
               

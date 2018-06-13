@@ -57,6 +57,11 @@ public class TimesheetSubmissionsDocumentsServiceImpl implements TimesheetSubmis
 		return timesheetSubmissionsDocumentsDao.getAllTimesheetSubmissionsDocumentsHistoryByTimesheetActivityId(activityId);
 	}
 
+	@Override
+	public List<Long> getAllTimesheetSubmissionsDocumentIdsBySubmissionId(Long submissionId) throws Exception {
+		return timesheetSubmissionsDocumentsDao.getAllTimesheetSubmissionsDocumentIdsBySubmissionId(submissionId);
+	}
+
 	
 	
 		

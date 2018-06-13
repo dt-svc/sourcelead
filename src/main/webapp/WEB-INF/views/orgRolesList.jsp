@@ -9,8 +9,7 @@ window.onload = function () {
 	getRolesList();
  };
 </script>
-
-
+ 
 <style type="text/css">
 .dataTables_wrapper .dataTables_filter input {
 background-color: #f5f5f5;
@@ -25,6 +24,7 @@ padding-right: 254px; padding-top: 10px;
           <div class="pull-left">
             <h2>Roles List</h2>
           </div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;Roles List </div>
         </section>
 
         
@@ -357,7 +357,7 @@ function getRolesList(){
    		    		result = result +'<td>';
    		    		result = result +'<div>';
    		    		result = result +'<label class="label label-success">';
-   		    		result = result +'<a class="anchorWhite" href="<c:url value="/app/roleActions/'+report.id+'"/>""><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
+   		    		result = result +'<a class="anchorWhite" href="<c:url value="/app/roleActions/'+report.uuid+'"/>""><i class="fa fa-key"></i>&nbsp;&nbsp;Configure</a>';
    		    		result = result +'</label>';
    		    		result = result +'</div>';
    		    		result = result +'</td>';

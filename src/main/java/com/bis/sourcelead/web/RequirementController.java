@@ -211,6 +211,7 @@ public class RequirementController {
 		
 		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		model.addObject("loginUser",loginUser);
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
 		 SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_REQUIREMENT);
@@ -275,7 +276,12 @@ public class RequirementController {
 			model.addObject("requirement",requirement);
 			model.addObject("requirementId",requirement.getId());
 			if(null != requirement.getClientId()){
-				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), loginUser.getId(),orgLocations.getId(),"Client");
+				long managerUserId = 0;
+				if (requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId() == loginUser.getId())
+					managerUserId = requirement.getManagerUserId().getId();
+				else
+					managerUserId = loginUser.getId();
+				List<OrgSpoc> clientContactList  = orgSpocService.getAllSpocsByOrgRelationId(requirement.getClientId().getId(), managerUserId, orgLocations.getId(),"Client");
 				/*commented by Prasad salina, here no need to iterate list, because in service impl we already itarated the list.
 				 * if(null != clientContactList){
 					for(OrgSpoc orgSpoc : clientContactList){
@@ -600,7 +606,6 @@ public class RequirementController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request,"isAdmin");
 		ModelAndView model = new ModelAndView();
-		
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(sessionData == null)
 		{
@@ -700,9 +705,10 @@ public class RequirementController {
 			}
 			requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
 			
-			if (requirement.getCreatedBy().getId().equals(loginUser.getId())) {
+			if (requirement.getCreatedBy().getId().equals(loginUser.getId())
+					|| (requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId().equals(loginUser.getId()))) {
 				requirement.setIsLoginUserAsInitiator("true");
-			}else {
+			} else {
 				requirement.setIsLoginUserAsInitiator("false");
 			}
 	

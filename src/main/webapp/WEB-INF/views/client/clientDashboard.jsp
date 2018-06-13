@@ -57,8 +57,8 @@ z-index: 1;
 				</h2>
 			</div>
 
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; Clients List</a></div>
-		</section>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>"></a>Home&raquo; Clients List</a></div>
+			</section>
 
 		<!-- Project -->
 		
@@ -2458,7 +2458,7 @@ function clientFileterPopUp(){
 function resetClientFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
 	getClientList();
-	
+	$(".advancedsearch-mask").fadeIn();
 }
 
 //Client Contact
@@ -2474,7 +2474,7 @@ function resetClientContactFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
 	getClientContactList();
-	
+	 $(".advancedsearch-mask").fadeIn();
 }
 </script>
 <!-- clinet related Fileter popup -->
@@ -2506,7 +2506,7 @@ function resetClientContactFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientFilterPop();getClientList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetClientFilter();closeClientFilterPop();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetClientFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>
@@ -2554,7 +2554,7 @@ function resetClientContactFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientContactFilterPop();getClientContactList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetClientContactFilter();closeClientContactFilterPop();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetClientContactFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>

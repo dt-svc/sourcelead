@@ -2,6 +2,10 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+/**
+ * @author BIS
+ *
+ */
 public class AssociateBalanceLeaveDTO {
 	
 	private String id;
@@ -20,6 +24,7 @@ public class AssociateBalanceLeaveDTO {
 	
 	private Long leaveTypeId;
 	
+	private float balanceLeaveCounts;
 	
 	private List<TotalLeaveDTO> totalLeavesDto;
 
@@ -112,6 +117,14 @@ public class AssociateBalanceLeaveDTO {
 	{
 		this.leaveTypeId = leaveTypeId;
 	}
-	
-	
+
+	public float getBalanceLeaveCounts()
+	{
+		return balanceLeaveCounts;
+	}
+
+	public void setBalanceLeaveCounts(float balanceLeaveCounts)
+	{
+		this.balanceLeaveCounts = balanceLeaveCounts;
+	}
 }

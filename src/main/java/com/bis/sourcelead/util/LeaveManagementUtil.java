@@ -260,8 +260,8 @@ public class LeaveManagementUtil {
 	public Map<String,Float> getMonthlyAppliedLeaves(Leave leave, LeaveDTO leaveDTO, User user) throws Exception{
 		Map<String,Float> monthlyLeaves = new HashMap<>();
 		String months[] = Constants.MONTHS;
-		Date fromDate = commonUtil.getDateFormat(leaveDTO.getFromDate());
-		Date toDate = commonUtil.getDateFormat(leaveDTO.getToDate());
+		Date fromDate = commonUtil.orgLocationDateFormat(leave.getOrgLocations().getDateFormat(),leaveDTO.getFromDate());
+		Date toDate = commonUtil.orgLocationDateFormat(leave.getOrgLocations().getDateFormat(),leaveDTO.getToDate());
 		
 		String fromHalfday = leave.getFromHalfDay();
 		String toHalfday = leave.getToHalfDay();
@@ -359,7 +359,7 @@ public class LeaveManagementUtil {
         float totalLeaveCount = 0;
         
         if("Monthly".equalsIgnoreCase(leaveType.getPeriod()) && Constants.NO.equalsIgnoreCase(leaveType.getLeavesCarryforward())) {
-        	if("Experienced".equalsIgnoreCase(leaveType.getLeaveEffective())){
+        	/*if("Experienced".equalsIgnoreCase(leaveType.getLeaveEffective())){
                 for(int i=0; i<currentMonth;i++){
                     if(emp.getHireDate() != null){
                         Date joinDate = emp.getHireDate();
@@ -384,12 +384,13 @@ public class LeaveManagementUtil {
                 }
                 
                 totalbalanceLeaveCounts = totalbalanceLeaveCounts - totalLeaveCount;
-            }else{
-//                for(int i=0; i<currentMonth;i++){
-                    totalLeaveCount = leaveType.getNoOfDays();
-//                }
+            }else{*/
+                for(int i=0; i<currentMonth;i++){
+                    totalLeaveCount += leaveType.getNoOfDaysPerPeriod();
+                }
+                totalbalanceLeaveCounts =  totalbalanceLeaveCounts - totalLeaveCount;
 //                totalbalanceLeaveCounts = totalbalanceLeaveCounts - totalLeaveCount;
-            }
+//            }
         }
         
         
