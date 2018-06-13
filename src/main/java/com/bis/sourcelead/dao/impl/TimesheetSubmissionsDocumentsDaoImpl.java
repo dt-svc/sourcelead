@@ -98,7 +98,7 @@ public class TimesheetSubmissionsDocumentsDaoImpl implements TimesheetSubmission
 	@Transactional(rollbackFor = { Exception.class })
 	public List<TimesheetSubmissionsDocumentsHistory> getAllTimesheetSubmissionsDocumentsHistoryBySubmissionId(Long submissionId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from TimesheetSubmissionsDocuments tsd where tsd.timesheetSubmissions.Id =:submissionId) ";
+	    String query = "from TimesheetSubmissionsDocuments tsd where tsd.timesheetSubmissions.Id =:submissionId ";
 	    List<TimesheetSubmissionsDocumentsHistory> timesheetSubmissionsDocumentsHistoryList = session.createQuery(query.toString()).setLong("submissionId", submissionId).list();
         return timesheetSubmissionsDocumentsHistoryList;
 	}
@@ -109,9 +109,20 @@ public class TimesheetSubmissionsDocumentsDaoImpl implements TimesheetSubmission
 	@Transactional(rollbackFor = { Exception.class })
 	public List<TimesheetSubmissionsDocumentsHistory> getAllTimesheetSubmissionsDocumentsHistoryByTimesheetActivityId(Long activityId) {
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from TimesheetSubmissionsDocumentsHistory tsdHistory where tsdHistory.timesheetActivity =:activityId) ";
+	    String query = "from TimesheetSubmissionsDocumentsHistory tsdHistory where tsdHistory.timesheetActivity =:activityId ";
 	    List<TimesheetSubmissionsDocumentsHistory> timesheetSubmissionsDocumentsHistory = session.createQuery(query.toString()).setLong("activityId", activityId).list();
         return timesheetSubmissionsDocumentsHistory;
+	}
+
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Long> getAllTimesheetSubmissionsDocumentIdsBySubmissionId(Long submissionId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "Select tsd.Id from TimesheetSubmissionsDocuments tsd where tsd.timesheetSubmissions.Id =:submissionId and tsd.status = '1') ";
+	    List<Long> timesheetSubmissionsDocumentsHistoryList = session.createQuery(query.toString()).setLong("submissionId", submissionId).list();
+        return timesheetSubmissionsDocumentsHistoryList;
 	}
 
 

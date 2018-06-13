@@ -10,5 +10,4 @@ public interface TimesheetActivityService {
 	List<TimesheetActivities> getTimesheetActivityByProjectIdMasterCandidateIdFrequencyStartAndEndDate(Long projectId, Long masterCandidateId, String timesheetFrequency, OrgLocations orgLocations) throws Exception;
 
 	TimesheetActivities saveTimesheetActivity(TimesheetActivities ta);
-
 }

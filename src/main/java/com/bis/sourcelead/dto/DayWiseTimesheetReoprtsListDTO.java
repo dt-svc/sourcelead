@@ -12,6 +12,8 @@ public class DayWiseTimesheetReoprtsListDTO {
 	private String status;
 	private String billableTotalCount;
 	private String nonBillableTotalCount;
+	private String submittedOn;
+	private String approvedOn;
 	
 	public String getTimesheetDate() {
 		return timesheetDate;
@@ -79,7 +81,16 @@ public class DayWiseTimesheetReoprtsListDTO {
 	public void setNonBillableTotalCount(String nonBillableTotalCount) {
 		this.nonBillableTotalCount = nonBillableTotalCount;
 	}
-	
-	
-	
+	public String getSubmittedOn() {
+		return submittedOn;
+	}
+	public void setSubmittedOn(String submittedOn) {
+		this.submittedOn = submittedOn;
+	}
+	public String getApprovedOn() {
+		return approvedOn;
+	}
+	public void setApprovedOn(String approvedOn) {
+		this.approvedOn = approvedOn;
+	}
 }

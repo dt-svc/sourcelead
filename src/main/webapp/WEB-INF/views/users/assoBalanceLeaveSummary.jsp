@@ -25,13 +25,14 @@ function assocBalanceLeaveSummary(userId){
          		result = result + '<input type="hidden" value='+opt.assoBalLeaveUUID+' />';
          		result = result + '<label  class="col-md-3"><th>'+opt.leaveTypeName+'</th></label>';
          		result = result + '<div class="col-md-2">';
-         		result = result + '<input type="text" value='+opt.noofLeaves+' id="'+i+'noofLeaves" name="'+i+'noofLeaves" class="form-control" onblur="editAssBalLeave(\''+opt.assoBalLeaveUUID+'\','+i+','+userId+')">';
+         		result = result + '<input type="text" value='+opt.noofLeaves+' id="'+i+'noofLeaves" readonly name="'+i+'noofLeaves" class="form-control" onblur="editAssBalLeave(\''+opt.assoBalLeaveUUID+'\','+i+','+userId+')">';
          		
          		result = result + '<div id="'+i+'errorDiv" style="color:red;"></div>';
          		result = result + '</div>';
          		result = result + '<div class="col-md-1 paddingLeft">';
-         		result = result + '<i class="fa fa-pencil cursorPointer mt5"></i>';
+         		result = result + '<i class="fa fa-pencil cursorPointer mt5" onclick="editBalLeave(\''+i+'noofLeaves\');"></i>';
          		result = result + '</div>';
+         		result = result + '<label  class="col-md-3 mt10"><th>Balance : '+opt.balanceLeaveCounts+' / '+opt.noofLeaves+'</th></label>';
          		result = result + '</div>';
          		result = result + '</div>';
           	   } 
@@ -48,8 +49,10 @@ function assocBalanceLeaveSummary(userId){
         	    $("#tab-29").append(result);
                  },
               }); 
-	
-	
+}
+
+function editBalLeave(typeId){
+	$("#"+typeId+"").removeAttr("readonly");
 }
 </script>
 
@@ -62,7 +65,8 @@ function editAssBalLeave(assoBalLeaveUUID,rowId,userId){
 	        type : "PUT",
 	         url: sourceleadUrl+"/editAssBalLeave?"+tokenParamName+"="+tokenValue+"&assoBalLeaveUUID="+assoBalLeaveUUID+"&totalLeaves="+totalLeaves,        
 	         success :function(json) {  
-	        	 assocBalanceLeaveSummary(userId)
+	        	 assocBalanceLeaveSummary(userId);
+	        	 $('#'+rowId+'').attr("readonly",true);
 	                 },
 	              }); 
 	}else{

@@ -835,7 +835,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                     // This Condition is if The Requirement is Released by the login User
                 }else{
                     //This is for Requirement Manger
-                    String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
+                    String subQuery1 = "(reqSub.requirement.managerUserId.id  =:userId or reqSub.requirement.primaryRecruiterUserId.id = :userId) ";
                     params.put("userId",user.getId());
                     
                     // This is if the user is  created by
@@ -2795,7 +2795,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO) throws Exception {
+		public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocations) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
 			List<RequirementSubmission> requirementSubmissionList = null;
 			ResponseList<RequirementSubmission> response = new ResponseList<>();
@@ -2804,9 +2804,6 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			if(requirementSubmissionsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(requirementSubmissionsDTO.getSearchValue())) {
 				
 				java.sql.Date sqlDate = null;
-				 OrgLocations orgLocations = orgLocationsDao.getOrgLocations(requirementSubmissionsDTO.getOrgLocationId());
-				 
-				 
 				 
 				 Pattern pattern = Pattern.compile("^(([0-9]{0,4})[-{1}]([0-9]{0,4})[-{1}]([0-9]{0,4}))$");
 				 Matcher matcher = pattern.matcher(requirementSubmissionsDTO.getSearchValue());
@@ -2904,7 +2901,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						// This Condition is if The Requirement is Released by the login User
 					}else{
 						//This is for Requirement Manger 
-						String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
+						String subQuery1 = "(reqSub.requirement.managerUserId.id  =:userId or reqSub.requirement.primaryRecruiterUserId.id  =:userId) ";
 						params.put("userId",requirementSubmissionsDTO.getUserId());
 						
 						//This is for Requirement Created by
@@ -3062,7 +3059,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							// This Condition is if The Requirement is Released by the login User
 						}else{
 							//This is for Requirement Manger 
-							String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
+							String subQuery1 = "(reqSub.requirement.managerUserId.id  =:userId or reqSub.requirement.primaryRecruiterUserId.id  =:userId) ";
 							params.put("userId",requirementSubmissionsDTO.getUserId());
 							//This is for Requirement Created by
 							String subQuery6 = "reqSub.requirement.createdBy =:requirementUsercode ";
