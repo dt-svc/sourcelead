@@ -1185,7 +1185,7 @@ function cancel(candidateId){
 				  </div>
 				  <div class="clearfix advancedsearch-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); minMaxExperience();" class="btn btn-sm btn-success"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); closePop();minMaxExperience();" class="btn btn-sm btn-success"/>
                                <input type="button"  value="Reset"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
                                <!--  <input type="button" value="Cancel" onClick="closePop();clearCandidateSearchKeys();" class="btn btn-sm btn-danger"/> -->
 						  </div>

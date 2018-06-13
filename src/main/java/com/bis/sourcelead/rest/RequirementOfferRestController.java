@@ -144,6 +144,10 @@ public class RequirementOfferRestController {
 		String isClientRequirement = null;
 		
 		Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+		
+		if (requirement != null && requirement.getPrimaryRecruiterUserId() != null) {
+			loginUser = requirement.getManagerUserId();
+		}
 		if(requirement.getIsClientJob() != null && requirement.getIsClientJob().equalsIgnoreCase(Constants.YES)){
 			isClientRequirement = Constants.YES;
 		}else{
