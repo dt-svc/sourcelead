@@ -187,7 +187,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 	{
 		int totalLeaves = 0;
 		try {
-			AssociateBalanceLeave associateBalanceLeave = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveTypeId,userId,orgLocationId);
+			AssociateBalanceLeave associateBalanceLeave = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveTypeId,userId,orgLocationId,1);
 			if(associateBalanceLeave != null) {
 				totalLeaves = Integer.parseInt(associateBalanceLeave.getTotalLeaves());
 			}else {
