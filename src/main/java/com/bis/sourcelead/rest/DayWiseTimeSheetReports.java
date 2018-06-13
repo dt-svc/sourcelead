@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,11 +45,9 @@ private DayEntryReportsService dayEntryReportsService;
 @Autowired
 private ProjectMembersService projectMemberService;
 
-@Autowired
-private UserService userService;
+@Value("${sourceleadUrl}")
+private String sourceleadUrl;
 
-@Autowired
-private CommonUtil commonUtil;
 	
 @RequestMapping(value="/getProjectListBasedOnStartAndEndDate")
 public List<Projects> getProjectListBasedOnStartAndEndDate(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws JsonProcessingException {

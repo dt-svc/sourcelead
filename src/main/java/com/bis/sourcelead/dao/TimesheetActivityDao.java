@@ -7,8 +7,11 @@ import com.bis.sourcelead.entity.TimesheetActivities;
 
 public interface TimesheetActivityDao {
 
-	List<TimesheetActivities> getTimesheetActivityByProjectIdMasterCandidateIdFrequencyStartAndEndDate(Long submissionId, Long masterCAndidateId, Date frequencyStartDate, Date frequencyEndDate);
+	List<TimesheetActivities> getTimesheetActivityByProjectIdMasterCandidateIdFrequencyStartAndEndDate(Long projectId, Long masterCAndidateId, Date frequencyStartDate, Date frequencyEndDate);
 
 	TimesheetActivities saveTimesheetActivity(TimesheetActivities ta);
-
+	
+     Long getTimesheetActivityByProjectIdMasterCandidateIdFrequencyStartAndEndDateAndStatus(Long projectId, Long masterCAndidateId, Date frequencyStartDate, Date frequencyEndDate,String status);
+	
+     TimesheetActivities getTimesheetActivityById(Long timesheetActivitiyId);
 }

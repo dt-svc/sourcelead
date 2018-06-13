@@ -46,6 +46,8 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 	
 	private boolean ticketNumberRequired;
 	
+	private boolean timesheetDocumentRequired;
+	
 	private boolean taskCommentsRequired;
 	
 	private String rejectedReason;
@@ -212,6 +214,14 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 
 	public void setTicketNumberRequired(boolean ticketNumberRequired) {
 		this.ticketNumberRequired = ticketNumberRequired;
+	}
+
+	public boolean isTimesheetDocumentRequired() {
+		return timesheetDocumentRequired;
+	}
+
+	public void setTimesheetDocumentRequired(boolean timesheetDocumentRequired) {
+		this.timesheetDocumentRequired = timesheetDocumentRequired;
 	}
 
 	public boolean isTaskCommentsRequired() {

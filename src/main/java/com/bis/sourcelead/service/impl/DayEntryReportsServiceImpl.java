@@ -11,13 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -28,17 +26,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.TimesheetActivityDao;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsListDTO;
-import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
+import com.bis.sourcelead.entity.TimesheetActivities;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.DayEntryReportsService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -79,6 +76,9 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 	
 	@Autowired
 	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	
+	@Autowired
+	private TimesheetActivityDao timesheetActivityDao;
 	
 	
 	@Override
@@ -269,11 +269,33 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 					writeRow.createCell(9).setCellValue(sah.getSubmissionApprovalStatus().toString());
 					createExcelsheet.autoSizeColumn(9);
 				}
-				
 				if (dayEntries.getComments() != null) {
 					writeRow.createCell(10).setCellValue(dayEntries.getComments());
 					createExcelsheet.autoSizeColumn(10);
 				}
+				String status = null;
+				if(sah.getSubmissionApprovalStatus().getValue().equalsIgnoreCase("submitted for approval")) {
+					status =  "submitted";
+				}else {
+					status = sah.getSubmissionApprovalStatus().getValue();
+				}
+				
+				TimesheetActivities timesheetActivity = getSubmittedAndApprovedDate(projectMember.getProjects().getId(), projectMember.getMasterCandidateId().getId(), sah.getFrequencyStartDate(),sah.getFrequencyEndDate(),status);
+				String submittedDate = null;
+				if(timesheetActivity!= null) {
+					if(timesheetActivity.getActivityStatus().equalsIgnoreCase("submitted")) {
+						submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate());
+						writeRow.createCell(11).setCellValue(submittedDate);
+						createExcelsheet.autoSizeColumn(11);
+					}else if(timesheetActivity.getActivityStatus().equalsIgnoreCase("approved") || timesheetActivity.getActivityStatus().equalsIgnoreCase("rejected")) {
+						writeRow.createCell(11).setCellValue(submittedDate);
+						createExcelsheet.autoSizeColumn(11);
+						writeRow.createCell(12).setCellValue(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate()));
+						createExcelsheet.autoSizeColumn(12);
+					}
+				 }
+				
+				
 				countTotal[0] = totalBillable;
 				countTotal[1] = totalNonbillable;
 				dataMap.put(createExcelsheet, countTotal);
@@ -369,10 +391,10 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		        PdfPTable table = new PdfPTable(headers.length);
 		        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 		        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-		        cell1.setColspan(11);
+		        cell1.setColspan(14);
 		        headerCellStyle(cell1);
 		        table.setWidthPercentage(100);
-	            table.setWidths(new int[]{5, 3, 3,5, 5, 5,5,5,5,3,5});
+	            table.setWidths(new int[]{5, 3, 3,5, 5, 5,5,5,5,3,5,3,3});
 	            table.addCell(cell1);
 		        for (int i = 0; i < headers.length; i++) {
 		            String header = headers[i];
@@ -465,10 +487,27 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 															if (sah != null) {
 																dayArray[9]=(sah.getSubmissionApprovalStatus().toString());
 															}
-															
+															String status = null;
+															if(sah.getSubmissionApprovalStatus().getValue().equalsIgnoreCase("submitted for approval")) {
+																status =  "submitted";
+															}else {
+																status = sah.getSubmissionApprovalStatus().getValue();
+															}
 															if (dayEntries.getComments() != null) {
 																dayArray[10]=(dayEntries.getComments());
 															}
+															TimesheetActivities timesheetActivity = getSubmittedAndApprovedDate(projectMember.getProjects().getId(), projectMember.getMasterCandidateId().getId(), sah.getFrequencyStartDate(),sah.getFrequencyEndDate(),status);
+															String submittedDate = null;
+															if(timesheetActivity!= null) {
+																if(timesheetActivity.getActivityStatus().equalsIgnoreCase("submitted")) {
+																	submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate());
+																	dayArray[11] =(submittedDate);
+																}else if(timesheetActivity.getActivityStatus().equalsIgnoreCase("approved") || timesheetActivity.getActivityStatus().equalsIgnoreCase("rejected")) {
+																	dayArray[11] =(submittedDate);
+																	dayArray[12] =(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate())); 
+																}
+															 }
+															
 															dayList.add(dayArray);
 												}
 											}
@@ -541,10 +580,10 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		        PdfPTable table = new PdfPTable(headers.length);
 		        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 		        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-		        cell1.setColspan(11);
+		        cell1.setColspan(14);
 		        headerCellStyle(cell1);
 		        table.setWidthPercentage(100);
-	            table.setWidths(new int[]{3, 5, 3,5, 5, 5,5,5,5,3,5});
+	            table.setWidths(new int[]{3, 5, 3,5, 5, 5,5,5,5,3,5,3,3});
 	            table.addCell(cell1);
 		        for (int i = 0; i < headers.length; i++) {
 		            String header = headers[i];
@@ -619,8 +658,27 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 															dayArray[9]=(sah.getSubmissionApprovalStatus().toString());
 														}
 														
+														String status = null;
+														if(sah.getSubmissionApprovalStatus().getValue().equalsIgnoreCase("submitted for approval")) {
+															status =  "submitted";
+														}else {
+															status = sah.getSubmissionApprovalStatus().getValue();
+														}
+														
+														TimesheetActivities timesheetActivity = getSubmittedAndApprovedDate(projectMember.getProjects().getId(), projectMember.getMasterCandidateId().getId(), sah.getFrequencyStartDate(),sah.getFrequencyEndDate(),status);
+														String submittedDate = null;
+														if(timesheetActivity!= null) {
+															if(timesheetActivity.getActivityStatus().equalsIgnoreCase("submitted")) {
+																submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate());
+																dayArray[10] =(submittedDate);
+															}else if(timesheetActivity.getActivityStatus().equalsIgnoreCase("approved") || timesheetActivity.getActivityStatus().equalsIgnoreCase("rejected")) {
+																dayArray[10] =(submittedDate);
+																dayArray[11] =(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate())); 
+															}
+														 }
+														
 														if (dayEntries.getComments() != null) {
-															dayArray[10]=(dayEntries.getComments());
+															dayArray[12]=(dayEntries.getComments());
 														}
 														dayList.add(dayArray);
 													}
@@ -658,63 +716,6 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		}
 		
 		
-		
-		
-		/*private String[] prepareUserStringArray(TimeSheetDayEntries dayEntries, String[] headers, ProjectMembers projectMember, OrgLocations orgloc) throws Exception {
-			String dayArray[] = new String[headers.length];
-			String weekDayName;
-			SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
-			weekDayName = dayFormat.format(dayEntries.getTimesheetDate());
-			if (dayEntries.getTimesheetDate() != null) {
-				dayArray[0] = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), dayEntries.getTimesheetDate());
-			}
-			if (weekDayName != null && !"".equalsIgnoreCase(weekDayName)) {
-				dayArray[1]=(weekDayName);
-			}
-				if (projectMember != null && projectMember.getMasterCandidateId() != null) {
-					if(projectMember.getProjectMemberCandidteId().getLastName()!=null) {
-						StringBuilder sb = new StringBuilder();
-						dayArray[2]=(sb.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(" ").append(projectMember.getProjectMemberCandidteId().getLastName()).toString());
-					}else {
-						dayArray[2]=(projectMember.getProjectMemberCandidteId().getFirstName());
-					}
-				}
-				
-				if (projectMember != null && projectMember.getProjects() != null) {
-					dayArray[3]=(projectMember.getProjectMemberCandidteId().getEmail());
-				}
-				
-				if (dayEntries!= null) {
-					dayArray[4]=(dayEntries.getTicketNumber());
-				}
-				
-				if (dayEntries.getTimesheetSubmissions() != null && dayEntries.getTimesheetSubmissions().getProjects() != null) {
-					dayArray[5]=(dayEntries.getTimesheetSubmissions().getProjects().getProjectName());
-				}
-				
-				if (dayEntries.getProjectTask() != null && dayEntries.getProjectTask().getId() != null) {
-					ProjectTasks projectTask = projecttasksservice.getTasksId(dayEntries.getProjectTask().getId().toString());
-					dayArray[6]=(projectTask.getTaskName());
-				}
-				if (dayEntries.getBillableHours() != null) {
-					dayArray[7]=(dayEntries.getBillableHours());
-				}
-				if (dayEntries.getNonBillableHours() != null) {
-					dayArray[8]=(dayEntries.getNonBillableHours());
-				}
-				  SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeBySubmissionId(dayEntries.getTimesheetSubmissions().getId(), projectMember.getMasterCandidateId().getId());
-				if (sah != null) {
-					dayArray[9]=(sah.getSubmissionApprovalStatus().toString());
-				}
-				
-				if (dayEntries.getComments() != null) {
-					dayArray[10]=(dayEntries.getComments());
-				}
-			   
-			return dayArray;
-			
-		
-		}*/
 		
 		
 		private static void headerCellStyle(PdfPCell cell){
@@ -784,8 +785,30 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 										if (sah != null) {
 											listDto.setStatus(sah.getSubmissionApprovalStatus().toString());
 										}
+										
+										String status = null;
+										if(sah.getSubmissionApprovalStatus().getValue().equalsIgnoreCase("submitted for approval")) {
+											status =  "submitted";
+										}else {
+											status = sah.getSubmissionApprovalStatus().getValue();
+										}
+										
+										TimesheetActivities timesheetActivity = getSubmittedAndApprovedDate(projectMember.getProjects().getId(), projectMember.getMasterCandidateId().getId(), sah.getFrequencyStartDate(),sah.getFrequencyEndDate(),status);
+										String submittedDate = null;
+										if(timesheetActivity!= null) {
+											if(timesheetActivity.getActivityStatus().equalsIgnoreCase("submitted")) {
+												submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate());
+												listDto.setSubmittedOn(submittedDate);
+											}else if(timesheetActivity.getActivityStatus().equalsIgnoreCase("approved") || timesheetActivity.getActivityStatus().equalsIgnoreCase("rejected")) {
+												listDto.setSubmittedOn(submittedDate);
+												listDto.setApprovedOn(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate())); 
+											}
+										 }
 											dayEntriesListDto.add(listDto);
 										}
+								 
+								         
+								 
 							}
 					}
 				}
@@ -851,6 +874,24 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 												if (sah != null) {
 													listDto.setStatus(sah.getSubmissionApprovalStatus().toString());
 												}
+												String status = null;
+												if(sah.getSubmissionApprovalStatus().getValue().equalsIgnoreCase("submitted for approval")) {
+													status =  "submitted";
+												}else {
+													status = sah.getSubmissionApprovalStatus().getValue();
+												}
+												
+												TimesheetActivities timesheetActivity = getSubmittedAndApprovedDate(projectMember.getProjects().getId(), projectMember.getMasterCandidateId().getId(), sah.getFrequencyStartDate(),sah.getFrequencyEndDate(),status);
+												String submittedDate = null;
+												if(timesheetActivity!= null) {
+													if(timesheetActivity.getActivityStatus().equalsIgnoreCase("submitted")) {
+														submittedDate = commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate());
+														listDto.setSubmittedOn(submittedDate);
+													}else if(timesheetActivity.getActivityStatus().equalsIgnoreCase("approved") || timesheetActivity.getActivityStatus().equalsIgnoreCase("rejected")) {
+														listDto.setSubmittedOn(submittedDate);
+														listDto.setApprovedOn(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), timesheetActivity.getCreatedDate())); 
+													}
+												 }
 													dayEntriesListDto.add(listDto);
 												}
 										 	}
@@ -869,6 +910,12 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 	}
 
 
+
+	private TimesheetActivities getSubmittedAndApprovedDate(Long projectMemberId, Long masterCandidateId, Date frequencyStartDate, Date frequencyEndDate,String status) {
+		Long timesheetActivityId = timesheetActivityDao.getTimesheetActivityByProjectIdMasterCandidateIdFrequencyStartAndEndDateAndStatus(projectMemberId, masterCandidateId, frequencyStartDate,frequencyEndDate,status);
+		TimesheetActivities timesheetActivity = timesheetActivityDao.getTimesheetActivityById(timesheetActivityId);
+	return timesheetActivity;
+	}
 
 	private String convertMinuteToHours(Long totalHours, String actualTimeString) {
 		int actualHours = (int) (totalHours / 60);
