@@ -1379,13 +1379,14 @@ function closeInvoiceFilterPop(){
 function openInvoiceFilterPop(orgRelationId,clientLocationId){
 	 $("#invoiceFilterId").toggle();
 	 $('#search_requiremet').attr("onclick","getClientInvoiceList("+orgRelationId+","+clientLocationId+");closeInvoiceFilterPop();");
-	 $('#clear_search').attr("onclick","resetInvoiceFilter("+orgRelationId+","+clientLocationId+");closeInvoiceFilterPop();");
+	 $('#clear_search').attr("onclick","resetInvoiceFilter("+orgRelationId+","+clientLocationId+");");
 	 $(".comMask").fadeIn();
 }
 function resetInvoiceFilter(orgRelationId,clientLocationId){
 	$("ul#paymnetFilter > li input:checkbox").prop("checked",false);
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	getClientInvoiceList(orgRelationId,clientLocationId)
+	$(".comMask").fadeIn();
 }
 </script>
 

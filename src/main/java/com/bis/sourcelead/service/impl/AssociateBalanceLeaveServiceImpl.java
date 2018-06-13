@@ -133,7 +133,7 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getLeaveTypeUUID(), orgLocations.getId(), loginUser.getId());
+				List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getLeaveTypeUUID(), orgLocations.getId(), userId);
 				for (Leave leave : totalleavesTaken) {
 					float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
 					if (Constants.APPROVED.equalsIgnoreCase(leave.getStatus())
