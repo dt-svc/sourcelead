@@ -706,7 +706,7 @@ public class RequirementController {
 			requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
 			
 			if (requirement.getCreatedBy().getId().equals(loginUser.getId())
-					|| requirement.getPrimaryRecruiterUserId().getId().equals(loginUser.getId())) {
+					|| (requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId().equals(loginUser.getId()))) {
 				requirement.setIsLoginUserAsInitiator("true");
 			} else {
 				requirement.setIsLoginUserAsInitiator("false");
