@@ -205,9 +205,6 @@ function submitCandidatesToJob(){
 		result = result + '<h3>Requirement List</h3>';
 		result = result + '<div id="choicepopUp"></div>';
 		result = result + '<div id="requirementsListLoading"></div>';
-		result  = result + '<div class="success_pop" id="selector4">';
-		result  = result + '<i class="fa fa-check-circle"></i><span id="successMsgDiv"></span>';
-		result = result +"</div>";
 		/* result = result +" <div class='mr pull-left'>";
 		result = result +" <button type='button' onclick='jobAdvSearch()' class='btn btn-primary btn-sm'>Advanced Search&nbsp;&nbsp;<i class='fa fa-search'></i></button>";
 		result = result +"</div>"; */
@@ -406,8 +403,6 @@ function submitCandidtesToJob(){
 				    		location.href = "/errorPage";
 				    	} else if (data.response === "SUCCESS") {
 				    		$("#requirementsListLoading").removeAttr("style");
-			       			$("#successMsgDiv").html("Great ! you have successfully submitted to this job");
-			       			successMsgFadeinFunction();
 			       			document.getElementById("radio"+jobId).checked = false;
 				    	}else if (data.indexOf('Sign In') !== -1) {
 				    		location.replace(sourceleadUrl);
