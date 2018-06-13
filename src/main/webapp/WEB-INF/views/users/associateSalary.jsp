@@ -78,10 +78,11 @@ $(document).ready(function(){
 					<div class="clearfix"></div>
                   <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
-                 <a href="javascript:void(0)" class="anchorBlack">Skip</a>
+                 <input type="button" value="Previous" onclick="shiftToAssociateTab();" class="btn btn-default">
 			     </div>
                   <div class="col-md-6">
                    <div class="pull-right">
+                   <input type="button" onclick="skipSalaryJsp();" class="btn btn-default mr10" value="Skip">
                     <input value="Save & Continue" class="btn btn-success btnSuccess" id="save_asso_sal_button" type="button" onclick="saveAssocioateSal();">
                     <input value="Cancel" class="btn btn-default ml10" type="button">
                     </div>
@@ -340,6 +341,8 @@ function calculateHourlyRateSal(){
  <script type="text/javascript">
  function saveAssocioateSal() {
 	 var userId = $("#associateId").val();
+	var empType = $("#empType").val(); 
+
 	 if ($('#associate_salary_form').validate(false, validationSettings)){ 
 			   var formData = $($('#associate_salary_form')[0]).serialize();
 				$("#saveAssocioateSal").attr("disabled", "disabled");
@@ -386,9 +389,31 @@ function calculateHourlyRateSal(){
  
 </script>
 
+
+<script>
+function shiftToAssociateTab(){
+	var associates = document.getElementById("associates");
+	document.getElementById("associates").removeAttribute("class"); 
+	associates.href="#tab-1"; 
+	$("#loading").removeAttr('style');
+	$("#create_user" ).addClass('button').val('Save & Continue');
+    $("#create_user").removeAttr("disabled");
+    $("#associates").click();
+}
+</script>
+
 <script>
 function selectCheckBox(i){
 	var isChecked = $("#"+i+"payItemCheck").is(':checked');
 	$("#"+i+"payItemCheck").val(isChecked);
 }
 </script>  
+
+<script>
+function skipSalaryJsp(){
+	var associateBanking = document.getElementById("associateBanking");
+	document.getElementById("associateBanking").removeAttribute("class"); 
+	associateBanking.href="#tab-2"; 
+	$("#associateBanking").click();
+}
+</script>
