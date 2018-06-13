@@ -31,11 +31,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.CandidateOnBoardingDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SubmissionRequirementListViewDTO;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
@@ -45,7 +44,6 @@ import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.RequirementLocationsService;
@@ -2268,7 +2266,7 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Override
 	@Transactional
-	public ResponseList<RequirementDTO> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,
+	public ResponseList<SubmissionRequirementListView> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,
 			Long userId, Long orgLocationId) throws Exception {
 		
 		
@@ -2276,7 +2274,7 @@ public class RequirementDaoImpl implements RequirementDao {
 		String query = null;
 		List<Long> countlist = null;
 		Integer filterCount = 0;
-		ResponseList<RequirementDTO> response = new ResponseList<>();
+		ResponseList<SubmissionRequirementListView> response = new ResponseList<>();
 		Query queryObj = null;
 		List<SubmissionRequirementListView> requirementList = null;
 		
@@ -2331,29 +2329,12 @@ public class RequirementDaoImpl implements RequirementDao {
 				response.setRecordsFiltered(totalCount);
 			}
 			
-			response.setData(getRequirementList(requirementList));
+			response.setData(requirementList);
 			return response;
 		
 	}
 	
-	private List<RequirementDTO> getRequirementList(List<SubmissionRequirementListView> requirementList) throws Exception {
-		
-		List<RequirementDTO> requiremntDTOList = new ArrayList<>();
-		if(requirementList != null && !requirementList.isEmpty()) {
-			for(SubmissionRequirementListView requirement : requirementList) {
-				RequirementDTO requirementDTO = new RequirementDTO();
-				requirementDTO.setId(requirement.getId());
-				requirementDTO.setGeneratedId(requirement.getGeneratedId());
-				requirementDTO.setJobTitle(requirement.getJobTitle());
-				requirementDTO.setReqCreatedDate(requirement.getCreatedDate());
-				requirementDTO.setLocation(requirement.getLocation());
-				requiremntDTOList.add(requirementDTO);
-			}
-		}
-		
-		return requiremntDTOList;
-		
-	}
+
 
 }
 

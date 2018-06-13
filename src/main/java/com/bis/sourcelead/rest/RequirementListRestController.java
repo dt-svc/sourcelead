@@ -19,10 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -57,8 +54,6 @@ import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.UserDTO;
-import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -84,10 +79,10 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionCounts;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
+import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.ApplicantSubmissionDisplayStatus;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
@@ -2426,13 +2421,13 @@ public class RequirementListRestController {
 	
 	
 	@RequestMapping(value = "/getRequirementListForCandidateBulkSubmission")
-	public @ResponseBody ResponseList<RequirementDTO> getRequirementListForCandidateBulkSubmission(RequirementDTO requirementDTO,HttpServletRequest request) throws Exception {
+	public @ResponseBody ResponseList<SubmissionRequirementListView> getRequirementListForCandidateBulkSubmission(RequirementDTO requirementDTO,HttpServletRequest request) throws Exception {
 
 	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 	    
 			
-			String[] tableColumns = { "id","generatedId", "jobTitle", "createdDate", "location"};
+			String[] tableColumns = { "action","generatedId", "jobTitle", "createdDate", "location"};
 			int sortColumnIndex = 1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default descending order
 			if (requirementDTO.getOrder() != null && !requirementDTO.getOrder().isEmpty()) {
@@ -2441,7 +2436,7 @@ public class RequirementListRestController {
 			}
 			requirementDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			requirementDTO.setSortOrder(sortColumnOrder);
-			ResponseList<RequirementDTO> requirementDTOList = requirementService.getAllRequirementsForCandidateSubmission(requirementDTO, user.getId(), orgLocations.getId());
+			ResponseList<SubmissionRequirementListView> requirementDTOList = requirementService.getAllRequirementsForCandidateSubmission(requirementDTO, user.getId(), orgLocations.getId());
 			return requirementDTOList;
 			
 		}
