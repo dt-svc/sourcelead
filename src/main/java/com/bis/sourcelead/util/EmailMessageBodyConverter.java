@@ -257,7 +257,6 @@ public String convertTemplateBodyOfEmailTemplate(String body,Map<String, String>
 			
 			int first = tests.indexOf(tests);
 			int last = tests.indexOf(tests)+tests.length();
-			
 			tempStr.replace(tempStr.indexOf(tests), tempStr.indexOf(tests)+tests.length(), sb.toString());
 			
 

@@ -38,6 +38,8 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 	
 	private List<EmployeeTimesheetFileInfoDTO> timsheetAttachments;
 	
+	private List<Long> oldSubmittedProjectMembersList;
+	
 	private Map<Long,EmployeeTimeSheetSubmissionStatusDTO> statusMap;
 	
     private boolean monEditable;
@@ -303,5 +305,15 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 	public void setSaveButtonVisible(boolean saveButtonVisible) {
 		this.saveButtonVisible = saveButtonVisible;
 	}
+
+	public List<Long> getOldSubmittedProjectMembersList() {
+		return oldSubmittedProjectMembersList;
+	}
+
+	public void setOldSubmittedProjectMembersList(List<Long> oldSubmittedProjectMembersList) {
+		this.oldSubmittedProjectMembersList = oldSubmittedProjectMembersList;
+	}
+
+
      
 }

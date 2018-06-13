@@ -247,63 +247,9 @@ $(document).ready(function(){
   getNotificationsByuserId();
 });
 </script>
-
-
-<script>
-function getNotificationsByuserId(){
-	var userId = '${SourceLeadWeb_user.id}';
-	var  orgCode ='${SourceLeadWeb_orgCode}';
-	var locationCode = '${SourceLeadWeb_locationCode}';
-	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	$.get(sourceleadUrl+"/getNotificationsByuserId?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&locationCode="+locationCode+"&orgCode="+orgCode+"&orgLocationId="+orgLocationId, function(json) {
-		var data = json.data
-		var result = "";
-		result = result + '<div class="header-widget alert-area">';
-		result = result + '<ul class="list-unstyled">';
-		if(data !=null && data !='' && data !='undefined'){
-			for(var i=0;i<data.length;i++){
-				var opt = data[i];
-				result = result + ' <li>';
-				result = result + '<div class="clearfix msg">';
-				result = result + '<div class="msg-img"> <span>';
-				if(opt.userType !=null && opt.userType !='' && opt.userType !='undefined' && opt.fileUrl !=null && opt.fileUrl !='' && opt.fileUrl !='undefined'){
-				result = result + ' <img class="img-circle" title='+opt.firstName+' alt='+opt.userType+' onerror="predefineProfileImage(this);" src='+opt.fileUrl+'>';
-				}
-				result = result + ' </span> </div>';
-				result = result + '<div class="msg-content">';
-				
-// 				if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID == null || report.spocUUID == "" || report.spocUUID == "undefined")){
-// 					result = result +'<a href="'+report.actionLink+'" title="'+report.body+'">'+report.body+'</a>';
-// 				}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && (report.orgRelationUUID != null && report.orgRelationUUID != "" && report.orgRelationUUID != "undefined") && report.responderType == "vendor"){
-// 					result = result +'<a href="/app/vendorsList?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.body+'">'+report.body+'</a>';
-// 				}else if((report.actionLink != null && report.actionLink != '' && report.actionLink != 'undefined') && ( report.spocUUID != null && report.spocUUID != "" && report.spocUUID != "undefined") && (report.spocInvitationStatus == "Accepted" || report.spocInvitationStatus == "Rejected") && (report.orgRelationUUID != null && report.orgRelationUUID != "" && report.orgRelationUUID != "undefined")&& report.responderType == "client"){
-// 					result = result +'<a href="/app/clientDashboard?orgRelationUUID='+report.orgRelationUUID+'" title="'+report.body+'">'+report.body+'</a>';
-// 				}else{
-// 					result = result +'<a href="#" title="'+report.body+'">'+report.body+'</a>';
-// 				}
-				
-				result = result + ' <a href="<c:url value="/app/notificationsList"/>"><p>'+opt.body+'</p>';
-				
-				/* result = result + ' <c:out value='+userId+' />'; */
-				result = result + ' <span>'+opt.calDays+'</span></a> ';
-				result = result + '</div>';
-				result = result + ' </div>';
-				result = result + ' </li>';
-			} 
-			
-		}else{
-			result = result + '<div class="clearfix msg_blank">All Caught UP!!! </div>'
-		}
-          result = result + '</ul>';
-         result = result + '<div class="headerwidget-footer"> <a href="<c:url value="/app/notificationsList"/>">View All</a> </div>';
-          result = result + ' </div>';
-		
-		$("#ndiv").empty();
-      $("#ndiv").append(result);
-		
-	});
-}
-</script>
+<!-- notification related include jsp -->
+<jsp:include page="headerNotificationList.jsp"></jsp:include>
+ 
 
 <!-- <script>
 $(window).load(function() {
@@ -696,34 +642,8 @@ function preventTabkey(e){
          
           <%-- <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}"> --%>
           <li id="alert"> 
-          <a href="#" title="Alerts" id="alert" onmouseover="notificationStatusAsRead();" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount > 0 ? SourceLeadWeb_notificationCount : ''}</span></a>
+          <a href="#" title="Alerts" id="alert" > <i class="fa fa-bell bell" ></i> <span class="label label-warning">${SourceLeadWeb_notificationCount > 0 ? SourceLeadWeb_notificationCount : ''}</span></a>
            <div id="ndiv"></div>
-            <%-- <div class="header-widget alert-area">
-              <ul class="list-unstyled">
-              <c:if test="${empty SourceLeadWeb_notificationList}">
-              	<div class="clearfix msg_blank">
-                     All Caught UP!!! 
-                  </div>
-              	</c:if>
-               <c:if test="${!empty SourceLeadWeb_notificationList}">
-                <c:forEach var="report" items="${SourceLeadWeb_notificationList}" end="4">
-                <li>
-                  <div class="clearfix msg">
-                    <div class="msg-img"> <span>
-                    <img class="img-circle" title="${report.notificationFrom.firstName} ${report.notificationFrom.lastName}" alt="${report.notificationFrom.userType}" onerror="predefineProfileImage(this);" src="${report.notificationFrom.fileUrl}">
-                    </span> </div>
-                    <div class="msg-content">
-                     <a href="#"><p>${report.body}</p>
-                     <c:out value="${userId}" />
-                      <span>${report.calDays}</span></a> 
-                   </div>
-                  </div>
-                </li>
-                </c:forEach>
-                </c:if>
-              </ul>
-              <div class="headerwidget-footer"> <a href="<c:url value='/notificationsList'/>">View All</a> </div>
-            </div> --%>
           </li>
 <%--           </c:if> --%>
 
@@ -782,7 +702,9 @@ function preventTabkey(e){
 						  <sec:authorize access="hasRole('ROLE_LEAVE_CONFIGURE')"> 
 						  	<li><a href="<c:url value="/app/leaveConfiguration" />"><i class="fa fa-key" aria-hidden="true"></i>Leave Configuration</a></li>
 						  </sec:authorize>
-						  
+						  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+                                                    <li><a href="<c:url value="/app/job-boards" />"><i class="fa fa-key" aria-hidden="true"></i>Job Board Configuration</a></li>
+                                                 </sec:authorize>
 					  	<sec:authorize access="!hasRole('ROLE_ENROLL_ORG')"> 
 					  	<li><a href="<c:url value="/app/customFields" />"><i class="fa fa-align-justify" aria-hidden="true"></i>Custom Fields</a></li>
 					  	</sec:authorize>
@@ -955,24 +877,7 @@ function preventTabkey(e){
 	  $('#spockLinksList').hide();
   });
   </script>
-  
-  <script>
-function notificationStatusAsRead(){   
-	var sourceleadUrl = '${sourceleadUrl}';
-	var  orgCode ='${SourceLeadWeb_orgCode}';
-	 var locationCode = '${SourceLeadWeb_locationCode}';
-	 $.ajax({
-	      type: "POST",
-	  	  url: sourceleadUrl+"/notificationStatusAsRead?${_csrf.parameterName}=${_csrf.token}&orgCode="+orgCode+"&locationCode="+locationCode,
-	  			  success :function(data) {
-	  				 //$("span.label-warning").text(0);
-      			 }							     
-	}); 
-	 /* $("#alert").click(function(){
-         $("span.label-warning").text(0);
-	 }); */
-}
-</script>
+
 
   <!-- Header Area --> 
   
@@ -2008,72 +1913,6 @@ $('body').on('blur', '#inviteCompany_form', function() {
 <script src="/resources/js/campaignRecipient.js"></script>
 <div id='campaignRecipient' class='popUpReci'></div> 
 <%-- </c:if> --%>
-
-
- 
-<!-- 
-<script>
-// This example displays an address form, using the autocomplete feature
-// of the Google Places API to help users fill in the information.
-function initLocationAuto(id) {
-// 	geolocate();
-    initialize(id);
-}
-/* $("#autocomplete").on('focus', function () {
-    
-});
- */
-var placeSearch, autocomplete;
-var componentForm = {
-    locality: 'long_name',
-    administrative_area_level_1: 'long_name',
-    country: 'long_name',
-    postal_code: 'short_name'
-};
-
-function initialize(id) {
-	   autocomplete = new google.maps.places.Autocomplete((document.getElementById('autocomplete')), {
-			        types: ['geocode']
-			    });
-	   
-    /* autocomplete = new google.maps.places.Autocomplete((document.getElementById(id)), {
-    	types: ['(cities)']
-    }); */
-    google.maps.event.addListener(autocomplete, 'place_changed', function () {
-        fillInAddress();
-    });
-}
-function fillInAddress() {
-    var place = autocomplete.getPlace();
-	document.getElementById("latitude").value = place.geometry.location.lat();
-    document.getElementById("longitude").value = place.geometry.location.lng();
-	
-    for (var component in componentForm) {
-        document.getElementById(component).value = '';
-        document.getElementById(component).disabled = false;
-    }
-
-    for (var i = 0; i < place.address_components.length; i++) {
-        var addressType = place.address_components[i].types[0];
-        if (componentForm[addressType]) {
-            var val = place.address_components[i][componentForm[addressType]];
-            document.getElementById(addressType).value = val;
-        }
-    }
-}
-function geolocate() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            var geolocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
-            document.getElementById("latitude").value = latitude;
-            document.getElementById("longitude").value = longitude;
-            autocomplete.setBounds(new google.maps.LatLngBounds(geolocation, geolocation));
-        });
-    }
-}
-</script> -->
 
 <script>
 function initLocationAuto(locationId,countryId,stateId,cityId,zipCodeId,latitudeId,longtitudeId,type,addressId) {

@@ -248,7 +248,32 @@ public class UserServiceImpl implements UserService {
 		  if(StringUtils.isNotBlank(addUserDTO.getExtensionNumber())){
 		    	user.setExtensionNumber(addUserDTO.getExtensionNumber());
 		    }
-		 
+		  if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {
+			  user.setMiddelName(addUserDTO.getMiddleName());
+			  }else{
+			  user.setMiddelName(null);
+			  }
+
+			  if(StringUtils.isNotBlank(addUserDTO.getGender())) {
+			  user.setGender(addUserDTO.getGender());
+			  }else{
+			  user.setGender(null);
+			  }
+
+			  if(StringUtils.isNotBlank(addUserDTO.getMaritalStatus())) {
+			  user.setMaritalStatus(addUserDTO.getMaritalStatus());
+			  }else{
+			  user.setMaritalStatus(null);
+			  }
+
+			  if(StringUtils.isNotBlank(addUserDTO.getDateofBirth())){
+			  try {
+			  user.setDateOfBirth(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofBirth()));
+
+			  } catch (Exception e) {
+			  e.printStackTrace();
+			  }
+			  }
 	   }
 	   
 	   if(null == user){
@@ -1625,6 +1650,12 @@ public class UserServiceImpl implements UserService {
 	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates)
 			throws Exception {
 		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates);
+	}
+
+	@Override
+	public List<User> getUsersByEmailList(List<String> userEmail,OrgLocations orgLocation)
+	{
+		return userDao.getUsersByEmailList(userEmail,orgLocation);
 	}
 	
 }

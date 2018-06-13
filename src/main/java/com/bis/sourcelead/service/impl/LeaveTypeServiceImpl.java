@@ -268,7 +268,9 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 						ProjectTasks  tasks  = null;
 						tasks  = new ProjectTasks();
 						LookUpData taskType = lookUpDataService.getTasksTypeByUniqueKey(Constants.GENERAL);
-						tasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects));
+						if(projects.getProjectShortCode() != null) {
+							tasks.setGeneratedId(commonUtil.getProjectTaskGenaratedId(projects));
+						}
 						tasks.setProjectTasksUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 						tasks.setTaskName(leaveTypeDTO.getName());
 						tasks.setDescription(leaveTypeDTO.getName());
@@ -416,5 +418,17 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	@Override
 	public List<ProjectTasks> getProjectTaskByorgLocationIdAndLeaveTypeId(Long orgLocationId, Long leaveTypeId) {
 		return leaveTypeDao.getProjectTaskByorgLocationIdAndLeaveTypeId(orgLocationId,leaveTypeId);		
+	}
+
+	@Override
+	public List<LeaveType> getLeaveTypesByTypeList(List<String> typeList, OrgLocations orgLocation)
+	{
+		return leaveTypeDao.getLeaveTypesByTypeList(typeList,orgLocation);
+	}
+
+	@Override
+	public LeaveType getLeaveTypeByLeaveTypeName(String leaveTypeName,OrgLocations orgLocation)
+	{
+		return leaveTypeDao.getLeaveTypeByLeaveTypeName(leaveTypeName,orgLocation);
 	}
 }

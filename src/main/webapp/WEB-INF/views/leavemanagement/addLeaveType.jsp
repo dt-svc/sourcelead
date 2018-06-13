@@ -34,21 +34,7 @@
 		var leaveEffective = '${leaveType.leaveEffective}';
 		if (leaveEffective == 'All Employees' || leaveEffective == '') {
 			hideExperienced();
-		/* 	$('#newJoineeDiv').find('p.jquery_form_error_message').remove();
-			$('#experiencedDiv').find('p.jquery_form_error_message').remove();
-			$('#newJoinee').removeAttr('data-validation');
-			$('#newJoinee').attr('data-validation-optional', "true");
-			$('#experiencedType').removeAttr('data-validation');
-			$('#experiencedType').attr('data-validation-optional', "true");
-			$('#experiencedDuration').removeAttr('data-validation');
-			$('#experiencedDuration').attr('data-validation-optional', "true");
-			$('#experiencedApplicableDays').removeAttr('data-validation');
-			$('#experiencedApplicableDays').attr('data-validation-optional', "true");
-			$("#experiencedGroup").hide();
-			$("#noOfDaysDiv").show();
-			$('#noOfDays').removeAttr('data-validation-optional');
-			$('#noOfDays').attr('data-validation', "required");
- */		}else{
+			}else{
 			showExperienced();
 		}
 		var priorLeave = '${leaveType.priorLeaveApplying}';
@@ -310,6 +296,7 @@
 						<div class="form-group" id="noOfDaysDiv">
 							<label class="col-md-4">No Of Days Annualy<span class="text-danger paddingLeft" >*</span></label>
 							<div class="col-md-3">
+							   <input type="hidden" name="previousNoOfdays" id="previousNoOfdays" value="${leaveType.noOfDays}"/>
 								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" placeholder="Enter no of Days" onblur="getNoOfDaysPerPeriod();" class="form-control" value="${leaveType.noOfDays}">
 							</div>
 						</div>
@@ -452,35 +439,35 @@
 						<div class="form-group">
 							<label class="col-md-4 checkBox">
 								<c:if test="${leaveType.autoApprove == 'Y'}">
-									<input type="checkbox" name="autoApprove" value="Y" checked id="autoApproveChekBox">Auto approve
+									<input type="checkbox" name="autoApprove" value="Y" checked id="autoApproveChekBox" onclick="validateAutoApprove();">Auto approve
 								</c:if>
 								<c:if test="${leaveType.autoApprove == 'N' || empty leaveType.autoApprove}">
-									<input type="checkbox" name="autoApprove" value="Y" id="autoApproveChekBox">Auto approve
+									<input type="checkbox" name="autoApprove" value="Y" id="autoApproveChekBox" onclick="validateAutoApprove();">Auto approve
 								</c:if>
 							</label>
 							<div class="col-md-6">
 								<div class="clearfix" id="autoApproveDiv">
 									<label class="radioIput">
 										<c:if test="${leaveType.autoApproveType == 'Grade'}">
-											<input type="radio" name="autoApproveType" id="grade" checked value="Grade">Grade
+											<input type="radio" name="autoApproveType" id="grade" onclick="getGradeList();" checked value="Grade">Grade
 										</c:if>
 										<c:if test="${leaveType.autoApproveType != 'Grade'}">
-											<input type="radio" name="autoApproveType" id="grade" value="Grade">Grade
+											<input type="radio" name="autoApproveType" id="grade" onclick="getGradeList();" value="Grade">Grade
 										</c:if>
 									</label>
 									<label class="radioIput ml">
 										<c:if test="${leaveType.autoApproveType == 'Role'}">
-											<input type="radio" name="autoApproveType" id="role" value="Role">Role
+											<input type="radio" name="autoApproveType" id="role" onclick="getRoleList();" checked value="Role">Role
 										</c:if>
 										<c:if test="${leaveType.autoApproveType != 'Role'}">
-											<input type="radio" name="autoApproveType" id="role" value="Role">Role
+											<input type="radio" name="autoApproveType" id="role" onclick="getRoleList();" value="Role">Role
 										</c:if>
 									</label>
 									
 									<div class="clearfix"></div>
 									<div class="row mt10">
 										<div class="col-md-12" id="chosenGrade" style="display:none;">
-											<select class="chosen-select" multiple id="gradeListId" data-placeholder="Select Grade" name="autoApproveTypeList">
+											<select class="chosen-select" multiple id="gradeListId" data-placeholder="Select Grade" name="autoApproveTypeList" field-name="Grade">
 												<c:forEach var="grade" items="${gradelist}">
 													<c:set var="NUM" value="${0}" />
 													<c:forEach var="existedGrade" items="${existGrade}">
@@ -496,7 +483,7 @@
 											</select>
 										</div>
 										<div class="col-md-12" id="chosenRole" style="display:none;">
-											<select class="chosen-select" multiple id="roleListId" data-placeholder="Select Role" name="autoApproveTypeList">
+											<select class="chosen-select" multiple id="roleListId" data-placeholder="Select Role" name="autoApproveTypeList" field-name="Role">
 												<c:forEach var="role" items="${rolesList}">
 													<c:set var="NUM" value="${0}" />
 													<c:forEach var="existedRoles" items="${autoApproveRole}">
@@ -762,37 +749,21 @@
 function validateDuration(){
 	 var maxDays = ($('#maxDays').val());
 	    var minDays = ($('#minDays').val());
-	    
-	    if (parseFloat(maxDays) <= parseFloat(minDays)){
+	    var days=($('#noOfDays').val());
+	  if((parseFloat(maxDays)>parseFloat(days))||(parseFloat(maxDays) <= parseFloat(minDays))){
 	        $('#expId').find('p.jquery_form_error_message').remove(); 
 			$('input#expValidation').attr('class','error signin_fild');
-			$("input#expValidation").after("<p class='jquery_form_error_message'>Max Days should be greater than Min Days</p>");
+			$("input#expValidation").after("<p class='jquery_form_error_message'>Max Days should be greater than Min Days and also max days should be less than no Of Days Per Period  </p>");
 			$('input#expValidation').attr('record-exist','yes');
-			$('input#expValidation').attr('record-exist-errorMsg','Max Days should be greater than Min Days'); 
+			$('input#expValidation').attr('record-exist-errorMsg','Max Days should be greater than Min Days');
 	    }  else{
 	    	$('#expId').find('p.jquery_form_error_message').remove(); 
 	    	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
 			$('#expId').find('p.jquery_form_error_message').remove();
 	    }
+
 }
 
-/*function setTemplateValues(){
-	var requirementId = document.getElementById('template').value;
-	getEditRequirementDetails(requirementId);
-	if(requirementId != null && requirementId !='' && requirementId != 'undefined'){
-		
-// 		getRequirementAndLookUpSkills(requirementId);
-	$.ajax({
-	   	type: "POST",
-	    url: sourceleadUrl+"/getRequirementById?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
-		    success: function(json) {
-		    	if(json != null && json != 'undefined' && json !='' ){ 
-		    		if(json.fileName != null && json.fileName != '' && json.fileName !='undefined'){
-		    			$("#templateId").val(json.id);
-		    		}
-		    		$("#minDays").val(json.minDays);
-			    	$("#maxDays").val(json.maxDays);
-			    	*/
 	function validateName() {
 	
 		var locationId = '${SourceLeadWeb_orgLocationId}';
@@ -1026,18 +997,25 @@ function validateDuration(){
  $("#autoApproveChekBox").click(function() {
 	 $("#autoApproveDiv").toggle();
  });
- $("#grade").click(function() {
+function getGradeList() {
 	 $("#chosenRole").hide();
 	 $("#roleListId").val("");
 	 $('#roleListId').trigger("chosen:updated");
 	 $("#chosenGrade").show();
- });
- $("#role").click(function() {
+	 
+	 $('#gradeListId').removeAttr('data-validation-optional');
+	 $('#gradeListId').attr('data-validation', "required");
+	 $('#roleListId').removeAttr('data-validation');
+ }
+function getRoleList() {
 	 $("#chosenGrade").hide();
 	 $("#gradeListId").val("");
 	 $('#gradeListId').trigger("chosen:updated");
 	 $("#chosenRole").show();
- });
+	 $('#roleListId').removeAttr('data-validation-optional');
+	 $('#roleListId').attr('data-validation', "required");
+	 $('#gradeListId').removeAttr('data-validation');
+ }
  
 function getNoOfDaysPerPeriod(){
 	 var period = $("#period").val();
@@ -1054,5 +1032,15 @@ function getNoOfDaysPerPeriod(){
 	 }
 	 $("#noOfDaysPerPeriod").val(calculatedDays);
  }
- 
+ </script>
+ <script>
+ function validateAutoApprove(){
+	 var ckbox = $('#autoApproveChekBox');
+		if (ckbox.is(':checked')) {
+			$("#grade").attr('checked', true);
+			getGradeList();
+		}else{
+			$("#grade").removeAttr("checked");
+		}
+ }
  </script>

@@ -2595,6 +2595,7 @@ function vendorFileterPopUp(){
 function resetVendorFilter(){
 	$("ul#tierFilter > li input:checkbox").prop("checked",false);
 	getVendorList();
+	 $(".advancedsearch-mask").fadeIn();
 	
 }
 
@@ -2612,11 +2613,12 @@ function resetVendorContactFilter(){
 	$("ul#statusFilter > li input:checkbox").prop("checked",false);
 	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
 	getVendorContactList();
+	 $(".advancedsearch-mask").fadeIn();
 	
 }
 </script>
 <!-- clinet related Fileter popup -->
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="vendorFilterId">
+          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="vendorFilterId" style="display: none">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="closeVendorFilterPop()"><i
 						class="fa fa-close"></i></a>
@@ -2644,14 +2646,14 @@ function resetVendorContactFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="closeVendorFilterPop();getVendorList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetVendorFilter();closeVendorFilterPop();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetVendorFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>
 
 
 
-          <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search-medium" id="vendorContactFilterId">
+          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="vendorContactFilterId" style="display: none">
 				<h5 class="headerAdsrch">Filter Search
 					<a href="javascript:void(0)" class="close-div" onClick="vendorClientContactFilterPop()"><i
 						class="fa fa-close"></i></a>
@@ -2692,7 +2694,7 @@ function resetVendorContactFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="vendorClientContactFilterPop();getVendorContactList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetVendorContactFilter();vendorClientContactFilterPop();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetVendorContactFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>

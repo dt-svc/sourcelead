@@ -26,6 +26,13 @@
 			});
 </script>
 
+<script type="text/javascript">
+//script for upload file
+document.getElementById("uploadBtn").onchange = function () {
+	document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();
+}
+</script>
+
 <style type="text/css">
 .timeBalance-scroll .col-md-2 {
 border: 1px solid #ccc; padding-top:15px; margin:0 15px 15px; text-transform:capitalize;
@@ -50,8 +57,48 @@ background-color: #fcfcfc;
         <div class="project_side_wrap_inn_tabs" id="new-id">
         
          <sec:authorize access="hasRole('ROLE_APPLY_LEAVE')"> 
-             <div class="pull-right">
-                 <a href="<c:url value='${appPath}/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
+             <div class="pull-right tblminwidth-125">
+             <div class="success_pop" id="msgDiv" style="display: none;"></div>
+              <form:form id="upload_leave_excel_form" name="upload_leave_excel_form" enctype="multipart/form-data">
+                 <div title="Import" class="positionRelartive pull-left zIndex mr">
+					        	<a onclick="leaveImport();"><i class="glyphicon glyphicon-import expIcon mt5"></i>&nbsp;</a> 
+						        	<div class="dowload_pop">
+					        			<div class="modal-content">
+						        			<div class=modal-header>
+							        			 <button type="button" class="close" data-dismiss="modal" onClick="closeImportFile();">&times;</button>
+						          				<h4 class="modal-title">Leave Import</h4>
+						        			</div>
+						        			<div class="modalBody">
+						        				<div class="row">
+						        					<div class="col-md-12 mb5 clearfix">
+						        					<a href="<c:url value='${appPath}/downloadLeaveTemplate'/>" class="text-primary">
+						        						Download Template :
+														<i class="ml fa fa-download"></i>
+														</a>
+						        					</div>
+						        					<div class="clearfix"></div>
+						        					
+						        					
+						        					<div class="col-md-12">
+						        					<div class="uploadTempalte">
+						        					<input type="file" class="margin-top0" id="leaveInputFileId" name="file" data-validation="required validate_importFile" field-name="File">
+						        					</div>
+						        					</div>
+						        				</div>
+						        			</div>
+						        			<div class="clearfix modalFooter">
+						        				<div class="pull-right">
+						        						<button type="button" class="btn btn-success btnSuccess btn-sm mr" onclick="importLeaves();">Import</button>
+						        						<button type="button" class="btn btn-default btn-sm mr" onclick="resetUpload();">Reset</button>
+						        				</div>
+						        			</div>
+					        			</div>
+						        	</div>
+						        </div>
+						        </form:form>
+			        <div class="pull-left">
+		                 <a href="<c:url value='${appPath}/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
+		            </div>
              </div>
          </sec:authorize>  
           <ul class="project-tabs-menu projecttabs-custom">
@@ -1313,5 +1360,79 @@ function leaveExcelExport(){
 	}
 }
 </script>
+
+<script>
+function leaveImport(){
+	resetUpload();
+	$(".dowload_pop").toggle();
+}
+function closeImportFile(){
+	$(".dowload_pop").hide();
+}
+function leaveImpPopClose(){
+	$(".side_mask").fadeOut(200);
+	$(".DocAccPopup").fadeOut(100);	
+}
+</script>
+
+
+<script type="text/javascript">
+function importLeaves(){
+	var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+if ($('#upload_leave_excel_form').validate(false, validationSettings)){
+	var frm = $('#upload_leave_excel_form').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, "");
+	
+	
+	//It will escape all the special characters
+	var jsonData = encodeURIComponent(con);
+	var form = $('#upload_leave_excel_form')[0];
+	var formData = new FormData(form); 
+	
+	 $.ajax({
+		   	type: "POST",
+		   	data: formData,
+    	    contentType : 'application/json; charset=utf-8',
+    	    enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false,
+    	    dataType : 'json',
+		    url : sourceleadUrl+"/uploadLeaveType?"+tokenParamName+"="+tokenValue+"", 	   
+ 		    success : function(json) {
+ 		    	    if(json.updateCount != null && json.updateCount != '')
+ 		    	    $("#msgDiv").removeAttr("style");
+ 		 			$("#msgDiv").css({ display: "block" });
+ 		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
+ 			    	msgFadein();
+ 		    	    closeImportFile();
+ 		    	   resetUpload();
+		 		    },
+		 		   error: function(e){
+			        }
+			 });
+			 
+		}
+}
+</script>
+
+<script>
+function resetUpload(){
+	$("#leaveInputFileId").val("");
+}
+</script>
+
+
+<script>
+	function msgFadein() {
+		$("#msgDiv").fadeIn(200);
+        $('#msgDiv').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <jsp:include page="../masterFooter.jsp" />

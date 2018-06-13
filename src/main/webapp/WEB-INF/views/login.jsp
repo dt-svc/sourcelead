@@ -24,7 +24,6 @@
             && request.getRequestURL().toString().indexOf("localhost") == -1
             && request.getRequestURL().toString().indexOf("qa.") == -1
             && request.getRequestURL().toString().indexOf("staging.") == -1
-            && request.getRequestURL().toString().indexOf("192.168.1.12") == -1
             && request.getRequestURL().toString().indexOf("demo.") == -1) {
         response.sendRedirect("https://www.sourcelead.com/login");
     } %>

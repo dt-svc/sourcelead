@@ -322,12 +322,26 @@ public class CandidateListRestController {
 						for (QueryBuilder QueryBuilder : QueryBuilderList) {
 							allBoolSubQueryBuilder.should(QueryBuilder);
 						}
+						DateFormat df = loginOrgLocation.getLocFullFormDateFormatter();
+						try{
+							if(keywd.contains("/")){
+								keywd = keywd.replaceAll("/", "a");
+							}
+							Date d = df.parse(keywd);
+							allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							String dateStr = commonUtil.elkDateFormatter(d);
+							allBoolSubQueryBuilder.should(QueryBuilders.termQuery("updatedDate", dateStr));
+						 }
+						 catch(Exception e){}
 						allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 					}
 				}
 			}
 			boolQueryBuilder.must(allBoolQueryBuilder);
 		}
+		
+		
+		
 		// Designation
 		List<String> designationArray = search.getDesignation();
 		if (designationArray != null && !designationArray.isEmpty()) {
