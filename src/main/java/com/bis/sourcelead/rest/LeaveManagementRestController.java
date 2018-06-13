@@ -985,37 +985,38 @@ public class LeaveManagementRestController {
 				if (leaveType != null) {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
-					List<User> userList = userService.getUsersListByOrglocationId(orgLocation.getId());
-					List<User> updatedUserList = new ArrayList<>();
-					List<User> insertUserList = new ArrayList<>();
-					for(User usr : userList) {
-						AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), usr.getId(), orgLocation.getId());
-					    if(associa != null) {
-					    	updatedUserList.add(usr);
-					    }else {
-					    	insertUserList.add(usr);
-					    }
-					}
-					if(!insertUserList.isEmpty() && insertUserList.size() >0) {
-						int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user);
-					}
-					if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
-						int previousNoOfDays = Integer.parseInt(leaveTypeDTO.getPreviousNoOfdays());
-						int currentNofDays = leaveType.getNoOfDays();
-						int diffLeaves = 0;
-						String actionType = "";
-						if(previousNoOfDays < currentNofDays) {
-							diffLeaves = currentNofDays - previousNoOfDays;
-							actionType = "ADD";
-						}if(previousNoOfDays > currentNofDays) {
-							 diffLeaves = previousNoOfDays - currentNofDays;
-							 actionType = "SUB";
-						}if(previousNoOfDays == currentNofDays) {
-							 actionType = "NONE";
+					if(!"0".equalsIgnoreCase(leaveType.getStatus())) {
+						List<User> userList = userService.getUsersListByOrglocationId(orgLocation.getId());
+						List<User> updatedUserList = new ArrayList<>();
+						List<User> insertUserList = new ArrayList<>();
+						for(User usr : userList) {
+							AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), usr.getId(), orgLocation.getId());
+						    if(associa != null) {
+						    	updatedUserList.add(usr);
+						    }else {
+						    	insertUserList.add(usr);
+						    }
 						}
-						int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(updatedUserList, orgLocation.getId(), leaveType, 1,diffLeaves,actionType,Constants.UPDATE);
+						if(!insertUserList.isEmpty() && insertUserList.size() >0) {
+							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user);
+						}
+						if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
+							int previousNoOfDays = Integer.parseInt(leaveTypeDTO.getPreviousNoOfdays());
+							int currentNofDays = leaveType.getNoOfDays();
+							int diffLeaves = 0;
+							String actionType = "";
+							if(previousNoOfDays < currentNofDays) {
+								diffLeaves = currentNofDays - previousNoOfDays;
+								actionType = "ADD";
+							}if(previousNoOfDays > currentNofDays) {
+								 diffLeaves = previousNoOfDays - currentNofDays;
+								 actionType = "SUB";
+							}if(previousNoOfDays == currentNofDays) {
+								 actionType = "NONE";
+							}
+							int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(updatedUserList, orgLocation.getId(), leaveType, 1,diffLeaves,actionType,Constants.UPDATE);
+						}	
 					}
-					
 				}
 			} else if (user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
