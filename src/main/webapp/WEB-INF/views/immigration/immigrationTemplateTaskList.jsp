@@ -320,7 +320,7 @@
         });
 //        $("#taskName").unbind("blur");
         $("#taskName").on("keyup", function () {
-            checkTaskNames($(this).val().trim());
+            checkTaskNames($(this).val().trim(),immiTaskId);
         });
     });
 </script>
@@ -366,6 +366,7 @@
         });
     });
 
+	var immiTaskId;
     function editImmiTaskList(id) {
         $.ajax({
             type: "GET",
@@ -412,6 +413,7 @@
                 $("#templateId").val(data.id);
             }
         });
+        immiTaskId = id;
     }
 
     function deleteImmiTaskList(id) {

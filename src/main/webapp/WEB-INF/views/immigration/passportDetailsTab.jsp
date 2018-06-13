@@ -90,7 +90,7 @@
 			<h2>Add Passport</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
 		</div>
 		
-		<div class="popupMid clearfix">
+		<div class="popupMid clearfix overflow_inherint">
         
           <div class="col-sm-12 noPad mt clearfix" id="idNumberPassportDiv">
 				<label class="col-md-4 padding_left">Passport Id<span class="text-danger">&nbsp;*</span></label>
@@ -101,7 +101,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Country<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="form-control selectpicker" name="country" id= "countryName" field-name="Country" data-validation="required" data-live-search="true">
+					<select class="selectpicker width100percnt" name="country" id="countryName" field-name="Country" data-validation="required" data-live-search="true">
 					<option value="" selected>--Select Country--</option>
 					  <c:forEach var="country" items="${countryList}">
 						<option value="${country.name}">${country.name}</option>
@@ -224,5 +224,7 @@
 	else {
         $('#passportfilled').hide()
 	}
+  
+  $('#countryName').selectpicker('refresh');
 </script>
 
