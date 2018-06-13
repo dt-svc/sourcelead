@@ -2429,13 +2429,10 @@ public class RequirementListRestController {
 	public @ResponseBody ResponseList<RequirementDTO> getRequirementListForCandidateBulkSubmission(RequirementDTO requirementDTO,HttpServletRequest request) throws Exception {
 
 	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 	      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	      String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
-	      String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 	    
 			
-			String[] tableColumns = { "action","generatedId", "jobTitle", "createdDate", "location"};
+			String[] tableColumns = { "id","generatedId", "jobTitle", "createdDate", "location"};
 			int sortColumnIndex = 1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default descending order
 			if (requirementDTO.getOrder() != null && !requirementDTO.getOrder().isEmpty()) {
@@ -2444,7 +2441,7 @@ public class RequirementListRestController {
 			}
 			requirementDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			requirementDTO.setSortOrder(sortColumnOrder);
-			ResponseList<RequirementDTO> requirementDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates);
+			ResponseList<RequirementDTO> requirementDTOList = requirementService.getAllRequirementsForCandidateSubmission(requirementDTO, user.getId(), orgLocations.getId());
 			return requirementDTOList;
 			
 		}

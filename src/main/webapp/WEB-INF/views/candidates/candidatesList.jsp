@@ -54,7 +54,8 @@
  <div class="new_side_wrap">
 	<div class="new_side_wrap_inn">
 		<div class="new_side_wrap_cta">
-		 <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop">
+		 <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop datatable_filter">
+		    <div id="addApplicantDivLoading"></div>
 			<div id="addApplicantDiv"></div>
 			</div>
 		</div>
@@ -2420,7 +2421,7 @@ function shareJob() {
 	 }else{
 		 $("#sharejob-pop").hide();
 			$(".sideMask").hide();
-		  var result = "";
+		    var result = "";
 			result = result +"	<div class='project_inn_mask'></div>"; 
 			result = result +"	   <div id='shareCandidate' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Please select at least one Candidate</p>";

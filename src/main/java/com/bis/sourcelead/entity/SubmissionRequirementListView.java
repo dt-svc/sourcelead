@@ -24,6 +24,9 @@ public class SubmissionRequirementListView {
 	@Column(name = "CREATED_DATE")
 	private String createdDate;
 	
+	@Column(name = "STATUS")
+	private String status;
+	
 	@Column(name = "SKILLS")
 	@Type(type="text")
 	private String skills;
@@ -148,6 +151,14 @@ public class SubmissionRequirementListView {
 
 	public void setCity(String city) {
 		this.city = city;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 	

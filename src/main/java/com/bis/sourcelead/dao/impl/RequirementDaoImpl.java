@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dao.impl;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -32,24 +31,25 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dto.CandidateOnBoardingDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
-import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementLocations;
+import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.ibm.icu.text.DateFormat;
 
 /**
  * 
@@ -2270,8 +2270,93 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Transactional
 	public ResponseList<RequirementDTO> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,
 			Long userId, Long orgLocationId) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<RequirementDTO> response = new ResponseList<>();
+		Query queryObj = null;
+		List<SubmissionRequirementListView> requirementList = null;
+		
+		
+		
+		  StringBuilder query1 = new StringBuilder("");
+			if(requirementDTO.getSearchValue() !=null && !"".equalsIgnoreCase(requirementDTO.getSearchValue())) {
+				 query1.append(" req.generatedId like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR req.jobTitle like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR req.createdDate like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR req.location like '%" + requirementDTO.getSearchValue() + "%' ");
+			}
+			
+			String sortingQry = "";
+			if(StringUtils.isNotBlank(requirementDTO.getSortColumn())) {
+					sortingQry = " order by req."+ requirementDTO.getSortColumn() +" "+requirementDTO.getSortOrder();
+			}
+			
+			query = "from SubmissionRequirementListView req where req.orgLocationId = :orgLocationId and req.status = 'OPEN' ";
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
+			}else{
+				 queryObj = session.createQuery(query + query1.toString()+" "+sortingQry+" ");
+			}
+		
+			queryObj.setFirstResult(requirementDTO.getStart());
+			queryObj.setMaxResults(requirementDTO.getLength());
+			queryObj.setLong("orgLocationId", orgLocationId).list();
+			requirementList = queryObj.list();
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationId", orgLocationId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}else {
+				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}
+			
+			
+			int totalCount = 0;
+
+			
+			if (requirementDTO != null) {
+				if(countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+				}
+			} 
+			response.setRecordsTotal(totalCount);
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				response.setRecordsFiltered(filterCount);
+			}else {
+				response.setRecordsFiltered(totalCount);
+			}
+			
+			response.setData(getRequirementList(requirementList));
+			return response;
+		
+	}
+	
+	private List<RequirementDTO> getRequirementList(List<SubmissionRequirementListView> requirementList) throws Exception {
+		
+		List<RequirementDTO> requiremntDTOList = new ArrayList<>();
+		if(requirementList != null && !requirementList.isEmpty()) {
+			for(SubmissionRequirementListView requirement : requirementList) {
+				RequirementDTO requirementDTO = new RequirementDTO();
+				requirementDTO.setId(requirement.getId());
+				requirementDTO.setGeneratedId(requirement.getGeneratedId());
+				requirementDTO.setJobTitle(requirement.getJobTitle());
+				requirementDTO.setReqCreatedDate(requirement.getCreatedDate());
+				requirementDTO.setLocation(requirement.getLocation());
+				requiremntDTOList.add(requirementDTO);
+			}
+		}
+		
+		return requiremntDTOList;
+		
 	}
 
 }
+
+
+
+
