@@ -36,13 +36,11 @@ public class DayEntriesReportController {
 		model.addObject("exportDto",dayWiseTimesheetReoprtsDto);
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Map<List<DayWiseTimesheetReoprtsListDTO>, String[]>  listDto = dayEntryReportsService.getDayEntriesList(dayWiseTimesheetReoprtsDto,orgLocations, loginUser) ;
-		for (Entry<List<DayWiseTimesheetReoprtsListDTO>, String[]> list : listDto.entrySet()) {
-			model.addObject("dayWiseTimesheetReoprtsList",list.getKey());
-		}
-		for (String[] totalHours : listDto.values()) {
-			model.addObject("totalBillable",totalHours[0]);
-			model.addObject("totalNonBillable",totalHours[1]);
+		List<DayWiseTimesheetReoprtsListDTO>  listDto = dayEntryReportsService.getDayEntriesList(dayWiseTimesheetReoprtsDto,orgLocations, loginUser) ;
+		model.addObject("dayWiseTimesheetReoprtsList",listDto);
+		for (DayWiseTimesheetReoprtsListDTO totalHours : listDto) {
+			model.addObject("totalBillable",totalHours.getBillableTotalCount());
+			model.addObject("totalNonBillable",totalHours.getNonBillableTotalCount());
 		}
 		model.addObject("startDate",dayWiseTimesheetReoprtsDto.getStartDate());
 		model.addObject("endDate",dayWiseTimesheetReoprtsDto.getEndDate());
