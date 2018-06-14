@@ -130,9 +130,9 @@ $(document).ready(function() {
 				  <div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Search" id="search_requiremet"
-								onclick="getRequirementTableList();" class="btn btn-sm btn-success" />
+								onclick="getRequirementTableList();closePop();" class="btn btn-sm btn-success" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="clearJobAdvSearch();getRequirementTableList();" class="btn btn-sm btn-primary" />
+								onclick="clearJobAdvSearch();closePop();getRequirementTableList();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 					
@@ -206,6 +206,7 @@ function submitCandidatesToJob(){
 		result = result + '<div id="requirementsListLoading"></div>';
 	    result = result +" <div class='mr pull-left'>";
 		result = result +" <button type='button' onclick='jobAdvSearch()' class='btn btn-primary btn-sm'>Advanced Search&nbsp;&nbsp;<i class='fa fa-search'></i></button>";
+		result = result +" <button type='button' onclick='clearJobAdvSearch();getRequirementTableList()' class='btn btn-primary btn-sm' title='Refresh'><i class='fa fa-refresh'></i></button>";
 		result = result +"</div>"; 
 		result = result +" <div class='pull-right'>";
 		result = result +" <div class='mr pull-left'>";
