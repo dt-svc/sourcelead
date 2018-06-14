@@ -1754,7 +1754,7 @@ public class CandidateDaoImpl implements CandidateDao {
 					 		 "FROM " + 
 					 		 "CANDIDATE CAND, " + 
 					 		 "ORG_LOCATIONS OL " + 
-					 		 "WHERE  CAND.ORG_LOCATION_ID = OL.ID " + 
+					 		 "WHERE  CAND.ORG_LOCATION_ID = OL.ID  AND CAND.STATUS = '1' " + 
 					 		 "AND CAND.ORG_LOCATION_ID = :orgLocationId " + 
 					 		 "GROUP BY CAND.ID,  " + 
 					 		 "DATE_FORMAT(CAND.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr+advSeachStr+sortingQry;
