@@ -322,7 +322,7 @@ function saveUserProfileImage(formId,data){
                 success: function(result) {
                     if(result)
                         $("img[data-id=orgLogoImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-                    //location.reload();
+                    location.reload();
                   },  
               });
         }

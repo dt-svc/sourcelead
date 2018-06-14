@@ -49,6 +49,20 @@
  </sec:authorize>
  <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  <jsp:include page="candidatesTimelineActivity.jsp"></jsp:include>
+ <jsp:include page="requirementListForSubmission.jsp"></jsp:include>
+ 
+ <div class="new_side_wrap">
+	<div class="new_side_wrap_inn">
+		<div class="new_side_wrap_cta">
+		 <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop datatable_filter">
+		    <div id="addApplicantDivLoading"></div>
+			<div id="addApplicantDiv"></div>
+			</div>
+		</div>
+	</div>
+</div>
+	
+ <div id="addApplicantDiv"></div>
  
 	<script>
 	var isAssociate = 'N';
@@ -596,6 +610,11 @@ $(document).ready(function() {
     $(".proj_close, .side_mask").click(function(){
 		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+		
+		clearJobAdvSearch();
+		$(".new_side_wrap").removeClass("new_side_wrap_active");
+		$(".req_side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
 	});	
 }); 
@@ -1185,7 +1204,7 @@ function cancel(candidateId){
 				  </div>
 				  <div class="clearfix advancedsearch-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); minMaxExperience();" class="btn btn-sm btn-success"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); closePop();minMaxExperience();" class="btn btn-sm btn-success"/>
                                <input type="button"  value="Reset"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
                                <!--  <input type="button" value="Cancel" onClick="closePop();clearCandidateSearchKeys();" class="btn btn-sm btn-danger"/> -->
 						  </div>
@@ -1197,26 +1216,24 @@ function cancel(candidateId){
       <div class="pull-left pull-left ml mt10 mr5">
 				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center" title="Filters" onclick="openCandidateFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
 				</a>
-	</div>
+	   </div>
       <div class="dropdown pull-left ml mt">
 			  <div class="dropdown-toggle" data-toggle="dropdown">
 			  <span class="fa fa-share-alt cursorPointer" title="Share" href="#" onclick="shareJob();"></span></div>
-			  <!-- <ul class="dropdown-menu dropdown-morecustom">
-			    <li><a title="Share"  data-toggle="modal" data-target="#myModal">Share Job</a></li>
-			    <li><a href="#">Compose Email</a></li>
-			  </ul> -->
-			</div>
-			
-			<!-- <div class="dropdown pull-left ml mt">
+			 
+	  </div>
+	  
+	   <div class="dropdown pull-left ml mt mr">
 			  <div class="dropdown-toggle" data-toggle="dropdown">
-			  <span class="fa fa-envelope cursorPointer" title="Compose Email"></span></div>
-			</div> -->
-      <!-- <div class="timesheet_head  customtimesheet-head hdr-styles pull-right"> -->
-      <div class="timesheet_head customtimesheet-head topfilters topfilters2 pull-right hdrFilter">
+			  <span class="fa fa-user-plus cursorPointer" title="Share" href="#" onclick="submitCandidatesToJob();"></span></div>
+			 
+	  </div>
+			
+      <div class="timesheet_head customtimesheet-head topfilters topfilters2 pull-right hdrFilter timesheetHead-search">
         <ul>
             
           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
-          <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate"><i class="fa fa-user-plus" style="font-size:17px;"></i></b>
+          <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate"><i class="fa fa-user" style="font-size:17px;"></i></b>
           <div id="addmorepop" class="approved_pop">
            
            </div>
@@ -1236,13 +1253,16 @@ function cancel(candidateId){
           </li>
           </sec:authorize>
           
+          <li class="positionRelative">
+		     <div class="dynamic_search">
+   			     <input type='text' placeholder='Search' id='dataTableSearch'/>
+        		<span class="cursorPointer faSearch" title="Search"><i class="fa fa-search" onClick="candidateList();"></i></span>
+			  </div>
+		  </li>
+		  
           <div class="clearfix"></div>
         </ul>
-	       
-        <div class="clearfix"></div>
-        <div class='remove_search'>
-        		<input type='text' placeholder='search' id='dataTableSearch'/>
-        </div>
+        
       </div>
       <div id="emptyPopup"></div>
       <div class="candidate_wrap_table datatable_filter">
@@ -1307,6 +1327,10 @@ function cancel(candidateId){
 		$("#candTimelineView").removeClass("active");
 		$("#timelineview").removeClass("active in");
 		$(".location-alert").fadeOut();
+		
+		$(".new_side_wrap").removeClass("new_side_wrap_active");
+		$(".req_side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
 	}
 </script>
 
@@ -2402,7 +2426,7 @@ function shareJob() {
 	 }else{
 		 $("#sharejob-pop").hide();
 			$(".sideMask").hide();
-		  var result = "";
+		    var result = "";
 			result = result +"	<div class='project_inn_mask'></div>"; 
 			result = result +"	   <div id='shareCandidate' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Please select at least one Candidate</p>";

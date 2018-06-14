@@ -46,7 +46,7 @@ position: absolute !important;
                 </span>            	
             </h2>
           </div>
-          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/vendorsList'/>"> Vendor List</a></div>
+          <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Vendor List</div>
         </section>
 		<!-- Project -->
 		 <div id="loading"></div>
@@ -55,7 +55,24 @@ position: absolute !important;
  <!-- Advanced Search -->
   <div class="clearfix">
   <div class="cand-advsrch pull-left candAdvsrch" id="advanceSearchDiv">
-            <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+	        <button type="button" class="btn btn-primary dropdown-toggle btn-sm pull-left mr" id="resetVendor" style="display: inline-block;" onclick="resetVendorFilter();" title="Refresh">
+			    <span class="fa fa-refresh"></span>
+			</button>
+		
+			<button type="button" class="btn btn-primary dropdown-toggle btn-sm pull-left mr" id="resetVendorContact" style="display: none;" onclick="resetVendorContactFilter();" title="Refresh">
+			    <span class="fa fa-refresh"></span>
+			</button>
+		
+            <a href="javascript:void(0)" class="btn btn-primary btn-sm pull-left" title="Advanced Search" onClick="openPop();loadChosenScripts();">Advanced Search&nbsp;&nbsp; <i class="fa fa-search"></i> </a>
+            
+            <div class="filterSearchDiv pull-left ml" id="vendorFiletPopup">
+				<a href="javascript:void(0)" onclick="vendorFileterPopUp();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
+			</div>
+			
+			<div class="filterSearchDiv pull-left ml" id="vendorContactFiletPopup" style="display: none;">
+				<a href="javascript:void(0)" onclick="vendorContactFilterPopUp();" title="Filters" class="btn btn-sm btn-default"><i class="fa fa-filter"></i></a>
+			</div>
+			
           </div>
           <div class="cand-advsrch-popup advancedsearch-popup">
           
@@ -290,63 +307,23 @@ position: absolute !important;
 	<!-- <div class="timesheet_head datatbl-filters customtimesheet-head"> -->
 	<div class="timesheet_head datatbl-filters topfilters">
         	<ul>
-        	
-        	<%-- <li  id="filter1ApprovePop"><i class="fa fa-filter"></i><span>Vendor</span><i class="glyphicon glyphicon-play" id="vendorsList" ></i>|
-		                	<div id="filter1ApprovedPop" class="approved_pop">
-		                    	<ul>
-		                    	  <c:forEach var="report" items="${vendor_list}">  
-		                        	<li><input  id="vendorName${report.id}" name="vendorNameById" value ="${report.id}"  onclick="getVendorContactLists();"  type="checkbox"><label title="${report.clientName}">${report.clientName}</label></li>
-								  </c:forEach>
-		                        </ul>
-		                    </div>                	
-		                </li> --%>
-	               
-		                <li id= "filter3ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" id="vendorSatatus"></i>|
-	                	<div id="filter3ApprovedPop" class="approved_pop">
-	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="vendorStatus"  value ="Active"      onclick="getVendorContactList();"  ><label>Active</label></li>
-								<li><input id="c6" type="checkbox"  name="vendorStatus"  value ="In-Active"   onclick="getVendorContactList();"><label>In-Active</label></li>
-								<!-- <li><input id="c7" type="checkbox"  name="vendorStatus"  value ="New"         onclick="getVendorContactLists();"><label>New</label></li>
-								<li><input id="c8" type="checkbox"  name="vendorStatus"  value ="Negotiation" onclick="getVendorContactLists();"><label>Negotiation</label></li>
-	               				<li><input id="c9" type="checkbox"  name="vendorStatus"  value ="Contract"  onclick="getVendorContactLists();"><label>Contract</label></li> -->
-	                        </ul>
-	                      </div>                	
-	                  </li>
-	                  <li  id="filter4ApprovePop" style="display:none"><i class="fa fa-filter"></i><span>Invitation</span><i class="glyphicon glyphicon-play" id="vendorInvitation"></i>|
-	                	<div id="filter4ApprovedPop" class="approved_pop">
-	                    	<ul>
-	                        	<li><input id="c5" type="checkbox"  name="vendorInvitationStatus"  value ="Sent"      onclick="getVendorContactList();"  ><label>Resend</label></li>
-								<li><input id="c6" type="checkbox"  name="vendorInvitationStatus"  value ="New"   onclick="getVendorContactList();"><label>Send</label></li>
-								<li><input id="c7" type="checkbox"  name="vendorInvitationStatus"  value ="Accepted"         onclick="getVendorContactList();"><label>Accepted</label></li>
-								<li><input id="c8" type="checkbox"  name="vendorInvitationStatus"  value ="Rejected" onclick="getVendorContactList();"><label>Rejected</label></li>
-	                        </ul>
-	                      </div>                	
-	                  </li>
-                  
-	                	 
-						<li id="contactLevel" >
-					   <div id="filter2ApprovePop"><i class="fa fa-filter"></i><span>Tier</span><i class="glyphicon glyphicon-play" style="right:20px;"></i></div>
-		                	<div id="filter2ApprovedPop" class="approved_pop">
-		                    	<ul>
-									<li><input id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"  onclick="getVendorList();"><label>Tier-1</label></li>
-									<li><input id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"  onclick="getVendorList();"><label>Tier-2</label></li>
-									<li><input id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"  onclick="getVendorList();"><label>Tier-3</label></li>
-		               				<li><input id="c9"  type="checkbox" name="clinetLevel" value ="Tier-4"  onclick="getVendorList();"><label>Tier-4</label></li>
-		               				<li><input id="c10"  type="checkbox" name="clinetLevel"value ="Tier-5"  onclick="getVendorList();"><label>Tier-5</label></li>
-		                        </ul>
-		                    </div>                	
-		                </li>  
-		                    
-		          <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')">
-				       <li><a href="<c:url value='${appPath}/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a></li>
-					</sec:authorize>
-					
-				<sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
-                       <li><a href="<c:url value='${appPath}/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a></li>	
-                       </sec:authorize>
-                        <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
-                       <li title="Import"><a href="<c:url value='${appPath}/uploadVendorForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-                 	   </sec:authorize> 
+        	 <li>
+				<a class="action" onclick="getVendorActions();" href="javascript:void(0)"><i class="fa fa-user-plus"></i>&nbsp;Add<i class="fa fa-caret-down"></i></a>
+				<div class="action-pop">	
+					<span>
+						   <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR')"> 
+                       			<a href="<c:url value='${appPath}/addVendor'/>"><i class="fa fa-plus"></i>Vendor</a>	
+                           </sec:authorize>
+						   <sec:authorize access="hasAnyRole('ROLE_CREATE_VENDOR_CONTACT')">
+					         <a href="<c:url value='${appPath}/addVendorContact'/>"><i class="fa fa-plus"></i>Contact</a>
+						  </sec:authorize>
+					<div class="clearfix"></div>
+					</span>
+				</div>
+				</li>
+                <sec:authorize access="hasAnyRole('ROLE_VENDOR_BULK_IMPORTS','ROLE_VENDOR_CONTACT_BULK_IMPORTS')">
+                 <li title="Import"><a href="<c:url value='${appPath}/uploadVendorForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
+           	   </sec:authorize> 
                  
                  <sec:authorize access="hasRole('ROLE_EXPORT_VENDORS')"> 
                        	 <li title="Export" id="vendorImports" >
@@ -1488,7 +1465,7 @@ function getClientDetails(){
 		result = result + '<ul class="project-tabs-menu">';
 		
 		  '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
-		   			result = result	+ '<li class="current"><a href="#tab-1" id="spocDetailsId" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+');">Details</a></li>';
+		   			result = result	+ '<li class="current"><a href="#tab-1" id="spocDetailsId" onClick="vendorDetailsbySpocId('+spocId+','+ownerId+','+spocUserId+','+tempOwnerId+','+spocLocationId+','+orgRelationId+');">Details</a></li>';
 		   '</sec:authorize>';
 		 '<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR_DOCUMENT\")">';
 		  result = result + '<li><a href="#tab-2" onClick="vendorSpocDocuments('+orgRelationId+','+spocLocationId+',\''+spocName+'\','+userId+');">Documents</a></li>';
@@ -1516,7 +1493,7 @@ function getClientDetails(){
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 
-		vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId);
+		vendorDetailsbySpocId(spocId,ownerId,spocUserId,tempOwnerId,spocLocationId,orgRelationId);
 	}
 </script>
 
@@ -1996,10 +1973,7 @@ function listChange(sel){
 		 document.getElementById("vendorList").style.display="table";
 		 document.getElementById("vendorContactList").style.display="none";
 		 document.getElementById("vendorContactList_wrapper").style.display="none";
-		 document.getElementById("contactLevel").style.display="block";
 // 		 document.getElementById("vendorsList").style.display="none";
-		 document.getElementById("vendorSatatus").style.display="none";
-		 document.getElementById("vendorInvitation").style.display="none";
          '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDORS\')">'; 
 		 document.getElementById("vendorImports").style.display="block";
 		 '</sec:authorize> ';
@@ -2007,12 +1981,16 @@ function listChange(sel){
 		 document.getElementById("VendorContactImports").style.display="none";
 		 '</sec:authorize> ';
 	//	 document.getElementById("filter1ApprovePop").style.display="none";
-		 document.getElementById("filter3ApprovePop").style.display="none";
-		 document.getElementById("filter4ApprovePop").style.display="none";
 		 //getVendorLists();
 		 document.getElementById("advanceSearchDiv").style.display="block";
 		 $("#dataTableSearch").val("");
 // 		 getVendorListsElk();
+
+         document.getElementById("resetVendor").style.display="inline-block";
+		 document.getElementById("resetVendorContact").style.display="none";
+		 document.getElementById("vendorFiletPopup").style.display="block";
+		 document.getElementById("vendorContactFiletPopup").style.display="none";
+		 
 		 getVendorList();
 	 }
 	 if(sel.value=="listbyContact"){
@@ -2020,25 +1998,22 @@ function listChange(sel){
 		 document.getElementById("vendorContactList").style.display="table";
 		 document.getElementById("vendorList").style.display="none";
 		 document.getElementById("vendorList_wrapper").style.display="none";
-		 //document.getElementById("vendorContactList_wrapper").style.display="block";
-		 document.getElementById("contactLevel").style.display="none";
-// 		 document.getElementById("vendorsList").style.display="block";
-		 document.getElementById("vendorSatatus").style.display="block";
-		 document.getElementById("vendorInvitation").style.display="block";
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDORS\')">'; 
 		 document.getElementById("vendorImports").style.display="none";
 		 '</sec:authorize> ';
 		 '<sec:authorize access="hasRole(\'ROLE_EXPORT_VENDOR_CONTACTS\')">'; 
 		 document.getElementById("VendorContactImports").style.display="block";
 		 '</sec:authorize> ';
-	//	 document.getElementById("filter1ApprovePop").style.display="block";
-		 document.getElementById("filter3ApprovePop").style.display="block";
-		 document.getElementById("filter4ApprovePop").style.display="block";
-		 //getVendorContactLists();
-// 		 getVendorContactListsELK();
-document.getElementById("advanceSearchDiv").style.display="block";
+        document.getElementById("advanceSearchDiv").style.display="block";
 		$("#dataTableSearch").val("");
+		
+		document.getElementById("resetVendor").style.display="none";
+		 document.getElementById("resetVendorContact").style.display="inline-block";
+		 document.getElementById("vendorFiletPopup").style.display="none";
+		 document.getElementById("vendorContactFiletPopup").style.display="block";
+		 
 		loadVendorContactDataTable("${universalVendorList}");
+		
 	 }
 	 
 }
@@ -2070,40 +2045,6 @@ $(document).ready(function() {
     $("#filter1ApprovedPop, #filter1ApprovePop").click(function(e) {  
         e.stopPropagation();
     });	
-    
-    $("#filter2ApprovePop").click(function(){
-		$("#filter2ApprovedPop").slideToggle(200);
-		$(".export_pop").slideUp(200);
-	});
-    $("html").click(function() {
-        $("#filter2ApprovedPop").slideUp(200);
-    });
-    $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {  
-        e.stopPropagation();
-    });	
-    
-    $("#filter3ApprovePop").click(function(){
-		$("#filter3ApprovedPop").slideToggle(200);
-		$("#filter1ApprovedPop, #filter4ApprovedPop, .export_pop").slideUp(200);
-	});
-    $("html").click(function() {
-        $("#filter3ApprovedPop").slideUp(200);
-    });
-    $("#filter3ApprovedPop, #filter3ApprovePop").click(function(e) {  
-        e.stopPropagation();
-    });	
-    
-    $("#filter4ApprovePop").click(function(){
-		$("#filter4ApprovedPop").slideToggle(200);
-		$("#filter3ApprovedPop, #filter1ApprovedPop, .export_pop").slideUp(200);
-	});
-    $("html").click(function() {
-        $("#filter4ApprovedPop").slideUp(200);
-    });
-    $("#filter4ApprovedPop, #filter4ApprovePop").click(function(e) {  
-        e.stopPropagation();
-    });	
-    
 });
 
 // Export Popup
@@ -2293,7 +2234,6 @@ function rejectInvitation(spocId){
   $(document).ready(function() {
 	   $("#vendor-imports").click(function(){
 	    $(".export_pop").toggle();
-	    $("#filter2ApprovedPop").slideUp();
 	       });
 	   $("html").click(function() {
 	       $(".export_pop").slideUp();
@@ -2629,3 +2569,135 @@ function vendorListCheck(searchValue,universalvendorSearchList,searchType,respon
     
   }
   </script>
+  
+<script>
+	function getVendorActions(){
+		$(".action-pop").slideToggle(200);
+	}	
+	$("html").click(function(){
+		$(".action-pop").slideUp(200);
+	});
+	$(".action, .action-pop").click(function(e){
+	 	e.stopPropagation();
+ 	});	
+</script>
+
+  <script>
+//Vendor
+function closeVendorFilterPop(){
+	$("#vendorFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function vendorFileterPopUp(){
+	 $("#vendorFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+function resetVendorFilter(){
+	$("ul#tierFilter > li input:checkbox").prop("checked",false);
+	getVendorList();
+	 $(".advancedsearch-mask").fadeIn();
+	
+}
+
+
+//Vendor Contact
+function vendorClientContactFilterPop(){
+	$("#vendorContactFilterId").hide();
+	$(".advancedsearch-mask").fadeOut();
+}
+function vendorContactFilterPopUp(){
+	 $("#vendorContactFilterId").toggle();
+	 $(".advancedsearch-mask").fadeIn();
+}
+function resetVendorContactFilter(){
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#invitationFilter > li input:checkbox").prop("checked",false);
+	getVendorContactList();
+	 $(".advancedsearch-mask").fadeIn();
+	
+}
+</script>
+<!-- clinet related Fileter popup -->
+          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="vendorFilterId" style="display: none">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="closeVendorFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+					  <div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Tier</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="tierFilter">
+									<li class="checkBox positionRelative" ><input class="mb0" id="c6"  type="checkbox" name="clinetLevel" value ="Tier-1"><label>Tier-1</label></li>
+									<li class="checkBox positionRelative" ><input class="mb0" id="c7"  type="checkbox" name="clinetLevel" value ="Tier-2"><label>Tier-2</label></li>
+									<li class="checkBox positionRelative" ><input class="mb0" id="c8"  type="checkbox" name="clinetLevel" value ="Tier-3"><label>Tier-3</label></li>
+		               				<li class="checkBox positionRelative" ><input class="mb0" id="c8"  type="checkbox" name="clinetLevel" value ="Tier-4"><label>Tier-4</label></li>
+		               				<li class="checkBox positionRelative" ><input class="mb0" id="c9"  type="checkbox" name="clinetLevel" value ="Tier-5"><label>Tier-5</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+					  </div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeVendorFilterPop();getVendorList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetVendorFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+
+
+
+          <div class="filter-popup advancedsearch-popup filterDynamic-Search-medium" id="vendorContactFilterId" style="display: none">
+				<h5 class="headerAdsrch">Filter Search
+					<a href="javascript:void(0)" class="close-div" onClick="vendorClientContactFilterPop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+					  <div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Status</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="statusFilter">
+									   <li class="checkBox positionRelative"><input id="c5" type="checkbox" class="mb0" name="vendorStatus"  value ="Active"><label>Active</label></li>
+								       <li class="checkBox positionRelative"><input id="c6" type="checkbox" class="mb0" name="vendorStatus"  value ="In-Active"><label>In-Active</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+						
+						<div class="col-md-6">
+						<div class="row">
+						    <div class="col-md-12 mb">
+								<label><strong>Invitation</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="invitationFilter">
+										<li class="checkBox positionRelative"><input id="c5" type="checkbox"  name="vendorInvitationStatus" class="mb0" value ="Sent"><label>Resend</label></li>
+										<li class="checkBox positionRelative"><input id="c6" type="checkbox"  name="vendorInvitationStatus" class="mb0" value ="New"><label>Send</label></li>
+										<li class="checkBox positionRelative"><input id="c7" type="checkbox"  name="vendorInvitationStatus" class="mb0" value ="Accepted"><label>Accepted</label></li>
+										<li class="checkBox positionRelative"><input id="c8" type="checkbox"  name="vendorInvitationStatus" class="mb0" value ="Rejected"><label for="c8">Rejected</label></li>
+			                        </ul>
+							      </div>
+						     </div> 
+						  </div>
+						</div>
+					  </div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet" onclick="vendorClientContactFilterPop();getVendorContactList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetVendorContactFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+  
+  
+  

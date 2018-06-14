@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
@@ -332,9 +333,26 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId) {
+		
+		 Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+		 cal.setLenient(false);
+		 cal.setTime(commonUtil.currentDate());
+		 Date previousMonthStartDate = CalendarUtil.getMonthStartDateByGivenDate(cal.getTime(),Constants.PREVIOUS_MONTH).get("STARTDATE");
+		 Date nextMonthEndDate =  CalendarUtil.getMonthEndDateByGivenDate(cal.getTime(),Constants.NEXT_MONTH).get("ENDDATE");
+		 
+	     java.sql.Date sqlStartDate = null;
+		 if(previousMonthStartDate != null){
+			sqlStartDate = new java.sql.Date(previousMonthStartDate.getTime());
+		 }
+			
+		 java.sql.Date sqlEndDate = null;
+		 if(nextMonthEndDate != null){
+			sqlEndDate = new java.sql.Date(nextMonthEndDate.getTime());
+		 }
+		 
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from ProjectMembers pm left join fetch pm.projectClientsId pc   left join fetch pc.orgRelationId rl left join fetch rl.locationId left join fetch rl.responderLocationId left join fetch pm.employee left join fetch pm.masterCandidateId left join fetch pm.projectMemberCandidteId  where pm.id IN(select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where pmh.projectTerminationDate IS NULL OR (pmh.projectTerminationDate IS NOT NULL and pmh.projectTerminationDate > pmh.projectAssignedDate)) and  pm.projectMemberCandidteId.id = :candidateId and  pc.orgLocationsId.id = :locationsId ";
+		String query = "from ProjectMembers pm left join fetch pm.projectClientsId pc   left join fetch pc.orgRelationId rl left join fetch rl.locationId left join fetch rl.responderLocationId left join fetch pm.employee left join fetch pm.masterCandidateId left join fetch pm.projectMemberCandidteId  where pm.id IN(select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  pmh.projectTerminationDate IS NULL OR (pmh.projectTerminationDate IS NOT NULL and pmh.projectTerminationDate > pmh.projectAssignedDate)) and  pm.projectMemberCandidteId.id = :candidateId and  pc.orgLocationsId.id = :locationsId ";
 		List<ProjectMembers> projectMemberList =  session.createQuery(query.toString()).setLong("locationsId", locationsId).setLong("candidateId", candidateId).list();
 		return projectMemberList;
 	}
@@ -374,11 +392,11 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor,String isGlobalUser){
+	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(String timesheetFrequency,Date startDate,Date endDate,Long clientId,Long projectId,String status,Long locationsId, Long approverUserId,String searchValue,String projectName,int start, int length,String timesheetFor,String isGlobalUser){
 		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
 		
 		ResponseList<ProjectMembers> response = new ResponseList<>();
-		Session session = this.sessionFactory.getCurrentSession();
+ 		Session session = this.sessionFactory.getCurrentSession();
 		
 		
 		java.sql.Date sqlStartDate = null;
@@ -400,6 +418,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					.append("OR pm.projectMemberCandidteId.mobilePhone like '%" + searchValue + "%' ")
 					.append("OR pm.projectMemberCandidteId.designationType like '%" + searchValue + "%' ")
 					.append("OR pm.projects.projectName like '%" + searchValue + "%' ")
+					.append("OR pm.projectClientsId.orgRelationId.responderLocationId.org.orgName like '%" + searchValue + "%' ")
 					.append("OR pm.id IN")
 					.append( " (select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus  like '%"+ searchValue +"') ")
 					.append( " )");
@@ -411,6 +430,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String dateQuery = "";
 		String userQuery = "";
 		String clientQuery = "";
+		String projectQuery = "";
 		String statusQuery = "";
 		String fillingOptionQuery = "";
 		String sortingOrder = "";
@@ -421,6 +441,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String dateCountQuery = "";
 		String userCountQuery = "";
 		String clientCountQuery = "";
+		String projectCountQuery = "";
 		String statusCountQuery = "";
 		
 		StringBuilder searchQuery = new StringBuilder();
@@ -431,6 +452,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 					.append("OR candidate.mobilePhone like '%" + searchValue + "%' ")
 					.append("OR candidate.designationType like '%" + searchValue + "%' ")
 					.append("OR projects.projectName like '%" + searchValue + "%' ")
+					.append("OR pclient.orgRelationId.responderLocationId.org.orgName like '%" + searchValue + "%' ")
 					.append("OR pm.id IN")
 					.append( " (select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate and sah.submissionApprovalStatus  like '%"+ searchValue +"%') ")
 					.append( " )");
@@ -456,10 +478,12 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	     }
 		if(clientId != null){
 			clientQuery = " and pclient.orgRelationId.id = :clientId ";
+			clientCountQuery = " and pm.projectClientsId.orgRelationId.id = :clientId ";
 		}
 		
-		if(clientId != null){
-			clientCountQuery = " and pm.projectClientsId.orgRelationId.id = :clientId ";
+		if(projectId != null){
+			projectQuery = " and pm.projects.id = :projectId ";
+			projectCountQuery = " and pm.projects.id = :projectId ";
 		}
 	  
 	     if(StringUtils.isNotEmpty(status) && !(status.equalsIgnoreCase("NEW") || status.equalsIgnoreCase("All"))){
@@ -530,6 +554,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				    +fillingOptionQuery
 				    + statusQuery
 				    +clientQuery
+				    +projectQuery
 				    + dateQuery
 					+ userQuery
 					+biweeklyDateFilter
@@ -544,6 +569,7 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				+fillingOptionCountQuery
 				+ statusCountQuery
 				+ clientCountQuery
+				+projectCountQuery
 				+ dateCountQuery
 				+ userCountQuery
 				+biweeklyDateFilter
@@ -560,6 +586,10 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			query.setParameter("clientId", clientId);
 		}
 		
+		if(projectId != null){
+			query.setParameter("projectId", projectId);
+		}
+		
 		@SuppressWarnings("unchecked")
 		List<ProjectMembers> projectMemberList =  query.setLong("locationsId", locationsId).setLong("userId", approverUserId).setFirstResult(start).setMaxResults(length).list();
 		response.setData(projectMemberList);
@@ -570,6 +600,9 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		}
 		if(clientId != null){
 			countQ.setParameter("clientId", clientId);
+		}
+		if(projectId != null){
+			countQ.setParameter("projectId", projectId);
 		}
 		if(StringUtils.isNotEmpty(timesheetFrequency)){
 			countQ.setString("timesheetFrequency", timesheetFrequency);
@@ -1568,13 +1601,13 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		String employmentTypeQuery = "";
 		String query= "";
 		if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()){
-			String empType = dayWiseTimesheetReoprtsDto.getEmploymentType().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
-			employmentTypeQuery = " and can.designation IN (:empType)";
+			//String empType = dayWiseTimesheetReoprtsDto.getEmploymentType().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
+			employmentTypeQuery = " and can.designationType IN (:empType)";
 		}
 	
 		String projectQuery = "";
 		if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()){
-			String projectIds = dayWiseTimesheetReoprtsDto.getProjectIds().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
+			//String projectIds = dayWiseTimesheetReoprtsDto.getProjectIds().toString().replaceAll("\\[", " ").replaceAll("\\]"," ");
 			projectQuery = " and projects.id  IN (:projectIds)";
 		}
 		

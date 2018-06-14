@@ -634,11 +634,11 @@ function clearProjectEndDate(){
  
  <script>
 function clearStartDate(){
-	$("#startDate").val("");
-	};
+	$("#projectStartDateExpensesId").val("");
+	}
 	
 function clearEndDate(){
-	$("#endDate").val("");
-	};
+	$("#projectEndDateExpensesId").val("");
+	}
 </script>
 <jsp:include page="../masterFooter.jsp" />

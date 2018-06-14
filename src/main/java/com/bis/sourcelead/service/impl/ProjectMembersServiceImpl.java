@@ -626,9 +626,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
-			String timesheetFrequency, Date startDate, Date endDate, Long clientId, String status, Long locationsId,
+			String timesheetFrequency, Date startDate, Date endDate, Long clientId, Long projectId, String status, Long locationsId,
 			Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor,String isGlobalUser) {
-		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,projectName,start,length,timesheetFor,isGlobalUser);
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId,projectId, status, locationsId, approverUserId,searchValue,projectName,start,length,timesheetFor,isGlobalUser);
 	}
 	
 	@Override

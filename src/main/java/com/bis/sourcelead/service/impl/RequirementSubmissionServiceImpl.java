@@ -4871,9 +4871,9 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO) throws Exception
+	public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation) throws Exception
 	{
-		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO);
+		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation);
 	}
 	
 	@Override
@@ -4885,10 +4885,43 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 requirementSubmission = requirementSubmissionDao.getRequirementSubmissionById(Long.valueOf(jsonObj.getString("submissionId")));
 			 CandidateResumes candidateResumes = new CandidateResumes();
 			 if(requirementSubmission != null){
-				 if(jsonObj.has("candidateResume") && !isNullOrEmpty(jsonObj.getString("candidateResume"))){
-					 candidateResumes.setId(Long.parseLong(jsonObj.getString("candidateResume")));
+				
+				 if((jsonObj.has("fileInfo[0].fileName") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].fileName"))) && (jsonObj.has("fileInfo[0].fileURL") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].fileURL"))) && (jsonObj.has("fileInfo[0].contentType") && !isNullOrEmpty(jsonObj.getString("fileInfo[0].contentType")))){
+					 FileInfo fileInfo = new FileInfo();
+					 fileInfo.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
+					 fileInfo.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
+					 fileInfo.setContentType(jsonObj.get("fileInfo[0].contentType").toString());
+					 candidateResumes = new CandidateResumes();
+	 				 candidateResumes.setCandidateId(requirementSubmission.getCandidate());
+					 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
+					 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
+					 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
+					 candidateResumes.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
+	 				 candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
+	 				 candidateResumes.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	 				 candidateResumes.setCreatedDate(new Date());
+	 				 if(user !=null){
+					 candidateResumes.setCreatedBy(user.getUserCode());
+	 				 }
+	 				 else{
+	 					 candidateResumes.setCreatedBy(null);
+	 
+	 				 }
+					 candidateResumes.setUpdatedDate(new Date());
+					 candidateResumes.setOrgLocationId(orgLocations);
+					 FileUploadUtil.moveFile(staticPath, fileInfo, "addApplicants");
+					 candidateResumesDao.storeCandidateResumes(candidateResumes);
+					 candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResumes, null);
 					 requirementSubmission.setCandidateResumes(candidateResumes);
+					 //insert the currentResumeId in ELK				 
+					 insertResumeIdInELK(requirementSubmission.getCandidate());
+				 }else {
+					 if(jsonObj.has("candidateResume") && !isNullOrEmpty(jsonObj.getString("candidateResume"))){
+						 candidateResumes.setId(Long.parseLong(jsonObj.getString("candidateResume")));
+						 requirementSubmission.setCandidateResumes(candidateResumes);
+					 }
 				 }
+			 
 				 
 				 if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))){
 					 if(jsonObj.getString("notifyToApplicant").equals("Y")){
