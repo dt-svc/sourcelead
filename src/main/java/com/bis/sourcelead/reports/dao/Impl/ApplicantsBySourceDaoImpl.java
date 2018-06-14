@@ -83,10 +83,6 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 	public ApplicantBySourceCountDTO getCrowdsourcingApplicantsCountByStage(List<Long> jobIdList, Date[] searchDates) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		
-		 String  fromDateStr =commonUtil.elkDateFormatter(searchDates[0]);
-  	     String  toDateStr  = commonUtil.elkDateFormatter(searchDates[1]);
-  	     
 		ApplicantBySourceCountDTO internalApplicantBySourceCountDTO= null;
         StringBuilder resultQuery = new StringBuilder("");	
         resultQuery.append("SELECT ");
@@ -127,7 +123,7 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 		 resultQuery.append(" AND  ( (RS.CANDIDATE_ID= C.ID AND C.CANDIDATE_TYPE='Professional' ) OR (RS.VENDOR_CANDIDATE_ID=C.ID  AND C.CANDIDATE_TYPE='Professional' AND RS.VENDOR_CANDIDATE_ID IS NOT NULL))");
 		 
 		  if(searchDates != null) {
-				resultQuery.append(" AND  (date_format(RS.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+fromDateStr+"' AND '"+toDateStr+"')");
+			    resultQuery.append(" AND  RS.CREATED_DATE  BETWEEN '"+searchDates[0]+"' AND '"+searchDates[1]+"'");
 				resultQuery.append(" GROUP BY RH.TO_STAGE)Q1");
 			}else {
 				resultQuery.append(" GROUP BY RH.TO_STAGE)Q1");
@@ -170,8 +166,6 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 	public ApplicantBySourceCountDTO getVendorSourceApplicantsCountByStage(List<Long> jobIdList, Date[] searchDates) {
 	
 		Session session = this.sessionFactory.getCurrentSession();
-		String  fromDateStr =commonUtil.elkDateFormatter(searchDates[0]);
- 	    String  toDateStr  = commonUtil.elkDateFormatter(searchDates[1]);
 		ApplicantBySourceCountDTO internalApplicantBySourceCountDTO= null;
         StringBuilder resultQuery = new StringBuilder("");	
         resultQuery.append("SELECT ");
@@ -212,7 +206,7 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 		 resultQuery.append(" AND RS.VENDOR_LOCATION_ID IS NOT NULL");
 		 
 		  if(searchDates != null) {
-				resultQuery.append(" AND  (date_format(RS.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+fromDateStr+"' AND '"+toDateStr+"')");
+			    resultQuery.append(" AND  RS.CREATED_DATE  BETWEEN '"+searchDates[0]+"' AND '"+searchDates[1]+"'");
 				resultQuery.append(" GROUP BY RH.TO_STAGE)Q1");
 			}else {
 				resultQuery.append(" GROUP BY RH.TO_STAGE)Q1");
@@ -258,8 +252,6 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 	public ApplicantBySourceCountDTO getFreelanceRecruiterSourceApplicantsCountByStage(List<Long> jobIdList, Date[] searchDates) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String  fromDateStr =commonUtil.elkDateFormatter(searchDates[0]);
- 	    String  toDateStr  = commonUtil.elkDateFormatter(searchDates[1]);
 		ApplicantBySourceCountDTO internalApplicantBySourceCountDTO= null;
         StringBuilder resultQuery = new StringBuilder("");	
         resultQuery.append("SELECT ");
@@ -300,7 +292,7 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 		 resultQuery.append(" AND RS.RECRUITER_USER_ID IS NOT NULL");
 		 
 		  if(searchDates != null) {
-				resultQuery.append(" AND  (date_format(RS.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+fromDateStr+"' AND '"+toDateStr+"')");
+			    resultQuery.append(" AND  RS.CREATED_DATE  BETWEEN '"+searchDates[0]+"' AND '"+searchDates[1]+"'");
 				resultQuery.append(" GROUP BY RH.TO_STAGE)Q1");
 			}else {
 				resultQuery.append(" GROUP BY RH.TO_STAGE)Q1");
@@ -344,8 +336,8 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 	public ApplicantBySourceCountDTO getInternalSourceApplicantsCountByStage(List<Long> jobIdList, Date[] searchDates) {
 		
 				 Session session = this.sessionFactory.getCurrentSession();
-				 String  fromDateStr =commonUtil.elkDateFormatter(searchDates[0]);
-		  	     String  toDateStr  = commonUtil.elkDateFormatter(searchDates[1]);
+				// String  fromDateStr =commonUtil.elkDateFormatter(searchDates[0]);
+		  	    // String  toDateStr  = commonUtil.elkDateFormatter(searchDates[1]);
 				 ApplicantBySourceCountDTO internalApplicantBySourceCountDTO= null;
 		         StringBuilder resultQuery = new StringBuilder("");
 		         resultQuery.append("SELECT ");
@@ -384,7 +376,7 @@ public class ApplicantsBySourceDaoImpl implements ApplicantsBySourceDao{
 				 resultQuery.append(" AND RS.REQUIREMENT_ID IN(:jobIds)"); 
 				
 				if(searchDates != null) {
-					resultQuery.append(" AND  (date_format(RS.CREATED_DATE, '%Y-%m-%d') BETWEEN '"+fromDateStr+"' AND '"+toDateStr+"')");
+					resultQuery.append(" AND  RS.CREATED_DATE  BETWEEN '"+searchDates[0]+"' AND '"+searchDates[1]+"'");
 					resultQuery.append(" GROUP BY RH.TO_STAGE)Q1");
 				}else {
 					resultQuery.append(" GROUP BY RH.TO_STAGE)Q1");
