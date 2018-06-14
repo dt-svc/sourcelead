@@ -201,7 +201,7 @@ function submitCandidatesToJob(){
 		  }
 		  
 		var result = "";
-		result = result + '<h3>Requirement List</h3>';
+		result = result + '<h3>Jobs List</h3>';
 		result = result + '<div id="choicepopUp"></div>';
 		result = result + '<div id="requirementsListLoading"></div>';
 	    result = result +" <div class='mr pull-left'>";
