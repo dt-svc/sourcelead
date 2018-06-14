@@ -35,8 +35,8 @@ import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
+import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -1684,6 +1684,117 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		
 		
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<SubmissionCandidateListView> getSubmissionCandidateListView(CandidateDTO candidateDTO,
+			OrgLocations orgLocations) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<BigInteger> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<SubmissionCandidateListView> response = new ResponseList<>();
+		Query queryObj = null;
+		String querySeachStr = "";
+		StringBuilder advSeach = new StringBuilder("");
+		String advSeachStr = "";
+		List<SubmissionCandidateListView> candidateList = null;
+		boolean flag = false;
+		
+		
+		
+		  StringBuilder query1 = new StringBuilder("");
+				if(candidateDTO.getSearchValue() != null && !"".equalsIgnoreCase(candidateDTO.getSearchValue())) {
+					 query1.append(" Q1.candidateName like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.email like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.employementType like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.createdDate like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.noticePeriod like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.primarySkill like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.country like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.location like '%" + candidateDTO.getSearchValue() + "%' ");
+					 
+				}
+				
+				
+				
+				
+				String sortingQry = "";
+				if(StringUtils.isNotBlank(candidateDTO.getSortColumn()))
+				{
+					sortingQry = " order by Q1."+ candidateDTO.getSortColumn() +" "+candidateDTO.getSortOrder();
+				}
+				
+				if(query1.toString() != null && !query1.toString().isEmpty()){
+					querySeachStr = "where "+"("+query1.toString()+")";
+				}
+				
+				try { 
+					 query = "SELECT Q1.* " + 
+					 		 "FROM (" + 
+							 "SELECT " + 
+					 		 "CAND.ID AS id, " + 
+					 		 "CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName," + 
+					 		 "CAND.GENERATED_ID AS generatedId, " + 
+					 		 "CAND.EMAIL AS email, " + 
+					 		 "CAND.DESIGNATION_TYPE AS employementType, " + 
+					 		 "CAND.PRIMARY_SKILL AS primarySkill, " + 
+					 		 "CAND.SKILLS_NAME AS skills, " + 
+					 		 "CAND.ADDRESS AS location, " + 
+					 		 "CAND.COUNTRY AS country, " + 
+					 		 "CAND.NOTICE_PERIOD AS noticePeriod, " + 
+					 		 "CAND.IS_ASSOCIATE AS isAssociate, " + 
+					 		 "DATE_FORMAT(CAND.CREATED_DATE ,\"%Y-%m-%d\") AS createdDate, " + 
+					 		 "DATE_FORMAT(CAND.UPDATED_DATE ,\"%Y-%m-%d\") AS updatedDate, " + 
+					 		 "CAND.ORG_LOCATION_ID AS orgLocationId, " + 
+					 		 "CAND.ORG_RELATION_ID AS orgRelationId, " + 
+					 		 "OL.ORG_ID AS orgId " + 
+					 		 "FROM " + 
+					 		 "CANDIDATE CAND, " + 
+					 		 "ORG_LOCATIONS OL " + 
+					 		 "WHERE  CAND.ORG_LOCATION_ID = OL.ID " + 
+					 		 "AND CAND.ORG_LOCATION_ID = :orgLocationId " + 
+					 		 "GROUP BY CAND.ID,  " + 
+					 		 "DATE_FORMAT(CAND.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr+advSeachStr+sortingQry;
+				
+				 String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
+							" FROM" + 
+							"(" + query +
+							")Q2;" ;
+				 
+				    queryObj = session.createSQLQuery(query);
+					queryObj.setParameter("orgLocationId", orgLocations.getId());
+					queryObj.setResultTransformer(Transformers.aliasToBean(SubmissionCandidateListView.class));
+					queryObj.setFirstResult(candidateDTO.getStart());
+					queryObj.setMaxResults(candidateDTO.getLength());
+					candidateList = queryObj.list();
+					
+					countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocations.getId()).list();
+					filterCount = countlist.iterator().next().intValue();
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				int totalCount = 0;
+
+				
+				if (candidateDTO != null) {
+					if(countlist != null && !countlist.isEmpty()) {
+						totalCount = countlist.iterator().next().intValue();
+					}
+				} 
+				response.setRecordsTotal(totalCount);
+				
+				if(query1.toString() != null && !query1.toString().isEmpty()){
+					response.setRecordsFiltered(filterCount);
+				}else {
+					response.setRecordsFiltered(totalCount);
+				}
+				
+				response.setData(candidateList);
+				return response;
 	}
 
 }

@@ -756,7 +756,7 @@ function requirementPipelineList(url, requirementId, submissionType){
  	 var result = "";
  	 
  	result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-	 	result = result +'<span class="applicant_export">';
+	 	result = result +'<span class="applicant_export mr">';
 		 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
 	      result = result +'<a title="Export" onClick="piplineexport();"class="Clo1"><i class="glyphicon glyphicon-export expIcon"></i></a>';
 	      result = result +'<div class="export_pipline" style="display:none">';
@@ -3142,6 +3142,18 @@ return result;
 <!-- Ends Script for Requirement recommendation profile saving , deleting -->
 
 
+<div class="clients_side_wrap ">
+	<div class="new_side_wrap_inn">
+		<div class="new_side_wrap_cta">
+		 <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop datatable_filter">
+		    <div id="addJobApplicantsDivLoading"></div>
+			<div id="addJobApplicantsDiv"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<jsp:include page="candidatesListForSubmission.jsp" />
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
 <jsp:include page="submitToClient.jsp" />
