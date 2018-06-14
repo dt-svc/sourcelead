@@ -366,7 +366,7 @@
         });
     });
 
-	var immiTaskId;
+	var immiTaskId = "";
     function editImmiTaskList(id) {
         $.ajax({
             type: "GET",
@@ -453,6 +453,7 @@
                 }
             }
         });
+        immiTaskId = "";
     }
 
 </script>
