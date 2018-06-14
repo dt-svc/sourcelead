@@ -705,7 +705,7 @@
               <label class="col-md-4">Zip Code</label>
               <div class="col-md-8">
                   <input class="form-control" value="${immigrationDTO.zipcode}" id="zipcode" name="zipcode"
-								placeholder="Zip code" type="text" ></input>
+								placeholder="Zip code" type="text" data-validation="validate_Space validate_length validate_phone length2-8" data-validation-optional="true"></input>
               </div>
             </div>
 		    
