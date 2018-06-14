@@ -71,6 +71,7 @@ import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
@@ -3768,6 +3769,12 @@ public class RequirementServiceImpl implements RequirementService {
 			List<Long> userIdsList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
 			throws Exception {
 		return requirementDao.getAssociateCountsCreatedUserList(orgLocationId, userIdsList, startDateUTC, endDateUTC, isGlobalUser, orgId);
+	}
+
+	@Override
+	public ResponseList<SubmissionRequirementListView> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,
+			Long userId, OrgLocations orgLocations) throws Exception {
+		return requirementDao.getAllRequirementsForCandidateSubmission(requirementDTO, userId, orgLocations);
 	}
 
 }
