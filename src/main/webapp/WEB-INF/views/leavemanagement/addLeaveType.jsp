@@ -648,7 +648,7 @@
 								<div class="col-md-6" id=minimumDaysDiv>
 									<input type="text" class="form-control" name="minDays" onblur="validateDuration();"
 										id="minDays" value="${leaveType.minDays}"
-										field-name="Min Days" data-validation-optional="true">
+										field-name="Min Days" data-validation-optional="false">
 								</div>
 							</div>
 							<div class="col-md-6 paddingLeft">
@@ -659,7 +659,7 @@
 								<div class="col-md-6" id=maximumDaysDiv>
 									<input type="text" class="form-control" name="maxDays" onblur="validateDuration();"
 										id="maxDays" value="${leaveType.maxDays}"
-										field-name="Max Days" data-validation-optional="true">
+										field-name="Max Days" data-validation-optional="false">
 								</div>
 						 </div>
 					 </div>
@@ -900,11 +900,11 @@ function validateDuration(){
 		if (ckbox.is(':checked')) {
 			$("#minMaxDaysdiv").show();
 			$('#minDays').removeAttr('data-validation-optional');
-			$('#minDays').attr('data-validation', "required validate_length length1-250 validate_int");
+			$('#minDays').attr('data-validation', "required validate_length length1-250 validate_float");
 			$('#maxDays').removeAttr('data-validation-optional');
-			$('#maxDays').attr('data-validation', "required validate_length length1-250 validate_int");
-			$('#minDays').attr('data-validation', "validate_int required validate_length length1-3");
-			$('#maxDays').attr('data-validation', "validate_int required validate_length length1-3");
+			$('#maxDays').attr('data-validation', "required validate_length length1-250 validate_float");
+			$('#minDays').attr('data-validation', "validate_float required validate_length length1-3");
+			$('#maxDays').attr('data-validation', "validate_float required validate_length length1-3");
 			$('#minimumDaysDiv').find('p.jquery_form_error_message').remove();
 			$('#maximumDaysDiv').find('p.jquery_form_error_message').remove();
 			
