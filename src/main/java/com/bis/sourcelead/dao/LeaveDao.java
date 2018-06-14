@@ -79,4 +79,6 @@ public interface LeaveDao {
 
 	List<LeaveApproveHierarchy> getAllLeaveApproversList(Long locationId);
 
+	Map<String, Float> getNumberOfCurrentMonthLeavesTakenByUser(Long userId, Long leaveTypeId);
+
 }

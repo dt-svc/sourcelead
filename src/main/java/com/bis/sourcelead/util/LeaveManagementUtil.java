@@ -397,4 +397,21 @@ public class LeaveManagementUtil {
         return totalbalanceLeaveCounts;
     }
 
+	public float calculateExtraLeaves(Long userId, Long leaveTypeId, Float appliedLeavesPerPeriod)
+	{
+		float extraLeaves = 0f;
+		Map<String, Float> nuberOfCurrentMonthLeavestaken = leaveService.getNumberOfCurrentMonthLeavesTakenByUser(userId,leaveTypeId);
+		float monthlyLeaves = appliedLeavesPerPeriod;
+		float appLeaves = nuberOfCurrentMonthLeavestaken.get("numberOfLeavsTaken");
+		if(appLeaves < monthlyLeaves){
+			extraLeaves = 0f;
+		}else if(appLeaves > monthlyLeaves){
+			float extra = Math.abs(appLeaves - monthlyLeaves);
+			extraLeaves = extra - nuberOfCurrentMonthLeavestaken.get("numberOfExtraLeaves");
+		}else if(appLeaves == monthlyLeaves){
+			extraLeaves = 0f;
+		}
+		return extraLeaves;
+	}
+
 }
