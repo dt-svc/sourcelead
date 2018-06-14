@@ -50,11 +50,11 @@ $(document).ready(function() {
 									id="noticePeriod" name="noticePeriod"
 									data-validation-optional="true"
 									data-placeholder="Select Notice Period">
-									<option>Immediately Available</option>
-									<option>15-Days</option>
-									<option>1-Month</option>
-									<option>2-Month</option>
-									<option>3-Month</option>
+									<option value="Immediately Available">Immediately Available</option>
+									<option value="15 Days">15-Days</option>
+									<option value="1 Month">1-Month</option>
+									<option value="2 Months">2-Month</option>
+									<option value="3 Months">3-Month</option>
 								</select>
 							</div>
 						  </div>
@@ -66,15 +66,11 @@ $(document).ready(function() {
 										data-placeholder="Select Client" multiple>
 										<c:forEach var="report" items="${add_clientList}">
 											<c:if test="${report.locationId.id == loginOrgLocId}">
-												<option
-													value="${report.responderLocationId.id}"
-													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.responderLocationId.org.orgName}</option>
+												<option value="${report.id}">${report.responderLocationId.org.orgName}</option>
 											</c:if>
 											<c:if
 												test="${report.responderLocationId.id == loginOrgLocId}">
-												<option
-													value="${report.locationId.id}"
-													${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+												<option value="${report.id}">${report.locationId.org.orgName}</option>
 											</c:if>
 										</c:forEach>
 									</select>
@@ -87,12 +83,12 @@ $(document).ready(function() {
 									<select class="chosen-select" id="updatedOn" name="updatedOn"
 										data-placeholder="Posted On">
 										<option>All</option>
-										<option>1 Day Ago</option>
-										<option>3 Days Ago</option>
-										<option>1 Week Ago</option>
-										<option>2 Weeks Ago</option>
-										<option>1 Month Ago</option>
-										<option>3 Months Ago</option>
+										<option value="today">Today</option>
+										<option value="yesterday">1 Day Ago</option>
+										<option value="1_week">1 Week Ago</option>
+										<option value="Last_15_days">2 Weeks Ago</option>
+										<option value="1_month">1 Month Ago</option>
+										<option value="3_months">3 Months Ago</option>
 									</select>
 								</div>
 							</div>
@@ -136,7 +132,7 @@ $(document).ready(function() {
 							<input type="button" value="Search" id="search_requiremet"
 								onclick="getRequirementTableList();" class="btn btn-sm btn-success" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="clearJobAdvSearch();" class="btn btn-sm btn-primary" />
+								onclick="clearJobAdvSearch();getRequirementTableList();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 					
@@ -145,6 +141,7 @@ $(document).ready(function() {
 
 <script>
 function clearJobAdvSearch(){
+	 $("#reqDataTableSearch").val('');
 	$('#client').val('').trigger('chosen:updated');
 	$('#country').val('').trigger('chosen:updated');
 	$('#requirementSkills').val('').trigger('chosen:updated');
@@ -152,6 +149,8 @@ function clearJobAdvSearch(){
 	$('#requirementTitle').val('').trigger('chosen:updated');
 	$('#generatedId').val('').trigger('chosen:updated');
 	$('#updatedOn').val('').trigger('chosen:updated');
+	$('#city').val('').trigger('chosen:updated');
+	refreshGoogleApiCity('apiLocation');
 }
 </script>
 
@@ -205,9 +204,9 @@ function submitCandidatesToJob(){
 		result = result + '<h3>Requirement List</h3>';
 		result = result + '<div id="choicepopUp"></div>';
 		result = result + '<div id="requirementsListLoading"></div>';
-		/* result = result +" <div class='mr pull-left'>";
+	    result = result +" <div class='mr pull-left'>";
 		result = result +" <button type='button' onclick='jobAdvSearch()' class='btn btn-primary btn-sm'>Advanced Search&nbsp;&nbsp;<i class='fa fa-search'></i></button>";
-		result = result +"</div>"; */
+		result = result +"</div>"; 
 		result = result +" <div class='pull-right'>";
 		result = result +" <div class='mr pull-left'>";
 		result = result +" <input type='button' value='Submit To Job' onclick='submitCandidtesToJob()' class='btn btn-primary btn-sm'>";
@@ -252,10 +251,49 @@ function submitCandidatesToJob(){
 <script>
 function getRequirementTableList(){
 	 $("#addApplicantDivLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 var generatedId = "";
+	 var requirementTitle = "";
+	 var noticePeriod = "";
+	 var client = "";
+	 var updatedOn = "";
+	 var requirementSkills = "";
+	 var city = "";
+	 
+	 
+	 
+	 if($("#generatedId").val() != null && $("#generatedId").val() != 'undefined'){
+		  generatedId = $("#generatedId").val();
+	 }
+	
+	 if($("#requirementTitle").val() != null && $("#requirementTitle").val() != 'undefined'){
+		 var requirementTitle = $("#requirementTitle").val();
+	 }
+	
+	 if($("#noticePeriod").val() != null && $("#noticePeriod").val() != 'undefined'){
+		 var noticePeriod = $("#noticePeriod").val();
+	 }
+	
+	 if($("#client").val() != null && $("#client").val() != 'undefined'){
+		 var client = $("#client").val();
+	 }
+	
+	 if($("#updatedOn").val() != null && $("#updatedOn").val() != 'undefined'){
+		 var updatedOn = $("#updatedOn").val();
+	 }
+	
+	 if($("#requirementSkills").val() != null && $("#requirementSkills").val() != 'undefined'){
+		 var requirementSkills = $("#requirementSkills").val();
+	 }
+	
+	 if($("#city").val() != null && $("#city").val() != 'undefined'){
+		 var city = $("#city").val();
+	 }
+	
+	 
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#reqDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getRequirementListForCandidateBulkSubmission?searchValue="+searchValue;
+	 var url = sourceleadUrl+"/getRequirementListForCandidateBulkSubmission?searchValue="+searchValue+"&generatedId="+generatedId+"&jobTitle="+requirementTitle+"&noticePeriod="+noticePeriod+"&client="+client+"&createdDate="+updatedOn+"&skills="+requirementSkills+"&city="+city;
 	 requirementListPagination(url,sourceleadUrl);
 	 $("#addApplicantDivLoading").removeAttr("style");
 }
@@ -369,7 +407,6 @@ function requirementListPagination(url,sourceleadUrl){
 
 <script>
 function jobAdvSearch(){
-	  $("#reqDataTableSearch").val('');
 	     $("#requirementFilterPopup").toggle();
 		 $(".advancedsearch-mask").fadeIn();
 	 
@@ -441,6 +478,7 @@ function cancelPopUp(){
 	$("#choicepopUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 	activeTab();
+	clearJobAdvSearch();
 	$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 	$(".side_mask").fadeOut(200);
 	$("body").css('overflow-y', 'auto');

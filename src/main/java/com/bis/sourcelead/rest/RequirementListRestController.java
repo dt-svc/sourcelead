@@ -2436,7 +2436,7 @@ public class RequirementListRestController {
 			}
 			requirementDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			requirementDTO.setSortOrder(sortColumnOrder);
-			ResponseList<SubmissionRequirementListView> requirementDTOList = requirementService.getAllRequirementsForCandidateSubmission(requirementDTO, user.getId(), orgLocations.getId());
+			ResponseList<SubmissionRequirementListView> requirementDTOList = requirementService.getAllRequirementsForCandidateSubmission(requirementDTO, user.getId(), orgLocations);
 			return requirementDTOList;
 			
 		}

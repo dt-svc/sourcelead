@@ -3773,8 +3773,8 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public ResponseList<SubmissionRequirementListView> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,
-			Long userId, Long orgLocationId) throws Exception {
-		return requirementDao.getAllRequirementsForCandidateSubmission(requirementDTO, userId, orgLocationId);
+			Long userId, OrgLocations orgLocations) throws Exception {
+		return requirementDao.getAllRequirementsForCandidateSubmission(requirementDTO, userId, orgLocations);
 	}
 
 }

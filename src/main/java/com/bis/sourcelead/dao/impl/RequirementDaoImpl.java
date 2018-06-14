@@ -48,6 +48,7 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 
 /**
  * 
@@ -92,6 +93,9 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Value("${jdbc.schema}")
 	private String schema;
+	
+	@Autowired
+	private ReportsUtil reportsUtil;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -2267,7 +2271,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Override
 	@Transactional
 	public ResponseList<SubmissionRequirementListView> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,
-			Long userId, Long orgLocationId) throws Exception {
+			Long userId, OrgLocations orgLocations) throws Exception {
 		
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -2277,19 +2281,103 @@ public class RequirementDaoImpl implements RequirementDao {
 		ResponseList<SubmissionRequirementListView> response = new ResponseList<>();
 		Query queryObj = null;
 		String querySeachStr = "";
-		String locationSeachStr = "";
+		StringBuilder advSeach = new StringBuilder("");
+		String advSeachStr = "";
 		List<SubmissionRequirementListView> requirementList = null;
-		
+		boolean flag = false;
 		
 		
 		  StringBuilder query1 = new StringBuilder("");
-			if(requirementDTO.getSearchValue() !=null && !"".equalsIgnoreCase(requirementDTO.getSearchValue())) {
+			if(requirementDTO.getSearchValue() != null && !"".equalsIgnoreCase(requirementDTO.getSearchValue())) {
 				 query1.append(" Q1.generatedId like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.jobTitle like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.createdDate like '%" + requirementDTO.getSearchValue() + "%' ")
 					.append("OR Q1.location like '%" + requirementDTO.getSearchValue() + "%' ");
 				 
 			}
+			
+			if(StringUtils.isNotBlank(requirementDTO.getGeneratedId())) {
+				String genertatedIds [] = requirementDTO.getGeneratedId().split(",");
+				String genertatedIdsStr = "'" + StringUtils.join(genertatedIds,"','") + "'";
+				advSeach.append(" Q1.generatedId IN ("+genertatedIdsStr+") ");
+				flag = true;
+			}
+			
+			if(StringUtils.isNotBlank(requirementDTO.getJobTitle())) {
+				String jobTitles [] = requirementDTO.getJobTitle().split(",");
+				String jobTitlesStr = "'" + StringUtils.join(jobTitles,"','") + "'";
+				if(flag == false) {
+					advSeach.append(" Q1.jobTitle IN ("+jobTitlesStr+") ");
+					flag = true;
+				}else {
+					advSeach.append(" OR Q1.jobTitle IN ("+jobTitlesStr+") ");
+				}
+				
+			}
+			
+			if(requirementDTO.getNoticePeriod() != null && !requirementDTO.getNoticePeriod().isEmpty()) {
+				String[] noticePeriod = requirementDTO.getNoticePeriod().toArray(new String[requirementDTO.getNoticePeriod().size()]);
+				String noticePeriodStr = "'" + StringUtils.join(noticePeriod,"','") + "'";
+				if(flag == false) {
+					advSeach.append(" Q1.noticePeriod IN ("+noticePeriodStr+") ");
+					flag = true;
+				}else {
+					advSeach.append(" OR Q1.noticePeriod IN ("+noticePeriodStr+") ");
+				}
+				
+			}
+			
+			if(StringUtils.isNotBlank(requirementDTO.getClient())) {
+				String orgRelationIds [] = requirementDTO.getClient().split(",");
+				String orgRelationIdStr = "'" + StringUtils.join(orgRelationIds,"','") + "'";
+				if(flag == false) {
+					advSeach.append(" Q1.orgRelationId IN ("+orgRelationIdStr+") ");
+					flag = true;
+				}else {
+					advSeach.append(" OR Q1.orgRelationId IN ("+orgRelationIdStr+") ");
+				}
+				
+			}
+			
+			if(StringUtils.isNotBlank(requirementDTO.getCreatedDate()) && !requirementDTO.getCreatedDate().equalsIgnoreCase("All")) {
+				Date[] searchDates  = reportsUtil.getJobFilterDate(requirementDTO.getCreatedDate(),orgLocations);
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				String fromDate = sdf.format(searchDates[0]);
+				String toDate = sdf.format(searchDates[1]);
+				
+				if(flag == false) {
+					advSeach.append(" (Q1.createdDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
+					flag = true;
+				}else {
+					advSeach.append(" OR (Q1.createdDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
+				}
+				
+			 }
+			
+			if(StringUtils.isNotBlank(requirementDTO.getSkills())) {
+				String skills [] = requirementDTO.getSkills().split(",");
+				String skillsStr = "'" + StringUtils.join(skills,"','") + "'";
+				if(flag == false) {
+					advSeach.append(" Q1.skills IN ("+skillsStr+") ");
+					flag = true;
+				}else {
+					advSeach.append(" OR Q1.skills IN ("+skillsStr+") ");
+				}
+				
+			}
+			
+			if(StringUtils.isNotBlank(requirementDTO.getCity())) {
+				String cities [] = requirementDTO.getCity().split(",");
+				String citiesStr = "'" + StringUtils.join(cities,"','") + "'";
+				if(flag == false) {
+					advSeach.append(" Q1.city IN ("+citiesStr+") ");
+					flag = true;
+				}else {
+					advSeach.append(" OR Q1.city IN ("+citiesStr+") ");
+				}
+				
+			}
+			
 			
 			String sortingQry = "";
 			if(StringUtils.isNotBlank(requirementDTO.getSortColumn()))
@@ -2299,6 +2387,12 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 			if(query1.toString() != null && !query1.toString().isEmpty()){
 				querySeachStr = "where "+"("+query1.toString()+")";
+			}
+			
+			if((query1.toString() == null || query1.toString().isEmpty()) && advSeach.toString() != null && !advSeach.toString().isEmpty()){
+				advSeachStr = "where "+"("+advSeach.toString()+")";
+			}else if(query1.toString() != null && !query1.toString().isEmpty() && advSeach.toString() != null && !advSeach.toString().isEmpty()){
+				advSeachStr = "and "+"("+advSeach.toString()+")";
 			}
 			
 			try {
@@ -2328,9 +2422,8 @@ public class RequirementDaoImpl implements RequirementDao {
 					"AND  REQ.ORG_LOCATION_ID = OL.ID " + 
 					"AND REQ.ORG_LOCATION_ID = :orgLocationId AND REQ.REQUIREMENT_SUBMISSION_STATUS = 'OPEN' " + 
 					" GROUP BY  REQ.ID, "+
-					" DATE_FORMAT(REQ.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr+sortingQry;
+					" DATE_FORMAT(REQ.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr+advSeachStr+sortingQry;
 			 
-			 System.out.println(query);
 			
 			  String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
 					" FROM" + 
@@ -2339,13 +2432,13 @@ public class RequirementDaoImpl implements RequirementDao {
 			
 			
 			queryObj = session.createSQLQuery(query);
-			queryObj.setParameter("orgLocationId", orgLocationId);
+			queryObj.setParameter("orgLocationId", orgLocations.getId());
 			queryObj.setResultTransformer(Transformers.aliasToBean(SubmissionRequirementListView.class));
 			queryObj.setFirstResult(requirementDTO.getStart());
 			queryObj.setMaxResults(requirementDTO.getLength());
 			requirementList = queryObj.list();
 			
-			countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocationId).list();
+			countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocations.getId()).list();
 			filterCount = countlist.iterator().next().intValue();
 			
 			}catch (Exception e) {
