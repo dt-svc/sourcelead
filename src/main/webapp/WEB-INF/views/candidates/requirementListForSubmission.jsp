@@ -429,12 +429,7 @@ function submitCandidtesToJob(){
 }
 </script>
 
-<script>
-	function successMsgFadeinFunction() {
-		$("#selector4").fadeIn(200);
-        $('#selector4').delay(2000).fadeOut('slow');
-	}
-</script>
+
 
 <script type="text/javascript">
 function okPopUp(){

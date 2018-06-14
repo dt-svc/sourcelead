@@ -33,6 +33,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
@@ -2271,47 +2272,85 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = null;
-		List<Long> countlist = null;
+		List<BigInteger> countlist = null;
 		Integer filterCount = 0;
 		ResponseList<SubmissionRequirementListView> response = new ResponseList<>();
 		Query queryObj = null;
+		String querySeachStr = "";
+		String locationSeachStr = "";
 		List<SubmissionRequirementListView> requirementList = null;
 		
 		
 		
 		  StringBuilder query1 = new StringBuilder("");
 			if(requirementDTO.getSearchValue() !=null && !"".equalsIgnoreCase(requirementDTO.getSearchValue())) {
-				 query1.append(" req.generatedId like '%" + requirementDTO.getSearchValue() + "%' ")
-					.append("OR req.jobTitle like '%" + requirementDTO.getSearchValue() + "%' ")
-					.append("OR req.createdDate like '%" + requirementDTO.getSearchValue() + "%' ")
-					.append("OR req.location like '%" + requirementDTO.getSearchValue() + "%' ");
+				 query1.append(" Q1.generatedId like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR Q1.jobTitle like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR Q1.createdDate like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR Q1.location like '%" + requirementDTO.getSearchValue() + "%' ");
+				 
 			}
 			
 			String sortingQry = "";
-			if(StringUtils.isNotBlank(requirementDTO.getSortColumn())) {
-					sortingQry = " order by req."+ requirementDTO.getSortColumn() +" "+requirementDTO.getSortOrder();
+			if(StringUtils.isNotBlank(requirementDTO.getSortColumn()))
+			{
+				sortingQry = " order by Q1."+ requirementDTO.getSortColumn() +" "+requirementDTO.getSortOrder();
 			}
 			
-			query = "from SubmissionRequirementListView req where req.orgLocationId = :orgLocationId and req.status = 'OPEN' ";
 			if(query1.toString() != null && !query1.toString().isEmpty()){
-				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
-			}else{
-				 queryObj = session.createQuery(query + query1.toString()+" "+sortingQry+" ");
+				querySeachStr = "where "+"("+query1.toString()+")";
 			}
-		
+			
+			try {
+			 query = "SELECT Q1.* " + 
+			 		 "FROM (" + 
+					 "SELECT " + 
+					"REQ.ID AS id," + 
+					"REQ.GENERATED_ID AS generatedId," + 
+					"REQ.JOB_TITLE AS jobTitle, " + 
+					"DATE_FORMAT(REQ.CREATED_DATE ,\"%Y-%m-%d\") AS createdDate, " + 
+					"REQ.REQUIREMENT_SUBMISSION_STATUS AS status, " + 
+					"REQ.SKILLS AS skills, " + 
+					"REQ.NOTICEPERIOD AS noticePeriod, " + 
+					"REQ.ORG_RELATION_ID AS orgRelationId, " + 
+					"REQ.CREATED_BY AS userId, " + 
+					"REQ.ORG_LOCATION_ID AS orgLocationId, " + 
+					"OL.ORG_ID AS orgId, " + 
+					"GROUP_CONCAT(DISTINCT RL.CITY " + 
+					"SEPARATOR ',') AS city, " + 
+					"GROUP_CONCAT(DISTINCT RL.LOCATION " + 
+					"SEPARATOR '|') AS location " + 
+					"FROM " + 
+					"REQUIREMENT REQ ," + 
+					"REQUIREMENT_LOCATIONS RL, " + 
+					"ORG_LOCATIONS OL " + 
+					"WHERE REQ.ID = RL.REQUIREMENT_ID " + 
+					"AND  REQ.ORG_LOCATION_ID = OL.ID " + 
+					"AND REQ.ORG_LOCATION_ID = :orgLocationId AND REQ.REQUIREMENT_SUBMISSION_STATUS = 'OPEN' " + 
+					" GROUP BY  REQ.ID, "+
+					" DATE_FORMAT(REQ.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr+sortingQry;
+			 
+			 System.out.println(query);
+			
+			  String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
+					" FROM" + 
+					"(" + query +
+					")Q2;" ;
+			
+			
+			queryObj = session.createSQLQuery(query);
+			queryObj.setParameter("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(SubmissionRequirementListView.class));
 			queryObj.setFirstResult(requirementDTO.getStart());
 			queryObj.setMaxResults(requirementDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocationId).list();
 			requirementList = queryObj.list();
-			if(query1.toString() != null && !query1.toString().isEmpty()){
-				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationId", orgLocationId).list();
-				filterCount = countlist.iterator().next().intValue();
-			}else {
-				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).list();
-				filterCount = countlist.iterator().next().intValue();
+			
+			countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocationId).list();
+			filterCount = countlist.iterator().next().intValue();
+			
+			}catch (Exception e) {
+				e.printStackTrace();
 			}
-			
-			
 			int totalCount = 0;
 
 			

@@ -1,67 +1,42 @@
 package com.bis.sourcelead.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.math.BigInteger;
 
-import org.hibernate.annotations.Type;
-
-@Entity
-@Table(name = "SUBMISSION_REQUIREMENT_LIST_VIEW")
 public class SubmissionRequirementListView {
 
-	@Id
-    @Column(name = "REQ_ID")
-	private Long id;
+	private BigInteger id;
 	
-	@Column(name = "GENERATED_ID")
 	private String generatedId;
 	
-	@Column(name = "JOB_TITLE")
 	private String jobTitle;
 	
-	@Column(name = "CREATED_DATE")
 	private String createdDate;
 	
-	@Column(name = "STATUS")
 	private String status;
 	
-	@Column(name = "SKILLS")
-	@Type(type="text")
 	private String skills;
 	
-	@Column(name = "NOTICE_PERIOD")
-	@Type(type="text")
 	private String noticePeriod;
 	
-	@Column(name = "ORG_LOCATION_ID")
-	private Long orgLocationId;
+	private BigInteger orgLocationId;
 	
-	@Column(name = "ORG_ID")
-	private Long orgId;
+	private BigInteger orgId;
 	
-	@Column(name = "ORG_RELATION_ID")
-	private Long orgRelationId;
+	private BigInteger orgRelationId;
 		
-	@Column(name = "USER_ID")
-	private Long userId;
+	private BigInteger userId;
 	
-	@Column(name = "LOCATION")
-	@Type(type="text")
 	private String location;
 	
-	@Column(name = "CITY")
-	@Type(type="text")
 	private String city;
 
 	
 	
-	public Long getId() {
+	public BigInteger getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(BigInteger id) {
 		this.id = id;
 	}
 
@@ -105,35 +80,35 @@ public class SubmissionRequirementListView {
 		this.noticePeriod = noticePeriod;
 	}
 
-	public Long getOrgLocationId() {
+	public BigInteger getOrgLocationId() {
 		return orgLocationId;
 	}
 
-	public void setOrgLocationId(Long orgLocationId) {
+	public void setOrgLocationId(BigInteger orgLocationId) {
 		this.orgLocationId = orgLocationId;
 	}
 
-	public Long getOrgId() {
+	public BigInteger getOrgId() {
 		return orgId;
 	}
 
-	public void setOrgId(Long orgId) {
+	public void setOrgId(BigInteger orgId) {
 		this.orgId = orgId;
 	}
 
-	public Long getOrgRelationId() {
+	public BigInteger getOrgRelationId() {
 		return orgRelationId;
 	}
 
-	public void setOrgRelationId(Long orgRelationId) {
+	public void setOrgRelationId(BigInteger orgRelationId) {
 		this.orgRelationId = orgRelationId;
 	}
 
-	public Long getUserId() {
+	public BigInteger getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Long userId) {
+	public void setUserId(BigInteger userId) {
 		this.userId = userId;
 	}
 
