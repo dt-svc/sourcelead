@@ -2,6 +2,7 @@ package com.bis.sourcelead.web;
 
 import java.io.FileNotFoundException;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -31,6 +32,7 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.States;
@@ -40,6 +42,7 @@ import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
@@ -94,8 +97,13 @@ public class CandidateController {
 	
 	@Autowired
 	private SourceleadFormSectionsService sourceleadFormSectionsService;
+	
 	@Autowired
 	private SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
+	
 	/**
 	 * Handles to display candidate jsp
 	 * @return ModelAndView
@@ -251,6 +259,16 @@ public class CandidateController {
 		List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 		model.addObject("documentsList", documentsList);
 		
+		Collection<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(orgLocations.getId()); 
+		if(null != orgClientList && orgClientList.size() > 0){
+			for(OrgRelations ocl :orgClientList){
+				ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+				ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+			 }
+		    model.addObject("add_clientList", orgClientList);
+		}
+		  model.addObject("loginOrgLocId", orgLocations.getId());
+		  
 		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 		if(null == sessionData)
 		{

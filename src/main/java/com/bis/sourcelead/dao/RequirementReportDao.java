@@ -12,7 +12,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface RequirementReportDao {
 
-	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate, Date startDateUTC, Date endDateUTC);
+	List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate, Date startDateUTC, Date endDateUTC,String status);
 
 	List<RequirementSubmissionHistory> getRequirementReports(Long requirementId);
 
@@ -24,7 +24,6 @@ public interface RequirementReportDao {
 
 	List<RequirementSubmissionHistory> getApplicantsCountForChart(Long orgLocationId);
 
-	Integer getRequirementStagesCountsForReports(Long orgLocId, String requirementStatus);
 
 	List<Requirement> getRequirementStageReports(OrgLocations orgLocation, String status) throws Exception;
 
