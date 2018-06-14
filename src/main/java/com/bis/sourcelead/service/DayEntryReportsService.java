@@ -20,6 +20,6 @@ public interface DayEntryReportsService {
 
 	File exportDayEntryReportsWithProjectPdf(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,	OrgLocations orgLocations, User loginUser)throws IOException, Exception;
 
-	Map<List<DayWiseTimesheetReoprtsListDTO>, String[]> getDayEntriesList(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgLocations, User loginUser) throws Exception;
+	List<DayWiseTimesheetReoprtsListDTO> getDayEntriesList(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,OrgLocations orgLocations, User loginUser) throws Exception;
 
 }
