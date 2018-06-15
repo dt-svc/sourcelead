@@ -63,11 +63,27 @@
 </section>  
 
 <script type="text/javascript">
-    $(document).ready(function () {
-    	//var immTemplId = $("#templateId").val(immTemplId);
-    	//var immTemplId = immTemplId;
-    	 immTemplId = '<c:out value ="${not empty templateDTO.id ? templateDTO.id : ''}"/>';
+	    $(document).ready(function () {
+	    	//var immTemplId = $("#templateId").val(immTemplId);
+	    	//var immTemplId = immTemplId;
+	    	 immTemplId = '<c:out value ="${not empty templateDTO.id ? templateDTO.id : ''}"/>';
+	
+	        getPetitionTypeOnCountries($("#countryName"),"${templateDTO.petitionType}");
+	    });
+      
+	    var config = {
+  		  '.chosen-select'           : {},
+  		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+  		  '.chosen-select-no-single' : {disable_search_threshold:10},
+  		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+  		  '.chosen-select-width'     : {width:"95%"}
+  		}
 
-        getPetitionTypeOnCountries($("#countryName"),"${templateDTO.petitionType}");
-    });
+  		for (var selector in config) {
+  			  $(selector).chosen(config[selector]);
+  			}
+  			$('.chosen-select').each(function() {
+  				var $this = $(this);
+  				$this.next().css({'width': '100%'});
+  			})
 </script>

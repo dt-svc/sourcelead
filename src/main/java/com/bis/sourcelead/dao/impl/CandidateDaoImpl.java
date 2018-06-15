@@ -1601,8 +1601,14 @@ public class CandidateDaoImpl implements CandidateDao {
 		} else {
 			return null;
 		}
-   	
-
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getAllActiveCandidatesByLocationEmail(String email, Long orgLocationId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.status ='1' and cnadidate.consultantUser !=null and cnadidate.email = :email ORDER BY cnadidate.id DESC";  
+        return  (Candidate) session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("email", email).uniqueResult();
 	}
 
 }

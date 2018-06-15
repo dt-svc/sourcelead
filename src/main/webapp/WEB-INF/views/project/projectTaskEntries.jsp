@@ -91,7 +91,7 @@
 					</form>
 					                <!-- TimeEntry Modal Pop Ends -->	        
                      
-					 <div id="tableContent" class="clearfix project_wrap_table">
+					 <div id="tableContent" class="clearfix project_wrap_table overflow_Auto">
 			                    <table>
 			                        <thead>
 			                            <tr>

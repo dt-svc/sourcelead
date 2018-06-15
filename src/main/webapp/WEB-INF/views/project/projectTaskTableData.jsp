@@ -11,11 +11,11 @@
  </tr>
 <c:forEach var="timeDayEntry" items="${timeEntryDayListData}">
 <tr>
-	    <td><div><span>${timeDayEntry.employeeName}</span></div></td>
-	    <td><div class="tbldata-dotdot-100">${timeDayEntry.timesheetDate}</div></td>
-	    <td><div><span>${timeDayEntry.hours}</span></div></td>
+	    <td><div class="tbldata-dotdot-100">${timeDayEntry.employeeName}</div></td>
+	    <td><div class="tblminwidth-50">${timeDayEntry.timesheetDate}</div></td>
+	    <td><div class="tblminwidth-30">${timeDayEntry.hours}</div></td>
 	    <td><div class="tbldata-dotdot-sm" title="${timeDayEntry.comments}">${timeDayEntry.comments}</div></td>
-	    <td><div><span>${timeDayEntry.approvalStatus}</span></div></td>
+	    <td><div class="tbldata-dotdot-100">${timeDayEntry.approvalStatus}</span></div></td>
 	    
 	    <c:if test="${timeDayEntry.projectMemberId eq projectMemID and timeDayEntry.approvalStatus ne 'APPROVED'}">
 	    	<td><div class="fa fa-edit" id="editTimeDayEntry" onclick="editProjectTaskTimesheetDayEntry('${timeDayEntry.timesheetDate}','edit');"></div>|

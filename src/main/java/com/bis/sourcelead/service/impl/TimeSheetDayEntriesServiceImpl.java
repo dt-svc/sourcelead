@@ -75,4 +75,12 @@ public class TimeSheetDayEntriesServiceImpl implements TimeSheetDayEntriesServic
 		return timeSheetDayEntriesDao.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDate(projectId, timesheetDate,projectMemberId);
 	}
 
+	@Override
+	public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(Long projectId,Date startDate, Date endDate, Long projectMembers) throws Exception {
+		return timeSheetDayEntriesDao.getAllTimeSheetDayEntriesByProjectIdAndTimesheetDateTest(projectId, startDate,endDate,projectMembers);
+	}
+	
+	
+
+
 }
