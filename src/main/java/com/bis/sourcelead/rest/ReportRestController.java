@@ -953,10 +953,12 @@ public class ReportRestController {
 				if(employee.getHireDate() != null)
 				userDto.setDateofJoin(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),employee.getHireDate()));
 				
-				if(Constants.INACTIVE.equalsIgnoreCase(userRole.getUserState().toString())) {
-					userDto.setDateOfTermination(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getUpdatedDate()));
-				}else {
-					userDto.setDateOfTermination("Till Date");
+				if(userRole.getUserState() != null) {
+					if("Inactive".equalsIgnoreCase(userRole.getUserState().toString())) {
+						userDto.setDateOfTermination(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getUpdatedDate()));
+					}else {
+						userDto.setDateOfTermination("Till Date");
+					}
 				}
 				if(employee.getUserEmploymentType() != null)
 				userDto.setEmploymentType(employee.getUserEmploymentType());

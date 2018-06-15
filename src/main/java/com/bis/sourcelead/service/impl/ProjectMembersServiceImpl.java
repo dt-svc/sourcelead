@@ -1774,5 +1774,14 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	public ProjectMembers getProjectMemberByUserIdAndLoginOrglocationId(Long userId, Long orgLocationId)throws Exception {
 		return projectMembersDao.getProjectMemberByUserIdAndLoginOrglocationId(userId, orgLocationId);
 	}
+	@Override
+	public List<String> getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId){
+		return projectMembersDao.getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(locationsId, candidateId);
+		
+	}
+	@Override
+	public List<ProjectMembers> getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(Long locationsId, Long candidateId,String timesheetFrequency){
+		return projectMembersDao.getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(locationsId, candidateId, timesheetFrequency);
+	}
 
 }

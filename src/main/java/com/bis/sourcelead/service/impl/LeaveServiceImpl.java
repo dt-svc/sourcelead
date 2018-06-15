@@ -2167,7 +2167,7 @@ public class LeaveServiceImpl implements LeaveService{
 					if(userRole != null && leaveType != null) {
 						List<User> userList = new ArrayList<>();
 						userList.add(userRole.getUser());
-						AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), userRole.getUser().getId(), orgLocation.getId());
+						AssociateBalanceLeave associa = associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), userRole.getUser().getId(), orgLocation.getId(),Integer.parseInt(leaveType.getStatus()));
 						if(associa != null) {
 							int result = associateBalanceLeaveService.addOrSubAssociateBalanceLeaveType(userList, orgLocation.getId(), leaveType, 1,Integer.parseInt(ltdto.getNumberOfLeaves()),"IMPORT",Constants.UPDATE);
 						}else {

@@ -1167,10 +1167,14 @@ public class RequirementRestController {
 				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 				
 				String[] candidateId = candidateIds.split(",");
-				if(candidateId != null &&  candidateId.length>0 && candidateId[0] != null && candidateId[0] != ""){
+				if(candidateId != null &&  candidateId.length > 0){
 					for(String candidateid   : candidateId){
 						Candidate candidate = candidateService.getCandidateByCandidateId(Long.valueOf(candidateid));
-								
+						
+						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirement.getId(), Long.valueOf(candidateid));
+						
+						if(submission == null) {
+						
 						JSONObject labelItems = new JSONObject();
 						labelItems.put("requirementId", requirementId);
 						labelItems.put("reqCoolingOffPeriod", requirement.getReqCoolingOffPeriod());
@@ -1282,7 +1286,8 @@ public class RequirementRestController {
 							requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 						}
 						
-						}
+					  }
+					}
 					
 					response.setObject("success");
 					response.setResponse(Result.SUCCESS.name());

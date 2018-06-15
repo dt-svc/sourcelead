@@ -141,8 +141,6 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 			    Date date=cal.getTime();
 	 System.out.println("======== first time======="+date);
 		List<Requirement> requirementList = requirementReportDao.getRequirementReports(userRoleName, orgLocation, user,filterDate, startDateUTC, endDateUTC,status);
-		Calendar cal1 = Calendar.getInstance();
-	    Date date1=cal1.getTime();
 	    
 		Map<Long,Requirement> requirementMap = new HashMap<Long,Requirement>();
 		List<Long> reqIdsList = new ArrayList<Long>();
@@ -176,7 +174,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		}
 		
 			//get the requirement locations list
-			
+			if(requirementList.size()>0){
 	    	    List<Object[]> locationList = requirementLocationsService.getRequirementLocationsListByRequirementIdMap(reqIdsList);
 	    	    
 	    	 //   List<String> requirementLocationsList =  new ArrayList<String>();
@@ -191,8 +189,11 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	    	    		requirement.getLocationsList().add((String)objArr[1]);
 	    	    	
 	    	    }
-	    	   
+			}
 	    	    // requirement.setLocationsList(requirementLocationsList); 
+			Calendar cal1 = Calendar.getInstance();
+		    Date date1=cal1.getTime();
+		    System.out.println("======== SERVICE TIME last======="+date1);
 	    	   
 		return requirementList;
 	}
