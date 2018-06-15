@@ -23,23 +23,23 @@
 				<span class="dropdown-toggle btn btn-sm btn-default" type="button" id="menu1" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
 				 <sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
-				 <li><a href='${appPath}/recruitersReports'>Recruiters Report</a></li>
+				 <li><a href='${appPath}/recruitersReports'>Recruiters Reports</a></li>
 				 </sec:authorize>
 				
 				 <sec:authorize access="hasRole('ROLE_VENDORS_REPORT')">
-				 <li><a href="${appPath}/vendorsReports">Vendors Report</a></li>
+				 <li><a href="${appPath}/vendorsReports">Vendors Reports</a></li>
 				 </sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_CLIENT_REPORT')">
-				<li><a href="${appPath}/perfomanceClientReports">Client Report</a></li>
+				<li><a href="${appPath}/perfomanceClientReports">Client Reports</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_DECLINE')">
-				<li><a href="${appPath}/applicantDeclineReports">Applicant Decline</a></li>
+				<li><a href="${appPath}/applicantDeclineReports">Applicants Decline</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_BACKOUT')">
-				<li><a href="${appPath}/applicantsBackoutReport">Applicant Backout</a></li>
+				<li><a href="${appPath}/applicantsBackoutReport">Applicants Backout</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_JOBS_PIPELINE')">
@@ -47,7 +47,7 @@
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_SOURCE')">
-				<li><a href="${appPath}/applicantBySource">Applicant Source</a></li>
+				<li><a href="${appPath}/applicantBySource">Applicants Source</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_TIME_TO_FILL')">
@@ -55,7 +55,7 @@
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_APPLICANT_RECEIVED')">
-				<li><a href="${appPath}/applicantsReceivedListForReports">Applicant Received</a></li>
+				<li><a href="${appPath}/applicantsReceivedListForReports">Applicants Received</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_JOBS_STAGES')">
@@ -91,7 +91,7 @@
 				<!-- <li><a href="#">Invoice</a></li> -->
 				
 				<sec:authorize access="hasRole('ROLE_BILLING_REPORTS')">
-				<li><a href="${appPath}/billingReports">Billing</a></li>
+				<li><a href="${appPath}/billingReports">Finance</a></li>
 				</sec:authorize>
 				<!-- <li><a href="#">Invoice Report By Customer / Project</a></li>
 				<li><a href="#">Bill Report By Customer / Project</a></li> -->
@@ -109,13 +109,13 @@
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_INVOICE')">
 					<c:if test="${SourceLeadWeb_ats == 'Y'}">
-					<li><a href='${appPath}/missingInvoiceReport'>Missing Invoice</a></li>
+					<li><a href='${appPath}/missingInvoiceReport'>Missing Invoices</a></li>
 					</c:if>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_MISSING_BILL')">
 				<c:if test="${SourceLeadWeb_vms == 'Y'}">
-				<li><a href='${appPath}/missingBillReport'>Missing Bill</a></li>
+				<li><a href='${appPath}/missingBillReport'>Missing Bills</a></li>
 				</c:if>
 				</sec:authorize>
 				
@@ -172,11 +172,11 @@
 				<%-- <li><a href="${appPath}/dailyTimeSheetReports">Daily Timesheet Report</a></li> --%>
 
 				<sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
-				<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
+				<li><a href="${appPath}/daywiseTimeSheetReports">Daywise Timesheet Reports</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
-				  <li><a href="${appPath}/timeSheetReports">Timesheet Report</a></li>
+				  <li><a href="${appPath}/timeSheetReports">Timesheet Reports</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_EXPENSES_REPORT')">
@@ -192,7 +192,7 @@
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
-				<li><a href="${appPath}/employementVerificationReport">Employement Verification Report</a></li>
+				<li><a href="${appPath}/employementVerificationReport">Employement Verification Reports</a></li>
 				</sec:authorize>
 				<!-- <li><a href="#">Employment Verficication</a></li>
 				<li><a href="#">Wage and Tax</a></li>
@@ -232,7 +232,7 @@
 					</sec:authorize>
 					
 					<sec:authorize access="hasRole('ROLE_ALL_ASSOCIATE_ROI')">
-					<li><a href="${appPath}/payrollAllBalanceReport">All Associate ROI</a></li>
+					<li><a href="${appPath}/payrollAllBalanceReport">All Associates ROI</a></li>
 					</sec:authorize>
 					<sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
 					<li><a href='${appPath}/campaignStats'>Campaign Reports</a></li>
@@ -273,7 +273,7 @@
 				<span class="dropdown-toggle btn btn-sm btn-default" type="button" id="menu4" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
 			     <sec:authorize access="hasRole('ROLE_USAGE_REPORT')">
-				<li><a href="${appPath}/userUsageReport">Usage Report</a></li>
+				<li><a href="${appPath}/userUsageReport">Usage Reports</a></li>
 				</sec:authorize>
 					
 				</ul>
