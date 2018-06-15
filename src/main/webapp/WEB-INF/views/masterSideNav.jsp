@@ -373,6 +373,9 @@
 								</li>
 								</sec:authorize>
 						</c:if>
+				    <c:if test="${userTabs.tabName == 'Leave Management'}">
+		             <li class="${sessionData.nav == 'Leave Management' ? 'side-nav-active' : ''}"><a href="<c:url value='${appPath}/leaveManagementTab'/>" title="Leave Management"><span><i class="fa fa-usd"></i></span><i class="subMenu">Leave Management</i></a></li>
+		          	</c:if>	
           </c:forEach>
             
           	
