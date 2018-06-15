@@ -15,6 +15,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.reports.dao.JobsPipelineReportDao;
 
 @Repository
+@Transactional(rollbackFor = { Exception.class })
 public class JobsPipelineReportDaoImpl implements JobsPipelineReportDao{
 
 	@Autowired
@@ -22,7 +23,6 @@ public class JobsPipelineReportDaoImpl implements JobsPipelineReportDao{
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getAllJobsForReportBasedOnStartAndEndDates(Long orgLocationId, Long loginUserId, Date startDateUTC, Date endDateUTC) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Requirement> releasedJobsList = null;
@@ -36,7 +36,6 @@ public class JobsPipelineReportDaoImpl implements JobsPipelineReportDao{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmission> getAllJobsReportCountByOrglocationIdAndLoginUserCodeAndStartAndEndDate(List<Long> jobIds,Date[] searchDates) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RequirementSubmission>  subList  = null;
@@ -56,7 +55,6 @@ public class JobsPipelineReportDaoImpl implements JobsPipelineReportDao{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementSubmissionHistory> getAllJobsReportsCountsBySubmmisonId(Long submissionId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query ="from RequirementSubmissionHistory rsh where rsh.submissionId.id =:submissionId and rsh.createdDate = (select Max(rh.createdDate) from RequirementSubmissionHistory rh where rh.submissionId.id =:submissionId and rh.toStage = rsh.toStage) Group By rsh.toStage";
@@ -66,7 +64,6 @@ public class JobsPipelineReportDaoImpl implements JobsPipelineReportDao{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional
 	public Integer requirementListStatusCountByJobIdsAndDates(List<Long> jobIds, Date[] searchDates, String JobStage) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "";
@@ -87,5 +84,23 @@ public class JobsPipelineReportDaoImpl implements JobsPipelineReportDao{
 			count = requiremnetCount.get(0).intValue();
 	}
 	return count;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Requirement> requirementListStatusCountByJobIdsAndDates(List<Long> jobIds, Date[] searchDates) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<Requirement>  reqList  = null;
+		String query = null;
+		if(jobIds.size() > 0) {
+			if(searchDates != null) {
+				 query =" from Requirement requirement  where requirement.id IN (:jobIds) and requirement.requirementSubmissionStatus IN('OPEN','ONHOLD','CLOSED','UNFILLEDCLOSED','FILLEDCLOSED','CANCEL') and date(requirement.createdDate) BETWEEN :startDate and :endDate";
+				 reqList = session.createQuery(query).setParameterList("jobIds", jobIds).setParameter("startDate", searchDates[0]).setParameter("endDate", searchDates[1]).list();
+			}else {
+				 query =" from  Requirement requirement  where requirement.id IN (:jobIds) and requirement.requirementSubmissionStatus IN('OPEN','ONHOLD','CLOSED','UNFILLEDCLOSED','FILLEDCLOSED','CANCEL')";
+				 reqList = session.createQuery(query).setParameterList("jobIds", jobIds).list();
+			}	
+		}
+	    return reqList;
 	}
 }
