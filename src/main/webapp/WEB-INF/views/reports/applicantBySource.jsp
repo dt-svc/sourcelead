@@ -161,7 +161,7 @@ function getCustomDates(){
 
 <script>
   function getApplicantBySourceChart(){
-	  
+	 
 	  var flag = true;
 	  var jobIds = $("#jobIds").val();
 	  if(jobIds == null){
@@ -173,22 +173,24 @@ function getCustomDates(){
 	  if(dateSelection == 'custom'){
 		   fromDate = $("#fromDate").val();
 		   toDate = $("#toDate").val();
-		  
 		  if(fromDate == '' || toDate == ''){
 			  flag = false;
 			  if(fromDate == ''){
 				  document.getElementById("fromDateDiv").style.display="block";
 			  }else{
+				
 				  document.getElementById("fromDateDiv").style.display="none";
 			  }
 			  if(toDate == ''){
 				  document.getElementById("toDateDiv").style.display="block";
 			  }else{
+				 
 				  document.getElementById("toDateDiv").style.display="none";
 			  }
 		  }else{
 			  document.getElementById("fromDateDiv").style.display="none";
 			  document.getElementById("toDateDiv").style.display="none";
+			  
 		  }
 		  
 	  }
@@ -462,8 +464,10 @@ function getCustomDates(){
 
  <script>
  function getListView(response){
+	
 	 if(response.data.length > 0)	
  		{
+		// alert("SS"+response.data.length);
 		 var result = "";
 		 result = result +"<div class='clearfix tableStyles mt'>"; 
 		 result = result +"<table class='table table-bordered mt10'>"; 
@@ -485,7 +489,7 @@ function getCustomDates(){
 			 for(var i=0; i < response.data.length ; i++){
 				 var applicantSource = response.data[i];
 				 
-	   					
+	   					console.log(applicantSource);
 				 result = result +"<tr>"; 
 				
 				 result = result +"<td>"; 
