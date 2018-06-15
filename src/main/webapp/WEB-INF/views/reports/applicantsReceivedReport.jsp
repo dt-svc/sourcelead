@@ -150,9 +150,9 @@ function toDate(selector) {
 
 <div class="pull-left reportBtns reportBtns_custom mt5">
 	  <div class="reportBtn dropdown-select reportBtn_custom_btn">
-		<select class="form-control" id="reportTypeId" onChange="getDayWiseReports(); custDates(); flushCustomDates();">
-<!-- 		<option value="">-- Select --</option> -->
-		  <option value="today">Today</option>
+		<select class="form-control" id="reportTypeId" onChange="getDayWiseReports();custDates();flushCustomDates();">
+		<option value="">-- Select --</option> 
+		  <option value="today" selected>Today</option>
 		  <option value="yesterday">Yesterday</option>
 		  <option value="week">1 Week</option>
 		  <option value="twoweeks">2 Weeks</option>
@@ -515,15 +515,17 @@ function getDayWiseReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
-	if(reportType == "custom" && startDate == null || startDate == '' || startDate == 'undefined'){
+	if(reportType == "custom" && (startDate == null || startDate == '' || startDate == 'undefined')){
 		document.getElementById("reportStartDate").style.display="block";
-		$("#reportStartDate").empty().append("Start Date is Required") ; 
+		$("#reportStartDate").empty().append("Start Date is Required") ;
+		return;
 	}else{
 		document.getElementById("reportStartDate").style.display="none";	
 	}
-	if(reportType == "custom" && endDate == null || endDate == '' || endDate == 'undefined'){
+	if(reportType == "custom" && (endDate == null || endDate == '' || endDate == 'undefined')){
 		document.getElementById("reportEndDate").style.display="block";
 		$("#reportEndDate").empty().append("End Date is Required") ; 
+		return;
 	}else{
 		document.getElementById("reportEndDate").style.display="none";
 	}
@@ -536,7 +538,7 @@ function getDayWiseReports(){
 	        	 var json = JSON.parse(data);
           		getDayWiseAppRecReports();
          },
-          
+	 
      });  
 	
 }
@@ -544,75 +546,6 @@ function getDayWiseReports(){
 </script>
 
 
-<!-- <script>
-function getAllCounts(applicantConts,reportType,startDate,endDate){
-	var sourceleadUrl = '${sourceleadUrl}';
-	 $.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getReceivedApplicantsCountForReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, 
-       success :function(data) { 
-      	 var json = JSON.parse(data);
-      	 $("#applicantCount").html(applicantConts); 
-         $("#shortlistedCount").html(json.shortlistedSum); 
-  	     $("#submitToClientCount").html(json.submitToClientSum);
-  	     $("#offerCount").html(json.offeredSum); 
- 	     $("#interviewCount").html(json.interviewsSum);
-	     $("#rejectedCount").html(json.rejectedSum);
-       },
-	  });
-}
-</script> -->
-
-<!-- <script>
-function allReceivedApplicantsCount(applicantConts){
-	var sourceleadUrl = '${sourceleadUrl}';
-	 $.ajax({
-       type : "POST",
-        url: sourceleadUrl+"/getReceivedApplicantsCountForReports?${_csrf.parameterName}=${_csrf.token}",        
-        success :function(data) { 
-       	 var json = JSON.parse(data);
-       	 $("#applicantCount").html(applicantConts); 
-         $("#shortlistedCount").html(json.shortlisted); 
-   	     $("#submitToClientCount").html(0);
-   	     $("#offerCount").html(json.offeredCount); 
-  	     $("#interviewCount").html(json.interviewCount);
- 	     $("#rejectedCount").html(json.rejectedCount);
-        },
-	  });
-}
-</script> -->
-
-
-<!-- <script>
-function getCustomReports(){
-	var reportType = $("#reportTypeId").val();
-	var startDate = $("#ExportStartDate").val();
-	var endDate = $("#ExportEndDate").val();
-	if(startDate == null || startDate == '' || startDate == 'undefined'){
-		document.getElementById("reportStartDate").style.display="block";
-		$("#reportStartDate").empty().append("Start Date is Required") ; 
-	}
-	if(endDate == null || endDate == '' || endDate == 'undefined'){
-		document.getElementById("reportEndDate").style.display="block";
-		$("#reportEndDate").empty().append("End Date is Required") ; 
-	}
-	else{
-		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		$.ajax({
-	         type : "POST",
-	         /*  url: sourceleadUrl+"/getRequirementReports?${_csrf.parameterName}=${_csrf.token}&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate, */  
-	          url: sourceleadUrl+"/getApplicantReceivedReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,
-	          success :function(data) {
-	        	 prepareReportDataDiv(data);
-	        	 var json = JSON.parse(data);
-	        	 getDayWiseAppRecReports();
-	         },
-	          
-	     }); 
-	}
-	 
-}
-</script> -->
 <script type="text/javascript"> 
 	function addValidClass(){
 		 var StartDate = document.getElementById("ExportStartDate").value;
@@ -627,63 +560,7 @@ function getCustomReports(){
 }
 </script>
 
-<!-- <script src="resources/reports/amcharts.js"></script> 
-<script src="resources/reports/serial.js"></script>
-<script src="resources/reports/light.js"></script>
-<script src="resources/reports/export.min.js"></script>
-<link rel="stylesheet" href="resources/reports/export.css" type="text/css" media="all" />   
-<script>
-function applicantReceivedReportLineChart(result){
 
-var chart = AmCharts.makeChart("chartdiv", {
-	  "type": "serial",
-	  "theme": "light",
-	  "dataProvider": result,
-	  "valueAxes": [{
-	    "gridColor": "#FFFFFF",
-	    "gridAlpha": 0.2,
-	    "dashLength": 0
-	  }],
-	  "gridAboveGraphs": true,
-	  "startDuration": 1,
-	  "graphs": [{
-	    "title": "Week #20",
-	    "balloonText": "[[title]]: <b>[[value]]</b>",
-	    "bullet": "round",
-	    "bulletSize": 10,
-	    "bulletBorderColor": "#ffffff",
-	    "bulletBorderAlpha": 1,
-	    "bulletBorderThickness": 2,
-	    "valueField": "value1"
-	  }, {
-	    "title": "Week #22",
-	    "balloonText": "[[title]]: <b>[[value]]</b>",
-	    "bullet": "round",
-	    "bulletSize": 10,
-	    "bulletBorderColor": "#ffffff",
-	    "bulletBorderAlpha": 1,
-	    "bulletBorderThickness": 2,
-	    "valueField": "value2"
-	  }],
-	  "chartCursor": {
-	    "categoryBalloonEnabled": false,
-	    "cursorAlpha": 0,
-	    "zoomable": false
-	  },
-	  "categoryField": "category",
-	  "categoryAxis": {
-	    "gridPosition": "start",
-	    "gridAlpha": 0
-	  },
-	  "legend": {}
-	});
-}
-</script>  --> 
-
-
-
-<!-- <script src="resources/reports/highcharts.js"></script>
-<script src="/resources/reports/exporting.js"></script>  -->
   
 	<script>
 	function applicantReceivedReportLineChart(applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData){
@@ -752,14 +629,7 @@ var chart = AmCharts.makeChart("chartdiv", {
 
 <script>
 function getDefaultChart(){
-	$('#container').empty();
-	var reportType = $("#reportTypeId").val();
-	if(reportType=="custom"){
-		getCustomReports();
-	}
-	else{
-		getDayWiseReports();
-	}
+	getDayWiseAppRecReports();
 }
 </script>
 
