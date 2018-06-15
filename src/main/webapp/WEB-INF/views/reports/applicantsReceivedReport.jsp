@@ -44,6 +44,7 @@ function prepareReportDataDiv(data){
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
 	var json = JSON.parse(data);
+	
     for (var i = 0; i < json.length; i++) {
     	var report= json[i];
     	result = result + '<tr>';
@@ -91,6 +92,8 @@ function prepareReportDataDiv(data){
 	result = result + '</table>';
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
+    $("#applicantsLoderDiv").empty();
+    $("#applicantsLoderDiv").removeAttr('style');
     requirementReportPagination();
 }
 
@@ -164,14 +167,14 @@ function toDate(selector) {
 			</span>	
 	<div class="col-md-7">
 		 <span class="dashboard-datepkr cusShow">
-		 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
+		 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
 		 <p id="reportStartDate" class="ReError" style="display: none"></p>
 		 </span>
 		<span class="dashboard-datepkr cusShow">
-		<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
+		<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
 		<p id="reportEndDate" class="ReError" style="display: none"></p>
 		</span>
-		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+		<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getDayWiseReports();" /></span>
 		</div>
 		
 		
@@ -509,33 +512,39 @@ function getDayWiseReports(){
 	$('#container').empty();
 	$('#reportStartDate').empty();
 	$('#reportEndDate').empty(); 
-	document.getElementById("reportStartDate").style.display="none";
-	document.getElementById("reportEndDate").style.display="none";
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
-	if(reportType!="custom"){
+	if(reportType == "custom" && startDate == null || startDate == '' || startDate == 'undefined'){
+		document.getElementById("reportStartDate").style.display="block";
+		$("#reportStartDate").empty().append("Start Date is Required") ; 
+	}else{
+		document.getElementById("reportStartDate").style.display="none";	
+	}
+	if(reportType == "custom" && endDate == null || endDate == '' || endDate == 'undefined'){
+		document.getElementById("reportEndDate").style.display="block";
+		$("#reportEndDate").empty().append("End Date is Required") ; 
+	}else{
+		document.getElementById("reportEndDate").style.display="none";
+	}
 		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
          type : "POST",
          url: sourceleadUrl+"/getApplicantReceivedReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
-        	  $("#applicantsLoderDiv").removeAttr("style");
 	        	 prepareReportDataDiv(data);
 	        	 var json = JSON.parse(data);
-	        	 getAllCounts(json.length,reportType,startDate,endDate);
           		getDayWiseAppRecReports();
          },
           
      });  
-	}
 	
 }
 
 </script>
 
 
-<script>
+<!-- <script>
 function getAllCounts(applicantConts,reportType,startDate,endDate){
 	var sourceleadUrl = '${sourceleadUrl}';
 	 $.ajax({
@@ -545,14 +554,14 @@ function getAllCounts(applicantConts,reportType,startDate,endDate){
       	 var json = JSON.parse(data);
       	 $("#applicantCount").html(applicantConts); 
          $("#shortlistedCount").html(json.shortlistedSum); 
-  	     $("#submitToClientCount").html(0);
+  	     $("#submitToClientCount").html(json.submitToClientSum);
   	     $("#offerCount").html(json.offeredSum); 
  	     $("#interviewCount").html(json.interviewsSum);
 	     $("#rejectedCount").html(json.rejectedSum);
        },
 	  });
 }
-</script>
+</script> -->
 
 <!-- <script>
 function allReceivedApplicantsCount(applicantConts){
@@ -574,7 +583,7 @@ function allReceivedApplicantsCount(applicantConts){
 </script> -->
 
 
-<script>
+<!-- <script>
 function getCustomReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
@@ -596,7 +605,6 @@ function getCustomReports(){
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	        	 var json = JSON.parse(data);
-	        	 getAllCounts(json.length,reportType,startDate,endDate);
 	        	 getDayWiseAppRecReports();
 	         },
 	          
@@ -604,7 +612,7 @@ function getCustomReports(){
 	}
 	 
 }
-</script>
+</script> -->
 <script type="text/javascript"> 
 	function addValidClass(){
 		 var StartDate = document.getElementById("ExportStartDate").value;
@@ -678,7 +686,7 @@ var chart = AmCharts.makeChart("chartdiv", {
 <script src="/resources/reports/exporting.js"></script>  -->
   
 	<script>
-	function applicantReceivedReportLineChart(chartData,applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData,requestSentData){
+	function applicantReceivedReportLineChart(applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData){
 		Highcharts.chart('container', {
     chart: {
         type: 'column'
@@ -687,7 +695,7 @@ var chart = AmCharts.makeChart("chartdiv", {
         text: 'Applicants Received'
     },
     xAxis: {
-        categories: chartData,
+        categories: "",
         crosshair: true
     },
     yAxis: {
@@ -713,10 +721,6 @@ var chart = AmCharts.makeChart("chartdiv", {
     series: [{
         name: 'Applicants',
         data: applicantData
-
-    }, {
-    	name: 'Request Sent',
-        data: requestSentData
 
     }, {
     	name: 'Shortlisted',
@@ -773,48 +777,40 @@ function getDayWiseAppRecReports(){
           success :function(data) {
         	/*  prepareReportDataDiv(data); */
         	 var json = JSON.parse(data);
-        	 if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 
-		        	if(json.length > 0)	
-		 	   		{
-		        		    var chartData = [];
+        	 if(json != null && json !='undefined' && json !=null){ 
+        		 $("#applicantCount").html(json.applicantsCount);  
+        		 $("#shortlistedCount").html(json.shortlisted); 
+		  	     $("#submitToClientCount").html(json.submitToClientCount);
+		  	     $("#offerCount").html(json.offeredCount); 
+		 	     $("#interviewCount").html(json.interviewCount);
+			     $("#rejectedCount").html(json.rejectedCount);
 		        		    var applicantData =[];
 		        		    var shortlistedData =[];
 		        		    var interviewData =[];
 		        		    var submitedtoClientData =[];
 		        		    var offeredData =[];
 		        		    var rejectedData  =[];
-		        		    var requestSentData  =[];
 		        		    
-							for(var i=0; i < json.length ; i++){
-		        			 
-		        			 var jobs = json[i];
-		        			    chartData.push( 
-		        			    	 jobs.orgName
-		        			     );
 		        			    applicantData.push( 
-		        			    	 jobs.applicantsCount
+		        			    		json.applicantsCount
 		        			    );
 		        			    shortlistedData.push( 
-			        			    	 jobs.shortlisted
+		        			    		json.shortlisted
 			        			    );
 		        			    submitedtoClientData.push( 
-			        			    	 jobs.submitToClientCount
+		        			    		json.submitToClientCount
 			        			    );
 		        			    interviewData.push( 
-			        			    	 jobs.interviewCount
+		        			    		json.interviewCount
 			        			    );
 		        			    offeredData.push( 
-			        			    	 jobs.offeredCount
+		        			    		json.offeredCount
 			        			    );
 		        			    rejectedData.push( 
-			        			    	 jobs.rejectedCount
-			        			    );
-		        			    requestSentData.push( 
-			        			    	 jobs.requestSentCount
-		        			    );
-		        			  }
-		        		 applicantReceivedReportLineChart(chartData,applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData,requestSentData);
-		 	   		}
+		        			    		json.rejectedCount
+			        			    ); 
+		        			     
+		        		 applicantReceivedReportLineChart(applicantData,shortlistedData,interviewData,submitedtoClientData,offeredData,rejectedData);
 	        	 }
         	 else{
         		 var result ="";

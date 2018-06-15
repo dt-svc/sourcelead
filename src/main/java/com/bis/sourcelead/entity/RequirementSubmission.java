@@ -50,33 +50,38 @@ public class RequirementSubmission implements Serializable{
 	@JoinColumn(name = "REQUIREMENT_ID")
    	private Requirement requirement;
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
    	private Candidate candidate;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "VENDOR_CANDIDATE_ID")
    	private Candidate vendorCandidateId;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY) 
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "SOURCE_SUBMISSION_ID") 
    	private RequirementSubmission sourceSubmission;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_RESUEME_ID")
    	private CandidateResumes candidateResumes;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocations;
 	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
 	@JoinColumn(name = "VENDOR_LOCATION_ID")
    	private OrgLocations vendorLocationId;
 	
@@ -180,7 +185,8 @@ public class RequirementSubmission implements Serializable{
 	private String updatedUser;
     
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
     @JoinColumn(name="RECRUITER_USER_ID")        
     private User recruiterUserId;
 	

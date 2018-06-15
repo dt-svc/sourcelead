@@ -46,9 +46,7 @@ public interface RequirementReportService {
 
 	List<RequirementSubmission> getAllSubmissionsByAssignTeamMember(Long orgLocationId, Set<String> userCodesList,Date startDateUTC, Date endDateUTC);
 
-	ApplicantReport getApplicantsReceivedCountsByDateRange(OrgLocations orgLocation, String reportType, String customStartDate, String customEndDate) throws Exception;
-
-	List<ApplicantReport> getAllDayWiseApplicantsRecievedRports(String reportType, String customStartDate, String customEndDate, OrgLocations orgLocation)throws Exception;
+	ApplicantReport getAllDayWiseApplicantsRecievedRports(String reportType, String customStartDate, String customEndDate, OrgLocations orgLocation)throws Exception;
 
 	List<AssignedRequirementReports> getAllAssignedRequirementList(JSONObject jsonObj, OrgLocations orgLocation)throws Exception;
 
