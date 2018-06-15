@@ -1984,7 +1984,11 @@ public class LeaveManagementRestController {
 				 
 				 float cancelledLeave = leave.getNumberOfDays() - leave.getExtraLeavesTaken();
 				 float updateExtraLeave = updatingLeave.getExtraLeavesTaken() - cancelledLeave;
-				 updatingLeave.setExtraLeavesTaken(updateExtraLeave);
+				 if(updateExtraLeave > 0){
+					 updatingLeave.setExtraLeavesTaken(updateExtraLeave);
+				 }else{
+					 updatingLeave.setExtraLeavesTaken(0);
+				 }
 				 leaveDao.saveLeave(updatingLeave);
 			 }
 		 }
