@@ -535,24 +535,8 @@ function Immigration() {
        });
    }	
 
-this.deletePassportVisaDetailsById=function(id,idType){
-	var candidateId = $("#candidateID").val();
-	$.ajax({
-        url: sourceleadUrl + immiModulePath + "/deleteCandidatePassportVisaDetails?id="+id+"&candidateId="+candidateId+ "&idType=" + idType,
-        type: "GET",
-        success: function (result) {
-        	if(result=='success'){
-        		if(idType=='Passport'){
-        			immigration.displayPassportDetails(candidateId,idType);
-        		}
-        		else if (idType == 'Visa') {
-        			immigration.displayVisaDetails(candidateId,idType);
-        		}
-        	}
-        }
-    });
-}
-
+   
+   
 
     this.saveCandidateFamilyDetails= function(relationType) {
     	var formId= "";
@@ -655,7 +639,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
             success: function (result) {
             	if(result =='success'){
             		immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'');
-            	     
+            		deleteImmigrationPopupDiv();
             	}
             }
         });
@@ -680,7 +664,7 @@ this.deletePassportVisaDetailsById=function(id,idType){
             success: function (result) {
             	if(result=='success'){
             	     immigration.displayFamilyDetails(candidateId) //candidateId global variable
-            	     
+            	     deleteImmigrationPopupDiv();
             	}
             }
         });
@@ -820,6 +804,27 @@ this.deletePassportVisaDetailsById=function(id,idType){
 	
 }
 
+function deletePassportVisaDetails(id,idType){
+	var candidateId = $("#candidateID").val();
+	$.ajax({
+        url: sourceleadUrl + immiModulePath + "/deleteCandidatePassportVisaDetails?id="+id+"&candidateId="+candidateId+ "&idType=" + idType,
+        type: "GET",
+        success: function (result) {
+        	if(result=='success'){
+        		if(idType=='Passport'){
+        			immigration.displayPassportDetails(candidateId,idType);
+        		}
+        		else if (idType == 'Visa') {
+        			immigration.displayVisaDetails(candidateId,idType);
+        		}
+            	deleteImmigrationPopupDiv(); // removes the existing added delete popup div in html code.
+        	}
+        	
+        }
+    });
+}
+
+
 function deleteEDucationDetailsById(id){
 	var candidateId = $("#candidateID").val();
 	$.ajax({
@@ -828,7 +833,7 @@ function deleteEDucationDetailsById(id){
         success: function (result) {
         	if(result=='success'){
         	  getCandidateEducationList(candidateId) //candidateId global variable
-        	     
+        	  deleteImmigrationPopupDiv();
         	}
         }
     });
@@ -940,15 +945,16 @@ function udpateEduFormdata (formObj, idsArray, dataObj) {
 	});
 }
 
-function deleteEmpDetailsById(id){
+function deleteEmpDetails(id){
 	var candidateId = $("#candidateID").val();
+	
 	$.ajax({
         url: sourceleadUrl + immiModulePath + "/deleteCandidateEmployerDetails?id="+id+"&candidateId="+candidateId,
         type: "GET",
         success: function (result) {
         	if(result=='success'){
         		getCandidateEmployerList(candidateId) //candidateId global variable
-        	     
+        		deleteImmigrationPopupDiv();
         	}
         }
     });
@@ -1227,6 +1233,7 @@ function deleteResidenceDetailsById(id){
         success: function (result) {
         	if(result=='success'){
         		getCandidateResidenceList(candidateId) //candidateId global variable
+        		deleteImmigrationPopupDiv();
         	     
         	}
         }
@@ -1335,7 +1342,7 @@ function deleteDocumentDetailsByRowId(id){
         success: function (result) {
         	if(result=='success'){
         	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
-        	     
+        	deleteImmigrationPopupDiv();
         	}
         }
     });
