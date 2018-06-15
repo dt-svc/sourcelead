@@ -417,6 +417,7 @@ public class OrgSettingsRestController {
 					roleActonsList.add(Long.parseLong(s));
 				}
 			}
+			roleDTO.setUuid(roles.getUuid());
 			roleDTO.setActionsCount(roleActonsList.size());
 			roleDTO.setHierarchyId(roles.getRoleHierarchy().getId());
 			roleDTO.setHierarchyName(roles.getRoleHierarchy().getHierarchyName());
@@ -451,11 +452,11 @@ public class OrgSettingsRestController {
 		return rolesDTOList;
 	}
 	
-	@RequestMapping(value = "/app/roleActions/{roleId}", method = RequestMethod.GET)
-	public @ResponseBody void roleActions(@PathVariable Long roleId, HttpServletRequest request, HttpServletResponse response) throws Exception
+	@RequestMapping(value = "/app/roleActions/{uuid}", method = RequestMethod.GET)
+	public @ResponseBody void roleActions(@PathVariable String uuid, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		StringBuilder redirectUrl = new StringBuilder();
-		response.sendRedirect(redirectUrl.append("/app/enrollRoleActions?roleId=").append(roleId).toString());
+		response.sendRedirect(redirectUrl.append("/app/enrollRoleActions?uuid=").append(uuid).toString());
 	}
 	
 	
@@ -468,10 +469,14 @@ public class OrgSettingsRestController {
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/app/saveRoleActions", method = RequestMethod.POST)
-	public String saveRoleActions(@RequestParam(value = "roleId", required = false) Long roleId, @RequestParam(value = "actionIds", required = false) String actionIds, HttpServletRequest request) throws Exception
+	public String saveRoleActions(@RequestParam(value = "uuid", required = false) String uuid, @RequestParam(value = "actionIds", required = false) String actionIds, HttpServletRequest request) throws Exception
 	{
-		Roles roles = rolesService.getRolesById(roleId);
+		Roles roles = rolesService.getRolesByUUID(uuid);
+		
 		if (null != roles) {
+			if(roles.getRoleName().equalsIgnoreCase("ROLE_PRODUCTION_SUPPORT")) {
+				actionIds = actionIds+",115";
+			}
 			roles.setActionId(actionIds);
 			rolesService.storeRoles(roles);
 			SourceLeadSessionManager.setSessionAttribute(request, "actionRolesMsg", "Action Roles Modified Successfully");
@@ -578,7 +583,7 @@ public class OrgSettingsRestController {
 					roles.setCreatedBy(user.getUserCode());
 					roles.setCreatedDate(new Date());
 					roles = rolesService.storeRoles(roles);
-					response = roles.getId().toString();
+					response = roles.getUuid();
 				}else{
 					response = "INVALID_DATA";
 				}

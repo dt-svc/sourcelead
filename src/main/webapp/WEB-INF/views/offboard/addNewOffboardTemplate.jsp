@@ -1115,7 +1115,7 @@ function getOffboardingTasksList(){
 	}
 }
 function redirect(){
-	window.location.href = sourceleadUrl +  "/onboardingTemplatesList";
+	window.location.href = sourceleadUrl +  "/offboardingTemplatesList";
 }
 </script>
 

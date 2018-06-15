@@ -29,7 +29,7 @@
                         <div class="col-md-12 noPad mb" id="templateNameDiv">
                             <label class="col-md-3">Country<span class="text-danger paddingLeft">*</span></label>
                            	<div class="col-md-8 padding_right">
-								<select class="chosen-select form-control" name="country" onchange="getPetitionTypeOnCountries($(this), ${templateDTO.petitionType});" id= "countryName" field-name="Country" data-validation="required">
+								<select class="chosen-select form-control" name="country" onchange="getPetitionTypeOnCountries($(this), ${templateDTO.petitionType});" id="countryName" field-name="Country" data-validation="required">
 									<option value="">--Select Country--</option>
 									<option value="Singapore" ${templateDTO.country == 'Singapore' ? 'selected' : ''}>Singapore</option>
 									<option value="Canada" ${templateDTO.country == 'Canada' ? 'selected' : ''}>Canada</option>
@@ -56,18 +56,23 @@
             <!--<a href="javascript:void(0)" class="pull-left">Prev</a>-->
             <a href="javascript:void(0)" onclick="immigration.savePetitionTemplateAndContinue('saveContinue')" class="ml10 nextBtn" id="saveAndContNewTemplate">Save &amp; Continue</a>
             <a href="javascript:void(0)" onclick="immigration.savePetitionTemplateAndContinue('save')" class="nextBtn">Save</a>
-            <a href="javascript:void(0)" onclick="immigration.resetFormData('petitionTemplateDetails')">Reset</a>
+            <a href="javascript:void(0)" onclick="resetTemplateDetailsForm('petitionTemplateDetails')">Reset</a>
             <div class="clearfix"></div>
         </div>   
     </div>
 </section>  
 
 <script type="text/javascript">
+		function resetTemplateDetailsForm(formId){
+			$("#templateName").val("");
+			$("#templateDescription").text("");
+			$("#countryName option[value='']").attr('selected', true);
+			$('#countryName').trigger('change');
+			$("#petitionTypeTemplate option[value='']").attr('selected', true);
+			$('#petitionTypeTemplate').trigger('change');
+		}
 	    $(document).ready(function () {
-	    	//var immTemplId = $("#templateId").val(immTemplId);
-	    	//var immTemplId = immTemplId;
 	    	 immTemplId = '<c:out value ="${not empty templateDTO.id ? templateDTO.id : ''}"/>';
-	
 	        getPetitionTypeOnCountries($("#countryName"),"${templateDTO.petitionType}");
 	    });
       

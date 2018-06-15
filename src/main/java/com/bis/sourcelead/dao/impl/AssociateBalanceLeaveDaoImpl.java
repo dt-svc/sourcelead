@@ -4,7 +4,11 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
@@ -17,15 +21,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateBalanceLeaveDao;
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TotalLeaveDTO;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
+import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.LeaveTypeService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -37,6 +46,11 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	LeaveTypeService leaveTypeService;
 	
 	@Override
 	@Transactional
@@ -129,11 +143,11 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 
 	@Override
 	@Transactional
-	public AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId,Long orgLocationId)
+	public AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId,Long orgLocationId,int status)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		AssociateBalanceLeave associateBalanceLeave = null;
-		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.leaveTypeId = :leaveTypeId and balLeave.orgLocationId.id = :orgLocationId and balLeave.status= 1").setLong("userId", userId).setLong("orgLocationId", orgLocationId).setLong("leaveTypeId", leaveTypeId).list();
+		List<AssociateBalanceLeave> assoBalLeave = session.createQuery("from AssociateBalanceLeave balLeave where balLeave.user.id =:userId and balLeave.leaveTypeId = :leaveTypeId and balLeave.orgLocationId.id = :orgLocationId and balLeave.status= :status").setLong("userId", userId).setLong("orgLocationId", orgLocationId).setLong("leaveTypeId", leaveTypeId).setInteger("status", status).list();
 		if (assoBalLeave != null && assoBalLeave.size() > 0) {
 			associateBalanceLeave = assoBalLeave.get(0);
 		}
@@ -143,7 +157,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 
 	@Override
 	@Transactional
-	public int updateAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType,int status,int diffLeaves,String actionType)
+	public int updateAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType,int status,int diffLeaves,String actionType,String methodType)
 	{
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -154,15 +168,28 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 					connection.setAutoCommit(false);
 					CallableStatement stmt = connection.prepareCall("{call deleteAssociateBalLeave(?,?,?,?,?)}");
 					for (User user : userList) {
-						stmt.setLong(1, status);
+						if(Constants.UPDATE.equalsIgnoreCase(methodType)) {
+							OrgLocations orgLocations = new OrgLocations();
+							orgLocations.setId(orgLocationId);
+							boolean b = getOrgLevelLeaves(orgLocations, user.getId(), leaveType);
+							if(!b) {
+								stmt.setLong(1, 0);
+							}else{
+								stmt.setLong(1, status);
+							}
+						}else {
+							stmt.setLong(1, status);
+						}
 						if(!"NONE".equalsIgnoreCase(actionType)) {
-							AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId);
+							AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId,Integer.parseInt(leaveType.getStatus()));
 							int assoBalLeaves = Integer.parseInt(associateBalanceLeave.getTotalLeaves());
 							int additionLeaves = 0;
 							if("ADD".equalsIgnoreCase(actionType)) {
 								 additionLeaves = assoBalLeaves + diffLeaves;
-							}else {
+							}if("SUB".equalsIgnoreCase(actionType)) {
 								additionLeaves = assoBalLeaves - diffLeaves;
+							}if("IMPORT".equalsIgnoreCase(actionType)) {
+								additionLeaves = diffLeaves;
 							}
 							stmt.setString(2, String.valueOf(additionLeaves));
 						}else {
@@ -183,6 +210,38 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 			e.printStackTrace();
 			return 0;
 		}
+	}
+	
+	
+	private boolean getOrgLevelLeaves(OrgLocations orgLocation, Long userId, LeaveType leaveType)
+	{
+		boolean isLeaveApplicable = false;
+//		List<LeaveType> roleLeaveType = new ArrayList<>();
+		try {
+			UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocation.getId());
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+//			if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
+//				for (LeaveType leaveType : leaveTypeList) {
+					Set<Long> roleIds = new HashSet<>();
+					if(leaveType.getLeaveTypeRolesSet() != null) {
+						for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {
+							roleIds.add(leaveRole.getRoleId().getId());
+						}
+						if (roleIds.contains(userRole.getRoles().getId()) || "Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+							isLeaveApplicable = true;
+						}	
+					}else {
+						if("Y".equalsIgnoreCase(leaveType.getApplicableToUsers())) {
+							isLeaveApplicable = true;
+						}
+					}
+				
+//				}
+//			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return isLeaveApplicable;
 	}
 
 }

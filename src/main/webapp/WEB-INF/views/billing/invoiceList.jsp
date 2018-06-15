@@ -46,7 +46,7 @@ $(document).ready(function(){
       <div class="pull-left">
         <h2>Invoices</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoice List</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Invoices List</div>
     </section>
     <div class="content-area content-new clearfix">
       <div class="billing_dashboard">
@@ -79,12 +79,7 @@ $(document).ready(function(){
                             </div>
                                 <div class="pull-right ml10">
                                <div class="count" id="unbilledAmoumt"></div>
-                               <c:if test="${!empty draftInvoiceCount }">
-                                <h5>Draft Invoices <span class="paddingLeft" id="draftInvoiceCount"></span></h5>
-                                </c:if>
-                                <c:if test="${empty draftInvoiceCount }">
-                                <h5>Draft Invoices<br><span class="paddingright pull-right">0.0</span></h5>
-                                </c:if>
+                                <h5>Draft Invoices <span class="paddingLeft" id="draftInvoiceCount">0.0</span></h5>
                                 </div>
                         </a>
                     </li>
@@ -96,12 +91,7 @@ $(document).ready(function(){
                             </div>
                             <div class="pull-right ml10">
                             <div class="count" id="dueAfterInvoiceAmount"></div>
-                            <c:if test="${!empty dueAfterInvoiceCount }">
-                              <h5>Overdue Invoices<span class="paddingLeft" id="dueAfterInvoiceCount"></span></h5>
-                           </c:if>
-                            <c:if test="${empty dueAfterInvoiceCount }">
-                              <h5>Overdue Invoices<br><span class="paddingright pull-right">0.0</span></h5>
-                           </c:if>
+                              <h5>Overdue Invoices<span class="paddingLeft" id="dueAfterInvoiceCount">0.0</span></h5>
                             </div>
                         
                         </a>
@@ -114,12 +104,7 @@ $(document).ready(function(){
                             </div>
                             <div class="pull-right ml10">
                             <div class="count" id="dueBeforeInvoiceAmount"></div>
-                             <c:if test="${!empty dueBeforeInvoiceCount }">
-                             <h5>Open Invoices<span class="paddingLeft" id="dueBeforeInvoiceCount"></span></h5>
-                             </c:if>
-                              <c:if test="${empty dueBeforeInvoiceCount }">
-                             <h5>Open Invoices<br><span class="paddingright pull-right">0.0</span></h5>
-                             </c:if>
+                             <h5>Open Invoices<span class="paddingLeft" id="dueBeforeInvoiceCount">0.0</span></h5>
                           </div>
                         </a>
                     </li>
@@ -131,14 +116,7 @@ $(document).ready(function(){
                             </div> 
                             <div class="pull-right ml10">
                             <div class="count" id="paidInvoiceAmount"></div>
-                             <c:if test="${!empty paidInvoiceCount }">
-                              <h5>Paid Invoices<span class="paddingLeft" id="paidInvoiceCount"></span></h5>
-                             </c:if>
-                             
-                              <c:if test="${empty paidInvoiceCount }">
-                              <h5>Paid Invoices<br><span class="paddingright pull-right">0.0</span></h5>
-                             </c:if>
-                             
+                              <h5>Paid Invoices<span class="paddingLeft" id="paidInvoiceCount">0.0</span></h5>
                             </div>
                         </a>
                     </li>
@@ -651,6 +629,7 @@ function invoicePagination(url){
 		    	  	if(report.dueAfterInvoiceCount != null && report.dueAfterInvoiceCount != '' && report.dueAfterInvoiceCount != 'undefined'){
 		    	  		$("#dueAfterInvoiceCount").html(report.dueAfterInvoiceCount);
 					}
+		    	  	
 		    	  	if(report.draftInvoiceCount != null && report.draftInvoiceCount != '' && report.draftInvoiceCount != 'undefined'){
 	 					$("#draftInvoiceCount").html(report.draftInvoiceCount);
 					}
@@ -1749,7 +1728,7 @@ function resetInvoiceFilter(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" onclick="closeInvoiceFilterPop();getInvoiceList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetInvoiceFilter();closeInvoiceFilterPop();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetInvoiceFilter();" class="btn btn-sm btn-primary" />
 						</div>
 					</div>
 				</div>

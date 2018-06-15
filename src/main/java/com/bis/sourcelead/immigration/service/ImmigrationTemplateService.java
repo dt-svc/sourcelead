@@ -63,4 +63,6 @@ public interface ImmigrationTemplateService {
 
 	List<ImmigrationTemplateTasks> getImmigrationTemplateTasksByTempId(Long templateId);
 
+	boolean validateTemplateTaskNameExistance(String templateTaskName, Long templateId, Long immiTaskId);
+
 }

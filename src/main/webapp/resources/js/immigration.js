@@ -1017,31 +1017,24 @@ function checkFormNames() {
     }
     return false;
 }
-function checkTaskNames(newName) {
-    var table = document.getElementById("templateTaskListTable");
-    var rows = table.rows;
-    for (var i = 1; i < rows.length; i++) {
-        var name = rows[i].firstChild.textContent.trim();
-        /*if (newName === name) {
-    	$("#taskNameDiv").parent().find('p.jquery_form_error_message').remove();
-        $("input#taskName").after("<p class='jquery_form_error_message'>is Already Existed</span>");
-        $("#addTaskBtn").addClass("disableBtn");
-        return;
-    } else {
-        $("input#taskName").parent().find('p.jquery_form_error_message').remove();
-        $("#addTaskBtn").removeClass("disableBtn");
-    }*/
-		if (newName === name) {
-		    $('#taskNameDiv').find('p.jquery_form_error_message').remove();
-			  $("input#taskName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
-			  $("#addTaskBtn").addClass("disableBtn");
-			  return;
-		}
-		else{
-			 $('input#taskName').removeAttr( "record-exist record-exist-errormsg");
-			 $('#taskNameDiv').find('p.jquery_form_error_message').remove(); 
-			 $("#addTaskBtn").removeClass("disableBtn");
-		}
+function checkTaskNames(newName, immiTaskId) {
+    if (newName !== null && newName !== "") {
+        $.ajax({
+            type: "POST",
+            url: sourceleadUrl + immiModulePath + "/validateTemplateTaskName?" + tokenParamName + "=" + tokenValue + "&templateTaskName=" + newName + "&templateId=" + immTemplId+"&immiTaskId="+immiTaskId,
+            success: function (data) {
+                if (data && data === true) {
+                    if ($('#taskNameDiv').find('p.jquery_form_error_message').length === 0){
+                        $("input#taskName").after("<p class='jquery_form_error_message'>" + newName + " is Already Existed</span>");
+                    }
+                    $("#addTaskBtn").addClass("disableBtn");
+                } else {
+                	 $('input#taskName').removeAttr( "record-exist record-exist-errormsg");
+        			 $('#taskNameDiv').find('p.jquery_form_error_message').remove(); 
+        			 $("#addTaskBtn").removeClass("disableBtn");
+                }
+            }
+        });
     }
 }
 

@@ -216,6 +216,11 @@ public class RequirementHelper {
 			if (requirement.getManagerUserId() != null) {
 				requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
 			}
+			if (requirement.getPrimaryRecruiterUserId() != null) {
+				requirementIndex.setPrimaryRecruiterUserId(requirement.getPrimaryRecruiterUserId().getId().toString());
+			} else {
+				requirementIndex.setPrimaryRecruiterUserId("");
+			}
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			if (null != requirement.getClosedDate()) {
 				String reqclosedDate = dateFormat.format(requirement.getClosedDate());
