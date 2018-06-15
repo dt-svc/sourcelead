@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,13 +22,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.CacheModeType;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.enums.Submission_Status;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -52,6 +44,8 @@ private static final long serialVersionUID = 1L;
 	@JsonBackReference
     private OrgLocations orgLocationId;
 	
+	@Column(name = "EXPENSES_LOCATION_ID") 
+    private Long expensesLocationId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
@@ -516,6 +510,14 @@ private static final long serialVersionUID = 1L;
 
 	public void setExpensesRejectedReason(String expensesRejectedReason) {
 		this.expensesRejectedReason = expensesRejectedReason;
+	}
+
+	public Long getExpensesLocationId() {
+		return expensesLocationId;
+	}
+
+	public void setExpensesLocationId(Long expensesLocationId) {
+		this.expensesLocationId = expensesLocationId;
 	}
 
 	

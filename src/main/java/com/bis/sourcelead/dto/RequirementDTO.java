@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -181,6 +182,10 @@ public class RequirementDTO extends CommonDTO {
 	private List<RequirementLocationsDTO> savedLocationInfo;
 
 	private List<String> locationsList;
+	
+	private boolean walkIn;
+	
+	private String walkInDays;
 	/*
 	 * private List<Map<String, String>> assinedToTeam;
 	 * 
@@ -189,6 +194,22 @@ public class RequirementDTO extends CommonDTO {
 
 	public String getNoOfOfferedApplicants() {
 		return noOfOfferedApplicants;
+	}
+
+	public boolean isWalkIn() {
+		return walkIn;
+	}
+
+	public void setWalkIn(boolean isDriveJob) {
+		this.walkIn = isDriveJob;
+	}
+
+	public String getWalkInDays() {
+		return walkInDays;
+	}
+
+	public void setWalkInDays(String driveDays) {
+		this.walkInDays = driveDays;
 	}
 
 	public void setNoOfOfferedApplicants(String noOfOfferedApplicants) {
@@ -328,6 +349,8 @@ public class RequirementDTO extends CommonDTO {
 	private String reqLevel2ApproverStatus;
 
 	private String managerUserId;
+	
+	private long primaryRecruiterUserId;
 
 	private String client;
 
@@ -340,6 +363,11 @@ public class RequirementDTO extends CommonDTO {
 	private String releasedBy;
 
 	private String currentRateCurrency;
+	
+	private BigInteger reqId;
+	
+	private BigInteger requirementCreatedUserId;
+	
 
 	public String getRequirementStatus() {
 		return requirementStatus;
@@ -1345,5 +1373,29 @@ public class RequirementDTO extends CommonDTO {
 
 	public void setLocationsList(List<String> locationsList) {
 		this.locationsList = locationsList;
+	}
+
+	public long getPrimaryRecruiterUserId() {
+		return primaryRecruiterUserId;
+	}
+
+	public void setPrimaryRecruiterUserId(long primaryRecruiterUserId) {
+		this.primaryRecruiterUserId = primaryRecruiterUserId;
+	}
+	
+	public BigInteger getReqId() {
+		return reqId;
+	}
+
+	public void setReqId(BigInteger reqId) {
+		this.reqId = reqId;
+	}
+
+	public BigInteger getRequirementCreatedUserId() {
+		return requirementCreatedUserId;
+	}
+
+	public void setRequirementCreatedUserId(BigInteger requirementCreatedUserId) {
+		this.requirementCreatedUserId = requirementCreatedUserId;
 	}
 }

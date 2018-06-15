@@ -95,7 +95,7 @@
 								<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
 								<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
 								<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
-								<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteDocumentDetailsByRowId(${canDocList.id});" ></i>
+								<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
 							 </c:if>
 								</div>
 							</td>
@@ -111,7 +111,7 @@
 										<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
 										<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
 										<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
-										<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteDocumentDetailsByRowId(${canDocList.id});" ></i>
+										<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
 									 </c:if>
 										</div>
 									</td>
@@ -148,7 +148,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Document Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="sel chosen-select form-control" name = "documentType" field-name="Document Type" data-validation="required" id="documentType" onchange="getDocumentTypeDiv(this);">
+					<select class="form-control selectpicker" name = "documentType" field-name="Document Type" data-validation="required" data-live-search="true" id="documentType" onchange="getDocumentTypeDiv(this);">
 					  <option value = "">Select Document Type</option>
 					   <c:forEach var="docs" items="${documentsList}">
 											<option value="${docs.id}">${docs.name}</option>

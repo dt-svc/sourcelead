@@ -1250,7 +1250,7 @@ public class ImmigrationRestController {
 					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
 			} catch (Exception e) {
-				logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
+				logger.error("Exception caugth in savePassportVisaDetailsPage controller" + e.getMessage());
 				e.printStackTrace();
 			}
 		} else {
@@ -1565,7 +1565,6 @@ public class ImmigrationRestController {
 				} else {
 					canPassportVisa.setCurrentStatus("Expired");
 				}
-
 			}
 
 			List<Countries> countryList = countriesService.getAllCountries();
@@ -2167,6 +2166,16 @@ public class ImmigrationRestController {
 		if (file != null) {
 			file.delete();
 		}
+	}
+	
+	
+	@RequestMapping(value = "/validateTemplateTaskName", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean validateTemplateTaskName(HttpServletRequest request,
+			@RequestParam(value = "templateTaskName") String templateTaskName,
+			@RequestParam(value = "templateId", defaultValue = "0") Long templateId,
+			@RequestParam(value = "immiTaskId", defaultValue = "0") Long immiTaskId) {
+		return immigrationTemplateService.validateTemplateTaskNameExistance(templateTaskName, templateId,immiTaskId);
 	}
 
 }

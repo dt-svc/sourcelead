@@ -139,7 +139,7 @@
                                         <div class="select-field">
                                             <select id="dueAfterMonths" name="dueAfterMonths" field-name= "Months" class="form-control input-sm" data-validation = "required">
                                                 <option selected="" value="">--Select Month--</option>
-                                                <c:forEach begin="1" end="12" var="m">
+                                                <c:forEach begin="0" end="12" var="m">
                                                     <option>${m}</option>
                                                 </c:forEach>
                                             </select>
@@ -320,7 +320,7 @@
         });
 //        $("#taskName").unbind("blur");
         $("#taskName").on("keyup", function () {
-            checkTaskNames($(this).val().trim());
+            checkTaskNames($(this).val().trim(),immiTaskId);
         });
     });
 </script>
@@ -366,6 +366,7 @@
         });
     });
 
+	var immiTaskId = "";
     function editImmiTaskList(id) {
         $.ajax({
             type: "GET",
@@ -412,6 +413,7 @@
                 $("#templateId").val(data.id);
             }
         });
+        immiTaskId = id;
     }
 
     function deleteImmiTaskList(id) {
@@ -451,6 +453,7 @@
                 }
             }
         });
+        immiTaskId = "";
     }
 
 </script>

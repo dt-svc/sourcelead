@@ -400,6 +400,14 @@ function cancelOrgImg(){
 							<input type="text" class="form-control" maxlength="2" name="averageWorkingHours" id="averageWorkingHours" data-validation="required" field-name="Average Working Hours" value="${SourceLeadWeb_orgLocations.averageWorkingHours}"/>
 							</div>
 						</div>
+						
+						<div class="form-group mt">
+								<div class="col-md-11">
+									<div class="checkBox">
+										<label><input type="checkbox" value="Y" ${SourceLeadWeb_orgLocations.isTimesheetAvgHoursRequired == 'Y' ? 'checked' : ''} name="isTimesheetAvgHoursRequired" id="isTimesheetAvgHoursRequired"> Average Hours Validation Is Required</label> 
+									</div>
+								</div>
+					    </div>
 							
 						<div class="form-group mt">
 							<label class="col-md-3">Phone</label>
@@ -450,8 +458,8 @@ function cancelOrgImg(){
 							</div>
 						</div>
 						
-						
-						<div class="form-group comp-textarea mt">
+					    
+					    <div class="form-group comp-textarea mt">
 						  <label class="col-md-3">About</label>
 							<div class="col-md-9">
 							   <textarea rows="6" name="aboutCompany" field-name="About" data-validation-optional="true" data-validation="validate_length length5-5000" class="form-control">${SourceLeadWeb_orgLocations.orgDescription}</textarea>
@@ -990,14 +998,14 @@ function cancelOrgImg(){
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
               <label class="clearfix">BSR Number <span class="text-danger">&nbsp;*</span></label>
 	           <div class="clearfix">
-	                <input type="text" id="paymentBSRNumber" data-min='9' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control"/>
+	                <input type="text" id="paymentBSRNumber" data-min='9' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control" data-required="required"/>
 	           </div>
            </div>
            
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
               <label class="clearfix">MICR Code <span class="text-danger">&nbsp;*</span></label>
 	           <div class="clearfix">
-	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control"/>
+	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control" data-required="required"/>
 	           </div>
            </div>
            </c:if>
@@ -1288,11 +1296,11 @@ function saveWhiteListIps(){
             } else {
                 if(validate('paymentAccountBankName', "Bank Name")
                         && validate('paymentAccountNumber', "Account Number")
+                        && validate('paymentBSRNumber', "BSR Number")
+                        && validate('paymentMICRCode', "MICR Code")
                         && validate('paymentAccountRoutingNumber', "Routing Number")
                         && validate('paymentAccountFirstName', "First Name")
                         && validate('paymentAccountLastName', "Last Name")
-                        && validate('paymentMICRCode', "MICR Code")
-                        && validate('paymentBSRNumber', "BSR Number")
                         && validateSelect("paymentAccountLocation", 'Location')) {
                 	data["micrCode"] = $("#paymentMICRCode").val().trim();
                 	data["bsrNumber"] = $("#paymentBSRNumber").val().trim();
@@ -1470,6 +1478,7 @@ function showPaymentAccountPopup() {
     $(".modal.paymentaccount-modal").fadeIn();
     $(".comMask").fadeIn();
     $("input[id*=paymentAccount]").val("");
+    $('#paymentaccount_form')[0].reset();
 }
 function showOrHidePaymentFormFields(type) {
     $("#paymentAccountLocation").val('0');
