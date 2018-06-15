@@ -6,22 +6,23 @@
 
 <script>
 function submitCandidatesToJob(){
-	
+	    shareCandidates = {};
 		$('.action-pop').slideUp();
-		$(".clients_side_wrap").addClass("clients_side_wrap_active");
+		$(".submission_side_wrap").addClass("submission_side_wrap_active");
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 		
 		var result = "";
 		result = result + '<h3>Candidate List</h3>';
+		result = result + '<div id="candidatesChoicepopUp"></div>';
 		result = result + '<div id="candidatesListLoading"></div>';
 	    result = result +" <div class='mr pull-left'>";
 		result = result +" <button type='button' onclick='jobAdvSearch()' class='btn btn-primary btn-sm'>Advanced Search&nbsp;&nbsp;<i class='fa fa-search'></i></button>";
-		result = result +" <button type='button' onclick='clearJobAdvSearch();getCandidatesTableList()' class='btn btn-primary btn-sm' title='Refresh'><i class='fa fa-refresh'></i></button>";
+		result = result +" <button type='button' onclick='clearCandAdvSearch();getCandidatesTableList()' class='btn btn-primary btn-sm' title='Refresh'><i class='fa fa-refresh'></i></button>";
 		result = result +"</div>"; 
 		result = result +" <div class='pull-right'>";
 		result = result +" <div class='mr pull-left'>";
-		result = result +" <input type='button' value='Submit To Job' onclick='submitCandidtesToJob()' class='btn btn-primary btn-sm'>";
+		result = result +" <input type='button' value='Submit To Job' onclick='submitApplicantsToJob()' class='btn btn-primary btn-sm'>";
 		result = result +"</div>";
 		result = result +" <div class='dynamic_search pull-left'>";
 	 	result = result +" <input type='text' placeholder='Search' id='candDataTableSearch'/>";
@@ -252,5 +253,82 @@ function candidatesListPagination(url,sourceleadUrl){
    	    	$('#candDataTableSearch').val(searchData);
     	   }
     	});
+}
+</script>
+
+
+
+<script>
+function submitApplicantsToJob(){
+	 
+	 var jobId = '${requirementId}';
+	 
+	 var candidateIds = new Array();
+	 for(var e in shareCandidates) {
+		 if(!e || !shareCandidates[e] || shareCandidates[e] === "")
+			   continue;
+		 candidateIds.push(shareCandidates[e]);
+	   } 
+	 
+	 if(candidateIds.length > 0){
+		  
+		 $("#candidatesListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			   $.ajax({
+		          type : "POST",
+		          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+jobId,    
+		           success :function(data) {
+		        	   if (data.response === "FAILED") {
+		        		   $("#candidatesListLoading").removeAttr("style");
+				    		showError(data.responseMessage);
+				    	} else if (data.response === "AWKWARD") {
+				    		location.href = "/errorPage";
+				    	} else if (data.response === "SUCCESS") {
+				    		$("#candidatesListLoading").removeAttr("style");
+				    		shareCandidates = {};
+				    		$('.action-pop').slideUp();
+				    		$(".submission_side_wrap").removeClass("submission_side_wrap_active");
+				    		$(".side_mask").fadeOut(200);
+				    		$("body").css('overflow-y', 'auto');
+				    		requirementPipeline(jobId,'all');
+				    		requirementStatusBar(jobId);
+				    	}else if (data.indexOf('Sign In') !== -1) {
+				    		location.replace(sourceleadUrl);
+				    	} else {
+				    		showError("Operation failed, please try again");
+				    	}
+		           },
+		   });  
+		 
+		 
+	 }else{
+		 var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"		<p>Select Candidate</p>";
+			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+			result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='okPopUp();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPopUp();'></b>";
+			result = result +"	</div>";
+			$("#candidatesChoicepopUp").append(result);
+			$("#remove_user_pop").slideDown(200);
+			//$(".project_inn_mask").fadeIn(200);
+	 }
+	 
+}
+</script>
+
+
+<script type="text/javascript">
+function okPopUp(){
+	$("#candidatesChoicepopUp").empty();
+	//$(".project_inn_mask").fadeOut(200);
+}
+
+function cancelPopUp(){
+	$("#candidatesChoicepopUp").empty();
+	//clearCandAdvSearch();
+	$('.action-pop').slideUp();
+	$(".submission_side_wrap").removeClass("submission_side_wrap_active");
+	$(".side_mask").fadeOut(200);
+	$("body").css('overflow-y', 'auto');
 }
 </script>

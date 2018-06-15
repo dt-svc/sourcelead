@@ -5076,4 +5076,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			Long requirementId, Long candidateId) throws Exception {
 		return requirementSubmissionDao.getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(requirementId, candidateId);
 	}
+
+	@Override
+	public boolean getRequirementSubmissionByCandidateIdAndJobId(Long candidateId, Long requirementId)
+			throws Exception {
+		return requirementSubmissionDao.getRequirementSubmissionByCandidateIdAndJobId(candidateId, requirementId);
+	}
 }

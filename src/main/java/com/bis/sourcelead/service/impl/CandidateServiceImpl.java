@@ -2188,4 +2188,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getSubmissionCandidateListView(candidateDTO, orgLcoations);
 	}
 
+	@Override
+	public CandidateDTO getCandidateDTOByCandidateId(Long candidateId) throws Exception {
+		return candidateDao.getCandidateDTOByCandidateId(candidateId);
+	}
+
 }

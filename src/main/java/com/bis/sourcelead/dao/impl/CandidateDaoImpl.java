@@ -36,7 +36,9 @@ import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
+import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -1795,6 +1797,41 @@ public class CandidateDaoImpl implements CandidateDao {
 				
 				response.setData(candidateList);
 				return response;
+	}
+
+	@Override
+	@Transactional
+	public CandidateDTO getCandidateDTOByCandidateId(Long candidateId) throws Exception {
+		
+		List<CandidateDTO> candidateDTOList = null;
+		CandidateDTO candidateDTO = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+				query ="SELECT "
+				+" CAND.ID AS candId, "
+				+" CAND.FIRST_NAME AS firstName, "
+				+" CAND.LAST_NAME AS lastName, "
+				+" CAND.MOBILE_PHONE AS phoneNumber, "
+				+" CAND.EMAIL AS email, "
+				+" CAND.LOCATION AS location, "
+				+" CAND.COUNTRY AS country, "
+				+" CAND.STATE AS state, "
+				+" CAND.CITY AS city, "
+				+" CAND.NOTICE_PERIOD AS noticePeriod "
+				+" FROM CANDIDATE CAND "
+				+" WHERE "
+				+" CAND.ID = :candidateId ";
+		    
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("candidateId", candidateId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
+			candidateDTOList = queryObj.list();
+			if(candidateDTOList != null && !candidateDTOList.isEmpty()) {
+				candidateDTO = candidateDTOList.get(0);
+			}
+			
+			return candidateDTO;
+	
 	}
 
 }

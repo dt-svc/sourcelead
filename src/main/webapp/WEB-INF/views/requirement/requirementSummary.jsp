@@ -310,6 +310,10 @@ $(document).ready(function() {
 		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
+		
+		$(".submission_side_wrap").removeClass("submission_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
 	});	
 });
 
@@ -3142,7 +3146,7 @@ return result;
 <!-- Ends Script for Requirement recommendation profile saving , deleting -->
 
 
-<div class="clients_side_wrap ">
+<div class="submission_side_wrap ">
 	<div class="new_side_wrap_inn">
 		<div class="new_side_wrap_cta">
 		 <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop datatable_filter">

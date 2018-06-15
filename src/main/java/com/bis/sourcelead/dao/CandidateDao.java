@@ -138,4 +138,6 @@ public interface CandidateDao {
 	List<RecruiterReportCandidateCountView> getCandidateCountsCreatedUserList(Long orgLocationId, List<String> userCodesList ,String startDateUTC, String endDateUTC,String isGlobalUser,Long orgId) throws Exception ;
 	
 	public ResponseList<SubmissionCandidateListView> getSubmissionCandidateListView(CandidateDTO candidateDTO,OrgLocations orgLcoations) throws Exception;
+	
+	public CandidateDTO getCandidateDTOByCandidateId(Long candidateId) throws Exception;
 }
