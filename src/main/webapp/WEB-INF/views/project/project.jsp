@@ -337,11 +337,10 @@ function validateShortCode(){
 			               </div> 
 						
 						<div class="form-group" id="shortCodeDivId">
-							<label class="col-md-3"> Project Short Code <span
-								class="text-danger">* </span><i class='fa fa-info-circle' title='The internal unique code for the project'></i>
+							<label class="col-md-3"> Project Short Code <i class='fa fa-info-circle' title='The internal unique code for the project'></i>
 							</label>
 							<div class="col-md-9">
-								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation="required validate_length length3-3"
+								<input type="text" class="form-control" name="projectShortCode" id="projectShortCode" placeholder="Project Short Code" data-validation-optional="true" data-validation="validate_length length3-3"
 									field-name="Project Short Code" value="" onkeyUp="toUpperCase();" onblur="validateShortCode();"  pattern="[a-zA-Z]"  maxlength="3">  
 
 							</div>
@@ -775,9 +774,13 @@ function getProjectDetails(){
 	        	 $("input[name=projectName]").val(json.projectName);
 	        	 $("input[name=startDate]").val(json.startDateStr);
 	        	 $("input[name=endDate]").val(json.endDateStr);
-	        	 $("#projectShortCode").val(json.projectShortCode);
-	        	 $("input[name=projectShortCode]").attr("readonly","readonly");
-	        	 $('#projectShortCode').removeAttr('onblur');
+	        	 if(json.projectShortCode != null && json.projectShortCode != '' && json.projectShortCode != 'undefined'){
+	        		 $("#projectShortCode").val(json.projectShortCode);
+	        		 $("input[name=projectShortCode]").attr("readonly","readonly");
+	        		 $('#projectShortCode').removeAttr('onblur');
+	        	 }
+	        	
+	        	
 	        	 $("#notifyBudgetAt").val(json.notifyBudgetAt);
 	        	 
 	           var projectStatus = '';
@@ -1264,9 +1267,10 @@ function getBudgetApprover(approverUserId){
  
 <script>
 function getCustomDependentField(sectionId){
+	var projectId = $('#projectId').val();
 	$.ajax({
 			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&projectId="+projectId+"&requestFrom=project",
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);

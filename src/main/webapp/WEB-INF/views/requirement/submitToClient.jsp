@@ -20,6 +20,15 @@
 .add_inter table tr td {
  vertical-align: middle;
 }
+.timesheet_week_comm {
+float: none !important; width: auto;
+}
+.timesheet_week_comm.mail-attach table tr {
+width: 100%;
+}
+.timesheet_week_comm span input, .commentFile span input {
+width: 80%;
+}
 </style>
 <script>
 function submitToClient(requirementId){

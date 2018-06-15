@@ -28,11 +28,17 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 	
 	private List<ProjectMembersDTO> submittedProjectMembersList;
 	
+	private List<ProjectMembersDTO> allProjectMembersList;
+	
+	private List<ProjectMembersDTO> attProjectMembersList;
+	
 	private List<EmployeeTimesheetSubmissionDTO> submissionList;
 	
 	private EmployeeTimesheetSubmissionDTO timesheetSubmission;
 	
 	private List<EmployeeTimesheetFileInfoDTO> timsheetAttachments;
+	
+	private List<Long> oldSubmittedProjectMembersList;
 	
 	private Map<Long,EmployeeTimeSheetSubmissionStatusDTO> statusMap;
 	
@@ -63,6 +69,8 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 	private Integer maxRowCount;
 	
 	private boolean submitButtonVisible;
+	
+	private boolean saveButtonVisible;
 
 	public LinkedHashSet<String> getInvoiceFrequencyList() {
 		return invoiceFrequencyList;
@@ -273,6 +281,39 @@ public class EmployeeTimesheetEntryDetailsDTO implements Serializable{
 	public void setTimsheetAttachments(List<EmployeeTimesheetFileInfoDTO> timsheetAttachments) {
 		this.timsheetAttachments = timsheetAttachments;
 	}
-	
+
+	public List<ProjectMembersDTO> getAllProjectMembersList() {
+		return allProjectMembersList;
+	}
+
+	public void setAllProjectMembersList(List<ProjectMembersDTO> allProjectMembersList) {
+		this.allProjectMembersList = allProjectMembersList;
+	}
+
+	public List<ProjectMembersDTO> getAttProjectMembersList() {
+		return attProjectMembersList;
+	}
+
+	public void setAttProjectMembersList(List<ProjectMembersDTO> attProjectMembersList) {
+		this.attProjectMembersList = attProjectMembersList;
+	}
+
+	public boolean isSaveButtonVisible() {
+		return saveButtonVisible;
+	}
+
+	public void setSaveButtonVisible(boolean saveButtonVisible) {
+		this.saveButtonVisible = saveButtonVisible;
+	}
+
+	public List<Long> getOldSubmittedProjectMembersList() {
+		return oldSubmittedProjectMembersList;
+	}
+
+	public void setOldSubmittedProjectMembersList(List<Long> oldSubmittedProjectMembersList) {
+		this.oldSubmittedProjectMembersList = oldSubmittedProjectMembersList;
+	}
+
+
      
 }

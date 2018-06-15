@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -48,7 +49,6 @@ import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.VendorsDocumentsDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Candidate;
@@ -65,11 +65,13 @@ import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
+import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementAssignTo;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.TeamMembers;
@@ -392,6 +394,10 @@ public class RequirementServiceImpl implements RequirementService {
 		} else {
 			requirement.setNoticePeriod(null);
 		}
+		
+		requirement.setWalkIn(requirementDTO.isWalkIn() && requirementDTO.getWalkInDays() != null && !requirementDTO.getWalkInDays().isEmpty());
+		requirement.setWalkInDays(requirementDTO.isWalkIn() ? requirementDTO.getWalkInDays() : "");
+		
 		if (StringUtils.isNotBlank(requirementDTO.getTravelAllowance())) {
 			requirement.setTravelAllowance(requirementDTO.getTravelAllowance());
 		}
@@ -472,6 +478,7 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setClientId(orgRelations);
 			client = requirementDTO.getSelectClient().split(",")[0];
 		}
+		
 		if (StringUtils.isNotBlank(requirementDTO.getSelectContact())) {
 			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(requirementDTO.getSelectContact()));
 			requirement.setSpocId(orgSpoc);
@@ -720,6 +727,13 @@ public class RequirementServiceImpl implements RequirementService {
 			User managerUserId = new User();
 			managerUserId.setId(Long.parseLong(requirementDTO.getManager()));
 			requirement.setManagerUserId(managerUserId);
+		}
+		if (requirementDTO.getPrimaryRecruiterUserId() > 0) {
+			User primaryRecruiterUser = new User();
+			primaryRecruiterUser.setId(requirementDTO.getPrimaryRecruiterUserId());
+			requirement.setPrimaryRecruiterUserId(primaryRecruiterUser);
+		} else {
+			requirement.setPrimaryRecruiterUserId(null);
 		}
 		if (StringUtils.isNotBlank(requirementDTO.getPriority())) {
 			requirement.setPriority(requirementDTO.getPriority());
@@ -2731,9 +2745,9 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(
-			Long orgLocationId, String userType, Long userId, String userCode) throws Exception {
+			Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception {
 		return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId,
-				userType, userId, userCode);
+				userType, userId, userCode, isWalkIn, walkinDay);
 	}
 
 	@Override
@@ -3416,10 +3430,10 @@ public class RequirementServiceImpl implements RequirementService {
 	}
 
 	@Override
-	public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC,
-			Date endDateUTC) throws Exception {
+	public BigInteger getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC,
+			String endDateUTC,String isGlobalUser,Long orgId) throws Exception {
 		return requirementDao.getCountOfAllRequirementsByCreatedUserAndOrglocationId(orgLocationId, user, startDateUTC,
-				endDateUTC);
+				endDateUTC,isGlobalUser,orgId);
 	}
 
 	@Override
@@ -3748,6 +3762,19 @@ public class RequirementServiceImpl implements RequirementService {
 	public Requirement getRequirementByGeneratedIdAndLocationId(String generatedId, Long orgLocationId)
 			throws Exception {
 		return requirementDao.getRequirementByGeneratedIdAndLocationId(generatedId, orgLocationId);
+	}
+
+	@Override
+	public List<RecruiterReportAssociateCountView> getAssociateCountsCreatedUserList(Long orgLocationId,
+			List<Long> userIdsList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
+			throws Exception {
+		return requirementDao.getAssociateCountsCreatedUserList(orgLocationId, userIdsList, startDateUTC, endDateUTC, isGlobalUser, orgId);
+	}
+
+	@Override
+	public ResponseList<SubmissionRequirementListView> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,
+			Long userId, OrgLocations orgLocations) throws Exception {
+		return requirementDao.getAllRequirementsForCandidateSubmission(requirementDTO, userId, orgLocations);
 	}
 
 }

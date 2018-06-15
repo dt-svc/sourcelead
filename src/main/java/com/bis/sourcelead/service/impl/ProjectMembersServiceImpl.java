@@ -618,7 +618,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndProjectIdAndStratDateAndEndDateAndStatus(status, startDate, endDate, projectId);
 		
 	}
-
+	
 	@Override
 	public List<ProjectMembers> getProjectMembersListByOrgLocationsIdAndApproverUserId(Long locationsId,Long approverUserId) {
 		return projectMembersDao.getProjectMembersListByOrgLocationsIdAndApproverUserId(locationsId,approverUserId);
@@ -626,9 +626,9 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public ResponseList<ProjectMembers> getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(
-			String timesheetFrequency, Date startDate, Date endDate, Long clientId, String status, Long locationsId,
+			String timesheetFrequency, Date startDate, Date endDate, Long clientId, Long projectId, String status, Long locationsId,
 			Long approverUserId,String searchValue,String projectName, int start, int length,String timesheetFor,String isGlobalUser) {
-		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, status, locationsId, approverUserId,searchValue,projectName,start,length,timesheetFor,isGlobalUser);
+		return projectMembersDao.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId,projectId, status, locationsId, approverUserId,searchValue,projectName,start,length,timesheetFor,isGlobalUser);
 	}
 	
 	@Override
@@ -1773,6 +1773,15 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public ProjectMembers getProjectMemberByUserIdAndLoginOrglocationId(Long userId, Long orgLocationId)throws Exception {
 		return projectMembersDao.getProjectMemberByUserIdAndLoginOrglocationId(userId, orgLocationId);
+	}
+	@Override
+	public List<String> getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId){
+		return projectMembersDao.getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(locationsId, candidateId);
+		
+	}
+	@Override
+	public List<ProjectMembers> getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(Long locationsId, Long candidateId,String timesheetFrequency){
+		return projectMembersDao.getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(locationsId, candidateId, timesheetFrequency);
 	}
 
 }

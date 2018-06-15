@@ -17,4 +17,6 @@ public interface AssociateGradesService {
 	ResponseList<AssociateGradesDTO> getAssociateGradesDTOListByOrgLocationId(AssociateGradesDTO associateGradesDTO,Long orgLocationId) throws Exception;
 	
 	AssociateGrades getAssociateGradesByGradeNameAndOrgLocationId(String gradeName,Long orgLocationId) throws Exception;
+
+	AssociateGrades getAssociateGradeById(Long id);
 }

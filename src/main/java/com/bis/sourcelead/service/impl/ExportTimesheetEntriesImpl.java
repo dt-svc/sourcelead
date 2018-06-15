@@ -707,15 +707,22 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	}
 	
 	@Override
-	public File timeSheetApprovelExport(User user, OrgLocations orgLocations, Date startDate, Date endDate,String timesheetFrequency, String client, String stage,String frequencyMonth,String weekFrequency,String globalUser) throws Exception {
+	public File timeSheetApprovelExport(User user, OrgLocations orgLocations, Date startDate, Date endDate,String timesheetFrequency, String client,String project, String stage,String frequencyMonth,String weekFrequency,String globalUser) throws Exception {
 		Long clientId;
 		if(!client.equalsIgnoreCase("") && !client.equalsIgnoreCase("All")){
 		 clientId = Long.parseLong(client) ;
 		}else{
 		  clientId = null;
 		}
+		
+		Long projectId;
+		if(!project.equalsIgnoreCase("") && !project.equalsIgnoreCase("All")){
+			projectId = Long.parseLong(project) ;
+		}else{
+			projectId = null;
+		}
 		String searchValue = "";
-		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId(),searchValue,"",0,0,"",globalUser);
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId,projectId, stage, orgLocations.getId(), user.getId(),searchValue,"",0,0,"",globalUser);
 		 HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
          if(projectMembers != null){
         	
@@ -1052,13 +1059,20 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 	
 	
 	@Override
-	public File timeSheetApprovelExportExcel(User user, OrgLocations orgLocations,Date startDate,Date endDate,String timesheetFrequency,String client,String stage,String frequencyMonth,String weekFrequency,String globalUser) throws Exception {
+	public File timeSheetApprovelExportExcel(User user, OrgLocations orgLocations,Date startDate,Date endDate,String timesheetFrequency,String client,String project,String stage,String frequencyMonth,String weekFrequency,String globalUser) throws Exception {
 		File file= null;
 		Long clientId;
 		if(!client.equalsIgnoreCase("") && !client.equalsIgnoreCase("All")){
 		 clientId = Long.parseLong(client) ;
 		}else{
 		  clientId = null;
+		}
+		
+		Long projectId;
+		if(!project.equalsIgnoreCase("") && !project.equalsIgnoreCase("All")){
+			projectId = Long.parseLong(project) ;
+		}else{
+			projectId = null;
 		}
 		//for creating workbook and sheet in excel.
 		Workbook createExcelworkbook = new XSSFWorkbook();
@@ -1068,7 +1082,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		Row writeRow = null;
 		// to get list of project members from data base.
 		String searchValue = "";
-		ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId, stage, orgLocations.getId(), user.getId(),searchValue,"",0,0,"",globalUser);
+		ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetFrequency, startDate, endDate, clientId,projectId,stage, orgLocations.getId(), user.getId(),searchValue,"",0,0,"",globalUser);
 		HashSet<ProjectMembers> freshProjectMembers = new HashSet<>();
         if(projectMembers != null){
        	if(StringUtils.isNotEmpty(timesheetFrequency) && timesheetFrequency.equalsIgnoreCase("Bi-Weekly")){

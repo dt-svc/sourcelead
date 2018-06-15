@@ -732,7 +732,10 @@ public class UsersListRestController {
 			} else {
 				userRole.setHireDateStr("");
 			}
-
+			if(userRole != null) {
+				userRole.setTerminateDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),userRole.getTerminateDate()));
+			}
+		
 			userRole.setDailyHours(employee.getDailyHours());
 			userRole.setUserEmploymentType(employee.getUserEmploymentType());
 			userRole.setDesignationOtherType(employee.getDesignationOtherType());
@@ -770,8 +773,8 @@ public class UsersListRestController {
 		userRole.setGradesList(gradesList);
 		
 		List<User> reportingManagersList = new ArrayList<>();
-		List<User> userList = userService.getManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(userRole.getUser().getId(), userRole.getRoles().getId(), orgLocations.getId(),Long.valueOf(Constants.TAB_USER));
-		List<User> globalUserList = userService.getGlobalUsersByOrgId(userRole.getRoles().getId(), org.getId(), Long.valueOf(Constants.TAB_USER)); 
+		List<User> userList = userService.getReportingManagersByUserRolesAndOrgLocationId(userRole.getRoles().getId(), orgLocations.getId());
+		List<User> globalUserList = userService.getGlobalReportingManagersUsersByOrgId(userRole.getRoles().getId(), org.getId()); 
 		if(userList != null && !userList.isEmpty()) {
 			reportingManagersList.addAll(userList);
 		}
@@ -1412,6 +1415,7 @@ public class UsersListRestController {
 			userRole.setPreviousUserState(userRole.getUserState());
 			userRole.setUserState(Status.INACTIVE);
 			userRole.setTerminateReason(addUserDTO.getReason());
+			userRole.setTerminateDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),  addUserDTO.getTerminateDate()));
 			userRole.setUpdatedBy(user.getUserCode());
 			userRole.setUpdatedDate(commonUtil.currentDate());
 						

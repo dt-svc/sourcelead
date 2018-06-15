@@ -762,8 +762,8 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			vendorContracts.setUpdatedDate(new Date());
 			vendorContracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 			vendorContracts.setContractsTemplate(savedContracts.getContractsTemplate());
-			if (null != savedContracts.getContractType() && !"".equalsIgnoreCase(savedContracts.getContractType())
-					&& Constants.CUSTOM_TYPE.equalsIgnoreCase(savedContracts.getContractType())) {
+			if (null != savedContracts.getTypeOfContract() && !"".equalsIgnoreCase(savedContracts.getTypeOfContract())
+					&& Constants.CUSTOM_TYPE.equalsIgnoreCase(savedContracts.getTypeOfContract())) {
 				vendorContracts.setTypeOfContract(Constants.CUSTOM_TYPE);
 			}
 			else {
@@ -2543,23 +2543,27 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			if (Constants.VENDOR.equalsIgnoreCase(responderType)) {
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
-				if (null != contracts.getOwnerUserId()) {
-					contracts.setOwnerUser(contracts.getOwnerUserId().getId());
-					if (null != contracts.getOwnerUserId().getFirstName()
-							&& null != contracts.getOwnerUserId().getLastName()) {
-						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+				List<Long> ownerUserIds = new ArrayList<>();
+				//if (null != contracts.getOwnerUserId()) {
+				if(null != contracts.getOwnerHierarchyList() && !contracts.getOwnerHierarchyList().isEmpty()){
+					for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
+						ownerUserIds.add(coh.getOwnerUserId().getId());
+						if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
+							ownerName.append(coh.getOwnerUserId().getFirstName()).append((coh.getOwnerUserId().getLastName())).append(" , ");
+						}else{
+							ownerName.append(coh.getOwnerUserId().getFirstName()).append(" , ");
+						}
 					}
-					else if (null != contracts.getOwnerUserId().getFirstName()) {
+					
+				}else{
+					ownerUserIds.add(contracts.getOwnerUserId().getId());
+					if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
+						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+					}else{
 						ownerName.append(contracts.getOwnerUserId().getFirstName());
 					}
-					else {
-						ownerName.append("---");
-					}
 				}
-				else {
-					ownerName.append("---");
-				}
-				contracts.setOwnerName(ownerName.toString());
+				contracts.setOwnerName(ownerName.toString().replaceAll("\\s*,\\s*$", ""));
 				if (null != contracts.getContactUser()) {
 					if (null != contracts.getContactUser().getFirstName()
 							&& null != contracts.getContactUser().getLastName()) {
@@ -2629,23 +2633,27 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			else {
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
-				if (null != contracts.getOwnerUserId()) {
-					contracts.setOwnerUser(contracts.getOwnerUserId().getId());
-					if (null != contracts.getOwnerUserId().getFirstName()
-							&& null != contracts.getOwnerUserId().getLastName()) {
-						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+				List<Long> ownerUserIds = new ArrayList<>();
+				if(null != contracts.getOwnerHierarchyList() && !contracts.getOwnerHierarchyList().isEmpty()){
+					for(ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()){
+						ownerUserIds.add(coh.getOwnerUserId().getId());
+						if(null != coh.getOwnerUserId().getFirstName() && null != coh.getOwnerUserId().getLastName()){
+							ownerName.append(coh.getOwnerUserId().getFirstName()).append((coh.getOwnerUserId().getLastName())).append(" , ");
+						}else{
+							ownerName.append(coh.getOwnerUserId().getFirstName()).append(" , ");
+						}
 					}
-					else if (null != contracts.getOwnerUserId().getFirstName()) {
+					
+				}else{
+					ownerUserIds.add(contracts.getOwnerUserId().getId());
+					if(StringUtils.isNotBlank(contracts.getOwnerUserId().getLastName())){
+						ownerName.append(contracts.getOwnerUserId().getFirstName()).append((contracts.getOwnerUserId().getLastName()));
+					}else{
 						ownerName.append(contracts.getOwnerUserId().getFirstName());
 					}
-					else {
-						ownerName.append("---");
-					}
 				}
-				else {
-					ownerName.append("---");
-				}
-				contracts.setOwnerName(ownerName.toString());
+				contracts.setOwnerName(ownerName.toString().replaceAll("\\s*,\\s*$", ""));
+				
 				if (null != contracts.getContactUser()) {
 					if (null != contracts.getContactUser().getFirstName()
 							&& null != contracts.getContactUser().getLastName()) {

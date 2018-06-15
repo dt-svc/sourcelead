@@ -292,6 +292,12 @@ public class User implements Serializable{
 	@Transient
 	private String isMailSent;
 	
+	@Transient
+	private String associateUserCode;
+	
+	@Transient
+	private Long userId;
+	
 
 	public Status getPreviousUserState() {
 		return previousUserState;
@@ -897,6 +903,22 @@ public class User implements Serializable{
 
 	public void setLinkUserId(User linkUserId) {
 		this.linkUserId = linkUserId;
+	}
+
+	public String getAssociateUserCode() {
+		return associateUserCode;
+	}
+
+	public void setAssociateUserCode(String associateUserCode) {
+		this.associateUserCode = associateUserCode;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	

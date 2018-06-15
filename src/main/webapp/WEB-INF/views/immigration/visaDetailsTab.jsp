@@ -102,7 +102,7 @@
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Visa Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" name = "visaType" id = "visaType" field-name = "Visa Type"  data-validation = "required" >
+					<select class="form-control selectpicker " name = "visaType" id = "visaType" field-name = "Visa Type"  data-validation = "required" data-live-search="true">
 					  <option value="" selected>Select Visa Type</option>
 					  <c:forEach var="visaType" items="${visaList}">
 						<option value="${visaType}">${visaType}</option>
@@ -120,7 +120,7 @@
           	<div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Country<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="chosen-select form-control" name="country" id= "visaCountry"  field-name="Country" data-validation="required">
+					<select class="form-control selectpicker" name="country" id= "visaCountry"  field-name="Country" data-validation="required" data-live-search="true">
 					<option value="" selected>--Select Country--</option>
 					  <c:forEach var="country" items="${countryList}">
 						<option value="${country.name}">${country.name}</option>
@@ -201,12 +201,28 @@
 		            $("#visaValidFrom").datepicker("option", "maxDate", dt);
 		        }
 		  });
+		 
+		  var config = {
+				  '.chosen-select'           : {},
+				  '.chosen-select-deselect'  : {allow_single_deselect:true},
+				  '.chosen-select-no-single' : {disable_search_threshold:10},
+				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+				  '.chosen-select-width'     : {width:"95%"}
+				}
 		  $("#searchValueVisa").keyup(function (e) {
 			    if (e.which === 13) {
 			    	searchVisaValue();
 			    }
 			});
+		 
 		  
+		  for (var selector in config) {
+			  $(selector).chosen(config[selector]);
+			}
+			$('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+			})
 		</script>
 <script>
   var visaListCount = '<c:out value ="${visaListCount}"/>';

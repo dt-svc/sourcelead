@@ -100,7 +100,7 @@ logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCo
 	public EmailScenario getEmailScenarioByUniqueName(String uniqueScenarioName, String entityType) throws Exception{
 		logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueName method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from EmailScenario es left join fetch es.parentId where es.uniqueScenarioName = :uniqueScenarioName and es.entityType = :entityType";
+		String query = "from EmailScenario es left join fetch es.parentId where es.uniqueScenarioName = :uniqueScenarioName and es.entityType = :entityType and es.defaultTemplate = 'Y' ";
 		List<EmailScenario> emailScenariosList =  session.createQuery(query.toString())
 				                                         .setString("uniqueScenarioName", uniqueScenarioName)
 				                                         .setString("entityType", entityType).list();
@@ -165,25 +165,25 @@ logger.debug("In EmailScenarioDaoImpl class getEmailScenarioByUniqueNameAndOrgCo
 				subQuery1 = " and emailScenario.templateType IN (:specification)";
 			}
 			if(subQuery !="" && subQuery1 != ""){
-				 query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y' and  emailScenario.entityType = 'Email' "+subQuery+" "+subQuery1+" "; 
+				 query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y'  "+subQuery+" "+subQuery1+" and emailScenario.status = '1' "; 
 				 emailScenarioList =session.createQuery(query) .setParameterList("tabIds", tabIds).setParameterList("specification", specification).list();
 			}else if(subQuery !=""){
-				query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y' and emailScenario.entityType = 'Email' "+subQuery+"  "; 
+				query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y'  "+subQuery+" and emailScenario.status = '1' "; 
 				 emailScenarioList =session.createQuery(query) .setParameterList("tabIds", tabIds).list();
 			}else if(subQuery1 != ""){
-				query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y' and emailScenario.entityType = 'Email' "+subQuery1+" "; 
+				query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y'  "+subQuery1+" and emailScenario.status = '1' "; 
 				 emailScenarioList =session.createQuery(query) .setParameterList("specification", specification).list();
 			}else{
-				query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y' and emailScenario.entityType = 'Email' "; 
+				query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y'  and emailScenario.status = '1' "; 
 				 emailScenarioList =session.createQuery(query) .list();
 			}
 			
 		}else if(templateType.equalsIgnoreCase("org")){
 			if(tabIds != null && !tabIds.isEmpty()){
-				query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y' and emailScenario.templateType = 'org' and emailScenario.entityType = 'Email' and emailScenario.tabId.id IN(:tabIds) "; 
+				query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y' and emailScenario.templateType = 'org' and emailScenario.entityType = 'Email' and emailScenario.tabId.id IN(:tabIds) and emailScenario.status = '1' "; 
 				 emailScenarioList =session.createQuery(query) .setParameterList("tabIds", tabIds).list();
 				}else{
-					query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y' and emailScenario.templateType = 'org' and emailScenario.entityType = 'Email' "; 
+					query = "from EmailScenario emailScenario where emailScenario.defaultTemplate = 'Y' and emailScenario.templateType = 'org' and emailScenario.entityType = 'Email' and emailScenario.status = '1' "; 
 					 emailScenarioList =session.createQuery(query).list();
 				}
 			 }

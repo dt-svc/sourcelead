@@ -20,6 +20,7 @@
 background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 }
 </style>
+<c:set var ="myImmigrationPage" value = "${myImmigrationPage}" scope="session"/>
 <c:set var ="passOnLoadCount" value = "${tabRecordCountMap['Passport']}" scope="request"/>
 <c:set var ="visaOnLoadCount" value = "${tabRecordCountMap['Visa']}" scope="request"/>
 <c:set var ="empOnLoadCount" value  =  "${tabRecordCountMap['Employers']}" scope="request"/>
@@ -29,7 +30,9 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 <c:set var ="taskOnLoadCount" value  = "${tabRecordCountMap['Tasks']}" scope="request"/>
 <c:set var ="curUscisMyImmi" value = "${immigration.currUscisStatus}" scope="session"/>
  <section class="content-wraper content-wraperNew">
-   
+	        <div class="success_pop" id="selector"  style="display: none;">
+		         <i class="fa fa-check-circle"></i><span></span>
+			</div>
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>${immigration.generatedId}</h2>
@@ -400,6 +403,11 @@ function showWarningPopup(tabName, multiWarnMsg){ // multiWarnMsg populated when
 		$(".project_inn_mask").fadeOut(200);
 		$(".project_inn_mask").remove();
 		$("#remove_immigration_pop").remove();
+	}
+	function showSuccessMsg(msg){
+		$('#selector').show();
+		$('#selector').text(msg)
+		setTimeout(function(){ $('#selector').hide();$('#selector').text("") }, 1000);
 	}
 </script>
 <jsp:include page="../masterFooter.jsp" />

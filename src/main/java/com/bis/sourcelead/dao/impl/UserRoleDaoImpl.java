@@ -533,7 +533,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<UserRole> userRole = new ArrayList<UserRole>();
 		logger.debug("getUserRoleByUserIdAndLocationId method  start");
-		userRole = session.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles left join fetch userRole.reportingManager "
+		userRole = session.createQuery("from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.orgLocations.org left join fetch userRole.orgLocations.org left join fetch userRole.roles left join fetch userRole.reportingManager "
 						+ " left join fetch userRole.gradeId left join fetch userRole.resourceManager left join fetch userRole.user where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
 				.setLong("userId", userId).setLong("locationId", locationId).list();
 		logger.debug("getUserRoleByUserIdAndLocationId method ends");
@@ -651,7 +651,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		userRole = session
 				.createQuery("from UserRole userRole left join fetch userRole.orgLocations orgLoc left join fetch orgLoc.org left join fetch userRole.roles  "
 
-						+ "left join fetch userRole.resourceManager left join fetch userRole.user left join fetch userRole.user.linkUserId  where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
+						+ "left join fetch userRole.resourceManager left join fetch userRole.user left join fetch userRole.reportingManager left join fetch userRole.user.linkUserId  where userRole.user.id = :userId and userRole.orgLocations.id = :locationId")
 
 				.setLong("userId", userId).setLong("locationId", locationId).list();
 		logger.debug("getUserDetailsByEmailAndLocationId method ends");

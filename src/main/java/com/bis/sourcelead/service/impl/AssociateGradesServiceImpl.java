@@ -44,4 +44,10 @@ public class AssociateGradesServiceImpl implements AssociateGradesService{
 		return associateGradesDao.getAssociateGradesByGradeNameAndOrgLocationId(gradeName, orgLocationId);
 	}
 
+	@Override
+	public AssociateGrades getAssociateGradeById(Long id)
+	{
+		return associateGradesDao.getAssociateGradeById(id);
+	}
+
 }

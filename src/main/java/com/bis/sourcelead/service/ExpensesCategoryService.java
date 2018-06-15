@@ -27,4 +27,6 @@ public interface ExpensesCategoryService {
 	public ExpensesCategory removeExpensesCategoryByCategoryId(Long expCategoryId) throws Exception;
 	
 	public Boolean validateExpensesCategoryType(Long orgLocationId, String categoryName) throws Exception;
+
+	public String getExpenseAttachmentStatusByCategoryId(Long categoryId);
 }

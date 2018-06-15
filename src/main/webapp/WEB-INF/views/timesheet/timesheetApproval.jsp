@@ -29,9 +29,14 @@
 	               var timesheetFrequency = $('#timesheetFrequency').val();
 	               var searchData = $('#dataTableSearchExpenses').val();
 	               var weekFrequency = $('#weekFrequency').val();
-	               var projectName = '';
+	               var projectName = $('#projectName').val();
+	               if(projectName == null || projectName !='' || projectName!='undefined'){
+	            	   projectName = '';
+	               }
+	               
 	               var stage = $('#stage').val();
 	               var client = $('#client').val();
+	               var project = $('#project').val();
 	               if(filter != null && filter != '' && filter != 'undefined' &&  filter == 'notifyLink'){
 	            	   frequencyMonth = '${frequencyMonth}';
 	            	   timesheetFrequency = '${timesheetFrequency}';
@@ -57,6 +62,9 @@
 		          
 		           if(client == null || client == '' || client == 'undefined')
 		        	   client = '';
+		           
+		           if(project == null || project == '' || project == 'undefined')
+		        	   project = '';
 		           var searchvalue = '';
 	  	           if(searchData != null && searchData !='' && searchData!='undefined'){
 	  	        	 searchValue = searchData;
@@ -70,6 +78,7 @@
 	               formData.append("timesheetFrequency", timesheetFrequency);
 	               formData.append("weekFrequency", weekFrequency);
 	               formData.append("client", client);
+	               formData.append("project", project);
 	               formData.append("stage", stage);
 	               formData.append("locationCode", locationCode);
 	               formData.append("userId", userId);
@@ -98,8 +107,8 @@
 
 <section class="content-wraper">
 		  <section class="content-header clearfix">
-		       <div class="pull-left"><h2>Timesheet approval</h2></div>
-		            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » Timesheet approval</div>
+		       <div class="pull-left"><h2>Timesheets approval</h2></div>
+		            <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » Timesheets approval</div>
 		       <div class="clearfix"></div>
 		   </section>
 		    <div  id="loadTimeHead"></div>

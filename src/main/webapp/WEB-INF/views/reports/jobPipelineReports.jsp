@@ -77,7 +77,7 @@ function getJobsReportCustomDates(){
       <div class="pull-left">
         <h2>Jobs Pipeline</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Report(s) Dashboard</a>&raquo;Jobs Pipeline Report
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/reportsDashboard'/>"> Report(s) Dashboard</a>&raquo;Jobs Pipeline Reports
        </div>
     </section>
     <!-- hiring Process  -->
@@ -608,7 +608,7 @@ function getJobsPipelineAmcahrt(response){
 					{
 						"id": "Title-1",
 						"size": 15,
-						"text": "Jobs Pipline"
+						"text": "Jobs Pipeline"
 					}
 				],
 				"dataProvider": mainChar

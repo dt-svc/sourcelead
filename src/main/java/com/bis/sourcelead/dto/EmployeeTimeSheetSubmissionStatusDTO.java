@@ -44,9 +44,17 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 	
 	private boolean sunEditable;
 	
+	private boolean ticketNumberRequired;
+	
+	private boolean timesheetDocumentRequired;
+	
+	private boolean taskCommentsRequired;
+	
 	private String rejectedReason;
 	
 	private Map<String,Boolean> editableMap;
+	
+	
 
 	public Long getProjectMemberId() {
 		return projectMemberId;
@@ -64,7 +72,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.projectId = projectId;
 	}
 
-	public boolean isModifyButtonVisible() {
+	public boolean getModifyButtonVisible() {
 		return modifyButtonVisible;
 	}
 
@@ -72,7 +80,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.modifyButtonVisible = modifyButtonVisible;
 	}
 
-	public boolean isSubmitButtonVisible() {
+	public boolean getSubmitButtonVisible() {
 		return submitButtonVisible;
 	}
 
@@ -96,7 +104,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.timesheetStatus = timesheetStatus;
 	}
 
-	public boolean isReopenButtonVisible() {
+	public boolean getReopenButtonVisible() {
 		return reopenButtonVisible;
 	}
 
@@ -104,7 +112,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.reopenButtonVisible = reopenButtonVisible;
 	}
 
-	public boolean isReopenRequestSent() {
+	public boolean getReopenRequestSent() {
 		return reopenRequestSent;
 	}
 
@@ -112,7 +120,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.reopenRequestSent = reopenRequestSent;
 	}
 
-	public boolean isCancelButtonVisible() {
+	public boolean getCancelButtonVisible() {
 		return cancelButtonVisible;
 	}
 
@@ -120,7 +128,7 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 		this.cancelButtonVisible = cancelButtonVisible;
 	}
 
-	public boolean isWeekCommentVisible() {
+	public boolean getWeekCommentVisible() {
 		return weekCommentVisible;
 	}
 
@@ -198,6 +206,30 @@ public class EmployeeTimeSheetSubmissionStatusDTO implements Serializable{
 
 	public void setEditableMap(Map<String, Boolean> editableMap) {
 		this.editableMap = editableMap;
+	}
+
+	public boolean isTicketNumberRequired() {
+		return ticketNumberRequired;
+	}
+
+	public void setTicketNumberRequired(boolean ticketNumberRequired) {
+		this.ticketNumberRequired = ticketNumberRequired;
+	}
+
+	public boolean isTimesheetDocumentRequired() {
+		return timesheetDocumentRequired;
+	}
+
+	public void setTimesheetDocumentRequired(boolean timesheetDocumentRequired) {
+		this.timesheetDocumentRequired = timesheetDocumentRequired;
+	}
+
+	public boolean isTaskCommentsRequired() {
+		return taskCommentsRequired;
+	}
+
+	public void setTaskCommentsRequired(boolean taskCommentsRequired) {
+		this.taskCommentsRequired = taskCommentsRequired;
 	}
 	
 }

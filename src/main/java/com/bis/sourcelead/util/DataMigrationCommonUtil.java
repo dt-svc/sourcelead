@@ -39,10 +39,12 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.TimeSheetDayEntriesDao;
 import com.bis.sourcelead.dto.ImportTimesheetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LookUpData;
@@ -169,6 +171,9 @@ public class DataMigrationCommonUtil {
 	
 	@Autowired
 	ImmigrationCommonService immigrationCommonService;
+	
+	@Autowired
+	private CandidateDao candidateDao;
 	
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
@@ -1856,17 +1861,20 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		
 		public void dataValidationForImmigration(HashMap<String, String> errorSet, JSONObject dataMigrationDTOJsonCopy,
 				User user, OrgLocations orgLocation) throws Exception {
+			
+			    boolean orgFound = false;
+			
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("beneficiaryEmail"))) {
 				errorSet.put("beneficiaryEmail", "Beneficiary Email is missing"); // need to validate email address.
 				} else {
 				String email = dataMigrationDTOJsonCopy.getString("beneficiaryEmail").trim();
 				boolean emailVaild = isValidEmailAddress(email);
 				if (emailVaild) {
-				User userByEmail = userService.findByEmailAndOrgLocationsId(email, orgLocation.getId());
-				if (userByEmail == null) {
+				Candidate candidateByEmail = candidateDao.getAllActiveCandidatesByLocationEmail(email, orgLocation.getId());
+				if (candidateByEmail == null) {
 				errorSet.put("beneficiaryEmail", "Beneficiary Email is not found");
 				} else {
-				dataMigrationDTOJsonCopy.put("candidateId", userByEmail.getId());
+				dataMigrationDTOJsonCopy.put("candidateId", candidateByEmail.getId());
 				// System.out.println("candidateId
 				// INSIDE---->>>>>"+dataMigrationDTOJsonCopy.getString("candidateId"));
 				}
@@ -2044,7 +2052,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				errorSet.put("company", "Company is missing"); /// dropdown value.
 				} else {
 				List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
-				boolean orgFound = false;
+				
 				for (OrgRelations rel : vendorsList) {
 				if (StringUtils.isNotBlank(orgLocation.getIsLawFirm())
 				&& orgLocation.getIsLawFirm().equalsIgnoreCase("Y")) {
@@ -2072,7 +2080,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("companyContactEmail"))) {
 				errorSet.put("companyContactEmail", "Attorney/Contact email is missing"); /// dropdown value.
 
-				} else {
+				} else if(orgFound){
 				String email = dataMigrationDTOJsonCopy.getString("companyContactEmail");
 				String venodorId = dataMigrationDTOJsonCopy.getString("company");
 				boolean isSpocFound = false;

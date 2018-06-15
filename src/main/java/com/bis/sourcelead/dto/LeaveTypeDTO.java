@@ -2,6 +2,8 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import javax.persistence.Column;
+
 import com.bis.sourcelead.annotations.Required;
 
 public class LeaveTypeDTO {
@@ -74,6 +76,15 @@ public class LeaveTypeDTO {
 	private float totalNoOfDays;
 	private String createdUser;
 	private String updatedUser;
+	
+	private Float noOfDaysPerPeriod;
+	private String autoApprove;
+	private String autoApproveType;
+	private List<String> autoApproveTypeList;
+	private String timeSheetAutofill;
+	private String effectiveGender;
+	private String previousNoOfdays;
+	private String updateCount;
 	
 	
 	public String getLeaveTypeUUID()
@@ -487,6 +498,70 @@ public class LeaveTypeDTO {
 	public void setUpdatedUser(String updatedUser)
 	{
 		this.updatedUser = updatedUser;
+	}
+	public Float getNoOfDaysPerPeriod()
+	{
+		return noOfDaysPerPeriod;
+	}
+	public void setNoOfDaysPerPeriod(Float noOfDaysPerPeriod)
+	{
+		this.noOfDaysPerPeriod = noOfDaysPerPeriod;
+	}
+	public String getAutoApprove()
+	{
+		return autoApprove;
+	}
+	public void setAutoApprove(String autoApprove)
+	{
+		this.autoApprove = autoApprove;
+	}
+	public String getAutoApproveType()
+	{
+		return autoApproveType;
+	}
+	public void setAutoApproveType(String autoApproveType)
+	{
+		this.autoApproveType = autoApproveType;
+	}
+	public List<String> getAutoApproveTypeList()
+	{
+		return autoApproveTypeList;
+	}
+	public void setAutoApproveTypeList(List<String> autoApproveTypeList)
+	{
+		this.autoApproveTypeList = autoApproveTypeList;
+	}
+	public String getTimeSheetAutofill()
+	{
+		return timeSheetAutofill;
+	}
+	public void setTimeSheetAutofill(String timeSheetAutofill)
+	{
+		this.timeSheetAutofill = timeSheetAutofill;
+	}
+	public String getEffectiveGender()
+	{
+		return effectiveGender;
+	}
+	public void setEffectiveGender(String effectiveGender)
+	{
+		this.effectiveGender = effectiveGender;
+	}
+	public String getPreviousNoOfdays()
+	{
+		return previousNoOfdays;
+	}
+	public void setPreviousNoOfdays(String previousNoOfdays)
+	{
+		this.previousNoOfdays = previousNoOfdays;
+	}
+	public String getUpdateCount()
+	{
+		return updateCount;
+	}
+	public void setUpdateCount(String updateCount)
+	{
+		this.updateCount = updateCount;
 	}
 	
 }

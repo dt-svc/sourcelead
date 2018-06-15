@@ -73,6 +73,7 @@ public class Constants {
 	public static final String TASK_NON_BILLABLE = "Non-Billable";
 	public static final Integer RECORD_ACTIVE = 1;
 	public static final Integer RECORD_INACTIVE = 0;
+	public static final Integer RECORD_DRAFT = 2;
 	public static final Integer LEVEL1 = 1;
 	public static final Integer LEVEL2 = 2;
 	public static final DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
@@ -215,6 +216,7 @@ public class Constants {
 	public static final String loginUserAsAdminWithMaxHeirarchyLevelForTs = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0'))";
 	public static final String loginUserAsAdminWithMaxHeirarchyLevelForExp = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pc.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pc.id and pah.status != '0' ))";
 	public static final String loginUserAsAdminForProjects = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id)";
+	public static final String IMMIGRATION_NOTIFICATION_TO_BENEFICIARY = "notificationToImmigrationBeneficiary";
 	/** projectMember constants **/
 	public static final String MEMBER_ACTIVE = "1";
 	public static final String MEMBER_IN_ACTIVE = "0";
@@ -271,6 +273,8 @@ public class Constants {
 	
 	public static final String USERTERMINATEDEMAIL="UserTerminatedEmail";
 	public static final String USERTERMINATEDNOTIFICATIONEMAIL="UserTerminatedNotificationEmail";
+	
+	public static final String APPLY_LEAVE_REMAINDER="ApplyLeaveRemainder";
 	
 	public static final String HOLIDAY_REMAINDER="HolidayRemainder";
 	public static final String HOLIDAY_REMAINDER_NOTIFICATION="HolidayRemainderNotification";
@@ -1133,12 +1137,14 @@ public class Constants {
 	public static final String REPORT_FILTER_1_WEEK = "1_week";
 	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
-	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments"};
+	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On"};
 	
 
 	public static final String EMAIL_SUCCESS = "success";
-	
-
+	public static final String UPDATE = "UPD";
+	public static final String DELETE = "DEL";
+	public static final String NONE = "NONE";
+	public static final String ADDITION = "ADD";
 
 
 }

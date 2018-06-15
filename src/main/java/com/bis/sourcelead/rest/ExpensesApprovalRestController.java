@@ -46,6 +46,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.ExpensesApprovalService;
+import com.bis.sourcelead.service.ExpensesCategoryService;
 import com.bis.sourcelead.service.ExpensesEntriesService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -97,6 +98,9 @@ public class ExpensesApprovalRestController {
 
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
+	
+	@Autowired
+	private ExpensesCategoryService expensesCategoryService;
 	
 	/*@RequestMapping(value = "/getExpensesApprovalList")
 	public List<ExpensesApproverHierarchy> getExpensesApprovalList(HttpServletRequest request, String expenseStatus, String startDate, String endDate) throws Exception {
@@ -404,5 +408,11 @@ public class ExpensesApprovalRestController {
 		emailScenerioUtil.sendNotification(actionLink, loginUser, projectMembers.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,new HashMap<String,String>());  
    }
 	
+    @RequestMapping(value="/getExpenseAttachmentStatus")
+    public String getExpenseAttachmentStatusByCategoryId(@RequestParam(value="categoryId" ,required=true)long categoryId) {
+    	 String isAttachemtRequired = expensesCategoryService.getExpenseAttachmentStatusByCategoryId(categoryId);
+    	return isAttachemtRequired;
+    }
+    
 	
 }

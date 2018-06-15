@@ -28,10 +28,10 @@
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Users Usage Report List</h2>
+        <h2>Users Usage Reports List</h2>
       </div>
       
-  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports	Dashboard</a> &raquo; Users Usage Report List</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports	Dashboard</a> &raquo; Users Usage Reports List</div>
 
       
 <!--       <div class="pull-right brud-crum">Home &raquo; Users Usage Report List</div> -->
@@ -329,7 +329,7 @@ function prepareUsageReportList(url, userType){
         result = result + '<th>Multiple Ips</th>';
         result = result + '<th>Created On</th>';
         result = result + '<th>Last Activity On</th>';
-        result = result + '<th>Action</th>';
+//         result = result + '<th>Action</th>';
         result = result + '</tr>';
         result = result +'</thead>';
         result = result +'<tbody>';
@@ -361,7 +361,7 @@ function activePagination(url, userType){
             { "data": "noOfActivities"},
             { "data": "createdOn" },
             { "data": "lastActivityOn" },
-            { "data": "action"},
+//             { "data": "action"},
             
         ],
         "columnDefs": [ {
@@ -494,7 +494,7 @@ function activePagination(url, userType){
                       } 
                       return result;
                   }
-              }, {
+              }/* , {
                   "targets": colIndex++,
                   "data": "action",
                   "render": function ( data, type, opt, meta ) {
@@ -514,7 +514,7 @@ function activePagination(url, userType){
                       
                         return result;
                   }
-                }],
+                } */],
             "scrollCollapse": false,
             "lengthMenu": [[10, 15, 20], [10, 15, 20]],
 //             "aaSorting": [[3,'desc']],

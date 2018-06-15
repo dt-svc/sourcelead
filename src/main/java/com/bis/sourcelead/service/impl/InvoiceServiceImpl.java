@@ -516,6 +516,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		parentInvoice.setPaymentFrequency(invoice.getPaymentFrequency());
 		parentInvoice.setDiscountType(invoice.getDiscountType());
 		parentInvoice.setInvoiceStatus(Constants.INVOICE_RECEIVED);
+		parentInvoice.setInvoiceCategory(invoice.getInvoiceCategory());
 		parentInvoice.setInvoiceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		parentInvoice.setPaymentStatus(invoice.getPaymentStatus());
 		parentInvoice.setDueDate(invoice.getDueDate());
@@ -826,7 +827,13 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
 		 globalVarsMap.put("LoginUser",user.getFirstName());
-		 globalVarsMap.put("clientorVendorName",invoice.getContactUser().getFirstName());
+		 if(invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
+             globalVarsMap.put("vendorName",invoice.getContactUser().getFirstName());
+
+         }else{
+             globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
+
+         }
 		 globalVarsMap.put("totalAmouprojectMembersListnt",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
 		 globalVarsMap.put("date",invoiceDate); 
@@ -874,7 +881,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 		 
 			//send notification logic
 			EmailScenario notificationScenario = null;
-			if(invoiceType.equalsIgnoreCase("payable")){
+			if(invoiceType.equalsIgnoreCase("payables")){
 				   commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orglocations.getOrg(), orglocations, Constants.INVOICE_ACCEPT_MAIL_VENDOR_EMAIL,attachmentList);
 				   notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 			 }else{
@@ -2360,7 +2367,11 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
 		 globalVarsMap.put("invoiceID",invoice.getInvoiceId());
 		 globalVarsMap.put("LoginUser",user.getFirstName());
-		 globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
+		 if(invoice.getInvoiceType().equalsIgnoreCase(Constants.RECEIVABLE)){
+		        globalVarsMap.put("vendorName",invoice.getContactUser().getFirstName()); 
+		         }else{
+		         globalVarsMap.put("clientName",invoice.getContactUser().getFirstName());
+		         }
 		 globalVarsMap.put("grandTotal",invoice.getTotal());
 		 globalVarsMap.put("dueDate",date); 
 		 globalVarsMap.put("orgName",orgLocation.getOrgLocationName());
@@ -2405,7 +2416,7 @@ private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Work
 			 }
 			 
 			 EmailScenario notificationScenario = null;
-				if(invoiceType.equalsIgnoreCase("payable")){
+				if(invoiceType.equalsIgnoreCase("payables")){
 					commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(), orgLocation, Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL,attachmentList1);
 				    notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.INVOICE_CLIENT_PAYABLE_REMINDER_MAIL,Constants.ENTITY_TYPE_NOTIFICATION);
 				 }else{
