@@ -1,5 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -89,20 +91,20 @@ public class UserLoginLogoutSessionServiceImpl implements UserLoginLogoutSession
         for(String str : iplist){
             UsersUsageReportDTO usagedto = new UsersUsageReportDTO();
             usagedto.setIpAddress(str);
-            List<Long> ipAddressIdsList = getUsersListByIpAddress(str,usersUsageReportDTO.getOrgId());
-            usagedto.setNoOfUsers(ipAddressIdsList.size());
-            int totalActivities = 0;
-            for (Long id : ipAddressIdsList) {
+//            List<Long> ipAddressIdsList = getUsersListByIpAddress(str,usersUsageReportDTO.getOrgId());
+//            usagedto.setNoOfUsers(ipAddressIdsList.size());
+//            int totalActivities = 0;
+//            for (Long id : ipAddressIdsList) {
                 try {
-                    UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(id);
-                    totalActivities += Integer.parseInt(actionHistory.getNoOfActivities());
+//                    UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(id);
+//                    totalActivities += Integer.parseInt(actionHistory.getNoOfActivities());
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 
-            }
-            usagedto.setNoOfActivities(String.valueOf(totalActivities));
+//            }
+//            usagedto.setNoOfActivities(String.valueOf(totalActivities));
             
             
 //            UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
@@ -116,9 +118,9 @@ public class UserLoginLogoutSessionServiceImpl implements UserLoginLogoutSession
         return responseList;
     }
 
-    private List<Long> getUsersListByIpAddress(String str, List<Long> list)
+    public UserDTO getUsersListByIpAddress(String str, List<Long> list,Long orgLocationId)
     {
-        return userLoginLogoutSessionDao.getUsersListByIpAddress(str,list);
+        return userLoginLogoutSessionDao.getUsersListByIpAddress(str,list,orgLocationId);
     }
 
     @Override
@@ -150,5 +152,11 @@ public class UserLoginLogoutSessionServiceImpl implements UserLoginLogoutSession
         responseList.setData(list);
         return responseList;
     }
+
+	@Override
+	public List<UserLoginLogoutSession> getAll()
+	{
+		return userLoginLogoutSessionDao.getAll();
+	}
     
 }

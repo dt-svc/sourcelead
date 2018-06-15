@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Org;
@@ -56,6 +57,7 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String linkedUserName;
 	
 	private String linkedUserPwd;
+	private BigInteger totalNoOfUsers;
 
 
 	
@@ -467,7 +469,15 @@ public class UserDTO extends SearchDTO implements Serializable {
 	public void setLinkedUserPwd(String linkedUserPwd) {
 		this.linkedUserPwd = linkedUserPwd;
 	}
-	
-	
+
+	public BigInteger getTotalNoOfUsers()
+	{
+		return totalNoOfUsers;
+	}
+
+	public void setTotalNoOfUsers(BigInteger totalNoOfUsers)
+	{
+		this.totalNoOfUsers = totalNoOfUsers;
+	}
 
 }

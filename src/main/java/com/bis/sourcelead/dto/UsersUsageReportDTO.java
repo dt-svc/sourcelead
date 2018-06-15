@@ -46,6 +46,7 @@ public class UsersUsageReportDTO extends SearchDTO implements Serializable{
 	private Date[] freqDates;
 	private String exportType;
 	private String dates;
+	private long userId;
 	
 	public long getId()
 	{
@@ -351,6 +352,12 @@ public class UsersUsageReportDTO extends SearchDTO implements Serializable{
 	{
 		this.dates = dates;
 	}
-	
-	
+	public long getUserId()
+	{
+		return userId;
+	}
+	public void setUserId(long userId)
+	{
+		this.userId = userId;
+	}
 }

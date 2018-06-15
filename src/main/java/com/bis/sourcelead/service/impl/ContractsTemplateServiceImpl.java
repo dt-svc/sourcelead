@@ -498,7 +498,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		}
 		
 		//owners
-		if(contractsDTO.getParallelOwner() != null || (contractsDTO.getSequentialOwner1() > 0 && contractsDTO.getSequentialOwner2() > 0)){
+		if(contractsDTO.getParallelOwner() != null || (contractsDTO.getSequentialOwner1() != null && contractsDTO.getSequentialOwner2() != null)){
 			contracts.setOwnerHierarchyList(getOwnersList(contractsDTO, contracts, user));
 		}
 		
