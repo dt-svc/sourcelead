@@ -5,9 +5,11 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
+import com.bis.sourcelead.payroll.view.AssociateTaxDedContriView;
 import com.symmetry.ste.CalcMethod;
 import com.symmetry.ste.EarnedIncomeCredit;
 import com.symmetry.ste.FederalFilingStatus;
@@ -33,7 +35,7 @@ public class HelloPayrollWorldBis {
 		System.out.println("Hi");
 	}
 	
-	public STEPayrollCalculator runUSPayroll(User user, float totalHours, double amount, int payPeriod, AssociateTaxDTO associateTaxDTO, String STEhome, String jniHome)
+	public STEPayrollCalculator runUSPayroll(User user, float totalHours, double amount, int payPeriod, AssociateTaxDedContriView associateTaxDTO, String STEhome, String jniHome)
 //	public void hello(String locationCode)
 	{
 //		String STEhome = "/home/rajashekar/Desktop/Tools/ste/ste-root";
@@ -55,22 +57,23 @@ public class HelloPayrollWorldBis {
 			Money zero = Money.zero();
 			STE.setWages(FEDERAL_LOCATION_CODE, WageType.REGULAR, new Hours(40.00), new Money(5000.00), zero, zero, zero);
 			FederalFilingStatus federalFilingStatus = FederalFilingStatus.SINGLE;
-			if(associateTaxDTO != null && "MARRIED".equalsIgnoreCase(associateTaxDTO.getFederaltaxFillingStatus())){
+			if(associateTaxDTO != null && "MARRIED".equalsIgnoreCase(associateTaxDTO.getFederalTaxFilliingStatus())){
 				federalFilingStatus = FederalFilingStatus.MARRIED;
-			}else if(associateTaxDTO != null && "MARRIED_USE_SINGLE_RATE".equalsIgnoreCase(associateTaxDTO.getFederaltaxFillingStatus())){
+			}else if(associateTaxDTO != null && "MARRIED_USE_SINGLE_RATE".equalsIgnoreCase(associateTaxDTO.getFederalTaxFilliingStatus())){
 				federalFilingStatus = FederalFilingStatus.MARRIED_USE_SINGLE_RATE;
-			}else if(associateTaxDTO != null && "NONRESIDENT_ALIEN".equalsIgnoreCase(associateTaxDTO.getFederaltaxFillingStatus())){
+			}else if(associateTaxDTO != null && "NONRESIDENT_ALIEN".equalsIgnoreCase(associateTaxDTO.getFederalTaxFilliingStatus())){
 				federalFilingStatus = FederalFilingStatus.NONRESIDENT_ALIEN;
 			}
 			int numberOfAllowances = 0;
-			if(associateTaxDTO != null &&  StringUtils.isNotBlank(associateTaxDTO.getFederaltaxAllowances())){
-				numberOfAllowances = Integer.parseInt(associateTaxDTO.getFederaltaxAllowances());
+			if(associateTaxDTO != null &&  StringUtils.isNotBlank(associateTaxDTO.getFederalTaxAllowances())){
+				numberOfAllowances = Integer.parseInt(associateTaxDTO.getFederalTaxAllowances());
 			}
-			boolean federalExemt = false;
-			if(associateTaxDTO != null &&  "YES".equalsIgnoreCase(associateTaxDTO.getFederalExempt())){
-				federalExemt = true;
+			System.out.println("----------------------------------++++++++++++++++++++++++++"+associateTaxDTO.getFederalExempt());
+			boolean federalExempt = false;
+			if(associateTaxDTO.getFederalExempt() != null) {
+				federalExempt = associateTaxDTO.getFederalExempt();
 			}
-			STE.setFederalParameters(federalExemt, federalFilingStatus, numberOfAllowances, false, zero, zero, zero);
+			STE.setFederalParameters(federalExempt, federalFilingStatus, numberOfAllowances, false, zero, zero, zero);
 			STE.setFICAParameters(false, false, zero, zero, true);
 			STE.setMedicareParameters(false, zero, zero);
 			STE.setEICParameters(EarnedIncomeCredit.SINGLE, zero, false);

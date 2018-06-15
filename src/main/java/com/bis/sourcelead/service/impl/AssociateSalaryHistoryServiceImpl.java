@@ -28,9 +28,8 @@ public class AssociateSalaryHistoryServiceImpl implements AssociateSalaryHistory
 	public List<AssociateSalaryHistoryDTO> findAssociateSalHistory(Long associateSalid,OrgLocations orgLocation)
 	{
 		List<AssociateSalaryHistory> associSalHisList = associateSalaryHistoryDao.findAssociateSalHistory(associateSalid);
-		
+		List<AssociateSalaryHistoryDTO> resList = new ArrayList<>();
 		if(associSalHisList != null && associSalHisList.size() >0) {
-			List<AssociateSalaryHistoryDTO> list = new ArrayList<>();
 			associSalHisList.forEach(his->{
 				AssociateSalaryHistoryDTO prevAssHisDto = new AssociateSalaryHistoryDTO();
 				prevAssHisDto.setPayType(his.getPreviousPayType());
@@ -40,29 +39,29 @@ public class AssociateSalaryHistoryServiceImpl implements AssociateSalaryHistory
 				prevAssHisDto.setGrossSalary(his.getPreviousGrossSalary());
 				prevAssHisDto.setHourlyRate(his.getPreviousHourlyRate());
 				if(his.getEffectiveDate() !=null) {
-					prevAssHisDto.setEffectiveDate(commonUtil.getOrglocationDateFormatHHMMSS(orgLocation.getDateFormat(),his.getEffectiveDate()));	
+					prevAssHisDto.setEffectiveDate(commonUtil.getOrglocationDateFormatHHMMSS(orgLocation.getDateFormat(),his.getPreviousCreatedDate()));	
 				}
 				if(StringUtils.isNotBlank(his.getIncreasePercentage())) {
-					prevAssHisDto.setIncreasePercentage(his.getIncreasePercentage());
+					prevAssHisDto.setIncreasePercentage("");
 				}
-				list.add(prevAssHisDto);
+				resList.add(prevAssHisDto);
 				
 				AssociateSalaryHistoryDTO assHisDto = new AssociateSalaryHistoryDTO();
-				assHisDto.setPayType(his.getPreviousPayType());
-				assHisDto.setPayFrequency(his.getPreviousPayFrequency());
-				assHisDto.setStandardHours(his.getPreviousStandardHours());
-				assHisDto.setAnnualSalary(his.getPreviousAnnualSalary());
-				assHisDto.setGrossSalary(his.getPreviousGrossSalary());
-				assHisDto.setHourlyRate(his.getPreviousHourlyRate());
+				assHisDto.setPayType(his.getPayType());
+				assHisDto.setPayFrequency(his.getPayFrequency());
+				assHisDto.setStandardHours(his.getStandardHours());
+				assHisDto.setAnnualSalary(his.getAnnualSalary());
+				assHisDto.setGrossSalary(his.getGrossSalary());
+				assHisDto.setHourlyRate(his.getHourlyRate());
 				if(his.getEffectiveDate() !=null) {
 					assHisDto.setEffectiveDate(commonUtil.getOrglocationDateFormatHHMMSS(orgLocation.getDateFormat(),his.getEffectiveDate()));	
 				}
 				if(StringUtils.isNotBlank(his.getIncreasePercentage())) {
 					assHisDto.setIncreasePercentage(his.getIncreasePercentage());
 				}
-				
+				resList.add(assHisDto);
 			});
 		}
-		return null;
+		return resList;
 	}
 }

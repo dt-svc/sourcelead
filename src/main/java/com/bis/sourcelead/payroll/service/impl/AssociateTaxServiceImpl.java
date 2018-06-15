@@ -23,6 +23,7 @@ import com.bis.sourcelead.payroll.dto.AssociateDeductionDTO;
 import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
 import com.bis.sourcelead.payroll.entity.AssociateTax;
 import com.bis.sourcelead.payroll.service.AssociateTaxService;
+import com.bis.sourcelead.payroll.view.AssociateTaxDedContriView;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -261,6 +262,12 @@ public class AssociateTaxServiceImpl implements AssociateTaxService{
 		}
 		
 		return associateTaxDTO;
+	}
+
+	@Override
+	public AssociateTaxDedContriView findUserTaxDeatails(Long userId, OrgLocations orgLocation)
+	{
+		return associateTaxDao.findUserTaxDeatails(userId,orgLocation);
 	}
 
 }

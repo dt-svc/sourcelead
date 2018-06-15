@@ -5,7 +5,6 @@
  
  <script>
 function associateSalSummary(userId){  
-	alert(userId);
 	$.ajax({
            type : "GET",
            url: sourceleadUrl+"/findAssociateSalary?"+tokenParamName+"="+tokenValue+"&userId="+userId,    
@@ -14,7 +13,7 @@ function associateSalSummary(userId){
             	result = result + '<div class="clearfix mt minHeightcol5">';
             	result = result + '		<div class="col-md-3 col-md-offset-9">';
             	result = result + '	<ul class="list-inline list-unstyled pull-right mb0">';
-            	result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\');">Add New</a></li>';
+            	result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\');">Update</a></li>';
             	result = result + '		<li><a href="javascript:void(0)" class="btn btn-warning btn-block" onClick="salaryHistory(\''+json.id+'\');">History</a></li>';
             	result = result + '		<li><a href="us-associates.html" class="btn btn-default btn-block">Edit</a></li>';
             	result = result + '		</ul>';
@@ -80,7 +79,6 @@ function associateSalSummary(userId){
               for(var i=0;i<json.associatePayItemDto.length;i++){
             	  
             	  var opt = json.associatePayItemDto[i];
-            	  
             	  result = result + '<tr>';
                   result = result + '<td>';
                   result = result + '		<div class="tblminwidth-100 text-left">'+opt.payItemName+'</div>';
@@ -319,15 +317,41 @@ function salaryHistory(id) {
 		    	type: "GET",
 		        url: sourceleadUrl+"/findAssociateSalHistory?"+tokenParamName+"="+tokenValue+"&associateSalid="+id                  , 
 		        success: function(json) {
-		       /*  var output = "";
+		        var result = "";
+		        result = result + '<table>';
+		        result = result + '<thead>';
+		        result = result + '<tr>';
+		        result = result + '<th>Pay Type</th>';
+		        result = result + '<th>Pay Frequency</th>';
+		        result = result + '<th>Normal Hours</th>';
+		        result = result + '<th>Annual Salary</th>';
+		        result = result + '<th>Per Pay Salary</th>';
+		        result = result + '<th>Hourly Rate</th>';
+		        result = result + '<th>Effective</th>';
+		        result = result + '<th>% Increase</th>';
+		        result = result + '</tr>';
+		        result = result + '</thead>';
+		        result = result + '<tbody>';
 				for (var i=0; i<json.length; i++)
 				{
-					var date = json[i].replace(",", " to ");
-					output = output + "<option value='" +json[i]+ "'>"+date+"</option>";
+					var opt = json[i];
+					result = result + '<tr>';
+					result = result + '<td>'+opt.payType+'</td>';
+					result = result + '<td>'+opt.payFrequency+'</td>';
+					result = result + '<td>'+opt.standardHours+'</td>';
+					result = result + '<td>'+opt.annualSalary+'</td>';
+					result = result + '<td>'+opt.grossSalary+'</td>';
+					result = result + '<td>'+opt.hourlyRate+'</td>';
+					result = result + '<td>'+opt.effectiveDate+'</td>';
+					result = result + '<td>'+opt.increasePercentage+'%</td>';
+					result = result + '</tr>';
+             			
+             		
 				}
-				$("#payPeriod").empty();
-				$("#payPeriod").append(output);
-				$('#payPeriod').trigger("chosen:updated");  */
+				result = result + '</tbody>';
+				result = result + '</table>';
+				$("#salHistoryDiv").empty();
+				$("#salHistoryDiv").append(result);
 		        },
 		    });
 	
@@ -594,56 +618,7 @@ function calaculateIncDecPer(){
         
         <div class="clearfix col-md-12 styleTables tableStyles-textLeft">
                  <div class="row">
-                 	<table>
-                 		<thead>
-                 			<tr>
-                 				<th>Pay Group</th>
-                 				<th>Pay Type</th>
-                 				<th>Pay Frequency</th>
-                 				<th>Normal Hours</th>
-                 				<th>Annual Salary</th>
-                 				<th>Per Pay Salary</th>
-                 				<th>Hours</th>
-                 				<th>Effective</th>
-                 				<th>% Increase</th>
-                 			</tr>
-                 		</thead>
-                 		<tbody>
-                 			<tr>
-                 				<td>Monthly</td>
-                 				<td>Hourly</td>
-                 				<td>Annually</td>
-                 				<td>800</td>
-                 				<td>1200000.00</td>
-                 				<td>1k</td>
-                 				<td>100</td>
-                 				<td>01/04/2018</td>
-                 				<td>10%</td>
-                 			</tr>
-                 			<tr>
-                 				<td>Weekly</td>
-                 				<td>Salary</td>
-                 				<td>Quarterly</td>
-                 				<td>800</td>
-                 				<td>1200000.00</td>
-                 				<td>1k</td>
-                 				<td>100</td>
-                 				<td>01/04/2018</td>
-                 				<td>10%</td>
-                 			</tr>
-                 			<tr>
-                 				<td>Semi-</td>
-                 				<td>Salary</td>
-                 				<td>Quarterly</td>
-                 				<td>800</td>
-                 				<td>1200000.00</td>
-                 				<td>1k</td>
-                 				<td>100</td>
-                 				<td>01/04/2018</td>
-                 				<td>10%</td>
-                 			</tr>
-                 		</tbody>
-                 	</table>
+                 	<div id="salHistoryDiv"></div>
                  </div>
                  </div>
       </div>

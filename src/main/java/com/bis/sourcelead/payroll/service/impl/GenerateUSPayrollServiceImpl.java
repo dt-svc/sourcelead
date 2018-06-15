@@ -29,6 +29,7 @@ import com.bis.sourcelead.payroll.service.AssociateTaxService;
 import com.bis.sourcelead.payroll.service.GenerateUSPayrollService;
 import com.bis.sourcelead.payroll.symmetry.HelloPayrollWorldBis;
 import com.bis.sourcelead.payroll.symmetry.SymmetryPaypal;
+import com.bis.sourcelead.payroll.view.AssociateTaxDedContriView;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.symmetry.ste.*;
@@ -94,7 +95,8 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 				
 				User user = userService.getUserbyConsultantUserId(pm.getProjectMemberCandidteId().getConsultantUser().getId());
 				int invoiceFrequency = getProjectInvoiceFrequency(pm.getProjects().getInvoiceFrequency());
-				AssociateTaxDTO associateTaxDTO = associateTaxService.findAssociateTaxSummaryByUserId(user.getId(), orgLocation);
+//				AssociateTaxDTO associateTaxDTO = associateTaxService.findAssociateTaxSummaryByUserId(user.getId(), orgLocation);
+				AssociateTaxDedContriView associateTaxDTO = associateTaxService.findUserTaxDeatails(user.getId(), orgLocation);
 //				Projects projects = pm.getProjects().getInvoiceFrequency();
 				HelloPayrollWorldBis helloPayrollWorld = new HelloPayrollWorldBis();
 //				SymmetryPaypal client = new SymmetryPaypal();

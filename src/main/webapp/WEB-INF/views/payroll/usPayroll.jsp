@@ -96,6 +96,7 @@ $(document).ready(function(){
 <script>
 function getGroupFrequency(){
 	var groupUUID = $("#groupId").val();
+	alert(groupUUID);
 	 $.ajax({
 	    	type: "GET",
 	        url: sourceleadUrl+"/getGroupPayPeriod?"+tokenParamName+"="+tokenValue+"&groupUUID="+groupUUID                  , 

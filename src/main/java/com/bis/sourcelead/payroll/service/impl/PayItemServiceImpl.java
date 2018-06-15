@@ -175,4 +175,26 @@ public class PayItemServiceImpl implements PayItemService{
 		}
 		return resObj;
 	}
+
+	@Override
+	public ResponseList<PayItemDTO> getPayItemByLocationId(OrgLocations orgLocation)
+	{
+		ResponseList<PayItemDTO> response = new ResponseList<>();
+		List<PayItemDTO> list = new ArrayList<>();
+		ResponseList<PayItem>  res = payItemDao.getPayItemByLocationId(orgLocation);
+		if(res.getData() != null) {
+			PayItemDTO payItemDTO = new PayItemDTO();
+			res.getData().forEach(pi->{
+				payItemDTO.setId(pi.getId());
+				payItemDTO.setAllowOverTime(pi.getAllowOverTime());
+				payItemDTO.setDescription(pi.getDescription());
+				payItemDTO.setPayItemName(pi.getPayItemName());;
+				payItemDTO.setPayItemUUID(pi.getPayItemUuid());
+				payItemDTO.setPaySchedule(pi.getPaySchedule());
+				list.add(payItemDTO);
+			});
+		}
+		response.setData(list);
+		return response;
+	}
 }
