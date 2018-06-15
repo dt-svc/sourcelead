@@ -1273,7 +1273,7 @@ public class LeaveManagementRestController {
 				if (leave != null) {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
-						boolean  isApproved = leaveService.reduceLeaveCount(orgLocations,leave.getUser(),leave.getLeaveUUID(),leave.getId(),leave.getStatus(),leave.getNumberOfDays());
+						boolean  isApproved = leaveService.reduceLeaveCount(orgLocations,leave.getUser(),leave.getLeaveUUID(),leave.getLeaveType().getId(),leave.getStatus(),leave.getNumberOfDays());
 				} else {
 					response.setResponse(Result.FAILED.name());
 					response.setResponseMessage(Result.FAILED.getValue());
@@ -1897,7 +1897,7 @@ public class LeaveManagementRestController {
 
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
 			float balLeaves = 0f;
-			 float balLeaves1 = totalLeavesperYear - nuberOfLeavestaken.get("numberOfLeavsTaken") + nuberOfLeavestaken.get("numberOfExtraLeaves");
+			 float balLeaves1 = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 			 
 			 float tot = 0f;
 			 float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
@@ -1910,7 +1910,7 @@ public class LeaveManagementRestController {
 						}
 						balLeaves = tot - (appliedLeaveCount - leave.getExtraLeavesTaken());
 					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						balLeaves = totalLeavesperYear - (appliedLeaveCount - leave.getExtraLeavesTaken());
+						balLeaves = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 					}
 			 }else{
 				 if ("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())) {
@@ -1921,7 +1921,7 @@ public class LeaveManagementRestController {
 						}
 						balLeaves = tot - (leavesTaken - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						balLeaves = totalLeavesperYear - (leavesTaken - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+						balLeaves = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 					}
 			 }
 			
@@ -1961,8 +1961,8 @@ public class LeaveManagementRestController {
 			User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (user1 != null){
 			Leave leave = leaveService.getLeaveByLeaveUUId(leaveUUID);
-			leaveManagementHistory.setFromStage(leave.getStatus());
 		 if(leave !=null) {
+			 leaveManagementHistory.setFromStage(leave.getStatus());
 			 leave.setDeleteReason(reason);
 			 leave.setCancelledBy(user);
 			 leave.setStatus(Constants.LEAVE_CANCELLED);
@@ -1970,6 +1970,31 @@ public class LeaveManagementRestController {
 			 isCancelled = true;
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
+			if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+				 Calendar c = Calendar.getInstance();
+				 int year = c.get(Calendar.YEAR);
+				 int month = c.get(Calendar.MONTH);
+				 int day = 1;
+				 c.set(year, month, day);
+				 int numOfDaysInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+				 Date startDate = c.getTime();
+				 java.sql.Date currentMonthStartDate = new java.sql.Date(startDate.getTime());
+				 c.add(Calendar.DAY_OF_MONTH, numOfDaysInMonth - 1);
+				 Date endDate = c.getTime();
+				 java.sql.Date currentMonthEndDate = new java.sql.Date(endDate.getTime());
+				 List<Leave> leaveList = leaveService.getLeavesListByTypeIdAndDuration(leave.getLeaveType().getId(), leave.getOrgLocations().getId(),leave.getUser().getId(),currentMonthStartDate,currentMonthEndDate);
+				 float extraLeaves = leave.getLeaveType().getNoOfDaysPerPeriod();
+				 Leave updatingLeave = leaveList.get(leaveList.size()-1);
+				 
+				 float cancelledLeave = leave.getNumberOfDays() - leave.getExtraLeavesTaken();
+				 float updateExtraLeave = updatingLeave.getExtraLeavesTaken() - cancelledLeave;
+				 if(updateExtraLeave > 0){
+					 updatingLeave.setExtraLeavesTaken(updateExtraLeave);
+				 }else{
+					 updatingLeave.setExtraLeavesTaken(0);
+				 }
+				 leaveDao.saveLeave(updatingLeave);
+			 }
 		 }
 		 else{
 				response.setResponse(Result.INVALID_DATA.name());
