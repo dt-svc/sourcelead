@@ -51,10 +51,10 @@ $(document).ready(function() {
 									data-validation-optional="true"
 									data-placeholder="Select Notice Period">
 									<option value="Immediately Available">Immediately Available</option>
-									<option value="15 Days">15-Days</option>
-									<option value="1 Month">1-Month</option>
-									<option value="2 Months">2-Month</option>
-									<option value="3 Months">3-Month</option>
+									<option value="15 Days">15 Days</option>
+									<option value="1 Month">1 Month</option>
+									<option value="2 Months">2 Months</option>
+									<option value="3 Months">3 Months</option>
 								</select>
 							</div>
 						  </div>

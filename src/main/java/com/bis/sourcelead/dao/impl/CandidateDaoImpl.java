@@ -43,6 +43,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 
 /**
  * 
@@ -87,6 +88,9 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Value("${jdbc.schema}")
 	private String schema;
+	
+	@Autowired
+	private ReportsUtil reportsUtil;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1720,7 +1724,90 @@ public class CandidateDaoImpl implements CandidateDao {
 					 
 				}
 				
+				if(StringUtils.isNotBlank(candidateDTO.getPrimarySkill())) {
+					String primarySkills [] = candidateDTO.getPrimarySkill().split(",");
+					String primarySkillsStr = "'" + StringUtils.join(primarySkills,"','") + "'";
+					advSeach.append(" Q1.primarySkill IN ("+primarySkillsStr+") ");
+					flag = true;
+				}
 				
+				if(StringUtils.isNotBlank(candidateDTO.getDesignationType())) {
+					String designationTypes [] = candidateDTO.getDesignationType().split(",");
+					String designationTypesStr = "'" + StringUtils.join(designationTypes,"','") + "'";
+					if(flag == false) {
+						advSeach.append(" Q1.employementType IN ("+designationTypesStr+") ");
+						flag = true;
+					}else {
+						advSeach.append(" OR Q1.employementType IN ("+designationTypesStr+") ");
+					}
+					
+				}
+				
+				if(candidateDTO.getNoticePeriod() != null && !candidateDTO.getNoticePeriod().isEmpty()) {
+					String noticePeriod [] = candidateDTO.getNoticePeriod().split(",");
+					String noticePeriodStr = "'" + StringUtils.join(noticePeriod,"','") + "'";
+					if(flag == false) {
+						advSeach.append(" Q1.noticePeriod IN ("+noticePeriodStr+") ");
+						flag = true;
+					}else {
+						advSeach.append(" OR Q1.noticePeriod IN ("+noticePeriodStr+") ");
+					}
+					
+				}
+				
+				if(StringUtils.isNotBlank(candidateDTO.getVendor())) {
+					String orgRelationIds [] = candidateDTO.getVendor().split(",");
+					String orgRelationIdStr = "'" + StringUtils.join(orgRelationIds,"','") + "'";
+					if(flag == false) {
+						advSeach.append(" Q1.orgRelationId IN ("+orgRelationIdStr+") ");
+						flag = true;
+					}else {
+						advSeach.append(" OR Q1.orgRelationId IN ("+orgRelationIdStr+") ");
+					}
+					
+				}
+				
+				
+				if(StringUtils.isNotBlank(candidateDTO.getCreatedDate()) && !candidateDTO.getCreatedDate().equalsIgnoreCase("All")) {
+					Date[] searchDates  = reportsUtil.getJobFilterDate(candidateDTO.getCreatedDate(),orgLocations);
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					String fromDate = sdf.format(searchDates[0]);
+					String toDate = sdf.format(searchDates[1]);
+					
+					if(flag == false) {
+						advSeach.append(" (Q1.createdDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
+						flag = true;
+					}else {
+						advSeach.append(" OR (Q1.createdDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
+					}
+					
+				 }
+				
+				
+				if(StringUtils.isNotBlank(candidateDTO.getCandidateSkills())) {
+					String skills [] = candidateDTO.getCandidateSkills().split(",");
+					String skillsStr = "'" + StringUtils.join(skills,"','") + "'";
+					if(flag == false) {
+						advSeach.append(" Q1.skills IN ("+skillsStr+") ");
+						flag = true;
+					}else {
+						advSeach.append(" OR Q1.skills IN ("+skillsStr+") ");
+					}
+					
+				}
+				
+				
+				if(StringUtils.isNotBlank(candidateDTO.getCity())) {
+					String cities [] = candidateDTO.getCity().split(",");
+					String citiesStr = "'" + StringUtils.join(cities,"','") + "'";
+					if(flag == false) {
+						advSeach.append(" Q1.city IN ("+citiesStr+") ");
+						flag = true;
+					}else {
+						advSeach.append(" OR Q1.city IN ("+citiesStr+") ");
+					}
+					
+				}
 				
 				
 				String sortingQry = "";
@@ -1731,6 +1818,12 @@ public class CandidateDaoImpl implements CandidateDao {
 				
 				if(query1.toString() != null && !query1.toString().isEmpty()){
 					querySeachStr = "where "+"("+query1.toString()+")";
+				}
+				
+				if((query1.toString() == null || query1.toString().isEmpty()) && advSeach.toString() != null && !advSeach.toString().isEmpty()){
+					advSeachStr = "where "+"("+advSeach.toString()+")";
+				}else if(query1.toString() != null && !query1.toString().isEmpty() && advSeach.toString() != null && !advSeach.toString().isEmpty()){
+					advSeachStr = "and "+"("+advSeach.toString()+")";
 				}
 				
 				try { 
@@ -1746,6 +1839,7 @@ public class CandidateDaoImpl implements CandidateDao {
 					 		 "CAND.SKILLS_NAME AS skills, " + 
 					 		 "CAND.ADDRESS AS location, " + 
 					 		 "CAND.COUNTRY AS country, " + 
+					 		 "CAND.CITY AS city, " + 
 					 		 "CAND.NOTICE_PERIOD AS noticePeriod, " + 
 					 		 "CAND.IS_ASSOCIATE AS isAssociate, " + 
 					 		 "DATE_FORMAT(CAND.CREATED_DATE ,\"%Y-%m-%d\") AS createdDate, " + 

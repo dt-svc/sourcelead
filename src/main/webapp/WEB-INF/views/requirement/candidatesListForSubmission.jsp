@@ -4,6 +4,193 @@
 <script src="/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
+<style>
+.refresh-icon {
+ top: 16px !important;
+}
+.mt2 {
+    margin-top: 4px !important;
+}
+</style>
+
+<script>
+$(document).ready(function() {
+	getcites('apiLocation','city','recommendation');
+});
+</script>
+<div class="advancedsearch-mask"></div>
+<div class="cand-advsrch-popup advancedsearch-popup" id="candidateFilterPopup">
+				<h5 class="headerAdsrch">Advanced Search
+					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+						<div class="clearfix">
+							<div class="col-md-4">
+								<label>Primary Skill</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Primary Skill" id="primarySkill" name="primarySkill">
+									</select>
+								</div>
+							</div>
+							
+						 <div class="col-md-4">
+						    <label>Employment Type</label>
+						     <div class="clearfix">
+						             <select class="chosen-select form-control" id="designationType" name="designationType">
+						                <option value="">--Select--</option>
+						                 <option>C2C</option>
+						                 <option>W-2</option>
+						                 <option>C2H</option>
+						                 <option>Part Time</option>
+						                 <option>Full Time</option>
+						                 <option>Other</option>
+						             </select>
+						    </div>
+						  </div>
+							
+							<div class="col-md-4">
+							<label>Notice Period</label>
+							<div class="clearfix">
+								<select multiple class="chosen-select form-control"
+									id="noticePeriod" name="noticePeriod"
+									data-validation-optional="true"
+									data-placeholder="Select Notice Period">
+									<option value="Immediately Available">Immediately Available</option>
+									<option value="15 Days">15 Days</option>
+									<option value="1 Month">1 Month</option>
+									<option value="2 Months">2 Months</option>
+									<option value="3 Months">3 Months</option>
+								</select>
+							</div>
+						  </div>
+						  
+						  <div class="col-md-4">
+								<label>Vendor</label>
+								<div class="clearfix">
+									<select class="chosen-select" id="vendor" name="vendor"
+										data-placeholder="Select Vendor" multiple>
+										<c:forEach var="report" items="${add_VendorList}">
+											<c:if test="${report.locationId.id == loginOrgLocId}">
+												<option value="${report.id}">${report.responderLocationId.org.orgName}</option>
+											</c:if>
+											<c:if
+												test="${report.responderLocationId.id == loginOrgLocId}">
+												<option value="${report.id}">${report.locationId.org.orgName}</option>
+											</c:if>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+							
+						<div class="col-md-4">
+								<label>Created On</label>
+								<div class="clearfix">
+									<select class="chosen-select" id=createdDate name="createdDate"
+										data-placeholder="Posted On">
+										<option>All</option>
+										<option value="today">Today</option>
+										<option value="yesterday">1 Day Ago</option>
+										<option value="1_week">1 Week Ago</option>
+										<option value="Last_15_days">2 Weeks Ago</option>
+										<option value="1_month">1 Month Ago</option>
+										<option value="3_months">3 Months Ago</option>
+									</select>
+								</div>
+							</div>
+						
+						<div class="col-md-4">
+							<label>Skills</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="candidateSkills" name="candidateSkills">
+								<c:forEach var="skill" items="${skillsList}">
+								<option value="${skill.name}">${skill.name}</option>
+								</c:forEach>
+								</select>
+							 </div>
+						</div>
+						  <div class="clearfix"></div>
+						  <div class="col-md-4">
+								<label>Choose City</label>
+								<div class="clearfix">
+								<div class="col-md-14">
+							      <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">
+								  <i class="fa fa-refresh btn btn-primary refresh-icon mr ref-top" title="Refresh" onClick="refreshGoogleApiCity('apiLocation');"></i>
+								 </div>
+								</div>
+							</div>
+							
+							<div class="col-md-8">
+								<label>Selected Cities</label>
+								<div class="clearfix">
+								   <select class="chosen-select form-control input-sm" multiple
+										data-placeholder="sletected cites" id="city" name="city">
+									</select>
+								</div>
+							</div>
+							
+						</div>
+					  </div>
+				  </div>
+				  
+				  <div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Search" id="search_requiremet"
+								onclick="getCandidatesTableList();closePop();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="clearCandAdvSearch();closePop();getCandidatesTableList();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+					
+			</div>
+	
+	
+<script>
+  $(function() { 
+	       //Adding Customized Job Title list this method is slead-common.js
+		   tagIt("primarySkill", 'Press Enter-Key Or Comma(,) Or Tab To Add Title:', 'tagItBykeyForSkills','skills','Job Title');
+	       
+		 //Adding Customized Job Skills list this method is slead-common.js
+		   tagIt("candidateSkills", 'Press Enter-Key Or Comma(,) Or Space To Add New Skills:', 'tagItBykeyForSkills','skills','Skills');
+
+		   tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+
+		   
+  });
+  </script>
+  
+  <script>
+  
+function closePop(){
+	 $("div.cand-advsrch-popup").hide();
+	 $(".advancedsearch-mask").fadeOut();
+}
+	
+function clearCandAdvSearch(){
+	$("#candDataTableSearch").val('');
+	$('#primarySkill').val('').trigger('chosen:updated');
+	$('#designationType').val('').trigger('chosen:updated');
+	$('#vendor').val('').trigger('chosen:updated');
+	$('#candidateSkills').val('').trigger('chosen:updated');
+	$('#noticePeriod').val('').trigger('chosen:updated');
+	$('#createdDate').val('').trigger('chosen:updated');
+	$('#city').val('').trigger('chosen:updated');
+	refreshGoogleApiCity('apiLocation');
+}
+</script>
+  
+  		
+			
+<script>
+	function candidateAdvSearch(){
+	     $("#candidateFilterPopup").toggle();
+		 $(".advancedsearch-mask").fadeIn();
+ 
+	}
+</script>
+			
 <script>
 function submitCandidatesToJob(){
 	    shareCandidates = {};
@@ -17,7 +204,7 @@ function submitCandidatesToJob(){
 		result = result + '<div id="candidatesChoicepopUp"></div>';
 		result = result + '<div id="candidatesListLoading"></div>';
 	    result = result +" <div class='mr pull-left'>";
-		result = result +" <button type='button' onclick='jobAdvSearch()' class='btn btn-primary btn-sm'>Advanced Search&nbsp;&nbsp;<i class='fa fa-search'></i></button>";
+		result = result +" <button type='button' onclick='candidateAdvSearch()' class='btn btn-primary btn-sm'>Advanced Search&nbsp;&nbsp;<i class='fa fa-search'></i></button>";
 		result = result +" <button type='button' onclick='clearCandAdvSearch();getCandidatesTableList()' class='btn btn-primary btn-sm' title='Refresh'><i class='fa fa-refresh'></i></button>";
 		result = result +"</div>"; 
 		result = result +" <div class='pull-right'>";
@@ -33,7 +220,7 @@ function submitCandidatesToJob(){
 	 	result = result + '<table id="candListTable" class="display mt10" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
-		result = result +'<th class="text-center"><input type="checkbox" id="sharedcheckbox" onclick="toggleShareCandidates(this);"/></th>'; 
+		result = result +'  <th class="text-center"><input type="checkbox" id="sharedcheckbox" onclick="toggleShareCandidates(this);"/></th>'; 
 		result = result +'	<th>Candidate Name</th>';
 		result = result +'	<th>Email</th>';
 		result = result +'	<th>Primary Skill</th>';
@@ -101,10 +288,47 @@ function checkShareCandidates(elem) {
 
 <script>
 function getCandidatesTableList(){
+	
+	
+	 var primarySkill = "";
+	 var designationType = "";
+	 var noticePeriod = "";
+	 var vendor = "";
+	 var createdDate = "";
+	 var candidateSkills = "";
+	 var city = "";
+	 
+	 if($("#primarySkill").val() != null && $("#primarySkill").val() != 'undefined'){
+		 primarySkill = $("#primarySkill").val();
+	 }
+	
+	 if($("#designationType").val() != null && $("#designationType").val() != 'undefined'){
+		 var designationType = $("#designationType").val();
+	 }
+	
+	 if($("#noticePeriod").val() != null && $("#noticePeriod").val() != 'undefined'){
+		 var noticePeriod = $("#noticePeriod").val();
+	 }
+	
+	 if($("#vendor").val() != null && $("#vendor").val() != 'undefined'){
+		 var vendor = $("#vendor").val();
+	 }
+	
+	 if($("#createdDate").val() != null && $("#createdDate").val() != 'undefined'){
+		 var createdDate = $("#createdDate").val();
+	 }
+	
+	 if($("#candidateSkills").val() != null && $("#candidateSkills").val() != 'undefined'){
+		 var candidateSkills = $("#candidateSkills").val();
+	 }
+	
+	 if($("#city").val() != null && $("#city").val() != 'undefined'){
+		 var city = $("#city").val();
+	 }
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#candDataTableSearch").val();
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getCandidatesListForJobBulkSubmission?searchValue="+searchValue;
+	 var url = sourceleadUrl+"/getCandidatesListForJobBulkSubmission?searchValue="+searchValue+"&primarySkill="+primarySkill+"&designationType="+designationType+"&noticePeriod="+noticePeriod+"&vendor="+vendor+"&createdDate="+createdDate+"&candidateSkills="+candidateSkills+"&city="+city;
 	 candidatesListPagination(url,sourceleadUrl);
 }
 </script>
@@ -149,9 +373,14 @@ function candidatesListPagination(url,sourceleadUrl){
    	        		 }
 	        		 if(!shareflag)
    	        			$("#sharedcheckbox").removeAttr('checked');
-   	        		 
-	        			result = result +'  <td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+opt.id+'" data-id="'+opt.id+'" value="'+opt.id+'" onchange="checkShareCandidates(this)"/></td>';
-    	  		 return result; 
+	        		   result = result +"<div class='tblminwidth-30 pull-left'>";
+	        			result = result +'<div class="pull-left mt3"><td><input'+(shareflag ? " checked='checked'" : "")+' class="contactscheckbox" name="sharedcheckbox"  type="checkbox" id="'+opt.id+'" data-id="'+opt.id+'" value="'+opt.id+'" onchange="checkShareCandidates(this)"/></td></div>';
+    	  		
+	        			if(opt.isAssociate == 'Y'){
+			            	  result = result +"<i class='fa fa-black-tie pull-right mt2' title='Added as Associate'></i> ";  
+			             }
+	        			 result = result +"</div>";
+	        			return result; 
 	    	  	}
 	      },{
 		    	  "targets": colIndex++,
@@ -325,7 +554,7 @@ function okPopUp(){
 
 function cancelPopUp(){
 	$("#candidatesChoicepopUp").empty();
-	//clearCandAdvSearch();
+	clearCandAdvSearch();
 	$('.action-pop').slideUp();
 	$(".submission_side_wrap").removeClass("submission_side_wrap_active");
 	$(".side_mask").fadeOut(200);

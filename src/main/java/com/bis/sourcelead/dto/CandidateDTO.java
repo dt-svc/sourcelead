@@ -81,6 +81,8 @@ public class CandidateDTO extends SearchDTO{
 	private String experienceMonths;
 
 	private String noticePeriod;
+	
+	private String vendor;
 
 	private String designation;
 
@@ -1116,6 +1118,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setCandId(BigInteger candId) {
 		this.candId = candId;
+	}
+
+	public String getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
 	}
 
 	
