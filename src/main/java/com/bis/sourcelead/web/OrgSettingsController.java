@@ -410,12 +410,12 @@ public class OrgSettingsController {
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/enrollRoleActions")
-	public ModelAndView enrollRoleActions(HttpServletRequest request, @RequestParam(value = "roleId", required = false) Long roleId) throws Exception
+	public ModelAndView enrollRoleActions(HttpServletRequest request, @RequestParam(value = "uuid", required = false) String uuid) throws Exception
 	{
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		Roles roles = rolesService.getRolesByIdAndOrgLocationId(roleId, orgLocations.getId());
+		Roles roles = rolesService.getRolesByUUIDAndOrgLocationId(uuid, orgLocations.getId());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		if (null != roles) {
 			List<SourceleadActions> actionsList = sourceleadActionsService.getAllSourceleadActionsForEnrollByOrgLocationIdAndOrgId(orgLocations,org);
@@ -439,7 +439,7 @@ public class OrgSettingsController {
 			else {
 				model.addObject("actionsList", actionsList);
 			}
-			model.addObject("roleId", roleId);
+			model.addObject("uuid", uuid);
 			model.addObject("roleDisplayName", roles.getDisplayName());
 			model.addObject("roleName", roles.getRoleName());
 			model.setViewName("enrollRoleActions");

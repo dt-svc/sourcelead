@@ -117,7 +117,7 @@
 
             <div  id="selectFieldDiv" style="display: none">
 				<div class="col-sm-12 noPad mt clearfix">
-					   <div class="col-md-3 noPad labHeight"><p>Options</p></div>
+					   <div class="col-md-3 noPad labHeight"><p>Options <span class="text-danger paddingLeft">*</span></p></div>
 						<c:if test="${not empty customFormPopDetails.optionData}">
 							<div class="col-md-6">
 							<c:forEach var="options" items="${customFormPopDetails.optionData}" varStatus="optionStatus">

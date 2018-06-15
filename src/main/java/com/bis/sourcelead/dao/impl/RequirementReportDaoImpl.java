@@ -1,14 +1,12 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.persistence.TemporalType;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -18,13 +16,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementReportDao;
-import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 
 @Repository
@@ -36,56 +32,92 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate,Date startDateUTC, Date endDateUTC) {
+	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String filterDate,Date startDateUTC, Date endDateUTC,String status) {
 		 
 		Session session = this.sessionFactory.getCurrentSession();
 		Map<String, Object> params = new HashMap<String,Object>();
+		List<Requirement> mainList = null;
+		String filterQuery = "";
 		String dateSubQuery = "";
-		if(null != startDateUTC && null != endDateUTC){
-			 dateSubQuery = " and requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC";
+		String[] reqStatus = null;
+		if(null != status && !"".equals(status)){	
+			reqStatus = status.split(",");
+		}
+	    List<String> list = new ArrayList<String>();
+	    if(reqStatus != null){
+	    	for(int i=0; i < reqStatus.length; i++){
+		    	if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.NEW.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.NEW.toString());
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.DRAFT.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.DRAFT.toString());
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.SUBMITTED.toString());
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.OPEN.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.OPEN.toString());
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.ONHOLD.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.ONHOLD.toString());
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.CANCEL.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.CANCEL.toString());
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.FILLEDCLOSED.toString());
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.UNFILLEDCLOSED.toString());
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.REJECTED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.REJECTED.toString());
+		    	}else if(reqStatus[i].equals(REQUIREMENT_SUBMISSION_STATUS.CLOSED.toString())){
+		    		list.add(REQUIREMENT_SUBMISSION_STATUS.CLOSED.toString());
+		    	}
+		    }
+	    }
+		
+	    if(null != startDateUTC && null != endDateUTC){
+			 dateSubQuery = " AND REQ.CREATED_DATE >= :startDateUTC AND REQ.CREATED_DATE <= :endDateUTC";
 			params.put("startDateUTC",startDateUTC);
 			params.put("endDateUTC",endDateUTC);
 		}
-		
-		
-		String from = "from Requirement requirement  left join fetch requirement.parentRequirement  left join fetch requirement.clientId left join fetch requirement.spocId left join fetch requirement.submissionTemplateId left join fetch requirement.clientSubmissionTemplateId left join fetch requirement.parentRequirement"; 
+	    
+	    if(!list.isEmpty() && null != list){
+	    	filterQuery = " AND REQ.REQUIREMENT_SUBMISSION_STATUS IN (:statusList)";
+	    	params.put("statusList",list);
+	    }
+		String from = "SELECT REQ.* FROM REQUIREMENT REQ LEFT JOIN ORG_RELATIONS ORGL ON ORGL.ID = REQ.ORG_RELATION_ID"; 
 		String subQuery = "";
 		
 		if(userRoleName != null && "ROLE_ADMIN".equalsIgnoreCase(userRoleName) || "ROLE_SOURCELEAD_ADMIN".equalsIgnoreCase(userRoleName)){
-			subQuery = " where requirement.orgLocationId.id =:orgLocationId and (requirement.isTemplate IS NULL OR requirement.isTemplate <> 'Y') ";
+			subQuery = " WHERE REQ.ORG_LOCATION_ID = :orgLocationId AND (REQ.IS_Template IS NULL OR REQ.IS_Template <> 'Y')";
 			params.put("orgLocationId",orgLocation.getId());
 		}else{
-			String subQuery1 = "requirement.createdBy =:loginUserCode and (requirement.isTemplate IS NULL OR requirement.isTemplate <> 'Y') ";
+			String subQuery1 = "REQ.CREATED_BY = :loginUserCode AND (REQ.IS_Template IS NULL OR REQ.IS_Template <> 'Y')";
 			params.put("loginUserCode",user.getUserCode());
 			
-			String subQuery2 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:userId and rah.level = :level and  requirement.requirementSubmissionStatus <> 'DRAFT'  ) or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) ) ";
+			String subQuery2 = "REQ.ID IN ( SELECT RAH.REQUIREMENT_ID FROM REQUIREMENT_APPROVER_HIERARCHY RAH WHERE RAH.APPROVER_USER_ID = :userId AND RAH.LEVEL = :level AND REQ.REQUIREMENT_SUBMISSION_STATUS <> 'DRAFT'  ) OR (REQ.ID IN ( SELECT RAT.REQUIREMENT_ID FROM REQUIREMENT_ASSIGN_TO RAT WHERE RAT.ASSIGN_USER_ID = :userId) AND ( REQ.REQUIREMENT_SUBMISSION_STATUS = 'APPROVED' OR REQ.REQUIREMENT_SUBMISSION_STATUS = 'OPEN' ))";
 			params.put("userId",user.getId());
 			params.put("level",1);
 			
-			String subQuery3 = "requirement.id IN ( select rah.requirementId from RequirementApproverHierarchy rah where rah.approverUserId.id =:approverUserId and rah.level = :level2  and  requirement.requirementSubmissionStatus <> 'DRAFT' and ( requirement.id IN (select rah1.requirementId from RequirementApproverHierarchy rah1 where rah1.level =:level1 and rah1.requirementApproverStatus = 'APPROVED'))  or (requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)   and ( requirement.requirementSubmissionStatus = 'APPROVED' or requirement.requirementSubmissionStatus = 'OPEN' ) )  )";
+			String subQuery3 = "REQ.ID IN ( SELECT RAH2.REQUIREMENT_ID FROM REQUIREMENT_APPROVER_HIERARCHY RAH2 WHERE RAH2.APPROVER_USER_ID = :approverUserId AND RAH2.LEVEL = :level2  AND  REQ.REQUIREMENT_SUBMISSION_STATUS <> 'DRAFT' AND ( REQ.ID IN (SELECT RAH1.REQUIREMENT_ID FROM REQUIREMENT_APPROVER_HIERARCHY RAH1 WHERE RAH1.LEVEL = :level1 AND RAH1.STATUS = 'APPROVED'))  OR (REQ.ID IN ( SELECT RAT1.REQUIREMENT_ID FROM REQUIREMENT_ASSIGN_TO RAT1 WHERE RAT1.ASSIGN_USER_ID = :approverUserId) AND (REQ.REQUIREMENT_SUBMISSION_STATUS = 'APPROVED' OR REQ.REQUIREMENT_SUBMISSION_STATUS = 'OPEN' )))";
 			params.put("approverUserId",user.getId());
 			params.put("level1",1);
 			params.put("level2",2);
 			
-			String subQuery4 = "requirement.managerUserId.id = :managerUserId and requirement.requirementSubmissionStatus <> 'DRAFT'";
+			String subQuery4 = "REQ.MANAGER_USER_ID = :managerUserId AND REQ.REQUIREMENT_SUBMISSION_STATUS <> 'DRAFT'";
 			params.put("managerUserId",user.getId());
 			
-			String subQuery5 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.teamId.id IN ( select rah.id from Team rah where rah.ownerUserId.id =:userId)) and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
+			String subQuery5 = "REQ.ID IN ( SELECT RAT2.REQUIREMENT_ID FROM REQUIREMENT_ASSIGN_TO RAT2 WHERE RAT2.TEAM_ID IN ( SELECT TM.ID FROM TEAM TM WHERE TM.OWNER_USER_ID = :userId)) AND REQ.REQUIREMENT_SUBMISSION_STATUS <> 'DRAFT' AND REQ.REQUIREMENT_SUBMISSION_STATUS <> 'SUBMITTED'";
 			params.put("userId",user.getId());
 			
-			String subQuery6 = "requirement.id IN ( select rah.requirementId from RequirementAssignTo rah where rah.assignUserId.id =:userId)  and requirement.requirementSubmissionStatus <> 'DRAFT' and requirement.requirementSubmissionStatus <> 'SUBMITTED'  ";
+			String subQuery6 = "REQ.ID IN ( SELECT RAT3.REQUIREMENT_ID from REQUIREMENT_ASSIGN_TO RAT3 WHERE RAT3.ASSIGN_USER_ID = :userId) AND REQ.REQUIREMENT_SUBMISSION_STATUS <> 'DRAFT' and REQ.REQUIREMENT_SUBMISSION_STATUS <> 'SUBMITTED'";
 			params.put("userId",user.getId());
 			
 			if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" || subQuery4 != "" || subQuery5 != "" || subQuery6 != "" ){
-				subQuery = "where requirement.orgLocationId.id =:orgLocationId and ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery3+")  OR ("+subQuery4+") OR ("+subQuery5+") OR ("+subQuery6+") )";
+				subQuery = "WHERE REQ.ORG_LOCATION_ID =:orgLocationId AND ( ("+subQuery1+") OR ("+subQuery2+") OR ("+subQuery3+") OR ("+subQuery4+") OR ("+subQuery5+") OR ("+subQuery6+") )";
 				params.put("orgLocationId",orgLocation.getId());
 			}
+			
 		}
+		String whereCondition = subQuery +dateSubQuery+filterQuery;
+		String listQuery = from+" "+whereCondition+" ORDER BY REQ.ID DESC";
 		
-		
-		String whereCondition = subQuery +dateSubQuery;
-		
-		Query query = session.createQuery(from+" "+whereCondition+" ORDER BY requirement.id DESC");
+		Query query = session.createSQLQuery(listQuery).addEntity(Requirement.class);
 		for (String str : query.getNamedParameters())
 		{
 			if (str.equalsIgnoreCase("orgLocationId")) {
@@ -103,7 +135,9 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 			} else if (str.equalsIgnoreCase("level2")) {
 				query.setInteger(str, 2);
 			} else if (str.equalsIgnoreCase("loginUserCode")) {
-				query.setString(str, user.getUserCode());
+				query.setLong(str, user.getId());
+			}else if (str.equalsIgnoreCase("statusList")) {
+				query.setParameterList(str, list);
 			}else if (str.equalsIgnoreCase("startDateUTC")) {
 				query.setDate(str,startDateUTC);
 			}else if (str.equalsIgnoreCase("endDateUTC")) {
@@ -111,8 +145,8 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 			}
 
 		}
-		
-		return query.list();
+		mainList = query.list();
+		return mainList;
 	}
 
 	
@@ -163,21 +197,6 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 	List<RequirementSubmissionHistory> rshList = session.createQuery(query).setLong("orgLocationsId",orgLocationId).list();
 	return rshList;
 	}
-
-
-	@Override
-	@Transactional(rollbackFor = { Exception.class })
-	public Integer getRequirementStagesCountsForReports(Long orgLocId, String requirementStatus) {
-		int totalCount = 0;
-		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Requirement req where req.orgLocationId =:orgLocId and req.requirementSubmissionStatus =:requirementStatus";
-		List<Requirement> reqList = session.createQuery(query).setLong("orgLocId",orgLocId).setString("requirementStatus", requirementStatus).list();
-		if(!reqList.isEmpty() && reqList.size() > 0){
-			totalCount = reqList.size();
-		}
-		return totalCount;
-	}
-
 
 	@SuppressWarnings({ "unchecked", "null" })
 	@Override

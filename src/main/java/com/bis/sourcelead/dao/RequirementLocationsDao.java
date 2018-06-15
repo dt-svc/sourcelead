@@ -15,4 +15,6 @@ public interface RequirementLocationsDao {
 	RequirementLocations getRequirementLocationsByLocationUUID(String locationUUID) throws Exception;
 	
 	void deleteRequirementLocations(RequirementLocations requirementLocations) throws Exception;
+
+	List<Object[]> getRequirementLocationsListByRequirementIdMap(List<Long> reqIdsList) throws Exception;
 }

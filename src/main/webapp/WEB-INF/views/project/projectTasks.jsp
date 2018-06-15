@@ -186,8 +186,10 @@ function prepareTasksList(url){
 	var status =  $("#projectStatus").val();
 	var result = "";
 	result = result	+ '<input type="hidden" id="projectStatus" value="'+status+'">';
-    result = result	+ '<div class="remove_search">';
+    result = result	+ '<div class="dynamic_search dynamic_search-new">';
     result = result +" <input type='text' placeholder='Search' id='taskDataTableSearch'/>";
+ 	result = result +"  <span class='cursorPointer' title='Search'><i class='fa fa-search' onclick='projectTaskList();'></i></span>";     
+
 	result = result	+ '</div><div class="project_tabs_inn_table project_tabs_inn_table_a">';
 	result = result	+ '<div id="tasksLoadingImg"></div>';
 	result = result + '<table id="projectTaskPagination" class="display" cellspacing="0" width="100%">';

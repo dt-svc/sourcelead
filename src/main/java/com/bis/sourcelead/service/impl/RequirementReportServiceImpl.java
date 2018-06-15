@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -44,7 +47,6 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class RequirementReportServiceImpl implements RequirementReportService {
@@ -74,80 +76,76 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	private RequirementLocationsService requirementLocationsService;
 	
 	@Override
-	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user, String reportType, String customStartDate, String customEndDate) throws Exception
+	public List<Requirement> getRequirementReports(String userRoleName, OrgLocations orgLocation, User user,String reportType, String customStartDate, String customEndDate,String status) throws Exception
 	{
 		//SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
-		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-		DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
-		DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
-		DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date endDateUTC = null;
-		String filterDate = null;
-		Date startDateUTC = null;
-		if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
-			String endDate = outputFormatter1.print(zoned);
-			endDateUTC = TZ_DF_TS.parse(endDate);
-		}
-		if (null != reportType && !"".equals(reportType)) {
-			if (Constants.TO_DAY.equals(reportType)) {
-				String startDate = outputFormatter.print(zoned);
-				filterDate = startDate;
-				startDateUTC = TZ_DF_TS.parse(startDate);
-			}
-			else if (Constants.YESTER_DAY.equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(1);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-			}
-			else if (Constants.ONE_WEEK.equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(7);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-			}
-			else if (Constants.TWO_WEEKS.equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(14);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-			}
-			else if (Constants.ONE_MONTH.equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(30);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-			}
-			else if (Constants.TWO_MONTHS.equals(reportType)) {
-				DateTime yesterDayZoned = zoned.minusDays(60);
-				String yesterDayDate = outputFormatter.print(yesterDayZoned);
-				startDateUTC = TZ_DF_TS.parse(yesterDayDate);
-			}
-			else {
-				if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
-					
-					DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
-					DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
-					Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
-					Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
-					String customStartTimeStr = TZ_DF_CSD.format(startTime);  
-					String customEndTimeStr = TZ_DF_CED.format(endTime);  
-					startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
-					endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+				Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+				DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+				DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
+				DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
+				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date endDateUTC = null;
+				String filterDate = null;
+				Date startDateUTC = null;
+				if (!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)) {
+					String endDate = outputFormatter1.print(zoned);
+					endDateUTC = TZ_DF_TS.parse(endDate);
 				}
-			}
-		}
-		List<Requirement> requirementList = requirementReportDao.getRequirementReports(userRoleName, orgLocation, user, filterDate, startDateUTC, endDateUTC);
+				if (null != reportType && !"".equals(reportType)) {
+					if (Constants.TO_DAY.equals(reportType)) {
+						String startDate = outputFormatter.print(zoned);
+						filterDate = startDate;
+						startDateUTC = TZ_DF_TS.parse(startDate);
+					}
+					else if (Constants.YESTER_DAY.equals(reportType)) {
+						DateTime yesterDayZoned = zoned.minusDays(1);
+						String yesterDayDate = outputFormatter.print(yesterDayZoned);
+						startDateUTC = TZ_DF_TS.parse(yesterDayDate);
+					}
+					else if (Constants.ONE_WEEK.equals(reportType)) {
+						DateTime yesterDayZoned = zoned.minusDays(7);
+						String yesterDayDate = outputFormatter.print(yesterDayZoned);
+						startDateUTC = TZ_DF_TS.parse(yesterDayDate);
+					}
+					else if (Constants.TWO_WEEKS.equals(reportType)) {
+						DateTime yesterDayZoned = zoned.minusDays(14);
+						String yesterDayDate = outputFormatter.print(yesterDayZoned);
+						startDateUTC = TZ_DF_TS.parse(yesterDayDate);
+					}
+					else if (Constants.ONE_MONTH.equals(reportType)) {
+						DateTime yesterDayZoned = zoned.minusDays(30);
+						String yesterDayDate = outputFormatter.print(yesterDayZoned);
+						startDateUTC = TZ_DF_TS.parse(yesterDayDate);
+					}
+					else if (Constants.TWO_MONTHS.equals(reportType)) {
+						DateTime yesterDayZoned = zoned.minusDays(60);
+						String yesterDayDate = outputFormatter.print(yesterDayZoned);
+						startDateUTC = TZ_DF_TS.parse(yesterDayDate);
+					}
+					else {
+						if (!"".equalsIgnoreCase(customStartDate) && !"".equalsIgnoreCase(customEndDate)) {
+							
+							DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd 00:00:00");
+							DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd 23:59:59");
+							Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
+							Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
+							String customStartTimeStr = TZ_DF_CSD.format(startTime);  
+							String customEndTimeStr = TZ_DF_CED.format(endTime);  
+							startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
+							endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+						}
+					}
+		
+				}
+				Calendar cal = Calendar.getInstance();
+			    Date date=cal.getTime();
+	 System.out.println("======== first time======="+date);
+		List<Requirement> requirementList = requirementReportDao.getRequirementReports(userRoleName, orgLocation, user,filterDate, startDateUTC, endDateUTC,status);
+	    
+		Map<Long,Requirement> requirementMap = new HashMap<Long,Requirement>();
+		List<Long> reqIdsList = new ArrayList<Long>();
 		for (Requirement requirement : requirementList) {
-			//String postedDate = getDateStr(requirement.getCreatedDate(), timezone);
 			requirement.setPostedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirement.getCreatedDate()));
-			 List<String> requirementLocationsList = new ArrayList<>();
-	    	    List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
-	    	    if(locationsList != null && !locationsList.isEmpty()) {
-	    	    	for(RequirementLocations locations : locationsList) {
-	    	    		requirementLocationsList.add(locations.getLocation());
-	    	    	}
-	    	    }
-	    	    requirement.setLocationsList(requirementLocationsList);
-	    	    
-			
 			
 			if(requirement.getClientId() != null){
 				if(requirement.getClientId().getResponderType().equalsIgnoreCase("Client")){
@@ -169,7 +167,34 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 				 StringBuilder managerSB = new StringBuilder();
 				requirement.setManager(managerSB.append(managerFirstName).append(" ").append(managerLastName).toString());
 			}
+			// adding required id map  below
+			requirementMap.put(requirement.getId(), requirement);
+			reqIdsList.add(requirement.getId());
+			
 		}
+		
+			//get the requirement locations list
+			if(requirementList.size()>0){
+	    	    List<Object[]> locationList = requirementLocationsService.getRequirementLocationsListByRequirementIdMap(reqIdsList);
+	    	    
+	    	 //   List<String> requirementLocationsList =  new ArrayList<String>();
+	    	    Long currId= null;
+	    	    for( Object[] objArr : locationList){
+	    	    	currId= ((BigInteger) objArr[0]).longValue();
+	    	    		Requirement requirement = (Requirement) requirementMap.get(currId);
+	    	    		if(requirement.getLocationsList() == null){
+	    	    			 List<String> requirementLocationsList =  new ArrayList<String>();
+	    	    			requirement.setLocationsList(requirementLocationsList);
+	    	    		}
+	    	    		requirement.getLocationsList().add((String)objArr[1]);
+	    	    	
+	    	    }
+			}
+	    	    // requirement.setLocationsList(requirementLocationsList); 
+			Calendar cal1 = Calendar.getInstance();
+		    Date date1=cal1.getTime();
+		    System.out.println("======== SERVICE TIME last======="+date1);
+	    	   
 		return requirementList;
 	}
 	
@@ -203,14 +228,10 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		return requirementReportDao.getApplicantsCountForChart(orgLocationId);
 	}
 	
-	@Override
-	public Integer getRequirementStagesCountsForReports(Long orgLocId, String requirementStatus) throws Exception
-	{
-		return requirementReportDao.getRequirementStagesCountsForReports(orgLocId, requirementStatus);
-	}
 	
 	@Override
 	public List<Requirement> getRequirementStageReports(OrgLocations orgLocation, String Status) throws Exception{
+		
 		
 		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		List<Requirement> reqList = requirementReportDao.getRequirementStageReports(orgLocation, Status);

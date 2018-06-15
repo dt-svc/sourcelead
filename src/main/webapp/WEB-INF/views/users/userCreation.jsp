@@ -40,20 +40,41 @@
 }
 </style>
   <!-- Content Area -->
-  <section class="content-wraper">
+  <section class="content-wraper contentWraper">
         <section class="content-header clearfix">
           <div class="pull-left">
             <h2>Add Associate</h2>
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/usersList'/>">Associates List</a> &raquo; Add Associate </div>
         </section>
-        <div class="content-area clearfix">
+        <!-- <div class="content-area clearfix"> -->
+        <div class="user_summ_wrap contentareaInner-styles">
+        
+        
+        <!--  Tabe Menu Starts -->
+        <div class="tabsMenu">
+        <ul class="list-unstyled">
+          <li class="current"><a href="#tab-1" id="associates">Associates</a></li>
+            <li class=""><a href="#tab-2" data-toggle="tab" id="associateLeaveType" >Leave Type</a></li>
+          <div class="clearfix"></div>
+        </ul>
+		</div>
+		 <!--  Tabe Menu Starts -->
+        
+        <div class="tabsMenu_tabs">
+          <div id="tab-1" class="tabsMenu_tabs_inn" style="display: block;">
+            <div class="project_tabs_inn_table">
+        
+        
         <div id="loading"></div> 
-        <div id="candidatesLoading"></div> 
-          
+        <div id="candidatesLoading"></div>
+        
+        
+        
         <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
           <form:form id="createUser_form"  name="createUser_form" method="post">
           <input type="hidden" id="actionId" value="${actionId}">
+          <input type="hidden" id="associateId" />
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
               
@@ -264,7 +285,7 @@
            <div class="form-group designationTypeDiv" id="designationTypeDiv" style="display:none">
             <label class="col-md-3">Employment Other Type</label>
             <div class="col-md-9">
-              <input type="text" class="form-control" id="designationOtherType" name="designationOtherType"   field-name="Job Type" value="">
+              <input type="text" class="form-control" id="designationOt$("#empType").val(result.object.designationType);herType" name="designationOtherType"   field-name="Job Type" value="">
             </div>
           </div>
        
@@ -391,16 +412,22 @@
             </div>
             </div>
                 
-            <div class="form-footer clearfix row">
-              <div class="col-lg-12">
+            <div class="footerstyelsNew clearfix">
                 <div class="pull-right">
-                  <input type="button" value="Save" id="create_user" onclick="createUser();" class="btn btn-primary">
+                  <input type="button" value="Save &amp; Continue" id="create_user" onclick="createUser();" class="btn btn-primary">
                   <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/usersList'/>'"  class="btn btn-default ml">
                 </div>
-              </div>
             </div>
             </form:form>
           </div>
+          
+          </div>
+          </div>
+            <jsp:include page="associateLeaveType.jsp" />
+          
+         
+          
+          
         </div>
       </section>
       <!-- Content Area Ends--> 
@@ -607,7 +634,6 @@ function getEmployeementType(designationType){
 	 
 	 
 	   if ($('#createUser_form').validate(false, validationSettings)){ 
-		
 		    var formData = getFormData("createUser_form");
 			$("#create_user").attr("disabled", "disabled");
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
@@ -625,7 +651,14 @@ function getEmployeementType(designationType){
 						$("#loading").removeAttr('style');
 					} 
 					else {
-						location.replace(sourceleadUrl+"/usersList");
+						$("#associateId").val(result.object.userId);
+						var associateLeaveType = document.getElementById("associateLeaveType");
+						document.getElementById("associateLeaveType").removeAttribute("class"); 
+						associateLeaveType.href="#tab-2"; 
+						$("#tab-1").removeAttr("href");
+						$("#associateLeaveType").click();
+						getAllLeaveType();
+						/* location.replace(sourceleadUrl+"/usersList"); */
 					}
 				},
 			});
@@ -681,6 +714,7 @@ function getEmployeementType(designationType){
                          $('#EmployeeIdDiv').find('p.jquery_form_error_message').remove();
                          $("#create_user" ).addClass('us-btn').val('Save');
                          $("#create_user").removeAttr("disabled");
+                       
                     }
                 },
             });
@@ -1279,4 +1313,34 @@ function clearDateofJoin(){
 	$("#DateofJoin").val("");
 	};
 </script>
+
+<script>
+// project side bar tabs
+
+var associateLeaveType = document.getElementById("associateLeaveType");
+				if(associateLeaveType){
+					associateLeaveType.href = "#";
+					associateLeaveType.className = "disabledLink";
+				}
+				
+
+ 
+
+
+$(document).ready(function() {
+	$("#tab-1").show()
+    $(".tabsMenu a").click(function(event) {
+        event.preventDefault();
+        $(this).parent().addClass("current");
+        $(this).parent().siblings().removeClass("current");
+        var tab = $(this).attr("href");
+        $(".tabsMenu_tabs_inn").not(tab).css("display", "none");
+        $(tab).fadeIn();
+    });
+});
+</script> 
+
+
+
+
 

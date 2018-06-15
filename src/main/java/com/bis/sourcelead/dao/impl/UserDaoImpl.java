@@ -1,19 +1,18 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +21,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,20 +32,22 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Employees;
-import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
+import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
+import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
-import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -58,6 +60,15 @@ public class UserDaoImpl implements UserDao {
 	
 	@Autowired
     OrgLocationService orgLocationService;
+	
+	@Autowired
+	RequirementService requirementService;
+	
+	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -1412,6 +1423,9 @@ public class UserDaoImpl implements UserDao {
 				if(null != userRole.getOrgLocations().getUser() && user.getId().equals(userRole.getOrgLocations().getUser().getId())){
 					userDTO.setIsPrimaryAdmin("Y");
 				}
+				if(null != userRole.getOrgLocations().getOrg().getUser() && user.getId().equals(userRole.getOrgLocations().getOrg().getUser().getId())){
+					userDTO.setIsSuperAdmin("Y");
+				}
 				
 				userDTOList.add(userDTO);
 			}
@@ -1777,5 +1791,301 @@ public class UserDaoImpl implements UserDao {
         return userRoleList;
         
 	
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates)
+			throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<Long> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<UserDTO> response = new ResponseList<>();
+		Query queryObj = null;
+		List<User> usersList = null;
+		StringBuilder query1 = new StringBuilder("");
+		String globalAccessQuery = "";
+		String searchQuery = "";
+		int totalCount = 0;
+		String sortingQry = "";
+		
+		if(loginUserRole.equalsIgnoreCase("ROLE_ADMIN")) {
+			
+			if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
+				searchQuery = " AND U.FIRST_NAME LIKE '%" + userDTO.getSearchValue() + "%' OR U.LAST_NAME LIKE '%" + userDTO.getSearchValue() + "%'";
+			}
+			if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
+				sortingQry = " ORDER BY U.FIRST_NAME"+" "+userDTO.getSortOrder();
+			}
+			
+			if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+				
+				try {
+				query ="SELECT "
+						+" CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS fullName, "
+						+" U.ID AS userId,"
+						+" U.USER_CODE AS userCode"
+						+ " FROM "
+					    + " USER U,"
+					    + " USER_ROLE UR,"
+					    + " ORG_LOCATIONS OL"
+						+ " WHERE OL.ID = UR.ORG_LOCATIONS_ID AND "
+						+ " UR.USER_ID = U.ID AND "
+					    + " UR.USER_STATE = 'ACTIVE' "
+						+searchQuery
+						+ " AND  OL.ORG_ID = :orgId"
+					    + " GROUP BY UR.USER_ID"
+					    +sortingQry;
+				
+				
+				queryObj = session.createSQLQuery(query);
+				queryObj.setParameter("orgId", orgId);
+				queryObj.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
+				queryObj.setFirstResult(userDTO.getStart());
+				queryObj.setMaxResults(userDTO.getLength());
+			List<UserDTO> userDTOList = queryObj.list();
+			if(userDTOList != null && !userDTOList.isEmpty()) {
+				usersList = new ArrayList<>();
+				for(UserDTO uDTO :userDTOList) {
+					User user = new User();
+					user.setId(uDTO.getUserId().longValue());
+					user.setFullName(uDTO.getFullName());
+					user.setUserCode(uDTO.getUserCode());
+					usersList.add(user);
+				}
+			}
+			
+			
+			String countQuery ="SELECT"
+					+ " COUNT(DISTINCT UR.USER_ID) AS USER_COUNT"
+					+ " FROM"
+					    + " USER U,"
+					    + " USER_ROLE UR,"
+					    + " ORG_LOCATIONS OL"
+						+ " WHERE UR.USER_ID = U.ID AND "
+					    + " OL.ID = UR.ORG_LOCATIONS_ID AND"
+					    + " UR.USER_STATE = 'ACTIVE' "
+						+searchQuery
+						+ " AND  OL.ORG_ID = :orgId"
+					    +sortingQry;
+			
+			Query countqueryString = session.createSQLQuery(countQuery);
+			countqueryString.setParameter("orgId", orgId);
+			BigInteger filterCount1 =  (BigInteger) countqueryString.uniqueResult();
+			filterCount = filterCount1.intValue();
+			totalCount = filterCount1.intValue();
+			
+				
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}else {
+				
+				try {
+				
+					query ="SELECT "
+							+" CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) AS fullName, "
+							+" U.ID AS userId,"
+							+" U.USER_CODE AS userCode"
+							+ " FROM"
+						    + " USER U,"
+						    + " USER_ROLE UR"
+							+ " WHERE"
+							+ " UR.USER_ID = U.ID AND "
+						    + " UR.USER_STATE = 'ACTIVE' "
+							+searchQuery
+						    + " AND  UR.ORG_LOCATIONS_ID = :orgLocationId"
+						    + " GROUP BY UR.USER_ID"
+						    +sortingQry;
+				
+					queryObj = session.createSQLQuery(query);
+					queryObj.setParameter("orgLocationId", orgLocationId);
+					queryObj.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
+					queryObj.setFirstResult(userDTO.getStart());
+					queryObj.setMaxResults(userDTO.getLength());
+				List<UserDTO> userDTOList = queryObj.list();
+				if(userDTOList != null && !userDTOList.isEmpty()) {
+					usersList = new ArrayList<>();
+					for(UserDTO uDTO :userDTOList) {
+						User user = new User();
+						user.setId(uDTO.getUserId().longValue());
+						user.setFullName(uDTO.getFullName());
+						user.setUserCode(uDTO.getUserCode());
+						usersList.add(user);
+					}
+				}
+				
+				String countQuery ="SELECT"
+						+ " COUNT(DISTINCT UR.USER_ID) AS USER_COUNT"
+						+ " FROM"
+						    + " USER U,"
+						    + " USER_ROLE UR"
+							+ " WHERE UR.USER_ID = U.ID AND "
+						    + " UR.USER_STATE = 'ACTIVE' "
+							+searchQuery
+						    + " AND  UR.ORG_LOCATIONS_ID = :orgLocationId"
+						    +sortingQry;
+				
+				Query countqueryString = session.createSQLQuery(countQuery);
+				countqueryString.setParameter("orgLocationId", orgLocationId);
+				BigInteger filterCount1 =  (BigInteger) countqueryString.uniqueResult();
+				filterCount = filterCount1.intValue();
+				totalCount = filterCount1.intValue();
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+
+			
+		}else {
+			
+			if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+				globalAccessQuery = " and userRole.orgLocations.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+			}else {
+				globalAccessQuery = " and userRole.orgLocations.id = :orgLocationId";
+			}
+			
+			
+			if(userDTO.getSearchValue() !=null && !"".equalsIgnoreCase(userDTO.getSearchValue())) {
+				query1.append(" user.firstName like '%" + userDTO.getSearchValue() + "%' ")
+				.append("OR user.lastName like '%" + userDTO.getSearchValue() + "%' ");
+							
+				}
+			
+			
+			if(StringUtils.isNotBlank(userDTO.getSortColumn())) {
+					sortingQry = " order by user."+ userDTO.getSortColumn() +" "+userDTO.getSortOrder();
+			}
+			
+			query = "from User user where (user.id IN (select userRole.user.id from UserRole userRole where (userRole.reportingManager.id = :userId OR userRole.resourceManager.id = :userId) and userRole.userState = 'ACTIVE' "+globalAccessQuery+" ) "
+					+ " OR user.id IN (select tm.memberUserId.id from TeamMembers tm where tm.teamId.ownerUserId = :userId and tm.status = '1'  and tm.teamId.orgLocationsId = :orgLocationId))";
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+" "+sortingQry+" ");
+			}else{
+				 queryObj = session.createQuery(query + query1.toString()+" "+sortingQry+" ");
+			}
+			
+			queryObj.setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+			
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				countlist = session.createQuery("select count(*) " + query + "and "+"("+query1.toString()+") "+sortingQry+" ").setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}else {
+				countlist = session.createQuery("select count(*) " + query +sortingQry).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+				filterCount = countlist.iterator().next().intValue();
+			}
+			queryObj.setFirstResult(userDTO.getStart());
+			queryObj.setMaxResults(userDTO.getLength());
+			usersList = queryObj.list();
+		}
+		
+		
+		
+		
+		
+		if (userDTO != null) {
+			if(countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		} 
+		response.setRecordsTotal(totalCount);
+		
+		if(query1.toString() != null && !query1.toString().isEmpty()){
+			response.setRecordsFiltered(filterCount);
+		}else {
+			response.setRecordsFiltered(totalCount);
+		}
+		
+		response.setData(getUserListForRecruiterReport(usersList,orgLocationId,searchDates,isGlobalUser,orgId));
+		return response;
+	}
+	
+	private List<UserDTO> getUserListForRecruiterReport(List<User> usersList,Long orgLocationId,Date[] searchDates,String isGlobalUser,Long orgId){
+		List<UserDTO> usersDTOList = new ArrayList<>();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String fromDate = sdf.format(searchDates[0]);
+		String toDate = sdf.format(searchDates[1]);
+		Map<String, UserDTO> userListMap = new HashMap<String, UserDTO>();
+		Map<BigInteger, UserDTO> associatesListMap = new HashMap<BigInteger, UserDTO>();
+		List<String> userCodeList = new ArrayList<>();
+		List<Long> userIdsList = new ArrayList<>();
+		if(usersList != null && !usersList.isEmpty()) {
+			for(User user : usersList) {
+				
+				try {
+					UserDTO userDTO = new UserDTO();
+					userDTO.setFullName(user.getFullName());
+					userListMap.put(user.getUserCode(), userDTO);
+					associatesListMap.put(BigInteger.valueOf(user.getId()), userDTO);
+					userCodeList.add(user.getUserCode());
+					userIdsList.add(user.getId());
+					usersDTOList.add(userDTO);
+					
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+			
+			try {
+				
+				
+				List<RecruiterReportCandidateCountView> RecruiterReportCandidatesList = candidateService.getCandidateCountsCreatedUserList(orgLocationId, userCodeList, fromDate, toDate,isGlobalUser, orgId);
+				if(RecruiterReportCandidatesList != null && !RecruiterReportCandidatesList.isEmpty()) {
+					for(RecruiterReportCandidateCountView candidateReportView : RecruiterReportCandidatesList) {
+						UserDTO userDTO = userListMap.get(candidateReportView.getAssociateUserCode());
+						if(candidateReportView.getCandCount() != null) {
+							userDTO.setUserCandidatesCount(candidateReportView.getCandCount());
+						}
+						
+					}
+				}
+				
+				List<RecruiterReportAssociateCountView> RecruiterReportAssociateList = requirementService.getAssociateCountsCreatedUserList(orgLocationId, userIdsList, fromDate, toDate,isGlobalUser, orgId);
+				if(RecruiterReportAssociateList != null && !RecruiterReportAssociateList.isEmpty()) {
+					for(RecruiterReportAssociateCountView associateReportView : RecruiterReportAssociateList) {
+						UserDTO userDTO = associatesListMap.get(associateReportView.getAssociateUserId());
+						if(associateReportView.getJobCount() != null) {
+							userDTO.setUserRequirementsCount(associateReportView.getJobCount());
+						}
+						
+					}
+				}
+				
+				List<RecruiterReportView> recruiterReportViewList = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, fromDate, toDate,isGlobalUser, orgId);
+				if(recruiterReportViewList != null && !recruiterReportViewList.isEmpty()) {
+					for(RecruiterReportView recuiterReportView : recruiterReportViewList) {
+						UserDTO userDTO = userListMap.get(recuiterReportView.getUserCode());
+						userDTO.setUserApplicantsCount(recuiterReportView.getApplicantSubmissionCount());
+						userDTO.setUserShortlistedApplicantsCount(recuiterReportView.getApplicantShortlistedCount());
+						userDTO.setUserSubmittedApplicantsCount(recuiterReportView.getApplicantSubmittedClientCount());
+						userDTO.setUserOfferedApplicantsCount(recuiterReportView.getApplicantOfferMadeCount());
+						userDTO.setUserRejectedApplicantsCount(recuiterReportView.getApplicantRejectedCount());
+						userDTO.setUserApplicantsBackOutCount(recuiterReportView.getApplicantBackOutCount());
+					}
+					
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return usersDTOList;
+	}
+
+	@Override
+	@Transactional
+	public List<User> getUsersByEmailList(List<String> userEmail,OrgLocations orgLocation)
+	{
+		 Session session = this.sessionFactory.getCurrentSession();
+	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationId and userRole.user.email IN (:emailList)) ORDER BY user.id DESC";
+	     List<User> usersList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).setParameterList("emailList", userEmail).list();
+	     return usersList;
 	}
 }

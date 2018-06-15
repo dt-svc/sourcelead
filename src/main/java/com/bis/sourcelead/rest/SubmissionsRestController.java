@@ -522,6 +522,10 @@ public class SubmissionsRestController {
 			try {
 				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				//java.text.SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
+				if (requirement != null && requirement.getPrimaryRecruiterUserId() != null) {
+					user = requirement.getManagerUserId();
+				}
 				List<RequirementSubmission> shortlistedList = requirementSubmissionService.getAllSubmissionListByRequirementIdAndSubmissionStage(orgLocations, requirementId, status,user,loginUserRole);
 				
 				ArrayList<RequirementSubmission> candidatesList = new ArrayList<RequirementSubmission>();
@@ -770,7 +774,10 @@ public class SubmissionsRestController {
 		submission.setFacebookUrl(submission.getCandidate().getFacebookUrl());
 		submission.setLinkedInUrl(submission.getCandidate().getLinkedUrl());
 		submission.setTwitterUrl(submission.getCandidate().getTwitterUrl());
-		submission.setResumeId(submission.getCandidateResumes().getId());
+		if(submission.getCandidateResumes() != null) {
+			submission.setResumeId(submission.getCandidateResumes().getId());
+		}
+		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		int percentage = candidateService.getCandidatePercentage(submission.getCandidate(),orgLocations);

@@ -1267,9 +1267,10 @@ function getBudgetApprover(approverUserId){
  
 <script>
 function getCustomDependentField(sectionId){
+	var projectId = $('#projectId').val();
 	$.ajax({
 			type : "POST" , 
-				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId+"&projectId="+projectId+"&requestFrom=project",
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);

@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -34,7 +35,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
-import org.hibernate.validator.constraints.br.CNPJ;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -59,6 +59,7 @@ import com.bis.sourcelead.dto.CandidateSearchDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
@@ -70,6 +71,8 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadActions;
+import com.bis.sourcelead.entity.SubmissionCandidateListView;
+import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
@@ -93,7 +96,6 @@ import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import org.apache.commons.lang.exception.ExceptionUtils;
 
 /**
  * Handles requests for the Candidate List Service.
@@ -322,12 +324,26 @@ public class CandidateListRestController {
 						for (QueryBuilder QueryBuilder : QueryBuilderList) {
 							allBoolSubQueryBuilder.should(QueryBuilder);
 						}
+						DateFormat df = loginOrgLocation.getLocFullFormDateFormatter();
+						try{
+							if(keywd.contains("/")){
+								keywd = keywd.replaceAll("/", "a");
+							}
+							Date d = df.parse(keywd);
+							allBoolSubQueryBuilder = QueryBuilders.boolQuery();
+							String dateStr = commonUtil.elkDateFormatter(d);
+							allBoolSubQueryBuilder.should(QueryBuilders.termQuery("updatedDate", dateStr));
+						 }
+						 catch(Exception e){}
 						allBoolQueryBuilder.must(allBoolSubQueryBuilder);
 					}
 				}
 			}
 			boolQueryBuilder.must(allBoolQueryBuilder);
 		}
+		
+		
+		
 		// Designation
 		List<String> designationArray = search.getDesignation();
 		if (designationArray != null && !designationArray.isEmpty()) {
@@ -2129,5 +2145,27 @@ public class CandidateListRestController {
 		}
 		return response;
 	}
+	
+	
+	@RequestMapping(value = "/getCandidatesListForJobBulkSubmission")
+	public @ResponseBody ResponseList<SubmissionCandidateListView> getCandidatesListForJobBulkSubmission(CandidateDTO candidateDTO,HttpServletRequest request) throws Exception {
+
+	        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			
+			String[] tableColumns = { "action", "candidateName", "email", "primarySkill", "employementType", "createdDate", "location"};
+			
+			int sortColumnIndex = 1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default descending order
+			if (candidateDTO.getOrder() != null && !candidateDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(candidateDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = candidateDTO.getOrder().get(0).get("dir");
+			}
+			candidateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			candidateDTO.setSortOrder(sortColumnOrder);
+			ResponseList<SubmissionCandidateListView> candidateDTOList = candidateService.getSubmissionCandidateListView(candidateDTO, orgLocations);
+			return candidateDTOList;
+			
+		}
+	
 
 }
