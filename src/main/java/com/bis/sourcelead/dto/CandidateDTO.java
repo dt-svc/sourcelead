@@ -228,6 +228,8 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String vendorSpocId;
 	
+	private Long requirementId;
+	
 	private List<CustomFormFieldDTO> customFormData;
 	
 	 private Map<String,String> candidateCustomFieldData;
@@ -1126,6 +1128,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setVendor(String vendor) {
 		this.vendor = vendor;
+	}
+
+	public Long getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(Long requirementId) {
+		this.requirementId = requirementId;
 	}
 
 	

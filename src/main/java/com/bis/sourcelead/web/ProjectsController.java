@@ -316,7 +316,7 @@ public class ProjectsController {
 					Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 					OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
 					OrgLocations clientOrgLocations = null;
-					String isClientOrgActive = Constants.NO;
+					String isClientOrgActive = "";
 					if(projects != null){
 						model.addObject("projectId", projects.getId());
 						model.addObject("projectName", projects.getProjectName());
@@ -345,12 +345,12 @@ public class ProjectsController {
 							
 							if(clientOrgLocations.getStatus() != null && clientOrgLocations.getStatus().equals(Status.ACTIVE)){
 								isClientOrgActive = Constants.YES;
+							}else {
+								isClientOrgActive = Constants.NO;
 							}
 						}
 						
-						/*if(!projects.getOrgLocationsId().getId().equals(orgLocations.getId())) {
-							isClientOrgActive = Constants.YES;
-						}*/
+						
 						
 						model.addObject("isClientOrgActive", isClientOrgActive);
 					}
