@@ -61,7 +61,7 @@
 						<c:otherwise>
 						<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id});"
 						class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-						 onclick="deleteResidenceDetailsById(${residitems.id});" 
+						 onclick="deleteImmigrationRecord('deleteResidenceDetailsById',${residitems.id});" 
 						 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						</c:otherwise>
 						</c:choose>
@@ -77,7 +77,7 @@
 									<c:otherwise>
 									<td><div><i id="edit" onclick="editResidenceDEtailsByRowId(${residitems.id});"
 									class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-									 onclick="deleteResidenceDetailsById(${residitems.id});" 
+									 onclick="deleteImmigrationRecord('deleteResidenceDetailsById',${residitems.id});" 
 									 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 									</c:otherwise>
 								</c:choose>

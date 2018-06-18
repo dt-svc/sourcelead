@@ -2172,5 +2172,15 @@ public class ImmigrationRestController {
 			file.delete();
 		}
 	}
+	
+	
+	@RequestMapping(value = "/validateTemplateTaskName", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean validateTemplateTaskName(HttpServletRequest request,
+			@RequestParam(value = "templateTaskName") String templateTaskName,
+			@RequestParam(value = "templateId", defaultValue = "0") Long templateId,
+			@RequestParam(value = "immiTaskId", defaultValue = "0") Long immiTaskId) {
+		return immigrationTemplateService.validateTemplateTaskNameExistance(templateTaskName, templateId,immiTaskId);
+	}
 
 }

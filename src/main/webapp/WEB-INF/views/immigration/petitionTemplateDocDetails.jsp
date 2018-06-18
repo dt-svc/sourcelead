@@ -49,7 +49,7 @@
 				  		<div class="col-md-3">
 					  
 						<select class="form-control selectpicker" 
-										name="immigrationDocList[0].documentType"  onchange="updateUIforOthers(0);" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation0" data-live-search="true">
+										name="immigrationDocList[0].documentType"  onchange="updateUIforOthers(0);" field-name="Select Document" data-validation="required" id="candidateEducation0" data-live-search="true">
 							<option value="" selected>--Select Document--</option>
 							<c:forEach var="edu" items="${educationsList}">
 											<option value="${edu.id}">${edu.name}</option>
@@ -118,7 +118,7 @@
 					  <input type="hidden" name="immigrationDocList[${rows.count-1}].id" value="${items.id}" id="templateId${rows.count-1}"/>
 					  
 						<select class="form-control selectpicker" 
-								onchange="updateUIforOthers(${rows.count-1});"		name="immigrationDocList[${rows.count-1}].documentType" title='Document Type' field-name="Select Document" data-validation="required" id="candidateEducation${rows.count-1}" data-live-search="true">
+								onchange="updateUIforOthers(${rows.count-1});"		name="immigrationDocList[${rows.count-1}].documentType" field-name="Select Document" data-validation="required" id="candidateEducation${rows.count-1}" data-live-search="true">
 							<option value="" selected>--Select Document--</option>
 							<c:forEach var="edu" items="${educationsList}">
 											<option ${edu.id == items.documentType? 'selected': ''} value="${items.documentType}">${edu.name}</option>
@@ -222,7 +222,7 @@
 		templateDocDetails = templateDocDetails+ "</select></div>";
 		
 		templateDocDetails = templateDocDetails+ "<div class='col-md-3'>";
-		templateDocDetails = templateDocDetails+ "<select class='form-control selectpicker' title='Document Type' onchange='updateUIforOthers("+rowId+")' field-name='Select Document' data-validation='required' name='immigrationDocList["+rowId+"].documentType' id='candidateEducation"+rowId+"' data-validation='validate_Space' data-live-search='true'>";
+		templateDocDetails = templateDocDetails+ "<select class='form-control selectpicker' onchange='updateUIforOthers("+rowId+")' field-name='Select Document' data-validation='required' name='immigrationDocList["+rowId+"].documentType' id='candidateEducation"+rowId+"' data-validation='validate_Space' data-live-search='true'>";
 		templateDocDetails = templateDocDetails+ "<option value='' selected>--Select Document--</option>";
 		<c:forEach var='edu' items='${educationsList}'>
 		templateDocDetails = templateDocDetails+ "<option value='${edu.id}'>${edu.name}</option>";
