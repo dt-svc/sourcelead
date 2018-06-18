@@ -1852,6 +1852,7 @@ public class CandidateDaoImpl implements CandidateDao {
 					 		 "ORG_LOCATIONS OL " + 
 					 		 "WHERE  CAND.ORG_LOCATION_ID = OL.ID  AND CAND.STATUS = '1' " + 
 					 		 "AND CAND.ORG_LOCATION_ID = :orgLocationId " + 
+					 		 "AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "+
 					 		 "GROUP BY CAND.ID,  " + 
 					 		 "DATE_FORMAT(CAND.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr+advSeachStr+sortingQry;
 				
@@ -1862,12 +1863,13 @@ public class CandidateDaoImpl implements CandidateDao {
 				 
 				    queryObj = session.createSQLQuery(query);
 					queryObj.setParameter("orgLocationId", orgLocations.getId());
+					queryObj.setParameter("requirementId", candidateDTO.getRequirementId());
 					queryObj.setResultTransformer(Transformers.aliasToBean(SubmissionCandidateListView.class));
 					queryObj.setFirstResult(candidateDTO.getStart());
 					queryObj.setMaxResults(candidateDTO.getLength());
 					candidateList = queryObj.list();
 					
-					countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocations.getId()).list();
+					countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocations.getId()).setLong("requirementId", candidateDTO.getRequirementId()).list();
 					filterCount = countlist.iterator().next().intValue();
 				}catch (Exception e) {
 					e.printStackTrace();
