@@ -1006,11 +1006,12 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     	                result = result +"	<div class='col-md-12 mt10 mb'>";
     	                result = result +"    <div class='clearfix inputfiledColor'>";
     	                if(obj != null && obj != 'undefined' && obj != ""){
-    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='"+obj.updatedDateStr+"' type='text' data-validation='required' field-name='Join Date'>";
+    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='"+obj.updatedDateStr+"' type='text' field-name='Join Date'>";
     	                }else{
-    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='' type='text' data-validation='required' field-name='Join Date'>";
+    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='' type='text' field-name='Join Date'>";
     	                }
     	                result = result +"    </div>";
+    	                result = result +"    <div id='joinDateErrorDiv'></div>";
     	                result = result +"	</div>";
     	                result = result +" <input id='saveJoinedRequest' type='button' class='btn' value='Submit' onclick='saveJoinedRequestForApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='joinedRequestCancel' value='Cancel' onClick='cancelJoinedRequest("+subId+","+reqId+",\""+subType+"\");'>";
     	                result = result +"</form>";
@@ -1232,6 +1233,7 @@ $('body').on('blur', '#backOut_form', function() {
 
 function saveJoinedRequestForApplicant(submissionId,requirementId,submissionType){
 	if ($('#joinedApplicant_form').validate(false, validationSettings)) {
+		if($('#joinDate').val() != null && $('#joinDate').val() != ''){
 		var formData =  getFormData('joinedApplicant_form'); 
 		$("#saveBackOut").attr("disabled", true);
 		$.ajax({
@@ -1239,12 +1241,27 @@ function saveJoinedRequestForApplicant(submissionId,requirementId,submissionType
     	    data: formData,
 		    url: sourceleadUrl+"/saveJoinedRequestForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
 		    success: function(data) {
-		    	$("#popUp").empty();
-   			 	$(".project_inn_mask").fadeOut(200);
-   			    requirementPipeline(requirementId,submissionType);
+		    	if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+		    		$("#popUp").empty();
+	   			 	$(".project_inn_mask").fadeOut(200);
+	   			    requirementPipeline(requirementId,submissionType);
+		    	}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
 		    }
 	   });
 		return true;
+	}else{
+		$('#joinDateErrorDiv').append('<p class="jquery_form_error_message">Join Date is required</p>');
+		return false;
+	}
+		
 	}else{
 		return false;
 	}
