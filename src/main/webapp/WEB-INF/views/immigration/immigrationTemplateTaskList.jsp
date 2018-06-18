@@ -59,6 +59,7 @@
 </section>
 <!--   Popup Code  -->
 <div class="popMask"></div>
+<div id="deletetemplate"></div>
 <div class="popUpOut popUpOutBig" id="taskViewPopup">
     <div class="popupHead">
         <h2>Add Task</h2><a href="javascript:void(0)" onclick="immigration.removeFormValidationErrors('petitionTemplateTaskDetails')" class="fa fa-close popCan"></a>
@@ -416,15 +417,40 @@
         immiTaskId = id;
     }
 
-    function deleteImmiTaskList(id) {
+
+	function deleteImmiTaskList(id){
+    	$(".project_inn_mask").remove();
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_template_popup' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <b>Do you want to remove record permanently?</b>";
+		result = result + ' <div id="reasonForTemplateDiv"/>';
+		result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteImmigrationTask("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTemplateDelete();'></b>";
+		result = result +"	</div>";
+		$("#deletetemplate").append(result);
+		$("#remove_template_popup").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+   
+		}
+    
+    function deleteImmigrationTask(id) {
         $.ajax({
             type: "GET",
             url: sourceleadUrl + immiModulePath + "/deleteImmigrationTaskList?${_csrf.parameterName}=${_csrf.token}&id=" + id,
             success: function (json) {
                 immigrationDataTableList();
+                cancelTemplateDelete();
             }
         });
     }
+    
+    function cancelTemplateDelete(){
+		$("#remove_template_popup").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+		$("#deletetemplate").empty();
+	}
+    
+    
 </script>
 <script>
     function getAssignToUsersList(id) {
