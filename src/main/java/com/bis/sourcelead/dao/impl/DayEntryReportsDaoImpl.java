@@ -45,11 +45,12 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ " TDE.COMMENTS as comments,"
 				+ " PT.TASK_NAME as task,"
 				+ " SAH.SUBMISSION_APPROVALSTATUS as status"
-				+ " FROM TIMESHEET_DAY_ENTRIES TDE,PROJECT_TASKS PT,PROJECT_CLIENTS PC,PROJECTS PROJ,CANDIDATE CAN,TIMESHEET_SUBMISSIONS TS,SUBMISSION_APPROVER_HIERARCHY SAH"
+				+ " FROM PROJECT_CLIENTS PC,CANDIDATE CAN,SUBMISSION_APPROVER_HIERARCHY SAH,TIMESHEET_DAY_ENTRIES TDE "
+				+ " LEFT JOIN PROJECT_TASKS PT ON PT.ID = TDE.PROJECT_TASK_ID "
+				+ " LEFT JOIN PROJECTS PROJ ON PROJ.ID =  PT.PROJECT_ID "
+                + " LEFT JOIN TIMESHEET_SUBMISSIONS TS ON TS.ID =  TDE.SUBMISSION_ID "
+                + " LEFT JOIN PROJECT_MEMBERS PM ON PM.ID =  TDE.SUBMISSION_ID "
 				+ " WHERE PROJ.ID in (:projectId)" 
-				+ " AND PT.PROJECT_ID = PROJ.ID"
-				+ " AND TDE.PROJECT_TASK_ID = PT.ID"
-				+ " AND TS.ID = TDE.SUBMISSION_ID "
 				+ " AND PC.ID IN(SELECT PCL.ID FROM PROJECT_CLIENTS PCL WHERE PCL.PROJECT_ID = PROJ.ID AND PCL.ORG_LOCATIONS_ID = '"+orgloc.getId()+"')"
 				+ " AND SAH.ID IN (SELECT SUBSAH.ID FROM SUBMISSION_APPROVER_HIERARCHY SUBSAH WHERE "
 				+ "                  SUBSAH.SUBMISSION_ID = TS.ID "
@@ -58,7 +59,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "                     (SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH WHERE PAH.PROJECT_ID = PROJ.ID AND PAH.APPROVER_USER_ID = '"+loginUser.getId()+"' AND PAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0' )"
 				/*+ "                              OR "
 				+ "                     (SELECT PAH.ID FROM PROJECT_APPROVER_HIERARCHY PAH where '"+loginUser.getId()+"' IN "
-				+ "                                               ( SELECT UR.USER_ID FROM USER_ROLE UR WHERE UR.ROLE_ID IN (SELECT R.ID FROM ROLES R WHERE R.ROLE_NAME = 'ROLE_ADMIN' AND R.ORG_LOCATION_ID = PC.ORG_LOCATIONS_ID )  AND UR.ORG_LOCATIONS_ID = PC.ORG_LOCATIONS_ID) "
+				+ "                                               ( SELECT UR.USER_ID FROM USER_ROLE UR LEFT JOIN  ROLES R  ON R.ID = UR.ROLE_ID   WHERE R.ROLE_NAME = 'ROLE_ADMIN'  AND UR.ORG_LOCATIONS_ID = PC.ORG_LOCATIONS_ID) "
 				+ "                                                    AND  PAH.LEVEL IN(select MAX(SUBPAH.LEVEL) FROM PROJECT_APPROVER_HIERARCHY SUBPAH WHERE SUBPAH.PROJECT_CLIENTS_ID = PC.ID AND PAH.STATUS != '0') )                    "*/
 				+ "                    )"
 			    + "              ) "
@@ -67,8 +68,10 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		
 		//String queryCount =  "SELECT SUM(Q1.billableHrs) AS billableTotalCount, SUM(Q1.nonBillableHrs) AS nonBillableTotalCount FROM ("+query+")Q1 GROUP BY Q1.billableHrs, Q1.nonBillableHrs";
 		
-		Query result = session.createSQLQuery(query).setParameterList("projectId", projectId).setResultTransformer(Transformers.aliasToBean(DayWiseTimesheetReoprtsListDTO.class)).setFirstResult(start).setMaxResults(length);
-		List<DayWiseTimesheetReoprtsListDTO> reportList  = result.list();
+		System.out.println(query);
+		
+		Query result = session.createSQLQuery(query).setParameterList("projectId", projectId).setFirstResult(start).setMaxResults(length);
+		List<DayWiseTimesheetReoprtsListDTO> reportList  = result.setResultTransformer(Transformers.aliasToBean(DayWiseTimesheetReoprtsListDTO.class)).list();
 		
 		String  countQuery = "SELECT COUNT(*) AS TOTAL FROM (" + query +")Q2;" ;
 		

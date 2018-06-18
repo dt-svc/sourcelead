@@ -23,7 +23,7 @@ import org.hibernate.annotations.NotFoundAction;
  *
  */
 @Entity
-@Table(name = "PROJECT_CUSTOM_FIELD_DATA", catalog = "sourcelead")
+@Table(name = "PROJECT_CUSTOM_FIELD_DATA")
 public class ProjectCustomFieldData implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

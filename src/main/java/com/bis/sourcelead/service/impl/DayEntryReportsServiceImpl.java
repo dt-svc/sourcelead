@@ -779,6 +779,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 			
 			ResponseList<DayWiseTimesheetReoprtsListDTO> timeEntryDataMap = new ResponseList<DayWiseTimesheetReoprtsListDTO>();
 			List<DayWiseTimesheetReoprtsListDTO> dayEntriesListDto = new ArrayList<DayWiseTimesheetReoprtsListDTO>();
+			
 			if(dayWiseTimesheetReoprtsDto.getProjectMemberListId()!= null && !dayWiseTimesheetReoprtsDto.getProjectMemberListId().isEmpty() && (dayWiseTimesheetReoprtsDto.getProjectIds() == null || dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty())) {
 			for(Long userId:dayWiseTimesheetReoprtsDto.getProjectMemberListId()) {
 				 ProjectMembers projectMember = projectMemberService.getProjectMemberById(userId);
@@ -856,6 +857,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				}
 			}
 		}
+			timeEntryDataMap.setData(dayEntriesListDto);	
 		}else {
 			 timeEntryDataMap = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser);
 			}
