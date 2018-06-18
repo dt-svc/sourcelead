@@ -885,9 +885,15 @@
 	}
 	
 	function getAttorneysByOrgLocation(){
-			 $.ajax({
+		var type = null ;
+		if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+			type = "Client";
+		}else{
+			type = "Vendor";
+		}	 
+		$.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+			        url: sourceleadUrl+"/getAllRelationsByOrgLocationAndType?"+tokenParamName+"="+tokenValue+"&type="+type, 
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	$('#attorneyFilter').empty();

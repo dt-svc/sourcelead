@@ -5,7 +5,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
@@ -111,9 +110,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.TimeSheetPdfUtil;
 import com.bis.sourcelead.util.TimesheetApprovalFrequencyGeneratorUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/app")
@@ -266,6 +262,7 @@ public class TimesheetRestController {
 				List<ProjectMembersDTO>  allProjectMembersList = new LinkedList<>();
 				List<ProjectMembersDTO> submittedProjectMembersList = new LinkedList<>();
 				List<ProjectMembersDTO>  attProjectMemberIdsList = new LinkedList<>();
+				List<Long>  oldSubmittedPmIdsList = new LinkedList<>();
 				Boolean isRejected = false;
 				Boolean isSUBMITTED = false;
 				Boolean isAPPROVED = false;
@@ -337,10 +334,12 @@ public class TimesheetRestController {
 						allProjectMembersList.add(pmDTO);
 						if(!tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
 							attProjectMemberIdsList.add(pmDTO);
+							oldSubmittedPmIdsList.add(pmDTO.getId());
 						}
 						
 					}else{
 						submittedProjectMembersList.add(pmDTO);
+						oldSubmittedPmIdsList.add(pmDTO.getId());
 						allProjectMembersList.add(pmDTO);
 						attProjectMemberIdsList.add(pmDTO);
 					}
@@ -350,6 +349,7 @@ public class TimesheetRestController {
 				
 				
 				tedDTO.getProjectMembersList().clear();
+				tedDTO.setOldSubmittedProjectMembersList(oldSubmittedPmIdsList);
 				tedDTO.setProjectMembersList(freshProjectMembersList);
 				tedDTO.setSubmittedProjectMembersList(submittedProjectMembersList);
 				tedDTO.setAllProjectMembersList(allProjectMembersList);
@@ -435,19 +435,17 @@ public class TimesheetRestController {
 		/**
 		 * Getting List Of Projects For LoginUser
 		 */
-		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
-		LinkedHashSet<String> timesheetFrequencyList = new LinkedHashSet<>();
-		timesheetFrequencyList.add("Weekly");
-		timesheetFrequencyList.add("Bi-Weekly");
-		timesheetFrequencyList.add("Semi-Monthly");
-		timesheetFrequencyList.add("Monthly");
-		employeeTimesheetEntryDetailsDTO.setInvoiceFrequencyList(timesheetFrequencyList);
-		if(StringUtils.isEmpty(eedDTO.getInvoiceFrequency())){
-			employeeTimesheetEntryDetailsDTO.setInvoiceFrequency("Weekly");
-       }else {
-       	employeeTimesheetEntryDetailsDTO.setInvoiceFrequency(eedDTO.getInvoiceFrequency());
-       }
-		employeeTimesheetEntryDetailsDTO =  getEmployeeWeekFrequncyDropDown(projectMembersList,employeeTimesheetEntryDetailsDTO,eedDTO,request);
+		List<String> timesheetFrequencyList = projectMembersService.getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
+		if(timesheetFrequencyList != null && !timesheetFrequencyList.isEmpty()) {
+			employeeTimesheetEntryDetailsDTO.setInvoiceFrequencyList(new LinkedHashSet<String>(timesheetFrequencyList));
+			if(StringUtils.isEmpty(eedDTO.getInvoiceFrequency())){
+				employeeTimesheetEntryDetailsDTO.setInvoiceFrequency(timesheetFrequencyList.get(0));
+	       }else {
+	       	employeeTimesheetEntryDetailsDTO.setInvoiceFrequency(eedDTO.getInvoiceFrequency());
+	       }
+			List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(orgLocations.getId(), candidate.getId(),employeeTimesheetEntryDetailsDTO.getInvoiceFrequency());
+			employeeTimesheetEntryDetailsDTO =  getEmployeeWeekFrequncyDropDown(projectMembersList,employeeTimesheetEntryDetailsDTO,eedDTO,request);
+		}
 		return employeeTimesheetEntryDetailsDTO;
 
 	}
@@ -1257,6 +1255,12 @@ public class TimesheetRestController {
 			statusDTO.setTaskCommentsRequired(false);
 		}
 		
+		if(projectMember != null && projectMember.getProjects() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() ==1) {
+			statusDTO.setTimesheetDocumentRequired(true);
+		}else {
+			statusDTO.setTimesheetDocumentRequired(false);
+		}
+		
 		statusDTO.setTimesheetStatus(statusMap.get("STATUS"));
 		statusDTO.setModifyButtonVisible(new Boolean(statusMap.get("IS_MODIFY_BUTTON_VISIBLE")));
 		statusDTO.setReopenButtonVisible(new Boolean(statusMap.get("IS_REOPEN_BUTTON_VISIBLE")));
@@ -1846,6 +1850,7 @@ public class TimesheetRestController {
 					List<ProjectMembersDTO>  allProjectMembersList = new LinkedList<>();
 					List<ProjectMembersDTO> submittedProjectMembersList = new LinkedList<>();
 					List<ProjectMembersDTO>  attProjectMemberIdsList = new LinkedList<>();
+					List<Long>  oldSubmittedPmIdsList = new LinkedList<>();
 					Boolean isRejected = false;
 					Boolean isSUBMITTED = false;
 					Boolean isAPPROVED = false;
@@ -1917,15 +1922,18 @@ public class TimesheetRestController {
 							allProjectMembersList.add(pmDTO);
 							if(!tedDTO.getStatusMap().get(pmDTO.getId()).getTimesheetStatus().equalsIgnoreCase("NEW")) {
 								attProjectMemberIdsList.add(pmDTO);
+								oldSubmittedPmIdsList.add(pmDTO.getId());
 							}
 						}else{
 							submittedProjectMembersList.add(pmDTO);
+							oldSubmittedPmIdsList.add(pmDTO.getId());
 							allProjectMembersList.add(pmDTO);
 							attProjectMemberIdsList.add(pmDTO);
 						}
 						
 					}
 					tedDTO.getProjectMembersList().clear();
+					tedDTO.setOldSubmittedProjectMembersList(oldSubmittedPmIdsList);
 					tedDTO.setProjectMembersList(freshProjectMembersList);
 					tedDTO.setSubmittedProjectMembersList(submittedProjectMembersList);
 					tedDTO.setAllProjectMembersList(allProjectMembersList);
@@ -1983,18 +1991,19 @@ public class TimesheetRestController {
 				model.setViewName("timesheet/employeeTImesheetInvoiceList");
 						
 		} catch (Exception e) {
+			e.printStackTrace();
 			model.addObject("AWKWARD", true);
 			model.setViewName("timesheet/employeeTImesheetInvoiceList");
 		}
 		return model;
 	}
 	
-	private void saveEmployeeTimesheetEntriesPerProjectMemberId(Long projectMemberId,String weekComment,List<FileInfo> fileInfoList,LinkedList<TimesheetEntriesDTO> entriesDTOList,Map<String,String> timeSubFrequencies, String currentTimeFrequency,String currentTimeSubFrequency,String status,OrgLocations loginOrgLocation,User loginUser,Candidate candidate) throws Exception{
+	private void saveEmployeeTimesheetEntriesPerProjectMemberId(Long projectMemberId,String recordStatus,String weekComment,List<FileInfo> fileInfoList,LinkedList<TimesheetEntriesDTO> entriesDTOList,Map<String,String> timeSubFrequencies, String currentTimeFrequency,String currentTimeSubFrequency,String status,OrgLocations loginOrgLocation,User loginUser,Candidate candidate) throws Exception{
 		ProjectMembers projectMember = null;
 		String savingType = "user";
 		if (projectMemberId != null) {
 			projectMember = projectMembersService.getProjectMemberById(projectMemberId);
-		}
+		
 		Date frequencyStartDate = null;
 		Date frequencyEndDate = null;
 		if (status != null && (status.equalsIgnoreCase("Draft") || status.equalsIgnoreCase("Submitted"))) {
@@ -2047,8 +2056,18 @@ public class TimesheetRestController {
 								saHierarchy.setCreatedBy(timesheetSubmissions.getCreatedBy());
 								saHierarchy.setUpdatedDate(timesheetSubmissions.getUpdatedDate());
 								saHierarchy.setUpdatedBy(timesheetSubmissions.getUpdatedBy());
-								saHierarchy.setStatus(Constants.RECORD_ACTIVE + "");
+								if(StringUtils.isNotEmpty(recordStatus) && recordStatus.equalsIgnoreCase("updated")) {
+									saHierarchy.setStatus(Constants.RECORD_ACTIVE + "");
+								}else {
+									saHierarchy.setStatus(Constants.RECORD_INACTIVE + "");
+								}
+								
 								freshSaHierarchyList.add(saHierarchy);
+							}
+							if(StringUtils.isNotEmpty(recordStatus) && recordStatus.equalsIgnoreCase("updated")) {
+								timesheetSubmissions.setStatus(Constants.RECORD_ACTIVE + "");
+							}else {
+								timesheetSubmissions.setStatus(Constants.RECORD_INACTIVE + "");
 							}
 							timesheetSubmissions.setApproverHierarchyList(freshSaHierarchyList);
 						}
@@ -2058,13 +2077,15 @@ public class TimesheetRestController {
 					SubmissionApproverHierarchy sahActivity = null;
 					for (SubmissionApproverHierarchy saHierarchy : saHierarchyList) {
 						Submission_Status currentSahStatus = saHierarchy.getSubmissionStatus();
-						if (currentSahStatus != null && currentSahStatus.equals(Submission_Status.SUBMITTED)
+						if (StringUtils.isNotEmpty(recordStatus) && recordStatus.equalsIgnoreCase("updated") 
+								&&currentSahStatus != null && currentSahStatus.equals(Submission_Status.SUBMITTED)
 								&& StringUtils.isNotEmpty(savingType) && !savingType.equalsIgnoreCase("user")
 								&& StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("Draft")) {
 							status = "submitted";
 						}
 
-						if (StringUtils.isNotEmpty(saHierarchy.getSubmissionStatus().getValue())
+						if (StringUtils.isNotEmpty(recordStatus) && recordStatus.equalsIgnoreCase("updated") 
+								&& StringUtils.isNotEmpty(saHierarchy.getSubmissionStatus().getValue())
 								&& saHierarchy.getSubmissionStatus().getValue().equalsIgnoreCase("approved")) {
 							status = "approved";
 							saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue("approved"));
@@ -2072,13 +2093,18 @@ public class TimesheetRestController {
 							saHierarchy.setSubmissionStatus(Submission_Status.getNameByValue(status));
 						}
 
-						if (StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("Draft"))
+						if (StringUtils.isNotEmpty(recordStatus) && recordStatus.equalsIgnoreCase("updated") 
+								&& StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("Draft"))
 							saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
 
-						if (StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("Submitted"))
+						if (StringUtils.isNotEmpty(recordStatus) && recordStatus.equalsIgnoreCase("updated") 
+								&& StringUtils.isNotEmpty(status) && status.equalsIgnoreCase("Submitted"))
 							saHierarchy.setSubmissionApprovalStatus(
 									Submission_ApprovalStatus.getNameByValue("submitted for approval"));
-
+                        if(StringUtils.isNotEmpty(recordStatus) && recordStatus.equalsIgnoreCase("removed") ) {
+                        	saHierarchy.setSubmissionStatus(Submission_Status.NEW);
+                        	saHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.NEW);
+                        }
 						saHierarchy.setUpdatedDate(CommonUtil.currentDate());
 						saHierarchy.setUpdatedBy(loginUser.getUserCode());
 
@@ -2087,6 +2113,9 @@ public class TimesheetRestController {
 						if (frequencyEndDate != null)
 							saHierarchy.setFrequencyEndDate(frequencyEndDate);
 						sahActivity = saHierarchy;
+						if(StringUtils.isNotEmpty(recordStatus) && recordStatus.equalsIgnoreCase("removed")) {
+							sahActivity.setStatus(Constants.RECORD_INACTIVE + "");
+						}
 						freshSaHierarchyList.add(saHierarchy);
 					}
 					submissionApproverHierarchyService.saveAllSubmissionApproverHierarchy(new ArrayList<>(freshSaHierarchyList));
@@ -2098,11 +2127,17 @@ public class TimesheetRestController {
 						activityStatus ="Submitted"; 
 					}
                    TimesheetActivities ta = CommonUtil.getTimesheetActivity(sahActivity, activityStatus);
+                   if(StringUtils.isNotEmpty(recordStatus) && recordStatus.equalsIgnoreCase("removed")) {
+                	   ta.setStatus(Constants.RECORD_INACTIVE + "");
+					}
                    timesheetActivityService.saveTimesheetActivity(ta);
                    
-					                    timesheetSubmissions.setWeekcomments(weekComment);
+					timesheetSubmissions.setWeekcomments(weekComment);
 					timesheetSubmissions.setUpdatedDate(CommonUtil.currentDate());
 					timesheetSubmissions.setUpdatedBy(loginUser.getUserCode());
+					if(StringUtils.isNotEmpty(recordStatus) && recordStatus.equalsIgnoreCase("removed")) {
+						timesheetSubmissions.setStatus(Constants.RECORD_INACTIVE + "");
+					}
 					timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions);
 
 			} else {
@@ -2148,9 +2183,12 @@ public class TimesheetRestController {
 				timesheetSubmissionsService.saveAllTimesheetSubmissions(timesheetSubmissionsList);
 			}
 			// save mutliple attachment in timesheet submissison attachment.
+		    
+		    List<Long> oldFileDbIdList = timesheetSubmissionsDocumentsService.getAllTimesheetSubmissionsDocumentIdsBySubmissionId(timesheetSubmissions.getId());
+			List<Long> freshFileIdList = new ArrayList<>();
 			if (fileInfoList != null && !fileInfoList.isEmpty()) {
 				for (FileInfo file : fileInfoList) {
-					if (StringUtils.isEmpty(file.getFileDbId())) {
+					if (StringUtils.isEmpty(file.getFileDbId()) && StringUtils.isNotEmpty(file.getFileURL())) {
 						FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
 						TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
 						tsd.setTimesheetSubmissions(timesheetSubmissions);
@@ -2162,11 +2200,24 @@ public class TimesheetRestController {
 						tsd.setCreatedBy(loginUser.getUserCode());
 						tsd.setUpdatedDate(CommonUtil.currentDate());
 						tsd.setUpdatedBy(loginUser.getUserCode());
-					    timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
+						tsd = timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
+					    freshFileIdList.add(tsd.getId());
+					}else if(StringUtils.isNotEmpty(file.getFileDbId())) {
+						  freshFileIdList.add(Long.parseLong(file.getFileDbId()));
 					}
 				}
 			}
-
+			oldFileDbIdList.removeAll(freshFileIdList);
+			if (oldFileDbIdList != null && !oldFileDbIdList.isEmpty()) {
+				for (Long id : oldFileDbIdList) {
+					TimesheetSubmissionsDocuments timesheetSubmissionsDocuments  = timesheetSubmissionsDocumentsService.getTimesheetSubmissionsDocuments(id);
+					timesheetSubmissionsDocuments.setDocFile(null);
+					timesheetSubmissionsDocuments.setFileContentType(null);
+					timesheetSubmissionsDocuments.setFileName(null);
+					timesheetSubmissionsDocuments.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+				    timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(timesheetSubmissionsDocuments);
+				}
+			}
 			List<Long> oldDbIdList = timesheetDayEntriesDao
 					.getAllTimeSheetDayEntryIdsBySubmissionId(timesheetSubmissions.getId());
 			List<Long> freshIdList = new ArrayList<>();
@@ -2343,7 +2394,8 @@ public class TimesheetRestController {
 
 				}
 			}
-	  }
+	      }
+		}
 	}
 	private EmployeeTimesheetEntryDetailsDTO saveEmployeeTimesheetEntries(EmployeeTimesheetEntryDetailsDTO tedDTO, HttpServletRequest request)throws Exception {
 
@@ -2389,7 +2441,10 @@ public class TimesheetRestController {
 					timesheetEntriesMap.put(projectMemberId, tsDTOList);
 				}
 			}
+		     List<Long> oldPmDbIdList = tedDTO.getOldSubmittedProjectMembersList();
+		    List<Long> freshPmIdList = new ArrayList<>();
 			if(timesheetEntriesMap != null && !timesheetEntriesMap.isEmpty()) {
+				 
 				  for (Map.Entry<Long,LinkedList<TimesheetEntriesDTO>> entry : timesheetEntriesMap.entrySet()) {
 					     Long  projectMemberId= entry.getKey();
 				   		 LinkedList<TimesheetEntriesDTO> entriesList = entry.getValue();
@@ -2405,10 +2460,21 @@ public class TimesheetRestController {
 				   				 }
 				   			 }
 				   		 }
-				   		saveEmployeeTimesheetEntriesPerProjectMemberId(projectMemberId,weekComment,fileInfoList,entriesList, tedDTO.getTimeSubFrequencies(), tedDTO.getCurrentTimeFrequency(), tedDTO.getCurrentTimeSubFrequency(), status, loginOrgLocation, loginUser, candidate);
+				   		freshPmIdList.add(projectMemberId);
+				   		saveEmployeeTimesheetEntriesPerProjectMemberId(projectMemberId,"updated",weekComment,fileInfoList,entriesList, tedDTO.getTimeSubFrequencies(), tedDTO.getCurrentTimeFrequency(), tedDTO.getCurrentTimeSubFrequency(), status, loginOrgLocation, loginUser, candidate);
 					}
 			}
-		
+
+			if (oldPmDbIdList != null && !oldPmDbIdList.isEmpty()) {
+				oldPmDbIdList.removeAll(freshPmIdList);
+				if (oldPmDbIdList != null && !oldPmDbIdList.isEmpty()) {
+					for (Long projectMemberId : oldPmDbIdList) {
+						saveEmployeeTimesheetEntriesPerProjectMemberId(projectMemberId,"removed","",new ArrayList<FileInfo>(),new LinkedList<TimesheetEntriesDTO>(), tedDTO.getTimeSubFrequencies(), tedDTO.getCurrentTimeFrequency(), tedDTO.getCurrentTimeSubFrequency(), status, loginOrgLocation, loginUser, candidate);
+					}
+				}
+				
+			}
+			
 			return getEmployeeTimesheetEntryDetails(eedDTO, request);
 	}
 

@@ -225,9 +225,11 @@ $(document).ready(function(){
 						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
 						<select class="chosen-select form-control" id="categoryType${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${(2*(entryCount.count))-1});">
 						<option value="">Select Category Type</option>
+						<c:set var="isAttachmentRequired" value="Y"/>
 						<c:forEach var="project" items="${expEntry.projectsList}">
 						   <c:if test="${project.id == expenses.projectId}">
 					 	    	 <c:forEach var="expCat" items="${project.expenseCategoryList}">
+					 	    	      <c:set var="isAttachmentRequired" value="${!empty expCat.isAttachemtRequired && expCat.isAttachemtRequired == \"Y\" ? 'Y' :'N'}"/>
 					 	    	      <option ${entry.categoryTypeId == expCat.id ? 'selected' : ''} value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>
 					 	    	 </c:forEach>
 						  </c:if>
@@ -303,7 +305,7 @@ $(document).ready(function(){
 			                 <span> 
 			                     <table class='timesheetAttachment' id='attachmentTable${(2*(entryCount.count))-1}' cellpadding='0' cellspacing='0' width="100%">
 			                       <tr id='${(2*(entryCount.count))-1}divAttachmentTsRow0'>
-			                           <td><div id='0docFileuploadFileGroup${(2*(entryCount.count))-1}'><input type='file' name='0docFile${(2*(entryCount.count))-1}' id='0docFile${(2*(entryCount.count))-1}' field-name='Attachment' onchange='validateUploadFile(0,${(2*(entryCount.count))-1})' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment(${(2*(entryCount.count))-1},"EDIT")'></i></div></td> 
+			                           <td><div id='0docFileuploadFileGroup${(2*(entryCount.count))-1}'><input type='file' name='0docFile${(2*(entryCount.count))-1}' id='0docFile${(2*(entryCount.count))-1}' field-name='Attachment' onchange='validateUploadFile(0,${(2*(entryCount.count))-1})' ><i class='fa fa-plus' onClick='addAttachment(${(2*(entryCount.count))-1},"EDIT")'></i></div></td> 
 			                       </tr>
 			                   </table>
 			                 </span>

@@ -706,7 +706,7 @@ public class RequirementController {
 			requirement.setIsLoginUserAsApprover(isLoginUserAsApprover.toString());
 			
 			if (requirement.getCreatedBy().getId().equals(loginUser.getId())
-					|| requirement.getPrimaryRecruiterUserId().getId().equals(loginUser.getId())) {
+					|| (requirement.getPrimaryRecruiterUserId() != null && requirement.getPrimaryRecruiterUserId().getId().equals(loginUser.getId()))) {
 				requirement.setIsLoginUserAsInitiator("true");
 			} else {
 				requirement.setIsLoginUserAsInitiator("false");
@@ -813,7 +813,15 @@ public class RequirementController {
 					model.addObject("submissionStatus", submissionStatus);
 				}
 				
-				
+				Collection<OrgRelations> orgVendorsList = orgRelationsService.getAllVendorsByOrgLocationId(orgLocations.getId()); 
+				if(null != orgVendorsList && orgVendorsList.size() > 0){
+					for(OrgRelations ocl :orgVendorsList){
+						ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+						ocl.setOrgid(ocl.getResponderLocationId().getOrg().getId());
+					 }
+				    model.addObject("add_VendorList", orgVendorsList);
+				}
+			    model.addObject("loginOrgLocId", orgLocations.getId());
 				
 				
 			}

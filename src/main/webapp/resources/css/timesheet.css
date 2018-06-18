@@ -7,9 +7,6 @@ body {
     }    
 a { cursor:pointer;}
  
- p {
- 	padding: 0px 0px; margin: 0px 0px;
- 	}
 .timesheet_out {
     width:auto; padding:0px 0px 0px 0px; position:relative;
     }
@@ -929,12 +926,12 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .clients_wrap_table table tr:hover .client_show i {
     visibility:visible; opacity:1;
     }
-.clients_side_wrap {
+.clients_side_wrap, .submission_side_wrap {
     width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
     transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
     z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
     }
-.clients_side_wrap.clients_side_wrap_active {
+.clients_side_wrap.clients_side_wrap_active, .submission_side_wrap.submission_side_wrap_active {
     right:0px;
     }  
 .clients_side_wrap_inn {
@@ -2237,11 +2234,8 @@ margin-bottom:15px !important;
     display:block; font-style:normal; font-size:12px; line-height:14px;
     }
 .timesheet_tableNew table tr td {
-    width:10%; border-left: 1px solid #f2f2f2; padding:5px 5px; border-bottom: 1px solid #f2f2f2; height: 40px;
+    width:10%; border-left: 1px solid #f2f2f2; padding:5px 5px; border-bottom: 1px solid #f2f2f2; height: 38px;
     }
-.timesheet_tableNew table tr td.timeModifyBtn {
-	height: 72px;
-}
  
 .timesheet_tableNew table tr td b {
     font-weight:400; display: inline-block; padding:3px 0px; color:#FFF; font-size:11px; border-radius:3px; background-color:#3186d6;
@@ -4057,7 +4051,11 @@ position: relative; padding: 0px 0px 5px 0px;
     padding: 5px; margin: 0px 0px; position: absolute; top: -20px; font-size: 16px; color: #17324c; cursor: pointer;
     left: 0px;
 }
- 
+.commentFile h2 .fa-info-circle {
+    padding: 0px; margin: 0px 0px; position: static; top: 0px; font-size: 14px; color: #17324c; cursor: pointer;
+    left: 0px;
+} 
+
 .depPW {
     width: 400px;
 }
@@ -8303,9 +8301,10 @@ float: left; width: 33.3333%; background-color: #f9f9f9; padding: 5px 15px; marg
 .timeAttBtn i.fa-trash {
 	color: #CB3E41;
 }
+
 .maxWid {
-	max-width: 60% !important;
+max-width: 60% !important;
 }
 .maxWid .attFile {
-	max-width: 100% !important;
+max-width: 100% !important;
 }

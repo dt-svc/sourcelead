@@ -5,7 +5,9 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DayWiseTimesheetReoprtsDTO {
+public class DayWiseTimesheetReoprtsDTO extends SearchDTO {
+
+	private static final long serialVersionUID = -3365114820091971186L;
 
 	private String startDate;
 	
@@ -27,6 +29,10 @@ public class DayWiseTimesheetReoprtsDTO {
 	
 	private String templateType;
 
+	private int pageNo;
+	
+	private int pageSize;
+	
 	public String getStartDate() {
 		return startDate;
 	}
@@ -105,6 +111,22 @@ public class DayWiseTimesheetReoprtsDTO {
 
 	public void setTemplateType(String templateType) {
 		this.templateType = templateType;
+	}
+
+	public int getPageNo() {
+		return pageNo;
+	}
+
+	public void setPageNo(int pageNo) {
+		this.pageNo = pageNo;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
 	}
 	
 	

@@ -383,7 +383,7 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 	
 	
 	result = result + '<div class="row">';
-	result = result + '	<div class="col-md-6 upresume mb">';
+	result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
 	result = result + '<label class="col-md-4">Add Resume</label>';
 	result = result + '		<div class="col-md-8">';
 	result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
@@ -399,7 +399,7 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 	result = result + '	<div class="col-md-6 upresume mb">';
 	result = result + '<label class="col-md-4">&nbsp;</label>';
 	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<span><strong>Need applicant permission</strong></span><br>';
-	result = result + '<input type="checkbox" checked="checked" name="notifyToApplicant" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
+	result = result + '<input type="checkbox"  name="notifyToApplicant" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
 	result = result + '</div>';
 	result = result + '</div>';
 	
@@ -520,7 +520,7 @@ function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId)
 	
 	result = result + '	<div class="col-md-6 upresume mb">';
 	result = result + '<label class="col-md-4">&nbsp;</label>';
-	result = result + '<input type="checkbox" checked="checked" name="notifyToApplicant" value="Y" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
+	result = result + '<input type="checkbox"  name="notifyToApplicant" value="Y" id="notifyToApplicantId" onClick="ApplicantNotifyRequiremnent();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
 	result = result + '</div>';
 	result = result + '</div>';
 	

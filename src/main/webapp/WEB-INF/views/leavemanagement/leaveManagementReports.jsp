@@ -57,7 +57,8 @@ background-color: #fcfcfc;
         <div class="project_side_wrap_inn_tabs" id="new-id">
         
          <sec:authorize access="hasRole('ROLE_APPLY_LEAVE')"> 
-             <div class="pull-right">
+             <div class="pull-right tblminwidth-125">
+             <div class="success_pop" id="msgDiv" style="display: none;"></div>
               <form:form id="upload_leave_excel_form" name="upload_leave_excel_form" enctype="multipart/form-data">
                  <div title="Import" class="positionRelartive pull-left zIndex mr">
 					        	<a onclick="leaveImport();"><i class="glyphicon glyphicon-import expIcon mt5"></i>&nbsp;</a> 
@@ -1362,6 +1363,7 @@ function leaveExcelExport(){
 
 <script>
 function leaveImport(){
+	resetUpload();
 	$(".dowload_pop").toggle();
 }
 function closeImportFile(){
@@ -1376,7 +1378,6 @@ function leaveImpPopClose(){
 
 <script type="text/javascript">
 function importLeaves(){
-	alert("Hi");
 	var validationSettings = {
             errorMessagePosition : 'element',
             borderColorOnError : '',
@@ -1394,7 +1395,6 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
 	var form = $('#upload_leave_excel_form')[0];
 	var formData = new FormData(form); 
 	
-	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 		   	type: "POST",
 		   	data: formData,
@@ -1405,7 +1405,13 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
     	    dataType : 'json',
 		    url : sourceleadUrl+"/uploadLeaveType?"+tokenParamName+"="+tokenValue+"", 	   
  		    success : function(json) {
- 		    	
+ 		    	    if(json.updateCount != null && json.updateCount != '')
+ 		    	    $("#msgDiv").removeAttr("style");
+ 		 			$("#msgDiv").css({ display: "block" });
+ 		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
+ 			    	msgFadein();
+ 		    	    closeImportFile();
+ 		    	   resetUpload();
 		 		    },
 		 		   error: function(e){
 			        }
@@ -1415,73 +1421,18 @@ if ($('#upload_leave_excel_form').validate(false, validationSettings)){
 }
 </script>
 
-<!-- <script>
-function importLeaves(){
-	alert("Hi");
-	var file = $("#leaveInputFileId").val();
-	if(file != null && file != '' && file != 'undefined'){
-		var frm = $('#upload_leave_excel_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		
-		//It will escape all the special characters
-		var jsonData = encodeURIComponent(con);
-		var form = $('#upload_leave_excel_form')[0];
-		var formData = new FormData(form); 
-
-		$.ajax({
-	   	type: "POST",
-		data: formData,
-	    contentType : 'application/json; charset=utf-8',
-	    enctype: 'multipart/form-data',
-	    processData: false,
-        contentType:false,
-	    dataType : 'json',
-	    url : sourceleadUrl+"/uploadLeaveType?"+tokenParamName+"="+tokenValue+"", 	   
-		    success : function(json) {
-		    	/*	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		    	
-		     	var statusCode = "";
-				if(json != null){
-					statusCode = json.statusCode;
-				}
-				if(json != null && json != ''){
-					if(statusCode == "success"){
-						$("#selector").removeClass("remove_pop");
-				 		$("#selector").addClass("success_pop");
-				 		$("#selector").removeAttr("style");
-						$("#selector").css({ display: "block" });
-				 		$("#msgDiv").html("Processed successfully");
-				 		msgFadein();
-				 		prepareExcelDataDiv(json);
-					}else if(statusCode == "invalid"){
-						$("#selector").removeAttr("style");
-						$("#selector").css({ display: "block" });
-						$("#msgDiv").html("Please fill mandatory fields");
-						msgFadein();
-					}
-				}else if(statusCode == ""){
-					$("#selector").removeAttr("style");
-					$("#selector").css({ display: "block" });
-					$("#msgDiv").html("Please import valid Template or fill mandatory fields");
-					msgFadein();
-				} */
-	 		    },
-	 		   error: function(e){
-		        }
-		 });
-	}
-}
-
-function resetUpload(){
-	$("#leaveInputFileId").val("");
-}
-</script> -->
-
 <script>
 function resetUpload(){
 	$("#leaveInputFileId").val("");
 }
 </script>
+
+
+<script>
+	function msgFadein() {
+		$("#msgDiv").fadeIn(200);
+        $('#msgDiv').delay(2000).fadeOut('slow');
+	}
+</script> 
 
 <jsp:include page="../masterFooter.jsp" />

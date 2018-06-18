@@ -1660,9 +1660,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> getUsersByEmailList(List<String> userEmail)
+	public List<User> getUsersByEmailList(List<String> userEmail,OrgLocations orgLocation)
 	{
-		return userDao.getUsersByEmailList(userEmail);
+		return userDao.getUsersByEmailList(userEmail,orgLocation);
 	}
 
 	@Override

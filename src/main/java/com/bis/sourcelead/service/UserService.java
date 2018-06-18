@@ -10,7 +10,6 @@ import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
-import com.bis.sourcelead.dto.AssociateGradesDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.Response;
@@ -236,6 +235,8 @@ public interface UserService  {
 
 	List<User> getUsersByEmailList(List<String> userEmail);
 	
+	List<User> getUsersByEmailList(List<String> userEmail, OrgLocations orgLocation);
+
 	/**
 	 * @author Mahaveer Manoj
 	 * @purpose - to get Dashboard Items by user
