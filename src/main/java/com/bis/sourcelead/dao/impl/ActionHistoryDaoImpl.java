@@ -1,12 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -31,7 +28,7 @@ import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class ActionHistoryDaoImpl implements ActionHistoryDao {
-	private static final Logger logger = LoggerFactory.getLogger(ExpensesCategoryDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionHistoryDaoImpl.class);
 
 	@Autowired
 	private SessionFactory sessionFactory;
