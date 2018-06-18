@@ -216,9 +216,10 @@ public class ProjectsRestController {
 	
        @RequestMapping(value = "/assignProjectMembersToProject", method = RequestMethod.POST)
 		public  Response<String> assignProjectMembersToProject(ProjectAssignedMembersDTO projectAssignedMembersDTO,@RequestParam(value="projectUUID", required=true) String projectUUID,
-			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId) throws Exception {
+			   @RequestParam(value="userId", required=true) Long userId,@RequestParam(value="orgLocationId", required=true) Long orgLocationId,HttpServletRequest request) throws Exception {
 			Response<String> response = new Response<>();
 			 User user = userService.getUserById(userId);
+			 String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request,"isGlobalAccess");
 			try {
 				if(user != null) {
 					outerLoop:{
@@ -234,7 +235,7 @@ public class ProjectsRestController {
 								}
 				   			}
 				   		    OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-						    projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations);
+						    projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projectUUID, user, orgLocations,isGlobalAccess);
 						    approvedLeaveForNewlyAddedEmployee(projectAssignedMembersDTO.getProjectMembers(),orgLocations,user);
 						    response.setResponse(Result.SUCCESS.name());
 							response.setResponseMessage(Result.SUCCESS.getValue());
