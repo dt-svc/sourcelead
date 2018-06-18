@@ -98,7 +98,7 @@
                         <div data-fieldtype="account" data-prop='username' data-fieldfor="2,3" data-requiredfor="2,3" class="col-md-12 mb10">
                             <label class="clearfix">Username<span class="text-danger">&nbsp;*</span></label>
                             <div class="clearfix">
-                                <input type="text" autocomplete="off" id="jobBoarddAccountUsername" name="jobBoarddAccountUsername" field-name="Username" placeholder="Email"  class="form-control" data-validation="required"/>
+                                <input type="text" autocomplete="off" id="jobBoarddAccountUsername" name="jobBoarddAccountUsername" field-name="Username" placeholder="Username"  class="form-control" data-validation="required"/>
                             </div>
                         </div>
 
