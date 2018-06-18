@@ -211,14 +211,14 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			leaveType.setNewJoinee(0);
 		}
 		   if(leaveTypeDTO.getMaxDays() !=null && !"".equalsIgnoreCase(leaveTypeDTO.getMaxDays())){
-			   leaveType.setMaxDays(Integer.parseInt(leaveTypeDTO.getMaxDays()));
+			   leaveType.setMaxDays(Float.parseFloat(leaveTypeDTO.getMaxDays()));
 		   }else{
-				leaveType.setMaxDays(0);
+				leaveType.setMaxDays(0f);
 			}
 		   if(leaveTypeDTO.getMinDays() !=null && !"".equalsIgnoreCase(leaveTypeDTO.getMinDays())){
-			   leaveType.setMinDays(Integer.parseInt(leaveTypeDTO.getMinDays())); 
+			   leaveType.setMinDays(Float.parseFloat(leaveTypeDTO.getMinDays())); 
 		   }else{
-				leaveType.setMinDays(0);
+				leaveType.setMinDays(0f);
 			}
 		
 		if(leaveTypeDTO.getNoOfDaysPerPeriod() != null)

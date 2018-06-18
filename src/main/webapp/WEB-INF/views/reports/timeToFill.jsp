@@ -98,10 +98,10 @@ $(document).ready(function(){
     	 	<div class="clearfix">
     			<div class="reTenWrap mt">
 			<h2 class="clearfix"><p id="yearchart"></p><span class="text-success" id="totalyearcount">0</span></h2>
-			<h3 class="clearfix"><p>Quarter 1</p><span class="text-primary" id="quarter1">0</span></h3>
-			<h3 class="clearfix"><p>Quarter 2</p><span class="text-warning" id="quarter2">0</span></h3>
-			<h3 class="clearfix"><p>Quarter 3</p><span class="text-primary" id="quarter3">0</span></h3>
-			<h3 class="clearfix"><p>Quarter 4</p><span class="text-warning" id="quarter4">0</span></h3>
+			<h3 class="clearfix"><p>Quarter 1 - Jan To Mar</p><span class="text-primary" id="quarter1">0</span></h3>
+			<h3 class="clearfix"><p>Quarter 2 - Apr To Jun</p><span class="text-warning" id="quarter2">0</span></h3>
+			<h3 class="clearfix"><p>Quarter 3 - Jul To Sep</p><span class="text-primary" id="quarter3">0</span></h3>
+			<h3 class="clearfix"><p>Quarter 4 - Oct To Dec</p><span class="text-warning" id="quarter4">0</span></h3>
 		</div>
     		</div>
     		

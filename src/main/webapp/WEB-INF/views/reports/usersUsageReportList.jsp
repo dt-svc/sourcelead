@@ -23,6 +23,8 @@
  </script>
 <input type="hidden" id="emptyUserUsageReportsId" name="emptyUserUsageReportsId"/>
 <input type="hidden" id="userTypeId" name="userTypeId"/>
+<input type="hidden" id="lastActivityCountIdHidden" name="lastActivityCountIdHidden" value="---"/>
+<input type="hidden" id="lastActivityIpCountIdHidden" name="lastActivityIpCountIdHidden" value="---"/>
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -111,7 +113,7 @@
     <li class="col-md-2">
       <div class="text-center well well-sm usageGrid" id="activeLi">
         <div class="clearfix"><i class="fa fa-user fa-2x text-primary"></i></div>
-        <h4>Active</h4>
+        <h5>Active</h5>
         <label class="views-count usersList" onClick="usageReportList('ACTIVE');usageactiveList();" id="activeCount"></label>
 <!--       <input type="text" value='ACTIVE' id="activeCount" class="form-control"> -->
       </div>
@@ -119,28 +121,28 @@
     <li class="col-md-2">
       <div class="text-center well well-sm" id="inactiveLi">
         <div class="clearfix"><i class="fa fa-user-times fa-2x text-danger"></i></div>
-        <h4>Inactive</h4>
+        <h5>Inactive</h5>
         <label class="views-count submited2client" onClick="usageReportList('INACTIVE');usageinactiveList();" id="inActiveCount"></label>
       </div>
     </li>
     <li class="col-md-2">
       <div class="text-center well well-sm" id="notloginLi">
         <div class="clearfix"><i class="fa fa-lock fa-2x text-warning"></i></div>
-        <h4> Not Logged In</h4>
+        <h5>Not Logged In</h5>
         <label class="views-count interview" onClick="usageReportList('NOT_LOGGEDIN');usagenotloginList();" id="notLoggedInCount"></label>
       </div>
     </li>
     <li class="col-md-2">
       <div class="text-center well well-sm" id="totalLi">
         <div class="clearfix"><i class="fa fa-users fa-2x text-info"></i></div>
-        <h4>Total</h4>
+        <h5>Total</h5>
         <label class="view-count" id="totalUserCount"></label>
       </div>
     </li>
          <li class="col-md-2">
       <div class="text-center well well-sm" id="multipleLi">
         <div class="clearfix"><i class="fa fa-sliders fa-2x text-success"></i></div>
-        <h4>IP Details</h4>
+        <h5>IP Details</h5>
         <label class="views-count offer" onClick="usagemultipleipslist('MULTIPLE_IP')" id="multipleIpsCount"></label>
       </div>
     </li>
@@ -437,11 +439,8 @@ function activePagination(url, userType){
                 "render": function ( data, type, opt, meta ) {
                         var result = "";
                         if(userType != "NOT_LOGGEDIN"){
-                        if(opt.noOfActivities !=null && opt.noOfActivities !='' && opt.noOfActivities !='undefined'){
-                            result = result + ' <td><div><span>'+opt.noOfActivities+'</span></div></td>';
-                        }else{
-                            result = result + ' <td><div><span>---</span></div></td>';
-                        }
+                            result = result + ' <td><div class="tblminwidth-50"><a id="'+opt.userId+'countId" data-id="'+opt.userId+'" class="viewActiveCount"><i class="fa fa-spinner fa-pulse"></i></a></div><div class="tblminwidth-50"  style="display:none;"><span title="100"></span></div></td>';
+                        
                         }else{
                             result = result + ' <td><div><span>---</span></div></td>';
                         }
@@ -481,15 +480,18 @@ function activePagination(url, userType){
                   "data": "lastActivityOn",
                   "render": function(data, type, opt, meta) {
                       var result = "";
+                      var lastActivityHiddenCount = $("#lastActivityCountIdHidden").val();
                       if(userType != "NOT_LOGGEDIN"){
-                      if(opt.lastActivity != null && opt.lastActivity !='' && opt.lastActivity != 'undefined'){
-                          result = result + ' <td><div><span>'+opt.lastActivity+'</span></div></td>';
+                      /* if(opt.lastActivity != null && opt.lastActivity !='' && opt.lastActivity != 'undefined'){
+                          result = result + ' <td><div><span>--</span></div></td>';
+                      }else  */if(lastActivityHiddenCount != null && lastActivityHiddenCount !='' && lastActivityHiddenCount != 'undefined'){
+                    	  result = result + ' <td><div id="'+opt.userId+'lastActivityCountId"><span>'+opt.lastActivity+'</span></div></td>';
                       }else{
-                          result = result + ' <td><div><span>---</span></div></td>';
+                    	  result = result + ' <td><div><span>---</span></div></td>';
                       }
                       }else{
                           result = result + ' <td><div><span>---</span></div></td>';
-                      }
+                      } 
                       return result;
                   }
               }/* , {
@@ -523,7 +525,18 @@ function activePagination(url, userType){
                  "sSearch": "",
                   "sZeroRecords": "", "sEmptyTable": "",
                   "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-         }
+         },
+	      drawCallback: function(){
+	    	 $('.viewActiveCount').each(function() {
+	    		 var id = this.id;
+	    		 var localId = $("#"+id).attr('data-id');
+	    		 if(localId != null &&  localId !='undefined' && localId != ''){
+	    			 viewCount(localId);
+	    		 }
+	    			
+	       }); 
+	   	   } 
+         
     } );
     $("#activePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
     $("input[type=search]").hide();
@@ -541,6 +554,8 @@ function activePagination(url, userType){
         $("#listNamediv").html("Not Logged In Users List");
     }
     getCountList();
+    
+    
 }
 
 </script>
@@ -682,11 +697,11 @@ function activePagination(url, userType){
                       "data": "noOfUsers",
                       "render": function ( data, type, opt, meta ) {
                           var result = "";
-                          if(opt.noOfUsers !=null && opt.noOfUsers !='' && opt.noOfUsers !='undefined'){
-                              result = result + ' <td><div><a class="cursorPointer" onClick="showIp(\''+opt.ipAddress+'\');">'+opt.noOfUsers+'</a></div></td>';
-                            }else{
-                                result = result + ' <td><div>--</div></td>';
-                            }
+//                           if(opt.noOfUsers !=null && opt.noOfUsers !='' && opt.noOfUsers !='undefined'){
+                              result = result + ' <td><div> <a id="'+opt.ipAddress+'ipUsersCountId" data-id="'+opt.ipAddress+'" class="ipDetailsCount" class="cursorPointer" onClick="showIp(\''+opt.ipAddress+'\');"><i class="fa fa-spinner fa-pulse"></i></a></div></td>';
+//                             }else{
+//                                 result = result + ' <td><div>--</div></td>';
+//                             }
                           return result;
                               
                       }
@@ -708,11 +723,13 @@ function activePagination(url, userType){
                         "data": "noOfActivities",
                         "render": function ( data, type, opt, meta ) {
                                 var result = "";
-                                if(opt.noOfActivities !=null && opt.noOfActivities !='' && opt.noOfActivities !='undefined'){
-                                    result = result + ' <td><div><span>'+opt.noOfActivities+'</span></div></td>';
-                                }else{
-                                    result = result + ' <td><div><span>---</span></div></td>';
-                                }
+//                                 var lastActivityIpHiddenCount = $("#lastActivityIpCountIdHidden").val();
+//                                 if(opt.noOfActivities !=null && opt.noOfActivities !='' && opt.noOfActivities !='undefined'){
+//                                     result = result + ' <td><div><span>'+opt.noOfActivities+'</span></div></td>';
+                                    result = result + ' <td><div class="tblminwidth-50"><a id="'+opt.ipAddress+'ipCountId" data-id="'+opt.ipAddress+'" class="ipDetailsCount"><i class="fa fa-spinner fa-pulse"></i></i></a></div><div class="tblminwidth-50"  style="display:none;"><span title="100"></span></div></td>';
+//                                    }else{
+//                                     result = result + ' <td><div><span>---</span></div></td>';
+//                                    }
                               return result;
                         }
                   }],
@@ -727,7 +744,18 @@ function activePagination(url, userType){
                        "sSearch": "",
                         "sZeroRecords": "", "sEmptyTable": "",
                         "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-               }
+               },
+            
+	            drawCallback: function(){
+	   	    	 $('.ipDetailsCount').each(function() {
+	   	    		 var localId = $(this).attr('data-id').replace(/\,/g, '');
+		   	    		 if(localId != null &&  localId !='undefined' && localId != ''){
+		   	    			 ipCount(localId);
+		   	    		 }
+   	    			
+   	       }); 
+   	   	   }
+            
           } );
             
 //             $("#multipleIpsDiv").find('a.buttons-excel').prop("title", "Export to Excel");
@@ -1358,6 +1386,53 @@ function validateCustDatesGraph(){
 }
     
     </script>
+    
+  <script>
+    function viewCount(userId){
+        var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+        var userType = $("#userTypeId").val();
+        var orgId = $("#orgs").val();
+        var customDates = $("#customDates").val();
+        var fromDate = $("#custFromDate").val();
+        var toDate = $("#custToDate1").val();
+//         var url = sourceleadUrl+"/viewCountsList?orgLocationId="+orgLocationId+"&userType="+userType+"&orgId="+orgId+"&customDates="+customDates+"&fromDate="+fromDate+"&toDate="+toDate;
+        $.ajax({
+            type : "GET",
+             url: sourceleadUrl+"/viewCountsList?userId="+userId+"&userType="+userType+"&orgId="+orgId+"&customDates="+customDates+"&fromDate="+fromDate+"&toDate="+toDate,    
+             success :function(data) {
+           	  
+           	  $("#"+userId+"countId").html(data.noOfActivities);
+           	  $("#lastActivityCountIdHidden").val(data.lastActivity);
+           	  $("#"+userId+"lastActivityCountId").empty();
+           	  $("#"+userId+"lastActivityCountId").html(data.lastActivity)
+            },
+             
+        }); 
+        
+        
+    }
+</script>
+
+<script>
+function ipCount(ipAddress){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var orgId = $("#orgs").val();
+    var customDates = $("#customDates").val();
+    var fromDate = $("#custFromDate").val();
+    var toDate = $("#custToDate1").val();
+	$.ajax({
+        type : "GET",
+	    url : sourceleadUrl+"/ipCountDetails?ipAddress="+ipAddress+"&fromDate="+fromDate+"&toDate="+toDate+"&customDates="+customDates+"&orgId="+orgId,
+	    success :function(data) {
+// 	    	$("#"+ipAddress+"ipCountId").html(data.noOfActivities);
+	    	document.getElementById(""+ipAddress+"ipCountId").innerHTML = data.noOfActivities
+	    	document.getElementById(""+ipAddress+"ipUsersCountId").innerHTML = data.totalNoOfUsers
+	    },
+	
+	 });
+	
+}
+</script>
 
 <jsp:include page="userUsageReportsGraph.jsp" />
 <jsp:include page="../masterFooter.jsp" />

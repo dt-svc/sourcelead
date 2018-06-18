@@ -1,10 +1,10 @@
 package com.bis.sourcelead.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 
-import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 
 public interface UserLoginLogoutSessionDao {
@@ -19,11 +19,12 @@ public interface UserLoginLogoutSessionDao {
 
     boolean validatePreviouslyAuthenticatedByUserIdAndIpAddress(String ipAddress, Long userId);
 
-    List<Long> getUsersListByIpAddress(String ipAddress, List<Long> list);
+    UserDTO getUsersListByIpAddress(String ipAddress, List<Long> list,Long orgLocationId);
 
     List<String> getMultipleIps(UsersUsageReportDTO usersUsageReportDTO);
     
     List<UserLoginLogoutSession> getUsersByipAddress(UsersUsageReportDTO usersUsageReportDTO);
     
-    
+	List<UserLoginLogoutSession>  getAll();
+
 }
