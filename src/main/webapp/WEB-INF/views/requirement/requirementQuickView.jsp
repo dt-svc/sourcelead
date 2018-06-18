@@ -470,8 +470,17 @@
                     	</div>
                     	<div class="clearfix"></div> 
                     </c:if>
-                </div> 							            
-           
+                </div> 			
+                    <c:if test="${requirement.requirementJobBoardInfoList != null && !requirement.requirementJobBoardInfoList.isEmpty()}">
+                        <div class="clearfix"></div> 
+                        <h2>Job Board(s)</h2> 
+                        <div class="require_one"> 
+                            <c:forEach items="${requirement.requirementJobBoardInfoList}" var="r">
+                                <span><a target="_blank" href="${r.jobUrl}"><img width="70px" src="${r.jobBoard.logoUrl}" alt="${r.jobBoard.name}"/></a></span>
+                            </c:forEach>
+                                <div class="clearfix"></div> 
+                        </div>
+                    </c:if>
                    <div class="clearfix"></div> 
                  </div> 
                  <div class="clearfix"></div> 
