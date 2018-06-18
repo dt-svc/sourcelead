@@ -308,6 +308,9 @@ window.onload = function() {
 		  }if(locationDate.match("yyyy-dd-MM")){
 			  finalDateFormatEndDate = 'yy-dd-mm'; 
 		  }
+		//to set from date to current month
+	       var currentTime = new Date()
+	       var minDate = new Date(currentTime.getFullYear(), currentTime.getMonth(), +1);
 		$('#fromDate').datepicker({
 			dateFormat : finalDateFormatEndDate,
 			changeMonth: true,
@@ -849,8 +852,9 @@ function validateDate(){
 	if(userId != null && userId != '' && userId != 'undefined'){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 			if(data != null){
-				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You cannot apply for leave on restricted/holiday day</span> "+data);
+				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data);
 				$(".comMask").fadeIn();
+				$("#applyId").prop("disabled", true);
 			}else{
 				$('.warMess').hide();
 			}
