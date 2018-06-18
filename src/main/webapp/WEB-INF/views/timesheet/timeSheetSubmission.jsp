@@ -248,7 +248,7 @@
 									<tr>
 										<th>Tasks</th>
 										<th>Type</th>
-										<!-- <th>Time Type</th> -->
+										<th>Ref/Ticket No.</th>
 										<c:forEach var="weekDays" items="${timesheetSubmissionDTO.weekDays}">
 										   <th>${weekDays.dayOfTheDate}<i>${weekDays.date}</i></th>
 										</c:forEach>
@@ -261,6 +261,7 @@
 											  <c:set var="taskType" value=""/>
 											  <c:set var="taskId" value=""/>
 											  <c:set var="taskName" value=""/>
+											  <c:set var="ticketNumber" value=""/>
 											  <c:if test="${timesheetSubmissionDTO.submitButtonVisible ||  timesheetSubmissionDTO.saveButtonVisible}">
 												   <select id="${entryCount.index+1}task1Id" name="${entryCount.index+1}task1Id" class="existedProjectTaskId${timesheetEntryDetailsDTO.projectId} timSelWid"  onchange='prepareProjectTaskDetails("${entryIndex}","${entryCount.index+1}task1Id");' data-validation="required" field-name="Task">
 														<option value=''>--select task--</option>
@@ -269,6 +270,7 @@
 														       <c:if test="${pt.id == entry.key}">
 															       <c:forEach var="ted" items="${entry.value}">
 														                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
+														                  <c:set var="ticketNumber" value="${ted.timesheetTaskDTO.ticketNumber}" />
 														           </c:forEach>
 														          <c:set var="taskId" value="${pt.id}" />
 														          <c:set var="taskName" value="${pt.taskName}" />
@@ -299,11 +301,13 @@
 															       <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
 																	       <c:forEach var="ted" items="${entry.value}">
 																                  <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
+																                  <c:set var="ticketNumber" value="${ted.timesheetTaskDTO.ticketNumber}" />
 																           </c:forEach>
 															       </c:if>
 															        <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
 															             <c:forEach var="ted" items="${entry.value}">
 															                 <c:set var="taskType" value="${ted.timesheetTaskDTO.taskType}" />
+															                 <c:set var="ticketNumber" value="${ted.timesheetTaskDTO.ticketNumber}" />
 									                                      </c:forEach>
 															        </c:if> 
 														           <c:set var="taskId" value="${pt.id}" />
@@ -335,16 +339,23 @@
 									           <%-- <span id="${entryCount.index+1}task1IdBillableTypeId">${!empty taskType ? taskType : '--'}</span> --%>
 									        </div>
 									      </td>
-									      <!-- <td>
-									        <div>Regular</div>
-									      </td> -->	
+									      <td>
+									         <c:if test="${timesheetSubmissionDTO.timesheetStatus == 'APPROVED'}">
+									               <span>${!empty ticketNumber ? ticketNumber : '--'}</span>
+									          </c:if>
+									          <c:if test="${timesheetSubmissionDTO.timesheetStatus != 'APPROVED'}">
+									          <div>
+									        	<input type="text"   id="${entryCount.index+1}ticketNumber1Id" name="${entryCount.index+1}ticketNumber1Id" value="${ticketNumber}" field-name="" onblur="setTicketNumber('${entryIndex}','${entryCount.index+1}ticketNumber1Id');" class="timeTick">
+									          </div>
+									         </c:if>
+									      </td>	
 									       <c:forEach var="te" items="${entry.value}" varStatus="teStatus">
 										          <td> 
 										           <div>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.id" value="${taskId}"/>
 													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskName" value="${taskName}"/>
 													   <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].timesheetTaskDTO.taskType" value="${taskType}"/>
- 
+                                                       <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].ticketNumber" value="${ticketNumber}" />
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].id" value="${te.id}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].dayOfTheDate" value="${te.dayOfTheDate}"/>
 										               <input type="hidden" name="timesheetSubmission.timesheetEntries[${entryIndex}].date" value="${te.date}"/>
@@ -403,7 +414,7 @@
 								    <tr class="last_child">
 										<td class="total_field">Total</td>
 										<td></td>
-										<!-- <td></td> -->
+										<td></td>
 										<td>
 											<div class="alignDiv">
 											<input type="hidden" id="entryIndexValue" value="${entryIndex}"/>
@@ -1149,7 +1160,15 @@ function addTimeSheetRow(projectId) {
 			cell1.innerHTML = divadttTd1Str;
 			$("#"+maxRowNum+"task1Id").attr('data-validation','required');
 			
-		    var cell2 = row.insertCell(2);
+			var cell2 = row.insertCell(2);
+			var divadttTd10Str = document.getElementById("divadttTd10").innerHTML;
+			divadttTd10Str = divadttTd10Str.replace(/REPLACEROWID/g, (maxRowNum));
+			divadttTd10Str = divadttTd10Str.replace(/projectId/g, (projectId)); 
+			divadttTd10Str = divadttTd10Str.replace(/ENTRYINDEX/g, (entryIndex)); 
+			cell2.innerHTML = divadttTd10Str;
+			
+			
+		    var cell3 = row.insertCell(3);
 			var isCell1Disabled = $("#1timeSheetDay1Id").prop('disabled');
 			if(isCell1Disabled){
 				$("#divadttTd3 :input[type=text]").attr('disabled','disabled');
@@ -1168,10 +1187,10 @@ function addTimeSheetRow(projectId) {
 			var dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[0].dayOfTheDate']").val();
 			divadttTd2Str = divadttTd2Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd2Str = divadttTd2Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell2.innerHTML = divadttTd2Str;
+			cell3.innerHTML = divadttTd2Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell3 = row.insertCell(3);
+			var cell4 = row.insertCell(4);
 			var isCell2Disabled = $("#1timeSheetDay2Id").prop('disabled');
 			if(isCell2Disabled){
 				$("#divadttTd4 :input[type=text]").attr('disabled','disabled');
@@ -1190,10 +1209,10 @@ function addTimeSheetRow(projectId) {
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[1].dayOfTheDate']").val();
 			divadttTd3Str = divadttTd3Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd3Str = divadttTd3Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell3.innerHTML = divadttTd3Str;
+			cell4.innerHTML = divadttTd3Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell4 = row.insertCell(4);
+			var cell5 = row.insertCell(5);
 			var isCell3Disabled = $("#1timeSheetDay3Id").prop('disabled');
 			if(isCell3Disabled){
 				$("#divadttTd5 :input[type=text]").attr('disabled','disabled');
@@ -1212,10 +1231,10 @@ function addTimeSheetRow(projectId) {
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[2].dayOfTheDate']").val();
 			divadttTd4Str = divadttTd4Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd4Str = divadttTd4Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell4.innerHTML = divadttTd4Str;
+			cell5.innerHTML = divadttTd4Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell5= row.insertCell(5);
+			var cell6= row.insertCell(6);
 			 var isCell4Disabled = $("#1timeSheetDay4Id").prop('disabled');
 			if(isCell4Disabled){
 				$("#divadttTd6 :input[type=text]").attr("disabled", "disabled");
@@ -1233,10 +1252,10 @@ function addTimeSheetRow(projectId) {
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[3].dayOfTheDate']").val();
 			divadttTd5Str = divadttTd5Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd5Str = divadttTd5Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell5.innerHTML = divadttTd5Str;
+			cell6.innerHTML = divadttTd5Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell6 = row.insertCell(6);
+			var cell7 = row.insertCell(7);
 			var isCell5Disabled = $("#1timeSheetDay5Id").prop('disabled'); 
 			 if(isCell5Disabled){
 				$("#divadttTd7 :input[type=text]").attr("disabled", "disabled");
@@ -1255,10 +1274,10 @@ function addTimeSheetRow(projectId) {
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[4].dayOfTheDate']").val();
 			divadttTd6Str = divadttTd6Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd6Str = divadttTd6Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell6.innerHTML = divadttTd6Str;
+			cell7.innerHTML = divadttTd6Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell7 = row.insertCell(7);
+			var cell8 = row.insertCell(8);
 			var isCell6Disabled = $("#1timeSheetDay6Id").prop('disabled');
 			if(isCell6Disabled){
 				$("#divadttTd8 :input[type=text]").attr("disabled", "disabled");
@@ -1277,10 +1296,10 @@ function addTimeSheetRow(projectId) {
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[5].dayOfTheDate']").val();
 			divadttTd7Str = divadttTd7Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd7Str = divadttTd7Str.replace(/DAYOFTHEDATE/g, (dayOfDate)); 
-			cell7.innerHTML = divadttTd7Str;
+			cell8.innerHTML = divadttTd7Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
-			var cell8 = row.insertCell(8);
+			var cell9 = row.insertCell(9);
 		    var isCell7Disabled = $("#1timeSheetDay7Id").prop('disabled');
 			if(isCell7Disabled){
 				$("#divadttTd9 :input[type=text]").attr("disabled", "disabled");
@@ -1298,7 +1317,7 @@ function addTimeSheetRow(projectId) {
 		    dayOfDate =  $("[name='timesheetSubmission.timesheetEntries[6].dayOfTheDate']").val();
 			divadttTd8Str = divadttTd8Str.replace(/DATEVALUE/g, (dateValue)); 
 			divadttTd8Str = divadttTd8Str.replace(/DAYOFTHEDATE/g, (dayOfDate));
-			cell8.innerHTML = divadttTd8Str;
+			cell9.innerHTML = divadttTd8Str;
 			
 			entryIndex = parseInt(entryIndex)+1;
 			$("#entryIndexValue").val(entryIndex);
@@ -2180,6 +2199,16 @@ function acceptReopenTimeSheetBySuperUser(projectMemberId,reOpenedUserId){
 	        	    }); 
 	}
 </script> 
+<script>
+ function setTicketNumber(entryIndex,taskNumberId){
+	if($("#" + taskNumberId).val() != null && $("#" + taskNumberId).val() != "" && $("#" + taskNumberId).val() !="undefined"){
+		   var end = parseInt(entryIndex)+7;
+      	  for (i = entryIndex; i < end; i++) {
+      		   $("[name='timesheetSubmission.timesheetEntries["+i+"].ticketNumber']").val($("#"+taskNumberId).val());
+          } 
+	}
+ }
+</script>
 <script type="text/javascript">
 $(".content-wraper").click(function() {
 	bodyClick();
