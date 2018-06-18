@@ -542,7 +542,7 @@
 	</div>
 	<div id="actionsDiv" class="timesheet_head timesheetHead minHeight candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">
 		<ul class="alignUlList mt10">
-		<li><a href="javascript:void(0)" title="Add Applicants" onclick="submitCandidatesToJob();" class="fa fa-user-plus cursorPointer mt5"></a></li>
+		<!-- <li><a href="javascript:void(0)" title="Add Applicants" onclick="submitCandidatesToJob();" class="fa fa-user-plus cursorPointer mt5"></a></li> -->
 		  <li class="li-vendor">
 		   <c:if test="${requirement.requirementSubmissionStatus != 'SUBMITTED' && requirement.requirementSubmissionStatus != 'CLOSED' && requirement.requirementSubmissionStatus != 'REJECTED' &&  requirement.requirementSubmissionStatus != 'CANCEL' && requirement.requirementSubmissionStatus != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'FILLEDCLOSED'  && requirement.requirementSubmissionStatus != 'UNFILLEDCLOSED' }">
 		        <a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>
@@ -551,6 +551,7 @@
 					<span class="width175">
 							<sec:authorize access="hasAnyRole('ROLE_ADD_APPLICANT')">
 							      <a href="javascript:void(0)" title="" onclick="getAddApplicant('${requirement.id}');" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>
+							       <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();" class="add-applicant"><i class="fa fa-plus"></i>&nbsp;Add Bulk Applicants</a>
 							</sec:authorize>
 							<sec:authorize access="hasAnyRole('ROLE_SHORTLIST')">
 							      <a href="javascript:void(0)" title="" onclick="candidateShortList('${requirement.id}');" class="shortlistClick"><i class="fa fa-plus"></i>&nbsp;Shortlist</a>

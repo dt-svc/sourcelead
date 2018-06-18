@@ -329,8 +329,9 @@ function getCandidatesTableList(){
 	 }
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#candDataTableSearch").val();
+	 var requirementId = '${requirementId}';
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getCandidatesListForJobBulkSubmission?searchValue="+searchValue+"&primarySkill="+primarySkill+"&designationType="+designationType+"&noticePeriod="+noticePeriod+"&vendor="+vendor+"&createdDate="+createdDate+"&candidateSkills="+candidateSkills+"&city="+city;
+	 var url = sourceleadUrl+"/getCandidatesListForJobBulkSubmission?searchValue="+searchValue+"&primarySkill="+primarySkill+"&designationType="+designationType+"&noticePeriod="+noticePeriod+"&vendor="+vendor+"&createdDate="+createdDate+"&candidateSkills="+candidateSkills+"&city="+city+"&requirementId="+requirementId;
 	 candidatesListPagination(url,sourceleadUrl);
 }
 </script>
