@@ -24,6 +24,7 @@ public enum ApplicantSubmissionStatus {
     ATTENDING("Attending"),
     NOT_ATTENDING("Not_Attending"),
     MAYBE("Maybe"),
+    JOINED("Joined"),
     
     CLIENT_OFFERMADE("client_offer_made"),
     CLIENT_OFFERACCEPTED("client_offer_accepted"),

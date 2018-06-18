@@ -110,6 +110,7 @@ function requirementList(isWalkIn, walkInDay){
 	                     result = result +"    <th>Submitted</th>"; 
 	                     result = result +"    <th>Interview</th>"; 
 	                     result = result +"    <th>Offered</th>";
+	                     result = result +"    <th>Joined</th>";
 	                     result = result +"    <th>Status</th>";
 // 	                     result = result +"    <th>Release</th>"; 
 	                     result = result +"  </tr>"; 
@@ -223,6 +224,9 @@ function requirementList(isWalkIn, walkInDay){
 		                     if(opt.noOfOfferedApplicants != null && opt.noOfOfferedApplicants != '' && opt.noOfOfferedApplicants != 'undefined'){
 		                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfOfferedApplicants+"</div></a></td>";
 		                     }
+		                     if(opt.noOfJoinedApplicants != null && opt.noOfJoinedApplicants != '' && opt.noOfJoinedApplicants != 'undefined'){
+			                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfJoinedApplicants+"</div></a></td>";
+			                     }
 		                     if(opt.requirementSubmissionStatus!=null && opt.requirementSubmissionStatus !='' && opt.requirementSubmissionStatus !='undefined'){
 	                    		 result = result +"<td><div class=''><span title='"+opt.requirementSubmissionStatus+"'>"+opt.requirementSubmissionStatus+"</span></a></div></td>";
 	                    	 }
