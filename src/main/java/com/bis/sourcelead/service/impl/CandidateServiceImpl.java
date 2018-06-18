@@ -73,6 +73,7 @@ import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
@@ -2179,6 +2180,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			List<String> userCodesList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
 			throws Exception {
 		return candidateDao.getCandidateCountsCreatedUserList(orgLocationId, userCodesList, startDateUTC, endDateUTC, isGlobalUser, orgId);
+	}
+
+	@Override
+	public ResponseList<SubmissionCandidateListView> getSubmissionCandidateListView(CandidateDTO candidateDTO,
+			OrgLocations orgLcoations) throws Exception {
+		return candidateDao.getSubmissionCandidateListView(candidateDTO, orgLcoations);
+	}
+
+	@Override
+	public CandidateDTO getCandidateDTOByCandidateId(Long candidateId) throws Exception {
+		return candidateDao.getCandidateDTOByCandidateId(candidateId);
 	}
 
 }

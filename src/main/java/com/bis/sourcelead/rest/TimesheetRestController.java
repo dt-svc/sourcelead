@@ -435,19 +435,17 @@ public class TimesheetRestController {
 		/**
 		 * Getting List Of Projects For LoginUser
 		 */
-		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
-		LinkedHashSet<String> timesheetFrequencyList = new LinkedHashSet<>();
-		timesheetFrequencyList.add("Weekly");
-		timesheetFrequencyList.add("Bi-Weekly");
-		timesheetFrequencyList.add("Semi-Monthly");
-		timesheetFrequencyList.add("Monthly");
-		employeeTimesheetEntryDetailsDTO.setInvoiceFrequencyList(timesheetFrequencyList);
-		if(StringUtils.isEmpty(eedDTO.getInvoiceFrequency())){
-			employeeTimesheetEntryDetailsDTO.setInvoiceFrequency("Weekly");
-       }else {
-       	employeeTimesheetEntryDetailsDTO.setInvoiceFrequency(eedDTO.getInvoiceFrequency());
-       }
-		employeeTimesheetEntryDetailsDTO =  getEmployeeWeekFrequncyDropDown(projectMembersList,employeeTimesheetEntryDetailsDTO,eedDTO,request);
+		List<String> timesheetFrequencyList = projectMembersService.getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
+		if(timesheetFrequencyList != null && !timesheetFrequencyList.isEmpty()) {
+			employeeTimesheetEntryDetailsDTO.setInvoiceFrequencyList(new LinkedHashSet<String>(timesheetFrequencyList));
+			if(StringUtils.isEmpty(eedDTO.getInvoiceFrequency())){
+				employeeTimesheetEntryDetailsDTO.setInvoiceFrequency(timesheetFrequencyList.get(0));
+	       }else {
+	       	employeeTimesheetEntryDetailsDTO.setInvoiceFrequency(eedDTO.getInvoiceFrequency());
+	       }
+			List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(orgLocations.getId(), candidate.getId(),employeeTimesheetEntryDetailsDTO.getInvoiceFrequency());
+			employeeTimesheetEntryDetailsDTO =  getEmployeeWeekFrequncyDropDown(projectMembersList,employeeTimesheetEntryDetailsDTO,eedDTO,request);
+		}
 		return employeeTimesheetEntryDetailsDTO;
 
 	}

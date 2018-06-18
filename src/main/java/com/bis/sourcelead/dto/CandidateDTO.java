@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigInteger;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +81,8 @@ public class CandidateDTO extends SearchDTO{
 	private String experienceMonths;
 
 	private String noticePeriod;
+	
+	private String vendor;
 
 	private String designation;
 
@@ -230,6 +233,8 @@ public class CandidateDTO extends SearchDTO{
 	 private Map<String,String> candidateCustomFieldData;
 	 
 	 private Long userId;
+	 
+	 private BigInteger candId;
 	
 	public String getCandidateId() {
 		return candidateId;
@@ -1105,6 +1110,22 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public BigInteger getCandId() {
+		return candId;
+	}
+
+	public void setCandId(BigInteger candId) {
+		this.candId = candId;
+	}
+
+	public String getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
 	}
 
 	
