@@ -86,4 +86,6 @@ public interface ImmigrationTemplateDao {
 
 	Long getTemplateIdByUUID(String immiTemplateUUID);
 
+	boolean validateTemplateTaskNameExistance(String templateTaskName, Long templateId, Long immiTaskId);
+
 }
