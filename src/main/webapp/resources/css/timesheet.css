@@ -926,14 +926,17 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .clients_wrap_table table tr:hover .client_show i {
     visibility:visible; opacity:1;
     }
+
+
 .clients_side_wrap, .submission_side_wrap {
-    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
-    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
-    z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
-    }
+width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
+transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
+z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
+}
 .clients_side_wrap.clients_side_wrap_active, .submission_side_wrap.submission_side_wrap_active {
-    right:0px;
-    }  
+right:0px;
+}
+
 .clients_side_wrap_inn {
     position:relative; padding:10px;
     }
@@ -6167,7 +6170,7 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	opacity: 0.6;
 }
 .popUpOut {
-	position: fixed; width: 500px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 1000000;
+	position: fixed; width: 500px; background-color: #fff; top: 5%; margin: 0px auto; display: none; z-index: 1000000;
 	left: 0px; right: 0px; padding: 25px 30px 25px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
 .popUpOut.popUpOutBig {
@@ -6177,7 +6180,7 @@ background: #f1f6ff none repeat scroll 0 0; color: #444; border-radius: 5px;
 	position: fixed;
 }
 .popUpReci {
-	position: absolute; width: 600px; background-color: #fff; top: 10%; margin: 0px auto; display: none; z-index: 1000000;
+	position: absolute; width: 600px; background-color: #fff; top: 5%; margin: 0px auto; display: none; z-index: 1000000;
 	left: 0px; right: 0px; padding: 25px 30px 30px; border-radius: 4px; box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
 }
 .popupHead {
@@ -8308,3 +8311,46 @@ max-width: 60% !important;
 .maxWid .attFile {
 max-width: 100% !important;
 }
+
+/*  Progress  */
+.proMask {
+  	position: fixed; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); left: 0px; top: 0px; z-index: 10000; display: none;
+}
+.proMask .progress {
+	width: 400px; margin: 20% auto 0px; height: 20px;
+}
+.movIcon {
+    position: absolute; right: 3px; top: 3px; color: #ccc; background-image: url(../images/movearrow.png); height: 30px; width: 30px;
+    background-size: 20px;background-repeat: no-repeat; background-position: center;
+}
+.moveListAlign {
+    margin: 0px 0px; padding: 0px 0px; clear: both;
+}
+.moveListAlign li {
+    list-style-type: none; float: left; margin: 1%; border: 1px solid #b3ffb3; background-color: #f3fff2; padding: 15px 15px;
+    font-size: 15px; color: #545454; cursor: pointer;
+}
+.moveListAlign li.unCheck {
+    border: 1px solid #ffd2be; background-color: #fff7f7;
+}
+.dashboard_loading {
+    position: absolute; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.7); left: 0px; top: 0px;
+    text-align: center; background-image: url(../images/loading.gif); background-size: 80px; background-repeat: no-repeat;
+    background-position: center; z-index: 100;
+}
+.checkbox-custom {
+    position: relative; width: 20px; height: 20px; display: inline-block; -webkit-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; -o-user-select: none; user-select: none; -webkit-appearance: none; -moz-appearance: none;
+    appearance: none;  margin: 1px 10px 0px 0px !important; outline: 0; opacity: 1;
+}
+.checkbox-custom:after {
+    content: ''; position: absolute; display: block; z-index: 1; width: 20px; height: 20px; border: 1px solid #f5baa0; border-radius: 2px;
+}
+.checkbox-custom[type=checkbox]:before {
+    background: #82e482 url(../images/tick.png); background-size: 12px 9px; background-repeat: no-repeat; background-position: 3px 5px;
+    position: absolute; left: 2px; z-index: 2; opacity: 0; width: 100%; height: 100%; color: #82e482;
+}
+.checkbox-custom[type=checkbox]:checked:before {
+    content: ''; position: absolute; top: 0px; opacity: 1; left: 0px; border: 1px solid #82e482; border-radius: 2px;
+}
+

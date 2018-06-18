@@ -1,7 +1,6 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -11,23 +10,30 @@ import java.util.Set;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.RequirementReportDao;
+import com.bis.sourcelead.dto.ApplicantReceivedReportsDTO;
+import com.bis.sourcelead.dto.ConnectionsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class RequirementReportDaoImpl implements RequirementReportDao{
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -352,16 +358,22 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementSubmission> getReceivedApplicantsCountsPerOrgLocId(Long orgLocationId, Date startDateUTC,Date endDateUTC) {
+	public List<ApplicantReceivedReportsDTO> getReceivedApplicantsCountsPerOrgLocId(Long orgLocationId, Date startDateUTC,Date endDateUTC) {
 		Session session = this.sessionFactory.getCurrentSession();
+		//String aa = commonUtil.elkDateFormatter(startDateUTC);
+		//String bb = commonUtil.elkDateFormatter(endDateUTC);
 		if(null != startDateUTC && null != endDateUTC ){
-			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and  rs.vendorLocationId <> null  and  (rs.createdDate >= :startDateUTC and rs.createdDate <= :endDateUTC) ";
-			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).setParameter("startDateUTC", startDateUTC).setParameter("endDateUTC", endDateUTC).list();
+			String query = "SELECT DISTINCT CONCAT(C.FIRST_NAME, ' ',IFNULL(C.LAST_NAME, '')) AS name, R.JOB_TITLE AS jobTitle, RS.ORG_LOCATION_ID AS orglocationId, RS.SUBMISSION_STATUS AS submissionStatus, CONCAT(RS.CREATED_USER, ' (', OL.ORG_NAME, ')') AS userAndOrgName, RS.UPDATED_DATE AS updatedDate	FROM" 
+	    +" REQUIREMENT_SUBMISSION RS, REQUIREMENT R, ORG_LOCATIONS OL, CANDIDATE C WHERE RS.VENDOR_LOCATION_ID IS NOT NULL AND C.ID = RS.CANDIDATE_ID AND R.ID = RS.REQUIREMENT_ID AND RS.VENDOR_LOCATION_ID = OL.ID"
+	     +" AND RS.ORG_LOCATION_ID = :orgLocationId AND DATE(RS.CREATED_DATE) BETWEEN :fromDate AND :toDate";
+			return  session.createSQLQuery(query).setResultTransformer(Transformers.aliasToBean(ApplicantReceivedReportsDTO.class)).setLong("orgLocationId", orgLocationId).setDate("fromDate", startDateUTC).setDate("toDate", endDateUTC).list();
 
 		}
 		else{
-			String query = "from RequirementSubmission rs left join fetch rs.requirement requirement where rs.orgLocations.id = :orgLocationId and  rs.vendorLocationId <> null ";
-			return  session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+			String query = "SELECT DISTINCT CONCAT(C.FIRST_NAME, ' ',IFNULL(C.LAST_NAME, '')) AS name, R.JOB_TITLE AS jobTitle, RS.ORG_LOCATION_ID AS orglocationId, RS.SUBMISSION_STATUS AS submissionStatus, CONCAT(RS.CREATED_USER, ' (', OL.ORG_NAME, ')') AS userAndOrgName, RS.UPDATED_DATE AS updatedDate	FROM" 
+	    +" REQUIREMENT_SUBMISSION RS, REQUIREMENT R, ORG_LOCATIONS OL, CANDIDATE C WHERE RS.VENDOR_LOCATION_ID IS NOT NULL AND C.ID = RS.CANDIDATE_ID AND R.ID = RS.REQUIREMENT_ID AND RS.VENDOR_LOCATION_ID = OL.ID"
+	     +" AND RS.ORG_LOCATION_ID = :orgLocationId";
+			return  session.createSQLQuery(query).setResultTransformer(Transformers.aliasToBean(ApplicantReceivedReportsDTO.class)).setLong("orgLocationId", orgLocationId).list();
 		}
 	}
 
@@ -371,6 +383,23 @@ public class RequirementReportDaoImpl implements RequirementReportDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidateResumes left join fetch rs.orgLocations left join fetch rs.vendorLocationId where rs.createdBy IN (:userCodesList)";
 		return session.createQuery(query).setParameterList("userCodesList", userCodesList).list();
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ApplicantReceivedReportsDTO getReceivedApplicantsCounts(Long orgLocationId, Date startDateUTC,	Date endDateUTC) {
+		ApplicantReceivedReportsDTO applicantCount = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT 	SUM(Q1.shortlistCount) AS shortlistCount, SUM(Q1.rejectedCount) AS rejectedCount, SUM(Q1.submitToClientCount) AS submitToClientCount,"
+				+" SUM(Q1.interviewCount) AS interviewCount, SUM(Q1.offermadeCount) AS offermadeCount, (SELECT DISTINCT COUNT(RS.ID) FROM REQUIREMENT_SUBMISSION RS, ORG_LOCATIONS OL WHERE RS.VENDOR_LOCATION_ID IS NOT NULL AND RS.VENDOR_LOCATION_ID = OL.ID AND RS.ORG_LOCATION_ID = :orgLocationId AND DATE(RS.CREATED_DATE) BETWEEN :startDate AND :endDate GROUP BY RS.ORG_LOCATION_ID) AS applicantCount FROM( SELECT RH.TO_STAGE, RS.ORG_LOCATION_ID,"
+			     +" CASE WHEN UPPER(RH.TO_STAGE) = 'SHORTLIST' THEN COUNT(RS.ID) ELSE 0 END AS shortlistCount, CASE WHEN UPPER(RH.TO_STAGE) = 'REJECTED' THEN COUNT(RS.ID) ELSE 0 END AS rejectedCount,"
+				+ " CASE WHEN UPPER(RH.TO_STAGE) = 'SUBMIT_TO_CLIENT' THEN COUNT(RS.ID) ELSE 0 END AS submitToClientCount, CASE WHEN UPPER(RH.TO_STAGE) = 'INTERVIEW' THEN COUNT(RS.ID) ELSE 0 END AS interviewCount,"
+				+ " CASE WHEN UPPER(RH.TO_STAGE) = 'OFFERMADE' THEN COUNT(RS.ID) ELSE 0 END AS offermadeCount FROM REQUIREMENT_SUBMISSION_HISTORY RH, REQUIREMENT_SUBMISSION RS "   
+				+" WHERE RH.REQUIREMENT_SUBMISSION_ID = RS.ID AND RS.ORG_LOCATION_ID = :orgLocationId AND RS.VENDOR_LOCATION_ID IS NOT NULL AND DATE(RS.CREATED_DATE) BETWEEN :startDate AND :endDate GROUP BY RS.ORG_LOCATION_ID, DATE(RS.CREATED_DATE),RH.TO_STAGE)Q1 GROUP BY Q1.ORG_LOCATION_ID";
+		Query mainQuery = 	session.createSQLQuery(query).setResultTransformer(Transformers.aliasToBean(ApplicantReceivedReportsDTO.class)).setLong("orgLocationId", orgLocationId).setDate("startDate", startDateUTC).setDate("endDate", endDateUTC);	
+		applicantCount = (ApplicantReceivedReportsDTO) mainQuery.uniqueResult();
+		return applicantCount;
 	}
 
 }

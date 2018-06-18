@@ -431,11 +431,20 @@ function submitCandidtesToJob(){
 				    	} else if (data.response === "SUCCESS") {
 				    		$("#requirementsListLoading").removeAttr("style");
 			       			document.getElementById("radio"+jobId).checked = false;
+			       			activeTab();
+			       			clearJobAdvSearch();
+			       			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+			       			$(".side_mask").fadeOut(200);
+			       			$("body").css('overflow-y', 'auto');
+			       			$("#candMsgDiv").html("Candidates Submitted Successfully...");
+			       			msgFadein();
 				    	}else if (data.indexOf('Sign In') !== -1) {
 				    		location.replace(sourceleadUrl);
 				    	} else {
 				    		showError("Operation failed, please try again");
 				    	}
+		        	   
+		        	   
 		           },
 		   });  
 		 

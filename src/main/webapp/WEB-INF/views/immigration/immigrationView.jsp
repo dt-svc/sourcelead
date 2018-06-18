@@ -163,6 +163,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 
 <!--   Popup Code  -->
 <div class="popMask"></div>
+	<div id="deletepopUp"></div>
 
 <script>
 $(document).ready(function() {
@@ -306,6 +307,45 @@ $("#packageZipfile").click(function() {
 });
 </script>
 <script>
+
+
+	function deleteImmigrationRecord(elem,arg1,arg2){
+    	$(".project_inn_mask").remove();
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_immigration_popup' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <b>Do you want to remove record permanently?</b>";
+		result = result + ' <div id="reasonForTemplateDiv"/>';
+		result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteImmigrationRecordById("+elem+",\""+arg1+"\",\""+arg2+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
+		result = result +"	</div>";
+		$("#deletepopUp").append(result);
+		$("#remove_immigration_popup").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+   
+		}
+	
+	function deleteImmigrationPopupDiv(){
+		$("#remove_immigration_popup").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+		$("#deletepopUp").empty();
+	}
+	function deleteImmigrationRecordById(elem, arg1, arg2){	
+		if(typeof elem ==='function') {
+			elem(arg1, arg2);
+		}
+		else{
+			alert("Not a valid Function call.");
+		}
+	}
+	
+	
+	 function cancelImmigrationDelete(){
+		 deleteImmigrationPopupDiv();
+		}
+
+
+	
+
 	function goToSummaryNextTab(tabName) {
 		if(tabName=="#visasTab"){
 			if($('#passportTbl tr').length<=1){

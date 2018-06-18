@@ -677,6 +677,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 		+ " rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED' )";
 		 }
 		 
+		 if(submissionStatus.equalsIgnoreCase("JOINED")){
+			 submissionStages = "and (rs.submissionStatus = 'JOINED')";
+		 }
+		 
 	     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId  "+submissionStages+" ";
 	     List<Long> candidatesCount = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).list();
 	     Integer count = 0;
@@ -711,6 +715,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
          }else if(submissionStatus.equalsIgnoreCase("OFFERED")){
              submissionStages = "and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' OR reqSub.submissionStatus = 'OFFERHIRED' OR "
                      + " reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED' OR reqSub.submissionStatus = 'CLIENT_OFFERHIRED' )";
+         }else if(submissionStatus.equalsIgnoreCase("JOINED")){
+             submissionStages = "and (reqSub.submissionStatus = 'JOINED')";
          }
         
 //         Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
