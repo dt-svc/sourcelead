@@ -82,26 +82,7 @@ $(document).ready(function(){
               </div>
             
                 <ul class="list-unstyled  clearfix hidden">
-                    <%-- <li class="clearfix">
-                        <label class="pull-left">Pending Leaves</label>
-                        <a href="<c:url value='${appPath}/pendingLeaves'/>" class="color_white" id="selfpend" title="Pending Leaves"><span class="label label-primary pull-right" id="selfPendingCounts"></span></a>
-                    </li>
-                    <li class="clearfix">
-                        <label class="pull-left">Approved Leaves</label>
-                        <a href="<c:url value='${appPath}/approvedLeaves'/>" class="color_white" id="selfapp" title="Approved Leaves"><span class="label label-success pull-right" id="selfApprovedCounts"></span></a>
-                    </li>
-                    <li class="clearfix">
-                        <label class="pull-left">Rejected Leaves</label>
-                        <a href="<c:url value='${appPath}/rejectedLeaves'/>" class="color_white" id="selfrej" title="Rejected Leaves"><span class="label label-danger pull-right" id="selfRejectedCounts"></span></a>
-                    </li>
-                    <li class="clearfix">
-                        <label class="pull-left">Cancelled Leaves</label>
-                        <a href="<c:url value='${appPath}/cancelLeaves'/>" class="color_white" id="selfcanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="selfCancelledCounts"></span></a>
-                    </li> --%>
-                      <!-- <li class="clearfix">
-                        <label class="pull-left">Balance Leaves</label>
-                        <div class="color_white" title="Balance Leaves"><span class="label label-info pull-right" id="selfBalancedCounts"></span></div>
-                    </li> -->
+                  
                 </ul>
                     
                 </div>
@@ -257,7 +238,7 @@ function getEmployeeTotalCounts(){
     		   }
     		   
     		   //pie chart count
-    		   AmCharts.makeChart("employeeLeaves",
+    		/*    AmCharts.makeChart("employeeLeaves",
     					{
     						"type": "pie",
     						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
@@ -305,8 +286,8 @@ function getEmployeeTotalCounts(){
     								"column-1": report.employeeCancelledCounts
     							} 
     						]
-    					}
-    				);
+    					} 
+    				);*/
     		   
 	       },
 		  });
@@ -363,7 +344,7 @@ function getSelfTotalCounts(){
    			   $("#selfBalancedCounts").html(report.totalBalLeaves); 
    		   }
    		   
-   		 AmCharts.makeChart("empselfLeaves",
+   		/*  AmCharts.makeChart("empselfLeaves",
  				{
  					"type": "pie",
  					"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
@@ -417,7 +398,7 @@ function getSelfTotalCounts(){
  						} 
  					]
  				}
- 			); 
+ 			); */ 
    		 
 	       },
 		  });
