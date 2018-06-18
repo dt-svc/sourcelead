@@ -608,7 +608,7 @@ function getJobsPipelineAmcahrt(response){
 					{
 						"id": "Title-1",
 						"size": 15,
-						"text": "Jobs Pipline"
+						"text": "Jobs Pipeline"
 					}
 				],
 				"dataProvider": mainChar
