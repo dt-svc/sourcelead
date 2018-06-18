@@ -209,7 +209,7 @@ padding: 2px 300px 2px 0px;
 	
 <div class="content-area content-new clearfix">
  <div class="project_wrap">
-	<div class="timesheet_head exportUl">
+	<div class="timesheet_head">
 		<div class="ContrBut">
 		    <input type="hidden" name="tabType" id="tabType" value='Vendor'>
 			<!-- <a href="#" id="Vendor" class="active tabActivation" onclick="tabEnable(this);getTemplateList('pending');">Vendors</a>
