@@ -516,12 +516,14 @@ public class DashboardRestController {
 					int submittedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SUBMITTED");
 					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "INTERVIEWED");
 					int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "OFFERED");
+					int joinedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "JOINED");
 					
 					requirement.setNoOfApplicants(String.valueOf(applicantsCount));
 					requirement.setNoOfShortlistedApplicants(String.valueOf(shortlistedCount));
 					requirement.setNoOfSubmittedApplicants(String.valueOf(submittedCount));
 					requirement.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
 					requirement.setNoOfOfferedApplicants(String.valueOf(offeredCount));
+					requirement.setNoOfJoinedApplicants(String.valueOf(joinedCount));
 					
 					if(null != requirement.getReleasedBy() && !"".equalsIgnoreCase(requirement.getReleasedBy())){
 						List<Long> userId = new ArrayList<Long>();

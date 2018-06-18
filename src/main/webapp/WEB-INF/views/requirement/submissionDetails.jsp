@@ -2460,6 +2460,7 @@ function pipelineList(requirementId){
 	$("#submitToClientli").removeClass("pipeline-active");
 	$("#interviewli").removeClass("pipeline-active");
 	$("#offerMadeli").removeClass("pipeline-active");
+	$("#joinedli").removeClass("pipeline-active");
 	$("#rejectedli").removeClass("pipeline-active");
 	$("#applicantli").addClass("pipeline-active");
 // 	filterReq(requirementId,submissionType);
