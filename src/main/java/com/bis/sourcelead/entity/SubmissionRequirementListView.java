@@ -29,6 +29,8 @@ public class SubmissionRequirementListView {
 	private String location;
 	
 	private String city;
+	
+	private String isAssociate;
 
 	
 	
@@ -134,6 +136,14 @@ public class SubmissionRequirementListView {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public String getIsAssociate() {
+		return isAssociate;
+	}
+
+	public void setIsAssociate(String isAssociate) {
+		this.isAssociate = isAssociate;
 	}
 	
 	
