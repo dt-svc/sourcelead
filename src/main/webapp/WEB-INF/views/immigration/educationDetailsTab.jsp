@@ -71,7 +71,7 @@
 				    <c:when test="${myImmigrationPage == 'N'}">
 				        <td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"
 								class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-								 onclick="deleteEDucationDetailsById(${eduItems.id});" 
+								 onclick="deleteImmigrationRecord('deleteEDucationDetailsById',${eduItems.id});" 
 								 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 				    </c:when>
 				    <c:otherwise>
@@ -79,7 +79,7 @@
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
 						       <td><div><i id="edit" onclick="editEducationDEtailsByRowId(${eduItems.id});"
 										class="glyphicon glyphicon-pencil cursorPointer"></i><i id="delete" 
-										 onclick="deleteEDucationDetailsById(${eduItems.id});" 
+										 onclick="deleteImmigrationRecord('deleteEDucationDetailsById',${eduItems.id});" 
 										 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>

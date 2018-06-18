@@ -11,9 +11,8 @@
 --%>
 
   <div id="shareEmptypopUp"></div>
-   <div class="success_pop" id="selector4" style="display: none;"> 
-     <i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span> 
-   </div>
+  
+   
 <script>
   function noAccess(id){ 	
 	 
@@ -896,6 +895,11 @@ function cancel(candidateId){
 
 <section class="content-wraper">
   <section class="content-header clearfix">
+  
+   <div class="success_pop" id="candSelector" style="display: none;"> 
+     <i class="fa fa-check-circle"></i><span id="candMsgDiv"></span> 
+   </div>
+   
    <c:if test="${!empty msg}">
 	        <div class="success_pop" id="sucesspop"  style="display: block;">
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
@@ -1317,7 +1321,13 @@ function cancel(candidateId){
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 <!--   Error Message   --> 
 
-
+   <script>
+	   function msgFadein() {
+			$("#candSelector").fadeIn(200);
+		    $('#candSelector').delay(2000).fadeOut('slow');
+		}
+   </script>
+   
 <script>
 	function activeTab() {
 		$("#candDetailView").removeClass("active");
