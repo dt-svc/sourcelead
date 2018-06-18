@@ -31,7 +31,7 @@ window.onload = function() {
 <section class="content-wraper">
 <section class="content-header clearfix">
 			<div class="pull-left">
-				<h2>Vendors Report </h2>
+				<h2>Vendors Reports </h2>
 			</div>
         <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Vendors Reports </div>
 </section>
@@ -41,7 +41,7 @@ window.onload = function() {
     <div class="vendor_wrap positionRelative">
       <div class="timesheet_head clearfix">
 <div class="pull-left reportBtns reportBtns_custom mt5">
-<h4 class="pull-left mr">Vendors Report</h4>
+<h4 class="pull-left mr">Vendors Reports</h4>
 	  <div class="reportBtn reportBtn_custom_btn select-field pull-left">
 		<select class="form-control" id="vendorreportTypeId" onChange="flushVendorCustomDates(); getVendorsReportList(); custVendorDates();">
 		  <option value="today">Today</option>

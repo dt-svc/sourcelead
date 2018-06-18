@@ -198,6 +198,13 @@
 .blogNewInn article b {
 	position: absolute; bottom: 0; right: 0;
 }
+
+.blogInn div span {
+	font-size: 14px !important; font-weight: 400 !important; color: #545454 !important; line-height: 24px !important;
+}
+
+
+
 /*   Responsive CSS   */
 @media screen and (max-width:1110px){
 	.customNavBar-inner ul > li ul#featureshome {

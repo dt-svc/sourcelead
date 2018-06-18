@@ -63,7 +63,7 @@
 							 <a title="Upload" class="fa fa-upload uploadForm" onclick=""></a>
 							 <c:if test="${items.isTemplateConfigured =='N'}">
 							 <i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="immigration.editImmigrationCandidateForm(${items.id});"></i>
-							 <i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="immigration.deleteImmigrationCandidateForm(${items.id});" ></i>
+							 <i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('immigration.deleteImmigrationCandidateForm',${items.id});" ></i>
 							 </c:if>
 							 </div>
 							 <c:if test="${items.isRequired == 'Y' and not empty items.uploadedFileUrl}">
@@ -78,7 +78,7 @@
 								 <a title="Upload" class="fa fa-upload uploadForm" onclick=""></a>
 								 <c:if test="${items.isTemplateConfigured =='N'}">
 								 <i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="immigration.editImmigrationCandidateForm(${items.id});"></i>
-								 <i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="immigration.deleteImmigrationCandidateForm(${items.id});" ></i>
+								 <i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('immigration.deleteImmigrationCandidateForm',${items.id});" ></i>
 								 </c:if>
 								 </div>
 								 <c:if test="${items.isRequired == 'Y' and not empty items.uploadedFileUrl}">
