@@ -30,10 +30,9 @@
 				</div>
 
 				<!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-				<div class="clearfix require_wrap_table dashboard-data filter_position">
+				<div class="clearfix require_wrap_table dashboard-data filter_position" style="min-height: 200px;">
 					<div id="requirementLoading" style="display: none;"></div>
 					<div id="requirementList">
-						<!-- <div class="dashboard_loading"></div> -->
 					</div>
 				</div>
 			</div>
