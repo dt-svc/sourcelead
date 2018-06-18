@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,11 +45,9 @@ private DayEntryReportsService dayEntryReportsService;
 @Autowired
 private ProjectMembersService projectMemberService;
 
-@Autowired
-private UserService userService;
+@Value("${sourceleadUrl}")
+private String sourceleadUrl;
 
-@Autowired
-private CommonUtil commonUtil;
 	
 @RequestMapping(value="/getProjectListBasedOnStartAndEndDate")
 public List<Projects> getProjectListBasedOnStartAndEndDate(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws JsonProcessingException {
@@ -114,7 +113,7 @@ public void exportDaywiseTimesheetReport(DayWiseTimesheetReoprtsDTO dayWiseTimes
 			file = dayEntryReportsService.exportDayEntryReportsWithProjectExcel(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
 		}
 	} else if("pdf".equalsIgnoreCase(dayWiseTimesheetReoprtsDto.getExportType())){
-		if(!dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
+		if(dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
 			file = dayEntryReportsService.exportDayEntryReportsWithoutProjectPdf(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
 		}else {
 			file = dayEntryReportsService.exportDayEntryReportsWithProjectPdf(dayWiseTimesheetReoprtsDto,orgLocations,loginUser);
@@ -140,10 +139,10 @@ public void exportDaywiseTimesheetReport(DayWiseTimesheetReoprtsDTO dayWiseTimes
 
 
 @RequestMapping(value="/getAllUserListBasedOnOrgLocationId", method= RequestMethod.POST)
-public String getAllUserListBasedOnOrgLocationId(HttpServletRequest request) throws Exception {
+public List<ProjectMembers> getAllUserListBasedOnOrgLocationId(HttpServletRequest request) throws Exception {
 	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-	List<User> userList = userService.getAllUsersByOrgLocationCode(orgLocations.getId());
-	return commonUtil.toJSON(userList);
+	List<ProjectMembers> projectMemberList = projectMemberService.getAllProjectsByOrgLocationId(orgLocations.getId());
+	return projectMemberList;
 }
 
 

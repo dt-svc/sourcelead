@@ -19,10 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -51,12 +48,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.RequirementAssignToDTO;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementLocationsDTO;
 import com.bis.sourcelead.dto.RequirementSearchDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.VendorOnboardingTemplateDocumentDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
@@ -82,10 +79,10 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionCounts;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
+import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.ApplicantSubmissionDisplayStatus;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
@@ -423,7 +420,6 @@ public class RequirementListRestController {
 			}
 			if (requirementStatusList != null) {
 				for (RequirementSubmission requirementSubmission : requirementStatusList) {
-					if (requirementSubmission.getCandidateResumes() != null) {
 						RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = null;
 						Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList = requirementSubmission.getRequirementSubmissionTemplateFieldsList();
 						for(RequirementSubmissionTemplateFields templateFields : requirementSubmissionTemplateFieldsList){
@@ -538,8 +534,12 @@ public class RequirementListRestController {
 						 * requirementSubmission.getCandidateResumes().getId());
 						 * }
 						 */
-						requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
-						requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
+						
+						if(requirementSubmission.getCandidateResumes() != null) {
+							requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+							requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
+						}
+					
 						if (requirementSubmission.getVendorLocationId() != null) {
 							requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
 						}
@@ -637,7 +637,6 @@ public class RequirementListRestController {
 						 * format(requirementSubmission.getUpdatedDate())); }
 						 */
 						submissionList.add(requirementSubmission);
-					}
 					requirementSubmission.setRequirementCurrentStatus(requirementSubmission.getRequirement().getRequirementSubmissionStatus());
 				}
 			}
@@ -703,11 +702,10 @@ public class RequirementListRestController {
 					requirementSubmissionsDTO.setSortColumn(tableColumns[sortColumnIndex]);
 					requirementSubmissionsDTO.setSortOrder(sortColumnOrder);
 					
-					list = requirementSubmissionService.loadSubmissionsListByRequirementId(requirementSubmissionsDTO);
+					list = requirementSubmissionService.loadSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation);
 					
 					if (list.getData() != null && list.getData().size() > 0) {
 						for (RequirementSubmission requirementSubmission : list.getData()) {
-							if (requirementSubmission.getCandidateResumes() != null) {
 								RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = null;
 								Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList = requirementSubmission.getRequirementSubmissionTemplateFieldsList();
 								for(RequirementSubmissionTemplateFields templateFields : requirementSubmissionTemplateFieldsList){
@@ -794,12 +792,14 @@ public class RequirementListRestController {
 									requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
 								}
 								requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
-								requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
-								requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
 								
-								requirementSubmission.setFileContentType(requirementSubmission.getCandidateResumes().getFileContentType());
-								requirementSubmission.setFileName(requirementSubmission.getCandidateResumes().getFileName());
-								requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
+								if(requirementSubmission.getCandidateResumes() != null) {
+									requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+									requirementSubmission.setResumeUUID(requirementSubmission.getCandidateResumes().getResumeUUID());
+									requirementSubmission.setFileContentType(requirementSubmission.getCandidateResumes().getFileContentType());
+									requirementSubmission.setFileName(requirementSubmission.getCandidateResumes().getFileName());
+									requirementSubmission.setFileURL(requirementSubmission.getCandidateResumes().getFileURL());
+								}
 								
 								if(requirementSubmission.getSubmissionStatus() != null) {
 									ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
@@ -883,7 +883,6 @@ public class RequirementListRestController {
 									}*/
 								}
 								//submissionList.add(requirementSubmission);
-							}
 							requirementSubmission.setRequirementCurrentStatus(requirementSubmission.getRequirement().getRequirementSubmissionStatus());
 						}
 					}
@@ -1492,8 +1491,11 @@ public class RequirementListRestController {
 			}
 			if (requirementStatusList != null) {
 				for (RequirementSubmission requirementSubmission : requirementStatusList) {
-					if (requirementSubmission.getCandidateResumes() != null) {
-						CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+						if(requirementSubmission.getCandidateResumes() != null) {
+							CandidateResumes candidateResumes = candidateResumesService.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());
+							requirementSubmission.setResumeName(candidateResumes.getFileName());
+						}
+						
 						RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 						List<RequirementInterview> numberOfInterviews = requirementInterviewService.getRequirementInterviewsBySubmissionIdAndOrgLocationsId(requirementSubmission.getId(), loginOrgLocation.getId());
 						List<RequirementOffers> requirementOffersList = requirementOffersService.getRequirementOfferSubmissionByIdAndOrgLocationId(requirementSubmission.getId(), loginOrgLocation.getId());
@@ -1543,7 +1545,10 @@ public class RequirementListRestController {
 						requirementSubmission.setWorkExperience(requirementSubmissionTemplateFields.getWorkExperience());
 						requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 						requirementSubmission.setPhoneNumber(requirementSubmissionTemplateFields.getPhoneNumber());
-						requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+						if(requirementSubmission.getCandidateResumes() != null) {
+							requirementSubmission.setResumeId(requirementSubmission.getCandidateResumes().getId());
+						}
+						
 						requirementSubmission.setTotalNoOfInterviews(numberOfInterviews.size());
 						requirementSubmission.setRequirementInterviewList(numberOfInterviews);
 						RequirementSubmission clientSubmission = requirementSubmissionService.getClientSubmissionsBySubmissionIdAndOrgLocationId(requirementSubmission.getId(), requirementSubmission.getOrgLocations().getId());
@@ -1575,13 +1580,11 @@ public class RequirementListRestController {
 						User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 						StringBuilder canNameSB = new StringBuilder();
 						requirementSubmission.setUserName(canNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
-						requirementSubmission.setResumeName(candidateResumes.getFileName());
 						requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getPreviousSubmissionStatus());
 						Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
 						List<Candidate> candidateList = new ArrayList<>();
 						candidateList.add(candidate);
 						requirementSubmission.setScore(requirementSubmission.getCandidateScore());
-					}
 				}
 				// file =
 				// requirementPipelineExportService.getExportRequirementFile(requirementStatusList,loginOrgLocation.getOrgLocationName(),exportType,requirementId,submissionType,
@@ -1987,6 +1990,12 @@ public class RequirementListRestController {
 					reqManagerUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
 					assignedBoolQueryBuilder.should(reqManagerUserIdQueryBuilder);
 					
+					//For Requirement Primary Recruiter
+					BoolQueryBuilder reqPrimaryManagerUserIdQueryBuilder = QueryBuilders.boolQuery();
+					reqPrimaryManagerUserIdQueryBuilder.must(QueryBuilders.termQuery("primaryRecruiterUserId",user.getId().toString()));
+					reqPrimaryManagerUserIdQueryBuilder.mustNot(QueryBuilders.matchQuery("requirementStatus", "DRAFT"));
+					assignedBoolQueryBuilder.should(reqPrimaryManagerUserIdQueryBuilder);
+					
 					//For Team Owner
 					BoolQueryBuilder teamOwnerQueryBuilder = QueryBuilders.boolQuery();
 					teamOwnerQueryBuilder.must(QueryBuilders.termQuery("teamOwnerUserId", user.getId().toString()));
@@ -2192,6 +2201,7 @@ public class RequirementListRestController {
       		requirement.setTotalApplicants(Integer.parseInt(requirementIndex.getNumberOfApplicants()));
       	}
       	requirement.setManager(requirementIndex.getManager());
+      	requirement.setPrimaryRecruiter(requirementIndex.getPrimaryRecruiterUserId());
       	if(StringUtils.isNotEmpty(requirementIndex.getRequirementStatus())){
           	requirement.setRequirementSubmissionStatus(REQUIREMENT_SUBMISSION_STATUS.valueOf(requirementIndex.getRequirementStatus()));
       	}
@@ -2404,4 +2414,33 @@ public class RequirementListRestController {
 			}
 		}
 	}
+	
+	
+	
+	
+	
+	
+	@RequestMapping(value = "/getRequirementListForCandidateBulkSubmission")
+	public @ResponseBody ResponseList<SubmissionRequirementListView> getRequirementListForCandidateBulkSubmission(RequirementDTO requirementDTO,HttpServletRequest request) throws Exception {
+
+	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	    
+			
+			String[] tableColumns = { "action","generatedId", "jobTitle", "createdDate", "location"};
+			int sortColumnIndex = 1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default descending order
+			if (requirementDTO.getOrder() != null && !requirementDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(requirementDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = requirementDTO.getOrder().get(0).get("dir");
+			}
+			requirementDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			requirementDTO.setSortOrder(sortColumnOrder);
+			ResponseList<SubmissionRequirementListView> requirementDTOList = requirementService.getAllRequirementsForCandidateSubmission(requirementDTO, user.getId(), orgLocations);
+			return requirementDTOList;
+			
+		}
+	
+	
+	
 }

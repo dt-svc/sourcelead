@@ -7,6 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
+
 @Controller
 @RequestMapping("/app")
 public class TimesheetReportsController {
@@ -22,7 +25,6 @@ public class TimesheetReportsController {
 		return model;
 
 	}
-	
 
 	@RequestMapping(value = "/dailyTimeSheetReports")
 	public ModelAndView dailyTimeSheetReports(HttpServletRequest request) throws Exception {
@@ -34,8 +36,9 @@ public class TimesheetReportsController {
 	@RequestMapping(value = "/daywiseTimeSheetReports")
 	public ModelAndView daywiseTimeSheetReports(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 model.setViewName("timesheet/dayWiseTimesheetReports");
-
+		 model.addObject("SourceLeadWeb_orgLocationId",orgLocations.getId());
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 

@@ -19,6 +19,7 @@ import org.elasticsearch.common.regex.Regex;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -835,7 +837,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                     // This Condition is if The Requirement is Released by the login User
                 }else{
                     //This is for Requirement Manger
-                    String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
+                    String subQuery1 = "(reqSub.requirement.managerUserId.id  =:userId or reqSub.requirement.primaryRecruiterUserId.id = :userId) ";
                     params.put("userId",user.getId());
                     
                     // This is if the user is  created by
@@ -2795,7 +2797,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO) throws Exception {
+		public ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocations) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
 			List<RequirementSubmission> requirementSubmissionList = null;
 			ResponseList<RequirementSubmission> response = new ResponseList<>();
@@ -2804,9 +2806,6 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			if(requirementSubmissionsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(requirementSubmissionsDTO.getSearchValue())) {
 				
 				java.sql.Date sqlDate = null;
-				 OrgLocations orgLocations = orgLocationsDao.getOrgLocations(requirementSubmissionsDTO.getOrgLocationId());
-				 
-				 
 				 
 				 Pattern pattern = Pattern.compile("^(([0-9]{0,4})[-{1}]([0-9]{0,4})[-{1}]([0-9]{0,4}))$");
 				 Matcher matcher = pattern.matcher(requirementSubmissionsDTO.getSearchValue());
@@ -2904,7 +2903,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 						// This Condition is if The Requirement is Released by the login User
 					}else{
 						//This is for Requirement Manger 
-						String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
+						String subQuery1 = "(reqSub.requirement.managerUserId.id  =:userId or reqSub.requirement.primaryRecruiterUserId.id  =:userId) ";
 						params.put("userId",requirementSubmissionsDTO.getUserId());
 						
 						//This is for Requirement Created by
@@ -3062,7 +3061,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 							// This Condition is if The Requirement is Released by the login User
 						}else{
 							//This is for Requirement Manger 
-							String subQuery1 = "reqSub.requirement.managerUserId.id  =:userId ";
+							String subQuery1 = "(reqSub.requirement.managerUserId.id  =:userId or reqSub.requirement.primaryRecruiterUserId.id  =:userId) ";
 							params.put("userId",requirementSubmissionsDTO.getUserId());
 							//This is for Requirement Created by
 							String subQuery6 = "reqSub.requirement.createdBy =:requirementUsercode ";
@@ -3162,5 +3161,30 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}
 		  return null;
 	
+		}
+		
+		@Override
+		@Transactional
+		public boolean getRequirementSubmissionByCandidateIdAndJobId(Long candidateId, Long requirementId)
+				throws Exception {
+			
+			List<RequirementSubmission> submissionList = null;
+			boolean flag = false;
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = null;
+						query ="SELECT * FROM "
+						+" REQUIREMENT_SUBMISSION "
+						+" WHERE "
+						+" CANDIDATE_ID = :candidateId AND REQUIREMENT_ID = :requirementId";
+			    
+						System.out.println(query);
+	            Query queryObj = session.createSQLQuery(query);
+				queryObj.setLong("candidateId", candidateId).setLong("requirementId", requirementId);
+				submissionList = queryObj.list();
+				if(submissionList != null && !submissionList.isEmpty()) {
+					flag = true;
+				}
+				
+				return flag;
 		}
 }

@@ -19,6 +19,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,24 +28,48 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.JobBoardConfigurationDAO;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.JobBoard;
+import com.bis.sourcelead.entity.JobBoardData;
+import com.bis.sourcelead.entity.OrgJobBoardAccount;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
+import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementJobBoardInfo;
 import com.bis.sourcelead.entity.RequirementLocations;
+import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.ibm.icu.text.DateFormat;
+import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.PasswordSecurity;
+import com.bis.sourcelead.util.ReportsUtil;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
+import java.io.StringReader;
+import java.util.TimeZone;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.dom4j.DocumentFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  * 
@@ -56,6 +81,8 @@ import com.ibm.icu.text.DateFormat;
 public class RequirementDaoImpl implements RequirementDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementDaoImpl.class);
+        
+        public static final MediaType XML = MediaType.parse("text/xml; charset=utf-8");
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -71,6 +98,12 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Autowired
 	UserRoleDao userRoleDao;
+        
+        @Autowired
+        private JobBoardConfigurationDAO jobBoardConfigurationDAO;
+        
+        @Value("${static.path}")
+	private String staticPath;
 
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -89,6 +122,9 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Value("${jdbc.schema}")
 	private String schema;
+	
+	@Autowired
+	private ReportsUtil reportsUtil;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -112,18 +148,133 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Requirement storeRequirement(Requirement requirement) throws Exception {
-		logger.debug("Storing Candidate");
-		Session session = this.sessionFactory.getCurrentSession();
-		try {
-			if (requirement != null) {
-				session.saveOrUpdate(requirement);
-			}
-			logger.debug("Requirement Stored Successfully");
-		} catch (Exception exception) {
-			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "Requirement"));
-			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
-		}
-		return requirement;
+            logger.debug("Storing Requirement");
+            Session session = this.sessionFactory.getCurrentSession();
+            try {
+                List<RequirementJobBoardInfo> list = new ArrayList<>();
+                if (requirement != null) {
+                    List<RequirementJobBoardInfo> list1 = requirement.getRequirementJobBoardInfoList();
+                    if (requirement.getJobBoardAccountIdList() != null) {
+                        for (Long l : requirement.getJobBoardAccountIdList()) {
+                            RequirementJobBoardInfo r = new RequirementJobBoardInfo();
+                            boolean flag = false;
+                            if (list1 != null) {
+                                for (RequirementJobBoardInfo re : list1) {
+                                    if (re.getOrgJobBoardAccount().getId() == l) {
+                                        r = re;
+                                        flag = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            OrgJobBoardAccount orgJobBoardAccount = (OrgJobBoardAccount) session.get(OrgJobBoardAccount.class, l);
+                            JobBoard jobBoard = orgJobBoardAccount.getOrgJobBoard().getJobBoard();
+                            r.setJobBoard(jobBoard);
+                            r.setOrgJobBoardAccount(orgJobBoardAccount);
+                            r.setRequirement(requirement);
+                            if (jobBoard.getName().equalsIgnoreCase("Monster")) {
+                                String bodyContent = FileUploadUtil.getFileContent(staticPath, jobBoard.getContentFileUrl());
+                                if (!bodyContent.isEmpty()) {
+                                    bodyContent = bodyContent.replace("{username}", orgJobBoardAccount.getUsername());
+                                    bodyContent = bodyContent.replace("{password}", new PasswordSecurity().decrypt(orgJobBoardAccount.getPassword()));
+                                    bodyContent = bodyContent.replace("{title}", requirement.getJobTitle());
+                                    bodyContent = bodyContent.replace("{jobDetail}", requirement.getDescription() == null ? requirement.getJobTitle() : requirement.getDescription());
+                                    String loc[] = requirement.getLocationsList() == null || requirement.getLocationsList().isEmpty() ? "Hyderabad, Telangana, IN".split(", ") : requirement.getLocationsList().get(0).split(", ");
+                                    bodyContent = bodyContent.replace("{city}", loc.length > 0 ? loc[0] : "Hyderabad");
+                                    bodyContent = bodyContent.replace("{state}", loc.length > 1 ? loc[1] : "Telangana");
+                                    bodyContent = bodyContent.replace("{country}", loc.length > 2 ? loc[2] : "IN");
+                                    bodyContent = bodyContent.replace("{jobRefCode}", requirement.getGeneratedId());
+//                                        bodyContent = bodyContent.replace("{postatlCode}", "10001"/*requirement.getPostatlCode()*/);
+                                    Date today = requirement.getCreatedDate() == null ? new Date() : requirement.getCreatedDate();
+                                    Constants.TZ_DF1.setTimeZone(TimeZone.getTimeZone("GMT"));
+                                    String dateString = Constants.TZ_DF1.format(today);
+                                    bodyContent = bodyContent.replace("{dateTime1}", dateString);
+                                    Constants.FULL_DATE.setTimeZone(TimeZone.getTimeZone("GMT"));
+                                    String dateString1 = Constants.FULL_DATE.format(today);
+                                    bodyContent = bodyContent.replace("{dateTime2}", dateString1);
+
+                                    String jobStatusCode = "4";
+                                    JobBoardData jobStatusCodeData = requirement.getJobType() == null ? null : jobBoardConfigurationDAO.getJobBoardDataList(jobBoard.getId(), "JobStatus", "jobType", requirement.getJobType(), requirement.getJobType());
+                                    if (jobStatusCodeData != null) {
+                                        jobStatusCode = jobStatusCodeData.getJobBoardValue();
+                                    }
+                                    bodyContent = bodyContent.replace("{jobStatusCode}", jobStatusCode);
+
+                                    String jobCateogoryCode = "660";
+                                    JobBoardData jobCateogoryData = requirement.getIndustryName() == null ? null : jobBoardConfigurationDAO.getJobBoardDataList(jobBoard.getId(), "JobCategory", "industryName", requirement.getIndustryName(), requirement.getIndustryName());
+                                    if (jobCateogoryData != null) {
+                                        jobCateogoryCode = jobCateogoryData.getJobBoardValue();
+                                    }
+                                    bodyContent = bodyContent.replace("{jobCategoryCode}", jobCateogoryCode);
+
+                                    String industryCode = "0";
+                                    JobBoardData industryData = requirement.getIndustryName() == null ? null : jobBoardConfigurationDAO.getJobBoardDataList(jobBoard.getId(), "Industry", "industryName", requirement.getIndustryName(), requirement.getIndustryName());
+                                    if (industryData != null) {
+                                        industryCode = industryData.getJobBoardValue();
+                                    }
+                                    bodyContent = bodyContent.replace("{industryCode}", industryCode);
+                                    OkHttpClient client = new OkHttpClient();
+                                    RequestBody body = RequestBody.create(XML, bodyContent);
+                                    Request req = new Request.Builder().url(jobBoard.getPostUrl())
+                                                    .addHeader("Content-Type", "application/xml")
+                                                    .post(body)
+                                                    .build();
+                                    Response res = client.newCall(req).execute();
+                                    if(res.isSuccessful()) {
+                                        String resBody = res.body().string();
+                                        System.out.println(resBody);
+                                        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                                        DocumentBuilder builder = factory.newDocumentBuilder();
+                                        Document doc = builder.parse(new InputSource(new StringReader(resBody))); 
+                                        NodeList nodeList = doc.getElementsByTagName("ReturnCode");
+                                        int c = nodeList.getLength();
+                                        for(int i = 0; i < c;i++) {
+                                            Element ele = (Element) nodeList.item(i);
+                                            String status = ele.getTextContent();
+                                            String statusText = ele.getAttribute("returnCodeType");
+                                            if(status.equals("1") || statusText.equals("failure")) {
+                                                NodeList nodeList1 = doc.getElementsByTagName("Descriptions").item(0).getChildNodes();
+                                                int c1 = nodeList1.getLength();
+                                                StringBuilder error = new StringBuilder();
+                                                for(int j = 0; j < c1;j++) {
+                                                    Element ele1 = (Element) nodeList1.item(j);
+                                                    if(ele1.getAttribute("descriptionType").equals("error")) {
+                                                        error.append("[Error]").append(ele1.getTextContent()).append("<br/>");
+                                                    }
+                                                    if(ele1.getAttribute("descriptionType").equals("warning")) {
+                                                        error.append("[Warning]").append(ele1.getTextContent()).append("<br/>");
+                                                    }
+                                                }
+                                                throw new Exception(new Exception(error.toString()));
+                                            }
+                                        }
+                                        Element ele = (Element) doc.getElementsByTagName("JobPostingResponse").item(0); 
+                                        String postingId = ele.getAttribute("postingId");
+                                        r.setJobId(postingId);
+                                        r.setJobUrl("http://jobview.monster.com/getjob.aspx?jobid="+postingId);
+                                        session.saveOrUpdate(r);
+                                    }
+                                }
+                            } else if (jobBoard.getName().equalsIgnoreCase("Dice")) {
+
+                            } else if (jobBoard.getName().equalsIgnoreCase("Naukri")) {
+
+                            }
+                            
+                            list.add(r);
+                        }
+                    }
+                    requirement.setRequirementJobBoardInfoList(list);
+                    session.saveOrUpdate(requirement);
+                }
+                logger.debug("Requirement Stored Successfully");
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "Requirement"));
+                throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+            }
+            return requirement;
 	}
 
 	/**
@@ -471,7 +622,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(
-			Long orgLocationId, String userType, Long userId, String userCode) throws Exception {
+			Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		User user = userDao.getUserById(userId);
@@ -509,7 +660,13 @@ public class RequirementDaoImpl implements RequirementDao {
 				params.put("orgLocationId", orgLocationId);
 			}
 		}
-
+		
+		subQuery += " and requirement.walkIn=:isWalkIn";
+		params.put("isWalkIn", isWalkIn);
+		if(isWalkIn) {
+			subQuery += " and requirement.walkInDays like '%" + walkinDay + "%'";
+		}
+		
 		String whereCondition = subQuery;
 		Query query = session.createQuery(from + " " + whereCondition + " ORDER BY requirement.id DESC");
 		query.setMaxResults(10);
@@ -1088,52 +1245,51 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Long getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, Date startDateUTC,
-			Date endDateUTC) throws Exception {
-
-		Map<String, Object> params = new HashMap<String, Object>();
-		String subQueryDateRange = "";
-
-		if (null != startDateUTC && null != endDateUTC) {
-			subQueryDateRange = "and (requirement.createdDate >= :startDateUTC and requirement.createdDate <= :endDateUTC)";
-			params.put("startDateUTC", startDateUTC);
-			params.put("endDateUTC", endDateUTC);
-		}
-
-		String queryString = "select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy.id =:userCode "
-				+ subQueryDateRange + " ";
+	public BigInteger getCountOfAllRequirementsByCreatedUserAndOrglocationId(Long orgLocationId, User user, String startDateUTC,
+			String endDateUTC,String isGlobalUser,Long orgId) throws Exception {
+		
 		Session session = this.sessionFactory.getCurrentSession();
-		params.put("orgLocationId", orgLocationId);
-		params.put("userCode", user.getId());
+		String query = null;
+		BigInteger count = null;
+		try {
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			query ="SELECT"
+					+ " COUNT(REQ.ID) AS REQ_COUNT"
+					+ " FROM"
+					    + " REQUIREMENT REQ,"
+					    + " ORG_LOCATIONS OL"
+					    
+						+ " WHERE  OL.ID = REQ.ORG_LOCATION_ID AND "
+					    + " REQ.CREATED_BY = :userId"
+					    + " AND DATE_FORMAT(REQ.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					    + " AND  OL.ORG_ID = :orgId"
+					    + " GROUP BY REQ.CREATED_BY, OL.ORG_ID, REQ.ORG_LOCATION_ID";
+				 
+			        
+					Query queryString = session.createSQLQuery(query);
+					queryString.setParameter("userId", user.getId()).setParameter("orgId", orgId);
+					count  = (BigInteger) queryString.uniqueResult();
+		}else {
+			query ="SELECT"
+					+ " COUNT(REQ.ID) AS REQ_COUNT"
+					+ " FROM"
+					    + " REQUIREMENT REQ "
+						+ " WHERE"
+					    + " REQ.CREATED_BY = :userId"
+					    + " AND DATE_FORMAT(REQ.CREATED_DATE ,'%Y-%m-%d') BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					    + " AND REQ.ORG_LOCATION_ID = :orgLocationId"
+					    + " GROUP BY REQ.CREATED_BY, REQ.ORG_LOCATION_ID";
+			
 
-		/*
-		 * String query
-		 * ="select count(*)from Requirement requirement where requirement.orgLocationId.id =:orgLocationId and requirement.createdBy =:userCode"
-		 * ; Session session = this.sessionFactory.getCurrentSession(); long count =
-		 * ((Long)session.createQuery(query.toString()).setLong("orgLocationId",
-		 * orgLocationId).setString("userCode",user.getUserCode()).uniqueResult()).
-		 * intValue();
-		 */
-
-		Query query = session.createQuery(queryString);
-		for (String str : query.getNamedParameters()) {
-			if (str.equalsIgnoreCase("startDateUTC")) {
-				query.setParameter(str, (Date) params.get(str));
-			}
-			if (str.equalsIgnoreCase("endDateUTC")) {
-				query.setParameter(str, (Date) params.get(str));
-			}
-
-			if (str.equalsIgnoreCase("orgLocationId")) {
-				query.setParameter(str, (long) params.get(str));
-			}
-
-			if (str.equalsIgnoreCase("userCode")) {
-				query.setParameter(str, params.get(str));
-			}
-
+					Query queryString = session.createSQLQuery(query);
+					queryString.setParameter("userId", user.getId()).setParameter("orgLocationId", orgLocationId);
+					count  = (BigInteger) queryString.uniqueResult();
 		}
-		return (Long) query.uniqueResult();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return count;
 
 	}
 
@@ -1991,7 +2147,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	public Requirement getRequirementByAccessibleUserIdAndRequirementUUID(Long userId, String requirementUUID)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "select req from Requirement req where req.requirementUUID =:requirementUUID and (req.releaseJobToAllUsers = 'Y' OR req.managerUserId.id = :userId OR req.createdBy.id = :userId or req.id IN(select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId and rat.requirementId.requirementUUID =:requirementUUID and rat.status <> '0') or req.id IN (select rah.requirementId.id from RequirementApproverHierarchy rah where rah.approverUserId.id = :userId and rah.requirementId.requirementUUID =:requirementUUID))";
+		String query = "select req from Requirement req where req.requirementUUID =:requirementUUID and (req.releaseJobToAllUsers = 'Y' OR req.managerUserId.id = :userId OR req.primaryRecruiterUserId.id = :userId OR req.createdBy.id = :userId or req.id IN(select rat.requirementId.id from RequirementAssignTo rat where rat.assignUserId.id = :userId and rat.requirementId.requirementUUID =:requirementUUID and rat.status <> '0') or req.id IN (select rah.requirementId.id from RequirementApproverHierarchy rah where rah.approverUserId.id = :userId and rah.requirementId.requirementUUID =:requirementUUID))";
 		List requirementList = session.createQuery(query).setLong("userId", userId)
 				.setString("requirementUUID", requirementUUID).list();
 		Requirement requirement = null;
@@ -2201,4 +2357,262 @@ public class RequirementDaoImpl implements RequirementDao {
 		return requirement;
 	}
 
+	@Override
+	@Transactional
+	public List<RecruiterReportAssociateCountView> getAssociateCountsCreatedUserList(Long orgLocationId,
+			List<Long> userIdsList, String startDateUTC, String endDateUTC, String isGlobalUser, Long orgId)
+			throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<RecruiterReportAssociateCountView> associatesViewList = null;
+		try {
+		
+		if(StringUtils.isNotBlank(isGlobalUser) && isGlobalUser.equalsIgnoreCase(Constants.YES)) {
+			
+			 query ="SELECT "
+						+" USER_ID AS associateUserId,SUM(REQ_COUNT) AS jobCount"
+						+" FROM"
+						+" RECRUITER_REPORT_ASSOCIATE_COUNT_VIEW"
+						+" WHERE"
+						+" ORG_ID = :orgId AND USER_ID IN (:userIdsList)"
+						+" AND CREATED_DATE BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+						+" GROUP BY USER_ID";
+			        
+			
+	            Query queryObj = session.createSQLQuery(query);
+				queryObj.setParameterList("userIdsList", userIdsList).setParameter("orgId", orgId);
+				queryObj.setResultTransformer(Transformers.aliasToBean(RecruiterReportAssociateCountView.class));
+				associatesViewList = queryObj.list();
+				
+		}
+		else {
+			         query ="SELECT "
+					+" USER_ID AS associateUserId,SUM(REQ_COUNT) AS jobCount"
+					+" FROM"
+					+" RECRUITER_REPORT_ASSOCIATE_COUNT_VIEW"
+					+" WHERE"
+					+" ORG_LOCATION_ID = :orgLocationId AND USER_ID IN (:userIdsList)"
+					+" AND CREATED_DATE BETWEEN '"+startDateUTC+"' AND '"+endDateUTC+"'"
+					+" GROUP BY USER_ID";
+		
+			
+		
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setParameterList("userIdsList", userIdsList).setParameter("orgLocationId", orgLocationId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(RecruiterReportAssociateCountView.class));
+			associatesViewList = queryObj.list();
+		
+		}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return  associatesViewList;
+		
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<SubmissionRequirementListView> getAllRequirementsForCandidateSubmission(RequirementDTO requirementDTO,
+			Long userId, OrgLocations orgLocations) throws Exception {
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<BigInteger> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<SubmissionRequirementListView> response = new ResponseList<>();
+		Query queryObj = null;
+		String querySeachStr = "";
+		StringBuilder advSeach = new StringBuilder("");
+		String advSeachStr = "";
+		List<SubmissionRequirementListView> requirementList = null;
+		boolean flag = false;
+		
+		
+		  StringBuilder query1 = new StringBuilder("");
+			if(requirementDTO.getSearchValue() != null && !"".equalsIgnoreCase(requirementDTO.getSearchValue())) {
+				 query1.append(" Q1.generatedId like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR Q1.jobTitle like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR Q1.createdDate like '%" + requirementDTO.getSearchValue() + "%' ")
+					.append("OR Q1.location like '%" + requirementDTO.getSearchValue() + "%' ");
+				 
+			}
+			
+			if(StringUtils.isNotBlank(requirementDTO.getGeneratedId())) {
+				String genertatedIds [] = requirementDTO.getGeneratedId().split(",");
+				String genertatedIdsStr = "'" + StringUtils.join(genertatedIds,"','") + "'";
+				advSeach.append(" Q1.generatedId IN ("+genertatedIdsStr+") ");
+				flag = true;
+			}
+			
+			if(StringUtils.isNotBlank(requirementDTO.getJobTitle())) {
+				String jobTitles [] = requirementDTO.getJobTitle().split(",");
+				String jobTitlesStr = "'" + StringUtils.join(jobTitles,"','") + "'";
+				if(flag == false) {
+					advSeach.append(" Q1.jobTitle IN ("+jobTitlesStr+") ");
+					flag = true;
+				}else {
+					advSeach.append(" OR Q1.jobTitle IN ("+jobTitlesStr+") ");
+				}
+				
+			}
+			
+			if(requirementDTO.getNoticePeriod() != null && !requirementDTO.getNoticePeriod().isEmpty()) {
+				String[] noticePeriod = requirementDTO.getNoticePeriod().toArray(new String[requirementDTO.getNoticePeriod().size()]);
+				String noticePeriodStr = "'" + StringUtils.join(noticePeriod,"','") + "'";
+				if(flag == false) {
+					advSeach.append(" Q1.noticePeriod IN ("+noticePeriodStr+") ");
+					flag = true;
+				}else {
+					advSeach.append(" OR Q1.noticePeriod IN ("+noticePeriodStr+") ");
+				}
+				
+			}
+			
+			if(StringUtils.isNotBlank(requirementDTO.getClient())) {
+				String orgRelationIds [] = requirementDTO.getClient().split(",");
+				String orgRelationIdStr = "'" + StringUtils.join(orgRelationIds,"','") + "'";
+				if(flag == false) {
+					advSeach.append(" Q1.orgRelationId IN ("+orgRelationIdStr+") ");
+					flag = true;
+				}else {
+					advSeach.append(" OR Q1.orgRelationId IN ("+orgRelationIdStr+") ");
+				}
+				
+			}
+			
+			if(StringUtils.isNotBlank(requirementDTO.getCreatedDate()) && !requirementDTO.getCreatedDate().equalsIgnoreCase("All")) {
+				Date[] searchDates  = reportsUtil.getJobFilterDate(requirementDTO.getCreatedDate(),orgLocations);
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				String fromDate = sdf.format(searchDates[0]);
+				String toDate = sdf.format(searchDates[1]);
+				
+				if(flag == false) {
+					advSeach.append(" (Q1.createdDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
+					flag = true;
+				}else {
+					advSeach.append(" OR (Q1.createdDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
+				}
+				
+			 }
+			
+			if(StringUtils.isNotBlank(requirementDTO.getSkills())) {
+				String skills [] = requirementDTO.getSkills().split(",");
+				String skillsStr = "'" + StringUtils.join(skills,"','") + "'";
+				if(flag == false) {
+					advSeach.append(" Q1.skills IN ("+skillsStr+") ");
+					flag = true;
+				}else {
+					advSeach.append(" OR Q1.skills IN ("+skillsStr+") ");
+				}
+				
+			}
+			
+			if(StringUtils.isNotBlank(requirementDTO.getCity())) {
+				String cities [] = requirementDTO.getCity().split(",");
+				String citiesStr = "'" + StringUtils.join(cities,"','") + "'";
+				if(flag == false) {
+					advSeach.append(" Q1.city IN ("+citiesStr+") ");
+					flag = true;
+				}else {
+					advSeach.append(" OR Q1.city IN ("+citiesStr+") ");
+				}
+				
+			}
+			
+			
+			String sortingQry = "";
+			if(StringUtils.isNotBlank(requirementDTO.getSortColumn()))
+			{
+				sortingQry = " order by Q1."+ requirementDTO.getSortColumn() +" "+requirementDTO.getSortOrder();
+			}
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				querySeachStr = "where "+"("+query1.toString()+")";
+			}
+			
+			if((query1.toString() == null || query1.toString().isEmpty()) && advSeach.toString() != null && !advSeach.toString().isEmpty()){
+				advSeachStr = "where "+"("+advSeach.toString()+")";
+			}else if(query1.toString() != null && !query1.toString().isEmpty() && advSeach.toString() != null && !advSeach.toString().isEmpty()){
+				advSeachStr = "and "+"("+advSeach.toString()+")";
+			}
+			
+			try {
+			 query = "SELECT Q1.* " + 
+			 		 "FROM (" + 
+					 "SELECT " + 
+					"REQ.ID AS id," + 
+					"REQ.GENERATED_ID AS generatedId," + 
+					"REQ.JOB_TITLE AS jobTitle, " + 
+					"DATE_FORMAT(REQ.CREATED_DATE ,\"%Y-%m-%d\") AS createdDate, " + 
+					"REQ.REQUIREMENT_SUBMISSION_STATUS AS status, " + 
+					"REQ.SKILLS AS skills, " + 
+					"REQ.NOTICEPERIOD AS noticePeriod, " + 
+					"REQ.ORG_RELATION_ID AS orgRelationId, " + 
+					"REQ.CREATED_BY AS userId, " + 
+					"REQ.ORG_LOCATION_ID AS orgLocationId, " + 
+					"OL.ORG_ID AS orgId, " + 
+					"GROUP_CONCAT(DISTINCT RL.CITY " + 
+					"SEPARATOR ',') AS city, " + 
+					"GROUP_CONCAT(DISTINCT RL.LOCATION " + 
+					"SEPARATOR '|') AS location " + 
+					"FROM " + 
+					"REQUIREMENT REQ ," + 
+					"REQUIREMENT_LOCATIONS RL, " + 
+					"ORG_LOCATIONS OL " + 
+					"WHERE REQ.ID = RL.REQUIREMENT_ID " + 
+					"AND  REQ.ORG_LOCATION_ID = OL.ID " + 
+					"AND REQ.ORG_LOCATION_ID = :orgLocationId AND REQ.REQUIREMENT_SUBMISSION_STATUS = 'OPEN' " + 
+					" GROUP BY  REQ.ID, "+
+					" DATE_FORMAT(REQ.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr+advSeachStr+sortingQry;
+			 
+			
+			  String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
+					" FROM" + 
+					"(" + query +
+					")Q2;" ;
+			
+			
+			queryObj = session.createSQLQuery(query);
+			queryObj.setParameter("orgLocationId", orgLocations.getId());
+			queryObj.setResultTransformer(Transformers.aliasToBean(SubmissionRequirementListView.class));
+			queryObj.setFirstResult(requirementDTO.getStart());
+			queryObj.setMaxResults(requirementDTO.getLength());
+			requirementList = queryObj.list();
+			
+			countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocations.getId()).list();
+			filterCount = countlist.iterator().next().intValue();
+			
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+			int totalCount = 0;
+
+			
+			if (requirementDTO != null) {
+				if(countlist != null && !countlist.isEmpty()) {
+					totalCount = countlist.iterator().next().intValue();
+				}
+			} 
+			response.setRecordsTotal(totalCount);
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				response.setRecordsFiltered(filterCount);
+			}else {
+				response.setRecordsFiltered(totalCount);
+			}
+			
+			response.setData(requirementList);
+			return response;
+		
+	}
+	
+
+
 }
+
+
+
+

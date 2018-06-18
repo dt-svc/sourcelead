@@ -224,4 +224,19 @@ public class AssociateGradesDaoImpl implements AssociateGradesDao{
 		}
 		return associateGrades;
 	}
+
+
+	@Override
+	@Transactional
+	public AssociateGrades getAssociateGradeById(Long id)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociateGrades grades where grades.id = :id";  
+		List<AssociateGrades> associateGradesList =  session.createQuery(query).setLong("id", id).list();
+		AssociateGrades associateGrades = null;
+		if (associateGradesList != null && associateGradesList.size() > 0) {
+			associateGrades = (AssociateGrades) associateGradesList.iterator().next();
+		}
+		return associateGrades;
+	}
 }

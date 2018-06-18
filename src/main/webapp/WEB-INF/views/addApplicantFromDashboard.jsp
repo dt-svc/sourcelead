@@ -71,7 +71,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '</div>';	
 	
 	result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv"  style="display: none;">';
-	result = result + '<select id="candidateResumesList" name="candidateResume" field-name="Resume" class="form-control block">';
+	result = result + '<select id="candidateResumesList" name="candidateResume" field-name="Resume" data-validation-optional="true" class="form-control block">';
 	result = result + '</select>';
 	result = result + '</div>';
 	
@@ -161,13 +161,13 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	
 	result = result + '<div class="row">';
 	result = result + '	<div class="col-md-6 upresume mb" id="newResumeDiv" style="display: none;">';
-	result = result + '<label class="col-md-4">Add Resume &nbsp;*</label>';
+	result = result + '<label class="col-md-4">Add Resume</label>';
 	result = result + '		<div class="col-md-8">';
 	result = result + '			    <div class="input-group col-md-12 attachfile-error" id="uploadFileGroup1" style="margin:0 auto">';
 	result = result + '			        <label class="input-group-btn" onchange="uploadAddApplicantCandidateDoc();"> <span class="btn btn-danger"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result + '                   <input type="file" style="display: none;" name="newUploadBtn" id="newUploadBtn"  class="upload">';
 	result = result + '			          </span> </label>';
-	result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="required validatedoc "  >';
+	result = result + '			          <input type="text" class="form-control" readonly id="newUploadFile" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation-optional="true" data-validation="validatedoc "  >';
 	result = result + '			    </div>';
 	result = result + '		 </div>';
 	result = result + '	 </div>';
@@ -176,7 +176,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '	<div class="col-md-6 upresume mb">';
 	result = result + '<label class="col-md-4">&nbsp;</label>';
 	result = result + '<input type="checkbox" name="needApplicantPermit" id="needApplicantPermit" onClick="ApplicantPermit();" >&nbsp;&nbsp;<strong>Need applicant permission</strong><br> ';
-	result = result + '<input type="checkbox" name="notifyToApplicant" checked="checked" value="Y" id="notifyToApplicantId" onClick="NotifyToApplicant();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
+	result = result + '<input type="checkbox" name="notifyToApplicant" value="Y" id="notifyToApplicantId" onClick="NotifyToApplicant();" >&nbsp;&nbsp;<span><strong>Notify to applicant</strong></span> ';
 	result = result + '</div>';
 	result = result + '</div>';
 	
@@ -489,8 +489,6 @@ function discordApplicant(){
 	     $("#candidateId").removeAttr("data-validation");
 	     $('#candidateId').attr("data-validation-optional","true"); 
 	     
-	     $("#candidateResumesList").removeAttr("data-validation");
-	     $('#candidateResumesList').attr("data-validation-optional","true"); 
 	     
 	     if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'parseCandidate'){
 	    	 document.getElementById("browseDiv").style.display="";
@@ -506,8 +504,6 @@ function discordApplicant(){
 		     $('#designationType').attr("data-validation","required"); 
 			
 		     $("#candidateSkills").val('').trigger("chosen:updated");
-			 $('#newUploadFile').removeAttr('data-validation');
-			 $('#newUploadFile').attr("data-validation-optional","true"); 
 			 $("#primarySkill").val('');
 	     }else if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'New'){
 	    	 document.getElementById("browseDiv").style.display="none";
@@ -523,8 +519,6 @@ function discordApplicant(){
 		     $('#designationType').attr("data-validation","required"); 
 	    	
 		     $("#candidateSkills").val('').trigger("chosen:updated");
-			 $('#newUploadFile').removeAttr('data-validation-optional');
-			 $("#newUploadFile").attr("data-validation", "required validatedoc");
 			 $("#primarySkill").val('');
 			 
 			
@@ -802,6 +796,7 @@ function getCandidateSelectionType(){
 			        	
 			        	if(json.length == 1){
 			        		var opt = json[0];
+			        		output = output + "<option value=''>-- Select Resume --</option>"; 
 			        		if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
 			        			output = output + "<option value='" +opt.id+ "'>"+opt.title+"</option>";
 			            	}else{
@@ -833,15 +828,9 @@ function getCandidateSelectionType(){
 					    $("#designationType").attr("data-validation-optional","true");
 					    $("#designationType").empty(); */
 				        
-				        $('#newUploadFile').removeAttr('data-validation');
-		        		$('#newUploadFile').attr("data-validation-optional","true"); 
 		        		
-		        		 $('#candidateResumesList').removeAttr('data-validation-optional');
-		    			 $("#candidateResumesList").attr("data-validation", "required");
 		        	}else{
 		        		
-		        		 $('#candidateResumesList').removeAttr('data-validation');
-		        		 $('#candidateResumesList').attr("data-validation-optional","true"); 
 		        		
 		        		 document.getElementById("resumesDiv").style.display="none";
 		        		 document.getElementById("browseDiv").style.display="none";
@@ -850,8 +839,6 @@ function getCandidateSelectionType(){
 		        		 document.getElementById("newResumeDiv").style.display="";
 		        		 
 		        		 
-		        		 $('#newUploadFile').removeAttr('data-validation-optional');
-		        		 $("#newUploadFile").attr("data-validation", "required validatedoc");
 		        		 
 		        		 $('#uploadFile').removeAttr('data-validation');
 		        		 $('#uploadFile').attr("data-validation-optional","true"); 
@@ -868,7 +855,6 @@ function getCandidateSelectionType(){
 		 var output = "";
      	 output = output + "<option value=''>-- Select Resume --</option>"; 
      	 $("#candidateResumesList").empty();
-     	 $("#candidateResumesList").removeAttr("data-validation");
 		 document.getElementById("resumesDiv").style.display="none";
 		 document.getElementById("browseDiv").style.display="none";
 		 document.getElementById("orConditionDiv").style.display="none";
@@ -935,22 +921,14 @@ function getCandidateSelectionType(){
 					        document.getElementById("newResumeDiv").style.display="none";
 					        
 					      
-					        $('#newUploadFile').removeAttr('data-validation');
-			        		$('#newUploadFile').attr("data-validation-optional","true"); 
 			        		
-			        		 $('#candidateResumesList').removeAttr('data-validation-optional');
-			    			 $("#candidateResumesList").attr("data-validation", "required");
 			        	}else{
 			        		
-			        		 $('#candidateResumesList').removeAttr('data-validation');
-			        		 $('#candidateResumesList').attr("data-validation-optional","true"); 
 			        		
 			        		 document.getElementById("resumesDiv").style.display="none";
 			        		 document.getElementById("newResumeDiv").style.display="";
 			        		
 			        		 
-			        		 $('#newUploadFile').removeAttr('data-validation-optional');
-			        		 $("#newUploadFile").attr("data-validation", "required validatedoc");
 			        		 
 			        	}
 			    	}else if (data.indexOf('Sign In') !== -1) {
@@ -964,7 +942,6 @@ function getCandidateSelectionType(){
 		 var output = "";
      	 output = output + "<option value=''>-- Select Resume --</option>"; 
      	 $("#candidateResumesList").empty();
-     	 $("#candidateResumesList").removeAttr("data-validation");
 		 document.getElementById("resumesDiv").style.display="none";
 	     $("#candidateResumesList").append(output);
 	 }

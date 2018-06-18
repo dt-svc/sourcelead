@@ -73,6 +73,7 @@ public class Constants {
 	public static final String TASK_NON_BILLABLE = "Non-Billable";
 	public static final Integer RECORD_ACTIVE = 1;
 	public static final Integer RECORD_INACTIVE = 0;
+	public static final Integer RECORD_DRAFT = 2;
 	public static final Integer LEVEL1 = 1;
 	public static final Integer LEVEL2 = 2;
 	public static final DateFormat DMY = new SimpleDateFormat("dd-MM-yyyy");
@@ -93,6 +94,8 @@ public class Constants {
 	public static final DateFormat SHORT_DF_STD_MD = new SimpleDateFormat("");
 	public static final DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
 	public static final DateFormat TZ_DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        public static final DateFormat TZ_DF1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        public static final DateFormat FULL_DATE = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 	
 	// Below line of code is used to print Week days like Sunday, Monday.... by passing Date.
 	public static final SimpleDateFormat WEEK_DAY =  new SimpleDateFormat("EEEE"); 
@@ -272,6 +275,8 @@ public class Constants {
 	
 	public static final String USERTERMINATEDEMAIL="UserTerminatedEmail";
 	public static final String USERTERMINATEDNOTIFICATIONEMAIL="UserTerminatedNotificationEmail";
+	
+	public static final String APPLY_LEAVE_REMAINDER="ApplyLeaveRemainder";
 	
 	public static final String HOLIDAY_REMAINDER="HolidayRemainder";
 	public static final String HOLIDAY_REMAINDER_NOTIFICATION="HolidayRemainderNotification";
@@ -1136,12 +1141,14 @@ public class Constants {
 	public static final String REPORT_FILTER_1_WEEK = "1_week";
 	public static final String REPORT_FILTER_2_WEEKS = "2_weeks";
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
-	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments"};
+	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On"};
 	
 
 	public static final String EMAIL_SUCCESS = "success";
-	
-
+	public static final String UPDATE = "UPD";
+	public static final String DELETE = "DEL";
+	public static final String NONE = "NONE";
+	public static final String ADDITION = "ADD";
 
 
 }

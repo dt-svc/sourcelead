@@ -47,6 +47,9 @@ public class ExpensesCategory implements Serializable {
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT default NULL")
 	private String description;
 	
+	@Column(name = "IS_ATTACHEMT_REQUIRED")
+	private String isAttachemtRequired;
+	
 	@Column(name = "STATUS")
 	private String status;
 	
@@ -163,7 +166,12 @@ public class ExpensesCategory implements Serializable {
 		this.expenseCategoryList = expenseCategoryList;
 	}
 
-	
+	public String getIsAttachemtRequired() {
+		return isAttachemtRequired;
+	}
 
+	public void setIsAttachemtRequired(String isAttachemtRequired) {
+		this.isAttachemtRequired = isAttachemtRequired;
+	}
 	
 }

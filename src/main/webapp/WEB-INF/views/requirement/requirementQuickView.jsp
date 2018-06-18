@@ -454,11 +454,33 @@
 						               </c:if>
 						            </c:forEach>
 					</c:if>
-                    
-			        <div class="clearfix"></div>
-			        			            
-                </div> 							            
-           
+					<c:if test="${requirement.walkIn}">
+                    	<div class="clearfix"></div>
+                    	<div class="require_wrap_details_cta">
+                    		<b>WalkIn Day(s) :</b><span>${requirement.walkInDays}</span>
+	                    	<div class="clearfix"></div>
+                    	</div>
+                    	<div class="clearfix"></div> 
+                    </c:if>
+                    <c:if test="${requirement.primaryRecruiterUserId!=null}">
+                    	<div class="clearfix"></div>
+                    	<div class="require_wrap_details_cta">
+                    		<b>Primary Recruiter :</b><span>${requirement.primaryRecruiterUserId.fullName}</span>
+	                    	<div class="clearfix"></div>
+                    	</div>
+                    	<div class="clearfix"></div> 
+                    </c:if>
+                </div> 			
+                    <c:if test="${requirement.requirementJobBoardInfoList != null && !requirement.requirementJobBoardInfoList.isEmpty()}">
+                        <div class="clearfix"></div> 
+                        <h2>Job Board(s)</h2> 
+                        <div class="require_one"> 
+                            <c:forEach items="${requirement.requirementJobBoardInfoList}" var="r">
+                                <span><a target="_blank" href="${r.jobUrl}"><img width="70px" src="${r.jobBoard.logoUrl}" alt="${r.jobBoard.name}"/></a></span>
+                            </c:forEach>
+                                <div class="clearfix"></div> 
+                        </div>
+                    </c:if>
                    <div class="clearfix"></div> 
                  </div> 
                  <div class="clearfix"></div> 
@@ -529,6 +551,7 @@
 	</div>
 	<div id="actionsDiv" class="timesheet_head timesheetHead minHeight candidateHead recruitmentHead headersummary clearfix zindex" style="display: none;">
 		<ul class="alignUlList mt10">
+		<li><a href="javascript:void(0)" title="Add Applicants" onclick="submitCandidatesToJob();" class="fa fa-user-plus cursorPointer mt5"></a></li>
 		  <li class="li-vendor">
 		   <c:if test="${requirement.requirementSubmissionStatus != 'SUBMITTED' && requirement.requirementSubmissionStatus != 'CLOSED' && requirement.requirementSubmissionStatus != 'REJECTED' &&  requirement.requirementSubmissionStatus != 'CANCEL' && requirement.requirementSubmissionStatus != 'DRAFT' && requirement.requirementSubmissionStatus != 'ONHOLD' && requirement.requirementSubmissionStatus != 'FILLEDCLOSED'  && requirement.requirementSubmissionStatus != 'UNFILLEDCLOSED' }">
 		        <a onclick="getActions();" href="javascript:void(0)" class="action"> Action <i  class="fa fa-caret-down" ></i></a>

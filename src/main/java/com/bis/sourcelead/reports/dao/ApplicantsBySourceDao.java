@@ -3,17 +3,19 @@ package com.bis.sourcelead.reports.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.bis.sourcelead.dto.ApplicantBySourceCountDTO;
+
 public interface ApplicantsBySourceDao {
 
 	Integer getCrowdsourcingApplicantsCount(List<Long> jobIdList,Date[] searchDates);
 	
 	Integer getRequirementsCount(Long orgLocationId) throws Exception;
 	
-	Integer getCrowdsourcingApplicantsCountByStage(List<Long> jobIdList,Date[] searchDates,String stage);
+	ApplicantBySourceCountDTO getCrowdsourcingApplicantsCountByStage(List<Long> jobIdList,Date[] searchDates);
 	
-	Integer getVendorSourceApplicantsCountByStage(List<Long> jobIdList,Date[] searchDates,String stage);
+	ApplicantBySourceCountDTO getVendorSourceApplicantsCountByStage(List<Long> jobIdList,Date[] searchDates);
 	
-	Integer getFreelanceRecruiterSourceApplicantsCountByStage(List<Long> jobIdList,Date[] searchDates,String stage);
+	ApplicantBySourceCountDTO getFreelanceRecruiterSourceApplicantsCountByStage(List<Long> jobIdList,Date[] searchDates);
 	
-	Integer getInternalSourceApplicantsCountByStage(List<Long> jobIdList,Date[] searchDates,String stage,Long orgLocationId);
+	ApplicantBySourceCountDTO getInternalSourceApplicantsCountByStage(List<Long> jobIdList,Date[] searchDates);
 }

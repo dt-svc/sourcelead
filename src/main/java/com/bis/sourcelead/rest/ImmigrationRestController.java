@@ -1255,7 +1255,7 @@ public class ImmigrationRestController {
 					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
 			} catch (Exception e) {
-				logger.error("Exception caugth in savePetitionDetailsPage controller" + e.getMessage());
+				logger.error("Exception caugth in savePassportVisaDetailsPage controller" + e.getMessage());
 				e.printStackTrace();
 			}
 		} else {
@@ -1570,7 +1570,6 @@ public class ImmigrationRestController {
 				} else {
 					canPassportVisa.setCurrentStatus("Expired");
 				}
-
 			}
 
 			List<Countries> countryList = countriesService.getAllCountries();

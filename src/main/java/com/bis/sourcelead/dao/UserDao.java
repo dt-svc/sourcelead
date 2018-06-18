@@ -1,6 +1,5 @@
 package com.bis.sourcelead.dao;
 
-import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -180,6 +179,10 @@ public interface UserDao {
 	public List<User> getGlobalReportingManagersUsersByOrgId(Long roleId, Long orgId) throws Exception;
 	
 	List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId) throws Exception;
+	
+	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates) throws Exception;
+
+	List<User> getUsersByEmailList(List<String> userEmail, OrgLocations orgLocation);
 
 
 }

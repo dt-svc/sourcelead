@@ -18,8 +18,8 @@ public class ClientCustomFieldDataServiceImpl implements ClientCustomFieldDataSe
 	private ClientCustomFieldDataDao clientCustomFieldDataDao;
 	
 	@Override
-	public ClientCustomFieldData saveUserCustomFieldData(ClientCustomFieldData clientCustomFields) throws Exception {
-		return clientCustomFieldDataDao.saveUserCustomFieldData(clientCustomFields);
+	public ClientCustomFieldData saveClientCustomFieldData(ClientCustomFieldData clientCustomFields) throws Exception {
+		return clientCustomFieldDataDao.saveClientCustomFieldData(clientCustomFields);
 		
 	}
 

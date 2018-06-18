@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.ProjectsDao;
 import com.bis.sourcelead.dao.TimesheetEntriesDao;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimesheetApprovalDTO;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
@@ -39,7 +41,6 @@ import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectClientService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
-import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
 import com.bis.sourcelead.service.TimesheetSubmissionsService;
@@ -59,7 +60,7 @@ public class TimesheetApprovalRestController {
 	private String sourceleadUrl;
 	 
 	@Autowired
-	public ProjectsService projectsService;
+	public ProjectsDao projectsDao;
 	
 	@Autowired
 	public ProjectClientService projectClientService;
@@ -122,11 +123,12 @@ public class TimesheetApprovalRestController {
 				model.addObject("timesheetApproval", timesheetApprovalDTO);
 				model.setViewName("timesheet/timesheetApprovalDetils");
 			}catch (Exception e){
+				e.printStackTrace();
 				model.addObject("AWKWARD", true);
 				model.setViewName("timesheet/timesheetApprovalDetils");
 			}
 			return model;
-			
+		
 		}
 		private TimesheetApprovalDTO timesheetApprovalDetails(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -170,6 +172,18 @@ public class TimesheetApprovalRestController {
 			timesheetApprovalDTO = timesheetEmployeeSubmissionDetails(request,timesheetApprovalDTO);
 			return timesheetApprovalDTO;
 		}
+		
+		
+		@RequestMapping(value="/getTimesheetFrequencyForFilter",method= RequestMethod.POST)
+		public ModelAndView  getTimesheetFrequencyForFilter(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception{
+			ModelAndView model = new ModelAndView();
+			timesheetApprovalDTO = getWeekFrequncyDropDown(timesheetApprovalDTO, request);
+			model.addObject("timesheetApproval",timesheetApprovalDTO);
+			model.setViewName("timesheet/timesheetFilter");
+			return model;
+			
+		}
+		
 		private TimesheetApprovalDTO  getWeekFrequncyDropDown(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception{
 		     User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 if(loginUser == null && timesheetApprovalDTO.getUserId() != null){
@@ -340,8 +354,21 @@ public class TimesheetApprovalRestController {
 	        					}
 	               	        });
 	                	    timesheetApprovalDTO.setClientList(clientMap);
+	                	    
 								
 	               }
+	                Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+					String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+					 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+	                List<Projects> projectsList =projectsDao.getProjectsListByUserIdAndOrgLocationIdAndStatus(user.getId(), orgLocations.getId(), orgLocations.getOrg().getId(), candidateId, userRole, isGlobalAccess);
+	               LinkedHashMap<Long,String> projectMap = new LinkedHashMap<>();
+	   	 		   projectMap.put(null, "All");
+	                if(projectsList != null && !projectsList.isEmpty()){
+	                	projectsList.forEach(project ->{
+	                		projectMap.put(project.getId(), project.getProjectName());
+	                	});
+	                	timesheetApprovalDTO.setProjectList(projectMap);
+	                }
 	               return timesheetApprovalDTO;
 		}
 		
@@ -355,7 +382,7 @@ public class TimesheetApprovalRestController {
 			timesheetStageList.add("REJECTED");
 			timesheetApprovalDTO.setStagesList(timesheetStageList);
 			if(StringUtils.isEmpty(timesheetApprovalDTO.getStage())){
-				timesheetApprovalDTO.setStage("All");
+				timesheetApprovalDTO.setStage("SUBMITTED FOR APPROVAL");
 			 }else {
 				 timesheetApprovalDTO.setStage(timesheetApprovalDTO.getStage()); 
 			 }
@@ -445,10 +472,14 @@ public class TimesheetApprovalRestController {
 		    	 actualEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),timesheetApprovalDTO.getFrequencyEndDate().replaceAll("/", "-"));
 		    }catch (Exception e) {}
 	        Long clientId = null;
+	        Long projectId = null;
 	        if(StringUtils.isNotEmpty(timesheetApprovalDTO.getClient()) && !timesheetApprovalDTO.getClient().equalsIgnoreCase("All")){
 	        	clientId =Long.parseLong(timesheetApprovalDTO.getClient());
 	        }
-	        ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId(),timesheetApprovalDTO.getSearchValue(),timesheetApprovalDTO.getProjectName(),start,length,"",isGlobalAccess);
+	        if(StringUtils.isNotEmpty(timesheetApprovalDTO.getProject()) && !timesheetApprovalDTO.getProject().equalsIgnoreCase("All")){
+	        	projectId =Long.parseLong(timesheetApprovalDTO.getProject());
+	        }
+	        ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(timesheetApprovalDTO.getTimesheetFrequency(), actualStartDate, actualEndDate, clientId,projectId, timesheetApprovalDTO.getStage(), orgLocations.getId(), user.getId(),timesheetApprovalDTO.getSearchValue(),timesheetApprovalDTO.getProjectName(),start,length,"",isGlobalAccess);
 	        
 	        timesheetApprovalDTO.setTotalRows(projectMembers.getRecordsTotal());
 			

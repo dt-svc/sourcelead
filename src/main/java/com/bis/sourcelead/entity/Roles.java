@@ -62,6 +62,9 @@ public class Roles implements Serializable{
 	@Column(name = "STATUS")
 	private String status;
 	
+	@Column(name = "UUID")
+	private String uuid;
+	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	
@@ -222,6 +225,14 @@ public class Roles implements Serializable{
 
 	public void setIsRoleAssigned(String isRoleAssigned) {
 		this.isRoleAssigned = isRoleAssigned;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 
