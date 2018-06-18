@@ -53,7 +53,8 @@ function Immigration() {
     }
 
     this.resetFormData = function (formId) {
-        $("#" + formId)[0].reset();
+        $("#" + formId).closest('form').find("input[type=text], textarea, .selectpicker, .chosen-select").val("").trigger('chosen:updated');
+        $("#" + formId).closest('form').find(".selectpicker, .chosen-select option[value='']").attr('selected', true).trigger('change');
     }
     
     this.saveEducationImmigration = function (status) {

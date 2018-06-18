@@ -172,6 +172,18 @@ public class TimesheetApprovalRestController {
 			timesheetApprovalDTO = timesheetEmployeeSubmissionDetails(request,timesheetApprovalDTO);
 			return timesheetApprovalDTO;
 		}
+		
+		
+		@RequestMapping(value="/getTimesheetFrequencyForFilter",method= RequestMethod.POST)
+		public ModelAndView  getTimesheetFrequencyForFilter(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception{
+			ModelAndView model = new ModelAndView();
+			timesheetApprovalDTO = getWeekFrequncyDropDown(timesheetApprovalDTO, request);
+			model.addObject("timesheetApproval",timesheetApprovalDTO);
+			model.setViewName("timesheet/timesheetFilter");
+			return model;
+			
+		}
+		
 		private TimesheetApprovalDTO  getWeekFrequncyDropDown(TimesheetApprovalDTO timesheetApprovalDTO,HttpServletRequest request) throws Exception{
 		     User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 if(loginUser == null && timesheetApprovalDTO.getUserId() != null){

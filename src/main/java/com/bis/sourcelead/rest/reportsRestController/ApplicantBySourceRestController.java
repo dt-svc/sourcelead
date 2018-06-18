@@ -19,14 +19,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.dto.ApplicantBySourceCountDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.reports.service.ApplicantsBySourceService;
-import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
 import com.bis.sourcelead.reportsDTO.ApplicantsBySourceDTO;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
 import com.bis.sourcelead.service.TimeZoneService;
@@ -95,6 +94,9 @@ public class ApplicantBySourceRestController {
 			    	    toDate = TZ_DF_TS.parse(endDateString);
 			    	    
 			    	    searchDates = new Date[2];
+			    	    //
+			    	  
+			    	    //
 			    	    searchDates[0] = fromDate;
 			    	    searchDates[1] = toDate;
 					}
@@ -102,28 +104,45 @@ public class ApplicantBySourceRestController {
 				
 				
 				if(jobIdList != null && jobIdList.size() > 0) {
+				
+				// Crowd Sourcing Reports Start
+					
 				ApplicantsBySourceDTO crowdSourcingApplicantsDTO = new ApplicantsBySourceDTO();
 				
-				Integer crowdsourcingApplicantsCount =  applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates,"SUBMISSION");
-				Integer crowdsourcingSortlistedCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "SHORTLIST");
-				Integer crowdsourcingSubmitToClientCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "SUBMIT_TO_CLIENT");
+				ApplicantBySourceCountDTO applicantBySourceCountDTO =  applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates);
 				
-				Integer crowdsourcingInterviewCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "INTERVIEW");
-				Integer crowdsourcingClientInterviewCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "CLIENT_INTERVIEW");
+				Integer crowdsourcingApplicantsCount = applicantBySourceCountDTO.getSubmissionCount() == null ? 0 :applicantBySourceCountDTO.getSubmissionCount().intValue();
+				crowdSourcingApplicantsDTO.setApplicantsCount(crowdsourcingApplicantsCount);
+				Integer crowdsourcingSortlistedCount = applicantBySourceCountDTO.getShortlistCount() == null ? 0 :applicantBySourceCountDTO.getShortlistCount().intValue();
+				crowdSourcingApplicantsDTO.setShortlistedCount(crowdsourcingSortlistedCount);
+				
+				Integer crowdsourcingSubmitToClientCount = applicantBySourceCountDTO.getSubmitToClientCount() == null ? 0 :applicantBySourceCountDTO.getSubmitToClientCount().intValue();
+				crowdSourcingApplicantsDTO.setSubmitToClientCount(crowdsourcingSubmitToClientCount);	
+				
+				Integer crowdsourcingInterviewCount = applicantBySourceCountDTO.getInterviewCount() == null ? 0 : applicantBySourceCountDTO.getInterviewCount().intValue();
+				Integer crowdsourcingClientInterviewCount = applicantBySourceCountDTO.getClientInterviewCount() == null ? 0 : applicantBySourceCountDTO.getClientInterviewCount().intValue();
 				crowdsourcingInterviewCount = crowdsourcingInterviewCount+crowdsourcingClientInterviewCount;
+				crowdSourcingApplicantsDTO.setInterviewsCount(crowdsourcingInterviewCount);
 				
-				Integer crowdsourcingRejectedCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "REJECTED");
+				Integer crowdsourcingRejectedCount = applicantBySourceCountDTO.getRejectedCount() == null ? 0 : applicantBySourceCountDTO.getRejectedCount().intValue();
+				crowdSourcingApplicantsDTO.setRejectedCount(crowdsourcingRejectedCount);
 				
-				Integer crowdsourcingOfferedCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "OFFERMADE");
-				Integer crowdsourcingClientOfferedCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERMADE");
+				Integer crowdsourcingOfferedCount = applicantBySourceCountDTO.getOffermadeCount() == null ? 0 : applicantBySourceCountDTO.getOffermadeCount().intValue();
+				Integer crowdsourcingClientOfferedCount = applicantBySourceCountDTO.getClientOffermadeCount() == null ? 0 :applicantBySourceCountDTO.getClientOffermadeCount().intValue();
 				crowdsourcingOfferedCount = crowdsourcingOfferedCount+crowdsourcingClientOfferedCount;
+				crowdSourcingApplicantsDTO.setOfferedCount(crowdsourcingOfferedCount);
 				
-				Integer crowdsourcingOfferAcceptedCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "OFFERACCEPTED");
-				Integer crowdsourcingClientOfferAcceptedCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERACCEPTED");
+				Integer crowdsourcingOfferAcceptedCount =applicantBySourceCountDTO.getOfferAcceptedCount() == null ? 0 : applicantBySourceCountDTO.getOfferAcceptedCount().intValue();
+				Integer crowdsourcingClientOfferAcceptedCount =applicantBySourceCountDTO.getClientOfferAcceptedCount() == null ? 0 :applicantBySourceCountDTO.getClientOfferAcceptedCount().intValue();
 				crowdsourcingOfferAcceptedCount = crowdsourcingOfferAcceptedCount+crowdsourcingClientOfferAcceptedCount;
+				crowdSourcingApplicantsDTO.setOfferAcceptedCount(crowdsourcingOfferAcceptedCount);
 				
-				Integer crowdsourcingOfferRejectedCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "OFFERREJECTED");
-				Integer crowdsourcingOfferBackoutCount = applicantsBySourceService.getCrowdsourcingApplicantsCountByStage(jobIdList, searchDates, "BACKOUT");
+				Integer crowdsourcingOfferRejectedCount = applicantBySourceCountDTO.getOfferRejectedCount() == null ? 0 :applicantBySourceCountDTO.getOfferRejectedCount().intValue();
+				crowdSourcingApplicantsDTO.setOfferRejectedCount(crowdsourcingOfferRejectedCount);
+				
+				Integer crowdsourcingOfferBackoutCount = applicantBySourceCountDTO.getBackoutCount() == null ? 0 :applicantBySourceCountDTO.getBackoutCount().intValue();
+				crowdSourcingApplicantsDTO.setBackoutCount(crowdsourcingOfferBackoutCount);
+				
 				crowdSourcingApplicantsDTO.setCategory("Crowd Sourcing");
 				crowdSourcingApplicantsDTO.setApplicantsCount(crowdsourcingApplicantsCount);
 				crowdSourcingApplicantsDTO.setShortlistedCount(crowdsourcingSortlistedCount);
@@ -135,30 +154,46 @@ public class ApplicantBySourceRestController {
 				crowdSourcingApplicantsDTO.setOfferRejectedCount(crowdsourcingOfferRejectedCount);
 				crowdSourcingApplicantsDTO.setBackoutCount(crowdsourcingOfferBackoutCount);
 				
+				// // Crowd Sourcing Reports End.
 				
+				// vendors Reports
 				
 				ApplicantsBySourceDTO vendorSourcingApplicantsDTO = new ApplicantsBySourceDTO();
 				
-				Integer vendorSourcingApplicantCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "SUBMISSION");
-				Integer vendorSourcingShortlistCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "SHORTLIST");
-				Integer vendorSourcingSubmitToClientCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "SUBMIT_TO_CLIENT");
+				ApplicantBySourceCountDTO vendorApplicantBySourceCountDTO = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates);
 				
-				Integer vendorSourcingInterviewCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "INTERVIEW");
-				Integer vendorSourcingClientInterviewCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_INTERVIEW");
+				Integer vendorSourcingApplicantCount = vendorApplicantBySourceCountDTO.getSubmissionCount() == null ? 0 : vendorApplicantBySourceCountDTO.getSubmissionCount().intValue();
+				vendorSourcingApplicantsDTO.setApplicantsCount(vendorSourcingApplicantCount);		
+				
+				Integer vendorSourcingShortlistCount = vendorApplicantBySourceCountDTO.getShortlistCount() == null ? 0 : vendorApplicantBySourceCountDTO.getShortlistCount().intValue();
+				vendorSourcingApplicantsDTO.setShortlistedCount(vendorSourcingShortlistCount);
+				
+				Integer vendorSourcingSubmitToClientCount = vendorApplicantBySourceCountDTO.getSubmitToClientCount() == null ? 0 : vendorApplicantBySourceCountDTO.getSubmitToClientCount().intValue();
+				vendorSourcingApplicantsDTO.setSubmitToClientCount(vendorSourcingSubmitToClientCount);
+				
+				Integer vendorSourcingInterviewCount = vendorApplicantBySourceCountDTO.getInterviewCount() == null ? 0 : vendorApplicantBySourceCountDTO.getInterviewCount().intValue();
+				Integer vendorSourcingClientInterviewCount = vendorApplicantBySourceCountDTO.getClientInterviewCount() == null ? 0 : vendorApplicantBySourceCountDTO.getClientInterviewCount().intValue();
 				vendorSourcingInterviewCount = vendorSourcingInterviewCount+vendorSourcingClientInterviewCount;
+				vendorSourcingApplicantsDTO.setInterviewsCount(vendorSourcingInterviewCount);	
 				
-				Integer vendorSourcingRejectedCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "REJECTED");
+				Integer vendorSourcingRejectedCount = vendorApplicantBySourceCountDTO.getRejectedCount() == null ? 0 :vendorApplicantBySourceCountDTO.getRejectedCount().intValue();
+				vendorSourcingApplicantsDTO.setRejectedCount(vendorSourcingRejectedCount);
 				
-				Integer vendorSourcingOfferedCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERMADE");
-				Integer vendorSourcingClientOfferedCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERMADE");
+				Integer vendorSourcingOfferedCount = vendorApplicantBySourceCountDTO.getOffermadeCount() == null ? 0 : vendorApplicantBySourceCountDTO.getOffermadeCount().intValue();
+				Integer vendorSourcingClientOfferedCount = vendorApplicantBySourceCountDTO.getClientOffermadeCount() == null ? 0 : vendorApplicantBySourceCountDTO.getClientOffermadeCount().intValue();
 				vendorSourcingOfferedCount = vendorSourcingOfferedCount+vendorSourcingClientOfferedCount;
+				vendorSourcingApplicantsDTO.setOfferedCount(vendorSourcingOfferedCount);
 				
-				Integer vendorSourcingOfferAcceptedCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERACCEPTED");
-				Integer vendorSourcingClientOfferAcceptedCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERACCEPTED");
+				Integer vendorSourcingOfferAcceptedCount = vendorApplicantBySourceCountDTO.getOfferAcceptedCount() == null ? 0 : vendorApplicantBySourceCountDTO.getOfferAcceptedCount().intValue();
+				Integer vendorSourcingClientOfferAcceptedCount = vendorApplicantBySourceCountDTO.getClientOfferAcceptedCount() == null ? 0 : vendorApplicantBySourceCountDTO.getClientOfferAcceptedCount().intValue();
 				vendorSourcingOfferAcceptedCount = vendorSourcingOfferAcceptedCount+vendorSourcingClientOfferAcceptedCount;
+				vendorSourcingApplicantsDTO.setOfferAcceptedCount(vendorSourcingOfferAcceptedCount);
 				
-				Integer vendorSourcingOfferRejectedCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERREJECTED");
-				Integer vendorSourcingOfferBackoutCount = applicantsBySourceService.getVendorSourceApplicantsCountByStage(jobIdList, searchDates, "BACKOUT");
+				Integer vendorSourcingOfferRejectedCount = vendorApplicantBySourceCountDTO.getOfferRejectedCount() == null ? 0 : vendorApplicantBySourceCountDTO.getOfferRejectedCount().intValue();
+				vendorSourcingApplicantsDTO.setOfferRejectedCount(vendorSourcingOfferRejectedCount);
+				
+				Integer vendorSourcingOfferBackoutCount = vendorApplicantBySourceCountDTO.getBackoutCount() == null ? 0 :vendorApplicantBySourceCountDTO.getBackoutCount().intValue();
+				vendorSourcingApplicantsDTO.setBackoutCount(vendorSourcingOfferBackoutCount);
 				
 				vendorSourcingApplicantsDTO.setCategory("Vendors");
 				vendorSourcingApplicantsDTO.setApplicantsCount(vendorSourcingApplicantCount);
@@ -171,29 +206,46 @@ public class ApplicantBySourceRestController {
 				vendorSourcingApplicantsDTO.setOfferRejectedCount(vendorSourcingOfferRejectedCount);
 				vendorSourcingApplicantsDTO.setBackoutCount(vendorSourcingOfferBackoutCount);
 				
+				// vendors end
 				
+				// FreelanceRecruiter Report Start
 				
 				ApplicantsBySourceDTO recruiterSourcingApplicantsDTO = new ApplicantsBySourceDTO();
-				Integer recruiterSourcingApplicantCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "SUBMISSION");
-				Integer recruiterSourcingShortlistCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "SHORTLIST");
-				Integer recruiterSourcingSubmitToClientCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "SUBMIT_TO_CLIENT");
 				
-				Integer recruiterSourcingInterviewCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "INTERVIEW");
-				Integer recruiterSourcingClientInterviewCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_INTERVIEW");
+				ApplicantBySourceCountDTO freelanceRecruiterApplicantBySourceCountDTO = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates);
+				
+				Integer recruiterSourcingApplicantCount = freelanceRecruiterApplicantBySourceCountDTO.getSubmissionCount() == null ? 0 : freelanceRecruiterApplicantBySourceCountDTO.getSubmissionCount().intValue();
+				recruiterSourcingApplicantsDTO.setApplicantsCount(recruiterSourcingApplicantCount);
+				
+				Integer recruiterSourcingShortlistCount = freelanceRecruiterApplicantBySourceCountDTO.getShortlistCount() == null ? 0 :freelanceRecruiterApplicantBySourceCountDTO.getShortlistCount().intValue();
+				recruiterSourcingApplicantsDTO.setShortlistedCount(recruiterSourcingShortlistCount);
+				
+				Integer recruiterSourcingSubmitToClientCount =freelanceRecruiterApplicantBySourceCountDTO.getSubmitToClientCount() == null ? 0 :freelanceRecruiterApplicantBySourceCountDTO.getSubmitToClientCount().intValue();
+				recruiterSourcingApplicantsDTO.setSubmitToClientCount(recruiterSourcingSubmitToClientCount);
+				
+				Integer recruiterSourcingInterviewCount = freelanceRecruiterApplicantBySourceCountDTO.getInterviewCount() == null ? 0 :freelanceRecruiterApplicantBySourceCountDTO.getInterviewCount().intValue();
+				Integer recruiterSourcingClientInterviewCount =freelanceRecruiterApplicantBySourceCountDTO.getClientInterviewCount() == null ? 0 :freelanceRecruiterApplicantBySourceCountDTO.getClientInterviewCount().intValue();
 				recruiterSourcingInterviewCount = recruiterSourcingInterviewCount+recruiterSourcingClientInterviewCount;
+				recruiterSourcingApplicantsDTO.setInterviewsCount(recruiterSourcingInterviewCount);
 				
-				Integer recruiterSourcingRejectedCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "REJECTED");
+				Integer recruiterSourcingRejectedCount =  freelanceRecruiterApplicantBySourceCountDTO.getRejectedCount() == null ? 0 :freelanceRecruiterApplicantBySourceCountDTO.getRejectedCount().intValue();
+				recruiterSourcingApplicantsDTO.setRejectedCount(recruiterSourcingRejectedCount);
 				
-				Integer recruiterrSourcingOfferedCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERMADE");
-				Integer recruiterrSourcingClientOfferedCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERMADE");
+				Integer recruiterrSourcingOfferedCount = freelanceRecruiterApplicantBySourceCountDTO.getOffermadeCount() == null ? 0 :freelanceRecruiterApplicantBySourceCountDTO.getOffermadeCount().intValue();
+				Integer recruiterrSourcingClientOfferedCount =freelanceRecruiterApplicantBySourceCountDTO.getClientOffermadeCount() == null ? 0 :freelanceRecruiterApplicantBySourceCountDTO.getClientOffermadeCount().intValue();
 				recruiterrSourcingOfferedCount = recruiterrSourcingOfferedCount+recruiterrSourcingClientOfferedCount;
+				recruiterSourcingApplicantsDTO.setOfferedCount(recruiterrSourcingOfferedCount);
 				
-				Integer recruiterSourcingOfferAcceptedCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERACCEPTED");
-				Integer recruiterSourcingClientOfferAcceptedCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERACCEPTED");
+				Integer recruiterSourcingOfferAcceptedCount =freelanceRecruiterApplicantBySourceCountDTO.getOfferAcceptedCount() == null ? 0 :freelanceRecruiterApplicantBySourceCountDTO.getOfferAcceptedCount().intValue();
+				Integer recruiterSourcingClientOfferAcceptedCount =freelanceRecruiterApplicantBySourceCountDTO.getClientOfferAcceptedCount() == null ? 0 :freelanceRecruiterApplicantBySourceCountDTO.getClientOfferAcceptedCount().intValue();
 				recruiterSourcingOfferAcceptedCount = recruiterSourcingOfferAcceptedCount+recruiterSourcingClientOfferAcceptedCount;
+				recruiterSourcingApplicantsDTO.setOfferAcceptedCount(recruiterSourcingOfferAcceptedCount);
 				
-				Integer recruiterSourcingOfferRejectedCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERREJECTED");
-				Integer recruiterSourcingOfferBackoutCount = applicantsBySourceService.getFreelanceRecruiterSourceApplicantsCountByStage(jobIdList, searchDates, "BACKOUT");
+				Integer recruiterSourcingOfferRejectedCount =freelanceRecruiterApplicantBySourceCountDTO.getOfferRejectedCount() == null ? 0 :freelanceRecruiterApplicantBySourceCountDTO.getOfferRejectedCount().intValue();
+				recruiterSourcingApplicantsDTO.setOfferRejectedCount(recruiterSourcingOfferRejectedCount);
+						
+				Integer recruiterSourcingOfferBackoutCount = freelanceRecruiterApplicantBySourceCountDTO.getBackoutCount() == null ? 0 :freelanceRecruiterApplicantBySourceCountDTO.getBackoutCount().intValue();
+				recruiterSourcingApplicantsDTO.setBackoutCount(recruiterSourcingOfferBackoutCount);
 				
 				recruiterSourcingApplicantsDTO.setCategory("Freelance Recruiters");
 				recruiterSourcingApplicantsDTO.setApplicantsCount(recruiterSourcingApplicantCount);
@@ -205,51 +257,61 @@ public class ApplicantBySourceRestController {
 				recruiterSourcingApplicantsDTO.setOfferAcceptedCount(recruiterSourcingOfferAcceptedCount);
 				recruiterSourcingApplicantsDTO.setOfferRejectedCount(recruiterSourcingOfferRejectedCount);
 				recruiterSourcingApplicantsDTO.setBackoutCount(recruiterSourcingOfferBackoutCount);
-			
 				
+				// FreelanceRecruiter End 
+				
+				// Internal DB Stage Counts
 				
 				ApplicantsBySourceDTO internalSourcingApplicantsDTO = new ApplicantsBySourceDTO();
-				Integer internalSourcingApplicantCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "SUBMISSION",orgLocation.getId());
-				Integer internalSourcingShortlistCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "SHORTLIST",orgLocation.getId());
-				Integer internalSourcingSubmitToClientCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "SUBMIT_TO_CLIENT",orgLocation.getId());
-				Integer internalSourcingInterviewCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "INTERVIEW",orgLocation.getId());
-				Integer internalSourcingClientInterviewCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_INTERVIEW",orgLocation.getId());
-				internalSourcingInterviewCount = internalSourcingInterviewCount+internalSourcingClientInterviewCount;
-				
-				Integer internalSourcingRejectedCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "REJECTED",orgLocation.getId());
-				
-				Integer internalSourcingOfferedCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERMADE",orgLocation.getId());
-				Integer internalSourcingClientOfferedCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERMADE",orgLocation.getId());
-				internalSourcingOfferedCount = internalSourcingOfferedCount+internalSourcingClientOfferedCount;
-				
-				Integer internalSourcingOfferAcceptedCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERACCEPTED",orgLocation.getId());
-				Integer internalSourcingClientOfferAcceptedCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "CLIENT_OFFERACCEPTED",orgLocation.getId());
-				internalSourcingOfferAcceptedCount = internalSourcingOfferAcceptedCount+internalSourcingClientOfferAcceptedCount;
-				
-				Integer internalSourcingOfferRejectedCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "OFFERREJECTED",orgLocation.getId());
-				Integer internalSourcingBackoutCount = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates, "BACKOUT",orgLocation.getId());
+				ApplicantBySourceCountDTO internalSourcingApplicantCountDTO = applicantsBySourceService.getInternalSourceApplicantsCountByStage(jobIdList, searchDates);
 				
 				internalSourcingApplicantsDTO.setCategory("Internal DB");
-				internalSourcingApplicantsDTO.setApplicantsCount(internalSourcingApplicantCount);
-				internalSourcingApplicantsDTO.setShortlistedCount(internalSourcingShortlistCount);
-				internalSourcingApplicantsDTO.setSubmitToClientCount(internalSourcingSubmitToClientCount);
-				internalSourcingApplicantsDTO.setInterviewsCount(internalSourcingInterviewCount);
-				internalSourcingApplicantsDTO.setRejectedCount(internalSourcingRejectedCount);
-				internalSourcingApplicantsDTO.setOfferedCount(internalSourcingOfferedCount);
-				internalSourcingApplicantsDTO.setOfferAcceptedCount(internalSourcingOfferAcceptedCount);
-				internalSourcingApplicantsDTO.setOfferRejectedCount(internalSourcingOfferRejectedCount);
-				internalSourcingApplicantsDTO.setBackoutCount(internalSourcingBackoutCount);
+				if(internalSourcingApplicantCountDTO != null) {
+				Integer internalSourcingApplicantCount = internalSourcingApplicantCountDTO.getSubmissionCount()== null ? 0 : internalSourcingApplicantCountDTO.getSubmissionCount().intValue();
 				
+				internalSourcingApplicantsDTO.setApplicantsCount(internalSourcingApplicantCount);
+				
+				Integer internalSourcingShortlistCount = internalSourcingApplicantCountDTO.getShortlistCount() == null ? 0 : internalSourcingApplicantCountDTO.getShortlistCount().intValue();
+				internalSourcingApplicantsDTO.setShortlistedCount(internalSourcingShortlistCount);
+				
+				Integer internalSourcingSubmitToClientCount = internalSourcingApplicantCountDTO.getSubmitToClientCount() == null ? 0 : internalSourcingApplicantCountDTO.getSubmitToClientCount().intValue();
+				internalSourcingApplicantsDTO.setSubmitToClientCount(internalSourcingSubmitToClientCount);
+				
+				Integer internalSourcingInterviewCount = internalSourcingApplicantCountDTO.getInterviewCount() == null ? 0 : internalSourcingApplicantCountDTO.getInterviewCount().intValue();
+				Integer internalSourcingClientInterviewCount = internalSourcingApplicantCountDTO.getClientInterviewCount() == null ? 0 : internalSourcingApplicantCountDTO.getClientInterviewCount().intValue();
+				internalSourcingInterviewCount = internalSourcingInterviewCount + internalSourcingClientInterviewCount;
+				internalSourcingApplicantsDTO.setInterviewsCount(internalSourcingInterviewCount);
+				
+				Integer internalSourcingRejectedCount = internalSourcingApplicantCountDTO.getRejectedCount() == null ? 0 : internalSourcingApplicantCountDTO.getRejectedCount().intValue();
+				internalSourcingApplicantsDTO.setRejectedCount(internalSourcingRejectedCount);
+				
+				Integer internalSourcingOfferedCount =internalSourcingApplicantCountDTO.getOffermadeCount() == null ? 0 : internalSourcingApplicantCountDTO.getOffermadeCount().intValue();
+				Integer internalSourcingClientOfferedCount = internalSourcingApplicantCountDTO.getClientOffermadeCount() == null ? 0 : internalSourcingApplicantCountDTO.getClientOffermadeCount().intValue();
+				internalSourcingOfferedCount = internalSourcingOfferedCount+internalSourcingClientOfferedCount;
+				internalSourcingApplicantsDTO.setOfferedCount(internalSourcingOfferedCount);
+				
+				Integer internalSourcingOfferAcceptedCount = internalSourcingApplicantCountDTO.getOfferAcceptedCount() == null ? 0 : internalSourcingApplicantCountDTO.getOfferAcceptedCount().intValue();
+				Integer internalSourcingClientOfferAcceptedCount = internalSourcingApplicantCountDTO.getClientOfferAcceptedCount() == null ? 0 : internalSourcingApplicantCountDTO.getClientOfferAcceptedCount().intValue();
+				internalSourcingOfferAcceptedCount = internalSourcingOfferAcceptedCount+internalSourcingClientOfferAcceptedCount;
+				internalSourcingApplicantsDTO.setOfferAcceptedCount(internalSourcingOfferAcceptedCount);
+				
+				Integer internalSourcingOfferRejectedCount = internalSourcingApplicantCountDTO.getOfferRejectedCount() == null ? 0 : internalSourcingApplicantCountDTO.getOfferRejectedCount().intValue();
+				internalSourcingApplicantsDTO.setOfferRejectedCount(internalSourcingOfferRejectedCount);
+				
+				Integer internalSourcingBackoutCount = internalSourcingApplicantCountDTO.getBackoutCount() == null ? 0 : internalSourcingApplicantCountDTO.getBackoutCount().intValue();
+				internalSourcingApplicantsDTO.setBackoutCount(internalSourcingBackoutCount);
 				
 				 Double crowdSoruceApplicantCount = ((double)(crowdsourcingApplicantsCount)/((double)crowdsourcingApplicantsCount+(double)vendorSourcingApplicantCount+(double)recruiterSourcingApplicantCount+(double)internalSourcingApplicantCount))*100;
 				 Double crowdSoruceShortlistedCount = ((double)(crowdsourcingSortlistedCount)/((double)crowdsourcingSortlistedCount+(double)vendorSourcingShortlistCount+(double)recruiterSourcingShortlistCount+(double)internalSourcingShortlistCount))*100;
 				 Double crowdSoruceSubmitToClientCount = ((double)(crowdsourcingSubmitToClientCount)/((double)crowdsourcingSubmitToClientCount+(double)vendorSourcingSubmitToClientCount+(double)recruiterSourcingSubmitToClientCount+(double)internalSourcingSubmitToClientCount))*100;
 				 Double crowdSoruceInterviewsCount = ((double)(crowdsourcingInterviewCount)/((double)crowdsourcingInterviewCount+(double)vendorSourcingInterviewCount+(double)recruiterSourcingInterviewCount+(double)internalSourcingInterviewCount))*100;
-				 Double crowdSoruceRejectedCount = ((double)(crowdsourcingRejectedCount)/((double)crowdsourcingRejectedCount+(double)vendorSourcingRejectedCount+(double)recruiterSourcingRejectedCount+(double)internalSourcingInterviewCount))*100;
+				 Double crowdSoruceRejectedCount = ((double)(crowdsourcingRejectedCount)/((double)crowdsourcingRejectedCount+(double)vendorSourcingRejectedCount+(double)recruiterSourcingRejectedCount+(double)internalSourcingRejectedCount))*100;
 				 Double crowdSoruceOfferedCount = ((double)(crowdsourcingOfferedCount)/((double)crowdsourcingOfferedCount+(double)vendorSourcingOfferedCount+(double)recruiterrSourcingOfferedCount+(double)internalSourcingOfferedCount))*100;
 				 Double crowdSoruceOfferAcceptedCount = ((double)(crowdsourcingOfferAcceptedCount)/((double)crowdsourcingOfferAcceptedCount+(double)vendorSourcingOfferAcceptedCount+(double)recruiterSourcingOfferAcceptedCount+(double)internalSourcingOfferAcceptedCount))*100;
 				 Double crowdSoruceOfferRejectedCount = ((double)(crowdsourcingOfferRejectedCount)/((double)crowdsourcingOfferRejectedCount+(double)vendorSourcingOfferRejectedCount+(double)recruiterSourcingOfferRejectedCount+(double)internalSourcingOfferRejectedCount))*100;
 				 Double crowdSoruceOfferBackoutCount = ((double)(crowdsourcingOfferBackoutCount)/((double)crowdsourcingOfferBackoutCount+(double)vendorSourcingOfferBackoutCount+(double)recruiterSourcingOfferBackoutCount+(double)internalSourcingBackoutCount))*100;
+				 
+				// Internal DB Stage Counts End
 				 
 				 crowdSourcingApplicantsDTO.setApplicantsAvgCount(df.format(crowdSoruceApplicantCount));
 				 crowdSourcingApplicantsDTO.setShortlistedAvgCount(df.format(crowdSoruceShortlistedCount));
@@ -261,7 +323,6 @@ public class ApplicantBySourceRestController {
 				 crowdSourcingApplicantsDTO.setOfferRejectedAvgCount(df.format(crowdSoruceOfferRejectedCount));
 				 crowdSourcingApplicantsDTO.setBackoutAvgCount(df.format(crowdSoruceOfferBackoutCount));
 				 applicantBySourceList.add(crowdSourcingApplicantsDTO);
-				 
 				 
 				 Double vendorApplicantCount = ((double)(vendorSourcingApplicantCount)/((double)crowdsourcingApplicantsCount+(double)vendorSourcingApplicantCount+(double)recruiterSourcingApplicantCount+(double)internalSourcingApplicantCount))*100;
 				 Double vendorShortlistedCount = ((double)(vendorSourcingShortlistCount)/((double)crowdsourcingSortlistedCount+(double)vendorSourcingShortlistCount+(double)recruiterSourcingShortlistCount+(double)internalSourcingShortlistCount))*100;
@@ -327,7 +388,9 @@ public class ApplicantBySourceRestController {
 				 internalSourcingApplicantsDTO.setOfferAcceptedAvgCount(df.format(internalOfferAcceptedCount));
 				 internalSourcingApplicantsDTO.setOfferRejectedAvgCount(df.format(internalOfferRejectedCount));
 				 internalSourcingApplicantsDTO.setBackoutAvgCount(df.format(internalOfferBackoutCount));
+				 
 				 applicantBySourceList.add(internalSourcingApplicantsDTO);
+				}
 				 if(applicantBySourceList != null){
 					 response.setData(applicantBySourceList);
 						response.setResponse(Result.SUCCESS.name());

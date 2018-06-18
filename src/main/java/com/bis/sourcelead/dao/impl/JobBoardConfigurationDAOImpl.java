@@ -1,10 +1,12 @@
 package com.bis.sourcelead.dao.impl;
 
 import com.bis.sourcelead.dao.JobBoardConfigurationDAO;
+import com.bis.sourcelead.dao.TeamDao;
 import com.bis.sourcelead.dto.OrgJobBoardAccountDTO;
 import com.bis.sourcelead.dto.OrgJobBoardAccountUserDTO;
 import com.bis.sourcelead.dto.OrgJobBoardDTO;
 import com.bis.sourcelead.entity.JobBoard;
+import com.bis.sourcelead.entity.JobBoardData;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgJobBoard;
 import com.bis.sourcelead.entity.OrgJobBoardAccount;
@@ -31,6 +33,9 @@ public class JobBoardConfigurationDAOImpl implements JobBoardConfigurationDAO {
 
     @Autowired
     private SessionFactory sessionFactory;
+    
+    @Autowired
+    private TeamDao teamDAO;
 
     @Override
     @Transactional
@@ -140,18 +145,24 @@ public class JobBoardConfigurationDAOImpl implements JobBoardConfigurationDAO {
 
     @Override
     @Transactional
-    public List<OrgJobBoardAccountDTO> getOrgJobBoardAccountList(long orgId, long jobBoardId, String search) {
+    public List<OrgJobBoardAccountDTO> getOrgJobBoardAccountList(long orgId, long jobBoardId, String search, long userId, long orgLocationId) {
         List<OrgJobBoardAccountDTO> resultList = new ArrayList<>();
         try {
             Session session = this.sessionFactory.getCurrentSession();
-            String query = "from OrgJobBoardAccount p where p.org.id = :orgId";
+            String query = "select oa from OrgJobBoardAccount oa " ;
+            query += "where oa.org.id = :orgId";
             if (jobBoardId > 0) {
-                query += " and p.orgJobBoard.jobBoard.id = :jobBoardId";
+                query += " and oa.orgJobBoard.jobBoard.id = :jobBoardId";
             }
             if (StringUtils.isNotEmpty(search)) {
-                query += " and p.name like :search";
+                query += " and oa.name like :search";
             }
-            query += " order by p.name";
+            List<Long> userTeamList = null;
+            if(userId > 0) {
+                userTeamList = teamDAO.getUserAssignedTeamIdsListByOrgLocationId(userId, orgLocationId);
+                query += " and oa.active = true ";
+            }
+            query += " order by oa.name";
             Query queryObj = session.createQuery(query);
             queryObj.setLong("orgId", orgId);
             if (jobBoardId > 0) {
@@ -160,6 +171,11 @@ public class JobBoardConfigurationDAOImpl implements JobBoardConfigurationDAO {
             if (StringUtils.isNotEmpty(search)) {
                 queryObj.setString("search", "%" + search + "%");
             }
+//            if(userId > 0) {
+//                queryObj.setLong("userId", userId);
+//                if(userTeamList != null)
+//                    queryObj.setParameterList("teamIds", userTeamList);
+//            }
             List<OrgJobBoardAccount> list = queryObj.list();
             for (OrgJobBoardAccount oa : list) {
                 OrgJobBoardAccountDTO oj = new OrgJobBoardAccountDTO();
@@ -176,7 +192,20 @@ public class JobBoardConfigurationDAOImpl implements JobBoardConfigurationDAO {
                 oj.setAccessToken(oa.getAccessToken());
                 oj.setAccountId(oa.getAccountId());
                 oj.setJobBoardName(oa.getOrgJobBoard().getJobBoard().getName());
-                if(!oa.isAccessToAll()) {
+                boolean flag = true;
+                if(!oa.isAccessToAll() && userId > 0) {
+                    flag = false;
+                    List<OrgJobBoardAccountUser> list1 = oa.getOrgJobBoardAccountUserList();
+                    for (OrgJobBoardAccountUser oa1 : list1) {
+                        if(oa1.getUser() != null && oa1.getUser().getId() == userId) {
+                            flag = true;
+                            break;
+                        } else if(oa1.getTeam() != null && userTeamList != null && userTeamList.contains(oa1.getTeam().getId())) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                } else if(!oa.isAccessToAll()) {
                     int userCount = 0;
                     int teamCount = 0;
                     List<OrgJobBoardAccountUser> list1 = oa.getOrgJobBoardAccountUserList();
@@ -188,8 +217,9 @@ public class JobBoardConfigurationDAOImpl implements JobBoardConfigurationDAO {
                         }
                     }
                     oj.setAssignCount(userCount+" / "+teamCount);
-                }
-                resultList.add(oj);
+                } 
+                if(flag)
+                    resultList.add(oj);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -321,6 +351,31 @@ public class JobBoardConfigurationDAOImpl implements JobBoardConfigurationDAO {
             ex.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    @Transactional
+    public JobBoardData getJobBoardDataList(int jobBoardId, String jobBoardFiled, String fieldLabel, String fieldValue, String fieldAlias) {
+        try {
+            Session session = this.sessionFactory.getCurrentSession();
+            String query = "from JobBoardData j where j.jobBoard.id = :jobBoardId";
+            query += " and j.jobBoardField = :jobBoardFiled";
+            query += " and j.slFieldLabel = :fieldLabel";
+            query += " and j.slFieldValue = :fieldValue";
+            query += " and j.slFieldAlias = :fieldAlias";
+            Query queryObj = session.createQuery(query);
+            queryObj.setLong("jobBoardId", jobBoardId);
+            queryObj.setString("jobBoardFiled", jobBoardFiled);
+            queryObj.setString("fieldLabel", fieldLabel);
+            queryObj.setString("fieldValue", fieldValue);
+            queryObj.setString("fieldAlias", fieldAlias);
+            List<JobBoardData> list = queryObj.list();
+            if(list != null && !list.isEmpty())
+                return list.get(0);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
 }

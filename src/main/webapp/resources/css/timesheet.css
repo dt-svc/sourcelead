@@ -926,12 +926,12 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .clients_wrap_table table tr:hover .client_show i {
     visibility:visible; opacity:1;
     }
-.clients_side_wrap {
+.clients_side_wrap, .submission_side_wrap {
     width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
     transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
     z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
     }
-.clients_side_wrap.clients_side_wrap_active {
+.clients_side_wrap.clients_side_wrap_active, .submission_side_wrap.submission_side_wrap_active {
     right:0px;
     }  
 .clients_side_wrap_inn {
