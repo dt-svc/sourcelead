@@ -97,12 +97,12 @@
 			<h2>Add Visa</h2><a href="javascript:void(0)" class="fa fa-close popCan" onClick="popFun();"></a>
 		</div>
 		
-	<div class="popupMid clearfix">
+	<div class="clearfix">
 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Visa Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="form-control selectpicker " name = "visaType" id = "visaType" field-name = "Visa Type"  data-validation = "required" data-live-search="true">
+					<select class="selectpicker width100percnt" name = "visaType" id = "visaType" field-name = "Visa Type"  data-validation = "required" data-live-search="true">
 					  <option value="" selected>Select Visa Type</option>
 					  <c:forEach var="visaType" items="${visaList}">
 						<option value="${visaType}">${visaType}</option>
@@ -120,7 +120,7 @@
           	<div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Country<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="form-control selectpicker" name="country" id= "visaCountry"  field-name="Country" data-validation="required" data-live-search="true">
+					<select class="selectpicker width100percnt" name="country" id= "visaCountry"  field-name="Country" data-validation="required" data-live-search="true">
 					<option value="" selected>--Select Country--</option>
 					  <c:forEach var="country" items="${countryList}">
 						<option value="${country.name}">${country.name}</option>
@@ -233,6 +233,8 @@
 	else{
         $('#visafilled').hide()
 	}
+  $('#visaType').selectpicker('refresh');
+  $('#visaCountry').selectpicker('refresh');
 </script>
 		
 

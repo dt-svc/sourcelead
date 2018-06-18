@@ -143,12 +143,12 @@
 			<h2>Add Document</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="removeDocPopUp();"></a>
 		</div>
 		
-		<div class="popupMid clearfix">
+		<div class="clearfix">
 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Document Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="form-control selectpicker" name = "documentType" field-name="Document Type" data-validation="required" data-live-search="true" id="documentType" onchange="getDocumentTypeDiv(this);">
+					<select class="selectpicker width100percnt" name = "documentType" field-name="Document Type" data-validation="required" data-live-search="true" id="documentType" onchange="getDocumentTypeDiv(this);">
 					  <option value = "">Select Document Type</option>
 					   <c:forEach var="docs" items="${documentsList}">
 											<option value="${docs.id}">${docs.name}</option>
@@ -612,4 +612,5 @@ function checkRequiredDocAndContinue(){
 	        $('#allDocsfilled').hide()
      }
 //});	
+$("#documentType").selectpicker("refresh");
 </script>
