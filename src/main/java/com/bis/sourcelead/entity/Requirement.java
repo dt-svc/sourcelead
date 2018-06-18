@@ -463,6 +463,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
 	@JsonProperty
 	private String noOfOfferedApplicants;
+	
+	@Transient
+	@JsonProperty
+	private String noOfJoinedApplicants;
 
 	@Transient
 	@JsonProperty
@@ -1174,6 +1178,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setNoOfOfferedApplicants(String noOfOfferedApplicants) {
 		this.noOfOfferedApplicants = noOfOfferedApplicants;
+	}
+
+	public String getNoOfJoinedApplicants() {
+		return noOfJoinedApplicants;
+	}
+
+	public void setNoOfJoinedApplicants(String noOfJoinedApplicants) {
+		this.noOfJoinedApplicants = noOfJoinedApplicants;
 	}
 
 	public String getClientContactName() {

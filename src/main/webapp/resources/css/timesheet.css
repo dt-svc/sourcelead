@@ -926,14 +926,17 @@ input.inline_field::-moz-placeholder { color: #333; }-->*/
 .clients_wrap_table table tr:hover .client_show i {
     visibility:visible; opacity:1;
     }
+
+
 .clients_side_wrap, .submission_side_wrap {
-    width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
-    transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
-    z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
-    }
+width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
+transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
+z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;
+}
 .clients_side_wrap.clients_side_wrap_active, .submission_side_wrap.submission_side_wrap_active {
-    right:0px;
-    }  
+right:0px;
+}
+
 .clients_side_wrap_inn {
     position:relative; padding:10px;
     }
@@ -8308,3 +8311,12 @@ max-width: 60% !important;
 .maxWid .attFile {
 max-width: 100% !important;
 }
+
+/*  Progress  */
+.proMask {
+  position: fixed; display:none; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); left: 0px; top: 0px; z-index: 10000;
+}
+.proMask .progress {
+    width: 400px; margin: 20% auto 0px; height: 20px;
+}
+
