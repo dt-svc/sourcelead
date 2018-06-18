@@ -1236,5 +1236,45 @@ public class SubmissionsRestController {
 
 		return "success";
 	}
+	
+	
+	@RequestMapping(value = "/app/saveJoinedRequestForApplicant")
+	public @ResponseBody String saveJoinedRequestForApplicant(ApplicantRejectBackOutDTO applicantRejectBackOutDTO,
+			@RequestParam(value = "submissionId", required = false) Long submissionId, HttpServletRequest request)
+			throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+
+		// to update submission history
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
+
+		// to update Submission status
+		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
+		requirementSubmission.setUpdatedBy(user.getUserCode());
+		StringBuilder sb = new StringBuilder();
+		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		requirementSubmission.setUpdatedDate(new Date());
+		
+		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getJoinDate()) && !"".equalsIgnoreCase(applicantRejectBackOutDTO.getJoinDate())) {
+			try {
+				Date convertedDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), applicantRejectBackOutDTO.getJoinDate());
+				requirementSubmission.setJoinedDate(convertedDate);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			requirementSubmission.setJoinedDate(null);
+		}
+		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+
+		return "success";
+	}
 
 }

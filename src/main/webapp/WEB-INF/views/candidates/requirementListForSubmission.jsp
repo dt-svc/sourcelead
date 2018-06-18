@@ -51,10 +51,10 @@ $(document).ready(function() {
 									data-validation-optional="true"
 									data-placeholder="Select Notice Period">
 									<option value="Immediately Available">Immediately Available</option>
-									<option value="15 Days">15-Days</option>
-									<option value="1 Month">1-Month</option>
-									<option value="2 Months">2-Month</option>
-									<option value="3 Months">3-Month</option>
+									<option value="15 Days">15 Days</option>
+									<option value="1 Month">1 Month</option>
+									<option value="2 Months">2 Months</option>
+									<option value="3 Months">3 Months</option>
 								</select>
 							</div>
 						  </div>
@@ -189,17 +189,6 @@ function submitCandidatesToJob(){
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 		
-		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-		  if(locationList.match("yyyy-MM-dd")){
-			  createdDate = 'YYYY-MM-DD';
-		  }if(locationList.match("dd-MM-yyyy")){
-			  createdDate = 'DD-MM-YYYY'; 
-		  }if(locationList.match("MM-dd-yyyy")){
-			  createdDate = 'MM-DD-YYYY'; 
-		  }if(locationList.match("yyyy-dd-MM")){
-			  createdDate = 'YYYY-DD-MM'; 
-		  }
-		  
 		var result = "";
 		result = result + '<h3>Jobs List</h3>';
 		result = result + '<div id="choicepopUp"></div>';
@@ -224,7 +213,7 @@ function submitCandidatesToJob(){
 		result = result +'  <th>&nbsp;</th>';
 		result = result +'	<th>Generated Id</th>';
 		result = result +'	<th>Title</th>';
-		result = result +'  <th>Posted On<br>(<small class="custom-small">'+createdDate+'</small>)</th>';
+		result = result +'  <th>Posted On<br>(<small class="custom-small">YYYY-MM-DD</small>)</th>';
 	  	result = result +'  <th>Location</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
@@ -352,7 +341,7 @@ function requirementListPagination(url,sourceleadUrl){
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
-	            	  result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+	            	  result = result +"<td><div class='tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
 	            	  return result;
 	              }
 		     },{
@@ -442,11 +431,20 @@ function submitCandidtesToJob(){
 				    	} else if (data.response === "SUCCESS") {
 				    		$("#requirementsListLoading").removeAttr("style");
 			       			document.getElementById("radio"+jobId).checked = false;
+			       			activeTab();
+			       			clearJobAdvSearch();
+			       			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+			       			$(".side_mask").fadeOut(200);
+			       			$("body").css('overflow-y', 'auto');
+			       			$("#candMsgDiv").html("Candidates Submitted Successfully...");
+			       			msgFadein();
 				    	}else if (data.indexOf('Sign In') !== -1) {
 				    		location.replace(sourceleadUrl);
 				    	} else {
 				    		showError("Operation failed, please try again");
 				    	}
+		        	   
+		        	   
 		           },
 		   });  
 		 

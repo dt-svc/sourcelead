@@ -586,10 +586,11 @@
 															+ ',\''
 															+ submissionType
 															+ '\')";>';
-													result = result
-															+ "<option value='Status'>"
-															+ opt.submissionDisplayStatus
-															+ "</option><option value='Reject'>Reject</option>";
+													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
+													if (opt.submissionStatus != 'SUBMISSION' && opt.submissionStatus != 'SUBMISSION_ACCEPT' && opt.submissionStatus != 'REQUEST_SENT' && opt.submissionStatus != 'NEW' && opt.submissionStatus != 'JOINED'){
+														result = result + "<option value='Joined'>Joined</option>";
+													}
+													result = result + "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERACCEPTED'
 															|| opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
 														result = result

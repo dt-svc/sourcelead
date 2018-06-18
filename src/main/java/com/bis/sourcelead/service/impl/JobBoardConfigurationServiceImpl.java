@@ -4,6 +4,7 @@ import com.bis.sourcelead.dao.JobBoardConfigurationDAO;
 import com.bis.sourcelead.dto.OrgJobBoardAccountDTO;
 import com.bis.sourcelead.dto.OrgJobBoardAccountUserDTO;
 import com.bis.sourcelead.dto.OrgJobBoardDTO;
+import com.bis.sourcelead.entity.JobBoardData;
 import com.bis.sourcelead.service.JobBoardConfigurationService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,8 @@ public class JobBoardConfigurationServiceImpl implements JobBoardConfigurationSe
     }
 
     @Override
-    public List<OrgJobBoardAccountDTO> getOrgJobBoardAccountList(long orgId, long jobBoardId, String search) {
-        return jobBoardConfigurationDAO.getOrgJobBoardAccountList(orgId, jobBoardId, search);
+    public List<OrgJobBoardAccountDTO> getOrgJobBoardAccountList(long orgId, long jobBoardId, String search, long userId, long orgLocationId) {
+        return jobBoardConfigurationDAO.getOrgJobBoardAccountList(orgId, jobBoardId, search, userId, orgLocationId);
     }
 
     @Override
@@ -57,6 +58,11 @@ public class JobBoardConfigurationServiceImpl implements JobBoardConfigurationSe
     @Override
     public int changeJobBoardAccountStatus(long orgJobBoardAccountId) {
         return jobBoardConfigurationDAO.changeJobBoardAccountStatus(orgJobBoardAccountId);
+    }
+
+    @Override
+    public JobBoardData getJobBoardDataList(int jobBoardId, String jobBoardField, String fieldLabel, String fieldValue, String fieldAlias) {
+        return jobBoardConfigurationDAO.getJobBoardDataList(jobBoardId, jobBoardField, fieldLabel, fieldValue, fieldAlias);
     }
 
 }

@@ -208,6 +208,19 @@ public class UserLoginHelper {
 			if(localip != null)
             ip = localip.getHostAddress();
         }
+        String[] ipArray = ip.split(",");
+		if(ipArray.length > 1){
+			for(String s :ipArray){
+				if(StringUtils.isNotEmpty(s)){
+					ip =s.replaceAll("[^0-9.]", "");
+					break;
+				}
+			}
+			
+		}else{
+			ip = ip.replaceAll("[^0-9.]", "");
+		}
+        
 	    return ip;  
 	}
 }
