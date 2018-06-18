@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -61,12 +63,15 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LetterHeadService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -184,6 +189,12 @@ public class ReportRestController {
 	
 	@Autowired
 	private EmployeeVerificationTemplateService employeeVerificationTemplateService;
+	
+	@Autowired
+	ActionHistoryService actionHistoryService;
+	
+	@Autowired 
+	OrgLocationService orgLocationService;
 	
 	
 	/**
@@ -623,6 +634,37 @@ public class ReportRestController {
 	}
 }
 	
+	@RequestMapping (value = "/viewCountsList")
+	public @ResponseBody UserDTO viewCountsList (UsersUsageReportDTO usersUsageReportDTO,HttpServletRequest request,HttpServletResponse response)throws Exception{
+		
+		UserDTO userViewCount = actionHistoryService.getAllActionHistoryByUserId(usersUsageReportDTO.getUserId());
+		UserDTO userDTO = new UserDTO();
+		
+//		UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
+		userDTO.setNoOfActivities(userViewCount.getNoOfActivities());
+		userDTO.setLastActivity(userViewCount.getLastActivity());
+		
+//		if(StringUtils.isNotBlank(userViewCount.getLastActivity())){
+//			userDTO.setLastActivity(userViewCount.getLastActivity());
+//		}
+		
+		return userViewCount;
+	}
+	
+	@RequestMapping (value = "/ipCountDetails")
+	public @ResponseBody UserDTO ipCountDetails (UsersUsageReportDTO usersUsageReportDTO,HttpServletRequest request,HttpServletResponse response)throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 UserDTO udTO = userLoginLogoutSessionService.getUsersListByIpAddress(usersUsageReportDTO.getIpAddress(),usersUsageReportDTO.getOrgId(),orgLocations.getId());
+//		 UserDTO activitiesCount = actionHistoryService.getAllActionHistoryByUserId(usersUsageReportDTO.getIpAddress());
+		 
+		 udTO.setNoOfActivities(String.valueOf(udTO.getNoOfActivities()));
+		 udTO.setTotalNoOfUsers(udTO.getTotalNoOfUsers());
+		return udTO;
+		
+	}
+	
+	
+	
 	@RequestMapping (value = "/multipleIpsUsersList")
 		public @ResponseBody ResponseList<UsersUsageReportDTO>multipleIpsUsersList (UsersUsageReportDTO usersUsageReportDTO,@RequestParam (value = "ipAddress", required = false)String ipAddress,HttpServletRequest request,HttpServletResponse response)throws Exception{
 	
@@ -991,6 +1033,33 @@ public class ReportRestController {
 			    e.printStackTrace();
 			}
 		}
+		
+		@RequestMapping(value = "/ws/dumpAllReplaceIpAddress", method = RequestMethod.GET)
+	    public boolean getRestActionHistoryList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	    {
+	        boolean isInserted = false;
+	        
+	        List<UserLoginLogoutSession> ipList = userLoginLogoutSessionService.getAll();
+	         for(UserLoginLogoutSession uls :ipList){
+	            		String ipAddress = uls.getIpaddress();
+		            	String[] ipArray = ipAddress.split(",");
+		        		if(ipArray.length > 1){
+		        			for(String s :ipArray){
+		        				if(StringUtils.isNotEmpty(s)){
+		        					ipAddress =s.replaceAll("[^0-9.]", "");
+		        					break;
+		        				}
+		        			}
+		        			
+		        		}else{
+		        			ipAddress = ipAddress.replaceAll("[^0-9.]", "");
+		        		}
+		        		uls.setIpaddress(ipAddress);
+		        		userLoginLogoutSessionService.storeUserLoginLogoutSession(uls);
+	        }
+	        System.out.println("End Update Ip Addrss");
+	        return isInserted;
+	    }
 
 		
 }

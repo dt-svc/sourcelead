@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -182,6 +184,12 @@ public interface UserDao {
 	
 	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates) throws Exception;
 
+
+	public DashboardItems getDashboardItemsByUserId(long loginUserId);
+	
+	public DashboardItems getDashboardItemsByDashboardId(long dashboardItemId);
+
+	public long saveDashboardItems(DashboardItems dashboardItems);
 
 
 }

@@ -12,7 +12,7 @@ $(document).ready(function(){
 });
 </script>
 <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES', 'ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
-<div class="col-md-6">
+<div class="col-md-6 mb">
         <div class="dashboard-widget dashboard-widget-icons">
           <h4 class="clearfix"><a id="expensesLink" href="<c:url value="/app/expenses"/>">Expenses &nbsp;&nbsp;</a></h4>
           <div class="clearfix dashboard-data mt">

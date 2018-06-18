@@ -24,8 +24,7 @@ $(document).ready(function(){
 });
 </script>
   
-  <div class="clearfix mb">
-    <div class="col-md-6">
+    <div class="col-md-6 mb">
       <div class="dashboard-widget">
           <h4 class="pull-left"><a href="<c:url value='${appPath}/leaveManagementReports'/>" title="Leave Management">Leaves</a></h4>
         <div class="clearfix">
@@ -187,7 +186,6 @@ $(document).ready(function(){
       </div>
     </div>
     <!-- Requirement ends --> 
-  </div>
   <!-- Tasks and Timesheets columns ends --> 
 <%-- </section> --%>
 
