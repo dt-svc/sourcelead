@@ -2193,4 +2193,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getCandidateDTOByCandidateId(candidateId);
 	}
 
+	@Override
+	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,
+			Long requirementId,String skills,String candidateDetails) throws Exception {
+		return candidateDao.getCandidateListForAddApplicant(orgLcoations, requirementId,skills,candidateDetails);
+	}
+
 }

@@ -45,7 +45,6 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<div class="venk clearfix">';
 	result = result + '<div class="col-md-7 radioInline">';
 	result = result + '<label class="mr"><input type="radio" checked="checked" value="N" name="candidateType" onClick="getCandidatesList('+requirementId+',\'N\');">Candidates</label>';
-	result = result + '<label class="mr"><input type="radio" value="Y" name="candidateType" onClick="getCandidatesList('+requirementId+',\'Y\');">Associates</label>';
 	
 	result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
 	result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
@@ -65,7 +64,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '<div class="col-md-6 mt10">';
 	result = result + '<div id="selectCandidateDiv" style="display: block;">';
 	result = result + '<select class="form-control chosen-select" onchange="getCandidateDetails(); getCandidateResumes();"  name="candidateId" id="candidateId" data-validation="required" field-name="Applicant" class="form-control  block mt10">';
-	result = result + '<option value="">--Select Candidate--</option>';
+	result = result + '<option value="">-- Select Candidate --</option>';
 	result = result + '</select>';
 	result = result + '</div>';	
 	result = result + '</div>';	
@@ -435,31 +434,26 @@ function discordApplicant(){
 		 
 		 
 		 if(requirementId != null && requirementId != "" && requirementId != 'undefined'){
-			 if(candidateType == "N" ){
-				 isAssociate = "N";
-				 candidateType = "Candidate";
-			 }
-			 if(candidateType == "Y" ){
-				 isAssociate = "Y";
-				 candidateType = "Associate";
-			 }
+			
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/getCandidatesList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId+"&isAssociate="+isAssociate, 
+			        url: sourceleadUrl+"/getCandidatesList?${_csrf.parameterName}=${_csrf.token}&requirementId="+requirementId, 
 			        success: function(response) {
 			        	if (response.response === "AWKWARD") {
 			        	    location.href = "/errorPage";
 			        	} else if (response.response === "SUCCESS") {
 			        		var json = response.data;
 				        	var output = "";
-				        	output = output + "<option value=''>-- Select "+candidateType+" --</option>"; 
+				        	output = output + "<option value=''>-- Select Candidate --</option>"; 
 				        	for (var i=0; i<json.length; i++) {
 					        		var opt = json[i];
-					        		var lastName = "";
-					        		if(opt.lastName != null && opt.lastName != "" && opt.lastName != 'undefined'){
-					        			lastName = opt.lastName;
+					        		var candidateType = "";
+					        		if(opt.isAssociate == 'Y'){
+					        			candidateType = 'Associate';
+					        		}else{
+					        			candidateType = 'Candidate';
 					        		}
-					        		output = output + "<option value='" +opt.candidateId+ "'>"+opt.firstName+" "+lastName+"</option>";
+					        		output = output + "<option value='" +opt.candId+ "'>"+opt.candidateName+" ("+candidateType+")</option>";
 							}
 				        	$("#candidateId").empty();
 					        $("#candidateId").append(output);
