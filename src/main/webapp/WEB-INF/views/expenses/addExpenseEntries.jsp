@@ -876,11 +876,9 @@ if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
 
 <script>
 function getExpenseAttachmentStatus(rowId){
-	alert(rowId);
     $('#0docFileuploadFileGroup'+rowId).find('p.jquery_form_error_message').remove();
 	$('#0docFile'+rowId).removeAttr('data-validation');
 	var category = $('#categoryType'+rowId).val();
-	alert("category"+category);
 	if(category !=null && category !='' && category!='Undefined'){
 		var idArray = category.split("\,")
 		if(idArray[0] != null && idArray[0]!='' && idArray[0]!='undefined' && idArray[0] > 0){
