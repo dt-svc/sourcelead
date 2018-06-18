@@ -1,10 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +11,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.TimeZone;
 
 import javax.mail.internet.InternetAddress;
@@ -1652,10 +1648,6 @@ public class UserServiceImpl implements UserService {
 		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates);
 	}
 
-	@Override
-	public List<User> getUsersByEmailList(List<String> userEmail,OrgLocations orgLocation)
-	{
-		return userDao.getUsersByEmailList(userEmail,orgLocation);
-	}
+
 	
 }

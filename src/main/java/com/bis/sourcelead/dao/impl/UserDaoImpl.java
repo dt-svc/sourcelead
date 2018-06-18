@@ -2078,14 +2078,4 @@ public class UserDaoImpl implements UserDao {
 		}
 		return usersDTOList;
 	}
-
-	@Override
-	@Transactional
-	public List<User> getUsersByEmailList(List<String> userEmail,OrgLocations orgLocation)
-	{
-		 Session session = this.sessionFactory.getCurrentSession();
-	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationId and userRole.user.email IN (:emailList)) ORDER BY user.id DESC";
-	     List<User> usersList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).setParameterList("emailList", userEmail).list();
-	     return usersList;
-	}
 }
