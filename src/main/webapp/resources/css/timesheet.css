@@ -8317,6 +8317,6 @@ max-width: 100% !important;
   position: fixed; display:none; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); left: 0px; top: 0px; z-index: 10000;
 }
 .proMask .progress {
-    width: 70%; margin: 20% auto 0px; height: 20px;
+    width: 400px; margin: 20% auto 0px; height: 20px;
 }
 
