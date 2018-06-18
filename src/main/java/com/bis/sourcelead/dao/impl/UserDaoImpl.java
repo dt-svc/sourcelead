@@ -35,8 +35,10 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.ConnectionsDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -2087,4 +2089,48 @@ public class UserDaoImpl implements UserDao {
 	{
 		return null;
 	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public DashboardItems getDashboardItemsByUserId(long loginUserId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from DashboardItems items where items.user.id= :userId";
+			Query queryObj = session.createQuery(query);
+			queryObj.setLong("userId", loginUserId);
+			List<DashboardItems> dashboardItems = queryObj.list();
+			if (dashboardItems != null && !dashboardItems.isEmpty())
+				return dashboardItems.get(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public DashboardItems getDashboardItemsByDashboardId(long dashboardItemId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			return session.get(DashboardItems.class, dashboardItemId);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public long saveDashboardItems(DashboardItems dashboardItems) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(dashboardItems);
+			return dashboardItems.getId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+	
 }

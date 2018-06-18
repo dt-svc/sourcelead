@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -27,6 +28,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -44,7 +46,9 @@ import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
@@ -52,6 +56,7 @@ import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
@@ -71,6 +76,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -194,6 +200,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	EmailScenarioConfigurationService emailScenarioConfigurationService;
+
 	
 	@Override
 	public User findByUserName(String username) {
@@ -1657,5 +1664,69 @@ public class UserServiceImpl implements UserService {
 	{
 		return userDao.getUsersByEmailList(userEmail);
 	}
+
+	@Override
+	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId) {
+		try {
+			DashboardItems dashboardItems = userDao.getDashboardItemsByUserId(loginUserId);
+			if (dashboardItems != null) {
+				DashboardItemsDTO dashboardItemsDTO = new DashboardItemsDTO();
+				
+				JSONArray jsonArray = new JSONArray(dashboardItems.getItems());
+				if (jsonArray != null) {
+					List<JSONObject> itemsObjectList = new LinkedList<>();
+					for (int i = 0; i < jsonArray.length(); i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						/*System.out.println("JSON OBJECT : " + jsonObject);*/
+						itemsObjectList.add(jsonObject.getInt("order") - 1, jsonObject);
+					}
+					dashboardItemsDTO.setItemsObjectList(itemsObjectList);
+				}
+				dashboardItemsDTO.setId(dashboardItems.getId());
+				return dashboardItemsDTO;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user) {
+		Response<String> response = new Response<>();
+		try {
+			DashboardItems dashboardItems = null;
+			if (dashboardItemsDTO.getId() > 0) {
+				dashboardItems = userDao.getDashboardItemsByDashboardId(dashboardItemsDTO.getId());
+			}
+			else {
+				dashboardItems = new DashboardItems();
+			}
+			/*String items = "";
+			for (int i = 0; i < dashboardItemsDTO.getItemsArray().length(); i++) {
+				String jsonString = dashboardItemsDTO.getItemsArray().getString(i);
+				items += "[" + jsonString + "]";
+			}*/
+			dashboardItems.setItems(dashboardItemsDTO.getJsonData());
+			dashboardItems.setUser(user);
+			
+			long result = userDao.saveDashboardItems(dashboardItems);
+			if (result > 0) {
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				response.setResponse(Result.FAILED.name());
+				response.setResponseMessage(Result.FAILED.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+		}
+		return response;
+	}
+	
+	
+	
 	
 }

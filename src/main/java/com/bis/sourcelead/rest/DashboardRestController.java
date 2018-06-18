@@ -15,6 +15,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.constants.Constants;
 
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dto.DashboardCountsDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.EventsDTO;
 
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
@@ -1650,6 +1652,25 @@ public class DashboardRestController {
 		return responseList;
 		
   }
+	
+	@RequestMapping(value = "/saveDashboardItems", method = RequestMethod.POST)
+	public Response<String> saveDashboardItems(HttpServletRequest request, DashboardItemsDTO dashboardItemsDTO) {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+//				JSONArray jsonArray = new JSONArray(dashboardItemsDTO.getItems());
+				
+				response = userService.saveDashboardItems(dashboardItemsDTO, user);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
 	
 	
 }
