@@ -27,6 +27,7 @@ import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.install.ApproverHierarchyToRequirement;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
@@ -818,15 +819,15 @@ public class LeaveDaoImpl implements LeaveDao{
 
 	@Override
 	@Transactional
-	public List<Leave> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate)
+	public List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate)
 	{
 		Date from = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), fromDate);
 		Date to = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), toDate);
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(from.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(to.getTime());
-		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and (leave.fromDate >= :startDate and leave.fromDate <= :endDate) and (leave.status = 'APPROVED' or leave.status = 'PENDING')";
-		List<Leave> list = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setLong("userId", userId).list();
+		String query = "from AppliedLeaveDateView aleave where aleave.orglocationId = :orgLocationId and aleave.userId = :userId and (( aleave.applyLeaveDate = :startDate) OR (aleave.applyLeaveDate = :endDate)) and (aleave.leaveStatus = 'APPROVED' or aleave.leaveStatus = 'PENDING')";
+		List<AppliedLeaveDateView> list = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setLong("userId", userId).list();
 		return list;
 	}
 }

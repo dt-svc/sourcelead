@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,11 +42,14 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
@@ -59,6 +64,8 @@ import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.LeaveTypeImportDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AppliedLeaveDate;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -82,6 +89,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.rest.TimesheetRestController;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -177,6 +185,8 @@ public class LeaveServiceImpl implements LeaveService{
     @Autowired
     AssociateBalanceLeaveDao associateBalanceLeaveDao;
     
+    @Autowired
+    AppliedLeaveDateService  appliedLeaveDateService;  
     
     private static final Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
     
@@ -280,7 +290,8 @@ public class LeaveServiceImpl implements LeaveService{
 		leave.setNumberOfDays(numberOfdays);
 		leave.setLeaveUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 //		leave.setExtraLeavesTaken(String.valueOf(0));
-		
+		Set<AppliedLeaveDate> appliedLeaveDateSet = getAppliedLeaveDateSet(leave,orgLocations,user,leaveDTO);
+		leave.setAppliedLeaveDateSet(appliedLeaveDateSet);
 		Leave savedLeave =  leaveDao.saveLeave(leave);
 		
 		Map<String,Float> monthlyLeaves = leaveManagementUtil.getMonthlyAppliedLeaves(leave,leaveDTO,user);
@@ -303,12 +314,54 @@ public class LeaveServiceImpl implements LeaveService{
 					 sendOnBehalfEmailToEmployee(savedLeave,applyUser,user,orgLocations);
 			}
 		 }
+			 
 		}
 		
 		
 		return savedLeave;
 	}
-
+	
+	/**
+	 * Get exact applied leave dates
+	 * 
+	 * @param leave
+	 * @param orgLocations
+	 * @param user
+	 * @param leaveDTO 
+	 * @return Set<AppliedLeaveDate>
+	 */
+	private Set<AppliedLeaveDate> getAppliedLeaveDateSet(Leave leave, OrgLocations orgLocations, User user, LeaveDTO leaveDTO)
+	{
+		Set<AppliedLeaveDate> set = new HashSet<>();
+		try {
+			List<Date> dateList = leaveManagementUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(), orgLocations.getDateFormat());
+			dateList.forEach(d -> {
+				AppliedLeaveDate appliedLeaveDate = new AppliedLeaveDate();
+				appliedLeaveDate.setApplyLeaveDate(d);
+				appliedLeaveDate.setApplyMonthName(getMonthName(d).toUpperCase());
+				appliedLeaveDate.setLeave(leave);
+				appliedLeaveDate.setIsPayrollInclude(Constants.STATUS_NO);
+				appliedLeaveDate.setCreatedBy(user.getId());
+				appliedLeaveDate.setCreatedDate(new Date());
+				appliedLeaveDate.setUpdatedBy(user.getId());
+				appliedLeaveDate.setUpdatedDate(new Date());
+				set.add(appliedLeaveDate);
+			});
+		} catch (Exception e) {
+			logger.error("AppliedLeaveDate failed due to " + e.getMessage());
+		}
+		return set;
+	}
+	
+	/**
+	 * Return month name by Date
+	 * @return String
+	 */
+	private String getMonthName(Date date) {
+		  Format formatter = new SimpleDateFormat("MMM"); 
+		    String monthName = formatter.format(date);
+		    return monthName;
+	}
 	private void sendOnBehalfEmailToEmployee(Leave savedLeave, User applyUser, User loginUser,
 			OrgLocations orgLocations) throws Exception {
 
@@ -1415,6 +1468,7 @@ public class LeaveServiceImpl implements LeaveService{
 			Leave updatedLeave = leaveDao.saveLeave(leave);
 			if(updatedLeave !=null) {
 				isLeaveWithdraw = true;
+				int isDeleted = appliedLeaveDateService.deleteAppliedLeaveDatesByLeaveId(updatedLeave.getId());
 			}
 			leaveManagementHistory.setLeaveid(leave);
 			leaveManagementHistory.setType(Constants.LEAVE);
@@ -2260,7 +2314,7 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 
 	@Override
-	public List<Leave> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate)
+	public List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate)
 	{
 		return leaveDao.getLeaveByUserIdAndFromToDate(userId,orgLocation,fromDate,toDate);
 	}
