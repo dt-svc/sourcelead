@@ -825,7 +825,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		java.sql.Date sqlStartDate = new java.sql.Date(from.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(to.getTime());
-		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and (leave.fromDate >= :startDate and leave.fromDate <= :endDate) and (leave.status = 'APPROVED' or leave.status = 'PENDING')";
+		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and ( leave.fromDate >= :startDate and leave.fromDate <= :endDate) OR (leave.toDate >= :startDate and leave.toDate <= :endDate)  and (leave.status = 'APPROVED' or leave.status = 'PENDING')";
 		List<Leave> list = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setLong("userId", userId).list();
 		return list;
 	}

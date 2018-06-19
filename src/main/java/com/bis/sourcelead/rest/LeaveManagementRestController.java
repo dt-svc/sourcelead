@@ -1272,7 +1272,7 @@ public class LeaveManagementRestController {
 				if (leave != null) {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
-						boolean  isApproved = leaveService.reduceLeaveCount(orgLocations,leave.getUser(),leave.getLeaveUUID(),leave.getLeaveType().getId(),leave.getStatus(),leave.getNumberOfDays());
+					boolean  isApproved = leaveService.reduceLeaveCount(orgLocations,leave.getUser(),leave.getLeaveUUID(),leave.getLeaveType().getId(),leave.getStatus(),leave.getNumberOfDays());
 				} else {
 					response.setResponse(Result.FAILED.name());
 					response.setResponseMessage(Result.FAILED.getValue());
@@ -2182,8 +2182,16 @@ public class LeaveManagementRestController {
 		}else {
 			List<Leave> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
 			if(leaveList != null && !leaveList.isEmpty()) {
-				sb = new StringBuilder();
-				sb.append("you cannot apply two leaves on same day.!");
+				Leave leave = leaveList.get(0);
+				Date from = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), fromDate);
+				Date to = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), toDate);
+				Date leaveFromDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), leave.getFromDate());
+				Date leaveToDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), leave.getToDate());
+				if(from.after(leaveToDate) || from.before(leaveToDate) || to.after(leaveFromDate) || to.before(leaveToDate) || from.equals(leaveFromDate) || to.equals(leaveToDate)) {
+					sb = new StringBuilder();
+					sb.append("you cannot apply two leaves on same day.!");
+				}
+				
 			}
 		}
 		
