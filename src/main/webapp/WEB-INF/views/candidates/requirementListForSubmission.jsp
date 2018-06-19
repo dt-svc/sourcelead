@@ -190,7 +190,7 @@ function submitCandidatesToJob(){
 		$("body").css('overflow-y', 'hidden');
 		
 		var result = "";
-		result = result + '<h3>Jobs List</h3>';
+		result = result + '<h3>Choose Job</h3>';
 		result = result + '<div id="choicepopUp"></div>';
 		result = result + '<div id="requirementsListLoading"></div>';
 	    result = result +" <div class='mr pull-left'>";
@@ -438,7 +438,6 @@ function submitCandidtesToJob(){
 		   } 
 		 
 		 var candidateResume = $("#candidateResume").val();
-		 alert(candidateResume);
 			
 		 $("#requirementsListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			   $.ajax({
@@ -458,7 +457,7 @@ function submitCandidtesToJob(){
 			       			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 			       			$(".side_mask").fadeOut(200);
 			       			$("body").css('overflow-y', 'auto');
-			       			$("#candMsgDiv").html("Candidates Submitted Successfully...");
+			       			$("#candMsgDiv").html(candidateIds.length+" Candidate(s) Submitted Successfully...");
 			       			msgFadein();
 				    	}else if (data.indexOf('Sign In') !== -1) {
 				    		location.replace(sourceleadUrl);

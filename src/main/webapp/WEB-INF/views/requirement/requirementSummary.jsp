@@ -195,6 +195,12 @@ function backoutCount(requirementId){
 
 <!-- Content Area -->
 <section class="content-wraper" onclick="popClose(); piplineexportClose();">
+
+
+<div class="success_pop" id="candSelector" style="display: none;"> 
+    	 <i class="fa fa-check-circle"></i><span id="candMsgDiv"></span> 
+   		</div>
+   		
   <section class="content-header clearfix">
     <div class="pull-left">
       <h2>Job Summary</h2>
@@ -270,6 +276,14 @@ function backoutCount(requirementId){
 	}
 </script> 
 <!-- End -->
+
+
+  <script>
+	   function candMsgFadein() {
+			$("#candSelector").fadeIn(200);
+		    $('#candSelector').delay(2000).fadeOut('slow');
+		}
+   </script>
 
 <script>
 
