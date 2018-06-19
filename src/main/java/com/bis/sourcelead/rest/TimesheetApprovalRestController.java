@@ -686,6 +686,7 @@ public class TimesheetApprovalRestController {
 				model.addObject("timesheetApproval", timesheetApprovalDTO);
 				model.setViewName("timesheet/timesheetDashboardTableData");
 			}catch(Exception e) {
+				e.printStackTrace();
 				model.addObject("AWKWARD", true);
 				model.setViewName("timesheet/timesheetDashboardTableData");
 			}
@@ -724,7 +725,7 @@ public class TimesheetApprovalRestController {
 				    	 timesheetApprovalDTO.setFrequencyStartDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate));
 						 timesheetApprovalDTO.setFrequencyEndDate(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
 				    	 timesheetApprovalDTO = dataTableWeekDateList(request, timesheetApprovalDTO,loginOrgLocations);
-						 ProjectMembers projectMember = projectMembersService.getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getMasterCandidateId().getId(),submissionApproverHierarchy.getSubmissionId().getProjectMembers().getProjects().getId(),loginOrgLocations.getId());
+						 ProjectMembers projectMember = projectMembersService.getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(submissionApproverHierarchy.getSubmissionId().getProjectMembers().getMasterCandidateId().getId(),submissionApproverHierarchy.getSubmissionId().getProjectMembers().getProjects().getId(),loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),isGlobalAccess);
 						 TimesheetApprovalSubmissionDetailsDTO timeSub = getTimesheetApprovalRowDetails(timesheetApprovalDTO, projectMember, loginOrgLocations, actualStartDate, actualEndDate, user, tdSpanLength,isGlobalAccess);
 						  timeSub.setDashboardInvoiceFrequency(projectMember.getProjects().getInvoiceFrequency());
 						  timeSub.setCurrentTimeFrequency(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualStartDate)+"To"+commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),actualEndDate));
