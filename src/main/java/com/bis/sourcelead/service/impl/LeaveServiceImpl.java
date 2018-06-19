@@ -287,7 +287,7 @@ public class LeaveServiceImpl implements LeaveService{
 		saveMonthlyLeaves(monthlyLeaves,leave,user);
 		
 		if(savedLeave !=null) {
-			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user);
+			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user,leaveDTO);
 			if(leaveDTO.getApproverUser() != null){
 				for(String approverUserId :leaveDTO.getApproverUser()){
 					leaveDTO.setLeaveUUID(savedLeave.getLeaveUUID());

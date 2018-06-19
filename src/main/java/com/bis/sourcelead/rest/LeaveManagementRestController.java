@@ -2729,7 +2729,7 @@ public class LeaveManagementRestController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/reApplyLeaveByUUID")
-	public ModelAndView reApllyLeaveByUUID(@RequestParam(value = "leaveUUID", required = false) String leaveUUID,HttpServletRequest request,
+	public ModelAndView reApllyLeaveByUUID(@RequestParam(value = "leaveUUID", required = false) String leaveUUID,@RequestParam(value = "currentStage", required = false) String currentStage,HttpServletRequest request,
 			HttpServletResponse response) {
 		
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -2742,6 +2742,7 @@ public class LeaveManagementRestController {
 			model.addObject("leave", leave);
 			model.addObject("fromDate", fromDate);
 			model.addObject("toDate", toDate);
+			model.addObject("currentStage", currentStage);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("leavemanagement/applyLeave");
 			return model;
