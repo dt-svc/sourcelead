@@ -204,6 +204,29 @@ function validateShortCode(){
 							</div>
 						</div>
 						
+						<c:if test="${!empty projectType && projectType == 'sharedProject' }">
+							<input type="hidden" name="savedSharedClientOrgLocId" id="savedSharedClientOrgLocId">
+							<div class="form-group">
+							<label class="col-md-3" for="Client">Client<span class="text-danger">*</span></label>
+							<div class="col-md-9 select-field">
+								<select class="form-control chosen-select"
+											name="sharedClientOrgLocId" id="sharedClientOrgLocId" field-name="Client"
+											data-validation-optional="true">
+											<option value="">-- Select Client --</option>
+											<c:forEach var="report" items="${clientsList}">
+											 <c:if test="${report.locationId.id == SourceLeadWeb_orgLocations.id}">
+											    <option value="${report.responderLocationId.id}">${report.responderLocationId.orgLocationName}</option>
+											 </c:if>
+											 <c:if test="${report.responderLocationId.id == SourceLeadWeb_orgLocations.id}">
+											    <option value="${report.locationId.id}">${report.locationId.orgLocationName}</option>
+											 </c:if>
+											</c:forEach>
+								</select>
+							</div>
+						</div>
+							
+					</c:if>
+						
 						
 						<div class="form-group">
 					             <label class="col-md-3"></label>
@@ -345,7 +368,6 @@ function validateShortCode(){
 
 							</div>
 						</div>
-						
 						
 						
 						<div class="form-group">
@@ -719,6 +741,14 @@ function getStatus(){
 									 $("#startDateStr").val(projects.startDateStr);
 									 $("#endDateStr").val(projects.endDateStr);
 									 
+									 var projectType = '${projectType}';
+									 if(projectType != '' && projectType != 'undefined' && projectType == 'sharedProject'){
+										 $("#savedSharedClientOrgLocId").val(projects.savedSharedClientOrgLocId);
+										 $("select[name=sharedClientOrgLocId]").val(projects.savedSharedClientOrgLocId);
+						        		 $('#sharedClientOrgLocId').prop('disabled', true).trigger("chosen:updated");
+									 }
+									
+									 
 									 $("#projectDetailsloading").removeAttr("style");
 									 var assignedMembers = document.getElementById("assignedMembers");
 									 document.getElementById("assignedMembers").removeAttribute("class");
@@ -770,6 +800,13 @@ function getProjectDetails(){
 // 	        		 $("input[name=projectSequeneNumber]").attr("readonly","readonly");
 	        		 $('#projectSequeneNumber').removeAttr('onblur');
 	        	}
+	        	
+	        	if(json.isProjectShared != null && json.isProjectShared != 'undefined' && json.isProjectShared == 'Y'){
+	        		$("#savedSharedClientOrgLocId").val(json.sharedClientOrgLocationId);
+	        		 $("select[name=sharedClientOrgLocId]").val(json.sharedClientOrgLocationId);
+	        		 $('#sharedClientOrgLocId').prop('disabled', true).trigger("chosen:updated");
+	        	}
+	        	 
 	        	
 	        	 $("input[name=projectName]").val(json.projectName);
 	        	 $("input[name=startDate]").val(json.startDateStr);
@@ -1253,6 +1290,13 @@ function getBudgetApprover(approverUserId){
 		  var sectionId = '${section.id}';
 		  getCustomDependentField(sectionId);
 		 </c:forEach>
+		 
+		 var projectType = '${projectType}';
+		 if(projectType != '' && projectType != 'undefined' && projectType == 'sharedProject'){
+			 $("#sharedClientOrgLocId").removeAttr("data-validation-optional");
+			 $("#sharedClientOrgLocId").attr("data-validation", "required");
+		 }
+		 
 	});
 </script>
 
