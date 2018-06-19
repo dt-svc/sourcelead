@@ -741,14 +741,6 @@ function getStatus(){
 									 $("#startDateStr").val(projects.startDateStr);
 									 $("#endDateStr").val(projects.endDateStr);
 									 
-									 var projectType = '${projectType}';
-									 if(projectType != '' && projectType != 'undefined' && projectType == 'sharedProject'){
-										 $("#savedSharedClientOrgLocId").val(projects.savedSharedClientOrgLocId);
-										 $("select[name=sharedClientOrgLocId]").val(projects.savedSharedClientOrgLocId);
-						        		 $('#sharedClientOrgLocId').prop('disabled', true).trigger("chosen:updated");
-									 }
-									
-									 
 									 $("#projectDetailsloading").removeAttr("style");
 									 var assignedMembers = document.getElementById("assignedMembers");
 									 document.getElementById("assignedMembers").removeAttribute("class");

@@ -198,7 +198,7 @@ public class ProjectsRestController {
 			stroredProjectsDTO.setStartDateStr(projects.getStartDateStr());
 			stroredProjectsDTO.setEndDateStr(projects.getEndDateStr());
 			if(projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
-				stroredProjectsDTO.setSavedSharedClientOrgLocId(projects.getOrgLocationsId().toString());
+				stroredProjectsDTO.setSavedSharedClientOrgLocId(projects.getSharedLocationId().getId().toString());
 			}
 			
 			response.setObject(stroredProjectsDTO);
