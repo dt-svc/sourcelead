@@ -133,6 +133,10 @@ public class Leave {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leaveid")
 	private Set<LeaveApproveHierarchy> approverHierarchyList;
 	
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "leave")
+	private Set<AppliedLeaveDate> appliedLeaveDateSet;
+	
 	@Transient
 	@JsonProperty
 	private String leaveTypeName;
@@ -461,6 +465,16 @@ public class Leave {
 	public void setLeaveUUID(String leaveUUID)
 	{
 		this.leaveUUID = leaveUUID;
+	}
+
+	public Set<AppliedLeaveDate> getAppliedLeaveDateSet()
+	{
+		return appliedLeaveDateSet;
+	}
+
+	public void setAppliedLeaveDateSet(Set<AppliedLeaveDate> appliedLeaveDateSet)
+	{
+		this.appliedLeaveDateSet = appliedLeaveDateSet;
 	}
 
 }
