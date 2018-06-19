@@ -89,6 +89,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.rest.TimesheetRestController;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -184,6 +185,8 @@ public class LeaveServiceImpl implements LeaveService{
     @Autowired
     AssociateBalanceLeaveDao associateBalanceLeaveDao;
     
+    @Autowired
+    AppliedLeaveDateService  appliedLeaveDateService;  
     
     private static final Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
     
@@ -329,23 +332,6 @@ public class LeaveServiceImpl implements LeaveService{
 	 */
 	private Set<AppliedLeaveDate> getAppliedLeaveDateSet(Leave leave, OrgLocations orgLocations, User user, LeaveDTO leaveDTO)
 	{
-		if(StringUtils.isNotBlank(leaveDTO.getUser())) {
-			
-		}
-//		
-//		@Override
-//		@Transactional(rollbackFor = { Exception.class })
-//		public int deleteRecipientListByListId(Long campaignListId) throws Exception
-//		{
-//			Session session = this.sessionFactory.getCurrentSession();
-//			Query qry = null;
-//				String query = "delete from CampaignRecipient creci where creci.campaignListId.id =:campaignListId ";
-//		    	qry = session.createQuery(query).setLong("campaignListId", campaignListId);
-//			int i = qry.executeUpdate();
-//			return i;
-//			
-//		}
-		
 		Set<AppliedLeaveDate> set = new HashSet<>();
 		try {
 			List<Date> dateList = leaveManagementUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(), orgLocations.getDateFormat());
@@ -1482,6 +1468,7 @@ public class LeaveServiceImpl implements LeaveService{
 			Leave updatedLeave = leaveDao.saveLeave(leave);
 			if(updatedLeave !=null) {
 				isLeaveWithdraw = true;
+				int isDeleted = appliedLeaveDateService.deleteAppliedLeaveDatesByLeaveId(updatedLeave.getId());
 			}
 			leaveManagementHistory.setLeaveid(leave);
 			leaveManagementHistory.setType(Constants.LEAVE);
