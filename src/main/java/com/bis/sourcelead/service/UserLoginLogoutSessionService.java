@@ -1,9 +1,12 @@
 package com.bis.sourcelead.service;
 
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
@@ -23,7 +26,9 @@ public interface UserLoginLogoutSessionService  {
 
 	ResponseList<UsersUsageReportDTO> getUsersByipAddress(UsersUsageReportDTO usersUsageReportDTO);
 	
+	List<UserLoginLogoutSession>  getAll();
 	
+	UserDTO getUsersListByIpAddress(String str, List<Long> list,Long orgLocationId);
 }	
 		
 	
