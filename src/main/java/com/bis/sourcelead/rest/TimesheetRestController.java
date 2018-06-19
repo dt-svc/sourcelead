@@ -2441,13 +2441,17 @@ public class TimesheetRestController {
 			} else {
 				status = "Draft";
 			}
-	
+			LinkedHashSet<Long> freshPmIdList = new LinkedHashSet<>();
 			List<EmployeeTimesheetFileInfoDTO> timesheetAttachments = tedDTO.getTimsheetAttachments();
 			Map<Long,LinkedList<TimesheetEntriesDTO>> timesheetEntriesMap = new LinkedHashMap<>();
 			if(tsDTO.getTimesheetEntries() != null && !tsDTO.getTimesheetEntries().isEmpty()) {
 				for(TimesheetEntriesDTO teDTO :tsDTO.getTimesheetEntries()) {
 					if(StringUtils.isNotEmpty(teDTO.getTimesheetStatus()) && (teDTO.getTimesheetStatus().equalsIgnoreCase("APPROVED") || teDTO.getTimesheetStatus().equalsIgnoreCase("SUBMITTED")))
+					{
+						freshPmIdList.add(teDTO.getProjectMemberId());
 						continue;
+					}
+						
 					Long projectMemberId = teDTO.getProjectMemberId();
 					LinkedList<TimesheetEntriesDTO> tsDTOList = timesheetEntriesMap.get(projectMemberId);
 					if (tsDTOList == null) {
@@ -2460,7 +2464,7 @@ public class TimesheetRestController {
 				}
 			}
 		     List<Long> oldPmDbIdList = tedDTO.getOldSubmittedProjectMembersList();
-		    List<Long> freshPmIdList = new ArrayList<>();
+		   
 			if(timesheetEntriesMap != null && !timesheetEntriesMap.isEmpty()) {
 				 
 				  for (Map.Entry<Long,LinkedList<TimesheetEntriesDTO>> entry : timesheetEntriesMap.entrySet()) {
