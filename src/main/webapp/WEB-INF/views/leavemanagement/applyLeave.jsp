@@ -47,7 +47,6 @@ window.onload = function() {
               <div class="form-group">
                     <label class="checkBox pull-left mr10">
 					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
-					<label for="checkbox-1" class="checkbox-custom-label"></label>
                   </label>
                   <span class="pull-left">On behalf of</span>
               </div>
@@ -85,8 +84,6 @@ window.onload = function() {
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
 					<input id="checkbox-2" class="checkbox-custom checkboxCustom" id="fromHalfDay" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
-					<label for="checkbox-2" class="checkbox-custom-label"></label>
-                  </label>
                       Half a Day </label>
                   </div>
                 </div>
@@ -106,7 +103,6 @@ window.onload = function() {
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
 					<input id="checkbox-3" class="checkbox-custom checkboxCustom" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
-					<label for="checkbox-3" class="checkbox-custom-label"></label>
                   </label>
                       Half a Day </label>
                   </div>
