@@ -117,6 +117,20 @@ public class ExpensesCategoryDaoImpl implements ExpensesCategoryDao {
 			return flag;
 		}
 	}
+
+
+	@Override
+	@Transactional
+	public String getExpenseAttachmentStatusByCategoryId(Long categoryId) {
+		String attachment = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select ec.isAttachemtRequired from ExpensesCategory ec where ec.id = :categoryId";
+		List<String> expensesCategoryList = session.createQuery(query).setLong("categoryId", categoryId).list();
+		if(expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
+			attachment = expensesCategoryList.get(0);
+		}
+		return attachment;
+	}
 	
 	
 }

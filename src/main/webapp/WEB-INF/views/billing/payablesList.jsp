@@ -96,14 +96,7 @@ $(document).ready(function(){
 							</div>
 							<div class="pull-right ml10">
 								<div class="count" id="unbilledAmoumt"></div>
-								<c:if test="${!empty draftInvoiceCount}">
-								<h5>Draft Bills<span class="paddingLeft" id="draftInvoiceCount"></span></h5>
-								</c:if>
-								
-								<c:if test="${empty draftInvoiceCount}">
-								<h5>Draft Bills<br><span class="paddingright pull-right">0.0</span></h5>
-								</c:if>
-								
+								<h5>Draft Bills<span class="paddingLeft" id="draftInvoiceCount">0.0</span></h5>
 							</div>
 					</a>
 					</li>
@@ -115,17 +108,9 @@ $(document).ready(function(){
 							</div>
 							<div class="pull-right ml10">
 								<div class="count" id="dueAfterInvoiceAmount"></div>
-								<c:if test="${!empty dueAfterInvoiceCount}">
 								<h5>
-									Overdue Bills<span class="paddingLeft" id="dueAfterInvoiceCount"></span>
+									Overdue Bills<span class="paddingLeft" id="dueAfterInvoiceCount">0.0</span>
 								</h5>
-								</c:if>
-								
-								<c:if test="${empty dueAfterInvoiceCount}">
-								<h5>
-									Overdue Bills<br><span class="paddingright pull-right">0.0</span>
-								</h5>
-								</c:if>
 							</div>
 
 					</a>
@@ -138,17 +123,9 @@ $(document).ready(function(){
 							</div>
 							<div class="pull-right ml10">
 								<div class="count" id="dueBeforeInvoiceAmount"></div>
-								<c:if test="${!empty dueBeforeInvoiceCount}">
 								<h5>
-									Open Bills<span class="paddingLeft" id="dueBeforeInvoiceCount"></span>
+									Open Bills<span class="paddingLeft" id="dueBeforeInvoiceCount">0.0</span>
 								</h5>
-								</c:if>
-								
-								<c:if test="${empty dueBeforeInvoiceCount}">
-								<h5>
-									Open Bills<br><span class="paddingright pull-right">0.0</span>
-								</h5>
-								</c:if>
 							</div>
 					</a>
 					</li>
@@ -160,18 +137,9 @@ $(document).ready(function(){
 							</div>
 							<div class="pull-right ml10">
 								<div class="count" id="paidInvoiceAmount"></div>
-								<c:if test="${!empty paidInvoiceCount}">
 								<h5>
-									Paid Bills<span class="paddingLeft" id="paidInvoiceCount"></span>
+									Paid Bills<span class="paddingLeft" id="paidInvoiceCount">0.0</span>
 								</h5>
-								</c:if>
-								
-								<c:if test="${empty paidInvoiceCount}">
-								<h5>
-									Paid Bills<br><span class="paddingright pull-right">0.0</span>
-								</h5>
-								</c:if>
-								
 							</div>
 					</a>
 					</li>

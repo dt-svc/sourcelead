@@ -1903,7 +1903,7 @@ position: absolute; top: 0; color: #fff;
 	display: none;
 }
 .slider {
-	position: absolute; cursor: pointer; top: 0; left: 0; right: -13px; bottom: 0;
+	position: absolute !important; cursor: pointer; top: 0; left: 0; right: -13px; bottom: 0;
 	background-color: #ccc; -webkit-transition: .4s; transition: .4s;
 }
 .slider:before {
@@ -8986,6 +8986,12 @@ clear: both; content: ""; height: 0; position: absolute; right: 30px; top: -10px
 }
 .inputOverright .form-control {
 background-color: transparent !important; width:96%; margin-left: 15px;
+}
+.reportsCountNew.reportsCountNewBig ul li {
+width: 10% !important;
+}
+.inputfiledColor input {
+	color: #333 !important;
 }
 /* forms edit element styles */
 @media (max-width: 320px) {

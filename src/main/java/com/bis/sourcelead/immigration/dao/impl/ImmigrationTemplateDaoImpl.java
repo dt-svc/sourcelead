@@ -659,6 +659,35 @@ public class ImmigrationTemplateDaoImpl implements ImmigrationTemplateDao {
 		Long tempId = (Long) session.createQuery(query).setParameter("templateUUID", immiTemplateUUID).uniqueResult();
 		return tempId;
 	}
+
+	@Override
+	public boolean validateTemplateTaskNameExistance(String templateTaskName, Long templateId, Long immiTaskId) {
+		Session session = null;
+		boolean returnVal = false;
+        try {
+            session = this.sessionFactory.openSession();
+            String query = null;
+            query = " from ImmigrationTemplateTasks iTemplate where iTemplate.taskName= :name and iTemplate.status = 1 and iTemplate.immigrationTempId.id = :templateId";
+            if(immiTaskId != 0) {
+                query += " and iTemplate.id <> :templateTaskId";
+            }
+            Query hqlQuery = session.createQuery(query);
+            if(immiTaskId != 0) {
+            	hqlQuery.setLong("templateTaskId", immiTaskId);
+            }
+            List<ImmigrationTemplate> templateList = hqlQuery.setString("name", templateTaskName).setLong("templateId",templateId).list();
+            if (templateList != null && !templateList.isEmpty()) {
+                returnVal = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+		return returnVal;
+	}
 	
 	
 }

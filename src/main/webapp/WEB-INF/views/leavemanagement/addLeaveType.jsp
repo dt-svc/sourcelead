@@ -900,9 +900,10 @@ function validateDuration(){
 		if (ckbox.is(':checked')) {
 			$("#minMaxDaysdiv").show();
 			$('#minDays').removeAttr('data-validation-optional');
-			$('#minDays').attr('data-validation', "required validate_length length1-250 validate_float");
+
+			$('#minDays').attr('data-validation', "required validate_length  length1-3 validate_float");
 			$('#maxDays').removeAttr('data-validation-optional');
-			$('#maxDays').attr('data-validation', "required validate_length length1-250 validate_float");
+			$('#maxDays').attr('data-validation', "required validate_length  length1-3 validate_float");
 			$('#minDays').attr('data-validation', "validate_float required validate_length length1-3");
 			$('#maxDays').attr('data-validation', "validate_float required validate_length length1-3");
 			$('#minimumDaysDiv').find('p.jquery_form_error_message').remove();

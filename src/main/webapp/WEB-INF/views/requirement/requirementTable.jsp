@@ -145,7 +145,7 @@ function prepareRequirementData(url,sourceleadUrl){
    result = result +"</thead>";
    result = result +"<tbody>"; 
        
-   result = result + '<div class="new_side_wrap">';
+    result = result + '<div class="new_side_wrap">';
 	result = result + '<div class="new_side_wrap_inn">';
 	result = result + '<div class="new_side_wrap_cta">';
 	result = result +'<div id="addApplicantDiv"></div>';

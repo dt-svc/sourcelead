@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsDTO;
 import com.bis.sourcelead.dto.DayWiseTimesheetReoprtsListDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.DayEntryReportsService;
@@ -36,18 +37,36 @@ public class DayEntriesReportController {
 		model.addObject("exportDto",dayWiseTimesheetReoprtsDto);
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Map<List<DayWiseTimesheetReoprtsListDTO>, String[]>  listDto = dayEntryReportsService.getDayEntriesList(dayWiseTimesheetReoprtsDto,orgLocations, loginUser) ;
-		for (Entry<List<DayWiseTimesheetReoprtsListDTO>, String[]> list : listDto.entrySet()) {
-			model.addObject("dayWiseTimesheetReoprtsList",list.getKey());
+		String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		
+		int start = dayWiseTimesheetReoprtsDto.getStart();
+		int length = 0;
+		if(dayWiseTimesheetReoprtsDto.getPageNo()<1) {
+			dayWiseTimesheetReoprtsDto.setPageNo(1);
 		}
-		for (String[] totalHours : listDto.values()) {
-			model.addObject("totalBillable",totalHours[0]);
-			model.addObject("totalNonBillable",totalHours[1]);
+		if(dayWiseTimesheetReoprtsDto.getPageSize()<1) {
+			length = 10;
+			dayWiseTimesheetReoprtsDto.setPageSize(10);
+		}else {
+			length = dayWiseTimesheetReoprtsDto.getPageSize();
+		}
+		dayWiseTimesheetReoprtsDto.setStart(start);
+		dayWiseTimesheetReoprtsDto.setLength(length);
+		
+		ResponseList<DayWiseTimesheetReoprtsListDTO>  listDto = dayEntryReportsService.getDayEntriesList(dayWiseTimesheetReoprtsDto,orgLocations, loginUser,isGlobalUser) ;
+		model.addObject("dayWiseTimesheetReoprtsList",listDto.getData());
+		for (DayWiseTimesheetReoprtsListDTO totalHours : listDto.getData()) {
+			model.addObject("totalBillable",totalHours.getBillableTotalCount());
+			model.addObject("totalNonBillable",totalHours.getNonBillableTotalCount());
 		}
 		model.addObject("startDate",dayWiseTimesheetReoprtsDto.getStartDate());
 		model.addObject("endDate",dayWiseTimesheetReoprtsDto.getEndDate());
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("timesheet/dayEntriesReportList");
+		model.addObject("totalRows",listDto.getRecordsFiltered());
+		model.addObject("pageCount",dayWiseTimesheetReoprtsDto.getPageNo());
+		model.addObject("pageSize",dayWiseTimesheetReoprtsDto.getLength());
+		model.addObject("searchValue",dayWiseTimesheetReoprtsDto.getSearchValue());
 		return model;
 	}
 	

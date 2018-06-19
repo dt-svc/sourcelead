@@ -601,10 +601,10 @@ public class ProjectPlanningRestController {
 	    }
 	    
 	    @RequestMapping(value = "/acceptRequestedAssociate", method = RequestMethod.POST)
-		public @ResponseBody String acceptRequestedAssociate(@RequestParam("requestUUID") String requestUUID,@RequestParam("userId") Long userId,@RequestParam("orglocationId") Long orglocationId) throws Exception {
+		public @ResponseBody String acceptRequestedAssociate(@RequestParam("requestUUID") String requestUUID,@RequestParam("userId") Long userId,@RequestParam("orglocationId") Long orglocationId,HttpServletRequest request) throws Exception {
         	OrgLocations orgLocations = orgLocationService.getOrgLocations(orglocationId);
 	    	User user = userService.getUserById(userId); 
-		  
+	    	 String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request,"isGlobalAccess");
 	    	 if(!isNullOrEmpty(requestUUID)){
 	    		 ProjectPlanningResourceRequest projectPlanningResourceRequest = projectPlanningResourceRequestService.getProjectPlanningResourceRequestByRequestUUID(requestUUID);
 	    		 projectPlanningResourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_APPROVED);
@@ -828,7 +828,7 @@ public class ProjectPlanningRestController {
 		    		
 		    		 ProjectAssignedMembersDTO projectAssignedMembersDTO = new ProjectAssignedMembersDTO();
 		    		 projectAssignedMembersDTO.setProjectMembers(projectMembersDTOList);
-	    			 projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projects.getProjectUUID(), user, orgLocations);
+	    			 projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projects.getProjectUUID(), user, orgLocations,isGlobalAccess);
 	    		 }else {
 	    			 ProjectClients orgProjectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projectPlanningRequest.getOrgLocationId().getId());
 	    			 if(orgProjectClients != null) {

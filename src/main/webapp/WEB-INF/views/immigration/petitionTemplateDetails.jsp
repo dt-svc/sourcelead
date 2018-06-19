@@ -29,7 +29,7 @@
                         <div class="col-md-12 noPad mb" id="templateNameDiv">
                             <label class="col-md-3">Country<span class="text-danger paddingLeft">*</span></label>
                            	<div class="col-md-8 padding_right">
-								<select class="chosen-select form-control" name="country" onchange="getPetitionTypeOnCountries($(this), ${templateDTO.petitionType});" id= "countryName" field-name="Country" data-validation="required">
+								<select class="chosen-select form-control" name="country" onchange="getPetitionTypeOnCountries($(this), ${templateDTO.petitionType});" id="countryName" field-name="Country" data-validation="required">
 									<option value="">--Select Country--</option>
 									<option value="Singapore" ${templateDTO.country == 'Singapore' ? 'selected' : ''}>Singapore</option>
 									<option value="Canada" ${templateDTO.country == 'Canada' ? 'selected' : ''}>Canada</option>
@@ -63,11 +63,9 @@
 </section>  
 
 <script type="text/javascript">
+		
 	    $(document).ready(function () {
-	    	//var immTemplId = $("#templateId").val(immTemplId);
-	    	//var immTemplId = immTemplId;
 	    	 immTemplId = '<c:out value ="${not empty templateDTO.id ? templateDTO.id : ''}"/>';
-	
 	        getPetitionTypeOnCountries($("#countryName"),"${templateDTO.petitionType}");
 	    });
       

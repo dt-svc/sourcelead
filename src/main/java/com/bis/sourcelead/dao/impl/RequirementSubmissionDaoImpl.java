@@ -19,6 +19,7 @@ import org.elasticsearch.common.regex.Regex;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -675,6 +677,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			 		+ " rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED' )";
 		 }
 		 
+		 if(submissionStatus.equalsIgnoreCase("JOINED")){
+			 submissionStages = "and (rs.submissionStatus = 'JOINED')";
+		 }
+		 
 	     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.requirement.id = :requirementId  "+submissionStages+" ";
 	     List<Long> candidatesCount = session.createQuery(query.toString()).setLong( "orgLocationsId", orgLocationsId).setLong( "requirementId", requirementId).list();
 	     Integer count = 0;
@@ -709,6 +715,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
          }else if(submissionStatus.equalsIgnoreCase("OFFERED")){
              submissionStages = "and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' OR reqSub.submissionStatus = 'OFFERHIRED' OR "
                      + " reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED' OR reqSub.submissionStatus = 'CLIENT_OFFERHIRED' )";
+         }else if(submissionStatus.equalsIgnoreCase("JOINED")){
+             submissionStages = "and (reqSub.submissionStatus = 'JOINED')";
          }
         
 //         Requirement requirement  = requirementDao.getRequirementByRequirementId(requirementId);
@@ -3159,5 +3167,30 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				}
 		  return null;
 	
+		}
+		
+		@Override
+		@Transactional
+		public boolean getRequirementSubmissionByCandidateIdAndJobId(Long candidateId, Long requirementId)
+				throws Exception {
+			
+			List<RequirementSubmission> submissionList = null;
+			boolean flag = false;
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = null;
+						query ="SELECT * FROM "
+						+" REQUIREMENT_SUBMISSION "
+						+" WHERE "
+						+" CANDIDATE_ID = :candidateId AND REQUIREMENT_ID = :requirementId";
+			    
+						System.out.println(query);
+	            Query queryObj = session.createSQLQuery(query);
+				queryObj.setLong("candidateId", candidateId).setLong("requirementId", requirementId);
+				submissionList = queryObj.list();
+				if(submissionList != null && !submissionList.isEmpty()) {
+					flag = true;
+				}
+				
+				return flag;
 		}
 }
