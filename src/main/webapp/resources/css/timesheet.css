@@ -8359,3 +8359,6 @@ width: 550px; margin: 0px auto; left: 0px; right: 0px; top: 8%;
 #configureDashboard .addInner {
 background-color: #fff; max-height: 450px;
 }
+.timesheet_tableNew table tr td.timeModifyBtn {
+    height: 72px;
+}
