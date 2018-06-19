@@ -165,6 +165,46 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			leaveType.setEffectiveGender(leaveTypeDTO.getEffectiveGender());
 		}
 		
+		if(leaveTypeDTO.getIncludeHoliday() != null){
+			leaveType.setIncludeHolidays(leaveTypeDTO.getIncludeHoliday());
+		}else{
+			leaveType.setIncludeHolidays(Constants.NO);
+		}
+		
+		if(leaveTypeDTO.getIncludeInPayRoll() != null){
+			leaveType.setIncludeInPayroll(leaveTypeDTO.getIncludeInPayRoll());
+		}else{
+			leaveType.setIncludeInPayroll(Constants.NO);
+		}
+		
+		if(leaveTypeDTO.getIncludeWeekoff() != null){
+			leaveType.setIncludeWeekoff(leaveTypeDTO.getIncludeWeekoff());
+		}else{
+			leaveType.setIncludeWeekoff(Constants.NO);
+		}
+		
+		if(leaveTypeDTO.getVisibleInBalanceLeaves() != null){
+			leaveType.setVisibleInBalanceLeaves(leaveTypeDTO.getVisibleInBalanceLeaves());
+		}else{
+			leaveType.setVisibleInBalanceLeaves(Constants.NO);
+		}
+		
+		if(leaveTypeDTO.getLeaveAllowability() != null){
+			leaveType.setAllowability(leaveTypeDTO.getLeaveAllowability());
+		}
+		
+		if(leaveTypeDTO.getLeveEmpType() != null && leaveTypeDTO.getLeveEmpType().size() > 0){
+			leaveType.setLeaveEmpType(String.join(",", leaveTypeDTO.getLeveEmpType()));
+		}
+		
+		if(leaveTypeDTO.getLeaveEncashment() != null){
+			leaveType.setLeaveEncashment(leaveTypeDTO.getLeaveEncashment());
+			leaveType.setLeaveEncashMinDays(leaveTypeDTO.getLeaveEncashMinDays());
+			leaveType.setLeaveEncashMaxDays(leaveTypeDTO.getLeaveEncashMaxDays());
+		}
+		
+		leaveType.setMaxDaysToCarryforward(leaveTypeDTO.getNoOfdaysToCarryforward());
+		
 		if(leaveTypeDTO.getReasonRequired() != null){
 			leaveType.setReasonRequired(leaveTypeDTO.getReasonRequired());
 		}else{
