@@ -153,10 +153,10 @@ public class LeaveType {
 	private String leaveDuration;
 	
 	@Column(name = "MIN_DAYS")
-	private Integer minDays;
+	private Float minDays;
 	
 	@Column(name = "MAX_DAYS")
-	private Integer maxDays;
+	private Float maxDays;
 	
 	@Column(name = "NO_OF_DAYS")
 	private Integer noOfDays;
@@ -603,22 +603,23 @@ public class LeaveType {
 		this.leaveDuration = leaveDuration;
 	}
 
-	public Integer getMinDays()
+
+	public Float getMinDays()
 	{
 		return minDays;
 	}
 
-	public void setMinDays(Integer minDays)
-	{
-		this.minDays = minDays;
-	}
-
-	public Integer getMaxDays()
+	public Float getMaxDays()
 	{
 		return maxDays;
 	}
 
-	public void setMaxDays(Integer maxDays)
+	public void setMinDays(Float minDays)
+	{
+		this.minDays = minDays;
+	}
+
+	public void setMaxDays(Float maxDays)
 	{
 		this.maxDays = maxDays;
 	}

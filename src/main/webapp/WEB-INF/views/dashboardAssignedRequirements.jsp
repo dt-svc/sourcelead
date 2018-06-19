@@ -7,11 +7,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-
 <jsp:include page="../views/requirement/requirementAssignedTo.jsp"/>
-
-<div class="content-dashboard clearfix" id="assignedRequirementsDiv" style="display: none;">
-  
+<div class="content-dashboard clearfix" id="assignedRequirementsDiv">
       <!-- Assigned Requirements -->
       <div class="clearfix dashboard-widget mb col-md-12" >
         <h4 class="clearfix">Jobs</h4>
@@ -33,9 +30,10 @@
 				</div>
 
 				<!-- <a href="#" class="collpase-div pull-right" title="SlideUp/SlideDown"><i aria-hidden="true" class="fa fa-angle-down"></i></a> -->
-				<div
-					class="clearfix require_wrap_table dashboard-data filter_position">
-					<div id="requirementList"></div>
+				<div class="clearfix require_wrap_table dashboard-data filter_position" style="min-height: 200px;">
+					<div id="requirementLoading" style="display: none;"></div>
+					<div id="requirementList">
+					</div>
 				</div>
 			</div>
 			<div class="vendor_wrap_mask"></div>
@@ -77,7 +75,8 @@ function requirementList(isWalkIn, walkInDay){
 	  var orgVMS = '${SourceLeadWeb_vms}';
 	  $("#requirementListActions").empty();
 	  $("#requirementList").empty();
-	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#requirementLoading").show();
+	  $("#requirementLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:35px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAssignedRequirementListByOrgLocationIDAndUserId?${_csrf.parameterName}=${_csrf.token}"+ (isWalkIn ? "&isWalkIn="+isWalkIn+"&walkInDay="+walkInDay : ""),    
@@ -110,6 +109,7 @@ function requirementList(isWalkIn, walkInDay){
 	                     result = result +"    <th>Submitted</th>"; 
 	                     result = result +"    <th>Interview</th>"; 
 	                     result = result +"    <th>Offered</th>";
+	                     result = result +"    <th>Joined</th>";
 	                     result = result +"    <th>Status</th>";
 // 	                     result = result +"    <th>Release</th>"; 
 	                     result = result +"  </tr>"; 
@@ -223,6 +223,9 @@ function requirementList(isWalkIn, walkInDay){
 		                     if(opt.noOfOfferedApplicants != null && opt.noOfOfferedApplicants != '' && opt.noOfOfferedApplicants != 'undefined'){
 		                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=OFFERMADE&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfOfferedApplicants+"</div></a></td>";
 		                     }
+		                     if(opt.noOfJoinedApplicants != null && opt.noOfJoinedApplicants != '' && opt.noOfJoinedApplicants != 'undefined'){
+			                     result = result +"<td><a href='<c:url value='/app/requirementSummary?type=JOINED&requirementUUID="+opt.requirementUUID+"'/>'><div>"+opt.noOfJoinedApplicants+"</div></a></td>";
+			                     }
 		                     if(opt.requirementSubmissionStatus!=null && opt.requirementSubmissionStatus !='' && opt.requirementSubmissionStatus !='undefined'){
 	                    		 result = result +"<td><div class=''><span title='"+opt.requirementSubmissionStatus+"'>"+opt.requirementSubmissionStatus+"</span></a></div></td>";
 	                    	 }
@@ -247,8 +250,9 @@ function requirementList(isWalkIn, walkInDay){
 	                     if(isWalkIn) {
 	                    	 $("#requirementListActions").append(getDynamicDayActionsForWalkInJobs(parseInt(data.responseMessage.split(":")[1]) - 1, data.responseMessage.split(":")[2], parseInt(data.responseMessage.split(":")[1]) + 1));
 	                     }
-	                     $("#requirementList").append(result); 
-	                     $("#assignedRequirementsDiv").css("display", "block");
+	                     $("#requirementList").append(result);
+	                     $("#requirementLoading").hide();
+	                     /* $("#assignedRequirementsDiv").css("display", "block"); */
 	                     
 	                	 $(".proj_close, .side_mask").click(function(){
 								$(".clients_side_wrap").removeClass("clients_side_wrap_active");

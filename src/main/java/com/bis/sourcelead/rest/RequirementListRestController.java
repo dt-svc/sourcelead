@@ -678,6 +678,9 @@ public class RequirementListRestController {
 					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("OFFERMADE")){
 						String[] columns = {"name", "email", "phNo", "resume", "offerJoinDate", "positionType", "offerRate", "attachment", "status"};
 						tableColumns = columns;
+					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("JOINED")){
+						String[] columns = {"name", "email", "phNo", "resume", "appliedOn", "source", "joinDate", "status"};
+						tableColumns = columns;
 					}else if(requirementSubmissionsDTO.getSubmissionType().equalsIgnoreCase("REJECTED")){
 						String[] columns = {"name", "email", "resume", "appliedOn", "rate", "subRate", "source", "rejectedOn", "rejectedBy", "status"};
 						tableColumns = columns;
@@ -881,6 +884,9 @@ public class RequirementListRestController {
 										currentDateInTimezone = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),converteDate);
 										requirementSubmission.setUpDatedStr(currentDateInTimezone);
 									}*/
+								}
+								if (requirementSubmission.getJoinedDate() != null) {
+									requirementSubmission.setJoinedDateStr(commonUtil.dateStrFromOrgDateFormatter(requirementSubmission.getOrgLocations().getDateFormat(), requirementSubmission.getJoinedDate()));
 								}
 								//submissionList.add(requirementSubmission);
 							requirementSubmission.setRequirementCurrentStatus(requirementSubmission.getRequirement().getRequirementSubmissionStatus());

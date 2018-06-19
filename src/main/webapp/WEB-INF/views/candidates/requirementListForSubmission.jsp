@@ -198,6 +198,14 @@ function submitCandidatesToJob(){
 		result = result +" <button type='button' onclick='clearJobAdvSearch();getRequirementTableList()' class='btn btn-primary btn-sm' title='Refresh'><i class='fa fa-refresh'></i></button>";
 		result = result +"</div>"; 
 		result = result +" <div class='pull-right'>";
+		
+		 result = result +" <div class='mr pull-left mt5'>";
+    	 result = result +'<label class="switch mr pull-left">';
+    	 result = result +'<input type="checkbox" onclick="checkResume();" value="N" name="candidateResume"  id="candidateResume"   >';
+    	 result = result +'<div class="slider round" title="Attach Applicants Resume"></div>';
+    	 result = result +'</label>';
+    	 result = result +"<span class='paddingLeft mt2'>Attach Resume</span></div>";
+		
 		result = result +" <div class='mr pull-left'>";
 		result = result +" <input type='button' value='Submit To Job' onclick='submitCandidtesToJob()' class='btn btn-primary btn-sm'>";
 		result = result +"</div>";
@@ -236,6 +244,17 @@ function submitCandidatesToJob(){
 	 }
 }
 
+</script>
+
+<script>
+function checkResume(){
+	 var flag = document.getElementById("candidateResume").checked;
+	 if(flag == true){
+		 $("#candidateResume").val('Y'); 
+	 }else{
+		 $("#candidateResume").val('N'); 
+	 }
+}
 </script>
 
 <script>
@@ -417,11 +436,14 @@ function submitCandidtesToJob(){
 				   continue;
 			 candidateIds.push(shareCandidates[e]);
 		   } 
+		 
+		 var candidateResume = $("#candidateResume").val();
+		 alert(candidateResume);
 			
 		 $("#requirementsListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			   $.ajax({
 		          type : "POST",
-		          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+jobId,    
+		          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+jobId+"&candidateResume="+candidateResume,    
 		           success :function(data) {
 		        	   if (data.response === "FAILED") {
 		        		   $("#requirementsListLoading").removeAttr("style");
@@ -431,11 +453,20 @@ function submitCandidtesToJob(){
 				    	} else if (data.response === "SUCCESS") {
 				    		$("#requirementsListLoading").removeAttr("style");
 			       			document.getElementById("radio"+jobId).checked = false;
+			       			activeTab();
+			       			clearJobAdvSearch();
+			       			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+			       			$(".side_mask").fadeOut(200);
+			       			$("body").css('overflow-y', 'auto');
+			       			$("#candMsgDiv").html("Candidates Submitted Successfully...");
+			       			msgFadein();
 				    	}else if (data.indexOf('Sign In') !== -1) {
 				    		location.replace(sourceleadUrl);
 				    	} else {
 				    		showError("Operation failed, please try again");
 				    	}
+		        	   
+		        	   
 		           },
 		   });  
 		 

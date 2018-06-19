@@ -29,11 +29,7 @@
 	               var timesheetFrequency = $('#timesheetFrequency').val();
 	               var searchData = $('#dataTableSearchExpenses').val();
 	               var weekFrequency = $('#weekFrequency').val();
-	               var projectName = $('#projectName').val();
-	               if(projectName == null || projectName !='' || projectName!='undefined'){
-	            	   projectName = '';
-	               }
-	               
+	               var projectName = '';
 	               var stage = $('#stage').val();
 	               var client = $('#client').val();
 	               var project = $('#project').val();
