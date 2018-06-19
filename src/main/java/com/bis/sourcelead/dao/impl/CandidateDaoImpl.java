@@ -36,9 +36,7 @@ import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
-import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
-import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -1852,6 +1850,7 @@ public class CandidateDaoImpl implements CandidateDao {
 					 		 "ORG_LOCATIONS OL " + 
 					 		 "WHERE  CAND.ORG_LOCATION_ID = OL.ID  AND CAND.STATUS = '1' " + 
 					 		 "AND CAND.ORG_LOCATION_ID = :orgLocationId " + 
+					 		 "AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "+
 					 		 "GROUP BY CAND.ID,  " + 
 					 		 "DATE_FORMAT(CAND.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr+advSeachStr+sortingQry;
 				
@@ -1862,12 +1861,13 @@ public class CandidateDaoImpl implements CandidateDao {
 				 
 				    queryObj = session.createSQLQuery(query);
 					queryObj.setParameter("orgLocationId", orgLocations.getId());
+					queryObj.setParameter("requirementId", candidateDTO.getRequirementId());
 					queryObj.setResultTransformer(Transformers.aliasToBean(SubmissionCandidateListView.class));
 					queryObj.setFirstResult(candidateDTO.getStart());
 					queryObj.setMaxResults(candidateDTO.getLength());
 					candidateList = queryObj.list();
 					
-					countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocations.getId()).list();
+					countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocations.getId()).setLong("requirementId", candidateDTO.getRequirementId()).list();
 					filterCount = countlist.iterator().next().intValue();
 				}catch (Exception e) {
 					e.printStackTrace();
@@ -1925,6 +1925,56 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
 			
 			return candidateDTO;
+	
+	}
+
+	@Override
+	@Transactional
+	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,
+			Long requirementId,String skills,String candidateDetails) throws Exception {
+		
+		List<CandidateDTO> candidateDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		String querySeachStr = "";
+		
+		  StringBuilder query1 = new StringBuilder("");
+			if(candidateDetails != null && !"".equalsIgnoreCase(candidateDetails)) {
+				 query1.append(" CAND.FIRST_NAME like '%" + candidateDetails + "%' ")
+					.append("OR CAND.LAST_NAME like '%" + candidateDetails + "%' ")
+					.append("OR CAND.EMAIL like '%" + candidateDetails + "%' ")
+					.append("OR CAND.MOBILE_PHONE like '%" + candidateDetails + "%' ");
+				 
+			}
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				querySeachStr = " AND "+"("+query1.toString()+")";
+			}
+			
+		if(StringUtils.isNotBlank(skills)) {
+			String requirementSkills [] = skills.split(",");
+			String requirementSkillsStr = "'" + StringUtils.join(requirementSkills,"','") + "'";
+			subQuery = " AND CAND.SKILLS_NAME IN ("+requirementSkillsStr+")";
+		}
+		
+		String	query ="SELECT "
+				+" CAND.ID AS candId, "
+				+" CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName," 
+				+" CAND.IS_ASSOCIATE AS isAssociate "  
+				+" FROM CANDIDATE CAND "
+				+" WHERE CAND.STATUS = '1' " 
+		 		+" AND CAND.ORG_LOCATION_ID = :orgLocationId " 
+				+subQuery
+		 		+ " AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "
+				+ " ORDER BY CAND.ID DESC "; 
+		
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("orgLocationId", orgLcoations.getId());
+			queryObj.setLong("requirementId", requirementId);
+			queryObj.setMaxResults(5000);
+			queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
+			candidateDTOList = queryObj.list();
+			return candidateDTOList;
 	
 	}
 

@@ -189,6 +189,9 @@ public class RequirementSubmission implements Serializable{
 	@ManyToOne
     @JoinColumn(name="RECRUITER_USER_ID")        
     private User recruiterUserId;
+    
+    @Column(name = "JOINED_DATE")
+    private Date joinedDate;
 	
     @Transient
     @JsonProperty
@@ -221,6 +224,10 @@ public class RequirementSubmission implements Serializable{
     @Transient
     @JsonProperty
    	private String upDatedStr;
+    
+    @Transient
+    @JsonProperty
+   	private String joinedDateStr;
     
     @Transient
     @JsonProperty
@@ -1156,6 +1163,14 @@ public class RequirementSubmission implements Serializable{
 		this.upDatedStr = upDatedStr;
 	}
 
+	public String getJoinedDateStr() {
+		return joinedDateStr;
+	}
+
+	public void setJoinedDateStr(String joinedDateStr) {
+		this.joinedDateStr = joinedDateStr;
+	}
+
 	public String getCreatedTimeStr() {
 		return createdTimeStr;
 	}
@@ -1355,6 +1370,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRecruiterUserId(User recruiterUserId) {
 		this.recruiterUserId = recruiterUserId;
+	}
+
+	public Date getJoinedDate() {
+		return joinedDate;
+	}
+
+	public void setJoinedDate(Date joinedDate) {
+		this.joinedDate = joinedDate;
 	}
 
 	public String getLoginOrgLOcationName() {

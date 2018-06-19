@@ -873,7 +873,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public void saveAssignedProjectMembers(ProjectAssignedMembersDTO projectAssignedMembersDTO, String projectUUID,
-			User user, OrgLocations orgLocations) throws Exception {
+			User user, OrgLocations orgLocations,String isGlobalUser) throws Exception {
 		
 		Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 		//List<Long> savedProjectMemberIds = projectMembersDao.getAllProjectMembersIdsByProjectIdAndOrgLocationId(projects.getId(),orgLocations.getId());
@@ -1624,8 +1624,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public ProjectMembers getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId,
-			Long projectId, Long locationId) throws Exception {
-		return projectMembersDao.getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId);
+			Long projectId, Long locationId,Long orgId,String isGlobalAccess) throws Exception {
+		return projectMembersDao.getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId,orgId,isGlobalAccess);
 	}
 
 	@Override

@@ -94,6 +94,8 @@ public class Constants {
 	public static final DateFormat SHORT_DF_STD_MD = new SimpleDateFormat("");
 	public static final DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
 	public static final DateFormat TZ_DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        public static final DateFormat TZ_DF1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        public static final DateFormat FULL_DATE = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 	
 	// Below line of code is used to print Week days like Sunday, Monday.... by passing Date.
 	public static final SimpleDateFormat WEEK_DAY =  new SimpleDateFormat("EEEE"); 
@@ -631,7 +633,7 @@ public class Constants {
 	
 
 	public static final String[] IMMIGRATION_LIST_EXCEL_HEADERS = { "Emp ID", "Beneficiary First Name", "Beneficiary Last Name", "Beneficiary Email", "Experience", "SSN", "I-94 Number", "I-20 SEVIS Number If Student", "EAD Number If Student",
-			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Company", "Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
+			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
 			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate", "Previous LCA Title", "Previous LCA Location" };
 
 

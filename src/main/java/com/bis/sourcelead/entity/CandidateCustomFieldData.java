@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "CANDIDATE_CUSTOM_FIELD_DATA", catalog = "sourcelead")
+@Table(name = "CANDIDATE_CUSTOM_FIELD_DATA")
 public class CandidateCustomFieldData implements Serializable{
 	private static final long serialVersionUID = 1L;
 	

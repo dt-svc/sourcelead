@@ -24,6 +24,10 @@ public class JobBoard extends Record implements Serializable {
     private String name;
     @Column(name = "LOGO_URL")
     private String logoUrl;
+    @Column(name = "POST_URL")
+    private String postUrl;
+    @Column(name = "CONTENT_FILE_URL")
+    private String contentFileUrl;
 
     /**
      * @return the id
@@ -65,6 +69,34 @@ public class JobBoard extends Record implements Serializable {
      */
     public void setLogoUrl(String logoUrl) {
         this.logoUrl = logoUrl;
+    }
+
+    /**
+     * @return the postUrl
+     */
+    public String getPostUrl() {
+        return postUrl;
+    }
+
+    /**
+     * @param postUrl the postUrl to set
+     */
+    public void setPostUrl(String postUrl) {
+        this.postUrl = postUrl;
+    }
+
+    /**
+     * @return the contentFileUrl
+     */
+    public String getContentFileUrl() {
+        return contentFileUrl;
+    }
+
+    /**
+     * @param contentFileUrl the contentFileUrl to set
+     */
+    public void setContentFileUrl(String contentFileUrl) {
+        this.contentFileUrl = contentFileUrl;
     }
     
 }

@@ -8,7 +8,7 @@ $(document).ready(function(){
 	requirementSubmissionsCount("today");
 });
 </script>
-<div class="col-md-6">
+<div class="col-md-6 mb">
         <div class="dashboard-widget dashboard-widget-icons">
           <h4 class="clearfix"><a id="jobsLink" href="<c:url value="/app/jobs"/>"> Jobs &nbsp;&nbsp;</a> </h4>
           <div class="clearfix dashboard-data mt">

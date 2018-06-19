@@ -1,12 +1,9 @@
 package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -31,7 +28,7 @@ import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 public class ActionHistoryDaoImpl implements ActionHistoryDao {
-	private static final Logger logger = LoggerFactory.getLogger(ExpensesCategoryDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionHistoryDaoImpl.class);
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -198,16 +195,16 @@ public class ActionHistoryDaoImpl implements ActionHistoryDao {
 		Query actionHistory = session.createQuery(query).setLong("userId", userId);
 		Long count = (Long) actionHistory.uniqueResult();
 		countMap.setNoOfActivities(count.toString());
-//		List<Long> countlist = actionHistory.list();
+		/*List<Long> countlist = actionHistory.list();
 		
-		String query1 = "SELECT MAX(act) FROM ActionHistory act where act.userId = :userId";
+		String query1 = "from ActionHistory act where act.userId = :userId order by act.id desc";
 		List<ActionHistory> actionHistorylist = session.createQuery(query1).setLong("userId", userId).list();
 		Date lastActivity = null ;
 		if(actionHistorylist != null && actionHistorylist.size() > 0 && actionHistorylist.get(0) != null){
 			lastActivity = actionHistorylist.get(0).getActionTime();
 			SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 			countMap.setLastActivity(df.format(lastActivity));
-		}
+		}*/
 		
 		return countMap;
 	}
