@@ -32,7 +32,7 @@ CREATE TABLE `REQUIREMENT_JOB_BOARD_INFO` (
 CALL AlterTableAddColumn ('JOB_BOARD','POST_URL','VARCHAR(500) NULL AFTER `LOGO_URL`');
 CALL AlterTableAddColumn ('JOB_BOARD','CONTENT_FILE_URL','VARCHAR(500) NULL AFTER `POST_URL`');
 
-UPDATE `sourcelead`.`JOB_BOARD` SET `POST_URL`='https://gateway.monster.com:8443/bgwBroker', `CONTENT_FILE_URL`='/jobboard/mosnter.txt' WHERE `ID`='2';
+UPDATE `sourcelead`.`JOB_BOARD` SET `POST_URL`='https://gateway.monster.com:8443/bgwBroker', `CONTENT_FILE_URL`='/jobboard/monster.txt' WHERE `ID`='2';
 
 CREATE TABLE `JOB_BOARD_DATA` (
   `ID` BIGINT(20) NOT NULL AUTO_INCREMENT,

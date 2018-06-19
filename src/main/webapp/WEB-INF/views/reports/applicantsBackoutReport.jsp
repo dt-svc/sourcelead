@@ -138,7 +138,7 @@ $(window).load(function() {
 			    	  	} else if (response.response === "AWKWARD") {
 			    		    location.href = "/errorPage";
 			    		} else if (response.response === "SUCCESS") {
-						  	  var total = (response.object.currentCompany + response.object.compensation + response.object.betterOffer + response.object.coldFeet +response.object.personal + response.object.other);
+						  	  var total = (response.object.totalCount);
 							  	var listView = document.getElementById("listView");
 					        	 listView.addEventListener("click", function() {
 					        		 getBackoutApplicantList();
@@ -455,7 +455,7 @@ function getCustomDates(){
 	  if(response.object.other>0){
 		  mainChar.push( {
 			  "category": "Other",
-				"column-1": json.other,
+				"column-1": response.object.other,
 				"color": "#BCAAA4",
 				"count": response.object.other,
 				"percentage": (((response.object.other/total)*100)).toFixed(2)
