@@ -442,8 +442,10 @@ function getTimesheetFilterData(){
 	if('project' in formData){
 		$("#project").val(formData['project']); 
 	}
-	if('projectName' in formData){
-		$("#projectName").val(formData['projectName']); 
+	
+	var selectedProjectValue = $("input[id='project']:checked").data('value');
+	if(selectedProjectValue != null && selectedProjectValue !='' && selectedProjectValue !='undefined'){
+		$("#projectName").val(selectedProjectValue); 
 	}
 	timesheetApprovalDetils();
 }
