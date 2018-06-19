@@ -36,9 +36,7 @@ import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
-import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
-import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -1927,6 +1925,56 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
 			
 			return candidateDTO;
+	
+	}
+
+	@Override
+	@Transactional
+	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,
+			Long requirementId,String skills,String candidateDetails) throws Exception {
+		
+		List<CandidateDTO> candidateDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		String querySeachStr = "";
+		
+		  StringBuilder query1 = new StringBuilder("");
+			if(candidateDetails != null && !"".equalsIgnoreCase(candidateDetails)) {
+				 query1.append(" CAND.FIRST_NAME like '%" + candidateDetails + "%' ")
+					.append("OR CAND.LAST_NAME like '%" + candidateDetails + "%' ")
+					.append("OR CAND.EMAIL like '%" + candidateDetails + "%' ")
+					.append("OR CAND.MOBILE_PHONE like '%" + candidateDetails + "%' ");
+				 
+			}
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				querySeachStr = " AND "+"("+query1.toString()+")";
+			}
+			
+		if(StringUtils.isNotBlank(skills)) {
+			String requirementSkills [] = skills.split(",");
+			String requirementSkillsStr = "'" + StringUtils.join(requirementSkills,"','") + "'";
+			subQuery = " AND CAND.SKILLS_NAME IN ("+requirementSkillsStr+")";
+		}
+		
+		String	query ="SELECT "
+				+" CAND.ID AS candId, "
+				+" CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName," 
+				+" CAND.IS_ASSOCIATE AS isAssociate "  
+				+" FROM CANDIDATE CAND "
+				+" WHERE CAND.STATUS = '1' " 
+		 		+" AND CAND.ORG_LOCATION_ID = :orgLocationId " 
+				+subQuery
+		 		+ " AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "
+				+ " ORDER BY CAND.ID DESC "; 
+		
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("orgLocationId", orgLcoations.getId());
+			queryObj.setLong("requirementId", requirementId);
+			queryObj.setMaxResults(5000);
+			queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
+			candidateDTOList = queryObj.list();
+			return candidateDTOList;
 	
 	}
 
