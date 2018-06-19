@@ -643,6 +643,7 @@ public class ProjectsServiceImpl implements ProjectsService{
 		}else {
 			projects.setOrgLocationsId(loginOrgLocation);
 			projects.setIsClientProject(Constants.NO);
+			projects.setIsProjectShared(Constants.NO);
 			Set<ProjectClients> projectClientsList = getProjectClientsForProject(projectsDTO,projects,loginOrgLocation,user);
 			projects.setProjectClients(projectClientsList);
 		}
