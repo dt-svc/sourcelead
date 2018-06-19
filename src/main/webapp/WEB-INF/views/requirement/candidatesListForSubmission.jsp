@@ -13,11 +13,13 @@
 }
 </style>
 
-<script>
-$(document).ready(function() {
-	getcites('apiLocation','city','recommendation');
-});
-</script>
+
+<div class="proMask">
+<div class="progress progress-striped active">
+    <div class="progress-bar progress-bar-success" data-values="100">0</div>
+</div>
+</div>
+
 <div class="advancedsearch-mask"></div>
 <div class="cand-advsrch-popup advancedsearch-popup" id="candidateFilterPopup">
 				<h5 class="headerAdsrch">Advanced Search
@@ -327,8 +329,9 @@ function getCandidatesTableList(){
 	 }
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var searchValue = $("#candDataTableSearch").val();
+	 var requirementId = '${requirementId}';
 	 searchValue = searchValue ? searchValue : "";
-	 var url = sourceleadUrl+"/getCandidatesListForJobBulkSubmission?searchValue="+searchValue+"&primarySkill="+primarySkill+"&designationType="+designationType+"&noticePeriod="+noticePeriod+"&vendor="+vendor+"&createdDate="+createdDate+"&candidateSkills="+candidateSkills+"&city="+city;
+	 var url = sourceleadUrl+"/getCandidatesListForJobBulkSubmission?searchValue="+searchValue+"&primarySkill="+primarySkill+"&designationType="+designationType+"&noticePeriod="+noticePeriod+"&vendor="+vendor+"&createdDate="+createdDate+"&candidateSkills="+candidateSkills+"&city="+city+"&requirementId="+requirementId;
 	 candidatesListPagination(url,sourceleadUrl);
 }
 </script>
@@ -500,7 +503,9 @@ function submitApplicantsToJob(){
 	   } 
 	 
 	 if(candidateIds.length > 0){
-		  
+		 
+		 getProgressBar();
+		 
 		 $("#candidatesListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			   $.ajax({
 		          type : "POST",
@@ -514,6 +519,7 @@ function submitApplicantsToJob(){
 				    	} else if (data.response === "SUCCESS") {
 				    		$("#candidatesListLoading").removeAttr("style");
 				    		shareCandidates = {};
+				    		$(".proMask").hide();
 				    		$('.action-pop').slideUp();
 				    		$(".submission_side_wrap").removeClass("submission_side_wrap_active");
 				    		$(".side_mask").fadeOut(200);
@@ -526,7 +532,7 @@ function submitApplicantsToJob(){
 				    		showError("Operation failed, please try again");
 				    	}
 		           },
-		   });  
+		   });   
 		 
 		 
 	 }else{
@@ -545,6 +551,42 @@ function submitApplicantsToJob(){
 }
 </script>
 
+<script>
+$(document).ready(function() {
+	getcites('apiLocation','city','recommendation');
+	$(".proMask").hide();
+	
+});
+</script>
+
+<script>
+function getProgressBar(){
+	$(".proMask").show();
+	$(".progress div").each(function () {
+	    var display = $(this),
+	        currentValue = parseInt(display.text()),
+	        nextValue = $(this).attr("data-values"),
+	        diff = nextValue - currentValue,
+	        step = (0 < diff ? 1 : -1);
+	    if (nextValue == "0") {
+	        $(display).css("padding", "0");
+	    } else {
+	        $(display).css("color", "#fff").animate({
+	            "width": nextValue + "%"
+	        }, "slow");
+	    }
+
+	    for (var i = 0; i < Math.abs(diff); ++i) {
+	        setTimeout(function () {
+	            currentValue += step
+	            display.html(currentValue + "%");
+	        }, 200 * i);
+	    }
+	});
+	
+	
+}
+</script>
 
 <script type="text/javascript">
 function okPopUp(){

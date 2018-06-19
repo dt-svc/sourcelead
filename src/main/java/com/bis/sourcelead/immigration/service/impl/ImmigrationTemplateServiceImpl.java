@@ -394,4 +394,9 @@ public class ImmigrationTemplateServiceImpl implements ImmigrationTemplateServic
 		return immigrationTemplateDao.getImmigratonTemplateTasksByTemplateId(templateId);
 	}
 
+	@Override
+	public boolean validateTemplateTaskNameExistance(String templateTaskName, Long templateId, Long immiTaskId) {
+		return immigrationTemplateDao.validateTemplateTaskNameExistance(templateTaskName, templateId, immiTaskId);
+	}
+
 }

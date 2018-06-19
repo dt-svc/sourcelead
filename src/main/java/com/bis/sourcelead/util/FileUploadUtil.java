@@ -24,7 +24,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
@@ -42,15 +41,30 @@ import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 import net.coobird.thumbnailator.Thumbnails;
 
 public class FileUploadUtil {
+
+    public static String getFileContent(String staticPath, String contentFileUrl) {
+        StringBuilder fileContent = new StringBuilder();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(new File(staticPath, contentFileUrl)));
+            String line;
+            while((line = br.readLine()) != null) {
+                fileContent.append(line).append(System.getProperty("line.separator"));
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return fileContent.toString();
+    }
 
 	public String cropImage(String staticPath, File inFile, int x, int y, int w, int h) {
 		try {

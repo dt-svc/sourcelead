@@ -94,6 +94,8 @@ public class Constants {
 	public static final DateFormat SHORT_DF_STD_MD = new SimpleDateFormat("");
 	public static final DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
 	public static final DateFormat TZ_DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        public static final DateFormat TZ_DF1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        public static final DateFormat FULL_DATE = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 	
 	// Below line of code is used to print Week days like Sunday, Monday.... by passing Date.
 	public static final SimpleDateFormat WEEK_DAY =  new SimpleDateFormat("EEEE"); 

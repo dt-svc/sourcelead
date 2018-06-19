@@ -15,6 +15,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +31,7 @@ import com.bis.sourcelead.constants.Constants;
 
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dto.DashboardCountsDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.EventsDTO;
 
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
@@ -516,12 +518,14 @@ public class DashboardRestController {
 					int submittedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "SUBMITTED");
 					int interviewedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "INTERVIEWED");
 					int offeredCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "OFFERED");
+					int joinedCount = requirementSubmissionService.getAllSubmissionCountByRequirementIdAndSubmissionStage(loginOrgLocation.getId(), requirement.getId(), "JOINED");
 					
 					requirement.setNoOfApplicants(String.valueOf(applicantsCount));
 					requirement.setNoOfShortlistedApplicants(String.valueOf(shortlistedCount));
 					requirement.setNoOfSubmittedApplicants(String.valueOf(submittedCount));
 					requirement.setNoOfInterviewedApplicants(String.valueOf(interviewedCount));
 					requirement.setNoOfOfferedApplicants(String.valueOf(offeredCount));
+					requirement.setNoOfJoinedApplicants(String.valueOf(joinedCount));
 					
 					if(null != requirement.getReleasedBy() && !"".equalsIgnoreCase(requirement.getReleasedBy())){
 						List<Long> userId = new ArrayList<Long>();
@@ -1650,6 +1654,25 @@ public class DashboardRestController {
 		return responseList;
 		
   }
+	
+	@RequestMapping(value = "/saveDashboardItems", method = RequestMethod.POST)
+	public Response<String> saveDashboardItems(HttpServletRequest request, DashboardItemsDTO dashboardItemsDTO) {
+		Response<String> response = new Response<>();
+		try {
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if (user != null) {
+//				JSONArray jsonArray = new JSONArray(dashboardItemsDTO.getItems());
+				
+				response = userService.saveDashboardItems(dashboardItemsDTO, user);
+			} else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response;
+	}
 	
 	
 }

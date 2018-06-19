@@ -156,39 +156,6 @@ public class RequirementReportRestController {
 
 	}
 			
-		 
-	
-	/**
-	 * returns applicants counts based on stage status
-	 * 
-	 * @param applicantStatus
-	 * @param request
-	 * @return json
-	 * @throws Exception
-	 */
-	@Async
-	@RequestMapping(value = "/getReceivedApplicantsCountForReports", method = RequestMethod.POST)
-	@ResponseBody
-	String getReceivedApplicantsCountForReports(@RequestParam(value="reportType", required=false) String reportType,
-			 @RequestParam(value="startDate", required=false) String customStartDate,
-			 @RequestParam(value="endDate", required=false) String customEndDate,
-			 HttpServletRequest request,HttpServletResponse response) throws Exception {
-		
-
-		 String reportsList = null;
-
-		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		 // started
-		 ApplicantReport applicantReceived = requirementReportService.getApplicantsReceivedCountsByDateRange(orgLocation,reportType,customStartDate,customEndDate);
-		
-		 if(null != applicantReceived){
-			 reportsList = commonUtil.toJSON(applicantReceived); 
-		 }else{
-			 reportsList = commonUtil.toJSON(""); 
-		 }
-			return reportsList;
-	}
-	
 	/**
 	 * Used to get all applicants recieved from the client
 	 * 
@@ -262,9 +229,9 @@ public class RequirementReportRestController {
 		
 		String reportsList = null;
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<ApplicantReport> applicantReportList = requirementReportService.getAllDayWiseApplicantsRecievedRports(reportType, customStartDate, customEndDate, orgLocation);
-		if (null != applicantReportList) {
-			reportsList = commonUtil.toJSON(applicantReportList);
+		ApplicantReport  applicantReceived= requirementReportService.getAllDayWiseApplicantsRecievedRports(reportType,customStartDate, customEndDate,orgLocation);
+		if (null != applicantReceived) {
+			reportsList = commonUtil.toJSON(applicantReceived);
 		}
 		else {
 			reportsList = commonUtil.toJSON("");
