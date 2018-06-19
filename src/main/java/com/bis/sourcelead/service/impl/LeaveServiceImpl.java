@@ -2234,4 +2234,10 @@ public class LeaveServiceImpl implements LeaveService{
 	{
 		return leaveDao.getNumberOfCurrentMonthLeavesTakenByUser(userId, leaveTypeId);
 	}
+
+	@Override
+	public List<Leave> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate)
+	{
+		return leaveDao.getLeaveByUserIdAndFromToDate(userId,orgLocation,fromDate,toDate);
+	}
 }

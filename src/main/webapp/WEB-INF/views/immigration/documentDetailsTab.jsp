@@ -95,7 +95,7 @@
 								<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
 								<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
 								<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
-								<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteDocumentDetailsByRowId(${canDocList.id});" ></i>
+								<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
 							 </c:if>
 								</div>
 							</td>
@@ -111,7 +111,7 @@
 										<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
 										<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
 										<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
-										<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteDocumentDetailsByRowId(${canDocList.id});" ></i>
+										<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
 									 </c:if>
 										</div>
 									</td>
@@ -143,12 +143,12 @@
 			<h2>Add Document</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="removeDocPopUp();"></a>
 		</div>
 		
-		<div class="popupMid clearfix">
+		<div class="clearfix">
 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Document Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="form-control selectpicker" name = "documentType" field-name="Document Type" data-validation="required" data-live-search="true" id="documentType" onchange="getDocumentTypeDiv(this);">
+					<select class="selectpicker width100percnt" name = "documentType" field-name="Document Type" data-validation="required" data-live-search="true" id="documentType" onchange="getDocumentTypeDiv(this);">
 					  <option value = "">Select Document Type</option>
 					   <c:forEach var="docs" items="${documentsList}">
 											<option value="${docs.id}">${docs.name}</option>
@@ -345,14 +345,14 @@ function removeImmigDocumrntDynamic(id){
 	    					  $("#uploadFile"+fileUploadRow).attr("data-validation-optional","true");
 			    			  $("#uploadDocEditDiv"+fileUploadRow).show();
 			    			  $('#uploadDocumentName'+fileUploadRow).text(value);
-			    			  $('#docHisoryId0').val(key);
+			    			  $('#docHisoryId'+fileUploadRow).val(key);
 			    			 
 			    			  
 			    		  }
 			    	  
 			    	  console.log("row id value is "+rowId +", fileUploadRow --> "+fileUploadRow);
 			    	   $('#uploadFile'+fileUploadRow).attr("docId", key);
-			    	  $('#uploadDocumentName'+fileUploadRow).attr("fileName", value);
+			    	  $('#uploadDocumentName'+fileUploadRow).attr("fileName", value); 
 			    	  fileUploadRow =fileUploadRow+1;
 			    	}); 
 			     }else{
@@ -612,4 +612,5 @@ function checkRequiredDocAndContinue(){
 	        $('#allDocsfilled').hide()
      }
 //});	
+$("#documentType").selectpicker("refresh");
 </script>

@@ -330,7 +330,7 @@ function getRequirementStageCounts(countObj){
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2 class="pull-left">Job Stages Reports</h2>
+      <h2 class="pull-left">Jobs Stages Reports</h2>
 		
     </div>
     <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a>&nbsp;&raquo; Jobs Stages Reports</div>

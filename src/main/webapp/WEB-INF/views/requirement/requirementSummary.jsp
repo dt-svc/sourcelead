@@ -48,6 +48,7 @@ function prepareAllCounts(requirementId){
     $('#submitToClientli').load(submitToClientCount(requirementId));
     $('#interviewli').load(interviewsCount(requirementId));
     $('#offerMadeli').load(offerMadeCount(requirementId));
+    $('#joinedli').load(joinedCount(requirementId));
     $('#rejectedli').load(rejectedCount(requirementId)); 
     $('#backoutli').load(backoutCount(requirementId)); 
 }
@@ -152,6 +153,19 @@ function offerMadeCount(requirementId){
 </script>
 
 <script>
+function joinedCount(requirementId){
+	$.ajax({
+      type : "POST",
+      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=JOINED",        
+      success :function(data) { 
+    	    var json = JSON.parse(data);
+    	    $("#joinedCount").html(json);
+       },
+	  });
+}
+</script>
+
+<script>
 function rejectedCount(requirementId){
 	
 	$.ajax({
@@ -181,6 +195,12 @@ function backoutCount(requirementId){
 
 <!-- Content Area -->
 <section class="content-wraper" onclick="popClose(); piplineexportClose();">
+
+
+<div class="success_pop" id="candSelector" style="display: none;"> 
+    	 <i class="fa fa-check-circle"></i><span id="candMsgDiv"></span> 
+   		</div>
+   		
   <section class="content-header clearfix">
     <div class="pull-left">
       <h2>Job Summary</h2>
@@ -257,6 +277,14 @@ function backoutCount(requirementId){
 </script> 
 <!-- End -->
 
+
+  <script>
+	   function candMsgFadein() {
+			$("#candSelector").fadeIn(200);
+		    $('#candSelector').delay(2000).fadeOut('slow');
+		}
+   </script>
+
 <script>
 
 // Error pop
@@ -308,6 +336,11 @@ $(document).ready(function() {
 	});
     $(".proj_close, .side_mask").click(function(){
 		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+		
+		clearCandAdvSearch();
+		$(".submission_side_wrap").removeClass("submission_side_wrap_active");
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
 	});	
@@ -486,6 +519,10 @@ function sideBar(requirementId,type){
 				 	requirementPipeline(requirementId,type);	
 					requirementStatusBar(requirementId);
 					tabEnable('','interviewli');
+			 }else if(type == 'JOINED'){
+				 	requirementPipeline(requirementId,type);
+					requirementStatusBar(requirementId);
+					tabEnable('','joinedli');
 			 }
 			 else if(type == 'OFFERMADE'){
 				 	requirementPipeline(requirementId,type);
@@ -756,7 +793,7 @@ function requirementPipelineList(url, requirementId, submissionType){
  	 var result = "";
  	 
  	result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-	 	result = result +'<span class="applicant_export">';
+	 	result = result +'<span class="applicant_export mr">';
 		 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
 	      result = result +'<a title="Export" onClick="piplineexport();"class="Clo1"><i class="glyphicon glyphicon-export expIcon"></i></a>';
 	      result = result +'<div class="export_pipline" style="display:none">';
@@ -799,7 +836,7 @@ function requirementPipelineList(url, requirementId, submissionType){
 	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE'){
 	  result = result + '<th>Applied on  <br>(<small class="custom-small">'+requirementPipelineListDate+'</small>)</th>';
 	  }
-	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE' && submissionType != 'SUBMIT_TO_CLIENT'){
+	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE' && submissionType != 'SUBMIT_TO_CLIENT' && submissionType != 'JOINED'){
 	  result = result + '<th>Rate</th>';
 	  }
 	  if(submissionType == 'REJECTED' || submissionType == 'BACKOUT' || submissionType == 'SUBMIT_TO_CLIENT'){
@@ -807,6 +844,9 @@ function requirementPipelineList(url, requirementId, submissionType){
 	  }
 	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE'){
 	  result = result + '<th>Source</th>';
+	  }
+	  if(submissionType == 'JOINED'){
+		  result = result + '<th>Join Date <br>(<small class="custom-small">'+requirementPipelineListDate+'</small>)</th>';
 	  }
 	  if(submissionType == 'REJECTED'){
 		  result = result + '<th>Rejected On <br>(<small class="custom-small">'+requirementPipelineListDate+'</small>)</th>';
@@ -823,10 +863,10 @@ function requirementPipelineList(url, requirementId, submissionType){
 	  if(submissionType == 'SHORTLIST'){
 	      result = result + '<th>Shortlisted By</th>';
 	  }
-	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE' && submissionType != 'REJECTED' && submissionType != 'BACKOUT'){
+	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE' && submissionType != 'REJECTED' && submissionType != 'BACKOUT' && submissionType != 'JOINED'){
 	  result = result + '<th>Score</th>';
 	  }
-	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE' && submissionType != 'REJECTED' && submissionType != 'BACKOUT'){
+	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE' && submissionType != 'REJECTED' && submissionType != 'BACKOUT' && submissionType != 'JOINED'){
 	  result = result + '<th>Exp</th>';
 	  }
 	  if(submissionType == 'INTERVIEW'){
@@ -849,6 +889,8 @@ function requirementPipelineList(url, requirementId, submissionType){
     	requirementPipelinePaginationBackOut(url, requirementId, submissionType);
     }else if(submissionType == 'SUBMIT_TO_CLIENT'){
     	requirementPipelinePaginationSC(url, requirementId, submissionType);
+    }else if(submissionType == 'JOINED'){
+    	requirementPipelinePaginationJoined(url, requirementId, submissionType);
     }else{
     	requirementPipelinePagination(url, requirementId, submissionType);
     }
@@ -961,6 +1003,59 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         $("#popUp").append(result);
         $("#rejectApplicant"+submissionId).slideDown(200);
         $(".project_inn_mask").fadeIn(200);
+    }else if(selectBox == "Joined"){
+    	$.ajax({
+    	      type : "POST",
+    	      url: sourceleadUrl+"/getRequirementOfferSubmissionById?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+    	    	success :function(data) { 
+    	    		if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		var obj = data.object;
+    	            	var result = "";
+    	                result = result +"<div id='joinedApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
+    	                result = result +"<form id='joinedApplicant_form' name='joinedApplicant_form'>";
+    	                result = result +"	<div class='col-md-12 mt10 mb'>";
+    	                result = result +"    <div class='clearfix inputfiledColor'>";
+    	                if(obj != null && obj != 'undefined' && obj != ""){
+    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='"+obj.updatedDateStr+"' type='text' field-name='Join Date'>";
+    	                }else{
+    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='' type='text' field-name='Join Date'>";
+    	                }
+    	                result = result +"    </div>";
+    	                result = result +"    <div id='joinDateErrorDiv'></div>";
+    	                result = result +"	</div>";
+    	                result = result +" <input id='saveJoinedRequest' type='button' class='btn' value='Submit' onclick='saveJoinedRequestForApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='joinedRequestCancel' value='Cancel' onClick='cancelJoinedRequest("+subId+","+reqId+",\""+subType+"\");'>";
+    	                result = result +"</form>";
+    	                result = result +"</div>";
+    	                $("#popUp").append(result);
+    	                $("#joinedApplicant"+submissionId).slideDown(200);
+    	                $(".project_inn_mask").fadeIn(200);
+    	                var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    	            	  var jsDateFormat= '';
+    	            	  if(locationDate.match("yyyy-MM-dd")){
+    	            		  jsDateFormat = 'yy-mm-dd';
+    	            	  }if(locationDate.match("dd-MM-yyyy")){
+    	            		  jsDateFormat = 'dd-mm-yy'; 
+    	            	  }if(locationDate.match("MM-dd-yyyy")){
+    	            		  jsDateFormat = 'mm-dd-yy'; 
+    	            	  }if(locationDate.match("yyyy-dd-MM")){
+    	            		  jsDateFormat = 'yy-dd-mm'; 
+    	            	  }
+    	            	  $('#joinDate').datepicker({
+    	            	      dateFormat: jsDateFormat,
+    	            	      changeMonth: true,
+    	            	  	  changeYear: true,
+    	            	  });
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
+  				},
+    		  });
     }
 }
 </script>
@@ -1036,38 +1131,27 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 		 document.getElementById("backOutOtherCategoryDiv").style.display="none";
 		 $("#backOutCategory").val("");
 	 }
-	if(submissionType == 'all'){
-		requirementPipeline(requirementId,submissionType);
-	}else if(submissionType == 'DUPLICATE_APPLICANTS'){
-		requirementPipelineDA(requirementId,submissionType);
-	}else if(submissionType == 'REQUEST_SENT'){
-		requirementPipelineRS(requirementId,submissionType);
-	}else if(submissionType == 'SHORTLIST'){
-		requirementPipelineSL(requirementId,submissionType);
-	}else if(submissionType == 'INTERVIEW'){
-		requirementPipelineIN(requirementId,submissionType);
-	}else if(submissionType == 'OFFERMADE'){
-		requirementPipelineOffer(requirementId,submissionType);
-	}else if(submissionType == 'REJECTED'){
-		requirementPipelineRejected(requirementId,submissionType);
-	}else if(submissionType == 'SUBMIT_TO_CLIENT'){
-		requirementPipelineSC(requirementId,submissionType);
-	}else if(submissionType == 'BACKOUT'){
-		requirementPipelineBackout(requirementId,submissionType);
-	}
+	pipelineBySubmissionType(requirementId,submissionType);
 };
-</script>
 
-<script type="text/javascript">
 function cancelBackOutApplicant(submissionId,requirementId,submissionType){ 
-	
 	 //script for backOut
 	 $("#backOutApplicant"+submissionId).fadeOut(200);
 	 $(".project_inn_mask").fadeOut(200);
 	 $("#backOutCategorytDiv").find('p.jquery_form_error_message').remove();
 	 document.getElementById("backOutOtherCategoryDiv").style.display="none";
 	 $("#backOutCategory").val("");
-	 
+	 pipelineBySubmissionType(requirementId,submissionType);
+};
+
+function cancelJoinedRequest(submissionId,requirementId,submissionType){ 
+	 $("#joinedApplicant"+submissionId).fadeOut(200);
+	 $(".project_inn_mask").fadeOut(200);
+	 $("#joinDate").val("");
+	 pipelineBySubmissionType(requirementId,submissionType);
+};
+
+function pipelineBySubmissionType(requirementId,submissionType){
 	if(submissionType == 'all'){
 		requirementPipeline(requirementId,submissionType);
 	}else if(submissionType == 'DUPLICATE_APPLICANTS'){
@@ -1086,8 +1170,10 @@ function cancelBackOutApplicant(submissionId,requirementId,submissionType){
 		requirementPipelineSC(requirementId,submissionType);
 	}else if(submissionType == 'BACKOUT'){
 		requirementPipelineBackout(requirementId,submissionType);
+	}else if(submissionType == 'JOINED'){
+		requirementPipelineJoined(requirementId,submissionType);
 	}
-};
+}
 </script>
 
 
@@ -1134,9 +1220,7 @@ $('body').on('blur', '#rejected_form', function() {
 	$("#rejected_form").showHelpOnFocus();
 	$("#rejected_form").validateOnBlur(false, validationSettings);
 });
-</script>
 
-<script>
 function backOutApplicantSave(submissionId,requirementId,submissionType){
 	if ($('#backOut_form').validate(false, validationSettings)) {
 		var formData =  getFormData('backOut_form'); 
@@ -1160,6 +1244,46 @@ $('body').on('blur', '#backOut_form', function() {
 	$("#backOut_form").showHelpOnFocus();
 	$("#backOut_form").validateOnBlur(false, validationSettings);
 });
+
+function saveJoinedRequestForApplicant(submissionId,requirementId,submissionType){
+	if ($('#joinedApplicant_form').validate(false, validationSettings)) {
+		if($('#joinDate').val() != null && $('#joinDate').val() != ''){
+		var formData =  getFormData('joinedApplicant_form'); 
+		$("#saveBackOut").attr("disabled", true);
+		$.ajax({
+			type : "POST",
+    	    data: formData,
+		    url: sourceleadUrl+"/saveJoinedRequestForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
+		    success: function(data) {
+		    	if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+		    		$("#popUp").empty();
+	   			 	$(".project_inn_mask").fadeOut(200);
+	   			    requirementPipeline(requirementId,submissionType);
+		    	}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
+		    }
+	   });
+		return true;
+	}else{
+		$('#joinDateErrorDiv').append('<p class="jquery_form_error_message">Join Date is required</p>');
+		return false;
+	}
+		
+	}else{
+		return false;
+	}
+}
+$('body').on('blur', '#joinedApplicant_form', function() {
+	$("#joinedApplicant_form").showHelpOnFocus();
+	$("#joinedApplicant_form").validateOnBlur(false, validationSettings);
+});
 </script>
 
 
@@ -1179,6 +1303,7 @@ function requirementSubmissionCount(requirementId){
         	 $("#submitToClientCount").html(report1.numOfSubmitToClient);
         	 $("#interviewCount").html(report1.numOfInterview);
         	 $("#offersCount").html(report1.numOfOffers);
+        	 $("#joinedCount").html(report1.numOfOffers);
         	 $("#rejectedCount").html(report1.numOfRejected);
         	 $("#requestSent").html(report1.numofrequestsent);
         	 //$("#duplicateApplicantsCount").html(report1.duplicateCount);
@@ -1808,10 +1933,10 @@ function requirementStatusBar(requirementId){
        var clientSubmissions = '${clientSubmissions}';
        var isSpocActive = '${isSpocActive}';
        var duplicateApplicantCount = 'DUPLICATE_APPLICANTS';
-		
        var offerMade = 'OFFERMADE';
+       var joined = 'JOINED';
        
-        result = result + '<div class="reportsCount reportsCountNew reportsCountCustom" id="customLi">';
+        result = result + '<div class="reportsCount reportsCountNew reportsCountNewBig reportsCountCustom" id="customLi">';
 		result = result + '<ul>';
 		result = result + '<li title="Applicants" id="applicantli" onclick="requirementPipeline('+requirementId+',\''+all+'\');tabEnable(this);" class="reqAct">';
 		result = result + '	<span><i class="fa fa-users"></i></span><b id="applicantsCount">0</b>';
@@ -1835,6 +1960,9 @@ function requirementStatusBar(requirementId){
 		result = result + '</li>';
 		result = result + '<li title="Offers" id="offerMadeli" onclick="requirementPipeline('+requirementId+',\''+offerMade+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount">0</b>';
+		result = result + '</li>';
+		result = result + '<li title="Joined" id="joinedli" onclick="requirementPipeline('+requirementId+',\''+joined+'\');tabEnable(this);">';
+		result = result + '	<span><i class="fa fa-id-badge"></i></span><b id="joinedCount">0</b>';
 		result = result + '</li>';
 		result = result + '<li title="Rejected" class="" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
 		result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>';
@@ -3142,6 +3270,18 @@ return result;
 <!-- Ends Script for Requirement recommendation profile saving , deleting -->
 
 
+<div class="submission_side_wrap ">
+	<div class="new_side_wrap_inn">
+		<div class="new_side_wrap_cta">
+		 <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop datatable_filter">
+		    <div id="addJobApplicantsDivLoading"></div>
+			<div id="addJobApplicantsDiv"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<jsp:include page="candidatesListForSubmission.jsp" />
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
 <jsp:include page="submitToClient.jsp" />
@@ -3152,6 +3292,7 @@ return result;
 <jsp:include page="requirementPipelinePaginationOffer.jsp" />
 <jsp:include page="requirementPipelinePaginationRejected.jsp" />
 <jsp:include page="requirementPipelinePaginationSC.jsp" />
+<jsp:include page="requirementPipelinePaginationJoined.jsp" />
 <jsp:include page="requirementPipelinePaginationSL.jsp" />
 
 <jsp:include page="addOffer.jsp" />

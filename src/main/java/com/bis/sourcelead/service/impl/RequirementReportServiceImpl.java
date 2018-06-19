@@ -27,10 +27,10 @@ import com.bis.sourcelead.beans.ApplicantReport;
 import com.bis.sourcelead.beans.AssignedRequirementReports;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementReportDao;
+import com.bis.sourcelead.dto.ApplicantReceivedReportsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
-import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
@@ -558,25 +558,26 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 							String customStartTimeStr = TZ_DF_CSD.format(startTime);  
 							String customEndTimeStr = TZ_DF_CED.format(endTime);  
 							startDateUTC = TZ_DF_TS.parse(customStartTimeStr);
-							endDateUTC = TZ_DF_TS.parse(customEndTimeStr);
+							endDateUTC = TZ_DF_TS.parse(customEndTimeStr);  
 					 }
 					
 				}
 			}
 			List<ApplicantReport> applicantReportList = null;               
-			List<RequirementSubmission> requirementSubmissionList = requirementReportDao.getReceivedApplicantsCountsPerOrgLocId(orgLocation.getId(),startDateUTC,endDateUTC);
+			List<ApplicantReceivedReportsDTO> requirementSubmissionList = requirementReportDao.getReceivedApplicantsCountsPerOrgLocId(orgLocation.getId(),startDateUTC,endDateUTC);
 			if(null != requirementSubmissionList && requirementSubmissionList.size() >0){
 				applicantReportList = new ArrayList<>(); 
-				for(RequirementSubmission rs : requirementSubmissionList){
+				for(ApplicantReceivedReportsDTO rs : requirementSubmissionList){
 						ApplicantReport applicantReport = new ApplicantReport();
-						applicantReport.setRequirementTitle(rs.getRequirement().getJobTitle());
-						applicantReport.setReceivedOn(getDateStr(rs.getUpdatedDate(),timezone,orgLocation.getDateFormat()));
-						applicantReport.setSource(rs.getCreatedUser()+'('+rs.getVendorLocationId().getOrgLocationName()+')');
-						applicantReport.setApplicantName(rs.getCandidate().getFirstName());
+						applicantReport.setApplicantName(rs.getName());
+						applicantReport.setSource(rs.getUserAndOrgName());
+						applicantReport.setRequirementTitle(rs.getJobTitle());
+						applicantReport.setStage(rs.getSubmissionStatus());
+						applicantReport.setReceivedOn( commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),rs.getUpdatedDate()));
 						applicantReport.setStage(rs.getSubmissionStatus().toString());
 						applicantReportList.add(applicantReport);
-					}
-			}	
+						
+			}	}
 			return applicantReportList;
 	}
 	
@@ -587,117 +588,7 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 	}
 	
 	@Override
-	public ApplicantReport getApplicantsReceivedCountsByDateRange(OrgLocations orgLocation, String reportType, String customStartDate, String customEndDate) throws Exception
-	{
-		Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
-		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-		 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-		 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-		 DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
-		 Date endDateUTC =null ;
-		// SimpleDateFormat simpleDateFormat = orgLocation.getLocFullFormDateFormatter();
-		 Date startDateUTC = null;
-		    int applicantsSum = 0;
-			int requestSentSum = 0;
-			int shortlistedSum = 0;
-			int submitToClientSum = 0;
-			int interviewsSum = 0;
-			int offeredSum = 0;
-			int rejectedSum = 0;
-		 ApplicantReport applicantReport = null;
-		 if(!Constants.CUSTOM_REPORTS.equalsIgnoreCase(reportType)){
-			 String endDate = outputFormatter1.print(zoned);
-			 String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, endDate);
-			 endDateUTC = TZ_DF_TS.parse(endDateString);
-		 }
-			
-			if(null != reportType && !"".equals(reportType)){
-				if("today".equals(reportType)){
-					String startDate = outputFormatter.print(zoned);
-					String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, startDate);
-					startDateUTC = TZ_DF_TS.parse(startDateString);
-				}else if(Constants.YESTER_DAY.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 1);
-				}else if(Constants.ONE_WEEK.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 7);
-				}else if(Constants.TWO_WEEKS.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 14);
-				}else if(Constants.ONE_MONTH.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 30);
-				}else if(Constants.TWO_MONTHS.equals(reportType)){
-					startDateUTC = getPreviousDate(zoned, outputFormatter, TZ_DF_TS, timezone, 60);
-				}else{
-					 if(!"".equalsIgnoreCase(customStartDate)&& !"".equalsIgnoreCase(customEndDate)){
-						DateFormat TZ_DF_CSD = new SimpleDateFormat ("yyyy-MM-dd'T'00:00:00");
-						DateFormat TZ_DF_CED = new SimpleDateFormat ("yyyy-MM-dd'T'23:59:59");
-						Date startTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customStartDate);
-						Date endTime =  commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(),customEndDate);
-						String customStartTimeStr = TZ_DF_CSD.format(startTime);  
-						String customEndTimeStr = TZ_DF_CED.format(endTime);  
-						String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customStartTimeStr);
-						String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(),Constants.UTC_TIMEZONE, customEndTimeStr);
-						startDateUTC = TZ_DF_TS.parse(startDateString);
-						endDateUTC = TZ_DF_TS.parse(endDateString);
-					 }
-					
-				}
-			}
-			List<RequirementSubmission> requirementSubmissionList = requirementReportDao.getReceivedApplicantsCountsPerOrgLocId(orgLocation.getId(),startDateUTC,endDateUTC);
-			if(null != requirementSubmissionList){
-				applicantReport = new ApplicantReport();
-				for(RequirementSubmission reqSub : requirementSubmissionList){
-					int applicantsCount = 0;
-					int requestSentCount = 0;
-					int shortlistedCount = 0;
-					int submitToClientCount = 0;
-					int interviewsCount = 0;
-					int offeredCount = 0;
-					int rejectedCount = 0;
-					List<RequirementSubmissionHistory> requirementSubmissionHistoryList = requirementReportDao.getApplicantsCountsByDateRange(reqSub.getId(),startDateUTC,endDateUTC);
-					if(null != requirementSubmissionHistoryList && requirementSubmissionHistoryList.size() >0){
-						for(RequirementSubmissionHistory rsh : requirementSubmissionHistoryList){
-							if("submission".equals(rsh.getToStage())){
-								applicantsCount++;
-							}else if("shortList".equals(rsh.getToStage())){
-								shortlistedCount++;
-							}else if("interview".equals(rsh.getToStage())){
-								interviewsCount++;
-							}else if("offer_made".equals(rsh.getToStage())){
-								offeredCount++;
-							}else if("request_sent".equals(rsh.getToStage())){
-								requestSentCount++;
-							}else if("submit_to_client".equals(rsh.getToStage())){
-								submitToClientCount++;
-							}else if("rejected".equals(rsh.getToStage())){
-								rejectedCount++;
-							}
-						}
-						 applicantsSum = applicantsSum+applicantsCount;
-						 requestSentSum = requestSentSum+requestSentCount;
-						 shortlistedSum = shortlistedSum+shortlistedCount;
-						 submitToClientSum = submitToClientSum+submitToClientCount;
-						 interviewsSum = interviewsSum+interviewsCount;
-						 offeredSum = offeredSum+offeredCount;
-						 rejectedSum = rejectedSum+rejectedCount;
-					}
-				}
-				applicantReport.setApplicantsSum(applicantsSum);
-				applicantReport.setShortlistedSum(shortlistedSum);
-				applicantReport.setSubmitToClientSum(submitToClientSum);
-				applicantReport.setInterviewsSum(interviewsSum);
-				applicantReport.setOfferedSum(offeredSum);
-				applicantReport.setRejectedSum(rejectedSum);
-				applicantReport.setRequestSentSum(requestSentSum);
-				
-				return applicantReport;
-			}else{
-				return applicantReport;
-			}
-			
-	}
-	
-	@Override
-	public List<ApplicantReport> getAllDayWiseApplicantsRecievedRports(String reportType, String customStartDate, String customEndDate,OrgLocations orgLocation) throws Exception
+	public ApplicantReport getAllDayWiseApplicantsRecievedRports(String reportType, String customStartDate, String customEndDate,OrgLocations orgLocation) throws Exception
 	{
 		 Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
@@ -744,52 +635,19 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 					
 				}
 			}
-	
-			List<RequirementSubmission> requirementSubmissionVendors = requirementSubmissionService.getAllVendorsIdbyorgLocationId(orgLocation,startDateUTC,endDateUTC);
-			List<ApplicantReport> applicantReportList = null;
+			ApplicantReceivedReportsDTO applicantReportDto =requirementReportDao.getReceivedApplicantsCounts(orgLocation.getId(), startDateUTC, endDateUTC);
 			ApplicantReport applicantReport = new ApplicantReport();
-			for (RequirementSubmission rs : requirementSubmissionVendors) {
-				List<RequirementSubmission> requirementSubmissionList = requirementReportDao.getReceivedApplicantsCountsByVendorLocationId(orgLocation.getId(),rs.getVendorLocationId().getId(),startDateUTC,endDateUTC);
-				List<RequirementSubmissionHistory> rshList = requirementReportDao.getReceivedApplicantsCountForReportsByVendorLocationId(orgLocation.getId(),rs.getVendorLocationId().getId(),startDateUTC,endDateUTC);
-				int applicantsCount = 0;
-				int requestSentCount = 0;
-				int shortlistedCount = 0;
-				int submitToClientCount = 0;
-				int interviewsCount = 0;
-				int offeredCount = 0;
-				int rejectedCount = 0;	
-				if(null != rshList){
-					applicantReportList = new ArrayList<>();
-					for(RequirementSubmissionHistory rsh : rshList){
-						if("submission".equals(rsh.getToStage())){
-							applicantsCount++;
-						}else if("shortList".equals(rsh.getToStage())){
-							shortlistedCount++;
-						}else if("interview".equals(rsh.getToStage())){
-							interviewsCount++;
-						}else if("offer_made".equals(rsh.getToStage())){
-							offeredCount++;
-						}else if("request_sent".equals(rsh.getToStage())){
-							requestSentCount++;
-						}else if("submit_to_client".equals(rsh.getToStage())){
-							submitToClientCount++;
-						}else if("rejected".equals(rsh.getToStage())){
-							rejectedCount++;
-						}
-						
-					}
-					applicantReport.setApplicantsCount(requirementSubmissionList.size());
-					applicantReport.setShortlisted(shortlistedCount);
-					applicantReport.setInterviewCount(interviewsCount);
-					applicantReport.setSubmitToClientCount(submitToClientCount);
-					applicantReport.setOfferedCount(offeredCount);
-					applicantReport.setRejectedCount(rejectedCount);
-					applicantReport.setRequestSentCount(requestSentCount);
-					applicantReport.setOrgName(rs.getVendorLocationId().getOrgLocationName());
-					applicantReportList.add(applicantReport);
-					}
-				}
-		return applicantReportList;
+			if(applicantReportDto != null){
+				applicantReport.setApplicantsCount(applicantReportDto.getApplicantCount().intValue());
+				applicantReport.setShortlisted(applicantReportDto.getShortlistCount().intValue());
+				applicantReport.setInterviewCount(applicantReportDto.getInterviewCount().intValue());
+				applicantReport.setSubmitToClientCount(applicantReportDto.getSubmitToClientCount().intValue());
+				applicantReport.setOfferedCount(applicantReportDto.getOffermadeCount().intValue());
+				applicantReport.setRejectedCount(applicantReportDto.getRejectedCount().intValue());
+				//applicantReport.setRequestSentCount(requestSentSum);
+				//applicantReport.setOrgName(rs.getVendorLocationId().getOrgLocationName());
+			}
+		return applicantReport;
 	}
 	
 	
@@ -1328,7 +1186,4 @@ public class RequirementReportServiceImpl implements RequirementReportService {
 		return requirementReportDao.getApplicantsCountsByDateRange(submissionId, startDateUTC, endDateUTC);
 	}
 
-	
-	
-	
 }

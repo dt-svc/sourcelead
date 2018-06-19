@@ -868,12 +868,16 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Transactional(rollbackFor = { Exception.class })
 	private List<String> getOrgNamesById(Long[] longs, Long orgLocationId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from OrgRelations orgr  where orgr.locationId = :currOrgLocationId and orgr.id IN ( :relationIds ) ";
+		String query = "from OrgRelations orgr  where (orgr.locationId = :currOrgLocationId or orgr.responderLocationId = :currOrgLocationId) and orgr.id IN ( :relationIds ) ";
 		List<OrgRelations> orgRelations = session.createQuery(query).setLong("currOrgLocationId", orgLocationId)
 				.setParameterList("relationIds", longs).list();
 		List<String> orgNames = new ArrayList<String>();
 		for (OrgRelations orgRelation : orgRelations) {
+			if(orgLocationId.equals(orgRelation.getLocationId().getId())){
 			orgNames.add(orgRelation.getResponderLocationId().getOrg().getOrgName());
+			}if(orgLocationId.equals(orgRelation.getResponderLocationId().getId())){
+			orgNames.add(orgRelation.getLocationId().getOrg().getOrgName());
+			}
 		}
 		return orgNames;
 	}
@@ -1453,7 +1457,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	public List<Immigration> getImmigrationsByOrgId(Long id) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String listQuery = "from Immigration immi  where immi.status = 1  and (immi.orgLocationId.id = :id or immi.attorneyOrgLocationId.id = :id)";
-		List<Immigration> immigrations = session.createQuery(listQuery).setLong("id", id).list();
+		List<Immigration> immigrations = session.createQuery(listQuery).setParameter("id", id).list();
 		return immigrations;
 	}
 

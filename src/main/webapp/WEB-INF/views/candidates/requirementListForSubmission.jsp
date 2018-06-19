@@ -51,10 +51,10 @@ $(document).ready(function() {
 									data-validation-optional="true"
 									data-placeholder="Select Notice Period">
 									<option value="Immediately Available">Immediately Available</option>
-									<option value="15 Days">15-Days</option>
-									<option value="1 Month">1-Month</option>
-									<option value="2 Months">2-Month</option>
-									<option value="3 Months">3-Month</option>
+									<option value="15 Days">15 Days</option>
+									<option value="1 Month">1 Month</option>
+									<option value="2 Months">2 Months</option>
+									<option value="3 Months">3 Months</option>
 								</select>
 							</div>
 						  </div>
@@ -189,19 +189,8 @@ function submitCandidatesToJob(){
 		$(".side_mask").fadeIn(200);
 		$("body").css('overflow-y', 'hidden');
 		
-		 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-		  if(locationList.match("yyyy-MM-dd")){
-			  createdDate = 'YYYY-MM-DD';
-		  }if(locationList.match("dd-MM-yyyy")){
-			  createdDate = 'DD-MM-YYYY'; 
-		  }if(locationList.match("MM-dd-yyyy")){
-			  createdDate = 'MM-DD-YYYY'; 
-		  }if(locationList.match("yyyy-dd-MM")){
-			  createdDate = 'YYYY-DD-MM'; 
-		  }
-		  
 		var result = "";
-		result = result + '<h3>Jobs List</h3>';
+		result = result + '<h3>Choose Job</h3>';
 		result = result + '<div id="choicepopUp"></div>';
 		result = result + '<div id="requirementsListLoading"></div>';
 	    result = result +" <div class='mr pull-left'>";
@@ -209,6 +198,14 @@ function submitCandidatesToJob(){
 		result = result +" <button type='button' onclick='clearJobAdvSearch();getRequirementTableList()' class='btn btn-primary btn-sm' title='Refresh'><i class='fa fa-refresh'></i></button>";
 		result = result +"</div>"; 
 		result = result +" <div class='pull-right'>";
+		
+		 result = result +" <div class='mr pull-left mt5'>";
+    	 result = result +'<label class="switch mr pull-left">';
+    	 result = result +'<input type="checkbox" onclick="checkResume();" value="N" name="candidateResume"  id="candidateResume"   >';
+    	 result = result +'<div class="slider round" title="Attach Applicants Resume"></div>';
+    	 result = result +'</label>';
+    	 result = result +"<span class='paddingLeft mt2'>Attach Resume</span></div>";
+		
 		result = result +" <div class='mr pull-left'>";
 		result = result +" <input type='button' value='Submit To Job' onclick='submitCandidtesToJob()' class='btn btn-primary btn-sm'>";
 		result = result +"</div>";
@@ -224,7 +221,7 @@ function submitCandidatesToJob(){
 		result = result +'  <th>&nbsp;</th>';
 		result = result +'	<th>Generated Id</th>';
 		result = result +'	<th>Title</th>';
-		result = result +'  <th>Posted On<br>(<small class="custom-small">'+createdDate+'</small>)</th>';
+		result = result +'  <th>Posted On<br>(<small class="custom-small">YYYY-MM-DD</small>)</th>';
 	  	result = result +'  <th>Location</th>';
 		result = result + '</tr>';
 		result = result + '</thead>	';
@@ -247,6 +244,17 @@ function submitCandidatesToJob(){
 	 }
 }
 
+</script>
+
+<script>
+function checkResume(){
+	 var flag = document.getElementById("candidateResume").checked;
+	 if(flag == true){
+		 $("#candidateResume").val('Y'); 
+	 }else{
+		 $("#candidateResume").val('N'); 
+	 }
+}
 </script>
 
 <script>
@@ -352,7 +360,7 @@ function requirementListPagination(url,sourceleadUrl){
 	              "sortable": true,
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
-	            	  result = result +"<td><div class='proj_show tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
+	            	  result = result +"<td><div class='tbldata-dotdot_140'><span class='pull-left' title='"+opt.jobTitle+"'>"+opt.jobTitle+"</span></div></td>";
 	            	  return result;
 	              }
 		     },{
@@ -428,11 +436,13 @@ function submitCandidtesToJob(){
 				   continue;
 			 candidateIds.push(shareCandidates[e]);
 		   } 
+		 
+		 var candidateResume = $("#candidateResume").val();
 			
 		 $("#requirementsListLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			   $.ajax({
 		          type : "POST",
-		          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+jobId,    
+		          url: sourceleadUrl+"/submitRecommendationCandidates?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+jobId+"&candidateResume="+candidateResume,    
 		           success :function(data) {
 		        	   if (data.response === "FAILED") {
 		        		   $("#requirementsListLoading").removeAttr("style");
@@ -442,11 +452,20 @@ function submitCandidtesToJob(){
 				    	} else if (data.response === "SUCCESS") {
 				    		$("#requirementsListLoading").removeAttr("style");
 			       			document.getElementById("radio"+jobId).checked = false;
+			       			activeTab();
+			       			clearJobAdvSearch();
+			       			$(".clients_side_wrap").removeClass("clients_side_wrap_active");
+			       			$(".side_mask").fadeOut(200);
+			       			$("body").css('overflow-y', 'auto');
+			       			$("#candMsgDiv").html(candidateIds.length+" Candidate(s) Submitted Successfully...");
+			       			msgFadein();
 				    	}else if (data.indexOf('Sign In') !== -1) {
 				    		location.replace(sourceleadUrl);
 				    	} else {
 				    		showError("Operation failed, please try again");
 				    	}
+		        	   
+		        	   
 		           },
 		   });  
 		 

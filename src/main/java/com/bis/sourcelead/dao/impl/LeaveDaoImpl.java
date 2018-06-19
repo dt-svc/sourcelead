@@ -815,4 +815,18 @@ public class LeaveDaoImpl implements LeaveDao{
 		leavesMap.put("numberOfExtraLeaves", numberOfExtraLeaves);
 		return leavesMap;
 	}
+
+	@Override
+	@Transactional
+	public List<Leave> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate)
+	{
+		Date from = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), fromDate);
+		Date to = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), toDate);
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(from.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(to.getTime());
+		String query = "from Leave leave where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and (leave.fromDate >= :startDate and leave.fromDate <= :endDate) and (leave.status = 'APPROVED' or leave.status = 'PENDING')";
+		List<Leave> list = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setLong("userId", userId).list();
+		return list;
+	}
 }
