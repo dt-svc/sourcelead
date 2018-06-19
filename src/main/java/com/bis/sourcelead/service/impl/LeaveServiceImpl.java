@@ -189,7 +189,19 @@ public class LeaveServiceImpl implements LeaveService{
     
 	@Override
 	public Leave saveLeave(LeaveDTO leaveDTO,OrgLocations orgLocations, User user) throws Exception {
-		Leave leave = new Leave();
+		
+		Leave leave = null;
+		if(leaveDTO.getLeaveId() != null) {
+			leave = leaveDao.getLeaveById(leaveDTO.getLeaveId());
+			leave.setUpdatedBy(user.getUserCode());
+			leave.setUpdatedDate(new Date());
+		}else{
+			leave = new Leave();
+			leave.setCreatedBy(user.getUserCode());
+			leave.setCreatedDate(new Date());
+		}
+		
+//		Leave leave = new Leave();
 		leave.setOrgLocations(orgLocations);
 		leave.setFromDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getFromDate()));
 		if(StringUtils.isNotBlank(leaveDTO.getUser())) {

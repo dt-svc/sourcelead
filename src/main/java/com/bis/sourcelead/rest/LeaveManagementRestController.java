@@ -2722,5 +2722,31 @@ public class LeaveManagementRestController {
 			model.setViewName("leavemanagement/withdrawLeaves");
 			return model;
 	}
+	
+	/**
+	 * returns apply leave jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/reApplyLeaveByUUID")
+	public ModelAndView reApllyLeaveByUUID(@RequestParam(value = "leaveUUID", required = false) String leaveUUID,HttpServletRequest request,
+			HttpServletResponse response) {
+		
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Leave leave = leaveService.getLeaveByLeaveUUId(leaveUUID);
+		
+			String fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), leave.getFromDate());
+			String toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), leave.getToDate());
+			
+			ModelAndView model = new ModelAndView();
+			model.addObject("leave", leave);
+			model.addObject("fromDate", fromDate);
+			model.addObject("toDate", toDate);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("leavemanagement/applyLeave");
+			return model;
+	}
 
 }

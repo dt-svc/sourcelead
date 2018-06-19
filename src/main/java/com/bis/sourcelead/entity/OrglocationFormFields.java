@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "ORGLOCATION_FORM_FIELDS", catalog = "sourcelead")
+@Table(name = "ORGLOCATION_FORM_FIELDS")
 public class OrglocationFormFields implements Serializable{
 	private static final long serialVersionUID = 1L;
 
