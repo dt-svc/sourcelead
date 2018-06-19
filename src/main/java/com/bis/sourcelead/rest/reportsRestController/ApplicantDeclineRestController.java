@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -28,11 +27,8 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.reports.service.ApplicantDeclineService;
-import com.bis.sourcelead.reports.service.ApplicantsBySourceService;
 import com.bis.sourcelead.reportsDTO.ApplicantDeclineDTO;
-import com.bis.sourcelead.reportsDTO.ApplicantsBySourceDTO;
 import com.bis.sourcelead.reportsDTO.JobFilterDTO;
-import com.bis.sourcelead.rest.CandidateCertificationsRestController;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -137,7 +133,7 @@ public class ApplicantDeclineRestController {
 		return response;
 	}
 
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused", "unchecked" })
 	@RequestMapping(value = "/app/getDeclinedApplicantsList", method = RequestMethod.GET)
 	public ResponseList<ApplicantDeclineDTO> getDeclinedApplicantsList(JobFilterDTO jobFilterDTO, HttpServletRequest request) throws Exception {
 		
