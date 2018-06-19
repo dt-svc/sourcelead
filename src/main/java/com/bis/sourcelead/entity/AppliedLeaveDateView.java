@@ -15,6 +15,12 @@ public class AppliedLeaveDateView {
     @Column(name = "USER_ID", nullable = false)
     private Long userId;
 	
+	@Column(name = "ORGLOCATION_ID", nullable = false)
+	private Long orglocationId;
+	
+	@Column (name = "LEAVE_STATUS")
+	private String leaveStatus;
+
 	@Column (name = "APPLY_LEAVE_DATE")
 	private Date applyLeaveDate;
 	
@@ -75,6 +81,26 @@ public class AppliedLeaveDateView {
 	public void setStatus(Integer status)
 	{
 		this.status = status;
+	}
+
+	public Long getOrglocationId()
+	{
+		return orglocationId;
+	}
+
+	public String getLeaveStatus()
+	{
+		return leaveStatus;
+	}
+
+	public void setOrglocationId(Long orglocationId)
+	{
+		this.orglocationId = orglocationId;
+	}
+
+	public void setLeaveStatus(String leaveStatus)
+	{
+		this.leaveStatus = leaveStatus;
 	}
 	
 	

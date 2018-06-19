@@ -61,6 +61,8 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
+import com.bis.sourcelead.entity.AppliedLeaveDate;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateGrades;
@@ -2180,18 +2182,10 @@ public class LeaveManagementRestController {
 				i++;
 			}
 		}else {
-			List<Leave> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
+			List<AppliedLeaveDateView> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
 			if(leaveList != null && !leaveList.isEmpty()) {
-				Leave leave = leaveList.get(0);
-				Date from = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), fromDate);
-				Date to = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), toDate);
-				Date leaveFromDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), leave.getFromDate());
-				Date leaveToDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), leave.getToDate());
-				if(from.after(leaveToDate) || from.before(leaveToDate) || to.after(leaveFromDate) || to.before(leaveToDate) || from.equals(leaveFromDate) || to.equals(leaveToDate)) {
 					sb = new StringBuilder();
 					sb.append("you cannot apply two leaves on same day.!");
-				}
-				
 			}
 		}
 		
