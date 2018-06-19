@@ -10,7 +10,7 @@ import com.bis.sourcelead.reportsDTO.ApplicantsBackoutDTO;
 
 public interface ApplicantsBackoutReportService {
 
-	Map<String, Integer> getApplicantBackoutReport(List<Long> jobIdList, Date[] searchDates);
+	List<ApplicantsBackoutDTO> getApplicantBackoutReport(List<Long> jobIdList, Date[] searchDates);
 
 	void getApplicantBackoutReportForinduvidalJobs(List<Long> jobIdList, Date[] searchDates);
 	
