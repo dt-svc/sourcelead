@@ -8,6 +8,11 @@
 <script type="text/javascript">
 window.onload = function() { 
 
+	var leaveUUID = '${leaveUUID}';
+	if(leaveUUID != null && leaveUUID != '' && leaveUUID != 'undefined'){
+		getLeaveDetails();
+	}
+	
 	getPieChartBasedOnUser();
 	getApproversList();
    if($("#checkbox-1").is(':checked')){
@@ -624,7 +629,13 @@ $(".close").click(function(){
 
 <script>
 function getLeaveDetails(finalDateFormatEndDate){
-	var leaveTypeUUID = $("#leaveType").val();
+	var editLeaveTypeUUID = '${leave.leaveType.leaveTypeUUID}';
+	var leaveTypeUUID = '';
+	if(editLeaveTypeUUID != null && editLeaveTypeUUID != '' && editLeaveTypeUUID != 'undefined'){
+		 leaveTypeUUID = editLeaveTypeUUID;
+	}else{
+		 leaveTypeUUID = $("#leaveType").val();
+	}
 	var fromDate = $("#fromDate").val();
 	var toDate = $("#toDate").val();
 	var skipPolicy = false;
