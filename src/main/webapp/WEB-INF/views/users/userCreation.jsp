@@ -332,6 +332,18 @@
                   </div>
             </div>
             
+            <div class="form-group " >
+              <label class="col-md-3">Shift<span class="text-danger">&nbsp;* </span></label>
+              <div class="col-md-9">
+					<select class="form-control chosen-select" name="shiftId" id="shiftId" field-name="Shift" data-validation="required">
+                        <option value="">-Select Shift-</option>
+                        <c:forEach var="shift" items="${shiftList}">
+                          <option value="${shift.id}" ${shift.defaultStatus eq 'Y' ? 'selected' : ''}>${shift.shiftName}</option>
+                        </c:forEach>
+                     </select>
+                 </div>
+            </div>
+            
             <div class="form-group">
                   <label class="col-md-3">Resource Manager<span class="text-danger">&nbsp;* </span><i class='fa fa-info-circle' title='This will represent the resource manager for a associate in organisation'></i></label>
                   <div class="col-md-9">
@@ -341,17 +353,6 @@
                   </div>
             </div>
             		
-            <div class="form-group">
-		             <label class="col-md-3"></label>
-		              <div class="col-md-9">
-		                <div class="checkbox checkBox">
-		                  <label>
-		                    <input type="checkbox" value="Y" name="isGlobalAccess">
-		                    Is Global Manager</label>
-		                </div>
-		                 </div>
-               </div> 
-                
                  <div class="form-group">
                      <label class="col-md-3">Rate</label>
                      <div class="col-md-9">
@@ -384,13 +385,23 @@
                           </div>
                      </div>
                 </div>
-                
-            <div class="form-group " id = "DayHoursDiv">
+                <div class="form-group">
+		             <label class="col-md-3"></label>
+		              <div class="col-md-9">
+		                <div class="checkbox checkBox">
+		                  <label>
+		                    <input type="checkbox" value="Y" name="isGlobalAccess">
+		                    Is Global Manager</label>
+		                </div>
+		                 </div>
+               </div>
+                <div class="form-group " id = "DayHoursDiv">
                   <label class="col-md-3">Day hours</label>
                   <div class="col-md-9">
                     <input type="text" class="form-control" id="DayHours" placeholder="HH:MM" value="${averageWorkingHours}" name="DayHours" data-validation="validate_Space validate_length length1-9" data-validation-optional="true" onblur="editMe(this);validateDayHours();">
                   </div>
                 </div>
+                
             
             <div class="form-group">
 		             <label class="col-md-3"></label>

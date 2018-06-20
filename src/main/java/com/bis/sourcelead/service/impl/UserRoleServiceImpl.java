@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -820,6 +821,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public List<UserRole> getAllAssignedUsersByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
 		return userRoleDao.getAllAssignedUsersByResourceManagerId(resourceManagerId, orgLocationId);
+	}
+
+	@Override
+	public List<BigInteger> getAllUsersRoleList() throws Exception {
+		return userRoleDao.getAllUsersRoleList();
 	} 
     
 

@@ -183,7 +183,26 @@ $(document).ready(function() {
                   <textarea rows="2" class="form-control" name="description" data-validation="validate_length length1-500" data-validation-optional="true" placeholder="Description" value="${holidayDTO.description}">${holidayDTO.description}</textarea>
               </div>
             </div>
-              
+            
+            <div class="form-group">
+              <label class="col-md-3">Shift<span class="text-danger">&nbsp;*</span></label>
+              <div class="col-md-9">
+				<select multiple data-placeholder="Select Shift" class="chosen-select form-control" name="shift" field-name="Shift" id="shiftId" data-validation="required">
+				<c:forEach var="shift" items="${shiftList}">
+               		<c:set var = "NUM" value = "${0}"/>
+               		 <c:forEach var="holidayShift" items="${holidayShiftList}">
+					    <c:if test="${holidayShift.shift.id eq shift.id}">
+					    	<c:set var = "NUM" value = "${1}"/>
+					       <option  selected value="${shift.id}">${shift.shiftName}</option>
+					    </c:if>
+					</c:forEach> 
+					<c:if test="${NUM == 0}">
+						<option  value="${shift.id}">${shift.shiftName}</option>
+					</c:if>
+                </c:forEach>
+				</select>   
+	           </div>
+            </div>
               </div>
               
               
@@ -333,4 +352,5 @@ function clearToDate(){
 	};
 	
 </script> -->
+
 <jsp:include page="../masterFooter.jsp" />

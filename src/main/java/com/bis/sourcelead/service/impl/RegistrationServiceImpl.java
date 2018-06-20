@@ -419,6 +419,9 @@ public class RegistrationServiceImpl implements RegistrationService{
 		commonUtil.saveDefaultEmployeeVerificationTemplate(org,orgLocations,user,"Default Employee Verification Template");
 //		saveDefaultContractTemplate(org,orgLocations,user," Default NCA Template","NSA");
 		
+		commonUtil.saveDefaultGenaeralShift(orgLocations,user,"Genearal Shift");
+
+		
 		saveOrgLocationDefaultProject(registration, orgLocations, user);
 		commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);
 		

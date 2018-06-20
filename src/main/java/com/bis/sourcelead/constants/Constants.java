@@ -43,6 +43,7 @@ public class Constants {
 	public static final String ASSOCIATE_VENDOR_CONTACT="Vendor Contact(Email)";
 	public static final String ASSOCIATE_GRADE="Grade";
 	public static final String ASSOCIATE_DESIGNATION="Designation*";
+	public static final String ASSOCIATE_SHIFT="Shift*";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";
 	public static final String FAILED_REASON = "Reason";
@@ -1145,6 +1146,6 @@ public class Constants {
 	public static final String DELETE = "DEL";
 	public static final String NONE = "NONE";
 	public static final String ADDITION = "ADD";
-
+	public static final String GENERAL_SHIFT = "General Shift"; 
 
 }

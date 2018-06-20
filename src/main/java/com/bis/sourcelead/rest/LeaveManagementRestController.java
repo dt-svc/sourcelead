@@ -4,7 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
+import java.math.BigInteger;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -69,6 +70,7 @@ import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Holiday;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
+import com.bis.sourcelead.entity.HolidayShift;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
@@ -221,8 +223,6 @@ public class LeaveManagementRestController {
 	
 	@Autowired
 	AssociateBalanceLeaveDao associateBalanceLeaveDao;
-	
-	
 	
 	/**
 	 * returns Pending leaves jsp
@@ -506,6 +506,9 @@ public class LeaveManagementRestController {
 	@RequestMapping(value = "/addHoliday")
 	public ModelAndView addHolidayJsp(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Shift> shiftList = shiftService.getShiftList(orgLocations.getId());
+		model.addObject("shiftList", shiftList);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("leavemanagement/addHoliday");
 		return model;
@@ -522,6 +525,10 @@ public class LeaveManagementRestController {
 	@RequestMapping(value = "/viewHoliday")
 	public ModelAndView viewHolidayJsp(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<Shift> shiftList = shiftService.getShiftList(orgLocations.getId());
+		model.addObject("shiftList", shiftList);
+
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("leavemanagement/viewHoliday");
 		return model;
@@ -807,15 +814,17 @@ public class LeaveManagementRestController {
 				shiftDTO.setShiftDescription(shift.getShiftDescription());
 				shiftDTO.setStatus(shift.getStatus());
 				shiftDTO.setShiftUUID(shift.getShiftUUID());
-				User user = userService.getUserByUserCode(shift.getCreatedBy());
 				StringBuilder sb = new StringBuilder();
-				if(StringUtils.isNotBlank(user.getLastName())) {
-					sb.append(user.getFirstName()).append("").append(user.getLastName());
-				}else {
-					sb.append(user.getFirstName());
+				if(shift.getCreatedBy() != null) {
+					User user = userService.getUserByUserCode(shift.getCreatedBy());
+					if(StringUtils.isNotBlank(user.getLastName())) {
+						sb.append(user.getFirstName()).append("").append(user.getLastName());
+					}else {
+						sb.append(user.getFirstName());
+					}
+					shiftDTO.setUpdatedBy(sb.toString());
+					shiftDTO.setUserId(sb.toString());
 				}
-				shiftDTO.setUpdatedBy(sb.toString());
-				shiftDTO.setUserId(sb.toString());
 				shiftDTOList.add(shiftDTO);
 	
 	            }
@@ -931,7 +940,8 @@ public class LeaveManagementRestController {
 	@RequestMapping(value = { "/getHolidaysList", "/rest/getHolidaysList" }, method = RequestMethod.GET)
 	public @ResponseBody ResponseList<HolidayDTO> getHolidaysList(
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "reportYear", required = false) String reportYear, HttpServletRequest request)
+			@RequestParam(value = "reportYear", required = false) String reportYear,
+			@RequestParam(value = "shiftIds", required = false) String shiftIds, HttpServletRequest request)
 			throws Exception {
 		ResponseList<HolidayDTO> responseList = new ResponseList<>();
 		try {
@@ -944,7 +954,7 @@ public class LeaveManagementRestController {
 					holiodaysDTOList = holidayService.getAllHolidaysListBasedOnYear(orgLocationId,
 							Long.parseLong(reportYear));
 				} else {
-					holiodaysDTOList = holidayService.getAllHolidaysList(orgLocationId);
+					holiodaysDTOList = holidayService.getAllHolidaysListByOrgloationIdAndShiftId(orgLocationId,shiftIds);
 				}
 
 				responseList.setData(holiodaysDTOList);
@@ -1446,6 +1456,13 @@ public class LeaveManagementRestController {
 		holidayDTO.setToHalfDayCheckBox(holidays.getToHalfDayCheckBox());
 		holidayDTO.setToHalfDayAmPm(holidays.getToHalfDayAmPm());
 		holidayDTO.setHolidayStatus(holidays.getHolidayStatus());
+		
+		List<Shift> shiftList = shiftService.getShiftList(orgLocations.getId());
+		model.addObject("shiftList", shiftList);
+		
+		List<HolidayShift> holidayShiftList = holidayService.getHolidayShiftListByHolidayId(holidays.getId());
+		model.addObject("holidayShiftList", holidayShiftList);
+		
 		model.addObject("holidayDTO", holidayDTO);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("leavemanagement/addHoliday");
@@ -1460,6 +1477,9 @@ public class LeaveManagementRestController {
 		boolean isDeleted = false;
 		Holiday deleteHoliday = holidayService.getHolidaysByUUID(holidayUUID);
 		if (deleteHoliday != null) {
+			//delted HolidayShift related query
+			holidayDAO.deleteHolidayByHolidayId(deleteHoliday.getId());
+			
 			deleteHoliday.setStatus("0");
 			holidayDAO.saveDeleteHoliday(deleteHoliday);
 
@@ -2683,4 +2703,32 @@ public class LeaveManagementRestController {
 			return model;
 	}
 
+	@RequestMapping(value = "/ws/dumpAllGeneralShifts", method = RequestMethod.GET)
+    public void dumpAllGeneralShifts(HttpServletRequest request, HttpServletResponse response) throws Exception
+    {
+        List<OrgLocations> locationsList = orgLocationService.getAllOrgLocations();
+        System.out.println("Start Time"+java.time.LocalDateTime.now());
+        for (OrgLocations orgLocation : locationsList) {
+             	commonUtil.saveDefaultGenaeralShift(orgLocation, orgLocation.getUser(), Constants.GENERAL_SHIFT);
+        }
+        System.out.println("End Time"+java.time.LocalDateTime.now());
+
+    }
+	
+	
+	@RequestMapping(value = "/ws/dumpAllGeneralShiftsWithActiveUsers", method = RequestMethod.GET)
+    public void dumpAllGeneralShiftsWithActiveUsers(HttpServletRequest request, HttpServletResponse response) throws Exception
+    {
+        System.out.println("Start Time"+java.time.LocalDateTime.now());
+		List<BigInteger> userRoleList =  userRoleService.getAllUsersRoleList();
+		for(BigInteger roleId:userRoleList) {
+			UserRole userRole = userRoleService.getUserRoleById(roleId.longValue());	
+			Shift shift = shiftService.getShiftListByShiftNameAndOrglocationId(Constants.GENERAL_SHIFT,userRole.getOrgLocations().getId());
+			   if(userRole.getShift() == null) {
+					userRole.setShift(shift);
+					userRoleService.addUserRole(userRole);
+				}
+		}
+		 System.out.println("End Time"+java.time.LocalDateTime.now());
+    }
 }
