@@ -77,7 +77,7 @@ window.onload = function() {
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="fromDateDiv">
                   <div class="input-group errorInptgroup">
-                    <input type="text" class="form-control calendar" id="fromDate" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required" readonly>
+                    <input type="text" class="form-control calendar" id="fromDate" value="${fromDate}" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required" readonly>
                     <span class="input-group-addon" onClick="clearFromDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                    </div> 
                   </div>
@@ -98,7 +98,7 @@ window.onload = function() {
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="toDateDiv">
                     <div class="input-group errorInptgroup">
-                     <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required" readonly>
+                     <input type="text" class="form-control calendar" id="toDate" name="toDate" value="${toDate}" placeholder="To Date" field-name="To Date" data-validation="required" readonly>
                      <span class="input-group-addon" onClick="clearToDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                     </div>
                   </div>
@@ -118,7 +118,7 @@ window.onload = function() {
               <label class="col-md-3" id="reasonIdY" style="display:block">Reason<span class="text-danger paddingLeft" >*</span></label>
               <label class="col-md-3" id="reasonIdN" style="display:none">Reason</label>
               <div class="col-md-9" id="reasonId">
-                <textarea class="form-control" rows="2" placeholder="Reason" id="reason" name="reason" field-name="Reason" data-validation="required validate_length length1-500"></textarea>
+                <textarea class="form-control" rows="2" placeholder="Reason" id="reason" name="reason" field-name="Reason" data-validation="required validate_length length1-500">${leave.reason}</textarea>
               </div>
             </div>
               
@@ -382,6 +382,7 @@ function removeEndValid(){
  		
  <script type="text/javascript">
  function getPieChartBasedOnUser(onbehalf){
+	 var leaveId = '${leave.leaveType.id}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 var userId ='';
 	 if(onbehalf !=null && onbehalf !='' && onbehalf !='undefined'){
@@ -399,7 +400,11 @@ function removeEndValid(){
         	  output = output +' <option value="">--Select Leave Type--</option>';
         	  for (var i = 0; i < json.length; i++) { 
         		  var leave = json[i];
-        		  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+        		  if(leave.id == leaveId){
+        			  output = output +'<option selected value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+        		  }else{
+        			  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+        		  }
         	  }
         	  output = output +'</select>';
         	  $("#leaveTypeIdDiv").empty();
@@ -537,12 +542,14 @@ $(function() {
 
 <script type="text/javascript">
 function applyLeave(){
+		var leaveId = '${leave.id}';
+		var currentStage = '${currentStage}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var userId = '${SourceLeadWeb_userId}';
 		if ($('#apply_leave_form').validate(false, validationSettings)) {
 	  	var formData = $($('#apply_leave_form')[0]).serialize();
 		$("#leaveLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(result) {
+		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveId="+leaveId+"&currentStage="+currentStage, formData, function(result) {
 			if (result && result.response === "INVALID_DATA") {
     		    showError(result.responseMessage);
     		} else if (result.response === "AWKWARD") {
