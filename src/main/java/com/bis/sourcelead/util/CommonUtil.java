@@ -62,11 +62,8 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
-<<<<<<< HEAD
 import com.bis.sourcelead.dao.ShiftDao;
-=======
 import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
->>>>>>> fb3551c4f705c2f5c285230075f853ffe68aa7d8
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
@@ -96,12 +93,9 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
-<<<<<<< HEAD
 import com.bis.sourcelead.entity.Shift;
-=======
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
->>>>>>> fb3551c4f705c2f5c285230075f853ffe68aa7d8
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
@@ -252,14 +246,13 @@ public class CommonUtil {
 	EmailScenarioConfigurationService emailScenarioconService;
 	
 	@Autowired
-<<<<<<< HEAD
 	private ShiftDao shiftDao;
-=======
+
+	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
 
 	@Autowired
 	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
->>>>>>> fb3551c4f705c2f5c285230075f853ffe68aa7d8
 	
 	/**
 	 * This method is used to convert JSON String to HashMap<Key,Value>
