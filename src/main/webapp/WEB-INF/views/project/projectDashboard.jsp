@@ -112,9 +112,9 @@ overflow-x: auto;
 							</a>
 							<div class="action-pop">
 								<span> 
-								<a href="<c:url value='${appPath}/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
-								 <a href="<c:url value='${appPath}/clientProject'/>"><i class="fa fa-plus"></i>Client Project</a> 
-								<!-- <a href="#" onclick='getClientProjectPop();'><i class="fa fa-plus"></i>Client Project</a> -->
+								 <a href="<c:url value='${appPath}/project'/>"><i class="fa fa-plus"></i>Internal Project</a>
+								 <%--<a href="<c:url value='${appPath}/clientProject'/>"><i class="fa fa-plus"></i>Client Project</a>  --%>
+								 <a href="#" onclick='getClientProjectPop();'><i class="fa fa-plus"></i>Client Project</a>
 								</span>
 							</div>
 						</sec:authorize></li>
@@ -244,23 +244,23 @@ overflow-x: auto;
 	   <div id="popUp"></div>
 	   
 	   
-<%-- 	   <div class="addcandidate-popup">
+ 	   <div class="addcandidate-popup">
 				  <div class="row">
-                      <div class="col-md-offset-1 col-md-10">
+                <div class="col-md-offset-1 col-md-10">
 				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeClientProject()"><i class="fa fa-close"></i></a>
-                          <div class="col-md-4 mt">
+                       <div class="col-md-4 mt">
                         <div class="small-widget bg-purple">
-                            <a href="<c:url value='${appPath}/candidate'/>"  title="Import Candidate">
+                            <a href="<c:url value='${appPath}/project?projectType=sharedProject'/>" >
                                 <div class="clearfix mb10">
                                 <i class="fa fa-bar-chart fa-4x"></i>
                                 </div>
-                                <strong class="clearfix">Client Shared Project</strong>
+                                <strong class="clearfix">Shared Client Project</strong>
                                 </a>
                         </div>
 					  </div>
 					  <div class="col-md-4 mt">
                           <div class="small-widget bg-yellow">
-                              <a href="<c:url value='${appPath}/clientProject'/>" title="Client Project">
+                              <a href="<c:url value='${appPath}/clientProject'/>" >
                                   <div class="clearfix mb10">
                                       <i class="fa fa-bar-chart fa-4x"></i>
                                   </div>
@@ -270,12 +270,12 @@ overflow-x: auto;
                           </div>
 					  </div>
 					  
-                      </div>
+                 </div>
                           
 				  </div>
 			  </div>
       <div class="pop_mask"></div>
-     --%>
+     
 	   
 	   
 <!--   Popup's   -->
@@ -546,7 +546,12 @@ function projectsPagination(url,sourceleadUrl){
             	  
             	  '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_PROJECT\',\'ROLE_VIEW_EDIT_PROJECT\',\'ROLE_CREATE_PROJECT_TASKS\',\'ROLE_VIEW_EDIT_PROJECT_TASKS\',\'ROLE_VIEW_PROJECT_EMPLOYEES\',\'ROLE_VIEW_EDIT_PROJECT_EMPLOYEES\',\'ROLE_VIEW_DELETE_PROJECT_EMPLOYEES\')">'
  		    		if(opt.projectMode != null && opt.projectMode == 'Draft'){
- 		    			result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    			if(opt.isProjectShared == 'Y'){
+ 		    				result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectType=sharedProject&projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    			}else{
+ 		    				result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/project?projectUUID='+opt.projectUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
+ 		    			}
+ 		    			
  		    		}else{
  		    			result = result +'<td data-title="Name"><a href="'+sourceleadUrl+'/projectSummary?projectUUID='+opt.projectUUID+'&projectClientUUID='+opt.projectClientUUID+'" ><div class="proj_show tbldata-dotdot_140"><span class="pull-left" title="'+opt.projectName+'">'+opt.projectName+'</span><i class="fa fa-binoculars pull-right"></i></div></a></td>';
  		    		}

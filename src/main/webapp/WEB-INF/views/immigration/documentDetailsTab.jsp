@@ -345,14 +345,14 @@ function removeImmigDocumrntDynamic(id){
 	    					  $("#uploadFile"+fileUploadRow).attr("data-validation-optional","true");
 			    			  $("#uploadDocEditDiv"+fileUploadRow).show();
 			    			  $('#uploadDocumentName'+fileUploadRow).text(value);
-			    			  $('#docHisoryId0').val(key);
+			    			  $('#docHisoryId'+fileUploadRow).val(key);
 			    			 
 			    			  
 			    		  }
 			    	  
 			    	  console.log("row id value is "+rowId +", fileUploadRow --> "+fileUploadRow);
 			    	   $('#uploadFile'+fileUploadRow).attr("docId", key);
-			    	  $('#uploadDocumentName'+fileUploadRow).attr("fileName", value);
+			    	  $('#uploadDocumentName'+fileUploadRow).attr("fileName", value); 
 			    	  fileUploadRow =fileUploadRow+1;
 			    	}); 
 			     }else{

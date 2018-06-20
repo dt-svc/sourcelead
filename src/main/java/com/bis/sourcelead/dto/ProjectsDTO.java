@@ -86,6 +86,12 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	
 	private String endDateStr;
 	
+	private String savedSharedClientOrgLocId;
+	
+	 private Long sharedClientOrgLocationId;
+	 
+	 private String isProjectShared;
+	
 	private String estimatedBudgetCurrency;
 	
 	private String budgetApproverUser;
@@ -203,6 +209,10 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 	private String isTicketNumberRequired;
 	
 	private String isTaskCommentsRequired;
+	
+	private String sharedClientOrgLocId;
+	
+	private Long sharedProjectCreatedOrgLocId;
 	
 	public String getExpenseId() {
 		return expenseId;
@@ -961,5 +971,45 @@ public class ProjectsDTO extends SearchDTO implements Serializable{
 
 	public void setIsTaskCommentsRequired(String isTaskCommentsRequired) {
 		this.isTaskCommentsRequired = isTaskCommentsRequired;
+	}
+
+	public String getSharedClientOrgLocId() {
+		return sharedClientOrgLocId;
+	}
+
+	public void setSharedClientOrgLocId(String sharedClientOrgLocId) {
+		this.sharedClientOrgLocId = sharedClientOrgLocId;
+	}
+
+	public String getSavedSharedClientOrgLocId() {
+		return savedSharedClientOrgLocId;
+	}
+
+	public void setSavedSharedClientOrgLocId(String savedSharedClientOrgLocId) {
+		this.savedSharedClientOrgLocId = savedSharedClientOrgLocId;
+	}
+
+	public Long getSharedClientOrgLocationId() {
+		return sharedClientOrgLocationId;
+	}
+
+	public void setSharedClientOrgLocationId(Long sharedClientOrgLocationId) {
+		this.sharedClientOrgLocationId = sharedClientOrgLocationId;
+	}
+
+	public String getIsProjectShared() {
+		return isProjectShared;
+	}
+
+	public void setIsProjectShared(String isProjectShared) {
+		this.isProjectShared = isProjectShared;
+	}
+
+	public Long getSharedProjectCreatedOrgLocId() {
+		return sharedProjectCreatedOrgLocId;
+	}
+
+	public void setSharedProjectCreatedOrgLocId(Long sharedProjectCreatedOrgLocId) {
+		this.sharedProjectCreatedOrgLocId = sharedProjectCreatedOrgLocId;
 	}
 }
