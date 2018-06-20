@@ -104,7 +104,7 @@ function prepareApprovedEmployeesList(url){
 		result = result + '<th>Leave Type</th>';
 		result = result + '<th>Duration</th>';
 		result = result + '<th>No Of Days</th>';
-		result = result + '<th>No Of Extra Days</th>';
+// 		result = result + '<th>No Of Extra Days</th>';
 		result = result + '<th>Leaves Taken</th>';
 		result = result + '<th>Approved By</th>';
 		result = result + '<th>Approved On</th>';
@@ -134,7 +134,7 @@ function approvedEmployeesPagination(url){
             { "data": "leaveType"},
             { "data": "duration"},
             { "data": "noOfDays"},
-            { "data": "extraLeavesTaken"},
+//             { "data": "extraLeavesTaken"},
             { "data": "leavesTaken"},
             { "data": "approvedBy" },
             { "data": "updatedDate" },
@@ -176,7 +176,7 @@ function approvedEmployeesPagination(url){
             	   result = result + '     <div class="tblminwidth-75">'+opt.appliedNoOfDays+'</div>';		 
             	    return result; 
               }
-            },{
+            },/* {
                 "targets": colIndex++,
                 "data": "extraLeavesTaken",
                 "render": function ( data, type, opt, meta ) {
@@ -184,7 +184,7 @@ function approvedEmployeesPagination(url){
                   result = result + '     <div class="tblminwidth-75">'+opt.extraLeavesTaken+'</div>';	 
               	    return result; 
                 }
-              }, {
+              }, */ {
                 "targets": colIndex++,
                 "data": "leavesTaken",
                 "render": function ( data, type, opt, meta ) {
