@@ -157,7 +157,7 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 
 	@Override
 	@Transactional
-	public int updateAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType,int status,int diffLeaves,String actionType,String methodType)
+	public int updateAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType,int status,float diffLeaves,String actionType,String methodType)
 	{
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -182,8 +182,8 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 						}
 						if(!"NONE".equalsIgnoreCase(actionType)) {
 							AssociateBalanceLeave associateBalanceLeave = getTotalLeavesByUserIdAndLeaveTypeId(leaveType.getId(), user.getId(), orgLocationId,Integer.parseInt(leaveType.getStatus()));
-							int assoBalLeaves = Integer.parseInt(associateBalanceLeave.getTotalLeaves());
-							int additionLeaves = 0;
+							float assoBalLeaves = Float.parseFloat(associateBalanceLeave.getTotalLeaves());
+							float additionLeaves = 0;
 							if("ADD".equalsIgnoreCase(actionType)) {
 								 additionLeaves = assoBalLeaves + diffLeaves;
 							}if("SUB".equalsIgnoreCase(actionType)) {
