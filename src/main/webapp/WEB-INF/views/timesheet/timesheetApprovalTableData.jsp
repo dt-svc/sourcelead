@@ -19,7 +19,6 @@
 <script>
   $(document).ready(function () {
 	  if('${AWKWARD}' == "true"){
-		  alert('${AWKWARD}');
 		   window.location.href =  "/errorPage";
 	  }
 	});
