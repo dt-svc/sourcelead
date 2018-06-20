@@ -864,7 +864,9 @@ function editEducationDEtailsByRowId(id){
         			var fomValues=["name","specialization", "startDate","endDate","gradeType","grade","institute","address"];
         			$("#addEdu").trigger('click');
         			udpateEduFormdata(formObj,fomValues,data);
-        			$('#eduName').val(data.name); // to select the dropdwon value based on id value.
+        			//$('#eduName').val(data.name); // to select the dropdwon value based on id value.
+        			$('#eduName option[value="'+data.name+'"]').prop("selected", true);
+        	        $('#eduName').trigger("chosen:updated");
         			$('#scoreEducationType').val(data.gradeType);
         			$('#immigrationEduStartDate12').val(data.startDateStr);
         			$('#immigrationEduEndDate').val(data.endDateStr);
@@ -872,6 +874,10 @@ function editEducationDEtailsByRowId(id){
         			$('#immigrationEduDocDivEdit').show();
     	        	$('#immigrationEduDocDiv').hide();
         			$('#immigrationEduDocName').text(data.educationFileName);
+        			}else{
+        				$('#immigrationEduDocDivEdit').hide();
+        	        	$('#immigrationEduDocDiv').show();
+        	        	$('#immigrationEduDocName').text("");
         			}
         			$('#candidateEducationId').val(data.id);
         	
