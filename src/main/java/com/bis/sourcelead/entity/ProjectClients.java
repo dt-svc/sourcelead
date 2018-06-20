@@ -68,6 +68,9 @@ public class ProjectClients implements Serializable{
     @Column(name = "IS_END_CLIENT")
     private String isEndClient;
     
+    @Column(name = "IS_PROJECT_SHARED")
+    private String isProjectShared;
+    
     
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -89,6 +92,11 @@ public class ProjectClients implements Serializable{
     @Fetch(FetchMode.SELECT)
 	@JsonBackReference
     private Set<ProjectApproverHierarchy> projectApproverHierarchyList;
+	
+	@OneToMany(mappedBy="projectClientsId",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+	@JsonBackReference
+    private Set<ProjectApproverHierarchy> sharedClientProjectApproverHierarchyList;
 	
 	@Transient
 	@JsonProperty
@@ -222,6 +230,23 @@ public class ProjectClients implements Serializable{
 	public void setClientName(String clientName)
 	{
 		this.clientName = clientName;
+	}
+
+	public String getIsProjectShared() {
+		return isProjectShared;
+	}
+
+	public void setIsProjectShared(String isProjectShared) {
+		this.isProjectShared = isProjectShared;
+	}
+
+	public Set<ProjectApproverHierarchy> getSharedClientProjectApproverHierarchyList() {
+		return sharedClientProjectApproverHierarchyList;
+	}
+
+	public void setSharedClientProjectApproverHierarchyList(
+			Set<ProjectApproverHierarchy> sharedClientProjectApproverHierarchyList) {
+		this.sharedClientProjectApproverHierarchyList = sharedClientProjectApproverHierarchyList;
 	}
 
 }
