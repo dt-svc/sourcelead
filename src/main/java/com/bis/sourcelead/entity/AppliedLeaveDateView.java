@@ -21,6 +21,9 @@ public class AppliedLeaveDateView {
 	@Column (name = "LEAVE_STATUS")
 	private String leaveStatus;
 
+	@Column(name = "REASON",columnDefinition = "TEXT default NULL")
+	private String reason;
+	
 	@Column (name = "APPLY_LEAVE_DATE")
 	private Date applyLeaveDate;
 	
@@ -101,6 +104,16 @@ public class AppliedLeaveDateView {
 	public void setLeaveStatus(String leaveStatus)
 	{
 		this.leaveStatus = leaveStatus;
+	}
+
+	public String getReason()
+	{
+		return reason;
+	}
+
+	public void setReason(String reason)
+	{
+		this.reason = reason;
 	}
 	
 	
