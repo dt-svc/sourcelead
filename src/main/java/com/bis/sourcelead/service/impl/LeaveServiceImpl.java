@@ -1357,94 +1357,89 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 	
 	@Override
-	public void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc, User approverUser) throws Exception {
-		
-		 EmailMessage emailMessage = new EmailMessage();
-		 StringBuilder sb = new StringBuilder();
-		 emailMessage.setFirstName(approverUser.getFirstName());
-		 emailMessage.setToEmail(approverUser.getEmail());
-		 emailMessage.setFromEmail(loginUser.getEmail());
-		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
-			 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 }else{
-			 emailMessage.setFromName(loginUser.getFirstName());
-		 }
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-
-		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setOrgLocationId(orgLoc.getId());
-		 
-		//setting the class filed values
-		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
-			 StringBuilder employee =new StringBuilder();
-			 globalVarsMap.put("employeeUser", employee.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 }else{
-			 globalVarsMap.put("employeeUser",loginUser.getFirstName());
-		 }
-		 
-		 User applyUser = null;
-		 if(null != leaveDTO.getUser() && !"".equalsIgnoreCase(leaveDTO.getUser())){
-			 applyUser = userService.getUserById(Long.parseLong(leaveDTO.getUser()));
-			 if(null != applyUser.getLastName() && !"".equalsIgnoreCase(applyUser.getLastName())) {
-			 StringBuilder leaveUser =new StringBuilder();
-			 globalVarsMap.put("leaveUser", leaveUser.append(applyUser.getFirstName()).append(" ").append(applyUser.getLastName()).toString());
-		 }else{
-			 globalVarsMap.put("leaveUser",applyUser.getFirstName());
-		 }
-	 }
-		 
-		if(null != approverUser.getLastName() && !"".equalsIgnoreCase(approverUser.getLastName())){
-			 StringBuilder manager =new StringBuilder();
-			 globalVarsMap.put("approverUser", manager.append(approverUser.getFirstName()).append(" ").append(approverUser.getLastName()).toString());
-		 }else{
-			 globalVarsMap.put("approverUser",approverUser.getFirstName());
-		 }
-		 
-		 if(null != leaveDTO.getReason()){
-		 globalVarsMap.put("reason",leaveDTO.getReason());
-		 }
-		 Date fromDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),leaveDTO.getFromDate());
-		 Date toDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),leaveDTO.getToDate());
-		 int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate, toDate);
-		 leaveDTO.setNoOfDays(numberOfdays);
-		 
-		 globalVarsMap.put("noOfDays",String.valueOf(leaveDTO.getNoOfDays()));
-		 
-		 if(null != leaveDTO.getLeaveType()){
-			 LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
-//			 LeaveType leaveType =  leaveTypeService.getLeaveTypeById(Long.parseLong(leaveDTO.getLeaveType()));
-			 globalVarsMap.put("leaveType",leaveType.getName());
-			 }
-		 
-		 if(null != leaveDTO.getFromDate()){
-			 globalVarsMap.put("fromDate",leaveDTO.getFromDate());
-		 }
-
-		 if(null != leaveDTO.getToDate()){
-			 globalVarsMap.put("toDate",leaveDTO.getToDate());
-		 }
-		 
-			StringBuilder stringBuildforLink = new StringBuilder();
-			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-
-		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 EmailScenario  notificationScenario = null;
-		 StringBuilder actionLinkBuilder = new StringBuilder();
-		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("employeeRequestedLeaves?notifyLink=notifyLink&leaveUUID="+leaveDTO.getLeaveUUID()+"&orgLocationId="+orgLoc.getId()).toString();	 
-		 if(applyUser != null){
-			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLoc.getOrg(), orgLoc, Constants.LEAVE_EMAIL_ON_BEHALF_EMAIL,new ArrayList<EmailAttachment>());
-			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_ON_BEHALF_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-		 }else {
-			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLoc.getOrg(), orgLoc, Constants.LEAVE_EMAIL_TO_APPROVERS,new ArrayList<EmailAttachment>());
-			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_NOTIFICATION_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION);
-		 }
-		  String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap, notificationScenario );
-			notificationScenario.setBody(notificationBody);
-			emailScenerioUtil.sendNotification(actionLink,loginUser, approverUser, orgLoc, notificationScenario,new HashMap<String,String>());
-		 
+	public void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc, User approverUser) throws Exception
+	{
+		EmailMessage emailMessage = new EmailMessage();
+		StringBuilder sb = new StringBuilder();
+		emailMessage.setFirstName(approverUser.getFirstName());
+		emailMessage.setToEmail(approverUser.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
+			emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		}
+		else {
+			emailMessage.setFromName(loginUser.getFirstName());
+		}
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		emailMessage.setOrgLocationId(orgLoc.getId());
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
+			StringBuilder employee = new StringBuilder();
+			globalVarsMap.put("employeeUser", employee.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		}
+		else {
+			globalVarsMap.put("employeeUser", loginUser.getFirstName());
+		}
+		User applyUser = null;
+		if (null != leaveDTO.getUser() && !"".equalsIgnoreCase(leaveDTO.getUser())) {
+			applyUser = userService.getUserById(Long.parseLong(leaveDTO.getUser()));
+			if (null != applyUser.getLastName() && !"".equalsIgnoreCase(applyUser.getLastName())) {
+				StringBuilder leaveUser = new StringBuilder();
+				globalVarsMap.put("leaveUser", leaveUser.append(applyUser.getFirstName()).append(" ").append(applyUser.getLastName()).toString());
+			}
+			else {
+				globalVarsMap.put("leaveUser", applyUser.getFirstName());
+			}
+		}
+		if (null != approverUser.getLastName()
+				&& !"".equalsIgnoreCase(approverUser.getLastName())) {
+			StringBuilder manager = new StringBuilder();
+			globalVarsMap.put("approverUser", manager.append(approverUser.getFirstName()).append(" ").append(approverUser.getLastName()).toString());
+		}
+		else {
+			globalVarsMap.put("approverUser", approverUser.getFirstName());
+		}
+		if (null != leaveDTO.getReason()) {
+			globalVarsMap.put("reason", leaveDTO.getReason());
+		}
+		Date fromDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), leaveDTO.getFromDate());
+		Date toDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), leaveDTO.getToDate());
+		int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate, toDate);
+		leaveDTO.setNoOfDays(numberOfdays);
+		globalVarsMap.put("noOfDays", String.valueOf(leaveDTO.getNoOfDays()));
+		if (null != leaveDTO.getLeaveType()) {
+			LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
+			// LeaveType leaveType =
+			// leaveTypeService.getLeaveTypeById(Long.parseLong(leaveDTO.getLeaveType()));
+			globalVarsMap.put("leaveType", leaveType.getName());
+		}
+		if (null != leaveDTO.getFromDate()) {
+			globalVarsMap.put("fromDate", leaveDTO.getFromDate());
+		}
+		if (null != leaveDTO.getToDate()) {
+			globalVarsMap.put("toDate", leaveDTO.getToDate());
+		}
+		StringBuilder stringBuildforLink = new StringBuilder();
+		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		// setting the Recipient information
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		EmailScenario notificationScenario = null;
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("employeeRequestedLeaves?notifyLink=notifyLink&leaveUUID="
+				+ leaveDTO.getLeaveUUID() + "&orgLocationId=" + orgLoc.getId()).toString();
+		if (applyUser != null) {
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLoc.getOrg(), orgLoc, Constants.LEAVE_EMAIL_ON_BEHALF_EMAIL, new ArrayList<EmailAttachment>());
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_ON_BEHALF_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+		}
+		else {
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLoc.getOrg(), orgLoc, Constants.LEAVE_EMAIL_TO_APPROVERS, new ArrayList<EmailAttachment>());
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_NOTIFICATION_TO_APPROVERS, Constants.ENTITY_TYPE_NOTIFICATION);
+		}
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, approverUser, orgLoc, notificationScenario, new HashMap<String, String>());
 }
 
 
