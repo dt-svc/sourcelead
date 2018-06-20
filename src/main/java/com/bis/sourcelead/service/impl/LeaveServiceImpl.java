@@ -298,7 +298,7 @@ public class LeaveServiceImpl implements LeaveService{
 		saveMonthlyLeaves(monthlyLeaves,leave,user);
 		
 		if(savedLeave !=null) {
-			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user);
+			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user,leaveDTO);
 			if(leaveDTO.getApproverUser() != null){
 				for(String approverUserId :leaveDTO.getApproverUser()){
 					leaveDTO.setLeaveUUID(savedLeave.getLeaveUUID());
@@ -703,6 +703,7 @@ public class LeaveServiceImpl implements LeaveService{
 				leave.setStatus(Constants.LEAVE_REJECTED);
 				leave.setRejectedReason(reason);
 				leave.setRejectedBy(user);
+				int isDeleted = appliedLeaveDateService.deleteAppliedLeaveDatesByLeaveId(leave.getId());
 			}
 			leave.setUpdatedBy(user.getUserCode());
 			leave.setUpdatedDate(new Date());
