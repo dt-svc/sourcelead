@@ -539,6 +539,8 @@ function submitApplicantsToJob(){
 				    		location.href = "/errorPage";
 				    	} else if (data.response === "SUCCESS") {
 				    		$("#candidatesListLoading").removeAttr("style");
+				    		$("#candMsgDiv").html(candidateIds.length+" Candidate(s) Submitted Successfully...");
+				    		candMsgFadein();
 				    		shareCandidates = {};
 				    		$(".proMask").hide();
 				    		$('.action-pop').slideUp();
