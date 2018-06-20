@@ -126,11 +126,16 @@ window.onload = function() {
               <label class="col-md-3" id="attachmentY" style="display:block">Attachment<span class="text-danger paddingLeft" >*</span></label>
               <label class="col-md-3" id="attachmentN" style="display:none">Attachment</label>
               <div class="col-md-9 errorInptgroup errorInptgroup-bottom" id="attachmentId">
-                  <div style="float:left; width:100%; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#fff; color:#333; ">
-                      <input  type="file" class="pull-left valid" id="uploadBtn" field-name="Attachment"  onchange="uploadButton(0);" data-validation="required" >
-                      <a id="Button0value">
-                      <i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right" title="clear" onClick="removedocfile();"></i>
-                      </a>
+                  <div class="positionRelative clearfix"><i class="clearUpload" title="clear" onClick="removedocfile();"></i>
+                  
+                  <div class="input-group ratetype col-md-12 pull-left" title="Document Type: .pdf format only">
+	                      <label class="input-group-btn"> 
+	                        <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Choose File
+	                          <input type="file" id="uploadBtn" style="display: none;" class="upload">
+	                        </span> 
+	                      </label>
+		                      <input type="text" class="form-control" readonly id="uploadFile" value="${leave.fileName}" placeholder="no file chosen" field-name="Attachment" data-validation="required">
+	              </div>
                   </div>
               </div>
             </div>
@@ -173,7 +178,7 @@ window.onload = function() {
   
  <script>
  function removedocfile(){
-	 $("#uploadBtn").val('');
+	 $("#uploadFile").val('');
  }
  </script> 
  <script>
@@ -341,6 +346,10 @@ window.onload = function() {
 // 			 $('#leaveType').prop('disabled', false).trigger("chosen:updated");
 			}
 		});
+	  
+	  document.getElementById("uploadBtn").onchange = function () {
+  	    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
+  	    };
 		
 	});
 </script>
