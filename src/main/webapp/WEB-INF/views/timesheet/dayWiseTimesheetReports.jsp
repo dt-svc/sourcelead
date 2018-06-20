@@ -4,7 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<!-- <script src="/resources/js/dayWiseTimeSheetReport.js"></script> -->
+<script src="/resources/js/jquery.simplePagination.js"></script>
+
 <script>
 $( document ).ready(function() {
     getProjectListBasedOnStartAndEndDate();
@@ -14,6 +15,8 @@ $( document ).ready(function() {
 </script>
 
 <body>
+    <div id="loadingId"></div>
+	<div id="dayEntryformData">
 	<section class="content-wraper contentWraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -21,8 +24,8 @@ $( document ).ready(function() {
       </div>
       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> » Daywise Timesheet Report</div>
     </section>
-    <form id="timesheetExportForm" name="timesheetExportForm" action="/app/dayEntriesReportList" method="post">
-    <div class="contentareaInner-styles clearfix">
+    <form id="timesheetExportForm" name="timesheetExportForm">
+    <div class="contentareaInner-styles clearfix" >
       <div class="clearfix form-horizontal minHeight_225 minHeightcol5">
         <div class="row min">
            
@@ -109,7 +112,7 @@ $( document ).ready(function() {
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" id="runDiv" class="btn btn-success btnSuccess" onclick="validateDayEntriesReport();">
+            <input value="Run" id="runDiv" class="btn btn-success btnSuccess" type="button" onclick="validateDayEntriesReport();">
             <input value="Reset" class="btn btn-default ml10" type="button" onclick="resetValues();">
           </div>
         </div>
@@ -119,7 +122,12 @@ $( document ).ready(function() {
     
     
   </section>
+ </div> 
 </body>
+
+<div id="expensesExportListDiv" style="display: none;">
+	 <jsp:include page="dayEntriesReportList.jsp"></jsp:include> 
+</div>
 
 
 <script>
@@ -139,7 +147,25 @@ function validateDayEntriesReport(){
 		projectMemberList = '';
 	}
 	  if ($('#timesheetExportForm').validate(false, validationSettings)){
-		 $('#timesheetExportForm').submit();
+		  $("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+		  var formData = getFormData1("timesheetExportForm");
+		  $.ajax({
+	            url: sourceleadUrl+"/dayEntriesReportList",
+	            type: "POST",
+	            data: formData,
+ 		        processData: false,
+ 		        contentType:false, 
+	            success: function (data) {
+	            	 $("#dayEntryformData").hide();
+	            	 $("#expensesExportListDiv").show();
+	            	 $("#expensesExportListDiv").empty();
+	    			 $("#expensesExportListDiv").append(data);
+	    			 $("#loadingId").removeAttr('style');
+	    			 preparePaginationEmployee(1);
+	            }
+	        });
+		  
+		 //$('#timesheetExportForm').submit();
 		 $('#runDiv').attr('disabled','disabled');
 		 return true;
 	 }else{ 

@@ -465,6 +465,8 @@ public class TimeSheetSubmissionDTO implements Serializable{
 	public void setActivityList(List<TimesheetActivities> activityList) {
 		this.activityList = activityList;
 	}
+
+
 	
 	
 }

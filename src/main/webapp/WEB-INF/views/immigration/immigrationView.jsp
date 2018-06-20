@@ -103,52 +103,64 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 
   
 	  <div id="detailsTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingDetailsTab"></div>
 		 	<jsp:include page="petitionDetailsTab.jsp" />	  		  		  
 		
 	  </div>
 	  
 	  <div id="docsTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingDocsTab"></div>
 		<jsp:include page="documentDetailsTab.jsp" />	
 		
 	  </div>
 	  
 	  <div id="employersTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingEmployersTab"></div>
 		<jsp:include page="employerDetailsTab.jsp" />	
 	  </div>
 	  
 	  <div id="residencesTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingResidencesTab"></div>
 		<jsp:include page="residenceDetailsTab.jsp" />
 	  </div>	 
 	   
 	  <div id="educationsTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingEducationsTab"></div>
 		<jsp:include page="educationDetailsTab.jsp" />
 	  </div>
 	  
 	  <div id="familiesTab" class="immigraTabs_inn">
+	 	 <div id="immigrationLoadingFamiliesTab"></div>
 		<jsp:include page="familyDetailsTab.jsp" />
 	  </div>	
 	  
 	  <div id="notesTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingNotesTab"></div>
 		<jsp:include page="noteDetailsTab.jsp" />
 	  </div>  
 	  
 	  <div id="activitiesTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingActivitiesTab"></div>
 		<jsp:include page="activityDetailsTab.jsp" />
 	  </div> 
 	   
 	   <div id="visasTab" class="immigraTabs_inn">
+	   <div id="immigrationLoadingVisasTab"></div>
 		<jsp:include page="visaDetailsTab.jsp" />
 	  </div>
 	  	  
 	  <div id="passportsTab" class="immigraTabs_inn">
+	   <div id="immigrationLoadingPassportsTab"></div>
 		<jsp:include page="passportDetailsTab.jsp" />
 	  </div>	  
 	  
 	   <div id="formsTab" class="immigraTabs_inn">
+	   <div id="immigrationLoadingFormsTab"></div>
 		<jsp:include page="formDetailsTab.jsp" />
 	  </div>
 	  
 	  <div id="tasksTab" class="immigraTabs_inn">
+	  <div id="immigrationLoadingTasksTab"></div>
 		<jsp:include page="taskDetailsTab.jsp" />
 	  </div>
 
@@ -163,6 +175,7 @@ background-color: #ddd; color: #333; border: 1px solid #ddd !important;
 
 <!--   Popup Code  -->
 <div class="popMask"></div>
+	<div id="deletepopUp"></div>
 
 <script>
 $(document).ready(function() {
@@ -207,31 +220,41 @@ $(document).ready(function() {
         $(this).parent().siblings().removeClass("current");
         var tab = $(this).attr("href");
         $(".immigraTabs_inn").not(tab).css("display", "none");
-        if(tab=='#deatilsTab'){
-        	immigration.displayPetitionDetails(immigrationId);
+        if(tab=='#detailsTab'){
+        	showLoading("immigrationLoadingDetailsTab");
+      		immigration.displayPetitionDetails(immigrationId);
         }else if(tab=='#familiesTab'){
+        	showLoading("immigrationLoadingFamiliesTab");
         	immigration.displayFamilyDetails(candidateId);
         }else if(tab=='#educationsTab'){
+        showLoading("immigrationLoadingEducationsTab");
         getCandidateEducationList(candidateId);
         } else if(tab=='#employersTab'){
+        showLoading("immigrationLoadingEmployersTab");
         getCandidateEmployerList(candidateId);
         }else if(tab=='#residencesTab'){
+        	showLoading("immigrationLoadingResidencesTab");
         	getCandidateResidenceList(candidateId);
         }else if(tab=='#passportsTab'){
+        showLoading("immigrationLoadingPassportsTab");
         immigration.displayPassportDetails(candidateId,'Passport');
         }else if(tab=='#visasTab'){
+        showLoading("immigrationLoadingVisasTab");
         immigration.displayVisaDetails(candidateId,'Visa');
         }else if(tab=='#docsTab'){
+        	showLoading("immigrationLoadingDocsTab");
         	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"");
         }else if(tab =='#notesTab'){
+        	showLoading("immigrationLoadingNotesTab");
         	getNotesListByImmigration(candidateId);
         } else if(tab=='#formsTab'){
+        	showLoading("immigrationLoadingFormsTab");
         	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,"");
-        	console.log("immigrationId --->"+immigrationId)
         }else if(tab=='#activitiesTab'){
+        	showLoading("immigrationLoadingActivitiesTab");
         	getImmigrationActivies();
         }else if(tab=='#tasksTab'){
-        	
+        	showLoading("immigrationLoadingTasksTab");
         	getImmigrationTasks(immigrationId,"${myImmigrationPage}","");
         }
         
@@ -267,6 +290,10 @@ $(document).ready(function() {
 </script> 
     <!-- Script for Linked Invoice pop -->
     <script>
+    function showLoading(loadingId){
+    	$("#"+loadingId).attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; right:0px; margin:0px auto; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+    }
+    
         $(".sendReminder").click(function(){
         $('.modal.modal_invoice').fadeIn(200);
         $('.side_mask').fadeIn(200);
@@ -306,6 +333,45 @@ $("#packageZipfile").click(function() {
 });
 </script>
 <script>
+
+
+	function deleteImmigrationRecord(elem,arg1,arg2){
+    	$(".project_inn_mask").remove();
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_immigration_popup' class='remove_user_pop remove_user_pop_a'>";
+		result = result +" <b>Do you want to remove record permanently?</b>";
+		result = result + ' <div id="reasonForTemplateDiv"/>';
+		result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteImmigrationRecordById("+elem+",\""+arg1+"\",\""+arg2+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
+		result = result +"	</div>";
+		$("#deletepopUp").append(result);
+		$("#remove_immigration_popup").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+   
+		}
+	
+	function deleteImmigrationPopupDiv(){
+		$("#remove_immigration_popup").fadeOut(200);
+		$(".project_inn_mask").fadeOut(200);
+		$("#deletepopUp").empty();
+	}
+	function deleteImmigrationRecordById(elem, arg1, arg2){	
+		if(typeof elem ==='function') {
+			elem(arg1, arg2);
+		}
+		else{
+			alert("Not a valid Function call.");
+		}
+	}
+	
+	
+	 function cancelImmigrationDelete(){
+		 deleteImmigrationPopupDiv();
+		}
+
+
+	
+
 	function goToSummaryNextTab(tabName) {
 		if(tabName=="#visasTab"){
 			if($('#passportTbl tr').length<=1){

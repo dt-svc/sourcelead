@@ -1,5 +1,4 @@
 package com.bis.sourcelead.rest;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
-import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
@@ -45,7 +43,6 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.web.LoginSessionController;
 /**
  * 
  * @author Rajashekar
@@ -60,7 +57,7 @@ public class RequirementReleaseRestController {
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
-	
+        
 	@Autowired
 	RequirementService requirementService;
 	
@@ -598,7 +595,8 @@ public class RequirementReleaseRestController {
 	 @RequestMapping(value = "/releaseToCrowdSourcingNetwork" , method = RequestMethod.POST)
 	 public  String releaseToCrowdSourcingNetwork(@RequestParam(value="json", required=false) String json,
 			 @RequestParam(value = "requirementId", required = false) Long requirementId,
-			 HttpServletRequest request) throws Exception {
+			 HttpServletRequest request,
+                         @RequestParam(value = "jobBoardAccounts", required = false) ArrayList<Long> jobBoardAccounts) throws Exception {
 		 	
 		 json = "{"+json+"}";
 		 
@@ -609,7 +607,9 @@ public class RequirementReleaseRestController {
 	 	 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	 	 
 	 	Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-	 	
+//	 	System.out.println(jobBoardAccounts);
+                requirement.setJobBoardAccountIdList(jobBoardAccounts);
+                
 	 	if(jsonObj.has("isPublic") && !isNullOrEmpty(jsonObj.getString("isPublic")) && jsonObj.getString("isPublic").equalsIgnoreCase("Y")){
 	 		requirement.setIsPublic(jsonObj.getString("isPublic"));
 	 		requirement.setPostedOrgName(orgLocations.getOrgLocationName());

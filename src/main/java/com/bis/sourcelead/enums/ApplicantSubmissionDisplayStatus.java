@@ -20,6 +20,7 @@ public enum ApplicantSubmissionDisplayStatus {
     OFFERREJECTED("Offer Rejected"),
     OFFERHIRED("Hired"),
     NEW("New"),
+    JOINED("Joined"),
     
     CLIENT_OFFERMADE("Client Offer Made"),
     CLIENT_OFFERACCEPTED("Client Offer Accepted"),

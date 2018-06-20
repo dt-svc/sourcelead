@@ -62,7 +62,11 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
+<<<<<<< HEAD
 import com.bis.sourcelead.dao.ShiftDao;
+=======
+import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
+>>>>>>> fb3551c4f705c2f5c285230075f853ffe68aa7d8
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
@@ -92,7 +96,12 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+<<<<<<< HEAD
 import com.bis.sourcelead.entity.Shift;
+=======
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+>>>>>>> fb3551c4f705c2f5c285230075f853ffe68aa7d8
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
@@ -102,6 +111,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.VendorOnboardingTemplate;
 import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
+import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.CandidateService;
@@ -118,6 +128,8 @@ import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
@@ -240,7 +252,14 @@ public class CommonUtil {
 	EmailScenarioConfigurationService emailScenarioconService;
 	
 	@Autowired
+<<<<<<< HEAD
 	private ShiftDao shiftDao;
+=======
+	RequirementSubmissionService requirementSubmissionService;
+
+	@Autowired
+	RequirementSubmissionHistoryService requirementSubmissionHistoryService;
+>>>>>>> fb3551c4f705c2f5c285230075f853ffe68aa7d8
 	
 	/**
 	 * This method is used to convert JSON String to HashMap<Key,Value>
@@ -2501,7 +2520,34 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 	}
   
   
-  
-  
-  
+  public String saveJoinStatusInSubmission(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, Long submissionId, OrgLocations orgLocations, User user) throws Exception {
+		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
+
+		// to update submission history
+		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+		requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
+		requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
+
+		// to update Submission status
+		requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
+		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
+		requirementSubmission.setUpdatedBy(user.getUserCode());
+		StringBuilder sb = new StringBuilder();
+		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
+		requirementSubmission.setUpdatedDate(new Date());
+		
+		if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getJoinDate()) && !"".equalsIgnoreCase(applicantRejectBackOutDTO.getJoinDate())) {
+			try {
+				Date convertedDate = orgLocationDateFormat(orgLocations.getDateFormat(), applicantRejectBackOutDTO.getJoinDate());
+				requirementSubmission.setJoinedDate(convertedDate);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			requirementSubmission.setJoinedDate(null);
+		}
+		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory);
+		return "success";
+	}
 }

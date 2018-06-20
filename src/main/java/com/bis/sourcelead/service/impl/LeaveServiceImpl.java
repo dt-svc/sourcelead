@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,11 +42,14 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
@@ -59,6 +64,8 @@ import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.dto.LeaveTypeImportDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AppliedLeaveDate;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -82,6 +89,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.rest.TimesheetRestController;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -177,12 +185,26 @@ public class LeaveServiceImpl implements LeaveService{
     @Autowired
     AssociateBalanceLeaveDao associateBalanceLeaveDao;
     
+    @Autowired
+    AppliedLeaveDateService  appliedLeaveDateService;  
     
     private static final Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
     
 	@Override
 	public Leave saveLeave(LeaveDTO leaveDTO,OrgLocations orgLocations, User user) throws Exception {
-		Leave leave = new Leave();
+		
+		Leave leave = null;
+		if(leaveDTO.getLeaveId() != null) {
+			leave = leaveDao.getLeaveById(leaveDTO.getLeaveId());
+			leave.setUpdatedBy(user.getUserCode());
+			leave.setUpdatedDate(new Date());
+		}else{
+			leave = new Leave();
+			leave.setCreatedBy(user.getUserCode());
+			leave.setCreatedDate(new Date());
+		}
+		
+//		Leave leave = new Leave();
 		leave.setOrgLocations(orgLocations);
 		leave.setFromDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), leaveDTO.getFromDate()));
 		if(StringUtils.isNotBlank(leaveDTO.getUser())) {
@@ -268,14 +290,15 @@ public class LeaveServiceImpl implements LeaveService{
 		leave.setNumberOfDays(numberOfdays);
 		leave.setLeaveUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 //		leave.setExtraLeavesTaken(String.valueOf(0));
-		
+		Set<AppliedLeaveDate> appliedLeaveDateSet = getAppliedLeaveDateSet(leave,orgLocations,user,leaveDTO);
+		leave.setAppliedLeaveDateSet(appliedLeaveDateSet);
 		Leave savedLeave =  leaveDao.saveLeave(leave);
 		
 		Map<String,Float> monthlyLeaves = leaveManagementUtil.getMonthlyAppliedLeaves(leave,leaveDTO,user);
 		saveMonthlyLeaves(monthlyLeaves,leave,user);
 		
 		if(savedLeave !=null) {
-			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user);
+			LeaveManagementHistory leaveManagementHistory = leaveManagementHistoryService.saveLeaveManagementHistory(leave,user,leaveDTO);
 			if(leaveDTO.getApproverUser() != null){
 				for(String approverUserId :leaveDTO.getApproverUser()){
 					leaveDTO.setLeaveUUID(savedLeave.getLeaveUUID());
@@ -291,12 +314,54 @@ public class LeaveServiceImpl implements LeaveService{
 					 sendOnBehalfEmailToEmployee(savedLeave,applyUser,user,orgLocations);
 			}
 		 }
+			 
 		}
 		
 		
 		return savedLeave;
 	}
-
+	
+	/**
+	 * Get exact applied leave dates
+	 * 
+	 * @param leave
+	 * @param orgLocations
+	 * @param user
+	 * @param leaveDTO 
+	 * @return Set<AppliedLeaveDate>
+	 */
+	private Set<AppliedLeaveDate> getAppliedLeaveDateSet(Leave leave, OrgLocations orgLocations, User user, LeaveDTO leaveDTO)
+	{
+		Set<AppliedLeaveDate> set = new HashSet<>();
+		try {
+			List<Date> dateList = leaveManagementUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(), orgLocations.getDateFormat());
+			dateList.forEach(d -> {
+				AppliedLeaveDate appliedLeaveDate = new AppliedLeaveDate();
+				appliedLeaveDate.setApplyLeaveDate(d);
+				appliedLeaveDate.setApplyMonthName(getMonthName(d).toUpperCase());
+				appliedLeaveDate.setLeave(leave);
+				appliedLeaveDate.setIsPayrollInclude(Constants.STATUS_NO);
+				appliedLeaveDate.setCreatedBy(user.getId());
+				appliedLeaveDate.setCreatedDate(new Date());
+				appliedLeaveDate.setUpdatedBy(user.getId());
+				appliedLeaveDate.setUpdatedDate(new Date());
+				set.add(appliedLeaveDate);
+			});
+		} catch (Exception e) {
+			logger.error("AppliedLeaveDate failed due to " + e.getMessage());
+		}
+		return set;
+	}
+	
+	/**
+	 * Return month name by Date
+	 * @return String
+	 */
+	private String getMonthName(Date date) {
+		  Format formatter = new SimpleDateFormat("MMM"); 
+		    String monthName = formatter.format(date);
+		    return monthName;
+	}
 	private void sendOnBehalfEmailToEmployee(Leave savedLeave, User applyUser, User loginUser,
 			OrgLocations orgLocations) throws Exception {
 
@@ -509,13 +574,8 @@ public class LeaveServiceImpl implements LeaveService{
 				
 				float appliedLeavesCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
 				leaveDto.setAppliedNoOfDays(appliedLeavesCount);
-//				List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leave.getLeaveType().getId(), orgLocations.getId(),leave.getUser().getId(),yearStartDate,fromDate);
-//				float carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType(),leave);
-//				float extraLeaves = appliedLeavesCount - carryForwardLeaves;
-//				if(extraLeaves > 0)
-					leaveDto.setExtraLeavesTaken(leave.getExtraLeavesTaken());
-//				else
-//					leaveDto.setExtraLeavesTaken(0);
+				
+				leaveDto.setExtraLeavesTaken(leave.getExtraLeavesTaken());
 			
 				if(StringUtils.isNotBlank(leave.getDeleteReason())) {
 					leaveDto.setCancelReason(leave.getDeleteReason());
@@ -643,6 +703,7 @@ public class LeaveServiceImpl implements LeaveService{
 				leave.setStatus(Constants.LEAVE_REJECTED);
 				leave.setRejectedReason(reason);
 				leave.setRejectedBy(user);
+				int isDeleted = appliedLeaveDateService.deleteAppliedLeaveDatesByLeaveId(leave.getId());
 			}
 			leave.setUpdatedBy(user.getUserCode());
 			leave.setUpdatedDate(new Date());
@@ -752,85 +813,61 @@ public class LeaveServiceImpl implements LeaveService{
 						case 0:
 							if(janLeaves < monthlyAllowedLeaves){
 								carryForwardLeaves += (monthlyAllowedLeaves - janLeaves);
-							}else{
-								carryForwardLeaves += monthlyAllowedLeaves;
 							}
 							break;
 						case 1:
 							if(febLeaves < monthlyAllowedLeaves){
 								carryForwardLeaves += (monthlyAllowedLeaves - febLeaves);
-							}else{
-								carryForwardLeaves += monthlyAllowedLeaves;
 							}
 							break;
 						case 2:
 							if(marLeaves < monthlyAllowedLeaves){
 								carryForwardLeaves += (monthlyAllowedLeaves - marLeaves);
-							}else{
-								carryForwardLeaves += monthlyAllowedLeaves;
 							}
 							break;
 						case 3:
 							if(aprLeaves < monthlyAllowedLeaves){
 								carryForwardLeaves += (monthlyAllowedLeaves - aprLeaves);
-							}else{
-								carryForwardLeaves += monthlyAllowedLeaves;
 							}
 							break;
 						case 4:
 							if(mayLeaves < monthlyAllowedLeaves){
 								carryForwardLeaves += (monthlyAllowedLeaves - mayLeaves);
-							}else{
-								carryForwardLeaves += monthlyAllowedLeaves;
 							}
 							break;
 						case 5:
 							if(junLeaves < monthlyAllowedLeaves){
 								carryForwardLeaves += (monthlyAllowedLeaves - junLeaves);
-							}else{
-								carryForwardLeaves += monthlyAllowedLeaves;
 							}
 							break;
 						case 6:
 							if(julLeaves < monthlyAllowedLeaves){
 								carryForwardLeaves += (monthlyAllowedLeaves - julLeaves);
-							}else{
-								carryForwardLeaves += monthlyAllowedLeaves;
 							}
 							break;
 						case 7:
 							if(augLeaves < monthlyAllowedLeaves){
 								carryForwardLeaves += (monthlyAllowedLeaves - augLeaves);
-							}else{
-								carryForwardLeaves += monthlyAllowedLeaves;
 							}
 							break;
 						case 8:
 							if(sepLeaves < monthlyAllowedLeaves){
 								carryForwardLeaves += (monthlyAllowedLeaves - sepLeaves);
-							}else{
-								carryForwardLeaves += monthlyAllowedLeaves;
 							}
 							break;
 						case 9:
 							if(octLeaves < monthlyAllowedLeaves){
 								carryForwardLeaves += (monthlyAllowedLeaves - octLeaves);
-							}else{
-								carryForwardLeaves += monthlyAllowedLeaves;
 							}
 							break;
 						case 10:
 							if(novLeaves < monthlyAllowedLeaves){
 								carryForwardLeaves += (monthlyAllowedLeaves - novLeaves);
-							}else{
-								carryForwardLeaves += monthlyAllowedLeaves;
 							}
 							break;
 						case 11:
 							if(decLeaves < monthlyAllowedLeaves){
 								carryForwardLeaves += (monthlyAllowedLeaves - decLeaves);
-							}else{
-								carryForwardLeaves += monthlyAllowedLeaves;
 							}
 							break;
 					}
@@ -1297,94 +1334,89 @@ public class LeaveServiceImpl implements LeaveService{
 	}
 	
 	@Override
-	public void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc, User approverUser) throws Exception {
-		
-		 EmailMessage emailMessage = new EmailMessage();
-		 StringBuilder sb = new StringBuilder();
-		 emailMessage.setFirstName(approverUser.getFirstName());
-		 emailMessage.setToEmail(approverUser.getEmail());
-		 emailMessage.setFromEmail(loginUser.getEmail());
-		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
-			 emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 }else{
-			 emailMessage.setFromName(loginUser.getFirstName());
-		 }
-		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-
-		 emailMessage.setCreatedBy(loginUser.getUserCode());
-		 emailMessage.setOrgLocationId(orgLoc.getId());
-		 
-		//setting the class filed values
-		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
-			 StringBuilder employee =new StringBuilder();
-			 globalVarsMap.put("employeeUser", employee.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-		 }else{
-			 globalVarsMap.put("employeeUser",loginUser.getFirstName());
-		 }
-		 
-		 User applyUser = null;
-		 if(null != leaveDTO.getUser() && !"".equalsIgnoreCase(leaveDTO.getUser())){
-			 applyUser = userService.getUserById(Long.parseLong(leaveDTO.getUser()));
-			 if(null != applyUser.getLastName() && !"".equalsIgnoreCase(applyUser.getLastName())) {
-			 StringBuilder leaveUser =new StringBuilder();
-			 globalVarsMap.put("leaveUser", leaveUser.append(applyUser.getFirstName()).append(" ").append(applyUser.getLastName()).toString());
-		 }else{
-			 globalVarsMap.put("leaveUser",applyUser.getFirstName());
-		 }
-	 }
-		 
-		if(null != approverUser.getLastName() && !"".equalsIgnoreCase(approverUser.getLastName())){
-			 StringBuilder manager =new StringBuilder();
-			 globalVarsMap.put("approverUser", manager.append(approverUser.getFirstName()).append(" ").append(approverUser.getLastName()).toString());
-		 }else{
-			 globalVarsMap.put("approverUser",approverUser.getFirstName());
-		 }
-		 
-		 if(null != leaveDTO.getReason()){
-		 globalVarsMap.put("reason",leaveDTO.getReason());
-		 }
-		 Date fromDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),leaveDTO.getFromDate());
-		 Date toDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(),leaveDTO.getToDate());
-		 int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate, toDate);
-		 leaveDTO.setNoOfDays(numberOfdays);
-		 
-		 globalVarsMap.put("noOfDays",String.valueOf(leaveDTO.getNoOfDays()));
-		 
-		 if(null != leaveDTO.getLeaveType()){
-			 LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
-//			 LeaveType leaveType =  leaveTypeService.getLeaveTypeById(Long.parseLong(leaveDTO.getLeaveType()));
-			 globalVarsMap.put("leaveType",leaveType.getName());
-			 }
-		 
-		 if(null != leaveDTO.getFromDate()){
-			 globalVarsMap.put("fromDate",leaveDTO.getFromDate());
-		 }
-
-		 if(null != leaveDTO.getToDate()){
-			 globalVarsMap.put("toDate",leaveDTO.getToDate());
-		 }
-		 
-			StringBuilder stringBuildforLink = new StringBuilder();
-			globalVarsMap.put("loginLink",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-
-		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-		 EmailScenario  notificationScenario = null;
-		 StringBuilder actionLinkBuilder = new StringBuilder();
-		 String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("employeeRequestedLeaves?notifyLink=notifyLink&leaveUUID="+leaveDTO.getLeaveUUID()+"&orgLocationId="+orgLoc.getId()).toString();	 
-		 if(applyUser != null){
-			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLoc.getOrg(), orgLoc, Constants.LEAVE_EMAIL_ON_BEHALF_EMAIL,new ArrayList<EmailAttachment>());
-			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_ON_BEHALF_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
-		 }else {
-			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLoc.getOrg(), orgLoc, Constants.LEAVE_EMAIL_TO_APPROVERS,new ArrayList<EmailAttachment>());
-			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_NOTIFICATION_TO_APPROVERS,Constants.ENTITY_TYPE_NOTIFICATION);
-		 }
-		  String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap, notificationScenario );
-			notificationScenario.setBody(notificationBody);
-			emailScenerioUtil.sendNotification(actionLink,loginUser, approverUser, orgLoc, notificationScenario,new HashMap<String,String>());
-		 
+	public void sendLeaveEmailToApprovers(User loginUser, LeaveDTO leaveDTO, OrgLocations orgLoc, User approverUser) throws Exception
+	{
+		EmailMessage emailMessage = new EmailMessage();
+		StringBuilder sb = new StringBuilder();
+		emailMessage.setFirstName(approverUser.getFirstName());
+		emailMessage.setToEmail(approverUser.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
+			emailMessage.setFromName(sb.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		}
+		else {
+			emailMessage.setFromName(loginUser.getFirstName());
+		}
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+		emailMessage.setOrgLocationId(orgLoc.getId());
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
+			StringBuilder employee = new StringBuilder();
+			globalVarsMap.put("employeeUser", employee.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		}
+		else {
+			globalVarsMap.put("employeeUser", loginUser.getFirstName());
+		}
+		User applyUser = null;
+		if (null != leaveDTO.getUser() && !"".equalsIgnoreCase(leaveDTO.getUser())) {
+			applyUser = userService.getUserById(Long.parseLong(leaveDTO.getUser()));
+			if (null != applyUser.getLastName() && !"".equalsIgnoreCase(applyUser.getLastName())) {
+				StringBuilder leaveUser = new StringBuilder();
+				globalVarsMap.put("leaveUser", leaveUser.append(applyUser.getFirstName()).append(" ").append(applyUser.getLastName()).toString());
+			}
+			else {
+				globalVarsMap.put("leaveUser", applyUser.getFirstName());
+			}
+		}
+		if (null != approverUser.getLastName()
+				&& !"".equalsIgnoreCase(approverUser.getLastName())) {
+			StringBuilder manager = new StringBuilder();
+			globalVarsMap.put("approverUser", manager.append(approverUser.getFirstName()).append(" ").append(approverUser.getLastName()).toString());
+		}
+		else {
+			globalVarsMap.put("approverUser", approverUser.getFirstName());
+		}
+		if (null != leaveDTO.getReason()) {
+			globalVarsMap.put("reason", leaveDTO.getReason());
+		}
+		Date fromDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), leaveDTO.getFromDate());
+		Date toDate = commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), leaveDTO.getToDate());
+		int numberOfdays = commonUtil.getNumberOfDaysBetweenTwoDates(fromDate, toDate);
+		leaveDTO.setNoOfDays(numberOfdays);
+		globalVarsMap.put("noOfDays", String.valueOf(leaveDTO.getNoOfDays()));
+		if (null != leaveDTO.getLeaveType()) {
+			LeaveType leaveType = leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());
+			// LeaveType leaveType =
+			// leaveTypeService.getLeaveTypeById(Long.parseLong(leaveDTO.getLeaveType()));
+			globalVarsMap.put("leaveType", leaveType.getName());
+		}
+		if (null != leaveDTO.getFromDate()) {
+			globalVarsMap.put("fromDate", leaveDTO.getFromDate());
+		}
+		if (null != leaveDTO.getToDate()) {
+			globalVarsMap.put("toDate", leaveDTO.getToDate());
+		}
+		StringBuilder stringBuildforLink = new StringBuilder();
+		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		// setting the Recipient information
+		InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		EmailScenario notificationScenario = null;
+		StringBuilder actionLinkBuilder = new StringBuilder();
+		String actionLink = actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("employeeRequestedLeaves?notifyLink=notifyLink&leaveUUID="
+				+ leaveDTO.getLeaveUUID() + "&orgLocationId=" + orgLoc.getId()).toString();
+		if (applyUser != null) {
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLoc.getOrg(), orgLoc, Constants.LEAVE_EMAIL_ON_BEHALF_EMAIL, new ArrayList<EmailAttachment>());
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_EMAIL_ON_BEHALF_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+		}
+		else {
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLoc.getOrg(), orgLoc, Constants.LEAVE_EMAIL_TO_APPROVERS, new ArrayList<EmailAttachment>());
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LEAVE_NOTIFICATION_TO_APPROVERS, Constants.ENTITY_TYPE_NOTIFICATION);
+		}
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+		notificationScenario.setBody(notificationBody);
+		emailScenerioUtil.sendNotification(actionLink, loginUser, approverUser, orgLoc, notificationScenario, new HashMap<String, String>());
 }
 
 
@@ -1408,6 +1440,7 @@ public class LeaveServiceImpl implements LeaveService{
 			Leave updatedLeave = leaveDao.saveLeave(leave);
 			if(updatedLeave !=null) {
 				isLeaveWithdraw = true;
+				int isDeleted = appliedLeaveDateService.deleteAppliedLeaveDatesByLeaveId(updatedLeave.getId());
 			}
 			leaveManagementHistory.setLeaveid(leave);
 			leaveManagementHistory.setType(Constants.LEAVE);
@@ -1946,7 +1979,6 @@ public class LeaveServiceImpl implements LeaveService{
 	@Override
 	public boolean reduceLeaveCount(OrgLocations orgLocations, User user, String leaveUUID, Long leaveTypeId, String status, int numberOfDays) throws Exception
 	{
-
 		boolean isApproved = false;
 //		Employees emp = null;
 		Leave updaetedLeave = null;
@@ -1955,65 +1987,104 @@ public class LeaveServiceImpl implements LeaveService{
 		
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_YEAR, 1);
-        Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(),orgLocations.getId());
+//        Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(),orgLocations.getId());
         Date yearStartDate = null;
-        if(leave.getUser().getCreatedDate().before(cal.getTime()) && leave.getUser().getCreatedDate().equals(cal.getTime())){
+        if(leave.getUser().getCreatedDate().before(cal.getTime()) || leave.getUser().getCreatedDate().equals(cal.getTime())){
         	yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(leave.getUser().getCreatedDate()));
         }else{
         	yearStartDate = commonUtil.getDateFormat(Constants.DMY.format(cal.getTime()));
         }
-        Date fromDate = commonUtil.getDateFormat(Constants.DMY.format(leave.getFromDate()));
-        
-		List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),leave.getUser().getId(),yearStartDate,fromDate);
-		float carryForwardLeaves = calculateCarryForwardLeaves(leaveList,leave.getFromDate(),yearStartDate,leave.getLeaveType(),leave);
-		
-//		leaveManagementHistory.setFromStage(leave.getStatus());
+        Date fromDate = commonUtil.getDateFormat(Constants.DMY.format(new Date()));
 		if (leave != null) {
-//					LeaveType leaveType = leaveTypeService.getLeaveTypeById(leaveTypeId);
-//					emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(),orgLocations.getId());
-//					int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
-					int totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leaveTypeId,user.getId(),orgLocations.getId());
-//					int noOfExtraDays = leaveManagementUtil.getNumberOfExtraDaysByPeriod(leave.getLeaveType(),leave,orgLocations,user);
-					
-					float appliedLeaves = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
-					if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						float extraLeaves = appliedLeaves - carryForwardLeaves;
-						if(extraLeaves > 0)
-							leave.setExtraLeavesTaken(extraLeaves);
-						else
-							leave.setExtraLeavesTaken(0);
-					}else if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						leave.setExtraLeavesTaken(Math.abs(leave.getLeaveType().getNoOfDaysPerPeriod() - appliedLeaves));
-					}else{
+			int totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leaveTypeId,user.getId(),orgLocations.getId());
+			Map<String, Float> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+			float appliedLeaves = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
+			if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+				
+				List<Leave> leaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),leave.getUser().getId(),yearStartDate,fromDate);
+				float carryForwardLeaves = calculateCarryForwardLeaves(leaveList,fromDate,yearStartDate,leave.getLeaveType(),leave);
+				
+				Date currentMonthStartDate = leaveManagementUtil.getCurrentMonthStartDate();
+				List<Leave> currentMonthLeaves = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),leave.getUser().getId(),fromDate,currentMonthStartDate);
+				float currLeavesTaken = currentMonthLeaves.stream().mapToInt(l->l.getNumberOfDays()).sum();
+				float currExtraLeaves = (float) currentMonthLeaves.stream().mapToDouble(l->l.getExtraLeavesTaken()).sum();
+				if(currExtraLeaves > 0){
+					leave.setExtraLeavesTaken(leave.getNumberOfDays());
+				}else{
+					float extraLeaves = appliedLeaves - carryForwardLeaves;
+					if(extraLeaves > 0){
+						leave.setExtraLeavesTaken(extraLeaves);
+					}					
+					else{
 						leave.setExtraLeavesTaken(0);
 					}
-					
-					
-					float numberOfLeavesPerYear = totalLeaves - appliedLeaves + leave.getExtraLeavesTaken();
-					leave.setBalanceLeavesCount(numberOfLeavesPerYear);
+				}
+				
+			}else if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+				
+				float extraLeaves = leaveManagementUtil.calculateExtraLeaves(leave.getUser().getId(),leave.getLeaveType().getId(),leave.getLeaveType().getNoOfDaysPerPeriod());
+				leave.setExtraLeavesTaken(Math.abs(extraLeaves));
+				
+				/*float thisMonthLeaves = leaveDao.getThisMonthLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+				if((thisMonthLeaves - leave.getNumberOfDays()) > leave.getLeaveType().getNoOfDaysPerPeriod()){
+					leave.setExtraLeavesTaken(Math.abs(leave.getNumberOfDays()));
+				}else{
+					if(leave.getLeaveType().getNoOfDaysPerPeriod() > appliedLeaves){
+						leave.setExtraLeavesTaken(0);
+					}else{
+						float extra = 0f;
+						for(Leave l : leaveList){
+							l.getNumberOfDays()
+						}
+						leave.setExtraLeavesTaken(Math.abs(appliedLeaves - leave.getLeaveType().getNoOfDaysPerPeriod()));
+					}
+				}*/
+			}else{
+				leave.setExtraLeavesTaken(0);
+			}
 			
-//			leave.setUpdatedBy(user.getUserCode());
-//			leave.setUpdatedDate(new Date());
+			float numberOfLeavesPerYear = totalLeaves - nuberOfLeavestaken.get("numberOfExtraLeaves");
+			leave.setBalanceLeavesCount(numberOfLeavesPerYear);
+			
+			leave.setUpdatedBy(user.getUserCode());
+			leave.setUpdatedDate(new Date());
 			updaetedLeave =  leaveDao.saveLeave(leave);
+			
+			/*//to update applied leaves after current leave duration
+			if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+				Map<String, Float> totalLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
+				Calendar calander = Calendar.getInstance();
+				calander.set(Calendar.MONTH, 11); 
+				calander.set(Calendar.DAY_OF_MONTH, 31);
+				Date endDate = commonUtil.getDateFormat(Constants.DMY.format(calander.getTime()));
+				
+				Calendar c = Calendar.getInstance(); 
+				c.setTime(leave.getToDate()); 
+				c.add(Calendar.DAY_OF_MONTH, 1);
+				Date startDate = commonUtil.getDateFormat(Constants.DMY.format(c.getTime()));
+				List<Leave> previousLeaveList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),leave.getUser().getId(),yearStartDate,fromDate);
+				List<Leave> leavesList = getLeavesListByTypeIdAndDuration(leaveTypeId, orgLocations.getId(),leave.getUser().getId(),startDate,endDate);
+//				float count = (float) leavesList.stream().mapToDouble(l->l.getExtraLeavesTaken()).sum();
+				for(Leave l : leavesList){
+//					if(updaetedLeave.getId().longValue() == l.getId().longValue()){
+					float appleave = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(l);
+						float carryLeaves = calculateCarryForwardLeaves(previousLeaveList,l.getFromDate(),yearStartDate,l.getLeaveType(),leave);
+						float eLeaves = appleave - (carryLeaves + remainingCarryforwardedLeaves) - l.getLeaveType().getNoOfDaysPerPeriod();
+						if(eLeaves > 0){
+							l.setExtraLeavesTaken(eLeaves);
+						}
+						else
+							l.setExtraLeavesTaken(0);
+						leaveDao.saveLeave(l);
+//					}
+				}
+			}*/
+			
 			if(updaetedLeave != null) {
 				isApproved = true;
 			}
 		}
-//		leaveManagementHistory.setLeaveid(leave);
-//		leaveManagementHistory.setType(Constants.LEAVE);
-//		leaveManagementHistory.setToStage(leave.getStatus());
-//		leaveManagementHistory.setStatus(leave.getStatus());
-//		leaveManagementHistory.setCreatedBy(user.getUserCode());
-//		leaveManagementHistory.setCreatedDate(new Date());
-//		leaveManagementHistory.setUpdatedBy(user.getUserCode());
-//		leaveManagementHistory.setUpdatedDate(new Date());
-//		leaveManagementHistoryDao.saveLeaveManagementHistory(leaveManagementHistory);
-//		sendApprovedAndRejectedLeaveMailToEmployee(orgLocations, user, leaveManagementHistory);
-//		if(isApproved = true) {
-//			timesheetRestController.linkLeaveTypeWithTimeSheet(user, orgLocations, leaveTypeId, updaetedLeave,Constants.APPROVED);
-//		}
 		return isApproved;
-	
 	}
 
 	@Override
@@ -2219,4 +2290,16 @@ public class LeaveServiceImpl implements LeaveService{
 			}
 			return cellValue;
 		}
+
+	@Override
+	public Map<String, Float> getNumberOfCurrentMonthLeavesTakenByUser(Long userId, Long leaveTypeId)
+	{
+		return leaveDao.getNumberOfCurrentMonthLeavesTakenByUser(userId, leaveTypeId);
+	}
+
+	@Override
+	public List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate)
+	{
+		return leaveDao.getLeaveByUserIdAndFromToDate(userId,orgLocation,fromDate,toDate);
+	}
 }

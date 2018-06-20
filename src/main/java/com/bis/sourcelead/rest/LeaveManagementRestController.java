@@ -63,6 +63,8 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.RestrictDayDTO;
 import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.dto.ShiftDTO;
+import com.bis.sourcelead.entity.AppliedLeaveDate;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssociateBalanceLeave;
 import com.bis.sourcelead.entity.AssociateGrades;
@@ -1283,7 +1285,7 @@ public class LeaveManagementRestController {
 				if (leave != null) {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
-						boolean  isApproved = leaveService.reduceLeaveCount(orgLocations,leave.getUser(),leave.getLeaveUUID(),leave.getId(),leave.getStatus(),leave.getNumberOfDays());
+					boolean  isApproved = leaveService.reduceLeaveCount(orgLocations,leave.getUser(),leave.getLeaveUUID(),leave.getLeaveType().getId(),leave.getStatus(),leave.getNumberOfDays());
 				} else {
 					response.setResponse(Result.FAILED.name());
 					response.setResponseMessage(Result.FAILED.getValue());
@@ -1917,7 +1919,7 @@ public class LeaveManagementRestController {
 
 			leaveDto.setIsBillable(leave.getLeaveType().getLeaveType());
 			float balLeaves = 0f;
-			 float balLeaves1 = totalLeavesperYear - nuberOfLeavestaken.get("numberOfLeavsTaken") + nuberOfLeavestaken.get("numberOfExtraLeaves");
+			 float balLeaves1 = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 			 
 			 float tot = 0f;
 			 float appliedLeaveCount = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
@@ -1930,7 +1932,7 @@ public class LeaveManagementRestController {
 						}
 						balLeaves = tot - (appliedLeaveCount - leave.getExtraLeavesTaken());
 					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						balLeaves = totalLeavesperYear - (appliedLeaveCount - leave.getExtraLeavesTaken());
+						balLeaves = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 					}
 			 }else{
 				 if ("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())) {
@@ -1941,7 +1943,7 @@ public class LeaveManagementRestController {
 						}
 						balLeaves = tot - (leavesTaken - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 					}else if(Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
-						balLeaves = totalLeavesperYear - (leavesTaken - nuberOfLeavestaken.get("numberOfExtraLeaves"));
+						balLeaves = totalLeavesperYear - (nuberOfLeavestaken.get("numberOfLeavsTaken") - nuberOfLeavestaken.get("numberOfExtraLeaves"));
 					}
 			 }
 			
@@ -1981,8 +1983,8 @@ public class LeaveManagementRestController {
 			User user1 = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (user1 != null){
 			Leave leave = leaveService.getLeaveByLeaveUUId(leaveUUID);
-			leaveManagementHistory.setFromStage(leave.getStatus());
 		 if(leave !=null) {
+			 leaveManagementHistory.setFromStage(leave.getStatus());
 			 leave.setDeleteReason(reason);
 			 leave.setCancelledBy(user);
 			 leave.setStatus(Constants.LEAVE_CANCELLED);
@@ -1990,6 +1992,31 @@ public class LeaveManagementRestController {
 			 isCancelled = true;
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
+			if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.NO.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
+				 Calendar c = Calendar.getInstance();
+				 int year = c.get(Calendar.YEAR);
+				 int month = c.get(Calendar.MONTH);
+				 int day = 1;
+				 c.set(year, month, day);
+				 int numOfDaysInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+				 Date startDate = c.getTime();
+				 java.sql.Date currentMonthStartDate = new java.sql.Date(startDate.getTime());
+				 c.add(Calendar.DAY_OF_MONTH, numOfDaysInMonth - 1);
+				 Date endDate = c.getTime();
+				 java.sql.Date currentMonthEndDate = new java.sql.Date(endDate.getTime());
+				 List<Leave> leaveList = leaveService.getLeavesListByTypeIdAndDuration(leave.getLeaveType().getId(), leave.getOrgLocations().getId(),leave.getUser().getId(),currentMonthStartDate,currentMonthEndDate);
+				 float extraLeaves = leave.getLeaveType().getNoOfDaysPerPeriod();
+				 Leave updatingLeave = leaveList.get(leaveList.size()-1);
+				 
+				 float cancelledLeave = leave.getNumberOfDays() - leave.getExtraLeavesTaken();
+				 float updateExtraLeave = updatingLeave.getExtraLeavesTaken() - cancelledLeave;
+				 if(updateExtraLeave > 0){
+					 updatingLeave.setExtraLeavesTaken(updateExtraLeave);
+				 }else{
+					 updatingLeave.setExtraLeavesTaken(0);
+				 }
+				 leaveDao.saveLeave(updatingLeave);
+			 }
 		 }
 		 else{
 				response.setResponse(Result.INVALID_DATA.name());
@@ -2109,18 +2136,24 @@ public class LeaveManagementRestController {
 		return leaveDtoResponse;
 	}
 
+	/**
+	 * Validate Leave
+	 * 
+	 * @param fromDate
+	 * @param toDate
+	 * @param orgLocationId
+	 * @param userId
+	 * @param leaveUUID
+	 * @param request
+	 * @return String
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/validateRestrictDate")
 	@ResponseBody
-	public String validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate,
-			@RequestParam(value = "toDate", required = false) String toDate,
-			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "userId", required = false) Long userId,
-			@RequestParam(value = "leaveUUID", required = false) String leaveUUID, HttpServletRequest request)
-			throws Exception {
-
+	public String validateRestrictDate(@RequestParam(value = "fromDate", required = false) String fromDate, @RequestParam(value = "toDate", required = false) String toDate, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(value = "userId", required = false) Long userId, @RequestParam(value = "leaveUUID", required = false) String leaveUUID, HttpServletRequest request) throws Exception
+	{
 		String isTrue = null;
 		StringBuilder sb = null;
-
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		User user = null;
 		if (userId == null) {
@@ -2133,9 +2166,7 @@ public class LeaveManagementRestController {
 			fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getFromDate());
 			toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), leave.getToDate());
 		}
-
-		List<HolidayAndRestrictday> list = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate, toDate,
-				orgLocations);
+		List<HolidayAndRestrictday> list = leaveService.getAllHolidayAndRestrictDaysInDuration(fromDate, toDate, orgLocations);
 		List<Date> daysList = new ArrayList<>();
 		Set<Long> roleIds = new HashSet<>();
 		for (HolidayAndRestrictday day : list) {
@@ -2149,10 +2180,12 @@ public class LeaveManagementRestController {
 					if (roleIds.contains(userRole.getRoles().getId())) {
 						daysList.add(day.getDay());
 					}
-				} else {
+				}
+				else {
 					daysList.add(day.getDay());
 				}
-			} else {
+			}
+			else {
 				daysList.add(day.getDay());
 			}
 		}
@@ -2161,6 +2194,7 @@ public class LeaveManagementRestController {
 		Collections.sort(daysList);
 		if (daysList.size() > 0) {
 			sb = new StringBuilder();
+			sb.append("You cannot apply for leave on restricted/holiday day ");
 			for (Date d : daysList) {
 				sb.append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), d));
 				if (i != daysList.size() - 1) {
@@ -2168,8 +2202,15 @@ public class LeaveManagementRestController {
 				}
 				i++;
 			}
+		}else {
+			List<AppliedLeaveDateView> leaveList = leaveService.getLeaveByUserIdAndFromToDate(userId,orgLocations,fromDate,toDate);
+			if(leaveList != null && !leaveList.isEmpty()) {
+					sb = new StringBuilder();
+					sb.append("you cannot apply two leaves on same day.!");
+			}
 		}
-
+		
+		
 		/*
 		 * List<RestrictDay> restDay =
 		 * restrictDayService.validateRestrictDayDates(fromDate, toDate,
@@ -2700,6 +2741,33 @@ public class LeaveManagementRestController {
 			model.addObject("orgLocationId", orgLocationId);
 			model.addObject("status", status);
 			model.setViewName("leavemanagement/withdrawLeaves");
+			return model;
+	}
+	
+	/**
+	 * returns apply leave jsp
+	 * 
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/reApplyLeaveByUUID")
+	public ModelAndView reApllyLeaveByUUID(@RequestParam(value = "leaveUUID", required = false) String leaveUUID,@RequestParam(value = "currentStage", required = false) String currentStage,HttpServletRequest request,
+			HttpServletResponse response) {
+		
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			Leave leave = leaveService.getLeaveByLeaveUUId(leaveUUID);
+		
+			String fromDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), leave.getFromDate());
+			String toDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), leave.getToDate());
+			
+			ModelAndView model = new ModelAndView();
+			model.addObject("leave", leave);
+			model.addObject("fromDate", fromDate);
+			model.addObject("toDate", toDate);
+			model.addObject("currentStage", currentStage);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("leavemanagement/applyLeave");
 			return model;
 	}
 

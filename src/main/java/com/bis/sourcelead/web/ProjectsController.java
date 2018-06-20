@@ -156,7 +156,8 @@ public class ProjectsController {
 	 
 	 @PreAuthorize("hasRole('ROLE_CREATE_PROJECT')")
 	 @RequestMapping(value = "/project")
-		public ModelAndView projects(@RequestParam(value="projectUUID", required=false) String projectUUID,HttpServletRequest request) throws Exception {
+		public ModelAndView projects(@RequestParam(value="projectUUID", required=false) String projectUUID,
+				@RequestParam(value="projectType", required=false) String projectType,HttpServletRequest request) throws Exception {
 		     String loginOrgLocation = (String) SourceLeadSessionManager.getSessionAttribute(request, "locationCode");
 		    OrgLocations loginOrgLocations = orgLocationService.getOrgLocationsByLocationCode(loginOrgLocation);
 		    User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -171,24 +172,27 @@ public class ProjectsController {
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 				
-				/*Collection<OrgRelations> orgClientList =orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId(), loginUser.getId());
-				for(OrgRelations ocl :orgClientList){
-					if(null != ocl.getLocationId() && ocl.getLocationId().getId() != null && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-						if(ocl.getResponderLocationId() != null){
-							ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
-							ocl.setOrgLocationId(ocl.getResponderLocationId().getId());
+				if(StringUtils.isNotBlank(projectType) && projectType.equalsIgnoreCase("sharedProject")) {
+					Collection<OrgRelations> orgClientList = orgRelationsService.getAllClientsByOrgLocationId(loginOrgLocations.getId(), loginUser.getId());
+					for(OrgRelations ocl :orgClientList){
+						if(null != ocl.getLocationId() && ocl.getLocationId().getId() != null && ocl.getLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+							if(ocl.getResponderLocationId() != null){
+								ocl.setOrgName(ocl.getResponderLocationId().getOrgLocationName());
+								ocl.setOrgLocationId(ocl.getResponderLocationId().getId());
+							}
 						}
-					}
-					if(null != ocl.getResponderLocationId() && null != ocl.getResponderLocationId().getId() && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
-						if(ocl.getLocationId() != null){
-							ocl.setOrgName(ocl.getLocationId().getOrgLocationName());
-							ocl.setOrgLocationId(ocl.getLocationId().getId());
+						if(null != ocl.getResponderLocationId() && null != ocl.getResponderLocationId().getId() && ocl.getResponderLocationId().getId().longValue() == loginOrgLocations.getId().longValue()){
+							if(ocl.getLocationId() != null){
+								ocl.setOrgName(ocl.getLocationId().getOrgLocationName());
+								ocl.setOrgLocationId(ocl.getLocationId().getId());
+							}
 						}
-					}
-				 }
-			    model.addObject("add_clientList", orgClientList);
+					 }
+				    model.addObject("clientsList", orgClientList);
+				}
+				 model.addObject("projectType", projectType);
 			    
-				Collection<Org> orgsList = orgService.getOrgs();
+				/*Collection<Org> orgsList = orgService.getOrgs();
 				model.addObject("add_client", orgsList);*/
 				
                 Collection<User> userList = userService.getTabAccessOwnersByOrgLocationIdAndTabId(loginOrgLocations.getId(),Long.valueOf(Constants.TAB_TIMESHEET_APPROVAL));
@@ -316,7 +320,7 @@ public class ProjectsController {
 					Projects projects = projectsService.getProjectByProjectUUID(projectUUID);
 					OrgLocations locations=orgLocationService.getOrgLocations(projects.getOrgLocationsId().getId());
 					OrgLocations clientOrgLocations = null;
-					String isClientOrgActive = Constants.NO;
+					String isClientOrgActive = "";
 					if(projects != null){
 						model.addObject("projectId", projects.getId());
 						model.addObject("projectName", projects.getProjectName());
@@ -345,12 +349,12 @@ public class ProjectsController {
 							
 							if(clientOrgLocations.getStatus() != null && clientOrgLocations.getStatus().equals(Status.ACTIVE)){
 								isClientOrgActive = Constants.YES;
+							}else {
+								isClientOrgActive = Constants.NO;
 							}
 						}
 						
-						/*if(!projects.getOrgLocationsId().getId().equals(orgLocations.getId())) {
-							isClientOrgActive = Constants.YES;
-						}*/
+						
 						
 						model.addObject("isClientOrgActive", isClientOrgActive);
 					}
@@ -386,6 +390,14 @@ public class ProjectsController {
 					model.addObject("projectUUID", projectUUID);
 					model.addObject("projectCurrency", projects.getCurrency());
 					model.addObject("postedOrgLocationId", projects.getOrgLocationsId().getId());
+					
+					if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+						ProjectClients pc = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getSharedLocationId().getId());
+						if(StringUtils.isNotBlank(pc.getIsProjectShared()) && pc.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+							model.addObject("postedSharedProjectOrgLocationId", orgLocations.getId());
+						}
+								
+					}
 					
 					List<OrgLocations> orgLocationsList = orgLocationService.getAllOrgLocationsByOrgId(org.getId());
 					model.addObject("orgLocationsList", orgLocationsList);

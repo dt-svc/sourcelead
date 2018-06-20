@@ -35,12 +35,13 @@ import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
+import com.bis.sourcelead.entity.SubmissionCandidateListView;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ReportsUtil;
 
 /**
  * 
@@ -85,6 +86,9 @@ public class CandidateDaoImpl implements CandidateDao {
 	
 	@Value("${jdbc.schema}")
 	private String schema;
+	
+	@Autowired
+	private ReportsUtil reportsUtil;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1684,6 +1688,294 @@ public class CandidateDaoImpl implements CandidateDao {
 		
 		
 		
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<SubmissionCandidateListView> getSubmissionCandidateListView(CandidateDTO candidateDTO,
+			OrgLocations orgLocations) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		List<BigInteger> countlist = null;
+		Integer filterCount = 0;
+		ResponseList<SubmissionCandidateListView> response = new ResponseList<>();
+		Query queryObj = null;
+		String querySeachStr = "";
+		StringBuilder advSeach = new StringBuilder("");
+		String advSeachStr = "";
+		List<SubmissionCandidateListView> candidateList = null;
+		boolean flag = false;
+		
+		
+		
+		  StringBuilder query1 = new StringBuilder("");
+				if(candidateDTO.getSearchValue() != null && !"".equalsIgnoreCase(candidateDTO.getSearchValue())) {
+					 query1.append(" Q1.candidateName like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.email like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.employementType like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.createdDate like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.noticePeriod like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.primarySkill like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.country like '%" + candidateDTO.getSearchValue() + "%' ")
+						.append("OR Q1.location like '%" + candidateDTO.getSearchValue() + "%' ");
+					 
+				}
+				
+				if(StringUtils.isNotBlank(candidateDTO.getPrimarySkill())) {
+					String primarySkills [] = candidateDTO.getPrimarySkill().split(",");
+					String primarySkillsStr = "'" + StringUtils.join(primarySkills,"','") + "'";
+					advSeach.append(" Q1.primarySkill IN ("+primarySkillsStr+") ");
+					flag = true;
+				}
+				
+				if(StringUtils.isNotBlank(candidateDTO.getDesignationType())) {
+					String designationTypes [] = candidateDTO.getDesignationType().split(",");
+					String designationTypesStr = "'" + StringUtils.join(designationTypes,"','") + "'";
+					if(flag == false) {
+						advSeach.append(" Q1.employementType IN ("+designationTypesStr+") ");
+						flag = true;
+					}else {
+						advSeach.append(" OR Q1.employementType IN ("+designationTypesStr+") ");
+					}
+					
+				}
+				
+				if(candidateDTO.getNoticePeriod() != null && !candidateDTO.getNoticePeriod().isEmpty()) {
+					String noticePeriod [] = candidateDTO.getNoticePeriod().split(",");
+					String noticePeriodStr = "'" + StringUtils.join(noticePeriod,"','") + "'";
+					if(flag == false) {
+						advSeach.append(" Q1.noticePeriod IN ("+noticePeriodStr+") ");
+						flag = true;
+					}else {
+						advSeach.append(" OR Q1.noticePeriod IN ("+noticePeriodStr+") ");
+					}
+					
+				}
+				
+				if(StringUtils.isNotBlank(candidateDTO.getVendor())) {
+					String orgRelationIds [] = candidateDTO.getVendor().split(",");
+					String orgRelationIdStr = "'" + StringUtils.join(orgRelationIds,"','") + "'";
+					if(flag == false) {
+						advSeach.append(" Q1.orgRelationId IN ("+orgRelationIdStr+") ");
+						flag = true;
+					}else {
+						advSeach.append(" OR Q1.orgRelationId IN ("+orgRelationIdStr+") ");
+					}
+					
+				}
+				
+				
+				if(StringUtils.isNotBlank(candidateDTO.getCreatedDate()) && !candidateDTO.getCreatedDate().equalsIgnoreCase("All")) {
+					Date[] searchDates  = reportsUtil.getJobFilterDate(candidateDTO.getCreatedDate(),orgLocations);
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					String fromDate = sdf.format(searchDates[0]);
+					String toDate = sdf.format(searchDates[1]);
+					
+					if(flag == false) {
+						advSeach.append(" (Q1.createdDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
+						flag = true;
+					}else {
+						advSeach.append(" OR (Q1.createdDate BETWEEN '"+fromDate+"' AND '"+toDate+"') ");
+					}
+					
+				 }
+				
+				
+				if(StringUtils.isNotBlank(candidateDTO.getCandidateSkills())) {
+					String skills [] = candidateDTO.getCandidateSkills().split(",");
+					String skillsStr = "'" + StringUtils.join(skills,"','") + "'";
+					if(flag == false) {
+						advSeach.append(" Q1.skills IN ("+skillsStr+") ");
+						flag = true;
+					}else {
+						advSeach.append(" OR Q1.skills IN ("+skillsStr+") ");
+					}
+					
+				}
+				
+				
+				if(StringUtils.isNotBlank(candidateDTO.getCity())) {
+					String cities [] = candidateDTO.getCity().split(",");
+					String citiesStr = "'" + StringUtils.join(cities,"','") + "'";
+					if(flag == false) {
+						advSeach.append(" Q1.city IN ("+citiesStr+") ");
+						flag = true;
+					}else {
+						advSeach.append(" OR Q1.city IN ("+citiesStr+") ");
+					}
+					
+				}
+				
+				
+				String sortingQry = "";
+				if(StringUtils.isNotBlank(candidateDTO.getSortColumn()))
+				{
+					sortingQry = " order by Q1."+ candidateDTO.getSortColumn() +" "+candidateDTO.getSortOrder();
+				}
+				
+				if(query1.toString() != null && !query1.toString().isEmpty()){
+					querySeachStr = "where "+"("+query1.toString()+")";
+				}
+				
+				if((query1.toString() == null || query1.toString().isEmpty()) && advSeach.toString() != null && !advSeach.toString().isEmpty()){
+					advSeachStr = "where "+"("+advSeach.toString()+")";
+				}else if(query1.toString() != null && !query1.toString().isEmpty() && advSeach.toString() != null && !advSeach.toString().isEmpty()){
+					advSeachStr = "and "+"("+advSeach.toString()+")";
+				}
+				
+				try { 
+					 query = "SELECT Q1.* " + 
+					 		 "FROM (" + 
+							 "SELECT " + 
+					 		 "CAND.ID AS id, " + 
+					 		 "CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName," + 
+					 		 "CAND.GENERATED_ID AS generatedId, " + 
+					 		 "CAND.EMAIL AS email, " + 
+					 		 "CAND.DESIGNATION_TYPE AS employementType, " + 
+					 		 "CAND.PRIMARY_SKILL AS primarySkill, " + 
+					 		 "CAND.SKILLS_NAME AS skills, " + 
+					 		 "CAND.ADDRESS AS location, " + 
+					 		 "CAND.COUNTRY AS country, " + 
+					 		 "CAND.CITY AS city, " + 
+					 		 "CAND.NOTICE_PERIOD AS noticePeriod, " + 
+					 		 "CAND.IS_ASSOCIATE AS isAssociate, " + 
+					 		 "DATE_FORMAT(CAND.CREATED_DATE ,\"%Y-%m-%d\") AS createdDate, " + 
+					 		 "DATE_FORMAT(CAND.UPDATED_DATE ,\"%Y-%m-%d\") AS updatedDate, " + 
+					 		 "CAND.ORG_LOCATION_ID AS orgLocationId, " + 
+					 		 "CAND.ORG_RELATION_ID AS orgRelationId, " + 
+					 		 "OL.ORG_ID AS orgId " + 
+					 		 "FROM " + 
+					 		 "CANDIDATE CAND, " + 
+					 		 "ORG_LOCATIONS OL " + 
+					 		 "WHERE  CAND.ORG_LOCATION_ID = OL.ID  AND CAND.STATUS = '1' " + 
+					 		 "AND CAND.ORG_LOCATION_ID = :orgLocationId " + 
+					 		 "AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "+
+					 		 "GROUP BY CAND.ID,  " + 
+					 		 "DATE_FORMAT(CAND.CREATED_DATE ,\"%Y-%m-%d\"))Q1 "+querySeachStr+advSeachStr+sortingQry;
+				
+				 String  countQuery = "SELECT COUNT(*) AS TOTAL" + 
+							" FROM" + 
+							"(" + query +
+							")Q2;" ;
+				 
+				    queryObj = session.createSQLQuery(query);
+					queryObj.setParameter("orgLocationId", orgLocations.getId());
+					queryObj.setParameter("requirementId", candidateDTO.getRequirementId());
+					queryObj.setResultTransformer(Transformers.aliasToBean(SubmissionCandidateListView.class));
+					queryObj.setFirstResult(candidateDTO.getStart());
+					queryObj.setMaxResults(candidateDTO.getLength());
+					candidateList = queryObj.list();
+					
+					countlist = session.createSQLQuery(countQuery).setLong("orgLocationId", orgLocations.getId()).setLong("requirementId", candidateDTO.getRequirementId()).list();
+					filterCount = countlist.iterator().next().intValue();
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				int totalCount = 0;
+
+				
+				if (candidateDTO != null) {
+					if(countlist != null && !countlist.isEmpty()) {
+						totalCount = countlist.iterator().next().intValue();
+					}
+				} 
+				response.setRecordsTotal(totalCount);
+				
+				if(query1.toString() != null && !query1.toString().isEmpty()){
+					response.setRecordsFiltered(filterCount);
+				}else {
+					response.setRecordsFiltered(totalCount);
+				}
+				
+				response.setData(candidateList);
+				return response;
+	}
+
+	@Override
+	@Transactional
+	public CandidateDTO getCandidateDTOByCandidateId(Long candidateId) throws Exception {
+		
+		List<CandidateDTO> candidateDTOList = null;
+		CandidateDTO candidateDTO = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+				query ="SELECT "
+				+" CAND.ID AS candId, "
+				+" CAND.FIRST_NAME AS firstName, "
+				+" CAND.LAST_NAME AS lastName, "
+				+" CAND.MOBILE_PHONE AS phoneNumber, "
+				+" CAND.EMAIL AS email, "
+				+" CAND.LOCATION AS location, "
+				+" CAND.COUNTRY AS country, "
+				+" CAND.STATE AS state, "
+				+" CAND.CITY AS city, "
+				+" CAND.NOTICE_PERIOD AS noticePeriod "
+				+" FROM CANDIDATE CAND "
+				+" WHERE "
+				+" CAND.ID = :candidateId ";
+		    
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("candidateId", candidateId);
+			queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
+			candidateDTOList = queryObj.list();
+			if(candidateDTOList != null && !candidateDTOList.isEmpty()) {
+				candidateDTO = candidateDTOList.get(0);
+			}
+			
+			return candidateDTO;
+	
+	}
+
+	@Override
+	@Transactional
+	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,
+			Long requirementId,String skills,String candidateDetails) throws Exception {
+		
+		List<CandidateDTO> candidateDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String subQuery = "";
+		String querySeachStr = "";
+		
+		  StringBuilder query1 = new StringBuilder("");
+			if(candidateDetails != null && !"".equalsIgnoreCase(candidateDetails)) {
+				 query1.append(" CAND.FIRST_NAME like '%" + candidateDetails + "%' ")
+					.append("OR CAND.LAST_NAME like '%" + candidateDetails + "%' ")
+					.append("OR CAND.EMAIL like '%" + candidateDetails + "%' ")
+					.append("OR CAND.MOBILE_PHONE like '%" + candidateDetails + "%' ");
+				 
+			}
+			
+			if(query1.toString() != null && !query1.toString().isEmpty()){
+				querySeachStr = " AND "+"("+query1.toString()+")";
+			}
+			
+		if(StringUtils.isNotBlank(skills)) {
+			String requirementSkills [] = skills.split(",");
+			String requirementSkillsStr = "'" + StringUtils.join(requirementSkills,"','") + "'";
+			subQuery = " AND CAND.SKILLS_NAME IN ("+requirementSkillsStr+")";
+		}
+		
+		String	query ="SELECT "
+				+" CAND.ID AS candId, "
+				+" CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName," 
+				+" CAND.IS_ASSOCIATE AS isAssociate "  
+				+" FROM CANDIDATE CAND "
+				+" WHERE CAND.STATUS = '1' " 
+		 		+" AND CAND.ORG_LOCATION_ID = :orgLocationId " 
+				+subQuery
+		 		+ " AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "
+				+ " ORDER BY CAND.ID DESC "; 
+		
+            Query queryObj = session.createSQLQuery(query);
+			queryObj.setLong("orgLocationId", orgLcoations.getId());
+			queryObj.setLong("requirementId", requirementId);
+			queryObj.setMaxResults(5000);
+			queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
+			candidateDTOList = queryObj.list();
+			return candidateDTOList;
+	
 	}
 
 }
