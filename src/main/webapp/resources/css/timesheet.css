@@ -8353,4 +8353,12 @@ max-width: 100% !important;
 .checkbox-custom[type=checkbox]:checked:before {
     content: ''; position: absolute; top: 0px; opacity: 1; left: 0px; border: 1px solid #82e482; border-radius: 2px;
 }
-
+.filter-popupMid {
+width: 550px; margin: 0px auto; left: 0px; right: 0px; top: 8%;
+}
+#configureDashboard .addInner {
+background-color: #fff; max-height: 450px;
+}
+.timesheet_tableNew table tr td.timeModifyBtn {
+    height: 72px;
+}

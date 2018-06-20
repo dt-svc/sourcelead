@@ -1,7 +1,11 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigInteger;
+import java.util.Date;
+
 public class DayWiseTimesheetReoprtsListDTO {
-	private String timesheetDate;
+	private BigInteger timeEntryId;
+	private Date timesheetDate;
 	private String employeeName;
 	private String employeeEmail;
 	private String ticketNo;
@@ -10,17 +14,12 @@ public class DayWiseTimesheetReoprtsListDTO {
 	private String billableHrs	;
 	private String nonBillableHrs;
 	private String status;
-	private String billableTotalCount;
-	private String nonBillableTotalCount;
+	private Double billableTotalCount;
+	private Double nonBillableTotalCount;
 	private String submittedOn;
 	private String approvedOn;
+	private String comments;
 	
-	public String getTimesheetDate() {
-		return timesheetDate;
-	}
-	public void setTimesheetDate(String timesheetDate) {
-		this.timesheetDate = timesheetDate;
-	}
 	public String getEmployeeName() {
 		return employeeName;
 	}
@@ -69,16 +68,16 @@ public class DayWiseTimesheetReoprtsListDTO {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public String getBillableTotalCount() {
+	public Double getBillableTotalCount() {
 		return billableTotalCount;
 	}
-	public void setBillableTotalCount(String billableTotalCount) {
+	public void setBillableTotalCount(Double billableTotalCount) {
 		this.billableTotalCount = billableTotalCount;
 	}
-	public String getNonBillableTotalCount() {
+	public Double getNonBillableTotalCount() {
 		return nonBillableTotalCount;
 	}
-	public void setNonBillableTotalCount(String nonBillableTotalCount) {
+	public void setNonBillableTotalCount(Double nonBillableTotalCount) {
 		this.nonBillableTotalCount = nonBillableTotalCount;
 	}
 	public String getSubmittedOn() {
@@ -93,4 +92,24 @@ public class DayWiseTimesheetReoprtsListDTO {
 	public void setApprovedOn(String approvedOn) {
 		this.approvedOn = approvedOn;
 	}
+	
+	public BigInteger getTimeEntryId() {
+		return timeEntryId;
+	}
+	public void setTimeEntryId(BigInteger timeEntryId) {
+		this.timeEntryId = timeEntryId;
+	}
+	public Date getTimesheetDate() {
+		return timesheetDate;
+	}
+	public void setTimesheetDate(Date timesheetDate) {
+		this.timesheetDate = timesheetDate;
+	}
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+	
 }

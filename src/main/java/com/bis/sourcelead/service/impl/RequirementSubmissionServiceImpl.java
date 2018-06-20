@@ -53,6 +53,7 @@ import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
+import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
@@ -565,6 +566,19 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				
 			
 		 }
+		 
+		
+		 if(jsonObj.has("candidateResumeRequired") && !isNullOrEmpty(jsonObj.getString("candidateResumeRequired")) && jsonObj.getString("candidateResumeRequired").equalsIgnoreCase(Constants.YES)){
+			 CandidateResumesDTO resumeDTO = candidateResumesDao.getCandidateResumesDTOByCandidateId(candidate.getId());
+			 if(resumeDTO != null) {
+				 CandidateResumes resume = new CandidateResumes();
+				 resume.setId(resumeDTO.getResumeId().longValue());
+				 requirementSubmission.setCandidateResumes(resume);
+				 insertResumeIdInELK(candidate);
+			 }
+			
+		 }
+		 
 		 
 		 if(jsonObj.has("candidateResume") && !isNullOrEmpty(jsonObj.getString("candidateResume"))){
 			 candidateResumes = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(jsonObj.getString("candidateResume")));
