@@ -437,7 +437,11 @@ function getTimesheetFilterData(){
 		$("#stage").val(formData['timesheetStatus']); 
 	}
 	if('client' in formData){
-		$("#client").val(formData['client']); 
+		if(formData['client'] != null && formData['client'] != '' && formData['client'] !='undefined'){
+			$("#client").val(formData['client']); 
+		}else{
+			$("#client").val('');
+		}
 	}
 	if('project' in formData){
 		$("#project").val(formData['project']); 
