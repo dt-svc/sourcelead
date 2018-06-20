@@ -40,7 +40,7 @@ public class ImmigrationTemplateDocDTO {
 	
 	private Long immigrationCandidateDocId;
 	
-	private Long immigrationCandidateDocHistoryId;
+	private List<Long> immigrationCandidateDocHistoryId;
 	
 	public Long getId() {
 		return id;
@@ -139,12 +139,11 @@ public class ImmigrationTemplateDocDTO {
 	public void setDescriptionOther(String descriptionOther) {
 		this.descriptionOther = descriptionOther;
 	}
-	public Long getImmigrationCandidateDocHistoryId() {
+	public List<Long> getImmigrationCandidateDocHistoryId() {
 		return immigrationCandidateDocHistoryId;
 	}
-	public void setImmigrationCandidateDocHistoryId(Long immigrationCandidateDocHistoryId) {
+	public void setImmigrationCandidateDocHistoryId(List<Long> immigrationCandidateDocHistoryId) {
 		this.immigrationCandidateDocHistoryId = immigrationCandidateDocHistoryId;
 	}
-	
 	
 }
