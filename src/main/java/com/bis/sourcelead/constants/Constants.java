@@ -1147,6 +1147,8 @@ public class Constants {
 	public static final String DELETE = "DEL";
 	public static final String NONE = "NONE";
 	public static final String ADDITION = "ADD";
-
+	public static final String STATUS_NO = "NO";
+	public static final String STATUS_YES = "YES";
+	public static final String ANNUALLY = "Annually";
 
 }
