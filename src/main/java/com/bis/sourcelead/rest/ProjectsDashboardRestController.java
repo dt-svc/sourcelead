@@ -482,6 +482,10 @@ public class ProjectsDashboardRestController {
 		   
 		     OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     Projects projects = projectsService.getProjectById(projectId);
+		     if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+		    	 projects.setSharedClientOrgLocationId(projects.getOrgLocationsId().getId());
+		     }
+		     
 		     Set<ProjectClients> projectClientsList = projects.getProjectClients();
 		     if(projectClientsList != null){
 		    	 for(ProjectClients projectClients : projectClientsList){
