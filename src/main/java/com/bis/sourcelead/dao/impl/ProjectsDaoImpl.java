@@ -630,9 +630,9 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		}
 		
 		if(StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
-			projectModeQuery = " and (ps.orgLocationsId.org.id = :orgId OR ps.projectMode = 'Finished')";
+			projectModeQuery = " and (ps.orgLocationsId.org.id = :orgId OR ps.sharedLocationId.org.id = :orgId OR ps.projectMode = 'Finished')";
 		}else {
-			projectModeQuery = " and (ps.orgLocationsId = :orgLocationsId  OR ps.projectMode = 'Finished')";
+			projectModeQuery = " and (ps.orgLocationsId = :orgLocationsId OR ps.sharedLocationId = :orgLocationsId  OR ps.projectMode = 'Finished')";
 		}
 		
 		
@@ -847,6 +847,8 @@ public class ProjectsDaoImpl implements ProjectsDao{
 				    		 
 				    			 ProjectsDTO projectsDTO = new ProjectsDTO();
 				    			 projectsDTO.setId(projects.getId());
+				    			 projectsDTO.setIsProjectShared(projects.getIsProjectShared());
+				    			 projectsDTO.setSharedClientOrgLocationId(projects.getOrgLocationsId().getId());
 				    			 projectsDTO.setProjectClientUUID(projectClients.getUuid());
 				    			 projectsDTO.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));
 				    			 projectsDTO.setEmployeeStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orglo.getDateFormat(),projects.getStartDate()));

@@ -65,7 +65,9 @@ background-color: #fcfcfc;
              <div class="success_pop" id="msgDiv" style="display: none;"></div>
               <form:form id="upload_leave_excel_form" name="upload_leave_excel_form" enctype="multipart/form-data">
                  <div title="Import" class="positionRelartive pull-left zIndex mr">
+                 			<sec:authorize access="hasRole('ROLE_IMPORT_BALANCE_LEAVES')">
 					        	<a onclick="leaveImport();"><i class="glyphicon glyphicon-import expIcon mt5"></i>&nbsp;</a> 
+					 		 </sec:authorize>      	
 						        	<div class="dowload_pop">
 					        			<div class="modal-content">
 						        			<div class=modal-header>

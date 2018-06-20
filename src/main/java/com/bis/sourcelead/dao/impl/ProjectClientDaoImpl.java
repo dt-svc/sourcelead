@@ -89,7 +89,7 @@ public class ProjectClientDaoImpl implements ProjectClientDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<ProjectClients> projectClientsList = null;
 		Query candidateListQuery= session.createQuery("from ProjectClients pc left join fetch pc.projectId left join fetch pc.orgLocationsId "
-				+ " left join fetch pc.orgRelationId  where pc.projectId.id = :projectId and pc.status = '1' ");
+				+ " left join fetch pc.orgRelationId  where pc.projectId.id = :projectId and pc.status = '1' order by pc.id asc ");
 		projectClientsList = candidateListQuery.setLong("projectId", projectId).list();
 		return projectClientsList;
 	}
