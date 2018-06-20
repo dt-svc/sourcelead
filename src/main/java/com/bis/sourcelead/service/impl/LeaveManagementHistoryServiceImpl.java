@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveManagementHistoryDao;
+import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveManagementHistory;
 import com.bis.sourcelead.entity.User;
@@ -19,13 +20,21 @@ public class LeaveManagementHistoryServiceImpl implements LeaveManagementHistory
 	LeaveManagementHistoryDao leaveManagementHistoryDao;
 
 	@Override
-	public LeaveManagementHistory saveLeaveManagementHistory(Object obj,User user) throws Exception {
+	public LeaveManagementHistory saveLeaveManagementHistory(Object obj,User user,LeaveDTO leaveDTO) throws Exception {
 		LeaveManagementHistory leaveManagementHistory = new LeaveManagementHistory(); 
 		if(obj instanceof Leave) {
 			Leave leave  = (Leave)obj;
 			leaveManagementHistory.setLeaveid(leave);
 			leaveManagementHistory.setType(Constants.LEAVE);
-			leaveManagementHistory.setFromStage(Constants.LEAVE_NEW);
+			
+			if(leaveDTO.getLeaveId() != null) {
+				if(leaveDTO.getCurrentStage().equalsIgnoreCase(Constants.LEAVE_WITHDRAW))
+					leaveManagementHistory.setFromStage(Constants.LEAVE_WITHDRAW);
+				else if(leaveDTO.getCurrentStage().equalsIgnoreCase(Constants.LEAVE_REJECTED))
+					leaveManagementHistory.setFromStage(Constants.LEAVE_REJECTED);
+			}else {
+				leaveManagementHistory.setFromStage(Constants.LEAVE_NEW);
+			}
 			leaveManagementHistory.setToStage(leave.getStatus());
 			leaveManagementHistory.setStatus(leave.getStatus());
 			leaveManagementHistory.setCreatedBy(user.getUserCode());

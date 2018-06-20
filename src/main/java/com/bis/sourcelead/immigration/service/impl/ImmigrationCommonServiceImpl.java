@@ -968,9 +968,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			List<FileInfo> fileInfo1 = immigrationTemplateDocDTO.getFileInfo();
 			for (FileInfo info : fileInfo1) {
 				ImmigrationCandidateDocumentsHistory docsHistory = null;
-				if (immigrationTemplateDocDTO.getImmigrationCandidateDocHistoryId() != null) {
-					docsHistory = immigrationCommonDao.getImmigrationCandidateDocumentsHistoryById(
-							immigrationTemplateDocDTO.getImmigrationCandidateDocHistoryId());
+				if (!immigrationTemplateDocDTO.getImmigrationCandidateDocHistoryId().contains(null)) {
+					docsHistory = immigrationCommonDao.getImmigrationCandidateDocumentsHistoryById(immigrationTemplateDocDTO.getImmigrationCandidateDocHistoryId().get(0));
 				} else {
 					docsHistory = new ImmigrationCandidateDocumentsHistory();
 				}
