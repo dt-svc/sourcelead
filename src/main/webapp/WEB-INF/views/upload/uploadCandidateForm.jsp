@@ -103,15 +103,15 @@
 						<span><i class="fa fa-question" aria-hidden="true"></i></span> <span
 							class="info-msg clearfix mt">
 							<p class="clearfix mt">
-								According to this template, the Users need to <span
+								According to this template, the user need to <span
 									class="text-danger"><strong>Import Required
 										Fields</strong></span>
 							</p>
 							<p>
-								<label><i class="fa fa-user"></i>&nbsp;&nbsp;Title</label> <label><i
-									class="fa fa-user"></i>&nbsp;&nbsp;Location</label> <label><i
-									class="fa fa-envelope"></i>&nbsp;&nbsp;Manager</label> <label><i
-									class="fa fa-envelope"></i>&nbsp;&nbsp;Priority</label>
+								<label><i class="fa fa-user"></i>&nbsp;&nbsp;Candidate Name</label> <label><i
+									class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label> <label><i
+									class="fa fa-map-marker"></i>&nbsp;&nbsp;Address</label> <label><i
+									class="fa fa-black-tie"></i>&nbsp;&nbsp;Employment Type</label>
 							</p>
 						</span>
 					</div>
