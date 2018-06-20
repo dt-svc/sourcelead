@@ -997,7 +997,7 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 								
 									Candidate pCandidate = candidateService.getCandidateByParentCandidateId(clildCandidate.getId());
 									if(pCandidate != null && pCandidate.getOrgRelationId() != null){
-										ProjectClients pClient = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projects.getId(), clildCandidate.getOrgLocationId().getId(),pCandidate.getOrgRelationId().getId());
+										ProjectClients pClient = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clildCandidate.getOrgLocationId().getId());
 										if(pClient != null && pClient.getLevel() != null){
 											level = pClient.getLevel()+1;
 										}else {
