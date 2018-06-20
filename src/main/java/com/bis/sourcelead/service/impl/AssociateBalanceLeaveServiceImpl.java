@@ -214,7 +214,12 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 					TotalLeaveDTO totalLeaveDTO = new TotalLeaveDTO();
 					totalLeaveDTO.setUserId(String.valueOf(user.getId()));
 					totalLeaveDTO.setLeaveTypeId(String.valueOf(leaveType.getId()));
-					totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDays()));
+					if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())) {
+						totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDaysPerPeriod()));
+					}else {
+						totalLeaveDTO.setNoOfLeaves(String.valueOf(leaveType.getNoOfDays()));	
+					}
+				
 					list.add(totalLeaveDTO);
 				}
 			}
