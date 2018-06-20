@@ -86,6 +86,17 @@ public class LeaveTypeDTO {
 	private String previousNoOfdays;
 	private String updateCount;
 	
+	private String includeWeekoff;
+	private String includeHoliday;
+	private String visibleInBalanceLeaves;
+	private List<String> leveEmpType;
+	private int noOfdaysToCarryforward;
+	private String leaveAllowability;
+	private String includeInPayRoll;
+	private String leaveEncashment;
+	private int leaveEncashMinDays;
+	private int leaveEncashMaxDays;
+	
 	
 	public String getLeaveTypeUUID()
 	{
@@ -562,6 +573,86 @@ public class LeaveTypeDTO {
 	public void setUpdateCount(String updateCount)
 	{
 		this.updateCount = updateCount;
+	}
+	public String getIncludeWeekoff()
+	{
+		return includeWeekoff;
+	}
+	public void setIncludeWeekoff(String includeWeekoff)
+	{
+		this.includeWeekoff = includeWeekoff;
+	}
+	public String getIncludeHoliday()
+	{
+		return includeHoliday;
+	}
+	public void setIncludeHoliday(String includeHoliday)
+	{
+		this.includeHoliday = includeHoliday;
+	}
+	public String getVisibleInBalanceLeaves()
+	{
+		return visibleInBalanceLeaves;
+	}
+	public void setVisibleInBalanceLeaves(String visibleInBalanceLeaves)
+	{
+		this.visibleInBalanceLeaves = visibleInBalanceLeaves;
+	}
+	public List<String> getLeveEmpType()
+	{
+		return leveEmpType;
+	}
+	public void setLeveEmpType(List<String> leveEmpType)
+	{
+		this.leveEmpType = leveEmpType;
+	}
+	public String getIncludeInPayRoll()
+	{
+		return includeInPayRoll;
+	}
+	public void setIncludeInPayRoll(String includeInPayRoll)
+	{
+		this.includeInPayRoll = includeInPayRoll;
+	}
+	public int getNoOfdaysToCarryforward()
+	{
+		return noOfdaysToCarryforward;
+	}
+	public void setNoOfdaysToCarryforward(int noOfdaysToCarryforward)
+	{
+		this.noOfdaysToCarryforward = noOfdaysToCarryforward;
+	}
+	public String getLeaveAllowability()
+	{
+		return leaveAllowability;
+	}
+	public void setLeaveAllowability(String leaveAllowability)
+	{
+		this.leaveAllowability = leaveAllowability;
+	}
+	public String getLeaveEncashment()
+	{
+		return leaveEncashment;
+	}
+	public void setLeaveEncashment(String leaveEncashment)
+	{
+		this.leaveEncashment = leaveEncashment;
+	}
+	public int getLeaveEncashMinDays()
+	{
+		return leaveEncashMinDays;
+	}
+	public void setLeaveEncashMinDays(int leaveEncashMinDays)
+	{
+		this.leaveEncashMinDays = leaveEncashMinDays;
+	}
+	public int getLeaveEncashMaxDays()
+	{
+		return leaveEncashMaxDays;
+	}
+	public void setLeaveEncashMaxDays(int leaveEncashMaxDays)
+	{
+		this.leaveEncashMaxDays = leaveEncashMaxDays;
 	}
 	
 }
