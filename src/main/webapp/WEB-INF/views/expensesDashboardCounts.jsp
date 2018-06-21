@@ -19,11 +19,11 @@ $(document).ready(function(){
             <ul class="nav nav-tabs">
             
             <%-- <sec:authorize access="hasAnyRole('ROLE_ADD_MY_EXPENSES','ROLE_VIEW_EDIT_MY_EXPENSES','ROLE_EXPORT_MY_EXPENSES')"> --%>
-              <li class="active"><a data-toggle="tab" onclick="expensesCount('myExpenses');" href="#today-myExpense">Self</a></li>
+              <li class="active"><a data-toggle="tab" onclick="expensesCount('myExpenses');" >Self</a></li>
             <%--   </sec:authorize>  --%>
              
              <sec:authorize access="hasAnyRole('ROLE_ADD_EMPLOYEE_EXPENSES','ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES','ROLE_EXPORT_EMPLOYEE_EXPENSES')">
-              <li><a data-toggle="tab" onclick="expensesCount('employeeExpenses');" href="#prev-employeeExpense">Employees</a></li>
+              <li><a data-toggle="tab" onclick="expensesCount('employeeExpenses');" >Employees</a></li>
              </sec:authorize>
               
             </ul>

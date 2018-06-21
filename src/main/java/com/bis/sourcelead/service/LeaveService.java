@@ -100,6 +100,8 @@ public interface LeaveService {
 	Map<String, Float> getNumberOfCurrentMonthLeavesTakenByUser(Long userId, Long leaveTypeId);
 
 	List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate);
+
+	void updateBalanceLeaves(Leave leave, User user, OrgLocations orgLocations);
 	
 	
 }

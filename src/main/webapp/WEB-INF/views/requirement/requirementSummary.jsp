@@ -2298,7 +2298,7 @@ function exportPipelineToPdf(requirementId,submissionType){
 
 <script>
 	// Close Advanced Search
-		function closePop(){
+		function closeCustomizePop(){
 			$("div.cand-advsrch-popup").hide();
 			$("#customizeScoreDiv").hide();
 		}
@@ -2698,7 +2698,10 @@ function customizeScore(requirementId){
 			        result = result +'		              </div>                          ';
 			        
 			        result = result +'		            <div class="form-footer clearfix">                                              ';
-			        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Apply</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closePop();">Cancel</a> </div>';
+
+	
+			        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Apply</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closeCustomizePop();">Cancel</a> </div>';
+
 			        result = result +'		            </div>'; 
 			        result = result	+ '               <form>';
 			        result = result +'		            </div>'; 
