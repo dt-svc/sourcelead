@@ -93,22 +93,10 @@ window.onload = function() {
                   </div>
                                 <div class="clearfix"></div>
                   <div id="fromTimeDiv" class="mt10 clearfix" style="display:none;">
-                  <div class="col-md-3 dropdown-select paddingRight">
-                  		<select class='form-control input-sm'>
-                  			<option selected>From Time</option>
-                  			<option>option1</option>
-                  			<option>option1</option>
-                  			<option>option1</option>
-                  		</select>
-                  </div>
-                  <div class="col-md-3 dropdown-select paddingLeft">
-                  		<select class='form-control input-sm'>
-                  			<option selected>To Time</option>
-                  			<option>option1</option>
-                  			<option>option1</option>
-                  			<option>option1</option>
-                  		</select>
-                  </div>
+                <div class="col-md-6 clearField" id="startTimeDiv">
+        			<input type="text" class="timepicker form-control" id="fromDateHalfTime" name="fromDateHalfTime" placeholder="From-Time" field-name="From-Time" value="" onblur="" data-validation = "required">
+        				<i class="fa fa-times text-muted small"></i>
+        		</div>
                   </div>
                 </div>
               </div>
@@ -132,22 +120,10 @@ window.onload = function() {
                   </div>
                   <div class="clearfix"></div>
                   <div id="toTimeDiv" class="mt10 clearfix"  style="display:none;">
-                  <div class="col-md-3 dropdown-select paddingRight">
-                  		<select class='form-control input-sm'>
-                  			<option selected>From Time</option>
-                  			<option>option1</option>
-                  			<option>option1</option>
-                  			<option>option1</option>
-                  		</select>
-                  </div>
-                  <div class="col-md-3 dropdown-select paddingLeft">
-                  		<select class='form-control input-sm'>
-                  			<option selected>To Time</option>
-                  			<option>option1</option>
-                  			<option>option1</option>
-                  			<option>option1</option>
-                  		</select>
-                  </div>
+                  <div class="col-md-6 clearField" id="toEndTimeDiv">
+        			<input type="text" class="timepicker form-control" id="toDateHalfTime" name="toDateHalfTime" placeholder="To-Time" field-name="To-Time" value="" onblur="" data-validation = "required">
+        				<i class="fa fa-times text-muted small"></i>
+        		</div>
                   </div>
                 </div>
               </div>
@@ -167,7 +143,7 @@ window.onload = function() {
               <div class="col-md-9 errorInptgroup errorInptgroup-bottom" id="attachmentId">
                   <div class="positionRelative clearfix"><i class="clearUpload" title="clear" onClick="removedocfile();"></i>
                   
-                  <div class="input-group ratetype col-md-12 pull-left" title="Document Type: .pdf format only">
+                  <div class="input-group ratetype col-md-12 pull-left" title="">
 	                      <label class="input-group-btn"> 
 	                        <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Choose File
 	                          <input type="file" id="uploadBtn" style="display: none;" class="upload">
@@ -223,22 +199,19 @@ window.onload = function() {
  <script>
  function checkFromHalfDay(){
 	 
-	 var userId = '';
-	 
     $("#checkbox-2").val('YES');
     
-   if($("#checkbox-2").is(':checked')){
-	   if($("#checkbox-1").is(':checked')){
-		    userId = $("#user").val();
+	   if($("#checkbox-2").is(':checked')){
 		   $("#fromTimeDiv").show();
+		   $("#toTimeDiv").show();
 	   }else{
-		    userId = '${SourceLeadWeb_userId}';
-		    $("#fromTimeDiv").show();
-	   }
-	   
-    }else{
-    	$("#fromTimeDiv").hide();
-    }
+		   $("#startTimeDiv").find('p.jquery_form_error_message').remove();
+		   $("#toEndTimeDiv").find('p.jquery_form_error_message').remove();
+    	   $("#fromTimeDiv").hide();
+    	   $("#toTimeDiv").hide();
+    	   $("#fromDateHalfTime").val('');
+    	   $("#toDateHalfTime").val('');
+   	   }
     
  }
  
@@ -247,10 +220,16 @@ window.onload = function() {
 	 $("#checkbox-3").val('YES');
 	 
 	 if($("#checkbox-3").is(':checked')){
+		   $("#fromTimeDiv").show();
 		   $("#toTimeDiv").show();
-	    }else{
-	    	$("#toTimeDiv").hide();
-	    }
+	   }else{
+		   $("#startTimeDiv").find('p.jquery_form_error_message').remove();
+		   $("#toEndTimeDiv").find('p.jquery_form_error_message').remove();
+  	   $("#fromTimeDiv").hide();
+  	   $("#toTimeDiv").hide();
+  	   $("#fromDateHalfTime").val('');
+  	   $("#toDateHalfTime").val('');
+ 	   } 
  }
   function validateFromHalfDay()
   {
@@ -331,7 +310,7 @@ window.onload = function() {
 	  var toDate = $("#toDate").val();
 	  if(fromDate.length !=0 && toDate.length!=0)
 	  {
-		if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
+		 if(fromDate == toDate && ($("#checkbox-3").is(':checked')) && ($("#checkbox-2").is(':checked'))){
 			 $("#checkbox-3").prop('checked', false);
 			 $("#toHalfDayDiv").hide();
 	  }
@@ -994,6 +973,29 @@ function clearFromDate(){
 function clearToDate(){
 	$("#toDate").val("");
 	};
+</script>
+
+
+<script>
+$("#fromDateHalfTime").timepicker({
+	'showDuration': true,
+	'disableTextInput': true,
+	 'step': 15
+}).on('changeTime', function() {
+	$("#toDateHalfTime").val('')
+// 	flushShowDeatils();
+    $("#toDateHalfTime").timepicker('option', 'minTime', $(this).val());
+});
+
+$("#toDateHalfTime").timepicker({
+	'showDuration': true,
+	'disableTextInput': true,
+	 'step': 15
+}).on('changeTime', function() {
+    $("#fromDateHalfTime").timepicker('option', 'maxTime', $(this).val());
+}); 
+
+
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
