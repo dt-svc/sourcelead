@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -253,9 +254,12 @@ public class RolesDaoImpl implements RolesDao{
 		 for(Roles roles : rolesList){
 			 List<Long> roleActonList = new ArrayList<Long>();
 			 if(null != roles.getActionId()){
-				 for (String s : roles.getActionId().split(",")){
+				 /*for (String s : roles.getActionId().split(",")){
 					 roleActonList.add(Long.parseLong(s));
-				 }
+				 }*/
+				 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActonList.add(Long.parseLong(s));
+	        	 }
 			 }
 			 roleActonList.retainAll(actionsList);
 			 if(roleActonList.size() > 0){
@@ -330,8 +334,11 @@ public class RolesDaoImpl implements RolesDao{
      for(Roles roles : rolesList){
     	 if(null != roles.getActionId()){
     		 List<Long> roleActionsList = new ArrayList<Long>();
-    		 for (String s : roles.getActionId().split(",")){
+    		 /*for (String s : roles.getActionId().split(",")){
         		 roleActionsList.add(Long.parseLong(s));
+        	 }*/
+    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+    			 roleActionsList.add(Long.parseLong(s));
         	 }
         	 
         	 roleActionsList.retainAll(tabActionsIds);

@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -757,8 +758,11 @@ public class ContractsTemplateDaoImpl implements ContractsTemplateDao{
 	     for(Roles roles : rolesList){
 	    	 if(null != roles.getActionId()){
 	    		 List<Long> roleActionsList = new ArrayList<Long>();
-	    		 for (String s : roles.getActionId().split(",")){
+	    		 /*for (String s : roles.getActionId().split(",")){
 	        		 roleActionsList.add(Long.parseLong(s));
+	        	 }*/
+	    		 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
+	    			 roleActionsList.add(Long.parseLong(s));
 	        	 }
 	        	 
 	        	 roleActionsList.retainAll(tabActionsIds);
