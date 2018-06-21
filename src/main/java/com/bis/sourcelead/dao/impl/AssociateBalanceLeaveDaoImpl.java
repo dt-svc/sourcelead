@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -242,6 +243,23 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 			e.printStackTrace();
 		}
 		return isLeaveApplicable;
+	}
+
+
+	@Override
+	@Transactional
+	public AssociateBalanceLeave saveOrUpdateAssocicateBalanceLeaves(AssociateBalanceLeave assBalLeave)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (assBalLeave != null) {
+				session.saveOrUpdate(assBalLeave);
+			}
+		} catch (Exception exception) {
+			logger.error(ExceptionUtils.getFullStackTrace(exception));
+		}
+		return assBalLeave;
+		
 	}
 
 }
