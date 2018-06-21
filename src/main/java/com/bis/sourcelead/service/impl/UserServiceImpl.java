@@ -1726,10 +1726,4 @@ public class UserServiceImpl implements UserService {
 		return response;
 	}
 
-	@Override
-	public List<User> getUsersByEmailList(List<String> userEmail) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 }

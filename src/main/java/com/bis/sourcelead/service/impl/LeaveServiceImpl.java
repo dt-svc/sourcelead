@@ -340,6 +340,7 @@ public class LeaveServiceImpl implements LeaveService{
 	{
 		Set<AppliedLeaveDate> set = new HashSet<>();
 		try {
+			 Calendar cal = Calendar.getInstance();
 			List<Date> dateList = leaveManagementUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(), orgLocations.getDateFormat());
 			dateList.forEach(d -> {
 				AppliedLeaveDate appliedLeaveDate = new AppliedLeaveDate();
@@ -351,6 +352,7 @@ public class LeaveServiceImpl implements LeaveService{
 				appliedLeaveDate.setCreatedDate(new Date());
 				appliedLeaveDate.setUpdatedBy(user.getId());
 				appliedLeaveDate.setUpdatedDate(new Date());
+				appliedLeaveDate.setYear(cal.get(Calendar.YEAR));
 				set.add(appliedLeaveDate);
 			});
 		} catch (Exception e) {
@@ -2307,5 +2309,14 @@ public class LeaveServiceImpl implements LeaveService{
 	public List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate)
 	{
 		return leaveDao.getLeaveByUserIdAndFromToDate(userId,orgLocation,fromDate,toDate);
+	}
+
+	@Override
+	public void updateBalanceLeaves(Leave leave, User user, OrgLocations orgLocations)
+	{
+		AssociateBalanceLeave assBalLeave =  associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),user.getId(),orgLocations.getId(), Constants.RECORD_ACTIVE);
+		float balanceLeaves = Integer.parseInt(assBalLeave.getTotalLeaves()) - leave.getNumberOfDays();
+		assBalLeave.setTotalLeaves(String.valueOf(balanceLeaves));
+		associateBalanceLeaveService.saveOrUpdateAssocicateBalanceLeaves(assBalLeave);
 	}
 }

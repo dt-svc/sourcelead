@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.AppliedLeaveDateDao;
+import com.bis.sourcelead.entity.AppliedLeaveDate;
 
 @Repository
 public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
@@ -35,5 +38,16 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 					+ e.getLocalizedMessage());
 		}
 		return isDeleted;
+	}
+
+	@Override
+	@Transactional
+	public List<AppliedLeaveDate> getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(Long orgLocationid, Long leaveTypeId)
+	{
+		List<AppliedLeaveDate> appliedLeaveList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AppliedLeaveDateView alView where alView.leaveTypeId =:leaveTypeId and alView.orglocationId = :orgLocationid";
+		appliedLeaveList = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationid", orgLocationid).list();
+		return appliedLeaveList;
 	}
 }

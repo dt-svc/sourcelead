@@ -224,7 +224,12 @@ public class BillingPayableRestController {
 		    	List<InvoiceDocument> invoiceDocumentsList = invoiceDocumentsService.getInvoiceDocumentsListByInvoiceId(invoice.getId());
 		    	invoice.setInvoiceDocumentsList(invoiceDocumentsList);
 		    	
-		    	List<InvoiceTax> invoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoice.getId());
+		    	List<InvoiceTax> invoiceTaxList = null;
+		    	if(invoice.getParentInvoiceId() != null)
+		    	 invoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoice.getParentInvoiceId().getId());
+		    	else
+		    	 invoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoice.getId());
+		    	
 		    	invoice.setInvoiceTaxList(invoiceTaxList);
 		    	
 		    	String currency = "";
