@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +25,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -210,6 +214,10 @@ public class CandidateServiceImpl implements CandidateService {
     
     @Autowired
 	ReferContactsDao referContactsDao;
+    
+    @Value("${static.path}")
+	private String staticPath;
+
     
        
     protected boolean isNullOrEmpty(String str) {
@@ -2197,6 +2205,254 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,
 			Long requirementId,String skills,String candidateDetails) throws Exception {
 		return candidateDao.getCandidateListForAddApplicant(orgLcoations, requirementId,skills,candidateDetails);
+	}
+
+	@Override
+	public void saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user) throws Exception {
+		
+		if (null != candidateDTO.getExperienceYears()) {
+			if (candidateDTO.getExperienceYears().matches("[-a-zA-Z]+")) {
+				candidateDTO.setExperienceYears("0");
+				candidateDTO.setExperienceMonths("0");
+			}else{
+				 String exp[] = getExperienceYearsAndMonths(candidateDTO.getExperienceYears());
+				 if(exp.length >1){
+					 candidateDTO.setExperienceYears(exp[0]);
+						if(!exp[1].matches("[a-zA-Z]+")){
+							if(!"years".equalsIgnoreCase(exp[1])){
+							int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
+							candidateDTO.setExperienceMonths(String.valueOf(months));
+							}
+								
+						} 
+				 }else{
+					 if(exp[0].contains("years") || exp[0].contains("Years") ){
+						 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
+						 candidateDTO.setExperienceYears(String.valueOf(years));
+						 candidateDTO.setExperienceMonths("0");
+					 }else{
+						 candidateDTO.setExperienceYears("");
+						 candidateDTO.setExperienceMonths("");
+					 }
+					 
+				 }
+					
+					
+			}
+		}
+		
+		if (null != candidateDTO.getDesignationType()) {
+			if(candidateDTO.getDesignationType().equalsIgnoreCase("W2")) {
+				candidateDTO.setDesignationType("W-2");
+			}
+			
+			else if(!candidateDTO.getDesignationType().equalsIgnoreCase("C2C") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("C2C-1099") &&
+					!candidateDTO.getDesignationType().equalsIgnoreCase("W-2") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("C2H") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("C2H -1099") &&
+					!candidateDTO.getDesignationType().equalsIgnoreCase("Part Time") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("Full Time") && 
+					!candidateDTO.getDesignationType().equalsIgnoreCase("Off Shore")) {
+				
+				candidateDTO.setDesignationType("C2C");
+			}
+		}
+		
+		if (null != candidateDTO.getExpectedRate()) {
+			String rate = getExpectedRate(candidateDTO.getExpectedRate());
+			if (null != rate) {
+				candidateDTO.setExpectedRate(rate);
+				String countryCheck = orgLocations.getCountry();
+				switch (countryCheck) {
+					case "India":
+						candidateDTO.setRateType("Monthly");
+						break;
+					default:
+						candidateDTO.setRateType("Hourly");
+				}
+				
+				if ("India".equals(orgLocations.getCountry())) {
+					
+					//jsonObj.put("expectedRateCurrencey", "INR");
+					candidateDTO.setExpectedRateCurrencey("INR");
+				}
+				else if ("Australia".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("AUD");
+				}
+				else if ("United States".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("USD");
+				}
+				else if ("Singapore".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("SGD");
+				}
+				else if ("United Kingdom".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("GBP");
+				}
+				else if ("France".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("EUR");
+				}
+			}
+			else {
+				
+				if ("India".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("INR");
+				}
+				else if ("Australia".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("AUD");
+				}
+				else if ("United States".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("USD");
+				}
+				else if ("Singapore".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("SGD");
+				}
+				else if ("United Kingdom".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("GBP");
+				}
+				else if ("France".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setExpectedRateCurrencey("EUR");
+				}
+				String countryCheck = orgLocations.getCountry();
+				switch (countryCheck) {
+					case "India":
+						//jsonObj.put("rateType", "Monthly");
+						candidateDTO.setRateType("Monthly");
+						break;
+					default:
+						candidateDTO.setRateType("Hourly");
+				}
+			}
+		}
+		
+		
+		
+		if (null != candidateDTO.getExperienceYears()) {
+			if (candidateDTO.getExperienceYears().matches("[-a-zA-Z]+")) {
+				candidateDTO.setExperienceYears("0");
+				candidateDTO.setExperienceMonths("0");
+			}else{
+				 String exp[] = getExperienceYearsAndMonths(candidateDTO.getExperienceYears());
+				 if(exp.length >1){
+					 candidateDTO.setExperienceYears(exp[0]);
+						if(!exp[1].matches("[a-zA-Z]+")){
+							if(!"years".equalsIgnoreCase(exp[1])){
+							int months = ((Number)NumberFormat.getInstance().parse(exp[1])).intValue();
+							candidateDTO.setExperienceMonths(String.valueOf(months));
+							}
+								
+						} 
+				 }else{
+					 if(exp[0].contains("years") || exp[0].contains("Years") ){
+						 int years = ((Number)NumberFormat.getInstance().parse(exp[0])).intValue();
+						 candidateDTO.setExperienceYears(String.valueOf(years));
+						 candidateDTO.setExperienceMonths("0");
+					 }else{
+						 candidateDTO.setExperienceYears("");
+						 candidateDTO.setExperienceMonths("");
+					 }
+					 
+				 }
+					
+					
+			}
+			
+			
+		}
+		
+		
+		// Vendor and Vendor Contact
+		if(candidateDTO.getVendor() != null && !candidateDTO.getVendor().equals("") && candidateDTO.getVendorcontact() != null && !candidateDTO.getVendorcontact().equals("")) {
+			List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+			Long vendorId = 0l;
+			for(OrgRelations rel : vendorsList) {
+				if((candidateDTO.getVendor().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (candidateDTO.getVendor().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+					vendorId = rel.getId();
+				}
+			}
+			if(vendorId > 0) {
+				candidateDTO.setVendors(String.valueOf(vendorId));
+			}
+			
+			List<OrgSpoc> vendorContactsList = orgSpocService.getOrgSpocByOrgRelationId(vendorId);
+			
+			for(OrgSpoc vendorContacts : vendorContactsList) {
+				if(candidateDTO.getVendorcontact().equalsIgnoreCase(vendorContacts.getVendorUser().getEmail())) {
+					candidateDTO.setVendorcontact(String.valueOf(vendorContacts.getId()));
+				}
+			}
+		}
+		
+		Candidate candidate = storeCandidate(candidateDTO, orgLocations, user);
+		
+		if(candidateDTO.getDocFile() != null && !candidateDTO.getDocFile().equals("")) {
+			
+			long time = new Date().getTime();
+			File folder = new File(staticPath+"/"+orgLocations.getOrg().getId()+"/"+orgLocations.getId()+"/resumes/");
+			if (!folder.exists())
+				folder.mkdirs();
+			File file = new File(folder,candidateDTO.getFirstName() + time+".docx");
+			String fileUrl = "/slead-static/"+orgLocations.getOrg().getId()+"/"+orgLocations.getId()+"/resumes/"+file.getName();
+			XWPFDocument document = new XWPFDocument(); 
+			FileOutputStream out = new FileOutputStream(file);
+			XWPFParagraph paragraph = document.createParagraph();
+			XWPFRun run = paragraph.createRun();
+		    run.setText(candidateDTO.getDocFile());
+	        document.write(out);
+	        out.close();
+	        document.close();
+	        
+	        CandidateResumes resume = new CandidateResumes();
+	        resume.setOrgLocationId(orgLocations);
+	        resume.setCandidateId(candidate);
+	        resume.setFileContentType("application/msword");
+	        resume.setFileName(candidateDTO.getFirstName()+" Resume.doc");
+	        resume.setStatus(Constants.CANDIDATE_ACTIVE);
+	        resume.setCreatedDate(new Date());
+	        resume.setCreatedBy(user.getUserCode());
+	        resume.setUpdatedDate(new Date());
+	        resume.setUpdatedBy(user.getUserCode());
+	        resume.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	        resume.setTitle(candidateDTO.getFirstName()+" Resume");
+	        resume.setFileURL(fileUrl);
+	        candidateResumesService.updateCandidateResume(resume);
+		}
+	
+		
+	}
+	
+	private String[] getExperienceYearsAndMonths(String experience) {
+	    
+		return experience.split("[\\p{Punct}\\s]+");
+		
+	}
+	
+	private String getExpectedRate(String expectedRate)
+	{
+		
+		String[] Res = expectedRate.split("[\\p{Punct}\\s]+");
+		for (String s : Res) {
+			if (isNumeric(s)) {
+				return s;
+			}
+		}
+		return null;
+	}
+	
+	public static boolean isNumeric(String str)
+	{
+		return str.matches("-?\\d+(\\.\\d+)?");
 	}
 
 }

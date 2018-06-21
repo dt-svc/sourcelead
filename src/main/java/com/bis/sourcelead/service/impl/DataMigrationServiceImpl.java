@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -32,6 +33,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFFormulaEvaluator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -45,6 +49,7 @@ import com.bis.sourcelead.dao.DataMigrationDao;
 import com.bis.sourcelead.dto.AssetAssignDTO;
 import com.bis.sourcelead.dto.AssetDTO;
 import com.bis.sourcelead.dto.AssetsDataImportDTO;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DataMigrationDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ImmigrationDTO;
@@ -63,6 +68,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DataMigrationService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.ProjectTasksService;
@@ -73,6 +79,7 @@ import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -120,6 +127,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 	@Autowired
 	private ImmigrationCommonService immigrationCommonService;
+	
+	@Autowired
+	CandidateService candidateService;
 
 	@Override
 	public Map<String, String> getfileData(String filePath, String headerPosition) throws Exception {
@@ -305,6 +315,12 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					dataMigrationCommonUtil.dataValidationForJobs(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation);
 					break;
+					
+				case "candidatesUpload":
+					dataMigrationCommonUtil.dataValidationForCandidates(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation);
+					break;
+					
 				case "timesheetUpload":
 					String timeFrequency = dataMigrationDTOJson.get("timeFrequencyType").toString();
 					dataMigrationCommonUtil.dataValidationForTimesheets(errorSet, dataMigrationDTOJsonCopy,
@@ -441,6 +457,17 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			locationDTOList.add(locationDTO);
 			reqDTO.setLocationInfo(locationDTOList);
 			Requirement requirement = requirementService.storeRequirement(reqDTO, orgLocation, user);
+			break;
+			
+			
+		case "candidatesUpload":
+			
+			CandidateDTO candidateDTO = new CandidateDTO();
+			ObjectMapper candidtemapper = new ObjectMapper();
+			candidtemapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+			candidtemapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			candidateDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), CandidateDTO.class);
+			candidateService.saveCandidateBulkImports(candidateDTO, orgLocation, user);
 			break;
 
 		case "assetUpload":
