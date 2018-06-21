@@ -50,10 +50,10 @@ window.onload = function() {
           <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-1">
           <sec:authorize access="hasRole('ROLE_APPLY_BEHALF_LEAVE')"> 
               <div class="form-group">
-                    <label class="checkBox pull-left mr10">
+                    <label class="checkBox pull-left ml">
 					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
                   </label>
-                  <span class="pull-left">On behalf of</span>
+                  <span class="pull-left mt5">On behalf of</span>
               </div>
           </sec:authorize> 
                <div class="form-group" style="display: none" id="onbehalf">
@@ -88,8 +88,27 @@ window.onload = function() {
                   <div class="col-md-5 paddingLeft"  id="fromHalfDayDiv">
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
-					<input id="checkbox-2" class="checkbox-custom checkboxCustom" id="fromHalfDay" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
-                      Half a Day </label>
+					<input id="checkbox-2" class="checkbox-custom checkboxCustom" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
+                      <span class="pull-left mt5">Half a Day</span></label>
+                  </div>
+                                <div class="clearfix"></div>
+                  <div id="fromTimeDiv" class="mt10 clearfix" style="display:none;">
+                  <div class="col-md-3 dropdown-select paddingRight">
+                  		<select class='form-control input-sm'>
+                  			<option selected>From Time</option>
+                  			<option>option1</option>
+                  			<option>option1</option>
+                  			<option>option1</option>
+                  		</select>
+                  </div>
+                  <div class="col-md-3 dropdown-select paddingLeft">
+                  		<select class='form-control input-sm'>
+                  			<option selected>To Time</option>
+                  			<option>option1</option>
+                  			<option>option1</option>
+                  			<option>option1</option>
+                  		</select>
+                  </div>
                   </div>
                 </div>
               </div>
@@ -106,10 +125,29 @@ window.onload = function() {
                   </div>
                   <div class="col-md-5 paddingLeft" id="toHalfDayDiv">
                     <label class="checkBox mt5">
-                      <label class="checkBox pull-left mr10">
+                      <label class="checkBox pull-left">
 					<input id="checkbox-3" class="checkbox-custom checkboxCustom" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
                   </label>
-                      Half a Day </label>
+                      <span class="pull-left mt5">Half a Day</span></label>
+                  </div>
+                  <div class="clearfix"></div>
+                  <div id="toTimeDiv" class="mt10 clearfix"  style="display:none;">
+                  <div class="col-md-3 dropdown-select paddingRight">
+                  		<select class='form-control input-sm'>
+                  			<option selected>From Time</option>
+                  			<option>option1</option>
+                  			<option>option1</option>
+                  			<option>option1</option>
+                  		</select>
+                  </div>
+                  <div class="col-md-3 dropdown-select paddingLeft">
+                  		<select class='form-control input-sm'>
+                  			<option selected>To Time</option>
+                  			<option>option1</option>
+                  			<option>option1</option>
+                  			<option>option1</option>
+                  		</select>
+                  </div>
                   </div>
                 </div>
               </div>
@@ -184,17 +222,39 @@ window.onload = function() {
  </script> 
  <script>
  function checkFromHalfDay(){
-	
+	 
+	 var userId = '';
+	 
     $("#checkbox-2").val('YES');
+    
+   if($("#checkbox-2").is(':checked')){
+	   if($("#checkbox-1").is(':checked')){
+		    userId = $("#user").val();
+		   $("#fromTimeDiv").show();
+	   }else{
+		    userId = '${SourceLeadWeb_userId}';
+		    $("#fromTimeDiv").show();
+	   }
+	   
+    }else{
+    	$("#fromTimeDiv").hide();
+    }
+    
  }
  
  function checkToHalfDay(){
 	
 	 $("#checkbox-3").val('YES');
+	 
+	 if($("#checkbox-3").is(':checked')){
+		   $("#toTimeDiv").show();
+	    }else{
+	    	$("#toTimeDiv").hide();
+	    }
  }
   function validateFromHalfDay()
   {
-	  $("#toHalfDayDiv").hide();
+// 	  $("#toHalfDayDiv").hide();
 		 var fromDate = $("#fromDate").val();
 		 var toDate = $("#toDate").val();
 		 if(fromDate.length !=0 && toDate.length!=0)
@@ -215,7 +275,7 @@ window.onload = function() {
   }
   function validateToHalfDay()
   {
-	  $("#fromHalfDayDiv").hide();
+// 	  $("#fromHalfDayDiv").hide();
 		 var fromDate = $("#fromDate").val();
 		 var toDate = $("#toDate").val();
 
