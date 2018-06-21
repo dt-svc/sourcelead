@@ -69,6 +69,7 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserCustomFieldData;
 import com.bis.sourcelead.entity.UserRole;
@@ -624,6 +625,12 @@ public class UserServiceImpl implements UserService {
 			User resourceManager = new User();
 			resourceManager.setId(Long.parseLong(addUserDTO.getResourceManager()));
 			userRole.setResourceManager(resourceManager);
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getShiftId())) {
+			Shift shift = new Shift();
+			shift.setId(Long.parseLong(addUserDTO.getShiftId()));
+			userRole.setShift(shift);
 		}
 		
 	    if(StringUtils.isNotBlank(addUserDTO.getIsMailSent()) && ("Y".equals(addUserDTO.getIsMailSent()))){
@@ -1650,9 +1657,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates)
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList)
 			throws Exception {
-		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates);
+		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates,teamsList);
 	}
 
 
