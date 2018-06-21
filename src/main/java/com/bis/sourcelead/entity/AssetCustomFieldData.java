@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 	
 	@Entity
-	@Table(name = "ASSET_CUSTOM_FIELD_DATA", catalog = "sourcelead")
+	@Table(name = "ASSET_CUSTOM_FIELD_DATA")
 	public class AssetCustomFieldData implements Serializable{
 		private static final long serialVersionUID = 1L;
 		

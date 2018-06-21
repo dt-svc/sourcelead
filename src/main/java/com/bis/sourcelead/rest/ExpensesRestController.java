@@ -198,7 +198,7 @@ public class ExpensesRestController {
     			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(expenses.getOrgRelationId()));
     			expenses.setOrgRelationUUID(orgRelations.getUUID());
     		}*/
-            ExpensesDTO expDate =  ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses,new ExpensesDTO());
+            ExpensesDTO expDate =  ExpensesDTOConverter.getExpensesDTOFromExpenses(orgLoc,expenses,new ExpensesDTO());
             expDate.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getStartDate()));
             expDate.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenses.getEndDate()));	
             expensesDTOList.add(expDate);
@@ -230,13 +230,21 @@ public class ExpensesRestController {
 				if(projects.getOrgLocationsId()== null)
 				continue;
 				List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersWithMasterCandidateIdByProjectIdAndLocationId(projects.getId(),orgLocations.getId(),eedDTO.getIsGlobalUser());
-				//Long expenseCategoryLocationId = null;
-				/*if(projects.getOrgLocationsId() != null && projects.getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(projects.getOrgLocationsId().getOrg().getOrgType()) && !projects.getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
-					expenseCategoryLocationId = projects.getOrgLocationsId().getId();
+				Long orgLocationId = null;
+				if(StringUtils.isNotEmpty(eedDTO.getExpenseId())){
+					OrgLocations expLoc = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getExpenseLocationCode());
+					if(expLoc != null) {
+						orgLocationId = expLoc.getId();
+					}
 				}else {
-					expenseCategoryLocationId = orgLocations.getId();
-				}*/
-				List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(projects.getOrgLocationsId().getId(), Constants.MEMBER_ACTIVE,eedDTO.getIsGlobalUser());
+					if(projects.getOrgLocationsId() != null && projects.getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(projects.getOrgLocationsId().getOrg().getOrgType()) && !projects.getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
+						orgLocationId = projects.getOrgLocationsId().getId();
+					}else {
+						orgLocationId = orgLocations.getId();
+					}
+				}
+				
+				List<ExpensesCategory>  expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, Constants.MEMBER_ACTIVE,eedDTO.getIsGlobalUser());
 				ProjectsDTO projectDTO =ProjectDTOConverter.getProjectsDTOFromProjects(projects);
 				if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
 					ArrayList<ExpensesCategoryListDTO> ecDTOList = new ArrayList<>();
@@ -298,7 +306,20 @@ public class ExpensesRestController {
 							pmDTO.setProjectEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),pm.getProjects().getEndDate()));
 						}
 					}
-					List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(pm.getProjects().getOrgLocationsId().getId(), "1",eedDTO.getIsGlobalUser());
+					Long orgLocationId = null;
+					if(StringUtils.isNotEmpty(eedDTO.getExpenseId())){
+						OrgLocations expLoc = orgLocationService.getOrgLocationsByLocationCode(eedDTO.getExpenseLocationCode());
+						if(expLoc != null) {
+							orgLocationId = expLoc.getId();
+						}
+					}else {
+						if(pm.getProjects().getOrgLocationsId() != null && pm.getProjects().getOrgLocationsId().getOrg() != null && StringUtils.isNotEmpty(pm.getProjects().getOrgLocationsId().getOrg().getOrgType()) && !pm.getProjects().getOrgLocationsId().getOrg().getOrgType().equalsIgnoreCase(Constants.GUEST)) {
+							orgLocationId = pm.getProjects().getOrgLocationsId().getId();
+						}else {
+							orgLocationId = orgLocations.getId();
+						}
+					}
+					List<ExpensesCategory> expensesCategoryList = expensesCategoryService.getAllExpensesCategoryByLocationIdAndStatus(orgLocationId, "1",eedDTO.getIsGlobalUser());
 					if (expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
 						ArrayList<ExpensesCategoryListDTO> ecDTOList = new ArrayList<>();
 						for (ExpensesCategory ec : expensesCategoryList) {
@@ -596,14 +617,11 @@ public class ExpensesRestController {
 		ExpensesDTO expensesDTO = null;
 		OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(elDTO.getExpenseLocationCode());
 		if(orgLocations != null) {
-			Expenses expen = expensesService.getExpenseByExpenseUniqueId(elDTO.getExpenseId(),orgLocations.getId(),elDTO.getIsGlobalAccess());
-			 Expenses expenses= null;
-			 if(expen !=null){
-				 expenses = expensesService.getExpenseByExpenseUniqueId(expen.getExpenseId(), orgLocations.getId(),elDTO.getIsGlobalAccess());
-			 }
+			 Expenses expenses=  expensesService.getExpenseByExpenseUniqueId(elDTO.getExpenseId(), orgLocations.getId(),elDTO.getIsGlobalAccess());
 			//loginSessionController.DATEFORMAT= new SimpleDateFormat(orgLocations.getDateFormat());
 			if (expenses != null) {
-				expensesDTO = ExpensesDTOConverter.getExpensesDTOFromExpenses(expenses, expensesDTO);
+				 OrgLocations loginLoc = orgLocationService.getOrgLocationsByLocationCode(elDTO.getLocationCode());
+				expensesDTO = ExpensesDTOConverter.getExpensesDTOFromExpenses(loginLoc,expenses, expensesDTO);
 				expensesDTO.setMasterCandidateId(expenses.getProjectMembers().getMasterCandidateId().getId());
 				ExpensesApproverHierarchy eah = expensesApprovalService.getexpensesApproverHierarchyForEmployeeByExpenseId(expenses.getId());
 				Submission_Status submissionStatus = eah.getExpenseStatus();

@@ -11,9 +11,12 @@ import org.json.JSONObject;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.UserIndex;
+import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -228,9 +231,19 @@ public interface UserService  {
 	
 	List<User> getReportingManagersByUserIdAndUserRolesAndOrgLocationIdAndUserTabId(Long userId, Long roleId, Long orgLocationsId) throws Exception;
 	
-	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates) throws Exception;
+	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList) throws Exception;
 
-	List<User> getUsersByEmailList(List<String> userEmail, OrgLocations orgLocation);
+	
+//	List<User> getUsersByEmailList(List<String> userEmail, OrgLocations orgLocation);
+
+	/**
+	 * @author Mahaveer Manoj
+	 * @purpose - to get Dashboard Items by user
+	 **/
+	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId, long orgLocationId);
+
+	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
+
 }	
 		
 	

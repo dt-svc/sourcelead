@@ -169,6 +169,11 @@ public class ShiftServiceImpl implements ShiftService {
 	{
 		return shiftDao.getShiftById(shiftId);
 	}
+
+	@Override
+	public Shift getShiftListByShiftNameAndOrglocationId(String ShiftName, Long orgLocationId) {
+		return shiftDao.getShiftListByShiftNameAndOrglocationId(ShiftName, orgLocationId);
+	}
 	
 	
 }

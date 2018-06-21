@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -32,10 +33,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.DashboardItems;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
@@ -223,7 +226,6 @@ public class LoginSessionController {
 			}
 		}
 		
-		
 		Collection<Tabs> tabsList = null;
 		Integer associatesTabsCount = 0; 
 		Integer billingTabsCount = 0;
@@ -251,6 +253,7 @@ public class LoginSessionController {
 		
 		//commented By Pavan jampana -- switchuserType value will be available in the session no-need to set again.
 //		SourceLeadSessionManager.setSessionAttribute(request, "switchUserType", switchUserType);
+		
 		List<SourceleadActions> actionsList = null;
 		
 		if(!userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !userRole.getRoles().getRoleName().equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)){
@@ -583,7 +586,15 @@ public class LoginSessionController {
 			
 			
 		}
-	   
+		boolean dashboardConfigured = false;
+		DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(user.getId(), orgLocations.getId());
+		if (dashboardItems != null && dashboardItems.getItemsObjectList().size() > 0) {
+			dashboardConfigured = true;
+		}
+		model.addObject("dashboardConfigured", dashboardConfigured);
+		model.addObject("dashboardItems", dashboardItems);
+		if (model.getViewName().equalsIgnoreCase("dashboard") && dashboardConfigured)
+			model.setViewName("dashboard_configured");
 		return model;
 		
 	}

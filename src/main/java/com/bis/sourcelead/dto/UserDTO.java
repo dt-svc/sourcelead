@@ -1,7 +1,9 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+
 import java.math.BigDecimal;
+
 import java.math.BigInteger;
 import java.util.List;
 
@@ -61,6 +63,8 @@ public class UserDTO extends SearchDTO implements Serializable {
 	private String linkedUserName;
 	
 	private String linkedUserPwd;
+
+	private BigInteger totalNoOfUsers;
 	
     private BigDecimal userRequirementsCount;
 	
@@ -79,6 +83,9 @@ public class UserDTO extends SearchDTO implements Serializable {
     private BigDecimal userRejectedApplicantsCount;
 	
     private BigDecimal userApplicantsBackOutCount;
+    
+    private BigDecimal userApplicantsJoinedCount;
+
 
     private BigInteger userId;
 
@@ -492,6 +499,17 @@ public class UserDTO extends SearchDTO implements Serializable {
 		this.linkedUserPwd = linkedUserPwd;
 	}
 
+
+	public BigInteger getTotalNoOfUsers()
+	{
+		return totalNoOfUsers;
+	}
+
+	public void setTotalNoOfUsers(BigInteger totalNoOfUsers)
+	{
+		this.totalNoOfUsers = totalNoOfUsers;
+	}
+
 	public BigDecimal getUserRequirementsCount() {
 		return userRequirementsCount;
 	}
@@ -583,7 +601,13 @@ public class UserDTO extends SearchDTO implements Serializable {
 		this.userId = userId;
 	}
 
-	
-	
+	public BigDecimal getUserApplicantsJoinedCount() {
+		return userApplicantsJoinedCount;
+	}
+
+	public void setUserApplicantsJoinedCount(BigDecimal userApplicantsJoinedCount) {
+		this.userApplicantsJoinedCount = userApplicantsJoinedCount;
+	}
+
 
 }

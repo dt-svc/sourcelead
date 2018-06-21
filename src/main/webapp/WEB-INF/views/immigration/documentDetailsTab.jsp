@@ -95,7 +95,7 @@
 								<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
 								<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
 								<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
-								<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteDocumentDetailsByRowId(${canDocList.id});" ></i>
+								<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
 							 </c:if>
 								</div>
 							</td>
@@ -111,7 +111,7 @@
 										<a id= "upload" title="Upload" class="fa fa-upload uploadForm"></a>
 										<c:if test="${canDocList.isTemplateConfigured eq 'N'}">
 										<i id="edit" class="glyphicon glyphicon-pencil ml10 cursorPointer" onclick="editDocumentDetailsByRowId(${canDocList.id});"></i>
-										<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteDocumentDetailsByRowId(${canDocList.id});" ></i>
+										<i id="delete" class="glyphicon glyphicon-trash ml10 cursorPointer" onclick="deleteImmigrationRecord('deleteDocumentDetailsByRowId',${canDocList.id});" ></i>
 									 </c:if>
 										</div>
 									</td>
@@ -143,12 +143,12 @@
 			<h2>Add Document</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="removeDocPopUp();"></a>
 		</div>
 		
-		<div class="popupMid clearfix">
+		<div class="clearfix">
 
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Document Type<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="form-control selectpicker" name = "documentType" field-name="Document Type" data-validation="required" data-live-search="true" id="documentType" onchange="getDocumentTypeDiv(this);">
+					<select class="selectpicker width100percnt" name = "documentType" field-name="Document Type" data-validation="required" data-live-search="true" id="documentType" onchange="getDocumentTypeDiv(this);">
 					  <option value = "">Select Document Type</option>
 					   <c:forEach var="docs" items="${documentsList}">
 											<option value="${docs.id}">${docs.name}</option>
@@ -262,7 +262,7 @@
 				  </div>
 				  </div>			          	
 			</div>	
-			 <input type="hidden" id="docHisoryId0" name="immigrationCandidateDocHistoryId" value="">
+			 <input type="hidden" id="docHisoryId0" name="immigrationCandidateDocHistoryId[0]" value="">
 			<div id="divAddButton" class="col-md-2" style="display:none">
 						<button type="button" id="btnDynamicRow0" onclick="appendDynamicUploaRow()" class="btn btm-sm"><i class="fa fa-plus text-primary"></i></button>
 				  </div>
@@ -308,7 +308,8 @@ function removeImmigDocumrntDynamic(id){
 	$("#uploadDocSaveDiv"+id).show();
 	$("#uploadDocEditDiv"+id).hide();
 	$('#uploadDocumentName'+id).val('');
-	//$("#uploadFile"+id).removeAttr("data-validation");
+	$("#uploadFile"+id).removeAttr("data-validation");
+	$("#uploadFile"+id).removeAttr("data-validation-optional");
 	$("#uploadFile"+id).attr("data-validation", "required");
 	
 }
@@ -338,6 +339,7 @@ function removeImmigDocumrntDynamic(id){
 								 $('#uploadDocumentName0').text(value);  
 								 $("#uploadFile0").attr("data-validation-optional","true");
 								 $('#docHisoryId0').val(key);
+								 alert("ppp"+key)
 								
 			    		  }else{
 			    			  appendDynamicUploaRow();	
@@ -345,14 +347,15 @@ function removeImmigDocumrntDynamic(id){
 	    					  $("#uploadFile"+fileUploadRow).attr("data-validation-optional","true");
 			    			  $("#uploadDocEditDiv"+fileUploadRow).show();
 			    			  $('#uploadDocumentName'+fileUploadRow).text(value);
-			    			  $('#docHisoryId0').val(key);
+			    			  $('#docHisoryId'+fileUploadRow).val(key);
+			    			  alert("lll"+key)
 			    			 
 			    			  
 			    		  }
 			    	  
 			    	  console.log("row id value is "+rowId +", fileUploadRow --> "+fileUploadRow);
 			    	   $('#uploadFile'+fileUploadRow).attr("docId", key);
-			    	  $('#uploadDocumentName'+fileUploadRow).attr("fileName", value);
+			    	  $('#uploadDocumentName'+fileUploadRow).attr("fileName", value); 
 			    	  fileUploadRow =fileUploadRow+1;
 			    	}); 
 			     }else{
@@ -440,11 +443,7 @@ $("#docZipfile").click(function() {
 <script type="text/javascript">
 
 function removeDocPopUp12(){
-	$(".popMask").fadeOut(200);
-	$("#uploadCanDocPop").fadeOut(100);
-	$(".comMask").fadeOut(100);
-	 $("div[id*='dynamicRow']").remove();
-	 $('#uploadRequestDoc_Form').find('p.jquery_form_error_message').remove();
+	 displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,"");
 }
 
 function removeDocPopUp(){
@@ -475,7 +474,7 @@ function prepareDynamicUploadRow(rowId){
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-10 paddingLeft'>";
 	  
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='row'>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+" <input type='hidden' id='docHisoryId"+rowId+"' name='immigrationCandidateDocHistoryId"+rowId+"' value=''>";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+" <input type='hidden' id='docHisoryId"+rowId+"' name='immigrationCandidateDocHistoryId["+rowId+"]' value=''>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-10' id= 'uploadDocSaveDiv"+rowId+"'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<div class='input-group validation_p'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<label class='input-group-btn'> <span class='btn btn-primary' onchange='uploadRerqDocsList("+rowId+")'><i class='fa fa-folder-open-o'></i>&nbsp;Browse File";
@@ -488,7 +487,7 @@ function prepareDynamicUploadRow(rowId){
 	dynamicUploadRowHtml= dynamicUploadRowHtml+'<div class="col-md-10" id="uploadDocEditDiv'+rowId+'" style="display: none"> ';
 	//dynamicUploadRowHtml=dynamicUploadRowHtml+'	<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label> ';
 	dynamicUploadRowHtml=dynamicUploadRowHtml+'	 <div class="clearfix"> ';
-	dynamicUploadRowHtml=dynamicUploadRowHtml+'	  <label id="uploadDocumentName'+rowId+'" name="uploadDocumentName'+rowId+'" class="text-primary tbldata-dotdot-custom pull-left" title=""></label>&nbsp;&nbsp;<span id="delete_immiDocFile" onclick="removeImmigDocumrntDynamic('+rowId+');"><i class="fa fa-trash removeIcon text-danger cursorPointer pull-right"></i></span>';
+	dynamicUploadRowHtml=dynamicUploadRowHtml+'	  <label id="uploadDocumentName'+rowId+'" name="uploadDocumentName'+rowId+'" class="text-primary tbldata-dotdot-custom pull-left" title=""></label>';
 	dynamicUploadRowHtml=dynamicUploadRowHtml+'	<input type="hidden" id="uploadDocumentNameExisitngFile" name="uploadDocumentNameExisitngFile" value="">';
 	dynamicUploadRowHtml=dynamicUploadRowHtml+'	  </div>';		          	
 	dynamicUploadRowHtml=dynamicUploadRowHtml+'	</div>	';
@@ -612,4 +611,5 @@ function checkRequiredDocAndContinue(){
 	        $('#allDocsfilled').hide()
      }
 //});	
+$("#documentType").selectpicker("refresh");
 </script>

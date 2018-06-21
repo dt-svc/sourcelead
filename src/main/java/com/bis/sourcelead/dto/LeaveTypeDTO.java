@@ -15,10 +15,12 @@ public class LeaveTypeDTO {
 	private String hoursType;
 	private String billingType;
 	private String applicableToUsers;
-	@Required(desc = "Department", dependsOn="applicableToUsers",parentValue="N")
+	@Required(desc = "Department", either = "[Roles,leveEmpType]")
 	private String department;
-	@Required(desc = "Roles", dependsOn="applicableToUsers",parentValue="N")
+	@Required(desc = "Roles", either = "[Department,leveEmpType]")
 	private List<String> roles;
+	@Required(desc = "leveEmpType", either = "[Department,Roles]")
+	private List<String> leveEmpType;
 	private String carryforward;
 	private String noOfLeavesPerYear;
 	private String description;
@@ -86,16 +88,16 @@ public class LeaveTypeDTO {
 	private String previousNoOfdays;
 	private String updateCount;
 	
-	
-	public String getLeaveTypeUUID()
-	{
-		return leaveTypeUUID;
-	}
-	public void setLeaveTypeUUID(String leaveTypeUUID)
-	{
-		this.leaveTypeUUID = leaveTypeUUID;
-	}
-	
+	private String includeWeekoff;
+	private String includeHoliday;
+	private String visibleInBalanceLeaves;
+	private Integer noOfdaysToCarryforward;
+	private String leaveAllowability;
+	private String includeInPayRoll;
+	private String leaveEncashment;
+	private Integer leaveEncashMinDays;
+	private Integer leaveEncashMaxDays;
+	private String accuralPolicy;
 	public String getName()
 	{
 		return name;
@@ -159,6 +161,14 @@ public class LeaveTypeDTO {
 	public void setRoles(List<String> roles)
 	{
 		this.roles = roles;
+	}
+	public List<String> getLeveEmpType()
+	{
+		return leveEmpType;
+	}
+	public void setLeveEmpType(List<String> leveEmpType)
+	{
+		this.leveEmpType = leveEmpType;
 	}
 	public String getCarryforward()
 	{
@@ -328,7 +338,14 @@ public class LeaveTypeDTO {
 	{
 		this.leaveEffective = leaveEffective;
 	}
-	
+	public String getNewJoinee()
+	{
+		return newJoinee;
+	}
+	public void setNewJoinee(String newJoinee)
+	{
+		this.newJoinee = newJoinee;
+	}
 	public String getExperiencedType()
 	{
 		return experiencedType;
@@ -337,8 +354,22 @@ public class LeaveTypeDTO {
 	{
 		this.experiencedType = experiencedType;
 	}
-	
-	
+	public String getExperiencedDuration()
+	{
+		return experiencedDuration;
+	}
+	public void setExperiencedDuration(String experiencedDuration)
+	{
+		this.experiencedDuration = experiencedDuration;
+	}
+	public String getExperiencedApplicableDays()
+	{
+		return experiencedApplicableDays;
+	}
+	public void setExperiencedApplicableDays(String experiencedApplicableDays)
+	{
+		this.experiencedApplicableDays = experiencedApplicableDays;
+	}
 	public String getReasonRequired()
 	{
 		return reasonRequired;
@@ -379,38 +410,6 @@ public class LeaveTypeDTO {
 	{
 		this.priorLeaveApplying = priorLeaveApplying;
 	}
-	public String getLeaveDuration()
-	{
-		return leaveDuration;
-	}
-	public void setLeaveDuration(String leaveDuration)
-	{
-		this.leaveDuration = leaveDuration;
-	}
-	public String getNewJoinee()
-	{
-		return newJoinee;
-	}
-	public void setNewJoinee(String newJoinee)
-	{
-		this.newJoinee = newJoinee;
-	}
-	public String getExperiencedDuration()
-	{
-		return experiencedDuration;
-	}
-	public void setExperiencedDuration(String experiencedDuration)
-	{
-		this.experiencedDuration = experiencedDuration;
-	}
-	public String getExperiencedApplicableDays()
-	{
-		return experiencedApplicableDays;
-	}
-	public void setExperiencedApplicableDays(String experiencedApplicableDays)
-	{
-		this.experiencedApplicableDays = experiencedApplicableDays;
-	}
 	public String getPriorDays()
 	{
 		return priorDays;
@@ -418,6 +417,14 @@ public class LeaveTypeDTO {
 	public void setPriorDays(String priorDays)
 	{
 		this.priorDays = priorDays;
+	}
+	public String getLeaveDuration()
+	{
+		return leaveDuration;
+	}
+	public void setLeaveDuration(String leaveDuration)
+	{
+		this.leaveDuration = leaveDuration;
 	}
 	public String getMinDays()
 	{
@@ -442,6 +449,14 @@ public class LeaveTypeDTO {
 	public void setNoOfDays(String noOfDays)
 	{
 		this.noOfDays = noOfDays;
+	}
+	public String getLeaveTypeUUID()
+	{
+		return leaveTypeUUID;
+	}
+	public void setLeaveTypeUUID(String leaveTypeUUID)
+	{
+		this.leaveTypeUUID = leaveTypeUUID;
 	}
 	public float getTotalApprovedCount()
 	{
@@ -563,5 +578,86 @@ public class LeaveTypeDTO {
 	{
 		this.updateCount = updateCount;
 	}
+	public String getIncludeWeekoff()
+	{
+		return includeWeekoff;
+	}
+	public void setIncludeWeekoff(String includeWeekoff)
+	{
+		this.includeWeekoff = includeWeekoff;
+	}
+	public String getIncludeHoliday()
+	{
+		return includeHoliday;
+	}
+	public void setIncludeHoliday(String includeHoliday)
+	{
+		this.includeHoliday = includeHoliday;
+	}
+	public String getVisibleInBalanceLeaves()
+	{
+		return visibleInBalanceLeaves;
+	}
+	public void setVisibleInBalanceLeaves(String visibleInBalanceLeaves)
+	{
+		this.visibleInBalanceLeaves = visibleInBalanceLeaves;
+	}
+	public Integer getNoOfdaysToCarryforward()
+	{
+		return noOfdaysToCarryforward;
+	}
+	public void setNoOfdaysToCarryforward(Integer noOfdaysToCarryforward)
+	{
+		this.noOfdaysToCarryforward = noOfdaysToCarryforward;
+	}
+	public String getLeaveAllowability()
+	{
+		return leaveAllowability;
+	}
+	public void setLeaveAllowability(String leaveAllowability)
+	{
+		this.leaveAllowability = leaveAllowability;
+	}
+	public String getIncludeInPayRoll()
+	{
+		return includeInPayRoll;
+	}
+	public void setIncludeInPayRoll(String includeInPayRoll)
+	{
+		this.includeInPayRoll = includeInPayRoll;
+	}
+	public String getLeaveEncashment()
+	{
+		return leaveEncashment;
+	}
+	public void setLeaveEncashment(String leaveEncashment)
+	{
+		this.leaveEncashment = leaveEncashment;
+	}
+	public Integer getLeaveEncashMinDays()
+	{
+		return leaveEncashMinDays;
+	}
+	public void setLeaveEncashMinDays(Integer leaveEncashMinDays)
+	{
+		this.leaveEncashMinDays = leaveEncashMinDays;
+	}
+	public Integer getLeaveEncashMaxDays()
+	{
+		return leaveEncashMaxDays;
+	}
+	public void setLeaveEncashMaxDays(Integer leaveEncashMaxDays)
+	{
+		this.leaveEncashMaxDays = leaveEncashMaxDays;
+	}
+	public String getAccuralPolicy()
+	{
+		return accuralPolicy;
+	}
+	public void setAccuralPolicy(String accuralPolicy)
+	{
+		this.accuralPolicy = accuralPolicy;
+	}
+	
 	
 }

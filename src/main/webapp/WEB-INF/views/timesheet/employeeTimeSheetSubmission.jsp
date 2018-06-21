@@ -388,7 +388,7 @@
 																		     </c:if>  
 	                                                                       </c:if> 
 	                                                               </c:forEach>
-	                                                               <input type='hidden' name='${attCount.index}maxAttDivRowNumber' id='${attCount.index}maxAttDivRowNumber'  value='${!empty attachment.fileInfo ? fn:length(attachment.fileInfo) : 1}' />
+	                                                               <input type='hidden' name='${attCount.index}maxAttDivRowNumber' id='${attCount.index}maxAttDivRowNumber'  value='${!empty attachment.fileInfo ? fn:length(attachment.fileInfo)+1 : 1}' />
 			                                                        <c:set var="attNumber" value="0"/>
 			                                                        <c:if test="${!empty attachment.fileInfo}">
 			                                                         <input type='hidden' name='${attCount.index}attachMentCount' id='${attCount.index}attachMentCount'  value='${!empty attachment.fileInfo ? fn:length(attachment.fileInfo) : 0}' />
@@ -400,7 +400,7 @@
 			                                                               <a  href='${finfo.fileURL}' download><div class="attFile"><i class="fa fa-download"></i>${finfo.fileName}</div></a>
 										                                    <div class="timeAttBtn">
 										                                        <i class="fa fa-eye" onClick="viewFile('${finfo.fileURL}','${finfo.fileName}','${finfo.contentType}');"></i>
-										                                       <c:if test="${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APRROVED'}">
+										                                       <c:if test="${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APPROVED'}">
 										                                            <i class="fa fa-trash" onClick='deleteSubmissionDocument("${finfo.fileDbId}","${attCount.index}");'></i>
 										                                       </c:if>
 										                                    </div>
@@ -411,7 +411,7 @@
 										                              <c:if test="${empty attachment.fileInfo && !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 										                                  <p> No Attachments Found</p>
 										                              </c:if>
-			                                                         <c:if test="${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APRROVED' }">
+			                                                         <c:if test="${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APPROVED' }">
 				                                                             <div id="attachmentInnerDiv${attCount.index}Id">
 							                                                          <div id="${attCount.index}AttchmentDiv${attNumber}Id" class="addRowBtn">
 																						  <div class="input-group col-md-12" style="margin:0 auto">
@@ -428,7 +428,7 @@
 															 </div>
 														</td>
 														<td>
-															<input type="text" name="timsheetAttachments[${attCount.index}].weekComment" ${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APRROVED' ? '' : 'readonly="readonly"'}  class="form-control  input-sm" value="${attachment.weekComment}" placeholder="Comment" />
+															<input type="text" name="timsheetAttachments[${attCount.index}].weekComment" ${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APPROVED' ? '' : 'readonly="readonly"'}  class="form-control  input-sm" value="${attachment.weekComment}" placeholder="Comment" />
 														</td>
 													    </tr>
 												    </c:forEach>
@@ -446,7 +446,7 @@
 												      <c:if test="${projAttAvailable == 0}">
 												      <c:set var="timeSheetSubmissionStatus" value="NEW"/>
 									                  <c:forEach var="statusEntry" items="${employeeTimesheetEntryDetailsDTO.statusMap}" varStatus="statusEntryCount">
-                                                           <c:if test="${statusEntry.key == pMember.id && (statusEntry.value.timesheetStatus != 'SUBMITTED' && statusEntry.value.timesheetStatus != 'APRROVED' )}">
+                                                           <c:if test="${statusEntry.key == pMember.id && (statusEntry.value.timesheetStatus != 'SUBMITTED' && statusEntry.value.timesheetStatus != 'APPROVED' )}">
 															     <tr id="timesheetAttRow${attCount}">
 																    <td>
 																       <div class="timeAdd">

@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service.impl;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -686,7 +687,7 @@ public class UserRoleServiceImpl implements UserRoleService{
 				UsersUsageReportDTO usageDto = new UsersUsageReportDTO();
 				usageDto.setUserRoleId(userRole.getId());
 				usageDto.setLocationId(userRole.getOrgLocations().getId());
-				
+				usageDto.setUserId(userRole.getUser().getId());
 				if(StringUtils.isNotBlank(user.getLastName())){
 					usageDto.setUserName(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 				}else{
@@ -703,12 +704,12 @@ public class UserRoleServiceImpl implements UserRoleService{
 				usageDto.setEnrolledOrgs(userRoleList);
 				usageDto.setCreatedOn(commonUtil.dateStrFromDate(user.getCreatedDate()));
 				
-				UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
-				usageDto.setNoOfActivities(actionHistory.getNoOfActivities());
+//				UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
+//				usageDto.setNoOfActivities(actionHistory.getNoOfActivities());
 				
-				if(StringUtils.isNotBlank(actionHistory.getLastActivity())){
-				usageDto.setLastActivity(actionHistory.getLastActivity());
-				}
+//				if(StringUtils.isNotBlank(actionHistory.getLastActivity())){
+					usageDto.setLastActivity("---");
+//				}
 				
 				List<ActionHistory>  actionHis = actionHistoryService.getAllMultipleIpsByUserId(user.getId());
 				usageDto.setMultipleIps(actionHis.size());
@@ -820,6 +821,11 @@ public class UserRoleServiceImpl implements UserRoleService{
 	@Override
 	public List<UserRole> getAllAssignedUsersByResourceManagerId(Long resourceManagerId, Long orgLocationId) {
 		return userRoleDao.getAllAssignedUsersByResourceManagerId(resourceManagerId, orgLocationId);
+	}
+
+	@Override
+	public List<BigInteger> getAllUsersRoleList() throws Exception {
+		return userRoleDao.getAllUsersRoleList();
 	} 
     
 

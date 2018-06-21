@@ -407,6 +407,7 @@ public class TimesheetRestController {
 			}
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			model.addObject("AWKWARD", true);
 			model.setViewName("timesheet/employeeTImesheetInvoiceList");
 		}
@@ -435,19 +436,17 @@ public class TimesheetRestController {
 		/**
 		 * Getting List Of Projects For LoginUser
 		 */
-		List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersListByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
-		LinkedHashSet<String> timesheetFrequencyList = new LinkedHashSet<>();
-		timesheetFrequencyList.add("Weekly");
-		timesheetFrequencyList.add("Bi-Weekly");
-		timesheetFrequencyList.add("Semi-Monthly");
-		timesheetFrequencyList.add("Monthly");
-		employeeTimesheetEntryDetailsDTO.setInvoiceFrequencyList(timesheetFrequencyList);
-		if(StringUtils.isEmpty(eedDTO.getInvoiceFrequency())){
-			employeeTimesheetEntryDetailsDTO.setInvoiceFrequency("Weekly");
-       }else {
-       	employeeTimesheetEntryDetailsDTO.setInvoiceFrequency(eedDTO.getInvoiceFrequency());
-       }
-		employeeTimesheetEntryDetailsDTO =  getEmployeeWeekFrequncyDropDown(projectMembersList,employeeTimesheetEntryDetailsDTO,eedDTO,request);
+		List<String> timesheetFrequencyList = projectMembersService.getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(orgLocations.getId(), candidate.getId());
+		if(timesheetFrequencyList != null && !timesheetFrequencyList.isEmpty()) {
+			employeeTimesheetEntryDetailsDTO.setInvoiceFrequencyList(new LinkedHashSet<String>(timesheetFrequencyList));
+			if(StringUtils.isEmpty(eedDTO.getInvoiceFrequency())){
+				employeeTimesheetEntryDetailsDTO.setInvoiceFrequency(timesheetFrequencyList.get(0));
+	       }else {
+	       	employeeTimesheetEntryDetailsDTO.setInvoiceFrequency(eedDTO.getInvoiceFrequency());
+	       }
+			List<ProjectMembers> projectMembersList = projectMembersService.getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(orgLocations.getId(), candidate.getId(),employeeTimesheetEntryDetailsDTO.getInvoiceFrequency());
+			employeeTimesheetEntryDetailsDTO =  getEmployeeWeekFrequncyDropDown(projectMembersList,employeeTimesheetEntryDetailsDTO,eedDTO,request);
+		}
 		return employeeTimesheetEntryDetailsDTO;
 
 	}
@@ -519,7 +518,9 @@ public class TimesheetRestController {
 					     if(StringUtils.isEmpty(eedDTO.getCurrentTimeFrequency()))
 					     currentTimesheetFrequency = k.replaceAll("/", "-")+"To"+v.replaceAll("/", "-");
 	    			}
-			      } catch (Exception e) {}
+			      } catch (Exception e) {
+			    	  e.printStackTrace();
+			      }
 	    	     count++;
 	    	    if(k.equalsIgnoreCase(v)){
 	    	    	dateFrequencyList.put(k.replaceAll("/", "-")+"To"+v.replaceAll("/", "-"), k.replaceAll("/", "-"));
@@ -1257,7 +1258,7 @@ public class TimesheetRestController {
 			statusDTO.setTaskCommentsRequired(false);
 		}
 		
-		if(projectMember != null && projectMember.getProjects() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() ==1) {
+		if(projectMember != null && projectMember.getProjects() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() != null && projectMember.getProjects().getIsTimesheetAttachmentRequired() ==1) {
 			statusDTO.setTimesheetDocumentRequired(true);
 		}else {
 			statusDTO.setTimesheetDocumentRequired(false);
@@ -1395,6 +1396,7 @@ public class TimesheetRestController {
 						billableType = te.getTaskType();
 						timesheetTaskDTO.setId(te.getProjectTask().getId());
 						timesheetTaskDTO.setTaskName(te.getProjectTask().getTaskName());
+						timesheetTaskDTO.setTicketNumber(te.getTicketNumber());
 					}
 
 					timesheetTaskDTO.setTaskType(billableType);
@@ -1753,11 +1755,20 @@ public class TimesheetRestController {
 				"orgLocations");
 		LinkedHashMap<Long, LinkedList<TimesheetEntriesDTO>> entriesMap = new LinkedHashMap<>();
 		LinkedHashMap<String, Long> valuesMap = new LinkedHashMap<>();
+		LinkedHashMap<Long, String> taskTypeMap = new LinkedHashMap<>();
+		LinkedHashMap<Long, String> taskNameMap = new LinkedHashMap<>();
+		LinkedHashMap<Long, String> ticketNumberMap = new LinkedHashMap<>();
 		if (entriesList != null && entriesList != null && !entriesList.isEmpty()) {
 			for (TimesheetEntriesDTO teDTO : entriesList) {
 				Long taskId = 0l;
+				String taskName="";
+				String taskType = "";
+				String ticketNumber="";
 				if (teDTO.getTimesheetTaskDTO() != null && teDTO.getTimesheetTaskDTO().getId() != null) {
 					taskId = teDTO.getTimesheetTaskDTO().getId();
+					taskName = teDTO.getTimesheetTaskDTO().getTaskName();
+					taskType = teDTO.getTimesheetTaskDTO().getTaskType();
+					ticketNumber = teDTO.getTimesheetTaskDTO().getTicketNumber();
 				}
 				LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
 				if (tsDTOList == null) {
@@ -1768,6 +1779,9 @@ public class TimesheetRestController {
 				}
 				valuesMap.put(taskId + "" + teDTO.getDate(), taskId);
 				entriesMap.put(taskId, tsDTOList);
+				taskNameMap.put(taskId, taskName);
+				taskTypeMap.put(taskId, taskType);
+				ticketNumberMap.put(taskId, ticketNumber);
 			}
 		} else {
 			Long taskId = 0l;
@@ -1792,17 +1806,22 @@ public class TimesheetRestController {
 			for (Long taskId : entriesMap.keySet()) {
 				for (WeekDaysDTO weekDay : weekDaysList) {
 					if (valuesMap.get(taskId + "" + weekDay.getDate()) == null) {
-						ProjectTasks pt = projectTasksService.getTasksId(taskId.toString());
+						//ProjectTasks pt = projectTasksService.getTasksId(taskId.toString());
 						TimesheetEntriesDTO teDTO = new TimesheetEntriesDTO();
 						teDTO.setDayOfTheDate(weekDay.getDayOfTheDate());
 						teDTO.setDate(weekDay.getDate());
 						teDTO.setEditable(weekDay.isEditable());
 						teDTO.setHours("HH:MM");
 						TimesheetTaskDTO timesheetTaskDTO = new TimesheetTaskDTO();
-						if (pt != null) {
-							timesheetTaskDTO.setId(pt.getId());
-							timesheetTaskDTO.setTaskType(pt.getBillableType());
-							timesheetTaskDTO.setTaskName(pt.getTaskName());
+						timesheetTaskDTO.setId(taskId);
+						if (StringUtils.isNotEmpty(taskTypeMap.get(taskId))) {
+							timesheetTaskDTO.setTaskType(taskTypeMap.get(taskId));
+						}
+						if (StringUtils.isNotEmpty(ticketNumberMap.get(taskId))) {
+							timesheetTaskDTO.setTicketNumber(ticketNumberMap.get(taskId));
+						}
+						if (StringUtils.isNotEmpty(taskNameMap.get(taskId))) {
+							timesheetTaskDTO.setTaskName(taskNameMap.get(taskId));
 						}
 						teDTO.setTimesheetTaskDTO(timesheetTaskDTO);
 						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
@@ -2425,13 +2444,17 @@ public class TimesheetRestController {
 			} else {
 				status = "Draft";
 			}
-	
+			LinkedHashSet<Long> freshPmIdList = new LinkedHashSet<>();
 			List<EmployeeTimesheetFileInfoDTO> timesheetAttachments = tedDTO.getTimsheetAttachments();
 			Map<Long,LinkedList<TimesheetEntriesDTO>> timesheetEntriesMap = new LinkedHashMap<>();
 			if(tsDTO.getTimesheetEntries() != null && !tsDTO.getTimesheetEntries().isEmpty()) {
 				for(TimesheetEntriesDTO teDTO :tsDTO.getTimesheetEntries()) {
 					if(StringUtils.isNotEmpty(teDTO.getTimesheetStatus()) && (teDTO.getTimesheetStatus().equalsIgnoreCase("APPROVED") || teDTO.getTimesheetStatus().equalsIgnoreCase("SUBMITTED")))
+					{
+						freshPmIdList.add(teDTO.getProjectMemberId());
 						continue;
+					}
+						
 					Long projectMemberId = teDTO.getProjectMemberId();
 					LinkedList<TimesheetEntriesDTO> tsDTOList = timesheetEntriesMap.get(projectMemberId);
 					if (tsDTOList == null) {
@@ -2444,7 +2467,7 @@ public class TimesheetRestController {
 				}
 			}
 		     List<Long> oldPmDbIdList = tedDTO.getOldSubmittedProjectMembersList();
-		    List<Long> freshPmIdList = new ArrayList<>();
+		   
 			if(timesheetEntriesMap != null && !timesheetEntriesMap.isEmpty()) {
 				 
 				  for (Map.Entry<Long,LinkedList<TimesheetEntriesDTO>> entry : timesheetEntriesMap.entrySet()) {
@@ -2537,6 +2560,7 @@ public class TimesheetRestController {
 						timesheetTaskDTO.setId(tempteDTO.getTimesheetTaskDTO().getId());
 						timesheetTaskDTO.setTaskType(tempteDTO.getTimesheetTaskDTO().getTaskType());
 						timesheetTaskDTO.setTaskName(tempteDTO.getTimesheetTaskDTO().getTaskName());
+						timesheetTaskDTO.setTicketNumber(tempteDTO.getTimesheetTaskDTO().getTicketNumber());
 						teDTO.setTimesheetTaskDTO(timesheetTaskDTO);
 						LinkedList<TimesheetEntriesDTO> tsDTOList = entriesMap.get(taskId);
 						if (tsDTOList == null) {
@@ -4370,6 +4394,7 @@ public class TimesheetRestController {
 					billableType = te.getTaskType();
 					timesheetTaskDTO.setId(te.getProjectTask().getId());
 					timesheetTaskDTO.setTaskName(te.getProjectTask().getTaskName());
+					timesheetTaskDTO.setTicketNumber(te.getTicketNumber());
 				}
 
 				timesheetTaskDTO.setTaskType(billableType);
@@ -4384,6 +4409,7 @@ public class TimesheetRestController {
 					teMonDTO.setId(te.getId());
 					teMonDTO.setTimesheetTaskDTO(timesheetTaskDTO);
 					teMonDTO.setDayOfTheDate("Mon");
+					teMonDTO.setTicketNumber(te.getTicketNumber());
 					teMonDTO.setDate(monDayDTO.getDate());
 					teMonDTO.setEditable(monDayDTO.isEditable());
 					teMonDTO.setHours(mondayHours);
@@ -5136,7 +5162,7 @@ public class TimesheetRestController {
 						timesheetDayEntries.setTotalHours(nonBillableHours);
 						timesheetDayEntries.setTaskType("Non-Billable");
 					}
-
+					timesheetDayEntries.setTicketNumber(teDTO.getTicketNumber());
 					timesheetDayEntries.setComments(teDTO.getComments());
 					timesheetDayEntries.setTimesheetDate(
 							commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), teDTO.getDate()));

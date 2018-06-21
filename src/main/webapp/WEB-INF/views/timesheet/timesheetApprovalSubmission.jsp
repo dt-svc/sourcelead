@@ -86,8 +86,14 @@ function exportTimeSheetToPdfOrExcel(exportType){
 		var frequencyMonth = $("#frequencyMonth").val();
 		var timesheetFrequency = $('#timesheetFrequency').val();
 		var stage = $('#stage').val();
-		var client = $('#client').val();
-		var project = $('#project').val();
+		var client ='';
+		if(client!= null && client !='' && client !='undefined'){
+		   client = $('#client').val();
+		}
+		var project = '';
+		if(project!= null && project !='' && project !='undefined'){
+			project = $('#project').val();
+		}
 		var weekFrequency = $('#weekFrequency').val();
 		if(weekFrequency != null && weekFrequency !='undefined'){
 		var date = weekFrequency.split("To");

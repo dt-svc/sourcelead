@@ -1624,8 +1624,8 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 
 	@Override
 	public ProjectMembers getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(Long masterCandidateId,
-			Long projectId, Long locationId) throws Exception {
-		return projectMembersDao.getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId);
+			Long projectId, Long locationId,Long orgId,String isGlobalAccess) throws Exception {
+		return projectMembersDao.getActiveOrNonProjectMemberByMasterCandidateIdAndProjectIdLocationId(masterCandidateId, projectId, locationId,orgId,isGlobalAccess);
 	}
 
 	@Override
@@ -1773,6 +1773,15 @@ public class ProjectMembersServiceImpl implements ProjectMembersService{
 	@Override
 	public ProjectMembers getProjectMemberByUserIdAndLoginOrglocationId(Long userId, Long orgLocationId)throws Exception {
 		return projectMembersDao.getProjectMemberByUserIdAndLoginOrglocationId(userId, orgLocationId);
+	}
+	@Override
+	public List<String> getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(Long locationsId, Long candidateId){
+		return projectMembersDao.getProjectMembersTimesheetFrequenciesByOrgLocationsIdAndCandidateId(locationsId, candidateId);
+		
+	}
+	@Override
+	public List<ProjectMembers> getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(Long locationsId, Long candidateId,String timesheetFrequency){
+		return projectMembersDao.getProjectMembersByOrgLocationsIdAndCandidateIdTimesheetFrequency(locationsId, candidateId, timesheetFrequency);
 	}
 
 }

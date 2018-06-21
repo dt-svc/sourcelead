@@ -89,9 +89,6 @@ function addExpenseCategory(categoryId) {
 	result = result  +' </div>';
 	result = result  +'</div>';
 	
-	
-	
-	
 	result = result  +'<div class="col-md-7 paddingLeft" id="taxFlatReward"  >';
 	result = result  +'<div class="row flat">';
 	result = result  +' <div class="form-group col-md-12 paddingRight positionRelative iconHolder" >';
@@ -111,7 +108,7 @@ function addExpenseCategory(categoryId) {
 	
 	result = result  +' </div>';
 	result = result  +' </div>';
-	
+	result = result  +'<div class="col-md-12">Attachment Required <input type="checkbox" value="" onClick="checkCheckBox();" name="isAttachmetRequired" id="isAttachmetRequired"></div>';	
 	result = result  +' <div class="clearfix"></div>';	
 	
 	result = result  +'<div class="clearfix mb10">';
@@ -211,6 +208,7 @@ function expenseCategoryList(){
                    result = result +"    <th>Category Name</th>";
                    result = result +"    <th>Amount</th>";
                    result = result +"    <th>Type</th>";
+                   result = result +"    <th>Attachemt Required</th>";
                    result = result +"    <th>Descrption</th>"; 
                    result = result +"    <th>Status</th>"; 
                    result = result +"    <th>Actions</th>";
@@ -240,6 +238,17 @@ function expenseCategoryList(){
                   	    }else{
                   	     result = result +"<td><div><span>---</span></div></td>";
                   	    }
+                  	    
+                  	  if(opt.isAttachemtRequired != null && opt.isAttachemtRequired !='' && opt.isAttachemtRequired !='undefined'){
+                  		  if(opt.isAttachemtRequired == 'Y'){
+                  			result = result +"<td><div><span>YES</span></div></td>";	  
+                  		  }
+                  		  if(opt.isAttachemtRequired == 'N'){
+                  			result = result +"<td><div><span>NO</span></div></td>";	  
+                  		  }
+                   	    }else{
+                   	     result = result +"<td><div><span>---</span></div></td>";
+                   	    }
                   	    
                   	    if(opt.description != null && opt.description !='' && opt.description !='undefined'){
                   		 result = result +"<td><div><span title='"+opt.description+"'>"+opt.description+"</span></div></td>"; 
@@ -659,6 +668,8 @@ function reActiveExpenseCategory(categoryId){
 									result = result  +' </div>';
 									result = result  +' </div>';
 									
+									result = result  +'<div class="col-md-12">Attachment Required <input type="checkbox" value="" '+(json.isAttachemtRequired == "Y" ? "checked" : '')+' onClick="checkCheckBox();" name="isAttachmetRequired" id="isAttachmetRequired"></div>';
+									
 									result = result  +' <div class="clearfix"></div>';	
 									
 									result = result  +'<div class="clearfix mb10">';
@@ -802,5 +813,17 @@ function reActiveExpenseCategory(categoryId){
 		    });
  }
  </script> 
+ 
+ <script>
+ function checkCheckBox(){
+	 $('input[name$="isAttachmetRequired"]').each(function(){
+	     if(this.checked){
+	         $(this).val('Y');
+	     } else {
+	         $(this).val('N');
+	     }
+	});
+ }
+ </script>
  
 <jsp:include page="../masterFooter.jsp" />

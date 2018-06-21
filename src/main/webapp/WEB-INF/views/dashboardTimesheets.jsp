@@ -29,15 +29,15 @@ $(document).ready(function(){
 </script>
 
  <!-- Timesheets -->
-      <div class="col-md-6">
+      <div class="col-md-6 mb">
         <div class="dashboard-widget dashboard-widget-icons">
           <h4 class="clearfix"><a id="timeSheetLink" href="<c:url value="/app/timesheet"/>"> ${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'My Timesheets' : onlyApprovalTimesheets ? 'Approval Timesheets' : ''} &nbsp;&nbsp;</a><!-- <a href="#" title="Calendar"><i aria-hidden="true" class="fa fa-calendar"></i></a> --></h4>
            <div class="clearfix dashboard-data mt">
             <input type="hidden" value="" id="timesheetSocketsFor">
              <c:if test="${bothTimesheets}">
 	             <ul class="nav nav-tabs">
-	               <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');" href="#today-myTimesheets">Self</a></li>
-	               <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');" href="#prev-employees">Employees</a></li>
+	               <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');" >Self</a></li>
+	               <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');" >Employees</a></li>
 	             </ul>
              </c:if>
              

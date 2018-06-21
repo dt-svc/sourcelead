@@ -116,7 +116,7 @@ public class JobBoardController {
         } else {
             List<OrgJobBoardDTO> jobBoardList = jobBoardConfigurationService.getOrgJobBoardList(org.getId(), false);
             if (jobBoardList.isEmpty()) {
-                return "redirec:/app/job-boards?error=true";
+                return "redirect:/app/job-boards?error=true";
             } else {
                 map.addAttribute("jobBoardList", jobBoardList);
                 try {
@@ -140,7 +140,7 @@ public class JobBoardController {
             response.setResponse(Result.SESSION_TIMEDOUT.name());
             response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
         } else {
-            List<OrgJobBoardAccountDTO> list = jobBoardConfigurationService.getOrgJobBoardAccountList(org.getId(), jobBoardId, search);
+            List<OrgJobBoardAccountDTO> list = jobBoardConfigurationService.getOrgJobBoardAccountList(org.getId(), jobBoardId, search, 0, 0);
             response.setData(list);
             response.setResponse(Result.SUCCESS.name());
             response.setResponseMessage(Result.SUCCESS.getValue());

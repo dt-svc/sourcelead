@@ -19,7 +19,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "SOURCELEAD_FORM_FIELDS", catalog = "sourcelead")
+@Table(name = "SOURCELEAD_FORM_FIELDS")
 public class SourceleadFormFields implements Serializable{
 	private static final long serialVersionUID = 1L;
 

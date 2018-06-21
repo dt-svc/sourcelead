@@ -19,4 +19,6 @@ public interface ExpensesCategoryDao {
 	public ExpensesCategory getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(Long expCategoryId) throws Exception;
 	
 	public Boolean validateExpensesCategoryType(Long categoryId, String categoryType) throws Exception;
+
+	public String getExpenseAttachmentStatusByCategoryId(Long categoryId);
 }

@@ -642,8 +642,9 @@ public class ClientServiceImpl implements ClientService {
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Client SOW Template",Constants.Client_SOW);
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default Vendor SOW Template",Constants.Vendor_SOW);
 			commonUtil.saveDefaultContractTemplate(org,clientOrgLocations,spocUser," Default NDA Template",Constants.NDA);
-			
 			commonUtil.saveDefaultEmployeeVerificationTemplate(org, clientOrgLocations, spocUser, "Default Employee Verification Template");
+         	commonUtil.saveDefaultGenaeralShift(clientOrgLocations, spocUser, Constants.GENERAL_SHIFT);
+
 		}
 		
 		if(Constants.GUEST.equalsIgnoreCase(org.getOrgType())) {

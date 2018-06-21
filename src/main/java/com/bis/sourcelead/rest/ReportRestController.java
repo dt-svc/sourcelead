@@ -44,9 +44,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
-import com.bis.sourcelead.dto.AssociateGradesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.dto.UsersUsageReportDTO;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
@@ -61,12 +61,15 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
+import com.bis.sourcelead.service.ActionHistoryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LetterHeadService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -185,6 +188,12 @@ public class ReportRestController {
 	@Autowired
 	private EmployeeVerificationTemplateService employeeVerificationTemplateService;
 	
+	@Autowired
+	ActionHistoryService actionHistoryService;
+	
+	@Autowired 
+	OrgLocationService orgLocationService;
+	
 	
 	/**
 	 * To get All the Users by filtering
@@ -198,7 +207,7 @@ public class ReportRestController {
 	 */
 
 	@RequestMapping(value = "/getAllUsersByOrgLocationsId")
-	public @ResponseBody ResponseList<UserDTO> getAllUsersByOrgLocationsId(@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
+	public @ResponseBody ResponseList<UserDTO> getAllUsersByOrgLocationsId(UserRoleDTO userRoleDto,@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
 			UserDTO userDTO,HttpServletRequest request) throws Exception {
 
 	      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -229,10 +238,15 @@ public class ReportRestController {
 		    	    searchDates[0] = startDateUTC;
 		    	    searchDates[1] = endDateUTC;
 				}
-
+				List<Long> teamsList = new ArrayList<>();
+				if(userRoleDto.getOrgTeams() != null && !userRoleDto.getOrgTeams().isEmpty()) {
+					String[] orgTeams = userRoleDto.getOrgTeams().split(",");
+					for(int i=0; i < orgTeams.length; i++) {
+						teamsList.add(Long.parseLong(orgTeams[i]));
+					}
+				}
 			
-			
-			String[] tableColumns = { "firstName", "jobs", "candidates", "applicants", "shortlisted", "submitted", "Interviewed", "offered", "rejected", "backout" };
+			String[] tableColumns = { "firstName", "jobs", "candidates", "applicants", "shortlisted", "submitted", "Interviewed", "offered", "rejected","joined", "backout" };
 			int sortColumnIndex = 1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default descending order
 			if (userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {
@@ -241,7 +255,7 @@ public class ReportRestController {
 			}
 			userDTO.setSortColumn(tableColumns[sortColumnIndex]);
 			userDTO.setSortOrder(sortColumnOrder);
-			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates);
+			ResponseList<UserDTO> userDTOList = userService.getRecruitersReports(user.getId(), orgLocations.getId(), org.getId(), isGlobalUser,userDTO,loginUserRole,searchDates,teamsList);
 			return userDTOList;
 			
 		}
@@ -623,6 +637,37 @@ public class ReportRestController {
 	}
 }
 	
+	@RequestMapping (value = "/viewCountsList")
+	public @ResponseBody UserDTO viewCountsList (UsersUsageReportDTO usersUsageReportDTO,HttpServletRequest request,HttpServletResponse response)throws Exception{
+		
+		UserDTO userViewCount = actionHistoryService.getAllActionHistoryByUserId(usersUsageReportDTO.getUserId());
+		UserDTO userDTO = new UserDTO();
+		
+//		UserDTO actionHistory = actionHistoryService.getAllActionHistoryByUserId(user.getId());
+		userDTO.setNoOfActivities(userViewCount.getNoOfActivities());
+		userDTO.setLastActivity(userViewCount.getLastActivity());
+		
+//		if(StringUtils.isNotBlank(userViewCount.getLastActivity())){
+//			userDTO.setLastActivity(userViewCount.getLastActivity());
+//		}
+		
+		return userViewCount;
+	}
+	
+	@RequestMapping (value = "/ipCountDetails")
+	public @ResponseBody UserDTO ipCountDetails (UsersUsageReportDTO usersUsageReportDTO,HttpServletRequest request,HttpServletResponse response)throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 UserDTO udTO = userLoginLogoutSessionService.getUsersListByIpAddress(usersUsageReportDTO.getIpAddress(),usersUsageReportDTO.getOrgId(),orgLocations.getId());
+//		 UserDTO activitiesCount = actionHistoryService.getAllActionHistoryByUserId(usersUsageReportDTO.getIpAddress());
+		 
+		 udTO.setNoOfActivities(String.valueOf(udTO.getNoOfActivities()));
+		 udTO.setTotalNoOfUsers(udTO.getTotalNoOfUsers());
+		return udTO;
+		
+	}
+	
+	
+	
 	@RequestMapping (value = "/multipleIpsUsersList")
 		public @ResponseBody ResponseList<UsersUsageReportDTO>multipleIpsUsersList (UsersUsageReportDTO usersUsageReportDTO,@RequestParam (value = "ipAddress", required = false)String ipAddress,HttpServletRequest request,HttpServletResponse response)throws Exception{
 	
@@ -953,10 +998,12 @@ public class ReportRestController {
 				if(employee.getHireDate() != null)
 				userDto.setDateofJoin(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),employee.getHireDate()));
 				
-				if(Constants.INACTIVE.equalsIgnoreCase(userRole.getUserState().toString())) {
-					userDto.setDateOfTermination(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getUpdatedDate()));
-				}else {
-					userDto.setDateOfTermination("Till Date");
+				if(userRole.getUserState() != null) {
+					if("Inactive".equalsIgnoreCase(userRole.getUserState().toString())) {
+						userDto.setDateOfTermination(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),userRole.getUpdatedDate()));
+					}else {
+						userDto.setDateOfTermination("Till Date");
+					}
 				}
 				if(employee.getUserEmploymentType() != null)
 				userDto.setEmploymentType(employee.getUserEmploymentType());
@@ -989,6 +1036,33 @@ public class ReportRestController {
 			    e.printStackTrace();
 			}
 		}
+		
+		@RequestMapping(value = "/ws/dumpAllReplaceIpAddress", method = RequestMethod.GET)
+	    public boolean getRestActionHistoryList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	    {
+	        boolean isInserted = false;
+	        
+	        List<UserLoginLogoutSession> ipList = userLoginLogoutSessionService.getAll();
+	         for(UserLoginLogoutSession uls :ipList){
+	            		String ipAddress = uls.getIpaddress();
+		            	String[] ipArray = ipAddress.split(",");
+		        		if(ipArray.length > 1){
+		        			for(String s :ipArray){
+		        				if(StringUtils.isNotEmpty(s)){
+		        					ipAddress =s.replaceAll("[^0-9.]", "");
+		        					break;
+		        				}
+		        			}
+		        			
+		        		}else{
+		        			ipAddress = ipAddress.replaceAll("[^0-9.]", "");
+		        		}
+		        		uls.setIpaddress(ipAddress);
+		        		userLoginLogoutSessionService.storeUserLoginLogoutSession(uls);
+	        }
+	        System.out.println("End Update Ip Addrss");
+	        return isInserted;
+	    }
 
 		
 }

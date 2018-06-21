@@ -27,6 +27,7 @@ import com.bis.sourcelead.dao.LeaveDao;
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.install.ApproverHierarchyToRequirement;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
@@ -700,7 +701,7 @@ public class LeaveDaoImpl implements LeaveDao{
 		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
 		List<Leave> list = null;
-		String query = "from Leave leave left join fetch leave.leaveType lType left join fetch leave.user where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and lType.id = :leaveTypeId and leave.status = 'APPROVED' and (leave.fromDate >= :startDate and leave.fromDate <= :endDate)";
+		String query = "from Leave leave left join fetch leave.leaveType lType left join fetch leave.user where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and lType.id = :leaveTypeId and (leave.fromDate >= :startDate and leave.fromDate <= :endDate) and (leave.status = 'APPROVED' or leave.status = 'PENDING') order by leave.fromDate";
 		list = session.createQuery(query).setLong("leaveTypeId", leaveTypeId).setLong("orgLocationId", orgLocationId).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setLong("userId", userId).list();
 		return list;
 	}
@@ -782,5 +783,51 @@ public class LeaveDaoImpl implements LeaveDao{
 		String query = "from LeaveApproveHierarchy lah left join fetch lah.leaveid leave left join fetch leave.user user left join fetch leave.orgLocations orgLoc where orgLoc.id =:orglocationId";
 		List<LeaveApproveHierarchy> leaveList = session.createQuery(query).setLong("orglocationId", locationId).setCacheable(false).list();
 		return leaveList;
+	}
+
+
+	@Override
+	@Transactional
+	public Map<String, Float> getNumberOfCurrentMonthLeavesTakenByUser(Long userId, Long leaveTypeId)
+	{
+		Calendar c = Calendar.getInstance();
+		int year = c.get(Calendar.YEAR);
+		int month = c.get(Calendar.MONTH);
+		int day = 1;
+		c.set(year, month, day);
+		int numOfDaysInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+		Date startDate = c.getTime();
+		java.sql.Date currentMonthStartDate = new java.sql.Date(startDate.getTime());
+		c.add(Calendar.DAY_OF_MONTH, numOfDaysInMonth - 1);
+		Date endDate = c.getTime();
+		java.sql.Date currentMonthEndDate = new java.sql.Date(endDate.getTime());
+		Map<String, Float> leavesMap = new HashMap<>();
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Leave leave where leave.user.id = :userId  and leave.leaveType.id = :leaveTypeId and (leave.status = 'APPROVED' OR leave.status = 'PENDING') and leave.createdDate BETWEEN :currentMonthStartDate AND :currentMonthEndDate";
+		List<Leave> leavesList = session.createQuery(query).setLong("userId", userId).setLong("leaveTypeId", leaveTypeId).setParameter("currentMonthStartDate", currentMonthStartDate).setParameter("currentMonthEndDate", currentMonthEndDate).list();
+		float numberOfLeavsTaken = leavesList.stream().mapToInt(l->l.getNumberOfDays()).sum();
+		leavesMap.put("numberOfLeavsTaken", numberOfLeavsTaken);
+//		int halfDayCount = leavesList.stream().mapToInt(ll->ll.getFromHalfDay().equalsIgnoreCase("YES")).collect(supplier, accumulator, combiner);
+		int fromhalfDayCount = leavesList.stream().filter(ll->ll.getFromHalfDay() != null && ll.getFromHalfDay().equalsIgnoreCase("YES")).collect(Collectors.toList()).size();
+		int tohalfDayCount = leavesList.stream().filter(ll->ll.getToHalfDay() != null && ll.getToHalfDay().equalsIgnoreCase("YES")).collect(Collectors.toList()).size();
+		leavesMap.put("halfdayLeavesCount", (float)fromhalfDayCount + tohalfDayCount);
+		
+		float numberOfExtraLeaves = (float) leavesList.stream().mapToDouble(l->l.getExtraLeavesTaken()).sum();
+		leavesMap.put("numberOfExtraLeaves", numberOfExtraLeaves);
+		return leavesMap;
+	}
+
+	@Override
+	@Transactional
+	public List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate)
+	{
+		Date from = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), fromDate);
+		Date to = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), toDate);
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(from.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(to.getTime());
+		String query = "from AppliedLeaveDateView aleave where aleave.orglocationId = :orgLocationId and aleave.userId = :userId and (( aleave.applyLeaveDate = :startDate) OR (aleave.applyLeaveDate = :endDate)) and (aleave.leaveStatus = 'APPROVED' or aleave.leaveStatus = 'PENDING')";
+		List<AppliedLeaveDateView> list = session.createQuery(query).setLong("orgLocationId", orgLocation.getId()).setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate).setLong("userId", userId).list();
+		return list;
 	}
 }

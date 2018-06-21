@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -65,6 +67,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.entity.UsersImport;
@@ -77,6 +80,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -132,6 +136,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 	
 	@Autowired
 	AssociateGradesService associateGradesService;
+	
+	@Autowired
+	ShiftService shiftService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -311,7 +318,6 @@ public class UploadFileServiceImpl implements UploadFileService {
 		String isFileCreated = "failure";
 		String fileName = multipartFile.getOriginalFilename();
 		Workbook createExcelworkbook = null ;
-		int savedRecordCount = 0;
 		if (fileName.endsWith("xlsx")) {
 			createExcelworkbook = new XSSFWorkbook();
 		} else if (fileName.endsWith("xls")) {
@@ -331,9 +337,10 @@ public class UploadFileServiceImpl implements UploadFileService {
 				boolean isUserFound = false;
 				workbook = WorkbookFactory.create(fis);
 			int numberOfSheets = workbook.getNumberOfSheets();
+			int savedRecordCount = 0;
 			for (int i = 0; i < numberOfSheets; i++) {
-				Sheet sheet = workbook.getSheetAt(i);
 				int count = 0;
+				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				while (rowIterator.hasNext()) {
 					UsersImport userImport = new UsersImport();
@@ -445,6 +452,11 @@ public class UploadFileServiceImpl implements UploadFileService {
 								userImport.setDesignation("");
 							}
 							
+							if(row.getCell(17) != null) {
+								String shift = getCellValueAsString(row.getCell(17), fileName);
+								userImport.setShift(shift);
+							}
+							
 							  isUserFound = validateDuplicateUser(userImport.getEmailId(),userImport.getEmployeeId(),userImport,orgLocations);
 							 if(isUserFound){
 								 if (row.getRowNum() > 0) {
@@ -553,6 +565,12 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		
 		Roles role = rolesService.getRolesByRoleDisplayNameAndOrgLocationId(userImport.getRole(), orgLocations.getId());
 		User reportUser = userService.findByEmailAndOrgLocationsId(userImport.getManager(), orgLocations.getId());
+		if(userImport.getShift() != null) {
+			Shift shift = shiftService.getShiftListByShiftNameAndOrglocationId(userImport.getShift(), orgLocations.getId());
+			if(shift != null) {
+				userRole.setShift(shift);
+			}
+		}
 		userRole.setReportingManager(reportUser);
 		userRole.setResourceManager(reportUser);
 		userRole.setRoles(role);
@@ -974,9 +992,15 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		} else {
 			writeRow.createCell(16).setCellValue("");
 		}
+		
+		if (row.getCell(17) != null && !"".equalsIgnoreCase(row.getCell(17).toString())) {
+			 writeRow.createCell(17).setCellValue(row.getCell(17).toString());
+		} else {
+			 writeRow.createCell(17).setCellValue("");
+		}
 			
 		if (userImport.getReason() !=null) {
-			writeRow.createCell(17).setCellValue(userImport.getReason());
+			writeRow.createCell(18).setCellValue(userImport.getReason());
 		} 
 	}
 	/**
@@ -1098,7 +1122,18 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			}else if(row.getCell(16) != null && !"".equalsIgnoreCase(row.getCell(16).toString())){
 				isValidated = isFnameLnameValid(row.getCell(16).toString());
 				if(isValidated == false){
-					userImport.setReason("should contain above 2 char and should not allowed special charecters");
+					userImport.setReason("Should contain above 2 char and should not allowed special charecters");
+					return isValidated;
+				}
+			}
+			
+			if (row.getCell(17) == null || "".equalsIgnoreCase(row.getCell(17).toString())) {
+				userImport.setReason("Shift field is not filled");
+				return false;
+			}else if(row.getCell(17) != null && !"".equalsIgnoreCase(row.getCell(17).toString())){
+				isValidated = shiftNameValidation(row.getCell(17).toString(),orgLocations.getId());
+				if(isValidated == false){
+					userImport.setReason("Shift is not a current org user");
 					return isValidated;
 				}
 			}
@@ -1172,6 +1207,16 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		return true;
 	}
 
+
+	private boolean shiftNameValidation(String shiftName, Long loginLoationId) {
+		
+		List<Shift> shiftList  = shiftService.getShiftList(loginLoationId);
+		Shift shift = shiftList.stream().filter(x -> shiftName.equalsIgnoreCase(x.getShiftName())).findAny().orElse(null); 
+		 boolean flag = false;
+		 if(shift != null)
+			 flag= true;
+		return flag;
+	}
 
 	private boolean isCellValueDate(Cell cell, String fileName, OrgLocations orgLocations) {
 	
@@ -1276,7 +1321,10 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		excelHeader.createCell(12).setCellValue(Constants.EMPLOYMENT_TYPE);
 		excelHeader.createCell(13).setCellValue(Constants.ASSOCIATE_VENDOR);
 		excelHeader.createCell(14).setCellValue(Constants.ASSOCIATE_VENDOR_CONTACT);
-		excelHeader.createCell(15).setCellValue(Constants.FAILED_REASON);
+		excelHeader.createCell(15).setCellValue(Constants.ASSOCIATE_GRADE);
+		excelHeader.createCell(16).setCellValue(Constants.ASSOCIATE_DESIGNATION);
+		excelHeader.createCell(17).setCellValue(Constants.ASSOCIATE_SHIFT);
+		excelHeader.createCell(18).setCellValue(Constants.FAILED_REASON);
 		return createExcelsheet;
 	}
 	
@@ -1308,6 +1356,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		excelHeader.createCell(14).setCellValue(Constants.ASSOCIATE_VENDOR_CONTACT);
 		excelHeader.createCell(15).setCellValue(Constants.ASSOCIATE_GRADE);
 		excelHeader.createCell(16).setCellValue(Constants.ASSOCIATE_DESIGNATION);
+		excelHeader.createCell(17).setCellValue(Constants.ASSOCIATE_SHIFT);
 		return sheet;
 	}
 	
@@ -1466,11 +1515,16 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			cell16.setCellValue("");
 		}
 		
-		
-		
+		if (record.get(Constants.ASSOCIATE_SHIFT) != null && !"".equalsIgnoreCase(record.get(Constants.ASSOCIATE_SHIFT))) {
+			Cell cell17 = writeRow.createCell(17);
+			cell17.setCellValue(record.get(Constants.ASSOCIATE_SHIFT));
+		} else {
+			Cell cell17 = writeRow.createCell(17);
+			cell17.setCellValue("");
+		}
 		
 		if (userImport.getReason() !=null) {
-			writeRow.createCell(17).setCellValue(userImport.getReason());
+			writeRow.createCell(18).setCellValue(userImport.getReason());
 		} 
 	
 	}

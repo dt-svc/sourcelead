@@ -124,7 +124,7 @@ function getWithdrawLeavesList(){
 			        		 result = result + '  </div>';
 			        		 result = result + ' </td>';
 			        		 result = result + ' <td>';
-			        		 result = result + '   <div title="Reapply" class="tbldata-dotdot-100">Reapply</div>';
+			        		 result = result + '   <a title="Reapply" class="tbldata-dotdot-100" href="'+sourceleadUrl+'/reApplyLeaveByUUID?leaveUUID='+opt.leaveUUID+'&currentStage=WITHDRAW">Reapply</a>';
 			        		 result = result + '</td>';
 			        		 result = result + '  </tr>';
 						}
