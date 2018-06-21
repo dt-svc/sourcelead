@@ -126,7 +126,13 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-4">Duration<span class="text-danger">&nbsp;*</span></label>
+							<label class="col-md-4">Duration<span class="text-danger">&nbsp;*</span>
+							<div class="tooltip">
+							<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+							<span class="tooltiptext">User can apply leave for both full day & half-day for this leave type.</span>
+							</span>
+							</div>
+							</label>
 							<div class="col-md-6 dropdown-select">
 								<label class="paddingLeft paddingRight"> <c:if
 											test="${!empty leaveType.duration}">
@@ -202,7 +208,12 @@
 						</div>
 						<div class="form-group">
 
-							<label class="col-md-4">Applicable to All Users<i class='fa fa-info-circle text-muted paddingLeft' title='Leave policies will be visible to users while applying the respective leave type'></i></label>
+							<label class="col-md-4">Applicable to All Users
+							<div class="tooltip"><span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+							<span class="tooltiptext">If set to yes leave type will be applicable to all users in the organization.If set to no leave type will be applicable to users based on configured criteria</span>
+							</span>
+							</div>
+							</label>
 							<div class="col-md-6">
 
 							
@@ -305,7 +316,13 @@
 						</div>
 						<div class="form-group">
 
-							<label class="col-md-4">Leaves Carryforward <i class='fa fa-info-circle text-muted' title='provides details regarding the leaves carryforward to next year'></i></label>
+							<label class="col-md-4">Leaves Carryforward
+							<div class="tooltip">
+								<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+								  <span class="tooltiptext">Leaves will be carry forwarded based on leave type accrual period</span>
+								  </span>
+								</div>
+							</label>
 							<div class="col-md-6">	
 
 								<div class="clearfix mb">
@@ -341,14 +358,26 @@
 						</div>
 						
 						<div class="form-group" id="noOfDaysDiv">
-							<label class="col-md-4">No.of Days to Carry forward</label>
+							<label class="col-md-4">Max no of Days to Carry forward
+							<div class="tooltip">
+							<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+							<span class="tooltiptext">No of days will be carry forward for next year.</span>
+							</span>
+							</div>
+							</label>
 							<div class="col-md-3">
 								<input type="text" id="noOfdaysToCarryforward" name="noOfdaysToCarryforward" field-name="No Of Days To CarryForward" placeholder="Enter no of Days" class="form-control" value="${leaveType.maxDaysToCarryforward}">
 							</div>
 						</div>
 						
 						<div class="form-group" id="noOfDaysDiv">
-							<label class="col-md-4">No Of Days Annualy<span class="text-danger paddingLeft" >*</span></label>
+							<label class="col-md-4">No Of Days Annually<span class="text-danger paddingLeft" >*</span>
+							<div class="tooltip">
+							<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+							<span class="tooltiptext">No of leaves are applicable for this leave type annually</span>
+							</span>
+							</div>
+							</label>
 							<div class="col-md-3">
 							   <input type="hidden" name="previousNoOfdays" id="previousNoOfdays" value="${leaveType.noOfDays}"/>
 								<input type="text" id="noOfDays" name="noOfDays" field-name="No Of Days" placeholder="Enter no of Days" onblur="getNoOfDaysPerPeriod();" class="form-control" value="${leaveType.noOfDays}">
@@ -357,7 +386,13 @@
 						
 						<div class="form-group">
 							<label class="col-md-4">Accural Period<span
-								class="text-danger paddingLeft">*</span></label>
+								class="text-danger paddingLeft">*</span>
+								<div class="tooltip">
+								<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+								<span class="tooltiptext">Configure how the leave type should calculate Annually/Half-yearly/Quarterly/Monthly.</span>
+								</span>
+								</div>
+								</label>
 							<div class="col-md-6 dropdown-select">
 								<select class="form-control" name="period" id="period" onchange="getNoOfDaysPerPeriod();">
 								<option ${leaveType.period == 'Annually' ? 'selected' : ''}>Annually</option>
@@ -380,7 +415,13 @@
 
 						<div class="form-group">
 						 <label class="col-md-4">Leave Effective<span
-								class="text-danger paddingLeft">*</span></label>
+								class="text-danger paddingLeft">*</span>
+								<div class="tooltip">
+								<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+								<span class="tooltiptext">Configure that leave type applicable to users based on experience level in organisation.</span>
+								</span>
+								</div>
+								</label>
 							<div class="col-md-6">
 							
 							
@@ -481,7 +522,13 @@
 						</div>
 						
 						<div class="form-group">
-							<label class="col-md-4">Allowability<span class="text-danger paddingLeft">*</span></label>
+							<label class="col-md-4">Allowability<span class="text-danger paddingLeft">*</span>
+							<div class="tooltip">
+							<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+							<span class="tooltiptext">User can apply for this leave type number of times configured</span>
+							</span>
+							</div>
+							</label>
 							<div class="col-md-6 dropdown-select">
 								<select class="form-control" name="leaveAllowability" id="leaveAllowability">
 								<option value="">--Select Allowability--</option>
@@ -506,9 +553,19 @@
 							<label class="col-md-4 checkBox">
 								<c:if test="${leaveType.autoApprove == 'Y'}">
 									<input type="checkbox" name="autoApprove" value="Y" checked id="autoApproveChekBox" onclick="validateAutoApprove();">Auto approve
+									<div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Leave will be a auto approve for the configured roles/grades.</span>
+									</span>
+									</div>
 								</c:if>
 								<c:if test="${leaveType.autoApprove == 'N' || empty leaveType.autoApprove}">
 									<input type="checkbox" name="autoApprove" value="Y" id="autoApproveChekBox" onclick="validateAutoApprove();">Auto approve
+									<div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Leave will be a auto approve for the configured roles/grades.</span>
+									</span>
+									</div>
 								</c:if>
 							</label>
 							<div class="col-md-6">
@@ -578,13 +635,28 @@
 								<c:if test="${leaveType.reasonRequired == 'Y'}">
 									<input type="checkbox" checked="true" name="reasonRequired" id="reasonRequired" 
 									value="Y"> Reason Required
+									 <div class="tooltip">
+										<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+										<span class="tooltiptext">Reason is required while applying for the leave.</span>
+										</span>
+										</div>
 								</c:if>
 								     <c:if test="${leaveType.reasonRequired == 'N'}">
 								      <input type="checkbox" name="reasonRequired" id="reasonRequired" value="Y"> Reason Required 
+								      <div class="tooltip">
+										<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+										<span class="tooltiptext">Reason is required while applying for the leave.</span>
+										</span>
+										</div>
                                 </c:if>
                                 <c:if test="${empty leaveType.reasonRequired}">
 								      <input type="checkbox" name="reasonRequired" id="reasonRequired"
-									   value="Y"> Reason Required 
+									   value="Y"> Reason Required
+									   <div class="tooltip">
+										<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+										<span class="tooltiptext">Reason is required while applying for the leave.</span>
+										</span>
+										</div> 
                                 </c:if>
 <!-- 												<input type="checkbox" checked="true" name="reasonRequired" value="Y"> Reason Required -->
 								</span>
@@ -592,14 +664,29 @@
 								<c:if test="${leaveType.attachmentRequired == 'Y'}">
 									<input type="checkbox" checked="true" name="attachmentRequired" id="attachmentRequired" 
 									value="Y"> Attachment Required
+									<div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Attachment is required while applying for the leave.</span>
+									</span>
+									</div>
 								</c:if>
 								     <c:if test="${leaveType.attachmentRequired == 'N'}">
 								      <input type="checkbox" name="attachmentRequired" id="attachmentRequired"
 									   value="Y"> Attachment Required 
+									   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Attachment is required while applying for the leave.</span>
+									</span>
+									</div>
                                 </c:if>
                                 <c:if test="${empty leaveType.attachmentRequired}">
 								      <input type="checkbox" name="attachmentRequired" id="attachmentRequired"
 									   value="Y"> Attachment Required 
+									   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Attachment is required while applying for the leave.</span>
+									</span>
+									</div>
                                 </c:if>
 <!-- 												<input type="checkbox" checked="true" name="attachmentRequired" value="Y"> Attachment Required -->
 								</span>
@@ -623,14 +710,29 @@
 								<c:if test="${leaveType.donateLeave == 'Y'}">
 									<input type="checkbox" checked="true" name="donateLeave" id="donateLeave"
 									 value="Y"> Donate Leave
+									 <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">User can Donate leave for other users in the organization.</span>
+									</span>
+									</div>
 								</c:if>
 								     <c:if test="${leaveType.donateLeave == 'N'}">
 								      <input type="checkbox" name="donateLeave" id="donateLeave"
 									   value="Y"> Donate Leave 
+									    <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">User can Donate leave for other users in the organization.</span>
+									</span>
+									</div>
                                 </c:if>
                                 <c:if test="${empty leaveType.donateLeave}">
 								      <input type="checkbox" name="donateLeave" id="donateLeave"
 									   value="Y"> Donate Leave 
+									    <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">User can Donate leave for other users in the organization.</span>
+									</span>
+									</div>
                                 </c:if>
 								</span>
 								
@@ -638,14 +740,29 @@
 								<c:if test="${leaveType.timeSheetAutofill == 'Y'}">
 									<input type="checkbox" checked="true" name="timeSheetAutofill" id="timeSheetAutoFill" 
 									value="Y"> TimeSheet AutoFill
+									<div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Time sheet will be auto fill once the leave got approved.</span>
+									</span>
+									</div>
 								</c:if>
 								     <c:if test="${leaveType.timeSheetAutofill == 'N'}">
 								      <input type="checkbox" name="timeSheetAutofill" id="timeSheetAutoFill"
 									   value="Y"> TimeSheet AutoFill
+									   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Time sheet will be auto fill once the leave got approved.</span>
+									</span>
+									</div>
                                 </c:if>
                                 <c:if test="${empty leaveType.timeSheetAutofill}">
 								      <input type="checkbox" name="timeSheetAutofill" id="timeSheetAutoFill"
 									   value="Y"> TimeSheet AutoFill
+									   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Time sheet will be auto fill once the leave got approved.</span>
+									</span>
+									</div>
                                 </c:if>
 								</span>
 								
@@ -671,14 +788,29 @@
 									<c:if test="${leaveType.includeHolidays == 'Y'}">
 										<input type="checkbox" checked="true" name="includeHoliday" id="includeHoliday" 
 										value="Y">Include Holiday 
+									<div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Leave duration will include Organisation holidays while applying for this leave type.</span>
+									</span>
+									</div>	
 									</c:if>
 									     <c:if test="${leaveType.includeHolidays == 'N'}">
 									      <input type="checkbox" name="includeHoliday" id="includeHoliday"
 										   value="Y">Include Holiday 
+										   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Leave duration will include Organisation holidays while applying for this leave type.</span>
+									</span>
+									</div>	
 	                                </c:if>
 	                                <c:if test="${empty leaveType.includeHolidays}">
 									      <input type="checkbox" name="includeHoliday" id="includeHoliday"
-										   value="Y">Include Holiday 
+										   value="Y">Include Holiday
+										   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Leave duration will include Organisation holidays while applying for this leave type.</span>
+									</span>
+									</div>	 
 	                                </c:if>
 								</span>
 								
@@ -686,14 +818,29 @@
 									<c:if test="${leaveType.visibleInBalanceLeaves == 'Y'}">
 										<input type="checkbox" checked="true" name="visibleInBalanceLeaves" id="visibleInBalanceLeaves" 
 										value="Y">Visible in Balance Leaves
+											   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">You can choose to show or hide this type of leave balances.Even if this is not shown on balance leaves this leave type will be available in the leave type dropdown Apply Leave is clicked for any other leave type.</span>
+									</span>
+									</div>
 									</c:if>
 									     <c:if test="${leaveType.visibleInBalanceLeaves == 'N'}">
 									      <input type="checkbox" name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
 										   value="Y">Visible in Balance Leaves
+										   	   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">You can choose to show or hide this type of leave balances.Even if this is not shown on balance leaves this leave type will be available in the leave type dropdown Apply Leave is clicked for any other leave type.</span>
+									</span>
+									</div>
 	                                </c:if>
 	                                <c:if test="${empty leaveType.visibleInBalanceLeaves}">
 									      <input type="checkbox" name="visibleInBalanceLeaves" id="visibleInBalanceLeaves"
 										   value="Y">Visible in Balance Leaves
+										   	   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">You can choose to show or hide this type of leave balances.Even if this is not shown on balance leaves this leave type will be available in the leave type dropdown Apply Leave is clicked for any other leave type.</span>
+									</span>
+									</div>
 	                                </c:if>
 								</span>
 								
@@ -701,14 +848,29 @@
 									<c:if test="${leaveType.includeInPayroll == 'Y'}">
 										<input type="checkbox" checked="true" name="includeInPayRoll" id="includeInPayRoll" 
 										value="Y">Include in PayRoll
+										  <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Configure this leave type should add into Payroll.</span>
+									</span>
+									</div>
 									</c:if>
 									     <c:if test="${leaveType.includeInPayroll == 'N'}">
 									      <input type="checkbox" name="includeInPayRoll" id="includeInPayRoll"
 										   value="Y">Include in PayRoll
+										     <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Configure this leave type should add into Payroll.</span>
+									</span>
+									</div>
 	                                </c:if>
 	                                <c:if test="${empty leaveType.includeInPayroll}">
 									      <input type="checkbox" name="includeInPayRoll" id="includeInPayRoll"
 										   value="Y">Include in PayRoll
+										     <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Configure this leave type should add into Payroll.</span>
+									</span>
+									</div>
 	                                </c:if>
 								</span>
 								
@@ -721,14 +883,29 @@
 						<c:if test="${leaveType.leaveEncashment == 'Y'}">
 							<input type="checkbox" checked="true" name="leaveEncashment" id="leaveEncashment" 
 							value="Y">Leave En-cashment
+								   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Leave Encashable will be calculated for this leave type based on user balance leaves.</span>
+									</span>
+									</div>
 						</c:if>
 					     <c:if test="${leaveType.leaveEncashment == 'N'}">
 						      <input type="checkbox" name="leaveEncashment" id="leaveEncashment"
 							   value="Y">Leave En-cashment
+							   	   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Leave Encashable will be calculated for this leave type based on user balance leaves.</span>
+									</span>
+									</div>
 	                             </c:if>
 	                             <c:if test="${empty leaveType.leaveEncashment}">
 						      <input type="checkbox" name="leaveEncashment" id="leaveEncashment"
 						   		value="Y">Leave En-cashment
+						   			   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">Leave Encashable will be calculated for this leave type based on user balance leaves.</span>
+									</span>
+									</div>
                            </c:if>
 					</span>
 				
@@ -763,14 +940,29 @@
 						<c:if test="${leaveType.priorLeaveApplying == 'Y'}">
 							<input type="checkbox" checked="true" name="priorLeaveApplying"
 								id="priorLeaveApplying" value="Y">Prior Leave Intimation
+								   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">User need to plan & apply for this leave type in prior in days.</span>
+									</span>
+									</div>
                         </c:if>
 						<c:if test="${leaveType.priorLeaveApplying == 'N'}">
 								<input type="checkbox" name="priorLeaveApplying" id="priorLeaveApplying"
 									value="Y">Prior Leave Intimation
+									   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">User need to plan & apply for this leave type in prior in days.</span>
+									</span>
+									</div>
                         </c:if>
                         <c:if test="${empty leaveType.priorLeaveApplying}">
 								<input type="checkbox" name="priorLeaveApplying" id="priorLeaveApplying"
 									value="Y">Prior Leave Intimation
+									   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">User need to plan & apply for this leave type in prior in days.</span>
+									</span>
+									</div>
                         </c:if>
 					</div>
 					</span>
@@ -791,14 +983,29 @@
 						<c:if test="${leaveType.leaveDuration == 'Y'}">
 							<input type="checkbox" checked="true" name="leaveDuration"
 								id="leaveDuration" value="Y">Leave Duration
+								 <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext"> Minimum no of days that can be applied for this leave type.Maximum number of days can be applied for this leave type.</span>
+									</span>
+									</div>
                            </c:if>
 						<c:if test="${leaveType.leaveDuration == 'N'}">
 							<input type="checkbox" name="leaveDuration" id="leaveDuration"
 								value="Y">Leave Duration 
+								 <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext"> Minimum no of days that can be applied for this leave type.Maximum number of days can be applied for this leave type.</span>
+									</span>
+									</div>
                            </c:if>
                            <c:if test="${empty leaveType.leaveDuration}">
 							<input type="checkbox" name="leaveDuration" id="leaveDuration"
 								value="Y">Leave Duration 
+								 <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext"> Minimum no of days that can be applied for this leave type.Maximum number of days can be applied for this leave type.</span>
+									</span>
+									</div>
                            </c:if>
 					  	</div>
 					</span>
@@ -839,13 +1046,28 @@
 								<c:if test="${leaveType.accuralPolicy == 'Y'}">
 									<input type="checkbox" checked="true" name="accuralPolicy" id="accPolicy" 
 									value="Y"> Accural Policy
+									   <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">No of balance leaves should add in accrual basis.</span>
+									</span>
+									</div>
 								</c:if>
 								     <c:if test="${leaveType.accuralPolicy == 'N'}">
 								      <input type="checkbox" name="accuralPolicy" id="accPolicy" value="Y"> Accural Policy 
+								         <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">No of balance leaves should add in accrual basis.</span>
+									</span>
+									</div>
                                 </c:if>
                                 <c:if test="${empty leaveType.accuralPolicy}">
 								      <input type="checkbox" name="accuralPolicy" id="accPolicy"
-									   value="Y"> Accural Policy 
+									   value="Y"> Accural Policy
+									      <div class="tooltip">
+									<span class="positionRelative"><i class='fa fa-info-circle text-primary'></i>
+									<span class="tooltiptext">No of balance leaves should add in accrual basis.</span>
+									</span>
+									</div> 
                                 </c:if>
 <!-- 												<input type="checkbox" checked="true" name="reasonRequired" value="Y"> Reason Required -->
 								</span>
@@ -1334,4 +1556,9 @@ function getNoOfDaysPerPeriod(){
 			$("#grade").removeAttr("checked");
 		}
  }
+ 
+ //Tooltip script
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();   
+});
  </script>

@@ -91,6 +91,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateGradesService;
@@ -226,6 +227,11 @@ public class LeaveManagementRestController {
 	@Autowired
 	AssociateBalanceLeaveDao associateBalanceLeaveDao;
 	
+
+	@Autowired
+	AppliedLeaveDateService appliedLeaveDateService;
+	
+
 	/**
 	 * returns Pending leaves jsp
 	 * 
@@ -816,6 +822,11 @@ public class LeaveManagementRestController {
 				shiftDTO.setShiftDescription(shift.getShiftDescription());
 				shiftDTO.setStatus(shift.getStatus());
 				shiftDTO.setShiftUUID(shift.getShiftUUID());
+				if(shift.getDefaultStatus() != null) {
+					shiftDTO.setDefaultStatus(shift.getDefaultStatus());
+				}else {
+					shiftDTO.setDefaultStatus("N");
+				}
 				StringBuilder sb = new StringBuilder();
 				if(shift.getCreatedBy() != null) {
 					User user = userService.getUserByUserCode(shift.getCreatedBy());
@@ -1013,9 +1024,14 @@ public class LeaveManagementRestController {
 							int result = associateBalanceLeaveService.addLeaveTypeToAssociate(insertUserList,orgLocation,leaveType,user);
 						}
 						if(!updatedUserList.isEmpty() && updatedUserList.size() >0) {
-							int previousNoOfDays = Integer.parseInt(leaveTypeDTO.getPreviousNoOfdays());
-							int currentNofDays = leaveType.getNoOfDays();
-							int diffLeaves = 0;
+							float previousNoOfDays = Float.parseFloat(leaveTypeDTO.getPreviousNoOfdays());
+							float currentNofDays = 0;
+							if(!Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod())) {
+								currentNofDays = leaveType.getNoOfDaysPerPeriod();
+							}else {
+								currentNofDays = leaveType.getNoOfDays();
+							}
+							float diffLeaves = 0;
 							String actionType = "";
 							if(previousNoOfDays < currentNofDays) {
 								diffLeaves = currentNofDays - previousNoOfDays;
@@ -1286,6 +1302,9 @@ public class LeaveManagementRestController {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 					boolean  isApproved = leaveService.reduceLeaveCount(orgLocations,leave.getUser(),leave.getLeaveUUID(),leave.getLeaveType().getId(),leave.getStatus(),leave.getNumberOfDays());
+					
+					leaveService.updateBalanceLeaves(leave,leave.getUser(),orgLocations);
+					
 				} else {
 					response.setResponse(Result.FAILED.name());
 					response.setResponseMessage(Result.FAILED.getValue());
@@ -2771,6 +2790,20 @@ public class LeaveManagementRestController {
 			return model;
 	}
 
+
+	@RequestMapping(value = "/checkBalance")
+	public void checkBalance(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				List<AppliedLeaveDate> appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(orgLocation.getId(),leaveType.getId());
+				
+			}
+		}
+	}
+	
+
 	@RequestMapping(value = "/ws/dumpAllGeneralShifts", method = RequestMethod.GET)
     public void dumpAllGeneralShifts(HttpServletRequest request, HttpServletResponse response) throws Exception
     {
@@ -2799,4 +2832,5 @@ public class LeaveManagementRestController {
 		}
 		 System.out.println("End Time"+java.time.LocalDateTime.now());
     }
+
 }
