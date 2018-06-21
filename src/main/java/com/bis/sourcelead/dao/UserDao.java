@@ -186,7 +186,7 @@ public interface UserDao {
 
 	List<User> getUsersByEmailList(List<String> userEmail, OrgLocations orgLocation);
 
-	public DashboardItems getDashboardItemsByUserId(long loginUserId);
+	public DashboardItems getDashboardItemsByUserId(long loginUserId, long orgLocationId);
 	
 	public DashboardItems getDashboardItemsByDashboardId(long dashboardItemId);
 

@@ -1666,9 +1666,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId) {
+	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId, long orgLocationId) {
 		try {
-			DashboardItems dashboardItems = userDao.getDashboardItemsByUserId(loginUserId);
+			DashboardItems dashboardItems = userDao.getDashboardItemsByUserId(loginUserId, orgLocationId);
+			
 			if (dashboardItems != null) {
 				DashboardItemsDTO dashboardItemsDTO = new DashboardItemsDTO();
 				
@@ -1692,7 +1693,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user) {
+	public Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations) {
 		Response<String> response = new Response<>();
 		try {
 			DashboardItems dashboardItems = null;
@@ -1709,6 +1710,7 @@ public class UserServiceImpl implements UserService {
 			}*/
 			dashboardItems.setItems(dashboardItemsDTO.getJsonData());
 			dashboardItems.setUser(user);
+			dashboardItems.setOrgLocations(orgLocations);
 			
 			long result = userDao.saveDashboardItems(dashboardItems);
 			if (result > 0) {
@@ -1724,6 +1726,12 @@ public class UserServiceImpl implements UserService {
 			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		return response;
+	}
+
+	@Override
+	public List<User> getUsersByEmailList(List<String> userEmail) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

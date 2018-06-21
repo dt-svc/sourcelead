@@ -241,9 +241,9 @@ public interface UserService  {
 	 * @author Mahaveer Manoj
 	 * @purpose - to get Dashboard Items by user
 	 **/
-	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId);
+	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId, long orgLocationId);
 
-	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user);
+	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
 }	
 		
 	
