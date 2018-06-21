@@ -531,6 +531,8 @@ public class Constants {
     public static final String SOURCELEAD_ADMIN_UNIQUE = "Sourcelead";
 	
 	public static final String DOCUMENT_TYPE = "Document Type";
+	public static final String ATTORNEY_CATEGORY = "AttorneyCategory";
+	public static final String PETITIONER_CATEGORY = "PetitionerCategory";
 	public static final String ADMIN = "Admin";
 	public static final String MAIL_SENT = "Sent";
 	public static final String MAIL_NEW = "New";
