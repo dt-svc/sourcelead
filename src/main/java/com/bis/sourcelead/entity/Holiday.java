@@ -2,7 +2,9 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,14 +13,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 /**
@@ -89,6 +96,12 @@ private static final long serialVersionUID = 1L;
 	
 	@Transient
 	private String toDateStr;
+	
+	@OneToMany(mappedBy="holiday",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    @JsonBackReference
+    private Set<HolidayShift> holidayShift;
+	
 	
 	public Long getId() {
 		return id;
@@ -258,5 +271,14 @@ private static final long serialVersionUID = 1L;
 	public void setHolidayUUID(String holidayUUID)
 	{
 		this.holidayUUID = holidayUUID;
+	}
+
+
+	public Set<HolidayShift> getHolidayShift() {
+		return holidayShift;
+	}
+
+	public void setHolidayShift(Set<HolidayShift> holidayShift) {
+		this.holidayShift = holidayShift;
 	}
 }
