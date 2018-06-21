@@ -649,6 +649,7 @@ function Immigration() {
             type: "GET",
             success: function (result) {
             	if(result =='success'){
+            		showSuccessMsg("Successfully Record Deleted.");
             		immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'');
             		deleteImmigrationPopupDiv();
             	}
@@ -674,6 +675,7 @@ function Immigration() {
             type: "GET",
             success: function (result) {
             	if(result=='success'){
+            		showSuccessMsg("Successfully Record Deleted.");
             	     immigration.displayFamilyDetails(candidateId) //candidateId global variable
             	     deleteImmigrationPopupDiv();
             	}
@@ -823,9 +825,11 @@ function deletePassportVisaDetails(id,idType){
         success: function (result) {
         	if(result=='success'){
         		if(idType=='Passport'){
+        			showSuccessMsg("Successfully Record Deleted.");
         			immigration.displayPassportDetails(candidateId,idType);
         		}
         		else if (idType == 'Visa') {
+        			showSuccessMsg("Successfully Record Deleted.");
         			immigration.displayVisaDetails(candidateId,idType);
         		}
             	deleteImmigrationPopupDiv(); // removes the existing added delete popup div in html code.
@@ -843,6 +847,7 @@ function deleteEDucationDetailsById(id){
         type: "GET",
         success: function (result) {
         	if(result=='success'){
+        		showSuccessMsg("Successfully Record Deleted.");
         	  getCandidateEducationList(candidateId) //candidateId global variable
         	  deleteImmigrationPopupDiv();
         	}
@@ -964,6 +969,7 @@ function deleteEmpDetails(id){
         type: "GET",
         success: function (result) {
         	if(result=='success'){
+        		showSuccessMsg("Successfully Record Deleted.");
         		getCandidateEmployerList(candidateId) //candidateId global variable
         		deleteImmigrationPopupDiv();
         	}
@@ -1236,6 +1242,7 @@ function deleteResidenceDetailsById(id){
         type: "GET",
         success: function (result) {
         	if(result=='success'){
+        		showSuccessMsg("Successfully Record Deleted.");
         		getCandidateResidenceList(candidateId) //candidateId global variable
         		deleteImmigrationPopupDiv();
         	     
@@ -1345,7 +1352,8 @@ function deleteDocumentDetailsByRowId(id){
         type: "GET",
         success: function (result) {
         	if(result=='success'){
-        	displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
+        	showSuccessMsg("Successfully Record Deleted.");
+            displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'');
         	deleteImmigrationPopupDiv();
         	}
         }
