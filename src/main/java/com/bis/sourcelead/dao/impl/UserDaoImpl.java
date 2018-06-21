@@ -2071,7 +2071,9 @@ public class UserDaoImpl implements UserDao {
 						userDTO.setUserSubmittedApplicantsCount(recuiterReportView.getApplicantSubmittedClientCount());
 						userDTO.setUserOfferedApplicantsCount(recuiterReportView.getApplicantOfferMadeCount());
 						userDTO.setUserRejectedApplicantsCount(recuiterReportView.getApplicantRejectedCount());
+						userDTO.setUserInterviewedApplicantsCount(recuiterReportView.getApplicantInterviewCount());
 						userDTO.setUserApplicantsBackOutCount(recuiterReportView.getApplicantBackOutCount());
+						userDTO.setUserApplicantsJoinedCount(recuiterReportView.getApplicantJoinedCount());
 					}
 					
 				}
@@ -2080,16 +2082,6 @@ public class UserDaoImpl implements UserDao {
 			}
 		}
 		return usersDTOList;
-	}
-
-	@Override
-	@Transactional
-	public List<User> getUsersByEmailList(List<String> userEmail,OrgLocations orgLocation)
-	{
-		 Session session = this.sessionFactory.getCurrentSession();
-	     String query = "from User user where user.id IN (select userRole.user.id from UserRole userRole where userRole.orgLocations=:orgLocationId and userRole.user.email IN (:emailList)) ORDER BY user.id DESC";
-	     List<User> usersList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocation.getId()).setParameterList("emailList", userEmail).list();
-	     return usersList;
 	}
 
 	@Override
@@ -2135,5 +2127,5 @@ public class UserDaoImpl implements UserDao {
 		return -1;
 	}
 	
-	
+
 }

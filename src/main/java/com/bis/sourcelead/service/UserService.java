@@ -233,9 +233,8 @@ public interface UserService  {
 	
 	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates) throws Exception;
 
-	List<User> getUsersByEmailList(List<String> userEmail);
 	
-	List<User> getUsersByEmailList(List<String> userEmail, OrgLocations orgLocation);
+//	List<User> getUsersByEmailList(List<String> userEmail, OrgLocations orgLocation);
 
 	/**
 	 * @author Mahaveer Manoj
@@ -244,6 +243,7 @@ public interface UserService  {
 	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId, long orgLocationId);
 
 	Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations);
+
 }	
 		
 	

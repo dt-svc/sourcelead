@@ -1,12 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,7 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -53,9 +50,12 @@ import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.RequirementSubmissionTemplateFieldsDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ApplicantAuthorizationDTO;
+import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.RequirementDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
+import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
@@ -565,6 +565,19 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				
 			
 		 }
+		 
+		
+		 if(jsonObj.has("candidateResumeRequired") && !isNullOrEmpty(jsonObj.getString("candidateResumeRequired")) && jsonObj.getString("candidateResumeRequired").equalsIgnoreCase(Constants.YES)){
+			 CandidateResumesDTO resumeDTO = candidateResumesDao.getCandidateResumesDTOByCandidateId(candidate.getId());
+			 if(resumeDTO != null) {
+				 CandidateResumes resume = new CandidateResumes();
+				 resume.setId(resumeDTO.getResumeId().longValue());
+				 requirementSubmission.setCandidateResumes(resume);
+				 insertResumeIdInELK(candidate);
+			 }
+			
+		 }
+		 
 		 
 		 if(jsonObj.has("candidateResume") && !isNullOrEmpty(jsonObj.getString("candidateResume"))){
 			 candidateResumes = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(jsonObj.getString("candidateResume")));
@@ -1523,7 +1536,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 	
 	@Override
-	public Integer getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user,
+	public RequirementSubmissionsCountDTO getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user,
 			OrgLocations loginOrgLocation, String submissionStatus) throws Exception{
 		return requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirementId,user,loginOrgLocation,submissionStatus);
 	}

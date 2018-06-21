@@ -276,6 +276,7 @@ function requirementList(isWalkIn, walkInDay){
 	        	    	$("#assigned").addClass("current");
 	        	    	$("#drive").removeClass("current");
 	                }
+
 		    	} else if (data.indexOf('Sign In') !== -1) {
 		    		location.replace(sourceleadUrl);
 		    	} else {
