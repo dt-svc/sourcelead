@@ -987,7 +987,7 @@ public class LeaveManagementRestController {
 	@RequestMapping(value = "/saveNewLeaveType", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveNewLeaveType(LeaveTypeDTO leaveTypeDTO, HttpServletRequest request)
 			throws Exception {
-		Response<String> response = new Response<>();
+ 		Response<String> response = new Response<>();
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
