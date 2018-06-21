@@ -262,4 +262,37 @@ public class AssociateBalanceLeaveDaoImpl implements AssociateBalanceLeaveDao{
 		
 	}
 
+
+	@Override
+	@Transactional
+	public int updateAssociateAccuralBalanceLeaveCount(List<AssociateBalanceLeaveDTO> assBalList)
+	{
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.doWork(new Work() {
+				@Override
+				public void execute(java.sql.Connection connection) throws SQLException {
+					boolean initialAutocommitSetting = connection.getAutoCommit();
+					connection.setAutoCommit(false);
+					CallableStatement stmt = connection.prepareCall("{call updateAssociateBalLeave(?,?,?,?)}");
+					for (AssociateBalanceLeaveDTO leave : assBalList) {
+						stmt.setString(1, leave.getNoofLeaves());
+						stmt.setLong(2, leave.getOrgLocationId());
+						stmt.setLong(3, Long.parseLong(leave.getUserId()));
+						stmt.setLong(4, leave.getLeaveTypeId());
+						stmt.addBatch();
+					}
+					int[] updateCount = stmt.executeBatch();
+					connection.commit();
+					connection.setAutoCommit(initialAutocommitSetting);
+				}
+			});
+			return 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+		
+	}
+
 }

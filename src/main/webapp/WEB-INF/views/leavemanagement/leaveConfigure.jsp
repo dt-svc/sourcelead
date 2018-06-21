@@ -83,7 +83,7 @@
                   </div>
                       </div>
                      
-                  <a href="<c:url value='${appPath}/checkBalance'/>" class="btn btn-info btn-sm mr10" >check Bal</a>
+<%--                   <a href="<c:url value='${appPath}/checkBalance'/>" class="btn btn-info btn-sm mr10" >check Bal</a> --%>
       </div>
         </div>
       <!-- Content Area Ends--> 
