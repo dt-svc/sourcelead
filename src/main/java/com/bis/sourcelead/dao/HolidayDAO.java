@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.Holiday;
+import com.bis.sourcelead.entity.HolidayShift;
 import com.bis.sourcelead.entity.Option;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
@@ -30,6 +31,15 @@ public interface HolidayDAO {
 
 	List<Holiday> getAllHoliday();
 
+	List<Holiday> getAllHolidaysListByOrgloationIdAndShiftId(Long locationId,String shiftIds);
 	
+	List<Long> getHolidayShiftCout(Long holidayId)throws Exception;
+	
+	public List<HolidayShift> getHolidayShiftListByHolidayId(Long holidayId) throws Exception ;
+	
+	void removeHolidayShiftList(List<Long> shiftIds,Long holidayId)throws Exception ;
+
+	void deleteHolidayByHolidayId(Long holidayId)throws Exception;
+
 	
 }

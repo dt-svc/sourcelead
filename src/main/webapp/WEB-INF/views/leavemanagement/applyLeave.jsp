@@ -47,7 +47,6 @@ window.onload = function() {
               <div class="form-group">
                     <label class="checkBox pull-left mr10">
 					<input id="checkbox-1" class="checkbox-custom checkboxCustom onbehalf" name="checkbox-1" type="checkbox" onClick="onbehalf(); getApproversList();">
-					<label for="checkbox-1" class="checkbox-custom-label"></label>
                   </label>
                   <span class="pull-left">On behalf of</span>
               </div>
@@ -77,7 +76,7 @@ window.onload = function() {
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="fromDateDiv">
                   <div class="input-group errorInptgroup">
-                    <input type="text" class="form-control calendar" id="fromDate" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required" readonly>
+                    <input type="text" class="form-control calendar" id="fromDate" value="${fromDate}" name="fromDate" placeholder="From Date" field-name="From Date" data-validation="required" readonly>
                     <span class="input-group-addon" onClick="clearFromDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                    </div> 
                   </div>
@@ -85,8 +84,6 @@ window.onload = function() {
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
 					<input id="checkbox-2" class="checkbox-custom checkboxCustom" id="fromHalfDay" name="fromHalfDay"  type="checkbox" onclick="checkFromHalfDay();validateFromHalfDay();">
-					<label for="checkbox-2" class="checkbox-custom-label"></label>
-                  </label>
                       Half a Day </label>
                   </div>
                 </div>
@@ -98,7 +95,7 @@ window.onload = function() {
                 <div class="row">
                   <div class="col-md-7 paddingRight" id="toDateDiv">
                     <div class="input-group errorInptgroup">
-                     <input type="text" class="form-control calendar" id="toDate" name="toDate" placeholder="To Date" field-name="To Date" data-validation="required" readonly>
+                     <input type="text" class="form-control calendar" id="toDate" name="toDate" value="${toDate}" placeholder="To Date" field-name="To Date" data-validation="required" readonly>
                      <span class="input-group-addon" onClick="clearToDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>
                     </div>
                   </div>
@@ -106,7 +103,6 @@ window.onload = function() {
                     <label class="checkBox mt5">
                       <label class="checkBox pull-left mr10">
 					<input id="checkbox-3" class="checkbox-custom checkboxCustom" name="toHalfDay" value="NO" type="checkbox" onclick="checkToHalfDay();validateToHalfDay();">
-					<label for="checkbox-3" class="checkbox-custom-label"></label>
                   </label>
                       Half a Day </label>
                   </div>
@@ -118,7 +114,7 @@ window.onload = function() {
               <label class="col-md-3" id="reasonIdY" style="display:block">Reason<span class="text-danger paddingLeft" >*</span></label>
               <label class="col-md-3" id="reasonIdN" style="display:none">Reason</label>
               <div class="col-md-9" id="reasonId">
-                <textarea class="form-control" rows="2" placeholder="Reason" id="reason" name="reason" field-name="Reason" data-validation="required validate_length length1-500"></textarea>
+                <textarea class="form-control" rows="2" placeholder="Reason" id="reason" name="reason" field-name="Reason" data-validation="required validate_length length1-500">${leave.reason}</textarea>
               </div>
             </div>
               
@@ -160,7 +156,7 @@ window.onload = function() {
       <div class="form-footer clearfix mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Apply" id="applyId" class="btn btn-primary ml mr" onclick="applyLeave();">
+            <input type="button" value="Apply" id="ApplyLeave" class="btn btn-primary ml mr" onclick="applyLeave();">
             <input type="button" value="Cancel" class="btn btn-default" onclick="cancel();">
           </div>
         </div>
@@ -382,6 +378,7 @@ function removeEndValid(){
  		
  <script type="text/javascript">
  function getPieChartBasedOnUser(onbehalf){
+	 var leaveId = '${leave.leaveType.id}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 var userId ='';
 	 if(onbehalf !=null && onbehalf !='' && onbehalf !='undefined'){
@@ -399,7 +396,11 @@ function removeEndValid(){
         	  output = output +' <option value="">--Select Leave Type--</option>';
         	  for (var i = 0; i < json.length; i++) { 
         		  var leave = json[i];
-        		  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+        		  if(leave.id == leaveId){
+        			  output = output +'<option selected value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+        		  }else{
+        			  output = output +'<option value='+leave.leaveTypeUUID+'>'+leave.name+'</option>';
+        		  }
         	  }
         	  output = output +'</select>';
         	  $("#leaveTypeIdDiv").empty();
@@ -537,12 +538,14 @@ $(function() {
 
 <script type="text/javascript">
 function applyLeave(){
+		var leaveId = '${leave.id}';
+		var currentStage = '${currentStage}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var userId = '${SourceLeadWeb_userId}';
 		if ($('#apply_leave_form').validate(false, validationSettings)) {
 	  	var formData = $($('#apply_leave_form')[0]).serialize();
 		$("#leaveLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId, formData, function(result) {
+		$.post(sourceleadUrl+"/saveApplyLeave?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&leaveId="+leaveId+"&currentStage="+currentStage, formData, function(result) {
 			if (result && result.response === "INVALID_DATA") {
     		    showError(result.responseMessage);
     		} else if (result.response === "AWKWARD") {
@@ -683,7 +686,7 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	if(report.overdrawLeaves != null && report.overdrawLeaves != '' && report.overdrawLeaves != 'undefined' && report.overdrawLeaves == "N"){
     		    		validateOverDrawLeaves(report.name);
     		    	}else{
-    		    		$("#applyId").prop("disabled", false);
+    		    		$("#ApplyLeave").removeAttr('disabled');
     		    	}
     		    	if(report.priorLeaveApplying == "Y" && fromDate != ""){
     		    		validatePriorDays(report.priorDays,finalDateFormatEndDate);
@@ -694,13 +697,13 @@ function getLeaveDetails(finalDateFormatEndDate){
     		    	}
     		    	
     		    	if(errorMessage != ""){
-    		        	$("#applyId").prop("disabled", true);
+    		        	$("#ApplyLeave").attr('disabled','disabled');
     		        	$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>"+errorMessage+"</p> ");
     		        	$(".warMess").fadeIn();
     		        	$(".comMask").fadeIn();
     		        	errorMessage = "";
     		        }else{
-    		    		$("#applyId").prop("disabled", false);
+    		    		$("#ApplyLeave").removeAttr('disabled');
     		        }
     		    	if(skipPolicy != true){
     		    		if(report.policyDescription !=null && report.policyDescription !='' && report.policyDescription !='undefined'){
@@ -733,11 +736,11 @@ function validateOverDrawLeaves(leaveTypeName){
 	var typeName = leaveTypeName.replace(/ /g,"_");
 	var typeIdBalCount = $("#"+typeName+"Span").text();
 	if((dayDiff > typeIdBalCount) || typeIdBalCount ==  0){
-		$("#applyId").prop("disabled", true);
+		$("#ApplyLeave").attr('disabled','disabled');
 		$("#leaveTypeIdDiv").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span>You Have Not Enough Leaves To Apply</span> ");
 		$(".comMask").fadeIn();
 	}else{
-		$("#applyId").prop("disabled", false);
+		$("#ApplyLeave").removeAttr('disabled');
 	}
 }
 </script>
@@ -852,10 +855,11 @@ function validateDate(){
 	if(userId != null && userId != '' && userId != 'undefined'){
 		$.get(sourceleadUrl+"/validateRestrictDate?"+tokenParamName+"="+tokenValue+"&fromDate="+fromDate+"&toDate="+toDate+"&orgLocationId="+orgLocationId+"&userId="+userId, function(data) {
 			if(data != null){
+				$("#ApplyLeave").attr('disabled','disabled');
 				$("#toDate").after("<p class='warMess'><span id='dataclosePop' class='fa fa-times text-danger' onclick='closedate();'></span></span>"+data);
 				$(".comMask").fadeIn();
-				$("#applyId").prop("disabled", true);
 			}else{
+				$("#ApplyLeave").removeAttr('disabled');
 				$('.warMess').hide();
 			}
 		});

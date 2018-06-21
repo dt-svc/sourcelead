@@ -43,6 +43,7 @@ public class Constants {
 	public static final String ASSOCIATE_VENDOR_CONTACT="Vendor Contact(Email)";
 	public static final String ASSOCIATE_GRADE="Grade";
 	public static final String ASSOCIATE_DESIGNATION="Designation*";
+	public static final String ASSOCIATE_SHIFT="Shift*";
 	public static final String INVOICE_FREQUENCY = "Invoice Frequency";
 	public static final String DAY_HOURS = "Day Hours";
 	public static final String FAILED_REASON = "Reason";
@@ -217,7 +218,7 @@ public class Constants {
 	public static final String loginUserAsAdmin = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = ts.projectMembers. projectClientsId.orgLocationsId.id)";
 	public static final String loginUserAsAdminWithMaxHeirarchyLevelForTs = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pclient.id and pah.status != '0'))";
 	public static final String loginUserAsAdminWithMaxHeirarchyLevelForExp = "(:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pc.orgLocationsId.id) and  sah.hierarchyId.level IN(select MAX(pah.level) from ProjectApproverHierarchy pah where pah.projectClientsId.id = pc.id and pah.status != '0' ))";
-	public static final String loginUserAsAdminForProjects = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id)";
+	public static final String loginUserAsAdminForProjects = ":userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.orgLocations.id = pclient.orgLocationsId.id and userRole.userState = 'ACTIVE')";
 	public static final String IMMIGRATION_NOTIFICATION_TO_BENEFICIARY = "notificationToImmigrationBeneficiary";
 	/** projectMember constants **/
 	public static final String MEMBER_ACTIVE = "1";
@@ -1147,6 +1148,10 @@ public class Constants {
 	public static final String DELETE = "DEL";
 	public static final String NONE = "NONE";
 	public static final String ADDITION = "ADD";
+	public static final String GENERAL_SHIFT = "General Shift"; 
+	public static final String STATUS_NO = "NO";
+	public static final String STATUS_YES = "YES";
+	public static final String ANNUALLY = "Annually";
 
 
 }

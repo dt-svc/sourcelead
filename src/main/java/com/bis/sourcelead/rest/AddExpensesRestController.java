@@ -1,9 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,9 +7,7 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +31,6 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
-import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
@@ -64,7 +57,6 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 @RestController
 @RequestMapping("/app")
 public class AddExpensesRestController {
-	private static final Logger logger = LoggerFactory.getLogger(TimesheetRestController.class);
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
