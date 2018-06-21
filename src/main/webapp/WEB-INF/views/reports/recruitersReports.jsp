@@ -140,6 +140,11 @@ function getDayWiseReports(){
  
  
  <script type="text/javascript"> 
+ 
+ function resetFilter() {
+	 $("ul#myTeamsUL > li input:checkbox").prop("checked",false);
+}
+ 
  function myTeamsFunction() {
 	    var input, filter, ul, li, a, i;
 	    input = document.getElementById("myTeamsInput");
