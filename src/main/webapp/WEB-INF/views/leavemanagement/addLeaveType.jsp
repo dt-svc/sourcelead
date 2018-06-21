@@ -7,7 +7,7 @@
 <link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet" />
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
 <link href="/resources/css/editor.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
-
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
 
 		<link href="/resources/css/bootstrap-colorpicker.min.css" rel="stylesheet">
@@ -130,31 +130,35 @@
 							<div class="col-md-6 dropdown-select">
 								<label class="paddingLeft paddingRight"> <c:if
 											test="${!empty leaveType.duration}">
-											<c:if test="${leaveType.duration == 'Full Day'}">
-												<input type="checkbox" checked="true" id="fullDayId"
-													name="duration" value="Full Day">
+<%-- 											<c:if test = "${fn:contains(leaveType.duration, 'Full Day')}"> --%>
+											
+											<c:if test = "${fn:contains(leaveType.duration, 'Full Day') && !fn:contains(leaveType.duration, 'Half Day')}">
+												<input type="checkbox" checked="true" id="fullDayId" name="duration" value="Full Day">
 												<span class="paddingLeft">Full Day</span>
-												<input type="radio" id="halfDayId" name="duration"
-													value="Half Day">
+												<input type="checkbox" id="halfDayId" name="duration" value="Half Day">
+												<span class="paddingLeft">Half Day</span>
+												 
+											</c:if>
+											<c:if test = "${fn:contains(leaveType.duration, 'Half Day') && !fn:contains(leaveType.duration, 'Full Day') }">
+											<input type="checkbox" id="fullDayId" name="duration" value="Full Day">
+												<span class="paddingLeft">Full Day</span>
+												
+												<input type="checkbox" checked="true" id="halfDayId" name="duration" value="Half Day">
 												<span class="paddingLeft">Half Day</span>
 											</c:if>
-											<c:if test="${leaveType.duration == 'Half Day'}">
-												<input type="checkbox" checked="true" id="fullDayId" name="duration"
-													value="Full Day">
+											<c:if test = "${fn:contains(leaveType.duration, 'Half Day') && fn:contains(leaveType.duration, 'Full Day') }">
+											<input type="checkbox" checked="true"  id="fullDayId" name="duration" value="Full Day">
 												<span class="paddingLeft">Full Day</span>
-												<input type="checkbox" checked="true" id="halfDayId"
-													name="duration" value="Half Day">
+												
+												<input type="checkbox" checked="true" id="halfDayId" name="duration" value="Half Day">
 												<span class="paddingLeft">Half Day</span>
 											</c:if>
 										</c:if> <c:if test="${empty leaveType.duration}">
-											<input type="checkbox" checked="true" id="fullDayId"
-												name="duration" value="Full Day">
+											<input type="checkbox" id="fullDayId" name="duration" value="Full Day">
 											<span class="paddingLeft">Full Day</span>
-											<input type="checkbox" checked="true" id="halfDayId" name="duration"
-												value="Half Day">
+											<input type="checkbox"  id="halfDayId" name="duration" value="Half Day">
 											<span class="paddingLeft">Half Day</span>
 										</c:if>
-
 									</label>
 									<%-- <option ${leaveType.duration  == 'Full Day' ? 'selected' : ''}>Full Day</option>
 									<option ${leaveType.duration  == 'Half Day' ? 'selected' : ''}>Half Day</option> --%>
@@ -249,7 +253,6 @@
 									<select class="chosen-select form-control" multiple  name="department" onchange="removeErrMsg();valid();"
 										id="department" field-name="Department"
 										data-validation-optional="true">
-										<option value="">Select Department</option>
 										<c:forEach var="report" items="${departmentList}">
 											<option value="${report.id}"
 												${report.id  == departmentId ? 'selected' : ''}>${report.departmentName}</option>
@@ -284,9 +287,8 @@
 								<label class="col-md-4">Select Employement Type<span
 								class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-6 dropdown-select" id="empTypeErrMsg">
-									<select class="chosen-select form-control"  multiple id="leveEmpType" name="leveEmpType"
+									<select class="chosen-select form-control"  multiple id="leveEmpType" name="leveEmpType" value="${leaveType.leaveEmpType}"
 										field-name="Employement Type" data-validation-optional="true">
-										<option value="">--Select Employment type--</option>
 						                 <option>C2C</option>
 						                 <option>C2C-1099</option>
 						                 <option>W-2</option>
@@ -317,7 +319,7 @@
 												class="paddingLeft">No</span></label>
 										</c:if>
 										<c:if test="${leaveType.leavesCarryforward == 'N'}">
-											<label class="paddingLeft paddingRight" onClick="carryForwardNoUsers();"> <input
+											<label class="paddingLeft paddingRight" onClick="carryForwardYesUsers();"> <input
 												type="radio" value="Y" name="carryforward"> <span
 												class="paddingLeft">Yes</span></label>
 											<label class="paddingLeft" onClick="carryForwardNoUsers();"> <input type="radio"
@@ -915,9 +917,8 @@
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="button" id="saveLeaveType" value="Save"
-							onclick="submitLeaveType();noUsers();" class="btn btn-primary"> <input
-							type="button" value="Cancel" onclick="redirect();"
-							class="btn btn-default ml10">
+							onclick="submitLeaveType();" class="btn btn-primary"> 
+							<input type="button" value="Cancel" onclick="redirect();" class="btn btn-default ml10">
 					</div>
 				</div>
 			</div>
@@ -1139,13 +1140,21 @@ function showLeaveEncashmentDiv(){
 		$('#roles').removeAttr('data-validation');
 		$('#roles').attr('data-validation-optional', "true");
 		$("#noUsersDiv").hide();
+		$("#department").val();
+		$("#roles").val();
+		$("#leveEmpType").val();
+		$(".chosen-select").val('').trigger("chosen:updated");
+		document.getElementById("applicableId").style.display="block";
 	}
 	function noUsers() {
 		document.getElementById("applicableId").style.display="block";
 		 	if($('#department').val() == null && $('#roles').val() == null && $('#leveEmpType').val() == null){
 				$("#saveLeaveType").attr("disabled", true);
+		 	}else{
+				document.getElementById("applicableId").style.display="none";
 		 	}
 		 	$("#noUsersDiv").show();
+		 	
 		 	/* $('#department').click(function(){
 		 		alert("1")
 		 	} */ 
@@ -1155,6 +1164,8 @@ function showLeaveEncashmentDiv(){
 // 		$('#roles').attr('data-validation', "required");
 		
 	}
+	
+// 	${leaveType.leavesCarryforward == 'Y'}
 	function valid(){
 		var id = $('#department').val();
 		if(id != "" && id != null && id != "undefined"){
@@ -1257,7 +1268,14 @@ $('.chosen-select').chosen().on('change', function() {
 </script>
 
 <jsp:include page="../masterFooter.jsp" />
-
+<script>
+$(window).load(function() {
+	var leavesCarryforward = '${leaveType.leavesCarryforward}';
+	if(leavesCarryforward == "N"){
+		carryForwardNoUsers();
+	}
+});
+</script>
 <script>
 	$(document).ready(function() {
 		$("#txtEditor").Editor();
