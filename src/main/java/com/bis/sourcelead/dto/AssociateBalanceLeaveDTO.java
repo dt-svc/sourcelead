@@ -26,6 +26,8 @@ public class AssociateBalanceLeaveDTO {
 	
 	private float balanceLeaveCounts;
 	
+	private Long orgLocationId;
+	
 	private List<TotalLeaveDTO> totalLeavesDto;
 
 	public String getId()
@@ -126,5 +128,15 @@ public class AssociateBalanceLeaveDTO {
 	public void setBalanceLeaveCounts(float balanceLeaveCounts)
 	{
 		this.balanceLeaveCounts = balanceLeaveCounts;
+	}
+
+	public Long getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
 	}
 }
