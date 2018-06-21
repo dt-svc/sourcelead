@@ -334,6 +334,7 @@ public class LeaveServiceImpl implements LeaveService{
 	{
 		Set<AppliedLeaveDate> set = new HashSet<>();
 		try {
+			 Calendar cal = Calendar.getInstance();
 			List<Date> dateList = leaveManagementUtil.getDaysBetweenDates(leave.getFromDate(), leave.getToDate(), orgLocations.getDateFormat());
 			dateList.forEach(d -> {
 				AppliedLeaveDate appliedLeaveDate = new AppliedLeaveDate();
@@ -345,6 +346,7 @@ public class LeaveServiceImpl implements LeaveService{
 				appliedLeaveDate.setCreatedDate(new Date());
 				appliedLeaveDate.setUpdatedBy(user.getId());
 				appliedLeaveDate.setUpdatedDate(new Date());
+				appliedLeaveDate.setYear(cal.get(Calendar.YEAR));
 				set.add(appliedLeaveDate);
 			});
 		} catch (Exception e) {
