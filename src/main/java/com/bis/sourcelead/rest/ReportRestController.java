@@ -240,7 +240,7 @@ public class ReportRestController {
 
 			
 			
-			String[] tableColumns = { "firstName", "jobs", "candidates", "applicants", "shortlisted", "submitted", "Interviewed", "offered", "rejected", "backout" };
+			String[] tableColumns = { "firstName", "jobs", "candidates", "applicants", "shortlisted", "submitted", "Interviewed", "offered", "rejected","joined", "backout" };
 			int sortColumnIndex = 1; // by default sorting using updated date
 			String sortColumnOrder = "desc"; // by default descending order
 			if (userDTO.getOrder() != null && !userDTO.getOrder().isEmpty()) {
