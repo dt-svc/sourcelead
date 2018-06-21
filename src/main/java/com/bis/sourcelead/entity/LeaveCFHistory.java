@@ -43,13 +43,13 @@ public class LeaveCFHistory {
 	private Date createdDate;
 	
 	@Column (name = "CREATED_BY")
-	private String createdBy;
+	private Long createdBy;
 	
 	@Column (name = "UPDATED_DATE")
 	private Date updatedDate;
 	
 	@Column (name = "UPDATED_BY")
-	private String updatedBy;
+	private Long updatedBy;
 
 	public Long getId()
 	{
@@ -96,19 +96,11 @@ public class LeaveCFHistory {
 		return createdDate;
 	}
 
-	public String getCreatedBy()
-	{
-		return createdBy;
-	}
+	
 
 	public Date getUpdatedDate()
 	{
 		return updatedDate;
-	}
-
-	public String getUpdatedBy()
-	{
-		return updatedBy;
 	}
 
 	public void setId(Long id)
@@ -156,20 +148,12 @@ public class LeaveCFHistory {
 		this.createdDate = createdDate;
 	}
 
-	public void setCreatedBy(String createdBy)
-	{
-		this.createdBy = createdBy;
-	}
-
 	public void setUpdatedDate(Date updatedDate)
 	{
 		this.updatedDate = updatedDate;
 	}
 
-	public void setUpdatedBy(String updatedBy)
-	{
-		this.updatedBy = updatedBy;
-	}
+	
 	
 	
 	
