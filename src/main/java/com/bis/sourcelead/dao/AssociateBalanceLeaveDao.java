@@ -25,4 +25,6 @@ public interface AssociateBalanceLeaveDao {
 	int updateAssociateBalanceLeaveType(List<User> userList, Long orgLocationId, LeaveType leaveType,int status,float diffLeaves,String actionType, String methodType);
 
 	AssociateBalanceLeave saveOrUpdateAssocicateBalanceLeaves(AssociateBalanceLeave assBalLeave);
+
+	int updateAssociateAccuralBalanceLeaveCount(List<AssociateBalanceLeaveDTO> assBalList);
 }

@@ -240,8 +240,14 @@ public class LeaveServiceImpl implements LeaveService{
 		if(StringUtils.isNotBlank(leaveDTO.getFromHalfDay())) {
 			leave.setFromHalfDay(leaveDTO.getFromHalfDay());
 		}
+		if(StringUtils.isNotBlank(leaveDTO.getFromDateHalfTime())) {
+			leave.setFromTime(leaveDTO.getFromDateHalfTime());
+		}
 		if(StringUtils.isNotBlank(leaveDTO.getToHalfDay())) {
 			leave.setToHalfDay(leaveDTO.getToHalfDay());
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getToDateHalfTime())) {
+			leave.setToTime(leaveDTO.getToDateHalfTime());
 		}
 		if(leaveDTO.getFileInfo() !=null) {
 			FileInfo fileinfo = leaveDTO.getFileInfo().get(0);
@@ -565,7 +571,7 @@ public class LeaveServiceImpl implements LeaveService{
 				leaveDto.setLeaveUUID(leave.getLeaveUUID());
 				
 //				int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser();
-				int totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),leave.getUser().getId(),orgLocations.getId());
+				float totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),leave.getUser().getId(),orgLocations.getId());
 				float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(leave.getLeaveType(), totalLeaves,emp);
 				
 				float balLeaves = leaves - (leavesTaken - nuberOfLeavestaken.get("numberOfExtraLeaves"));
@@ -1271,7 +1277,7 @@ public class LeaveServiceImpl implements LeaveService{
 			   }
 			   
 				for(LeaveType type : roleLeaveType) {
-				int totalLeaves = 0;
+					float totalLeaves = 0;
 				
 //				totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type,emp,orgLocations,user);
 				 totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(type.getId(),user.getId(),orgLocationId);
@@ -1712,7 +1718,7 @@ public class LeaveServiceImpl implements LeaveService{
 			
 			emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(leave.getUser().getId(), orgLocations.getId());
 //			int totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(leave.getLeaveType(),emp,orgLocations,leave.getUser());
-			int totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),leave.getUser().getId(),orgLocations.getId());
+			float totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),leave.getUser().getId(),orgLocations.getId());
 			float leaves = leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(leave.getLeaveType(),totalLeaves, emp);
 			
 			if(reportMap.containsKey(leave.getUser().getId())){
@@ -1998,7 +2004,7 @@ public class LeaveServiceImpl implements LeaveService{
         }
         Date fromDate = commonUtil.getDateFormat(Constants.DMY.format(new Date()));
 		if (leave != null) {
-			int totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leaveTypeId,user.getId(),orgLocations.getId());
+			float totalLeaves = associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leaveTypeId,user.getId(),orgLocations.getId());
 			Map<String, Float> nuberOfLeavestaken = leaveDao.getNumberOfLeavesTakenByUser(leave.getUser().getId(),leave.getLeaveType().getId());
 			float appliedLeaves = leaveManagementUtil.calculateAppliedLeavesCountWithHalfDays(leave);
 			if("Monthly".equalsIgnoreCase(leave.getLeaveType().getPeriod()) && Constants.YES.equalsIgnoreCase(leave.getLeaveType().getLeavesCarryforward())){
@@ -2309,7 +2315,7 @@ public class LeaveServiceImpl implements LeaveService{
 	public void updateBalanceLeaves(Leave leave, User user, OrgLocations orgLocations)
 	{
 		AssociateBalanceLeave assBalLeave =  associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),user.getId(),orgLocations.getId(), Constants.RECORD_ACTIVE);
-		float balanceLeaves = Integer.parseInt(assBalLeave.getTotalLeaves()) - leave.getNumberOfDays();
+		float balanceLeaves = Float.parseFloat(assBalLeave.getTotalLeaves()) - leave.getNumberOfDays();
 		assBalLeave.setTotalLeaves(String.valueOf(balanceLeaves));
 		associateBalanceLeaveService.saveOrUpdateAssocicateBalanceLeaves(assBalLeave);
 	}
