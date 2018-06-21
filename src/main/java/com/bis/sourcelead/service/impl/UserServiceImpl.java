@@ -1657,16 +1657,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates)
+	public ResponseList<UserDTO> getRecruitersReports(Long userId, Long orgLocationId, Long orgId, String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates,List<Long> teamsList)
 			throws Exception {
-		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates);
+		return userDao.getRecruitersReports(userId, orgLocationId, orgId, isGlobalUser,userDTO,loginUserRole,searchDates,teamsList);
 	}
 
 
 	@Override
-	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId) {
+	public DashboardItemsDTO getDashboardItemsByUserId(long loginUserId, long orgLocationId) {
 		try {
-			DashboardItems dashboardItems = userDao.getDashboardItemsByUserId(loginUserId);
+			DashboardItems dashboardItems = userDao.getDashboardItemsByUserId(loginUserId, orgLocationId);
+			
 			if (dashboardItems != null) {
 				DashboardItemsDTO dashboardItemsDTO = new DashboardItemsDTO();
 				
@@ -1690,7 +1691,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user) {
+	public Response<String> saveDashboardItems(DashboardItemsDTO dashboardItemsDTO, User user, OrgLocations orgLocations) {
 		Response<String> response = new Response<>();
 		try {
 			DashboardItems dashboardItems = null;
@@ -1707,6 +1708,7 @@ public class UserServiceImpl implements UserService {
 			}*/
 			dashboardItems.setItems(dashboardItemsDTO.getJsonData());
 			dashboardItems.setUser(user);
+			dashboardItems.setOrgLocations(orgLocations);
 			
 			long result = userDao.saveDashboardItems(dashboardItems);
 			if (result > 0) {
@@ -1724,5 +1726,10 @@ public class UserServiceImpl implements UserService {
 		return response;
 	}
 
+	@Override
+	public List<User> getUsersByEmailList(List<String> userEmail) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

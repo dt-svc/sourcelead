@@ -36,6 +36,8 @@ public class RecruiterReportView {
 	@Column(name = "APPLICANT_BACKOUT_COUNT")
 	private BigDecimal applicantBackOutCount;
 	
+	@Column(name = "APPLICANT_JOINED_COUNT")
+	private BigDecimal applicantJoinedCount;
 	
 	@Column(name = "ORG_LOCATION_ID")
 	private Long orgLocationId;
@@ -145,6 +147,14 @@ public class RecruiterReportView {
 
 	public void setUserCode(String userCode) {
 		this.userCode = userCode;
+	}
+
+	public BigDecimal getApplicantJoinedCount() {
+		return applicantJoinedCount;
+	}
+
+	public void setApplicantJoinedCount(BigDecimal applicantJoinedCount) {
+		this.applicantJoinedCount = applicantJoinedCount;
 	}
 	
 	
