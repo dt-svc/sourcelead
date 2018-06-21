@@ -310,6 +310,7 @@ public class OrgLicenseSubscriptionServiceImpl implements OrgLicenseSubscription
 			commonUtil.saveDefaultContractTemplate(orgLicenseSubscription.getOrg(),orgLocations,user," Default Client SOW Template",Constants.Client_SOW);
 			commonUtil.saveDefaultContractTemplate(orgLicenseSubscription.getOrg(),orgLocations,user," Default Vendor SOW Template",Constants.Vendor_SOW);
 			commonUtil.saveDefaultContractTemplate(orgLicenseSubscription.getOrg(),orgLocations,user," Default NDA Template",Constants.NDA);
+			commonUtil.saveDefaultGenaeralShift(orgLocations, user, "General Shift");
 			
 			saveOrgLocationDefaultProject(orgLocations, user);
 			commonUtil.storeVendorOnboardDefaultTemplate(user, orgLocations);

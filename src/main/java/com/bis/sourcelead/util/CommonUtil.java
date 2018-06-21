@@ -62,6 +62,7 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTasksDao;
+import com.bis.sourcelead.dao.ShiftDao;
 import com.bis.sourcelead.dto.ApplicantRejectBackOutDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
@@ -92,6 +93,7 @@ import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.Shift;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SourceleadActions;
@@ -243,6 +245,9 @@ public class CommonUtil {
 	@Autowired
 	EmailScenarioConfigurationService emailScenarioconService;
 	
+	@Autowired
+	private ShiftDao shiftDao;
+
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
 
@@ -2464,6 +2469,48 @@ public OrgLicenseSubscriptionHistory  getOrgLicenseSubscriptionHistory(OrgLicens
 		 
 		 return fromEmail;
   }
+  
+  public void saveDefaultGenaeralShift(OrgLocations orgLocations, User user,String shiftName) throws Exception {
+	     Shift shift = new Shift();
+	     shift.setShiftUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	     shift.setOrgLocations(orgLocations);
+	     shift.setShiftName(shiftName);
+	     shift.setTimeIn("9:00 AM");
+	     shift.setTimeOut("6:00 PM");
+	     shift.setMinmumHours("9 hrs");
+	     shift.setTotalHours("9 hrs");
+	     shift.setShiftDescription("Genearal Shift");
+	     
+	     shift.setMondayInTime("9:00 AM");
+	     shift.setMondayOutTime("6:00 PM");
+	     
+	     shift.setTuesdayInTime("9:00 AM");
+	     shift.setTuesdayOutTime("6:00 PM");
+	     
+	     shift.setWednesdayInTime("9:00 AM");
+	     shift.setWednesdayOutTime("6:00 PM");
+	     
+	     shift.setThursdayInTime("9:00 AM");
+	     shift.setThursdayOutTime("6:00 PM");
+	     
+	     shift.setFridayInTime("9:00 AM");
+	     shift.setFridayOutTime("6:00 PM");
+	     
+	     shift.setSaturdayInTime("9:00 AM");
+	     shift.setSaturdayOutTime("6:00 PM");
+	     
+	     shift.setSundayInTime("9:00 AM");
+	     shift.setSundayOutTime("6:00 PM");
+	     shift.setDefaultStatus("Y");
+	     shift.setStatus(Constants.RECORD_ACTIVE.toString());
+	     if(user != null) {
+			 shift.setUpdatedBy(user.getUserCode());
+			 shift.setCreatedBy(user.getUserCode());
+	     }
+		 shift.setUpdatedDate(new Date());
+		 shift.setCreatedDate(new Date());
+		 shiftDao.saveShift(shift);
+	}
   
   
   public String saveJoinStatusInSubmission(ApplicantRejectBackOutDTO applicantRejectBackOutDTO, Long submissionId, OrgLocations orgLocations, User user) throws Exception {

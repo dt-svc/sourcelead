@@ -240,6 +240,11 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 		}else{
 			leaveType.setLeaveDuration(Constants.NO);
 		}
+		if(leaveTypeDTO.getAccuralPolicy() != null) {
+			leaveType.setAccuralPolicy(leaveTypeDTO.getAccuralPolicy());
+		}else {
+			leaveType.setAccuralPolicy(Constants.NO);
+		}
 		if(leaveTypeDTO.getNoOfDays() != null && !"".equalsIgnoreCase(leaveTypeDTO.getNoOfDays())){
 			leaveType.setNoOfDays(Integer.parseInt(leaveTypeDTO.getNoOfDays()));
 		}else{
