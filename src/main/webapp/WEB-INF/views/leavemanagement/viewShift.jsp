@@ -112,8 +112,9 @@ function populategShiftList(response){
            result = result +'  <td>';
            result = result +'     <div class="tblminwidth-50">'    
            if(report.status == 1){
-           result = result +'          <span title="Edit" class="paddingRight" onclick="editShift(\''+report.shiftUUID+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></span>';       
-           result = result +'          <span title="Delete" class="paddingLeft"><i onclick= "deleteShift(\''+report.shiftUUID+'\');" class="fa fa-trash text-danger cursorPointer"></i></span>';         
+           result = result +'          <span title="Edit" class="paddingRight" onclick="editShift(\''+report.shiftUUID+'\');"><i class="fa fa-pencil text-primary cursorPointer"></i></span>';   
+           if(report.defaultStatus != "Y")
+               result = result +'          <span title="Delete" class="paddingLeft"><i onclick= "deleteShift(\''+report.shiftUUID+'\');" class="fa fa-trash text-danger cursorPointer"></i></span>';         
            }else{
         	   result = result +'          <span class="paddingRight" >NA</span>'; 
            }
