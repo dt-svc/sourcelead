@@ -207,6 +207,7 @@ function custDates(){
         result = result +"<th><i class='fa fa-handshake-o fa-2x'></i><div class='small'>Interviewed</div></th>"; 
         result = result +"<th><i class='fa fa-envelope-open-o fa-2x'></i><div class='small'>Offered</div></th>"; 
         result = result +"<th><i class='fa fa-ban fa-2x'></i><div class='small'>Rejected</div></th>";
+        result = result +"<th><i class='fa fa-id-badge'></i><div class='small'>Joined</div></th>";
         result = result +"<th><i class='fa fa-arrow-circle-left fa-2x'></i> <div class='small'>Back-Out</div></th>";
 		result = result + '</tr>';
 		result = result + '</thead>	';
@@ -277,6 +278,7 @@ function usersListPagination(url,sourceleadUrl){
             { "data": "Interviewed"},
             { "data": "offered"},
             { "data": "rejected"},
+            { "data": "joined"},
             { "data": "backout"}
         ],
         "columnDefs": [ {
@@ -405,6 +407,20 @@ function usersListPagination(url,sourceleadUrl){
 	            	    return result;
 	              }
 		     }, {
+		    	  "targets": colIndex++,
+	              "data": "joined",
+	              "sortable": false,
+	              "render": function ( data, type, opt, meta ) {
+	            	    var result = "";
+	            	    if(opt.userApplicantsJoinedCount !=null && opt.userApplicantsJoinedCount !='' && opt.userApplicantsJoinedCount !='undefined'){
+	            	    	result = result +"<td><div class='small'> <span title='"+opt.userApplicantsJoinedCount+"'>"+opt.userApplicantsJoinedCount+"</span></div></td>";
+	            	    }else{
+	            	    	result = result +"<td><div class='small'> <span>0</span></div></td>"; 
+	            	    }
+	            	    
+	            	    return result;
+	              }
+		     },{
 		    	  "targets": colIndex++,
 	              "data": "backout",
 	              "sortable": false,
