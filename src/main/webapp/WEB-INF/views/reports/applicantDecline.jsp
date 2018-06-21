@@ -139,7 +139,14 @@ function getDeclineApplicants(){
 		    		    showError(response.responseMessage);
 		    	  	} else if (response.response === "AWKWARD") {
 		    		    location.href = "/errorPage";
-		    		} else if (response.response === "SUCCESS") {
+		    		} else if(response.response === "DATA_NOT_FOUND"){
+		    			var result = '';
+		 	   			result = result+"<div class='dataTables_empty'>"; 
+		 	   			result = result+"</div> ";
+		 	   	        $("#applicantDecline").empty();
+		                $("#applicantDecline").append(result);
+		    		}
+		    	  	else if (response.response === "SUCCESS") {
 		    			
 		    			var total=response.object.skillsCount + response.object.unsuitableCount + response.object.badfitCount + response.object.interviewCount + response.object.salaryCount + response.object.otherCount;
 				    	

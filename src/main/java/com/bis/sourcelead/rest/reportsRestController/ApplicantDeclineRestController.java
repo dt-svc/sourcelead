@@ -106,7 +106,12 @@ public class ApplicantDeclineRestController {
 					}
 				}
 
-				applicantDeclineDTO =  applicantDeclineService.getDeclineApplicantSkillCount(jobIdList, searchDates,orgLocation); 
+				if(jobIdList.size() > 0){
+					applicantDeclineDTO =  applicantDeclineService.getDeclineApplicantSkillCount(jobIdList, searchDates,orgLocation); 
+				}else{
+					response.setResponse(Result.DATA_NOT_FOUND.name());
+					response.setResponseMessage(Result.DATA_NOT_FOUND.getValue());
+				}
 				
 				if (applicantDeclineDTO != null) {
 					response.setObject(applicantDeclineDTO);
