@@ -207,7 +207,7 @@ function submitCandidatesToJob(){
     	 result = result +"<span class='paddingLeft mt2'>Attach Resume</span></div>";
 		
 		result = result +" <div class='mr pull-left'>";
-		result = result +" <input type='button' value='Submit To Job' onclick='submitCandidtesToJob()' class='btn btn-primary btn-sm'>";
+		result = result +" <input type='button' value='Submit' onclick='submitCandidtesToJob()' class='btn btn-primary btn-sm'>";
 		result = result +"</div>";
 		result = result +" <div class='dynamic_search pull-left'>";
 	 	result = result +" <input type='text' placeholder='Search' id='reqDataTableSearch'/>";
