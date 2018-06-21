@@ -240,8 +240,14 @@ public class LeaveServiceImpl implements LeaveService{
 		if(StringUtils.isNotBlank(leaveDTO.getFromHalfDay())) {
 			leave.setFromHalfDay(leaveDTO.getFromHalfDay());
 		}
+		if(StringUtils.isNotBlank(leaveDTO.getFromDateHalfTime())) {
+			leave.setFromTime(leaveDTO.getFromDateHalfTime());
+		}
 		if(StringUtils.isNotBlank(leaveDTO.getToHalfDay())) {
 			leave.setToHalfDay(leaveDTO.getToHalfDay());
+		}
+		if(StringUtils.isNotBlank(leaveDTO.getToDateHalfTime())) {
+			leave.setToTime(leaveDTO.getToDateHalfTime());
 		}
 		if(leaveDTO.getFileInfo() !=null) {
 			FileInfo fileinfo = leaveDTO.getFileInfo().get(0);

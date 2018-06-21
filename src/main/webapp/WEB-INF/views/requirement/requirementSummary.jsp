@@ -41,30 +41,26 @@ $(document).ready(function() {
 
 <script>
 function prepareAllCounts(requirementId){
-    $('#applicantli').load(allApplicantsCount(requirementId)); 
-    $('#duplicataplctli').load(duplicateCount(requirementId));
-    $('#requestSentli').load(requestSentCount(requirementId));
-    $('#shortListli').load(shortListCount(requirementId));
-    $('#submitToClientli').load(submitToClientCount(requirementId));
-    $('#interviewli').load(interviewsCount(requirementId));
-    $('#offerMadeli').load(offerMadeCount(requirementId));
-    $('#joinedli').load(joinedCount(requirementId));
-    $('#rejectedli').load(rejectedCount(requirementId)); 
-    $('#backoutli').load(backoutCount(requirementId)); 
-}
-</script>
-
-<script>
-function allApplicantsCount(requirementId){
+	$.ajax({
+	       type : "POST",
+	        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=ALL",        
+	        success :function(data) { 
+	       	 var json = data.object;
+	       	 $("#applicantsCount").html(json.applicantsCount);
+	       	 $("#requestSent").html(json.requestSent);
+	       	 $("#shortlistCount").html(json.shortlistCount);
+	       	 $("#submitToClientCount").html(json.submitToClientCount);
+	       	 $("#interviewCount").html(json.interviewCount);
+	       	 $("#offersCount").html(json.offersCount);
+	       	 $("#joinedCount").html(json.joinedCount);
+	       	 $("#rejectedCount").html(json.rejectedCount);
+	       	 $("#backoutCount").html(json.backoutCount);
+	        },
+		  });
 	
-	 $.ajax({
-       type : "POST",
-        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=APPLICANTS",        
-        success :function(data) { 
-       	 var json = JSON.parse(data);
-       	 $("#applicantsCount").html(json);
-        },
-	  });
+	$('#duplicataplctli').load(duplicateCount(requirementId));
+    
+	
 }
 </script>
 
@@ -79,117 +75,6 @@ function duplicateCount(requirementId){
       	 $("#duplicateApplicantsCount").html(json);
        },
 	  }); 
-}
-</script>
-
-<script>
-function requestSentCount(requirementId){
-	
-	 $.ajax({
-      type : "POST",
-       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REQUESTSENT",        
-       success :function(data) { 
-      	    var json = JSON.parse(data);
-      	    $("#requestSent").html(json);
-         },
-	  });
-}
-</script>
-
-<script>
-function shortListCount(requirementId){
-	
-	 $.ajax({
-     type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SHORTLISTED",        
-      success :function(data) { 
-     	    var json = JSON.parse(data);
-     	    $("#shortlistCount").html(json);
-        },
-	  });
-}
-</script>
-
-<script>
-function submitToClientCount(requirementId){
-	
-	$.ajax({
-     type : "POST",
-     url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SUBMIT_TO_CLIENT",        
-     success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#submitToClientCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function interviewsCount(requirementId){
-	
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=INTERVIEWED",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#interviewCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function offerMadeCount(requirementId){
-	
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=OFFERED",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#offersCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function joinedCount(requirementId){
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=JOINED",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#joinedCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function rejectedCount(requirementId){
-	
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REJECTED",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#rejectedCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function backoutCount(requirementId){
-	
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=BACKOUT",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#backoutCount").html(json);
-       },
-	  });
 }
 </script>
 
@@ -1288,7 +1173,7 @@ $('body').on('blur', '#joinedApplicant_form', function() {
 
 
 
-<script>
+<!-- <script>
 function requirementSubmissionCount(requirementId){  
 	
 	 $.ajax({
@@ -1310,7 +1195,7 @@ function requirementSubmissionCount(requirementId){
          },
 	  });
 }
-</script>
+</script> -->
 
 <%-- 
      @author : sarath kumar.
@@ -2413,7 +2298,7 @@ function exportPipelineToPdf(requirementId,submissionType){
 
 <script>
 	// Close Advanced Search
-		function closePop(){
+		function closeCustomizePop(){
 			$("div.cand-advsrch-popup").hide();
 			$("#customizeScoreDiv").hide();
 		}
@@ -2813,7 +2698,7 @@ function customizeScore(requirementId){
 			        result = result +'		              </div>                          ';
 			        
 			        result = result +'		            <div class="form-footer clearfix">                                              ';
-			        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Customize</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closePop();">Cancel</a> </div>';
+			        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Customize</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closeCustomizePop();">Cancel</a> </div>';
 			        result = result +'		            </div>'; 
 			        result = result	+ '               <form>';
 			        result = result +'		            </div>'; 

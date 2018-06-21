@@ -79,6 +79,7 @@ overflow-x: auto;
 	});
 </script> 
 
+
 <form:form class="login-form clearfix"  id="configure_form"  name="configure_form" method="post" >
    <div id ="configurePopUpDiv"></div>
 </form:form>
@@ -184,7 +185,7 @@ overflow-x: auto;
 	     </c:if>
 	    
 	      <div class="pull-left">
-	        <h2>Dashboard<a href="javascript:void(0)" onclick="$('#configureDashboard').show();$('.advancedsearch-mask').fadeIn();"><i class="fa fa-cog ml"></i></a></h2>
+	        <h2>Dashboard<a  onclick="$('#configureDashboard').show();$('.advancedsearch-mask').fadeIn();"><i class="fa fa-cog ml"></i></a></h2>
 	      </div>
 	    </section>
 	    

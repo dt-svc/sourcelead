@@ -59,7 +59,7 @@ private String grade;
 
 private String designation;
 
-
+private String shift;
 
 public String getReason() {
 	return reason;
@@ -231,5 +231,11 @@ public void setDesignation(String designation) {
 	this.designation = designation;
 }
 
+public String getShift() {
+	return shift;
+}
 
+public void setShift(String shift) {
+	this.shift = shift;
+}
 }
