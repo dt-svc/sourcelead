@@ -816,6 +816,11 @@ public class LeaveManagementRestController {
 				shiftDTO.setShiftDescription(shift.getShiftDescription());
 				shiftDTO.setStatus(shift.getStatus());
 				shiftDTO.setShiftUUID(shift.getShiftUUID());
+				if(shift.getDefaultStatus() != null) {
+					shiftDTO.setDefaultStatus(shift.getDefaultStatus());
+				}else {
+					shiftDTO.setDefaultStatus("N");
+				}
 				StringBuilder sb = new StringBuilder();
 				if(shift.getCreatedBy() != null) {
 					User user = userService.getUserByUserCode(shift.getCreatedBy());
