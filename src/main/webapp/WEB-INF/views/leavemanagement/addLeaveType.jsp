@@ -128,11 +128,36 @@
 						<div class="form-group">
 							<label class="col-md-4">Duration<span class="text-danger">&nbsp;*</span></label>
 							<div class="col-md-6 dropdown-select">
-								<select class="form-control" name="duration"
-									field-name="Duration" data-validation="required">
-									<option ${leaveType.duration  == 'Full Day' ? 'selected' : ''}>Full Day</option>
-									<option ${leaveType.duration  == 'Half Day' ? 'selected' : ''}>Half Day</option>
-								</select>
+								<label class="paddingLeft paddingRight"> <c:if
+											test="${!empty leaveType.duration}">
+											<c:if test="${leaveType.duration == 'Full Day'}">
+												<input type="checkbox" checked="true" id="fullDayId"
+													name="duration" value="Full Day">
+												<span class="paddingLeft">Full Day</span>
+												<input type="radio" id="halfDayId" name="duration"
+													value="Half Day">
+												<span class="paddingLeft">Half Day</span>
+											</c:if>
+											<c:if test="${leaveType.duration == 'Half Day'}">
+												<input type="checkbox" checked="true" id="fullDayId" name="duration"
+													value="Full Day">
+												<span class="paddingLeft">Full Day</span>
+												<input type="checkbox" checked="true" id="halfDayId"
+													name="duration" value="Half Day">
+												<span class="paddingLeft">Half Day</span>
+											</c:if>
+										</c:if> <c:if test="${empty leaveType.duration}">
+											<input type="checkbox" checked="true" id="fullDayId"
+												name="duration" value="Full Day">
+											<span class="paddingLeft">Full Day</span>
+											<input type="checkbox" checked="true" id="halfDayId" name="duration"
+												value="Half Day">
+											<span class="paddingLeft">Half Day</span>
+										</c:if>
+
+									</label>
+									<%-- <option ${leaveType.duration  == 'Full Day' ? 'selected' : ''}>Full Day</option>
+									<option ${leaveType.duration  == 'Half Day' ? 'selected' : ''}>Half Day</option> --%>
 							</div>
 						</div>
 
@@ -216,12 +241,12 @@
 							</div>
 						</div>
 
-						<div class="clearfix" id="noUsersDiv" style="display: none;">
+						<div class="clearfix" id="noUsersDiv" style="display: none;" class="deprolemp">
 							<div class="clearfix"></div>
 							<div class="form-group" id="departmentDiv">
 								<label class="col-md-4">Select Department<span class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-6 dropdown-select">
-									<select multiple class="chosen-select form-control" name="department" onchange="removeErrMsg();"
+									<select class="chosen-select form-control" multiple  name="department" onchange="removeErrMsg();valid();"
 										id="department" field-name="Department"
 										data-validation-optional="true">
 										<option value="">Select Department</option>
@@ -236,9 +261,9 @@
 								<label class="col-md-4">Select Roles<span
 								class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-6 dropdown-select" id="roleErrMsg">
-									<select multiple data-placeholder="Select Roles"
-										class="chosen-select form-control" id="roles" name="roles"
-										field-name="Roles" data-validation-optional="true" onchange="removeRoleErrMsg();">
+								<select class="form-control chosen-select choose" multiple id="roles" name="roles"
+										field-name="Roles" data-validation-optional="true" onchange="removeRoleErrMsg()">
+									
 										<c:forEach var="role" items="${rolesList}">
 											<c:set var="NUM" value="${0}" />
 											<c:forEach var="existedRoles" items="${existedRoles}">
@@ -259,9 +284,8 @@
 								<label class="col-md-4">Select Employement Type<span
 								class="text-danger">&nbsp;*</span></label>
 								<div class="col-md-6 dropdown-select" id="empTypeErrMsg">
-									<select multiple data-placeholder="Select Employement Type"
-										class="chosen-select form-control" id="leveEmpType" name="leveEmpType"
-										field-name="Employement Type" data-validation-optional="true" onchange="">
+									<select class="chosen-select form-control"  multiple id="leveEmpType" name="leveEmpType"
+										field-name="Employement Type" data-validation-optional="true">
 										<option value="">--Select Employment type--</option>
 						                 <option>C2C</option>
 						                 <option>C2C-1099</option>
@@ -272,7 +296,9 @@
 						                 <option>Full Time</option>
 									</select>
 								</div>
+								<p Style="color: red; display: none;" id="applicableId" >Select Atleast One Field</p>
 							</div>
+							
 
 						</div>
 						<div class="form-group">
@@ -283,27 +309,27 @@
 								<div class="clearfix mb">
 									<c:if test="${!empty leaveType.leavesCarryforward}">
 										<c:if test="${leaveType.leavesCarryforward == 'Y'}">
-											<label class="paddingLeft paddingRight"> <input
+											<label class="paddingLeft paddingRight" onClick="carryForwardYesUsers();"> <input
 												type="radio" checked value="Y" name="carryforward">
 												<span class="paddingLeft">Yes</span></label>
-											<label class="paddingLeft"> <input type="radio"
+											<label class="paddingLeft" onClick="carryForwardNoUsers();"> <input type="radio"
 												value="N" name="carryforward"> <span
 												class="paddingLeft">No</span></label>
 										</c:if>
 										<c:if test="${leaveType.leavesCarryforward == 'N'}">
-											<label class="paddingLeft paddingRight"> <input
+											<label class="paddingLeft paddingRight" onClick="carryForwardNoUsers();"> <input
 												type="radio" value="Y" name="carryforward"> <span
 												class="paddingLeft">Yes</span></label>
-											<label class="paddingLeft"> <input type="radio"
+											<label class="paddingLeft" onClick="carryForwardNoUsers();"> <input type="radio"
 												checked value="N" name="carryforward"> <span
 												class="paddingLeft">No</span></label>
 										</c:if>
 									</c:if>
 									<c:if test="${empty leaveType.leavesCarryforward}">
-										<label class="paddingLeft paddingRight"> <input
+										<label class="paddingLeft paddingRight" onClick="carryForwardYesUsers();"> <input
 											type="radio" checked value="Y" name="carryforward"> <span
 											class="paddingLeft">Yes</span></label>
-										<label class="paddingLeft"> <input type="radio"
+										<label class="paddingLeft" onClick="carryForwardNoUsers();"> <input type="radio"
 											 value="N" name="carryforward"> <span
 											class="paddingLeft">No</span></label>
 									</c:if>
@@ -313,9 +339,9 @@
 						</div>
 						
 						<div class="form-group" id="noOfDaysDiv">
-							<label class="col-md-4">No.of Days to Carry forward<span class="text-danger paddingLeft" >*</span></label>
+							<label class="col-md-4">No.of Days to Carry forward</label>
 							<div class="col-md-3">
-								<input type="text" id="noOfdaysToCarryforward" name="noOfdaysToCarryforward" field-name="No Of Days To CarryForward" placeholder="Enter no of Days" class="form-control" value="${leaveType.noOfdaysToCarryforward}">
+								<input type="text" id="noOfdaysToCarryforward" name="noOfdaysToCarryforward" field-name="No Of Days To CarryForward" placeholder="Enter no of Days" class="form-control" value="${leaveType.maxDaysToCarryforward}">
 							</div>
 						</div>
 						
@@ -631,7 +657,7 @@
 									      <input type="checkbox" name="includeWeekoff" id="includeWeekoff"
 										   value="Y">Include Week off 
 	                                </c:if>
-	                                <c:if test="${empty leaveType.includeWeekoffHoliday}">
+	                                <c:if test="${empty leaveType.includeWeekoff}">
 									      <input type="checkbox" name="includeWeekoff" id="includeWeekoff"
 										   value="Y">Include Week off 
 	                                </c:if>
@@ -640,15 +666,15 @@
 								<div class="clearfix mb"></div>
 								
 								<span class="checkBox col-md-4">
-									<c:if test="${leaveType.includeHoliday == 'Y'}">
+									<c:if test="${leaveType.includeHolidays == 'Y'}">
 										<input type="checkbox" checked="true" name="includeHoliday" id="includeHoliday" 
 										value="Y">Include Holiday 
 									</c:if>
-									     <c:if test="${leaveType.includeHoliday == 'N'}">
+									     <c:if test="${leaveType.includeHolidays == 'N'}">
 									      <input type="checkbox" name="includeHoliday" id="includeHoliday"
 										   value="Y">Include Holiday 
 	                                </c:if>
-	                                <c:if test="${empty leaveType.includeHoliday}">
+	                                <c:if test="${empty leaveType.includeHolidays}">
 									      <input type="checkbox" name="includeHoliday" id="includeHoliday"
 										   value="Y">Include Holiday 
 	                                </c:if>
@@ -670,15 +696,15 @@
 								</span>
 								
 								<span class="checkBox col-md-4">
-									<c:if test="${leaveType.includeInPayRoll == 'Y'}">
+									<c:if test="${leaveType.includeInPayroll == 'Y'}">
 										<input type="checkbox" checked="true" name="includeInPayRoll" id="includeInPayRoll" 
 										value="Y">Include in PayRoll
 									</c:if>
-									     <c:if test="${leaveType.includeInPayRoll == 'N'}">
+									     <c:if test="${leaveType.includeInPayroll == 'N'}">
 									      <input type="checkbox" name="includeInPayRoll" id="includeInPayRoll"
 										   value="Y">Include in PayRoll
 	                                </c:if>
-	                                <c:if test="${empty leaveType.includeInPayRoll}">
+	                                <c:if test="${empty leaveType.includeInPayroll}">
 									      <input type="checkbox" name="includeInPayRoll" id="includeInPayRoll"
 										   value="Y">Include in PayRoll
 	                                </c:if>
@@ -803,6 +829,28 @@
 				 </div>
 			 </div>
 		</div>
+		
+		              <div class="form-group">
+						<div class="col-md-12">
+						<div class="row clearfix">
+		                        <span class="checkBox col-md-4">
+								<c:if test="${leaveType.accuralPolicy == 'Y'}">
+									<input type="checkbox" checked="true" name="accuralPolicy" id="accPolicy" 
+									value="Y"> Accural Policy
+								</c:if>
+								     <c:if test="${leaveType.accuralPolicy == 'N'}">
+								      <input type="checkbox" name="accuralPolicy" id="accPolicy" value="Y"> Accural Policy 
+                                </c:if>
+                                <c:if test="${empty leaveType.accuralPolicy}">
+								      <input type="checkbox" name="accuralPolicy" id="accPolicy"
+									   value="Y"> Accural Policy 
+                                </c:if>
+<!-- 												<input type="checkbox" checked="true" name="reasonRequired" value="Y"> Reason Required -->
+								</span>
+							</div>
+						</div>
+					</div>
+								
 					
 					
 										
@@ -867,7 +915,7 @@
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="button" id="saveLeaveType" value="Save"
-							onclick="submitLeaveType();" class="btn btn-primary"> <input
+							onclick="submitLeaveType();noUsers();" class="btn btn-primary"> <input
 							type="button" value="Cancel" onclick="redirect();"
 							class="btn btn-default ml10">
 					</div>
@@ -902,10 +950,27 @@ function showLeaveEncashmentDiv(){
 	var ckbox = $('#leaveEncashment');
 	if (ckbox.is(':checked')) {
 		$("#leaveEncashmentDiv").show();
+		$('#leaveEncashMinDays').removeAttr('data-validation-optional');
+		$('#leaveEncashMinDays').attr('data-validation', "required validate_length  length1-3 validate_float");
+		$('#leaveEncashMaxDays').removeAttr('data-validation-optional');
+		$('#leaveEncashMaxDays').attr('data-validation', "required validate_length  length1-3 validate_float");
+		$('#leaveEncashMinDays').attr('data-validation', "validate_float required validate_length length1-3");
+		$('#leaveEncashMaxDays').attr('data-validation', "validate_float required validate_length length1-3");
+		$('#leaveEncashMinDaysDiv').find('p.jquery_form_error_message').remove();
+		$('#leaveEncashMaxDaysDiv').find('p.jquery_form_error_message').remove();
 	}else{
 		$("#leaveEncashmentDiv").hide();
+		$('#leaveEncashMinDaysDiv').find('p.jquery_form_error_message').remove();
+		$('#leaveEncashMaxDaysDiv').find('p.jquery_form_error_message').remove();
+		$('#leaveEncashMinDays').removeAttr('data-validation');
+		$('#leaveEncashMinDays').attr('data-validation-optional', "true");
+		$('#leaveEncashMaxDays').removeAttr('data-validation');
+		$('#leaveEncashMaxDays').attr('data-validation-optional', "true");
+		$("#leaveEncashMinDays").val("");
+		$("#leaveEncashMaxDays").val("");
 	}
 }
+
 	function validateName() {
 	
 		var locationId = '${SourceLeadWeb_orgLocationId}';
@@ -949,7 +1014,7 @@ function showLeaveEncashmentDiv(){
 						.attr(
 								'style',
 								'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-				$.post(sourceleadUrl + "/saveNewLeaveType?&orgLocationId=" + locationId	+ "&loginUserId=" + loginUserId, formData, function(result) {
+				$.post(sourceleadUrl+"/saveNewLeaveType?&orgLocationId="+locationId+"&loginUserId="+loginUserId,formData,function(result) {
 					if (result && result.response === "INVALID_DATA") {
 		    		    showError(result.responseMessage);
 		    		} else if (result.response === "AWKWARD") {
@@ -1075,11 +1140,47 @@ function showLeaveEncashmentDiv(){
 		$("#noUsersDiv").hide();
 	}
 	function noUsers() {
-		$('#department').removeAttr('data-validation-optional');
-		$('#department').attr('data-validation', "required");
-		$('#roles').removeAttr('data-validation-optional');
-		$('#roles').attr('data-validation', "required");
-		$("#noUsersDiv").show();
+		document.getElementById("applicableId").style.display="block";
+		 	if($('#department').val() == null && $('#roles').val() == null && $('#leveEmpType').val() == null){
+				$("#saveLeaveType").attr("disabled", true);
+		 	}
+		 	$("#noUsersDiv").show();
+		 	/* $('#department').click(function(){
+		 		alert("1")
+		 	} */ 
+// 		$('#department').removeAttr('data-validation-optional');
+// 		$('#department').attr('data-validation', "required");
+// 		$('#roles').removeAttr('data-validation-optional');
+// 		$('#roles').attr('data-validation', "required");
+		
+	}
+	function valid(){
+		var id = $('#department').val();
+		if(id != "" && id != null && id != "undefined"){
+			$("#saveLeaveType").attr("disabled", false);
+		}else{
+			$("#saveLeaveType").attr("disabled", true);
+		}
+	}
+	/* $("#roles").chosen().change({
+		("#roles").attr("disabled", false);
+	  }); */
+	/* function roles(){
+		var role = $('#roles').val();
+		if(roles != null && roles != "" && roles != "undefined"){
+			alert("hhhhh")
+			$("#roles").attr("disabled", false);
+		}
+	} */
+	//Select Leave Carry Forward Users
+	function carryForwardNoUsers(){
+		$("#noOfDaysDiv").hide();
+		$("#noOfdaysToCarryforward").val();
+	}
+	
+	function carryForwardYesUsers(){
+		$("#noOfDaysDiv").show();
+		$("#noOfdaysToCarryforward").val('');
 	}
 	
 	//Select All Employees And Experienced
@@ -1096,7 +1197,7 @@ function showLeaveEncashmentDiv(){
 		$('#experiencedApplicableDays').removeAttr('data-validation');
 		$('#experiencedApplicableDays').attr('data-validation-optional', "true");
 		$("#experiencedGroup").hide();
-		$("#noOfDaysDiv").show();
+// 		$("#noOfDaysDiv").show();
 		$('#noOfDays').removeAttr('data-validation-optional');
 		$('#noOfDays').attr('data-validation', "required validate_int");
 		$("#experiencedDuration").val("");
@@ -1114,7 +1215,7 @@ function showLeaveEncashmentDiv(){
 		$('#experiencedApplicableDays').attr('data-validation', "required validate_int validate_length length1-3");
 		$("#experiencedGroup").show();
 		$("#noOfDays").val("");
-		$("#noOfDaysDiv").hide();
+// 		$("#noOfDaysDiv").hide();
 		$('#noOfDays').removeAttr('data-validation');
 		$('#noOfDays').attr('data-validation-optional', "true");
 	}
@@ -1124,7 +1225,36 @@ function showLeaveEncashmentDiv(){
 	$(function() {
 		$('#cp').colorpicker();
 	});
+	
 </script>
+
+<script>
+$('.chosen-select').chosen().on('change', function() {
+	
+	var roles = $("#roles").val();
+	var leveEmpType = $("#leveEmpType").val();
+	var department = $("#department").val();
+	if(roles != null && roles !="" && roles !="undefined"){
+		$("#saveLeaveType").attr("disabled",false );
+		document.getElementById("applicableId").style.display="none";
+	}else if(leveEmpType != null && leveEmpType !="" && leveEmpType !="undefined"){
+		$("#saveLeaveType").attr("disabled",false );
+		document.getElementById("applicableId").style.display="none";
+	}else if(department != null && department !="" && department !="undefined"){
+		$("#saveLeaveType").attr("disabled",false );
+		document.getElementById("applicableId").style.display="none";
+	}else{
+		$("#saveLeaveType").attr("disabled",true );
+		document.getElementById("applicableId").style.display="block";
+	}
+	
+	
+})
+
+
+
+</script>
+
 <jsp:include page="../masterFooter.jsp" />
 
 <script>
