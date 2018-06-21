@@ -28,18 +28,22 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.JobBoardConfigurationDAO;
 import com.bis.sourcelead.dao.RequirementDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.JobBoard;
+import com.bis.sourcelead.entity.JobBoardData;
+import com.bis.sourcelead.entity.OrgJobBoardAccount;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RecruiterReportAssociateCountView;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementJobBoardInfo;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.SubmissionRequirementListView;
 import com.bis.sourcelead.entity.TeamMembers;
@@ -48,7 +52,24 @@ import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.FileUploadUtil;
+import com.bis.sourcelead.util.PasswordSecurity;
 import com.bis.sourcelead.util.ReportsUtil;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
+import java.io.StringReader;
+import java.util.TimeZone;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.dom4j.DocumentFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  * 
@@ -60,6 +81,8 @@ import com.bis.sourcelead.util.ReportsUtil;
 public class RequirementDaoImpl implements RequirementDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementDaoImpl.class);
+        
+        public static final MediaType XML = MediaType.parse("text/xml; charset=utf-8");
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -75,6 +98,12 @@ public class RequirementDaoImpl implements RequirementDao {
 
 	@Autowired
 	UserRoleDao userRoleDao;
+        
+        @Autowired
+        private JobBoardConfigurationDAO jobBoardConfigurationDAO;
+        
+        @Value("${static.path}")
+	private String staticPath;
 
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -119,18 +148,133 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Requirement storeRequirement(Requirement requirement) throws Exception {
-		logger.debug("Storing Candidate");
-		Session session = this.sessionFactory.getCurrentSession();
-		try {
-			if (requirement != null) {
-				session.saveOrUpdate(requirement);
-			}
-			logger.debug("Requirement Stored Successfully");
-		} catch (Exception exception) {
-			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "Requirement"));
-			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
-		}
-		return requirement;
+            logger.debug("Storing Requirement");
+            Session session = this.sessionFactory.getCurrentSession();
+            try {
+                List<RequirementJobBoardInfo> list = new ArrayList<>();
+                if (requirement != null) {
+                    List<RequirementJobBoardInfo> list1 = requirement.getRequirementJobBoardInfoList();
+                    if (requirement.getJobBoardAccountIdList() != null) {
+                        for (Long l : requirement.getJobBoardAccountIdList()) {
+                            RequirementJobBoardInfo r = new RequirementJobBoardInfo();
+                            boolean flag = false;
+                            if (list1 != null) {
+                                for (RequirementJobBoardInfo re : list1) {
+                                    if (re.getOrgJobBoardAccount().getId() == l) {
+                                        r = re;
+                                        flag = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            OrgJobBoardAccount orgJobBoardAccount = (OrgJobBoardAccount) session.get(OrgJobBoardAccount.class, l);
+                            JobBoard jobBoard = orgJobBoardAccount.getOrgJobBoard().getJobBoard();
+                            r.setJobBoard(jobBoard);
+                            r.setOrgJobBoardAccount(orgJobBoardAccount);
+                            r.setRequirement(requirement);
+                            if (jobBoard.getName().equalsIgnoreCase("Monster")) {
+                                String bodyContent = FileUploadUtil.getFileContent(staticPath, jobBoard.getContentFileUrl());
+                                if (!bodyContent.isEmpty()) {
+                                    bodyContent = bodyContent.replace("{username}", orgJobBoardAccount.getUsername());
+                                    bodyContent = bodyContent.replace("{password}", new PasswordSecurity().decrypt(orgJobBoardAccount.getPassword()));
+                                    bodyContent = bodyContent.replace("{title}", requirement.getJobTitle());
+                                    bodyContent = bodyContent.replace("{jobDetail}", requirement.getDescription() == null ? requirement.getJobTitle() : requirement.getDescription());
+                                    String loc[] = requirement.getLocationsList() == null || requirement.getLocationsList().isEmpty() ? "Hyderabad, Telangana, IN".split(", ") : requirement.getLocationsList().get(0).split(", ");
+                                    bodyContent = bodyContent.replace("{city}", loc.length > 0 ? loc[0] : "Hyderabad");
+                                    bodyContent = bodyContent.replace("{state}", loc.length > 1 ? loc[1] : "Telangana");
+                                    bodyContent = bodyContent.replace("{country}", loc.length > 2 ? loc[2] : "IN");
+                                    bodyContent = bodyContent.replace("{jobRefCode}", requirement.getGeneratedId());
+//                                        bodyContent = bodyContent.replace("{postatlCode}", "10001"/*requirement.getPostatlCode()*/);
+                                    Date today = requirement.getCreatedDate() == null ? new Date() : requirement.getCreatedDate();
+                                    Constants.TZ_DF1.setTimeZone(TimeZone.getTimeZone("GMT"));
+                                    String dateString = Constants.TZ_DF1.format(today);
+                                    bodyContent = bodyContent.replace("{dateTime1}", dateString);
+                                    Constants.FULL_DATE.setTimeZone(TimeZone.getTimeZone("GMT"));
+                                    String dateString1 = Constants.FULL_DATE.format(today);
+                                    bodyContent = bodyContent.replace("{dateTime2}", dateString1);
+
+                                    String jobStatusCode = "4";
+                                    JobBoardData jobStatusCodeData = requirement.getJobType() == null ? null : jobBoardConfigurationDAO.getJobBoardDataList(jobBoard.getId(), "JobStatus", "jobType", requirement.getJobType(), requirement.getJobType());
+                                    if (jobStatusCodeData != null) {
+                                        jobStatusCode = jobStatusCodeData.getJobBoardValue();
+                                    }
+                                    bodyContent = bodyContent.replace("{jobStatusCode}", jobStatusCode);
+
+                                    String jobCateogoryCode = "660";
+                                    JobBoardData jobCateogoryData = requirement.getIndustryName() == null ? null : jobBoardConfigurationDAO.getJobBoardDataList(jobBoard.getId(), "JobCategory", "industryName", requirement.getIndustryName(), requirement.getIndustryName());
+                                    if (jobCateogoryData != null) {
+                                        jobCateogoryCode = jobCateogoryData.getJobBoardValue();
+                                    }
+                                    bodyContent = bodyContent.replace("{jobCategoryCode}", jobCateogoryCode);
+
+                                    String industryCode = "0";
+                                    JobBoardData industryData = requirement.getIndustryName() == null ? null : jobBoardConfigurationDAO.getJobBoardDataList(jobBoard.getId(), "Industry", "industryName", requirement.getIndustryName(), requirement.getIndustryName());
+                                    if (industryData != null) {
+                                        industryCode = industryData.getJobBoardValue();
+                                    }
+                                    bodyContent = bodyContent.replace("{industryCode}", industryCode);
+                                    OkHttpClient client = new OkHttpClient();
+                                    RequestBody body = RequestBody.create(XML, bodyContent);
+                                    Request req = new Request.Builder().url(jobBoard.getPostUrl())
+                                                    .addHeader("Content-Type", "application/xml")
+                                                    .post(body)
+                                                    .build();
+                                    Response res = client.newCall(req).execute();
+                                    if(res.isSuccessful()) {
+                                        String resBody = res.body().string();
+                                        System.out.println(resBody);
+                                        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                                        DocumentBuilder builder = factory.newDocumentBuilder();
+                                        Document doc = builder.parse(new InputSource(new StringReader(resBody))); 
+                                        NodeList nodeList = doc.getElementsByTagName("ReturnCode");
+                                        int c = nodeList.getLength();
+                                        for(int i = 0; i < c;i++) {
+                                            Element ele = (Element) nodeList.item(i);
+                                            String status = ele.getTextContent();
+                                            String statusText = ele.getAttribute("returnCodeType");
+                                            if(status.equals("1") || statusText.equals("failure")) {
+                                                NodeList nodeList1 = doc.getElementsByTagName("Descriptions").item(0).getChildNodes();
+                                                int c1 = nodeList1.getLength();
+                                                StringBuilder error = new StringBuilder();
+                                                for(int j = 0; j < c1;j++) {
+                                                    Element ele1 = (Element) nodeList1.item(j);
+                                                    if(ele1.getAttribute("descriptionType").equals("error")) {
+                                                        error.append("[Error]").append(ele1.getTextContent()).append("<br/>");
+                                                    }
+                                                    if(ele1.getAttribute("descriptionType").equals("warning")) {
+                                                        error.append("[Warning]").append(ele1.getTextContent()).append("<br/>");
+                                                    }
+                                                }
+                                                throw new Exception(new Exception(error.toString()));
+                                            }
+                                        }
+                                        Element ele = (Element) doc.getElementsByTagName("JobPostingResponse").item(0); 
+                                        String postingId = ele.getAttribute("postingId");
+                                        r.setJobId(postingId);
+                                        r.setJobUrl("http://jobview.monster.com/getjob.aspx?jobid="+postingId);
+                                        session.saveOrUpdate(r);
+                                    }
+                                }
+                            } else if (jobBoard.getName().equalsIgnoreCase("Dice")) {
+
+                            } else if (jobBoard.getName().equalsIgnoreCase("Naukri")) {
+
+                            }
+                            
+                            list.add(r);
+                        }
+                    }
+                    requirement.setRequirementJobBoardInfoList(list);
+                    session.saveOrUpdate(requirement);
+                }
+                logger.debug("Requirement Stored Successfully");
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "Requirement"));
+                throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+            }
+            return requirement;
 	}
 
 	/**

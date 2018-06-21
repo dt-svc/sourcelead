@@ -2,15 +2,14 @@ package com.bis.sourcelead.dao;
 
 
 import java.text.ParseException;
-
 import java.util.Date;
-
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.bis.sourcelead.dto.LeaveDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AppliedLeaveDate;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.HolidayAndRestrictday;
 import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveApproveHierarchy;
@@ -80,5 +79,7 @@ public interface LeaveDao {
 	List<LeaveApproveHierarchy> getAllLeaveApproversList(Long locationId);
 
 	Map<String, Float> getNumberOfCurrentMonthLeavesTakenByUser(Long userId, Long leaveTypeId);
+
+	List<AppliedLeaveDateView> getLeaveByUserIdAndFromToDate(Long userId, OrgLocations orgLocation, String fromDate, String toDate);
 
 }

@@ -293,7 +293,7 @@
 						<div class="row">
 							<div class="col-md-12 mb">
 								<div class="clearfix dynamic_search filterDynamicsearch">
-										<input type="text" id="attorneyFilterInput"  onkeyup="myClientsFunction('attorneyFilterInput','attorneyFilter');" placeholder="Attorney" title="Type in a managers">
+										<input type="text" id="attorneyFilterInput"  onkeyup="myClientsFunction('attorneyFilterInput','attorneyFilter');" placeholder="Attorney/Company" title="Type in a managers">
 										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
 									</div>
 								 <div class="clearfix filterSearch-ul mt5 filterSearch">
@@ -885,9 +885,15 @@
 	}
 	
 	function getAttorneysByOrgLocation(){
-			 $.ajax({
+		var type = null ;
+		if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
+			type = "Client";
+		}else{
+			type = "Vendor";
+		}	 
+		$.ajax({
 			    	type: "GET",
-			        url: sourceleadUrl+"/getVendorsByOrgLocation?", 
+			        url: sourceleadUrl+"/getAllRelationsByOrgLocationAndType?"+tokenParamName+"="+tokenValue+"&type="+type, 
 			        success: function(data) {
 			        	var json = JSON.parse(data);
 			        	$('#attorneyFilter').empty();

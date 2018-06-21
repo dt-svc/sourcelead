@@ -371,14 +371,14 @@
           <div class="form-group">
               <label class="col-md-4">Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="mobile" id="mobile" value="${immigrationDTO.mobile}" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+					<input type="text" class="form-control" name="mobile" id="mobile" value="${immigrationDTO.mobile}" data-validation="required validate_Space validate_phone validate_length length2-100" data-validation-optional="true">
               </div>
           </div>
           
            <div class="form-group">
               <label class="col-md-4">Alternative Mobile</label>
               <div class="col-md-8">
-					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile" value="${immigrationDTO.alternateMobile}" data-validation="required validate_Space validate_length length2-100" data-validation-optional="true">
+					<input type="text" class="form-control" name="alternateMobile" id="alternateMobile" value="${immigrationDTO.alternateMobile}" data-validation="required validate_Space validate_length validate_phone length2-100" data-validation-optional="true">
               </div>
           </div> 
             
@@ -705,7 +705,7 @@
               <label class="col-md-4">Zip Code</label>
               <div class="col-md-8">
                   <input class="form-control" value="${immigrationDTO.zipcode}" id="zipcode" name="zipcode"
-								placeholder="Zip code" type="text" ></input>
+								placeholder="Zip code" type="text" data-validation="validate_Space validate_length validate_zipcode length2-8" data-validation-optional="true"></input>
               </div>
             </div>
 		    
@@ -816,7 +816,7 @@
 	   prepareResidencediv =prepareResidencediv+ "     <div class='form-group'>";
 	   prepareResidencediv =prepareResidencediv+ "       <label class='col-md-4'>Zip Code</label>";
 	   prepareResidencediv =prepareResidencediv+ "       <div class='col-md-8'>";
-	   prepareResidencediv =prepareResidencediv+ "          <input class='form-control' id='zipcode"+rowId+"' value='"+(typeof residenceVal[6]==="undefined"?"":residenceVal[6])+"' name='residenceList["+rowId+"].zipcode'";
+	   prepareResidencediv =prepareResidencediv+ "          <input class='form-control' id='zipcode"+rowId+"' value='"+(typeof residenceVal[6]==="undefined"?"":residenceVal[6])+"' name='residenceList["+rowId+"].zipcode' data-validation='validate_Space validate_length validate_zipcode length2-8' data-validation-optional='true'";
 	   prepareResidencediv =prepareResidencediv+ " 						placeholder='Zip code' type='text' ></input>";
 	   prepareResidencediv =prepareResidencediv+ "       </div>";
 	   prepareResidencediv =prepareResidencediv+ "     </div>";

@@ -388,7 +388,7 @@
 																		     </c:if>  
 	                                                                       </c:if> 
 	                                                               </c:forEach>
-	                                                               <input type='hidden' name='${attCount.index}maxAttDivRowNumber' id='${attCount.index}maxAttDivRowNumber'  value='${!empty attachment.fileInfo ? fn:length(attachment.fileInfo) : 1}' />
+	                                                               <input type='hidden' name='${attCount.index}maxAttDivRowNumber' id='${attCount.index}maxAttDivRowNumber'  value='${!empty attachment.fileInfo ? fn:length(attachment.fileInfo)+1 : 1}' />
 			                                                        <c:set var="attNumber" value="0"/>
 			                                                        <c:if test="${!empty attachment.fileInfo}">
 			                                                         <input type='hidden' name='${attCount.index}attachMentCount' id='${attCount.index}attachMentCount'  value='${!empty attachment.fileInfo ? fn:length(attachment.fileInfo) : 0}' />

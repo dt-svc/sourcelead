@@ -1157,7 +1157,10 @@ public class RequirementRestController {
 	
 	
 	@RequestMapping(value = "/submitRecommendationCandidates", method = RequestMethod.POST)
-	public @ResponseBody Response<String> submitRecommendationCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateIds", required = false) String candidateIds,HttpServletRequest request)throws Exception {
+	public @ResponseBody Response<String> submitRecommendationCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId, 
+			@RequestParam(value = "candidateIds", required = false) String candidateIds,
+			@RequestParam(value = "candidateResume", required = false) String candidateResume,
+			HttpServletRequest request)throws Exception {
 		Response<String> response = new Response<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1179,6 +1182,7 @@ public class RequirementRestController {
 							labelItems.put("requirementId", requirementId);
 							labelItems.put("reqCoolingOffPeriod", requirement.getReqCoolingOffPeriod());
 							labelItems.put("candidateId", candidate.getCandId());
+							labelItems.put("candidateResumeRequired", candidateResume);
 							
 							JSONArray array = new JSONArray();
 							JSONObject firstNameItem = new JSONObject();

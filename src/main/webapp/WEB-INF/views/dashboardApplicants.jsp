@@ -2,7 +2,7 @@
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
  <!-- Applicant Authorization -->
-      <div class="col-md-12 pdRight pdLeft">
+      <div class="col-md-12 mb pdRight pdLeft">
         <div class="dashboard-widget">
           <h4 class="clearfix">Applicant Permission
           </h4>

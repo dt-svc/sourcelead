@@ -345,6 +345,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Transient
 	private String projectName;
+        
+        @Transient
+	private List<Long> jobBoardAccountIdList;
+        
+        @NotFound(action = NotFoundAction.IGNORE)
+	@OneToMany(mappedBy = "requirement")
+	@Fetch(FetchMode.SELECT)
+	private List<RequirementJobBoardInfo> requirementJobBoardInfoList;
 
 	@Transient
 	private String msg;
@@ -455,6 +463,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Transient
 	@JsonProperty
 	private String noOfOfferedApplicants;
+	
+	@Transient
+	@JsonProperty
+	private String noOfJoinedApplicants;
 
 	@Transient
 	@JsonProperty
@@ -1166,6 +1178,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setNoOfOfferedApplicants(String noOfOfferedApplicants) {
 		this.noOfOfferedApplicants = noOfOfferedApplicants;
+	}
+
+	public String getNoOfJoinedApplicants() {
+		return noOfJoinedApplicants;
+	}
+
+	public void setNoOfJoinedApplicants(String noOfJoinedApplicants) {
+		this.noOfJoinedApplicants = noOfJoinedApplicants;
 	}
 
 	public String getClientContactName() {
@@ -1941,5 +1961,33 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setPrimaryRecruiter(String primaryRecruiter) {
 		this.primaryRecruiter = primaryRecruiter;
 	}
+
+    /**
+     * @return the jobBoardAccountIdList
+     */
+    public List<Long> getJobBoardAccountIdList() {
+        return jobBoardAccountIdList;
+    }
+
+    /**
+     * @param jobBoardAccountIdList the jobBoardAccountIdList to set
+     */
+    public void setJobBoardAccountIdList(List<Long> jobBoardAccountIdList) {
+        this.jobBoardAccountIdList = jobBoardAccountIdList;
+    }
+
+    /**
+     * @return the requirementJobBoardInfoList
+     */
+    public List<RequirementJobBoardInfo> getRequirementJobBoardInfoList() {
+        return requirementJobBoardInfoList;
+    }
+
+    /**
+     * @param requirementJobBoardInfoList the requirementJobBoardInfoList to set
+     */
+    public void setRequirementJobBoardInfoList(List<RequirementJobBoardInfo> requirementJobBoardInfoList) {
+        this.requirementJobBoardInfoList = requirementJobBoardInfoList;
+    }
 
 }

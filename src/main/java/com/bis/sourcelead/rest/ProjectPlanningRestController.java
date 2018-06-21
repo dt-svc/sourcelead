@@ -601,10 +601,10 @@ public class ProjectPlanningRestController {
 	    }
 	    
 	    @RequestMapping(value = "/acceptRequestedAssociate", method = RequestMethod.POST)
-		public @ResponseBody String acceptRequestedAssociate(@RequestParam("requestUUID") String requestUUID,@RequestParam("userId") Long userId,@RequestParam("orglocationId") Long orglocationId) throws Exception {
+		public @ResponseBody String acceptRequestedAssociate(@RequestParam("requestUUID") String requestUUID,@RequestParam("userId") Long userId,@RequestParam("orglocationId") Long orglocationId,HttpServletRequest request) throws Exception {
         	OrgLocations orgLocations = orgLocationService.getOrgLocations(orglocationId);
 	    	User user = userService.getUserById(userId); 
-		  
+	    	 String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request,"isGlobalAccess");
 	    	 if(!isNullOrEmpty(requestUUID)){
 	    		 ProjectPlanningResourceRequest projectPlanningResourceRequest = projectPlanningResourceRequestService.getProjectPlanningResourceRequestByRequestUUID(requestUUID);
 	    		 projectPlanningResourceRequest.setResourceStatus(Constants.RESOURCE_REQUEST_APPROVED);
@@ -616,10 +616,10 @@ public class ProjectPlanningRestController {
 	    		 Candidate vendorCandidate = null;
 	    		 OrgRelations orgRelations = null;
 	    		 Candidate candidate = candidateService.getCandidateByCandidateId(projectPlanningResourceRequest.getCandidateId().getId());
-	    		 if(candidate != null && !candidate.getOrgLocationId().getId().equals(projectPlanningResourceRequest.getOrgLocationId().getId())) {
+	    		 if(candidate != null && !candidate.getOrgLocationId().getId().equals(projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getOrgLocationsId().getId())) {
 	    			
 					 OrgLocations vendorOrgLocation = candidate.getOrgLocationId();
-					 OrgLocations clientOrgLocation = projectPlanningRequest.getOrgLocationId();
+					 OrgLocations clientOrgLocation = projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getOrgLocationsId();
 		    		 orgRelations = orgRelationsService.getOrgRelationByResponderLocationIdAndLocationId(vendorOrgLocation.getId(),clientOrgLocation.getId());
 		    		 OrgSpoc orgSpoc = null;
 		    		 if(orgRelations == null) {
@@ -673,7 +673,8 @@ public class ProjectPlanningRestController {
 						}
 		    		 
 		    		   
-						vendorCandidate = candidateService.findByCandidateEmail(candidate.getEmail(), projectPlanningRequest.getOrgLocationId().getId());
+						vendorCandidate = candidateService.findByCandidateEmail(candidate.getEmail(), projectPlanningRequest.getProjectId().getOrgLocationsId().getId());
+						
 						if(vendorCandidate == null) {
 							vendorCandidate = new Candidate();
 							MasterCandidate masterCandidate = new MasterCandidate();
@@ -692,7 +693,7 @@ public class ProjectPlanningRestController {
 							vendorCandidate.setLastName(candidate.getLastName());
 							vendorCandidate.setEmail(candidate.getEmail());
 							vendorCandidate.setCountry(candidate.getCountry());
-							vendorCandidate.setOrgLocationId(projectPlanningRequest.getOrgLocationId());
+							vendorCandidate.setOrgLocationId(projectPlanningRequest.getProjectId().getOrgLocationsId());
 							vendorCandidate.setIsAssociate(Constants.NO);
 							vendorCandidate.setDesignationType("Offshore C2C");
 							
@@ -743,7 +744,7 @@ public class ProjectPlanningRestController {
 									
 										Candidate pCandidate = candidateService.getCandidateByParentCandidateId(clildCandidate.getId());
 										if(pCandidate != null && pCandidate.getOrgRelationId() != null){
-											ProjectClients pClient = projectClientService.getProjectClientsByProjectIdAndOrgLocationIdAndOrgRelationId(projectPlanningRequest.getProjectId().getId(), clildCandidate.getOrgLocationId().getId(),pCandidate.getOrgRelationId().getId());
+											ProjectClients pClient = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectPlanningRequest.getProjectId().getId(), clildCandidate.getOrgLocationId().getId());
 											if(pClient != null && pClient.getLevel() != null){
 												level = pClient.getLevel()+1;
 											}else {
@@ -804,7 +805,7 @@ public class ProjectPlanningRestController {
 	    		 Projects projects = projectsService.getProjectById(projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getId());
 	    		 
 	 		   
-	    		 if(candidate != null && candidate.getOrgLocationId().getId().equals(projectPlanningResourceRequest.getOrgLocationId().getId())) {
+	    		 if(candidate != null && candidate.getOrgLocationId().getId().equals(projectPlanningResourceRequest.getProjectPlanningRequestId().getProjectId().getOrgLocationsId().getId())) {
 	    			 List<ProjectMembersDTO> projectMembersDTOList = new ArrayList<>();
 		    		 ProjectMembersDTO projectMembersDTO = new ProjectMembersDTO();
 		    		 projectMembersDTO.setCandidateId(projectPlanningResourceRequest.getCandidateId().getId());
@@ -828,9 +829,9 @@ public class ProjectPlanningRestController {
 		    		
 		    		 ProjectAssignedMembersDTO projectAssignedMembersDTO = new ProjectAssignedMembersDTO();
 		    		 projectAssignedMembersDTO.setProjectMembers(projectMembersDTOList);
-	    			 projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projects.getProjectUUID(), user, orgLocations);
+	    			 projectMembersService.saveAssignedProjectMembers(projectAssignedMembersDTO, projects.getProjectUUID(), user, orgLocations,isGlobalAccess);
 	    		 }else {
-	    			 ProjectClients orgProjectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projectPlanningRequest.getOrgLocationId().getId());
+	    			 ProjectClients orgProjectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projectPlanningRequest.getProjectId().getOrgLocationsId().getId());
 	    			 if(orgProjectClients != null) {
 							ProjectMembers projectMembers = saveProjectMembers(projects,vendorCandidate,projectPlanningResourceRequest,user,orgProjectClients,orgLocations);
 							saveProjectMembersHistory(projectMembers, user, orgProjectClients);
