@@ -45,6 +45,9 @@ import com.bis.sourcelead.entity.UserRole;
 		@Required(desc = "resourceManager")
 		private String resourceManager;
 		
+		@Required(desc = "shift")
+		private String shiftId;
+		
 		private String isMailSent;
 		
 		private String jobTitle;
@@ -807,5 +810,12 @@ import com.bis.sourcelead.entity.UserRole;
 			this.grade = grade;
 		}
 
-		
+		public String getShiftId() {
+			return shiftId;
+		}
+
+		public void setShiftId(String shiftId) {
+			this.shiftId = shiftId;
+		}
+
 }

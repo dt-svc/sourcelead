@@ -89,6 +89,7 @@ margin:10px 220px 0;
 			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Role</label>
 			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Manager(Email)</label>
 			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Employment Type</label>
+			  <label><i class="fa fa-check"></i>&nbsp;&nbsp;Shift</label>
 			  </p>
 			  </span>
             </div>

@@ -83,6 +83,8 @@ public class UserDTO extends SearchDTO implements Serializable {
     private BigDecimal userRejectedApplicantsCount;
 	
     private BigDecimal userApplicantsBackOutCount;
+    
+    private BigDecimal userApplicantsJoinedCount;
 
 
     private BigInteger userId;
@@ -597,6 +599,14 @@ public class UserDTO extends SearchDTO implements Serializable {
 
 	public void setUserId(BigInteger userId) {
 		this.userId = userId;
+	}
+
+	public BigDecimal getUserApplicantsJoinedCount() {
+		return userApplicantsJoinedCount;
+	}
+
+	public void setUserApplicantsJoinedCount(BigDecimal userApplicantsJoinedCount) {
+		this.userApplicantsJoinedCount = userApplicantsJoinedCount;
 	}
 
 
