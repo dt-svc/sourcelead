@@ -39,7 +39,7 @@ $(window).load(function() {
 		<div class="col-md-6 ReqRepHead-chosen">
           <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
             <c:forEach var="option" items="${requirementsList}">
-				<option value="${option.requirementId}">${option.jobTitle}</option>
+				<option value="${option.requirementId}"> ${option.generatedId} - ${option.jobTitle} </option>
 			</c:forEach>
           </select>
         </div>
@@ -258,6 +258,7 @@ function getDeclineApplicantList(){
 			             result  = result + '    <table class="table table-bordered" id="applicantDeclinePagenationId">     ';
 						 result  = result + '     <thead>                                 ';
 						 result  = result + '       <tr>                                  ';
+						 result  = result + '         <th>Id</th>                       ';
 						 result  = result + '         <th>Jobs</th>                       ';
 						 result  = result + '         <th>Skills</th>                     ';
 						 result  = result + '         <th>Unsuitable Personality</th>     ';
@@ -273,7 +274,8 @@ function getDeclineApplicantList(){
 							 var report = response.data[i];
 							 
 							 if(report.totalCount>0){
-								 result  = result + '       <tr>                                  ';	
+							result  = result + '       <tr>                                  ';	
+							 result  = result + '		  <td><div>'+report.generatedId+'</div></td>  ';	 
 							 result  = result + '		  <td><div>'+report.jobName+'</div></td>  ';
 							 result  = result + '         <td><div>'+report.skillsCount+'</div></td>               ';
 							 result  = result + '         <td><div>'+report.unsuitableCount+'</div></td>               ';

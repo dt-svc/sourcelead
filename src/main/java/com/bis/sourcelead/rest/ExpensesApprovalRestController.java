@@ -226,7 +226,8 @@ public class ExpensesApprovalRestController {
 			 		 
 			 		//For Approvers of EndClient
 			 		 List<ProjectApproverHierarchy> approverList =  projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMembers.getProjects().getId(), orgLoc.getId());
-			 		 if(approverList != null && approverList.isEmpty()){
+			 		 if(approverList != null && !approverList.isEmpty()){
+			 			 
 			 			 for(ProjectApproverHierarchy  approver : approverList){
 			 				if(!user.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())){
 			 					sendEmailNotificationToEmployeeAndApproversOfEndClient(eah.getExpenseId(),currencyCode,approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(), approver.getApproverUserId().getEmail(), user, orgLoc, projectMembers, startDate, endDate, submissionStatusStr, rejectedReason);

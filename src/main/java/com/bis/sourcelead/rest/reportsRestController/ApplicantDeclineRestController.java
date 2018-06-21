@@ -197,6 +197,7 @@ public class ApplicantDeclineRestController {
 					jobids.add(jobId);
 					applicantDeclineDTO =  applicantDeclineService.getDeclineApplicantSkillCount(jobids, searchDates,orgLocation);
 					applicantDeclineDTO.setJobName(requirement.getJobTitle());
+					applicantDeclineDTO.setGeneratedId(requirement.getGeneratedId());
 					applicantDeclineList.add(applicantDeclineDTO);
 					if(applicantDeclineList != null){
 						response.setData(applicantDeclineList);
