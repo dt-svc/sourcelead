@@ -238,6 +238,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 							expensesApproverHierarchy.setReopenRejectedReason(expensesApproverHierarchy.getReopenRejectedReason());
 						}
 						expensesApproverHierarchy.setRejectedReason(expensesApproverHierarchy.getRejectedReason());
+						expensesApproverHierarchy.setReopenReason(expensesApproverHierarchy.getReopenReason());
 					}
 				}
 			}
@@ -277,6 +278,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 		expensesApproverHierarchyDto.setExpensesUserid(expensesApproverHierarchy.getExpensesUserid());
 		expensesApproverHierarchyDto.setLocationsCode(expensesApproverHierarchy.getExpenseId().getLocationsCode());
 		expensesApproverHierarchyDto.setRejectedReason(expensesApproverHierarchy.getRejectedReason());
+		expensesApproverHierarchyDto.setReopenReason(expensesApproverHierarchy.getReopenReason());
 		expensesApproverHierarchyDto.setReopenRejectedReason(expensesApproverHierarchy.getReopenRejectedReason());
 		expensesApproverHierarchyDto.setUserTypeVendorName(expensesApproverHierarchy.getUserTypeVendorName());
 		expensesApproverHierarchyDto.setExpenseId(expensesApproverHierarchy.getExpenseId().getExpenseId());

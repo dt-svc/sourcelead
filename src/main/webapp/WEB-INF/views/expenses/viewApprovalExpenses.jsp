@@ -31,7 +31,8 @@
 						  <c:if test="${submissionStatus == 'NEW'}">
 						       <b class='proj_new pull-right'>${submissionStatus}</b>
 						  </c:if>
-						  <c:if test="${submissionStatus == 'DRAFT'}">
+						 
+						  <c:if test="${submissionStatus == 'DRAFT' || submissionStatus == 'REOPENED'}">
 						       <b class='proj_draft pull-right' >${submissionStatus}</b>
 						  </c:if>
 						   <c:if test="${submissionStatus == 'SUBMITTED'}">
@@ -48,7 +49,7 @@
 						  </c:if>
 						</div>
 					
-					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED'}">
+					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
 					        <a href="${sourceleadUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
 					     </c:if>
 					     

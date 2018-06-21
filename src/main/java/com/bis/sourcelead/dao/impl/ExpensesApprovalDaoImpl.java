@@ -317,11 +317,11 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	    			eah.setReopenedUser(loginUser);
 	    			
 	    			Expenses expenses =eah.getExpenseId();
-	    			expenses.setExpenseStatus(Submission_Status.SUBMITTED);
+	    			expenses.setExpenseStatus(Submission_Status.REOPENED);
 	    			session.saveOrUpdate(expenses);
 	    			
-	    			eah.setExpenseStatus(Submission_Status.SUBMITTED);
-	    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL);
+	    			eah.setExpenseStatus(Submission_Status.REOPENED);
+	    			eah.setExpenseApprovalStatus(Submission_ApprovalStatus.REOPENED);
 	    			eah.setReopenRejectedReason(null);
 	    		}else{
 	    			if(null != type && "notify".equalsIgnoreCase(type)){
@@ -632,7 +632,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		//return expensesApproverHierarchyList;
 		
 		Boolean isRejected = false; 
-	    Boolean isAPPROVED = false; 
+	    Boolean isREOPENED = false; 
 	    Boolean isSUBMITTED = false; 
 	    Boolean isNEW = false;
 	    Boolean isDRAFT = false;
@@ -648,16 +648,19 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 					 isNEW   = true;  
 					 expensesApproverHierarchy = eah;
 				}
-				else if(!isRejected && !isNEW &&  eah.getExpenseStatus() == Submission_Status.DRAFT){
+				else if(!isRejected && !isNEW &&  eah.getExpenseStatus() == Submission_Status.REOPENED){
+					 isREOPENED   = true;  
+					 expensesApproverHierarchy = eah;
+				}
+				else if(!isRejected && !isNEW && !isREOPENED &&  eah.getExpenseStatus() == Submission_Status.DRAFT){
 					 isDRAFT   = true;  
 					 expensesApproverHierarchy = eah;
 				}
-				else if(!isRejected && !isNEW && !isDRAFT && eah.getExpenseStatus() == Submission_Status.SUBMITTED){
+				else if(!isRejected && !isNEW &&  !isREOPENED && !isDRAFT && eah.getExpenseStatus() == Submission_Status.SUBMITTED){
 					isSUBMITTED   = true;  
 					expensesApproverHierarchy = eah;
 				}
-				else if(!isRejected && !isNEW && !isDRAFT && !isSUBMITTED && eah.getExpenseStatus() == Submission_Status.APPROVED ){
-					 isAPPROVED   = true;  
+				else if(!isRejected && !isNEW &&  !isREOPENED && !isDRAFT && !isSUBMITTED && eah.getExpenseStatus() == Submission_Status.APPROVED ){
 					 expensesApproverHierarchy = eah;
 				}
 	      }
