@@ -98,7 +98,7 @@ var loaded = false;
 				<c:set var="itemName" value="${itemObj.get('name')}"></c:set>
 				<c:set var="itemChecked" value="${itemObj.get('checked')}"></c:set>
 				<c:set var="itemOrder" value="${itemObj.get('order')}"></c:set>
-				<c:if test='${itemName eq "Timesheets" && itemChecked == true}'>
+				<c:if test='${(itemName eq "Timesheets" && itemChecked == true) || (itemName eq "My Timesheets" && itemChecked == true) || (itemName eq "Approval Timesheets" && itemChecked == true)}'>
 			    	<sec:authorize access="hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')"> 
 					<c:if test = "${SourceLeadWeb_timesheet == 'Y'}">       
 						<jsp:include page="dashboardTimesheets.jsp"></jsp:include>  

@@ -185,7 +185,7 @@ public interface UserDao {
 	public ResponseList<UserDTO> getRecruitersReports(Long userId,Long orgLocationId,Long orgId,String isGlobalUser,UserDTO userDTO,String loginUserRole,Date[] searchDates) throws Exception;
 
 
-	public DashboardItems getDashboardItemsByUserId(long loginUserId);
+	public DashboardItems getDashboardItemsByUserId(long loginUserId, long orgLocationId);
 	
 	public DashboardItems getDashboardItemsByDashboardId(long dashboardItemId);
 
