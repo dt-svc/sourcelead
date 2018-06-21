@@ -37,7 +37,7 @@ public class AppliedLeaveDateView {
 	private Integer status;
 	
 	@Column (name = "LEAVE_TYPE_ID")
-	private String leaveTypeId;
+	private Long leaveTypeId;
 
 	public Long getUserId()
 	{
@@ -119,14 +119,13 @@ public class AppliedLeaveDateView {
 		this.reason = reason;
 	}
 
-	public String getLeaveTypeId()
+	public Long getLeaveTypeId()
 	{
 		return leaveTypeId;
 	}
 
-	public void setLeaveTypeId(String leaveTypeId)
+	public void setLeaveTypeId(Long leaveTypeId)
 	{
 		this.leaveTypeId = leaveTypeId;
 	}
-	
 }
