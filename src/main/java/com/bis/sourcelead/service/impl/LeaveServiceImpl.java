@@ -2304,4 +2304,13 @@ public class LeaveServiceImpl implements LeaveService{
 	{
 		return leaveDao.getLeaveByUserIdAndFromToDate(userId,orgLocation,fromDate,toDate);
 	}
+
+	@Override
+	public void updateBalanceLeaves(Leave leave, User user, OrgLocations orgLocations)
+	{
+		AssociateBalanceLeave assBalLeave =  associateBalanceLeaveService.getTotalLeavesByUserIdAndLeaveTypeId(leave.getLeaveType().getId(),user.getId(),orgLocations.getId(), Constants.RECORD_ACTIVE);
+		float balanceLeaves = Integer.parseInt(assBalLeave.getTotalLeaves()) - leave.getNumberOfDays();
+		assBalLeave.setTotalLeaves(String.valueOf(balanceLeaves));
+		associateBalanceLeaveService.saveOrUpdateAssocicateBalanceLeaves(assBalLeave);
+	}
 }

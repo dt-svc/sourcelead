@@ -280,5 +280,17 @@ public class AssociateBalanceLeaveServiceImpl implements AssociateBalanceLeaveSe
 //		}
 //		return 0;
 	}
+
+	@Override
+	public AssociateBalanceLeave getTotalLeavesByUserIdAndLeaveTypeId(Long leaveTypeId, Long userId, Long orgLocationId, Integer status)
+	{
+		return associateBalanceLeaveDao.getTotalLeavesByUserIdAndLeaveTypeId(leaveTypeId, userId, orgLocationId, status);
+	}
+
+	@Override
+	public AssociateBalanceLeave saveOrUpdateAssocicateBalanceLeaves(AssociateBalanceLeave assBalLeave)
+	{
+		return associateBalanceLeaveDao.saveOrUpdateAssocicateBalanceLeaves(assBalLeave);		
+	}
 	
 }

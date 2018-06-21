@@ -88,6 +88,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateGradesService;
@@ -223,7 +224,8 @@ public class LeaveManagementRestController {
 	@Autowired
 	AssociateBalanceLeaveDao associateBalanceLeaveDao;
 	
-	
+	@Autowired
+	AppliedLeaveDateService appliedLeaveDateService;
 	
 	/**
 	 * returns Pending leaves jsp
@@ -1280,6 +1282,9 @@ public class LeaveManagementRestController {
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 					boolean  isApproved = leaveService.reduceLeaveCount(orgLocations,leave.getUser(),leave.getLeaveUUID(),leave.getLeaveType().getId(),leave.getStatus(),leave.getNumberOfDays());
+					
+					leaveService.updateBalanceLeaves(leave,leave.getUser(),orgLocations);
+					
 				} else {
 					response.setResponse(Result.FAILED.name());
 					response.setResponseMessage(Result.FAILED.getValue());
@@ -2755,4 +2760,16 @@ public class LeaveManagementRestController {
 			return model;
 	}
 
+	@RequestMapping(value = "/checkBalance")
+	public void checkBalance(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		List<OrgLocations> orglocationsList = orgLocationService.getAllOrgLocations();
+		for(OrgLocations orgLocation : orglocationsList){
+			List<LeaveType> leaveTypeList = leaveTypeService.getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			for(LeaveType leaveType : leaveTypeList){
+				List<AppliedLeaveDate> appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationId(orgLocation.getId(),leaveType.getId());
+				
+			}
+		}
+	}
+	
 }
